@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Refuse direct commits to main. All work lands through a PR.
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)
+if [[ "$branch" == "main" ]]; then
+  echo "pre-commit: direct commits to main are not allowed. Create a branch and open a PR." >&2
+  exit 1
+fi
