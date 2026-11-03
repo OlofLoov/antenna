@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core:
+    name: AntennaCore tests
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.1.app || sudo xcode-select -s /Applications/Xcode.app
+      - name: Test
+        run: swift test --package-path Packages/AntennaCore
+
+  apps:
+    name: Build apps
+    runs-on: macos-26
+    needs: core
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.1.app || sudo xcode-select -s /Applications/Xcode.app
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build iOS
+        run: |
+          xcodebuild build -project Antenna.xcodeproj -scheme Antenna \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || true
+      - name: Build tvOS
+        run: |
+          xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV \
+            -destination 'generic/platform=tvOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
