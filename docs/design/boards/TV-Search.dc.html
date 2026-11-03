@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV search</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <!-- Top bar -->
+  <div style="height: 104px; flex: 0 0 auto; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+      <span>Antenna</span>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.08)">
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Movies</span>
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Series</span>
+      <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: #F2F4F8; color: #0B0E13">Search</span>
+    </div>
+    <div style="width: 260px; text-align: right; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+  </div>
+
+  <!-- Search field + tvOS linear keyboard -->
+  <div style="flex: 0 0 auto; padding: 8px 64px 0; display: flex; flex-direction: column; gap: 18px">
+    <label style="display: flex; align-items: center; gap: 20px; height: 84px; padding: 0 28px; border-radius: 16px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+      <svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search channels, programmes, movies and series</span>
+      <input type="search" value="north" style="font: inherit; font-size: 38px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #F2F4F8; outline: none">
+      <span style="font-size: 22px; color: #A7B0BF">Channels · Guide · Movies · Series</span>
+      <button type="button" aria-label="Dictate" style="font: inherit; width: 52px; height: 52px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.1); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+    </label>
+    <div style="display: flex; gap: 6px; justify-content: space-between">
+      <span style="width: 52px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #A7B0BF">⌫</span>
+      <span style="width: 120px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 20px; color: #A7B0BF">space</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">a</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">b</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">c</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">d</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">e</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">f</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">g</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">h</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">i</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">j</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">k</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">l</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">m</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">n</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">o</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">p</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">q</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">r</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">s</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">t</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">u</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">v</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">w</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">x</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">y</span>
+      <span style="width: 52px; height: 56px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">z</span>
+      <span style="width: 80px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 20px; color: #A7B0BF">123</span>
+      <span style="width: 80px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 20px; color: #A7B0BF">åäö</span>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 28px; padding: 30px 64px 0">
+
+    <!-- Channels -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; gap: 14px; align-items: baseline"><span style="font-size: 26px; font-weight: 700">Channels</span><span style="font-size: 20px; color: #A7B0BF">3</span></div>
+      <div style="display: flex; gap: 20px">
+        <!-- focused -->
+        <div style="width: 340px; height: 112px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 18px; padding: 0 20px; box-sizing: border-box">
+          <div style="width: 84px; height: 56px; border-radius: 8px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #F2F4F8; flex: 0 0 auto">NN</div>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern News</div>
+            <div style="font-size: 18px; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">201 · Now: Late Edition</div>
+          </div>
+        </div>
+        <div style="width: 340px; height: 112px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; gap: 18px; padding: 0 20px; box-sizing: border-box">
+          <div style="width: 84px; height: 56px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NS</div>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sport</div>
+            <div style="font-size: 18px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">118 · Now: Ice Hockey</div>
+          </div>
+        </div>
+        <div style="width: 340px; height: 112px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; gap: 18px; padding: 0 20px; box-sizing: border-box">
+          <div style="width: 84px; height: 56px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NO1</div>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Nordic One</div>
+            <div style="font-size: 18px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">301 · Matches <span style="background: rgba(91,184,255,0.35); border-radius: 3px; color: #F2F4F8">North</span>ern Report</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- In the guide -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; gap: 14px; align-items: baseline"><span style="font-size: 26px; font-weight: 700">In the guide</span><span style="font-size: 20px; color: #A7B0BF">Next 7 days · 12</span></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px">
+        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
+          <span style="font-size: 18px; font-weight: 700; letter-spacing: 1px; padding: 5px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13">NOW</span>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sea Patrol</div>
+            <div style="font-size: 18px; color: #A7B0BF">Docu HD · 21:00 – 22:00</div>
+          </div>
+          <svg role="img" aria-label="Catch-up available" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
+          <span style="width: 92px; font-size: 20px; color: #D7DEE8; font-variant-numeric: tabular-nums">22:00</span>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Lights · S2 E4</div>
+            <div style="font-size: 18px; color: #A7B0BF">Drama One · Today</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
+          <span style="width: 92px; font-size: 20px; color: #D7DEE8; font-variant-numeric: tabular-nums">Tue 20:00</span>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Soul Night</div>
+            <div style="font-size: 18px; color: #A7B0BF">Music Box · Tomorrow</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
+          <span style="width: 92px; font-size: 20px; color: #D7DEE8; font-variant-numeric: tabular-nums">Wed 18:30</span>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Weather: The <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span></div>
+            <div style="font-size: 18px; color: #A7B0BF">Northern News · Wednesday</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Movies & series -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; gap: 14px; align-items: baseline"><span style="font-size: 26px; font-weight: 700">Movies &amp; series</span><span style="font-size: 20px; color: #A7B0BF">6</span></div>
+      <div style="display: flex; gap: 20px">
+        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
+          <div style="width: 180px; height: 270px; border-radius: 12px; background: #2F4A3B; position: relative">
+            <span style="position: absolute; left: 10px; top: 10px; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 5px; background: rgba(8,10,14,0.72)">SERIES</span>
+          </div>
+          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Lights</div>
+        </div>
+        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
+          <div style="width: 180px; height: 270px; border-radius: 12px; background: #4A3A2F"></div>
+          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">True <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span></div>
+        </div>
+        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
+          <div style="width: 180px; height: 270px; border-radius: 12px; background: #334155"></div>
+          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>bound</div>
+        </div>
+        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
+          <div style="width: 180px; height: 270px; border-radius: 12px; background: #3B2F4A"></div>
+          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Country Diaries</div>
+        </div>
+        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
+          <div style="width: 180px; height: 270px; border-radius: 12px; background: #2A3A52; position: relative">
+            <span style="position: absolute; left: 10px; top: 10px; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 5px; background: rgba(8,10,14,0.72)">SERIES</span>
+          </div>
+          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Water</div>
+        </div>
+        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
+          <div style="width: 180px; height: 270px; border-radius: 12px; background: #4A2F3A"></div>
+          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Exposure</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

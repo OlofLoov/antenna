@@ -5,6 +5,12 @@
 - Depends on ADRs: 0001, 0002
 - Platforms: iOS, iPadOS, macOS, tvOS
 
+## Design
+
+Boards: `docs/design/boards/<Board>.dc.html`, one per platform the spec covers (see `docs/design/README.md` section 4). Write "none, no UI" for a core-only spec.
+Design rules that apply: DR-n, DR-n (from `docs/design/README.md` section 5).
+States on the boards: focused, selected, empty, loading, error, as drawn.
+
 ## Problem
 
 What the user cannot do today and why it matters. Three sentences.

@@ -30,6 +30,9 @@ from `Config/Local.xcconfig.example` for device builds.
 
 ## How we work
 
+- **Design first for screens.** Every screen has a board in `docs/design/`.
+  Specs cite the board and the design rules (`DR-n`) that apply; reviewers
+  check against them. No board, no spec, no code.
 - **Spec first.** Feature work starts from a spec in `docs/specs/` with
   Given/When/Then acceptance criteria. No feature code without a spec id.
   Use the `spec` skill to write one, then run the `spec-reviewer` agent on it.
