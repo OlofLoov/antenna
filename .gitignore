@@ -1,0 +1,18 @@
+# Xcode
+*.xcodeproj
+!*.xcodeproj/project.xcworkspace/xcshareddata/
+xcuserdata/
+DerivedData/
+*.xcuserstate
+.build/
+.swiftpm/
+Packages/*/.build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# macOS
+.DS_Store
+
+# Secrets / local config
+Config/Local.xcconfig

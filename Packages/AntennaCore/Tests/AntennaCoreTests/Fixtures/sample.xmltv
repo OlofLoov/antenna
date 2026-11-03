@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tv generator-info-name="test">
+  <channel id="SkySportsF1.uk"><display-name>Sky Sports F1</display-name><display-name>F1</display-name></channel>
+  <programme start="20261103180000 +0000" stop="20261103200000 +0000" channel="SkySportsF1.uk">
+    <title>Grand Prix Live</title><sub-title>São Paulo</sub-title><desc>Lights out.</desc><category>Sport</category>
+    <icon src="http://img/gp.jpg"/>
+  </programme>
+  <programme start="20261103200000" stop="20261103190000" channel="SkySportsF1.uk"><title>Bogus negative length</title></programme>
+</tv>

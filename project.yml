@@ -1,0 +1,81 @@
+name: Antenna
+options:
+  bundleIdPrefix: se.codecrave
+  xcodeVersion: "26.0"
+  deploymentTarget:
+    iOS: "26.0"
+    macOS: "26.0"
+    tvOS: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+configFiles:
+  Debug: Config/Shared.xcconfig
+  Release: Config/Shared.xcconfig
+
+packages:
+  AntennaCore:
+    path: Packages/AntennaCore
+
+targets:
+  # iPhone, iPad and native Mac from one target (multiplatform destinations).
+  Antenna:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - Apps/Shared
+      - Apps/Mobile
+    dependencies:
+      - package: AntennaCore
+    entitlements:
+      path: Config/Antenna.entitlements
+    info:
+      path: Apps/Mobile/Info.plist
+      properties:
+        CFBundleDisplayName: Antenna
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIBackgroundModes: [audio]
+        NSAppTransportSecurity:
+          # IPTV sources are overwhelmingly plain http. Tighten per-domain later if you can.
+          NSAllowsArbitraryLoads: true
+        LSApplicationCategoryType: public.app-category.entertainment
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+
+  AntennaTV:
+    type: application
+    platform: tvOS
+    sources:
+      - Apps/Shared
+      - Apps/TV
+    dependencies:
+      - package: AntennaCore
+    entitlements:
+      path: Config/AntennaTV.entitlements
+    info:
+      path: Apps/TV/Info.plist
+      properties:
+        CFBundleDisplayName: Antenna
+        UIUserInterfaceStyle: Automatic
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv
+        TARGETED_DEVICE_FAMILY: "3"
+
+schemes:
+  Antenna:
+    build:
+      targets: { Antenna: all }
+    run: { config: Debug }
+  AntennaTV:
+    build:
+      targets: { AntennaTV: all }
+    run: { config: Debug }
