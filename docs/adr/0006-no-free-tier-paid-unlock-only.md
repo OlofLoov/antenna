@@ -1,6 +1,6 @@
 # 0006. Sell every feature behind one App Store unlock, with no free tier
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-11-03
 - Related specs: none yet
 
