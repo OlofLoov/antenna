@@ -6,6 +6,25 @@ on:
   pull_request:
 
 jobs:
+  commits:
+    name: Conventional commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$TITLE" | bash scripts/lint-commit.sh -
+      - name: Check commit messages
+        run: |
+          set -e
+          for sha in $(git rev-list ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}); do
+            git log -1 --format=%B "$sha" | bash scripts/lint-commit.sh - || { echo "in commit $sha"; exit 1; }
+          done
+
   core:
     name: AntennaCore tests
     runs-on: macos-26
@@ -32,7 +51,7 @@ jobs:
         run: |
           xcodebuild build -project Antenna.xcodeproj -scheme Antenna \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || true
+            CODE_SIGNING_ALLOWED=NO
       - name: Build tvOS
         run: |
           xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV \
