@@ -12,9 +12,9 @@ import Testing
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tv>\(body)</tv>"
     }
 
-    private func programme(_ children: String, start: String = "20261103200000", stop: String = "20261103210000")
-        -> String
-    {
+    private func programme(
+        _ children: String, start: String = "20261103200000", stop: String = "20261103210000"
+    ) -> String {
         document(#"<programme channel="a" start="\#(start)" stop="\#(stop)">\#(children)</programme>"#)
     }
 
