@@ -30,7 +30,7 @@ layer is `device` are exempt. The `implement` skill runs this loop.
 | [0011](0011-movies-and-series-browsing.md) | Movies and series browsing | Draft |
 | [0012](0012-search.md) | Search across channels, guide, movies and series | Draft |
 | [0013](0013-channel-catalogue.md) | Channel catalogue: groups, numbers, initials, favorites | Accepted |
-| [0014](0014-guide-data.md) | Guide data: download, join and query | Draft |
+| [0014](0014-guide-data.md) | Guide data: download, join and query | Accepted |
 | [0015](0015-tvos-shell.md) | tvOS shell: tab bar, full-screen playback and Menu | Draft |
 | [0016](0016-xtream-vod-and-series-client.md) | Xtream VOD and series client | Draft |
 
