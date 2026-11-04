@@ -53,5 +53,8 @@
 - One logical change per commit. Specs and ADRs go in their own commit ahead
   of the code that implements them.
 - PR title is the conventional header of the main commit. PR body follows the
-  template and links spec and ADRs. Squash-merge, so the PR title becomes the
-  commit on main.
+  template and links spec and ADRs. Rebase-merge, so every commit on the
+  branch lands on main as pushed; no WIP or fixup commits in a PR.
+- A feature too big for one small PR ships as a stack: `feat/NNNN-slug-1`,
+  `-2` and so on, each based on the one before. The `implement` skill cuts
+  the stack, the `pr` skill opens and rebases it.

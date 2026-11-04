@@ -1,18 +1,19 @@
 ---
 name: implement
-description: Implement a merged spec from docs/specs end to end. Checks the spec is Accepted and unblocked, branches, writes the code and one test per acceptance criterion, sets the spec to Implemented in the same diff, runs the impl-reviewer agent and hands off to the pr skill. Use when the user says "implement spec NNNN", "build 0013", "start on the catalogue spec", or names a spec id with code work in mind.
+description: Implement a merged spec from docs/specs end to end. Checks the spec is Accepted and unblocked, cuts the work into the fewest small shippable PRs, writes the code and one test per acceptance criterion, sets the spec to Implemented in the last diff, runs the impl-reviewer agent and hands each PR to the pr skill. Use when the user says "implement spec NNNN", "build 0013", "start on the catalogue spec", or names a spec id with code work in mind.
 ---
 
 # Implementing a spec
 
-Goal: one PR on `feat/NNNN-slug` that makes every acceptance criterion of
-spec NNNN true, proves each one with a test named after it, and sets the
-spec to Implemented in the same diff.
+Goal: the fewest small PRs that make every acceptance criterion of spec
+NNNN true, prove each one with a test named after it, and set the spec to
+Implemented in the last diff. A spec that fits one small PR ships as one.
+One that does not ships as a stack, each PR built on the one before it.
 
 Status is a claim the diff backs. Nothing tracks it on the side: no job
 file, no tracker agent. `scripts/check-specs.sh` runs in CI and fails any
 spec that says Implemented without a test citing every criterion. When the
-PR merges, the index is already right.
+last PR merges, the index is already right.
 
 ## 1. Check the spec is ready
 
@@ -29,22 +30,13 @@ one message if any of these hold. Do not start a partial implementation.
 - The Design section has a non-empty "Not drawn" list. Those states get
   drawn on the canvas and the section updated before code. No board, no code.
 
-## 2. Branch
-
-```sh
-git fetch origin
-git checkout -b feat/NNNN-slug origin/main
-```
-
-The slug is the spec file's slug.
-
-## 3. Read before writing
+## 2. Read before writing
 
 The spec. Every ADR it names. `docs/conventions.md`. If the spec has a
 Design section, `docs/design/README.md` and every board it lists. The specs
 it builds on, for type and identifier names. The files the spec touches.
 
-## 4. Plan the proof
+## 3. Plan the proof
 
 Before any code, write a coverage table to the scratchpad with one row per
 criterion: AC id, layer from the spec's test plan, test name, file. At least
@@ -56,7 +48,38 @@ the PR body with the reason the spec gives.
 A criterion you cannot see how to test is a spec problem. Stop and report it
 instead of writing a test that cannot fail.
 
-## 5. Build
+## 4. Cut the stack
+
+Add a PR column to the table. A group of criteria is one PR when all of
+these hold:
+
+- Main is shippable after it merges on its own: builds green, tests green,
+  no screen the user can reach that is half wired. A model with no UI yet
+  is fine. A button that does nothing is not.
+- The criteria belong together for a reviewer. Usually that is one layer
+  (core models and parsing, then app wiring, then UI) or one design board.
+- A reviewer can read it in one sitting. Past about 400 changed lines,
+  fixtures excluded, look for a seam. Past 800 there is one.
+
+A spec that fits one group is a stack of one. Otherwise write the stack to
+the scratchpad: position, branch, criteria, and what main can do once it
+merges. Each PR builds on the previous one, so order them by dependency,
+core before Apps. Rebase-merge keeps every commit, so a slice that is not
+shippable on its own cannot hide behind a later one.
+
+## 5. Branch
+
+```sh
+git fetch origin
+git checkout -b feat/NNNN-slug origin/main
+```
+
+The slug is the spec file's slug. In a stack the branches are
+`feat/NNNN-slug-1`, `feat/NNNN-slug-2` and so on, and slice k branches from
+slice k-1, not from main. Work one ahead: open slice k+1 while k is in
+review, but do not start k+2 until k has merged.
+
+## 6. Build
 
 - AntennaCore first, with its tests, then Apps. All parsing and protocol
   logic stays in the package (ADR-0005).
@@ -65,17 +88,21 @@ instead of writing a test that cannot fail.
   invent it. Add the question under Open questions in its own
   `docs(spec)` commit. If the answer would change a criterion, stop and
   report.
+- Stay inside the slice. A criterion from a later slice that turns out to
+  be needed now means the cut was wrong: move it into this slice and
+  update the stack plan, do not half-implement it.
 - Commits follow `docs/conventions.md`: Conventional Commits, footer
-  `Spec: NNNN`, spec edits in their own commit before the code.
+  `Spec: NNNN`, spec edits in their own commit before the code. Every commit
+  lands on main as is, so no WIP or fixup commits.
 - Run `swift test --package-path Packages/AntennaCore` after each core
   change. If the local toolchain cannot run it, say so and rely on CI.
 
-## 6. Claim the status
+## 7. Claim the status
 
-Set `- Status: Implemented` in the spec header and in its README row. When
-the user has asked to split a spec over several PRs, every PR but the last
-sets `In progress (AC-a..AC-b in this PR)` instead, and only the last one
-says Implemented.
+The last PR of the stack sets `- Status: Implemented` in the spec header
+and in its README row. Every other PR sets
+`- Status: In progress (AC-a..AC-b in this PR)` in the header and
+`In progress` in the row.
 
 ```sh
 bash scripts/check-specs.sh
@@ -83,14 +110,21 @@ bash scripts/check-specs.sh
 
 Fix until it prints `ok`.
 
-## 7. Review
+## 8. Review
 
-Run the `impl-reviewer` agent with the spec id and `main...HEAD`.
-READY WITH FIXES: apply the fixes and rerun check-specs. NOT READY: fix,
-run it once more; if still NOT READY, stop and give the user its findings.
+Run the `impl-reviewer` agent with the spec id and the diff range:
+`main...HEAD` for a stack of one or the first slice, `<previous slice
+branch>...HEAD` after that. READY WITH FIXES: apply the fixes and rerun
+check-specs. NOT READY: fix, run it once more; if still NOT READY, stop and
+give the user its findings.
 
-## 8. Open the PR
+## 9. Open the PR
 
-Hand off to the `pr` skill. The PR body's "Criteria covered" table is the
-table from step 4 with the final test names. Title `feat(scope): <what>`.
-After merge there is nothing left to do for this spec.
+Hand off to the `pr` skill with the slice's position in the stack and the
+branch it builds on. The PR body's "Criteria covered" table is this slice's
+rows from step 3 with the final test names. Title `feat(scope): <what>`.
+
+In a stack, go back to step 5 for the next slice once this PR is open.
+When the previous slice merges, the `pr` skill's "Stacks" section says how
+to rebase. After the last PR merges there is nothing left to do for this
+spec.

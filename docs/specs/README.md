@@ -7,8 +7,8 @@ A spec is Accepted when the `spec-reviewer` agent has passed it and every
 acceptance criterion is testable. It is Implemented when a PR has merged with
 a test per criterion. The implementing PR sets that status itself, in the
 spec header and in this table, so merging the code and updating the index
-are one change. In progress is for a spec the user chose to split over
-several PRs; every PR but the last uses it.
+are one change. In progress is for a spec shipping as a stack of PRs; every
+PR but the last uses it.
 
 `scripts/check-specs.sh` runs in CI and in the `pr` skill. It fails when the
 header and the row disagree, or when a spec marked Implemented has a
