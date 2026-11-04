@@ -129,6 +129,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV number entry, zeros only | `TV-ZapBar-PillZeros.dc.html` | 0008 |
 | TV number entry, no such channel | `TV-ZapBar-PillNoChannel.dc.html` | 0008 |
 | TV guide grid | `TV-Guide.dc.html` | 0009 |
+| TV guide grid, placeholder rows and gap | `TV-Guide-Placeholders.dc.html` | 0009 |
+| TV guide grid, future programme, PiP not playing | `TV-Guide-Future.dc.html` | 0009 |
+| TV guide grid, empty group | `TV-Guide-Empty.dc.html` | 0009 |
 | iPad and Mac live browse | `iPad.dc.html` | 0010 |
 | iPhone live | `iPhone.dc.html` | 0010 |
 | TV movies | `TV-Movies.dc.html` | 0011 |
