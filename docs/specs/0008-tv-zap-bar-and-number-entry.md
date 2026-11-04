@@ -13,6 +13,7 @@ Boards: `docs/design/boards/TV-ZapBar.dc.html` and the `TV-ZapBar-*.dc.html` sta
 Design rules that apply: DR-1, DR-3, DR-4, DR-7, DR-8, DR-11, DR-12, DR-13.
 States on the boards: `TV-ZapBar.dc.html` is the bar visible over live video with identity, now playing (78%, 26 min left), next ("22:00 · Match of the Day"), badges ("LIVE", "1080p", "AAC 5.1"), catch-up footer and the hint "Press to browse channels", with the entry pill top left mid-entry drawn on the same frame. `TV-ZapBar.dc.html` is a composite for layout: the pill and the bar are never on screen together (AC-17) and the clock is never rendered in full-screen playback (AC-20); the state boards are authoritative for what is on screen. Digit entry is narrowed to hardware keyboards, as `docs/design/README.md` section 2 says.
 State boards, one frame each, in the muted 22 pt style of the now section unless stated: hidden state, nothing but video (`TV-ZapBar-Hidden.dc.html`); "No programme information" (`TV-ZapBar-NoProgramme.dc.html`), "Loading guide…" (`TV-ZapBar-GuideLoading.dc.html`) and "Guide unavailable" (`TV-ZapBar-GuideUnavailable.dc.html`) bars, each with no progress bar, Next line or remaining text; now section with no Next line when 0014/AC-5 returns nothing, the remaining text kept at the right of its row (`TV-ZapBar-NoNext.dc.html`); footer without catch-up (`TV-ZapBar-NoCatchup.dc.html`); "Favorites · 4 of 9" (`TV-ZapBar-Favorites.dc.html`) and "All channels · 131 of 1312" (`TV-ZapBar-AllChannels.dc.html`) in the 20 pt position label of the base board; pill with no match (`TV-ZapBar-PillNoMatch.dc.html`) and zeros-only pill (`TV-ZapBar-PillZeros.dc.html`), 44 pt digits with the name empty, bar hidden per AC-17; "No channel 999" pill at 22 pt, same height as the digits pill (`TV-ZapBar-PillNoChannel.dc.html`); "Ends now" with the progress bar full (`TV-ZapBar-EndsNow.dc.html`); bar while buffering, no LIVE and no format badges, badge row kept at its height (`TV-ZapBar-Buffering.dc.html`); bar while `.playing` before `PresentationInfo` arrives, LIVE badge alone at 18 pt, badge row kept at its height (`TV-ZapBar-LiveOnly.dc.html`).
+Not drawn: nothing.
 Deviations: the 132 by 88 identity tile uses radius 12, above the 6 to 8 logo-tile range, because it is the largest logo tile in the app.
 
 ## Problem
@@ -167,7 +168,7 @@ Then the pill is removed, no tune occurs and Menu is consumed (0015/AC-3 does no
 ### AC-20 No clock in full screen
 Given full-screen playback with or without the bar
 When rendered
-Then no clock is shown; the clock belongs to the overlay (0007/AC-15) and the shell (0015/AC-7).
+Then no clock is shown; the clock belongs to the overlay (0007/AC-15) and the shell (0015/AC-7a).
 
 ## Edge cases and failure modes
 
