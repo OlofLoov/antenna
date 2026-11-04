@@ -404,7 +404,7 @@ These describe the Xtream login arriving on the Apple TV. They cannot happen und
 - tvOS has no sending view; the sending criteria (AC-24 to AC-28) run on iOS, iPadOS and macOS only.
 - Clock skew between devices: AC-8's 300 s window tolerates it. A record older than that is left for the normal sync path (0004/AC-12).
 - `createdAt` is a defaulted stored property already on `SourceRecord`; no schema change (ADR-0002).
-- Credential lookup on the TV: not done by this card (AC-10). 0004/AC-10's note on read errors applies when the loading step runs.
+- Credential lookup on the TV: not done by this card (AC-10). 0004's rule for Keychain read errors applies when the loading step runs.
 - Token, link URL and activity `userInfo` are never written to a log, to `UserDefaults` or to SwiftData, and `SetupLink` and `PairingToken` expose only the token (no initialiser or property takes a `SourceRecord`, `SourceDescriptor`, `Credential`, device name or iCloud identifier); the impl-reviewer checks both by reading the diff.
 - Apple TV not entitled: the paywall (ADR-0006) comes before onboarding, so the card is never shown (AC-1's Given).
 - Entitlement lapses on the iPhone while the sheet is up: the paywall replaces everything at the next root evaluation (ADR-0006); a saved record stays.

@@ -39,7 +39,7 @@ Out (explicitly):
 - Adding a source: 0006 owns the form; this screen only presents it (`settings.addSource` opens 0006's add-source sheet or type step).
 - Caching channel lists across launches: the storage ADR 0014 is blocked on. Every launch loads every source over the network.
 - Changing a source's kind: delete and add again.
-- Stalker portal handshake and form (0004/AC-13 stays: the record is listed and inert).
+- Stalker portal handshake and form (the record stays listed and inert, as in 0004).
 - Multiple guide URLs per source, manual channel-to-guide mapping: 0014 out of scope, later spec.
 - Hiding, renaming, locking or reordering groups and channels: later catalogue spec.
 - Paywall, restore purchase, subscription management: ADR-0006 follow-up spec.

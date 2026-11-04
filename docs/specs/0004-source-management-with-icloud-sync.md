@@ -7,7 +7,7 @@
 - Platforms: iOS, iPadOS, macOS, tvOS
 - Superseded in part: AC-8, AC-14 and the loading-indicator edge case by 0010
   on iOS, iPadOS and macOS (Accepted; the Channels tab is renamed Live).
-  AC-6, AC-7, AC-9 ("first time"), AC-10 and AC-11 by 0023 (Draft). AC-13 by
+  AC-6, AC-7, AC-9 ("first time"), AC-10 and AC-11 by 0023 (Draft). AC-18 by
   0030 (Draft). Each criterion stays in force until the replacing spec is
   Implemented. The delete-path additions other specs expect of 0004 (0021
   `GuideOverridesRecord`, 0029 `removeSource(_:)`, 0037 `remove(sourceID:)`)
