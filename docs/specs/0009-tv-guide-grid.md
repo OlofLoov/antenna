@@ -26,7 +26,7 @@ A guide grid is how TV viewers plan the evening: what is on across channels at a
 
 In:
 - Guide tab (0015) with the PiP box and a detail panel.
-- Grid for the current group (0008/AC-15), time header in 30-minute columns, now line.
+- Grid for the current group (0008/AC-15a to AC-15c), time header in 30-minute columns, now line.
 - Programme blocks sized by duration, past blocks muted, clipped blocks marked, gaps as unlabelled blocks.
 - Focus model inside the grid, to the chips, and between grid and panel.
 - Tuning from the grid.
@@ -50,7 +50,7 @@ Out (explicitly):
 3. Moving focus across blocks updates the panel. Moving to a block outside the window scrolls so that block's start column is first. Up from the first row reaches the day chips.
 4. Select on an on-air programme tunes to that channel and returns to full screen. Select on any other block moves focus to Watch.
 5. Day chips move the window to the same local time of day on that date.
-6. Menu from the grid or a chip shows the tab bar (0015/AC-6); Menu from the panel returns focus to the grid.
+6. Menu from the grid or a chip shows the tab bar (0015/AC-6a); Menu from the panel returns focus to the grid.
 
 ## Acceptance criteria
 
@@ -69,7 +69,7 @@ Then `play()` is called once; until the engine reports `.playing` the box shows 
 ### AC-2 Rows are the current group's channels
 Given the current group has 42 channels
 When the grid is scrolled from top to bottom
-Then `guide.row.<rowKey>` is exposed for each of the 42 channels in 0013/AC-6 order and no others, each 84 pt tall, with `guide.channel.<rowKey>` showing number, logo or initials tile and name; the playing channel's name is drawn at weight 600.
+Then `guide.row.<rowKey>` is exposed for each of the 42 channels in 0013/AC-6a order and no others, each 84 pt tall, with `guide.channel.<rowKey>` showing number, logo or initials tile and name; the playing channel's name is drawn at weight 600.
 
 ### AC-3 Window and now line
 Given the time is 21:34
@@ -179,7 +179,7 @@ Then focus returns to the block it came from and the guide stays open; left, rig
 ### AC-17b Menu from the grid
 Given focus in the grid or on a day chip
 When the user presses Menu
-Then the tab bar is shown with Guide selected (0015/AC-6).
+Then the tab bar is shown with Guide selected (0015/AC-6a).
 
 ### AC-18 Gaps
 Given programmes 20:30 to 21:00 and 21:30 to 22:00 on a channel in a window from 20:00
@@ -199,7 +199,7 @@ Then the truncated block's width follows its truncated duration; no two blocks i
 ### AC-21 Open at a programme
 Given Search (0012/AC-8) requests the guide for programme P on channel C
 When the guide is shown
-Then the window's first column is the half-hour boundary at or before P's start clamped per AC-13, the day chip for P's start date is selected, C's row is scrolled into view, the current group becomes All channels when C is not in it (0008/AC-15), and focus is on `guide.block.<rowKey>.<P.start>`.
+Then the window's first column is the half-hour boundary at or before P's start clamped per AC-13, the day chip for P's start date is selected, C's row is scrolled into view, the current group becomes All channels when C is not in it (0008/AC-15b), and focus is on `guide.block.<rowKey>.<P.start>`.
 
 ### AC-22 Clock
 Given the guide is open
