@@ -17,17 +17,26 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 
   <!-- Top bar -->
   <div style="height: 104px; flex: 0 0 auto; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
+    <!-- shell.mark: not focusable -->
     <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
       <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
       <span>Antenna</span>
     </div>
-    <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.08)">
-      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
-      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>
-      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Movies</span>
-      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Series</span>
-      <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: #F2F4F8; color: #0B0E13">Search</span>
+    <div style="display: flex; align-items: center; gap: 14px">
+      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search -->
+      <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.08)">
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Movies</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Series</span>
+        <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: #F2F4F8; color: #0B0E13">Search</span>
+      </div>
+      <!-- shell.settings: 30 pt gear, opens the Settings sheet, not a tab -->
+      <span aria-label="Settings" style="width: 56px; height: 56px; border-radius: 28px; color: #F2F4F8; display: flex; align-items: center; justify-content: center; flex: 0 0 auto">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </span>
     </div>
+    <!-- shell.clock: not focusable -->
     <div style="width: 260px; text-align: right; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
   </div>
 
