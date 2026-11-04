@@ -101,6 +101,11 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   white ring and shadow.
 - **Search highlight**: the matched substring gets an accent background at
   35% opacity.
+- **Passcode prompt**: lock glyph, title, one muted line naming what is
+  locked, four digit boxes (72 by 88 pt on tvOS, 56 by 64 on touch
+  platforms) that fill with a dot, an error line in the live-dot colour.
+  tvOS adds a focusable digit row; the other platforms use the system
+  numeric keyboard. Drawn on the `*-Groups-Locked` boards.
 
 ## 4. Screens and boards
 
@@ -119,6 +124,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV groups, passcode prompt and channel picker | `TV-Groups.dc.html`, `TV-Groups-Locked.dc.html`, `TV-Groups-Empty.dc.html`, `TV-Groups-Members.dc.html` | 0020 |
+| iPad and Mac groups | `iPad-Groups.dc.html`, `iPad-Groups-Locked.dc.html`, `iPad-Groups-Empty.dc.html` | 0020 |
+| iPhone groups | `iPhone-Groups.dc.html`, `iPhone-Groups-Locked.dc.html`, `iPhone-Groups-Empty.dc.html`, `iPhone-Groups-Detail.dc.html` | 0020 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
@@ -163,7 +171,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `groups.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
