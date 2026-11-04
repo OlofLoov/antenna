@@ -1,6 +1,6 @@
 # 0013. Channel catalogue: groups, numbers, initials, favorites resolution
 
-- Status: Accepted
+- Status: Implemented
 - Date: 2026-11-03
 - Depends on ADRs: 0002, 0003, 0005
 - Blocked on: nothing; every criterion is core. Constraint on consumers (0007, 0010): no screen may insert the snapshot AC-10 returns until the 0001 follow-up that hashes `streamURL` out of `Channel.id` is merged, because `FavoriteRecord.channelID` would otherwise carry credentials for M3U sources (ADR-0003).
@@ -223,31 +223,31 @@ All criteria are swift-testing tests over fixtures in AntennaCore.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | core | TBD |
-| AC-2 | core | TBD |
-| AC-3 | core | TBD |
-| AC-4 | core | TBD |
-| AC-5a | core | TBD |
-| AC-5b | core | TBD |
-| AC-6a | core | TBD |
-| AC-6b | core | TBD |
-| AC-7 | core | TBD |
-| AC-8 | core | TBD |
-| AC-9a | core | TBD |
-| AC-9b | core | TBD |
-| AC-9c | core | TBD |
-| AC-10 | core | TBD |
-| AC-11a | core | TBD |
-| AC-11b | core | TBD |
-| AC-12 | core | TBD |
-| AC-13 | core | TBD |
-| AC-14 | core benchmark | TBD |
-| AC-15 | core | TBD |
-| AC-16 | core | TBD |
-| AC-17 | core | TBD |
-| AC-18 | core | TBD |
-| AC-19 | core | TBD |
-| AC-20 | core | TBD |
+| AC-1 | core | CatalogueTests.tagging |
+| AC-2 | core | CatalogueTests.groupOrder |
+| AC-3 | core | CatalogueTests.groupCounts |
+| AC-4 | core | CatalogueTests.providerNumbers |
+| AC-5a | core | CatalogueTests.numberFallback |
+| AC-5b | core | CatalogueTests.numberFallbackBase |
+| AC-6a | core | CatalogueTests.sortInGroup, .sortInGroupByNumber |
+| AC-6b | core | CatalogueTests.allOrder |
+| AC-7 | core | CatalogueTests.initials |
+| AC-8 | core | CatalogueFavoritesTests.resolution, .unresolvedOrder |
+| AC-9a | core | CatalogueFavoritesTests.oneRowPerChannel |
+| AC-9b | core | CatalogueFavoritesTests.removalSet |
+| AC-9c | core | CatalogueFavoritesTests.favoritePredicate |
+| AC-10 | core | CatalogueFavoritesTests.addFavorite |
+| AC-11a | core | CatalogueTests.equalIDs |
+| AC-11b | core | CatalogueTests.deterministic |
+| AC-12 | core | CatalogueTests.digitMatch, .digitMatchLonger |
+| AC-13 | core | CatalogueTests.positionInGroup |
+| AC-14 | core benchmark | CatalogueFavoritesTests.buildBenchmark (`ANTENNA_BENCHMARK=1`) |
+| AC-15 | core | CatalogueTests.rowKeyLookup |
+| AC-16 | core | CatalogueTests.sourceGroup |
+| AC-17 | core | CatalogueTests.emptyCatalogue |
+| AC-18 | core | CatalogueTests.untaggedDropped |
+| AC-19 | core | CatalogueFavoritesTests.replaceFavorites, .replaceBenchmark (`ANTENNA_BENCHMARK=1`) |
+| AC-20 | core | CatalogueTests.unknownGroup |
 
 ## Open questions
 
