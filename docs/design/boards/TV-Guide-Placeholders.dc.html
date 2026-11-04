@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV guide grid, placeholder rows and gap</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <!-- Top: PiP video + panel for the focused gap (AC-18). Eyebrow muted, no progress, Watch only (AC-8c). -->
+  <div style="display: flex; gap: 40px; padding: 48px 64px 28px; align-items: flex-start">
+    <!-- guide.pip, engine playing -->
+    <div style="width: 480px; height: 270px; border-radius: 14px; background: #1A2535; flex: 0 0 auto; position: relative; overflow: hidden">
+      <div style="position: absolute; left: 16px; bottom: 14px; display: flex; align-items: center; gap: 10px; font-size: 18px; color: #D7DEE8">
+        <span style="width: 10px; height: 10px; border-radius: 5px; background: #FF5F57; display: inline-block"></span>
+        <span>104 Sport One</span>
+      </div>
+    </div>
+    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding-top: 6px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px">
+        <!-- guide.panel.eyebrow, muted: the gap's start and channel -->
+        <div style="font-size: 20px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">Today 21:00 · Arena HD</div>
+        <!-- guide.clock -->
+        <div style="font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+      </div>
+      <!-- guide.panel.title -->
+      <div style="font-size: 40px; font-weight: 700; line-height: 1.15">No programme information</div>
+      <!-- guide.panel.meta -->
+      <div style="font-size: 24px; color: #A7B0BF">21:00 – 21:30 · 30 min</div>
+      <!-- guide.panel.summary absent, guide.panel.progress absent -->
+      <div style="display: flex; gap: 14px; padding-top: 6px">
+        <!-- guide.watch, unfocused: 0.12 surface -->
+        <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; padding: 12px 24px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Watch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div style="flex: 1 1 auto; position: relative; padding: 0 64px 40px; display: flex; flex-direction: column; gap: 6px">
+
+    <!-- Time header -->
+    <div style="display: flex; align-items: center; height: 52px">
+      <div style="width: 300px; flex: 0 0 auto; display: flex; gap: 10px; align-items: center">
+        <span style="font-size: 20px; font-weight: 600; padding: 6px 14px; border-radius: 8px; background: rgba(255,255,255,0.12)">Today</span>
+        <span style="font-size: 20px; color: #A7B0BF; padding: 6px 14px">Tue</span>
+        <span style="font-size: 20px; color: #A7B0BF; padding: 6px 14px">Wed</span>
+      </div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">20:00</div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">20:30</div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">21:00</div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">21:30</div>
+    </div>
+
+    <!-- 101: guide.loading.<rowKey>, one block across the window (AC-12) -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">101</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">EUR</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Eurosport 1</span>
+      </div>
+      <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Loading guide…</div>
+    </div>
+
+    <!-- 102 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">102</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">EUR2</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Eurosport 2</span>
+      </div>
+      <div style="width: 551px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Ski Jumping: World Cup</div>
+      <div style="width: 551px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Alpine Skiing: Night slalom</div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sports News</div>
+    </div>
+
+    <!-- 104 playing, not focused -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">104</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #F2F4F8; flex: 0 0 auto">S1</span>
+        <span style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One</span>
+      </div>
+      <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Premier League: Arsenal v Liverpool</div>
+    </div>
+
+    <!-- 105: guide.noGuide.<rowKey> (AC-12) -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">105</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">S2</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport Two</span>
+      </div>
+      <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">No programme information</div>
+    </div>
+
+    <!-- 106: focused gap 21:00 – 21:30 (guide.gap.<rowKey>.<start>, AC-18). Focus card, no title, time line only (AC-6). -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">106</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">ARN</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Arena HD</span>
+      </div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Handball Weekly</div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Handball: EHF Champions League</div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: #F2F4F8; color: #0B0E13; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 16px; box-sizing: border-box; box-shadow: 0 10px 28px rgba(0,0,0,0.5)">
+        <div style="font-size: 18px; color: #4B5563">21:00 – 21:30</div>
+      </div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Handball: Late Show</div>
+    </div>
+
+    <!-- 107: unfocused gap 21:00 – 21:30, 0.06 surface, unlabelled (AC-18) -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">107</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">MTR</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Motor TV</span>
+      </div>
+      <div style="width: 736px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">WRC Rally: Day 2 highlights</div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06)"></div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">WRC Rally: Day 3 preview</div>
+    </div>
+
+    <!-- 108: guide.failed.<rowKey> (AC-12) -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-right: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">108</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">GLF</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Golf Channel</span>
+      </div>
+      <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Guide unavailable</div>
+    </div>
+
+    <!-- Now line (21:34 → 94 min past 20:00 at 12.33 px/min) -->
+    <div style="position: absolute; left: 1523px; top: 0; bottom: 40px; width: 3px; background: {{accent}}; border-radius: 2px"></div>
+    <div style="position: absolute; left: 1489px; top: 8px; padding: 4px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">21:34</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
