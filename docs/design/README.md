@@ -59,6 +59,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 - Non-live sections (Movies, Series, Search) use the tvOS top tab bar:
   Live, Guide, Movies, Series, Search. Clock top right.
 - Focus is the lifted white card. Nothing else is white-filled.
+- Title detail: no tab bar. Art full bleed behind a 1100 wide left scrim
+  with the copy column on the hero's left edge; on a series the art stops
+  at 520 and the season chips (64) and episode rows (128) sit below it.
 
 ### iPad and Mac
 
@@ -69,6 +72,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   the upcoming list under it.
 - Movies and Search put a toolbar on top of the detail column and scroll
   content below it.
+- Title detail replaces the content column; the sidebar stays. Toolbar
+  with the back link, art on top (240 tall on a series), buttons, plot,
+  cast, then season chips (34) and episode rows (96).
 
 ### iPhone
 
@@ -78,6 +84,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   chips, channel list.
 - Movies: tall portrait hero, chips laid over the art, copy on a solid scrim
   at the foot of the hero, then rows.
+- Title detail is pushed inside the Movies tab: 16:9 art with a round
+  back button over it, copy, buttons, then season chips (30) and episode
+  rows (84). The tab bar stays.
 - Onboarding and add source are sheets. iPad centres the same sheet.
 
 ## 3. Shared components
@@ -90,8 +99,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   cards.
 - **Badges**: 1.5 pt muted outline, uppercase, letter-spaced (`4K`,
   `1080p`, `AAC 5.1`, `CATCH-UP 7D`; `CATCH-UP` alone when the day count
-  is unknown). The only filled badges are `NOW` (accent) and `LIVE`
-  (surface with the live dot). Resolution and audio badges come from the
+  is unknown). The only filled badges are `NOW` (accent), `UP NEXT`
+  (accent, the episode Play would start, spec 0026) and `LIVE` (surface
+  with the live dot). Resolution and audio badges come from the
   player and exist only for the playing channel. As running text the
   catch-up fact reads "Catch-up 7 days".
 - **Section header**: title plus a muted count or "See all" at the trailing
@@ -117,6 +127,12 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV search | `TV-Search.dc.html` | 0012 |
 | iPad and Mac search | `iPad-Search.dc.html` | 0012 |
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
+| TV movie detail | `TV-Title.dc.html` | 0026 |
+| TV series detail and episodes | `TV-Series.dc.html` | 0026 |
+| iPad and Mac movie detail | `iPad-Title.dc.html` | 0026 |
+| iPad and Mac series detail and episodes | `iPad-Series.dc.html` | 0026 |
+| iPhone movie detail, missing metadata | `iPhone-Title.dc.html` | 0026 |
+| iPhone series detail and episodes | `iPhone-Series.dc.html` | 0026 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
 
@@ -124,8 +140,7 @@ Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
 drawn on `TV-Movies.dc.html` and `TV-Search.dc.html`.
 
-Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
-series detail, player controls on tvOS, Sources and Settings, the "source
+Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, player controls on tvOS, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec lists under "Not drawn".
 
@@ -163,7 +178,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `title.`, `episodes.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV series detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- title.backdrop: top 520 only, so the season row and episodes sit on the ground colour -->
+  <div style="position: absolute; left: 0; top: 0; width: 1920px; height: 520px; background: #2F4A3B"></div>
+  <div style="position: absolute; left: 0; top: 0; width: 1100px; height: 520px; background: rgba(11, 14, 19, 0.72)"></div>
+  <div style="position: absolute; left: 0; right: 0; top: 380px; height: 140px; background: linear-gradient(to bottom, rgba(11,14,19,0), #0B0E13)"></div>
+
+  <!-- No shell tab bar and no clock on the detail (spec 0026): Menu pops back to the section. -->
+
+  <!-- title.root: copy column -->
+  <div style="position: absolute; left: 64px; top: 96px; width: 880px; display: flex; flex-direction: column; gap: 18px">
+    <!-- title.eyebrow -->
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: {{accent}}">Series · Drama</div>
+    <!-- title.name -->
+    <div style="font-size: 64px; font-weight: 800; line-height: 1.02; letter-spacing: -1px">Northern Lights</div>
+    <!-- title.meta: year · seasons · genre · rating · badges -->
+    <div style="display: flex; gap: 14px; align-items: center; font-size: 24px; color: #D7DEE8">
+      <span>2019</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span>3 seasons</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span>Drama</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span style="display: flex; align-items: center; gap: 6px"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><span>8.1</span></span>
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF">15</span>
+    </div>
+    <!-- title.plot: clamped to 2 lines on the series detail so the episodes stay above the fold -->
+    <div style="font-size: 26px; line-height: 1.4; color: #D7DEE8; max-width: 760px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">A coastal weather station loses contact with the mainland the week the lights return. The crew finds out what the last team left behind.</div>
+    <!-- title.play (focused) reads "Resume S<season> E<number>" for the up-next episode; title.myList in its checked state -->
+    <div style="display: flex; gap: 16px; padding-top: 4px">
+      <button type="button" style="font: inherit; font-size: 26px; font-weight: 700; padding: 18px 36px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>
+        <span>Resume S2 E4</span>
+      </button>
+      <button type="button" aria-label="Remove from my list" style="font: inherit; width: 72px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- episodes.seasons: 64 pt chips. Selected season is the 0.12 surface at weight 600; a focused chip takes the Focus token. Header count at the trailing edge. -->
+  <div style="position: absolute; left: 64px; right: 64px; top: 556px; display: flex; justify-content: space-between; align-items: center">
+    <div style="display: flex; gap: 12px">
+      <span style="font-size: 26px; height: 64px; padding: 0 32px; display: inline-flex; align-items: center; border-radius: 999px; background: rgba(255,255,255,0.06); color: #F2F4F8">Season 1</span>
+      <span style="font-size: 26px; font-weight: 600; height: 64px; padding: 0 32px; display: inline-flex; align-items: center; border-radius: 999px; background: rgba(255,255,255,0.12); color: #F2F4F8">Season 2</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 32px; display: inline-flex; align-items: center; border-radius: 999px; background: rgba(255,255,255,0.06); color: #F2F4F8">Season 3</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 32px; display: inline-flex; align-items: center; border-radius: 999px; background: rgba(255,255,255,0.06); color: #F2F4F8">Specials</span>
+    </div>
+    <div style="font-size: 22px; color: #A7B0BF">8 episodes</div>
+  </div>
+
+  <!-- episodes.list: rows 128 pt, radius 14, 0.06 surface. Each row: thumbnail with progress bar, number, title, duration line, plot (1 line). -->
+  <div style="position: absolute; left: 64px; right: 64px; top: 652px; display: flex; flex-direction: column; gap: 12px">
+
+    <!-- episodes.row.<id>, watched: bar full, duration replaced by "Watched" -->
+    <div style="height: 128px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 24px; padding: 0 24px 0 10px; box-sizing: border-box">
+      <div style="width: 192px; height: 108px; border-radius: 8px; background: #3B2F4A; position: relative; overflow: hidden; flex: 0 0 auto">
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 100%; background: {{accent}}"></div></div>
+      </div>
+      <div style="width: 40px; font-size: 26px; color: #A7B0BF; font-variant-numeric: tabular-nums; text-align: right; flex: 0 0 auto">3</div>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 auto">
+        <div style="font-size: 29px; font-weight: 600">The Weir</div>
+        <div style="font-size: 22px; color: #A7B0BF">Watched</div>
+        <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The generator fails on the first night. Ása goes out alone to the weir.</div>
+      </div>
+    </div>
+
+    <!-- episodes.row.<id>, up next: episodes.row.<id>.upNext badge (accent filled) and episodes.row.<id>.progress at 52% -->
+    <div style="height: 128px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 24px; padding: 0 24px 0 10px; box-sizing: border-box">
+      <div style="width: 192px; height: 108px; border-radius: 8px; background: #334155; position: relative; overflow: hidden; flex: 0 0 auto">
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 52%; background: {{accent}}"></div></div>
+      </div>
+      <div style="width: 40px; font-size: 26px; color: #A7B0BF; font-variant-numeric: tabular-nums; text-align: right; flex: 0 0 auto">4</div>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 auto">
+        <div style="display: flex; align-items: center; gap: 14px">
+          <span style="font-size: 29px; font-weight: 600">Low Water</span>
+          <span style="font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; background: {{accent}}; color: #0B0E13">UP NEXT</span>
+        </div>
+        <div style="font-size: 22px; color: #A7B0BF">44 min · 21 min left</div>
+        <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The tide drops further than the charts allow. Something under the pier has been waiting for that.</div>
+      </div>
+    </div>
+
+    <!-- episodes.row.<id>, no plot from the provider: title and duration only, nothing invented -->
+    <div style="height: 128px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 24px; padding: 0 24px 0 10px; box-sizing: border-box">
+      <div style="width: 192px; height: 108px; border-radius: 8px; background: #2A3A52; position: relative; overflow: hidden; flex: 0 0 auto"></div>
+      <div style="width: 40px; font-size: 26px; color: #A7B0BF; font-variant-numeric: tabular-nums; text-align: right; flex: 0 0 auto">5</div>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 auto">
+        <div style="font-size: 29px; font-weight: 600">Ice Road</div>
+        <div style="font-size: 22px; color: #A7B0BF">41 min</div>
+      </div>
+    </div>
+
+    <!-- episodes.row.<id>, no title, no thumbnail, no plot: "Episode 6" from 0016/AC-6d, number tile in the placeholder colour. Cut by the frame to show scroll. -->
+    <div style="height: 128px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 24px; padding: 0 24px 0 10px; box-sizing: border-box">
+      <div style="width: 192px; height: 108px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: #A7B0BF; flex: 0 0 auto">6</div>
+      <div style="width: 40px; font-size: 26px; color: #A7B0BF; font-variant-numeric: tabular-nums; text-align: right; flex: 0 0 auto">6</div>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 auto">
+        <div style="font-size: 29px; font-weight: 600">Episode 6</div>
+        <div style="font-size: 22px; color: #A7B0BF">43 min</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
