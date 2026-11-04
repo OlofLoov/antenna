@@ -140,7 +140,7 @@ loading and error states each spec lists under "Not drawn". The "source
 arrived without its credential" state on tvOS is on `TV-Shell-Empty.dc.html`.
 series detail, player controls on tvOS, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
-error states each spec other than 0007 lists under "Not drawn".
+error states each spec lists under "Not drawn".
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the

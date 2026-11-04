@@ -1,24 +1,24 @@
 # 0007. Apple TV channel overlay
 
-- Status: Draft (two spec-reviewer rounds; findings applied, boards drawn)
+- Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: tvOS
 - Builds on specs 0013 (groups, numbers, initials, favorites resolution, row keys), 0014 (guide queries), 0015 (shell, full-screen playback), 0008 (channel-change event shows the bar; remaining-time formatter), 0012 (Search tab).
-- Blocked on the playback engine spec (not yet written) for an observable engine state and `load(_:)` recording on a fake; AC-1, AC-9 and AC-9a are tested with a fake engine until then.
+- Blocked on: nothing. AC-1, AC-9, AC-9a and AC-10 are asserted on a fake `PlaybackEngine` (AntennaCore) injected under a launch argument; the real engines are the playback spec's concern.
 
 ## Design
 
 Boards: `docs/design/boards/Main.dc.html` with the state boards `Main-Favorites.dc.html`, `Main-FavoritesEmpty.dc.html`, `Main-Empty.dc.html`, `Main-NoProgramme.dc.html` and `Main-GuideLoading.dc.html`.
 Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-6, DR-7, DR-8, DR-11, DR-12, DR-13. Deviations: the selected-but-unfocused group row uses the 0.12 surface and weight 600 (README section 1 is amended to allow it on tvOS); on the focused white card muted text uses `#4B5563` ("Text muted on focus" token in README section 1); the accent "Now" eyebrow in the panel extends DR-3's NOW usage.
 States on the boards:
-- `Main.dc.html`: overlay open over live video, selected group, every group with its count at the trailing edge (AC-3), focused channel row as the white card with the muted-on-focus token on its number, programme title and catch-up glyph, unfocused rows, now and next panel for the focused channel, catch-up glyph on a row, channel column header, clock, "Groups" eyebrow, star and magnifier glyphs. The stage caption bottom right is illustrative and does not ship. The logo tiles and the "HD" badge are illustrative; AC-6 and AC-8 define what ships. Start over is drawn here and hidden per AC-14.
+- `Main.dc.html`: overlay open over live video, selected group, every group with its count at the trailing edge (AC-3), focused channel row as the white card with the muted-on-focus token on its number, programme title and catch-up glyph, unfocused rows, now and next panel for the focused channel, catch-up glyph on a row, channel column header, clock, "Groups" eyebrow, star and magnifier glyphs.
 - `Main-Favorites.dc.html`: Favorites selected with its count, header "Favorites" and "Your order" (AC-4), rows in the user's order (AC-12), panel with the filled star labelled "Remove from favorites" (AC-11) and without Start over (AC-14).
 - `Main-FavoritesEmpty.dc.html`: Favorites focused with count 0, `overlay.emptyGroup` reading "No favorites yet. Press the star on a channel to add it." at muted 26 pt centred in the column, panel empty (AC-13).
-- `Main-Empty.dc.html`: catalogue with zero channels, only Favorites and All channels in the group column, All channels focused, `overlay.emptyGroup` reading "No channels yet. Add a source in Settings." (AC-2), panel empty, no live video under the overlay.
+- `Main-Empty.dc.html`: catalogue with zero channels, only Favorites and All channels in the group column, All channels focused, `overlay.emptyGroup` reading "No channels yet. Add a source in Settings." (AC-2b), panel empty, no live video under the overlay.
 - `Main-NoProgramme.dc.html`: focused row with "No programme information" at muted 22 pt and no progress bar, panel with the same text in place of the Now section and the next section listing programmes after now (AC-7, AC-20), no Start over.
 - `Main-GuideLoading.dc.html`: unfocused rows with "Loading guide…" at muted 22 pt and no progress bar (AC-18), no Start over.
-Not drawn: nothing. Every state the criteria describe is on a board above.
+Not drawn: focused Search row, focused Watch and favorite buttons, unfocused catch-up glyph, focused "Loading guide…" row. Each applies the Focus token or the Text muted token of README section 1 to the drawn unfocused/focused counterpart with no other change.
 
 ## Problem
 
@@ -65,12 +65,22 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 ### AC-1 Opening keeps the video playing
 Given a channel is playing, zap bar visible or hidden, and no entry pill is shown
 When the user presses select
-Then the overlay is presented and the engine's state stays `.playing` with no `pause()` call and the same engine instance.
+Then the overlay is presented, the engine instance is unchanged, `pause()` is not called and the state is the same value it had before the press.
 
 ### AC-2 Initial focus and selected group
 Given a channel is playing and the current group is G (0008/AC-15)
 When the overlay opens
-Then G is selected (its row carries the `.isSelected` trait and the 0.12 surface while focus is elsewhere); focus is on the playing channel's row by `rowKey`, scrolled into view, when it is in G, else on G's first row. When the playing channel's `rowKey` resolves to no channel (0013/AC-15), All channels is selected and focus is on its first row. When the catalogue has zero channels, All channels is selected, the column shows `overlay.emptyGroup` reading "No channels yet. Add a source in Settings.", and focus is on the All channels group.
+Then G is selected (its row carries the `.isSelected` trait and the 0.12 surface while focus is elsewhere); focus is on the playing channel's row by `rowKey`, scrolled into view, when it is in G, else on G's first row.
+
+### AC-2a Playing channel not in catalogue
+Given a channel is playing whose `rowKey` resolves to no channel (0013/AC-15)
+When the overlay opens
+Then All channels is selected and focus is on its first row.
+
+### AC-2b Empty catalogue
+Given the catalogue has zero channels and the Live tab is shown with nothing playing (0015)
+When the user presses select
+Then All channels is selected, `overlay.channelsHeader` reads "All channels" and "Sorted by number", `overlay.emptyGroup` reads "No channels yet. Add a source in Settings.", `overlay.panel` has no children and focus is on `overlay.group.1`.
 
 ### AC-3 Group column contents
 Given the catalogue of 0013/AC-2
@@ -85,17 +95,17 @@ Then the channel column lists exactly C's channels in 0013/AC-6 order and `overl
 ### AC-5 Channel row anatomy
 Given a channel with number 104, a logo URL, name "Sport One", a current programme at 68% elapsed and `hasCatchup` true
 When its row is rendered
-Then the row shows "104", the logo tile, "Sport One" and the programme title on one line, below them `overlay.channel.<rowKey>.progress` with a fraction equal to elapsed over duration within 0.01, and `overlay.channel.<rowKey>.catchup` at the trailing edge; the frame of `overlay.channel.<rowKey>` is 92 pt tall (board), never under 64 (DR-5).
+Then the row shows "104", the logo tile, "Sport One" and the programme title on one line, below them `overlay.channel.<rowKey>.progress` with a fraction equal to elapsed over duration within 0.01, and `overlay.channel.<rowKey>.catchup` at the trailing edge; the row's accessibility label is "<number>, <name>, <programme title or state text>, <remaining text>"; the frame of `overlay.channel.<rowKey>` is 92 pt tall unfocused and 100 pt tall while focused (board), never under 64 (DR-5).
 
 ### AC-6 Logo fallback
 Given a channel whose logo URL is nil or fails to load
 When its row is rendered
-Then `overlay.channel.<rowKey>.logo` shows the placeholder colour and has accessibility value equal to `initials(for:)` from 0013/AC-7.
+Then `overlay.channel.<rowKey>.logo` exists and has accessibility value equal to `initials(for:)` from 0013/AC-7.
 
 ### AC-7 No programme covering now
 Given a channel whose `loadingState` is `.loaded`, `.noData`, `.unavailable` or `.failed` and `current(for:at:)` is nil
 When its row and panel are rendered
-Then the row shows "No programme information" in the muted colour and no progress bar, and the panel shows the same text in place of the Now section.
+Then the row shows "No programme information" and `overlay.channel.<rowKey>.progress` does not exist, and the panel shows the same text in place of the Now section.
 
 ### AC-8 Panel identity
 Given focus on a channel row
@@ -105,12 +115,12 @@ Then `overlay.panel.logo` shows the logo or initials tile, the name, and `overla
 ### AC-9 Select on another channel
 Given focus on a channel row whose `rowKey` differs from the playing channel's
 When the user presses select or activates `overlay.watch`
-Then the engine's `load(_:)` is called once with that channel's `streamURL` (asserted on the fake engine, never logged), the overlay is dismissed, AC-22 commits the group, and a channel-change event is emitted (0008/AC-1).
+Then the fake engine records exactly one `load(_:)` whose argument equals the channel's `streamURL` (never logged or exposed through accessibility), `overlay.root` is dismissed and the zap bar is shown (0008/AC-1).
 
 ### AC-9a Select on the playing channel
 Given focus on the playing channel's row
 When the user presses select or activates `overlay.watch`
-Then with engine state `.playing` or `.loading` the overlay is dismissed and `load(_:)` is not called; with `.failed` or `.idle` it is called once with the channel's `streamURL`.
+Then with engine state `.playing` or `.loading` the overlay is dismissed and `load(_:)` is not called; with `.paused`, `play()` is called once and `load(_:)` is not; with `.failed` or `.idle` it is called once with the channel's `streamURL`.
 
 ### AC-10 Menu closes without tuning
 Given the overlay is open and focus is anywhere in it
@@ -120,7 +130,7 @@ Then the overlay is dismissed, `load(_:)` and `pause()` are not called, the curr
 ### AC-11 Favorite toggle
 Given focus on `overlay.favorite` for a channel that is not a favorite
 When the user presses select
-Then 0013/AC-10 produces the snapshot and the app inserts its record, the button shows the filled star with label "Remove from favorites", and the Favorites count increases by one; pressing again applies 0013/AC-9's removal and reverses both.
+Then a `FavoriteRecord` for the channel exists in the container (0013/AC-10 defines its fields), `overlay.favorite` has label "Remove from favorites", and `overlay.group.0`'s count is one higher; pressing again removes that record (0013/AC-9), the label returns to "Add to favorites" and the count returns to its previous value.
 
 ### AC-12 Favorites group
 Given favorites per 0013/AC-8
@@ -155,12 +165,12 @@ Then focus is on the playing channel's row if it is in C, else on the first row.
 ### AC-18 Guide still loading
 Given a channel whose `loadingState` is `.loading`
 When its row is rendered
-Then the row shows "Loading guide…" in the muted colour and no progress bar, and changes to the AC-5 or AC-7 rendering within five seconds of `loadingState` becoming `.loaded` or `.noData`.
+Then the row shows "Loading guide…" and `overlay.channel.<rowKey>.progress` does not exist, and changes to the AC-5 or AC-7 rendering within five seconds of `loadingState` becoming `.loaded` or `.noData`.
 
 ### AC-19 Panel now section
 Given focus on a channel with a current programme
 When the panel is rendered
-Then `overlay.panel.now` shows the title, start and stop in the locale short time style separated by an en dash, "· " followed by 0008/AC-5's remaining text in `overlay.panel.remaining`, `overlay.panel.progress` with a fraction equal to elapsed over duration within 0.01, and the programme summary or nothing when it is nil.
+Then `overlay.panel.now` shows the title, start and stop in the locale short time style separated by an en dash, "· " followed by 0008/AC-5's remaining text in `overlay.panel.remaining`, `overlay.panel.progress` with a fraction equal to elapsed over duration within 0.01, and `overlay.panel.summary` exists with the summary text, or does not exist when it is nil.
 
 ### AC-20 Panel next section
 Given focus on a channel
@@ -180,7 +190,7 @@ Then the current group becomes C (0008/AC-15a); when the user presses Menu inste
 ### AC-23 Search entry
 Given focus on `overlay.search`
 When the user presses select
-Then the overlay is dismissed, the shell shows the Search tab (0015/AC-14) with `search.field` focused, the engine state is unchanged, and Menu from Search follows 0012/AC-12, not back to the overlay.
+Then the overlay is dismissed, the shell shows the Search tab (0015/AC-14) with `search.field` focused, the engine state is unchanged, and `overlay.root` is not presented again when Menu is pressed in Search.
 
 ## Edge cases and failure modes
 
@@ -195,15 +205,20 @@ Then the overlay is dismissed, the shell shows the Search tab (0015/AC-14) with 
 - `Channel.streamURL` is never logged, never used in an identifier or label, and never shown (ADR-0003).
 - Reduce Motion: the overlay appears without the slide animation.
 - VoiceOver: a row reads number, name, programme title and remaining time as one element.
+- Catalogue or favorites change while open: columns and counts refresh in place; focus stays on the same `rowKey` when it still exists, else on the first row; if the selected group no longer exists, All channels is selected and focus moves to its first row.
+- Play/pause while open toggles the engine as it would without the overlay; the overlay stays open.
+- Swipes past the edge of a column (left from groups, right from the favorite button, up from the first item, down from the last) do not move focus and do not close the overlay.
 
 ## Test plan
 
-Catalogue behaviour is tested in 0013, guide queries in 0014 and the remaining-time formatter in 0008. UI tests run on the tvOS simulator with a fake engine that records `load(_:)` calls to a file in the test's temp directory (nothing derived from `streamURL` is set on any accessibility attribute), a fixture catalogue, a fake `GuideStore` and an injected clock. Identifiers: `overlay.root`, `overlay.groups`, `overlay.group.<index>`, `overlay.channelsHeader`, `overlay.channels`, `overlay.channel.<rowKey>`, `overlay.channel.<rowKey>.logo`, `overlay.channel.<rowKey>.progress`, `overlay.channel.<rowKey>.catchup`, `overlay.panel`, `overlay.panel.logo`, `overlay.panel.badges`, `overlay.panel.now`, `overlay.panel.progress`, `overlay.panel.remaining`, `overlay.panel.next`, `overlay.watch`, `overlay.startOver`, `overlay.favorite`, `overlay.clock`, `overlay.search`, `overlay.emptyGroup`.
+Catalogue behaviour is tested in 0013, guide queries in 0014 and the remaining-time formatter in 0008. UI tests run on the tvOS simulator with a fake engine that records `load(_:)` calls to a file in the test's temp directory (nothing derived from `streamURL` is set on any accessibility attribute), a fixture catalogue, a fake `GuideStore` and an injected clock. Identifiers: `overlay.root`, `overlay.groups`, `overlay.group.<index>`, `overlay.channelsHeader`, `overlay.channels`, `overlay.channel.<rowKey>`, `overlay.channel.<rowKey>.logo`, `overlay.channel.<rowKey>.progress`, `overlay.channel.<rowKey>.catchup`, `overlay.panel`, `overlay.panel.logo`, `overlay.panel.badges`, `overlay.panel.now`, `overlay.panel.progress`, `overlay.panel.remaining`, `overlay.panel.summary`, `overlay.panel.next`, `overlay.watch`, `overlay.startOver`, `overlay.favorite`, `overlay.clock`, `overlay.search`, `overlay.emptyGroup`.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
 | AC-1 | ui (fake engine state) | TBD |
-| AC-2 | ui (three Givens) | TBD |
+| AC-2 | ui (two Givens) | TBD |
+| AC-2a | ui | TBD |
+| AC-2b | ui | TBD |
 | AC-3 | ui | TBD |
 | AC-4 | ui | TBD |
 | AC-5 | ui (frame and fraction) | TBD |
@@ -211,7 +226,7 @@ Catalogue behaviour is tested in 0013, guide queries in 0014 and the remaining-t
 | AC-7 | ui (fake GuideStore, parameterised states) | TBD |
 | AC-8 | ui | TBD |
 | AC-9 | ui (fake engine load log) | TBD |
-| AC-9a | ui (fake engine, four states) | TBD |
+| AC-9a | ui (fake engine, five states) | TBD |
 | AC-10 | ui | TBD |
 | AC-11 | integration (in-memory ModelContainer) + ui | TBD |
 | AC-12 | ui | TBD |
