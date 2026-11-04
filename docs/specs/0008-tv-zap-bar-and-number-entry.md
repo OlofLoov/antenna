@@ -1,19 +1,19 @@
 # 0008. Apple TV zap bar and channel number entry
 
-- Status: Draft (two spec-reviewer rounds, verdict ACCEPT WITH EDITS applied)
+- Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: tvOS
 - Builds on specs 0013 (position in group, digit matching, source group), 0014 (guide queries), 0015 (shell, full-screen playback), 0007 (overlay opens on select; 0007/AC-22 commits the current group).
 - Blocked on the playback engine spec (not yet written) for an observable state and a `PresentationInfo` stream (video height, audio channels, audio codec). AC-7 and AC-14 are tested with a fake engine until then; the protocol change is a dependency, not made here.
-- Reviewer verdict after two rounds: ACCEPT WITH EDITS, edits applied in this version.
 
 ## Design
 
 Boards: `docs/design/boards/TV-ZapBar.dc.html` and the `TV-ZapBar-*.dc.html` state boards beside it.
 Design rules that apply: DR-1, DR-3, DR-4, DR-7, DR-8, DR-11, DR-12, DR-13.
-States on the boards: `TV-ZapBar.dc.html` is the bar visible over live video with identity, now playing (78%, 26 min left), next ("22:00 · Match of the Day"), badges ("LIVE", "1080p", "AAC 5.1"), catch-up footer and the hint "Press to browse channels", with the entry pill top left mid-entry drawn on the same frame. The clock drawn top right there is 0007's and is not rendered during full-screen playback (AC-20); the state boards omit it. Digit entry is narrowed to hardware keyboards, as `docs/design/README.md` section 2 says.
-State boards, one frame each, in the muted 22 pt style of the now section unless stated: hidden state, nothing but video (`TV-ZapBar-Hidden.dc.html`); "No programme information" (`TV-ZapBar-NoProgramme.dc.html`), "Loading guide…" (`TV-ZapBar-GuideLoading.dc.html`) and "Guide unavailable" (`TV-ZapBar-GuideUnavailable.dc.html`) bars, each with no progress bar, Next line or remaining text; footer without catch-up (`TV-ZapBar-NoCatchup.dc.html`); "Favorites · 4 of 9" (`TV-ZapBar-Favorites.dc.html`) and "All channels · 131 of 1312" (`TV-ZapBar-AllChannels.dc.html`) in the 20 pt position label of the base board; pill with no match (`TV-ZapBar-PillNoMatch.dc.html`) and zeros-only pill (`TV-ZapBar-PillZeros.dc.html`), 44 pt digits with the name empty, bar hidden per AC-17; "No channel 999" pill at 22 pt, same height as the digits pill (`TV-ZapBar-PillNoChannel.dc.html`); "Ends now" with the progress bar full (`TV-ZapBar-EndsNow.dc.html`); bar while buffering, no LIVE and no format badges, badge row kept at its height (`TV-ZapBar-Buffering.dc.html`).
+States on the boards: `TV-ZapBar.dc.html` is the bar visible over live video with identity, now playing (78%, 26 min left), next ("22:00 · Match of the Day"), badges ("LIVE", "1080p", "AAC 5.1"), catch-up footer and the hint "Press to browse channels", with the entry pill top left mid-entry drawn on the same frame. `TV-ZapBar.dc.html` is a composite for layout: the pill and the bar are never on screen together (AC-17) and the clock is never rendered in full-screen playback (AC-20); the state boards are authoritative for what is on screen. Digit entry is narrowed to hardware keyboards, as `docs/design/README.md` section 2 says.
+State boards, one frame each, in the muted 22 pt style of the now section unless stated: hidden state, nothing but video (`TV-ZapBar-Hidden.dc.html`); "No programme information" (`TV-ZapBar-NoProgramme.dc.html`), "Loading guide…" (`TV-ZapBar-GuideLoading.dc.html`) and "Guide unavailable" (`TV-ZapBar-GuideUnavailable.dc.html`) bars, each with no progress bar, Next line or remaining text; now section with no Next line when 0014/AC-5 returns nothing, the remaining text kept at the right of its row (`TV-ZapBar-NoNext.dc.html`); footer without catch-up (`TV-ZapBar-NoCatchup.dc.html`); "Favorites · 4 of 9" (`TV-ZapBar-Favorites.dc.html`) and "All channels · 131 of 1312" (`TV-ZapBar-AllChannels.dc.html`) in the 20 pt position label of the base board; pill with no match (`TV-ZapBar-PillNoMatch.dc.html`) and zeros-only pill (`TV-ZapBar-PillZeros.dc.html`), 44 pt digits with the name empty, bar hidden per AC-17; "No channel 999" pill at 22 pt, same height as the digits pill (`TV-ZapBar-PillNoChannel.dc.html`); "Ends now" with the progress bar full (`TV-ZapBar-EndsNow.dc.html`); bar while buffering, no LIVE and no format badges, badge row kept at its height (`TV-ZapBar-Buffering.dc.html`); bar while `.playing` before `PresentationInfo` arrives, LIVE badge alone at 18 pt, badge row kept at its height (`TV-ZapBar-LiveOnly.dc.html`).
+Deviations: the 132 by 88 identity tile uses radius 12, above the 6 to 8 logo-tile range, because it is the largest logo tile in the app.
 
 ## Problem
 
@@ -52,17 +52,17 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 ### AC-1 Shown on every channel change
 Given a channel is playing with the bar hidden
 When playback switches to another channel by any means
-Then the bar shows the new channel's identity and now section before the engine's `load` returns and hides five seconds later on the injected clock; the timer restarts on any channel change (including AC-9 and AC-11) and on AC-2's press, and on nothing else (engine updates per AC-7, the minute refresh per AC-16).
+Then the bar (`zapBar.root`) shows the new channel's identity and now section before the engine's `load` returns and hides five seconds later on the injected clock; the timer restarts on any channel change (including AC-9 and AC-11) and on AC-2's press, and on nothing else (engine updates per AC-7, the minute refresh per AC-16).
 
 ### AC-2 Shown on demand
 Given a channel is playing
 When the user presses play/pause
-Then with the bar hidden it is shown for the current channel and hides five seconds later; with the bar visible the five seconds restart and nothing else changes; the engine state is unchanged in both cases.
+Then with the bar hidden it is shown for the current channel and hides five seconds later; with the bar visible the five seconds restart and nothing else changes; with the pill visible, the pill is removed first without tuning and the bar is then shown for the current channel; the engine state is unchanged in every case.
 
 ### AC-3 Menu hides
 Given the bar is visible
 When the user presses Menu
-Then the bar is hidden, the engine state is unchanged, the app stays in full-screen playback, and Menu is consumed (0015/AC-3 does not fire).
+Then `zapBar.root` is absent, the engine state is unchanged, the app stays in full-screen playback, and Menu is consumed (0015/AC-3 does not fire).
 
 ### AC-4 Identity section
 Given channel 104 "Sport One", fourth of 42 in current group "Sport" (0013/AC-13)
@@ -72,7 +72,7 @@ Then `zapBar.logo` shows the logo or initials tile (0013/AC-7), `zapBar.number` 
 ### AC-5 Now playing section
 Given a current programme 20:00 to 22:00 and now 21:34
 When the bar is rendered
-Then `zapBar.title` shows the title, `zapBar.times` the start and stop in the locale short time style separated by an en dash, `zapBar.progress` a fraction equal to elapsed over duration within 0.01 (0.78), clamped to 0...1 and full for a zero or negative duration, `zapBar.next` "Next" with the next programme's locale start time, " · " and title (absent when 0014/AC-5 returns nothing), and `zapBar.remaining` the core formatter's text: minutes are stop minus now rounded up; "26 min left"; 60 minutes or more "1 h 34 min left"; under one minute "Ends now". 0007/AC-19 uses the same formatter.
+Then `zapBar.title` shows the title, `zapBar.times` the start and stop in the locale short time style separated by an en dash, `zapBar.progress` a fraction equal to elapsed over duration within 0.01 (0.78), clamped to 0...1 and full for a zero or negative duration, `zapBar.next` "Next" with the next programme's locale start time, " · " and title (absent when 0014/AC-5 returns nothing), and `zapBar.remaining` the core formatter's text for `stop − now`: 60 s or more, minutes rounded up, "26 min left", and from 60 minutes "1 h 34 min left"; under 60 s, including zero and negative, "Ends now". 0007/AC-19 uses the same formatter.
 
 ### AC-6a No programme
 Given a channel whose `loadingState` is `.loaded` or `.noData` with `current(for:at:)` nil, or `.unavailable`
@@ -102,12 +102,12 @@ Then `zapBar.catchup` shows the catch-up glyph and "Catch-up 7 days"; with `hasC
 ### AC-9 Channel up and down
 Given the fourth of 42 channels in the current group is playing
 When the user swipes up
-Then playback switches to the fifth channel and the bar shows "5 of 42" (AC-1); swiping down from the first channel wraps to the last; a swipe while a tune is still loading cancels that load and starts the next; a swipe while the pill is visible removes the pill first.
+Then playback switches to the fifth channel and the bar shows "5 of 42" (AC-1); swiping down from the first channel wraps to the last and swiping up from the last wraps to the first; a swipe while a tune is still loading cancels that load and starts the next; a swipe while the pill is visible removes the pill first.
 
 ### AC-10 Digit entry shows the pill
 Given a hardware keyboard sends the digit "1"
 When the key is pressed
-Then `zapBar.entryPill` appears top left with `zapBar.entryPill.digits` "1" and a cursor and `zapBar.entryPill.name` the name of 0013/AC-12's match, empty when there is no match or only zeros are typed; a fifth digit is ignored and the four typed digits stay.
+Then `zapBar.entryPill` appears top left with `zapBar.entryPill.digits` "1" and a cursor and `zapBar.entryPill.name` the name of 0013/AC-12's match, empty when there is no match or only zeros are typed; a digit beyond the length of the longest channel number in 0013's index (never fewer than four) is ignored and the typed digits stay.
 
 ### AC-11 Digit entry tunes after a pause
 Given the pill shows "104" and 0013/AC-12 matches channel 104
@@ -115,13 +115,13 @@ When two seconds pass on the injected clock with no further digit
 Then playback switches to channel 104, the pill is removed, and AC-1 shows the bar.
 
 ### AC-12 Return or select tunes immediately
-Given the pill shows "10" and channel 10 exists
+Given the pill shows "10" and 0013/AC-12 matches channel 10
 When the user presses Return or select
-Then playback switches to channel 10 and the pill is removed without waiting.
+Then playback switches to the match, the pill is removed without waiting, and select is consumed (0007/AC-1 does not fire).
 
 ### AC-13 No such channel
 Given the pill shows "999" and 0013/AC-12 returns nil
-When two seconds pass or the user presses Return
+When two seconds pass or the user presses Return or select
 Then the pill reads "No channel 999" for one second on the injected clock (±100 ms), is then removed, and the playing channel and engine state are unchanged.
 
 ### AC-14 Digit entry does not stop video
@@ -182,7 +182,7 @@ Then no clock is shown; the clock belongs to the overlay (0007/AC-15) and the sh
 - Prefix matching and position lookup run against 0013's precomputed index.
 - The bar and pill are never focusable; focus stays on the player. Swipe and directional click are equivalent.
 - `Channel.streamURL` is never shown, logged or used in an identifier (ADR-0003).
-- Reduce Motion: show and hide without animation.
+- Show and hide: the bar slides in and out at the bottom edge over 0.25 s; the pill fades; Reduce Motion replaces both with no animation.
 - VoiceOver: the bar is announced once when shown with channel, programme and remaining time.
 
 ## Test plan
