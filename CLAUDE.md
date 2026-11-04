@@ -36,6 +36,10 @@ from `Config/Local.xcconfig.example` for device builds.
 - **Spec first.** Feature work starts from a spec in `docs/specs/` with
   Given/When/Then acceptance criteria. No feature code without a spec id.
   Use the `spec` skill to write one, then run the `spec-reviewer` agent on it.
+- **Views follow ADR-0008.** Components in `Apps/Shared/Components/` take
+  values and closures, screens in `Apps/Shared/Views/` own queries and
+  models and provide shared state through `@Entry`. No `Bool` picks a
+  layout. The `swiftui-composition` skill has the rules and a grep pass.
 - **Decisions are ADRs.** Anything that would be hard to reverse (data model,
   playback path, sync, dependency) gets a record in `docs/adr/` via the `adr`
   skill. Read `docs/adr/README.md` before proposing architecture changes.

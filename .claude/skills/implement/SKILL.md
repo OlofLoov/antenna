@@ -33,7 +33,9 @@ one message if any of these hold. Do not start a partial implementation.
 ## 2. Read before writing
 
 The spec. Every ADR it names. `docs/conventions.md`. If the spec has a
-Design section, `docs/design/README.md` and every board it lists. The specs
+Design section, `docs/design/README.md` and every board it lists. For any
+view work, `.claude/skills/swiftui-composition/SKILL.md` (ADR-0008): it
+says which folder a view goes in and what a component may not do. The specs
 it builds on, for type and identifier names. The files the spec touches.
 
 ## 3. Plan the proof
