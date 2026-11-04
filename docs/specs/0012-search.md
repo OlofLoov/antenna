@@ -1,6 +1,6 @@
 # 0012. Search across channels, guide, movies and series
 
-- Status: Draft (two spec-reviewer rounds; every finding applied, see the PR)
+- Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS
@@ -12,8 +12,8 @@
 Boards: `docs/design/boards/TV-Search.dc.html` (tvOS), `docs/design/boards/iPad-Search.dc.html` (iPadOS, macOS), `docs/design/boards/iPhone-Search.dc.html` (iOS). State boards in the same folder: `TV-Search-Recents.dc.html`, `iPhone-Search-Recents.dc.html`, `iPhone-Search-Empty.dc.html`, `iPad-Search-OneCharacter.dc.html`, `iPad-Search-Loading.dc.html`, `iPad-Search-GuideLoading.dc.html`, `iPad-Search-Capped.dc.html`.
 Design rules that apply: DR-1 (tvOS, video keeps playing behind Search for the first 30 seconds, then 0015/AC-5a), DR-2, DR-3, DR-4, DR-5, DR-8, DR-10, DR-11, DR-13. Deviations: DR-6 and DR-7 do not apply to result rows (compact variant, number after the name, no progress bar); DR-4, badge text ("NOW", "SERIES") sits 2 to 4 pt under the caption floor because it is letter-spaced label text; DR-5, chips and recents rows extend their hit area to 44 pt.
 States on the boards: field with a query, results in three sections with highlighted matches, NOW badge with the catch-up glyph at the trailing edge, SERIES badge, focused channel card (tvOS), scope chips with counts and recent searches in the sidebar (iPad, Mac), Cancel and clear (iPhone), "See all n" as the guide header's trailing control, the "Next 7 days" header prefix, the iPhone channel row chevron. tvOS uses the system search UI: the board's field row and keyboard are illustrative only.
-States on the state boards, each drawn on one platform and reused on the others at that platform's type scale: recents with an empty field (`TV-Search-Recents.dc.html`, rows 64 pt at 29 pt body; `iPhone-Search-Recents.dc.html`, rows 44 pt at 17 pt body; both on the 0.06 surface with a muted clock glyph, header "Recent searches" on tvOS and the "Recent" eyebrow on iPhone); one character with an empty results area and no chips (`iPad-Search-OneCharacter.dc.html`); no results (`iPhone-Search-Empty.dc.html`: title at body size, hint in the muted caption, centred; the second caption line "Some sources are still loading." is present only in the AC-21 case); nothing loaded (`iPad-Search-Loading.dc.html`: "Channels are still loading" at body size, centred, no hint); guide loading with zero guide rows (`iPad-Search-GuideLoading.dc.html`: header "In the guide · loading" with "· loading" in the muted colour, no rows, Guide chip disabled); channel section cap (`iPad-Search-Capped.dc.html`: Channels chip selected, header count before the cap, last row "Showing 500 of 612" in the muted caption at 44 pt, number-prefix matches highlighted in the secondary line); disabled zero-count chip (`iPad-Search-Capped.dc.html` Series, `iPad-Search-GuideLoading.dc.html` Guide: muted text on the 0.04 surface, no bold); hardware-keyboard focused row on the 0.12 surface (first channel row of `iPad-Search.dc.html`, marked in a comment).
-Not drawn: nothing.
+States on the state boards, each drawn on one platform and reused on the others at that platform's type scale: recents with an empty field (`TV-Search-Recents.dc.html`, rows 64 pt at 29 pt body; `iPhone-Search-Recents.dc.html`, rows 44 pt at 17 pt body; both on the 0.06 surface with a muted clock glyph, header "Recent searches" on tvOS and the "Recent" eyebrow on iPhone); one character with an empty results area and no chips (`iPad-Search-OneCharacter.dc.html`; the same board stands for the empty-field results area on iPad and Mac, AC-12a); no results (`iPhone-Search-Empty.dc.html`: title at body size, hint in the muted caption, centred; the second caption line "Some sources are still loading." is present only in the AC-21 case); nothing loaded (`iPad-Search-Loading.dc.html`: "Channels are still loading" at body size, centred, no hint); guide loading with zero guide rows (`iPad-Search-GuideLoading.dc.html`: header "In the guide · loading" with "· loading" in the muted colour, no rows, Guide chip disabled); channel section cap (`iPad-Search-Capped.dc.html`: Channels chip selected, header count before the cap, last row "Showing 500 of 612" in the muted caption at 44 pt, number-prefix matches highlighted in the secondary line); disabled zero-count chip (`iPad-Search-Capped.dc.html` Series, `iPad-Search-GuideLoading.dc.html` Guide: muted text on the 0.04 surface, no bold); hardware-keyboard focused row on the 0.12 surface (first channel row of `iPad-Search.dc.html`, marked in a comment); focused poster card on tvOS as drawn on `TV-Movies.dc.html` (0011), reused here.
+Not drawn: `browse.laterProgramme` on `iPad.dc.html` (one row under the 'Up next' list, same 13 pt muted secondary style as the up-next rows, text '<Today | Tomorrow | weekday> <time> · <title>') and the 'Later:' fragment of `browse.nowPlaying` on `iPhone.dc.html` (replaces the 'Next:' fragment in the 13 pt muted line). Both are drawn on the 0010 boards before the implementing PR opens.
 
 ## Problem
 
@@ -26,6 +26,7 @@ In:
 - `SearchIndex` in AntennaCore over channel name, number and group; programme titles and subtitles within the horizon; movie and series titles.
 - Results as you type in three sections with counts, matched text highlighted.
 - Selecting a result: tune or play inline, open the guide at the programme, or play the title.
+- Amends 0010: a 'later programme' row and fragment on the browse screens, set by AC-8 and cleared as AC-8 states.
 - Scope chips on iPad, Mac and iPhone: All, Channels, Guide, Movies, Series. tvOS has no chips; the sections are always shown.
 - Recent searches, local to the device, through an injected recents store (production: standard `UserDefaults`).
 - No-results, loading and capped states.
@@ -54,27 +55,27 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 ### AC-1 One character shows nothing
 Given the field holds one non-whitespace character
 When rendered
-Then the results area shows neither results, counts, chips, `search.empty` nor `search.recents`.
+Then the results area shows neither results, counts, chips nor `search.empty`; on iOS and tvOS it also shows no `search.recents`; on iPadOS and macOS the sidebar `search.recents` stays visible.
 
 ### AC-2 Matching rules
 Given channels "Northern News", "Nordic One" (group "Northern Report"), a programme "True North", a movie "Northbound"
 When the query is "north", "NÖRTH" or "north news"
-Then the query is trimmed, collapsed to single spaces, folded (case- and diacritic-insensitive) and split on spaces; a text matches when every token is a substring of its folded text; "north" and "NÖRTH" return all four (channels by name or group, programmes and titles by title or subtitle), "north news" returns "Northern News" only; highlight ranges (AC-5) cover each token's first occurrence.
+Then the query is trimmed, collapsed to single spaces, folded (case- and diacritic-insensitive) and split on spaces; a text matches when every token is a substring of its folded text; "north" and "NÖRTH" return all four (channels by name or group, programmes and titles by title or subtitle), "north news" returns "Northern News" only; highlight ranges (AC-5) cover each token's first occurrence; tokens are tested against one field at a time: a channel matches when its folded name alone or its folded group alone contains every token; "nordic report" matches nothing in the fixture.
 
 ### AC-3 Digit queries
-Given channel 104 and a movie "1917"
+Given channel 104, a movie "1917" and a programme titled "104"
 When the query is "19"
 Then Movies & series contains "1917" by text and Channels does not contain 104; when the query is "104", Channels contains 104 by number prefix and Movies & series is absent; leading zeros are stripped as in 0013/AC-12 and every channel whose number starts with the digits is returned; a programme titled "104" is matched by text only.
 
 ### AC-4a Section order
 Given results in all three kinds
 When rendered
-Then sections appear as Channels, In the guide (header "In the guide" with "Next 7 days · <count>"), Movies & series, each header with the count before any display cap; a section with zero results is absent.
+Then sections appear as Channels, In the guide, Movies & series; a section with zero results is absent except as AC-21. Counts are shown before any display cap: on tvOS in every header (guide header "Next 7 days · <count>"); on iOS, iPadOS and macOS in the chips (AC-10), and in a section header only while that section's chip is active (AC-22). The guide header's trailing text is "Next 7 days · See all n" on iPadOS and macOS and "See all n" on iOS, in the accent colour as a link (DR-3).
 
 ### AC-4b Channel bands
 Given channel results
 When ordered
-Then they are placed in their best band: (1) folded name starts with the query, (2) a word of the name starts with the query, (3) other name substring, (4) number prefix, (5) group-only; within a band alphabetical by name, then number, then source `sortOrder`.
+Then they are placed in their best band: (1) folded name starts with the full folded query, (2) a word of the name starts with the first token, (3) other name substring, (4) number prefix, (5) group-only; within a band alphabetical by name, then number, then source `sortOrder`.
 
 ### AC-4c Guide order
 Given programme results
@@ -84,12 +85,12 @@ Then they are by start time ascending so on-air rows come first, ties by channel
 ### AC-4d Title order
 Given movie and series results
 When ordered
-Then title-prefix matches come first, then alphabetical, movies and series interleaved.
+Then title-prefix matches (full folded query) first, then the rest; alphabetical within each group, movies and series interleaved.
 
 ### AC-5 Highlight
 Given a result whose text contains the query tokens
 When rendered
-Then each matched range is drawn with the accent colour at 35% opacity as its background with 3 pt radius, and no other text run in the row has a background tint.
+Then each matched range is drawn with the accent colour at 35% opacity as its background with 3 pt radius, and no other text run in the row has a background tint; a highlighted run in a muted line is drawn in the primary text colour.
 
 ### AC-6a Channel result row
 Given a channel result
@@ -129,17 +130,17 @@ Then 0011/AC-3a (movie) or 0011/AC-9b (series) applies.
 ### AC-10 Scope chips
 Given results on iPad, Mac or iPhone
 When the user activates `search.chip.guide`
-Then only the guide section is shown with every row and no cap control; `search.chip.movies` and `search.chip.series` show the titles section filtered to that kind with the header reading "Movies" or "Series"; `search.chip.channels` shows Channels only; `search.chip.all` restores all sections; each chip's count equals the results in its section before any display cap and All equals their sum; a chip whose count is zero is disabled and reads "· 0"; Movies and Series chips are present only under 0011/AC-1.
+Then only the guide section is shown with every row and no cap control; `search.chip.movies` and `search.chip.series` show the titles section filtered to that kind with the header reading "Movies" or "Series"; `search.chip.channels` shows Channels only, still capped as AC-22; `search.chip.all` restores all sections; each chip's count equals the results in its section before any display cap and All equals their sum; a chip whose count is zero is disabled and reads "· 0"; Movies and Series chips are present only under 0011/AC-1.
 
 ### AC-11 Recent searches
 Given twelve searches run by selecting a result, two differing only in case
-When the field is empty
-Then ten entries are listed newest first with the oldest unique entry dropped and folded duplicates collapsed to the most recent with its casing, written through the injected recents store and to no SwiftData record; shown in `search.recents` in the sidebar on iPad and Mac and in the results area on iPhone and tvOS; selecting one fills the field and runs the query.
+When the field is empty on iOS and tvOS, or at any time on iPadOS and macOS
+Then ten entries are listed newest first with the oldest unique entry dropped and folded duplicates collapsed to the most recent with its casing, written through the injected recents store and to no SwiftData record; shown in `search.recents` in the sidebar on iPad and Mac and in the results area on iPhone and tvOS; selecting one fills the field and runs the query; on tvOS the header "Recent searches" carries the entry count in the muted caption.
 
 ### AC-12a Clear
 Given a query with results on iOS, iPadOS or macOS
 When the user activates `search.clear`
-Then the field empties, results are replaced by recents, and the field keeps focus.
+Then the field empties and keeps focus; on iOS the results area shows `search.recents`; on iPadOS and macOS the results area is empty as `iPad-Search-OneCharacter.dc.html`.
 
 ### AC-12b Menu on tvOS
 Given results on tvOS
@@ -147,9 +148,9 @@ When the user presses Menu from a result
 Then focus returns to the system keyboard; Menu from the keyboard shows the tab bar (0015/AC-6); tvOS has no clear control and the keyboard's delete key edits the query.
 
 ### AC-12c Escape on iPad and Mac
-Given a query with results and a hardware keyboard
+Given a hardware keyboard on iPadOS or macOS and focus in the field
 When the user presses Escape
-Then the field clears; a second Escape moves focus to the first result row, or to `search.recent.0` when the field is empty.
+Then with a non-empty field the field clears and keeps focus (results are replaced as AC-12a); with an empty field focus moves to `search.recent.0`, or stays in the field when there are no recents.
 
 ### AC-12d Cancel on iPhone
 Given the Search tab
@@ -169,7 +170,7 @@ Then the build completes within 1 500 ms and the query within 300 ms in a debug 
 ### AC-15 tvOS search UI
 Given the Search tab on tvOS
 When shown
-Then the system search field and its linear keyboard are at the top with results below, and one downward swipe from the keyboard focuses the first result row of the first non-empty section.
+Then the system search field and its linear keyboard are at the top with results below, and one downward swipe from the keyboard focuses the first result row of the first non-empty section; with an empty field the swipe focuses `search.recent.0`, or nothing when there are no recents.
 
 ### AC-16 Group-only match
 Given a channel whose group matched but whose name did not
@@ -179,7 +180,7 @@ Then the secondary line reads "<number> · Matches <group>" with the group match
 ### AC-17 Debounce
 Given two or more characters
 When 300 ms pass on the injected clock after the last keystroke
-Then results reflect the full query; a keystroke within 300 ms cancels the pending query; the debounce applies to Search only.
+Then results reflect the full query; a keystroke within 300 ms cancels the pending query.
 
 ### AC-18 Guide horizon
 Given programmes that ended before `now`, within seven days, and beyond seven days
@@ -188,13 +189,13 @@ Then only programmes with stop after `now` and start before `now` plus seven day
 
 ### AC-19 Guide section cap
 Given more than four guide results
-When rendered in the All view
-Then four rows are shown and the header's trailing control `search.section.guide.seeAll` reads "See all n"; activating it shows every guide row in place (same as the Guide chip where chips exist).
+When rendered in the All view on iOS, iPadOS or macOS
+Then four rows are shown and the header's trailing control `search.section.guide.seeAll` reads "See all n"; activating it shows every guide row in place (same as the Guide chip). On tvOS the guide section is not capped: every row is shown, the header reads "Next 7 days · n" and there is no `search.section.guide.seeAll`.
 
 ### AC-20a Down arrow
 Given a hardware keyboard on macOS or iPadOS and focus in the field
 When the user presses the down arrow
-Then focus moves to the first result row, which shows the 0.12 surface and the `isSelected` trait; Up from the first result returns to the field; Left and Right move across poster cells.
+Then focus moves to the first result row, which shows the 0.12 surface and the `isSelected` trait; Up from the first result returns to the field; Left and Right move across poster cells. Left and Right also move across columns of the channel and guide grids; Down from a section's last row moves to the next section's first row.
 
 ### AC-20b Return
 Given a focused result
