@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV movies, rows below the hero</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Same page as TV-Movies.dc.html scrolled past Recently added: My list, one category row, then the Genres row -->
+
+  <!-- Top bar: tvOS tab bar -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+      <span>Antenna</span>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.08)">
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>
+      <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: rgba(255,255,255,0.12); color: #F2F4F8">Movies</span>
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Series</span>
+      <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Search</span>
+    </div>
+    <div style="width: 260px; text-align: right; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:36</div>
+  </div>
+
+  <!-- Row: My list (movies.row.myList, current kind only). The first poster has focus: 5 pt white ring and shadow -->
+  <div style="position: absolute; left: 0; right: 0; top: 128px; display: flex; flex-direction: column; gap: 16px">
+    <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-size: 28px; font-weight: 700">My list</div>
+      <div style="font-size: 20px; color: #A7B0BF">12 titles</div>
+    </div>
+    <div style="display: flex; gap: 20px; padding: 0 64px; overflow: hidden">
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #22304A; flex: 0 0 auto; box-shadow: 0 0 0 5px #F2F4F8, 0 16px 40px rgba(0,0,0,0.55)"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A2F3A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F3F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3A4A2F; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3B2F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F4A3B; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A3A2F; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #334155; flex: 0 0 auto"></div>
+    </div>
+  </div>
+
+  <!-- Row: one per provider category (movies.row.<categoryID>), header is the category name and "<n> titles" -->
+  <div style="position: absolute; left: 0; right: 0; top: 536px; display: flex; flex-direction: column; gap: 16px">
+    <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-size: 28px; font-weight: 700">Thriller</div>
+      <div style="font-size: 20px; color: #A7B0BF">187 titles</div>
+    </div>
+    <div style="display: flex; gap: 20px; padding: 0 64px; overflow: hidden">
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2A3A52; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3B2F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A3A2F; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F4A3B; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #334155; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A2F3A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F3F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3A4A2F; flex: 0 0 auto"></div>
+    </div>
+  </div>
+
+  <!-- Row: Genres (movies.genres) after the last category row. Chips: My list (movies.genres.myList), then one per category (movies.genres.<categoryID>). None selected while rows show -->
+  <div style="position: absolute; left: 0; right: 0; top: 944px; display: flex; flex-direction: column; gap: 16px">
+    <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-size: 28px; font-weight: 700">Genres</div>
+    </div>
+    <div style="display: flex; gap: 14px; padding: 0 64px; overflow: hidden; white-space: nowrap">
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">My list</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Action</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Comedy</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Drama</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Thriller</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Family</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Documentary</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Horror</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Science fiction</span>
+      <span style="font-size: 26px; height: 64px; padding: 0 30px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: flex; align-items: center; flex: 0 0 auto">Animation</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
