@@ -22,7 +22,8 @@ In:
 - `<channel id>` with its first `<display-name>`.
 - `<programme channel start stop>` with `title`, `sub-title`, `desc`,
   `category` and `icon src`.
-- Timestamps `yyyyMMddHHmmss ±HHMM` and `yyyyMMddHHmmss` (treated as UTC).
+- Timestamps `yyyyMMddHHmmss ±HHMM`, with or without a space before the
+  offset, and `yyyyMMddHHmmss` (treated as UTC).
 - Event-driven parse of an in-memory `Data` via `XMLParser`. No DOM tree is
   built, but the input bytes and the full `Result` are held in memory.
 
@@ -32,7 +33,8 @@ Out (explicitly):
 - Storing or caching programmes.
 - Language selection among multiple `<title lang>` elements.
 - `episode-num`, `credits`, `rating`, `date`, multiple categories, channel icons.
-- Recovering a partial guide from a document with a well-formedness error.
+- Recovering a partial guide from a document with a well-formedness error,
+  beyond the stray `&` and HTML named entities of AC-14.
 - Parsing from a file URL or `InputStream`, incremental delivery of
   programmes, and cancelling a running parse.
 - Reading zone offsets in forms other than those listed under Edge cases.
@@ -76,9 +78,9 @@ When parsed
 Then `summary` is nil.
 
 ### AC-4 Timestamp with zone offset
-Given a programme with `start="20261103200000 +0100" stop="20261103210000 +0100"`
+Given a programme with `start="20261103200000 +0100" stop="20261103210000 +0100"`, or the same offset with no space (`20261103200000+0100`), or `20261103200000-0530`
 When parsed
-Then its (`start`, `stop`) is (2026-11-03T19:00:00Z, 2026-11-03T20:00:00Z).
+Then its `start` is 2026-11-03T19:00:00Z for both `+0100` forms and 2026-11-04T01:30:00Z for `-0530`, and its `stop` is one hour later.
 
 ### AC-4b Negative zone offset
 Given a programme with `start="20261103200000 -0500" stop="20261103210000 -0500"`
@@ -103,15 +105,15 @@ Then `programmes.map(\.title)` is ["Good"].
 - AC-6e: no `channel`.
 - AC-6f: `start="2026XX03200000"`, which does not parse.
 
-### AC-7 Malformed XML throws
-Given `<tv><programme channel="a" start="20261103200000" stop="20261103210000"><title>T</title></tv>` (unclosed `programme`)
+### AC-7 Malformed XML throws a typed error
+Given the four lines `<tv>`, `<programme channel="a" start="20261103200000" stop="20261103210000">`, `<title>T</title>`, `</tv>` (unclosed `programme`)
 When parsed
-Then `parse` throws.
+Then `parse` throws `XMLTVError.malformed(line: 4, column: 6)`, the position where `XMLParser` stopped. No `NSError` reaches the caller.
 
 ### AC-7b Non-XML data throws
 Given empty `Data`, or gzip bytes passed without decompression
 When parsed
-Then `parse` throws.
+Then `parse` throws `XMLTVError.malformed`.
 
 ### AC-8 First repeated title wins
 Given a programme with `<title lang="en">A</title><title lang="sv">B</title>`
@@ -148,22 +150,43 @@ Given a programme with `<title><![CDATA[A & B]]></title><desc><![CDATA[D]]></des
 When parsed
 Then (`title`, `summary`) is ("A & B", "D").
 
+### AC-14 Stray ampersands and HTML entities are read as text
+Given a programme whose title is `Tom & Jerry`, or `A&nbsp;B`, or contains
+`&eacute;`, `&copy;`, `&ndash;` or another common HTML named entity, or whose
+`icon src` holds a bare `&`
+When parsed
+Then it parses with the text a browser would show ("Tom & Jerry", "A\u{A0}B",
+"é", "©", "–") and the URL as written. A `&` that starts no valid XML
+reference is read as `&amp;`; an HTML entity is read as its character. A
+document that has neither reaches `XMLParser` byte for byte unchanged, and
+any other well-formedness error still throws per AC-7.
+
 ## Edge cases and failure modes
 
 - Whitespace and newlines inside text elements are trimmed.
 - An empty first element is skipped in favour of a later non-empty one (AC-8b).
   Applies to title, sub-title, desc and category. `<display-name>` differs:
-  the first one wins even if empty (AC-1b).
+  the first one wins even if empty (AC-1b). The owner decided to keep this.
 - Namespaced documents are parsed with namespaces disabled; prefixed element names are not matched.
-- Timestamps: `yyyyMMddHHmmss ±HHMM` with one space is read with its offset,
-  and `+01:00` after a space is also accepted by the formatter. Any other
-  suffix (`UTC`, an offset with no space) is ignored and the first 14
-  characters are read as UTC, so the time is off by the offset. A timestamp
+- Timestamps: an offset `±HHMM` or `±HH:MM` after the 14 digits is applied,
+  with or without spaces before it, when its hours are at most 14. Any other
+  suffix (`UTC`, `+1`, `+9900`) is ignored and the first 14 characters are
+  read as UTC. A timestamp
   whose first 14 characters do not parse, including `yyyyMMddHHmm` without
   seconds, is dropped per AC-6f.
-- Any well-formedness error anywhere in the document, including an unescaped
-  `&` or an undeclared entity such as `&nbsp;`, throws per AC-7 and discards
-  every programme already parsed.
+- Entities: the Latin-1 HTML names (`&nbsp;` to `&yuml;`) and common
+  punctuation (`&ndash;`, `&mdash;`, `&hellip;`, quotes, `&euro;`, `&trade;`)
+  are read as their characters. An unknown name such as `&foo;`, a name
+  without its semicolon such as `&nbsp`, and a character reference to a code
+  point XML forbids such as `&#0;` are read as literal text. CDATA sections,
+  comments, processing instructions and the DOCTYPE are not rewritten. A
+  document whose DOCTYPE declares entities (`<!ENTITY`) or that starts with a
+  UTF-16 byte order mark is passed to `XMLParser` unchanged, so a stray `&` in
+  it throws.
+- Any other well-formedness error anywhere in the document, for example a
+  bare `<` in text, throws per AC-7 and discards every programme already
+  parsed. When AC-14 rewrote an entity earlier on the same line, the reported
+  column counts the rewritten bytes.
 - A well-formed document that is not XMLTV (for example `<tv/>` or an XHTML
   page) returns an empty `Result` with no error. A non-well-formed HTML page
   throws per AC-7.
@@ -177,7 +200,7 @@ Then (`title`, `summary`) is ("A & B", "D").
 - If two `<channel>` elements share an id, the first display-name across both wins.
 - Text of child elements inside a text element is concatenated: `A <b>bold</b> c` gives "A bold c".
 - With several `<icon>` in one programme the last `src` wins; a `src` that `URL(string:)` rejects gives `iconURL == nil`.
-- Peak memory for a 50 MB file and parse time on tvOS cannot be asserted in CI; check on device when the guide ships.
+- Peak memory for a 50 MB file and parse time on tvOS cannot be asserted in CI; check on device when the guide ships. When AC-14 rewrites anything, the rewritten copy and the input are both held, so the input's share of the peak doubles.
 
 ## Test plan
 
@@ -188,9 +211,9 @@ Then (`title`, `summary`) is ("A & B", "D").
 | AC-2 | core | `XMLTVParserTests.programmeFields` |
 | AC-3 | core | `XMLTVParserTests.absentOptionalFields` |
 | AC-3b | core | `XMLTVParserTests.whitespaceDescIsNil` |
-| AC-4 | core | `XMLTVParserTests.timestampWithOffset` |
+| AC-4 | core (parameterised, three rows) | `XMLTVParserTests.timestampWithOffset` |
 | AC-4b | core | `XMLTVParserTests.timestampWithNegativeOffset` |
-| AC-5 | core | `XMLTVParserTests.timestampWithoutZone`; CI runners are on UTC, so it only catches a lost UTC zone on the no-offset formatter when run on a host in another zone |
+| AC-5 | core | `XMLTVParserTests.timestampWithoutZone`; CI runners are on UTC, so it only catches a lost UTC zone on the date formatter when run on a host in another zone |
 | AC-6 | core (parameterised over cases a to f) | `XMLTVParserTests.invalidIntervalsDropped` |
 | AC-7 | core | `XMLTVParserTests.malformedThrows` |
 | AC-7b | core | `XMLTVParserTests.nonXMLDataThrows` |
@@ -198,13 +221,12 @@ Then (`title`, `summary`) is ("A & B", "D").
 | AC-8b | core | `XMLTVParserTests.emptyFirstElementSkipped` |
 | AC-9 | core | `XMLTVParserTests.channelIconIgnored`; checks the combined effect of the icon guard and the per-programme reset, each of which alone keeps it passing |
 | AC-10 | core (parameterised, three rows) | `XMLTVParserTests.airingCheck` |
-| AC-11 | core (benchmark, not CI-gated) | `XMLTVParserTests.largeGuideBenchmark`, runs only with `ANTENNA_BENCHMARKS=1`; about 14 s on an Apple M1, in both debug and release because the time is spent inside `XMLParser` |
+| AC-11 | core (benchmark, not CI-gated) | `XMLTVParserTests.largeGuideBenchmark`, runs only with `ANTENNA_BENCHMARKS=1`; about 15 s on an Apple M1 (14.0 s before the AC-14 pass), in both debug and release because the time is spent inside `XMLParser`; the document has no `&`, so the rewrite path is not timed |
 | AC-12 | core | `XMLTVParserTests.documentOrder` |
 | AC-13 | core | `XMLTVParserTests.cdataText` |
+| AC-14 | core | `XMLTVParserTests.strayEntitiesRead` (four rows), `strayAmpersandInAttribute`, `validInputUnchanged`, `declaredEntitiesAndUTF16Unchanged`, `otherErrorsStillThrow`, `forbiddenCharacterReference` |
 
 ## Open questions
 
-- Wrap the `XMLParser` error in `XMLTVError` so callers get a typed error as conventions require.
 - Language preference for repeated elements: device locale or first in file?
 - Should `Programme.id` include `stop` to avoid collisions when a provider emits two programmes with the same start on one channel?
-- Should an empty first `<display-name>` give way to a later non-empty one, as programme text elements do? AC-1b records today's behaviour.
