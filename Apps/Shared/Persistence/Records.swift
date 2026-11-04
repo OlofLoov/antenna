@@ -30,6 +30,9 @@ final class SourceRecord {
 
     var kind: SourceKind { SourceKind(rawValue: kindRaw) ?? .m3u }
 
+    /// The order Settings lists sources in and Channels loads them in.
+    static var displayOrder: [SortDescriptor<SourceRecord>] { [SortDescriptor(\.sortOrder)] }
+
     var descriptor: SourceDescriptor? {
         guard let url else { return nil }
         return SourceDescriptor(id: id, name: name, kind: kind, url: url, epgURL: epgURL, credentialKey: credentialKey)

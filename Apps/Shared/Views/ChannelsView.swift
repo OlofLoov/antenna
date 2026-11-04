@@ -3,7 +3,8 @@ import SwiftData
 import AntennaCore
 
 struct ChannelsView: View {
-    @Query(sort: \SourceRecord.sortOrder) private var sources: [SourceRecord]
+    @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
+    @Environment(\.sourceLoader) private var loader
     @State private var model = ChannelListModel()
 
     var body: some View {
@@ -16,9 +17,10 @@ struct ChannelsView: View {
                         description: Text(
                             "Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud.")
                     )
+                    .accessibilityIdentifier("channels.emptyState")
                 } else if model.channels.isEmpty {
                     ProgressView("Loading channels…")
-                        .task { await model.load(sources.compactMap(\.descriptor)) }
+                        .task { await model.load(sources.compactMap(\.descriptor), using: loader) }
                 } else {
                     List(model.channels) { channel in
                         NavigationLink(value: channel) {
@@ -27,6 +29,7 @@ struct ChannelsView: View {
                     }
                     .navigationDestination(for: Channel.self) { channel in
                         PlayerView(channel: channel)
+                            .accessibilityIdentifier("player.view")
                     }
                 }
             }
@@ -86,11 +89,11 @@ final class ChannelListModel {
     var channels: [Channel] = []
     var error: String?
 
-    func load(_ sources: [SourceDescriptor]) async {
+    func load(_ sources: [SourceDescriptor], using loader: SourceLoader) async {
         var all: [Channel] = []
         for source in sources {
             do {
-                all += try await SourceLoader.load(source)
+                all += try await loader.load(source)
             } catch {
                 self.error = error.localizedDescription
             }
@@ -99,20 +102,30 @@ final class ChannelListModel {
     }
 }
 
+extension EnvironmentValues {
+    /// The loader `ChannelsView` uses. Tests replace it with one on a stubbed session.
+    @Entry var sourceLoader = SourceLoader()
+}
+
 /// Turns a stored source into channels. Lives in the app layer because it
 /// needs the Keychain; the parsers themselves are in AntennaCore.
-enum SourceLoader {
-    static func load(_ source: SourceDescriptor) async throws -> [Channel] {
+struct SourceLoader: Sendable {
+    var session: URLSession = .shared
+    var credentials: any CredentialStoring = CredentialStore()
+
+    func load(_ source: SourceDescriptor) async throws -> [Channel] {
         switch source.kind {
         case .m3u:
-            let (data, _) = try await URLSession.shared.data(from: source.url)
+            let (data, _) = try await session.data(from: source.url)
             let text = String(decoding: data, as: UTF8.self)
             return M3UParser().parse(text).channels
         case .xtream:
             guard let key = source.credentialKey,
-                let cred = try CredentialStore().load(for: key)
+                let cred = try credentials.load(for: key)
             else { return [] }
-            let client = XtreamClient(credentials: .init(server: source.url, username: cred.username, password: cred.password))
+            let client = XtreamClient(
+                credentials: .init(server: source.url, username: cred.username, password: cred.password),
+                session: session)
             async let categories = client.liveCategories()
             async let streams = client.liveStreams()
             let names = Dictionary(uniqueKeysWithValues: try await categories.map { ($0.categoryID, $0.categoryName) })
