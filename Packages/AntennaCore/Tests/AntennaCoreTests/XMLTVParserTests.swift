@@ -137,11 +137,10 @@ import Testing
         "0002/AC-7b empty data and gzip bytes throw XMLTVError.malformed",
         arguments: [Data(), Data([0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03])])
     func nonXMLDataThrows(data: Data) {
-        #expect {
-            try XMLTVParser().parse(data)
-        } throws: { error in
-            guard case .malformed = error as? XMLTVParser.XMLTVError else { return false }
-            return true
+        let error = #expect(throws: XMLTVParser.XMLTVError.self) { try XMLTVParser().parse(data) }
+        guard case .malformed = error else {
+            Issue.record("expected XMLTVError.malformed, got \(String(describing: error))")
+            return
         }
     }
 
@@ -231,5 +230,65 @@ import Testing
         let parsed = try #require(result.programmes.first)
         #expect(parsed.title == "A & B")
         #expect(parsed.summary == "D")
+    }
+
+    @Test(
+        "0002/AC-14 stray ampersands and HTML entities are read as text",
+        arguments: [
+            ("<title>Tom & Jerry</title>", "Tom & Jerry"),
+            ("<title>A&nbsp;B</title>", "A\u{A0}B"),
+            ("<title>Caf&eacute; &copy; &reg; 1&ndash;2&mdash;3&hellip;</title>", "Café © ® 1–2—3…"),
+            ("<title>R&amp;D &#169; &#xA9; &unknown;</title>", "R&D © © &unknown;"),
+        ])
+    func strayEntitiesRead(children: String, title: String) throws {
+        let result = try parse(programme(children))
+        #expect(try #require(result.programmes.first).title == title)
+    }
+
+    @Test("0002/AC-14 a bare & in an icon URL is kept")
+    func strayAmpersandInAttribute() throws {
+        let result = try parse(programme(#"<title>T</title><icon src="http://i/x?a=1&b=2"/>"#))
+        #expect(try #require(result.programmes.first).iconURL?.absoluteString == "http://i/x?a=1&b=2")
+    }
+
+    @Test("0002/AC-14 valid input reaches XMLParser byte for byte")
+    func validInputUnchanged() throws {
+        let url = try #require(
+            Bundle.module.url(forResource: "sample.xmltv", withExtension: nil, subdirectory: "Fixtures"))
+        let fixture = try Data(contentsOf: url)
+        let escaped = Data(
+            programme(
+                "<title>R&amp;D &lt;&gt;&quot;&apos; &#169; &#xA9;</title><!-- a & b --><desc><![CDATA[x & y]]></desc>"
+            )
+            .utf8)
+        let prolog = Data(
+            """
+            <?xml version="1.0"?><?xml-stylesheet href="g.xsl?a=1&b=2"?>
+            <!DOCTYPE tv SYSTEM "http://x/?a=1&b=2" [ <!ELEMENT tv ANY> ]><tv/>
+            """.utf8)
+        #expect(XMLEntitySanitizer.sanitize(fixture) == fixture)
+        #expect(XMLEntitySanitizer.sanitize(escaped) == escaped)
+        #expect(XMLEntitySanitizer.sanitize(prolog) == prolog)
+    }
+
+    @Test(
+        "0002/AC-14 documents that declare entities or are UTF-16 are left alone",
+        arguments: [
+            Data(#"<!DOCTYPE tv [ <!ENTITY x "y"> ]><tv><title>A & B</title></tv>"#.utf8),
+            Data([0xFF, 0xFE]) + Data("<tv>A & B</tv>".utf8),
+        ])
+    func declaredEntitiesAndUTF16Unchanged(data: Data) {
+        #expect(XMLEntitySanitizer.sanitize(data) == data)
+    }
+
+    @Test("0002/AC-14 other well-formedness errors still throw")
+    func otherErrorsStillThrow() {
+        #expect(throws: XMLTVParser.XMLTVError.self) { try parse(programme("<title>A < B</title>")) }
+    }
+
+    @Test("0002/AC-14 a reference to a code point XML forbids is read as text")
+    func forbiddenCharacterReference() throws {
+        let result = try parse(programme("<title>A &#0; B</title>"))
+        #expect(try #require(result.programmes.first).title == "A &#0; B")
     }
 }

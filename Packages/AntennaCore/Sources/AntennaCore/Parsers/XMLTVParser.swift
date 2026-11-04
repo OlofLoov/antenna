@@ -15,11 +15,12 @@ public struct XMLTVParser: Sendable {
 
     public init() {}
 
-    /// Parses a whole XMLTV document. Throws `XMLTVError.malformed` when the
-    /// bytes are not well-formed XML, and returns nothing in that case.
+    /// Parses a whole XMLTV document. A bare `&` and common HTML named
+    /// entities such as `&nbsp;` are read as text. Any other well-formedness
+    /// error throws `XMLTVError.malformed` and returns nothing.
     public func parse(_ data: Data) throws(XMLTVError) -> Result {
         let delegate = Delegate()
-        let parser = XMLParser(data: data)
+        let parser = XMLParser(data: XMLEntitySanitizer.sanitize(data))
         parser.delegate = delegate
         parser.shouldProcessNamespaces = false
         guard parser.parse() else {
