@@ -22,7 +22,7 @@ layer is `device` are exempt. The `implement` skill runs this loop.
 | [0003](0003-xtream-codes-live-source.md) | Xtream Codes live source | Accepted (retroactive) |
 | [0004](0004-source-management-with-icloud-sync.md) | Source management with iCloud sync | Draft (retroactive) |
 | [0005](0005-favorites.md) | Favorites | Accepted (retroactive) |
-| [0006](0006-first-run-onboarding.md) | First-run onboarding and add-source flow | Draft |
+| [0006](0006-first-run-onboarding.md) | First-run onboarding and add-source flow | Accepted |
 | [0007](0007-tv-channel-overlay.md) | Apple TV channel overlay | Accepted |
 | [0008](0008-tv-zap-bar-and-number-entry.md) | Apple TV zap bar and channel number entry | Accepted |
 | [0009](0009-tv-guide-grid.md) | Apple TV guide grid | Accepted |
