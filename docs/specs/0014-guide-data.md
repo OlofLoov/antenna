@@ -212,7 +212,7 @@ Then `expectedContentLength` is compared to the compressed limit when the body s
 - A guide whose programmes all lie in the past: horizon set, `current` nil everywhere, keys are `.loaded` (AC-10), 0009 shows AC-12 blocks.
 - Offline at refresh with a previous guide: AC-11a, the attempt fails with `.offline` on `progressStream()`; with none: AC-11 and AC-12 `.offline`. There is no reachability pre-check.
 - A 200 response whose body is an HTML login page (the common Xtream failure) sniffs as XML; a well-formed page parses to zero programmes and fails with `.empty` (0002 edge case), a non-well-formed one fails with `.malformed` (0002/AC-7). Both are AC-12 outcomes.
-- A Stalker source with `epgURL` set (zero channels, 0004/AC-13) still downloads its guide; every programme is `unmatched`. Open: load only after the source delivers a channel.
+- A Stalker source with `epgURL` set (zero channels, as in 0004) still downloads its guide; every programme is `unmatched`. Open: load only after the source delivers a channel.
 - `next(for:after:count:)` callers (0007/AC-19, 0010/AC-8) pass the current programme's stop, or now when there is none.
 - Duplicate `Programme.id` across channels (0002 open question): the store keys on `GuideKey` plus start time.
 - User-supplied M3U EPG URLs with embedded credentials (0004 edge case) are covered by AC-15.
