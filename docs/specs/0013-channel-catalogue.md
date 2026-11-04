@@ -1,31 +1,36 @@
 # 0013. Channel catalogue: groups, numbers, initials, favorites resolution
 
-- Status: Draft (two spec-reviewer rounds applied; see the PR's Review state)
+- Status: Draft
 - Date: 2026-11-03
 - Depends on ADRs: 0002, 0003, 0005
+- Blocked on: a 0001 follow-up that hashes `streamURL` out of `Channel.id`. No screen may insert the snapshot AC-10 returns until that change is merged, because `FavoriteRecord.channelID` would otherwise carry credentials for M3U sources (ADR-0003). The core layer can be implemented and tested before it.
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore, shared by every screen)
-- Builds on specs 0001, 0003 (channel parsing), 0004 (source loading), 0005 (favorite records). Fills 0005's gap "resolving a favorite to a `Channel`". Specs 0007 to 0015 are in open PRs, not yet in this tree; 0010/AC-11 and 0007/AC-11 cite AC-9 and AC-10 for favorite identity.
+- Builds on specs 0001, 0003 (channel parsing), 0004 (source loading), 0005 (favorite records). Fills 0005's gap "resolving a favorite to a `Channel`". Specs 0007 to 0015 are in open PRs, not yet in this tree; 0010/AC-11 and 0007/AC-11 cite AC-9 (now AC-9a to AC-9c) and AC-10 for favorite identity.
 
 ## Design
 
 Boards: none, no UI. Screens that render the catalogue cite this spec: 0007, 0008, 0009, 0010, 0012, 0015 (in open PRs).
-Design rules that apply: DR-8 (initials rule is defined here).
+Design rules that apply: DR-8 (initials; defined in `docs/design/README.md` on main, merged after this branch was cut).
 
 ### Interface
 
 Every criterion below reads its result through one of these. Names are binding; signatures show intent and may gain labels or `Sendable` constraints in the implementing PR.
 
 ```swift
+extension Channel {
+    static func tagged(_ channels: [Channel], sourceID: UUID) -> [Channel]
+    static func initials(for name: String) -> String
+}
+
 struct Catalogue<Token: Hashable & Sendable> {
     init(channels: [Channel], groupOrder: [UUID: [String]], favorites: [FavoriteSnapshot<Token>])
-    static func tag(_ channels: [Channel], sourceID: UUID) -> [Channel]
 
     var groups: [CatalogueGroup]
     func count(of group: CatalogueGroup) -> Int
     func rows(in group: CatalogueGroup) -> [RowKey]
     func channel(for key: RowKey) -> Channel?
-    func number(for key: RowKey) -> Int
-    func sourceGroup(of channel: Channel) -> CatalogueGroup
+    func number(for key: RowKey) -> Int?
+    func sourceGroup(of channel: Channel) -> CatalogueGroup?
     func position(of key: RowKey, in group: CatalogueGroup) -> (Int, Int)?
     func match(digits: String) -> RowKey?
 
@@ -34,10 +39,9 @@ struct Catalogue<Token: Hashable & Sendable> {
     func addFavorite(_ channel: Channel) -> FavoriteSnapshot<Token>?
     var unresolvedFavorites: [FavoriteSnapshot<Token>]
 }
-static func initials(for name: String) -> String
 ```
 
-`groupOrder` maps a source id to its group names in provider order (`get_live_categories` for Xtream); a source with no entry uses first appearance. "All channels order" means `rows(in: .all)`.
+`tagged` and `initials` do not depend on `Token`, so they live on `Channel` rather than on the generic type. `groupOrder` maps a source id to its group names in provider order (`get_live_categories` for Xtream); a source with no entry uses first appearance. "All channels order" means `rows(in: .all)`.
 
 ## Problem
 
@@ -46,7 +50,7 @@ Every screen needs the same answers: which groups exist and in what order, what 
 ## Scope
 
 In:
-- `Channel.sourceID: UUID?` and `Channel.position: Int?`, set by `Catalogue.tag(_:sourceID:)`, which the loader calls on each source's list with that `SourceRecord.id`. `position` is the 0-based index within the source's list. `M3UParser`'s `fallbackIndex` is 1-based and is not reused for it.
+- `Channel.sourceID: UUID?` and `Channel.position: Int?`, set by `Channel.tagged(_:sourceID:)`, which the loader calls on each source's list with that `SourceRecord.id`. `position` is the 0-based index within the source's list. `M3UParser`'s `fallbackIndex` is 1-based and is not reused for it.
 - Source order is the order of first appearance of `sourceID` in the input array. The caller concatenates per-source lists in `SourceRecord.sortOrder`. A channel with `sourceID == nil` is dropped from the catalogue (AC-18).
 - `RowKey`: a `Hashable` value of (`sourceID`, `id`, `position`) with a lookup that degrades gracefully.
 - `CatalogueGroup` identified by kind: `.favorites`, `.all`, `.named(sourceID, name)`, `.ungrouped(sourceID)`. The UI supplies labels for `.favorites`, `.all` and `.ungrouped`.
@@ -60,6 +64,8 @@ Out (explicitly):
 - Group merging across sources.
 - Anything that renders.
 
+Required of other specs: the source-refresh spec (or a 0004 revision) must call `tagged`, pass each source's category order as `groupOrder` and rebuild the catalogue after each source loads; a 0005 revision must own the `FavoriteRecord` to `FavoriteSnapshot<PersistentIdentifier>` mapping. Until those land, this spec is Implemented only at the core layer.
+
 ## User flow
 
 None. Consumed by screens.
@@ -70,13 +76,13 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 
 ### AC-1 Source tagging and position
 Given a `[Channel]` parsed from a source with id S
-When `Catalogue.tag(_:sourceID: S)` runs
+When `Channel.tagged(_:sourceID: S)` runs
 Then every returned channel has `sourceID == S` and `position` equal to its 0-based index in the input (playlist order for M3U, stream list order for Xtream), and nothing else changes.
 
 ### AC-2 Group list and order
 Given source A (first in input) with groups "Sport", "News" and two channels with `group` nil, source B (second) with channels in groups "Kids" then "Sport", and `groupOrder[B] == ["Sport", "Kids", "Radio"]`
 When the catalogue is built
-Then `groups` is [`.favorites`, `.all`, `.named(A, "Sport")`, `.named(A, "News")`, `.ungrouped(A)`, `.named(B, "Sport")`, `.named(B, "Kids")`]; a source with a `groupOrder` entry lists its named groups in that order and omits names with no channels ("Radio"); a source without one lists them in first-appearance order; an Ungrouped group follows its source's named groups and is absent when the source has no such channels; a `group` that is empty or whitespace-only counts as nil.
+Then `groups` is [`.favorites`, `.all`, `.named(A, "Sport")`, `.named(A, "News")`, `.ungrouped(A)`, `.named(B, "Sport")`, `.named(B, "Kids")`]; a source with a `groupOrder` entry lists its named groups in that order and omits names with no channels ("Radio"); a source without one lists them in first-appearance order; a named group whose source has a `groupOrder` entry that does not list it follows the listed groups in first-appearance order; a name that appears twice in an entry is used once, at its first position; an entry name that is empty or whitespace-only is ignored; an Ungrouped group follows its source's named groups and is absent when the source has no such channels; a `group` that is empty or whitespace-only counts as nil.
 
 ### AC-3 Group counts
 Given the catalogue of AC-2 with 3, 4, 2, 5, 6 channels in A Sport, A News, A Ungrouped, B Sport, B Kids and two resolved favorites
@@ -91,17 +97,22 @@ Then `number(for:)` returns 104 and 7 for their row keys unchanged.
 ### AC-5a Number fallback
 Given channels without a `number`, channels with `number` 0, -3 and 100 000, across sources whose highest `number` within 1...99 999 is 300
 When the catalogue is built
-Then the 0, -3 and 100 000 channels count as unnumbered, and `number(for:)` gives every unnumbered channel 301, 302, ... in source order then `position`; the function is deterministic for identical input.
+Then the 0, -3 and 100 000 channels count as unnumbered, and `number(for:)` gives every unnumbered channel 301, 302, ... in source order then `position`; the function is deterministic for identical input. The 1...99 999 ceiling applies to provider numbers only; fallback numbers may exceed it.
 
 ### AC-5b Number fallback base case
 Given channels none of which has a `number` within 1...99 999
 When the catalogue is built
 Then `number(for:)` gives them 1, 2, ... in source order then `position`.
 
-### AC-6 Sort within a group and All channels order
-Given channels numbered 5 (source B), 5 (source A, `position` 9), 5 (source A, `position` 2), 3 (source A)
-When `rows(in:)` runs for a group containing all four
-Then the order is 3 (A), 5 (A, 2), 5 (A, 9), 5 (B): assigned number (AC-4, AC-5a) ascending, then source order, then `position`; `rows(in: .all)` lists every channel in this same order.
+### AC-6a Sort within a group
+Given source A first and source B second in the input, with channels numbered 3 (A), 5 (A, `position` 9), 5 (A, `position` 2) and 5 (B), all in one group
+When `rows(in:)` runs for that group
+Then the order is 3 (A), 5 (A, 2), 5 (A, 9), 5 (B): assigned number (AC-4, AC-5a) ascending, then source order, then `position`.
+
+### AC-6b All channels order
+Given the channels of AC-6a spread over several groups
+When `rows(in: .all)` runs
+Then it lists every channel in the AC-6a order.
 
 ### AC-7 Initials
 Given channel names
@@ -109,9 +120,9 @@ When `initials(for:)` runs
 Then the name is split on `Character.isWhitespace`; a character counts when `isLetter || isNumber`; when exactly one word has a counting character, the result is that word's first four counting characters; otherwise it is the first counting character of each such word, up to four; the result is `uppercased()` and truncated to four characters: "Sport One" → "SO", "Eurosport 1" → "E1", "BBC - One" → "BO", "Arena HD" → "AH", "a b c d e" → "ABCD", "news24" → "NEWS", "24/7" → "247", "** HD **" → "HD"; a name with no counting character yields "?".
 
 ### AC-8 Favorites resolve to loaded channels
-Given favorites X (`sortOrder` 1, `sourceID` nil), Y (`sortOrder` 0, `sourceID` A), W (`sortOrder` 2, `sourceID` B) and Z (`channelID` not loaded); channels with X's `channelID` in sources A and B, Y's in A, and W's in A only
+Given favorites X (`sortOrder` 1, `sourceID` nil), Y (`sortOrder` 0, `sourceID` A), W (`sortOrder` 2, `sourceID` B) and Z (`channelID` not loaded); channels with X's `channelID` in sources A and B, both without a `number` so A's copy precedes B's in All channels order, Y's in A, and W's in A only
 When `rows(in: .favorites)` runs
-Then a favorite resolves to the channel whose `id` equals `channelID` and, when the snapshot's `sourceID` is non-nil, whose `sourceID` equals it; when more than one matches, the first in All channels order; X resolves to the A copy, Y to its A channel, W to nothing because the B copy does not exist; the rows are Y then X; W and Z are neither listed nor counted and are the contents of `unresolvedFavorites`.
+Then a favorite resolves to the channel whose `id` equals `channelID` and, when the snapshot's `sourceID` is non-nil, whose `sourceID` equals it; when more than one matches, the first in All channels order; X resolves to the A copy, Y to its A channel, W to nothing because the B copy does not exist; rows are ordered by `sortOrder` ascending, ties broken by All channels order, so the rows are Y then X; W and Z are neither listed nor counted and are the contents of `unresolvedFavorites`, ordered by `sortOrder` then `channelID`.
 
 ### AC-9a One row per favorite channel
 Given any number of snapshots that resolve to the same channel (a nil and a non-nil `sourceID`, or two identical snapshots from a sync race per ADR-0002)
@@ -133,10 +144,15 @@ Given a channel C with `sourceID` S, `isFavorite(C)` false, and snapshots (resol
 When `addFavorite(C)` runs
 Then it returns a `FavoriteSnapshot` with `channelID == C.id`, `sourceID == S`, `sortOrder == 5`, `recordToken == nil`; with no snapshots `sortOrder` is 0; when `isFavorite(C)` is true it returns nil.
 
-### AC-11 Row key and stability
+### AC-11a Distinct keys for equal ids
 Given two channels with equal `id` from the same or different sources
 When rows are keyed
-Then each has a distinct `RowKey(sourceID, id, position)` and both are listed; building twice from identical input yields identical `groups` and identical `RowKey`s in every group.
+Then each has a distinct `RowKey(sourceID, id, position)` and both are listed.
+
+### AC-11b Build is deterministic
+Given any input
+When the catalogue is built twice from it
+Then both builds have identical `groups` and identical `RowKey`s in every group.
 
 ### AC-12 Digit prefix match
 Given channels numbered 1, 10, 104, 1040 (source A) and 104 (source B)
@@ -171,16 +187,16 @@ Then `groups` is [`.favorites`, `.all`] with counts 0 and 0, `match(digits:)` re
 ### AC-18 Untagged channels are dropped
 Given three channels, one with `sourceID` nil
 When the catalogue is built
-Then `count(of: .all)` is 2, no group lists the untagged channel and `channel(for:)` returns nil for any key built from it.
+Then `count(of: .all)` is 2, no group lists the untagged channel, `channel(for:)` and `number(for:)` return nil for any key built from it and `sourceGroup(of:)` returns nil for it; for a group not in `groups`, `count(of:)` is 0 and `rows(in:)` is empty.
 
 ## Edge cases and failure modes
 
 - The catalogue is rebuilt after each source finishes loading (0004 loads sequentially). Fallback numbers may shift until every source has loaded; screens show the current value and 0010/AC-16 shows per-source progress.
-- Provider numbers that collide within one source: both keep the number; AC-6 orders them by `position`.
+- Provider numbers that collide within one source: both keep the number; AC-6a orders them by `position`.
 - A number present in two sources is reachable by digit entry only for the first (AC-12); the second is reachable through the overlay or search.
 - Group names are not normalised beyond the empty and whitespace rule in AC-2.
 - Favorites whose source is deleted land in `unresolvedFavorites` (AC-8) until a cleanup spec removes them. See the open question on orphaned favorites.
-- Channels with an empty name: initials "?", sort by number only.
+- Channels with an empty name: initials "?"; sort is unaffected, since AC-6a never reads `name`.
 - `Channel.id` for M3U entries embeds the stream URL (spec 0001), which for many providers carries credentials, so `RowKey`, `FavoriteSnapshot` and `Channel` are never logged or put in error messages (ADR-0003). Hashing the URL out of the id is a 0001 follow-up; this spec adds no further field derived from `streamURL`.
 
 ## Test plan
@@ -195,14 +211,16 @@ All criteria are swift-testing tests over fixtures in AntennaCore.
 | AC-4 | core | TBD |
 | AC-5a | core | TBD |
 | AC-5b | core | TBD |
-| AC-6 | core | TBD |
+| AC-6a | core | TBD |
+| AC-6b | core | TBD |
 | AC-7 | core | TBD |
 | AC-8 | core | TBD |
 | AC-9a | core | TBD |
 | AC-9b | core | TBD |
 | AC-9c | core | TBD |
 | AC-10 | core | TBD |
-| AC-11 | core | TBD |
+| AC-11a | core | TBD |
+| AC-11b | core | TBD |
 | AC-12 | core | TBD |
 | AC-13 | core | TBD |
 | AC-14 | core benchmark | TBD |
@@ -216,10 +234,11 @@ All criteria are swift-testing tests over fixtures in AntennaCore.
 - Does the catalogue hide a group whose source has a missing credential, or does that source simply contribute nothing (current assumption, per 0004/AC-10)?
 - Should fallback numbers be frozen once shown during a partial load, at the cost of a second numbering pass?
 - Orphaned favorites: AC-10 binds a favorite to a `SourceRecord.id`, and 0004 has no source edit, so deleting and re-adding a playlist orphans every favorite. Should a snapshot whose `sourceID` matches no loaded source fall back to `channelID`-only resolution? That needs the set of known source ids passed to the catalogue.
-- `Channel.id` carries the stream URL for M3U (see Edge cases). A 0001 follow-up should hash it so `FavoriteRecord.channelID` stops storing credentials in CloudKit.
 
 ## Dropped
 
 - AC-5 is split into AC-5a and AC-5b; one fixture could not exercise both fallback bases.
+- AC-6 is split into AC-6a and AC-6b; group order and All channels order fail for different reasons.
 - AC-9 is split into AC-9a, AC-9b and AC-9c; it had two Whens and no predicate for the favorite badge.
+- AC-11 is split into AC-11a and AC-11b; key distinctness and build determinism are unrelated assertions.
 - AC-1's integration layer: tagging is now a core function so the test does not wait on 0004's loader seam.
