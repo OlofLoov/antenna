@@ -1,6 +1,6 @@
 # 0009. Apple TV guide grid
 
-- Status: Draft (two spec-reviewer rounds; remaining findings listed in the PR)
+- Status: Draft (two spec-reviewer rounds, every finding applied)
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: tvOS
@@ -9,10 +9,14 @@
 
 ## Design
 
-Boards: `docs/design/boards/TV-Guide.dc.html`.
+Boards: `docs/design/boards/TV-Guide.dc.html` for the playing state, `TV-Guide-Placeholders.dc.html`, `TV-Guide-Future.dc.html` and `TV-Guide-Empty.dc.html` for the other states. Same frame, tokens and type on all four; the state boards show Watch alone, as AC-8c requires.
 Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-8, DR-11, DR-12, DR-13. Deviations: DR-6 does not apply (the 296 pt channel cell is number, logo and name); DR-7, in the grid the now line stands in for the progress bar and the panel shows the bar; DR-2, Watch is drawn white on the board for emphasis but ships on the 0.12 surface and takes the Focus token only when focused; DR-3, the panel eyebrow is accent for "Now" only, muted otherwise; DR-4, initials in the 64 by 42 logo tile are 14 pt because the tile is 42 pt tall.
-States on the boards: PiP with the live dot and caption, panel for the focused programme, day chips (Today then short weekday names; selected chip 0.12 surface, weight 600, radius 8), time header, now line with pill, past blocks (muted text on 0.06), now and future blocks (primary text on 0.08), a block clipped at the window start with the ◂ marker, the focused block as the white card with a second line "<start> – <stop> · Live", the playing channel's name at weight 600, clock in the eyebrow row. Remind me is drawn and hidden until a reminders spec exists.
-Not drawn, to be added before the implementing PR: placeholder rows "No programme information", "Loading guide…", "Guide unavailable" (muted 24 pt on the 0.06 surface); gap block (0.06 surface, unlabelled); empty window (muted 24 pt centred); panel for a gap and for a future or past programme (muted eyebrow); panel progress bar; panel without Start over and Remind me; PiP when the engine is not playing (ground colour with caption); focused and unfocused day chip.
+States on the boards:
+- `TV-Guide`: PiP with the live dot and caption, panel for the focused on-air programme with `guide.panel.progress` (4 pt, accent fill on the 0.12 track, under the meta line), day chips (Today then short weekday names; selected chip 0.12 surface, weight 600, radius 8; unselected chips muted), time header, now line with pill, past blocks (muted text on 0.06), now and future blocks (primary text on 0.08), a block clipped at the window start with the ◂ marker, the focused block as the white card with a second line "<start> – <stop> · Live", the playing channel's name at weight 600, clock in the eyebrow row. Remind me and Start over are drawn here and hidden until a reminders spec exists.
+- `TV-Guide-Placeholders`: placeholder rows "Loading guide…" (`guide.loading.<rowKey>`), "No programme information" (`guide.noGuide.<rowKey>`) and "Guide unavailable" (`guide.failed.<rowKey>`), each one block across the window, muted 24 pt on the 0.06 surface; an unfocused gap block (0.06 surface, unlabelled); a focused gap as the white card with the time line only; the panel for a gap (muted eyebrow "Today 21:00 · Arena HD", title "No programme information", meta, no summary, no progress bar, Watch only).
+- `TV-Guide-Future`: the window scrolled to 21:00 with the now line at 783 pt; a focused future programme as the white card with the second line without "· Live"; its panel with the muted eyebrow "Today 22:00 · Sport One", no progress bar and Watch only; PiP while the engine is not playing (ground colour, caption, no live dot). The panel for a past programme is the same panel with a past start in the eyebrow.
+- `TV-Guide-Empty`: `guide.empty` "No channels in <group>" muted 24 pt centred in the grid area; the Today chip focused (Focus token, weight 600, radius 8) with the other chips muted; time header and now line kept; PiP playing; the panel shows only the clock because no block has focus.
+Not drawn: nothing.
 
 ## Problem
 
