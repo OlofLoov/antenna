@@ -180,11 +180,11 @@ import Testing
         #expect(playlist.groups == ["B", "A", "C"])
     }
 
-    /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARK=1 swift test`.
+    /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1 swift test`.
     /// Reference machine: Apple M1, 16 GB, debug build.
     @Test(
         "0001/AC-14 50,000 entries parse within 5 seconds",
-        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARK"] != nil),
+        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(1)))
     func largePlaylistBenchmark() {
         var text = "#EXTM3U\n"
