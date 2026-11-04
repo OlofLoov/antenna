@@ -7,7 +7,7 @@
 
 ## Design
 
-Boards: `docs/design/boards/<Board>.dc.html`, one per platform the spec covers (see `docs/design/README.md` section 4). Write "none, no UI" for a core-only spec.
+Boards: `docs/design/boards/<Board>.dc.html`, one per platform the spec covers (list them with `scripts/spec-index.sh --boards`). Write "none, no UI" for a core-only spec.
 Design rules that apply: DR-n, DR-n (from `docs/design/README.md` section 5).
 Deviations: none, or one sentence per DR that the boards break and why.
 States on the boards: focused, selected, empty, loading, error, as drawn.

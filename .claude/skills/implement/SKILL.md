@@ -13,11 +13,11 @@ One that does not ships as a stack, each PR built on the one before it.
 Status is a claim the diff backs. Nothing tracks it on the side: no job
 file, no tracker agent. `scripts/check-specs.sh` runs in CI and fails any
 spec that says Implemented without a test citing every criterion. When the
-last PR merges, the index is already right.
+last PR merges, the spec header already says Implemented.
 
 ## 1. Check the spec is ready
 
-Read `docs/specs/NNNN-*.md` and `docs/specs/README.md`. Stop and report in
+Read `docs/specs/NNNN-*.md`. Stop and report in
 one message if any of these hold. Do not start a partial implementation.
 
 - Status is not Accepted. A Draft has reviewer findings to resolve first,
@@ -100,10 +100,9 @@ while k is in review, but do not start k+2 until k has merged.
 
 ## 7. Claim the status
 
-The last PR of the stack sets `- Status: Implemented` in the spec header
-and in its README row. Every other PR sets
-`- Status: In progress (AC-a..AC-b in this PR)` in the header and
-`In progress` in the row.
+The last PR of the stack sets `- Status: Implemented` in the spec header.
+Every other PR sets `- Status: In progress (AC-a..AC-b in this PR)`. The
+header is the only place status lives; there is no index row to update.
 
 ```sh
 bash scripts/check-specs.sh

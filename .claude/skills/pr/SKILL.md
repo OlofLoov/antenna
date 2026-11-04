@@ -27,8 +27,8 @@ If on `main`, create a branch first. Naming:
 - `swift test --package-path Packages/AntennaCore` must pass. Paste the
   failing output and stop if it does not.
 - `bash scripts/check-specs.sh` must print `ok`. It fails when a spec says
-  Implemented without a test citing every criterion, or when the spec header
-  and the README row disagree.
+  Implemented without a test citing every criterion, or when a spec and the
+  boards in `docs/design/boards/` do not match.
 - `swift format lint --strict --recursive --parallel Apps Packages` and
   `scripts/check-rules.sh` must pass. Run `swiftlint lint --strict` too when
   it is installed; CI runs all three.
