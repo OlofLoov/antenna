@@ -25,3 +25,8 @@ struct RootView: View {
         .tabViewStyle(.sidebarAdaptable)
     }
 }
+
+#Preview("Root, no sources") {
+    RootView()
+        .modelContainer(for: [SourceRecord.self, FavoriteRecord.self], inMemory: true)
+}

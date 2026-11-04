@@ -61,6 +61,24 @@ struct ChannelRow: View {
     }
 }
 
+#Preview("Channel row") {
+    List {
+        ChannelRow(channel: Channel(
+            id: "1",
+            name: "Sample One",
+            streamURL: URL(filePath: "/sample/one.ts"),
+            group: "News"
+        ))
+        ChannelRow(channel: Channel(
+            id: "2",
+            name: "Sample Two",
+            streamURL: URL(filePath: "/sample/two.ts"),
+            group: "Sport",
+            hasCatchup: true
+        ))
+    }
+}
+
 @MainActor @Observable
 final class ChannelListModel {
     var channels: [Channel] = []
