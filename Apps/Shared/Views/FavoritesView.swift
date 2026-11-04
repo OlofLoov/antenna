@@ -24,7 +24,7 @@ struct FavoritesView: View {
 
 #Preview("Favorites, empty") {
     FavoritesView()
-        .modelContainer(for: [SourceRecord.self, FavoriteRecord.self], inMemory: true)
+        .modelContainer(previewContainer(sortOrders: []))
 }
 
 #Preview("Favorites, three entries") {

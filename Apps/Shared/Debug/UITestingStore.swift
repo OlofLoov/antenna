@@ -16,7 +16,12 @@
             guard let index = arguments.firstIndex(of: favoritesArgument) else { return nil }
             let next = arguments.index(after: index)
             let value = next < arguments.endIndex ? arguments[next] : ""
-            let sortOrders = value.split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
+            let sortOrders = value.split(separator: ",").map { token in
+                guard let order = Int(token.trimmingCharacters(in: .whitespaces)) else {
+                    fatalError("\(favoritesArgument) takes comma-separated integers, got \(token)")
+                }
+                return order
+            }
 
             let schema = Schema([SourceRecord.self, FavoriteRecord.self])
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
