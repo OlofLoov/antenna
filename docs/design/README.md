@@ -119,12 +119,15 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV paywall, with purchasing, restored and unavailable states | `TV-Paywall.dc.html`, `TV-Paywall-Purchasing.dc.html`, `TV-Paywall-Restored.dc.html`, `TV-Paywall-Unavailable.dc.html` | 0024 |
+| iPad and Mac paywall, same states | `iPad-Paywall.dc.html`, `iPad-Paywall-Purchasing.dc.html`, `iPad-Paywall-Restored.dc.html`, `iPad-Paywall-Unavailable.dc.html` | 0024 |
+| iPhone paywall, same states | `iPhone-Paywall.dc.html`, `iPhone-Paywall-Purchasing.dc.html`, `iPhone-Paywall-Restored.dc.html`, `iPhone-Paywall-Unavailable.dc.html` | 0024 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
 drawn on `TV-Movies.dc.html` and `TV-Search.dc.html`.
 
-Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
+Not yet drawn: guide on iPhone, iPad and Mac, movie and
 series detail, player controls on tvOS, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec lists under "Not drawn".
@@ -163,7 +166,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `paywall.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
