@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone reminders</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <!-- Navigation bar (safe area above). Reached from Settings (0023) -->
+  <div style="margin-top: 54px; height: 44px; display: flex; align-items: center; padding: 0 8px 0 8px; position: relative; flex: 0 0 auto">
+    <div style="display: flex; align-items: center; gap: 4px; font-size: 17px; color: {{accent}}; height: 44px; padding: 0 8px">
+      <svg aria-hidden="true" width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L2 10l8 8"/></svg>
+      <span>Settings</span>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; text-align: center; font-size: 17px; font-weight: 600; pointer-events: none">Reminders</div>
+  </div>
+
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 0">
+
+    <!-- Lead time: reminders.leadTime -->
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 12px 4px 8px">Remind me</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 16px; border-radius: 10px; background: rgba(255,255,255,0.06)">
+      <span style="font-size: 17px">Before start</span>
+      <span style="display: flex; align-items: center; gap: 8px; font-size: 17px; color: #A7B0BF">5 minutes
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10l4 4 4-4"/></svg>
+      </span>
+    </div>
+
+    <!-- Permission denied: reminders.permissionDenied with reminders.openSettings. Absent when notifications are allowed. -->
+    <div style="margin-top: 12px; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; gap: 12px; align-items: flex-start">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto; margin-top: 2px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/><path d="M4 4l16 16"/></svg>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+        <div style="font-size: 15px; line-height: 1.35; color: #D7DEE8">Notifications are off for Antenna. Reminders show only while the app is open.</div>
+        <div style="font-size: 15px; color: {{accent}}; height: 44px; display: flex; align-items: center; margin-bottom: -12px">Open Settings</div>
+      </div>
+    </div>
+
+    <!-- List header -->
+    <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 20px 4px 8px">
+      <span style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Upcoming</span>
+      <span style="font-size: 13px; color: #A7B0BF">4</span>
+    </div>
+
+    <!-- reminders.list, rows reminders.row.<id>, 64 pt, sorted by start -->
+    <div style="display: flex; flex-direction: column; gap: 2px; border-radius: 10px; background: rgba(255,255,255,0.06); padding: 2px 0">
+
+      <!-- Row: due today -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="#F2F4F8" style="flex: 0 0 auto"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+          <div style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Match of the Day</div>
+          <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Today 22:00 – 23:15 · Sport One</div>
+        </div>
+      </div>
+
+      <!-- Row: moved by a guide refresh (reminders.row.<id>.status) -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="#F2F4F8" style="flex: 0 0 auto"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+          <div style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">La Liga: Sevilla v Betis</div>
+          <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Tomorrow 21:00 – 23:00 · Sport Two</div>
+          <div style="font-size: 12px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Moved from 20:00</div>
+        </div>
+      </div>
+
+      <!-- Row: no longer in the guide (reminders.row.<id>.status) -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+          <div style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Handball: EHF Champions League</div>
+          <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Thu 19:45 – 21:30 · Arena HD</div>
+          <div style="font-size: 12px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">No longer in the guide</div>
+        </div>
+      </div>
+
+      <!-- Row: swiped, trailing action reminders.remove.<id> -->
+      <div style="display: flex; align-items: stretch; height: 64px; position: relative; overflow: hidden">
+        <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px; flex: 1 1 auto; min-width: 0; transform: translateX(-88px)">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="#F2F4F8" style="flex: 0 0 auto"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+            <div style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">DP World Tour: Round 4</div>
+            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sun 13:00 – 18:00 · Golf Channel</div>
+          </div>
+        </div>
+        <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 88px; background: #FF5F57; color: #F2F4F8; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">Remove</div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: #A7B0BF; line-height: 1.4; padding: 12px 4px 0">Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antenna is open.</div>
+  </div>
+
+  <!-- Tab bar, Settings selected -->
+  <div style="height: 84px; flex: 0 0 auto; box-sizing: border-box; padding: 8px 8px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: #11151C; display: flex; justify-content: space-around; align-items: flex-start">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #A7B0BF; width: 64px">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg>
+      <span>Live</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #A7B0BF; width: 64px">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 10v9"/></svg>
+      <span>Guide</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #A7B0BF; width: 64px">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 12.5v4l3.5-2z" fill="currentColor"/></svg>
+      <span>Movies</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #A7B0BF; width: 64px">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span>Search</span>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: {{accent}}; width: 64px">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span>Settings</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

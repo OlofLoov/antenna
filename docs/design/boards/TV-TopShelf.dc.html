@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV Top Shelf</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- tvOS Home screen. The system draws the shelf, the section headers, the item titles, the focus lift and the progress bars; the app controls only the 908 by 512 px tile images (drawn here at 380 by 214), the title strings, the progress fractions and the section order. The wallpaper is the user's and is drawn here as the ground colour. -->
+
+  <!-- topShelf.section.favorites: 0013/AC-8 order, at most 20 items -->
+  <div style="position: absolute; left: 90px; top: 72px; font-size: 31px; font-weight: 600">Favorites</div>
+  <div style="position: absolute; left: 90px; top: 120px; display: flex; gap: 36px; width: 1830px; overflow: hidden">
+
+    <!-- topShelf.item.<itemID>: tile with the channel logo centred on the placeholder ground (DR-8), title "<name> · <programme>", progress = elapsed over duration (DR-7). Focused: the system's lift and shadow, not the DR-2 card. -->
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; box-shadow: 0 18px 44px rgba(0,0,0,0.55); transform: translateY(-8px); display: flex; align-items: center; justify-content: center">
+        <!-- Logo stand-in. The real image is the channel's logo, at most 60% of the tile in either direction. -->
+        <div style="width: 180px; height: 100px; border-radius: 10px; background: rgba(255,255,255,0.18)"></div>
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 62%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; font-weight: 600; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One · Match of the Day</div>
+    </div>
+
+    <!-- Initials tile (DR-8): up to four characters per 0013/AC-7 at 200 px on the 908 px source -->
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 84px; font-weight: 700; letter-spacing: 2px; color: #F2F4F8">
+        <span>E1</span>
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 35%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Eurosport 1 · Snooker: UK Championship</div>
+    </div>
+
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 84px; font-weight: 700; letter-spacing: 2px; color: #F2F4F8">
+        <span>NEWS</span>
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 91%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">News24 · Evening Bulletin</div>
+    </div>
+
+    <!-- Guide exhausted (AC-6a): no programme in the snapshot covers now, so the title is the name alone and there is no progress bar -->
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 84px; font-weight: 700; letter-spacing: 2px; color: #F2F4F8">
+        <span>AH</span>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Arena HD</div>
+    </div>
+
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 84px; font-weight: 700; letter-spacing: 2px; color: #F2F4F8">
+        <span>KO</span>
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 20%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Kids One · Morning Cartoons</div>
+    </div>
+  </div>
+
+  <!-- topShelf.section.continueWatching: 0011/AC-4 order, at most 10 items, 16:9 tiles with the watch position as progress -->
+  <div style="position: absolute; left: 90px; top: 404px; font-size: 31px; font-weight: 600">Continue watching</div>
+  <div style="position: absolute; left: 90px; top: 452px; display: flex; gap: 36px; width: 1830px; overflow: hidden">
+
+    <!-- Backdrop tile: the title's backdrop when cached, else the poster centred on the placeholder ground -->
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #3B2F4A; position: relative; overflow: hidden">
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 42%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The Long Harbor</div>
+    </div>
+
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #2F4A3B; position: relative; overflow: hidden">
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 78%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northern Lights · S2 E4</div>
+    </div>
+
+    <!-- Artwork fallback (0011/AC-8): title text centred on the placeholder colour, 60 px on the 908 px source -->
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #1E3A5F; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 32px; box-sizing: border-box; font-size: 25px; font-weight: 700; color: #F2F4F8">
+        <span>Salt Road</span>
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 15%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Salt Road</div>
+    </div>
+
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #334155; position: relative; overflow: hidden">
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 60%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Quiet Engines · S1 E2</div>
+    </div>
+
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #2A3A52; position: relative; overflow: hidden">
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 90%; background: {{accent}}"></div></div>
+      </div>
+      <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Paper Cities</div>
+    </div>
+  </div>
+
+  <!-- Home screen app row, drawn by the system. Antenna's icon has focus, which is what makes the shelf above show Antenna's content. Neighbouring icons are neutral tiles (DR-12). -->
+  <div style="position: absolute; left: 0; right: 0; top: 806px; display: flex; justify-content: center; align-items: center; gap: 40px">
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+    <div style="width: 324px; height: 194px; border-radius: 20px; background: #11151C; box-shadow: 0 22px 54px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 40px; font-weight: 700">
+      <svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+      <span>Antenna</span>
+    </div>
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+  </div>
+  <div style="position: absolute; left: 0; right: 0; top: 1022px; text-align: center; font-size: 26px; color: #D7DEE8">Antenna</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

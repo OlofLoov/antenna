@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV player panel, audio tracks</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Live video stage, still playing (DR-1). No transport strip: timeshift inactive. -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+
+  <!-- player.panel with the Audio segment selected. Focus is in the list, so the selected segment falls back to the 0.12 surface at weight 600. -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 470px; box-sizing: border-box; padding: 40px 64px 36px; background: rgba(8, 10, 14, 0.88); display: flex; flex-direction: column; gap: 30px">
+
+    <!-- player.panel.segments -->
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.08)">
+        <!-- player.panel.segment.info, player.panel.segment.audio, player.panel.segment.subtitles, in this order -->
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Info</span>
+        <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: rgba(255,255,255,0.12); color: #F2F4F8">Audio</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Subtitles</span>
+      </div>
+      <!-- player.panel.hint -->
+      <div style="font-size: 22px; color: #A7B0BF">Menu closes</div>
+    </div>
+
+    <!-- player.panel.tracks: one row per track in engine order, 72 pt tall, radius 14. The Subtitles segment uses the same rows with "Off" first. -->
+    <div style="display: flex; flex-direction: column; gap: 6px; width: 900px">
+      <!-- player.panel.track.0, selected (checkmark), unfocused -->
+      <div style="display: flex; align-items: center; gap: 20px; height: 72px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.06)">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+        <span style="font-size: 29px; flex: 1 1 auto">English</span>
+        <span style="font-size: 22px; color: #A7B0BF">AAC 5.1</span>
+      </div>
+      <!-- player.panel.track.1, focused: Focus token, muted text uses the muted-on-focus token -->
+      <div style="display: flex; align-items: center; gap: 20px; height: 72px; padding: 0 24px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,.45)">
+        <span style="width: 26px; height: 26px; display: inline-block"></span>
+        <span style="font-size: 29px; font-weight: 600; flex: 1 1 auto">English (audio description)</span>
+        <span style="font-size: 22px; color: #4B5563">AAC Stereo</span>
+      </div>
+      <!-- player.panel.track.2 -->
+      <div style="display: flex; align-items: center; gap: 20px; height: 72px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.06)">
+        <span style="width: 26px; height: 26px; display: inline-block"></span>
+        <span style="font-size: 29px; flex: 1 1 auto">Español</span>
+        <span style="font-size: 22px; color: #A7B0BF">AAC Stereo</span>
+      </div>
+      <!-- player.panel.track.3: no language tag, falls back to the track name, then "Track 4" -->
+      <div style="display: flex; align-items: center; gap: 20px; height: 72px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.06)">
+        <span style="width: 26px; height: 26px; display: inline-block"></span>
+        <span style="font-size: 29px; flex: 1 1 auto">Track 4</span>
+        <span style="font-size: 22px; color: #A7B0BF">AC-3 5.1</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV groups, passcode prompt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Whatever was beneath (here the Groups screen title) stays, dimmed -->
+  <div style="position: absolute; left: 64px; top: 110px; font-size: 52px; font-weight: 800; letter-spacing: -0.5px; color: #F2F4F8">Groups</div>
+  <div style="position: absolute; right: 64px; top: 44px; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.88)"></div>
+
+  <!-- groups.passcode -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center">
+    <div style="width: 1040px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+      <svg aria-hidden="true" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div style="font-size: 38px; font-weight: 700">Enter passcode</div>
+      <div style="font-size: 24px; color: #A7B0BF; margin-top: -14px">Movies is locked.</div>
+
+      <!-- groups.passcode.digit.1 to .4 -->
+      <div style="display: flex; gap: 20px; padding: 10px 0">
+        <div style="width: 72px; height: 88px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center"><span style="width: 18px; height: 18px; border-radius: 9px; background: #F2F4F8; display: inline-block"></span></div>
+        <div style="width: 72px; height: 88px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center"><span style="width: 18px; height: 18px; border-radius: 9px; background: #F2F4F8; display: inline-block"></span></div>
+        <div style="width: 72px; height: 88px; border-radius: 14px; background: rgba(255,255,255,0.08)"></div>
+        <div style="width: 72px; height: 88px; border-radius: 14px; background: rgba(255,255,255,0.08)"></div>
+      </div>
+
+      <!-- groups.passcode.error -->
+      <div style="font-size: 22px; color: #FF5F57; height: 28px">Wrong passcode</div>
+
+      <!-- groups.passcode.key.0 to .9 and delete; 5 is focused -->
+      <div style="display: flex; gap: 10px">
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">1</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">2</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">3</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">4</span>
+        <span style="width: 72px; height: 64px; margin-top: -4px; border-radius: 10px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 600">5</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">6</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">7</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">8</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">9</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #D7DEE8">0</span>
+        <span style="width: 72px; height: 56px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #A7B0BF">⌫</span>
+      </div>
+
+      <!-- groups.passcode.forgot: static text on tvOS -->
+      <div style="font-size: 20px; color: #A7B0BF; padding-top: 10px">Forgot it? Reset the passcode in Antenna on your iPhone, iPad or Mac.</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

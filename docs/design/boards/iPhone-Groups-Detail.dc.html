@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone groups, user group detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <div style="margin-top: 54px; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+    <a href="iPhone-Groups.dc.html" style="display: inline-flex; align-items: center; gap: 4px; font-size: 17px; color: #5BB8FF; text-decoration: none">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      <span>Groups</span>
+    </a>
+    <span style="font-size: 17px; font-weight: 600">Weekend sports</span>
+    <span style="font-size: 17px; font-weight: 600; color: #5BB8FF; width: 72px; text-align: right">Done</span>
+  </div>
+
+  <!-- groups.detail -->
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 18px; padding: 12px 16px 0">
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+      <!-- groups.name -->
+      <label style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+        <span style="width: 72px; font-size: 16px; color: #D7DEE8">Name</span>
+        <input type="text" value="Weekend sports" maxlength="60" style="font: inherit; font-size: 16px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #F2F4F8; outline: none">
+      </label>
+      <!-- groups.hide -->
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 16px">
+        <span>Hidden</span>
+        <span style="width: 20px"></span>
+      </div>
+      <!-- groups.lock -->
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 14px; font-size: 16px">
+        <span>Locked</span>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+      </div>
+    </div>
+
+    <!-- groups.members in edit mode: handles shown -->
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; justify-content: space-between; padding: 0 4px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">
+        <span>Channels · 6</span>
+        <span>Your order</span>
+      </div>
+      <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span style="width: 44px; height: 28px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">EUR</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Eurosport 1</span>
+            <span style="font-size: 13px; color: #A7B0BF">101 · Home provider</span>
+          </div>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span style="width: 44px; height: 28px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">S2</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport Two</span>
+            <span style="font-size: 13px; color: #A7B0BF">105 · Home provider</span>
+          </div>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span style="width: 44px; height: 28px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NS</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Nordic Sport</span>
+            <span style="font-size: 13px; color: #A7B0BF">412 · Second playlist</span>
+          </div>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span style="width: 44px; height: 28px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">MTR</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Motor TV</span>
+            <span style="font-size: 13px; color: #A7B0BF">107 · Home provider</span>
+          </div>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span style="width: 44px; height: 28px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">GLF</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Golf Channel</span>
+            <span style="font-size: 13px; color: #A7B0BF">108 · Home provider</span>
+          </div>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span style="width: 44px; height: 28px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">TEN</span>
+          <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Tennis Live</span>
+            <span style="font-size: 13px; color: #A7B0BF">109 · Home provider</span>
+          </div>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+        </div>
+        <!-- groups.addChannels -->
+        <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; font-size: 16px">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add channels</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- groups.delete -->
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; height: 48px; font-size: 16px; color: #FF5F57">Delete group</div>
+  </div>
+
+  <div style="height: 34px; flex: 0 0 auto"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV paywall</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px">
+  <!-- paywall.root -->
+
+  <div style="position: absolute; left: 64px; top: 44px; display: inline-flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 700">
+    <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+    <span>Antenna</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 1072px; text-align: center">
+    <div style="font-size: 64px; font-weight: 800; letter-spacing: -1px"><!-- paywall.title -->Unlock Antenna</div>
+    <div style="font-size: 30px; line-height: 1.4; color: #D7DEE8"><!-- paywall.body -->Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group.</div>
+  </div>
+
+  <div style="display: flex; gap: 32px">
+    <!-- paywall.product.lifetime (focused) -->
+    <div style="width: 520px; height: 400px; border-radius: 20px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 16px 44px rgba(0,0,0,0.55); box-sizing: border-box; padding: 40px; display: flex; flex-direction: column; gap: 18px">
+      <div style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #4B5563">Lifetime</div>
+      <div style="font-size: 56px; font-weight: 800; letter-spacing: -1px"><!-- paywall.product.lifetime.price -->$29.99</div>
+      <div style="font-size: 23px; line-height: 1.4; color: #4B5563"><!-- paywall.product.lifetime.line -->Pay once. Yours for good.</div>
+      <div style="flex: 1 1 auto"></div>
+      <!-- paywall.product.lifetime.family --><div style="display: flex; align-items: center; gap: 10px; font-size: 20px; color: #4B5563"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M15 20a4.5 4.5 0 0 1 6-4"/></svg><span>Includes Family Sharing</span></div>
+    </div>
+    <!-- paywall.product.yearly -->
+    <div style="width: 520px; height: 400px; border-radius: 20px; background: rgba(255,255,255,0.08); color: #F2F4F8; box-sizing: border-box; padding: 40px; display: flex; flex-direction: column; gap: 18px">
+      <div style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Yearly</div>
+      <div style="display: flex; align-items: baseline; gap: 10px"><span style="font-size: 56px; font-weight: 800; letter-spacing: -1px"><!-- paywall.product.yearly.price -->$9.99</span><span style="font-size: 26px; color: #A7B0BF"><!-- paywall.product.yearly.unit -->per year</span></div>
+      <div style="font-size: 23px; line-height: 1.4; color: #D7DEE8"><!-- paywall.product.yearly.line -->Renews every year. Cancel any time.</div>
+      <div style="flex: 1 1 auto"></div>
+      <!-- paywall.product.yearly.family --><div style="display: flex; align-items: center; gap: 10px; font-size: 20px; color: #A7B0BF"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M15 20a4.5 4.5 0 0 1 6-4"/></svg><span>Includes Family Sharing</span></div>
+    </div>
+  </div>
+
+  <!-- paywall.status sits here when present (AC-16 to AC-22), 22 pt, above paywall.restore -->
+  <!-- paywall.restore -->
+  <span style="font-size: 24px; color: #A7B0BF; padding: 14px 28px">Restore purchase</span>
+
+  <!-- paywall.legal with paywall.terms and paywall.privacy as static text on tvOS -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #A7B0BF; text-align: center; padding: 0 160px">
+    <span>Yearly renews automatically until cancelled in Settings. Terms: codecrave.se/antenna/terms. Privacy: codecrave.se/antenna/privacy</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

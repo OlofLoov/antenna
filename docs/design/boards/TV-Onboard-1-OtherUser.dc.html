@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV onboarding, welcome, several users on this Apple TV</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px">
+
+  <!-- onboarding.steps -->
+  <div style="position: absolute; right: 64px; top: 44px; display: flex; gap: 8px; align-items: center">
+    <span style="width: 32px; height: 6px; border-radius: 3px; background: #F2F4F8; display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+  </div>
+
+  <div style="width: 160px; height: 160px; border-radius: 40px; background: #1E3A5F; display: flex; align-items: center; justify-content: center">
+    <svg aria-hidden="true" width="92" height="92" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+  </div>
+
+  <!-- onboarding.welcome -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 18px; max-width: 900px; text-align: center">
+    <div style="font-size: 64px; font-weight: 800; letter-spacing: -1px">Welcome to Antenna</div>
+    <div style="font-size: 30px; line-height: 1.4; color: #D7DEE8">Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider.</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 12px">
+    <!-- onboarding.addSource, focused -->
+    <a href="TV-Onboard-2.dc.html" style="font-size: 28px; font-weight: 700; padding: 20px 48px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: inline-flex; align-items: center; gap: 14px">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span>Add a source</span>
+    </a>
+    <!-- onboarding.help -->
+    <span style="font-size: 24px; color: #A7B0BF; padding: 14px 28px">What is a source?</span>
+  </div>
+
+  <!-- profiles.hint: shown only when the Apple TV has more than one user (0033/AC-3). Not focusable. Same style as the iCloud footer under it. -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 104px; display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 22px; color: #A7B0BF">
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15.5a5 5 0 0 1 5.5 4.5"/></svg>
+    <span>Each user on this Apple TV has their own sources. Another user's are not shown here. Switch user in Control Center to use theirs.</span>
+  </div>
+
+  <!-- 0006 iCloud footer, unchanged. Hidden when the current user is not signed in to iCloud; the hint keeps its position. -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 22px; color: #A7B0BF">
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 8.5 4 4 0 0 1 17.5 18z"/></svg>
+    <span>Signed in to iCloud. Sources you add on your iPhone or iPad appear here on their own.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

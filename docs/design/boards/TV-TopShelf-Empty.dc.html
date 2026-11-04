@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV Top Shelf, no favorites</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- tvOS Home screen with Antenna focused, no favorites and nothing in progress. One section, one item. The system-drawn parts are as on TV-TopShelf.dc.html. -->
+
+  <!-- topShelf.section.favorites -->
+  <div style="position: absolute; left: 90px; top: 72px; font-size: 31px; font-weight: 600">Favorites</div>
+  <div style="position: absolute; left: 90px; top: 120px; display: flex; gap: 36px">
+
+    <!-- topShelf.emptyItem: placeholder ground with a star outline (200 px glyph, 1.5 px line, muted, on the 908 px source), no progress bar. Select opens the app. -->
+    <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
+      <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; box-shadow: 0 18px 44px rgba(0,0,0,0.55); transform: translateY(-8px); display: flex; align-items: center; justify-content: center; color: #A7B0BF">
+        <svg aria-hidden="true" width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg>
+      </div>
+      <div style="font-size: 26px; font-weight: 600; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Add favorites in Antenna to see them here</div>
+    </div>
+  </div>
+
+  <!-- Home screen app row, drawn by the system; Antenna focused, neighbours neutral (DR-12) -->
+  <div style="position: absolute; left: 0; right: 0; top: 806px; display: flex; justify-content: center; align-items: center; gap: 40px">
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+    <div style="width: 324px; height: 194px; border-radius: 20px; background: #11151C; box-shadow: 0 22px 54px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 40px; font-weight: 700">
+      <svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+      <span>Antenna</span>
+    </div>
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+    <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
+  </div>
+  <div style="position: absolute; left: 0; right: 0; top: 1022px; text-align: center; font-size: 26px; color: #D7DEE8">Antenna</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
