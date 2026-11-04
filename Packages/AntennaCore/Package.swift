@@ -1,9 +1,9 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "AntennaCore",
-    platforms: [.iOS(.v17), .tvOS(.v17), .macOS(.v14)],
+    platforms: [.iOS(.v26), .tvOS(.v26), .macOS(.v26)],
     products: [
         .library(name: "AntennaCore", targets: ["AntennaCore"])
     ],
