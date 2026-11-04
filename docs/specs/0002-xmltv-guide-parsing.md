@@ -135,7 +135,7 @@ Then it returns true, true and false. One parameterised test, three rows.
 
 ### AC-11 Large documents parse in bounded time
 Given a generated document of 100,000 programmes across 500 channels, each with `title`, `desc` and `category`
-When parsed with `ANTENNA_BENCHMARK` set
+When parsed with `ANTENNA_BENCHMARKS=1`
 Then `programmes.count` is 100,000 and the parse takes under 20 seconds on macOS.
 
 ### AC-12 Programmes keep document order
@@ -198,7 +198,7 @@ Then (`title`, `summary`) is ("A & B", "D").
 | AC-8b | core | `XMLTVParserTests.emptyFirstElementSkipped` |
 | AC-9 | core | `XMLTVParserTests.channelIconIgnored`; checks the combined effect of the icon guard and the per-programme reset, each of which alone keeps it passing |
 | AC-10 | core (parameterised, three rows) | `XMLTVParserTests.airingCheck` |
-| AC-11 | core (benchmark, not CI-gated) | `XMLTVParserTests.largeGuideBenchmark`, runs only with `ANTENNA_BENCHMARK=1`; about 14 s on an Apple M1, in both debug and release because the time is spent inside `XMLParser` |
+| AC-11 | core (benchmark, not CI-gated) | `XMLTVParserTests.largeGuideBenchmark`, runs only with `ANTENNA_BENCHMARKS=1`; about 14 s on an Apple M1, in both debug and release because the time is spent inside `XMLParser` |
 | AC-12 | core | `XMLTVParserTests.documentOrder` |
 | AC-13 | core | `XMLTVParserTests.cdataText` |
 

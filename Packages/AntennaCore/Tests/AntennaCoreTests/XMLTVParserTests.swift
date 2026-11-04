@@ -176,7 +176,7 @@ import Testing
 
     @Test(
         "0002/AC-11 100,000 programmes parse within 20 seconds",
-        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARK"] != nil),
+        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(2)))
     func largeGuideBenchmark() throws {
         var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tv>"
