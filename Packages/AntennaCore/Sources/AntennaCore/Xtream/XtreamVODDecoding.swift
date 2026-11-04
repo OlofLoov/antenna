@@ -88,6 +88,12 @@ extension XtreamClient {
         return try decode([Row].self, from: data)
     }
 
+    /// Decodes a list that drops rows failing to decode, as `liveStreams()` does. The empty shapes give `[]`.
+    static func decodeLossyList<Row: Decodable>(_ data: Data) throws -> [Row] {
+        let rows: [Lossy<Row>] = try decodeWholeList(data)
+        return rows.compactMap(\.value)
+    }
+
     /// Throws `XtreamError.unauthorized` when the body is a JSON object whose `user_info.auth`
     /// decodes to 0. Array bodies and bodies that are not JSON pass through untouched.
     static func probeAuth(_ data: Data) throws {
@@ -204,12 +210,20 @@ protocol ListRow {
 // MARK: - Loose values
 
 enum Loose {
-    /// An integer from a JSON integer, an integral in-range float, or a string holding either.
+    /// An integer from a whole, in-range number, or a string holding one. Never truncates.
     static func int(_ double: Double) -> Int? { Int(exactly: double) }
 
+    /// Decimal digits only, with an optional sign and fraction: "55", "-3", "55.0". No exponent or hex.
     static func int(_ string: String) -> Int? {
-        Int(string) ?? Double(string).flatMap(int)
+        if let value = Int(string) { return value }
+        let digits = string.hasPrefix("-") || string.hasPrefix("+") ? string.dropFirst() : Substring(string)
+        let parts = digits.split(separator: ".", omittingEmptySubsequences: false)
+        guard parts.count == 2, parts.allSatisfy({ !$0.isEmpty && $0.allSatisfy(\.isASCII) && $0.allSatisfy(\.isNumber) })
+        else { return nil }
+        return Double(string).flatMap(int)
     }
+
+    static func isBlank(_ string: String) -> Bool { string.allSatisfy(\.isWhitespace) }
 
     static func double(_ string: String) -> Double? {
         Double(string).flatMap { $0.isFinite ? $0 : nil }
@@ -267,17 +281,17 @@ extension KeyedDecodingContainer {
         return nil
     }
 
-    /// A string, or a number as its text. Nil when absent, null, empty or another type.
+    /// A string, or a number as its text. Nil when absent, null, empty, only whitespace or another type.
     func looseString(_ key: Key) -> String? {
-        if let value = try? decodeIfPresent(String.self, forKey: key) { return value.isEmpty ? nil : value }
+        if let value = try? decodeIfPresent(String.self, forKey: key) { return Loose.isBlank(value) ? nil : value }
         if let value = try? decodeIfPresent(Int.self, forKey: key) { return String(value) }
         if let value = try? decodeIfPresent(Double.self, forKey: key), value.isFinite { return String(value) }
         return nil
     }
 
-    /// A non-empty JSON string, or nil.
+    /// A JSON string that is not empty or only whitespace, or nil.
     func nonEmptyString(_ key: Key) -> String? {
-        guard let value = try? decodeIfPresent(String.self, forKey: key), !value.isEmpty else { return nil }
+        guard let value = try? decodeIfPresent(String.self, forKey: key), !Loose.isBlank(value) else { return nil }
         return value
     }
 }
