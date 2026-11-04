@@ -205,6 +205,26 @@ Given a built catalogue and a group G not in `groups` (for example `.named(S, "X
 When `count(of: G)` and `rows(in: G)` run
 Then they return 0 and [].
 
+### AC-21 Channel without a position is dropped
+Given a channel with `sourceID` S and `position` nil, alongside tagged channels of S
+When the catalogue is built
+Then `RowKey(channel)` is nil, `count(of: .all)` counts only the tagged channels, no group lists it and `match(digits:)` never returns it.
+
+### AC-22 Duplicate row key
+Given two input channels with the same `sourceID`, `id` and `position` (for example a source's list passed twice)
+When the catalogue is built
+Then only the first in input order is kept: `rows(in: .all)` lists the key once, and `channel(for:)`, `number(for:)` and the source groups come from the first copy.
+
+### AC-23 Adding an untagged channel
+Given a channel with `sourceID` nil
+When `addFavorite(channel)` runs
+Then it returns nil, because a snapshot with a nil `sourceID` would match every copy of the channel.
+
+### AC-24 Source group of a channel from a source not loaded
+Given a built catalogue and a tagged channel whose `sourceID` is not in the input
+When `sourceGroup(of:)` runs
+Then it returns the group derived from the channel's own `sourceID` and `group` as in AC-16; that group is absent from `groups` and `count(of:)` returns 0 for it (AC-20).
+
 ## Edge cases and failure modes
 
 - The catalogue is rebuilt after each source finishes loading (0004 loads sequentially). Fallback numbers may shift until every source has loaded; screens show the current value and 0010/AC-16 shows per-source progress.
@@ -248,6 +268,10 @@ All criteria are swift-testing tests over fixtures in AntennaCore.
 | AC-18 | core | CatalogueTests.untaggedDropped |
 | AC-19 | core | CatalogueFavoritesTests.replaceFavorites, .replaceBenchmark (`ANTENNA_BENCHMARKS=1`) |
 | AC-20 | core | CatalogueTests.unknownGroup |
+| AC-21 | core | CatalogueTests.noPositionDropped |
+| AC-22 | core | CatalogueTests.duplicateKey |
+| AC-23 | core | CatalogueFavoritesTests.addFavoriteUntagged |
+| AC-24 | core | CatalogueTests.sourceGroupUnloadedSource |
 
 ## Open questions
 
