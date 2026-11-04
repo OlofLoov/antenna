@@ -130,9 +130,9 @@ tvOS shell (spec 0015) owns the top bar drawn on `TV-Movies.dc.html` and
 `TV-Search.dc.html`, gear included, plus the four `TV-Shell-*` boards.
 
 Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
-series detail, player controls on tvOS, Sources and Settings, the "source
-arrived without its credential" state on tvOS, and the empty, loading and
-error states each spec lists under "Not drawn".
+series detail, player controls on tvOS, Sources and Settings, and the empty,
+loading and error states each spec lists under "Not drawn". The "source
+arrived without its credential" state on tvOS is on `TV-Shell-Empty.dc.html`.
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the
