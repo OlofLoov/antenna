@@ -74,9 +74,10 @@ Check that a criterion or an edge case covers each one that applies:
 
 ## Design section
 
-- Every board the spec covers is named and exists. Every `.dc.html` under
-  `docs/design/boards/` that this spec owns has a row in
-  `docs/design/README.md` section 4.
+- Every board the spec covers is named in its Design section and exists.
+  Every `.dc.html` this spec adds under `docs/design/boards/` is named
+  there by file name; `scripts/check-specs.sh` fails on a board no spec
+  names.
 - "Not drawn" lists every state a criterion names that no board draws, with
   the text style it uses. "Not drawn: nothing" is written only after walking
   the criteria against the boards. Whole-screen states (a grid, a loading

@@ -58,7 +58,7 @@ jobs:
       - name: Check relative links in Markdown
         uses: lycheeverse/lychee-action@v2.9.0
         with:
-          args: --offline --no-progress --include-fragments --exclude-path docs/specs/README.md './**/*.md'
+          args: --offline --no-progress --include-fragments './**/*.md'
           fail: true
           failIfEmpty: true
 

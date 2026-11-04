@@ -10,8 +10,9 @@ cite and a reviewer can check without talking to the author.
 
 ## Steps
 
-1. Read `docs/specs/README.md` for the next number and `docs/adr/README.md`
-   for decisions the feature must respect. Read `docs/specs/0000-template.md`.
+1. Run `scripts/spec-index.sh --next` for the number. It counts open
+   `docs/spec-NNNN-*` branches, so two specs written at once do not collide.
+   Read `docs/adr/README.md` for decisions the feature must respect. Read `docs/specs/0000-template.md`.
    For anything with a screen, read `docs/design/README.md` and the board
    file for that screen. No board means the design is not settled: say so
    and stop; the board comes first.
@@ -42,7 +43,8 @@ cite and a reviewer can check without talking to the author.
    - A Then names an identifier, a return value, a recorded call or a
      record, never display text or a colour as its only handle.
 4. Fill the test plan table with a layer per criterion.
-5. Add a row to the table in `docs/specs/README.md` with status Draft.
+5. Set `- Status: Draft` in the header. There is no index row to add:
+   `scripts/spec-index.sh` reads the header.
 6. Self-review. Run `bash scripts/lint-spec.sh` and fix every error. Then go
    through `checklist.md` in this directory, line by line, and fix what it
    names. The reviewer's findings on specs 0006 to 0016 were mostly these

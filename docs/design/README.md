@@ -105,102 +105,21 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 
 ## 4. Screens and boards
 
-| Screen | Board | Spec |
-|--------|-------|------|
-| TV channel overlay | `Main.dc.html` | 0007 |
-| TV channel overlay, Favorites group with filled star | `Main-Favorites.dc.html` | 0007 |
-| TV channel overlay, Favorites empty | `Main-FavoritesEmpty.dc.html` | 0007 |
-| TV channel overlay, empty catalogue | `Main-Empty.dc.html` | 0007 |
-| TV channel overlay, no programme information | `Main-NoProgramme.dc.html` | 0007 |
-| TV channel overlay, guide loading | `Main-GuideLoading.dc.html` | 0007 |
-| TV zap bar and number entry | `TV-ZapBar.dc.html` | 0008 |
-| TV zap bar, hidden | `TV-ZapBar-Hidden.dc.html` | 0008 |
-| TV zap bar, no programme information | `TV-ZapBar-NoProgramme.dc.html` | 0008 |
-| TV zap bar, guide loading | `TV-ZapBar-GuideLoading.dc.html` | 0008 |
-| TV zap bar, guide unavailable | `TV-ZapBar-GuideUnavailable.dc.html` | 0008 |
-| TV zap bar, programme ends now | `TV-ZapBar-EndsNow.dc.html` | 0008 |
-| TV zap bar, no catch-up | `TV-ZapBar-NoCatchup.dc.html` | 0008 |
-| TV zap bar, buffering | `TV-ZapBar-Buffering.dc.html` | 0008 |
-| TV zap bar, no next programme | `TV-ZapBar-NoNext.dc.html` | 0008 |
-| TV zap bar, LIVE badge only | `TV-ZapBar-LiveOnly.dc.html` | 0008 |
-| TV zap bar, Favorites group | `TV-ZapBar-Favorites.dc.html` | 0008 |
-| TV zap bar, All channels | `TV-ZapBar-AllChannels.dc.html` | 0008 |
-| TV number entry, no match | `TV-ZapBar-PillNoMatch.dc.html` | 0008 |
-| TV number entry, zeros only | `TV-ZapBar-PillZeros.dc.html` | 0008 |
-| TV number entry, no such channel | `TV-ZapBar-PillNoChannel.dc.html` | 0008 |
-| TV guide grid | `TV-Guide.dc.html` | 0009 |
-| TV guide grid, placeholder rows and gap | `TV-Guide-Placeholders.dc.html` | 0009 |
-| TV guide grid, future programme, PiP not playing | `TV-Guide-Future.dc.html` | 0009 |
-| TV guide grid, empty group | `TV-Guide-Empty.dc.html` | 0009 |
-| iPad and Mac live browse | `iPad.dc.html` | 0010 |
-| iPhone live | `iPhone.dc.html` | 0010 |
-| iPad and Mac live, loading | `iPad-Loading.dc.html` | 0010 |
-| iPad and Mac live, nothing selected | `iPad-NothingSelected.dc.html` | 0010 |
-| iPad and Mac live, every source failed | `iPad-Error.dc.html` | 0010 |
-| iPad and Mac live, one source failed and one waiting for login | `iPad-Banner.dc.html` | 0010 |
-| iPad and Mac live, no channels | `iPad-Empty.dc.html` | 0010 |
-| iPad and Mac live, keyboard focus | `iPad-Focus.dc.html` | 0010 |
-| iPad and Mac live, sidebar collapsed (800 pt) | `iPad-Collapsed.dc.html` | 0010 |
-| Mac live, player only (600 pt) | `iPad-Collapsed-Narrow.dc.html` | 0010 |
-| iPhone live, loading | `iPhone-Loading.dc.html` | 0010 |
-| iPhone live, offline | `iPhone-Error.dc.html` | 0010 |
-| iPhone live, one source failed and one waiting for login | `iPhone-Banner.dc.html` | 0010 |
-| iPhone live, no favorites | `iPhone-EmptyFavorites.dc.html` | 0010 |
-| iPhone live, full screen | `iPhone-FullScreen.dc.html` | 0010 |
-| TV movies | `TV-Movies.dc.html` | 0011 |
-| iPad and Mac movies | `iPad-Movies.dc.html` | 0011 |
-| iPhone movies | `iPhone-Movies.dc.html` | 0011 |
-| TV movies, rows below the hero | `TV-Movies-Rows.dc.html` | 0011 |
-| iPad and Mac movies, rows below the hero | `iPad-Movies-Rows.dc.html` | 0011 |
-| iPhone movies, rows below the hero | `iPhone-Movies-Rows.dc.html` | 0011 |
-| TV movies, grid | `TV-Movies-Grid.dc.html` | 0011 |
-| iPad and Mac movies, grid | `iPad-Movies-Grid.dc.html` | 0011 |
-| iPhone movies, grid | `iPhone-Movies-Grid.dc.html` | 0011 |
-| TV search | `TV-Search.dc.html` | 0012 |
-| iPad and Mac search | `iPad-Search.dc.html` | 0012 |
-| iPhone search | `iPhone-Search.dc.html` | 0012 |
-| TV search, recent searches | `TV-Search-Recents.dc.html` | 0012 |
-| iPhone search, recent searches | `iPhone-Search-Recents.dc.html` | 0012 |
-| iPhone search, no results | `iPhone-Search-Empty.dc.html` | 0012 |
-| iPad and Mac search, one character | `iPad-Search-OneCharacter.dc.html` | 0012 |
-| iPad and Mac search, sources loading | `iPad-Search-Loading.dc.html` | 0012 |
-| iPad and Mac search, guide loading | `iPad-Search-GuideLoading.dc.html` | 0012 |
-| iPad and Mac search, capped section | `iPad-Search-Capped.dc.html` | 0012 |
-| TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
-| iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
-| TV shell, tab bar over the dimmed picture after Menu | `TV-Shell-Menu.dc.html` | 0015 |
-| TV shell, focus on the tab bar | `TV-Shell-FocusedTab.dc.html` | 0015 |
-| TV shell, loading at launch | `TV-Shell-Loading.dc.html` | 0015 |
-| TV shell, no channels | `TV-Shell-Empty.dc.html` | 0015 |
-| TV onboarding, M3U form with error | `TV-Onboard-3-M3U.dc.html` | 0006 |
-| TV onboarding, Connect in progress | `TV-Onboard-3-Connecting.dc.html` | 0006 |
-| TV onboarding, no live channels | `TV-Onboard-4-NoLive.dc.html` | 0006 |
-| TV onboarding, no channels found | `TV-Onboard-4-Empty.dc.html` | 0006 |
-| TV onboarding, sign in on this Apple TV | `TV-Onboard-SignIn.dc.html` | 0006 |
-| TV onboarding, what is a source | `TV-Onboard-Help.dc.html` | 0006 |
-| TV onboarding, ready with two sources | `TV-Onboard-5-Two.dc.html` | 0006 |
-| iPhone onboarding, M3U form with error | `iPhone-Onboard-2-M3U.dc.html` | 0006 |
-| iPhone onboarding, Connect in progress | `iPhone-Onboard-2-Connecting.dc.html` | 0006 |
-| iPhone onboarding, no link on the clipboard | `iPhone-Onboard-2-NoLink.dc.html` | 0006 |
-| iPhone onboarding, no live channels | `iPhone-Onboard-3-NoLive.dc.html` | 0006 |
-| iPhone onboarding, no channels found | `iPhone-Onboard-3-Empty.dc.html` | 0006 |
-| iPhone onboarding, what is a source | `iPhone-Onboard-Help.dc.html` | 0006 |
-| iPhone onboarding, ready with two sources | `iPhone-Onboard-3-Two.dc.html` | 0006 |
+Each spec's Design section names the boards it covers. That is the only
+mapping; this file keeps no table of it, so spec PRs do not conflict here.
+Print the current mapping from the specs:
 
-Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
-tvOS shell (spec 0015) owns the top bar drawn on `TV-Movies.dc.html` and
-`TV-Search.dc.html`, gear included, plus the four `TV-Shell-*` boards.
+```sh
+scripts/spec-index.sh --boards
+```
 
-Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
-series detail, player controls on tvOS, Sources and Settings, and the empty,
-loading and error states each spec lists under "Not drawn". The "source
-arrived without its credential" state on tvOS is on `TV-Shell-Empty.dc.html`.
-series detail, player controls on tvOS, Sources and Settings, the "source
-arrived without its credential" state on tvOS, and the empty, loading and
-error states each spec other than 0008 lists under "Not drawn".
-series detail, player controls on tvOS, Sources and Settings, and the
-empty, loading and error states each spec lists under "Not drawn".
-error states each spec other than 0010 lists under "Not drawn".
+`scripts/check-specs.sh` fails when a Design section names a board file
+that is not in [`boards/`](boards/), and when a board is named by no spec.
+A spec lists the states it describes but that are not drawn yet under
+"Not drawn" in its Design section.
+
+Core specs with no screen, such as 0013 channel catalogue and 0014 guide
+data, write "none, no UI" in their Design section.
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the

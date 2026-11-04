@@ -16,7 +16,6 @@
 # Notes (printed, exit 0):
 #   - A cross-reference to a spec that is not in the tree.
 #   - A "Blocked on" line that says something is not yet written.
-#   - A board file with no row in docs/design/README.md.
 #
 # Usage: scripts/lint-spec.sh [repo-root] [spec-file ...]
 set -u
@@ -133,12 +132,6 @@ for file in "${files[@]}"; do
     done < <(grep -oE '[A-Za-z0-9-]+\.dc\.html' <<< "$design" | sort -u)
   fi
 done
-
-if [[ -d "$boards" && -f "$root/docs/design/README.md" ]]; then
-  for b in "$boards"/*.dc.html; do
-    grep -qF "$(basename "$b")" "$root/docs/design/README.md" || note "$(basename "$b") has no row in docs/design/README.md"
-  done
-fi
 
 if (( fail )); then
   exit 1
