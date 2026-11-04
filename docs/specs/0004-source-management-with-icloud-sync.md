@@ -1,12 +1,27 @@
 # 0004. Source management with iCloud sync
 
-- Status: Draft
+- Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS
+- Superseded in part: AC-8, AC-14 and the loading-indicator edge case by 0010
+  on iOS, iPadOS and macOS (Accepted; the Channels tab is renamed Live).
+  AC-6, AC-7, AC-9 ("first time"), AC-10 and AC-11 by 0023 (Draft). AC-13 by
+  0030 (Draft). Each criterion stays in force until the replacing spec is
+  Implemented. The delete-path additions other specs expect of 0004 (0021
+  `GuideOverridesRecord`, 0029 `removeSource(_:)`, 0037 `remove(sourceID:)`)
+  belong to 0023's delete path, not to this spec.
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
   changes have a spec to revise or supersede. Tests that do not yet cite a
   criterion are marked TBD in the test plan.
+
+## Design
+
+Boards: none. The shipped UI predates docs/design; the boarded Settings is
+0023, the add flow 0006, and Live 0010.
+Design rules that apply: none.
+Identifiers: `settings.addSource`, `settings.source.<id>`, `addSource.save`,
+`addSource.error`, `channels.emptyState`, `player.view`.
 
 ## Problem
 
@@ -44,9 +59,11 @@ Out (explicitly):
 6. On another device signed into the same iCloud account the source appears without any action.
 
 tvOS and macOS: the add form is the same, driven by the remote and on-screen
-keyboard on tvOS. Deleting a source has no affordance on either platform
-today (known gap). Source rows are not focusable on tvOS; only the Add source
-button is, so a long source list cannot be scrolled.
+keyboard on tvOS. Save and Cancel are the sheet's toolbar items. Deleting a
+source has no affordance on either platform today (known gap). Source rows
+are not focusable on tvOS; only the Add source button is, so a long source
+list cannot be scrolled. Initial focus in the sheet and what Menu does there
+are not specified (see open questions).
 
 ## Acceptance criteria
 
@@ -55,12 +72,12 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 ### AC-1 Invalid URL is rejected
 Given the URL field contains text without a scheme
 When the user taps Save
-Then the message "Enter a valid URL." is shown, the sheet stays open, and no `SourceRecord` is inserted.
+Then the save fails with the message "Enter a valid URL.", the sheet stays open, and no `SourceRecord` is inserted.
 
 ### AC-2 M3U source is saved
-Given type M3U, a valid playlist URL and an EPG URL
+Given N existing sources, type M3U, playlist URL U and EPG URL E
 When the user taps Save
-Then one `SourceRecord` exists with `kind` m3u, that `url` and `epgURL`, `credentialKey` nil, and `sortOrder` equal to the number of sources that existed before.
+Then exactly one new `SourceRecord` exists with `kind` m3u, `url` U, `epgURL` E, `credentialKey` nil and `sortOrder` N.
 
 ### AC-3 Name defaults to host
 Given an empty name field and URL `http://example.com/list.m3u`
@@ -75,7 +92,7 @@ Then the Keychain holds a synchronizable item under service `se.codecrave.antenn
 ### AC-5 Keychain failure blocks the save
 Given the Keychain write fails
 When the user taps Save
-Then an error beginning "Could not store credentials" is shown and no `SourceRecord` is inserted.
+Then the save fails with a message beginning "Could not store credentials" and no `SourceRecord` is inserted.
 
 ### AC-6 Deleting a source removes its credential
 Given a saved Xtream source, on iOS or iPadOS
@@ -85,12 +102,12 @@ Then the `SourceRecord` is gone and the Keychain item for its key is gone.
 ### AC-7 Settings lists sources in order
 Given three sources with `sortOrder` 0, 1, 2
 When Settings is shown
-Then they appear in that order, each with its name and URL.
+Then rows `settings.source.<id>` appear in that order, each with its name and URL.
 
 ### AC-8 Empty state
 Given no sources
 When the Channels tab is shown
-Then the "No sources yet" view is shown and no network request is made.
+Then `channels.emptyState` is shown and no network request is made.
 
 ### AC-9 Channels from all sources are combined
 Given an M3U source with 2 channels and an Xtream source with 3 streams
@@ -98,41 +115,71 @@ When the Channels tab loads for the first time
 Then 5 channels are listed, M3U first, in source `sortOrder`.
 
 ### AC-10 Missing credential yields no channels
-Given an Xtream source whose Keychain item is absent on this device, or whose `credentialKey` is nil
+Given an Xtream source (sortOrder 0) whose Keychain item is absent on this device and an M3U source (sortOrder 1) with 2 channels
 When the Channels tab loads
-Then that source contributes zero channels and the other sources still load. A Keychain read error other than not-found follows the AC-11 path.
+Then `ChannelListModel.channels` holds exactly the M3U source's 2 channels and no request is made to the Xtream server.
 
 ### AC-11 One failing source does not block the rest
-Given one source whose URL returns an error
+Given an M3U source (sortOrder 0) whose request fails with a transport error and an M3U source (sortOrder 1) with 2 channels
 When the Channels tab loads
-Then the remaining sources' channels are listed and the last failure's `localizedDescription` is recorded on the model. Earlier failures are overwritten; none is rendered.
+Then `ChannelListModel.channels` holds exactly the second source's 2 channels.
 
 ### AC-12 Sources sync between devices
 Given a source saved on device A
-When device B, signed into the same iCloud account, is online
-Then the source appears in device B's Settings and Channels without user action.
+When device B, signed into the same iCloud account, finishes a CloudKit import
+Then the source is listed in device B's Settings.
 
-### AC-13 Stalker type is stored but inert
+### AC-13 Stalker type is stored
 Given type Stalker portal with a MAC address and password
-When saved and the Channels tab loads
-Then a `SourceRecord` with `kind` stalker and a Keychain item exist, the source contributes zero channels, and if it is the only source the Channels tab stays on the loading indicator.
+When saved
+Then a `SourceRecord` with `kind` stalker exists, and the Keychain item under its id holds the MAC address as username and the password.
 
 ### AC-14 Tapping a channel starts playback (stopgap)
 Given a listed channel
-When the user taps it
-Then a `PlayerView` for the channel is pushed onto the Channels navigation stack and its player's current item URL equals `channel.streamURL`. On iOS, iPadOS and macOS the navigation title is the channel name; tvOS shows no title.
+When the user selects it (tap on iOS and iPadOS, click on macOS, select on tvOS)
+Then `player.view` is pushed onto the Channels navigation stack, playing `channel.streamURL`, with `navigationTitle` set to the channel name on every platform.
+
+### AC-15 Load failure is recorded
+Given the AC-11 fixture
+When the Channels tab loads
+Then `ChannelListModel.error` equals the failure's `localizedDescription`. With two failing sources it holds the later one, and a later successful source does not clear it.
+
+### AC-16 Nil credential key yields no channels
+Given an Xtream source (sortOrder 0) whose `credentialKey` is nil and an M3U source (sortOrder 1) with 2 channels
+When the Channels tab loads
+Then `ChannelListModel.channels` holds exactly the M3U source's 2 channels and no request is made to the Xtream server.
+
+### AC-17 Unreadable credential
+Given an Xtream source whose Keychain read fails with a status other than `errSecItemNotFound`, or whose stored data does not decode
+When the Channels tab loads
+Then the source contributes zero channels and the failure is handled as AC-11 and AC-15 describe.
+
+### AC-18 Stalker contributes no channels
+Given a Stalker source (sortOrder 0) with a stored credential and an M3U source (sortOrder 1) with 2 channels
+When the Channels tab loads
+Then `ChannelListModel.channels` holds exactly the 2 M3U channels and no request is made to the portal.
 
 ## Edge cases and failure modes
 
 - Any load that yields zero channels in total (offline, Stalker-only, empty playlist) leaves the list on the loading indicator and retries on each appearance, because no error is rendered.
+- Offline at launch: every source fails or yields nothing; the list stays on the loading indicator and `ChannelListModel.error` holds the last transport error.
+- An M3U URL answering non-2xx, or an HTML page, parses to zero channels and records no error. Only transport errors fail an M3U load; the Xtream path also fails on a non-2xx status.
 - Slow source: the whole list waits for the slowest source. Sources load sequentially.
+- A source with tens of thousands of channels is downloaded, parsed and held in memory before anything renders.
 - Adding a second source after the list has loaded shows nothing new until the next launch.
+- Deleting a source leaves its channels listed and playable until relaunch. Deleting every source shows the AC-8 empty state; adding a source afterwards shows the deleted sources' channels again, because the model is not cleared.
+- Adding the same source twice is allowed (no dedup, ADR-0002). Both load, and channels with identical ids appear twice in one `List`; SwiftUI identity for those rows is undefined.
 - Known defect: an Xtream source whose categories contain duplicate `category_id` values crashes the app (precondition failure in `Dictionary(uniqueKeysWithValues:)` in `SourceLoader`). AC-11 does not hold for this failure mode.
 - Sync lag: a `SourceRecord` can arrive before its Keychain item (AC-10 covers the silent case).
-- A `SourceRecord` with `url == nil`, possible after a partial CloudKit sync, is silently skipped.
+- Device B whose Channels list has already loaded does not show a synced source's channels until relaunch. If B had no sources, the empty state switches to loading and the source loads.
+- tvOS: synchronizable Keychain items do not reach Apple TV (pending the ADR-0003 amendment named in 0006 and 0023), so a synced Xtream or Stalker source is listed in Settings and contributes zero channels there permanently (AC-10).
+- A `SourceRecord` with `url == nil`, possible after a partial CloudKit sync, is silently skipped by the loader and shows an empty URL line in Settings.
 - An unknown `kindRaw`, from a newer app version, falls back to `.m3u` and is fetched as a playlist.
 - The EPG URL is not validated; any text is stored through the lenient `URL(string:)`, empty gives nil.
+- An EPG URL typed before switching the type to Xtream or Stalker is hidden but still saved as `epgURL`.
 - An M3U URL with no host (for example `file:///x.m3u`) gets the default name "Source". A whitespace-only name is stored as-is.
+- The AC-5 message appends the raw error, for example "unexpectedStatus(-34018)", so users see an internal status code.
+- Equal `sortOrder` values (two devices adding at once) render in undefined order.
 - User-supplied M3U URLs that embed credentials (`get.php?username=…&password=…`) are stored and synced as part of `url` and displayed in clear in Settings. ADR-0003 rejected embedding credentials in URLs as our own storage strategy; it does not address URLs the user supplies. Accepted today; see open questions.
 - Keychain delete failure during AC-6 is swallowed; the record is still deleted and the Keychain item is orphaned.
 - The downloaded playlist is decoded as UTF-8 with replacement characters; non-UTF-8 playlists are not rejected.
@@ -144,39 +191,42 @@ Then a `PlayerView` for the channel is pushed onto the Channels navigation stack
 
 ## Test plan
 
-AC-2 to AC-6 require extracting `AddSourceView.save()` into a testable type
-with an injected `CredentialStore` before tests can be written; until then
-they are manual. AC-9 to AC-11 and AC-13 additionally require `SourceLoader`
-to take an injected `URLSession` and `CredentialStore` (or a `URLProtocol`
-stub registered on a custom session) and `ChannelListModel` to call it through
-that seam; until then they are manual. AC-14's URL assertion needs `PlayerView`
-to expose its player. UI tests require accessibility identifiers
-`settings.addSource`, `addSource.save`, `addSource.error`,
-`channels.emptyState`, `channels.list` and `player.view`, to be added by the
-implementing PR.
+AC-1 to AC-6 and AC-13 require extracting `AddSourceView.save()` and the
+Settings `onDelete` body into a testable type with an injected
+`CredentialStore` before tests can be written. AC-9 to AC-11 and AC-15 to
+AC-18 additionally require `SourceLoader` to take an injected `URLSession`
+and `CredentialStore` (or a `URLProtocol` stub registered on a custom
+session) and `ChannelListModel` to call it through that seam. AC-14's URL
+check is manual until `PlayerView` exposes its player. UI tests require the
+identifiers in the Design section, added by the implementing PR.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | ui | TBD |
-| AC-2 | integration (in-memory ModelContainer, after refactor) | TBD |
-| AC-3 | integration (after refactor) | TBD |
-| AC-4 | integration (Keychain in simulator, after refactor) | TBD |
-| AC-5 | integration (injected failing store, after refactor) | TBD |
-| AC-6 | integration (after refactor) | TBD |
+| AC-1 | integration (save path) + ui (sheet stays open) | TBD |
+| AC-2 | integration (in-memory ModelContainer) | TBD |
+| AC-3 | integration | TBD |
+| AC-4 | integration (Keychain in simulator) | TBD |
+| AC-5 | integration (injected failing store) | TBD |
+| AC-6 | integration | TBD |
 | AC-7 | ui | TBD |
-| AC-8 | ui | TBD |
-| AC-9 | integration (stubbed `URLSession`, after refactor) | TBD |
-| AC-10 | integration (after refactor) | TBD |
-| AC-11 | integration (after refactor) | TBD |
+| AC-8 | ui (empty state) + integration (URLProtocol stub records zero requests) | TBD |
+| AC-9 | integration (stubbed `URLSession`) | TBD |
+| AC-10 | integration | TBD |
+| AC-11 | integration | TBD |
 | AC-12 | device | CloudKit cannot run in CI; manual two-device check |
-| AC-13 | integration (after refactor) | TBD |
-| AC-14 | ui (view pushed) + manual (current item URL, until `PlayerView` exposes its player) | TBD |
+| AC-13 | integration (Keychain in simulator) | TBD |
+| AC-14 | ui (view pushed) + manual (current item URL) | TBD |
+| AC-15 | integration | TBD |
+| AC-16 | integration | TBD |
+| AC-17 | integration (injected failing store) | TBD |
+| AC-18 | integration | TBD |
 
 ## Open questions
 
 - Fix the duplicate `category_id` crash: build the name map with `Dictionary(_:uniquingKeysWith:)`.
 - Should the Stalker option be hidden until the portal handshake ships?
-- Where does the error from AC-11 get rendered: inline per source in Settings, or a banner in Channels?
+- Where does the error from AC-15 get rendered: inline per source in Settings, or a banner in Channels?
 - Should `url` be redacted in Settings, or should credential-bearing M3U URLs be split into Keychain plus base URL?
 - Delete affordance on tvOS and macOS.
 - `sortOrder` collisions when two devices add a source at once (ADR-0002 follow-up).
+- tvOS add sheet: where initial focus lands and whether Menu dismisses without saving. Not checked against a build.
