@@ -119,6 +119,7 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV onboarding, welcome when the Apple TV has several users | `TV-Onboard-1-OtherUser.dc.html` | 0033 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
@@ -163,7 +164,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `profiles.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
