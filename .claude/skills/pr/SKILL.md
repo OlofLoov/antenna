@@ -24,6 +24,9 @@ If on `main`, create a branch first. Naming:
 
 - `swift test --package-path Packages/AntennaCore` must pass. Paste the
   failing output and stop if it does not.
+- `bash scripts/check-specs.sh` must print `ok`. It fails when a spec says
+  Implemented without a test citing every criterion, or when the spec header
+  and the README row disagree.
 - If Apps/ changed, the iOS build must pass (see the `sim` skill).
 - If a spec exists for this work, run the `impl-reviewer` agent and fix
   READY WITH FIXES items before continuing. NOT READY stops here.

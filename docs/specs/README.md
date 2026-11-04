@@ -1,11 +1,19 @@
 # Specs
 
 One file per feature. Numbered, four digits. Status lifecycle:
-Draft → Accepted → Implemented → Superseded.
+Draft → Accepted → In progress → Implemented → Superseded.
 
 A spec is Accepted when the `spec-reviewer` agent has passed it and every
 acceptance criterion is testable. It is Implemented when a PR has merged with
-a test per criterion.
+a test per criterion. The implementing PR sets that status itself, in the
+spec header and in this table, so merging the code and updating the index
+are one change. In progress is for a spec the user chose to split over
+several PRs; every PR but the last uses it.
+
+`scripts/check-specs.sh` runs in CI and in the `pr` skill. It fails when the
+header and the row disagree, or when a spec marked Implemented has a
+criterion with no Swift test citing `NNNN/AC-n`. Criteria whose test-plan
+layer is `device` are exempt. The `implement` skill runs this loop.
 
 | Spec | Title | Status |
 |------|-------|--------|

@@ -41,8 +41,12 @@ from `Config/Local.xcconfig.example` for device builds.
   skill. Read `docs/adr/README.md` before proposing architecture changes.
 - **Tests cite criteria.** A test that proves acceptance criterion `AC-3` of
   spec `0007` says so in its name or a comment: `// 0007/AC-3`.
-- **Review against the spec.** Before a PR, run the `impl-reviewer` agent with
-  the spec id and the diff.
+- **Implement with the `implement` skill.** Give it a spec id. It checks the
+  spec is Accepted and unblocked, writes the code and a test per criterion,
+  sets the spec to Implemented in the same diff, runs the `impl-reviewer`
+  agent, then hands off to the `pr` skill. Nothing tracks status on the
+  side. `scripts/check-specs.sh` fails CI when a spec claims Implemented
+  without a test citing every criterion.
 - **Everything ends in a PR.** Code, specs, ADRs, CI changes, this file. Never
   commit on main and never push to main. Hooks refuse both. Finish work with
   the `pr` skill, which branches, verifies, commits and opens the PR.

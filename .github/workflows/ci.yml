@@ -25,6 +25,14 @@ jobs:
             git log -1 --format=%B "$sha" | bash scripts/lint-commit.sh - || { echo "in commit $sha"; exit 1; }
           done
 
+  specs:
+    name: Spec status
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Status matches tests
+        run: bash scripts/check-specs.sh
+
   core:
     name: AntennaCore tests
     runs-on: macos-26
