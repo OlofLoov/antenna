@@ -116,7 +116,7 @@ jobs:
           xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
             -destination "platform=iOS Simulator,name=$name" \
             -only-testing:AntennaTests \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
       - name: Upload snapshots
         if: always()
         uses: actions/upload-artifact@v4
