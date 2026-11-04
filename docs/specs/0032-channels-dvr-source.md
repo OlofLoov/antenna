@@ -212,7 +212,7 @@ Then the outcome is the one in that row, exactly one GET to `playlistURL()` is i
 ### AC-13 Credential missing or unreadable
 Given three `SourceRecord`s of this kind: one with `credentialKey` non-nil whose Keychain item is absent on this device, one whose Keychain read fails with a status other than not-found, and one with `credentialKey` nil
 When `SourceLoader.load` runs for each with a stubbed session and a fake `CredentialStore`
-Then no request is issued for the first two; the first returns `.waitingForCredential` (0010/AC-18 and AC-24 render it); the second throws `.credentialUnreadable` and is recorded as failed (0004/AC-11); the third performs no Keychain read and returns `.loaded` after the AC-14 requests.
+Then no request is issued for the first two; the first returns `.waitingForCredential` (0010/AC-18 and AC-24 render it); the second throws `.credentialUnreadable` and is recorded as failed (as in 0004); the third performs no Keychain read and returns `.loaded` after the AC-14 requests.
 
 ### AC-14 Loader order and failure isolation
 Given three sources in `sortOrder`: an M3U source, a Channels DVR source whose `/status` fails with `.unreachable(.cannotConnectToHost)`, and a Channels DVR source that answers both calls
