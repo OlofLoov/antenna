@@ -45,6 +45,10 @@ from `Config/Local.xcconfig.example` for device builds.
   the `pr` skill, which branches, verifies, commits and opens the PR.
 - **Conventional Commits** are enforced by a commit-msg hook and in CI:
   `type(scope): subject`. Details in `docs/conventions.md`.
+- **No AI slop.** Every doc, spec, ADR, commit message, PR body and code
+  comment goes through the `no-ai-slop` skill (imported from
+  petergyang/no-ai-slop, MIT). A hook reminds you after each file change and
+  before each commit or PR; run its Detect pass and fix what it names.
 - Conventions (style, concurrency, errors, SwiftData rules): `docs/conventions.md`.
 
 ## Hard constraints
