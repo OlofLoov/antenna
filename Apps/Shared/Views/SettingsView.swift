@@ -61,8 +61,8 @@ struct AddSourceView: View {
                 TextField("Name", text: $name)
                 TextField(kind == .m3u ? "Playlist URL" : "Server URL", text: $url)
                     #if !os(macOS)
-                    .textInputAutocapitalization(.never)
-                    .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.URL)
                     #endif
                 if kind == .m3u {
                     TextField("EPG URL (optional)", text: $epgURL)

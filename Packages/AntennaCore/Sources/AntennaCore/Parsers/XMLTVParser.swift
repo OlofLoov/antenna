@@ -67,7 +67,10 @@ public struct XMLTVParser: Sendable {
             return dateFormatter.date(from: s) ?? dateFormatterNoZone.date(from: String(s.prefix(14)))
         }
 
-        func parser(_ parser: XMLParser, didStartElement name: String, namespaceURI: String?, qualifiedName: String?, attributes: [String: String] = [:]) {
+        func parser(
+            _ parser: XMLParser, didStartElement name: String, namespaceURI: String?, qualifiedName: String?,
+            attributes: [String: String] = [:]
+        ) {
             switch name {
             case "channel":
                 inChannel = true
@@ -106,13 +109,14 @@ public struct XMLTVParser: Sendable {
                 currentChannelID = nil
             case "programme":
                 if let ch = progChannel, let start = progStart, let stop = progStop, stop > start {
-                    programmes.append(Programme(
-                        channelID: ch, start: start, stop: stop, title: title,
-                        subtitle: subtitle.isEmpty ? nil : subtitle,
-                        summary: desc.isEmpty ? nil : desc,
-                        category: category.isEmpty ? nil : category,
-                        iconURL: icon
-                    ))
+                    programmes.append(
+                        Programme(
+                            channelID: ch, start: start, stop: stop, title: title,
+                            subtitle: subtitle.isEmpty ? nil : subtitle,
+                            summary: desc.isEmpty ? nil : desc,
+                            category: category.isEmpty ? nil : category,
+                            iconURL: icon
+                        ))
                 }
                 progChannel = nil
             default:

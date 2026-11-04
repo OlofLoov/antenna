@@ -5,7 +5,7 @@ let package = Package(
     name: "AntennaCore",
     platforms: [.iOS(.v17), .tvOS(.v17), .macOS(.v14)],
     products: [
-        .library(name: "AntennaCore", targets: ["AntennaCore"]),
+        .library(name: "AntennaCore", targets: ["AntennaCore"])
     ],
     targets: [
         .target(

@@ -3,10 +3,12 @@ import Testing
 @testable import AntennaCore
 
 @Suite struct XtreamClientTests {
+    // swift-format-ignore: NeverForceUnwrap
     let creds = XtreamCredentials(server: URL(string: "http://panel.example:8080")!, username: "u", password: "p")
 
     @Test func decodesLooseTypes() throws {
-        let json = #"[{"num":"7","name":"BBC One","stream_id":"42","stream_icon":"","epg_channel_id":"bbc1.uk","category_id":3,"tv_archive":"1","tv_archive_duration":3}]"#
+        let json =
+            #"[{"num":"7","name":"BBC One","stream_id":"42","stream_icon":"","epg_channel_id":"bbc1.uk","category_id":3,"tv_archive":"1","tv_archive_duration":3}]"#
         let streams = try JSONDecoder().decode([XtreamLiveStream].self, from: Data(json.utf8))
         let s = try #require(streams.first)
         #expect(s.num == 7)

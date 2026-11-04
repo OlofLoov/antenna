@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "indentation": { "spaces": 4 },
+  "lineLength": 140,
+  "maximumBlankLines": 1,
+  "respectsExistingLineBreaks": true,
+  "lineBreakBeforeControlFlowKeywords": false,
+  "lineBreakBeforeEachArgument": false,
+  "multiElementCollectionTrailingCommas": true,
+  "rules": {
+    "DoNotUseSemicolons": false,
+    "OneCasePerLine": false,
+    "AlwaysUseLiteralForEmptyCollectionInit": true,
+    "NeverForceUnwrap": true,
+    "NeverUseImplicitlyUnwrappedOptionals": true,
+    "NoAccessLevelOnExtensionDeclaration": false,
+    "UseExplicitNilCheckInConditions": true
+  }
+}
