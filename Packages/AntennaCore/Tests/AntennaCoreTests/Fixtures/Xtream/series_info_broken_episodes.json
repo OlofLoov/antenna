@@ -1,0 +1,11 @@
+{
+  "episodes": [
+    {"id": 1, "episode_num": 1, "season": 1, "title": "Keep"},
+    "not an object",
+    {"episode_num": 2, "season": 1, "title": "No id"},
+    {"id": "abc", "episode_num": 3, "season": 1, "title": "Letters"},
+    {"id": 4, "episode_num": 4, "season": 1, "title": ""},
+    {"id": 5, "season": 1},
+    {"id": "1", "episode_num": 9, "season": 1, "title": "Repeat"}
+  ]
+}

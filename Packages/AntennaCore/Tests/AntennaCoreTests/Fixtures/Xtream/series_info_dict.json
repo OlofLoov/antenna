@@ -1,0 +1,10 @@
+{
+  "seasons": [{"season_number": 1, "name": "Season 1"}, {"season_number": 99, "name": "Ignored"}],
+  "info": {"name": "Dark", "plot": "A town", "releaseDate": "2017-12-01", "genre": "Drama", "age": 16, "backdrop_path": "http://h/b.jpg"},
+  "episodes": {
+    "10": [{"id": "1001", "episode_num": 1, "title": "Ten one", "container_extension": "mkv", "info": {"duration_secs": 3000}}],
+    "2": [{"id": 201, "episode_num": "2", "title": "Two two", "container_extension": "mp4", "info": {"duration": "50:00"}},
+          {"id": 200, "episode_num": 1, "title": "Two one", "container_extension": "mp4", "info": {"duration_secs": "3100", "duration": "00:52:00"}}],
+    "1": [{"id": 101, "episode_num": 1, "season": "1", "title": "One one", "container_extension": "mkv", "info": []}]
+  }
+}

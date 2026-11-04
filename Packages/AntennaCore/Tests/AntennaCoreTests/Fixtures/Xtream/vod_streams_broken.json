@@ -1,0 +1,11 @@
+[
+  {"name": "First", "stream_id": 1},
+  "not an object",
+  {"name": "No id"},
+  {"stream_id": 3},
+  {"name": "Letters", "stream_id": "abc"},
+  {"name": "Huge", "stream_id": "1e400"},
+  {"name": "Second", "stream_id": 2, "rating": "N/A", "added": "abc", "stream_icon": 7, "category_id": [1]},
+  {"name": "Repeat of first", "stream_id": "1"},
+  {"name": "Third", "stream_id": 4}
+]
