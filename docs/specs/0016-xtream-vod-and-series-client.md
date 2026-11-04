@@ -209,3 +209,4 @@ Fixtures under `Tests/AntennaCoreTests/Fixtures/Xtream/` for every endpoint, inc
 
 - Should `vodStreams(categoryID: nil)` page through categories for providers whose unfiltered list exceeds tens of megabytes? Any resolution must keep an unfiltered count path for 0006/AC-10a.
 - Do some providers require `direct_source` instead of the `/movie/` and `/series/` shape? Tracked for a follow-up spec; this spec ignores the field.
+- `JSONDecoder` does not guarantee JSON object key order, so for `episodes` keyed by season the implementation visits numeric keys in ascending order, then other keys by name. That order stands in for server order in AC-6b's ties and AC-6d's first-occurrence rule across seasons. Within one season's array, server order holds. Is that the intended reading, or should duplicates across seasons be decided some other way?
