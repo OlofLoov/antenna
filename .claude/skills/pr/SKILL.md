@@ -33,11 +33,14 @@ If on `main`, create a branch first. Naming:
   `scripts/check-rules.sh` must pass. Run `swiftlint lint --strict` too when
   it is installed; CI runs all three.
 - If Apps/ changed, the iOS build must pass (see the `sim` skill).
-- `bash scripts/check-arch.sh` must print `ok`. If it fails, or the work
-  adds a dependency, target or ADR, run the `arch-reviewer` agent. On
-  UPDATE DIAGRAMS edit `docs/architecture/` with the `drawio` skill. On
-  NEEDS ADR write it with the `adr` skill. On NO IMPACT add the trailer
-  `Arch-Impact: none` to the commit. VIOLATION stops here.
+- `bash scripts/check-arch.sh` runs locally only; CI does not. The
+  `arch-review` hook runs it before each `git commit` and `gh pr create`
+  and says when it flags the branch. When it flags, or the work adds a
+  dependency, target or ADR, run the `arch-reviewer` agent. On UPDATE
+  DIAGRAMS edit `docs/architecture/` with the `drawio` skill. On NEEDS ADR
+  write it with the `adr` skill. When the change follows an existing ADR,
+  add the trailer `ADR: NNNN`. On NO IMPACT add `Arch-Impact: none`.
+  VIOLATION stops here.
 - If a spec exists for this work, run the `impl-reviewer` agent and fix
   READY WITH FIXES items before continuing. NOT READY stops here.
 

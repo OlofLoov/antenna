@@ -36,19 +36,6 @@ jobs:
             git log -1 --format=%B "$sha" | bash scripts/lint-commit.sh - || { echo "in commit $sha"; exit 1; }
           done
 
-  architecture:
-    name: Architecture records
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: ADR or diagram update for architectural changes
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-        run: bash scripts/check-arch.sh "$BASE"
-
   specs:
     name: Spec status
     runs-on: ubuntu-latest
