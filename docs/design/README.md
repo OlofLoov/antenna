@@ -119,6 +119,8 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV onboarding details step with QR code, plus nothing-arrived, source-arrived and sign-in states | `TV-Onboard-3-QR.dc.html`, `TV-Onboard-3-QR-Timeout.dc.html`, `TV-Onboard-3-QR-Received.dc.html`, `TV-Onboard-3-QR-SignIn.dc.html` | 0036 |
+| iPhone add source opened from Apple TV, plus sending, sent and not-sent states | `iPhone-Onboard-2-FromTV.dc.html`, `iPhone-Onboard-2-FromTV-Waiting.dc.html`, `iPhone-Onboard-2-FromTV-Sent.dc.html`, `iPhone-Onboard-2-FromTV-Timeout.dc.html` | 0036 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
