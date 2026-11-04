@@ -78,7 +78,7 @@ UI tests require accessibility identifiers `favorites.emptyState` and
 |-----------|-------|------|
 | AC-1 | ui | TBD |
 | AC-2 | ui | TBD |
-| AC-3 | core | covered by 0001/AC-9 and 0003/AC-10 for unchanged input |
+| AC-3 | core | `FavoriteChannelIDTests.m3uReload`, `FavoriteChannelIDTests.xtreamReload` |
 | AC-4 | device | CloudKit cannot run in CI; manual two-device check |
 
 ## Open questions
