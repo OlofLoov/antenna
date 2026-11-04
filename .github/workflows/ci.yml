@@ -124,3 +124,37 @@ jobs:
           name: preview-snapshots
           path: snapshot-images
           if-no-files-found: warn
+
+  uitests:
+    name: UI tests
+    runs-on: macos-26
+    needs: core
+    steps:
+      - uses: actions/checkout@v5
+      - name: Ensure iOS simulator runtime
+        run: |
+          set -e
+          if ! xcrun simctl list runtimes available | grep -q "^iOS "; then
+            xcodebuild -downloadPlatform iOS
+          fi
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Run UI tests
+        run: |
+          set -e
+          name=$(xcrun simctl list devices available | grep -oE 'iPhone [^(]+' | head -1 | sed 's/ *$//')
+          echo "Simulator: $name"
+          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
+            -destination "platform=iOS Simulator,name=$name" \
+            -only-testing:AntennaUITests \
+            -resultBundlePath ui-tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-tests-xcresult
+          path: ui-tests.xcresult
+          if-no-files-found: ignore
