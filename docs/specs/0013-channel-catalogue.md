@@ -241,12 +241,12 @@ All criteria are swift-testing tests over fixtures in AntennaCore.
 | AC-11b | core | CatalogueTests.deterministic |
 | AC-12 | core | CatalogueTests.digitMatch, .digitMatchLonger |
 | AC-13 | core | CatalogueTests.positionInGroup |
-| AC-14 | core benchmark | CatalogueFavoritesTests.buildBenchmark (`ANTENNA_BENCHMARK=1`) |
+| AC-14 | core benchmark | CatalogueFavoritesTests.buildBenchmark (`ANTENNA_BENCHMARKS=1`) |
 | AC-15 | core | CatalogueTests.rowKeyLookup |
 | AC-16 | core | CatalogueTests.sourceGroup |
 | AC-17 | core | CatalogueTests.emptyCatalogue |
 | AC-18 | core | CatalogueTests.untaggedDropped |
-| AC-19 | core | CatalogueFavoritesTests.replaceFavorites, .replaceBenchmark (`ANTENNA_BENCHMARK=1`) |
+| AC-19 | core | CatalogueFavoritesTests.replaceFavorites, .replaceBenchmark (`ANTENNA_BENCHMARKS=1`) |
 | AC-20 | core | CatalogueTests.unknownGroup |
 
 ## Open questions

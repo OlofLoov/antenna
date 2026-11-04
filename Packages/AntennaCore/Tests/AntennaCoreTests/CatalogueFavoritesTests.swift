@@ -107,11 +107,11 @@ import Testing
             channels: source("a", sourceA) + source("b", sourceB), groupOrder: [sourceA: groups, sourceB: groups], favorites: favorites)
     }
 
-    /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARK=1 swift test`.
+    /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1 swift test`.
     /// Reference machine: Apple M1, 16 GB, debug build.
     @Test(
         "0013/AC-14 50,000 channels build within 200 ms",
-        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARK"] != nil),
+        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(1)))
     func buildBenchmark() {
         let input = Self.ac14Input()
@@ -151,11 +151,11 @@ import Testing
         #expect(original.isFavorite(input.channels[0]))
     }
 
-    /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARK=1 swift test`.
+    /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1 swift test`.
     /// Reference machine: Apple M1, 16 GB, debug build.
     @Test(
         "0013/AC-19 replacing favorites takes under 20 ms",
-        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARK"] != nil),
+        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(1)))
     func replaceBenchmark() {
         let input = Self.ac14Input()
