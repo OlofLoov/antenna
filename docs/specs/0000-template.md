@@ -9,7 +9,10 @@
 
 Boards: `docs/design/boards/<Board>.dc.html`, one per platform the spec covers (see `docs/design/README.md` section 4). Write "none, no UI" for a core-only spec.
 Design rules that apply: DR-n, DR-n (from `docs/design/README.md` section 5).
+Deviations: none, or one sentence per DR that the boards break and why.
 States on the boards: focused, selected, empty, loading, error, as drawn.
+Not drawn: nothing, or each state a criterion names that no board draws, with the text style it uses. Whole-screen states need a board.
+Identifiers: `prefix.element`, one per element a criterion names.
 
 ## Problem
 

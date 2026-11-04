@@ -13,6 +13,12 @@ Read first: the spec you were given, `docs/adr/README.md` and every ADR it
 links, `docs/conventions.md`, `CLAUDE.md`, and for a spec with a Design
 section `docs/design/README.md` plus every board file it names.
 
+Run `bash scripts/lint-spec.sh . <spec path>` first. Report its errors as
+finding 1, one line each, and spend the rest of the review on what it cannot
+see. `.claude/skills/spec/checklist.md` lists the classes the author was
+asked to clear before handing the draft over; a draft that still fails a
+checklist line is a finding, with that line quoted.
+
 Check, in this order:
 
 1. **Testability.** For each AC-n: could a test fail it? If the Then clause

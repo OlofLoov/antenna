@@ -15,6 +15,11 @@ header and the row disagree, or when a spec marked Implemented has a
 criterion with no Swift test citing `NNNN/AC-n`. Criteria whose test-plan
 layer is `device` are exempt. The `implement` skill runs this loop.
 
+`scripts/lint-spec.sh` checks structure: a bare status word, Given/When/Then
+per criterion, a test plan row per criterion, cross-references that resolve,
+board files that exist. It runs in CI and is step 6 of the `spec` skill,
+together with the self-review checklist in `.claude/skills/spec/checklist.md`.
+
 | Spec | Title | Status |
 |------|-------|--------|
 | [0001](0001-m3u-playlist-parsing.md) | M3U playlist parsing | Accepted (retroactive) |
