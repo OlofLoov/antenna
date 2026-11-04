@@ -28,7 +28,8 @@ change. A screen that has no board gets one before its spec is written.
 | Text muted | `#A7B0BF` | Captions, metadata, section eyebrows. 9:1 on ground |
 | Text muted on focus | `#4B5563` | Muted text on the focused white card. 7.5:1 on `#F2F4F8` |
 | Accent | `#5BB8FF` | Progress fills, guide now line, NOW badge, iPhone selected tab, links |
-| Live dot | `#FF5F57` | Only the small dot before "LIVE" |
+| Live dot | `#FF5F57` | Only the small dot before "LIVE"; muted (`#A7B0BF`) while the picture is behind the live edge (0019) |
+| Buffered fill | `rgba(255,255,255,0.35)` | The recorded-but-unplayed part of the timeshift scrubber (0019) |
 | Logo placeholder | `#26344A`, `#1E3A5F` | Tile with channel initials when no logo has loaded |
 | Focus (tvOS) | background `#F2F4F8`, text `#0B0E13`, shadow `0 12px 32px rgba(0,0,0,.45)` | The focused element, always |
 
@@ -91,7 +92,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 - **Badges**: 1.5 pt muted outline, uppercase, letter-spaced (`4K`,
   `1080p`, `AAC 5.1`, `CATCH-UP 7D`; `CATCH-UP` alone when the day count
   is unknown). The only filled badges are `NOW` (accent) and `LIVE`
-  (surface with the live dot). Resolution and audio badges come from the
+  (surface with the live dot). While the picture is behind the live edge
+  `LIVE` takes the outline style with the muted dot and, on touch and
+  pointer platforms, returns to live when tapped (0019). Resolution and audio badges come from the
   player and exist only for the playing channel. As running text the
   catch-up fact reads "Catch-up 7 days".
 - **Section header**: title plus a muted count or "See all" at the trailing
@@ -119,6 +122,8 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV zap bar, timeshift row | `TV-ZapBar-Timeshift.dc.html` | 0019 |
+| iPhone player, timeshift strip | `iPhone-Player-Timeshift.dc.html` | 0019 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
@@ -163,7 +168,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `timeshift.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
