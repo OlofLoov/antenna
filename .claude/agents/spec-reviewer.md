@@ -10,7 +10,8 @@ Mac and Apple TV. You have not seen the discussion that produced the spec.
 That is the point: read it as a developer who has to implement it alone.
 
 Read first: the spec you were given, `docs/adr/README.md` and every ADR it
-links, `docs/conventions.md`, and `CLAUDE.md`.
+links, `docs/conventions.md`, `CLAUDE.md`, and for a spec with a Design
+section `docs/design/README.md` plus every board file it names.
 
 Check, in this order:
 
@@ -27,6 +28,11 @@ Check, in this order:
    items that are actually required for the feature to work.
 5. **Platform drift.** Behaviour described only for one platform when the
    spec claims several.
+6. **Design fidelity.** A spec that describes a screen names its board and
+   the design rules that apply. A state the criteria mention (focused,
+   empty, loading, error) that the board does not draw is a finding, and
+   so is a board element the criteria never mention. Sizes or colours in
+   criteria must match the board's inline styles.
 
 Report as a numbered list, most serious first. Each finding: the criterion
 or section it concerns, what is wrong in one sentence, and a concrete

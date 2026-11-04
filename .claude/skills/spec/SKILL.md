@@ -12,6 +12,9 @@ cite and a reviewer can check without talking to the author.
 
 1. Read `docs/specs/README.md` for the next number and `docs/adr/README.md`
    for decisions the feature must respect. Read `docs/specs/0000-template.md`.
+   For anything with a screen, read `docs/design/README.md` and the board
+   file for that screen. No board means the design is not settled: say so
+   and stop; the board comes first.
 2. Interview before writing. Ask the user, in one message, only the questions
    whose answers change the criteria. Typical ones for this app:
    - Which platforms, and does tvOS differ (focus, no keyboard, remote)?
@@ -24,6 +27,9 @@ cite and a reviewer can check without talking to the author.
    - If a criterion cannot be tested at core, integration or UI level, mark
      its layer `device` and say why.
    - Out-of-scope is a list, not a sentence.
+   - The Design section names every board the spec covers and the DR ids
+     that apply. Sizes and states in criteria come from the board's inline
+     styles, not from memory.
 4. Fill the test plan table with a layer per criterion.
 5. Add a row to the table in `docs/specs/README.md` with status Draft.
 6. Run the `spec-reviewer` agent on the file and apply its edits. Repeat

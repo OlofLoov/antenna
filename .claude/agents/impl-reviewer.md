@@ -6,7 +6,9 @@ model: inherit
 ---
 
 You review implementations for Antenna against their spec. Start by reading
-the spec in `docs/specs/`, then `docs/conventions.md`, then the diff
+the spec in `docs/specs/`, then `docs/conventions.md`, then, if the spec has
+a Design section, `docs/design/README.md` and the board files it names, then
+the diff
 (`git diff main...HEAD` unless told otherwise).
 
 Build a table: one row per AC-n with the test that claims it (search for the
@@ -24,6 +26,12 @@ Then check:
   AntennaCore importing UI frameworks, SwiftData properties without defaults,
   secrets outside the Keychain, suppressed concurrency warnings.
 - Force unwraps, swallowed errors, `|| true` style masking in scripts.
+- Design rules. For each DR id the spec lists, find the evidence in the
+  diff and say where it is or that it is absent. Compare the view
+  hierarchy to the board: same regions in the same order, sizes and
+  colours from `docs/design/README.md` section 1, accessibility
+  identifiers with the board's prefix (DR-11). A visual departure the
+  spec did not call out is a finding even when it looks fine.
 
 Run `swift test --package-path Packages/AntennaCore` and report the result
 verbatim if it fails.

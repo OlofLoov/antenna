@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV onboarding, source type</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 56px">
+
+  <div style="position: absolute; right: 64px; top: 44px; display: flex; gap: 8px; align-items: center">
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 32px; height: 6px; border-radius: 3px; background: #F2F4F8; display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+  </div>
+  <a href="TV-Onboard-1.dc.html" style="position: absolute; left: 64px; top: 44px; display: inline-flex; align-items: center; gap: 10px; font-size: 24px; color: #A7B0BF">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>Back</span>
+  </a>
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center">
+    <div style="font-size: 56px; font-weight: 800; letter-spacing: -0.5px">What kind of source?</div>
+    <div style="font-size: 26px; color: #A7B0BF">Your provider gave you one of these. You can add more later.</div>
+  </div>
+
+  <div style="display: flex; gap: 32px">
+    <!-- M3U -->
+    <div style="width: 480px; height: 420px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box; padding: 40px; display: flex; flex-direction: column; gap: 20px">
+      <div style="width: 80px; height: 80px; border-radius: 20px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+      </div>
+      <div style="font-size: 34px; font-weight: 700">M3U playlist</div>
+      <div style="font-size: 23px; line-height: 1.4; color: #D7DEE8">A link ending in .m3u or .m3u8. Add an XMLTV link for the guide if you have one.</div>
+      <div style="flex: 1 1 auto"></div>
+      <div style="font-size: 20px; color: #A7B0BF">Most common</div>
+    </div>
+
+    <!-- Xtream (focused) -->
+    <a href="TV-Onboard-3.dc.html" style="width: 480px; height: 420px; border-radius: 20px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 16px 44px rgba(0,0,0,0.55); box-sizing: border-box; padding: 40px; display: flex; flex-direction: column; gap: 20px">
+      <div style="width: 80px; height: 80px; border-radius: 20px; background: rgba(11,14,19,0.08); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0B0E13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </div>
+      <div style="font-size: 34px; font-weight: 700">Xtream login</div>
+      <div style="font-size: 23px; line-height: 1.4; color: #4B5563">A server address with a username and password. Channels, guide, movies and series all come with it.</div>
+      <div style="flex: 1 1 auto"></div>
+      <div style="font-size: 20px; color: #4B5563">Also called Xtream Codes</div>
+    </a>
+
+    <!-- Stalker (later) -->
+    <div style="width: 480px; height: 420px; border-radius: 20px; background: rgba(255,255,255,0.04); box-sizing: border-box; padding: 40px; display: flex; flex-direction: column; gap: 20px; color: #A7B0BF">
+      <div style="width: 80px; height: 80px; border-radius: 20px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+      </div>
+      <div style="font-size: 34px; font-weight: 700">Stalker portal</div>
+      <div style="font-size: 23px; line-height: 1.4">A portal address and a MAC address, the way a MAG box signs in.</div>
+      <div style="flex: 1 1 auto"></div>
+      <div style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase">Coming later</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
