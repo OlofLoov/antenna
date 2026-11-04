@@ -11,6 +11,10 @@
 - Errors are typed enums per subsystem (`XtreamClient.Error`,
   `CredentialStore.StoreError`). Do not throw `NSError` or strings.
 - No force unwraps outside tests and fixtures.
+- Formatting is what `swift format` produces with `.swift-format`: four-space
+  indent, 140 columns, trailing commas in multi-line collections. SwiftLint
+  (`.swiftlint.yml`) enforces the rest of this list. CI runs both with
+  `--strict`, so a warning fails the PR.
 
 ## Layering
 

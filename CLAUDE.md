@@ -7,6 +7,9 @@ sources (M3U, Xtream, later Stalker / Jellyfin / Channels DVR). Ships no content
 
 ```sh
 swift test --package-path Packages/AntennaCore          # core tests, no Xcode needed
+swift format lint --strict --recursive --parallel Apps Packages   # formatting, ships with the toolchain
+swiftlint lint --strict                                  # conventions; brew install swiftlint
+scripts/check-rules.sh                                   # ADR greps: layering, CloudKit, availability
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO

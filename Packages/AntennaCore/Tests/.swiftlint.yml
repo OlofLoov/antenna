@@ -1,0 +1,7 @@
+# Tests may force-unwrap fixtures (docs/conventions.md) and hold long literal payloads.
+disabled_rules:
+  - force_unwrapping
+
+line_length:
+  warning: 250
+  error: 300
