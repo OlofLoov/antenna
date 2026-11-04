@@ -1,6 +1,7 @@
 # 0018. Player controls and playback errors on every platform
 
-- Status: Draft (two spec-reviewer rounds by the first author, the second's findings lost when that attempt stopped; a third round, verdict ACCEPT WITH EDITS, every finding applied)
+- Status: Draft
+- Review: three spec-reviewer rounds. The second round's findings were lost when that attempt stopped; the third returned ACCEPT WITH EDITS and every finding is applied (see PR #41).
 - Date: 2026-11-04
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS

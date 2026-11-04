@@ -85,8 +85,8 @@ Required of other specs:
 - 0001 follow-up (the one this spec is blocked on): a channel without `tvg-id` gets an id derived from its name and a hash of its stream URL, not from its position, or mappings for such channels are lost on every playlist reorder; until then AC-12 is tested with `tvg-id` channels only.
 - 0006/AC-12a to AC-12c: the guide row aggregates the source's enabled guides. Bytes are summed across guides in progress; "Guide could not be loaded" appears only when every enabled guide failed; the loaded text uses the AC-8 `.loaded` counts.
 - 0007, 0009 and 0010: every lookup of a channel's guide goes through `GuideStore.key(for:)` (AC-10b), so a mapped channel shows its programmes in the overlay, the grid and browse.
-- 0007/AC-7, 0009/AC-12, 0010/AC-9: the "No programme information" and "Guide unavailable" placeholders gain an action that opens `guideSources.root` for that channel's source with the channel selected (AC-24). Names (`overlay.guideInfo`, `guide.guideInfo`, `browse.guideInfo`) are those specs' to fix.
-- 0023: a "Guide" row per source in `settings.detail`, with the AC-15 count as its detail, opens `guideSources.root`; on tvOS from inside `shell.settingsSheet` (0015/AC-12). 0023/AC-4's "No guide" reads `GuideStore.guideEntries(for:)` being empty instead of `GuideURLResolver.resolve`. 0023's source deletion (AC-20c) deletes the source's `GuideOverridesRecord` and its AC-22a Keychain items in the same save (AC-27). 0023's out-of-scope line for multiple guide URLs and mapping points to 0021.
+- 0007/AC-7, 0009/AC-12, 0010/AC-9a, 0010/AC-9b: the "No programme information" and "Guide unavailable" placeholders gain an action that opens `guideSources.root` for that channel's source with the channel selected (AC-24). Names (`overlay.guideInfo`, `guide.guideInfo`, `browse.guideInfo`) are those specs' to fix.
+- 0023: a "Guide" row per source in `settings.detail`, with the AC-15 count as its detail, opens `guideSources.root`; on tvOS from inside `shell.settingsSheet` (0015/AC-12a). 0023/AC-4's "No guide" reads `GuideStore.guideEntries(for:)` being empty instead of `GuideURLResolver.resolve`. 0023's source deletion (AC-20c) deletes the source's `GuideOverridesRecord` and its AC-22a Keychain items in the same save (AC-27). 0023's out-of-scope line for multiple guide URLs and mapping points to 0021.
 - 0004/AC-6 and the sync path of 0014/AC-18a: deleting a `SourceRecord` deletes its `GuideOverridesRecord` (AC-27).
 
 ## User flow
@@ -103,7 +103,7 @@ iOS and compact width:
 3. Tapping a channel row pushes the diagnosis screen with the card, the search field and the results. Tapping a result saves the mapping and pops back to the list.
 
 tvOS:
-1. From the settings sheet (0015/AC-12) the user selects a source, then Guide. The screen slides over the dimmed picture, which keeps playing. Focus starts on the first guide row.
+1. From the settings sheet (0015/AC-12a) the user selects a source, then Guide. The screen slides over the dimmed picture, which keeps playing. Focus starts on the first guide row.
 2. Moving right from a guide row reaches the channel list; moving down inside the guide list past the last row reaches Add guide URL. Select on a guide row shows its actions in the detail column and moves focus there; Menu returns focus to the row. Select on Add guide URL shows the field, Save and Cancel in the detail column (AC-2c).
 3. Select on a channel row shows its diagnosis and moves focus to the search field, prefilled with the channel name; select on the field opens the system keyboard. Moving down from the field reaches the results. Select on a result saves the mapping and returns focus to the channel list, where the next row is focused because the mapped one left.
 4. Menu from the channel list or the guide list closes the screen back to the settings sheet.
@@ -413,7 +413,7 @@ Then focus returns to the channel row and the mapping is unchanged.
 ### AC-18d Menu closes the screen (tvOS)
 Given focus on a guide row, `guideSources.add` or a channel row
 When the user presses Menu
-Then `guideSources.root` is gone, `shell.settingsSheet` (0015/AC-12) is shown, focus is on the row in the settings sheet that opened the screen, and the engine state is unchanged (DR-1).
+Then `guideSources.root` is gone, `shell.settingsSheet` (0015/AC-12a) is shown, focus is on the row in the settings sheet that opened the screen, and the engine state is unchanged (DR-1).
 
 ### AC-19 Huge guides
 Given two guides of 100 000 programmes and 5 000 channel names each for one source of 20 000 channels, 3 000 of them mapped

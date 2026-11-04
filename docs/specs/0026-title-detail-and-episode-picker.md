@@ -244,7 +244,7 @@ Then focus stays where it was if that element still exists, else moves to `title
 ### AC-23a Source removed while open
 Given the detail open for a title of source S
 When S's `SourceRecord` is deleted from the store
-Then the detail is dismissed to the section, which applies 0011/AC-1, and no further request is made for S.
+Then the detail is dismissed to the section, which applies 0011/AC-1a, and no further request is made for S.
 
 ### AC-23b Credential gone while open
 Given the detail open for a title of source S whose `SourceRecord` still exists
@@ -273,7 +273,7 @@ Then the Instruments Animation Hitches template records no hitch above 100 ms ov
 - Huge catalogue: nothing here loads a list; the detail issues one info request per open.
 - Malformed info: 0016/AC-12 yields nil fields, so AC-4 applies; `XtreamError.decoding` is a non-offline failure (AC-11).
 - Credential not yet synced: a source without a readable Keychain item contributes no titles (0011/AC-13e), so no detail can open for it; a credential that becomes unreadable while the detail is open is AC-23b. A My list or progress record for such a title is neither listed nor deleted (0011 edge case).
-- First launch, empty store: Movies and Series are absent (0011/AC-1); the detail is unreachable.
+- First launch, empty store: Movies and Series are absent (0011/AC-1a); the detail is unreachable.
 - Two sources with the same title: the detail is per `VODItem` or `Series`, so each card opens its own; records key on the full title id, which includes the host.
 - An episode's record exists but the episode is no longer in the response: the record is ignored, not deleted (0011 edge case); the play target skips it.
 - Records store title ids only, never URLs. Playable URLs are built on demand from the Keychain credential and never logged or stored (ADR-0003). Thumbnail, poster and backdrop URLs are provider art URLs and may be cached by the 0011/AC-18b cache.

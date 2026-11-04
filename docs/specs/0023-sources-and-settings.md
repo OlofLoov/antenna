@@ -24,7 +24,7 @@ Once a source is added there is no way to fix a typo in its URL, change a passwo
 ## Scope
 
 In:
-- Sources and Settings screen on every platform: iPhone Settings tab (0010/AC-2), iPad and Mac sidebar entry (0010/AC-3), tvOS gear (0015/AC-12).
+- Sources and Settings screen on every platform: iPhone Settings tab (0010/AC-2), iPad and Mac sidebar entry (0010/AC-3), tvOS gear (0015/AC-12a).
 - Source list in `sortOrder` with per-source status: channel count, guide state (0014 progress), last successful load on this device, credential present on this device, last error.
 - Source detail: status block, edit name, URL, guide URL and Xtream login, with verification before save through the same calls as 0006 Connect.
 - "Sign in on this Apple TV" from the detail when the Keychain item is missing (0006/AC-21 reachable after onboarding); on the other platforms the same empty login fields.
@@ -127,9 +127,9 @@ iPad and Mac:
 3. Preferences and About are rows in the list column; their content fills the detail column.
 
 Apple TV:
-1. The gear in the tab bar (0015/AC-12) opens the panel over the current tab. Focus lands on the first source row; the right pane shows its detail. Moving focus along the rows changes the pane; select moves focus into it.
+1. The gear in the tab bar (0015/AC-12a) opens the panel over the current tab. Focus lands on the first source row; the right pane shows its detail. Moving focus along the rows changes the pane; select moves focus into it.
 2. In the detail, fields open the system keyboard. Save verifies and returns focus to the row. Refresh now, Move up, Move down and Delete source are buttons under the fields. A source without a login on this Apple TV shows Sign in on this Apple TV above the fields.
-3. Delete source opens the confirmation with Cancel focused. Menu anywhere in the panel steps back: dialog to detail, detail to row (discarding unsaved changes), row to the tab bar (0015/AC-12).
+3. Delete source opens the confirmation with Cancel focused. Menu anywhere in the panel steps back: dialog to detail, detail to row (discarding unsaved changes), row to the tab bar (0015/AC-12b).
 4. Preferences is a row below the sources; its pane lists the four preferences with their values. Select on one opens its option list.
 
 ## Acceptance criteria
@@ -451,7 +451,7 @@ Then it reflects the t2 record, a write goes to that record, and the t1 record i
 ### AC-39 Preference options
 Given the preferences
 When each option list is shown
-Then Open on launch offers Live, Guide and Movies (Movies only under 0011/AC-1, else the stored value falls back to Live without a write); Guide window offers 2, 3 and 4 hours; Refresh sources offers Every 6 hours, Every 12 hours, Every 24 hours and Only manually; Swipe up or down offers Changes channel and Shows the zap bar.
+Then Open on launch offers Live, Guide and Movies (Movies only under 0011/AC-1b, else the stored value falls back to Live without a write); Guide window offers 2, 3 and 4 hours; Refresh sources offers Every 6 hours, Every 12 hours, Every 24 hours and Only manually; Swipe up or down offers Changes channel and Shows the zap bar.
 
 ### AC-41 Open on launch takes effect
 Given a `SettingsRecord` with `launchSectionRaw` "guide"
@@ -482,7 +482,7 @@ Then `settings.about.version` reads "Version <CFBundleShortVersionString> (<CFBu
 - Password handling: the detail never reads the stored password into a field; an empty field means "keep". Nothing derived from the password or the stream URL is set on an accessibility attribute (ADR-0003).
 - Deleting while a load for that source runs: 0014/AC-18 cancels the guide task; `SourceRefresher` cancels the channel task and discards its result.
 - Two devices delete and edit the same source at once: the deletion wins through sync; the editing device sees the row disappear (AC-23) and its open detail is dismissed.
-- The settings panel on tvOS does not change engine state (0015/AC-12) except AC-21.
+- The settings panel on tvOS does not change engine state (0015/AC-12a) except AC-21.
 - Entitlement lapses while the panel is open: the paywall replaces the root (ADR-0006); unsaved edits are lost.
 - Dynamic Type at accessibility sizes: rows grow, status lines wrap, Save stays in the bar.
 - VoiceOver: a source row reads name, kind, status and error as one element; the kind badge is not read as "M three U".
