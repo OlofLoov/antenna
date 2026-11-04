@@ -134,6 +134,19 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV guide grid, empty group | `TV-Guide-Empty.dc.html` | 0009 |
 | iPad and Mac live browse | `iPad.dc.html` | 0010 |
 | iPhone live | `iPhone.dc.html` | 0010 |
+| iPad and Mac live, loading | `iPad-Loading.dc.html` | 0010 |
+| iPad and Mac live, nothing selected | `iPad-NothingSelected.dc.html` | 0010 |
+| iPad and Mac live, every source failed | `iPad-Error.dc.html` | 0010 |
+| iPad and Mac live, one source failed and one waiting for login | `iPad-Banner.dc.html` | 0010 |
+| iPad and Mac live, no channels | `iPad-Empty.dc.html` | 0010 |
+| iPad and Mac live, keyboard focus | `iPad-Focus.dc.html` | 0010 |
+| iPad and Mac live, sidebar collapsed (800 pt) | `iPad-Collapsed.dc.html` | 0010 |
+| Mac live, player only (600 pt) | `iPad-Collapsed-Narrow.dc.html` | 0010 |
+| iPhone live, loading | `iPhone-Loading.dc.html` | 0010 |
+| iPhone live, offline | `iPhone-Error.dc.html` | 0010 |
+| iPhone live, one source failed and one waiting for login | `iPhone-Banner.dc.html` | 0010 |
+| iPhone live, no favorites | `iPhone-EmptyFavorites.dc.html` | 0010 |
+| iPhone live, full screen | `iPhone-FullScreen.dc.html` | 0010 |
 | TV movies | `TV-Movies.dc.html` | 0011 |
 | iPad and Mac movies | `iPad-Movies.dc.html` | 0011 |
 | iPhone movies | `iPhone-Movies.dc.html` | 0011 |
@@ -174,6 +187,7 @@ arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec other than 0008 lists under "Not drawn".
 series detail, player controls on tvOS, Sources and Settings, and the
 empty, loading and error states each spec lists under "Not drawn".
+error states each spec other than 0010 lists under "Not drawn".
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the
