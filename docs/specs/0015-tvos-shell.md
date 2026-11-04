@@ -1,21 +1,24 @@
 # 0015. tvOS shell: tab bar, full-screen playback and Menu
 
-- Status: Draft (three spec-reviewer rounds; what is still open is under Open questions)
+- Status: Accepted
 - Date: 2026-11-03
-- Depends on ADRs: 0001, 0002, 0003, 0006
+- Depends on ADRs: 0001, 0002, 0003, 0005, 0006
 - Platforms: tvOS
 - Builds on specs 0006 (onboarding and the root chooser), 0011 (Movies and Series presence rule), 0013 (catalogue lookup), 0008 (channel-change event). Owns the navigation that 0007, 0008, 0009, 0011, 0012 assume. Replaces the tvOS root only; `RootView` remains the root for the other platforms until 0010 is implemented.
-- Depends on the playback engine spec (not yet written) for the engine's observable state and for the live-edge position after resume, which that spec owns as its own criterion. Tested with a fake engine until then.
+- Blocked on (implementing PR, not acceptance): the Not drawn states in Design, which must be boards before the PR opens (design README section 6); a real `PlaybackEngine` with the full-screen error view and live-edge resume, owned by the playback spec (not yet written). Criteria are tested against a fake conforming to the existing `PlaybackEngine` protocol.
 
 ## Design
 
-Boards: top bar as drawn on `docs/design/boards/TV-Movies.dc.html` and `TV-Search.dc.html` (Antenna mark, pill tab bar with the selected tab white-filled, gear, clock); shell states on `TV-Shell-Menu.dc.html`, `TV-Shell-FocusedTab.dc.html`, `TV-Shell-Loading.dc.html` and `TV-Shell-Empty.dc.html`. Full-screen playback with nothing but video is 0008's not-drawn hidden state; no clock is shown there. Element identifiers (`shell.mark`, `shell.tab.*`, `shell.settings`, `shell.clock`, `shell.scrim`, `shell.player`, `shell.loading`, `shell.empty`, `shell.retry`) are comments on those boards (DR-11).
-Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-11, DR-12, DR-13, DR-14, DR-15. Deviations: DR-1, behind Movies, Series and Search the engine is paused after 30 seconds to save bandwidth; 0012 claims DR-1 for Search and needs the sentence "the engine is paused after 30 seconds per 0015/AC-5a" added in its implementing PR. DR-2, the selected tab is white-filled when focus is in the content so the user can see which section they are in without a focus ring in the bar; when focus is on the tab bar the focused item takes the Focus token and the selected item falls back to the surface fill with weight 600. DR-5, tab pills are 51 pt and the gear 56 pt tall because they are chips, not rows.
+Boards: top bar as drawn on `docs/design/boards/TV-Movies.dc.html` and `TV-Search.dc.html` (Antenna mark, pill tab bar with the selected tab white-filled, gear, clock); shell states on `TV-Shell-Menu.dc.html`, `TV-Shell-FocusedTab.dc.html`, `TV-Shell-Loading.dc.html` and `TV-Shell-Empty.dc.html`. Full-screen playback with nothing but video is 0008's not-drawn hidden state; no clock is shown there. Element identifiers (`shell.tabBar`, `shell.mark`, `shell.tab.*`, `shell.settings`, `shell.clock`, `shell.scrim`, `shell.player`, `shell.loading`, `shell.loading.<sourceId>`, `shell.empty`, `shell.empty.source.<sourceId>`, `shell.retry`) are comments on those boards (DR-11).
+Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-11, DR-12, DR-13, DR-14, DR-15. Deviations: DR-1, behind Movies, Series and Search the engine is paused after 30 seconds to save bandwidth; 0012 claims DR-1 for Search and needs the sentence "the engine is paused after 30 seconds per 0015/AC-5a" added in its implementing PR. DR-2, the selected tab is white-filled when focus is in the content so the user can see which section they are in without a focus ring in the bar; when focus is on the tab bar the focused item takes the Focus token and the selected item falls back to the surface fill with weight 600. DR-5, tab pills are 51 pt and the gear 56 pt tall because they are chips, not rows. DR-13 and the Overlay scrim token: `shell.scrim` is 0.55 so the picture stays legible behind the bar; the pill group therefore gets an opaque `#11151C` fill (Sidebar / tab bar token) instead of `rgba(255,255,255,0.08)`, so labels always sit on a known colour. DR-3, the completed-source check on `shell.loading` is accent-filled because it is progress state (DR-15); container radius 20 for the single floating panel.
 Menu from full screen opens the tab bar; the channel overlay is reached by swipe per 0007.
 The tab bar is part of the Movies, Series and Search screens and always visible there (boards); it is hidden on Live and on Guide (TV-Guide board) and appears over the dimmed picture on Menu.
 Colours and type are verified by the impl-reviewer against the boards, not by UI tests; criteria name identifiers and accessibility traits.
-States on the boards: the gear (`shell.settings`, 30 pt glyph, unfilled, 56 pt target after the pill) on TV-Movies and TV-Search; the tab bar over the dimmed picture with Live selected and focused (`shell.scrim` full frame at `rgba(8,10,14,0.55)`, Focus token on Live, clock shown) on TV-Shell-Menu; the focused tab bar over Movies content (Search focused with the Focus token, Movies selected in the 0.12 surface fill at weight 600, no focus ring left in the content) on TV-Shell-FocusedTab; loading (`shell.loading`, one row per source with its name at 26 pt and a muted 22 pt detail, indeterminate ring or "<n> channels", no tab bar, no clock) on TV-Shell-Loading; empty (`shell.empty`, "No channels yet" at 29 pt, one muted 24 pt line per source that contributed no channel, `shell.retry` as the focused white button, no tab bar) on TV-Shell-Empty.
-Not drawn, to be added before the implementing PR: the tab bar and `shell.scrim` over the Guide after Menu (AC-6a), same geometry as TV-Shell-Menu with `shell.clock` hidden (AC-7b); the tab bar and scrim over `shell.loading` and `shell.empty` (AC-10b), same geometry; the Settings sheet (`shell.settingsSheet`), whose content is out of scope.
+States on the boards: the gear (`shell.settings`, 30 pt glyph, unfilled, 56 pt target after the pill) on TV-Movies and TV-Search; the tab bar over the dimmed picture with Live selected and focused (`shell.scrim` full frame at `rgba(8,10,14,0.55)`, pill group on `#11151C`, Focus token on Live, clock shown) on TV-Shell-Menu; the focused tab bar over Movies content (Search focused with the Focus token, Movies selected in the 0.12 surface fill at weight 600, pill group on `#11151C`, no focus ring left in the content) on TV-Shell-FocusedTab; loading (`shell.loading`, one row per source with its name at 26 pt and a muted 22 pt detail, indeterminate ring or "<n> channels", no tab bar, no clock) on TV-Shell-Loading; empty (`shell.empty`, "No channels yet" at 29 pt, one muted 24 pt line per source that contributed no channel, `shell.retry` as the focused white button, no tab bar) on TV-Shell-Empty. On TV-Shell-Loading the container is focusable but shows no Focus token because nothing else competes (DR-2 deviation: a focus holder, not a control).
+Not drawn, to be added before the implementing PR:
+- The tab bar and `shell.scrim` over the Guide after Menu (AC-6a), same geometry as TV-Shell-Menu including the `#11151C` pill group, with `shell.clock` hidden (AC-7b); the 260 pt trailing slot stays empty so the pills do not shift when `shell.clock` is hidden.
+- The tab bar and scrim over `shell.loading` and `shell.empty` (AC-10b), same geometry; while the bar is shown `shell.retry` drops the Focus token (DR-2) and regains it when the bar is dismissed.
+- The Settings sheet (`shell.settingsSheet`): tvOS full-screen presentation on Ground `#0B0E13`, 38 pt title, presented over whatever is beneath without removing `shell.scrim` or the bar; content out of scope.
 
 ## Problem
 
@@ -25,13 +28,16 @@ Five tvOS specs say "the tab bar" and "Menu returns to full screen" and none own
 
 In:
 - The shell is `ShellView` in `Apps/Shared/Views/Shell/` under `#if os(tvOS)`. 0006 owns the root chooser (paywall per ADR-0006, then onboarding, then the shell when at least one source exists); this spec owns everything inside `ShellView`.
+- `ShellModel`, `ShellNavigator` and `LastChannelKey` live in `Apps/Shared/Views/Shell/` and are tested in the AntennaTV test bundle; nothing from this spec enters AntennaCore (ADR-0005).
 - Top tab bar: Antenna mark, Live, Guide, Movies, Series, Search, gear. Movies and Series present per 0011/AC-1, which owns that test. Clock at the trailing edge.
 - Live is full-screen playback of the current channel; the tab bar is hidden on Live and Guide, persistent on Movies, Series and Search.
+- `shell.player` exists on Live, loading and empty; it does not exist on Movies, Series or Search (the view is hidden, the engine instance lives on) and on Guide the picture is `guide.pip` (0009).
 - Menu from full screen with no overlay, bar or pill visible shows the tab bar over the dimmed picture with Live selected.
 - While 0007's overlay or 0008's zap bar or pill is visible, Menu is consumed by that spec and the shell does nothing; a `ShellNavigator` request from the overlay dismisses the overlay before switching tabs.
+- Menu propagation contract: a content screen deeper than its root consumes Menu itself (its spec); at root it does not handle Menu and the shell's handler receives it. The shell never asks the content for its depth.
 - Moving focus along the tab bar does not change the selected tab or the screen beneath; select does. The tab bar is reached from content by Menu (AC-6a) and by swiping up from the topmost focusable element of Movies, Series and Search (AC-17); Guide reaches it by Menu only.
 - Launch: the last watched channel plays full screen; else the first channel per 0006/AC-15. Loading and empty states while that is not possible.
-- A source whose credential or record arrives after launch is loaded on the next shell appearance or Retry; the shell never shows `shell.loading` over a playing channel.
+- A source whose credential or record arrives after launch is loaded when the scene becomes active again or on Retry; while a channel is playing the shell never shows `shell.loading`.
 - Last watched channel is per device, in `UserDefaults` not SwiftData, so that two Apple TVs in one home do not fight over it; it is not synced.
 - Programmatic navigation: other screens navigate through `ShellNavigator`, an environment object with `show(.search)`, `show(.guide(programmeKey:))` and `showLive()` (AC-14a to AC-14c).
 - Settings sheet entry (content out of scope). The AC-5a timer keeps running while the sheet is open over a content tab.
@@ -61,19 +67,21 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 ### AC-1 Tabs and order
 Given sources exist and at least one is Xtream
 When the tab bar is shown (on Movies, and over Live after Menu)
-Then `shell.tabBar` contains, in order, `shell.mark`, `shell.tab.live`, `shell.tab.guide`, `shell.tab.movies`, `shell.tab.series`, `shell.tab.search`, `shell.settings`, `shell.clock`; `shell.mark` and `shell.clock` are not focusable; exactly one `shell.tab.*` has the `.isSelected` trait.
+Then `shell.tabBar` contains, in order, `shell.mark`, `shell.tab.live`, `shell.tab.guide`, `shell.tab.movies`, `shell.tab.series`, `shell.tab.search`, `shell.settings`, `shell.clock`; from `shell.tab.live`, five focus moves right land on `shell.tab.guide`, `shell.tab.movies`, `shell.tab.series`, `shell.tab.search`, `shell.settings` in that order; a sixth leaves focus on `shell.settings`; a move left from `shell.tab.live` leaves focus there; exactly one `shell.tab.*` has the `.isSelected` trait.
 
 ### AC-2a Launch into the last channel
 Given a stored key that resolves (0013/AC-15) in the catalogue of a source that has finished loading
 When the shell appears
-Then `load(_:)` is called once with that channel's URL and `play()` once, within one second of that source finishing, and no tab bar is visible.
+Then `load(_:)` is called once with that channel's URL and `play()` once, within one second of the later of the shell appearing and that source finishing; `shell.tabBar` and `shell.scrim` are present only if Menu was pressed since the shell appeared (AC-10b).
 
 ### AC-2b Launch fallback
 Given no stored key, or a key whose `sourceID` matches no source, or whose source has not finished loading 10 seconds after the shell appeared, or whose source finished without that channel id
 When the shell appears
-Then `load(_:)` is called once with the URL of the first channel per 0006/AC-15 of the first source to finish with at least one channel, and `play()` once, within one second of that source finishing or of the 10 second deadline, whichever applies; a later-finishing source never switches the playing channel.
+Then `load(_:)` is called once with the URL of the first channel per 0006/AC-15 of the first source to finish with at least one channel, and `play()` once, within one second of the later of the shell appearing and that source finishing, or of the 10 second deadline, whichever applies; a later-finishing source never switches the playing channel; `shell.tabBar` and `shell.scrim` are present only if Menu was pressed since the shell appeared (AC-10b).
 
 The 10 second deadline starts when the shell appears and again when `shell.retry` is selected. Until the deadline, a source other than the key's source finishing does not tune; the shell stays on AC-10's loading state.
+
+If `load(_:)` throws, the shell makes no further `load(_:)` or `play()` call for that tune, the full-screen view shows the player's error state (playback spec) and AC-3 and AC-18 apply; a stored key is kept.
 
 ### AC-3 Menu shows the tab bar
 Given full-screen playback with no overlay, zap bar or entry pill visible
@@ -81,34 +89,34 @@ When the user presses Menu
 Then `shell.scrim` exists, `shell.tabBar` exists, `shell.tab.live` has focus and the `.isSelected` trait, and the engine state is unchanged (`.playing` stays `.playing`, `.failed` stays `.failed`); no `load(_:)`, `pause()` or `stop()` call is made.
 
 ### AC-4 Leaving the tab bar to full screen
-Given the tab bar is shown over the dimmed picture with Live selected and the engine is not `.failed`
-When the user presses Menu (test a) or selects `shell.tab.live` (test b)
+Given the tab bar is shown over the dimmed picture with Live selected
+When the user presses Menu (test a, any engine state) or selects `shell.tab.live` with the engine not `.failed` (test b)
 Then `shell.tabBar` and `shell.scrim` are gone, the engine instance and state are unchanged, and no `load(_:)` call was made.
 
 ### AC-5a Pause behind content tabs
-Given Movies, Series or Search is open and the engine is `.playing`
-When 30 seconds pass on the injected clock without Live or Guide being shown, and the engine is still `.playing` when the deadline fires
-Then `pause()` has been called once and the engine instance is unchanged; if the engine left `.playing` before the deadline, no call is made.
+Given Movies, Series or Search is selected and the engine is `.playing`
+When 30 seconds pass on the injected clock, counted from the later of the tab being selected and the engine entering `.playing`, without Live or Guide being shown
+Then (test a, engine still `.playing` at the deadline) `pause()` has been called once and the engine instance is unchanged; (test b, engine left `.playing` before the deadline) no `pause()` call is made.
 
 ### AC-5b Resume
 Given AC-5a's paused engine
 When Live or Guide becomes the selected tab by any route (select, Menu per AC-6b, or a request per AC-14c) without a new tune
-Then the fake engine records `play()` once and no `load(_:)` by the time `guide.root` or `shell.player` exists.
+Then the fake engine records `play()` once and no `load(_:)` by the time `shell.tab.live` or `shell.tab.guide` has `.isSelected` and no `movies.`, `series.` or `search.` root identifier exists.
 
 ### AC-6a Menu from a tab screen's root
 Given focus inside a tab's content at the level its spec calls root (0009/AC-17b grid, 0011/AC-7 rows, 0012/AC-12 keyboard)
 When the user presses Menu
-Then focus is on `shell.tab.<thatTab>`, the selected tab is unchanged, and no screen is dismissed; for Guide `shell.scrim` and `shell.tabBar` appear over the guide.
+Then focus is on `shell.tab.<thatTab>`, the selected tab is unchanged, and no screen is dismissed; for Guide `shell.scrim` and `shell.tabBar` appear over the guide. Selecting `shell.tab.guide` while Guide is selected removes `shell.tabBar` and `shell.scrim` and returns focus to the guide cell that had it, as AC-16. On Movies, Series and Search selecting the selected tab moves focus to the content root's first focusable element.
 
 ### AC-6b Menu from the tab bar returns to Live
 Given focus on any item of `shell.tabBar` and a tab other than Live selected
 When the user presses Menu
-Then Live is selected, `shell.tabBar` and `shell.scrim` are gone, no `load(_:)` call was made, and if the engine state was `.paused` then `play()` was called once, otherwise the engine state is unchanged.
+Then Live is selected, `shell.tabBar` and `shell.scrim` are gone, no `load(_:)` call was made, and (test a, engine `.paused`) `play()` was called once; (test b, engine not `.paused`) the engine state is unchanged.
 
 ### AC-7a Clock ticks
 Given the tab bar is shown over the dimmed picture or on a content tab
 When the injected clock advances past a minute boundary
-Then after one tick `shell.clock`'s label equals `Date.FormatStyle.dateTime.hour().minute()` of the new time in the test locale.
+Then after one tick `ShellModel.clockText`, the string bound to `shell.clock`, equals `Date.FormatStyle.dateTime.hour().minute()` of the new time in the test locale.
 
 ### AC-7b One clock on Guide
 Given the tab bar is shown over Guide (AC-6a)
@@ -123,22 +131,27 @@ Then the injected `UserDefaults` suite holds under key `shell.lastChannel` a `Da
 ### AC-10 Loading at launch
 Given sources exist and none has finished loading
 When the shell appears
-Then `shell.player` exists, the fake engine has received no `load(_:)`, `shell.loading` lists `shell.loading.<sourceId>` once per source with its name and state as 0010/AC-16, and `shell.tabBar` does not exist.
+Then `shell.player` exists, the fake engine has received no `load(_:)`, `shell.loading` lists `shell.loading.<sourceId>` once per source with its name and state as 0010/AC-16, and `shell.tabBar` does not exist. `shell.loading` is the focused element (focusable, no action on select) so that Menu reaches the shell (AC-10b).
 
 ### AC-10b Menu while loading or empty
 Given `shell.loading` or `shell.empty` is shown
 When the user presses Menu
-Then `shell.scrim` and `shell.tabBar` appear over it with Live selected and focused, `shell.settings` is selectable (AC-12), and selecting Live returns to the state beneath.
+Then `shell.scrim` and `shell.tabBar` appear over it with Live selected and focused, `shell.settings` is selectable (AC-12a), and selecting Live returns to the state beneath.
 
 ### AC-11 No channels
 Given every source has reached a terminal state per 0010/AC-16 (loaded, failed, or waiting for its credential) and the catalogue is empty
 When Live is shown
 Then `shell.empty` exists with `shell.empty.source.<sourceId>` once per source that did not contribute a channel (failed, waiting for its credential, or loaded with 0 channels), showing that source's name and its 0010/AC-16 state text ("0 channels" for the last case), `shell.retry` has focus, and `shell.tabBar` does not exist.
 
-### AC-12 Settings sheet
+### AC-12a Open Settings
 Given the tab bar is shown
 When the user selects `shell.settings`
-Then `shell.settingsSheet` exists and the engine state is unchanged; Menu removes `shell.settingsSheet`, focus is on `shell.settings`, and the selected tab and the presence of `shell.scrim` are as before the select.
+Then `shell.settingsSheet` exists and the engine state is unchanged.
+
+### AC-12b Close Settings
+Given `shell.settingsSheet` is shown
+When the user presses Menu
+Then `shell.settingsSheet` is gone, focus is on `shell.settings`, and the selected tab and the presence of `shell.scrim` are as before AC-12a.
 
 ### AC-13 Focus does not switch tabs
 Given focus on `shell.tab.live` over the dimmed picture
@@ -148,12 +161,12 @@ Then `shell.tab.live` keeps the `.isSelected` trait, `shell.scrim` still exists,
 ### AC-14a Request Search
 Given any tab or the overlay is shown
 When `show(.search)` is called (0007/AC-23)
-Then after the call returns and the view has updated, `shell.tab.search` has `.isSelected` and `search.root` exists.
+Then after the call returns and the view has updated, `shell.tab.search` has `.isSelected`, `search.root` exists, and no `overlay.` identifier exists.
 
 ### AC-14b Request Guide with a programme
 Given any tab or the overlay is shown
 When `show(.guide(programmeKey:))` is called (0012/AC-8)
-Then after the call returns and the view has updated, `shell.tab.guide` has `.isSelected`, `guide.root` exists and `programmeKey` has been handed to the guide root; the focused cell is 0012/AC-8's assertion.
+Then after the call returns and the view has updated, `shell.tab.guide` has `.isSelected`, `guide.root` exists and the guide root (or its fake in integration tests) has received exactly one `show(programmeKey:)` with that key; the focused cell is 0012/AC-8's assertion.
 
 ### AC-14c Request full-screen Live
 Given any tab or the overlay is shown
@@ -166,7 +179,7 @@ When the user selects `shell.retry`
 Then every source that did not contribute a channel is reloaded once (recorded on the fake sources), `shell.loading` replaces `shell.empty` while any source is loading, and the outcome follows AC-2a, AC-2b or AC-11.
 
 ### AC-16 Swipe down from the bar
-Given the tab bar is shown over the dimmed picture, `shell.loading` or `shell.empty`
+Given the tab bar is shown over the dimmed picture (test a), over the Guide (AC-6a, test b), over `shell.loading` (test c) or over `shell.empty` (test d)
 When the user swipes down
 Then for Live, loading and empty `shell.tabBar` and `shell.scrim` are gone as in AC-4; for Guide focus returns to the guide cell that had it and `shell.tabBar` and `shell.scrim` are gone.
 
@@ -178,18 +191,20 @@ Then focus is on `shell.tab.<selectedTab>`, the selection is unchanged and the c
 ### AC-18 Select Live while failed
 Given the tab bar is shown over the dimmed picture and the engine is `.failed`
 When the user selects `shell.tab.live`
-Then `load(_:)` is called once with the current channel's URL and `shell.tabBar` and `shell.scrim` are gone.
+Then `load(_:)` is called once with the current channel's URL, then `play()` once, and `shell.tabBar` and `shell.scrim` are gone.
 
 ## Dropped
 
 - AC-9 (never exits to Home): untestable universal claim. Replaced by the Scope sentence on leaving the app and the open question.
 - AC-6 (Menu from a tab screen): split into AC-6a and AC-6b because its second Menu cited AC-4, whose Given does not hold on content tabs and whose Then forbade the `play()` a paused engine needs.
 - AC-7 (Clock): split into AC-7a and AC-7b; it mixed an injected clock with wall-clock timing and two assertions.
+- AC-12 (Settings sheet): split into AC-12a and AC-12b; one criterion asserted both the select and the Menu that undoes it.
 - AC-14 (programmatic navigation): split into AC-14a to AC-14c with the `ShellNavigator` calls named; "within one frame" was not observable and the channel-change clause belongs to 0008/AC-1.
 
 ## Edge cases and failure modes
 
 - Playback failed: the full-screen view shows the player's error state (playback spec); Menu still shows the tab bar (AC-3); selecting Live re-tunes (AC-18).
+- Offline at launch: every source reaches failed per 0010/AC-16, AC-11 applies, Retry is the only recovery; offline mid-stream the engine reports `.failed` and AC-3 and AC-18 apply.
 - Sources removed while a tab screen is open: onboarding replaces the shell at the next root evaluation (0006/AC-1).
 - Return from background: the same engine instance resumes the same channel; a cold launch applies AC-2a or AC-2b.
 - Entitlement lapses: the paywall replaces the shell at the next root evaluation (ADR-0006).
@@ -208,23 +223,24 @@ Integration tests drive `ShellModel` with a fake engine (recording `load`, `play
 | AC-2b | integration (ShellModel, injected clock, completion order) | TBD |
 | AC-3 | ui (fake engine state by launch argument) | TBD |
 | AC-4 | ui (tests a and b) | TBD |
-| AC-5a | integration (ShellModel, injected clock, fake engine) | TBD |
+| AC-5a | integration (ShellModel, injected clock, fake engine; tests a and b) | TBD |
 | AC-5b | integration (ShellModel, fake engine) + ui (per route) | TBD |
 | AC-6a | ui (per tab) | TBD |
-| AC-6b | ui (fake engine state by launch argument) | TBD |
+| AC-6b | ui (fake engine state by launch argument; tests a and b) | TBD |
 | AC-7a | integration (ShellModel, injected clock) | TBD |
 | AC-7b | ui (Guide) | TBD |
 | AC-8 | integration (ShellModel, injected defaults) | TBD |
 | AC-10 | ui (fake sources) | TBD |
 | AC-10b | ui (fake sources, loading and empty) | TBD |
 | AC-11 | ui (fake sources, fake credential store) | TBD |
-| AC-12 | ui | TBD |
+| AC-12a | ui | TBD |
+| AC-12b | ui | TBD |
 | AC-13 | ui | TBD |
 | AC-14a | ui (navigator request by launch argument) | TBD |
-| AC-14b | ui (navigator request by launch argument) | TBD |
+| AC-14b | ui (navigator request by launch argument) + integration (fake guide root) | TBD |
 | AC-14c | ui (navigator request by launch argument, fake engine) | TBD |
 | AC-15 | ui (fake sources, reload recorded) | TBD |
-| AC-16 | ui (Live, Guide, loading, empty) | TBD |
+| AC-16 | ui (tests a to d: Live, Guide, loading, empty) | TBD |
 | AC-17 | ui (per content tab) | TBD |
 | AC-18 | ui (fake engine state by launch argument) | TBD |
 
@@ -232,4 +248,4 @@ Integration tests drive `ShellModel` with a fake engine (recording `load`, `play
 
 - Menu at the top level: this spec keeps the user inside the shell (AC-4 and AC-3 alternate), which departs from the tvOS HIG expectation that Menu at the top level returns Home. Alternative: Menu on the tab bar with Live selected suspends the app.
 - Is 30 seconds the right pause delay behind Movies and Search, or should audio continue muted?
-- The 10 second launch deadline (AC-2b) means an Xtream source with tens of thousands of streams on a slow link never restores the last channel. Raise the deadline, measure it from the source's first byte, or accept it.
+- The 10 second launch deadline (AC-2b). Decided: 10 seconds from shell appearance, accepted for v1; revisit with device measurements on a 30k-stream Xtream source (tracked as a follow-up spec change, not open here).
