@@ -113,7 +113,7 @@ Then `guide.root` contains, top to bottom, `guide.chips`, `guide.days` with `gui
 ### AC-3 Rows are the current group's channels
 Given the current group has 42 channels
 When the grid or list is scrolled from top to bottom
-Then `guide.row.<rowKey>` is exposed once for each of the 42 channels in 0013/AC-6 order and for no others; each row has `guide.channel.<rowKey>` whose label is "<number> <name>" and which contains the logo or initials tile (0013/AC-7; 56 by 36 pt regular, 30 by 20 compact); the frame of a row is 56 pt tall at regular width and 96 pt at compact width; the playing channel's `guide.channel.<rowKey>` has the `.isSelected` trait and no other does.
+Then `guide.row.<rowKey>` is exposed once for each of the 42 channels in 0013/AC-6a order and for no others; each row has `guide.channel.<rowKey>` whose label is "<number> <name>" and which contains the logo or initials tile (0013/AC-7; 56 by 36 pt regular, 30 by 20 compact); the frame of a row is 56 pt tall at regular width and 96 pt at compact width; the playing channel's `guide.channel.<rowKey>` has the `.isSelected` trait and no other does.
 
 ### AC-4 Window and now line
 Given regular width, the default zoom and the time 21:34

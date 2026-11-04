@@ -1,6 +1,7 @@
 # 0028. Session restore and recently watched channels
 
-- Status: Draft (two spec-reviewer rounds, both REWORK; every finding applied, see the PR; a third round is due before acceptance)
+- Status: Draft
+- Review: two spec-reviewer rounds, both REWORK, every finding applied (see PR #31). A third round is due before acceptance.
 - Date: 2026-11-04
 - Depends on ADRs: 0002, 0003, 0005
 - ADR needed: none for the design below. Recents and the restored session are per device in `UserDefaults`, as 0015/AC-8 does. 0012/AC-11 did the same for recent searches and 0029 is moving those into a CloudKit `RecentSearchRecord`; if recents follow, `RecentsStore` gets a SwiftData implementation and a migration as 0029/AC-11a does, under an ADR. See Open questions.
@@ -218,7 +219,7 @@ When Live is first shown
 Then All channels is selected and `session()?.group` is still `.named(S, "Sport")`.
 
 ### AC-11d Movies or Series with no Xtream source
-Given a saved section `.movies` or `.series` and no Xtream source (0011/AC-1)
+Given a saved section `.movies` or `.series` and no Xtream source (0011/AC-1a)
 When the app cold launches
 Then Live is shown.
 
@@ -316,7 +317,7 @@ Then the store records `remove(sourceID: S)` once, the tracker's dwell is cancel
 
 - AC-2 split into AC-2a to AC-2f: the dwell rule contradicted the edge-case list for buffering streams, the last-channel write had no single seam a test could hit, the per-screen claim was not observable from a UI test and is now a lint plus a mirror file, a VOD play could complete a live dwell, and background cancellation had no test.
 - AC-8 split into AC-8a and AC-8b: freezing and refreshing fail for different reasons on different platforms.
-- AC-11 split into AC-11a to AC-11g: three Givens, no nil-group case, no rule for a section 0011/AC-1 has removed, and a When that did not match its Then for a source still loading.
+- AC-11 split into AC-11a to AC-11g: three Givens, no nil-group case, no rule for a section 0011/AC-1a has removed, and a When that did not match its Then for a source still loading.
 - AC-13 split into AC-13a and AC-13b: fallback and pending restore are separate tests.
 - AC-16 split into AC-16a to AC-16d: first swipe, toggle, nothing to return to, and the in-flight and failed cases.
 - AC-18 split into AC-18a and AC-18b: undecodable bytes and an unknown raw value.

@@ -109,7 +109,7 @@ Out (explicitly):
 
 Required of other specs:
 - 0028: `LastChannelKey` gains `string` and `init?(parsing:)` (this spec's AC-1); `currentChannel` is not read from the store, `playingChannel` comes from the engine state, so 0028's store is read-only for this spec.
-- 0010: the root view on iOS, iPadOS and macOS accepts programmatic requests to tune a channel (AC-12c) and to show Search with a query (AC-29), as 0015/AC-14 does on tvOS.
+- 0010: the root view on iOS, iPadOS and macOS accepts programmatic requests to tune a channel (AC-12c) and to show Search with a query (AC-29), as 0015/AC-14a and AC-14c do on tvOS.
 - 0012: a Search entry that takes a preset query and runs it without the AC-17 debounce (AC-29).
 - 0011: playing a movie or series by `TitleReference` from outside the section counts as "a search result" in 0011/AC-10a and 0011/AC-9b (AC-26, AC-27).
 - 0020: a catalogue predicate for a channel whose group is locked or hidden. Until it lands the app's `isLocked(_:)` and `isHidden(_:)` return false; AC-7, AC-8 and AC-19 are tested against the fake provider and hold whatever shape 0020 chooses.
