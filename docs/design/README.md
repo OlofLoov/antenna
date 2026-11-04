@@ -119,13 +119,23 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV player panel and timeshift transport | `TV-Player.dc.html` | 0018 |
+| TV player panel, audio tracks | `TV-Player-Tracks.dc.html` | 0018 |
+| TV player, playback failed | `TV-Player-Error.dc.html` | 0018 |
+| TV player, buffering | `TV-Player-Buffering.dc.html` | 0018 |
+| iPad and Mac player controls | `iPad-Player.dc.html` | 0018 |
+| iPad and Mac player, track picker | `iPad-Player-Tracks.dc.html` | 0018 |
+| iPad and Mac player, playback failed | `iPad-Player-Error.dc.html` | 0018 |
+| iPhone player controls | `iPhone-Player.dc.html` | 0018 |
+| iPhone player, track picker | `iPhone-Player-Tracks.dc.html` | 0018 |
+| iPhone player, playback failed | `iPhone-Player-Error.dc.html` | 0018 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
 drawn on `TV-Movies.dc.html` and `TV-Search.dc.html`.
 
 Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
-series detail, player controls on tvOS, Sources and Settings, the "source
+series detail, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec lists under "Not drawn".
 
@@ -163,7 +173,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `player.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel

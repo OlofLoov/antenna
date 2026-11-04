@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV player, playback failed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- player.error: replaces the video on the ground colour. The zap bar (0008/AC-1) has already hidden. No clock (0008/AC-20). -->
+  <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 0 320px; text-align: center">
+
+    <svg aria-hidden="true" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+
+    <!-- player.error.title -->
+    <div style="font-size: 38px; font-weight: 700">Stream not found</div>
+
+    <!-- player.error.body: PlaybackFailureText.describe, names the source, never the URL -->
+    <div style="font-size: 26px; line-height: 1.4; color: #D7DEE8; max-width: 1100px">Acme TV returned 404 for this channel. The channel may have moved or been removed by the provider.</div>
+
+    <!-- player.error.detail -->
+    <div style="font-size: 22px; color: #A7B0BF">Source: Acme TV · Attempted at 21:34</div>
+
+    <!-- player.retry: focused on appearance (Focus token). Play/pause does the same. -->
+    <div style="display: flex; gap: 16px; padding-top: 12px">
+      <button type="button" style="font: inherit; font-size: 26px; font-weight: 600; height: 64px; padding: 0 40px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,.45); cursor: pointer">Try again</button>
+    </div>
+
+    <!-- player.error.hint -->
+    <div style="font-size: 22px; color: #A7B0BF; padding-top: 8px">Swipe up or down for another channel. Menu opens the tab bar.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
