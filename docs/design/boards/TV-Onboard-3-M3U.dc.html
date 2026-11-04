@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV onboarding, M3U details with error</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 80px">
+
+  <div style="position: absolute; right: 64px; top: 44px; display: flex; gap: 8px; align-items: center">
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 32px; height: 6px; border-radius: 3px; background: #F2F4F8; display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+  </div>
+  <a href="TV-Onboard-2.dc.html" style="position: absolute; left: 64px; top: 44px; display: inline-flex; align-items: center; gap: 10px; font-size: 24px; color: #A7B0BF">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>Back</span>
+  </a>
+
+  <!-- Form -->
+  <div style="width: 820px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.5px">M3U playlist</div>
+      <div style="font-size: 24px; color: #A7B0BF">Paste the link your provider gave you. The guide link is optional.</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <label style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Name <span style="font-weight: 400; text-transform: none; letter-spacing: 0">(optional)</span></span>
+        <input type="text" value="Home provider" style="font: inherit; font-size: 28px; height: 76px; padding: 0 24px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.08); color: #F2F4F8; outline: none; box-sizing: border-box">
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Playlist URL</span>
+        <input type="url" value="http://tv.example-provider.net/get.php?type=m3u_plus" style="font: inherit; font-size: 28px; height: 76px; padding: 0 24px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; outline: none; box-sizing: border-box; box-shadow: 0 0 0 4px rgba(255,255,255,0.25), 0 12px 32px rgba(0,0,0,0.45)">
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Guide URL <span style="font-weight: 400; text-transform: none; letter-spacing: 0">(optional)</span></span>
+        <input type="url" value="http://tv.example-provider.net/xmltv.php" style="font: inherit; font-size: 28px; height: 76px; padding: 0 24px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.08); color: #F2F4F8; outline: none; box-sizing: border-box">
+      </label>
+    </div>
+
+    <!-- onboarding.error, AC-23 -->
+    <div style="font-size: 22px; line-height: 1.4; color: #FF5F57">Could not reach tv.example-provider.net. Check the address and try again.</div>
+
+    <div style="display: flex; gap: 16px; align-items: center; padding-top: 6px">
+      <a href="TV-Onboard-4.dc.html" style="font-size: 26px; font-weight: 700; padding: 18px 44px; border-radius: 14px; background: rgba(255,255,255,0.14); color: #F2F4F8; display: inline-flex">Connect</a>
+    </div>
+  </div>
+
+  <!-- Side: type on iPhone -->
+  <div style="width: 480px; border-radius: 20px; background: rgba(255,255,255,0.06); box-sizing: border-box; padding: 36px; display: flex; flex-direction: column; gap: 22px">
+    <div style="width: 72px; height: 72px; border-radius: 18px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+    </div>
+    <div style="font-size: 30px; font-weight: 700; line-height: 1.2">Easier to type on iPhone</div>
+    <div style="font-size: 22px; line-height: 1.45; color: #D7DEE8">An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over.</div>
+    <div style="font-size: 20px; color: #A7B0BF; padding-top: 6px">The offer comes from iOS and needs no setup.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

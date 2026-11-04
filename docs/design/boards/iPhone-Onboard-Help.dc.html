@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone onboarding, what is a source</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <!-- onboarding.help as a sheet -->
+  <div style="margin-top: 54px; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+    <span style="width: 60px"></span>
+    <span style="font-size: 17px; font-weight: 600">What is a source?</span>
+    <!-- onboarding.help.done -->
+    <a href="iPhone-Onboard-1.dc.html" style="width: 60px; text-align: right; font-size: 17px; font-weight: 600; color: #5BB8FF">Done</a>
+  </div>
+
+  <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 22px; padding: 12px 16px 0">
+    <div style="font-size: 17px; line-height: 1.45; color: #D7DEE8">Antenna includes no channels. A source is the playlist or login a TV provider gives you. Antenna has no servers of its own; everything you add stays between you and your provider.</div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 20px; font-weight: 700">M3U playlist</div>
+      <div style="font-size: 17px; line-height: 1.45; color: #D7DEE8">A link ending in .m3u or .m3u8. It lists every channel with its stream address. Antenna downloads it and keeps it up to date. A second link, in XMLTV format, carries the programme guide and is optional.</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 20px; font-weight: 700">Xtream login</div>
+      <div style="font-size: 17px; line-height: 1.45; color: #D7DEE8">A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in your iCloud Keychain.</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
