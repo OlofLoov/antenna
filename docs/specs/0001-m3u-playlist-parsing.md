@@ -155,7 +155,7 @@ Then `hasCatchup` is true and `catchupDays` is 3.
 | AC-11 | core | `M3UParserTests.orphanURLSkipped` |
 | AC-12 | core | `M3UParserTests.emptyInput` (empty string and header only) |
 | AC-13 | core | `M3UParserTests.groupOrder` |
-| AC-14 | core (benchmark, not CI-gated) | `M3UParserTests.largePlaylistBenchmark`, runs only with `ANTENNA_BENCHMARK=1`; 1.2 s on an Apple M1 |
+| AC-14 | core (benchmark, not CI-gated) | `M3UParserTests.largePlaylistBenchmark`, runs only with `ANTENNA_BENCHMARKS=1`; 1.2 s on an Apple M1 |
 | AC-15 | core | `M3UParserTests.catchupDisabled` |
 | AC-16 | core | `M3UParserTests.legacyTvgRec` |
 
