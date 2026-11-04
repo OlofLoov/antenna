@@ -6,8 +6,12 @@ struct AntennaApp: App {
     /// One container, CloudKit-backed. The iCloud container id comes from the
     /// entitlements, so `.automatic` resolves to `iCloud.se.codecrave.antenna`.
     /// On tvOS with the "Runs as Current User" entitlement this becomes
-    /// per-profile automatically.
+    /// per-profile automatically. A Debug build launched by a UI test gets
+    /// the in-memory `UITestingStore` instead.
     private let container: ModelContainer = {
+        #if DEBUG
+            if let seeded = UITestingStore.container() { return seeded }
+        #endif
         let schema = Schema([SourceRecord.self, FavoriteRecord.self])
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         do {
