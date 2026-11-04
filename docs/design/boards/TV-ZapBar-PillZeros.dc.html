@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV zap bar, zeros-only digits</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Live video stage -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+
+  <!-- Channel number entry: only zeros typed, name empty -->
+  <div style="position: absolute; left: 64px; top: 44px; display: flex; align-items: center; gap: 18px; padding: 10px 22px; border-radius: 14px; background: rgba(8, 10, 14, 0.82)">
+    <span style="font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 2px">00<span style="color: #A7B0BF">_</span></span>
+    <!-- Name: empty -->
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
