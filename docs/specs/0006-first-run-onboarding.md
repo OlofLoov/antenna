@@ -1,6 +1,6 @@
 # 0006. First-run onboarding and add-source flow
 
-- Status: Draft (two spec-reviewer rounds; remaining findings listed in the PR)
+- Status: Draft (two spec-reviewer rounds applied; the board findings are closed, see the PR)
 - Date: 2026-11-03
 - Depends on ADRs: 0002, 0003, 0005, 0006
 - Platforms: iOS, iPadOS, macOS, tvOS
@@ -9,10 +9,24 @@
 
 ## Design
 
-Boards: `docs/design/boards/TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` (tvOS), `docs/design/boards/iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` (iOS; iPadOS and macOS centre the same sheet at 390 pt wide).
-Design rules that apply: DR-2, DR-3, DR-4, DR-5, DR-11, DR-12, DR-14, DR-15. Deviations: DR-3, done markers, the Fill in control, the guide toggle and the tvOS ready eyebrow use the accent because they are completion and link affordances; DR-5, the iPhone show-password control is 28 pt visually with a 44 pt hit area.
-States on the boards: welcome with "What is a source?"; type picker with the focused card and a dimmed card; Xtream details form with a focused field, the iPhone hint card ("Waiting for your iPhone" is static copy) and the Keychain note; loading checklist; ready with four tiles over the already-playing first channel (tvOS, caption "Live · <number> <name>", `onboarding.nowPlaying`) or the checklist as a grouped list (iOS). Board corrections in the same PR: TV-Onboard-4 and iPhone-Onboard-3 guide rows become indeterminate during download (AC-12a); iPhone-Onboard-3 row copy follows AC-14b; TV-Onboard-5 body copy reads "The first channel is already playing. Press the touch surface for the channel list, press play/pause for the channel bar."; the iPhone-Onboard-2 guide toggle is removed (out of scope); the iPhone Stalker segment gets the caption of AC-3; step segments are 32 by 6 pt `#F2F4F8` (current) and 6 by 6 pt `rgba(255,255,255,0.3)` (others).
-Not drawn, to be added before the implementing PR, in the inline error style of 0004 (15 pt iOS, 22 pt tvOS, `#FF5F57` text) unless stated: M3U variant of the form; validation and connection errors under the form; Connect in progress (disabled control with indicator); clipboard banner after Fill in; "No live channels" row and "Browse movies" control; "No channels found" row; disabled Start watching; the AC-21 sign-in step; the help screen (`onboarding.help`, headings and body copy at body size); ready title for two sources.
+Boards: `docs/design/boards/TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` (tvOS), `docs/design/boards/iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` (iOS; iPadOS and macOS centre the same sheet at 390 pt wide). State boards sit beside them as `<Board>-<State>.dc.html`.
+Design rules that apply: DR-2, DR-3, DR-4, DR-5, DR-11, DR-12, DR-14, DR-15. Deviations: DR-3, done markers, the Fill in control and the tvOS ready eyebrow use the accent because they are completion and link affordances; DR-5, the iPhone show-password control is 28 pt visually with a 44 pt hit area.
+States on the boards:
+- Welcome with "What is a source?" (TV-Onboard-1, iPhone-Onboard-1).
+- Help, `onboarding.help`, headings "M3U playlist" and "Xtream login", body copy at 29 pt on tvOS and 17 pt on iOS, `onboarding.help.done` (TV-Onboard-Help full screen, iPhone-Onboard-Help sheet).
+- Type picker with the focused card and the dimmed Stalker card (TV-Onboard-2); the iOS segmented picker with the Stalker caption of AC-3 (iPhone-Onboard-2).
+- Xtream details form with a focused field, the Keychain note and the tvOS keyboard card (TV-Onboard-3). The card's copy is static and names the platform, never the user's device. iPhone-Onboard-2 shows the clipboard banner of AC-17a over the fields as AC-17b fills them.
+- M3U form (AC-4a) with the AC-23 error under it in the error style (TV-Onboard-3-M3U, iPhone-Onboard-2-M3U). The iPhone board shows the fields as AC-17c fills them.
+- Connect in progress, AC-30, disabled control with an indeterminate ring (TV-Onboard-3-Connecting, iPhone-Onboard-2-Connecting).
+- Clipboard banner after Fill in found no link, AC-17d (iPhone-Onboard-2-NoLink).
+- Sign in on this Apple TV, AC-21 (TV-Onboard-SignIn).
+- Loading checklist with the guide row indeterminate during download, AC-12a (TV-Onboard-4).
+- "No live channels" row with `onboarding.browseMovies`, AC-32 (TV-Onboard-4-NoLive, iPhone-Onboard-3-NoLive).
+- M3U checklist (AC-10b) with "No channels found" and disabled Start watching, AC-32 (TV-Onboard-4-Empty, iPhone-Onboard-3-Empty).
+- Ready with four tiles over the already-playing first channel, caption "Live · <number> <name>", `onboarding.nowPlaying` (TV-Onboard-5), and the ready list of AC-14b with the guide row indeterminate (iPhone-Onboard-3).
+- Ready with two sources, AC-16b and AC-19b (TV-Onboard-5-Two, iPhone-Onboard-3-Two).
+Error style: 15 pt iOS, 22 pt tvOS, `#FF5F57` text. Step segments on every tvOS board: 32 by 6 pt `#F2F4F8` for the current step, 6 by 6 pt `rgba(255,255,255,0.3)` for the others (AC-19a). The iPhone guide toggle was removed from iPhone-Onboard-2; opting out of the guide is out of scope.
+Not drawn: nothing. The boards in the repo are exports; the design canvas needs the same changes.
 
 ## Problem
 
@@ -156,7 +170,7 @@ Then the AC-15 channel is already playing behind the panel with `onboarding.nowP
 ### AC-14b Ready list (iOS, iPadOS, macOS)
 Given the ready sheet
 When it is shown
-Then it lists rows per AC-10a and AC-11 with the detail line shortened to "<n> groups" and the movies detail reading "In the Movies tab", the guide row per AC-12, and no catch-up row.
+Then it lists rows per AC-10a and AC-11 with the channels row reading "<n> live channels" over the detail "<n> groups" and the movies detail reading "In the Movies tab", the guide row per AC-12, and no catch-up row.
 
 ### AC-15 Start watching
 Given the ready step
