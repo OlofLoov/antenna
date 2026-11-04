@@ -15,18 +15,25 @@ public struct XMLTVParser: Sendable {
 
     public init() {}
 
-    public func parse(_ data: Data) throws -> Result {
+    /// Parses a whole XMLTV document. Throws `XMLTVError.malformed` when the
+    /// bytes are not well-formed XML, and returns nothing in that case.
+    public func parse(_ data: Data) throws(XMLTVError) -> Result {
         let delegate = Delegate()
         let parser = XMLParser(data: data)
         parser.delegate = delegate
         parser.shouldProcessNamespaces = false
         guard parser.parse() else {
-            throw parser.parserError ?? XMLTVError.malformed
+            throw .malformed(line: parser.lineNumber, column: parser.columnNumber)
         }
         return Result(channelNames: delegate.channelNames, programmes: delegate.programmes)
     }
 
-    public enum XMLTVError: Error { case malformed }
+    /// The only error `parse` throws. No Foundation error reaches the caller.
+    public enum XMLTVError: Error, Sendable, Equatable {
+        /// The document is not well-formed XML. `line` and `column` are where
+        /// the XML parser stopped; `line` is 1-based.
+        case malformed(line: Int, column: Int)
+    }
 
     // MARK: - SAX delegate
 

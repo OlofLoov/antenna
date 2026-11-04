@@ -122,17 +122,27 @@ import Testing
         #expect(result.programmes.map(\.title) == ["Good"])
     }
 
-    @Test("0002/AC-7 malformed XML throws")
+    @Test("0002/AC-7 malformed XML throws XMLTVError.malformed with its position")
     func malformedThrows() {
-        let xml = #"<tv><programme channel="a" start="20261103200000" stop="20261103210000"><title>T</title></tv>"#
-        #expect(throws: (any Error).self) { try parse(xml) }
+        let xml = """
+            <tv>
+            <programme channel="a" start="20261103200000" stop="20261103210000">
+            <title>T</title>
+            </tv>
+            """
+        #expect(throws: XMLTVParser.XMLTVError.malformed(line: 4, column: 6)) { try parse(xml) }
     }
 
     @Test(
-        "0002/AC-7b empty data and gzip bytes throw",
+        "0002/AC-7b empty data and gzip bytes throw XMLTVError.malformed",
         arguments: [Data(), Data([0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03])])
     func nonXMLDataThrows(data: Data) {
-        #expect(throws: (any Error).self) { try XMLTVParser().parse(data) }
+        #expect {
+            try XMLTVParser().parse(data)
+        } throws: { error in
+            guard case .malformed = error as? XMLTVParser.XMLTVError else { return false }
+            return true
+        }
     }
 
     @Test("0002/AC-8 first repeated title wins")
