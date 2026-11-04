@@ -89,6 +89,19 @@ import Testing
         #expect(info.episodes.map(\.title) == ["nil e1", "s1 nil", "s1e1", "s2e1", "s2e2 first", "s2e2 second", "s2e10", "s10e1"])
     }
 
+    @Test("0016/AC-6b 0016/AC-6d season keys are visited in numeric order, then by name")
+    func seasonKeyOrder() throws {
+        let body = #"""
+            {"b":[{"id":9,"season":3,"episode_num":1,"title":"from b"}],
+             "10":[{"id":1,"season":3,"episode_num":1,"title":"from 10"},{"id":2,"title":"dup from 10"}],
+             "a":[{"id":8,"season":3,"episode_num":1,"title":"from a"}],
+             "2":[{"id":3,"season":3,"episode_num":1,"title":"from 2"},{"id":2,"title":"dup from 2"}]}
+            """#
+        let info = try seriesInfo(episodes: body)
+        #expect(info.episodes.map(\.title) == ["dup from 2", "from 2", "from 10", "from a", "from b"])
+        #expect(info.skippedEpisodes == 1)
+    }
+
     @Test("0016/AC-6c season count uses resolved seasons, not keys")
     func seasonCount() throws {
         let info = try seriesInfo(episodes: #"{"2":[{"id":1,"season":3,"title":"A"},{"id":2,"title":"B"},{"id":3,"title":"C"}]}"#)

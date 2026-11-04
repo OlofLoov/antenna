@@ -101,6 +101,38 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
+        "0016/AC-4 ids must be whole numbers, never truncated",
+        arguments: [("55", true), ("55.0", true), (#""55.0""#, true), (#""55.7""#, false), ("55.7", false)])
+    func wholeNumberIDs(id: String, kept: Bool) throws {
+        let list = try XtreamClient.decodeVODList(Data("[{\"name\":\"Dune\",\"stream_id\":\(id)}]".utf8), host: host)
+        #expect(list.items.map(\.streamID) == (kept ? [55] : []))
+        #expect(list.skipped == (kept ? 0 : 1))
+    }
+
+    @Test("0016/AC-4 empty or whitespace names are missing", arguments: [#""""#, #""   ""#, #""\t\n""#])
+    func blankNames(name: String) throws {
+        let vod = try XtreamClient.decodeVODList(
+            Data("[{\"name\":\(name),\"stream_id\":1},{\"name\":\"B\",\"stream_id\":2}]".utf8), host: host)
+        #expect(vod.items.map(\.streamID) == [2])
+        #expect(vod.skipped == 1)
+        let series = try XtreamClient.decodeSeriesList(Data("[{\"name\":\(name),\"series_id\":1}]".utf8), host: host)
+        #expect(series.items.isEmpty)
+        #expect(series.skipped == 1)
+    }
+
+    @Test("0016/AC-4 whitespace optional strings are nil")
+    func blankOptionalStrings() throws {
+        let item = try vodRow(#","stream_icon":"  ","container_extension":" ","category_id":"\t""#)
+        #expect(item.posterURL == nil)
+        #expect(item.containerExtension == nil)
+        #expect(item.categoryID == nil)
+        let info = try XtreamClient.decodeVODInfo(Data(#"{"info":{"plot":"  ","genre":"\n","age":" "}}"#.utf8), host: host)
+        #expect(info.plot == nil)
+        #expect(info.genre == nil)
+        #expect(info.ageRating == nil)
+    }
+
+    @Test(
         "0016/AC-4 series rows skip on series_id", arguments: [#"{"name":"A"}"#, #"{"name":"A","series_id":"nan"}"#, #"{"series_id":2}"#])
     func brokenSeriesRows(row: String) throws {
         let list = try XtreamClient.decodeSeriesList(Data("[{\"name\":\"Dark\",\"series_id\":7},\(row)]".utf8), host: host)

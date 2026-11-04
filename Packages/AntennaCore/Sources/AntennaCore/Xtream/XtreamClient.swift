@@ -51,9 +51,11 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
         try Self.decodeWholeList(try await fetch(action: "get_live_categories"))
     }
 
-    /// Fails whole when any row lacks `name` or `stream_id` (spec 0003).
+    /// Drops rows that are not objects, lack `name` or `stream_id`, or whose `stream_id` is not a whole
+    /// number. Keeps server order and does not drop repeated ids.
     public func liveStreams(categoryID: String? = nil) async throws -> [XtreamLiveStream] {
-        try Self.decodeWholeList(try await fetch(action: "get_live_streams", id: categoryID.map { ("category_id", $0) }))
+        let data = try await fetch(action: "get_live_streams", id: categoryID.map { ("category_id", $0) })
+        return try Self.decodeLossyList(data)
     }
 
     public func accountInfo() async throws -> XtreamAccountInfo {
@@ -230,14 +232,14 @@ public struct XtreamLiveStream: Decodable, Sendable, Hashable {
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        num = try c.decodeIfPresent(FlexibleInt.self, forKey: .num)?.value
         name = try c.decode(String.self, forKey: .name)
         streamID = try c.decode(FlexibleInt.self, forKey: .streamID).value
-        streamIcon = try c.decodeIfPresent(String.self, forKey: .streamIcon)
-        epgChannelID = try c.decodeIfPresent(String.self, forKey: .epgChannelID)
-        categoryID = try c.decodeIfPresent(FlexibleString.self, forKey: .categoryID)?.value
-        tvArchive = try c.decodeIfPresent(FlexibleInt.self, forKey: .tvArchive)?.value
-        tvArchiveDuration = try c.decodeIfPresent(FlexibleInt.self, forKey: .tvArchiveDuration)?.value
+        num = c.looseInt(.num)
+        streamIcon = try? c.decodeIfPresent(String.self, forKey: .streamIcon)
+        epgChannelID = try? c.decodeIfPresent(String.self, forKey: .epgChannelID)
+        categoryID = (try? c.decodeIfPresent(FlexibleString.self, forKey: .categoryID))?.value
+        tvArchive = c.looseInt(.tvArchive)
+        tvArchiveDuration = c.looseInt(.tvArchiveDuration)
     }
 }
 
@@ -268,15 +270,16 @@ public struct XtreamAccountInfo: Decodable, Sendable {
     enum CodingKeys: String, CodingKey { case userInfo = "user_info" }
 }
 
-/// Decodes a value that may be a JSON number or string into `Int`.
+/// Decodes a JSON number or numeric string into `Int` when its value is a whole number in range,
+/// so `55`, `55.0`, `"55"` and `"55.0"` give 55. Anything else, `"55.7"` included, throws.
 public struct FlexibleInt: Decodable, Sendable, Hashable {
     public var value: Int
     public init(from decoder: any Decoder) throws {
         let c = try decoder.singleValueContainer()
         if let i = try? c.decode(Int.self) { value = i; return }
-        if let d = try? c.decode(Double.self), let i = Int(exactly: d.rounded(.towardZero)) { value = i; return }
+        if let d = try? c.decode(Double.self), let i = Loose.int(d) { value = i; return }
         let s = try c.decode(String.self)
-        guard let i = Int(s) ?? Double(s).flatMap({ Int(exactly: $0.rounded(.towardZero)) }) else {
+        guard let i = Loose.int(s) else {
             throw DecodingError.dataCorruptedError(in: c, debugDescription: "Not an int: \(s)")
         }
         value = i

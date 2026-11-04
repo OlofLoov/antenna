@@ -64,9 +64,9 @@ private func requiredID<K: CodingKey>(_ c: KeyedDecodingContainer<K>, _ key: K) 
     return id
 }
 
-/// The row name: must be present as a string or number, or the row is skipped. May be empty.
+/// The row name: must be present as a string or number and not empty or only whitespace, or the row is skipped.
 private func requiredName<K: CodingKey>(_ c: KeyedDecodingContainer<K>, _ key: K) throws -> String {
-    if let name = try? c.decodeIfPresent(String.self, forKey: key) { return name }
+    if let name = try? c.decodeIfPresent(String.self, forKey: key), !Loose.isBlank(name) { return name }
     if let number = try? c.decodeIfPresent(Int.self, forKey: key) { return String(number) }
     throw DecodingError.keyNotFound(key, .init(codingPath: c.codingPath, debugDescription: "missing name"))
 }

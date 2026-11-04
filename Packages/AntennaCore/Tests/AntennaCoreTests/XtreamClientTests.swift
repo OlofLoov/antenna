@@ -115,14 +115,37 @@ import Testing
     }
 
     @Test(
-        "0016/AC-4 live stream ids that are not integers fail the list without trapping",
-        arguments: [("huge", "1e400"), ("hugestring", #""1e400""#), ("nan", #""nan""#), ("inf", #""inf""#), ("big", "1e20")])
-    func liveStreamIDNeverTraps(name: String, id: String) async throws {
-        let host = "live-trap-\(name).panel"
-        let client = try stubbedClient(host: host, status: 200, body: "[{\"name\":\"A\",\"stream_id\":\(id)}]")
-        await #expect(throws: XtreamClient.XtreamError.decoding(path: "[0].stream_id")) {
-            _ = try await client.liveStreams()
-        }
+        "0016/AC-4 live rows with a stream_id that is not a whole number are skipped without trapping",
+        arguments: [
+            ("fraction", #""55.7""#), ("fractionnumber", "55.7"), ("huge", "1e400"), ("hugestring", #""1e400""#), ("nan", #""nan""#),
+            ("inf", #""inf""#), ("big", "1e20"), ("letters", #""abc""#), ("exponent", #""1e2""#), ("hex", #""0x37""#),
+        ])
+    func liveStreamIDSkipped(name: String, id: String) async throws {
+        let body =
+            "[{\"name\":\"A\",\"stream_id\":\(id)},{\"name\":\"B\",\"stream_id\":56},{\"stream_id\":57},\"x\",{\"name\":\"C\"},"
+            + "{\"name\":\"B again\",\"stream_id\":\"56\"}]"
+        let client = try stubbedClient(host: "live-skip-\(name).panel", status: 200, body: body)
+        let streams = try await client.liveStreams()
+        #expect(streams.map(\.streamID) == [56, 56])
+        #expect(streams.map(\.name) == ["B", "B again"])
+    }
+
+    @Test("0016/AC-4 live integers accept whole numbers in every form", arguments: ["55", "55.0", #""55""#, #""55.0""#])
+    func liveWholeNumbers(id: String) throws {
+        let stream = try decode(XtreamLiveStream.self, "{\"name\":\"A\",\"stream_id\":\(id),\"num\":\(id)}")
+        #expect(stream.streamID == 55)
+        #expect(stream.num == 55)
+    }
+
+    @Test("0016/AC-4 live optional integers that are not whole numbers are nil")
+    func liveOptionalIntegers() throws {
+        let stream = try decode(
+            XtreamLiveStream.self,
+            #"{"name":"A","stream_id":1,"num":"7.5","tv_archive":"yes","tv_archive_duration":1e400,"epg_channel_id":5}"#)
+        #expect(stream.num == nil)
+        #expect(stream.tvArchive == nil)
+        #expect(stream.tvArchiveDuration == nil)
+        #expect(stream.epgChannelID == nil)
     }
 
     @Test("0003/AC-9 account info decodes loose types")
