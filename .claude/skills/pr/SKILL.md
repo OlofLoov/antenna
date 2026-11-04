@@ -100,7 +100,8 @@ gh stack submit --auto                # push every branch, open missing PRs
 Then set each new PR's title and body with `gh pr edit <n> --title "..."
 --body-file <tmp>`, since `--auto` writes placeholder titles. The criteria
 table lists only that slice's rows. Every slice but the last sets the spec
-to `In progress`; only the last says Implemented.
+to `In progress` and lists its criteria on a `- Progress:` line; only the
+last says Implemented. The `implement` skill's step 7 has the format.
 
 Branches made without `gh stack` (by hand or by another tool) become a
 stack with `gh stack link <bottom> ... <top>`, using branch names or PR
