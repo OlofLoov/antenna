@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Check PR title
@@ -40,7 +40,7 @@ jobs:
     name: Spec status
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Status matches tests
         run: bash scripts/check-specs.sh
 
@@ -48,7 +48,7 @@ jobs:
     name: AntennaCore tests
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Show toolchain
         run: xcodebuild -version && swift --version
       - name: Test
@@ -59,7 +59,7 @@ jobs:
     runs-on: macos-26
     needs: core
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # The image's default Xcode is the only one guaranteed to have its
       # simulator runtimes installed. Pinning an older Xcode (26.1) left the
       # iOS build with no simulator destination at all.
