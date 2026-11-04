@@ -28,7 +28,7 @@ layer is `device` are exempt. The `implement` skill runs this loop.
 | [0009](0009-tv-guide-grid.md) | Apple TV guide grid | Accepted |
 | [0010](0010-live-tv-on-iphone-ipad-mac.md) | Live TV browsing on iPhone, iPad and Mac | Accepted |
 | [0011](0011-movies-and-series-browsing.md) | Movies and series browsing | Accepted |
-| [0012](0012-search.md) | Search across channels, guide, movies and series | Draft |
+| [0012](0012-search.md) | Search across channels, guide, movies and series | Accepted |
 | [0013](0013-channel-catalogue.md) | Channel catalogue: groups, numbers, initials, favorites | Accepted |
 | [0014](0014-guide-data.md) | Guide data: download, join and query | Accepted |
 | [0015](0015-tvos-shell.md) | tvOS shell: tab bar, full-screen playback and Menu | Accepted |
