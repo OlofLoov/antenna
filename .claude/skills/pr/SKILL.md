@@ -33,6 +33,11 @@ If on `main`, create a branch first. Naming:
   `scripts/check-rules.sh` must pass. Run `swiftlint lint --strict` too when
   it is installed; CI runs all three.
 - If Apps/ changed, the iOS build must pass (see the `sim` skill).
+- `bash scripts/check-arch.sh` must print `ok`. If it fails, or the work
+  adds a dependency, target or ADR, run the `arch-reviewer` agent. On
+  UPDATE DIAGRAMS edit `docs/architecture/` with the `drawio` skill. On
+  NEEDS ADR write it with the `adr` skill. On NO IMPACT add the trailer
+  `Arch-Impact: none` to the commit. VIOLATION stops here.
 - If a spec exists for this work, run the `impl-reviewer` agent and fix
   READY WITH FIXES items before continuing. NOT READY stops here.
 
@@ -47,6 +52,7 @@ Conventional Commits, enforced by `scripts/lint-commit.sh`:
 
 Spec: NNNN          # when applicable
 ADR: NNNN           # when created or changed
+Arch-Impact: none   # when arch-reviewer says NO IMPACT
 ```
 
 Types: feat, fix, docs, refactor, test, build, ci, chore, perf, style, revert.
