@@ -4,7 +4,7 @@
 - Date: 2026-11-03
 - Depends on ADRs: 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore)
-- Builds on spec 0003 (Xtream live client, decoding rules). Extends `XtreamClient` with the VOD and series endpoints that 0003 listed as out of scope. Supersedes 0003/AC-7 (401 and 403 become `unauthorized`, AC-11), 0003/AC-8 (`DecodingError` becomes `XtreamError.decoding(path:)`, AC-4a and AC-4b), 0003's `URLError` passthrough (AC-10) and 0003/AC-1, AC-4 and AC-5 for credential encoding (AC-1 and AC-7 of this spec apply to every URL the client builds). 0003's tests for those criteria assert the new behaviour. Resolves 0003's `user_info.auth` question (AC-11). Resolves 0003's row-skipping question for VOD, series and episode lists only (AC-4, AC-6d); `liveStreams()` keeps 0003's `[XtreamLiveStream]` and fails whole on a row lacking `name` or `stream_id`, as 0003's edge case states. 0003 edge cases on `auth: 0` and on broken rows are superseded by AC-11 and AC-4 respectively. Specs 0006 and 0011 to 0014 are in open PRs, not in this tree; they consume this spec and do not block it.
+- Builds on spec 0003 (Xtream live client, decoding rules). Extends `XtreamClient` with the VOD and series endpoints that 0003 listed as out of scope. Supersedes 0003/AC-7 (401 and 403 become `unauthorized`, AC-11), 0003/AC-8 (`DecodingError` becomes `XtreamError.decoding(path:)`, AC-4a and AC-4b), 0003's `URLError` passthrough (AC-10) and 0003/AC-1, AC-4 and AC-5 for credential encoding (AC-1 and AC-7 of this spec apply to every URL the client builds). 0003's tests for those criteria assert the new behaviour. Resolves 0003's `user_info.auth` question (AC-11). Resolves 0003's row-skipping question (AC-4, AC-6d): `liveStreams()` keeps its `[XtreamLiveStream]` return type but drops a row lacking `name` or with a `stream_id` that is not an integer instead of failing the whole list, superseding 0003's edge case on broken rows. Integers are strict everywhere, live included (AC-4): 0003's `FlexibleInt` no longer truncates. 0003 edge cases on `auth: 0` and on broken rows are superseded by AC-11 and AC-4 respectively. Specs 0006 and 0011 to 0014 are in open PRs, not in this tree; they consume this spec and do not block it.
 - Type names: `XtreamClient.XtreamError` and `XtreamClient.DecodedList` are nested in `XtreamClient` as 0003's error is; this spec writes them without the prefix. `VODItem`, `VODInfo`, `Series`, `SeriesInfo`, `Episode` and `XtreamTitleID` are top-level types in AntennaCore like `XtreamLiveStream`.
 
 ## Design
@@ -25,7 +25,7 @@ In:
 - `XtreamAccountInfo.UserInfo` gains `auth: Int?`, decoded loosely per 0003/AC-2.
 - Raw ids (`streamID`, `seriesID`, `episodeID`: `Int`) for requests and URLs; title ids `xtream#<host>#vod#<stream_id>`, `xtream#<host>#series#<series_id>`, `xtream#<host>#episode#<episode_id>` for storage and cross-device identity, and parsing a title id back to its kind and raw id.
 - Playable URL builders for movies and episodes.
-- Tolerant decoding: loose types per 0003, row skipping for broken and duplicate rows in VOD, series and episode lists, no trap on any input.
+- Tolerant decoding: loose types per 0003, strict integers (AC-4), row skipping for broken and duplicate rows in VOD, series and episode lists and for broken rows in `liveStreams()`, no trap on any input.
 - `XtreamError.unauthorized`, `XtreamError.transport(URLError.Code)` and `XtreamError.decoding(path: String)` on every `XtreamClient` call, including 0003's. `XtreamError` stays `Sendable`; `decoding` stores the joined coding path only.
 - Error and client values carry no credentials or URLs.
 
@@ -74,7 +74,7 @@ Then `added` is nil for each and decoding never traps.
 ### AC-4 Broken rows are skipped
 Given a list response where one element is not a JSON object, one row lacks `stream_id`, one lacks `name`, one has `stream_id` "abc", one has `stream_id` "1e400" and one repeats an earlier row's `stream_id`
 When decoded
-Then `DecodedList<VODItem>.items` holds the other rows in server order and `skipped` is 6. A row is skipped and counted only when it is not a JSON object, lacks `stream_id` (`series_id` on series lists) or `name`, `stream_id` (`series_id`) does not decode to `Int` (including "nan", "inf", "-inf", "1e400" and out-of-range numbers, which never trap), or its `id` equals an earlier row's `id` in the same response. Failure of any other field yields nil for that field and keeps the row. Skipping applies to VOD, series and episode lists only; `liveStreams()` keeps 0003's behaviour and fails whole on a broken row.
+Then `DecodedList<VODItem>.items` holds the other rows in server order and `skipped` is 6. A row is skipped and counted only when it is not a JSON object, lacks `stream_id` (`series_id` on series lists), lacks `name` or has a `name` that is empty or only whitespace, `stream_id` (`series_id`) does not decode to `Int`, or its `id` equals an earlier row's `id` in the same response. Integer rule, for every integer field the client decodes including 0003's live fields: a JSON number, or a string of decimal digits with an optional sign and fraction, decodes only when its value is a whole number in `Int` range, so `55`, `55.0`, `"55"` and `"55.0"` give 55, and `"55.7"`, `55.7`, "abc", "nan", "inf", "-inf", "1e400" and out-of-range numbers do not decode and never trap; exponent and hex strings ("1e2", "0x37") do not decode either. Values are never truncated. Failure of any other field yields nil for that field and keeps the row; on VOD, series and episode rows, empty or whitespace-only optional strings are nil (live rows keep their strings as 0003 decodes them). `liveStreams()` skips a row that is not an object, lacks `name` or `stream_id`, or whose `stream_id` does not decode, and returns the kept rows without a count; it does not drop duplicates.
 
 ### AC-4a Non-array list body
 Given a body that is a JSON object other than `{}`, a string, `true`, or not JSON at all (an HTML login page)
@@ -170,6 +170,7 @@ Then the first four yield `host` "h", `kind` `.live`, `.vod`, `.series`, `.episo
 
 - `category_id` absent on a row: `categoryID` nil; 0011 lists the item only in Recently added and All.
 - Duplicate rows: a repeated `id` within one response is skipped and counted (AC-4), so 0011's `ForEach` over `id` never sees a duplicate. The first occurrence wins.
+- Episode order across seasons: `episodes` is an object keyed by season and JSON object key order is not preserved, so seasons are visited by numeric key ascending, then non-numeric keys by name. That order decides AC-6b's ties and AC-6d's first occurrence across seasons; within one season's array server order holds. `episode_num` often arrives as a string, so sorting is numeric (AC-6b).
 - Ids are never built from `streamURL`-like fields. `direct_source` is ignored in this spec and URLs are always built per AC-7. Whether some providers require `direct_source` is an open question for a follow-up spec, not this one.
 - Credentials with reserved characters (`&`, `#`, `/`, `?`, `+`, `%`, space): `URLQueryItem` leaves `+` literal, `appending(path:)` splits on `/` and `appending(component:)` encodes it, so the implementation percent-encodes explicitly (AC-1, AC-7).
 - Paging: `vodStreams(categoryID: nil)` and `series(categoryID: nil)` stay available because 0006/AC-10a counts movies and series from them.
@@ -185,15 +186,15 @@ Fixtures under `Tests/AntennaCoreTests/Fixtures/Xtream/` for every endpoint, inc
 | AC-2a | core (decode function, parameterised) | `XtreamVODDecodingTests.looseIDs`, `.looseAddedAndRating`, `.zeroRating` |
 | AC-2b | core (decode function, parameterised) | `XtreamVODDecodingTests.posterURLRule` |
 | AC-3 | core (decode function, parameterised) | `XtreamVODDecodingTests.unparseableAdded` |
-| AC-4 | core (decode function) | `XtreamVODDecodingTests.brokenRows`, `.brokenSeriesRows` |
+| AC-4 | core (decode function; live list skipping through the `URLProtocol` stub, live row fields decoded directly) | `XtreamVODDecodingTests.brokenRows`, `.brokenSeriesRows`, `.wholeNumberIDs`, `.blankNames`, `.blankOptionalStrings`; `XtreamClientTests.liveStreamIDSkipped`, `.liveWholeNumbers`, `.liveOptionalIntegers` |
 | AC-4a | core (decode function, parameterised, HTML body included) | `XtreamVODDecodingTests.nonArrayListBody`, `.nestedPath` |
 | AC-4b | core (`URLProtocol` stub: category list, `accountInfo()` on HTML) | `XtreamClientCallTests.categoryListFailsWhole`, `.htmlBody` |
 | AC-5 | core (decode function) | `XtreamVODDecodingTests.vodInfoFields`, `.durationRule`, `.yearRule`, `.infoShapes` |
 | AC-6 | core (decode function) | `XtreamSeriesDecodingTests.seriesRowFields`, `.lastModifiedRule` |
 | AC-6a | core (decode function) | `XtreamSeriesDecodingTests.episodesFlattenFromDictionary`, `.episodesFlattenFromArray`, `.seasonAndNumberFallback` |
-| AC-6b | core (decode function) | `XtreamSeriesDecodingTests.episodeOrder` |
+| AC-6b | core (decode function) | `XtreamSeriesDecodingTests.episodeOrder`, `.seasonKeyOrder` |
 | AC-6c | core (decode function) | `XtreamSeriesDecodingTests.seasonCount` |
-| AC-6d | core (decode function) | `XtreamSeriesDecodingTests.episodeSkipping` |
+| AC-6d | core (decode function) | `XtreamSeriesDecodingTests.episodeSkipping`, `.seasonKeyOrder` |
 | AC-6e | core (decode function, parameterised) | `XtreamSeriesDecodingTests.emptyEpisodes` |
 | AC-7 | core | `XtreamURLTests.playableURLs`, `.extensionRule`, `.serverPath`, `.encodedCredentials` |
 | AC-8 | core (parameterised) | `XtreamURLTests.errorsCarryNoSecrets`, `.valuesCarryNoSecrets` |
@@ -209,4 +210,3 @@ Fixtures under `Tests/AntennaCoreTests/Fixtures/Xtream/` for every endpoint, inc
 
 - Should `vodStreams(categoryID: nil)` page through categories for providers whose unfiltered list exceeds tens of megabytes? Any resolution must keep an unfiltered count path for 0006/AC-10a.
 - Do some providers require `direct_source` instead of the `/movie/` and `/series/` shape? Tracked for a follow-up spec; this spec ignores the field.
-- `JSONDecoder` does not guarantee JSON object key order, so for `episodes` keyed by season the implementation visits numeric keys in ascending order, then other keys by name. That order stands in for server order in AC-6b's ties and AC-6d's first-occurrence rule across seasons. Within one season's array, server order holds. Is that the intended reading, or should duplicates across seasons be decided some other way?
