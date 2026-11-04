@@ -1,6 +1,6 @@
 # 0007. Apple TV channel overlay
 
-- Status: Draft (two spec-reviewer rounds; remaining findings listed in the PR)
+- Status: Draft (two spec-reviewer rounds; findings applied, boards drawn)
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: tvOS
@@ -9,10 +9,16 @@
 
 ## Design
 
-Boards: `docs/design/boards/Main.dc.html`.
-Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-6, DR-7, DR-8, DR-11, DR-12, DR-13. Deviations: the selected-but-unfocused group row uses the 0.12 surface and weight 600 (README section 1 is amended to allow it on tvOS); on the focused white card muted text uses `#4B5563` ("Text muted on focus" token added to README section 1); the accent "Now" eyebrow in the panel extends DR-3's NOW usage.
-States on the boards: overlay open over live video, selected group with its count, focused channel row as the white card, unfocused rows, now and next panel for the focused channel, catch-up glyph on a row, channel column header, clock, "Groups" eyebrow, star and magnifier glyphs. The stage caption bottom right is illustrative and does not ship. The board's logo tiles and the "HD" badge are illustrative; AC-6 and AC-8 define what ships. Start over is drawn and hidden per AC-14. Counts on every group (AC-3) are to be added to the board.
-Not drawn, to be added before the implementing PR: `overlay.emptyGroup` for Favorites and for an empty catalogue (muted 26 pt, centred in the column), "No programme information" row and panel (muted 22 pt), "Loading guide…" row, panel without Start over, filled star state of `overlay.favorite` (label "Remove from favorites"), Favorites header "Your order".
+Boards: `docs/design/boards/Main.dc.html` with the state boards `Main-Favorites.dc.html`, `Main-FavoritesEmpty.dc.html`, `Main-Empty.dc.html`, `Main-NoProgramme.dc.html` and `Main-GuideLoading.dc.html`.
+Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-6, DR-7, DR-8, DR-11, DR-12, DR-13. Deviations: the selected-but-unfocused group row uses the 0.12 surface and weight 600 (README section 1 is amended to allow it on tvOS); on the focused white card muted text uses `#4B5563` ("Text muted on focus" token in README section 1); the accent "Now" eyebrow in the panel extends DR-3's NOW usage.
+States on the boards:
+- `Main.dc.html`: overlay open over live video, selected group, every group with its count at the trailing edge (AC-3), focused channel row as the white card with the muted-on-focus token on its number, programme title and catch-up glyph, unfocused rows, now and next panel for the focused channel, catch-up glyph on a row, channel column header, clock, "Groups" eyebrow, star and magnifier glyphs. The stage caption bottom right is illustrative and does not ship. The logo tiles and the "HD" badge are illustrative; AC-6 and AC-8 define what ships. Start over is drawn here and hidden per AC-14.
+- `Main-Favorites.dc.html`: Favorites selected with its count, header "Favorites" and "Your order" (AC-4), rows in the user's order (AC-12), panel with the filled star labelled "Remove from favorites" (AC-11) and without Start over (AC-14).
+- `Main-FavoritesEmpty.dc.html`: Favorites focused with count 0, `overlay.emptyGroup` reading "No favorites yet. Press the star on a channel to add it." at muted 26 pt centred in the column, panel empty (AC-13).
+- `Main-Empty.dc.html`: catalogue with zero channels, only Favorites and All channels in the group column, All channels focused, `overlay.emptyGroup` reading "No channels yet. Add a source in Settings." (AC-2), panel empty, no live video under the overlay.
+- `Main-NoProgramme.dc.html`: focused row with "No programme information" at muted 22 pt and no progress bar, panel with the same text in place of the Now section and the next section listing programmes after now (AC-7, AC-20), no Start over.
+- `Main-GuideLoading.dc.html`: unfocused rows with "Loading guide…" at muted 22 pt and no progress bar (AC-18), no Start over.
+Not drawn: nothing. Every state the criteria describe is on a board above.
 
 ## Problem
 
