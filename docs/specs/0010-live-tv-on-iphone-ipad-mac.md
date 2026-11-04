@@ -34,7 +34,7 @@ On a phone or a desk the user browses with a finger or a pointer while a channel
 
 In:
 - Regular width (iPadOS, macOS): sidebar with sections and groups, channel list with local filter, inline player with controls, now-playing panel, up-next list. Column collapse rules for narrow windows and Split View.
-- Compact width (iOS, iPad in a compact Split View): player pinned at the top, now-playing row, group chips, channel list, tab bar with Live, Guide, Movies, Search, Settings. Series is reached from inside Movies at compact width (0011/AC-1).
+- Compact width (iOS, iPad in a compact Split View): player pinned at the top, now-playing row, group chips, channel list, tab bar with Live, Guide, Movies, Search, Settings. Series is reached from inside Movies at compact width (0011/AC-1b).
 - Selecting a channel plays it inline through `EngineRouter`.
 - Group filter, including Favorites and All channels.
 - Local filter field over the current group by name and number (regular width only; compact width uses Search, 0012).
@@ -81,17 +81,17 @@ Then with at least 904 pt available three columns are visible: sidebar (232 pt),
 ### AC-2 Compact-width layout
 Given a horizontal size class of compact
 When the Live tab is shown
-Then the frame of `browse.player` spans the full width at a 16:9 height, followed by `browse.nowPlaying`, the group chips and the channel list, with the tab bar at the bottom listing Live, Guide, Movies, Search and Settings; Movies is present under 0011/AC-1; a size-class change while a channel plays makes no further `load` call and the engine state stays `.playing`.
+Then the frame of `browse.player` spans the full width at a 16:9 height, followed by `browse.nowPlaying`, the group chips and the channel list, with the tab bar at the bottom listing Live, Guide, Movies, Search and Settings; Movies is present under 0011/AC-1a and AC-1b; a size-class change while a channel plays makes no further `load` call and the engine state stays `.playing`.
 
 ### AC-3 Sidebar contents
 Given sources with groups per 0013/AC-2
 When the sidebar is rendered at regular width
-Then it lists, under the app mark, Live, Guide, Movies, Series, Search in that order (Movies and Series under 0011/AC-1), then a Groups header with Favorites, All channels and every group with its count, then Sources & Settings at the bottom.
+Then it lists, under the app mark, Live, Guide, Movies, Series, Search in that order (Movies and Series under 0011/AC-1a and AC-1b), then a Groups header with Favorites, All channels and every group with its count, then Sources & Settings at the bottom.
 
 ### AC-4 Group selection filters the list
 Given group "Sport" with 42 channels
 When the user selects it in the sidebar or taps its chip
-Then the list shows those channels in 0013/AC-6 order, the previously selected channel keeps playing, and the filter field is cleared; at regular width `browse.listHeader` reads "Sport" and "42 channels"; at compact width the Sport chip is shown selected, no header exists and chips carry no counts.
+Then the list shows those channels in 0013/AC-6a order, the previously selected channel keeps playing, and the filter field is cleared; at regular width `browse.listHeader` reads "Sport" and "42 channels"; at compact width the Sport chip is shown selected, no header exists and chips carry no counts.
 
 ### AC-5 Channel row anatomy
 Given a channel with number, logo, name, current programme and progress
@@ -136,7 +136,7 @@ Then the controls appear and hide three seconds after the last touch on the inje
 ### AC-11 Favorite toggle
 Given the panel or row for a channel that is not a favorite
 When the user taps the star
-Then `Catalogue.addFavorite(channel)` runs and its snapshot is inserted (0013/AC-10), the star fills, and the sidebar Favorites count increases by one (chips show no count); tapping again applies 0013/AC-9's removal and reverses both.
+Then `Catalogue.addFavorite(channel)` runs and its snapshot is inserted (0013/AC-10), the star fills, and the sidebar Favorites count increases by one (chips show no count); tapping again applies 0013/AC-9b's removal and reverses both.
 
 ### AC-12 Favorites group
 Given favorites per 0013/AC-8
