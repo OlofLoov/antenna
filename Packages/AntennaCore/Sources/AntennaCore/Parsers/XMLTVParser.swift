@@ -48,13 +48,7 @@ public struct XMLTVParser: Sendable {
         private var text = ""
         private var capturing = false
 
-        private static let dateFormatter: DateFormatter = {
-            let f = DateFormatter()
-            f.locale = Locale(identifier: "en_US_POSIX")
-            f.dateFormat = "yyyyMMddHHmmss Z"
-            return f
-        }()
-        private static let dateFormatterNoZone: DateFormatter = {
+        private static let utcFormatter: DateFormatter = {
             let f = DateFormatter()
             f.locale = Locale(identifier: "en_US_POSIX")
             f.timeZone = TimeZone(secondsFromGMT: 0)
@@ -62,9 +56,27 @@ public struct XMLTVParser: Sendable {
             return f
         }()
 
+        /// Reads the first 14 characters as UTC, then applies a `±HHMM` or
+        /// `±HH:MM` offset that follows, with or without spaces before it.
+        /// An offset over 14 hours, or any other suffix, is ignored.
         static func date(_ s: String?) -> Date? {
-            guard let s else { return nil }
-            return dateFormatter.date(from: s) ?? dateFormatterNoZone.date(from: String(s.prefix(14)))
+            guard let s, let utc = utcFormatter.date(from: String(s.prefix(14))) else { return nil }
+            let suffix = s.dropFirst(14).trimmingCharacters(in: .whitespaces)
+            guard let offset = offsetSeconds(suffix) else { return utc }
+            return utc.addingTimeInterval(-TimeInterval(offset))
+        }
+
+        static func offsetSeconds(_ suffix: String) -> Int? {
+            let chars = Array(suffix)
+            guard let sign = chars.first, sign == "+" || sign == "-" else { return nil }
+            let digits = chars.dropFirst().filter { $0 != ":" }
+            let hasValidColon = chars.count == 5 || (chars.count == 6 && chars[3] == ":")
+            guard hasValidColon, digits.count == 4, digits.allSatisfy(\.isASCII), digits.allSatisfy(\.isNumber),
+                let hours = Int(String(digits.prefix(2))), let minutes = Int(String(digits.suffix(2))),
+                hours <= 14, minutes < 60
+            else { return nil }
+            let seconds = hours * 3600 + minutes * 60
+            return sign == "-" ? -seconds : seconds
         }
 
         func parser(
