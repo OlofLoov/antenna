@@ -47,9 +47,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
 }
 
 @Suite struct XtreamClientCallTests {
-    private func client(host: String, reply: StubURLProtocol.Reply, username: String = "u", password: String = "p") throws
-        -> XtreamClient
-    {
+    private func client(host: String, reply: StubURLProtocol.Reply, username: String = "u", password: String = "p") throws -> XtreamClient {
         StubURLProtocol.register(host: host, reply: reply)
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [StubURLProtocol.self]
