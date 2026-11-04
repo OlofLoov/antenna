@@ -10,6 +10,7 @@ swift test --package-path Packages/AntennaCore          # core tests, no Xcode n
 swift format lint --strict --recursive --parallel Apps Packages   # formatting, ships with the toolchain
 swiftlint lint --strict                                  # conventions; brew install swiftlint
 scripts/check-rules.sh                                   # ADR greps: layering, CloudKit, availability
+scripts/check-arch.sh                                    # architectural change needs an ADR or diagram update
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO
@@ -42,6 +43,10 @@ from `Config/Local.xcconfig.example` for device builds.
 - **Decisions are ADRs.** Anything that would be hard to reverse (data model,
   playback path, sync, dependency) gets a record in `docs/adr/` via the `adr`
   skill. Read `docs/adr/README.md` before proposing architecture changes.
+- **Diagrams follow the code.** C4 context and container diagrams live in
+  `docs/architecture/` as `.drawio.svg`. `scripts/check-arch.sh` fails a PR
+  that changes architectural paths without touching them or an ADR; the
+  `arch-reviewer` agent says which to update.
 - **Tests cite criteria.** A test that proves acceptance criterion `AC-3` of
   spec `0007` says so in its name or a comment: `// 0007/AC-3`.
 - **Implement with the `implement` skill.** Give it a spec id. It checks the
