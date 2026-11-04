@@ -1,22 +1,22 @@
 # 0009. Apple TV guide grid
 
-- Status: Draft (two spec-reviewer rounds, every finding applied)
+- Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: tvOS
-- Builds on specs 0013 (channel order, initials), 0014 (guide queries, horizon, loading state, overlap resolution), 0015 (shell, Menu, pause behind tabs), 0008 (current group, bar after tuning, remaining-time formatter, resolution mapping), 0012 (requests AC-21).
-- Blocked on the playback engine spec (not yet written) for an observable state, `play()` on resume (AC-1b) and presentation height (AC-8).
+- Builds on specs 0013 (channel order, initials), 0014 (guide queries, horizon, loading state, overlap resolution), 0015 (shell, Menu, pause behind tabs), 0008 (current group, bar after tuning, remaining-time formatter, resolution mapping), 0007 (overlay, hidden Start over, re-tune on `.failed`, group switching), 0004 (sources, unsynced credential), 0012 (requests AC-21).
+- Blocked on the playback engine spec (not yet written) for an observable state, `play()` on resume (AC-1b) and presentation height (AC-8a).
 
 ## Design
 
 Boards: `docs/design/boards/TV-Guide.dc.html` for the playing state, `TV-Guide-Placeholders.dc.html`, `TV-Guide-Future.dc.html` and `TV-Guide-Empty.dc.html` for the other states. Same frame, tokens and type on all four; the state boards show Watch alone, as AC-8c requires.
-Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-8, DR-11, DR-12, DR-13. Deviations: DR-6 does not apply (the 296 pt channel cell is number, logo and name); DR-7, in the grid the now line stands in for the progress bar and the panel shows the bar; DR-2, Watch is drawn white on the board for emphasis but ships on the 0.12 surface and takes the Focus token only when focused; DR-3, the panel eyebrow is accent for "Now" only, muted otherwise; DR-4, initials in the 64 by 42 logo tile are 14 pt because the tile is 42 pt tall.
+Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-8, DR-11, DR-12, DR-13. Deviations: DR-6 does not apply (the 296 pt channel cell is number, logo and name); DR-7, in the grid the now line stands in for the progress bar and the panel shows the bar; DR-2, Watch is drawn white on the board for emphasis but ships on the 0.12 surface and takes the Focus token only when focused; DR-3, the panel eyebrow is accent for "Now" only, muted otherwise; DR-4, initials in the 64 by 42 logo tile are 14 pt because the tile is 42 pt tall; DR-2, grid blocks use a tighter shadow `0 10px 28px rgba(0,0,0,0.5)` because the 84 pt row leaves no room for the 32 pt blur; DR-5, chips and the Watch button are 36 and 50 pt tall; the 64 pt floor applies to rows, and blocks are 84 pt. Blocks are radius 8 where section 1 gives 14 for tvOS cards, so the 4 pt gaps between blocks stay visible.
 States on the boards:
 - `TV-Guide`: PiP with the live dot and caption, panel for the focused on-air programme with `guide.panel.progress` (4 pt, accent fill on the 0.12 track, under the meta line), day chips (Today then short weekday names; selected chip 0.12 surface, weight 600, radius 8; unselected chips muted), time header, now line with pill, past blocks (muted text on 0.06), now and future blocks (primary text on 0.08), a block clipped at the window start with the ◂ marker, the focused block as the white card with a second line "<start> – <stop> · Live", the playing channel's name at weight 600, clock in the eyebrow row. Remind me and Start over are drawn here and hidden until a reminders spec exists.
 - `TV-Guide-Placeholders`: placeholder rows "Loading guide…" (`guide.loading.<rowKey>`), "No programme information" (`guide.noGuide.<rowKey>`) and "Guide unavailable" (`guide.failed.<rowKey>`), each one block across the window, muted 24 pt on the 0.06 surface; an unfocused gap block (0.06 surface, unlabelled); a focused gap as the white card with the time line only; the panel for a gap (muted eyebrow "Today 21:00 · Arena HD", title "No programme information", meta, no summary, no progress bar, Watch only).
-- `TV-Guide-Future`: the window scrolled to 21:00 with the now line at 783 pt; a focused future programme as the white card with the second line without "· Live"; its panel with the muted eyebrow "Today 22:00 · Sport One", no progress bar and Watch only; PiP while the engine is not playing (ground colour, caption, no live dot). The panel for a past programme is the same panel with a past start in the eyebrow.
-- `TV-Guide-Empty`: `guide.empty` "No channels in <group>" muted 24 pt centred in the grid area; the Today chip focused (Focus token, weight 600, radius 8) with the other chips muted; time header and now line kept; PiP playing; the panel shows only the clock because no block has focus.
-Not drawn: nothing.
+- `TV-Guide-Future`: the window scrolled to 21:00 with the now line 719 pt from the channel column (783 on the board); a focused future programme as the white card with the second line without "· Live"; its panel with the muted eyebrow "Today 22:00 · Sport One", no progress bar and Watch only; PiP while the engine is not playing (ground colour, caption, no live dot). The panel for a past programme is the same panel with a past start in the eyebrow.
+- `TV-Guide-Empty`: `guide.empty` "No channels in <group>" muted 24 pt centred in the grid area; the Today chip focused (Focus token, weight 600, radius 8) with the other chips muted; time header and now line kept; PiP playing; the panel shows only the clock because no block has focus. The board shows a store with a three-day horizon, hence three chips.
+Not drawn: focused placeholder block and its panel (same styles as the focused gap and gap panel on `TV-Guide-Placeholders`); focused `guide.watch` (Focus token incl. shadow); the no-channel PiP (ground colour, no caption).
 
 ## Problem
 
@@ -74,7 +74,7 @@ Then `guide.row.<rowKey>` is exposed for each of the 42 channels in 0013/AC-6 or
 ### AC-3 Window and now line
 Given the time is 21:34
 When the guide is laid out
-Then the visible window is four columns (two hours) whose first column starts at the half-hour boundary at or before now minus 90 minutes (20:00); the header shows 30-minute columns of 370 pt labelled in the locale short time style; the now line's left edge with a pill reading the current time is at 300 + 2 × 370 + 34/30 × 370 = 1459 pt from the leading edge of the channel column.
+Then the first column of `guide.header` is the half-hour boundary at or before now minus 90 minutes (20:00) and shows four 370 pt columns labelled in the locale short time style; `guide.nowLine`'s left edge is 300 + 2 × 370 + 34/30 × 370 ≈ 1459 pt (within 1 pt) from the channel column's leading edge, with `guide.nowLine.pill` reading the current time centred on the line.
 
 ### AC-4 Block width
 Given the window of AC-3
@@ -89,7 +89,7 @@ Then its block starts at the window's left edge, its width is computed from the 
 ### AC-6 Block state
 Given programmes that ended, are on air, or start later
 When rendered
-Then each block's accessibility value starts with "past", "now" or "future"; the focused block shows a second line "<start> – <stop>" followed by " · Live" for an on-air programme.
+Then each block's accessibility value, gaps and placeholders included, starts with "past", "now" or "future"; the focused block shows a second line "<start> – <stop>" followed by " · Live" for an on-air programme.
 
 ### AC-7 Initial focus
 Given the Guide tab is opened without a request (AC-21)
@@ -99,7 +99,7 @@ Then focus is on the block in the playing channel's row that covers now (program
 ### AC-8a Panel text
 Given focus on a block
 When the panel is rendered
-Then `guide.panel.eyebrow` reads "Now · <channel>" (accent) or "<Today | Tomorrow | weekday> <start> · <channel>" (muted), `guide.panel.title` the title or "Untitled", `guide.panel.meta` start and stop in the locale short style, the duration from 0008/AC-5's formatter without "left" ("2 h", "45 min", "1 h 30 min"), `Programme.category` when present, and 0008/AC-7's resolution text only for the playing channel after the engine reports; `guide.panel.summary` the summary or nothing when nil.
+Then `guide.panel.eyebrow` reads "Now · <channel>" (accent) or "<Today | weekday> <start> · <channel>" (muted), `guide.panel.title` the title or "Untitled", `guide.panel.meta` start and stop in the locale short style, the duration from 0008/AC-5's formatter without "left" ("2 h", "45 min", "1 h 30 min"), `Programme.category` when present, and 0008/AC-7's resolution text only for the playing channel after the engine reports; `guide.panel.summary` the summary or nothing when nil.
 
 ### AC-8b Panel progress
 Given focus on an on-air programme
@@ -114,17 +114,17 @@ Then `guide.watch` is present and Start over and Remind me are absent.
 ### AC-9 Select on an on-air programme
 Given focus on a block whose programme is on air
 When the user presses select
-Then if the channel is not playing, `load(_:)` is called once with its `streamURL`, the guide is dismissed to full screen and a channel-change event is emitted; if it is already playing the guide is dismissed without `load` unless the engine state is `.failed`, in which case `load` is called (as 0007/AC-9a).
+Then if the channel is not playing, `load(_:)` is called once with its `streamURL`, the guide is dismissed to full screen and the 0008 zap bar is shown after tuning (0008's channel-change path); if it is already playing the guide is dismissed without `load` unless the engine state is `.failed`, in which case `load` is called (as 0007/AC-9a).
 
 ### AC-10 Select on any other block
 Given focus on a future, past or gap block
 When the user presses select
-Then focus moves to `guide.watch` and the channel is unchanged; Watch tunes the channel as AC-9's first branch.
+Then focus moves to `guide.watch` and the channel is unchanged; Watch behaves exactly as AC-9, including the already-playing and `.failed` branches.
 
 ### AC-11a Day chips
 Given a horizon from 2026-11-03 06:00 to 2026-11-10 06:00 and today 2026-11-03 in the user's time zone
 When the guide is shown
-Then `guide.days` lists one chip per calendar day from today to the day containing `horizon.end` minus one second, labelled Today then short weekday names from `Calendar`, horizontally scrollable with the selected chip visible; days before today are not listed; a horizon starting after today selects the horizon's first day.
+Then `guide.days` lists one chip per calendar day from today to the day containing `horizon.end` minus one second, labelled Today then short weekday names from `Calendar`, horizontally scrollable with the selected chip visible; days before today are not listed; a horizon starting after today selects the horizon's first day; for the Given, eight chips: Today, Wed, Thu, Fri, Sat, Sun, Mon, Tue.
 
 ### AC-11b Selecting a chip
 Given a selected chip and a window at local time T
@@ -139,12 +139,12 @@ Then the selected chip changes to that day.
 ### AC-12 Placeholder rows
 Given a channel whose `loadingState` is `.noData`, `.unavailable` or `.loaded` with zero programmes in the horizon; `.loading`; or `.failed` with no previous guide
 When its row is rendered
-Then one focusable block spanning the visible window reads "No programme information" (`guide.noGuide.<rowKey>`), "Loading guide…" (`guide.loading.<rowKey>`) or "Guide unavailable" (`guide.failed.<rowKey>`); select on it behaves as AC-10 unless it covers now, then as AC-9; a `.failed` source whose previous guide is still queryable (0014/AC-11a) renders its programmes.
+Then one focusable block spanning the visible window reads "No programme information" (`guide.noGuide.<rowKey>`), "Loading guide…" (`guide.loading.<rowKey>`) or "Guide unavailable" (`guide.failed.<rowKey>`); select on it behaves as AC-10 unless it covers now, then as AC-9; a `.failed` source whose previous guide is still queryable (0014/AC-11a) renders its programmes; while focused the block is the white card with the placeholder text as its first line and "<window start> – <window end>" as its second; the panel shows the muted eyebrow "<day> <window start> · <channel>", the placeholder text as title, meta "<window start> – <window end> · 2 h", no summary, no progress, Watch only.
 
 ### AC-13 Horizontal bounds
 Given the horizon of AC-11a
 When the user scrolls left or right
-Then the first visible column is never before the horizon start's half-hour boundary, and the last column is the one whose start is strictly before the horizon end.
+Then the first visible column is never before the horizon start's half-hour boundary, and the last column is the one whose start is strictly before the horizon end; when the store has no horizon, bounds and chips are today 00:00 to 24:00 with a single Today chip.
 
 ### AC-14a First frame
 Given All channels with 20 000 channels and seven days of guide
@@ -159,22 +159,22 @@ Then Instruments reports no animation hitch longer than one frame.
 ### AC-15 Clock-driven updates
 Given the guide is open
 When the injected clock advances one minute, or passes a programme's stop
-Then the now line's offset increases by 370/30 pt per minute and the pill updates; when now is outside the visible window the line and pill are not drawn and the window does not scroll on its own; a block whose stop passed exposes "past" and the panel updates if it showed that programme, all on the next render (test: within five seconds of injected time).
+Then the now line's offset increases by 370/30 pt per minute and the pill updates; when now is outside the visible window the line and pill are not drawn and the window does not scroll on its own; a block whose stop passed exposes "past", the panel for that block drops `guide.panel.progress`, its eyebrow becomes the muted "<day> <start> · <channel>" form, and the focused block's second line loses " · Live"; the next block in the row exposes "now", all on the next render (test: within five seconds of injected time).
 
 ### AC-16 Focus within the grid
 Given focus on a block
 When the user moves
-Then up or down lands on the block in the adjacent row containing the focused block's start time clamped to the visible window; up from the first visible row moves to the selected day chip; right or left to a block outside the window scrolls so that block's start column is first; left from a block whose start is at or before the window's left edge scrolls one column, or does nothing at the AC-13 bound; channel cells and the time header are not focusable.
+Then up or down lands on the block in the adjacent row containing the focused block's start time clamped to the visible window; up from the first row of the group moves to the selected day chip; up from any other row scrolls that row into view if needed; right or left to a block outside the window scrolls so that block's start column is first; left from a block whose start is at or before the window's left edge scrolls one column, or does nothing at the AC-13 bound; channel cells and the time header are not focusable.
 
 ### AC-16b Focus from the chips
 Given focus on a day chip
 When the user moves down
-Then focus returns to the block it came from, or to the first row's block covering the window start; moving right from the last chip moves to `guide.watch`.
+Then if the window has not changed since focus left the grid, focus returns to the block it came from; otherwise to the block covering the window start in the row it came from, or in the first row when there is none; moving right from the last chip moves to `guide.watch`; moving up from a chip moves to `guide.watch`.
 
 ### AC-17 Focus from the panel
 Given focus on `guide.watch`
 When the user presses Menu or moves down
-Then focus returns to the block it came from and the guide stays open.
+Then focus returns to the block it came from and the guide stays open; left, right and up from `guide.watch` do nothing; `guide.pip`, the panel text and the clock are not focusable.
 
 ### AC-17b Menu from the grid
 Given focus in the grid or on a day chip
@@ -184,12 +184,12 @@ Then the tab bar is shown with Guide selected (0015/AC-6).
 ### AC-18 Gaps
 Given programmes 20:30 to 21:00 and 21:30 to 22:00 on a channel in a window from 20:00
 When the row is rendered
-Then every interval of the visible window not covered by a programme, including before the first and after the last, is an unlabelled focusable block on the 0.06 surface (`guide.gap.<rowKey>.<start>`); the panel for a gap reads "No programme information" with the gap's start and channel in the eyebrow; select on a gap covering now tunes per AC-9, otherwise AC-10.
+Then every interval of the visible window not covered by a programme, including before the first and after the last, is an unlabelled focusable block on the 0.06 surface (`guide.gap.<rowKey>.<start>`); the panel for a gap reads "No programme information" with the gap's start and channel in the eyebrow; select on a gap covering now tunes per AC-9, otherwise AC-10; a gap's accessibility value starts with "past", "now" or "future" as AC-6. A gap's start is the previous programme's stop, or the horizon start when none precedes it; the drawn block is clipped to the window like AC-5 but keeps that start in its identifier. For the fixture the row exposes `guide.gap.<rowKey>.<20:00 or earlier>` and `guide.gap.<rowKey>.<21:00>` and no other gap.
 
 ### AC-19 Empty group
 Given the current group has no channels
 When the guide is shown
-Then `guide.empty` reads "No channels in <group>", the PiP keeps playing, focus is on the Today chip, and AC-13 bounds default to today 00:00 to 24:00.
+Then `guide.empty` reads "No channels in <group>"; `guide.days` and the AC-13 bounds follow the store's horizon, or today 00:00 to 24:00 with a single Today chip when the store has no horizon; focus is on the selected chip; the PiP behaves as AC-1, AC-1b or the no-channel case of the edge list, whichever applies.
 
 ### AC-20 Overlap in source data
 Given 0014/AC-6's truncated programmes
@@ -210,6 +210,7 @@ Then `guide.clock` at the trailing edge of the eyebrow row shows the new time in
 
 - Columns are 30 minutes of absolute time anchored on a local half-hour boundary; on the DST change day the header shows a repeated or missing hour; day chips use calendar days in the user's time zone. Core test with a fixed `TimeZone` and a 2027-03-28 fixture.
 - PiP when the engine is `.loading` or `.failed`: the box shows the ground colour with the caption; Watch re-tunes.
+- No channel has been tuned (engine idle): `guide.pip` shows the ground colour with no caption and no live dot; AC-7 focuses the block covering now in the first row; no row's channel name is drawn at weight 600; Watch tunes per AC-9's first branch.
 - Empty programme title: block and panel read "Untitled".
 - Source whose credential has not synced: its channels are absent (0004/AC-10).
 - Reduce Motion: no slide when scrolling columns.
@@ -218,7 +219,7 @@ Then `guide.clock` at the trailing edge of the eyebrow row shows the new time in
 
 ## Test plan
 
-Window maths, block widths and minimum-width propagation, clipping, state, gap derivation, day-chip derivation and bounds are pure functions in AntennaCore over a fixed clock and time zone. UI tests use a fake engine, fixture catalogue and fake `GuideStore`. Identifiers: `guide.pip`, `guide.pip.caption`, `guide.pip.liveDot`, `guide.panel`, `guide.panel.eyebrow`, `guide.panel.title`, `guide.panel.meta`, `guide.panel.progress`, `guide.panel.summary`, `guide.watch`, `guide.days`, `guide.day.<index>`, `guide.header`, `guide.nowLine`, `guide.clock`, `guide.row.<rowKey>`, `guide.channel.<rowKey>`, `guide.block.<rowKey>.<startUnixSeconds>`, `guide.gap.<rowKey>.<startUnixSeconds>`, `guide.noGuide.<rowKey>`, `guide.loading.<rowKey>`, `guide.failed.<rowKey>`, `guide.empty`.
+Window maths, block widths and minimum-width propagation, clipping, state, gap derivation, day-chip derivation and bounds are pure functions in AntennaCore over a fixed clock and time zone. UI tests use a fake engine, fixture catalogue and fake `GuideStore`. Identifiers: `guide.pip`, `guide.pip.caption`, `guide.pip.liveDot`, `guide.panel`, `guide.panel.eyebrow`, `guide.panel.title`, `guide.panel.meta`, `guide.panel.progress`, `guide.panel.summary`, `guide.watch`, `guide.days`, `guide.day.<index>`, `guide.header`, `guide.nowLine`, `guide.nowLine.pill`, `guide.clock`, `guide.row.<rowKey>`, `guide.channel.<rowKey>`, `guide.block.<rowKey>.<startUnixSeconds>`, `guide.gap.<rowKey>.<startUnixSeconds>`, `guide.noGuide.<rowKey>`, `guide.loading.<rowKey>`, `guide.failed.<rowKey>`, `guide.empty`.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
