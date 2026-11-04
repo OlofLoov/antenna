@@ -10,10 +10,10 @@
 
 ## Design
 
-Boards: `docs/design/boards/TV-ZapBar.dc.html`.
+Boards: `docs/design/boards/TV-ZapBar.dc.html` and the `TV-ZapBar-*.dc.html` state boards beside it.
 Design rules that apply: DR-1, DR-3, DR-4, DR-7, DR-8, DR-11, DR-12, DR-13.
-States on the boards: bar visible over live video with identity, now playing (78%, 26 min left), next ("22:00 · Match of the Day"), badges ("LIVE", "1080p", "AAC 5.1"), catch-up footer and the hint "Press to browse channels"; the entry pill top left mid-entry. The clock drawn top right is 0007's and is not rendered during full-screen playback (AC-20). Digit entry is narrowed to hardware keyboards; `docs/design/README.md` section 2 is corrected in the same PR.
-Not drawn, to be added before the implementing PR, each in the muted 22 pt style of the now section unless stated: hidden state (nothing but video); "No programme information", "Loading guide…" and "Guide unavailable" bars; footer without catch-up; "Favorites · n of m" and "All channels · n of m"; pill with no match and zeros-only pill (44 pt digits, 22 pt name); "No channel 999" pill; "Ends now"; bar while buffering (no LIVE, no format badges).
+States on the boards: `TV-ZapBar.dc.html` is the bar visible over live video with identity, now playing (78%, 26 min left), next ("22:00 · Match of the Day"), badges ("LIVE", "1080p", "AAC 5.1"), catch-up footer and the hint "Press to browse channels", with the entry pill top left mid-entry drawn on the same frame. The clock drawn top right there is 0007's and is not rendered during full-screen playback (AC-20); the state boards omit it. Digit entry is narrowed to hardware keyboards, as `docs/design/README.md` section 2 says.
+State boards, one frame each, in the muted 22 pt style of the now section unless stated: hidden state, nothing but video (`TV-ZapBar-Hidden.dc.html`); "No programme information" (`TV-ZapBar-NoProgramme.dc.html`), "Loading guide…" (`TV-ZapBar-GuideLoading.dc.html`) and "Guide unavailable" (`TV-ZapBar-GuideUnavailable.dc.html`) bars, each with no progress bar, Next line or remaining text; footer without catch-up (`TV-ZapBar-NoCatchup.dc.html`); "Favorites · 4 of 9" (`TV-ZapBar-Favorites.dc.html`) and "All channels · 131 of 1312" (`TV-ZapBar-AllChannels.dc.html`) in the 20 pt position label of the base board; pill with no match (`TV-ZapBar-PillNoMatch.dc.html`) and zeros-only pill (`TV-ZapBar-PillZeros.dc.html`), 44 pt digits with the name empty, bar hidden per AC-17; "No channel 999" pill at 22 pt, same height as the digits pill (`TV-ZapBar-PillNoChannel.dc.html`); "Ends now" with the progress bar full (`TV-ZapBar-EndsNow.dc.html`); bar while buffering, no LIVE and no format badges, badge row kept at its height (`TV-ZapBar-Buffering.dc.html`).
 
 ## Problem
 
