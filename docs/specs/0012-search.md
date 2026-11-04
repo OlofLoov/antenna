@@ -1,6 +1,6 @@
 # 0012. Search across channels, guide, movies and series
 
-- Status: Draft (two spec-reviewer rounds; remaining findings listed in the PR)
+- Status: Draft (two spec-reviewer rounds; every finding applied, see the PR)
 - Date: 2026-11-03
 - Depends on ADRs: 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS
@@ -9,10 +9,11 @@
 
 ## Design
 
-Boards: `docs/design/boards/TV-Search.dc.html` (tvOS), `docs/design/boards/iPad-Search.dc.html` (iPadOS, macOS), `docs/design/boards/iPhone-Search.dc.html` (iOS).
+Boards: `docs/design/boards/TV-Search.dc.html` (tvOS), `docs/design/boards/iPad-Search.dc.html` (iPadOS, macOS), `docs/design/boards/iPhone-Search.dc.html` (iOS). State boards in the same folder: `TV-Search-Recents.dc.html`, `iPhone-Search-Recents.dc.html`, `iPhone-Search-Empty.dc.html`, `iPad-Search-OneCharacter.dc.html`, `iPad-Search-Loading.dc.html`, `iPad-Search-GuideLoading.dc.html`, `iPad-Search-Capped.dc.html`.
 Design rules that apply: DR-1 (tvOS, video keeps playing behind Search for the first 30 seconds, then 0015/AC-5a), DR-2, DR-3, DR-4, DR-5, DR-8, DR-10, DR-11, DR-13. Deviations: DR-6 and DR-7 do not apply to result rows (compact variant, number after the name, no progress bar); DR-4, badge text ("NOW", "SERIES") sits 2 to 4 pt under the caption floor because it is letter-spaced label text; DR-5, chips and recents rows extend their hit area to 44 pt.
-States on the boards: field with a query, results in three sections with highlighted matches, NOW badge with the catch-up glyph at the trailing edge, SERIES badge, focused channel card (tvOS), scope chips with counts and recent searches in the sidebar (iPad, Mac), Cancel and clear (iPhone), "See all n" as the guide header's trailing control, the "Next 7 days" header prefix, the iPhone channel row chevron. tvOS uses the system search UI: the board's field row, Dictate button and hint are illustrative only.
-Not drawn, to be added before the implementing PR: recents on tvOS and iPhone (rows at body size on the 0.06 surface, 64 pt on tvOS, 44 pt on iPhone); one-character state (empty area); no results and "Channels are still loading" (title at body size, hint in the muted caption, centred); "Showing 500 of n" row (muted caption); hardware-keyboard focused row (0.12 surface); disabled zero-count chip.
+States on the boards: field with a query, results in three sections with highlighted matches, NOW badge with the catch-up glyph at the trailing edge, SERIES badge, focused channel card (tvOS), scope chips with counts and recent searches in the sidebar (iPad, Mac), Cancel and clear (iPhone), "See all n" as the guide header's trailing control, the "Next 7 days" header prefix, the iPhone channel row chevron. tvOS uses the system search UI: the board's field row and keyboard are illustrative only.
+States on the state boards, each drawn on one platform and reused on the others at that platform's type scale: recents with an empty field (`TV-Search-Recents.dc.html`, rows 64 pt at 29 pt body; `iPhone-Search-Recents.dc.html`, rows 44 pt at 17 pt body; both on the 0.06 surface with a muted clock glyph, header "Recent searches" on tvOS and the "Recent" eyebrow on iPhone); one character with an empty results area and no chips (`iPad-Search-OneCharacter.dc.html`); no results (`iPhone-Search-Empty.dc.html`: title at body size, hint in the muted caption, centred; the second caption line "Some sources are still loading." is present only in the AC-21 case); nothing loaded (`iPad-Search-Loading.dc.html`: "Channels are still loading" at body size, centred, no hint); guide loading with zero guide rows (`iPad-Search-GuideLoading.dc.html`: header "In the guide · loading" with "· loading" in the muted colour, no rows, Guide chip disabled); channel section cap (`iPad-Search-Capped.dc.html`: Channels chip selected, header count before the cap, last row "Showing 500 of 612" in the muted caption at 44 pt, number-prefix matches highlighted in the secondary line); disabled zero-count chip (`iPad-Search-Capped.dc.html` Series, `iPad-Search-GuideLoading.dc.html` Guide: muted text on the 0.04 surface, no bold); hardware-keyboard focused row on the 0.12 surface (first channel row of `iPad-Search.dc.html`, marked in a comment).
+Not drawn: nothing.
 
 ## Problem
 
