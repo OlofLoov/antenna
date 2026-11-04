@@ -1,30 +1,30 @@
 # 0010. Live TV browsing on iPhone, iPad and Mac
 
-- Status: Draft (two spec-reviewer rounds; remaining findings listed in the PR)
+- Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS
-- Builds on specs 0013 (catalogue: groups, order, initials, favorites), 0014 (guide queries), 0012 (matching function for the local filter; adds `browse.laterProgramme`), 0011 (Movies and Series presence rule).
-- Supersedes 0004/AC-14 on these platforms: a channel plays inline, nothing is pushed. Supersedes 0005/AC-1 and AC-2 on these platforms: Favorites becomes a group inside Live, not a tab. On acceptance, 0005's status line gains "AC-1 and AC-2 superseded by 0010/AC-12 on iOS, iPadOS and macOS" and its README row says the same; 0005/AC-3 and AC-4 stay in force. Renames the Channels tab of 0004/AC-8 and AC-9 to Live. Answers 0004's open question "where does the AC-11 error get rendered": `browse.banner` (AC-21).
+- Builds on specs 0013 (catalogue: groups, order, initials, favorites), 0014 (guide queries), 0012 (matching function for the local filter), 0011 (Movies and Series presence rule).
+- Supersedes 0004/AC-14 on these platforms: a channel plays inline, nothing is pushed. Supersedes 0005/AC-1 and AC-2 on these platforms: Favorites becomes a group inside Live, not a tab. On acceptance, 0005's status line gains "AC-1 and AC-2 superseded by 0010/AC-12 on iOS, iPadOS and macOS" and its README row says the same; 0005/AC-3 and AC-4 stay in force. Renames the Channels tab of 0004/AC-9 to Live. Supersedes 0004/AC-8 on these platforms (0006/AC-1 shows onboarding instead) and the loading-indicator clause of 0004/AC-13 (AC-18 applies). Answers 0004's open question "where does the AC-11 error get rendered": `browse.banner.failed` (AC-21).
 - Blocked on the playback engine spec (not yet written) for `EngineRouter`-provided inline playback with an observable state and PiP capability (AC-6, AC-13, AC-17); tested with a fake engine until then.
 
 ## Design
 
 Boards: `docs/design/boards/iPad.dc.html` (iPadOS and macOS, regular width), `docs/design/boards/iPhone.dc.html` (iOS and any compact width).
-Design rules that apply: DR-3, DR-4, DR-5, DR-6, DR-7, DR-8, DR-11, DR-12, DR-13, DR-15. Deviations: DR-6, on touch and pointer platforms the number trails the name (logo, name, number, programme, bar) because the logo tile is the primary scan target; DR-7, the compact now-playing row has no bar because the player's programme progress bar sits directly above it.
-States on the boards: sidebar with the app mark, Live selected and the Sport group selected, channel list with header and the selected row, inline player with controls (pause, programme progress, clock, LIVE, PiP, full screen) and the panel with the favorite star and up-next list; iPhone with the pinned player (pause, progress, clock 13 pt, LIVE, PiP 32 pt, full screen), now-playing row with star, group chips (Favorites, All channels, Sport, …; no counts), list and tab bar.
+Design rules that apply: DR-3, DR-4, DR-5, DR-6, DR-7, DR-8, DR-11, DR-12, DR-13, DR-14, DR-15. Entitlement gating is the shell's; DR-14 applies before this screen is shown. Deviations: DR-6, on touch and pointer platforms the number trails the name (logo, name, number, programme, bar) because the logo tile is the primary scan target; DR-7, the compact now-playing row has no bar because the player's programme progress bar sits directly above it; DR-5, player controls, the favorite star and the collapse toggles are drawn 30 to 40 pt and receive a 44 by 44 pt hit area (asserted in AC-10a and AC-11 from the element frame); sidebar group rows (36 pt) and chips (32 pt) follow system sidebar and chip heights; DR-4, the LIVE badge and tile initials are uppercase letter-spaced labels one point under the floor (12 pt regular, 11 pt compact); tab bar labels are the system tab bar's.
+States on the boards: sidebar with the app mark, Live selected and the Sport group selected, channel list with header and the selected row, inline player with controls (pause, programme progress, clock, LIVE, PiP, full screen) and the panel with the favorite star and up-next list; iPhone with the pinned player (pause, progress, clock 13 pt, LIVE, PiP 32 pt, full screen), now-playing row with star, group chips (Favorites, All channels, Sport, …; no counts), list and tab bar. On macOS the PiP control drawn on the iPad boards is omitted (AC-13); the remaining controls close the gap.
 State boards, one file per state beside the two above:
 - Loading rows (`browse.loading`, 15 pt name on iPhone and 16 pt on iPad, muted 15 pt count or indeterminate ring) with the nothing-selected player: `iPad-Loading.dc.html`, `iPhone-Loading.dc.html`.
 - Nothing selected (`browse.player` in the ground colour with the mark and "Select a channel" muted 15 pt, `browse.panel` hidden): `iPad-NothingSelected.dc.html`; the compact version is the player on `iPhone-Loading.dc.html`.
 - Every source failed (`browse.error`, 17 pt title, 15 pt muted body, `browse.retry` 44 pt): `iPad-Error.dc.html` with "Could not load channels" and a waiting-for-login line; `iPhone-Error.dc.html` with the offline wording split into title and body.
-- Some sources failed (`browse.banner`, 15 pt, Retry and dismiss as 44 pt targets, above the list header on iPad and above the chips on iPhone): `iPad-Banner.dc.html`, `iPhone-Banner.dc.html`. The iPhone board also shows the AC-24 waiting-for-login banner under it.
+- Some sources failed (`browse.banner.failed`, 15 pt, Retry and dismiss as 44 pt targets, above the list header on iPad and above the chips on iPhone): `iPad-Banner.dc.html`, `iPhone-Banner.dc.html`. The iPhone board also shows the AC-24 waiting-for-login banner (`browse.banner.waiting.<sourceId>`) under it.
 - Sources loaded, no channels (`browse.empty`, muted 15 pt centred, waiting-for-login line, `browse.retry`): `iPad-Empty.dc.html`.
 - Empty Favorites group (`browse.emptyGroup`, muted 15 pt centred): `iPhone-EmptyFavorites.dc.html`.
 - Waiting-for-login sidebar row (`browse.group.waiting.<sourceId>`, muted 15 pt after the last group): `iPad-Banner.dc.html`, `iPad-Error.dc.html`, `iPad-Empty.dc.html`.
 - Collapsed widths (AC-1): `iPad-Collapsed.dc.html` at 800 pt with `browse.toggleSidebar` in the list header; `iPad-Collapsed-Narrow.dc.html` at 600 pt with `browse.toggleSidebar` and `browse.toggleList` above the player.
 - Full screen (AC-17): `iPhone-FullScreen.dc.html`, 844 by 390, controls on the bottom edge, the full-screen control shows the exit glyph.
 - Hardware-keyboard focused row (AC-14): `iPad-Focus.dc.html`, a 2 pt inset ring in the Text colour with no fill, on a row other than the selected one.
-Not drawn: nothing. The boards are exports of the design canvas; the canvas still needs the same states.
+Not drawn: the AC-9 guide states ("No programme information", "Loading guide…") in the panel, now-playing row and list row, muted 15 pt (regular) / 13 pt (compact) in place of the programme title, no bar; the filled star (AC-11), same 18/16 pt glyph with a Text-colour fill; the disabled PiP control (AC-13), same glyph at 40 % opacity. These are drawn before the implementing PR opens. The boards are exports of the design canvas; the canvas still needs the same states.
 
 ## Problem
 
@@ -37,7 +37,7 @@ In:
 - Compact width (iOS, iPad in a compact Split View): player pinned at the top, now-playing row, group chips, channel list, tab bar with Live, Guide, Movies, Search, Settings. Series is reached from inside Movies at compact width (0011/AC-1).
 - Selecting a channel plays it inline through `EngineRouter`.
 - Group filter, including Favorites and All channels.
-- Local filter field over the current group by name and number.
+- Local filter field over the current group by name and number (regular width only; compact width uses Search, 0012).
 - Favorite toggle from the panel (regular) and row (compact).
 - Player controls: play and pause, programme progress, wall-clock time, LIVE badge, Picture in Picture control (iOS, iPadOS), full screen.
 - Loading, partial failure, total failure, offline, empty and nothing-selected states.
@@ -61,7 +61,7 @@ Out (explicitly):
 iPadOS and macOS, regular width:
 1. The Live section is selected in the sidebar under the app mark. Below the sections, the groups list shows Favorites, All channels and every source group with counts.
 2. The middle column shows the selected group's channels with a header (group name, count) and a filter field. Typing filters the list on each keystroke.
-3. Selecting a row plays the channel in the right column's player. The row is highlighted. The panel under the player shows logo, programme title, times, channel, remaining time, description, a favorite star and the next three programmes.
+3. Selecting a row plays the channel in the right column's player. The row is highlighted. The panel under the player shows logo, programme title, times, channel, remaining time, description, a favorite star and up to the next three programmes.
 4. The player controls appear on tap or while the pointer is over the player.
 5. The star in the panel toggles the favorite.
 
@@ -76,12 +76,12 @@ Each criterion is testable in isolation and has a stable id. Do not renumber.
 ### AC-1 Regular-width columns
 Given a horizontal size class of regular on iPadOS or macOS
 When the Live section is shown
-Then with at least 904 pt available three columns are visible: sidebar (232 pt), channel list (352 pt) and the player with its panel (the rest, never under 320 pt); between 672 and 904 pt the sidebar is collapsed behind `browse.toggleSidebar` and list and player are visible; below 672 pt the list is also behind `browse.toggleList` and only the player with its panel is visible. The list is never placed above or below the player.
+Then with at least 904 pt available three columns are visible: sidebar (232 pt), channel list (352 pt) and the player with its panel (the rest, never under 320 pt); from 672 pt up to but not including 904 pt the sidebar is collapsed behind `browse.toggleSidebar` and list and player are visible; below 672 pt the list is also behind `browse.toggleList` and only the player with its panel is visible. The list is never placed above or below the player.
 
 ### AC-2 Compact-width layout
 Given a horizontal size class of compact
 When the Live tab is shown
-Then the frame of `browse.player` spans the full width at a 16:9 height, followed by `browse.nowPlaying`, the group chips and the channel list, with the tab bar at the bottom listing Live, Guide, Movies, Search and Settings; Movies is present under 0011/AC-1.
+Then the frame of `browse.player` spans the full width at a 16:9 height, followed by `browse.nowPlaying`, the group chips and the channel list, with the tab bar at the bottom listing Live, Guide, Movies, Search and Settings; Movies is present under 0011/AC-1; a size-class change while a channel plays makes no further `load` call and the engine state stays `.playing`.
 
 ### AC-3 Sidebar contents
 Given sources with groups per 0013/AC-2
@@ -101,22 +101,27 @@ Then it shows the logo tile (56 by 36 pt regular, 52 by 34 compact; initials per
 ### AC-6 Inline playback on selection
 Given a channel row
 When the user selects it
-Then the channel list remains visible and interactive, the row is highlighted, the engine obtained through `EngineRouter` has received `load(channel.streamURL)` exactly once (fake engine in tests) and its state is `.playing`, and the now-playing panel (regular) or row (compact) shows that channel.
+Then the channel list remains visible and interactive, the row is highlighted, the engine obtained through `EngineRouter` has received `load(channel.streamURL)` exactly once (fake engine in tests) and its state is `.playing`, and the now-playing panel (regular) or row (compact) shows that channel; selecting the already playing row makes no further `load` call.
 
 ### AC-7 Local filter
-Given the "Sport" group is selected and 20 000 channels are loaded in total
+Given the "Sport" group is selected at regular width and 20 000 channels are loaded in total
 When the user types into `browse.filter`
-Then the list shows only channels of the current group matched by name (0012/AC-2 folding and token rules) or by number digit prefix (0012/AC-3); group text is not matched; results reflect each keystroke on the next frame with no debounce; clearing the field restores the group.
+Then the list shows only channels of the current group matched by name (0012/AC-2 folding and token rules) or by number digit prefix (0012/AC-3); group text is not matched; after each single-character `typeText` the visible rows equal the 0012 matcher's result for the text typed so far, checked before the next character is typed; clearing the field restores the group.
 
 ### AC-8 Now-playing panel (regular)
 Given a channel with a current programme playing at regular width
 When the panel is rendered
-Then it shows the logo, programme title, "<start> – <stop>" as locale short time, "<channel> · <number> · <remaining per 0008/AC-5>", the description, `browse.favorite`, and "Up next on <channel>" with the next three programmes (0014/AC-5) and their start times.
+Then it shows the logo, programme title, "<start> – <stop>" as locale short time, "<channel> · <number> · <remaining per 0008/AC-5>", the description, `browse.favorite`, and "Up next on <channel>" under `browse.upNext` with up to the next three programmes (0014/AC-5) as rows `browse.laterProgramme.<index>` showing start time and title (fewer when the guide has fewer).
 
-### AC-9 Guide states
+### AC-9a No guide
 Given a channel whose 0014 `loadingState` is `.noData`, `.unavailable`, or `.failed` with no previous guide
 When it plays
-Then the panel (regular), `browse.nowPlaying` (compact) and the list row show "No programme information" in the muted colour with no progress bar, no up-next list and no "Next:" fragment; given `.loading` they show "Loading guide…" (same string as 0008/AC-6b) and switch when the state resolves.
+Then the panel (regular), `browse.nowPlaying` (compact) and the list row show "No programme information" in the muted colour with no progress bar, no up-next list and no "Next:" fragment.
+
+### AC-9b Guide loading
+Given a channel whose 0014 `loadingState` is `.loading`
+When it plays
+Then the panel, `browse.nowPlaying` and the row show "Loading guide…" (0008/AC-6b) and switch to the AC-8/AC-19 content or AC-9a text when the state resolves.
 
 ### AC-10a Player controls, contents
 Given a channel is playing inline
@@ -125,8 +130,8 @@ Then they contain `browse.player.playPause`, `browse.player.progress` showing th
 
 ### AC-10b Player controls, visibility
 Given a channel is playing inline
-When the user taps the player
-Then the controls appear and hide three seconds after the last touch on the injected clock; on macOS and iPadOS with a pointer they stay visible while the pointer is over the player and hide one second after it leaves.
+When the user taps (compact) or clicks (macOS, iPadOS pointer) the player
+Then the controls appear and hide three seconds after the last touch on the injected clock; with a pointer they stay while it is over the player and hide one second after it leaves; while the engine state is `.paused` they do not hide.
 
 ### AC-11 Favorite toggle
 Given the panel or row for a channel that is not a favorite
@@ -146,22 +151,27 @@ Then `browse.player.pip` is present and enabled only when the engine reports PiP
 ### AC-14 Keyboard shortcuts
 Given a hardware keyboard on macOS or iPadOS
 When keys are pressed with focus in the list
-Then Up and Down move the focused row (focus ring, distinct from the selected row's fill) without tuning, Return plays the focused row, Space toggles pause from anywhere outside a text field, Command-F focuses `browse.filter`; in full screen Escape exits (AC-17).
+Then Up and Down move the focused row (focus ring, distinct from the selected row's fill) without tuning, Return plays the focused row, Space toggles pause from anywhere outside a text field, Command-F focuses `browse.filter` at regular width; in full screen Escape exits (AC-17).
 
 ### AC-16 Loading state
-Given sources are loading
+Given sources are loading for the first time in this session and no channel is playing
 When the Live section is shown
-Then `browse.loading` renders in place of the channel list (regular) or of chips and list (compact) with one row per source (`browse.loading.<sourceId>`) showing its name and either an indeterminate indicator or "<n> channels" once loaded; the player shows the AC-23 state.
+Then `browse.loading` renders in place of the channel list (regular) or of chips and list (compact) with one row per source (`browse.loading.<sourceId>`) showing its name and either an indeterminate indicator or "<n> channels" once loaded; the player shows the AC-23 state; `browse.loading` is replaced by the list once every source has reached loaded, failed or waiting-for-login.
 
 ### AC-17 Full screen
 Given a channel is playing inline
 When the user activates `browse.player.fullscreen` or rotates an iPhone to landscape
-Then the player fills the screen with the AC-10a controls, and exiting returns to the inline layout with no further `load` call and the engine state still `.playing`.
+Then the player fills the window (on iPhone the screen) with the AC-10a controls on the bottom edge; rotation enters full screen on iPhone only; on macOS the window's own full-screen control is independent of this state; exiting returns to the inline layout with no further `load` call and the engine state still `.playing`.
 
 ### AC-18 Sources loaded but no channels
-Given at least one source loaded without error with zero channels and, optionally, a source whose Keychain item is absent
+Given at least one source loaded without error with zero channels, or every source lacks its Keychain item on this device, and optionally other sources whose Keychain item is absent
 When the Live section is shown
-Then `browse.empty` reads "No channels yet", lists each credential-less source as "<name>: waiting for its login to sync from iCloud", shows `browse.retry` for the loaded-but-empty sources, no loading indicator is shown, and when the credential arrives (fake credential store flips) the source loads without user action. The case where no source has a credential on tvOS is 0006/AC-21.
+Then `browse.empty` reads "No channels yet", lists each credential-less source as "<name>: waiting for its login to sync from iCloud", shows `browse.retry` for the loaded-but-empty sources, `browse.retry` is absent when no source is loaded-but-empty, and no loading indicator is shown. The case where no source has a credential on tvOS is 0006/AC-21.
+
+### AC-18b Credential arrives
+Given the Live section shows a source as waiting for login
+When the credential store gains its item
+Then within 5 s, or on the next scene activation, whichever is first, the source loads with no user action and its waiting line and `browse.group.waiting.<sourceId>` disappear.
 
 ### AC-19 Now-playing row (compact)
 Given a channel with a current programme playing at compact width
@@ -176,7 +186,7 @@ Then `browse.error` reads "Could not load channels", or "You're offline. Connect
 ### AC-21 Some sources failed
 Given one source failed and another loaded
 When the Live section is shown
-Then the loaded channels are listed and `browse.banner` reads "Could not load <name>" (names joined with commas) with a Retry control that reloads only the named sources while playback continues; the banner is dismissible and does not return until the next load.
+Then the loaded channels are listed and `browse.banner.failed` reads "Could not load <name>" (names joined with commas) with `browse.banner.failed.retry`, which reloads only the named sources while playback continues; `browse.banner.failed.dismiss` dismisses the banner and it does not return until the next load. Retry shows progress in the banner text ("Loading <name>…"), not `browse.loading`, and the list stays in place.
 
 ### AC-22 Large channel sets
 Given 20 000 channels and All channels selected
@@ -191,7 +201,7 @@ Then `browse.player` shows the ground colour with the Antenna mark and "Select a
 ### AC-24 Waiting-for-login row
 Given one source loaded and another has no credential on this device
 When the sidebar is rendered
-Then `browse.group.waiting.<sourceId>` reads "<name> · waiting for login" after the last group; at compact width the same text is a `browse.banner`.
+Then `browse.group.waiting.<sourceId>` reads "<name> · waiting for login" after the last group; at compact width the same text is `browse.banner.waiting.<sourceId>`; the compact banner has no Retry and no dismiss control and disappears when the credential arrives (AC-18b).
 
 ## Dropped
 
@@ -207,10 +217,11 @@ Then `browse.group.waiting.<sourceId>` reads "<name> · waiting for login" after
 - VoiceOver: a row reads name, number, programme and remaining time; the player's controls have labels.
 - Audio continues in the background only when the playback spec's PiP is active; this spec adds no background audio.
 - Holding an arrow key moves the focus through the list without tuning (AC-14).
+- The local filter has no debounce; each keystroke filters synchronously (AC-7).
 
 ## Test plan
 
-Filtering (shared with 0012) and the up-next derivation are pure functions in AntennaCore, with a timing test over a 20 000-channel fixture. Favorites use an in-memory `ModelContainer`. AC-6 and AC-17 use a fake engine injected via launch argument that records loaded URLs to a file in the test's temp directory; nothing derived from `streamURL` is set on any accessibility attribute (ADR-0003). Sizes are read from element frames. Identifiers: `browse.sidebar`, `browse.toggleSidebar`, `browse.toggleList`, `browse.section.<name>`, `browse.group.<index>`, `browse.group.waiting.<sourceId>`, `browse.chips`, `browse.chip.<index>`, `browse.list`, `browse.listHeader`, `browse.filter`, `browse.row.<rowKey>`, `browse.player`, `browse.player.playPause`, `browse.player.progress`, `browse.player.clock`, `browse.player.live`, `browse.player.pip`, `browse.player.fullscreen`, `browse.panel`, `browse.nowPlaying`, `browse.favorite`, `browse.upNext`, `browse.laterProgramme`, `browse.loading`, `browse.loading.<sourceId>`, `browse.error`, `browse.banner`, `browse.retry`, `browse.empty`, `browse.emptyGroup`.
+Filtering (shared with 0012) and the up-next derivation are pure functions in AntennaCore, with a timing test over a 20 000-channel fixture. Favorites use an in-memory `ModelContainer`. AC-6 and AC-17 use a fake engine injected via launch argument that records loaded URLs to a file in the test's temp directory; nothing derived from `streamURL` is set on any accessibility attribute (ADR-0003). Sizes are read from element frames. Identifiers: `browse.sidebar`, `browse.toggleSidebar`, `browse.toggleList`, `browse.section.<name>`, `browse.group.<index>`, `browse.group.waiting.<sourceId>`, `browse.chips`, `browse.chip.<index>`, `browse.list`, `browse.listHeader`, `browse.filter`, `browse.row.<rowKey>`, `browse.player`, `browse.player.playPause`, `browse.player.progress`, `browse.player.clock`, `browse.player.live`, `browse.player.pip`, `browse.player.fullscreen`, `browse.panel`, `browse.nowPlaying`, `browse.favorite`, `browse.upNext`, `browse.laterProgramme.<index>`, `browse.loading`, `browse.loading.<sourceId>`, `browse.error`, `browse.banner.failed`, `browse.banner.failed.retry`, `browse.banner.failed.dismiss`, `browse.banner.waiting.<sourceId>`, `browse.retry`, `browse.empty`, `browse.emptyGroup`.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
@@ -222,7 +233,8 @@ Filtering (shared with 0012) and the up-next derivation are pure functions in An
 | AC-6 | ui + fake engine log | TBD |
 | AC-7 | core (shared matcher) + ui | TBD |
 | AC-8 | core (up-next) + ui (iPad) | TBD |
-| AC-9 | ui (fake GuideStore states) | TBD |
+| AC-9a | ui (fake GuideStore states) | TBD |
+| AC-9b | ui (fake GuideStore states) | TBD |
 | AC-10a | ui (iPhone and macOS) | TBD |
 | AC-10b | ui (injected clock) | TBD |
 | AC-11 | integration + ui | TBD |
@@ -232,6 +244,7 @@ Filtering (shared with 0012) and the up-next derivation are pure functions in An
 | AC-16 | ui (stubbed sources) | TBD |
 | AC-17 | ui (iPhone rotation; fake engine) | TBD |
 | AC-18 | ui (stubbed sources, fake credential store) | TBD |
+| AC-18b | ui (stubbed sources, fake credential store) | TBD |
 | AC-19 | ui (iPhone) | TBD |
 | AC-20 | ui (stubbed failures per code) | TBD |
 | AC-21 | ui | TBD |
