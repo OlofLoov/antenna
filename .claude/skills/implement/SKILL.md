@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implement a merged spec from docs/specs end to end. Checks the spec is Accepted and unblocked, cuts the work into the fewest small shippable PRs, writes the code and one test per acceptance criterion, sets the spec to Implemented in the last diff, runs the impl-reviewer agent and hands each PR to the pr skill. Use when the user says "implement spec NNNN", "build 0013", "start on the catalogue spec", or names a spec id with code work in mind.
+description: Implement a merged spec from docs/specs end to end. Checks the spec is Accepted and unblocked, writes an implementation plan and has the plan-reviewer agent review it, cuts the work into the fewest small shippable PRs, writes the code and one test per acceptance criterion, sets the spec to Implemented in the last diff, runs the impl-reviewer agent and hands each PR to the pr skill. Use when the user says "implement spec NNNN", "build 0013", "start on the catalogue spec", or names a spec id with code work in mind.
 ---
 
 # Implementing a spec
@@ -58,18 +58,39 @@ view work, `.claude/skills/swiftui-composition/SKILL.md` (ADR-0008): it
 says which folder a view goes in and what a component may not do. The specs
 it builds on, for type and identifier names. The files the spec touches.
 
-## 3. Plan the proof
+## 3. Plan, then have the plan reviewed
 
-Before any code, write a coverage table to the scratchpad with one row per
-criterion: AC id, layer from the spec's test plan, test name, file, and
-needs (other specs' criteria or types it uses, per step 1). At least
-one test per criterion. Names follow `docs/conventions.md`:
-`@Test("NNNN/AC-3 short name")` in swift-testing, a `// NNNN/AC-3` comment on
-an XCUITest. Rows whose layer is `device` go under "Not covered and why" in
-the PR body with the reason the spec gives.
+The spec says what to build. Before any code, write the plan that says how,
+to `plan-NNNN.md` in the scratchpad. It settles the detail the spec leaves
+open:
 
-A criterion you cannot see how to test is a spec problem. Stop and report it
-instead of writing a test that cannot fail.
+- **Approach:** the types, functions and files, with signatures for public
+  API, and which existing code changes.
+- **Screens:** for each view, the board it follows, the states it draws,
+  and its accessibility identifiers (DR-11 prefixes). Sizes come from the
+  boards' inline styles.
+- **Decisions:** each rule the spec does not make (ties, empty input,
+  errors, tvOS focus and Menu, compact width), with the choice and one line
+  of reason.
+- **Coverage table:** one row per criterion with its approach, layer, test
+  name, file, and needs (per step 1). At least one test per criterion.
+  Names follow `docs/conventions.md`: `@Test("NNNN/AC-3 short name")` in
+  swift-testing, a `// NNNN/AC-3` comment on an XCUITest. `device` rows go
+  under "Not covered and why" in the PR body with the spec's reason.
+- **Slices:** the PR cut from step 4.
+
+`plan-checklist.md` in this directory lists what a plan must cover.
+
+Then have it reviewed. Run the `plan-reviewer` agent with the spec id and
+the plan path. Also run `arch-reviewer` when the plan adds a dependency, a
+target, a SwiftData model change, a network client or anything under
+`scripts/check-arch.sh`'s paths. Apply APPROVE WITH CHANGES findings and go
+on. On REWORK, revise and run the reviewer once more; a second REWORK stops
+here and goes to the user with the findings.
+
+A criterion you cannot see how to test, or a decision that would change
+what a criterion promises, is a spec problem. Stop and report it instead of
+deciding it in the plan.
 
 ## 4. Cut the stack
 
@@ -150,7 +171,8 @@ Fix until it prints `ok`.
 
 ## 8. Review
 
-Run the `impl-reviewer` agent with the spec id and the diff range:
+Run the `impl-reviewer` agent with the spec id, the plan path and the diff
+range:
 `main...HEAD` for a stack of one or the first slice, `<previous slice
 branch>...HEAD` after that. READY WITH FIXES: apply the fixes and rerun
 check-specs. NOT READY: fix, run it once more; if still NOT READY, stop and
@@ -160,7 +182,10 @@ give the user its findings.
 
 Hand off to the `pr` skill with the slice's position in the stack and the
 branch it builds on. The PR body's "Criteria covered" table is this slice's
-rows from step 3 with the final test names. Title `feat(scope): <what>`.
+rows from step 3 with the final test names. The body also carries a "Plan"
+section: the approach and decisions from the reviewed plan, trimmed to this
+slice, so the owner sees every choice the spec did not make. Title
+`feat(scope): <what>`.
 
 In a stack, go back to step 5 for the next slice once this PR is open.
 When the previous slice merges, run `gh stack sync`; the `pr` skill's
