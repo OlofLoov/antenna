@@ -25,7 +25,9 @@ case "$event" in
     case "${ext,,}" in
       md|markdown|txt|rst)
         emit PostToolUse "no-ai-slop: you just wrote $name. Run the Detect job from $skill on the whole file, fix every pattern it names in place, then check against eval.md. Keep the author's meaning; add no claims. Plain sentences, no em dashes, no summary ending." ;;
-      json|plist|xcconfig|xcprivacy|lock|strings|entitlements|resolved|png|jpg|jpeg|gif|pdf|svg)
+      yml|yaml|toml|xcconfig|plist|entitlements|swift-format|swiftlint)
+        emit PostToolUse "no-ai-slop: $name is a config file. Per $skill it carries no comments. Delete any header, inline or why-comment you wrote; the reason goes in the commit message or PR body." ;;
+      json|xcprivacy|lock|strings|resolved|png|jpg|jpeg|gif|pdf|svg)
         exit 0 ;;
       *)
         emit PostToolUse "no-ai-slop: you just changed $name. Apply $skill to its comments, doc comments and user-facing strings only: say what the caller can rely on, cut filler words and puffery, no colon reveals, no em dashes." ;;
