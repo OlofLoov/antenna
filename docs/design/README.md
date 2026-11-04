@@ -111,6 +111,7 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV guide grid | `TV-Guide.dc.html` | 0009 |
 | iPad and Mac live browse | `iPad.dc.html` | 0010 |
 | iPhone live | `iPhone.dc.html` | 0010 |
+| iPhone live, Recents group | `iPhone-Recents.dc.html` | 0028 |
 | TV movies | `TV-Movies.dc.html` | 0011 |
 | iPad and Mac movies | `iPad-Movies.dc.html` | 0011 |
 | iPhone movies | `iPhone-Movies.dc.html` | 0011 |
@@ -163,7 +164,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `recents.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
