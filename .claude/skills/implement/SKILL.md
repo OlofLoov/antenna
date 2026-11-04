@@ -76,8 +76,9 @@ git checkout -b feat/NNNN-slug origin/main
 
 The slug is the spec file's slug. In a stack the branches are
 `feat/NNNN-slug-1`, `feat/NNNN-slug-2` and so on, and slice k branches from
-slice k-1, not from main. Work one ahead: open slice k+1 while k is in
-review, but do not start k+2 until k has merged.
+slice k-1, not from main, created with `gh stack init` and `gh stack add`
+as the `pr` skill's "Stacks" section says. Work one ahead: open slice k+1
+while k is in review, but do not start k+2 until k has merged.
 
 ## 6. Build
 
@@ -125,6 +126,6 @@ branch it builds on. The PR body's "Criteria covered" table is this slice's
 rows from step 3 with the final test names. Title `feat(scope): <what>`.
 
 In a stack, go back to step 5 for the next slice once this PR is open.
-When the previous slice merges, the `pr` skill's "Stacks" section says how
-to rebase. After the last PR merges there is nothing left to do for this
-spec.
+When the previous slice merges, run `gh stack sync`; the `pr` skill's
+"Stacks" section has the rest. After the last PR merges there is nothing
+left to do for this spec.

@@ -78,32 +78,35 @@ Give the PR URL and the one-line result of each verification step.
 ## Stacks
 
 A feature too big for one small PR ships as a stack. The `implement` skill
-decides the cut; this skill opens and maintains the PRs. Each slice's branch
-starts from the previous slice, and its base on GitHub is that branch.
+decides the cut; this skill opens and maintains it with GitHub stacked PRs
+through the `gh stack` extension (`gh extension install github/gh-stack`).
+GitHub then shows the PRs as one stack, chains their bases, retargets them
+as slices merge, and can merge the stack in one operation.
 
-Opening slice k:
-
-```sh
-gh pr create --base feat/NNNN-slug-<k-1> --title "..." --body-file <tmp>
-```
-
-The body's first line is `Stack: k of n, builds on #<PR of slice k-1>.`
-Slice 1 has base `main` and says `Stack: 1 of n.` The criteria table lists
-only this slice's rows. Every slice but the last sets the spec to
-`In progress`; only the last says Implemented.
-
-When slice k-1 merges, GitHub deletes its branch and retargets slice k to
-main. Rebase slice k so it no longer carries the merged commits, then
-confirm the base:
+Slice 1 starts the stack, each later slice is added on top:
 
 ```sh
-git fetch origin
-git rebase --onto origin/main feat/NNNN-slug-<k-1> feat/NNNN-slug-<k>
-git push --force-with-lease
-gh pr view --json baseRefName
+gh stack init feat/NNNN-slug-1        # from main
+gh stack add feat/NNNN-slug-<k>       # from slice k-1, after its commits
+gh stack submit --auto                # push every branch, open missing PRs
 ```
 
-The local branch of slice k-1 is the rebase boundary, so keep it until this
-is done. When review changes slice k-1 while slice k is open, fix k-1,
-then rebase k onto the new k-1 with the same `--onto` form and force-push.
+Then set each new PR's title and body with `gh pr edit <n> --title "..."
+--body-file <tmp>`, since `--auto` writes placeholder titles. The criteria
+table lists only that slice's rows. Every slice but the last sets the spec
+to `In progress`; only the last says Implemented.
+
+Branches made without `gh stack` (by hand or by another tool) become a
+stack with `gh stack link <bottom> ... <top>`, using branch names or PR
+numbers in order. It reuses open PRs and creates the missing ones.
+
+Keeping it current:
+
+- Review changed a lower slice: commit on that branch, then `gh stack
+  rebase` and `gh stack push`. It cascades the rebase up the stack.
+- A slice merged, or main moved: `gh stack sync` fetches, rebases the
+  rest onto the new base and force-pushes with lease.
+- Merging: `gh stack merge` merges everything up to the chosen PR at
+  once, or nothing if any of them cannot merge.
+
 Never force-push a branch that someone else has commits on.
