@@ -34,7 +34,7 @@ public struct XtreamClient: Sendable {
     }
 
     public func liveStreams(categoryID: String? = nil) async throws -> [XtreamLiveStream] {
-        var items = [URLQueryItem]()
+        var items: [URLQueryItem] = []
         if let categoryID { items.append(.init(name: "category_id", value: categoryID)) }
         return try await get(action: "get_live_streams", extra: items)
     }
@@ -54,12 +54,12 @@ public struct XtreamClient: Sendable {
     }
 
     public func xmltvURL() -> URL {
-        var comps = URLComponents(url: credentials.server.appending(path: "xmltv.php"), resolvingAgainstBaseURL: false)!
-        comps.queryItems = [
-            .init(name: "username", value: credentials.username),
-            .init(name: "password", value: credentials.password),
-        ]
-        return comps.url!
+        credentials.server
+            .appending(path: "xmltv.php")
+            .appending(queryItems: [
+                .init(name: "username", value: credentials.username),
+                .init(name: "password", value: credentials.password),
+            ])
     }
 
     /// Maps an Xtream live stream onto the app's `Channel` model.
@@ -80,14 +80,13 @@ public struct XtreamClient: Sendable {
     // MARK: Internals
 
     private func get<T: Decodable>(action: String?, extra: [URLQueryItem] = []) async throws -> T {
-        var comps = URLComponents(url: credentials.server.appending(path: "player_api.php"), resolvingAgainstBaseURL: false)!
         var items: [URLQueryItem] = [
             .init(name: "username", value: credentials.username),
             .init(name: "password", value: credentials.password),
         ]
         if let action { items.append(.init(name: "action", value: action)) }
-        comps.queryItems = items + extra
-        let (data, response) = try await session.data(from: comps.url!)
+        let url = credentials.server.appending(path: "player_api.php").appending(queryItems: items + extra)
+        let (data, response) = try await session.data(from: url)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw XtreamError.badStatus((response as? HTTPURLResponse)?.statusCode ?? -1)
         }
