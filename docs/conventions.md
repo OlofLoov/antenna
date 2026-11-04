@@ -30,7 +30,9 @@
 
 - AntennaCore: swift-testing, fixtures in `Tests/AntennaCoreTests/Fixtures`.
 - Every acceptance criterion in an accepted spec has at least one test that
-  names it: `@Test("0007/AC-3 empty tvg-id is not an EPG id")`.
+  names it: `@Test("0007/AC-3 empty tvg-id is not an EPG id")`. In an
+  XCUITest the citation is a comment, `// 0007/AC-3`. `scripts/check-specs.sh`
+  greps for exactly this form, so write the id as `NNNN/AC-n` with no spaces.
 - UI tests use accessibility identifiers of the form `screen.element`
   (`channels.searchField`). Never match on display text.
 
