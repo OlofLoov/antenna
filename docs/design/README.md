@@ -150,6 +150,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV movies | `TV-Movies.dc.html` | 0011 |
 | iPad and Mac movies | `iPad-Movies.dc.html` | 0011 |
 | iPhone movies | `iPhone-Movies.dc.html` | 0011 |
+| TV movies, rows below the hero | `TV-Movies-Rows.dc.html` | 0011 |
+| iPad and Mac movies, rows below the hero | `iPad-Movies-Rows.dc.html` | 0011 |
+| iPhone movies, rows below the hero | `iPhone-Movies-Rows.dc.html` | 0011 |
 | TV search | `TV-Search.dc.html` | 0012 |
 | iPad and Mac search | `iPad-Search.dc.html` | 0012 |
 | iPhone search | `iPhone-Search.dc.html` | 0012 |

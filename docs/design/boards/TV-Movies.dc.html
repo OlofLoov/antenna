@@ -63,6 +63,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span>Play</span>
       </button>
       <button type="button" style="font: inherit; font-size: 26px; font-weight: 600; padding: 18px 32px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; cursor: pointer">More info</button>
+      <!-- movies.hero.myList, not in list (plus). The checked state is drawn on iPad-Movies.dc.html -->
       <button type="button" aria-label="Add to my list" style="font: inherit; width: 72px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
         <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       </button>
@@ -77,7 +78,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.4); display: inline-block"></span>
   </div>
 
-  <!-- Row: Continue watching (landscape cards with progress) -->
+  <!-- Row: Continue watching (landscape cards with progress; series cards carry the SERIES badge, movies.card.<id>.badge) -->
   <div style="position: absolute; left: 0; right: 0; top: 664px; display: flex; flex-direction: column; gap: 16px">
     <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
       <div style="font-size: 28px; font-weight: 700">Continue watching</div>
@@ -90,11 +91,12 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
           <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 42%; background: {{accent}}"></div></div>
           <div style="position: absolute; right: 12px; top: 12px; font-size: 16px; font-weight: 600; padding: 4px 10px; border-radius: 6px; background: rgba(8,10,14,0.72)">52 min left</div>
         </div>
-        <div style="font-size: 22px; font-weight: 600; padding: 0 4px">Second Act</div>
+        <div style="font-size: 22px; font-weight: 700; color: #F2F4F8; padding: 0 4px">Second Act</div>
       </div>
       <div style="width: 352px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
         <div style="width: 352px; height: 198px; border-radius: 12px; background: #2F4A3B; position: relative; overflow: hidden">
           <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 78%; background: {{accent}}"></div></div>
+          <div style="position: absolute; left: 12px; top: 12px; font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF; background: rgba(8,10,14,0.72)">SERIES</div>
         </div>
         <div style="font-size: 22px; color: #D7DEE8; padding: 0 4px">Northern Lights · S2 E4</div>
       </div>
@@ -107,6 +109,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="width: 352px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
         <div style="width: 352px; height: 198px; border-radius: 12px; background: #334155; position: relative; overflow: hidden">
           <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 60%; background: {{accent}}"></div></div>
+          <div style="position: absolute; left: 12px; top: 12px; font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF; background: rgba(8,10,14,0.72)">SERIES</div>
         </div>
         <div style="font-size: 22px; color: #D7DEE8; padding: 0 4px">Quiet Engines · S1 E2</div>
       </div>
