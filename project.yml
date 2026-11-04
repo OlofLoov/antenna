@@ -60,6 +60,9 @@ targets:
       - target: Antenna
       - package: SnapshotPreviews
         product: SnapshottingTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
 
   AntennaTV:
     type: application
