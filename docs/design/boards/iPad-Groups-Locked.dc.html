@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac groups, passcode prompt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- The three columns of iPad-Groups.dc.html, reduced to their frames, dimmed -->
+  <div style="position: absolute; left: 0; top: 0; width: 232px; height: 834px; background: #11151C; border-right: 1px solid rgba(255,255,255,0.08)"></div>
+  <div style="position: absolute; left: 232px; top: 0; width: 352px; height: 834px; border-right: 1px solid rgba(255,255,255,0.08)"></div>
+  <div style="position: absolute; left: 248px; top: 22px; font-size: 28px; font-weight: 700">Groups</div>
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.72)"></div>
+
+  <!-- groups.passcode as a centred sheet -->
+  <div style="position: absolute; left: 402px; top: 213px; width: 390px; box-sizing: border-box; padding: 28px 24px 24px; border-radius: 16px; background: #11151C; box-shadow: 0 24px 64px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; gap: 16px">
+    <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <div style="font-size: 22px; font-weight: 700">Enter passcode</div>
+    <div style="font-size: 15px; color: #A7B0BF; margin-top: -8px">Movies is locked.</div>
+
+    <!-- groups.passcode.digit.1 to .4; the system numeric keyboard types into them -->
+    <div style="display: flex; gap: 12px; padding: 8px 0">
+      <div style="width: 56px; height: 64px; border-radius: 12px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center"><span style="width: 14px; height: 14px; border-radius: 7px; background: #F2F4F8; display: inline-block"></span></div>
+      <div style="width: 56px; height: 64px; border-radius: 12px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center"><span style="width: 14px; height: 14px; border-radius: 7px; background: #F2F4F8; display: inline-block"></span></div>
+      <div style="width: 56px; height: 64px; border-radius: 12px; background: rgba(255,255,255,0.08)"></div>
+      <div style="width: 56px; height: 64px; border-radius: 12px; background: rgba(255,255,255,0.08)"></div>
+    </div>
+
+    <!-- groups.passcode.error -->
+    <div style="font-size: 15px; color: #FF5F57; height: 20px">Wrong passcode</div>
+
+    <!-- groups.passcode.forgot: a link, so it takes the accent (DR-3) -->
+    <a href="#" style="font-size: 15px; color: #5BB8FF; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center">Forgot passcode?</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

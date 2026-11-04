@@ -59,7 +59,17 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 - Non-live sections (Movies, Series, Search) use the tvOS top tab bar:
   Live, Guide, Movies, Series, Search, then the settings gear. Clock top
   right. Spec 0015 owns the bar and its Menu behaviour.
+- Sources and Settings: full-screen panel over the current tab, list
+  (640, from x 64) | detail (1088, from x 768), title top left. Rows on
+  the left, the selected row's detail on the right.
 - Focus is the lifted white card. Nothing else is white-filled.
+- Title detail: no tab bar. Art full bleed behind a 1100 wide left scrim
+  with the copy column on the hero's left edge; on a series the art stops
+  at 520 and the season chips (64) and episode rows (128) sit below it.
+- Multi-view: two to four 16:9 tiles on Ground, margin 24 and gap 16, two
+  side by side, three as two over one centred, four as a 2 by 2 grid. The
+  focused tile has the 5 pt white ring and a white label chip; only it is
+  audible.
 
 ### iPad and Mac
 
@@ -70,6 +80,15 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   the upcoming list under it.
 - Movies and Search put a toolbar on top of the detail column and scroll
   content below it.
+- Guide: sidebar | grid. No list column. A toolbar with filter, day chips,
+  Now, zoom and the now-playing chip sits over a time grid with a pinned
+  200 pt channel column and the now line. Detail is a popover on the block.
+- Title detail replaces the content column; the sidebar stays. Toolbar
+  with the back link, art on top (240 tall on a series), buttons, plot,
+  cast, then season chips (34) and episode rows (96).
+- Multi-view on Mac: the sidebar collapses, the list stays as the picker,
+  and the detail column holds a 52 pt toolbar over the tile grid (margin
+  16, gap 12). The selected tile has a 3 pt ring in the Text colour.
 
 ### iPhone
 
@@ -77,8 +96,14 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   inside Live, not a tab.
 - Live: player pinned at the top (16:9), now playing row, scrolling group
   chips, channel list.
+- Guide: group chips, day chips, then one row per channel with a header
+  line and its own horizontal strip of programme cards. No time grid. Detail
+  is a sheet; a now-playing mini bar sits above the tab bar.
 - Movies: tall portrait hero, chips laid over the art, copy on a solid scrim
   at the foot of the hero, then rows.
+- Title detail is pushed inside the Movies tab: 16:9 art with a round
+  back button over it, copy, buttons, then season chips (30) and episode
+  rows (84). The tab bar stays.
 - Onboarding and add source are sheets. iPad centres the same sheet.
 
 ## 3. Shared components
@@ -91,8 +116,12 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   cards.
 - **Badges**: 1.5 pt muted outline, uppercase, letter-spaced (`4K`,
   `1080p`, `AAC 5.1`, `CATCH-UP 7D`; `CATCH-UP` alone when the day count
-  is unknown). The only filled badges are `NOW` (accent) and `LIVE`
-  (surface with the live dot). Resolution and audio badges come from the
+  is unknown). The only filled badges are `NOW` (accent), `UP NEXT`
+  (accent, the episode Play would start, spec 0026) and `LIVE` (surface
+  with the live dot). While the picture is behind the live edge `LIVE`
+  takes the outline style with the muted dot and, on touch and pointer
+  platforms, returns to live when tapped (0019). Resolution and audio
+  badges come from the
   player and exist only for the playing channel. As running text the
   catch-up fact reads "Catch-up 7 days".
 - **Section header**: title plus a muted count or "See all" at the trailing
@@ -102,6 +131,11 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   white ring and shadow.
 - **Search highlight**: the matched substring gets an accent background at
   35% opacity.
+- **Passcode prompt**: lock glyph, title, one muted line naming what is
+  locked, four digit boxes (72 by 88 pt on tvOS, 56 by 64 on touch
+  platforms) that fill with a dot, an error line in the live-dot colour.
+  tvOS adds a focusable digit row; the other platforms use the system
+  numeric keyboard. Drawn on the `*-Groups-Locked` boards.
 
 ## 4. Screens and boards
 
@@ -155,7 +189,10 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`,
+  `player.`, `timeshift.`, `groups.`, `guideSources.`, `multiView.`,
+  `settings.`, `paywall.`, `title.`, `episodes.`, `reminders.`,
+  `recents.`, `profiles.`, `topShelf.`, `import.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV groups, empty</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Back link, focused as the white card -->
+  <a href="TV-Movies.dc.html" style="position: absolute; left: 64px; top: 36px; display: inline-flex; align-items: center; gap: 10px; height: 64px; padding: 0 22px; border-radius: 12px; font-size: 24px; font-weight: 600; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); text-decoration: none">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>Settings</span>
+  </a>
+
+  <div style="position: absolute; right: 64px; top: 44px; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+
+  <div style="position: absolute; left: 64px; top: 110px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Groups</div>
+    <div style="font-size: 24px; color: #A7B0BF">Hide, lock, rename and reorder. Changes reach every device signed into your iCloud.</div>
+  </div>
+
+  <!-- groups.empty -->
+  <div style="position: absolute; left: 0; right: 0; top: 230px; bottom: 0; display: flex; align-items: center; justify-content: center">
+    <div style="width: 900px; text-align: center; font-size: 29px; line-height: 1.4; color: #A7B0BF">No groups yet. Add a source in Settings and its groups appear here.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

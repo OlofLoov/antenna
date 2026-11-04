@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV zap bar, timeshift</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Live video stage, frozen on the paused frame -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+
+  <!-- No clock in full screen (0008/AC-20). No entry pill in this state. -->
+
+  <!-- Zap bar, timeshift variant (zapBar.root): 274 tall, paused 12 minutes behind live -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 274px; box-sizing: border-box; padding: 32px 64px 40px; background: rgba(8, 10, 14, 0.88); display: flex; align-items: center; gap: 40px">
+
+    <!-- Channel identity (zapBar.logo, zapBar.number, zapBar.name, zapBar.position), as 0008 -->
+    <div style="display: flex; align-items: center; gap: 24px; width: 420px; flex: 0 0 auto">
+      <div style="width: 132px; height: 88px; border-radius: 12px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; letter-spacing: 1px">S1</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="font-size: 26px; color: #A7B0BF; font-variant-numeric: tabular-nums">104</div>
+        <div style="font-size: 36px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One</div>
+        <div style="font-size: 20px; color: #A7B0BF">Sport · 4 of 42</div>
+      </div>
+    </div>
+
+    <!-- Now playing: the programme at the position (0019/AC-18), then the timeshift row -->
+    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px">
+        <div style="font-size: 34px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Premier League: Arsenal v Liverpool</div>
+        <div style="font-size: 24px; color: #A7B0BF; white-space: nowrap; font-variant-numeric: tabular-nums">20:00 – 22:00</div>
+      </div>
+      <!-- zapBar.progress: elapsed at the position, 21:22 of 20:00 to 22:00 = 68% -->
+      <div style="height: 6px; border-radius: 3px; background: rgba(255,255,255,0.16); position: relative">
+        <div style="height: 6px; width: 68%; border-radius: 3px; background: {{accent}}"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px">
+        <div style="display: flex; gap: 14px; align-items: baseline; min-width: 0">
+          <span style="font-size: 18px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">Next</span>
+          <span style="font-size: 24px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">22:00 · Match of the Day</span>
+        </div>
+        <!-- zapBar.remaining: stop minus position -->
+        <div style="font-size: 22px; color: #A7B0BF; white-space: nowrap">38 min left</div>
+      </div>
+
+      <!-- Timeshift row: timeshift.stateGlyph | timeshift.positionTime | timeshift.scrubber | timeshift.behindLive -->
+      <div style="display: flex; align-items: center; gap: 18px; height: 24px">
+        <!-- timeshift.stateGlyph, value "paused" -->
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="#A7B0BF"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+        <!-- timeshift.positionTime -->
+        <span style="font-size: 22px; font-variant-numeric: tabular-nums; white-space: nowrap">21:22</span>
+        <!-- timeshift.scrubber: track spans the window start (20:34) to the live edge (21:34) -->
+        <div style="flex: 1 1 auto; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.16); position: relative">
+          <!-- timeshift.track is the element above; timeshift.played from the window start to the knob (48 of 60 minutes = 80%) -->
+          <div style="position: absolute; left: 0; top: 0; height: 8px; width: 80%; border-radius: 4px; background: {{accent}}"></div>
+          <!-- timeshift.buffered from the knob to the recorded end (the live edge here) -->
+          <div style="position: absolute; left: 80%; top: 0; height: 8px; width: 20%; border-radius: 0 4px 4px 0; background: rgba(255,255,255,0.35)"></div>
+          <!-- timeshift.knob: 18 accent circle with a 2 ground ring, centred on the position -->
+          <div style="position: absolute; left: calc(80% - 9px); top: -5px; width: 18px; height: 18px; border-radius: 9px; background: {{accent}}; box-sizing: border-box; border: 2px solid #0B0E13"></div>
+        </div>
+        <!-- timeshift.behindLive -->
+        <span style="font-size: 22px; color: #A7B0BF; white-space: nowrap">12 min behind</span>
+      </div>
+    </div>
+
+    <!-- Status badges: LIVE in its behind state (muted dot, outlined), format badges as 0008 -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 14px; flex: 0 0 auto">
+      <div style="display: flex; gap: 10px">
+        <!-- zapBar.badge.live, value "behind" -->
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8; box-sizing: border-box"><span style="width: 10px; height: 10px; border-radius: 5px; background: #A7B0BF; display: inline-block"></span>LIVE</span>
+        <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8">1080p</span>
+        <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8">AAC 5.1</span>
+      </div>
+      <!-- zapBar.catchup and zapBar.hint ("Hold play/pause for live", 0019/AC-16) -->
+      <div style="display: flex; gap: 10px; align-items: center; font-size: 20px; color: #A7B0BF">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+        <span>Catch-up 7 days</span>
+        <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+        <span>Hold play/pause for live</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

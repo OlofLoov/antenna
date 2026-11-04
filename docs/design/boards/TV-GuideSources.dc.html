@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV guide sources</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- Live video keeps playing underneath (DR-1); the screen is the 0.88 scrim over it -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.88); display: flex; flex-direction: column">
+
+    <!-- Title row: guideSources.title, guideSources.clock -->
+    <div style="height: 120px; flex: 0 0 auto; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
+      <div style="font-size: 38px; font-weight: 700">Guide sources · Sport Pack</div>
+      <div style="font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; display: flex; gap: 40px; padding: 0 64px 48px">
+
+      <!-- Guide list: guideSources.guides -->
+      <div style="width: 560px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 26px; font-weight: 700; padding: 0 0 6px">Guides</div>
+        <!-- guideSources.guide.0, loaded -->
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px; height: 112px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+          <div style="font-size: 29px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Guide URL</div>
+          <div style="font-size: 22px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">epg.sportpack.tv/xmltv.xml.gz</div>
+          <div style="font-size: 22px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Loaded · 388 of 412 channels · 7 days</div>
+        </div>
+        <!-- guideSources.guide.1, downloading -->
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px; height: 112px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+          <div style="font-size: 29px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">From the playlist</div>
+          <div style="font-size: 22px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">guide.provider-cdn.net/epg.xml</div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 22px; color: #A7B0BF"><span style="width: 18px; height: 18px; border-radius: 9px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #D7DEE8; box-sizing: border-box; flex: 0 0 auto"></span><span>Downloading · 12.4 MB</span></div>
+        </div>
+        <!-- guideSources.guide.2, failed -->
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px; height: 112px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+          <div style="font-size: 29px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">epg-mirror.example.org</div>
+          <div style="font-size: 22px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">epg-mirror.example.org/all.xml.gz?key=…</div>
+          <div style="font-size: 22px; color: #FF5F57; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Could not download · Server returned 404</div>
+        </div>
+        <!-- guideSources.add -->
+        <div style="display: flex; align-items: center; gap: 16px; height: 72px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box; font-size: 29px">
+          <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add guide URL</span>
+        </div>
+      </div>
+
+      <!-- Channels without guide: guideSources.channels -->
+      <div style="width: 560px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; gap: 14px; align-items: baseline; padding: 0 0 10px"><span style="font-size: 26px; font-weight: 700">Channels without guide</span><span style="font-size: 20px; color: #A7B0BF">24</span></div>
+        <!-- guideSources.channel.<rowKey>, selected -->
+        <div style="display: flex; align-items: center; gap: 16px; height: 84px; padding: 0 20px; border-radius: 14px; background: rgba(255,255,255,0.12); box-sizing: border-box">
+          <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">104</span>
+          <span style="width: 64px; height: 42px; border-radius: 6px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #F2F4F8; flex: 0 0 auto">S1</span>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One</div>
+            <div style="font-size: 20px; color: #D7DEE8">Id not found</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; height: 84px; padding: 0 20px; border-radius: 14px; box-sizing: border-box">
+          <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">106</span>
+          <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">ARN</span>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Arena HD</div>
+            <div style="font-size: 20px; color: #A7B0BF">No guide id</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; height: 84px; padding: 0 20px; border-radius: 14px; box-sizing: border-box">
+          <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">107</span>
+          <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">MTR</span>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Motor TV</div>
+            <div style="font-size: 20px; color: #A7B0BF">No programmes</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; height: 84px; padding: 0 20px; border-radius: 14px; box-sizing: border-box">
+          <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">108</span>
+          <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">GLF</span>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Golf Channel</div>
+            <div style="font-size: 20px; color: #A7B0BF">Id not found</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; height: 84px; padding: 0 20px; border-radius: 14px; box-sizing: border-box">
+          <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">301</span>
+          <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NO1</span>
+          <div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Nordic One</div>
+            <div style="font-size: 20px; color: #A7B0BF">Mapping not found</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail: guideSources.diagnosis and guideSources.picker -->
+      <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: 14px; background: rgba(255,255,255,0.06)">
+          <div style="font-size: 20px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">Sport One · 104</div>
+          <div style="font-size: 34px; font-weight: 700; line-height: 1.15">Guide id “sport1” is not in the guide</div>
+          <div style="font-size: 24px; line-height: 1.4; color: #D7DEE8">“Guide URL” does not list “sport1”. Pick an entry below.</div>
+          <div style="font-size: 22px; color: #A7B0BF">1 of 3 guides could not be downloaded.</div>
+          <div style="font-size: 22px; color: #A7B0BF">1 guide is still downloading.</div>
+        </div>
+
+        <!-- guideSources.picker.field, system keyboard opens on focus with the name prefilled -->
+        <label style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+          <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the guide by channel name or id</span>
+          <input type="search" value="Sport One" style="font: inherit; font-size: 29px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #F2F4F8; outline: none">
+        </label>
+
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <!-- guideSources.picker.result.0, focused -->
+          <div style="display: flex; align-items: center; gap: 18px; height: 84px; padding: 0 24px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); box-sizing: border-box">
+            <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+              <div style="font-size: 26px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">Sport One</span></div>
+              <div style="font-size: 20px; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">sportone · Guide URL · 212 programmes</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 18px; height: 84px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+            <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+              <div style="font-size: 26px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">Sport One</span> HD</div>
+              <div style="font-size: 20px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">sport1.se · Guide URL · 230 programmes</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 18px; height: 84px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+            <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+              <div style="font-size: 26px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Euro<span style="background: rgba(91,184,255,0.35); border-radius: 3px">sport One</span></div>
+              <div style="font-size: 20px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">eurosport1 · Guide URL · 198 programmes</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 18px; height: 84px; padding: 0 24px; border-radius: 14px; background: rgba(255,255,255,0.08); box-sizing: border-box">
+            <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+              <div style="font-size: 26px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">One</span> <span style="background: rgba(91,184,255,0.35); border-radius: 3px">Sport</span></div>
+              <div style="font-size: 20px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">one.sport · Guide URL · 61 programmes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

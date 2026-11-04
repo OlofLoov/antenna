@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone paywall, unavailable</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column; padding: 54px 24px 34px">
+  <!-- paywall.root -->
+
+  <div style="flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center">
+    <div style="width: 88px; height: 88px; border-radius: 22px; background: #1E3A5F; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 34px; font-weight: 800; letter-spacing: -0.5px"><!-- paywall.title -->Unlock Antenna</div>
+      <div style="font-size: 17px; line-height: 1.45; color: #D7DEE8"><!-- paywall.body -->Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group.</div>
+    </div>
+
+    <!-- paywall.unavailable -->
+    <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 16px; border-radius: 14px; background: rgba(255,255,255,0.06); box-sizing: border-box">
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #F2F4F8"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/><path d="M9 15.5a5.5 5.5 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/><path d="M3 3l18 18"/></svg></div>
+      <span style="font-size: 17px; font-weight: 600"><!-- paywall.unavailable.title -->Can't reach the App Store</span>
+      <span style="font-size: 13px; line-height: 1.4; color: #A7B0BF">Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back.</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 2px">
+    <!-- paywall.retry -->
+    <div style="font-size: 17px; font-weight: 700; height: 52px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; justify-content: center">Try again</div>
+    <!-- paywall.restore -->
+    <span style="font-size: 15px; color: #A7B0BF; text-align: center; padding: 12px">Restore purchase</span>
+    <!-- paywall.legal with paywall.terms and paywall.privacy as links -->
+    <div style="font-size: 12px; line-height: 1.4; color: #A7B0BF; text-align: center; padding: 6px 0 0">Yearly renews automatically until cancelled in Settings. <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac delete source confirmation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex">
+  <!-- Sidebar -->
+  <div style="width: 232px; flex: 0 0 auto; box-sizing: border-box; padding: 24px 12px; background: #11151C; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 2px">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 18px; font-size: 20px; font-weight: 700">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+      <span>Antenna</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; font-size: 17px; color: #F2F4F8;">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg>
+      <span>Live</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; font-size: 17px; color: #F2F4F8;">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 10v9"/></svg>
+      <span>Guide</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; font-size: 17px; color: #F2F4F8;">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 12.5v4l3.5-2z" fill="currentColor"/></svg>
+      <span>Movies</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; font-size: 17px; color: #F2F4F8;">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+      <span>Series</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; font-size: 17px; color: #F2F4F8;">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span>Search</span>
+    </div>
+    <div style="flex: 1 1 auto"></div>
+    <div style="display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; font-size: 16px; font-weight: 600; color: #F2F4F8; background: rgba(255,255,255,0.12)">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span>Sources &amp; Settings</span>
+    </div>
+  </div>
+  <!-- settings.root: list column -->
+  <div style="width: 352px; flex: 0 0 auto; box-sizing: border-box; padding: 18px 16px 0; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 6px; overflow: hidden">
+    <div style="font-size: 22px; font-weight: 700; padding: 0 12px 10px">Sources &amp; Settings</div>
+    <!-- settings.sources -->
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 12px 4px">Sources</div>
+      <!-- settings.source.<id> -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.12); box-sizing: border-box">
+        <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Home provider</span><span style="font-size: 13px; font-weight: 700; letter-spacing: 1px; padding: 2px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF; color: #A7B0BF; text-transform: uppercase; flex: 0 0 auto">Xtream</span></div>
+          <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">412 channels · Guide 7 days · 12 minutes ago</div>
+        </div>
+      </div>
+      <!-- settings.source.<id> -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 12px; border-radius: 10px; background: transparent; box-sizing: border-box">
+        <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Family login</span><span style="font-size: 13px; font-weight: 700; letter-spacing: 1px; padding: 2px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF; color: #A7B0BF; text-transform: uppercase; flex: 0 0 auto">Xtream</span></div>
+          <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Waiting for login from iCloud</div>
+        </div>
+      </div>
+      <!-- settings.source.<id> -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 80px; padding: 0 12px; border-radius: 10px; background: transparent; box-sizing: border-box">
+        <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Playlist (old)</span><span style="font-size: 13px; font-weight: 700; letter-spacing: 1px; padding: 2px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF; color: #A7B0BF; text-transform: uppercase; flex: 0 0 auto">M3U</span></div>
+          <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">1 240 channels · Guide 3 days · yesterday</div>
+            <div style="font-size: 13px; color: #FF5F57; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Could not refresh: You're offline. Connect to the internet and try again.</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; font-size: 16px; color: #F2F4F8">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Add a source</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; font-size: 16px; color: #F2F4F8">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+        <span>Refresh all</span>
+      </div>
+    <!-- settings.footer -->
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 4px 12px 10px">Sources sync to your other devices through iCloud. Logins sync through iCloud Keychain when it is on, and never to Apple TV.</div>
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 12px 4px">App</div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; font-size: 16px; color: #F2F4F8">
+        <span>Preferences</span>
+        <span style="flex: 1 1 auto"></span>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; font-size: 16px; color: #F2F4F8">
+        <span>About</span>
+        <span style="flex: 1 1 auto"></span>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </div>
+  </div>
+  <!-- settings.detail -->
+  <div style="flex: 1 1 auto; min-width: 0; overflow: hidden; display: flex; flex-direction: column; gap: 18px; padding: 18px 28px 0">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <span style="font-size: 28px; font-weight: 700">Home provider</span>
+      <span style="font-size: 13px; font-weight: 700; letter-spacing: 1px; padding: 2px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF; color: #A7B0BF; text-transform: uppercase; flex: 0 0 auto">Xtream</span>
+      <span style="flex: 1 1 auto"></span>
+      <!-- settings.detail.save (disabled) -->
+      <span style="font-size: 15px; font-weight: 600; color: #A7B0BF">Save</span>
+    </div>
+    <!-- settings.detail.status -->
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; max-width: 560px">
+      <div style="font-size: 16px">412 channels in 18 groups</div>
+      <div style="font-size: 15px; color: #D7DEE8">Guide for 7 days · 388 of 412 channels</div>
+      <div style="font-size: 14px; color: #A7B0BF">Refreshed 12 minutes ago</div>
+      <div style="font-size: 14px; color: #A7B0BF">Account active until 3 March 2027 · 2 connections</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">Source</div>
+      <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+        <label style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+          <span style="width: 110px; font-size: 15px; color: #D7DEE8">Name</span>
+          <input type="text" value="Home provider" style="font: inherit; font-size: 15px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #F2F4F8; outline: none">
+        </label>
+        <label style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px;">
+          <span style="width: 110px; font-size: 15px; color: #D7DEE8">Server</span>
+          <input type="url" value="http://tv.example-provider.net:8080" style="font: inherit; font-size: 15px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #F2F4F8; outline: none">
+        </label>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">Login</div>
+      <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+        <label style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+          <span style="width: 110px; font-size: 15px; color: #D7DEE8">Username</span>
+          <input type="text" value="olof_tv" style="font: inherit; font-size: 15px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #F2F4F8; outline: none">
+        </label>
+        <label style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px;">
+          <span style="width: 110px; font-size: 15px; color: #D7DEE8">Password</span>
+          <input type="password" placeholder="••••••••" style="font: inherit; font-size: 15px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: #A7B0BF; outline: none">
+        </label>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px">
+        <span style="flex: 0 0 auto; margin-top: 2px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        <span>Saved in your iCloud Keychain only. Antenna has no servers and never sees your login.</span>
+      </div>
+    </div>
+    <!-- settings.detail.refresh, settings.detail.delete -->
+    <div style="display: flex; gap: 10px; align-items: center; padding-top: 6px">
+        <span style="font-size: 15px; font-weight: 600; height: 36px; padding: 0 16px; border-radius: 10px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: inline-flex; align-items: center">Refresh now</span>
+        <span style="font-size: 15px; font-weight: 600; height: 36px; padding: 0 16px; border-radius: 10px; background: rgba(255,255,255,0.08); color: #FF5F57; display: inline-flex; align-items: center">Delete source</span>
+    </div>
+  </div>
+  <div style="position: absolute; left: 0; top: 0; width: 1194px; height: 834px; background: rgba(8,10,14,0.6)"></div>
+  <!-- settings.deleteConfirm -->
+  <div style="position: absolute; left: 387px; top: 300px; width: 420px; border-radius: 14px; background: #11151C; box-shadow: 0 12px 32px rgba(0,0,0,0.45); padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 17px; font-weight: 600">Delete Home provider?</div>
+    <div style="font-size: 15px; line-height: 1.4; color: #D7DEE8">Removes its 412 channels, 3 favorites and guide from every device signed in to your iCloud account.</div>
+    <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 10px">
+      <!-- settings.deleteConfirm.cancel -->
+        <span style="font-size: 15px; font-weight: 600; height: 36px; padding: 0 16px; border-radius: 10px; background: rgba(255,255,255,0.08); color: #F2F4F8; display: inline-flex; align-items: center">Cancel</span>
+      <!-- settings.deleteConfirm.delete -->
+        <span style="font-size: 15px; font-weight: 600; height: 36px; padding: 0 16px; border-radius: 10px; background: rgba(255,255,255,0.08); color: #FF5F57; display: inline-flex; align-items: center">Delete</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

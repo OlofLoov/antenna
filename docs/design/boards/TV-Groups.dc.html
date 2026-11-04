@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV groups</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Back to the Settings sheet (0015/AC-12) -->
+  <a href="TV-Movies.dc.html" style="position: absolute; left: 64px; top: 44px; display: inline-flex; align-items: center; gap: 10px; font-size: 24px; color: #A7B0BF">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>Settings</span>
+  </a>
+
+  <!-- Clock -->
+  <div style="position: absolute; right: 64px; top: 44px; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+
+  <!-- Title -->
+  <div style="position: absolute; left: 64px; top: 110px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Groups</div>
+    <div style="font-size: 24px; color: #A7B0BF">Hide, lock, rename and reorder. Changes reach every device signed into your iCloud.</div>
+  </div>
+
+  <!-- groups.list -->
+  <div style="position: absolute; left: 64px; top: 230px; width: 900px; display: flex; flex-direction: column; gap: 6px">
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF; padding: 0 20px 12px">Groups · 9</div>
+
+    <!-- groups.row (All channels: pinned, no move handle, hide only) -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <span style="width: 22px; flex: 0 0 auto"></span>
+      <span style="flex: 1 1 auto">All channels</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">412</span>
+    </div>
+
+    <!-- groups.row (focused: white card) -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 80px; padding: 0 20px; border-radius: 14px; font-size: 29px; font-weight: 600; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">Sport</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; font-weight: 400; color: #4B5563; font-variant-numeric: tabular-nums">42</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">News</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">31</span>
+    </div>
+
+    <!-- groups.row.<groupKey>.locked -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">Movies</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        LOCKED
+      </span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">58</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">Kids</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">19</span>
+    </div>
+
+    <!-- groups.row.<groupKey>.hidden: muted text -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px; color: #A7B0BF">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">Adult</span>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #A7B0BF">HIDDEN</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">36</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">Documentary</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">27</span>
+    </div>
+
+    <!-- groups.row.<groupKey>.custom: a user group -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>
+      <span style="flex: 1 1 auto">Weekend sports</span>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8">CUSTOM</span>
+      <span style="width: 64px; text-align: right; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">6</span>
+    </div>
+
+    <!-- groups.new -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 26px; color: #A7B0BF">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span>New group</span>
+    </div>
+
+    <!-- groups.orphans -->
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF; padding: 22px 20px 12px">Not in any source</div>
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 26px; color: #A7B0BF">
+      <span style="width: 22px; flex: 0 0 auto"></span>
+      <span style="flex: 1 1 auto">Sports Extra <span style="font-size: 22px">· Home provider</span></span>
+      <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; padding: 10px 22px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Remove</button>
+    </div>
+  </div>
+
+  <!-- groups.panel for the focused group -->
+  <div style="position: absolute; left: 1024px; top: 230px; width: 832px; display: flex; flex-direction: column; gap: 14px">
+    <div style="font-size: 38px; font-weight: 700">Sport</div>
+    <div style="font-size: 22px; color: #A7B0BF; padding-bottom: 14px">42 channels · Home provider · Sorted by number</div>
+
+    <!-- groups.rename -->
+    <button type="button" style="font: inherit; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; font-size: 24px; font-weight: 600; text-align: left; cursor: pointer">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+      <span>Rename</span>
+    </button>
+    <!-- groups.hide -->
+    <button type="button" style="font: inherit; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; font-size: 24px; font-weight: 600; text-align: left; cursor: pointer">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M6.6 6.6C4 8.3 2 12 2 12s4 7 10 7c1.7 0 3.2-.4 4.5-1"/><path d="M9.9 5.2A10.4 10.4 0 0 1 12 5c6 0 10 7 10 7s-.9 1.6-2.5 3.3"/></svg>
+      <span>Hide</span>
+    </button>
+    <!-- groups.lock -->
+    <button type="button" style="font: inherit; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; font-size: 24px; font-weight: 600; text-align: left; cursor: pointer">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <span>Lock</span>
+    </button>
+    <div style="display: flex; gap: 14px">
+      <!-- groups.moveUp -->
+      <button type="button" style="font: inherit; flex: 1 1 0; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; font-size: 24px; font-weight: 600; text-align: left; cursor: pointer">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        <span>Move up</span>
+      </button>
+      <!-- groups.moveDown -->
+      <button type="button" style="font: inherit; flex: 1 1 0; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; font-size: 24px; font-weight: 600; text-align: left; cursor: pointer">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <span>Move down</span>
+      </button>
+    </div>
+
+    <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0"></div>
+
+    <!-- groups.setPasscode -->
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 24px; border-radius: 12px; font-size: 24px">
+      <span>Passcode</span>
+      <span style="font-size: 22px; color: #A7B0BF">Change</span>
+    </div>
+    <!-- groups.lockNow -->
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 24px; border-radius: 12px; font-size: 24px">
+      <span>Lock now</span>
+      <span style="font-size: 22px; color: #A7B0BF">Locks are open on this Apple TV</span>
+    </div>
+    <!-- groups.searchHidden: check glyph when on -->
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 24px; border-radius: 12px; font-size: 24px">
+      <span>Include hidden channels in search</span>
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

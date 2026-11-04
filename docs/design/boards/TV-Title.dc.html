@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV title detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- title.backdrop: first backdropURL, else the poster, else this placeholder colour. Full bleed. -->
+  <div style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #22304A"></div>
+  <div style="position: absolute; left: 0; top: 0; width: 1100px; height: 1080px; background: rgba(11, 14, 19, 0.72)"></div>
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 240px; background: linear-gradient(to bottom, rgba(11,14,19,0), rgba(11,14,19,0.85))"></div>
+
+  <!-- No shell tab bar and no clock on the detail (spec 0026): Menu pops back to the section. -->
+
+  <!-- title.root: copy column, same left edge as the Movies hero -->
+  <div style="position: absolute; left: 64px; top: 150px; width: 880px; display: flex; flex-direction: column; gap: 22px">
+    <!-- title.eyebrow -->
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: {{accent}}">Movie · Thriller</div>
+    <!-- title.name -->
+    <div style="font-size: 76px; font-weight: 800; line-height: 1.02; letter-spacing: -1px">The Long Harbor</div>
+    <!-- title.meta: year · duration · genre · rating, then title.badges. Missing parts are left out, never dashed. -->
+    <div style="display: flex; gap: 14px; align-items: center; font-size: 24px; color: #D7DEE8">
+      <span>2024</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span>2 h 08 min</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span>Thriller</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span style="display: flex; align-items: center; gap: 6px"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg><span>7.4</span></span>
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF">4K</span>
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF">15</span>
+    </div>
+    <!-- title.plot: clamped to 4 lines; title.more opens the full text (title.plotSheet) -->
+    <div style="font-size: 26px; line-height: 1.4; color: #D7DEE8; max-width: 760px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden">A harbour pilot uncovers a smuggling ring the night before the port is sold. One tide to decide who gets out. With the buyers arriving at dawn and her own crew split down the middle, she has until the water turns to choose a side, and every channel out of the harbour is watched.</div>
+    <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; align-self: flex-start; padding: 10px 24px; border-radius: 999px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; cursor: pointer">More</button>
+    <!-- title.cast and title.director: label muted, names secondary, at most two lines -->
+    <div style="display: flex; flex-direction: column; gap: 6px; font-size: 22px; line-height: 1.35; max-width: 760px">
+      <div><span style="color: #A7B0BF">Cast </span><span style="color: #D7DEE8">Mira Holt, Jonas Reeve, Adaeze Okafor, Teodor Lind</span></div>
+      <div><span style="color: #A7B0BF">Director </span><span style="color: #D7DEE8">Sanna Weiss</span></div>
+    </div>
+    <!-- title.play (focused, Focus token) and title.myList. Initial focus is title.play. -->
+    <div style="display: flex; gap: 16px; padding-top: 8px">
+      <button type="button" style="font: inherit; font-size: 26px; font-weight: 700; padding: 18px 36px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>
+        <span>Resume</span>
+      </button>
+      <button type="button" aria-label="Add to my list" style="font: inherit; width: 72px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+    <!-- title.progress and title.remaining: shown only when the button reads Resume -->
+    <div style="display: flex; align-items: center; gap: 16px; width: 520px">
+      <div style="flex: 1 1 auto; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.22); overflow: hidden"><div style="height: 6px; width: 42%; background: {{accent}}"></div></div>
+      <span style="font-size: 20px; color: #A7B0BF; flex: 0 0 auto">52 min left</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
