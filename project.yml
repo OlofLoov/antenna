@@ -61,6 +61,17 @@ targets:
       - package: SnapshotPreviews
         product: SnapshottingTests
 
+  AntennaUITests:
+    type: bundle.ui-testing
+    supportedDestinations: [iOS]
+    sources:
+      - Apps/UITests
+    dependencies:
+      - target: Antenna
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
   AntennaTV:
     type: application
     platform: tvOS
@@ -86,10 +97,10 @@ targets:
 schemes:
   Antenna:
     build:
-      targets: { Antenna: all, AntennaTests: [test] }
+      targets: { Antenna: all, AntennaTests: [test], AntennaUITests: [test] }
     run: { config: Debug }
     test:
-      targets: [AntennaTests]
+      targets: [AntennaTests, AntennaUITests]
   AntennaTV:
     build:
       targets: { AntennaTV: all }
