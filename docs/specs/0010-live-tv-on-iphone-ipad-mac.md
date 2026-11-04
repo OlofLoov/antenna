@@ -5,15 +5,26 @@
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS
 - Builds on specs 0013 (catalogue: groups, order, initials, favorites), 0014 (guide queries), 0012 (matching function for the local filter; adds `browse.laterProgramme`), 0011 (Movies and Series presence rule).
-- Supersedes 0004/AC-14 on these platforms: a channel plays inline, nothing is pushed. Supersedes 0005/AC-1 and AC-2 on these platforms: Favorites becomes a group inside Live, not a tab (0005's status line and the specs README are updated on acceptance). Renames the Channels tab of 0004/AC-8 and AC-9 to Live. Answers 0004's open question "where does the AC-11 error get rendered": `browse.banner` (AC-21).
+- Supersedes 0004/AC-14 on these platforms: a channel plays inline, nothing is pushed. Supersedes 0005/AC-1 and AC-2 on these platforms: Favorites becomes a group inside Live, not a tab. On acceptance, 0005's status line gains "AC-1 and AC-2 superseded by 0010/AC-12 on iOS, iPadOS and macOS" and its README row says the same; 0005/AC-3 and AC-4 stay in force. Renames the Channels tab of 0004/AC-8 and AC-9 to Live. Answers 0004's open question "where does the AC-11 error get rendered": `browse.banner` (AC-21).
 - Blocked on the playback engine spec (not yet written) for `EngineRouter`-provided inline playback with an observable state and PiP capability (AC-6, AC-13, AC-17); tested with a fake engine until then.
 
 ## Design
 
 Boards: `docs/design/boards/iPad.dc.html` (iPadOS and macOS, regular width), `docs/design/boards/iPhone.dc.html` (iOS and any compact width).
 Design rules that apply: DR-3, DR-4, DR-5, DR-6, DR-7, DR-8, DR-11, DR-12, DR-13, DR-15. Deviations: DR-6, on touch and pointer platforms the number trails the name (logo, name, number, programme, bar) because the logo tile is the primary scan target; DR-7, the compact now-playing row has no bar because the player's programme progress bar sits directly above it.
-States on the boards: sidebar with the app mark, Live selected and the Sport group selected, channel list with header and the selected row, inline player with controls (pause, programme progress, clock, LIVE, PiP, full screen) and the panel with the favorite star and up-next list; iPhone with the pinned player (pause, progress, LIVE, full screen), now-playing row with star, group chips (Favorites, Sport, …; no counts), list and tab bar.
-Not drawn, to be added before the implementing PR: iPhone player clock (13 pt) and PiP control (32 pt); All channels chip; loading rows (`browse.loading`, 15 pt with muted detail); error (`browse.error`, 17 pt title, 15 pt body) and banner (`browse.banner`, 15 pt); empty list and empty Favorites group (`browse.empty`, `browse.emptyGroup`, muted 15 pt centred); nothing-selected player (ground colour, mark, "Select a channel" muted 15 pt); collapsed-width layouts; full screen; hardware-keyboard focused row (focus ring distinct from the selected row's fill); "waiting for login" group row.
+States on the boards: sidebar with the app mark, Live selected and the Sport group selected, channel list with header and the selected row, inline player with controls (pause, programme progress, clock, LIVE, PiP, full screen) and the panel with the favorite star and up-next list; iPhone with the pinned player (pause, progress, clock 13 pt, LIVE, PiP 32 pt, full screen), now-playing row with star, group chips (Favorites, All channels, Sport, …; no counts), list and tab bar.
+State boards, one file per state beside the two above:
+- Loading rows (`browse.loading`, 15 pt name on iPhone and 16 pt on iPad, muted 15 pt count or indeterminate ring) with the nothing-selected player: `iPad-Loading.dc.html`, `iPhone-Loading.dc.html`.
+- Nothing selected (`browse.player` in the ground colour with the mark and "Select a channel" muted 15 pt, `browse.panel` hidden): `iPad-NothingSelected.dc.html`; the compact version is the player on `iPhone-Loading.dc.html`.
+- Every source failed (`browse.error`, 17 pt title, 15 pt muted body, `browse.retry` 44 pt): `iPad-Error.dc.html` with "Could not load channels" and a waiting-for-login line; `iPhone-Error.dc.html` with the offline wording split into title and body.
+- Some sources failed (`browse.banner`, 15 pt, Retry and dismiss as 44 pt targets, above the list header on iPad and above the chips on iPhone): `iPad-Banner.dc.html`, `iPhone-Banner.dc.html`. The iPhone board also shows the AC-24 waiting-for-login banner under it.
+- Sources loaded, no channels (`browse.empty`, muted 15 pt centred, waiting-for-login line, `browse.retry`): `iPad-Empty.dc.html`.
+- Empty Favorites group (`browse.emptyGroup`, muted 15 pt centred): `iPhone-EmptyFavorites.dc.html`.
+- Waiting-for-login sidebar row (`browse.group.waiting.<sourceId>`, muted 15 pt after the last group): `iPad-Banner.dc.html`, `iPad-Error.dc.html`, `iPad-Empty.dc.html`.
+- Collapsed widths (AC-1): `iPad-Collapsed.dc.html` at 800 pt with `browse.toggleSidebar` in the list header; `iPad-Collapsed-Narrow.dc.html` at 600 pt with `browse.toggleSidebar` and `browse.toggleList` above the player.
+- Full screen (AC-17): `iPhone-FullScreen.dc.html`, 844 by 390, controls on the bottom edge, the full-screen control shows the exit glyph.
+- Hardware-keyboard focused row (AC-14): `iPad-Focus.dc.html`, a 2 pt inset ring in the Text colour with no fill, on a row other than the selected one.
+Not drawn: nothing. The boards are exports of the design canvas; the canvas still needs the same states.
 
 ## Problem
 
