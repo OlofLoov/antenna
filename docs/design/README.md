@@ -58,6 +58,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   with a 300 wide channel column, 370 per 30 minutes, accent now line.
 - Non-live sections (Movies, Series, Search) use the tvOS top tab bar:
   Live, Guide, Movies, Series, Search. Clock top right.
+- Sources and Settings: full-screen panel over the current tab, list
+  (640, from x 64) | detail (1088, from x 768), title top left. Rows on
+  the left, the selected row's detail on the right.
 - Focus is the lifted white card. Nothing else is white-filled.
 
 ### iPad and Mac
@@ -119,13 +122,21 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV sources and settings | `TV-Settings.dc.html` | 0023 |
+| TV delete source confirmation | `TV-Settings-Delete.dc.html` | 0023 |
+| TV preferences | `TV-Settings-Preferences.dc.html` | 0023 |
+| iPad and Mac sources and settings | `iPad-Settings.dc.html` | 0023 |
+| iPad and Mac delete source confirmation | `iPad-Settings-Delete.dc.html` | 0023 |
+| iPhone sources and settings | `iPhone-Settings.dc.html` | 0023 |
+| iPhone source detail | `iPhone-Settings-Detail.dc.html` | 0023 |
+| iPhone delete source alert | `iPhone-Settings-Delete.dc.html` | 0023 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
 drawn on `TV-Movies.dc.html` and `TV-Search.dc.html`.
 
 Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
-series detail, player controls on tvOS, Sources and Settings, the "source
+series detail, player controls on tvOS, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec lists under "Not drawn".
 
@@ -163,7 +174,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `settings.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
