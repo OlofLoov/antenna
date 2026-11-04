@@ -82,6 +82,16 @@ import Testing
         #expect(empty.addFavorite(c[0])?.sortOrder == 0)
     }
 
+    @Test("0013/AC-23 addFavorite returns nil for an untagged channel")
+    func addFavoriteUntagged() {
+        let tagged = Channel.tagged([channel("c")], sourceID: sourceA)
+        let catalogue = TestCatalogue(channels: tagged, groupOrder: [:], favorites: [])
+        let untagged = channel("c")
+        #expect(!catalogue.isFavorite(untagged))
+        #expect(catalogue.addFavorite(untagged) == nil)
+        #expect(catalogue.addFavorite(tagged[0]) != nil)
+    }
+
     /// 50 000 channels in 400 groups over two sources, a third of them
     /// unnumbered, and 100 favorites.
     struct Input {

@@ -276,4 +276,46 @@ typealias Snapshot = FavoriteSnapshot<Int>
             #expect(catalogue.rows(in: group).isEmpty)
         }
     }
+
+    @Test("0013/AC-21 a channel with a sourceID but no position is dropped")
+    func noPositionDropped() {
+        var unpositioned = channel("half", group: "Sport", number: 1)
+        unpositioned.sourceID = sourceA
+        let channels = Channel.tagged([channel("a", group: "Sport")], sourceID: sourceA) + [unpositioned]
+        let catalogue = TestCatalogue(channels: channels, groupOrder: [:], favorites: [])
+        #expect(RowKey(unpositioned) == nil)
+        #expect(catalogue.count(of: .all) == 1)
+        for group in catalogue.groups {
+            #expect(!catalogue.rows(in: group).contains { $0.id == "half" })
+        }
+        #expect(catalogue.match(digits: "1") == RowKey(channels[0]))
+    }
+
+    @Test("0013/AC-22 a duplicate RowKey keeps the first copy in input order")
+    func duplicateKey() throws {
+        let first = Channel.tagged([channel("dup", group: "Sport", number: 7, name: "First")], sourceID: sourceA)[0]
+        var second = channel("dup", group: "News", number: 8, name: "Second")
+        second.sourceID = sourceA
+        second.position = 0
+        let catalogue = TestCatalogue(channels: [first, second], groupOrder: [:], favorites: [])
+        let key = try #require(RowKey(first))
+        #expect(RowKey(second) == key)
+        #expect(catalogue.rows(in: .all) == [key])
+        #expect(catalogue.channel(for: key)?.name == "First")
+        #expect(catalogue.number(for: key) == 7)
+        #expect(catalogue.groups == [.favorites, .all, .named(sourceA, "Sport")])
+    }
+
+    @Test("0013/AC-24 sourceGroup of a channel from a source not loaded")
+    func sourceGroupUnloadedSource() {
+        let catalogue = TestCatalogue(channels: Self.ac2Channels(), groupOrder: [:], favorites: [])
+        let unknown = UUID()
+        let outsiders = Channel.tagged([channel("o", group: "Sport"), channel("p")], sourceID: unknown)
+        let groups = outsiders.compactMap { catalogue.sourceGroup(of: $0) }
+        #expect(groups == [.named(unknown, "Sport"), .ungrouped(unknown)])
+        for group in groups {
+            #expect(!catalogue.groups.contains(group))
+            #expect(catalogue.count(of: group) == 0)
+        }
+    }
 }
