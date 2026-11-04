@@ -1,12 +1,13 @@
 # 0005. Favorites
 
-- Status: Accepted
+- Status: Implemented
 - Date: 2026-11-03
 - Depends on ADRs: 0002
 - Platforms: iOS, iPadOS, macOS, tvOS
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
-  changes have a spec to revise or supersede. The model and the tab exist; no
-  UI adds a favorite yet. Tests that do not yet cite a criterion are TBD.
+  changes have a spec to revise or supersede. No UI adds a favorite yet.
+  AC-1 and AC-2 gained XCUITests with the AntennaUITests target; AC-3 has core
+  tests; AC-4 is a manual device check.
 
 ## Problem
 
@@ -71,13 +72,16 @@ Then the favorite appears in device B's Favorites tab.
 
 ## Test plan
 
-UI tests require accessibility identifiers `favorites.emptyState` and
-`favorites.list`, to be added by the implementing PR.
+UI tests find the screen by the accessibility identifiers
+`favorites.emptyState` and `favorites.list`. Debug builds launched with
+`-ui-testing-favorites <sortOrders>` start on an in-memory store holding one
+favorite per listed sort order, channel id `channel-<n>`; an empty value
+gives an empty store. Nothing reaches iCloud.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | ui | TBD |
-| AC-2 | ui | TBD |
+| AC-1 | ui | `FavoritesUITests.testEmptyStateWhenThereAreNoFavorites` |
+| AC-2 | ui | `FavoritesUITests.testRowsFollowSortOrder` |
 | AC-3 | core | `FavoriteChannelIDTests.m3uReload`, `FavoriteChannelIDTests.xtreamReload` |
 | AC-4 | device | CloudKit cannot run in CI; manual two-device check |
 
