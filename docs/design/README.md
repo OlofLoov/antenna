@@ -114,6 +114,18 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV channel overlay, no programme information | `Main-NoProgramme.dc.html` | 0007 |
 | TV channel overlay, guide loading | `Main-GuideLoading.dc.html` | 0007 |
 | TV zap bar and number entry | `TV-ZapBar.dc.html` | 0008 |
+| TV zap bar, hidden | `TV-ZapBar-Hidden.dc.html` | 0008 |
+| TV zap bar, no programme information | `TV-ZapBar-NoProgramme.dc.html` | 0008 |
+| TV zap bar, guide loading | `TV-ZapBar-GuideLoading.dc.html` | 0008 |
+| TV zap bar, guide unavailable | `TV-ZapBar-GuideUnavailable.dc.html` | 0008 |
+| TV zap bar, programme ends now | `TV-ZapBar-EndsNow.dc.html` | 0008 |
+| TV zap bar, no catch-up | `TV-ZapBar-NoCatchup.dc.html` | 0008 |
+| TV zap bar, buffering | `TV-ZapBar-Buffering.dc.html` | 0008 |
+| TV zap bar, Favorites group | `TV-ZapBar-Favorites.dc.html` | 0008 |
+| TV zap bar, All channels | `TV-ZapBar-AllChannels.dc.html` | 0008 |
+| TV number entry, no match | `TV-ZapBar-PillNoMatch.dc.html` | 0008 |
+| TV number entry, zeros only | `TV-ZapBar-PillZeros.dc.html` | 0008 |
+| TV number entry, no such channel | `TV-ZapBar-PillNoChannel.dc.html` | 0008 |
 | TV guide grid | `TV-Guide.dc.html` | 0009 |
 | iPad and Mac live browse | `iPad.dc.html` | 0010 |
 | iPhone live | `iPhone.dc.html` | 0010 |
@@ -140,7 +152,7 @@ loading and error states each spec lists under "Not drawn". The "source
 arrived without its credential" state on tvOS is on `TV-Shell-Empty.dc.html`.
 series detail, player controls on tvOS, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
-error states each spec lists under "Not drawn".
+error states each spec other than 0008 lists under "Not drawn".
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the
