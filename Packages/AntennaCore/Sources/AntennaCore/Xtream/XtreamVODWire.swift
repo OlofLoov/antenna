@@ -140,7 +140,7 @@ struct SeriesInfoWire: Decodable {
             // then non-numeric keys by name. That order decides ties and which duplicate wins.
             let keys = seasons.allKeys.sorted { lhs, rhs in
                 switch (Int(lhs.stringValue), Int(rhs.stringValue)) {
-                case (let l?, let r?): l < r
+                case (let left?, let right?): left < right
                 case (.some, nil): true
                 case (nil, .some): false
                 case (nil, nil): lhs.stringValue < rhs.stringValue
@@ -212,7 +212,7 @@ extension XtreamClient {
     private static func precedes(_ lhs: Int?, _ rhs: Int?) -> Bool {
         switch (lhs, rhs) {
         case (nil, .some): true
-        case (let l?, let r?): l < r
+        case (let left?, let right?): left < right
         default: false
         }
     }
