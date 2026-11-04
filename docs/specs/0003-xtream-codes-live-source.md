@@ -1,12 +1,12 @@
 # 0003. Xtream Codes live source
 
-- Status: Accepted
+- Status: Implemented
 - Date: 2026-11-03
 - Depends on ADRs: 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore, no UI)
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
-  changes have a spec to revise or supersede. Tests that do not yet cite a
-  criterion are marked TBD in the test plan.
+  changes have a spec to revise or supersede. Every criterion has a test
+  citing it since the retroactive test pass.
 
 ## Problem
 
@@ -110,16 +110,16 @@ Then the ids are equal, two different stream ids on one server give different id
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | core (URLProtocol stub) | TBD |
-| AC-2 | core | `XtreamClientTests.decodesLooseTypes` (tv_archive_duration TBD) |
-| AC-3 | core | TBD |
-| AC-4 | core | `XtreamClientTests.buildsStreamAndEPGURLs` |
-| AC-5 | core | `XtreamClientTests.buildsStreamAndEPGURLs` |
-| AC-6 | core | `XtreamClientTests.buildsStreamAndEPGURLs` (id and group only; rest TBD) |
-| AC-7 | core (URLProtocol stub, parameterised over the three endpoints) | TBD |
-| AC-8 | core (URLProtocol stub) | TBD |
-| AC-9 | core | TBD |
-| AC-10 | core | TBD |
+| AC-1 | core (URLProtocol stub) | `XtreamClientTests.requestShape` |
+| AC-2 | core | `XtreamClientTests.looseNumericTypes` |
+| AC-3 | core | `XtreamClientTests.categoryIDNumberOrString` |
+| AC-4 | core | `XtreamClientTests.liveStreamURL` |
+| AC-5 | core | `XtreamClientTests.guideURL` |
+| AC-6 | core | `XtreamClientTests.channelMapping` |
+| AC-7 | core (URLProtocol stub, parameterised over the three endpoints) | `XtreamClientTests.nonSuccessStatus` |
+| AC-8 | core (URLProtocol stub) | `XtreamClientTests.malformedJSON` |
+| AC-9 | core | `XtreamClientTests.accountInfoLooseTypes` |
+| AC-10 | core | `XtreamClientTests.stableIDs` |
 
 ## Open questions
 

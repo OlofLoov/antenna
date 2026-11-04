@@ -1,12 +1,12 @@
 # 0001. M3U playlist parsing
 
-- Status: Accepted
+- Status: Implemented
 - Date: 2026-11-03
 - Depends on ADRs: 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore, no UI)
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
-  changes have a spec to revise or supersede. Tests that do not yet cite a
-  criterion are marked TBD in the test plan.
+  changes have a spec to revise or supersede. Every criterion has a test
+  citing it since the retroactive test pass.
 
 ## Problem
 
@@ -142,22 +142,22 @@ Then `hasCatchup` is true and `catchupDays` is 3.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | core | `M3UParserTests.parsesHeaderAndAttributes` (single URL only; two-URL case TBD) |
-| AC-2 | core | `M3UParserTests.parsesHeaderAndAttributes` |
-| AC-3 | core | TBD |
-| AC-4 | core | `M3UParserTests.titleWithCommaInsideQuotedGroupSurvives` |
-| AC-5 | core | `M3UParserTests.titleWithCommaInsideQuotedGroupSurvives` |
-| AC-6 | core | `M3UParserTests.extgrpAppliesWhenNoGroupTitle` (carry-over case TBD) |
-| AC-7 | core | TBD |
-| AC-8 | core | `M3UParserTests.parsesHeaderAndAttributes` |
-| AC-9 | core | `M3UParserTests.idsAreStableAndUnique` (same tvg-id, different URL case TBD) |
-| AC-10 | core | covered implicitly by `M3UParserTests.titleWithCommaInsideQuotedGroupSurvives`; explicit named test TBD |
-| AC-11 | core | TBD |
-| AC-12 | core | TBD |
-| AC-13 | core | `M3UParserTests.extgrpAppliesWhenNoGroupTitle` |
-| AC-14 | core (benchmark, not CI-gated) | TBD |
-| AC-15 | core | TBD |
-| AC-16 | core | TBD |
+| AC-1 | core | `M3UParserTests.headerEPGURLs` |
+| AC-2 | core | `M3UParserTests.standardAttributes` |
+| AC-3 | core | `M3UParserTests.titleFallback` |
+| AC-4 | core | `M3UParserTests.commaInsideQuotedAttribute` |
+| AC-5 | core | `M3UParserTests.emptyTvgID` |
+| AC-6 | core | `M3UParserTests.extgrpAppliesOnce` |
+| AC-7 | core | `M3UParserTests.groupTitleWinsOverExtgrp` |
+| AC-8 | core | `M3UParserTests.catchupFlags` |
+| AC-9 | core | `M3UParserTests.stableUniqueIDs` |
+| AC-10 | core | `M3UParserTests.unknownDirectivesIgnored` |
+| AC-11 | core | `M3UParserTests.orphanURLSkipped` |
+| AC-12 | core | `M3UParserTests.emptyInput` (empty string and header only) |
+| AC-13 | core | `M3UParserTests.groupOrder` |
+| AC-14 | core (benchmark, not CI-gated) | `M3UParserTests.largePlaylistBenchmark`, runs only with `ANTENNA_BENCHMARK=1`; 1.2 s on an Apple M1 |
+| AC-15 | core | `M3UParserTests.catchupDisabled` |
+| AC-16 | core | `M3UParserTests.legacyTvgRec` |
 
 ## Open questions
 
