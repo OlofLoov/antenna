@@ -37,6 +37,8 @@
   names it: `@Test("0007/AC-3 empty tvg-id is not an EPG id")`. In an
   XCUITest the citation is a comment, `// 0007/AC-3`. `scripts/check-specs.sh`
   greps for exactly this form, so write the id as `NNNN/AC-n` with no spaces.
+- Benchmarks run only with `ANTENNA_BENCHMARKS=1`. Gate them with
+  `.enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1")`.
 - UI tests use accessibility identifiers of the form `screen.element`
   (`channels.searchField`). Never match on display text.
 
