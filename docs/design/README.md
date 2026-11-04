@@ -146,6 +146,20 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV shell, focus on the tab bar | `TV-Shell-FocusedTab.dc.html` | 0015 |
 | TV shell, loading at launch | `TV-Shell-Loading.dc.html` | 0015 |
 | TV shell, no channels | `TV-Shell-Empty.dc.html` | 0015 |
+| TV onboarding, M3U form with error | `TV-Onboard-3-M3U.dc.html` | 0006 |
+| TV onboarding, Connect in progress | `TV-Onboard-3-Connecting.dc.html` | 0006 |
+| TV onboarding, no live channels | `TV-Onboard-4-NoLive.dc.html` | 0006 |
+| TV onboarding, no channels found | `TV-Onboard-4-Empty.dc.html` | 0006 |
+| TV onboarding, sign in on this Apple TV | `TV-Onboard-SignIn.dc.html` | 0006 |
+| TV onboarding, what is a source | `TV-Onboard-Help.dc.html` | 0006 |
+| TV onboarding, ready with two sources | `TV-Onboard-5-Two.dc.html` | 0006 |
+| iPhone onboarding, M3U form with error | `iPhone-Onboard-2-M3U.dc.html` | 0006 |
+| iPhone onboarding, Connect in progress | `iPhone-Onboard-2-Connecting.dc.html` | 0006 |
+| iPhone onboarding, no link on the clipboard | `iPhone-Onboard-2-NoLink.dc.html` | 0006 |
+| iPhone onboarding, no live channels | `iPhone-Onboard-3-NoLive.dc.html` | 0006 |
+| iPhone onboarding, no channels found | `iPhone-Onboard-3-Empty.dc.html` | 0006 |
+| iPhone onboarding, what is a source | `iPhone-Onboard-Help.dc.html` | 0006 |
+| iPhone onboarding, ready with two sources | `iPhone-Onboard-3-Two.dc.html` | 0006 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (spec 0015) owns the top bar drawn on `TV-Movies.dc.html` and
@@ -158,6 +172,8 @@ arrived without its credential" state on tvOS is on `TV-Shell-Empty.dc.html`.
 series detail, player controls on tvOS, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec other than 0008 lists under "Not drawn".
+series detail, player controls on tvOS, Sources and Settings, and the
+empty, loading and error states each spec lists under "Not drawn".
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the
@@ -198,8 +214,10 @@ renumber; retire a rule by marking it "Retired" with a reason.
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel
   and programme names on the boards are sample data for layout only and
-  never ship. Copy may name platforms (Apple TV, iPhone) but never the
-  user's own device name or the user.
+  never ship; sample logins never use a real name. Copy never names the
+  user, the user's device ("your iPhone", a device name) or a state the
+  app cannot see, such as a notification on another device. It may name
+  the platform: "this Apple TV", "Antenna on iPhone".
 - **DR-13 Contrast.** Text meets 4.5:1 against what it sits on, including
   muted captions; 3:1 for text at 24 pt and above.
 - **DR-14 Paywall first.** Per ADR-0006 nothing in this document is shown

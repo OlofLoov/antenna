@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV onboarding, loading with no live channels</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px">
+
+  <div style="position: absolute; right: 64px; top: 44px; display: flex; gap: 8px; align-items: center">
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+    <span style="width: 32px; height: 6px; border-radius: 3px; background: #F2F4F8; display: inline-block"></span>
+    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+    <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Setting up Home provider</div>
+    <div style="font-size: 24px; color: #A7B0BF">This runs once. Updates later happen in the background.</div>
+  </div>
+
+  <div style="width: 1000px; border-radius: 20px; background: rgba(255,255,255,0.06); box-sizing: border-box; padding: 16px 32px; display: flex; flex-direction: column">
+
+    <div style="display: flex; align-items: center; gap: 24px; height: 96px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+      <span style="width: 44px; height: 44px; border-radius: 22px; background: #5BB8FF; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B0E13" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 27px">Signed in</div>
+        <div style="font-size: 20px; color: #A7B0BF">Account active until 14 March 2027 · 2 connections</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px; height: 96px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+      <!-- onboarding.row.channels, muted style -->
+      <span style="width: 44px; height: 44px; border-radius: 22px; border: 4px solid rgba(255,255,255,0.18); box-sizing: border-box; flex: 0 0 auto"></span>
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 27px; color: #A7B0BF">No live channels</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px; height: 96px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+      <span style="width: 44px; height: 44px; border-radius: 22px; background: #5BB8FF; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B0E13" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 27px">1 240 movies and 86 series</div>
+        <div style="font-size: 20px; color: #A7B0BF">Posters and descriptions load as you browse</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px; height: 112px">
+      <span style="width: 44px; height: 44px; border-radius: 22px; border: 4px solid rgba(255,255,255,0.18); border-top-color: #5BB8FF; box-sizing: border-box; flex: 0 0 auto"></span>
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 27px">Downloading the guide · <span style="font-variant-numeric: tabular-nums">2,4 MB</span></div>
+        <!-- Indeterminate: the accent segment slides along the track -->
+        <div style="height: 6px; border-radius: 3px; background: rgba(255,255,255,0.16); position: relative; overflow: hidden"><div style="position: absolute; left: 35%; width: 30%; height: 6px; border-radius: 3px; background: #5BB8FF"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; align-items: center">
+    <!-- onboarding.browseMovies replaces Start watching -->
+    <a href="TV-Movies.dc.html" style="font-size: 26px; font-weight: 700; padding: 18px 44px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: inline-flex">Browse movies</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
