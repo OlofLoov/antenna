@@ -13,7 +13,8 @@ struct ChannelsView: View {
                     ContentUnavailableView(
                         "No sources yet",
                         systemImage: "antenna.radiowaves.left.and.right",
-                        description: Text("Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud.")
+                        description: Text(
+                            "Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud.")
                     )
                 } else if model.channels.isEmpty {
                     ProgressView("Loading channels…")
@@ -89,7 +90,8 @@ enum SourceLoader {
             return M3UParser().parse(text).channels
         case .xtream:
             guard let key = source.credentialKey,
-                  let cred = try CredentialStore().load(for: key) else { return [] }
+                let cred = try CredentialStore().load(for: key)
+            else { return [] }
             let client = XtreamClient(credentials: .init(server: source.url, username: cred.username, password: cred.password))
             async let categories = client.liveCategories()
             async let streams = client.liveStreams()
