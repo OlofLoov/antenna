@@ -26,9 +26,29 @@ one message if any of these hold. Do not start a partial implementation.
 - A "Blocked on" line names something that does not exist yet, such as an
   ADR or another spec.
 - "Depends on ADRs" names an ADR that is not Accepted in `docs/adr/README.md`.
-- "Builds on specs" names a spec that is not Implemented. Say which one.
+- A criterion you are about to build needs another spec's work that has
+  not merged. See "What gates a slice" below. Say which criterion needs
+  which.
 - The Design section has a non-empty "Not drawn" list. Those states get
   drawn on the canvas and the section updated before code. No board, no code.
+
+### What gates a slice
+
+"Builds on specs" says where to read, not what must ship first. What gates
+a slice is the work its own criteria use: another spec's criteria they
+cite (`0013/AC-6a`), and the types, identifiers or behaviour they call
+that another spec defines. For each criterion in the slice, list those
+needs in the coverage table (step 3). A need is met when that criterion
+is merged: its spec says Implemented, or In progress with the criterion
+on its `- Progress:` line. A spec under "Builds on" that no criterion in
+the slice uses does not gate the slice.
+
+UI specs build on each other in both directions (0007 and 0015, 0010 and
+0011), so whole-spec gating would deadlock them. Cut by criterion instead.
+Ship first the criteria whose needs are met, from whichever spec has
+them. A later slice picks up a criterion once what it needs has merged.
+Stop only when every criterion left in the spec waits on something
+unmerged, and say what each one waits on.
 
 ## 2. Read before writing
 
@@ -41,7 +61,8 @@ it builds on, for type and identifier names. The files the spec touches.
 ## 3. Plan the proof
 
 Before any code, write a coverage table to the scratchpad with one row per
-criterion: AC id, layer from the spec's test plan, test name, file. At least
+criterion: AC id, layer from the spec's test plan, test name, file, and
+needs (other specs' criteria or types it uses, per step 1). At least
 one test per criterion. Names follow `docs/conventions.md`:
 `@Test("NNNN/AC-3 short name")` in swift-testing, a `// NNNN/AC-3` comment on
 an XCUITest. Rows whose layer is `device` go under "Not covered and why" in
@@ -68,6 +89,11 @@ the scratchpad: position, branch, criteria, and what main can do once it
 merges. Each PR builds on the previous one, so order them by dependency,
 core before Apps. Rebase-merge keeps every commit, so a slice that is not
 shippable on its own cannot hide behind a later one.
+
+Criteria whose needs are unmet stay out of the stack. When the stack ends
+with criteria still waiting, its last PR leaves the spec `In progress`
+with a `- Progress:` line, and names what each remaining criterion waits
+on in the PR body. Rerun this skill on the spec once those needs merge.
 
 ## 5. Branch
 
@@ -102,8 +128,8 @@ while k is in review, but do not start k+2 until k has merged.
 
 ## 7. Claim the status
 
-The last PR of the stack sets `- Status: Implemented` in the spec header
-and deletes the `- Progress:` line. Every other PR sets a bare
+The PR that merges the spec's last criterion sets `- Status: Implemented`
+in the spec header and deletes the `- Progress:` line. Every other PR sets a bare
 `- Status: In progress` and, on the line below it, the criteria merged so
 far:
 
