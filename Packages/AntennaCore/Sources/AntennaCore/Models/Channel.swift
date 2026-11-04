@@ -13,6 +13,11 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
     public var hasCatchup: Bool
     /// Catch-up window in days, when the source advertises one.
     public var catchupDays: Int?
+    /// The `SourceRecord.id` this channel was loaded from. Nil until
+    /// `Channel.tagged(_:sourceID:)` runs; the catalogue drops untagged channels.
+    public var sourceID: UUID?
+    /// 0-based index in the source's channel list, set with `sourceID`.
+    public var position: Int?
 
     public init(
         id: String,
@@ -23,7 +28,9 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         epgID: String? = nil,
         number: Int? = nil,
         hasCatchup: Bool = false,
-        catchupDays: Int? = nil
+        catchupDays: Int? = nil,
+        sourceID: UUID? = nil,
+        position: Int? = nil
     ) {
         self.id = id
         self.name = name
@@ -34,5 +41,7 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         self.number = number
         self.hasCatchup = hasCatchup
         self.catchupDays = catchupDays
+        self.sourceID = sourceID
+        self.position = position
     }
 }
