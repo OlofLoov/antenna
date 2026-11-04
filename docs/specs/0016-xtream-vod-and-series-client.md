@@ -1,7 +1,6 @@
 # 0016. Xtream VOD and series client
 
-- Status: In progress
-- Progress: AC-2, AC-2a, AC-2b, AC-3, AC-4, AC-4a, AC-5, AC-6 to AC-6e, AC-9, AC-12, AC-13 and AC-13a in this PR
+- Status: Implemented
 - Date: 2026-11-03
 - Depends on ADRs: 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore)
@@ -181,14 +180,14 @@ Fixtures under `Tests/AntennaCoreTests/Fixtures/Xtream/` for every endpoint, inc
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | core (`URLProtocol` stub, parameterised over the nine calls; `xmltvURL()` built directly) | TBD |
+| AC-1 | core (`URLProtocol` stub, parameterised over the nine calls; `xmltvURL()` built directly) | `XtreamClientCallTests.requestShape`, `.guideURL` |
 | AC-2 | core (decode function) | `XtreamVODDecodingTests.vodItemFields` |
 | AC-2a | core (decode function, parameterised) | `XtreamVODDecodingTests.looseIDs`, `.looseAddedAndRating`, `.zeroRating` |
 | AC-2b | core (decode function, parameterised) | `XtreamVODDecodingTests.posterURLRule` |
 | AC-3 | core (decode function, parameterised) | `XtreamVODDecodingTests.unparseableAdded` |
 | AC-4 | core (decode function) | `XtreamVODDecodingTests.brokenRows`, `.brokenSeriesRows` |
 | AC-4a | core (decode function, parameterised, HTML body included) | `XtreamVODDecodingTests.nonArrayListBody`, `.nestedPath` |
-| AC-4b | core (`URLProtocol` stub: category list, `accountInfo()` on HTML) | TBD |
+| AC-4b | core (`URLProtocol` stub: category list, `accountInfo()` on HTML) | `XtreamClientCallTests.categoryListFailsWhole`, `.htmlBody` |
 | AC-5 | core (decode function) | `XtreamVODDecodingTests.vodInfoFields`, `.durationRule`, `.yearRule`, `.infoShapes` |
 | AC-6 | core (decode function) | `XtreamSeriesDecodingTests.seriesRowFields`, `.lastModifiedRule` |
 | AC-6a | core (decode function) | `XtreamSeriesDecodingTests.episodesFlattenFromDictionary`, `.episodesFlattenFromArray`, `.seasonAndNumberFallback` |
@@ -196,12 +195,12 @@ Fixtures under `Tests/AntennaCoreTests/Fixtures/Xtream/` for every endpoint, inc
 | AC-6c | core (decode function) | `XtreamSeriesDecodingTests.seasonCount` |
 | AC-6d | core (decode function) | `XtreamSeriesDecodingTests.episodeSkipping` |
 | AC-6e | core (decode function, parameterised) | `XtreamSeriesDecodingTests.emptyEpisodes` |
-| AC-7 | core | TBD |
-| AC-8 | core (parameterised) | TBD |
+| AC-7 | core | `XtreamURLTests.playableURLs`, `.extensionRule`, `.serverPath`, `.encodedCredentials` |
+| AC-8 | core (parameterised) | `XtreamURLTests.errorsCarryNoSecrets`, `.valuesCarryNoSecrets` |
 | AC-9 | core benchmark, `ANTENNA_BENCHMARKS=1` | `XtreamVODDecodingTests.decodeSpeed` |
-| AC-10 | core (`URLProtocol` stub throwing, parameterised) | TBD |
-| AC-10a | core (`URLProtocol` stub, task cancelled) | TBD |
-| AC-11 | core (`URLProtocol` stub: 401, 403, 500, non-`HTTPURLResponse`, `auth: 0`, `auth: "0"`, `auth: 1`, `auth: "yes"`) | TBD |
+| AC-10 | core (`URLProtocol` stub throwing, parameterised) | `XtreamClientCallTests.transportFailure` |
+| AC-10a | core (`URLProtocol` stub, task cancelled) | `XtreamClientCallTests.cancellation` |
+| AC-11 | core (`URLProtocol` stub: 401, 403, 500, non-`HTTPURLResponse`, `auth: 0`, `auth: "0"`, `auth: 1`, `auth: "yes"`) | `XtreamClientCallTests.unauthorizedStatus`, `.otherStatuses`, `.authZero`, `.probeInDecode`, `.arrayNotProbed`, `.authField` |
 | AC-12 | core (decode function, parameterised) | `XtreamVODDecodingTests.emptyShapes`, `.nonObjectInfo` |
 | AC-13 | core (decode function) | `XtreamSeriesDecodingTests.stableIDs` |
 | AC-13a | core (parameterised) | `XtreamSeriesDecodingTests.titleIDParses`, `.titleIDRejects` |
