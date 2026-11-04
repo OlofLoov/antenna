@@ -78,6 +78,12 @@ UI tests find the screen by the accessibility identifiers
 favorite per listed sort order, channel id `channel-<n>`; an empty value
 gives an empty store. Nothing reaches iCloud.
 
+The tests run on an iPhone simulator. The view is shared by every
+platform, and `AntennaUITests` targets iOS only. They open the tab by
+its "Favorites" label, an exception to the identifier rule in
+`docs/conventions.md`: the tab bar belongs to the shell, which this spec
+does not cover, and moves to an identifier when the shell spec adds one.
+
 | Criterion | Layer | Test |
 |-----------|-------|------|
 | AC-1 | ui | `FavoritesUITests.testEmptyStateWhenThereAreNoFavorites` |
