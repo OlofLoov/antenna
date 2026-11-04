@@ -1,0 +1,77 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  swift-format:
+    name: swift-format
+    runs-on: ubuntu-latest
+    container: swift:6.2.1-noble
+    steps:
+      - uses: actions/checkout@v5
+      - name: Lint formatting
+        run: swift format lint --strict --recursive --parallel Apps Packages
+
+  swiftlint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+    container: ghcr.io/realm/swiftlint:0.65.1
+    steps:
+      - uses: actions/checkout@v5
+      - name: Lint
+        run: swiftlint lint --strict --reporter github-actions-logging
+
+  rules:
+    name: Repo rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: ADR and layering greps
+        run: bash scripts/check-rules.sh
+
+  scripts:
+    name: Shell and workflow files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: shellcheck
+        run: shellcheck scripts/*.sh scripts/githooks/* .claude/hooks/*.sh
+      - name: actionlint
+        run: |
+          docker run --rm -v "$PWD:/repo" --workdir /repo rhysd/actionlint:1.7.12 -color
+
+  docs:
+    name: Doc links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # docs/specs/README.md already lists specs 0006 to 0016, which live on
+      # open branches. Drop the exclusion once they have merged.
+      - name: Check relative links in Markdown
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: --offline --no-progress --include-fragments --exclude-path docs/specs/README.md './**/*.md'
+          fail: true
+          failIfEmpty: true
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: "false"

@@ -1,0 +1,74 @@
+# SwiftLint carries the rules from docs/conventions.md that a formatter cannot.
+# Formatting (indentation, wrapping, trailing commas) belongs to swift-format
+# and .swift-format, so the rules that would fight it are off here.
+# Run: swiftlint lint --strict
+
+included:
+  - Apps
+  - Packages/AntennaCore/Sources
+  - Packages/AntennaCore/Tests
+
+excluded:
+  - .build
+  - Packages/AntennaCore/.build
+
+disabled_rules:
+  - trailing_comma                            # swift-format decides
+  - vertical_parameter_alignment              # swift-format indents continuations instead of aligning them
+  - multiple_closures_with_trailing_closure   # SwiftUI's Button(action:) { } label: { } reads better this way
+  - todo                                      # tracked in specs, not in code
+
+opt_in_rules:
+  - force_unwrapping                # conventions: none outside tests
+  - implicitly_unwrapped_optional
+  - fatal_error_message
+  - closure_spacing
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - empty_count
+  - empty_string
+  - first_where
+  - last_where
+  - legacy_multiple
+  - redundant_nil_coalescing
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - unused_optional_binding
+  - yoda_condition
+
+line_length:
+  warning: 140
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
+
+cyclomatic_complexity:
+  warning: 20
+  error: 30
+
+function_body_length:
+  warning: 80
+  error: 120
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+type_body_length:
+  warning: 300
+  error: 400
+
+file_length:
+  warning: 500
+  error: 700
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  excluded: [i, d, s, c, f, x, y]
+
+nesting:
+  type_level: 2
+
+reporter: xcode
