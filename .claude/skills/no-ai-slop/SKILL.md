@@ -117,3 +117,17 @@ itself; it hands you this checklist. When it fires:
 For code files, check only comments, doc comments and strings. A doc comment
 in AntennaCore says what the caller can rely on, in one or two plain
 sentences, per `docs/conventions.md`.
+
+Config files (YAML, workflows, lint configs, xcconfig, plist, TOML) carry no
+comments. A header that restates the file name, a comment that repeats the
+key next to it, or a note on why an option is set all go. The reason for an
+option belongs in the commit message or PR body, where it stays with the
+change that introduced it. The one exception is a line that is wrong without
+its comment, such as a workaround that will break when something upstream
+changes; keep that to one line.
+
+Shell scripts get one header line saying what the script does. Checks and
+steps are named by their labels, not by a comment above them.
+
+When the hook fires, open the file you just wrote and delete what it names
+before the next tool call.

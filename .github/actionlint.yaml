@@ -1,5 +1,3 @@
-# actionlint config. Runner labels newer than the bundled list go here so the
-# linter does not reject them.
 self-hosted-runner:
   labels:
     - macos-26

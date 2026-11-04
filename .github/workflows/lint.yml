@@ -55,8 +55,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      # docs/specs/README.md already lists specs 0006 to 0016, which live on
-      # open branches. Drop the exclusion once they have merged.
       - name: Check relative links in Markdown
         uses: lycheeverse/lychee-action@v2.9.0
         with:
