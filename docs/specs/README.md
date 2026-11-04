@@ -33,5 +33,6 @@ layer is `device` are exempt. The `implement` skill runs this loop.
 | [0014](0014-guide-data.md) | Guide data: download, join and query | Draft |
 | [0015](0015-tvos-shell.md) | tvOS shell: tab bar, full-screen playback and Menu | Draft |
 | [0016](0016-xtream-vod-and-series-client.md) | Xtream VOD and series client | Draft |
+| [0026](0026-title-detail-and-episode-picker.md) | Title detail and episode picker for movies and series | Draft |
 
 Template: [0000-template.md](0000-template.md). Create new ones with the `spec` skill.
