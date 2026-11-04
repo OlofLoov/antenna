@@ -25,7 +25,7 @@ layer is `device` are exempt. The `implement` skill runs this loop.
 | [0006](0006-first-run-onboarding.md) | First-run onboarding and add-source flow | Draft |
 | [0007](0007-tv-channel-overlay.md) | Apple TV channel overlay | Accepted |
 | [0008](0008-tv-zap-bar-and-number-entry.md) | Apple TV zap bar and channel number entry | Accepted |
-| [0009](0009-tv-guide-grid.md) | Apple TV guide grid | Draft |
+| [0009](0009-tv-guide-grid.md) | Apple TV guide grid | Accepted |
 | [0010](0010-live-tv-on-iphone-ipad-mac.md) | Live TV browsing on iPhone, iPad and Mac | Draft |
 | [0011](0011-movies-and-series-browsing.md) | Movies and series browsing | Draft |
 | [0012](0012-search.md) | Search across channels, guide, movies and series | Draft |
