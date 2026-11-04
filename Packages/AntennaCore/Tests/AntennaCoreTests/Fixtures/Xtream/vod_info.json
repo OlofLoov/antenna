@@ -1,0 +1,12 @@
+{
+  "info": {
+    "plot": "A desert",
+    "releasedate": "2024-03-01",
+    "duration": "02:08:00",
+    "duration_secs": 7680,
+    "genre": "Sci-Fi",
+    "age": "15",
+    "backdrop_path": ["http://h/b1.jpg", "p.jpg"]
+  },
+  "movie_data": {"stream_id": 55, "name": "Dune", "added": "1730600000", "category_id": "12", "container_extension": "mkv", "direct_source": ""}
+}

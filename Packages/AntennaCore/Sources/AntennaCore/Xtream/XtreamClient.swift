@@ -93,8 +93,13 @@ public struct XtreamClient: Sendable {
         return try JSONDecoder().decode(T.self, from: data)
     }
 
-    public enum XtreamError: Error, Sendable {
+    /// Errors from `XtreamClient`. Values carry codes and coding paths only, never URLs, credentials
+    /// or response bodies.
+    public enum XtreamError: Error, Sendable, Equatable {
         case badStatus(Int)
+        /// The body did not decode. `path` is the dotted coding path of the failure, such as
+        /// `[3].stream_id`, and "" when the body itself has the wrong shape or is not JSON.
+        case decoding(path: String)
     }
 }
 
