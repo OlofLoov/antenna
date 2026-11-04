@@ -111,7 +111,10 @@ for file in "${files[@]}"; do
   while read -r ref; do
     other="${ref%%/*}"; ac="${ref#*/}"
     [[ "$other" == "$id" ]] && continue
-    target=$(ls "$specs"/"$other"-*.md 2>/dev/null | head -1)
+    target=""
+    for candidate in "$specs"/"$other"-*.md; do
+      [[ -f "$candidate" ]] && { target="$candidate"; break; }
+    done
     if [[ -z "$target" ]]; then
       note "$name: cites $ref but spec $other is not in the tree"
       continue
