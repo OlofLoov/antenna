@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     container: swift:6.2.1-noble
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Lint formatting
         run: swift format lint --strict --recursive --parallel Apps Packages
 
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/realm/swiftlint:0.65.1
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Lint
         run: swiftlint lint --strict --reporter github-actions-logging
 
@@ -35,7 +35,7 @@ jobs:
     name: Repo rules
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: ADR and layering greps
         run: bash scripts/check-rules.sh
 
@@ -43,7 +43,7 @@ jobs:
     name: Shell and workflow files
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: shellcheck
         run: shellcheck scripts/*.sh scripts/githooks/* .claude/hooks/*.sh
       - name: actionlint
@@ -54,7 +54,7 @@ jobs:
     name: Doc links
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Check relative links in Markdown
         uses: lycheeverse/lychee-action@v2.9.0
         with:
@@ -66,7 +66,7 @@ jobs:
     name: Secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v3.0.0
