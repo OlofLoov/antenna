@@ -29,7 +29,7 @@ Five tvOS specs say "the tab bar" and "Menu returns to full screen" and none own
 In:
 - The shell is `ShellView` in `Apps/Shared/Views/Shell/` under `#if os(tvOS)`. 0006 owns the root chooser (paywall per ADR-0006, then onboarding, then the shell when at least one source exists); this spec owns everything inside `ShellView`.
 - `ShellModel`, `ShellNavigator` and `LastChannelKey` live in `Apps/Shared/Views/Shell/` and are tested in the AntennaTV test bundle; nothing from this spec enters AntennaCore (ADR-0005).
-- Top tab bar: Antenna mark, Live, Guide, Movies, Series, Search, gear. Movies and Series present per 0011/AC-1, which owns that test. Clock at the trailing edge.
+- Top tab bar: Antenna mark, Live, Guide, Movies, Series, Search, gear. Movies and Series present per 0011/AC-1a and AC-1b, which owns that test. Clock at the trailing edge.
 - Live is full-screen playback of the current channel; the tab bar is hidden on Live and Guide, persistent on Movies, Series and Search.
 - `shell.player` exists on Live, loading and empty; it does not exist on Movies, Series or Search (the view is hidden, the engine instance lives on) and on Guide the picture is `guide.pip` (0009).
 - Menu from full screen with no overlay, bar or pill visible shows the tab bar over the dimmed picture with Live selected.
@@ -104,7 +104,7 @@ When Live or Guide becomes the selected tab by any route (select, Menu per AC-6b
 Then the fake engine records `play()` once and no `load(_:)` by the time `shell.tab.live` or `shell.tab.guide` has `.isSelected` and no `movies.`, `series.` or `search.` root identifier exists.
 
 ### AC-6a Menu from a tab screen's root
-Given focus inside a tab's content at the level its spec calls root (0009/AC-17b grid, 0011/AC-7 rows, 0012/AC-12 keyboard)
+Given focus inside a tab's content at the level its spec calls root (0009/AC-17b grid, 0011/AC-7 rows, 0012/AC-12b keyboard)
 When the user presses Menu
 Then focus is on `shell.tab.<thatTab>`, the selected tab is unchanged, and no screen is dismissed; for Guide `shell.scrim` and `shell.tabBar` appear over the guide. Selecting `shell.tab.guide` while Guide is selected removes `shell.tabBar` and `shell.scrim` and returns focus to the guide cell that had it, as AC-16. On Movies, Series and Search selecting the selected tab moves focus to the content root's first focusable element.
 
@@ -126,7 +126,7 @@ Then `shell.clock` does not exist and `guide.clock` does.
 ### AC-8 Last watched channel is remembered
 Given the user tunes to a channel
 When the channel-change event (0008/AC-1) fires
-Then the injected `UserDefaults` suite holds under key `shell.lastChannel` a `Data` value decoding to `LastChannelKey(sourceID: UUID, channelID: String)` matching the tuned channel (0013/AC-11's components without position), written before the event handler returns.
+Then the injected `UserDefaults` suite holds under key `shell.lastChannel` a `Data` value decoding to `LastChannelKey(sourceID: UUID, channelID: String)` matching the tuned channel (0013/AC-11a's components without position), written before the event handler returns.
 
 ### AC-10 Loading at launch
 Given sources exist and none has finished loading
@@ -170,7 +170,7 @@ Then after the call returns and the view has updated, `shell.tab.guide` has `.is
 
 ### AC-14c Request full-screen Live
 Given any tab or the overlay is shown
-When `showLive()` is called after a tune (0009/AC-9, 0012/AC-6)
+When `showLive()` is called after a tune (0009/AC-9, 0012/AC-6b)
 Then after the call returns and the view has updated, `shell.tab.live` has `.isSelected`, `shell.player` exists, and no `shell.tabBar`, `shell.scrim`, `guide.`, `movies.`, `series.` or `search.` root identifier exists.
 
 ### AC-15 Retry
