@@ -121,6 +121,8 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV zap bar, programme ends now | `TV-ZapBar-EndsNow.dc.html` | 0008 |
 | TV zap bar, no catch-up | `TV-ZapBar-NoCatchup.dc.html` | 0008 |
 | TV zap bar, buffering | `TV-ZapBar-Buffering.dc.html` | 0008 |
+| TV zap bar, no next programme | `TV-ZapBar-NoNext.dc.html` | 0008 |
+| TV zap bar, LIVE badge only | `TV-ZapBar-LiveOnly.dc.html` | 0008 |
 | TV zap bar, Favorites group | `TV-ZapBar-Favorites.dc.html` | 0008 |
 | TV zap bar, All channels | `TV-ZapBar-AllChannels.dc.html` | 0008 |
 | TV number entry, no match | `TV-ZapBar-PillNoMatch.dc.html` | 0008 |
