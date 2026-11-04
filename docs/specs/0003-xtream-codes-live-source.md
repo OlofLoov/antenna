@@ -50,10 +50,14 @@ Given credentials for `http://panel:8080` with username `u` and password `p`
 When `liveStreams(categoryID: "3")` is called
 Then exactly one GET is issued to `http://panel:8080/player_api.php?username=u&password=p&action=get_live_streams&category_id=3`, with query items in the order username, password, action, then category_id, and without a category the `category_id` item is absent.
 
+Superseded in part by 0016/AC-1: credentials are percent-encoded outside the RFC 3986 unreserved set in every request.
+
 ### AC-2 Loose numeric types decode
 Given a live stream JSON where `num`, `stream_id`, `tv_archive` and `tv_archive_duration` are strings and `category_id` is a number
 When decoded
 Then the values are the corresponding integers and `categoryID` is the string "3".
+
+Narrowed by 0016/AC-4: an integer decodes only from a whole number, so "7.5" is not 7.
 
 ### AC-3 Category id as number or string
 Given categories JSON with `category_id` as `7` in one item and `"8"` in another
@@ -65,10 +69,14 @@ Given stream id 42
 When `streamURL(for:)` is built
 Then it is `http://panel:8080/live/u/p/42.ts`, and with `container: .m3u8` it ends in `42.m3u8`.
 
+Superseded in part by 0016/AC-7: credentials in the path are percent-encoded.
+
 ### AC-5 Guide URL
 Given the same credentials
 When `xmltvURL()` is built
 Then it is `http://panel:8080/xmltv.php?username=u&password=p`.
+
+Superseded in part by 0016/AC-1 and 0016/AC-7: credentials in the query are percent-encoded.
 
 ### AC-6 Channel mapping
 Given a stream with `stream_id` 42, `name` "BBC One", `num` 7, `stream_icon` "", `epg_channel_id` "", `tv_archive` 1, `tv_archive_duration` 3 and category name "UK"
@@ -80,10 +88,14 @@ Given the server answers 403
 When any endpoint is called
 Then the call throws `XtreamClient.XtreamError.badStatus(403)`.
 
+Superseded by 0016/AC-11: 401 and 403 throw `XtreamError.unauthorized`; other non-2xx statuses still throw `badStatus`.
+
 ### AC-8 Malformed JSON is an error, not a crash
 Given the server answers 200 with an HTML login page
 When `liveStreams()` is called
 Then the call throws a `DecodingError`.
+
+Superseded by 0016/AC-4b: the call throws `XtreamError.decoding(path: "")`, and no call lets `DecodingError` escape.
 
 ### AC-9 Account info decodes loose types
 Given `user_info` with `exp_date` as a number and `max_connections` as a string
@@ -99,10 +111,10 @@ Then the ids are equal, two different stream ids on one server give different id
 
 - Credentials are part of every URL. URLs built by this client must never be logged (ADR-0003, conventions). Error values carry status codes only.
 - Channel ids use the server host only. Two panels on the same host with different ports, or one panel over http and https, produce colliding ids. A server URL without a host yields `xtream##42`.
-- Many panels answer 200 with `{"user_info":{"auth":0}}` for bad credentials; this surfaces today as a `DecodingError` on list endpoints. Tracked as an open question.
+- Many panels answer 200 with `{"user_info":{"auth":0}}` for bad credentials. Since 0016/AC-11 every call throws `XtreamError.unauthorized` for it.
 - A response that is not `HTTPURLResponse` surfaces as `badStatus(-1)`.
 - A server URL with a path component keeps the path: `http://host/xtream` and `http://host/xtream/` both yield `http://host/xtream/player_api.php`.
-- Streams missing `name` or `stream_id` fail decoding for the whole list; providers that emit such rows are not tolerated today.
+- Since 0016/AC-4, `liveStreams()` skips a row that is not an object, lacks `name` or `stream_id`, or whose `stream_id` is not a whole number, and returns the rest. Duplicate stream ids are kept.
 - Categories missing `category_name` fail decoding for the whole category list.
 - Duplicate `category_id` values (for example `7` and `"7"`) decode to equal `categoryID` strings; the client does not deduplicate. Spec 0004 records the consequence.
 
@@ -116,12 +128,12 @@ Then the ids are equal, two different stream ids on one server give different id
 | AC-4 | core | `XtreamClientTests.liveStreamURL` |
 | AC-5 | core | `XtreamClientTests.guideURL` |
 | AC-6 | core | `XtreamClientTests.channelMapping` |
-| AC-7 | core (URLProtocol stub, parameterised over the three endpoints) | `XtreamClientTests.nonSuccessStatus` |
-| AC-8 | core (URLProtocol stub) | `XtreamClientTests.malformedJSON` |
+| AC-7 | core (URLProtocol stub, parameterised over the three endpoints and 403, 500) | `XtreamClientTests.nonSuccessStatus` (asserts 0016/AC-11) |
+| AC-8 | core (URLProtocol stub) | `XtreamClientTests.malformedJSON` (asserts 0016/AC-4b) |
 | AC-9 | core | `XtreamClientTests.accountInfoLooseTypes` |
 | AC-10 | core | `XtreamClientTests.stableIDs` |
 
 ## Open questions
 
-- Should bad credentials (`auth: 0`) be a distinct `XtreamError` so spec 0004 can show a useful message?
-- Should a single undecodable row be skipped instead of failing the whole stream list?
+- Resolved by 0016/AC-11: bad credentials (`auth: 0`) throw `XtreamError.unauthorized`.
+- Resolved by 0016/AC-4: an undecodable live row is skipped instead of failing the whole stream list.
