@@ -16,6 +16,9 @@ configFiles:
 packages:
   AntennaCore:
     path: Packages/AntennaCore
+  SnapshotPreviews:
+    url: https://github.com/EmergeTools/SnapshotPreviews
+    from: 0.20.0
 
 targets:
   # iPhone, iPad and native Mac from one target (multiplatform destinations).
@@ -48,6 +51,16 @@ targets:
         SUPPORTS_MACCATALYST: NO
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
 
+  AntennaTests:
+    type: bundle.unit-test
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - Apps/Tests
+    dependencies:
+      - target: Antenna
+      - package: SnapshotPreviews
+        product: SnapshottingTests
+
   AntennaTV:
     type: application
     platform: tvOS
@@ -73,8 +86,10 @@ targets:
 schemes:
   Antenna:
     build:
-      targets: { Antenna: all }
+      targets: { Antenna: all, AntennaTests: [test] }
     run: { config: Debug }
+    test:
+      targets: [AntennaTests]
   AntennaTV:
     build:
       targets: { AntennaTV: all }

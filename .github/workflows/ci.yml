@@ -103,3 +103,37 @@ jobs:
           xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV \
             -destination 'generic/platform=tvOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
+
+  snapshots:
+    name: Preview snapshots
+    runs-on: macos-26
+    needs: core
+    steps:
+      - uses: actions/checkout@v5
+      - name: Ensure iOS simulator runtime
+        run: |
+          set -e
+          if ! xcrun simctl list runtimes available | grep -q "^iOS "; then
+            xcodebuild -downloadPlatform iOS
+          fi
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Render previews
+        run: |
+          set -e
+          name=$(xcrun simctl list devices available | grep -oE 'iPhone [^(]+' | head -1 | sed 's/ *$//')
+          echo "Simulator: $name"
+          TEST_RUNNER_SNAPSHOTS_EXPORT_DIR="$PWD/snapshot-images" \
+          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
+            -destination "platform=iOS Simulator,name=$name" \
+            -only-testing:AntennaTests \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Upload snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-snapshots
+          path: snapshot-images
+          if-no-files-found: warn
