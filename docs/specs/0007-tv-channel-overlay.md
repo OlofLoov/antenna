@@ -29,10 +29,10 @@ Live TV on a television is driven by one remote and one question: what else is o
 In:
 - Overlay presented over the playing channel with groups, channels and a now-and-next panel.
 - Group list from 0013/AC-2 with counts, and a Search entry.
-- Channel column for the selected group in 0013/AC-6 order, with the header, and rows per DR-6.
+- Channel column for the selected group in 0013/AC-6a order, with the header, and rows per DR-6.
 - Now-and-next panel for the focused channel.
 - Tuning from the overlay; closing without tuning; committing the current group (AC-22).
-- Favorite add and remove from the panel (0013/AC-9, AC-10).
+- Favorite add and remove from the panel (0013/AC-9b, AC-10).
 - Clock.
 - Guide data through `GuideStore` (0014).
 - Accessibility identifiers with prefix `overlay.`.
@@ -49,7 +49,7 @@ Out (explicitly):
 ## User flow
 
 1. A channel is playing full screen, zap bar visible or hidden, no entry pill. The user presses select.
-2. The overlay slides in from the left over the video, which keeps playing. Focus lands on the playing channel's row in the current group (0008/AC-15), or the group's first row.
+2. The overlay slides in from the left over the video, which keeps playing. Focus lands on the playing channel's row in the current group (0008/AC-15a to AC-15c), or the group's first row.
 3. Swiping left moves focus to the groups. Moving up and down the groups replaces the channel column.
 4. Swiping right from a group returns to the channel column. Moving up and down the channels updates the panel.
 5. Select on a channel tunes to it, commits its group as current, and closes the overlay.
@@ -68,7 +68,7 @@ When the user presses select
 Then the overlay is presented, the engine instance is unchanged, `pause()` is not called and the state is the same value it had before the press.
 
 ### AC-2 Initial focus and selected group
-Given a channel is playing and the current group is G (0008/AC-15)
+Given a channel is playing and the current group is G (0008/AC-15a to AC-15c)
 When the overlay opens
 Then G is selected (its row carries the `.isSelected` trait and the 0.12 surface while focus is elsewhere); focus is on the playing channel's row by `rowKey`, scrolled into view, when it is in G, else on G's first row.
 
@@ -90,7 +90,7 @@ Then the group column lists, under the "Groups" eyebrow, the groups in 0013/AC-2
 ### AC-4 Focusing a group changes the channel column
 Given focus on group B
 When focus moves to group C
-Then the channel column lists exactly C's channels in 0013/AC-6 order and `overlay.channelsHeader` reads C's label and "Sorted by number"; for Favorites it reads "Favorites" and "Your order".
+Then the channel column lists exactly C's channels in 0013/AC-6a order and `overlay.channelsHeader` reads C's label and "Sorted by number"; for Favorites it reads "Favorites" and "Your order".
 
 ### AC-5 Channel row anatomy
 Given a channel with number 104, a logo URL, name "Sport One", a current programme at 68% elapsed and `hasCatchup` true
@@ -130,7 +130,7 @@ Then the overlay is dismissed, `load(_:)` and `pause()` are not called, the curr
 ### AC-11 Favorite toggle
 Given focus on `overlay.favorite` for a channel that is not a favorite
 When the user presses select
-Then a `FavoriteRecord` for the channel exists in the container (0013/AC-10 defines its fields), `overlay.favorite` has label "Remove from favorites", and `overlay.group.0`'s count is one higher; pressing again removes that record (0013/AC-9), the label returns to "Add to favorites" and the count returns to its previous value.
+Then a `FavoriteRecord` for the channel exists in the container (0013/AC-10 defines its fields), `overlay.favorite` has label "Remove from favorites", and `overlay.group.0`'s count is one higher; pressing again removes that record (0013/AC-9b), the label returns to "Add to favorites" and the count returns to its previous value.
 
 ### AC-12 Favorites group
 Given favorites per 0013/AC-8
@@ -190,11 +190,11 @@ Then the current group becomes C (0008/AC-15a); when the user presses Menu inste
 ### AC-23 Search entry
 Given focus on `overlay.search`
 When the user presses select
-Then the overlay is dismissed, the shell shows the Search tab (0015/AC-14) with `search.field` focused, the engine state is unchanged, and `overlay.root` is not presented again when Menu is pressed in Search.
+Then the overlay is dismissed, the shell shows the Search tab (0015/AC-14a) with `search.field` focused, the engine state is unchanged, and `overlay.root` is not presented again when Menu is pressed in Search.
 
 ## Edge cases and failure modes
 
-- Duplicate channel ids: rows are keyed by 0013/AC-11's `RowKey`; both are listed.
+- Duplicate channel ids: rows are keyed by 0013/AC-11a's `RowKey`; both are listed.
 - A group name used by two sources is shown twice in source order (0013/AC-2).
 - Logo requests are cancelled when a row leaves the visible area; the fallback tile shows until the image arrives.
 - Source with a missing credential contributes no channels (0004/AC-10) and its groups are absent.
