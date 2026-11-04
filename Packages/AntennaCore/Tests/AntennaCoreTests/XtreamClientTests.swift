@@ -90,26 +90,37 @@ import Testing
 
     enum Endpoint: String, CaseIterable, Sendable { case liveCategories, liveStreams, accountInfo }
 
-    @Test("0003/AC-7 non-2xx response is a typed error", arguments: Endpoint.allCases)
-    func nonSuccessStatus(endpoint: Endpoint) async throws {
-        let host = "ac7-\(endpoint.rawValue.lowercased()).panel"
-        let client = try stubbedClient(host: host, status: 403, body: "Forbidden")
-        await #expect {
+    /// 0016/AC-11 supersedes the 403 case: it is now `unauthorized`; other statuses stay `badStatus`.
+    @Test("0003/AC-7 non-2xx response is a typed error", arguments: Endpoint.allCases, [403, 500])
+    func nonSuccessStatus(endpoint: Endpoint, status: Int) async throws {
+        let host = "ac7-\(endpoint.rawValue.lowercased())-\(status).panel"
+        let client = try stubbedClient(host: host, status: status, body: "Forbidden")
+        let expected: XtreamClient.XtreamError = status == 403 ? .unauthorized : .badStatus(status)
+        await #expect(throws: expected) {
             switch endpoint {
             case .liveCategories: _ = try await client.liveCategories()
             case .liveStreams: _ = try await client.liveStreams()
             case .accountInfo: _ = try await client.accountInfo()
             }
-        } throws: { error in
-            guard case XtreamClient.XtreamError.badStatus(let code) = error else { return false }
-            return code == 403
         }
     }
 
-    @Test("0003/AC-8 malformed JSON throws a DecodingError")
+    /// 0016/AC-4b supersedes `DecodingError`: the call throws `XtreamError.decoding(path: "")`.
+    @Test("0003/AC-8 malformed JSON is a decoding error, not a crash")
     func malformedJSON() async throws {
         let client = try stubbedClient(host: "ac8.panel", status: 200, body: "<html><body>Please log in</body></html>")
-        await #expect(throws: DecodingError.self) {
+        await #expect(throws: XtreamClient.XtreamError.decoding(path: "")) {
+            _ = try await client.liveStreams()
+        }
+    }
+
+    @Test(
+        "0016/AC-4 live stream ids that are not integers fail the list without trapping",
+        arguments: [("huge", "1e400"), ("hugestring", #""1e400""#), ("nan", #""nan""#), ("inf", #""inf""#), ("big", "1e20")])
+    func liveStreamIDNeverTraps(name: String, id: String) async throws {
+        let host = "live-trap-\(name).panel"
+        let client = try stubbedClient(host: host, status: 200, body: "[{\"name\":\"A\",\"stream_id\":\(id)}]")
+        await #expect(throws: XtreamClient.XtreamError.decoding(path: "[0].stream_id")) {
             _ = try await client.liveStreams()
         }
     }
@@ -147,9 +158,18 @@ import Testing
 /// Answers requests per host from a registered status and body, and records each request.
 /// Tests use distinct hosts so they can run in parallel.
 final class StubURLProtocol: URLProtocol, @unchecked Sendable {
+    /// What the stub answers with.
+    enum Reply {
+        case http(Int, Data)
+        /// A plain `URLResponse`, not an `HTTPURLResponse`.
+        case plain(Data)
+        case failure(URLError.Code)
+        /// Never answers, so the caller can cancel mid-request.
+        case hang
+    }
+
     private struct Stub {
-        var status: Int
-        var body: Data
+        var reply: Reply
         var requests: [URLRequest] = []
     }
 
@@ -157,7 +177,11 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) private static var stubs: [String: Stub] = [:]
 
     static func register(host: String, status: Int, body: Data) {
-        lock.withLock { stubs[host] = Stub(status: status, body: body) }
+        register(host: host, reply: .http(status, body))
+    }
+
+    static func register(host: String, reply: Reply) {
+        lock.withLock { stubs[host] = Stub(reply: reply) }
     }
 
     static func requests(host: String) -> [URLRequest] {
@@ -176,13 +200,27 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
             Self.stubs[host]?.requests.append(request)
             return Self.stubs[host]
         }
-        guard let stub, let response = HTTPURLResponse(url: url, statusCode: stub.status, httpVersion: "HTTP/1.1", headerFields: nil)
-        else {
+        let response: URLResponse
+        let body: Data
+        switch stub?.reply {
+        case .http(let status, let data):
+            guard let http = HTTPURLResponse(url: url, statusCode: status, httpVersion: "HTTP/1.1", headerFields: nil) else { return }
+            response = http
+            body = data
+        case .plain(let data):
+            response = URLResponse(url: url, mimeType: "application/json", expectedContentLength: data.count, textEncodingName: nil)
+            body = data
+        case .failure(let code):
+            client?.urlProtocol(self, didFailWithError: URLError(code, userInfo: [NSURLErrorFailingURLErrorKey: url]))
+            return
+        case .hang:
+            return
+        case nil:
             client?.urlProtocol(self, didFailWithError: URLError(.cannotFindHost))
             return
         }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        client?.urlProtocol(self, didLoad: stub.body)
+        client?.urlProtocol(self, didLoad: body)
         client?.urlProtocolDidFinishLoading(self)
     }
 

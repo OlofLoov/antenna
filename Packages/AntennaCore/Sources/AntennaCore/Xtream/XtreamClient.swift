@@ -1,10 +1,10 @@
 import Foundation
 
-/// Minimal Xtream Codes `player_api.php` client.
+/// Login for one Xtream Codes panel.
 ///
-/// Xtream servers are notoriously loose with JSON types (ids arrive as strings
-/// or numbers depending on panel), hence the `Flexible*` wrappers.
-public struct XtreamCredentials: Sendable, Hashable {
+/// `description` and `debugDescription` are the server host only, so the
+/// value can be interpolated into logs without leaking the login.
+public struct XtreamCredentials: Sendable, Hashable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     public var server: URL
     public var username: String
     public var password: String
@@ -14,9 +14,20 @@ public struct XtreamCredentials: Sendable, Hashable {
         self.username = username
         self.password = password
     }
+
+    public var description: String { server.host() ?? "" }
+    public var debugDescription: String { description }
+    /// Shows the host only, so `dump` does not print the login either.
+    public var customMirror: Mirror { Mirror(self, children: ["host": description]) }
 }
 
-public struct XtreamClient: Sendable {
+/// Xtream Codes `player_api.php` client for live, VOD and series.
+///
+/// Panels are loose with JSON types (ids arrive as strings or numbers), so
+/// decoding is tolerant; see the `decode*` functions. Every call throws
+/// `XtreamError` or `CancellationError`, never `DecodingError` or `URLError`.
+/// `description` and `debugDescription` are the server host only.
+public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     public enum StreamContainer: String, Sendable { case ts, m3u8 }
 
     private let credentials: XtreamCredentials
@@ -27,45 +38,82 @@ public struct XtreamClient: Sendable {
         self.session = session
     }
 
-    // MARK: Endpoints
+    public var description: String { credentials.description }
+    public var debugDescription: String { description }
+    /// Shows the host only, so `dump` does not print the login either.
+    public var customMirror: Mirror { Mirror(self, children: ["host": description]) }
+
+    private var host: String { credentials.server.host() ?? "" }
+
+    // MARK: Live endpoints
 
     public func liveCategories() async throws -> [XtreamCategory] {
-        try await get(action: "get_live_categories")
+        try Self.decodeWholeList(try await fetch(action: "get_live_categories"))
     }
 
+    /// Fails whole when any row lacks `name` or `stream_id` (spec 0003).
     public func liveStreams(categoryID: String? = nil) async throws -> [XtreamLiveStream] {
-        var items: [URLQueryItem] = []
-        if let categoryID { items.append(.init(name: "category_id", value: categoryID)) }
-        return try await get(action: "get_live_streams", extra: items)
+        try Self.decodeWholeList(try await fetch(action: "get_live_streams", id: categoryID.map { ("category_id", $0) }))
     }
 
     public func accountInfo() async throws -> XtreamAccountInfo {
-        try await get(action: nil)
+        let data = try await fetch(action: nil)
+        try Self.probeAuth(data)
+        return try Self.decode(XtreamAccountInfo.self, from: data)
+    }
+
+    // MARK: VOD and series endpoints
+
+    public func vodCategories() async throws -> [XtreamCategory] {
+        try Self.decodeWholeList(try await fetch(action: "get_vod_categories"))
+    }
+
+    public func vodStreams(categoryID: String? = nil) async throws -> DecodedList<VODItem> {
+        try Self.decodeVODList(try await fetch(action: "get_vod_streams", id: categoryID.map { ("category_id", $0) }), host: host)
+    }
+
+    public func vodInfo(streamID: Int) async throws -> VODInfo {
+        try Self.decodeVODInfo(try await fetch(action: "get_vod_info", id: ("vod_id", String(streamID))), host: host)
+    }
+
+    public func seriesCategories() async throws -> [XtreamCategory] {
+        try Self.decodeWholeList(try await fetch(action: "get_series_categories"))
+    }
+
+    public func series(categoryID: String? = nil) async throws -> DecodedList<Series> {
+        try Self.decodeSeriesList(try await fetch(action: "get_series", id: categoryID.map { ("category_id", $0) }), host: host)
+    }
+
+    public func seriesInfo(seriesID: Int) async throws -> SeriesInfo {
+        try Self.decodeSeriesInfo(try await fetch(action: "get_series_info", id: ("series_id", String(seriesID))), host: host)
     }
 
     // MARK: URL building
 
+    /// Credentials are percent-encoded outside the RFC 3986 unreserved set in every URL this client builds.
     public func streamURL(for stream: XtreamLiveStream, container: StreamContainer = .ts) -> URL {
-        credentials.server
-            .appending(path: "live")
-            .appending(path: credentials.username)
-            .appending(path: credentials.password)
-            .appending(path: "\(stream.streamID).\(container.rawValue)")
+        url(path: ["live", credentials.username, credentials.password, "\(stream.streamID).\(container.rawValue)"])
     }
 
     public func xmltvURL() -> URL {
-        credentials.server
-            .appending(path: "xmltv.php")
-            .appending(queryItems: [
-                .init(name: "username", value: credentials.username),
-                .init(name: "password", value: credentials.password),
-            ])
+        url(path: ["xmltv.php"], query: [("username", credentials.username), ("password", credentials.password)])
+    }
+
+    /// `<server>/movie/<user>/<password>/<streamID>.<extension>`. The extension is trimmed, loses one
+    /// leading dot, and is "mp4" when nil or empty.
+    public func movieURL(streamID: Int, extension: String?) -> URL {
+        url(path: ["movie", credentials.username, credentials.password, "\(streamID).\(Self.fileExtension(`extension`))"])
+    }
+
+    /// `<server>/series/<user>/<password>/<episodeID>.<extension>`, with the extension rule of `movieURL`.
+    public func episodeURL(episodeID: Int, extension: String?) -> URL {
+        url(path: ["series", credentials.username, credentials.password, "\(episodeID).\(Self.fileExtension(`extension`))"])
     }
 
     /// Maps an Xtream live stream onto the app's `Channel` model.
     public func channel(from stream: XtreamLiveStream, categoryName: String?) -> Channel {
         Channel(
-            id: "xtream#\(credentials.server.host() ?? "")#\(stream.streamID)",
+            id: XtreamTitleID(host: host, kind: .live, rawID: stream.streamID).description,
             name: stream.name,
             streamURL: streamURL(for: stream),
             group: categoryName,
@@ -79,24 +127,66 @@ public struct XtreamClient: Sendable {
 
     // MARK: Internals
 
-    private func get<T: Decodable>(action: String?, extra: [URLQueryItem] = []) async throws -> T {
-        var items: [URLQueryItem] = [
-            .init(name: "username", value: credentials.username),
-            .init(name: "password", value: credentials.password),
-        ]
-        if let action { items.append(.init(name: "action", value: action)) }
-        let url = credentials.server.appending(path: "player_api.php").appending(queryItems: items + extra)
-        let (data, response) = try await session.data(from: url)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw XtreamError.badStatus((response as? HTTPURLResponse)?.statusCode ?? -1)
+    private static let unreserved = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+
+    static func percentEncode(_ value: String) -> String {
+        value.addingPercentEncoding(withAllowedCharacters: unreserved) ?? ""
+    }
+
+    static func fileExtension(_ value: String?) -> String {
+        var trimmed = (value ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix(".") { trimmed.removeFirst() }
+        return trimmed.isEmpty ? "mp4" : trimmed
+    }
+
+    /// The server URL with its own path kept, then each segment percent-encoded, then the query.
+    private func url(path segments: [String], query: [(String, String)] = []) -> URL {
+        guard var components = URLComponents(url: credentials.server, resolvingAgainstBaseURL: false) else {
+            return credentials.server
         }
-        return try JSONDecoder().decode(T.self, from: data)
+        var base = components.percentEncodedPath
+        while base.hasSuffix("/") { base.removeLast() }
+        components.percentEncodedPath = base + segments.map { "/" + Self.percentEncode($0) }.joined()
+        components.percentEncodedQuery = query.isEmpty ? nil : query.map { "\($0)=\(Self.percentEncode($1))" }.joined(separator: "&")
+        components.fragment = nil
+        return components.url ?? credentials.server
+    }
+
+    /// One GET to `player_api.php`. Maps transport failures to `XtreamError.transport`, cancellation to
+    /// `CancellationError`, 401 and 403 to `unauthorized`, and other non-2xx statuses to `badStatus`.
+    private func fetch(action: String?, id: (name: String, value: String)? = nil) async throws -> Data {
+        var query = [("username", credentials.username), ("password", credentials.password)]
+        if let action { query.append(("action", action)) }
+        if let id { query.append(id) }
+        let request = url(path: ["player_api.php"], query: query)
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(from: request)
+        } catch let error as URLError {
+            if Task.isCancelled { throw CancellationError() }
+            throw XtreamError.transport(error.code)
+        } catch {
+            if Task.isCancelled || error is CancellationError { throw CancellationError() }
+            throw XtreamError.transport(.unknown)
+        }
+        try Task.checkCancellation()
+        guard let http = response as? HTTPURLResponse else { throw XtreamError.badStatus(-1) }
+        if http.statusCode == 401 || http.statusCode == 403 { throw XtreamError.unauthorized }
+        guard (200..<300).contains(http.statusCode) else { throw XtreamError.badStatus(http.statusCode) }
+        return data
     }
 
     /// Errors from `XtreamClient`. Values carry codes and coding paths only, never URLs, credentials
     /// or response bodies.
     public enum XtreamError: Error, Sendable, Equatable {
         case badStatus(Int)
+        /// The server answered 401 or 403, or 200 with `user_info.auth` equal to 0.
+        case unauthorized
+        /// The request failed before a response arrived. Only the code is kept, not the failing URL.
+        /// A failure that is not a `URLError` arrives as `.unknown`.
+        case transport(URLError.Code)
         /// The body did not decode. `path` is the dotted coding path of the failure, such as
         /// `[3].stream_id`, and "" when the body itself has the wrong shape or is not JSON.
         case decoding(path: String)
@@ -157,8 +247,11 @@ public struct XtreamAccountInfo: Decodable, Sendable {
         public var status: String?
         public var expDate: String?
         public var maxConnections: String?
+        /// `user_info.auth` when it decodes to an integer, else nil. 0 never reaches callers:
+        /// the client throws `XtreamError.unauthorized` instead.
+        public var auth: Int?
         enum CodingKeys: String, CodingKey {
-            case username, status
+            case username, status, auth
             case expDate = "exp_date"
             case maxConnections = "max_connections"
         }
@@ -168,6 +261,7 @@ public struct XtreamAccountInfo: Decodable, Sendable {
             status = try c.decodeIfPresent(String.self, forKey: .status)
             expDate = try c.decodeIfPresent(FlexibleString.self, forKey: .expDate)?.value
             maxConnections = try c.decodeIfPresent(FlexibleString.self, forKey: .maxConnections)?.value
+            auth = c.looseInt(.auth)
         }
     }
     public var userInfo: UserInfo
@@ -180,9 +274,9 @@ public struct FlexibleInt: Decodable, Sendable, Hashable {
     public init(from decoder: any Decoder) throws {
         let c = try decoder.singleValueContainer()
         if let i = try? c.decode(Int.self) { value = i; return }
-        if let d = try? c.decode(Double.self) { value = Int(d); return }
+        if let d = try? c.decode(Double.self), let i = Int(exactly: d.rounded(.towardZero)) { value = i; return }
         let s = try c.decode(String.self)
-        guard let i = Int(s) ?? Double(s).map(Int.init) else {
+        guard let i = Int(s) ?? Double(s).flatMap({ Int(exactly: $0.rounded(.towardZero)) }) else {
             throw DecodingError.dataCorruptedError(in: c, debugDescription: "Not an int: \(s)")
         }
         value = i

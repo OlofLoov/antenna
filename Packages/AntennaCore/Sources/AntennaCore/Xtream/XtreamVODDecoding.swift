@@ -28,6 +28,7 @@ extension XtreamClient {
     /// Decodes a `get_vod_info` body. `[]`, `{}`, `false` and `null` give a value with every field empty;
     /// any other body that is not an object throws `XtreamError.decoding(path:)`.
     public static func decodeVODInfo(_ data: Data, host: String) throws -> VODInfo {
+        try probeAuth(data)
         guard try isObjectBody(data) else { return VODInfo() }
         let wire = try decode(VODInfoWire.self, from: data)
         let info = wire.info ?? InfoFields()
@@ -39,6 +40,7 @@ extension XtreamClient {
     /// Decodes a `get_series_info` body. Episodes come out flat and sorted by season then number, nil
     /// first, ties in server order. Broken and duplicate episodes are counted in `skippedEpisodes`.
     public static func decodeSeriesInfo(_ data: Data, host: String) throws -> SeriesInfo {
+        try probeAuth(data)
         guard try isObjectBody(data) else { return SeriesInfo() }
         let wire = try decode(SeriesInfoWire.self, from: data)
         let info = wire.info ?? InfoFields()
@@ -55,6 +57,7 @@ extension XtreamClient {
     static func decodeList<Row: Decodable & ListRow, Item: Sendable & Hashable>(
         _ data: Data, row: Row.Type, map: (Row) -> Item
     ) throws -> DecodedList<Item> {
+        try probeAuth(data)
         guard firstByte(of: data) == UInt8(ascii: "[") else {
             try requireEmptyShape(data)
             return DecodedList(items: [], skipped: 0)
@@ -72,6 +75,26 @@ extension XtreamClient {
             items.append(map(row))
         }
         return DecodedList(items: items, skipped: skipped)
+    }
+
+    /// Decodes a list that fails whole on any broken row, as categories and live streams do.
+    /// `[]`, `{}`, `false` and `null` give an empty list.
+    static func decodeWholeList<Row: Decodable>(_ data: Data) throws -> [Row] {
+        try probeAuth(data)
+        guard firstByte(of: data) == UInt8(ascii: "[") else {
+            try requireEmptyShape(data)
+            return []
+        }
+        return try decode([Row].self, from: data)
+    }
+
+    /// Throws `XtreamError.unauthorized` when the body is a JSON object whose `user_info.auth`
+    /// decodes to 0. Array bodies and bodies that are not JSON pass through untouched.
+    static func probeAuth(_ data: Data) throws {
+        guard firstByte(of: data) == UInt8(ascii: "{") else { return }
+        if let probe = try? JSONDecoder().decode(AuthProbe.self, from: data), probe.auth == 0 {
+            throw XtreamError.unauthorized
+        }
     }
 
     /// True for a JSON object body. False for the empty shapes `[]`, `{}`, `false` and `null`.
@@ -122,6 +145,18 @@ extension XtreamClient {
             }
         }
         return path
+    }
+}
+
+struct AuthProbe: Decodable {
+    var auth: Int?
+
+    enum CodingKeys: String, CodingKey { case userInfo = "user_info" }
+    enum UserInfoKeys: String, CodingKey { case auth }
+
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        auth = (try? c.nestedContainer(keyedBy: UserInfoKeys.self, forKey: .userInfo))?.looseInt(.auth)
     }
 }
 
