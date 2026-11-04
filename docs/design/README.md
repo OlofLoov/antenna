@@ -59,6 +59,10 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 - Non-live sections (Movies, Series, Search) use the tvOS top tab bar:
   Live, Guide, Movies, Series, Search. Clock top right.
 - Focus is the lifted white card. Nothing else is white-filled.
+- Multi-view: two to four 16:9 tiles on Ground, margin 24 and gap 16, two
+  side by side, three as two over one centred, four as a 2 by 2 grid. The
+  focused tile has the 5 pt white ring and a white label chip; only it is
+  audible.
 
 ### iPad and Mac
 
@@ -69,6 +73,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   the upcoming list under it.
 - Movies and Search put a toolbar on top of the detail column and scroll
   content below it.
+- Multi-view on Mac: the sidebar collapses, the list stays as the picker,
+  and the detail column holds a 52 pt toolbar over the tile grid (margin
+  16, gap 12). The selected tile has a 3 pt ring in the Text colour.
 
 ### iPhone
 
@@ -119,6 +126,14 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV multi-view, four tiles | `TV-MultiView.dc.html` | 0022 |
+| TV multi-view, two tiles and hint | `TV-MultiView-Two.dc.html` | 0022 |
+| TV multi-view, buffering and failed tile | `TV-MultiView-Failed.dc.html` | 0022 |
+| TV multi-view tile actions | `TV-MultiView-Actions.dc.html` | 0022 |
+| TV multi-view, one tile full screen | `TV-MultiView-Swap.dc.html` | 0022 |
+| TV multi-view channel pick | `TV-MultiView-Pick.dc.html` | 0022 |
+| Mac multi-view (iPad frame) | `iPad-MultiView.dc.html` | 0022 |
+| Mac multi-view, failed tile (iPad frame) | `iPad-MultiView-Failed.dc.html` | 0022 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
@@ -163,7 +178,7 @@ renumber; retire a rule by marking it "Retired" with a reason.
   movies and series, with sectioned results and highlighted matches.
 - **DR-11 Identifiers follow the board.** Accessibility identifiers use
   the screen prefix of the board: `onboarding.`, `overlay.`, `zapBar.`,
-  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`. Element names come from the
+  `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `multiView.`. Element names come from the
   board's comments and labels (`overlay.groups`, `zapBar.progress`).
 - **DR-12 Nothing fake, nothing bundled.** No drawn status bars in the app,
   no bundled channels or titles, no third-party logos or artwork. Channel

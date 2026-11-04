@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV multi-view actions</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- Four tiles with the actions panel open on tile 2. The tiles keep playing under it. -->
+  <!-- multiView.root: Ground behind the tiles; frames from MultiViewLayout with margin 24 and gap 16 -->
+  <div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0">
+    <!-- multiView.tile.1 (muted) 49,25 903x507 -->
+    <div style="position: absolute; left: 49px; top: 25px; width: 903px; height: 507px; border-radius: 14px; overflow: hidden; background: #1A2535">
+      <!-- multiView.tile.1.label: number 22, name 26/600, multiView.tile.1.audio (off) 24 pt glyph; white card when the tile has focus -->
+      <div style="position: absolute; left: 20px; bottom: 20px; display: flex; align-items: center; gap: 14px; height: 52px; padding: 0 18px; border-radius: 12px; background: rgba(8, 10, 14, 0.88); color: #F2F4F8">
+        <span style="font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">101</span>
+        <span style="font-size: 26px; font-weight: 600; white-space: nowrap">Eurosport 1</span>
+        <span style="display: inline-flex; color: #A7B0BF"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6"/><path d="M22 9l-5 6"/></svg></span>
+      </div>
+    </div>
+
+    <!-- multiView.tile.2 (focused, audible) 968,25 903x507 -->
+    <div style="position: absolute; left: 968px; top: 25px; width: 903px; height: 507px; border-radius: 14px; overflow: hidden; background: #1E2B3D; box-shadow: 0 0 0 5px #F2F4F8, 0 12px 32px rgba(0,0,0,0.45)">
+      <!-- multiView.tile.2.label: number 22, name 26/600, multiView.tile.2.audio (on) 24 pt glyph; white card when the tile has focus -->
+      <div style="position: absolute; left: 20px; bottom: 20px; display: flex; align-items: center; gap: 14px; height: 52px; padding: 0 18px; border-radius: 12px; background: #F2F4F8; color: #0B0E13">
+        <span style="font-size: 22px; color: #4B5563; font-variant-numeric: tabular-nums">104</span>
+        <span style="font-size: 26px; font-weight: 600; white-space: nowrap">Sport One</span>
+        <span style="display: inline-flex; color: #0B0E13"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
+      </div>
+    </div>
+
+    <!-- multiView.tile.3 (muted) 49,548 903x507 -->
+    <div style="position: absolute; left: 49px; top: 548px; width: 903px; height: 507px; border-radius: 14px; overflow: hidden; background: #172230">
+      <!-- multiView.tile.3.label: number 22, name 26/600, multiView.tile.3.audio (off) 24 pt glyph; white card when the tile has focus -->
+      <div style="position: absolute; left: 20px; bottom: 20px; display: flex; align-items: center; gap: 14px; height: 52px; padding: 0 18px; border-radius: 12px; background: rgba(8, 10, 14, 0.88); color: #F2F4F8">
+        <span style="font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">105</span>
+        <span style="font-size: 26px; font-weight: 600; white-space: nowrap">Sport Two</span>
+        <span style="display: inline-flex; color: #A7B0BF"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6"/><path d="M22 9l-5 6"/></svg></span>
+      </div>
+    </div>
+
+    <!-- multiView.tile.4 (muted) 968,548 903x507 -->
+    <div style="position: absolute; left: 968px; top: 548px; width: 903px; height: 507px; border-radius: 14px; overflow: hidden; background: #202C3A">
+      <!-- multiView.tile.4.label: number 22, name 26/600, multiView.tile.4.audio (off) 24 pt glyph; white card when the tile has focus -->
+      <div style="position: absolute; left: 20px; bottom: 20px; display: flex; align-items: center; gap: 14px; height: 52px; padding: 0 18px; border-radius: 12px; background: rgba(8, 10, 14, 0.88); color: #F2F4F8">
+        <span style="font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums">106</span>
+        <span style="font-size: 26px; font-weight: 600; white-space: nowrap">Arena HD</span>
+        <span style="display: inline-flex; color: #A7B0BF"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6"/><path d="M22 9l-5 6"/></svg></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- multiView.actions: opened by a long press on select; scrim panel, radius 20, width 520, rows 72 tall, 60 pt below the top of the tile; eyebrow 20/600 muted -->
+  <div style="position: absolute; left: 1159px; top: 85px; width: 520px; box-sizing: border-box; padding: 14px; border-radius: 20px; background: rgba(8, 10, 14, 0.88); display: flex; flex-direction: column; gap: 4px">
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF; padding: 8px 24px 12px">Tile 2 · Sport One</div>
+    <!-- multiView.action.fullScreen (focused) -->
+    <div style="display: flex; align-items: center; height: 72px; padding: 0 24px; border-radius: 14px; font-size: 29px; background: #F2F4F8; color: #0B0E13; font-weight: 600; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">Full screen</div>
+    <!-- multiView.action.changeChannel -->
+    <div style="display: flex; align-items: center; height: 72px; padding: 0 24px; border-radius: 14px; font-size: 29px; color: #F2F4F8">Change channel</div>
+    <!-- multiView.action.remove -->
+    <div style="display: flex; align-items: center; height: 72px; padding: 0 24px; border-radius: 14px; font-size: 29px; color: #F2F4F8">Remove from multi-view</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
