@@ -159,6 +159,13 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV search | `TV-Search.dc.html` | 0012 |
 | iPad and Mac search | `iPad-Search.dc.html` | 0012 |
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
+| TV search, recent searches | `TV-Search-Recents.dc.html` | 0012 |
+| iPhone search, recent searches | `iPhone-Search-Recents.dc.html` | 0012 |
+| iPhone search, no results | `iPhone-Search-Empty.dc.html` | 0012 |
+| iPad and Mac search, one character | `iPad-Search-OneCharacter.dc.html` | 0012 |
+| iPad and Mac search, sources loading | `iPad-Search-Loading.dc.html` | 0012 |
+| iPad and Mac search, guide loading | `iPad-Search-GuideLoading.dc.html` | 0012 |
+| iPad and Mac search, capped section | `iPad-Search-Capped.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
 | TV shell, tab bar over the dimmed picture after Menu | `TV-Shell-Menu.dc.html` | 0015 |
