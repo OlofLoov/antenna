@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Check PR title
@@ -29,9 +29,9 @@ jobs:
     name: AntennaCore tests
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_26.1.app || sudo xcode-select -s /Applications/Xcode.app
+      - uses: actions/checkout@v5
+      - name: Show toolchain
+        run: xcodebuild -version && swift --version
       - name: Test
         run: swift test --package-path Packages/AntennaCore
 
@@ -40,9 +40,21 @@ jobs:
     runs-on: macos-26
     needs: core
     steps:
-      - uses: actions/checkout@v4
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_26.1.app || sudo xcode-select -s /Applications/Xcode.app
+      - uses: actions/checkout@v5
+      # The image's default Xcode is the only one guaranteed to have its
+      # simulator runtimes installed. Pinning an older Xcode (26.1) left the
+      # iOS build with no simulator destination at all.
+      - name: Show toolchain
+        run: xcodebuild -version && xcrun simctl list runtimes available
+      - name: Ensure simulator runtimes
+        run: |
+          set -e
+          for platform in iOS tvOS; do
+            if ! xcrun simctl list runtimes available | grep -q "^$platform "; then
+              echo "No $platform simulator runtime installed, downloading"
+              xcodebuild -downloadPlatform "$platform"
+            fi
+          done
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate project
