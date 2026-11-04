@@ -7,7 +7,8 @@ A spec is Accepted when the `spec-reviewer` agent has passed it and every
 acceptance criterion is testable. It is Implemented when a PR has merged with
 a test per criterion. The implementing PR sets the `- Status:` line in the
 spec header itself. In progress is for a spec shipping as a stack of PRs;
-every PR but the last uses it.
+every PR but the last uses it, with a `- Progress:` line under Status that
+names the criteria merged so far. Status itself is always one bare word.
 
 ## No index file
 

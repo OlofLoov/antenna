@@ -102,9 +102,19 @@ while k is in review, but do not start k+2 until k has merged.
 
 ## 7. Claim the status
 
-The last PR of the stack sets `- Status: Implemented` in the spec header.
-Every other PR sets `- Status: In progress (AC-a..AC-b in this PR)`. The
-header is the only place status lives; there is no index row to update.
+The last PR of the stack sets `- Status: Implemented` in the spec header
+and deletes the `- Progress:` line. Every other PR sets a bare
+`- Status: In progress` and, on the line below it, the criteria merged so
+far:
+
+```markdown
+- Status: In progress
+- Progress: AC-1 to AC-6 (#61), AC-7 to AC-11 in this PR
+```
+
+Status takes one word only; `scripts/lint-spec.sh` fails anything after
+it. The header is the only place status lives; there is no index row to
+update.
 
 ```sh
 bash scripts/check-specs.sh
