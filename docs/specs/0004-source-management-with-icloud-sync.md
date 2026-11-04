@@ -1,6 +1,7 @@
 # 0004. Source management with iCloud sync
 
-- Status: Accepted
+- Status: In progress
+- Progress: AC-2 to AC-6, AC-9 to AC-11, AC-13, AC-15 to AC-18 and the integration halves of AC-1 and AC-8 in this PR. AC-7, AC-14 and the ui halves of AC-1 and AC-8 wait for the UI test target that the 0005 UI test work adds.
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS
@@ -12,8 +13,9 @@
   `GuideOverridesRecord`, 0029 `removeSource(_:)`, 0037 `remove(sourceID:)`)
   belong to 0023's delete path, not to this spec.
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
-  changes have a spec to revise or supersede. Tests that do not yet cite a
-  criterion are marked TBD in the test plan.
+  changes have a spec to revise or supersede. Its tests live in
+  `AntennaTests` and run in CI only; rows still marked TBD need a UI test
+  target.
 
 ## Design
 
@@ -177,6 +179,7 @@ Then `ChannelListModel.channels` holds exactly the 2 M3U channels and no request
 - An unknown `kindRaw`, from a newer app version, falls back to `.m3u` and is fetched as a playlist.
 - The EPG URL is not validated; any text is stored through the lenient `URL(string:)`, empty gives nil.
 - An EPG URL typed before switching the type to Xtream or Stalker is hidden but still saved as `epgURL`.
+- If counting the existing sources fails during save, the new source gets `sortOrder` 0 and the save goes ahead.
 - An M3U URL with no host (for example `file:///x.m3u`) gets the default name "Source". A whitespace-only name is stored as-is.
 - The AC-5 message appends the raw error, for example "unexpectedStatus(-34018)", so users see an internal status code.
 - Equal `sortOrder` values (two devices adding at once) render in undefined order.
@@ -198,28 +201,28 @@ AC-18 additionally require `SourceLoader` to take an injected `URLSession`
 and `CredentialStore` (or a `URLProtocol` stub registered on a custom
 session) and `ChannelListModel` to call it through that seam. AC-14's URL
 check is manual until `PlayerView` exposes its player. UI tests require the
-identifiers in the Design section, added by the implementing PR.
+identifiers in the Design section, which the code sets.
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | integration (save path) + ui (sheet stays open) | TBD |
-| AC-2 | integration (in-memory ModelContainer) | TBD |
-| AC-3 | integration | TBD |
-| AC-4 | integration (Keychain in simulator) | TBD |
-| AC-5 | integration (injected failing store) | TBD |
-| AC-6 | integration | TBD |
-| AC-7 | ui | TBD |
-| AC-8 | ui (empty state) + integration (URLProtocol stub records zero requests) | TBD |
-| AC-9 | integration (stubbed `URLSession`) | TBD |
-| AC-10 | integration | TBD |
-| AC-11 | integration | TBD |
+| AC-1 | integration (save path) + ui (sheet stays open) | `SourceManagementTests.invalidURL`; ui half TBD, needs a UI test target |
+| AC-2 | integration (in-memory ModelContainer) | `SourceManagementTests.m3uSaved` |
+| AC-3 | integration | `SourceManagementTests.nameDefaultsToHost` |
+| AC-4 | integration (Keychain in simulator) | `SourceManagementTests.xtreamCredentialsInKeychain` |
+| AC-5 | integration (injected failing store) | `SourceManagementTests.keychainFailureBlocksSave` |
+| AC-6 | integration | `SourceManagementTests.deleteRemovesCredential` |
+| AC-7 | ui | TBD, needs a UI test target |
+| AC-8 | ui (empty state) + integration (URLProtocol stub records zero requests) | `SourceManagementTests.emptyStateMakesNoRequest` (iOS, hosts `ChannelsView`); ui half TBD |
+| AC-9 | integration (stubbed `URLSession`) | `SourceManagementTests.combined` |
+| AC-10 | integration | `SourceManagementTests.missingCredential` |
+| AC-11 | integration | `SourceManagementTests.failingSourceDoesNotBlock` |
 | AC-12 | device | CloudKit cannot run in CI; manual two-device check |
-| AC-13 | integration (Keychain in simulator) | TBD |
-| AC-14 | ui (view pushed) + manual (current item URL) | TBD |
-| AC-15 | integration | TBD |
-| AC-16 | integration | TBD |
-| AC-17 | integration (injected failing store) | TBD |
-| AC-18 | integration | TBD |
+| AC-13 | integration (Keychain in simulator) | `SourceManagementTests.stalkerStored` |
+| AC-14 | ui (view pushed) + manual (current item URL) | TBD, needs a UI test target |
+| AC-15 | integration | `SourceManagementTests.lastFailureRecorded` |
+| AC-16 | integration | `SourceManagementTests.nilCredentialKey` |
+| AC-17 | integration (injected failing store, garbled Keychain item) | `SourceManagementTests.unreadableCredential` |
+| AC-18 | integration | `SourceManagementTests.stalkerInert` |
 
 ## Open questions
 
