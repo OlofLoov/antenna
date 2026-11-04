@@ -57,7 +57,8 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 - Guide: PiP player (480 by 270) and programme detail on top, grid below
   with a 300 wide channel column, 370 per 30 minutes, accent now line.
 - Non-live sections (Movies, Series, Search) use the tvOS top tab bar:
-  Live, Guide, Movies, Series, Search. Clock top right.
+  Live, Guide, Movies, Series, Search, then the settings gear. Clock top
+  right. Spec 0015 owns the bar and its Menu behaviour.
 - Focus is the lifted white card. Nothing else is white-filled.
 
 ### iPad and Mac
@@ -119,10 +120,14 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
+| TV shell, tab bar over the dimmed picture after Menu | `TV-Shell-Menu.dc.html` | 0015 |
+| TV shell, focus on the tab bar | `TV-Shell-FocusedTab.dc.html` | 0015 |
+| TV shell, loading at launch | `TV-Shell-Loading.dc.html` | 0015 |
+| TV shell, no channels | `TV-Shell-Empty.dc.html` | 0015 |
 
 Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
-tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
-drawn on `TV-Movies.dc.html` and `TV-Search.dc.html`.
+tvOS shell (spec 0015) owns the top bar drawn on `TV-Movies.dc.html` and
+`TV-Search.dc.html`, gear included, plus the four `TV-Shell-*` boards.
 
 Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
 series detail, player controls on tvOS, Sources and Settings, the "source
