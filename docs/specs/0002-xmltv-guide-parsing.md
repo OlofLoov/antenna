@@ -1,11 +1,12 @@
 # 0002. XMLTV guide parsing
 
-- Status: Accepted
+- Status: Implemented
 - Date: 2026-11-03
 - Depends on ADRs: 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore, no UI)
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
-  changes have a spec to revise or supersede.
+  changes have a spec to revise or supersede. Every criterion has a test
+  citing it since the retroactive test pass.
 
 ## Problem
 
@@ -182,24 +183,24 @@ Then (`title`, `summary`) is ("A & B", "D").
 
 | Criterion | Layer | Test |
 |-----------|-------|------|
-| AC-1 | core | TBD |
-| AC-1b | core | TBD |
-| AC-2 | core | TBD |
-| AC-3 | core | TBD |
-| AC-3b | core | TBD |
-| AC-4 | core | TBD |
-| AC-4b | core | TBD |
-| AC-5 | core | TBD |
-| AC-6 | core (parameterised over cases a to f) | TBD |
-| AC-7 | core | TBD |
-| AC-7b | core | TBD |
-| AC-8 | core | TBD |
-| AC-8b | core | TBD |
-| AC-9 | core | TBD |
-| AC-10 | core (parameterised, three rows) | TBD |
-| AC-11 | core (benchmark, not CI-gated) | TBD |
-| AC-12 | core | TBD |
-| AC-13 | core | TBD |
+| AC-1 | core | `XMLTVParserTests.channelDisplayNames` |
+| AC-1b | core | `XMLTVParserTests.emptyDisplayNameWins` |
+| AC-2 | core | `XMLTVParserTests.programmeFields` |
+| AC-3 | core | `XMLTVParserTests.absentOptionalFields` |
+| AC-3b | core | `XMLTVParserTests.whitespaceDescIsNil` |
+| AC-4 | core | `XMLTVParserTests.timestampWithOffset` |
+| AC-4b | core | `XMLTVParserTests.timestampWithNegativeOffset` |
+| AC-5 | core | `XMLTVParserTests.timestampWithoutZone`; CI runners are on UTC, so it only catches a lost UTC zone on the no-offset formatter when run on a host in another zone |
+| AC-6 | core (parameterised over cases a to f) | `XMLTVParserTests.invalidIntervalsDropped` |
+| AC-7 | core | `XMLTVParserTests.malformedThrows` |
+| AC-7b | core | `XMLTVParserTests.nonXMLDataThrows` |
+| AC-8 | core | `XMLTVParserTests.firstTitleWins` |
+| AC-8b | core | `XMLTVParserTests.emptyFirstElementSkipped` |
+| AC-9 | core | `XMLTVParserTests.channelIconIgnored`; checks the combined effect of the icon guard and the per-programme reset, each of which alone keeps it passing |
+| AC-10 | core (parameterised, three rows) | `XMLTVParserTests.airingCheck` |
+| AC-11 | core (benchmark, not CI-gated) | `XMLTVParserTests.largeGuideBenchmark`, runs only with `ANTENNA_BENCHMARK=1`; about 14 s on an Apple M1, in both debug and release because the time is spent inside `XMLParser` |
+| AC-12 | core | `XMLTVParserTests.documentOrder` |
+| AC-13 | core | `XMLTVParserTests.cdataText` |
 
 ## Open questions
 
