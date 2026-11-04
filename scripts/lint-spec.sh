@@ -12,8 +12,10 @@
 #   - A cross-reference NNNN/AC-n names a criterion the other spec does not
 #     have (when that spec is in the tree).
 #   - A Design section names a board file that does not exist, or lacks a
-#     "Boards:" or "Not drawn" line.
+#     "Boards:" line.
 # Notes (printed, exit 0):
+#   - More than 12 live criteria: likely implementation detail that belongs
+#     in the plan (see .claude/skills/spec/checklist.md).
 #   - A cross-reference to a spec that is not in the tree.
 #   - A "Blocked on" line that says something is not yet written.
 #
@@ -78,6 +80,7 @@ for file in "${files[@]}"; do
     (( t )) || err "$name: $ac has no Then"
   done < <(criteria "$file")
   (( ${#acs[@]} )) || err "$name: no '### AC-n' headings"
+  (( ${#acs[@]} > 12 )) && note "$name: ${#acs[@]} criteria; specs aim for 5 to 12, detail belongs in the plan"
 
   # First cell of each test plan row, expanded: "AC-4a, AC-4b" and
   # "AC-17a to AC-17d" both count as rows for each criterion they name.
@@ -124,9 +127,6 @@ for file in "${files[@]}"; do
   if grep -q '^## Design' "$file"; then
     design=$(awk '/^## Design/ { on = 1; next } /^## / { on = 0 } on' "$file")
     grep -q '^Boards:' <<< "$design" || err "$name: Design section has no 'Boards:' line"
-    if grep -qE '^Boards:.*\.dc\.html' <<< "$design"; then
-      grep -q 'Not drawn' <<< "$design" || err "$name: Design section has no 'Not drawn' line (write 'Not drawn: nothing.' only after checking every state a criterion names)"
-    fi
     while read -r board; do
       [[ -f "$boards/$board" ]] || err "$name: Design names $board, not in docs/design/boards"
     done < <(grep -oE '[A-Za-z0-9-]+\.dc\.html' <<< "$design" | sort -u)

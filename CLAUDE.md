@@ -37,9 +37,12 @@ from `Config/Local.xcconfig.example` for device builds.
 - **Design first for screens.** Every screen has a board in `docs/design/`.
   Specs cite the board and the design rules (`DR-n`) that apply; reviewers
   check against them. No board, no spec, no code.
-- **Spec first.** Feature work starts from a spec in `docs/specs/` with
-  Given/When/Then acceptance criteria. No feature code without a spec id.
-  Use the `spec` skill to write one, then run the `spec-reviewer` agent on it.
+- **Spec first, at behaviour level.** Feature work starts from a spec in
+  `docs/specs/`: problem, scope and 5 to 12 Given/When/Then criteria a user
+  or caller can observe. No layout, types or identifiers; those go in the
+  plan. No feature code without a spec id. Use the `spec` skill to write
+  one, then run the `spec-reviewer` agent on it once. Write specs for the
+  next features to build, not a backlog.
 - **Views follow ADR-0008.** Components in `Apps/Shared/Components/` take
   values and closures, screens in `Apps/Shared/Views/` own queries and
   models and provide shared state through `@Entry`. No `Bool` picks a
@@ -57,7 +60,10 @@ from `Config/Local.xcconfig.example` for device builds.
 - **Tests cite criteria.** A test that proves acceptance criterion `AC-3` of
   spec `0007` says so in its name or a comment: `// 0007/AC-3`.
 - **Implement with the `implement` skill.** Give it a spec id. It checks the
-  spec is Accepted and unblocked, cuts the work into the fewest small
+  spec is Accepted and unblocked, writes a plan (approach, layout from the
+  boards, identifiers, decisions the spec left open, a test per criterion)
+  and has the `plan-reviewer` agent review it before any code, cuts the
+  work into the fewest small
   shippable PRs, writes the code and a test per criterion, sets the spec to
   Implemented in the last diff, runs the `impl-reviewer` agent, then hands
   each PR to the `pr` skill. Main is rebase-merged. Nothing tracks status on the
