@@ -1,11 +1,11 @@
 # 0014. Guide data: download, join and query
 
-- Status: Draft (three spec-reviewer rounds; the PR lists what each round changed and what is still open)
+- Status: Accepted
 - Date: 2026-11-03
-- Depends on ADRs: 0002, 0003, 0005, and a pending ADR on guide storage (unnumbered until written; this spec stays Draft until it is accepted)
+- Depends on ADRs: 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS
 - Builds on specs 0002 (XMLTV parsing), 0003 (Xtream client, `xmltvURL()`), 0004 (sources), 0013 (catalogue). Requires 0013/AC-1 (`Channel.sourceID`) merged first. 0016 is referenced for its error names only.
-- Blocked on the storage ADR: where programmes and the per-device "last completed load" timestamp live. Programmes are never written to the CloudKit-synced container of ADR-0002; the options are an in-memory index rebuilt on launch, a local file cache, or a local-only SwiftData store. The timestamp lives outside the synced container in every option. AC-13 and AC-14 assume the in-memory option as the floor and are written so that they hold under every option.
+- Follow-up ADR on guide storage: where programmes and the per-device "last completed load" timestamp live. Programmes are never written to the CloudKit-synced container of ADR-0002; the options are an in-memory index rebuilt on launch, a local file cache, or a local-only SwiftData store (the third option amends ADR-0002's single-container decision and the new ADR must say so). The timestamp lives outside the synced container in every option. This spec is accepted on the in-memory floor: AC-13 and AC-14 assume it and are written so that they hold under every option. The ADR is a follow-up to this spec, not a blocker. Criteria touched by the ADR: AC-11a, AC-13, AC-14, AC-15, AC-18a. If the ADR chooses a cache, AC-14's conditional Given becomes unconditional and a new AC-21 'Cached guide at launch' (Given a completed cache for S When the store initialises Then `programmes(for:)` for S's keys is queryable and `loadingState` is `.loaded`/`.noData` before `refreshIfStale` runs) is added.
 
 ## Design
 
@@ -19,17 +19,17 @@ The XMLTV parser exists and has no caller. Nothing downloads a guide, joins prog
 ## Scope
 
 In:
-- `GuideKey` value type in AntennaCore: (`sourceID: UUID`, `epgID: String`). Channels with the same key share programmes and state. Every query takes a `GuideKey` or a `Channel` from which it derives one. A channel with `epgID` nil or `sourceID` nil has no key: `loadingState(for channel:)` for it is `.loading` until its source's first join and `.noData` afterwards, and its queries return nil or empty. `Channel.id` and `Channel.streamURL` are never part of a key, event, file name or log line (0013 edge case, ADR-0003), because an M3U fallback id embeds the stream URL.
+- `GuideKey` value type in AntennaCore: (`sourceID: UUID`, `epgID: String`). Channels with the same key share programmes and state. Every query takes a `GuideKey` or a `Channel` from which it derives one. A channel with `epgID` nil or `sourceID` nil has no key: `loadingState(for channel:)` returns the source-level state (`.loading`, `.unavailable` or `.failed`) until the source's first completed load, and `.noData` afterwards. Its queries return nil or empty. `Channel.id` and `Channel.streamURL` are never part of a key, event, file name or log line (0013 edge case, ADR-0003), because an M3U fallback id embeds the stream URL.
 - `GuideLoadingState` in AntennaCore: `.loading`, `.loaded`, `.noData`, `.unavailable`, `.failed(GuideError)`. Consumers (0007/AC-7, 0009/AC-12, 0010/AC-9) switch on it.
 - `GuideIndex` value type in AntennaCore, `Sendable` and immutable, built from `[Programme]` per source and `[Channel]`: join, overlap resolution, `current`, `next`, `programmes(in:)`, `horizon`, `unmatched`. It treats input order as document order. AC-2 to AC-8 and AC-16 test this type directly.
-- `GuideURLResolver.resolve(kind:epgURL:playlistEPGURLs:credential:) -> URL?` in AntennaCore (AC-1). `GuideDecoder` in AntennaCore: sniffing and gunzip (AC-17); gunzip enforces the inflated limit during inflation, not after. `redacted(_ url: URL) -> String` in AntennaCore (AC-15). Size limits are constants in AntennaCore (AC-20).
-- `GuideStore` protocol in AntennaCore, implemented in the app layer: `programmes(for: [GuideKey], in: DateInterval)`, `current(for: GuideKey, at: Date)`, `next(for: GuideKey, after: Date, count: Int)`, `horizon`, `loadingState(for: GuideKey)`, `progressStream()` factory, `refreshIfStale(now:)`, `refresh(source:)`, `update(channels: [Channel])` (called by the app after each source finishes loading; runs the join of AC-2 and AC-19), `register(epgURLs: [URL], for sourceID: UUID)` (called by the loader for M3U sources), `remove(sourceID:)` (called by the app when a `SourceRecord` is deleted locally or disappears from the synced container; AC-18 and AC-18a hold for both paths). The protocol is not actor-isolated; the app implementation is `@MainActor`. Download, decode, parse and the join run off the main actor and publish a new `GuideIndex` by a single assignment; queries read the current index.
+- `GuideURLResolver.resolve(kind:url:epgURL:playlistEPGURLs:credential:) -> URL?` in AntennaCore (AC-1). `GuideDecoder` in AntennaCore: sniffing and gunzip (AC-17); gunzip enforces the inflated limit during inflation, not after. `redacted(_ url: URL) -> String` in AntennaCore (AC-15). Size limits are constants in AntennaCore (AC-20).
+- `GuideStore` protocol in AntennaCore, implemented in the app layer: `programmes(for: [GuideKey], in: DateInterval)`, `current(for: GuideKey, at: Date)`, `next(for: GuideKey, after: Date, count: Int)`, `horizon`, `loadingState(for: GuideKey)`, `progressStream()` factory, `refreshIfStale(now:)`, `refresh(sourceID: UUID)`, `update(channels: [Channel])` (called by the app after each source finishes loading; runs the join of AC-2 and AC-19), `register(epgURLs: [URL], for sourceID: UUID)` (called by the loader for M3U sources), `remove(sourceID:)` (called by the app when a `SourceRecord` is deleted locally or disappears from the synced container; AC-18 and AC-18a hold for both paths, and observing synced deletions is wiring owned by 0013). The app implementation reads `SourceRecord`s itself and maps each to a core `GuideSourceDescriptor(sourceID:, kind:, epgURL:, credentialKey:, sortOrder:)` before resolving. The protocol never mentions `SourceRecord`. The protocol is not actor-isolated; the app implementation is `@MainActor`. Download, decode, parse and the join run off the main actor and publish a new `GuideIndex` by a single assignment; queries read the current index.
 - Loader call order after each source finishes: `register(epgURLs:for:)`, then `update(channels:)`, then `refreshIfStale(now:)`.
 - `GuideProgress`: `.downloading(sourceID:, bytesReceived:, expectedBytes:)`, `.loaded(sourceID:, channelsWithGuide:, channelsTotal:, days:, unmatched:)`, `.failed(sourceID:, GuideError)`.
 - `GuideError`: `.httpStatus(Int)`, `.timeout`, `.offline`, `.network(URLError.Code)`, `.malformed`, `.empty`, `.unsupportedEncoding`, `.tooLarge`, `.credentialMissing`, `.credentialUnreadable`, `.unauthorized`.
 - Guide sources: `SourceRecord.epgURL` for any kind; else for M3U the first of `Playlist.epgURLs`; else for Xtream `XtreamClient.xmltvURL()` (0003/AC-5) with the Keychain credential. A Stalker source with `epgURL` nil has no guide URL.
 - The guide is fetched with `URLSession.bytes(for:)` on the resolved URL, never through `XtreamClient`, so that byte progress (AC-9) is observable. There is no reachability pre-check; offline is detected from the `URLError` of the attempt.
-- Guide loads run one source at a time in `SourceRecord.sortOrder`; a `refresh(source:)` for another source queues behind the running one.
+- Guide loads run one source at a time in `SourceRecord.sortOrder`; a `refresh(sourceID:)` for another source queues behind the running one.
 - Join on `GuideKey`, re-run on every `update(channels:)`.
 - Progress in two phases; gzip detection by magic bytes.
 - Refresh: stale after 12 hours per device, plus on demand.
@@ -60,25 +60,25 @@ Then the result is the URL in that row and no request is issued during resolutio
 |--------|--------|
 | M3U with `epgURL` | `epgURL` |
 | M3U without `epgURL`, playlist `epgURLs` [u1, u2] | u1 (u2 ignored) |
-| M3U without `epgURL`, empty `epgURLs` | none; its keys report `.unavailable` |
+| M3U without `epgURL`, empty `epgURLs` | none (AC-11: `.unavailable`) |
 | Xtream with `epgURL` | `epgURL` |
-| Xtream without `epgURL` | `XtreamClient.xmltvURL()` built from the credential |
-| Stalker without `epgURL` | none; its keys report `.unavailable` |
+| Xtream without `epgURL` | `XtreamClient.xmltvURL()` built from `url` and the credential |
+| Stalker without `epgURL` | none (AC-11: `.unavailable`) |
 
 ### AC-1a Credential missing
 Given an Xtream source without `epgURL` whose Keychain item is absent
-When `refresh(source:)` runs
-Then no request is issued, `progressStream()` emits `.failed(sourceID:, .credentialMissing)` exactly once per load on each live stream (replay under AC-9a does not count), and its keys report `.unavailable`. This is the one failure whose keys report `.unavailable` rather than `.failed`, because the source is not misconfigured; every AC-13 trigger retries it since no load has completed.
+When `refresh(sourceID:)` runs
+Then no request is issued, `progressStream()` emits `.failed(sourceID:, .credentialMissing)` exactly once per load on each live stream (replay under AC-9a does not count), and its keys report `.unavailable`. This is the one failure whose keys report `.unavailable` rather than `.failed`, because the source is not misconfigured; every AC-13c trigger retries it since no load has completed.
 
 ### AC-1b Credential unreadable
 Given an Xtream source without `epgURL` whose Keychain read fails with a status other than not-found
-When `refresh(source:)` runs
+When `refresh(sourceID:)` runs
 Then no request is issued, `progressStream()` emits `.failed(sourceID:, .credentialUnreadable)` once, and its keys report `.failed`.
 
 ### AC-2 Join by GuideKey
-Given a channel with `epgID` " sport1.se" and a programme with `channelID` "sport1.se ", and a channel with `epgID` nil
+Given a channel with `epgID` " sport1.se" and a programme with `channelID` "sport1.se ", a channel with `epgID` nil, and a programme with `channelID` "nothing.se"
 When the join runs
-Then the first channel has its programme through its `GuideKey`; both `Channel.epgID` and `Programme.channelID` are trimmed of whitespace and newlines before comparison, which is otherwise exact and case-sensitive; the second channel has no key, gets no programme and reports `.noData` after the join; a programme whose `channelID` matches no key of that source is dropped and counted as `unmatched`.
+Then the first channel has its programme through its `GuideKey`; both `Channel.epgID` and `Programme.channelID` are trimmed of whitespace and newlines before comparison, which is otherwise exact and case-sensitive; the second channel has no key, gets no programme and reports `.noData` after the join; a programme whose `channelID` matches no key of that source is dropped, so `unmatched` is 1.
 
 ### AC-3 Join is per source
 Given two sources whose guides both contain channel id "one"
@@ -123,7 +123,7 @@ Then its first events are the most recent event of A and of B, in `sortOrder`, f
 ### AC-10 Progress, parsed phase
 Given a fixture of 412 channels, 24 of which have no programme with `stop > now`, 1200 programmes whose `channelID` matches no key of the source, and programme starts on exactly 7 distinct UTC calendar days from the day containing now to the day containing the latest stop
 When the join completes
-Then it emits `.loaded(sourceID:, channelsWithGuide: 388, channelsTotal: 412, days: 7, unmatched: 1200)`, where `channelsWithGuide` is the number of channels of the source whose key has at least one programme with `stop > now`, `channelsTotal` is the number of channels of the source including those with `epgID` nil, `unmatched` counts programmes, and `days` is the number of UTC calendar days, from the day containing now through the day containing the source's latest stop, on which at least one programme of the source starts or is airing at 00:00 UTC. `.loaded` is emitted after every join of that source, including re-joins caused by `update(channels:)`, with recomputed counts. `loadingState` is `.loaded` for a key with at least one programme at any time and `.noData` for a key with none.
+Then it emits `.loaded(sourceID:, channelsWithGuide: 388, channelsTotal: 412, days: 7, unmatched: 1200)`, where `channelsWithGuide` is the number of channels of the source whose key has at least one programme with `stop > now`, `channelsTotal` is the number of channels of the source including those with `epgID` nil, `unmatched` counts programmes, and `days` is the number of UTC calendar days, from the day containing now through the day containing the source's latest stop, on which at least one programme of the source starts or is airing at 00:00 UTC. `.loaded` is emitted after every join that follows a completed load of that source, including re-joins caused by `update(channels:)`; a join before the first completed load emits nothing. `loadingState` is `.loaded` for a key with at least one programme at any time and `.noData` for a key with none.
 
 ### AC-11 Loading state before data
 Given a source whose guide has never completed a load on this device
@@ -147,18 +147,23 @@ Then `timeoutIntervalForRequest` is 30, `timeoutIntervalForResource` is 600, `ur
 
 ### AC-13 Refresh policy
 Given a source for which this device holds no completed guide, or whose last completed load on this device finished more than 12 hours ago
-When the app launches, `scenePhase` becomes `.active` on any platform, or that source's channels finish loading
-Then `refreshIfStale(now:)` starts a load for it; a source with a completed guide younger than 12 hours is not refreshed; a source with a load in progress is not started again; `refresh(source:)` starts one regardless of age. A source counts as holding a completed guide only when its programmes are queryable now; a timestamp without its programmes is ignored and removed. The timestamp is stored per device outside the synced container; `SourceRecord.lastRefreshedAt` is not it, because it syncs and would mark a guide fresh on a device that never downloaded it.
+When `refreshIfStale(now:)` runs
+Then it starts a load for that source; a source with a completed guide younger than 12 hours is not refreshed; a source with a load in progress is not started again; `refresh(sourceID:)` starts one regardless of age. A source counts as holding a completed guide only when its programmes are queryable now; a timestamp without its programmes is ignored and removed. The timestamp is stored per device outside the synced container; `SourceRecord.lastRefreshedAt` is not it, because it syncs and would mark a guide fresh on a device that never downloaded it.
 
 ### AC-13a Refresh during a load
 Given a source with a load in progress
-When `refresh(source:)` runs for it
+When `refresh(sourceID:)` runs for it
 Then the running load is cancelled and a new one starts, nothing is emitted for the cancelled task, and `URLError.cancelled` is never emitted as `.failed`.
 
 ### AC-13b No sources
 Given zero sources
 When `refreshIfStale(now:)` runs
 Then no request is issued and `progressStream()` emits nothing (0004/AC-8).
+
+### AC-13c Triggers
+Given the app
+When it is running
+Then it calls `refreshIfStale(now:)` on launch, when `scenePhase` becomes `.active` on any platform, and after each source's channels finish loading (Scope call order). This is wiring, not store logic; the policy it triggers is AC-13.
 
 ### AC-14 Resume after relaunch
 Given a fresh store, a stub that records request headers, and, when the storage ADR chooses a file cache, a partially written file for the source in the cache directory
@@ -168,7 +173,7 @@ Then `programmes(for:)` for that source's keys is empty, `loadingState` is `.loa
 ### AC-15 Credentials never in the clear
 Given a guide URL whose query carries credential items (`username`, `password`, `token`, `pass`, `key` or any other name) or whose userinfo carries credentials (`http://u:p@host/epg.xml`)
 When a log line is written or a cache or file name is derived
-Then `redacted(_:)` keeps scheme, host, port and path, replaces every query value with "…" keeping the names, and drops userinfo; the injected logger receives only `redacted(url)`, the `sourceID` and the `GuideError` case name; the thrown `URLError` is reduced to its `code` and not retained (as 0016/AC-10); the cache or file is keyed by `sourceID` never by URL; the test asserts every recorded log line against the raw URL.
+Then `redacted(_:)` keeps scheme, host, port and path, replaces every query value with "…" keeping the names, and drops userinfo; the injected logger receives only `redacted(url)`, the `sourceID` and the `GuideError` case name; the thrown `URLError` is reduced to its `code` and not retained (as 0016/AC-10); the cache or file is keyed by `sourceID` never by URL; the test asserts that no recorded log line contains any raw query value, the userinfo, or the raw URL string.
 
 ### AC-16 Query performance
 Given 2 000 keys with seven days of programmes, and separately 500 000 programmes and 20 000 channels
@@ -183,12 +188,12 @@ Then `GuideDecoder` sniffs the body: after stripping an optional UTF-8 BOM, a bo
 ### AC-18 Source deleted during a load
 Given a load in progress for source S
 When `remove(sourceID:)` runs for S
-Then the task is cancelled, `progressStream()` emits nothing further for S, and `programmes(for:)` for S's keys returns empty.
+Then the task is cancelled, `progressStream()` emits nothing further for S, `programmes(for:)` for S's keys returns empty, and S is dropped from the AC-9a replay set, so a `progressStream()` created afterwards emits nothing for S.
 
 ### AC-18a Source deleted after a completed load
 Given a source S with a completed guide
 When `remove(sourceID:)` runs for S
-Then `programmes(for:)` for S's keys is empty, `horizon` no longer includes S's span, `loadingState` for S's keys is `.unavailable`, and S's per-device timestamp and any cached file are removed.
+Then `programmes(for:)` for S's keys is empty, `horizon` no longer includes S's span, `loadingState` for S's keys is `.unavailable`, S's per-device timestamp and any cached file are removed, and S is dropped from the AC-9a replay set, so a `progressStream()` created afterwards emits nothing for S.
 
 ### AC-19 Guide before channels
 Given a source whose guide finishes downloading before its channel list has loaded
@@ -206,11 +211,12 @@ Then `expectedContentLength` is compared to the compressed limit when the body s
 - Time zones: `Programme` times are absolute dates; `days` in AC-10 uses UTC calendar days by definition.
 - A guide whose programmes all lie in the past: horizon set, `current` nil everywhere, keys are `.loaded` (AC-10), 0009 shows AC-12 blocks.
 - Offline at refresh with a previous guide: AC-11a, the attempt fails with `.offline` on `progressStream()`; with none: AC-11 and AC-12 `.offline`. There is no reachability pre-check.
-- A 200 response whose body is an HTML login page (the common Xtream failure) sniffs as XML, parses to zero programmes and fails with `.empty` (0002 edge case).
+- A 200 response whose body is an HTML login page (the common Xtream failure) sniffs as XML; a well-formed page parses to zero programmes and fails with `.empty` (0002 edge case), a non-well-formed one fails with `.malformed` (0002/AC-7). Both are AC-12 outcomes.
 - A Stalker source with `epgURL` set (zero channels, 0004/AC-13) still downloads its guide; every programme is `unmatched`. Open: load only after the source delivers a channel.
 - `next(for:after:count:)` callers (0007/AC-19, 0010/AC-8) pass the current programme's stop, or now when there is none.
 - Duplicate `Programme.id` across channels (0002 open question): the store keys on `GuideKey` plus start time.
 - User-supplied M3U EPG URLs with embedded credentials (0004 edge case) are covered by AC-15.
+- App suspended during a download: the task fails with a `URLError` mapped by AC-12 (`.network(code)` unless a named case applies), `loadingState` follows AC-11 or AC-11a, and the next `.active` retries through AC-13c because no load completed. Background `URLSession` is out of scope.
 
 ## Test plan
 
@@ -238,12 +244,13 @@ Join, current, next, overlap, interval, horizon, URL resolution, decoding, redac
 | AC-13 | integration (injected clock, per-device timestamp) | TBD |
 | AC-13a | integration (re-entrancy) | TBD |
 | AC-13b | integration | TBD |
+| AC-13c | ui / manual (wiring, not store logic) | TBD |
 | AC-14 | integration (fresh store, header-recording stub, partial file when a cache exists) | TBD |
 | AC-15 | core (`redacted(_:)`) + integration (logger, cache key) | TBD |
 | AC-16 | core benchmark + integration (main-actor timing) | TBD |
 | AC-17 | core (`GuideDecoder`, gzipped fixture) + integration (end to end); transparent decoding manual | TBD |
-| AC-18 | integration | TBD |
-| AC-18a | integration | TBD |
+| AC-18 | integration (`remove` called directly) + device (synced deletion, manual two-device check) | TBD |
+| AC-18a | integration (`remove` called directly) + device (synced deletion, manual two-device check) | TBD |
 | AC-19 | integration | TBD |
 | AC-20 | integration (stub with and without a known length, gzip and plain) | TBD |
 
@@ -251,6 +258,6 @@ Join, current, next, overlap, interval, horizon, URL resolution, decoding, redac
 
 - ADR: storage of programmes and the per-device timestamp (memory, file cache, local-only store). A cache lets the guide appear before the first refresh completes.
 - Should the refresh interval be a setting? If synced, it is a record under ADR-0002 and needs the ADR.
-- Retry after a failed first load: AC-11 and AC-13 retry on every launch and every `.active`, so a permanently broken guide is re-downloaded each time the user returns. A 15-minute hold between attempts was proposed in review and is undecided.
+- Retry after a failed first load: AC-11 and AC-13c retry on every launch and every `.active`, so a permanently broken guide is re-downloaded each time the user returns. A 15-minute hold between attempts was proposed in review and is undecided.
 - Should a guide load wait until the source has delivered at least one channel through `update(channels:)`? Undecided; see the Stalker edge case.
 - Streaming XMLTV parsing to lift the size budget (0002 follow-up).
