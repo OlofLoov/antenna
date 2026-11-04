@@ -108,6 +108,11 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | Screen | Board | Spec |
 |--------|-------|------|
 | TV channel overlay | `Main.dc.html` | 0007 |
+| TV channel overlay, Favorites group with filled star | `Main-Favorites.dc.html` | 0007 |
+| TV channel overlay, Favorites empty | `Main-FavoritesEmpty.dc.html` | 0007 |
+| TV channel overlay, empty catalogue | `Main-Empty.dc.html` | 0007 |
+| TV channel overlay, no programme information | `Main-NoProgramme.dc.html` | 0007 |
+| TV channel overlay, guide loading | `Main-GuideLoading.dc.html` | 0007 |
 | TV zap bar and number entry | `TV-ZapBar.dc.html` | 0008 |
 | TV guide grid | `TV-Guide.dc.html` | 0009 |
 | iPad and Mac live browse | `iPad.dc.html` | 0010 |
@@ -133,6 +138,9 @@ Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
 series detail, player controls on tvOS, Sources and Settings, and the empty,
 loading and error states each spec lists under "Not drawn". The "source
 arrived without its credential" state on tvOS is on `TV-Shell-Empty.dc.html`.
+series detail, player controls on tvOS, Sources and Settings, the "source
+arrived without its credential" state on tvOS, and the empty, loading and
+error states each spec other than 0007 lists under "Not drawn".
 
 Remote vocabulary on tvOS, used by every spec: *select* is a press of the
 touch surface; *swipe* and a directional click on the clickpad are the
