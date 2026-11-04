@@ -22,10 +22,15 @@ a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
     <span style="width: 32px; height: 6px; border-radius: 3px; background: #F2F4F8; display: inline-block"></span>
     <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
   </div>
+  <!-- onboarding.back, focused because Start watching is disabled (AC-34); select deletes the source and returns to the form (AC-32) -->
+  <a href="TV-Onboard-3-M3U.dc.html" style="position: absolute; left: 44px; top: 30px; display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 600; padding: 18px 28px 18px 22px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>Back</span>
+  </a>
 
   <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
     <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Setting up Home provider</div>
-    <div style="font-size: 24px; color: #A7B0BF">This runs once. Updates later happen in the background.</div>
+    <div style="font-size: 24px; color: #A7B0BF">This runs once.</div>
   </div>
 
   <div style="width: 1000px; border-radius: 20px; background: rgba(255,255,255,0.06); box-sizing: border-box; padding: 16px 32px; display: flex; flex-direction: column">
@@ -58,7 +63,7 @@ a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
   </div>
 
   <div style="display: flex; gap: 16px; align-items: center">
-    <!-- onboarding.startWatching disabled; Menu deletes the source and returns to the form -->
+    <!-- onboarding.startWatching disabled; Back or Menu deletes the source and returns to the form -->
     <span aria-disabled="true" style="font-size: 26px; font-weight: 700; padding: 18px 44px; border-radius: 14px; background: rgba(255,255,255,0.08); color: #A7B0BF; display: inline-flex">Start watching now</span>
     <span style="font-size: 22px; color: #A7B0BF; padding: 18px 24px">Press Menu to go back and check the link</span>
   </div>
