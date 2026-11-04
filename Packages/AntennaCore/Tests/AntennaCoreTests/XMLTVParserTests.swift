@@ -70,12 +70,19 @@ import Testing
         #expect(try #require(result.programmes.first).summary == nil)
     }
 
-    @Test("0002/AC-4 timestamp with zone offset")
-    func timestampWithOffset() throws {
-        let result = try parse(programme("<title>T</title>", start: "20261103200000 +0100", stop: "20261103210000 +0100"))
+    @Test(
+        "0002/AC-4 timestamp with zone offset, with or without a space",
+        arguments: [
+            (" +0100", "2026-11-03T19:00:00Z"),
+            ("+0100", "2026-11-03T19:00:00Z"),
+            ("-0530", "2026-11-04T01:30:00Z"),
+        ])
+    func timestampWithOffset(offset: String, expectedStart: String) throws {
+        let result = try parse(
+            programme("<title>T</title>", start: "20261103200000\(offset)", stop: "20261103210000\(offset)"))
         let parsed = try #require(result.programmes.first)
-        #expect(parsed.start == (try utc("2026-11-03T19:00:00Z")))
-        #expect(parsed.stop == (try utc("2026-11-03T20:00:00Z")))
+        #expect(parsed.start == (try utc(expectedStart)))
+        #expect(parsed.stop == (try utc(expectedStart)).addingTimeInterval(3600))
     }
 
     @Test("0002/AC-4b negative zone offset")
@@ -86,9 +93,10 @@ import Testing
         #expect(parsed.stop == (try utc("2026-11-04T02:00:00Z")))
     }
 
-    @Test("0002/AC-5 timestamp without zone is UTC")
-    func timestampWithoutZone() throws {
-        let result = try parse(programme("<title>T</title>"))
+    @Test("0002/AC-5 timestamp without a usable zone is UTC", arguments: ["", " UTC", "+9900"])
+    func timestampWithoutZone(suffix: String) throws {
+        let result = try parse(
+            programme("<title>T</title>", start: "20261103200000\(suffix)", stop: "20261103210000\(suffix)"))
         let parsed = try #require(result.programmes.first)
         #expect(parsed.start == (try utc("2026-11-03T20:00:00Z")))
         #expect(parsed.stop == (try utc("2026-11-03T21:00:00Z")))
