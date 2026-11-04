@@ -100,7 +100,7 @@ Then the row shows the logo or initials tile (0013/AC-7), the name, and a second
 ### AC-6b Select a channel on tvOS
 Given focus on a channel result
 When the user presses select
-Then playback switches (0007/AC-9's `load` rule), Search dismisses to full screen (0015/AC-14) and a channel-change event is emitted (0008/AC-1).
+Then playback switches (0007/AC-9's `load` rule), Search dismisses to full screen (0015/AC-14c) and a channel-change event is emitted (0008/AC-1).
 
 ### AC-6c Select a channel on iOS, iPadOS, macOS
 Given a channel result
@@ -130,7 +130,7 @@ Then 0011/AC-3a (movie) or 0011/AC-9b (series) applies.
 ### AC-10 Scope chips
 Given results on iPad, Mac or iPhone
 When the user activates `search.chip.guide`
-Then only the guide section is shown with every row and no cap control; `search.chip.movies` and `search.chip.series` show the titles section filtered to that kind with the header reading "Movies" or "Series"; `search.chip.channels` shows Channels only, still capped as AC-22; `search.chip.all` restores all sections; each chip's count equals the results in its section before any display cap and All equals their sum; a chip whose count is zero is disabled and reads "· 0"; Movies and Series chips are present only under 0011/AC-1.
+Then only the guide section is shown with every row and no cap control; `search.chip.movies` and `search.chip.series` show the titles section filtered to that kind with the header reading "Movies" or "Series"; `search.chip.channels` shows Channels only, still capped as AC-22; `search.chip.all` restores all sections; each chip's count equals the results in its section before any display cap and All equals their sum; a chip whose count is zero is disabled and reads "· 0"; Movies and Series chips are present only under 0011/AC-1a and AC-1b.
 
 ### AC-11 Recent searches
 Given twelve searches run by selecting a result, two differing only in case
@@ -145,7 +145,7 @@ Then the field empties and keeps focus; on iOS the results area shows `search.re
 ### AC-12b Menu on tvOS
 Given results on tvOS
 When the user presses Menu from a result
-Then focus returns to the system keyboard; Menu from the keyboard shows the tab bar (0015/AC-6); tvOS has no clear control and the keyboard's delete key edits the query.
+Then focus returns to the system keyboard; Menu from the keyboard shows the tab bar (0015/AC-6a); tvOS has no clear control and the keyboard's delete key edits the query.
 
 ### AC-12c Escape on iPad and Mac
 Given a hardware keyboard on iPadOS or macOS and focus in the field
