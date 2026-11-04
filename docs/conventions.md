@@ -61,4 +61,5 @@
   branch lands on main as pushed; no WIP or fixup commits in a PR.
 - A feature too big for one small PR ships as a stack: `feat/NNNN-slug-1`,
   `-2` and so on, each based on the one before. The `implement` skill cuts
-  the stack, the `pr` skill opens and rebases it.
+  the stack, the `pr` skill opens and rebases it with `gh stack`, so GitHub
+  shows the PRs as one stack.
