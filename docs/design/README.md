@@ -69,6 +69,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   the upcoming list under it.
 - Movies and Search put a toolbar on top of the detail column and scroll
   content below it.
+- Guide: sidebar | grid. No list column. A toolbar with filter, day chips,
+  Now, zoom and the now-playing chip sits over a time grid with a pinned
+  200 pt channel column and the now line. Detail is a popover on the block.
 
 ### iPhone
 
@@ -76,6 +79,9 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   inside Live, not a tab.
 - Live: player pinned at the top (16:9), now playing row, scrolling group
   chips, channel list.
+- Guide: group chips, day chips, then one row per channel with a header
+  line and its own horizontal strip of programme cards. No time grid. Detail
+  is a sheet; a now-playing mini bar sits above the tab bar.
 - Movies: tall portrait hero, chips laid over the art, copy on a solid scrim
   at the foot of the hero, then rows.
 - Onboarding and add source are sheets. iPad centres the same sheet.
@@ -117,6 +123,8 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 | TV search | `TV-Search.dc.html` | 0012 |
 | iPad and Mac search | `iPad-Search.dc.html` | 0012 |
 | iPhone search | `iPhone-Search.dc.html` | 0012 |
+| iPad and Mac guide | `iPad-Guide.dc.html`, states `iPad-Guide-Placeholders.dc.html`, `iPad-Guide-Empty.dc.html` | 0025 |
+| iPhone guide | `iPhone-Guide.dc.html`, states `iPhone-Guide-Placeholders.dc.html`, `iPhone-Guide-Detail.dc.html` | 0025 |
 | TV onboarding, 5 steps | `TV-Onboard-1.dc.html` to `TV-Onboard-5.dc.html` | 0006 |
 | iPhone onboarding, 3 steps | `iPhone-Onboard-1.dc.html` to `iPhone-Onboard-3.dc.html` | 0006 |
 
@@ -124,8 +132,7 @@ Core specs with no screen: 0013 channel catalogue, 0014 guide data. The
 tvOS shell (tab bar, Menu behaviour) is spec 0015 and uses the top bar
 drawn on `TV-Movies.dc.html` and `TV-Search.dc.html`.
 
-Not yet drawn: paywall (ADR-0006), guide on iPhone, iPad and Mac, movie and
-series detail, player controls on tvOS, Sources and Settings, the "source
+Not yet drawn: paywall (ADR-0006), movie and series detail, player controls on tvOS, Sources and Settings, the "source
 arrived without its credential" state on tvOS, and the empty, loading and
 error states each spec lists under "Not drawn".
 
