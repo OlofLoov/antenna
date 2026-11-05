@@ -4,6 +4,7 @@
 - Date: YYYY-MM-DD
 - Depends on ADRs: 0001, 0002
 - Builds on specs: 0013, 0014
+- Needs from other specs: optional; a revision another spec must make first, by number, one clause each (for example "0006 adds this source's card")
 - Platforms: iOS, iPadOS, macOS, tvOS
 - User stories: US-n, US-m (from `docs/product/user-stories.md`)
 

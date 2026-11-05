@@ -15,7 +15,12 @@ status word, Given/When/Then per criterion, test plan rows, board files.
 - Status is the bare lifecycle word. Review history goes in the PR body.
 - "Blocked on" names only what stops acceptance. A decision owed later is a
   "Follow-up ADR" line that says what this spec assumes meanwhile.
-- "Builds on specs" names specs, not their criteria.
+- "Builds on specs" names specs, not their criteria. Another spec's code
+  that has not shipped belongs here, not in "Blocked on"; the `implement`
+  skill gates each slice on it.
+- "Needs from other specs" names each revision another spec must make
+  (a card in 0006's form, a row on 0023's screen), so the owner sees the
+  knock-on work.
 - "Depends on ADRs" lists every ADR the Scope relies on.
 - "User stories" names at least one story from
   `docs/product/user-stories.md`.
