@@ -1,7 +1,7 @@
 # 0014. Guide data: download, join and query
 
 - Status: In progress
-- Progress: AC-1, AC-4 and AC-7, with the core halves of AC-2 and AC-15, in this PR
+- Progress: AC-1, AC-4 and AC-7 (#81), AC-17 in this PR; AC-2, AC-12 and AC-15 in part
 - Date: 2026-11-03
 - Depends on ADRs: 0002, 0003, 0005
 - Builds on specs: 0002, 0003, 0004, 0013, 0016
