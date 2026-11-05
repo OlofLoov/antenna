@@ -297,9 +297,9 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac18-portal.test").isEmpty)
     }
 
-    // MARK: Fixed defects from the 0004 edge cases
+    // MARK: Edge cases fixed after the first 0004 slice (no criterion of their own)
 
-    @Test("0004/AC-11 a repeated Xtream category id loads instead of crashing")
+    @Test("0004 edge case: a repeated Xtream category id loads instead of crashing")
     func repeatedCategoryID() async throws {
         let host = "dup-category.test"
         StubURLProtocol.register(
@@ -319,7 +319,7 @@ import Testing
         #expect(model.channels.first?.group == "News")
     }
 
-    @Test("0004/AC-15 an M3U URL answering 404 fails the source")
+    @Test("0004 edge case: an M3U URL answering 404 fails the source")
     func m3uBadStatus() async throws {
         let host = "m3u-404.test"
         StubURLProtocol.register(host: host, status: 404, body: "<html>Not found</html>")
@@ -332,7 +332,7 @@ import Testing
         #expect(model.channels.map(\.name) == ["m3u-404-up.test one", "m3u-404-up.test two"])
     }
 
-    @Test("0004/AC-9 loading with no sources clears the previous channels")
+    @Test("0004 edge case: loading with no sources clears the channels and the error")
     func reloadWithNoSourcesClears() async throws {
         _ = try insert(.m3u, url: twoChannelPlaylist(host: "clear.test"), sortOrder: 0)
         let model = try await load(credentials: store)
@@ -341,6 +341,34 @@ import Testing
         await model.load([], using: SourceLoader(session: StubURLProtocol.session(), credentials: store))
 
         #expect(model.channels.isEmpty)
+        #expect(model.error == nil)
+    }
+
+    @Test("0004 edge case: unchanged sources are not downloaded again")
+    func unchangedSourcesSkipped() async throws {
+        let host = "unchanged.test"
+        _ = try insert(.m3u, url: twoChannelPlaylist(host: host), sortOrder: 0)
+        let loader = SourceLoader(session: StubURLProtocol.session(), credentials: store)
+        let model = ChannelListModel()
+
+        await model.load(try descriptors(), using: loader)
+        await model.load(try descriptors(), using: loader)
+
+        #expect(StubURLProtocol.requests(host: host).count == 1)
+        #expect(model.channels.count == 2)
+    }
+
+    @Test("0004 edge case: a changed source reloads the list")
+    func changedSourceReloads() async throws {
+        let record = try insert(.m3u, url: twoChannelPlaylist(host: "before.test"), sortOrder: 0)
+        let loader = SourceLoader(session: StubURLProtocol.session(), credentials: store)
+        let model = ChannelListModel()
+        await model.load(try descriptors(), using: loader)
+
+        record.url = URL(string: twoChannelPlaylist(host: "after.test"))
+        await model.load(try descriptors(), using: loader)
+
+        #expect(model.channels.map(\.name) == ["after.test one", "after.test two"])
     }
 
     #if os(iOS)
