@@ -297,6 +297,35 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac18-portal.test").isEmpty)
     }
 
+    #if os(iOS)
+        @Test("0004/AC-8 no sources, no request")
+        func emptyStateMakesNoRequest() async throws {
+            let tag = "ac8-\(UUID().uuidString)"
+            let loader = SourceLoader(session: StubURLProtocol.session(tag: tag), credentials: store)
+            let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+            let window = UIWindow(windowScene: scene)
+            window.rootViewController = UIHostingController(
+                rootView: ChannelsView().modelContainer(container).environment(\.sourceLoader, loader))
+            window.makeKeyAndVisible()
+            defer { window.isHidden = true }
+
+            try await Task.sleep(for: .seconds(1))
+            #expect(StubURLProtocol.requestCount(tag: tag) == 0)
+
+            // The same harness does see a request once a source exists, so the zero above is not vacuous.
+            _ = try insert(.m3u, url: "http://ac8.test/list.m3u", sortOrder: 0)
+            try context.save()
+            for _ in 0..<50 where StubURLProtocol.requestCount(tag: tag) == 0 {
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            #expect(StubURLProtocol.requestCount(tag: tag) > 0)
+        }
+    #endif
+}
+
+/// 0004 edge cases fixed after the first slice. An extension so the suite
+/// stays under SwiftLint's type body length.
+extension SourceManagementTests {
     // MARK: Edge cases fixed after the first 0004 slice (no criterion of their own)
 
     @Test("0004 edge case: a repeated Xtream category id loads instead of crashing")
@@ -370,31 +399,6 @@ import Testing
 
         #expect(model.channels.map(\.name) == ["after.test one", "after.test two"])
     }
-
-    #if os(iOS)
-        @Test("0004/AC-8 no sources, no request")
-        func emptyStateMakesNoRequest() async throws {
-            let tag = "ac8-\(UUID().uuidString)"
-            let loader = SourceLoader(session: StubURLProtocol.session(tag: tag), credentials: store)
-            let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
-            let window = UIWindow(windowScene: scene)
-            window.rootViewController = UIHostingController(
-                rootView: ChannelsView().modelContainer(container).environment(\.sourceLoader, loader))
-            window.makeKeyAndVisible()
-            defer { window.isHidden = true }
-
-            try await Task.sleep(for: .seconds(1))
-            #expect(StubURLProtocol.requestCount(tag: tag) == 0)
-
-            // The same harness does see a request once a source exists, so the zero above is not vacuous.
-            _ = try insert(.m3u, url: "http://ac8.test/list.m3u", sortOrder: 0)
-            try context.save()
-            for _ in 0..<50 where StubURLProtocol.requestCount(tag: tag) == 0 {
-                try await Task.sleep(for: .milliseconds(100))
-            }
-            #expect(StubURLProtocol.requestCount(tag: tag) > 0)
-        }
-    #endif
 }
 
 /// A credential store that keeps items in memory.
