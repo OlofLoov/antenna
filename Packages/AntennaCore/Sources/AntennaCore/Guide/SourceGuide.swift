@@ -15,38 +15,46 @@ struct SourceGuide: Sendable {
     /// programme's stop to the next one's start, so the later start wins and
     /// nothing is split.
     init(_ input: [Programme]) {
-        var grouped: [String: [(offset: Int, programme: Programme)]] = [:]
-        for (offset, programme) in input.enumerated() where programme.start < programme.stop {
-            let id = programme.channelID.trimmingCharacters(in: .whitespacesAndNewlines)
-            grouped[id, default: []].append((offset, programme))
+        // One grouped copy of the programmes; each id's list is cleaned on
+        // its own, so the peak stays near two copies of the input.
+        var grouped: [String: [Programme]] = [:]
+        for programme in input where programme.start < programme.stop {
+            grouped[programme.channelID.trimmingCharacters(in: .whitespacesAndNewlines), default: []].append(programme)
         }
-        var programmes: [String: [Programme]] = [:]
-        programmes.reserveCapacity(grouped.count)
         var count = 0
         var earliest: Date?
         var latest: Date?
-        for (id, entries) in grouped {
-            let sorted = entries.sorted { ($0.programme.start, $0.offset) < ($1.programme.start, $1.offset) }
-            var cleaned: [Programme] = []
-            cleaned.reserveCapacity(sorted.count)
-            for entry in sorted {
-                if let last = cleaned.last, last.start == entry.programme.start {
-                    cleaned[cleaned.count - 1] = entry.programme
-                    continue
-                }
-                if let last = cleaned.last, last.stop > entry.programme.start {
-                    cleaned[cleaned.count - 1].stop = entry.programme.start
-                }
-                cleaned.append(entry.programme)
-            }
-            count += cleaned.count
-            if let first = cleaned.first { earliest = min(earliest ?? first.start, first.start) }
-            if let stop = cleaned.map(\.stop).max() { latest = max(latest ?? stop, stop) }
-            programmes[id] = cleaned
+        for id in Array(grouped.keys) {
+            guard var list = grouped.removeValue(forKey: id) else { continue }
+            Self.clean(&list)
+            count += list.count
+            if let first = list.first { earliest = min(earliest ?? first.start, first.start) }
+            if let stop = list.last?.stop { latest = max(latest ?? stop, stop) }
+            grouped[id] = list
         }
-        self.programmes = programmes
+        programmes = grouped
         self.count = count
         if let earliest, let latest { span = DateInterval(start: earliest, end: latest) } else { span = nil }
+    }
+
+    /// Sorts by start, keeps the last of equal starts in input order, and cuts
+    /// each stop to the next start.
+    private static func clean(_ list: inout [Programme]) {
+        let order = list.indices.sorted { (list[$0].start, $0) < (list[$1].start, $1) }
+        var cleaned: [Programme] = []
+        cleaned.reserveCapacity(list.count)
+        for index in order {
+            let programme = list[index]
+            if let last = cleaned.last, last.start == programme.start {
+                cleaned[cleaned.count - 1] = programme
+                continue
+            }
+            if let last = cleaned.last, last.stop > programme.start {
+                cleaned[cleaned.count - 1].stop = programme.start
+            }
+            cleaned.append(programme)
+        }
+        list = cleaned
     }
 
     struct Summary: Sendable, Equatable {
