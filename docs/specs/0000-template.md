@@ -17,6 +17,7 @@ not do. A reader who stops here knows what the feature is.
 
 Boards: `docs/design/boards/<Board>.dc.html`, one per platform the spec covers (list them with `scripts/spec-index.sh --boards`). Write "none, no UI" for a core-only spec.
 Design rules that apply: DR-n, DR-n (from `docs/design/README.md` section 5).
+Not drawn: nothing, or the states the criteria name that no board draws yet. The `implement` skill stops until they are drawn.
 
 Layout, sizes, states and identifiers come from the boards and are settled in the implementation plan, not here.
 
