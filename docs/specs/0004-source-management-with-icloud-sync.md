@@ -39,13 +39,12 @@ In:
 - Add source sheet in Settings: type (M3U, Xtream Codes, Stalker portal), name, URL, optional EPG URL for M3U, username and password for the others.
 - `SourceRecord` in SwiftData with CloudKit sync; credentials in the Keychain keyed by the record id.
 - Sources listed in Settings; swipe-to-delete on iOS and iPadOS, which also removes the Keychain item.
-- Channels tab loads every source the first time it is shown with an empty channel list. It does not reload when sources are added, removed or synced (known gap).
+- Channels tab loads every source when it is shown, and again whenever a source is added, removed, reordered or changed by sync. Unchanged sources that already produced channels are not downloaded again.
 - Tapping a channel pushes the player screen.
 
 Out (explicitly):
 - Editing or reordering a source.
 - Caching channel lists between launches; refresh policy; `lastRefreshedAt`.
-- Reloading channels after a source changes.
 - Stalker channel loading (the type can be saved but yields no channels).
 - Showing load errors to the user (recorded on the model, not rendered).
 - The "credential not yet synced" UI state (ADR-0003 follow-up).
@@ -164,7 +163,7 @@ Then `ChannelListModel.channels` holds exactly the 2 M3U channels and no request
 
 ## Edge cases and failure modes
 
-- Any load that yields zero channels in total (offline, Stalker-only, empty playlist) leaves the list on the loading indicator and retries on each appearance, because no error is rendered.
+- Any load that yields zero channels in total (offline, Stalker-only, empty playlist) leaves the list on the loading indicator and retries on each appearance, because no error is rendered. A list that has channels does not reload on appearance.
 - Offline at launch: every source fails or yields nothing; the list stays on the loading indicator and `ChannelListModel.error` holds the last transport error.
 - An M3U URL answering non-2xx fails that source like a transport error (AC-11, AC-15). An HTML page answering 200 still parses to zero channels and records no error.
 - Slow source: the whole list waits for the slowest source. Sources load sequentially.
@@ -174,7 +173,8 @@ Then `ChannelListModel.channels` holds exactly the 2 M3U channels and no request
 - Adding the same source twice is allowed (no dedup, ADR-0002). Both load, and channels with identical ids appear twice in one `List`; SwiftUI identity for those rows is undefined.
 - An Xtream source whose categories repeat a `category_id` loads; the first name for that id is used.
 - Sync lag: a `SourceRecord` can arrive before its Keychain item (AC-10 covers the silent case).
-- A source synced to device B while its Channels list is open reloads the list there.
+- A source synced to device B, or a change to its URL or credential key, reloads the list there. A Keychain item that arrives after its record changes nothing the list watches, so that source stays empty until the list reloads for another reason or the app relaunches (AC-10).
+- `ChannelListModel.error` holds the last failure of the latest load and is cleared when a load has none.
 - tvOS: synchronizable Keychain items do not reach Apple TV (pending the ADR-0003 amendment named in 0006 and 0023), so a synced Xtream or Stalker source is listed in Settings and contributes zero channels there permanently (AC-10).
 - A `SourceRecord` with `url == nil`, possible after a partial CloudKit sync, is silently skipped by the loader and shows an empty URL line in Settings.
 - An unknown `kindRaw`, from a newer app version, falls back to `.m3u` and is fetched as a playlist.
@@ -225,9 +225,10 @@ identifiers in the Design section, which the code sets.
 | AC-17 | integration (injected failing store, garbled Keychain item) | `SourceManagementTests.unreadableCredential` |
 | AC-18 | integration | `SourceManagementTests.stalkerInert` |
 
+Edge-case tests with no criterion of their own: `repeatedCategoryID`, `m3uBadStatus`, `reloadWithNoSourcesClears`, `unchangedSourcesSkipped`, `changedSourceReloads`.
+
 ## Open questions
 
-- Fix the duplicate `category_id` crash: build the name map with `Dictionary(_:uniquingKeysWith:)`.
 - Should the Stalker option be hidden until the portal handshake ships?
 - Where does the error from AC-15 get rendered: inline per source in Settings, or a banner in Channels?
 - Should `url` be redacted in Settings, or should credential-bearing M3U URLs be split into Keychain plus base URL?

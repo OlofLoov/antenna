@@ -32,9 +32,10 @@ struct ChannelsView: View {
                     }
                 }
             }
-            // Reloads on appearance and whenever a source is added, removed or
-            // reordered, so deleted sources' channels do not linger.
-            .task(id: sources.map(\.id)) {
+            // Runs on appearance and whenever a source is added, removed,
+            // reordered or edited by sync. The model skips sources it already
+            // loaded channels for.
+            .task(id: sources.compactMap(\.descriptor)) {
                 await model.load(sources.compactMap(\.descriptor), using: loader)
             }
             .navigationTitle("Channels")
@@ -93,20 +94,29 @@ final class ChannelListModel {
     var channels: [Channel] = []
     var error: String?
 
-    /// Replaces `channels` with those of `sources`, in order. An empty list
-    /// clears them. A load cancelled by a newer one changes nothing.
+    /// The sources the current `channels` came from.
+    private var loadedSources: [SourceDescriptor]?
+
+    /// Replaces `channels` with those of `sources`, in order, and `error` with
+    /// this load's last failure. An empty list clears both. When `sources` is
+    /// what the current channels came from and there are channels, nothing is
+    /// downloaded; with zero channels it tries again. A load cancelled by a
+    /// newer one changes nothing.
     func load(_ sources: [SourceDescriptor], using loader: SourceLoader) async {
+        if sources == loadedSources, !channels.isEmpty { return }
+        var failure: String?
         var all: [Channel] = []
         for source in sources {
             do {
                 all += try await loader.load(source)
             } catch {
-                guard !Task.isCancelled else { return }
-                self.error = error.localizedDescription
+                failure = error.localizedDescription
             }
         }
         guard !Task.isCancelled else { return }
         channels = all
+        error = failure
+        loadedSources = sources
     }
 }
 
