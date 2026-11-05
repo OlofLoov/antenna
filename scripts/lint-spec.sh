@@ -137,7 +137,7 @@ for file in "${files[@]}"; do
       continue
     fi
     grep -qE "^### $ac( |$)" "$target" && continue
-    if awk '/^## Dropped/ { on = 1; next } /^## / { on = 0 } on' "$target" | grep -qE "^- $ac([ (:,]|$)"; then
+    if awk '/^## Dropped/ { on = 1; next } /^## / { on = 0 } on' "$target" | grep -qE "(^|[^A-Za-z0-9-])$ac([^A-Za-z0-9]|$)"; then
       note "$name: cites $ref, which $(basename "$target") has dropped; cite the spec by number"
     else
       err "$name: cites $ref but $(basename "$target") has no $ac"

@@ -86,5 +86,7 @@ implementation, as its own `docs(spec)` PR before the plan:
 - Cut detail out of the surviving criteria: identifiers, sizes, type names,
   timing budgets. Note anything worth keeping under "Notes for the plan".
 - Criteria that were only detail go under "Dropped" with the reason "moved
-  to the implementation plan". Ids are never reused.
+  to the implementation plan". Group them by reason, a few bullets in all,
+  and name every id (no ranges), so lint can find a dropped id that another
+  spec still cites. Ids are never reused.
 - Aim for 5 to 12 live criteria, then run `spec-reviewer` once.
