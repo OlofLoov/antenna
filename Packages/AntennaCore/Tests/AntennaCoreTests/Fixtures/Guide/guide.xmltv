@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tv generator-info-name="antenna-fixture">
+  <channel id="news.se"><display-name>News</display-name></channel>
+  <channel id="sport.se"><display-name>Sport</display-name></channel>
+  <programme start="20261103180000 +0000" stop="20261103190000 +0000" channel="news.se"><title>Evening News</title><desc>Weather &amp; traffic.</desc></programme>
+  <programme start="20261103190000 +0000" stop="20261103200000 +0000" channel="news.se"><title>Debate</title></programme>
+  <programme start="20261103200000 +0000" stop="20261103220000 +0000" channel="news.se"><title>Film &nbsp;Night</title></programme>
+  <programme start="20261103180000 +0000" stop="20261103200000 +0000" channel="sport.se"><title>Grand Prix Live</title><sub-title>São Paulo</sub-title></programme>
+  <programme start="20261103200000 +0000" stop="20261104000000 +0000" channel="sport.se"><title>Highlights & Analysis</title></programme>
+  <programme start="20261104000000 +0000" stop="20261104010000 +0000" channel="sport.se"><title>Replay</title></programme>
+</tv>
