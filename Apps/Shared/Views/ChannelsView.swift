@@ -108,7 +108,7 @@ final class ChannelListModel {
     /// guide links and channels and asks it to refresh stale guides. A source
     /// that failed is skipped. The guide calls run in a task of their own, so
     /// the view task ending does not cut them short.
-    func load(_ sources: [SourceDescriptor], using loader: SourceLoader, guide: (any GuideStore)? = nil) async {
+    func load(_ sources: [SourceDescriptor], using loader: SourceLoader, guide: AppGuideStore? = nil) async {
         if sources == loadedSources, !channels.isEmpty { return }
         var failure: String?
         var all: [Channel] = []
