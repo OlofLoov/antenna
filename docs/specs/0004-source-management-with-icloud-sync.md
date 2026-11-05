@@ -5,6 +5,7 @@
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS
+- User stories: US-2, US-5, US-7
 - Superseded in part: AC-8, AC-14 and the loading-indicator edge case by 0010
   on iOS, iPadOS and macOS (Accepted; the Channels tab is renamed Live).
   AC-6, AC-7, AC-9 ("first time"), AC-10 and AC-11 by 0023 (Draft). AC-18 by

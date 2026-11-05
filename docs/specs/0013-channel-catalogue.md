@@ -5,7 +5,8 @@
 - Depends on ADRs: 0002, 0003, 0005
 - Blocked on: nothing; every criterion is core. Constraint on consumers (0007, 0010): no screen may insert the snapshot AC-10 returns until the 0001 follow-up that hashes `streamURL` out of `Channel.id` is merged, because `FavoriteRecord.channelID` would otherwise carry credentials for M3U sources (ADR-0003).
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore, shared by every screen)
-- Builds on specs 0001, 0003 (channel parsing), 0004 (source loading), 0005 (favorite records). Fills 0005's gap "resolving a favorite to a `Channel`". Specs 0007 to 0015 are in open PRs, not yet in this tree; 0010/AC-11 and 0007/AC-11 cite AC-9 (now AC-9a to AC-9c) and AC-10 for favorite identity.
+- User stories: US-4, US-8, US-12
+- Builds on specs 0001, 0003 (channel parsing), 0004 (source loading), 0005 (favorite records). Fills 0005's gap "resolving a favorite to a `Channel`". 0007 and 0010 rely on AC-9a to AC-9c and AC-10 for favorite identity.
 
 ## Design
 
@@ -227,7 +228,7 @@ Then it returns the group derived from the channel's own `sourceID` and `group` 
 
 ## Edge cases and failure modes
 
-- The catalogue is rebuilt after each source finishes loading (0004 loads sequentially). Fallback numbers may shift until every source has loaded; screens show the current value and 0010/AC-16 shows per-source progress.
+- The catalogue is rebuilt after each source finishes loading (0004 loads sequentially). Fallback numbers may shift until every source has loaded; screens show the current value and 0010 shows per-source progress.
 - Provider numbers that collide within one source: both keep the number; AC-6a orders them by `position`.
 - A number present in two sources is reachable by digit entry only for the first (AC-12); the second is reachable through the overlay or search.
 - Group names are not normalised beyond the empty and whitespace rule in AC-2.

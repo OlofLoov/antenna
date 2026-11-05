@@ -38,8 +38,10 @@ from `Config/Local.xcconfig.example` for device builds.
   Specs cite the board and the design rules (`DR-n`) that apply; reviewers
   check against them. No board, no spec, no code.
 - **Spec first, at behaviour level.** Feature work starts from a spec in
-  `docs/specs/`: problem, scope and 5 to 12 Given/When/Then criteria a user
-  or caller can observe. No layout, types or identifiers; those go in the
+  `docs/specs/`, written for a human reader: a plain Summary, the user
+  stories it serves (`docs/product/user-stories.md`), problem, scope and 5
+  to 12 Given/When/Then criteria a user or caller can observe. No layout,
+  types or identifiers; those go in the
   plan. No feature code without a spec id. Use the `spec` skill to write
   one, then run the `spec-reviewer` agent on it once. Write specs for the
   next features to build, not a backlog.

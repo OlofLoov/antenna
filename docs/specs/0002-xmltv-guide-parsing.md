@@ -4,6 +4,7 @@
 - Date: 2026-11-03
 - Depends on ADRs: 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore, no UI)
+- User stories: US-9, US-10
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
   changes have a spec to revise or supersede. Every criterion has a test
   citing it since the retroactive test pass.
