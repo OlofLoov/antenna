@@ -20,7 +20,6 @@ struct ChannelsView: View {
                     .accessibilityIdentifier("channels.emptyState")
                 } else if model.channels.isEmpty {
                     ProgressView("Loading channels…")
-                        .task { await model.load(sources.compactMap(\.descriptor), using: loader) }
                 } else {
                     List(model.channels) { channel in
                         NavigationLink(value: channel) {
@@ -32,6 +31,11 @@ struct ChannelsView: View {
                             .accessibilityIdentifier("player.view")
                     }
                 }
+            }
+            // Reloads on appearance and whenever a source is added, removed or
+            // reordered, so deleted sources' channels do not linger.
+            .task(id: sources.map(\.id)) {
+                await model.load(sources.compactMap(\.descriptor), using: loader)
             }
             .navigationTitle("Channels")
         }
@@ -89,15 +93,19 @@ final class ChannelListModel {
     var channels: [Channel] = []
     var error: String?
 
+    /// Replaces `channels` with those of `sources`, in order. An empty list
+    /// clears them. A load cancelled by a newer one changes nothing.
     func load(_ sources: [SourceDescriptor], using loader: SourceLoader) async {
         var all: [Channel] = []
         for source in sources {
             do {
                 all += try await loader.load(source)
             } catch {
+                guard !Task.isCancelled else { return }
                 self.error = error.localizedDescription
             }
         }
+        guard !Task.isCancelled else { return }
         channels = all
     }
 }
@@ -113,10 +121,24 @@ struct SourceLoader: Sendable {
     var session: URLSession = .shared
     var credentials: any CredentialStoring = CredentialStore()
 
+    enum LoadError: LocalizedError, Equatable {
+        /// The playlist URL answered with a status outside 200 to 299.
+        case badStatus(Int)
+
+        var errorDescription: String? {
+            switch self {
+            case .badStatus(let code): "The playlist server answered with status \(code)."
+            }
+        }
+    }
+
     func load(_ source: SourceDescriptor) async throws -> [Channel] {
         switch source.kind {
         case .m3u:
-            let (data, _) = try await session.data(from: source.url)
+            let (data, response) = try await session.data(from: source.url)
+            if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                throw LoadError.badStatus(http.statusCode)
+            }
             let text = String(decoding: data, as: UTF8.self)
             return M3UParser().parse(text).channels
         case .xtream:
@@ -128,7 +150,9 @@ struct SourceLoader: Sendable {
                 session: session)
             async let categories = client.liveCategories()
             async let streams = client.liveStreams()
-            let names = Dictionary(uniqueKeysWithValues: try await categories.map { ($0.categoryID, $0.categoryName) })
+            // Providers sometimes repeat a category id; the first name wins.
+            let names = Dictionary(
+                try await categories.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
             return try await streams.map { client.channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] }) }
         case .stalker:
             // TODO: Stalker/MAG portal handshake (handshake → get_profile → get_all_channels).

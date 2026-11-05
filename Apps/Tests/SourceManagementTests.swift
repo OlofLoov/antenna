@@ -297,6 +297,52 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac18-portal.test").isEmpty)
     }
 
+    // MARK: Fixed defects from the 0004 edge cases
+
+    @Test("0004/AC-11 a repeated Xtream category id loads instead of crashing")
+    func repeatedCategoryID() async throws {
+        let host = "dup-category.test"
+        StubURLProtocol.register(
+            host: host, action: "get_live_categories",
+            body: #"[{"category_id":"1","category_name":"News"},{"category_id":"1","category_name":"Sport"}]"#)
+        StubURLProtocol.register(
+            host: host, action: "get_live_streams",
+            body: #"[{"stream_id":7,"name":"One","category_id":"1"}]"#)
+        let key = UUID().uuidString
+        try held.save(.init(username: "u", password: "p"), for: key)
+        defer { try? held.delete(for: key) }
+        _ = try insert(.xtream, url: "http://\(host)", sortOrder: 0, credentialKey: key)
+
+        let model = try await load(credentials: held)
+
+        #expect(model.channels.map(\.name) == ["One"])
+        #expect(model.channels.first?.group == "News")
+    }
+
+    @Test("0004/AC-15 an M3U URL answering 404 fails the source")
+    func m3uBadStatus() async throws {
+        let host = "m3u-404.test"
+        StubURLProtocol.register(host: host, status: 404, body: "<html>Not found</html>")
+        _ = try insert(.m3u, url: "http://\(host)/list.m3u", sortOrder: 0)
+        _ = try insert(.m3u, url: twoChannelPlaylist(host: "m3u-404-up.test"), sortOrder: 1)
+
+        let model = try await load(credentials: store)
+
+        #expect(model.error == SourceLoader.LoadError.badStatus(404).localizedDescription)
+        #expect(model.channels.map(\.name) == ["m3u-404-up.test one", "m3u-404-up.test two"])
+    }
+
+    @Test("0004/AC-9 loading with no sources clears the previous channels")
+    func reloadWithNoSourcesClears() async throws {
+        _ = try insert(.m3u, url: twoChannelPlaylist(host: "clear.test"), sortOrder: 0)
+        let model = try await load(credentials: store)
+        #expect(model.channels.count == 2)
+
+        await model.load([], using: SourceLoader(session: StubURLProtocol.session(), credentials: store))
+
+        #expect(model.channels.isEmpty)
+    }
+
     #if os(iOS)
         @Test("0004/AC-8 no sources, no request")
         func emptyStateMakesNoRequest() async throws {
