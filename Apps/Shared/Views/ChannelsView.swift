@@ -5,6 +5,7 @@ import AntennaCore
 struct ChannelsView: View {
     @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
     @Environment(\.sourceLoader) private var loader
+    @Environment(\.guideStore) private var guideStore
     @State private var model = ChannelListModel()
 
     var body: some View {
@@ -36,7 +37,7 @@ struct ChannelsView: View {
             // reordered or edited by sync. The model skips sources it already
             // loaded channels for.
             .task(id: sources.compactMap(\.descriptor)) {
-                await model.load(sources.compactMap(\.descriptor), using: loader)
+                await model.load(sources.compactMap(\.descriptor), using: loader, guide: guideStore)
             }
             .navigationTitle("Channels")
         }
@@ -102,13 +103,22 @@ final class ChannelListModel {
     /// what the current channels came from and there are channels, nothing is
     /// downloaded; with zero channels it tries again. A load cancelled by a
     /// newer one changes nothing.
-    func load(_ sources: [SourceDescriptor], using loader: SourceLoader) async {
+    ///
+    /// After a load, per source that loaded, tells `guide` its playlist's
+    /// guide links and channels and asks it to refresh stale guides. A source
+    /// that failed is skipped. The guide calls run in a task of their own, so
+    /// the view task ending does not cut them short.
+    func load(_ sources: [SourceDescriptor], using loader: SourceLoader, guide: (any GuideStore)? = nil) async {
         if sources == loadedSources, !channels.isEmpty { return }
         var failure: String?
         var all: [Channel] = []
+        var loaded: [(sourceID: UUID, playlist: Playlist)] = []
         for source in sources {
             do {
-                all += try await loader.load(source)
+                let playlist = try await loader.load(source)
+                let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
+                all += tagged
+                loaded.append((source.id, Playlist(channels: tagged, epgURLs: playlist.epgURLs)))
             } catch {
                 failure = error.localizedDescription
             }
@@ -117,6 +127,14 @@ final class ChannelListModel {
         channels = all
         error = failure
         loadedSources = sources
+        guard let guide else { return }
+        Task {
+            for (sourceID, playlist) in loaded {
+                await guide.register(epgURLs: playlist.epgURLs, for: sourceID)
+                await guide.update(channels: playlist.channels)
+                await guide.refreshIfStale(now: .now)
+            }
+        }
     }
 }
 
@@ -142,7 +160,8 @@ struct SourceLoader: Sendable {
         }
     }
 
-    func load(_ source: SourceDescriptor) async throws -> [Channel] {
+    /// The source's channels, and for a playlist the guide links its header names.
+    func load(_ source: SourceDescriptor) async throws -> Playlist {
         switch source.kind {
         case .m3u:
             let (data, response) = try await session.data(from: source.url)
@@ -150,11 +169,11 @@ struct SourceLoader: Sendable {
                 throw LoadError.badStatus(http.statusCode)
             }
             let text = String(decoding: data, as: UTF8.self)
-            return M3UParser().parse(text).channels
+            return M3UParser().parse(text)
         case .xtream:
             guard let key = source.credentialKey,
                 let cred = try credentials.load(for: key)
-            else { return [] }
+            else { return Playlist(channels: []) }
             let client = XtreamClient(
                 credentials: .init(server: source.url, username: cred.username, password: cred.password),
                 session: session)
@@ -163,10 +182,13 @@ struct SourceLoader: Sendable {
             // Providers sometimes repeat a category id; the first name wins.
             let names = Dictionary(
                 try await categories.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
-            return try await streams.map { client.channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] }) }
+            return Playlist(
+                channels: try await streams.map {
+                    client.channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] })
+                })
         case .stalker:
             // TODO: Stalker/MAG portal handshake (handshake → get_profile → get_all_channels).
-            return []
+            return Playlist(channels: [])
         }
     }
 }
