@@ -30,7 +30,9 @@ public enum GuideError: Error, Sendable, Equatable {
     case timeout
     /// No connection: `.notConnectedToInternet`, `.networkConnectionLost` or `.dataNotAllowed`.
     case offline
-    /// Any other transport failure, reduced to its code.
+    /// Any other transport failure, reduced to its code. A download that
+    /// cannot be written to or read from disk reports `.cannotCreateFile`,
+    /// `.cannotWriteToFile` or `.cannotOpenFile`.
     case network(URLError.Code)
     /// A damaged gzip stream or a document the XMLTV parser rejects.
     case malformed
