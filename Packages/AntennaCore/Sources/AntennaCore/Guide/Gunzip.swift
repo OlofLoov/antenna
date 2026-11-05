@@ -44,16 +44,16 @@ enum Gunzip {
             return bytes[position]
         }
 
-        /// The next `n` bits, least significant first. Fewer than 8 bits are
+        /// The next `width` bits, least significant first. Fewer than 8 bits are
         /// left in `buffer` afterwards, so a stored block can drop them.
-        mutating func bits(_ n: Int) throws(Failure) -> Int {
-            while count < n {
+        mutating func bits(_ width: Int) throws(Failure) -> Int {
+            while count < width {
                 buffer |= UInt64(try byte()) << UInt64(count)
                 count += 8
             }
-            let value = Int(buffer & ((1 << UInt64(n)) - 1))
-            buffer >>= UInt64(n)
-            count -= n
+            let value = Int(buffer & ((1 << UInt64(width)) - 1))
+            buffer >>= UInt64(width)
+            count -= width
             return value
         }
 
