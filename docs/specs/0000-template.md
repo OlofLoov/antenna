@@ -5,6 +5,13 @@
 - Depends on ADRs: 0001, 0002
 - Builds on specs: 0013, 0014
 - Platforms: iOS, iPadOS, macOS, tvOS
+- User stories: US-n, US-m (from `docs/product/user-stories.md`)
+
+## Summary
+
+Three to five plain sentences for someone who has never seen the code: who
+this is for, what they can do once it ships, and what it deliberately does
+not do. A reader who stops here knows what the feature is.
 
 ## Design
 
@@ -31,7 +38,7 @@ Numbered steps from the user's point of view, per platform where they differ. Ke
 
 ## Acceptance criteria
 
-5 to 12 criteria. Each is behaviour a user or a caller can observe, testable on its own, with a stable id. Do not renumber; a removed criterion goes under Dropped.
+5 to 12 criteria. Each is behaviour a user or a caller can observe, testable on its own, with a stable id. Titles say what the user gets. Do not renumber; a removed criterion goes under Dropped.
 
 ### AC-1 Short name
 Given ...
@@ -56,3 +63,7 @@ Only the ones a user would notice: offline, slow or huge source, malformed data,
 ## Open questions
 
 - ...
+
+## Notes for the plan
+
+Optional. Facts the implementation plan must not lose: a signature agreed with another spec, a security rule, a number the owner chose. The only section where technical detail belongs.

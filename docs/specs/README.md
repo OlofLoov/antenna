@@ -3,6 +3,11 @@
 One file per feature, named `NNNN-slug.md` with a four-digit number. Status
 lifecycle: Draft → Accepted → In progress → Implemented → Superseded.
 
+Each spec opens with a plain-language Summary and names the user stories it
+serves, from [docs/product/user-stories.md](../product/user-stories.md).
+Start there to see why a feature exists, then read its spec for what it
+does.
+
 A spec is Accepted when the `spec-reviewer` agent has passed it and every
 acceptance criterion is testable. It is Implemented when a PR has merged with
 a test per criterion. The implementing PR sets the `- Status:` line in the

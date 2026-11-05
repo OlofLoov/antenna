@@ -17,6 +17,16 @@ status word, Given/When/Then per criterion, test plan rows, board files.
   "Follow-up ADR" line that says what this spec assumes meanwhile.
 - "Builds on specs" names specs, not their criteria.
 - "Depends on ADRs" lists every ADR the Scope relies on.
+- "User stories" names at least one story from
+  `docs/product/user-stories.md`.
+
+## Readable by a person
+
+- The Summary alone tells a non-developer what the feature is, who it is
+  for and what it leaves out.
+- Criterion titles say what the user gets, not what a test checks.
+- A term a non-developer would not know (XMLTV, HLS, Xtream) is explained in
+  a few words the first time.
 
 ## Size
 

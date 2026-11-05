@@ -11,6 +11,15 @@ a user or a caller can observe. How it is built (types, layout, sizes,
 identifiers, timings, small edge cases) is settled later in the
 implementation plan that the `implement` skill writes and has reviewed.
 
+Write it for a person first. The owner reads specs to decide what gets
+built, so someone who has never seen the code should understand the
+feature in a few minutes. Plain English, criteria titled by what the user
+gets, jargon explained the first time it appears.
+
+Every spec serves one or more stories in `docs/product/user-stories.md`. If
+none fits, the feature needs a new story first: add it to that file in the
+same PR, with the next free id.
+
 Write specs just in time: for the next features to be built, not a backlog.
 
 ## Steps
@@ -33,6 +42,9 @@ Write specs just in time: for the next features to be built, not a backlog.
      spec states what it assumes meanwhile and the header carries a
      "Follow-up ADR" line, not a "Blocked on" line.
 3. Write the spec from the template. Rules:
+   - The header names the user stories it serves. The Summary says in three
+     to five plain sentences who it is for, what they can do once it ships,
+     and what it leaves out.
    - 5 to 12 criteria, each one Given/When/Then with a stable `AC-n` id.
    - A criterion names behaviour a user or caller can observe. No type
      names, identifiers, sizes, colours or timing budgets unless the number

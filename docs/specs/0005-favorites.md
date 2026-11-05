@@ -4,6 +4,7 @@
 - Date: 2026-11-03
 - Depends on ADRs: 0002
 - Platforms: iOS, iPadOS, macOS, tvOS
+- User stories: US-12
 - Retroactive: documents behaviour shipped in commit 082034b. Written so later
   changes have a spec to revise or supersede. No UI adds a favorite yet.
   AC-1 and AC-2 gained XCUITests with the AntennaUITests target; AC-3 has core

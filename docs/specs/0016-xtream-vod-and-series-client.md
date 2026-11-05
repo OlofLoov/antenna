@@ -4,6 +4,7 @@
 - Date: 2026-11-03
 - Depends on ADRs: 0003, 0005
 - Platforms: iOS, iPadOS, macOS, tvOS (AntennaCore)
+- User stories: US-18, US-19
 - Builds on spec 0003 (Xtream live client, decoding rules). Extends `XtreamClient` with the VOD and series endpoints that 0003 listed as out of scope. Supersedes 0003/AC-7 (401 and 403 become `unauthorized`, AC-11), 0003/AC-8 (`DecodingError` becomes `XtreamError.decoding(path:)`, AC-4a and AC-4b), 0003's `URLError` passthrough (AC-10) and 0003/AC-1, AC-4 and AC-5 for credential encoding (AC-1 and AC-7 of this spec apply to every URL the client builds). 0003's tests for those criteria assert the new behaviour. Resolves 0003's `user_info.auth` question (AC-11). Resolves 0003's row-skipping question (AC-4, AC-6d): `liveStreams()` keeps its `[XtreamLiveStream]` return type but drops a row lacking `name` or with a `stream_id` that is not an integer instead of failing the whole list, superseding 0003's edge case on broken rows. Integers are strict everywhere, live included (AC-4): 0003's `FlexibleInt` no longer truncates. 0003 edge cases on `auth: 0` and on broken rows are superseded by AC-11 and AC-4 respectively. Specs 0006 and 0011 to 0014 are in open PRs, not in this tree; they consume this spec and do not block it.
 - Type names: `XtreamClient.XtreamError` and `XtreamClient.DecodedList` are nested in `XtreamClient` as 0003's error is; this spec writes them without the prefix. `VODItem`, `VODInfo`, `Series`, `SeriesInfo`, `Episode` and `XtreamTitleID` are top-level types in AntennaCore like `XtreamLiveStream`.
 
@@ -36,7 +37,7 @@ Out (explicitly):
 - Stalker.
 - Interpreting `user_info.status` ("Disabled", "Expired"), as in 0003.
 - How callers render cancellation; 0006 and 0011 own that.
-- A logger. AntennaCore has none; the app layer applies 0014/AC-15's redaction when it logs.
+- A logger. AntennaCore has none; the app layer applies 0014's redaction when it logs.
 
 ## User flow
 
@@ -173,7 +174,7 @@ Then the first four yield `host` "h", `kind` `.live`, `.vod`, `.series`, `.episo
 - Episode order across seasons: `episodes` is an object keyed by season and JSON object key order is not preserved, so seasons are visited by numeric key ascending, then non-numeric keys by name. That order decides AC-6b's ties and AC-6d's first occurrence across seasons; within one season's array server order holds. `episode_num` often arrives as a string, so sorting is numeric (AC-6b).
 - Ids are never built from `streamURL`-like fields. `direct_source` is ignored in this spec and URLs are always built per AC-7. Whether some providers require `direct_source` is an open question for a follow-up spec, not this one.
 - Credentials with reserved characters (`&`, `#`, `/`, `?`, `+`, `%`, space): `URLQueryItem` leaves `+` literal, `appending(path:)` splits on `/` and `appending(component:)` encodes it, so the implementation percent-encodes explicitly (AC-1, AC-7).
-- Paging: `vodStreams(categoryID: nil)` and `series(categoryID: nil)` stay available because 0006/AC-10a counts movies and series from them.
+- Paging: `vodStreams(categoryID: nil)` and `series(categoryID: nil)` stay available because 0006 counts movies and series from them.
 
 ## Test plan
 
@@ -208,5 +209,5 @@ Fixtures under `Tests/AntennaCoreTests/Fixtures/Xtream/` for every endpoint, inc
 
 ## Open questions
 
-- Should `vodStreams(categoryID: nil)` page through categories for providers whose unfiltered list exceeds tens of megabytes? Any resolution must keep an unfiltered count path for 0006/AC-10a.
+- Should `vodStreams(categoryID: nil)` page through categories for providers whose unfiltered list exceeds tens of megabytes? Any resolution must keep an unfiltered count path for 0006.
 - Do some providers require `direct_source` instead of the `/movie/` and `/series/` shape? Tracked for a follow-up spec; this spec ignores the field.

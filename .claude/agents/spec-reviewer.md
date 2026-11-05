@@ -42,6 +42,12 @@ Check, in this order:
    items the feature cannot work without.
 6. **Platforms.** Behaviour given for one platform when the spec claims
    several.
+7. **Readable by a person.** The owner, not a developer, decides what gets
+   built from this spec. Could someone who has never seen the code tell
+   from the Summary what the feature is and who it is for? Do the
+   criterion titles say what the user gets? Is jargon explained once? Do
+   the named user stories in `docs/product/user-stories.md` match what the
+   spec does?
 
 Do not ask for detail the plan will settle. Do not suggest new lettered
 sub-criteria for edge cases; list the case under Edge cases or leave it to

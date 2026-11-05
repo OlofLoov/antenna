@@ -10,13 +10,17 @@
 #   - The test plan lacks a row for an AC-n, or has a row for one that does
 #     not exist (criteria under "## Dropped" need no row).
 #   - A cross-reference NNNN/AC-n names a criterion the other spec does not
-#     have (when that spec is in the tree).
+#     have, live or dropped (when that spec is in the tree).
+#   - A "User stories:" line names a US-n that docs/product/user-stories.md
+#     does not define.
 #   - A Design section names a board file that does not exist, or lacks a
 #     "Boards:" line.
 # Notes (printed, exit 0):
 #   - More than 12 live criteria: likely implementation detail that belongs
 #     in the plan (see .claude/skills/spec/checklist.md).
-#   - A cross-reference to a spec that is not in the tree.
+#   - A cross-reference to a spec that is not in the tree, or to a criterion
+#     the other spec has dropped.
+#   - No "User stories:" line.
 #   - A "Blocked on" line that says something is not yet written.
 #
 # Usage: scripts/lint-spec.sh [repo-root] [spec-file ...]
@@ -25,6 +29,7 @@ root="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
 shift $(( $# > 0 ? 1 : 0 ))
 specs="$root/docs/specs"
 boards="$root/docs/design/boards"
+stories="$root/docs/product/user-stories.md"
 fail=0
 
 err()  { printf 'lint-spec: %s\n' "$1" >&2; fail=1; }
@@ -66,6 +71,16 @@ for file in "${files[@]}"; do
     "") err "$name: no '- Status:' line" ;;
     *)  err "$name: Status must be a bare lifecycle word, got '$status'" ;;
   esac
+
+  stories_line=$(grep -m1 '^- User stories:' "$file")
+  if [[ -z "$stories_line" ]]; then
+    note "$name: no '- User stories:' line naming the stories in docs/product/user-stories.md"
+  else
+    while read -r us; do
+      [[ -z "$us" ]] && continue
+      grep -qE "^- \*\*$us\*\*" "$stories" || err "$name: names $us, not in docs/product/user-stories.md"
+    done < <(grep -oE 'US-[0-9]+' <<< "$stories_line" | sort -u)
+  fi
 
   if grep -qiE '^- Blocked on.*(not yet written|pending|unwritten)' "$file"; then
     note "$name: Blocked on names something that does not exist yet; the implement skill will refuse this spec until it does"
@@ -121,7 +136,12 @@ for file in "${files[@]}"; do
       note "$name: cites $ref but spec $other is not in the tree"
       continue
     fi
-    grep -qE "^### $ac( |$)" "$target" || err "$name: cites $ref but $(basename "$target") has no $ac"
+    grep -qE "^### $ac( |$)" "$target" && continue
+    if awk '/^## Dropped/ { on = 1; next } /^## / { on = 0 } on' "$target" | grep -qE "^- $ac([ (:,]|$)"; then
+      note "$name: cites $ref, which $(basename "$target") has dropped; cite the spec by number"
+    else
+      err "$name: cites $ref but $(basename "$target") has no $ac"
+    fi
   done < <(grep -oE '\b[0-9]{4}/AC-[0-9]+[a-z]?\b' "$file" | sort -u)
 
   if grep -q '^## Design' "$file"; then
