@@ -133,7 +133,7 @@ final class GuideDecoder {
             throw .malformed
         }
         let guide = SourceGuide(parsed.programmes)
-        guard guide.count > 0 else { throw .empty }
+        guard !guide.programmes.isEmpty else { throw .empty }
         return guide
     }
 
