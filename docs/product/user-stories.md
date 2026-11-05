@@ -23,7 +23,7 @@ renumbered.
 - **The sports fan.** Wants several games at once, a quick way back to live
   after pausing, and catch-up when they miss the start.
 - **The on-the-go viewer.** Watches on iPhone, iPad or Mac, in bed, on a
-  train, at a desk. Expects the same channels, favourites and progress as at
+  train, at a desk. Expects the same channels, favorites and progress as at
   home.
 - **The movie and series watcher.** Uses the provider's on-demand library and
   wants it to feel like a streaming app, not a file list.
@@ -58,7 +58,7 @@ renumbered.
   over the coming days, so I can plan what to watch.
 - **US-11** As a viewer, I want to browse live channels by group on iPhone,
   iPad and Mac, so the phone and computer are as useful as the TV.
-- **US-12** As a viewer, I want my favourite channels together in one list,
+- **US-12** As a viewer, I want my favorite channels together in one list,
   across all my subscriptions and devices.
 - **US-13** As a viewer, I want simple player controls (pause, audio track,
   subtitles, programme info) and a clear message when a stream fails, so I
@@ -95,7 +95,7 @@ renumbered.
 - **US-24** As a user whose guide does not match my channels, I want to pick
   the guide source and fix a channel's match by hand.
 - **US-25** As a family sharing one Apple TV, I want each person's
-  favourites, history and progress kept separate.
+  favorites, history and progress kept separate.
 
 ## Paying
 
