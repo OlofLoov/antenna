@@ -104,7 +104,9 @@ import Testing
 
     #if os(iOS)
         /// Shows `RootView` with `guide` in a window until the returned
-        /// window is hidden.
+        /// window is hidden. A hosting controller outside the app's scene
+        /// never gets a scene phase, so the test sets `.active` the way the
+        /// app's window does at launch.
         private func host(_ guide: AppGuideStore) throws -> UIWindow {
             let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
             let window = UIWindow(windowScene: scene)
@@ -112,7 +114,8 @@ import Testing
                 rootView: RootView()
                     .modelContainer(container)
                     .environment(\.guideStore, guide)
-                    .environment(\.sourceLoader, SourceLoader(session: StubURLProtocol.session())))
+                    .environment(\.sourceLoader, SourceLoader(session: StubURLProtocol.session()))
+                    .environment(\.scenePhase, .active))
             window.makeKeyAndVisible()
             return window
         }
