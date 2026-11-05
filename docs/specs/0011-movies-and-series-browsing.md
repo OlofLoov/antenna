@@ -3,284 +3,189 @@
 - Status: Accepted
 - Date: 2026-11-03
 - Depends on ADRs: 0001, 0002, 0003, 0005
+- Builds on specs: 0010, 0012, 0015, 0016, 0017 (jumping to a position, reporting the position, and leaving movie playback), 0029 (storing and syncing watch progress and My list)
+- Overrides the Movies and Series entries in the sidebar and tab bar of 0010 and the tab list of 0015 (AC-1a).
+- Blocked on: the ADR that 0029 names for storing watch progress and My list.
 - Platforms: iOS, iPadOS, macOS, tvOS
-- Builds on specs 0016 (VOD and series client), 0015 (tvOS shell), 0010 (sidebar and tab bar), 0012 (Search with a preselected chip). Overrides 0010/AC-2 and AC-3 for the Movies and Series entries (AC-1a). Overrides 0015's tab list for Movies and Series (AC-1a).
-- Blocked on: an ADR for `WatchProgressRecord` (`titleID`, `sourceID`, `kind` movie|episode, `seriesID`, `season`, `episode`, `position`, `duration`, `updatedAt`, all optional or defaulted) and `ListEntryRecord` (`titleID`, `sourceID`, `kind` movie|series, `addedAt`) under ADR-0002 rules (AC-3b, AC-4, AC-9b, AC-10, AC-14, AC-16, AC-17; migration is additive, two new models, no change to existing ones); the playback engine spec for `seek(to:)`, `duration`, a position stream and leaving VOD playback (AC-3a, AC-9b, AC-10, AC-16); boards for the states under Not drawn before the implementing PR.
+- User stories: US-18, US-20
+
+## Summary
+
+For people whose IPTV subscription (Xtream, a common provider login) includes movies and series. Once this ships they get a Movies and a Series section laid out like a streaming app: a large banner of new titles, rows for Continue watching, My list, Recently added and each of the provider's categories, and a grid per genre. They can play a title, pick up where they stopped, start the next episode they have not seen, and keep a list of things to watch later. The detail page for a title and the episode picker come in 0026; downloads, outside metadata and playlist-based movies are not part of it.
 
 ## Design
 
-Boards: `docs/design/boards/TV-Movies.dc.html` (tvOS), `docs/design/boards/iPad-Movies.dc.html` (iPadOS, macOS), `docs/design/boards/iPhone-Movies.dc.html` (iOS). The same page scrolled past Recently added is `TV-Movies-Rows.dc.html`, `iPad-Movies-Rows.dc.html` and `iPhone-Movies-Rows.dc.html` in the same folder. The grid (`movies.grid`) is `TV-Movies-Grid.dc.html`, `iPad-Movies-Grid.dc.html` and `iPhone-Movies-Grid.dc.html`. The Series section reuses the Movies boards with series data and the `series.` identifier prefix.
-Design rules that apply: DR-2, DR-3, DR-4, DR-5, DR-9, DR-11, DR-12, DR-13, DR-15. Deviations: DR-2, the hero's Play button is drawn white-filled as the focused element and uses the surface fill unfocused; the focused card shadow is 0 16 pt 40 pt black at 55%; DR-3, the hero eyebrow is accent-coloured on every platform because it is the one label that marks the hero as new; DR-4, outlined badges (hero badges and the card SERIES badge: 17 pt tvOS, 11 pt iPad and Mac, 10 pt iPhone) and the uppercase eyebrow sit up to 2 pt under the caption floor because they are letter-spaced labels, and the tvOS remaining-time label at 16 pt on the 0.72 scrim; DR-15, placeholder cards show only while no source has returned, then per-source loading rows.
-States on the boards: hero with eyebrow, title, metadata, badges, description, Play, More info ("Info" on iPhone), My list, pager dots (tvOS, iPad, Mac; none on iPhone); Continue watching with 16:9 cards, progress, remaining time and "See all"; Recently added row; sidebar (0010/AC-3's sidebar with Search; under Genres: My list, All movies, categories with counts, none highlighted while the rows show); genre chips over the hero and the search button (iPhone; `movies.genres`: All, My list as `movies.genres.myList`, then one chip per category); sort button and search field (iPad, Mac); SERIES badge on the Continue watching series cards (`movies.card.<id>.badge`, outlined, top left of the image, on the same 0.72 scrim as the remaining-time label); My list button checked state (`iPad-Movies.dc.html`: check glyph, label "Remove from my list"; the plus state is on the tvOS and iPhone boards); Movies | Series segmented control on iPhone (`movies.kind`, 44 pt tall in the top bar in place of the title); focused card title in primary bold (`TV-Movies.dc.html`, Continue watching). On the Rows boards: My list row (`movies.row.myList`, header "<n> titles"), one row per provider category (`movies.row.<categoryName slug>`, header is the category name and "<n> titles"), and on tvOS the Genres row of 64 pt chips after the last category row (`movies.genres`: My list, then one chip per category; none selected while the rows show), with focus on the first My list poster. All movies, genre, My list and Continue watching grids share one board per platform (`TV-Movies-Grid.dc.html`, `iPad-Movies-Grid.dc.html`, `iPhone-Movies-Grid.dc.html`); the Continue watching grid uses 16:9 cards. On the Grid boards: header is the list name and "<n> titles" in the row header style, 2:3 posters at the row card size, 6 per row on tvOS with the first card focused, 5 on iPad and Mac, 3 on iPhone; tvOS draws a genre grid as a pushed screen under the tab bar with no chip highlighted; iPad and Mac draw All movies in Title sort with the sidebar entry on the 0.12 surface and the sort menu reading "Title"; iPhone draws a genre grid with the hero and chips in place, the genre chip white-filled and the grid in place of the rows.
-Not drawn, with the text style each uses: per-source loading rows and placeholders (the AC-13a text is the measurement); empty (`movies.empty`): title at body size, muted detail; error (`movies.error`, `movies.retry`): title at body size, muted detail, Retry is the hero secondary button: surface 0.14, 44 pt; 64 pt on tvOS; banner: full width under the top bar or toolbar, surface 0.08, radius 12, body text with a trailing Dismiss button that is focusable on tvOS; no board needed; alert: system alert; card context menu: system context menu with the single item `menu.toggleList`; `movies.hero.info` renders at 40% opacity and is not focusable while disabled.
+Boards: `docs/design/boards/TV-Movies.dc.html`, `docs/design/boards/iPad-Movies.dc.html`, `docs/design/boards/iPhone-Movies.dc.html`, `docs/design/boards/TV-Movies-Rows.dc.html`, `docs/design/boards/iPad-Movies-Rows.dc.html`, `docs/design/boards/iPhone-Movies-Rows.dc.html`, `docs/design/boards/TV-Movies-Grid.dc.html`, `docs/design/boards/iPad-Movies-Grid.dc.html`, `docs/design/boards/iPhone-Movies-Grid.dc.html`. The Series section reuses the Movies boards with series data.
+Design rules that apply: DR-2, DR-3, DR-4, DR-5, DR-9, DR-11, DR-12, DR-13, DR-15.
+Not drawn: loading rows per source, empty, error, banner, alert, the poster menu, and the More info button that does nothing yet.
+
+Layout, sizes, states and identifiers come from the boards and are settled in the implementation plan, not here.
 
 ## Problem
 
-Xtream providers ship thousands of movies and series next to live TV, and TiviMate users call its VOD "not really very good": a flat list. People know how Netflix and Disney+ present a catalogue. Antenna has no VOD screen at all.
+Xtream providers ship thousands of movies and series next to live TV. TiviMate shows them as a flat list, and its users call its movie section "not really very good". People know how Netflix and Disney+ present a catalogue, and Antenna has no movie screen at all.
 
 ## Scope
 
 In:
-- Movies and Series sections, present when an Xtream source exists. On iPhone the Movies tab carries a Movies | Series segmented control (`movies.kind`); the iPhone tab bar never lists Series.
-- Hero with the newest titles, rotating.
-- Continue watching (movies and series together), My list (current kind), Recently added, one row per provider category.
-- Genres are the provider's VOD or series categories. Genre filter to a grid: sidebar (iPad, Mac), chips (iPhone), a Genres row of chips after the category rows (tvOS).
-- Sort menu on iPad and Mac; tvOS and iPhone are always Recently added.
-- Play from the hero and cards; resume; next unwatched episode for series.
-- "Add to my list" / "Remove from my list" on the hero and through a card context menu.
-- Position reporting while a VOD item plays.
-- Section search entry opening 0012 with the kind's chip preselected (AC-19).
-- Poster fallback.
-- Loading, empty, error, banner and alert states.
-- Accessibility identifiers with prefix `movies.` (Movies) and `series.` (Series), same element names.
+- Movies and Series sections whenever an Xtream source exists. On iPhone the Movies tab has a Movies | Series switch, and Series never gets its own tab.
+- A banner at the top that cycles through the newest titles.
+- Rows: Continue watching (movies and series together), My list, Recently added, and one row per provider category.
+- Genres, which are the provider's categories, open a grid: from the sidebar on iPad and Mac, chips on iPhone, a row of chips on Apple TV. All movies and Continue watching's See all open the same grid.
+- Sorting by title or year on iPad and Mac. Apple TV and iPhone always show newest first.
+- Playing from the banner and from posters, resuming, and the next unseen episode for a series.
+- Adding to and removing from My list, on the banner and from a poster's menu.
+- Saving the position while a movie or episode plays.
+- A search button that opens Search (0012) set to movies or series.
+- More info shows on the banner but does nothing until 0026.
+- A stand-in for missing posters, and what the screen shows while loading, empty, failed or partly failed.
 
 Out (explicitly):
-- Title detail screen (More info). The button is present and disabled until that spec exists.
-- Episode picker and series detail.
-- M3U playlists as a VOD source.
-- Metadata from third-party databases.
+- The title detail page, episode picker and series page (0026).
+- Movies from M3U playlists.
+- Ratings or artwork from outside databases.
 - Downloads.
-- Player UI for VOD beyond starting at a position; leaving VOD playback returns to the section with focus on the card that started it (playback spec).
-- Parental controls and hidden categories.
-- Caching the catalogue across launches (follow-up; offline therefore yields AC-13c).
+- Player controls for movies beyond starting at a position (0017, 0018).
+- Parental controls and hiding categories.
+- Keeping the catalogue between launches. Offline, the section shows its error message.
 
 ## User flow
 
-tvOS:
-1. From the tab bar the user selects Movies. The hero fills the top. Dots show up to four hero titles rotating every eight seconds while nothing inside the hero has focus. Swiping left from Play or right from My list moves to the adjacent hero title and resets the timer; swipes between the three buttons move focus only. Dots are not focusable.
-2. Below: Continue watching (if any), My list (if any), Recently added, one row per category, then a Genres row of chips. Rows scroll horizontally; the page scrolls vertically.
-3. Focus on a card lifts it with the white ring. Select plays a movie or the next unwatched episode. Long press opens the context menu.
-4. Series shows the same layout with series data.
+Apple TV:
+1. The user picks Movies in the tab bar. The banner fills the top and moves through up to four new titles while nothing in it is focused; swiping past its buttons pages it by hand.
+2. Below: Continue watching, My list, Recently added, a row per category, then a row of genre chips.
+3. Selecting a poster plays the movie, or the next episode not yet watched. A long press opens the poster's menu.
+4. Series looks the same with series.
 
-iPadOS, macOS:
-1. Movies in the sidebar shows the toolbar (title, search field, sort menu), the hero card, and the rows. Under the Genres header the sidebar lists My list, All movies and one entry per category with counts. Selecting the Movies section entry again returns from a grid to the rows.
+iPad and Mac:
+1. Movies in the sidebar shows a toolbar with search and sort, the banner and the rows. Under Genres the sidebar lists My list, All movies and each category with its count.
 
-iOS:
-1. The Movies tab shows the Movies | Series control, a tall portrait hero with genre chips laid over the art and the copy on a scrim at its foot (no dots, no description, "Info" button), then the rows. Swiping horizontally on the hero moves between titles.
+iPhone:
+1. The Movies tab shows the Movies | Series switch, a tall banner with genre chips over the artwork, then the rows. Swiping the banner pages it.
 
 ## Acceptance criteria
 
-Each criterion is testable in isolation and has a stable id. Do not renumber.
+### AC-1a Movies and Series appear when your provider has them
+Given the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet
+When the user looks at the tab bar or sidebar
+Then Movies and Series are listed (on iPhone, Movies with its Movies | Series switch); with no Xtream source neither appears.
 
-### AC-1a Sections absent without an Xtream source
-Given no Xtream `SourceRecord`
-When navigation is rendered
-Then Movies and Series are absent from the tvOS tab bar and the sidebar and Movies from the iPhone tab bar.
+### AC-2a New titles up front
+Given the provider's movies have dates they were added
+When the user opens Movies
+Then the banner shows the newest title with its name, category, year, length and description, moves through the four newest by itself while the user is not interacting with it, and can be paged by hand.
 
-### AC-1b Sections present with an Xtream source
-Given at least one Xtream `SourceRecord`, with or without a credential or a VOD response
-When navigation is rendered
-Then they are present, the iPhone Movies tab shows `movies.kind`, and the body shows the AC-13 state.
+### AC-3b Keep a list for later
+Given a title that is not in My list
+When the user adds it with the banner's My list button or from the poster's menu
+Then the button and menu offer to remove it instead, and the My list row appears or gains the title, latest additions first; removing it undoes both.
 
-### AC-2a Hero selection and rotation
-Given VOD items, some with nil `added`
-When the Movies section is shown
-Then the hero shows the item with the latest `added`; the dots count min(4, items) on tvOS, iPad and Mac; the hero advances through the four newest every eight seconds on the injected clock while no element inside the hero has focus (tvOS), is being touched (iOS, iPadOS) or has the pointer over it (macOS); when fewer than four items have an `added` date the candidates are filled in provider order; with Reduce Motion on the hero never auto-advances and changes without animation.
+### AC-4 Continue watching
+Given the user has stopped movies and episodes part-way through
+When the user opens Movies or Series
+Then Continue watching lists them together, most recent first, each with a progress bar and the minutes left (movie) or the season and episode (series); a movie watched to the end leaves the row, and a series whose episode was finished shows "Next episode" until no unwatched episode is left; with nothing in progress the row is not shown.
 
-### AC-2b Hero metadata line
-Given a hero title
-When rendered
-Then the hero shows name, eyebrow and the three buttons at once; the metadata line, badges and description appear when `VODInfo` arrives; on failure they stay absent. The eyebrow reads "Recently added · <category>", the line shows the year, and the duration as "<h> h <mm> min" ("2 h 08 min") or "<m> min" under an hour, omitting a missing part.
+### AC-6 Rows in a predictable order
+Given the provider's movies and categories
+When the user opens Movies
+Then after Continue watching and My list come Recently added, newest first, and one row per category that has titles, in the provider's order, each headed with its name and number of titles.
 
-### AC-2c Hero badges
-Given a hero title with `VODInfo`
-When rendered
-Then "4K" appears when `name` contains "2160p", "4K" or "UHD" case-insensitively, and the age badge appears only when `ageRating` is one of: digits 0 to 21, "U", "PG", "12", "12A", "15", "18", "R18", "G", "PG-13", "R", "NC-17", "TV-Y", "TV-Y7", "TV-G", "TV-PG", "TV-14", "TV-MA"; anything else shows no age badge.
+### AC-7 Browse a genre or sort the lot
+Given the rows are showing
+When the user picks a genre, My list, All movies, or See all on Continue watching, or on iPad and Mac picks Title or Year in the sort menu
+Then a poster grid of those titles in the chosen order takes the rows' place with the count above it; on Apple TV it opens as its own screen that Menu closes; All (iPhone), the section in the sidebar (iPad, Mac) or "Recently added" in the sort menu brings the rows back.
 
-### AC-2d Hero manual paging
-Given the hero on title k of n
-When the user swipes left from Play or right from My List (tvOS), swipes on the hero (iOS, iPadOS), or clicks a dot (iPadOS pointer, macOS)
-Then title k±1 shows, wrapping, and the eight-second timer restarts.
+### AC-9b Play a series from the next episode
+Given a series poster
+When the user selects it
+Then the poster shows it is working while the episode list loads, then the first episode the user has not finished starts.
 
-### AC-3a Hero Play
-Given the hero for a movie
-When the user activates `movies.hero.play`
-Then playback starts per AC-10a.
+### AC-10a Resume where you left off
+Given a movie the user stopped part-way through
+When the user plays it from the banner, a poster, My list or a search result
+Then it starts within five seconds of where they stopped; a movie barely started or already finished starts from the beginning.
 
-### AC-3b Hero My list
-Given the hero for a title not in My list
-When the user activates `movies.hero.myList`
-Then a `ListEntryRecord` for the title id and `sourceID` is inserted, the button shows the check state, and the My list row appears or gains the title; activating again removes every matching record and reverses both.
+### AC-13c When sources fail
+Given at least one Xtream source failed to load
+When the user opens the section
+Then titles from the other sources still show under a banner naming each failed source, which the user can dismiss; when no source has titles, "Could not load movies" with a Retry that asks only the failed sources again takes their place.
 
-### AC-3c More info
-Given the hero
-When rendered
-Then `movies.hero.info` is present and disabled.
+### AC-15b Series work the same way
+Given the provider has series
+When the user opens Series
+Then everything above holds for series, ordered by when each series last changed, with the banner showing the number of seasons instead of a length.
 
-### AC-4 Continue watching row
-Given `WatchProgressRecord`s with position p where 2% ≤ p < 95% of a known duration
-When the Movies or Series section is shown
-Then `movies.row.continueWatching` lists movies and series together as 16:9 cards ordered by `updatedAt` descending, each with a progress bar along the bottom edge and "<n> min left" rounded up (movies; top right on the image on tvOS, after the title with " · " elsewhere) or "S<season> E<episode>" (series); `movies.row.continueWatching.seeAll` opens the full grid; records with nil or zero duration are omitted; the row is absent when empty.
+### AC-16 Your place is saved as you watch
+Given a movie or episode is playing
+When 30 seconds pass, or the user pauses or stops, the app goes to the background, or the title ends
+Then the position is saved, and Continue watching and Resume show it from then on.
 
-### AC-5 Recently added row
-Given VOD items
-When the Movies section is shown
-Then `movies.row.recentlyAdded` lists the 50 items with the latest `added` descending, items with nil `added` after dated ones in provider order, and the header count is the number of items added in the last 30 days on the injected clock.
+### AC-19 Search from the section
+Given the Movies or Series section on iPhone, iPad or Mac
+When the user taps the search button (iPhone) or types in the toolbar's search field (iPad, Mac)
+Then Search opens set to movies or series with the field ready for typing and any text already typed carried over; Apple TV has no search button here and uses its Search tab (0015).
 
-### AC-6 Category rows
-Given VOD categories in provider order
-When the Movies section is shown
-Then one row per non-empty category follows in that order (`movies.row.<categoryName slug>`), titled with the category name and "<n> titles", posters in the provider's order; items with nil `categoryID` appear only in Recently added and the All grid.
+## Edge cases
 
-### AC-7 Genre filter
-Given the sidebar genre list, the iPhone chips or the tvOS Genres row
-When the user selects a genre
-Then the content area shows a poster grid of that category in the current sort with the count in the header; the sidebar entry takes the 0.12 surface (iPad, Mac), the chip takes the white fill (iPhone), and on tvOS the grid is a pushed screen with Menu returning to the rows and no chip highlighted; on iPhone the hero and chips stay in place and the grid replaces the rows below; All (iPhone) or the section entry (iPad, Mac) restores the rows and clears the selection.
-
-### AC-8 Poster fallback
-Given a title whose poster URL is nil or fails to load
-When its card is rendered
-Then the card shows the title text centred on the logo placeholder `#26344A`, never an empty frame.
-
-### AC-9a Series badge
-Given a series card in the Continue watching row or a search result
-When rendered
-Then `movies.card.<id>.badge` reads "SERIES"; poster cards in the Series section carry no badge.
-
-### AC-9b Series play
-Given a series card
-When selected
-Then `seriesInfo(seriesID:)` is requested and the card shows an activity indicator until it returns; then the first episode in 0016/AC-6 order whose saved position is below 95% (no record counts as 0%) plays per AC-10a; with zero episodes `movies.alert` reads "No episodes available"; on failure `movies.alert` reads "Could not load episodes" with Retry.
-
-### AC-10a Resume
-Given a movie whose last saved position is 42%
-When it is played from the hero, a card, My list or a search result
-Then the engine receives `seek(to:)` with the saved position before the first frame, and the first reported position is within 5 s of media time of it; a saved position at or above 95% or below 2% starts from zero.
-
-### AC-10b Completion
-Given a saved position at or above 95%
-When Continue watching is built
-Then a movie is omitted; a series appears as one card for its record with the latest `updatedAt`; when that record is below 95% the card shows its S/E and progress, otherwise it shows "Next episode" with a full bar and AC-9b resolves the episode on select; the series is omitted only after AC-9b finds no episode below 95%.
-
-### AC-11 tvOS focus
-Given a card on tvOS
-When it receives focus
-Then it shows the 5 pt white ring and the 0 16 pt 40 pt black 55% shadow, the row scrolls so the card is fully visible, and a card with a caption (Continue watching) shows it in primary bold.
-
-### AC-12 Sort menu on iPad and Mac
-Given the toolbar's sort menu with default "Recently added" and the rows showing
-When the user picks Title or Year
-Then the rows below the hero are replaced by an "All movies" grid with the count, sorted A to Z or by year descending; picking "Recently added" restores the rows; the sidebar's All movies entry shows the same grid in the current sort; the sort also orders the AC-7 grid; while the rows are shown no Genres entry is highlighted.
-
-### AC-13a Loading
-Given no source has returned a VOD list
-When the section is shown
-Then `movies.loading` is present, the hero area and three row areas show surface-0.06 rectangles at the card sizes, and once any source returns its rows render and `movies.loading.<sourceId>` is a row header reading "<name>: loading…" at section-header size with the count slot muted.
-
-### AC-13b Empty
-Given every Xtream source with a credential loaded zero items and none is still loading
-When the section is shown
-Then `movies.empty` reads "Nothing here yet" with one line per source "<name>: no movies" ("no series" in the Series section).
-
-### AC-13c Every source failed
-Given every source failed
-When the section is shown
-Then `movies.error` reads "Could not load movies" ("Could not load series" in the Series section), or "You're offline. Connect to the internet and try again." when every failure is a `URLError` of the 0006/AC-8 set, with `movies.retry` re-requesting only the failed sources.
-
-### AC-13d Partial failure
-Given one source failed and another loaded
-When the section is shown
-Then the loaded rows render and `movies.banner` reads "Could not load <name>" (comma-joined), dismissible, not shown again until the next load.
-
-### AC-13e Credential missing
-Given an Xtream source whose Keychain item is absent
-When the section is shown
-Then it contributes no titles (0004/AC-10), is listed in `movies.empty`, `movies.error` or, when other sources loaded, `movies.banner` as "<name>: waiting for its login to sync from iCloud" (same copy as 0010/AC-18), and is re-requested when the section appears and when the app returns to the foreground.
-
-### AC-14 My list row
-Given at least one `ListEntryRecord` of the section's kind
-When the section is shown
-Then `movies.row.myList` follows Continue watching with the current kind's titles ordered by `addedAt` descending, header "<n> titles"; `movies.genres.myList` (tvOS Genres chip, sidebar entry, and a My list chip after All on iPhone) opens the full grid.
-
-### AC-15a Series hero
-Given a series with `SeriesInfo` loaded
-When the Series hero is rendered
-Then the hero is chosen by `lastModified` per AC-2a, the eyebrow reads "Recently added · <category>", the line shows the year and "<n> seasons" from `seasonCount`, the description from `plot`, and no 4K or age badge.
-
-### AC-15b Series rows
-Given series data
-When the Series section is shown
-Then Recently added orders by `lastModified` with the AC-5 rules, and category rows follow AC-6 over series categories; every AC in this spec holds in the Series section with the `series.` prefix.
-
-### AC-16 Position reporting
-Given a VOD item playing
-When 30 seconds elapse on the injected clock, or playback pauses, stops, the scene becomes inactive, or the item ends
-Then the local `WatchProgressRecord` whose `titleID` and `sourceID` match is updated in place (inserted if none) with position, duration and `updatedAt`; when several records match (CloudKit merge) the one with the latest `updatedAt` is read and the rest are deleted on the next write.
-
-### AC-17 Card list toggle
-Given a card
-When the user opens the card menu (long press on tvOS, iOS, iPadOS; secondary click on macOS) and activates `movies.card.<id>.menu.toggleList`
-Then a `ListEntryRecord` is inserted or every matching one deleted, the item's label flips between "Add to my list" and "Remove from my list", the My list row updates, and `movies.hero.myList` updates when the card is the hero title.
-
-### AC-18a Large catalogue, first paint
-Given 20 000 items in 400 categories already received
-When the section is shown
-Then the hero and first three rows are on screen within two seconds on Apple TV 4K (3rd generation) and iPhone 15 (manual).
-
-### AC-18b Poster cache bounds
-Given the poster cache
-When it exceeds 50 MB in memory or 500 MB on disk
-Then it evicts to below those bounds (integration).
-
-### AC-19 Section search
-Given the Movies or Series section
-When the user activates `movies.search` or `series.search`
-Then on iPhone `movies.search` is the top-bar button; tapping it opens Search with the kind's chip preselected (0012/AC-10) and the field focused. On iPad and Mac `movies.search` is the toolbar field; the first character typed or Return opens Search with that text as the query and the chip preselected. tvOS has no section search; the Search tab (0015) opens with no chip preselected.
-
-## Edge cases and failure modes
-
-- Two Xtream sources: rows merge by category name with source `sortOrder` as tiebreak; the hero picks across sources.
-- Thousands of categories: rows render lazily; only visible rows load posters; decoding runs off the main actor.
-- Records store title ids and `sourceID` only, never URLs. The poster cache keys on a hash of the URL and the on-disk entry never contains the URL string. Playable URLs are built on demand from the Keychain credential and are not logged (ADR-0003).
-- A `WatchProgressRecord` or `ListEntryRecord` whose title is not in the loaded set is neither listed nor counted and is not deleted (as 0013/AC-8).
-- A title in both the VOD and series lists: shown once per section.
-- A position saved elsewhere arrives in the local store: Continue watching updates within five seconds of the store change (integration test); device sync is checked manually.
-- Rows missing `name` or `stream_id` are skipped per 0016/AC-4.
-- (playback spec) Exiting VOD playback (Menu on tvOS, done elsewhere) returns to the section with focus on the card that started it; the last live channel is re-tuned when the user next selects Live (0015/AC-4's "no tune" does not apply after VOD).
-- VoiceOver: a card reads title, year and "in progress, n minutes left" when applicable.
+- With Reduce Motion on, the banner never moves by itself. Paging wraps at either end.
+- A series with no episodes says "No episodes available"; if the list fails to load, "Could not load episodes" with Retry.
+- Offline, the failure message says so.
+- When every source answered with no titles, the section says "Nothing here yet" with a line per source.
+- A source whose login has not arrived from iCloud is named as waiting for it, and is tried again when the section opens and when the app returns to the foreground.
+- A position or My list change from another device shows in the open section without reopening it.
+- Two Xtream sources: their rows merge by category name, and the banner picks from both.
+- Thousands of categories: rows load as they scroll into view, and only visible rows fetch posters.
+- A missing or broken poster shows the title's name on a plain tile, never an empty frame.
+- A title the provider lists as both a movie and a series shows once in each section.
+- A saved position or list entry for a title that is not loaded is not shown or counted, and is kept.
+- Provider entries without a name or id are skipped, as in 0016.
+- Leaving a movie returns to the poster that started it; the last live channel starts again the next time the user opens Live.
+- VoiceOver reads a poster as title, year and, when in progress, the minutes left.
 
 ## Test plan
 
-Row building, hero selection, continue-watching filtering, next-episode selection, badge rules and sort are pure functions in AntennaCore over 0016's fixtures. Records need the ADR's models and an in-memory `ModelContainer`. Identifiers (Movies; Series uses `series.`): `movies.kind`, `movies.hero`, `movies.hero.play`, `movies.hero.info`, `movies.hero.myList`, `movies.hero.dots`, `movies.row.continueWatching`, `movies.row.continueWatching.seeAll`, `movies.row.myList`, `movies.row.recentlyAdded`, `movies.row.<categoryName slug>`, `movies.card.<id>`, `movies.card.<id>.badge`, `movies.card.<id>.menu.toggleList`, `movies.genres` (the container on every platform: tvOS Genres row, sidebar list, iPhone chips), `movies.genres.<categoryID>`, `movies.genres.myList`, `movies.grid`, `movies.sort`, `movies.search`, `movies.loading`, `movies.loading.<sourceId>`, `movies.empty`, `movies.error`, `movies.retry`, `movies.banner`, `movies.alert`.
-
-| Criterion | Layer | Test |
-|-----------|-------|------|
-| AC-1a | ui (three layouts) | TBD |
-| AC-1b | ui (three layouts) | TBD |
-| AC-2a | core (selection) + ui (injected clock) | TBD |
-| AC-2b | core (formatting) + ui (stubbed info) | TBD |
-| AC-2c | core | TBD |
-| AC-2d | ui (three layouts, `movies.hero.dots`, injected clock) | TBD |
-| AC-3a | ui + fake engine | TBD |
-| AC-3b | integration + ui | TBD |
-| AC-3c | ui | TBD |
-| AC-4 | core + integration | TBD |
-| AC-5 | core | TBD |
-| AC-6 | core | TBD |
-| AC-7 | ui (three layouts) | TBD |
-| AC-8 | ui | TBD |
-| AC-9a | ui | TBD |
-| AC-9b | core (next episode) + ui (stubbed client) | TBD |
-| AC-10a | integration (fake engine seek) | TBD |
-| AC-10b | core | TBD |
-| AC-11 | ui (tvOS) | TBD |
-| AC-12 | ui (iPad) | TBD |
-| AC-13a | ui (stubbed client) | TBD |
-| AC-13b | ui | TBD |
-| AC-13c | ui (stubbed failures per code) | TBD |
-| AC-13d | ui | TBD |
-| AC-13e | ui (fake credential store) | TBD |
-| AC-14 | integration + ui | TBD |
-| AC-15a | core + ui | TBD |
-| AC-15b | core + ui | TBD |
-| AC-16 | integration (fake engine position stream, injected clock) | TBD |
-| AC-17 | ui | TBD |
-| AC-18a | device | manual |
-| AC-18b | integration | TBD |
-| AC-19 | ui | TBD |
+| Criterion | Layer |
+|-----------|-------|
+| AC-1a | ui |
+| AC-2a | core + ui |
+| AC-3b | integration + ui |
+| AC-4 | core + integration |
+| AC-6 | core |
+| AC-7 | ui |
+| AC-9b | core + ui |
+| AC-10a | integration |
+| AC-13c | ui |
+| AC-15b | core + ui |
+| AC-16 | integration |
+| AC-19 | ui |
 
 ## Open questions
 
-- ADR: `WatchProgressRecord` and `ListEntryRecord` in SwiftData with CloudKit under ADR-0002 rules, versus `NSUbiquitousKeyValueStore` with its 1 MB cap.
-- Should Series get its own boards (series hero with season count) rather than reusing the Movies boards?
-- Hero rotation interval fixed at eight seconds, or a setting?
+- Where watch progress and My list are stored is 0029's ADR; no criterion here changes with it.
+- Should Series get its own boards instead of reusing the Movies boards? Can be decided in the plan.
+- Decided: the banner rotates every eight seconds; there is no setting for it.
+
+## Notes for the plan
+
+- Storage, duplicates and merge rules as 0029. Records hold title ids and `sourceID`, never URLs; removing from My list deletes every matching record.
+- The poster cache keys on a hash of the URL and its disk entries never contain the URL. Playable URLs are built on demand from the Keychain credential and never logged (ADR-0003).
+- In progress means 2% to under 95% of a known duration; records with no duration are left out. Resume seeks before the first frame. Series play picks the first episode in 0016's order below 95%.
+- Banner: four newest by `added`, eight seconds, paused while focus, touch or pointer is inside, filled from provider order when fewer than four have dates. Length reads "2 h 08 min" or "<m> min". The 4K badge comes from "2160p", "4K" or "UHD" in the name; the age badge shows only for a known rating list (see the dropped AC-2c in git history).
+- Recently added holds 50 items and its header counts items added in the last 30 days. Undated items follow dated ones; items with no category appear only in Recently added and the All grid.
+- Budgets from the dropped AC-18a and AC-18b: with 20 000 items in 400 categories the banner and three rows are on screen within two seconds on Apple TV 4K (3rd generation) and iPhone 15; the poster cache stays under 50 MB in memory and 500 MB on disk.
+- Board deviations: DR-2 for the banner's Play button and the focused poster shadow, DR-3 for the accent eyebrow, DR-4 for outlined badges and the eyebrow up to 2 pt under the caption floor, DR-15 for placeholder posters only until a source answers.
+- Identifier prefixes are `movies.` and `series.` with the same element names.
+- A position saved on another device updates Continue watching within five seconds of the local store change.
+
+## Dropped
+
+- Moved to the implementation plan: AC-2c, AC-3c, AC-8, AC-9a, AC-11, AC-13a, AC-18a, AC-18b. 0026 now owns the More info page; the poster fallback stays as an edge case.
+- Merged into AC-1a: AC-1b.
+- Merged into AC-2a: AC-2b, AC-2d.
+- Merged into AC-3b: AC-14, AC-17.
+- Merged into AC-4: AC-10b.
+- Merged into AC-6: AC-5.
+- Merged into AC-7: AC-12.
+- Merged into AC-10a: AC-3a.
+- Merged into AC-13c: AC-13b, AC-13d, AC-13e.
+- Merged into AC-15b: AC-15a.
