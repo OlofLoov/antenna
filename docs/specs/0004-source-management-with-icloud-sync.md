@@ -166,15 +166,15 @@ Then `ChannelListModel.channels` holds exactly the 2 M3U channels and no request
 
 - Any load that yields zero channels in total (offline, Stalker-only, empty playlist) leaves the list on the loading indicator and retries on each appearance, because no error is rendered.
 - Offline at launch: every source fails or yields nothing; the list stays on the loading indicator and `ChannelListModel.error` holds the last transport error.
-- An M3U URL answering non-2xx, or an HTML page, parses to zero channels and records no error. Only transport errors fail an M3U load; the Xtream path also fails on a non-2xx status.
+- An M3U URL answering non-2xx fails that source like a transport error (AC-11, AC-15). An HTML page answering 200 still parses to zero channels and records no error.
 - Slow source: the whole list waits for the slowest source. Sources load sequentially.
 - A source with tens of thousands of channels is downloaded, parsed and held in memory before anything renders.
-- Adding a second source after the list has loaded shows nothing new until the next launch.
-- Deleting a source leaves its channels listed and playable until relaunch. Deleting every source shows the AC-8 empty state; adding a source afterwards shows the deleted sources' channels again, because the model is not cleared.
+- Adding, removing or reordering a source reloads the list.
+- Deleting a source reloads the list without its channels. Deleting every source clears the list and shows the AC-8 empty state.
 - Adding the same source twice is allowed (no dedup, ADR-0002). Both load, and channels with identical ids appear twice in one `List`; SwiftUI identity for those rows is undefined.
-- Known defect: an Xtream source whose categories contain duplicate `category_id` values crashes the app (precondition failure in `Dictionary(uniqueKeysWithValues:)` in `SourceLoader`). AC-11 does not hold for this failure mode.
+- An Xtream source whose categories repeat a `category_id` loads; the first name for that id is used.
 - Sync lag: a `SourceRecord` can arrive before its Keychain item (AC-10 covers the silent case).
-- Device B whose Channels list has already loaded does not show a synced source's channels until relaunch. If B had no sources, the empty state switches to loading and the source loads.
+- A source synced to device B while its Channels list is open reloads the list there.
 - tvOS: synchronizable Keychain items do not reach Apple TV (pending the ADR-0003 amendment named in 0006 and 0023), so a synced Xtream or Stalker source is listed in Settings and contributes zero channels there permanently (AC-10).
 - A `SourceRecord` with `url == nil`, possible after a partial CloudKit sync, is silently skipped by the loader and shows an empty URL line in Settings.
 - An unknown `kindRaw`, from a newer app version, falls back to `.m3u` and is fetched as a playlist.
