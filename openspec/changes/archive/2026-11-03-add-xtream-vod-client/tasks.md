@@ -1,0 +1,26 @@
+## 1. Read Xtream movies and series
+
+- [x] 1.1 Request shape
+- [x] 1.2 VOD item fields
+- [x] 1.3 Loose forms
+- [x] 1.4 URL fields
+- [x] 1.5 Unparseable added date
+- [x] 1.6 Broken rows are skipped
+- [x] 1.7 Non-array list body
+- [x] 1.8 Category lists fail whole
+- [x] 1.9 VOD info
+- [x] 1.10 Series row fields
+- [x] 1.11 Episodes flatten
+- [x] 1.12 Episode order
+- [x] 1.13 Season count
+- [x] 1.14 Episode skipping and title fallback
+- [x] 1.15 Empty episodes shapes
+- [x] 1.16 Playable URLs
+- [x] 1.17 Errors and client values never carry credentials
+- [x] 1.18 Decoding is fast
+- [x] 1.19 Transport failures carry no URL
+- [x] 1.20 Cancellation
+- [x] 1.21 Unauthorized
+- [x] 1.22 Empty list shapes
+- [x] 1.23 Ids are stable
+- [x] 1.24 Title id round trip
