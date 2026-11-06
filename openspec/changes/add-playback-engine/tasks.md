@@ -16,7 +16,7 @@
 
 - [x] 3.1 Map every cause to one reason on both paths, and verify with core, integration and device tests citing `playback-engine/streams-that-cannot-play-fail-with-a-clear-reason`
 - [x] 3.2 Extend address redaction in `guide-data`, use an ephemeral session with no cache or cookies, and verify with core and integration tests citing `playback-engine/passwords-never-leak`
-- [ ] 3.3 Narrow the Apple player check in `scripts/check-rules.sh` and verify it passes
+- [x] 3.3 Narrow the Apple player check in `scripts/check-rules.sh` and verify it passes
 
 ## 4. Pause, seek and lifecycle
 

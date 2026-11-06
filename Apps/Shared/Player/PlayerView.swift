@@ -1,22 +1,33 @@
-import SwiftUI
-import AVKit
 import AntennaCore
+import SwiftUI
 
-/// Thin player screen. Routes to the system player for HLS. The demuxer path
-/// (FFmpeg → VideoToolbox → AVSampleBufferVideoRenderer) is the next engine to
-/// add; until then TS streams also go through AVPlayer so the UI can be exercised.
+/// Plays one channel full screen through the routed engine. Both routes use
+/// Apple's player until the demuxing engine exists. Player controls come with
+/// the player controls change.
 struct PlayerView: View {
     let channel: Channel
-    @State private var player = AVPlayer()
+    @State private var engine = PlayerView.makeEngine()
 
     var body: some View {
-        VideoPlayer(player: player)
+        PlayerSurfaceView(engine: engine)
             .ignoresSafeArea()
             .navigationTitle(channel.name)
-            .onAppear {
-                player.replaceCurrentItem(with: AVPlayerItem(url: channel.streamURL))
-                player.play()
+            .task(id: channel.streamURL) {
+                do {
+                    try await engine.load(channel.streamURL)
+                    await engine.play()
+                } catch {
+                    // The engine reports the reason through its state; this
+                    // screen has no error view yet.
+                }
             }
-            .onDisappear { player.pause() }
+            .onDisappear {
+                Task { await engine.stop() }
+            }
+    }
+
+    private static func makeEngine() -> RoutedEngine {
+        let player = AVPlayerEngine()
+        return RoutedEngine(system: player, demuxer: player)
     }
 }
