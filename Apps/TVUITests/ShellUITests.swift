@@ -265,7 +265,9 @@ extension ShellUITests {
         expectFocus("shell.retry")
         press(.select)
         XCTAssertTrue(element("shell.loading").waitForExistence(timeout: 10))
-        expectFocus("shell.loading")
+        XCTAssertFalse(element("shell.retry").exists)
+        let focusedRow = elements(prefix: "shell.loading.").matching(NSPredicate(format: "hasFocus == true"))
+        expect(focusedRow.firstMatch, "exists == true")
         expect(element("shell.loading.00000000-0000-0000-0000-00000000000A"), "value == 'loading'")
     }
 

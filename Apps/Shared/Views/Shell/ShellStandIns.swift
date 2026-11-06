@@ -71,6 +71,7 @@
     /// channel: a list of loaded channels on the overlay scrim.
     struct ChannelPicker: View {
         let channels: [Channel]
+        let focus: FocusState<ShellFocus?>.Binding
         let pick: (Channel) -> Void
 
         var body: some View {
@@ -82,6 +83,7 @@
                     } label: {
                         ChannelRow(channel: channel)
                     }
+                    .focused(focus, equals: .picker(index))
                     .accessibilityIdentifier("overlay.channel.\(index)")
                 }
                 .frame(width: 700)

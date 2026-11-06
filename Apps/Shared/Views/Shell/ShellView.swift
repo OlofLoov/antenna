@@ -66,7 +66,7 @@
                 if model.dimmed { ShellScrim() }
                 if model.barVisible { bar }
                 if model.pickerOpen {
-                    ChannelPicker(channels: model.channels) { channel in
+                    ChannelPicker(channels: model.channels, focus: $focus) { channel in
                         Task {
                             await model.pick(channel)
                             focus = .picture
@@ -128,7 +128,9 @@
                     // Stays focusable under the raised bar, so swiping down from the
                     // bar lands here and `move` lowers the bar.
                     Button {
-                        if !model.barVisible { model.openPicker() }
+                        guard !model.barVisible else { return }
+                        model.openPicker()
+                        focus = .picker(0)
                     } label: {
                         Color.clear
                     }
@@ -206,7 +208,6 @@
                 }
             }
             .focusSection()
-            .accessibilityIdentifier("shell.tabBar")
         }
 
         // MARK: Input
@@ -214,7 +215,7 @@
         private var barHasFocus: Bool {
             switch focus {
             case .tab, .settings: true
-            case .picture, .liveScreen, .content, nil: false
+            case .picture, .liveScreen, .content, .picker, nil: false
             }
         }
 
@@ -233,7 +234,7 @@
                 switch focus {
                 case .tab, .settings: .bar
                 case .content: .content
-                case .picture, .liveScreen, nil: model.tab == .live ? .picture : .content
+                case .picture, .liveScreen, .picker, nil: model.tab == .live ? .picture : .content
                 }
             Task { focus = await model.menu(from: origin) }
         }
@@ -245,6 +246,8 @@
         private func focusMoved(from old: ShellFocus?, to new: ShellFocus?) {
             switch (old, new) {
             case (.content, .tab(let target)) where target != model.tab && model.tab.isContent:
+                focus = .tab(model.tab)
+            case (.content, .settings) where model.tab.isContent:
                 focus = .tab(model.tab)
             case (.tab, .picture), (.tab, .liveScreen), (.tab, .content), (.settings, .picture), (.settings, .liveScreen),
                 (.settings, .content):

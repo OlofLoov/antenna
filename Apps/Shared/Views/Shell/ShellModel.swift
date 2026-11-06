@@ -22,6 +22,8 @@
         case tab(ShellTab)
         case settings
         case content
+        /// A row of the channel picker that stands in for 0007's overlay.
+        case picker(Int)
     }
 
     /// Where Menu was pressed.
