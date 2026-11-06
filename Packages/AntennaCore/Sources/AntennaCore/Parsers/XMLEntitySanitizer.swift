@@ -12,26 +12,57 @@ import Foundation
 /// unchanged.
 enum XMLEntitySanitizer {
     static func sanitize(_ data: Data) -> Data {
-        guard !data.isEmpty, !startsWithUTF16BOM(data) else { return data }
-        return data.withUnsafeBytes { raw -> Data in
+        var output = Data()
+        let rewritten = sanitize(data, flushingEvery: .max) { output.append(contentsOf: $0) }
+        return rewritten ? output : data
+    }
+
+    /// Writes the rewritten document to `write` in pieces of about
+    /// `chunkSize` bytes, so no second copy of it is held in memory. Returns
+    /// false when the input needs no rewrite or must stay unchanged; the
+    /// caller then uses `data` as it is and ignores anything written.
+    ///
+    /// The input is read in place, so a mapped file is never copied. A
+    /// rewrite that falls on a piece boundary is written whole, in order.
+    static func sanitize(_ data: Data, flushingEvery chunkSize: Int, write: (UnsafeRawBufferPointer) -> Void) -> Bool {
+        guard !data.isEmpty, !startsWithUTF16BOM(data) else { return false }
+        return data.withUnsafeBytes { raw -> Bool in
             let bytes = raw.bindMemory(to: UInt8.self)
-            var output: Data?
+            var pending: [UInt8] = []
+            var rewritten = false
             var copiedUpTo = 0
             var i = 0
 
-            func replace(upTo end: Int, resumeAt resume: Int, with replacement: String) {
-                if output == nil {
-                    output = Data(capacity: bytes.count + bytes.count / 64)
+            func flush() {
+                guard !pending.isEmpty else { return }
+                pending.withUnsafeBytes { write($0) }
+                pending.removeAll(keepingCapacity: true)
+            }
+
+            /// Passes `bytes[from..<to]` on, straight from the input when it
+            /// would not fit in the pending piece.
+            func copy(from: Int, to: Int) {
+                guard from < to else { return }
+                if pending.count + (to - from) > chunkSize {
+                    flush()
+                    write(UnsafeRawBufferPointer(rebasing: raw[from..<to]))
+                } else {
+                    pending.append(contentsOf: bytes[from..<to])
                 }
-                output?.append(UnsafeBufferPointer(rebasing: bytes[copiedUpTo..<end]))
-                output?.append(contentsOf: Array(replacement.utf8))
+            }
+
+            func replace(upTo end: Int, resumeAt resume: Int, with replacement: String) {
+                rewritten = true
+                copy(from: copiedUpTo, to: end)
+                pending.append(contentsOf: replacement.utf8)
+                if pending.count >= chunkSize { flush() }
                 copiedUpTo = resume
             }
 
             while i < bytes.count {
                 switch bytes[i] {
                 case ascii("<"):
-                    guard let next = skipMarkup(bytes, at: i) else { return data }
+                    guard let next = skipMarkup(bytes, at: i) else { return false }
                     i = next
                 case ascii("&"):
                     switch scanReference(bytes, at: i) {
@@ -49,9 +80,10 @@ enum XMLEntitySanitizer {
                 }
             }
 
-            guard var result = output else { return data }
-            result.append(UnsafeBufferPointer(rebasing: bytes[copiedUpTo..<bytes.count]))
-            return result
+            guard rewritten else { return false }
+            copy(from: copiedUpTo, to: bytes.count)
+            flush()
+            return true
         }
     }
 

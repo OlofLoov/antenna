@@ -157,7 +157,8 @@ import Testing
             names = (try? FileManager.default.contentsOfDirectory(atPath: world.directory.path())) ?? []
             return !names.isEmpty
         }
-        #expect(names.allSatisfy { $0 == "\(source.sourceID.uuidString).download" || $0 == "\(source.sourceID.uuidString).xml" })
+        let allowed = ["download", "xml", "parse.xml"].map { "\(source.sourceID.uuidString).\($0)" }
+        #expect(names.allSatisfy(allowed.contains))
         await engine.remove(sourceID: source.sourceID)
         await engine.idle()
     }
