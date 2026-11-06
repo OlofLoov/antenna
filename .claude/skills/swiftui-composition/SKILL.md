@@ -1,6 +1,6 @@
 ---
 name: swiftui-composition
-description: Composition rules for SwiftUI views in Apps/Shared per decision adr-0008. Use when writing or reviewing a screen or component, when a view is growing Bool parameters or #if os branches, when siblings need the same state, or when the user says "component", "compound view", "boolean props", "environment", "variant" or "composition".
+description: Composition rules for SwiftUI views in Apps/Shared. Use when writing or reviewing a screen or component, when a view is growing Bool parameters or #if os branches, when siblings need the same state, or when the user says "component", "compound view", "boolean props", "environment", "variant" or "composition".
 ---
 
 # SwiftUI composition
@@ -8,7 +8,8 @@ description: Composition rules for SwiftUI views in Apps/Shared per decision adr
 Adapted for Swift from Vercel's
 [composition-patterns](https://github.com/vercel-labs/agent-skills/tree/main/skills/composition-patterns)
 skill (MIT). The rules are theirs, the mapping to SwiftUI and the examples
-are ours. The decision is archived as openspec/changes/archive/2026-11-04-adr-0008-compose-ui-from-compound-components; this file is how to follow it.
+are ours. The project context in openspec/config.yaml states the rule as a
+hard constraint; this file is how to follow it.
 
 React to SwiftUI, for readers who know the original:
 
@@ -182,8 +183,8 @@ or about `SearchModel`.
 
 A component never runs a `@Query`, reads a `ModelContext`, hits the network
 or the Keychain. The screen does that and hands values down. The same
-component then works in a preview with fixtures, in a snapshot in CI
-(decision adr-0007), and under a different screen tomorrow.
+component then works in a preview with fixtures, in a snapshot in CI, and
+under a different screen tomorrow.
 
 Before:
 
@@ -276,11 +277,11 @@ PosterRow(titles) { title in
 - `@Bindable` to bind into an `@Observable` model.
 - `.task` and `.task(id:)` for loading. Never `.onAppear { Task { } }`.
 - No `AnyView`. Generics or `@ViewBuilder` instead.
-- No availability checks. Deployment target is 26 (decision adr-0004).
+- No availability checks. Deployment target is 26.
 - Every variant has a `#Preview` with fixture data, deterministic: no
   network, no clock, in-memory `ModelContainer` if a screen needs one. CI
-  renders each preview to a PNG (decision adr-0007), so a variant without a preview
-  is invisible to reviewers.
+  renders each preview to a PNG, so a variant without a preview is invisible
+  to reviewers.
 
 ## Review pass
 

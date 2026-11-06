@@ -1,7 +1,7 @@
 # Architecture
 
-C4 diagrams of Antenna as it is on main. The archived decisions in [openspec/changes/archive](../../openspec/changes/archive)
-record why it looks this way.
+C4 diagrams of Antenna as it is on main. The hard constraints in
+[openspec/config.yaml](../../openspec/config.yaml) say why it looks this way.
 
 ## System context
 
