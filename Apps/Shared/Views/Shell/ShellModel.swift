@@ -419,10 +419,10 @@
                 }
                 guard !Task.isCancelled, tab.isContent else { return }
                 switch await engine.state {
-                case .playing, .loading:
+                case .playing, .loading, .buffering, .reconnecting:
                     await engine.pause()
                     pausedByShell = true
-                case .idle, .paused, .failed:
+                case .idle, .paused, .ended, .failed:
                     break
                 }
             }

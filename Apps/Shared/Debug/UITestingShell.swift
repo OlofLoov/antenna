@@ -128,12 +128,14 @@
                     self.failing = failing
                 }
 
-                func load(_ url: URL) async throws {
+                var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
+
+                func load(_ url: URL, options: PlaybackOptions) async throws {
                     loads += 1
                     lastFile = url.lastPathComponent
                     if failing {
-                        state = .failed("failed")
-                        throw SystemPlaybackEngine.LoadError.failed
+                        state = .failed(.unreadable)
+                        throw PlaybackFailure.unreadable
                     }
                     state = .loading
                 }
@@ -151,6 +153,15 @@
                     state = .idle
                 }
 
+                func seek(to time: Duration) async throws { throw SeekRefusal.live }
+                func selectAudio(_ id: MediaTrack.ID) async {}
+                func selectSubtitle(_ id: MediaTrack.ID?) async {}
+                func states() async -> AsyncStream<PlaybackState> { Broadcast(state).stream() }
+                func presentation() async -> AsyncStream<PresentationInfo?> { Broadcast(PresentationInfo?.none).stream() }
+                func tracks() async -> AsyncStream<TrackList> { Broadcast(TrackList.empty).stream() }
+                func position() async -> AsyncStream<PlaybackPosition> { Broadcast(PlaybackPosition.zero).stream() }
+                func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
+
                 /// `"<state> loads=<n> file=<last file name>"`.
                 var summary: String {
                     let name =
@@ -159,6 +170,9 @@
                         case .loading: "loading"
                         case .playing: "playing"
                         case .paused: "paused"
+                        case .buffering: "buffering"
+                        case .reconnecting: "reconnecting"
+                        case .ended: "ended"
                         case .failed: "failed"
                         }
                     return "\(name) loads=\(loads) file=\(lastFile)"
