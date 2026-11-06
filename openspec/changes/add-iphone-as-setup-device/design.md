@@ -31,7 +31,7 @@ Not drawn yet: the Apple TV hint for a source this card cannot set up, the not-s
 
 ## Board states and copy
 
-`<device>` in every string is "iPhone", "iPad" or "Mac" for the platform the sheet runs on. The boards show the iPhone wording. Some requirement scenarios quote these strings without "your"; the wording below matches the boards. "Signed in to iCloud" means `CKContainer.accountStatus()` reports `.available`, so an Apple ID without iCloud Drive counts as not signed in.
+`<device>` in every string is "iPhone", "iPad" or "Mac" for the platform the sheet runs on. The boards show the iPhone wording. "Signed in to iCloud" means `CKContainer.accountStatus()` reports `.available`, so an Apple ID without iCloud Drive counts as not signed in.
 
 Apple TV:
 

@@ -22,7 +22,7 @@ Not reviewed yet.
 Out of scope:
 - The prices, trial length and the Terms and Privacy addresses, which are set in App Store Connect and the store listing.
 - Moving the Apple TV app onto the shared App Store record.
-- Managing or cancelling the subscription inside the app, and a Settings row showing what was bought.
+- Managing or canceling the subscription inside the app, and a Settings row showing what was bought.
 - Promotional and win-back offers, and price-increase consent.
 - Checking purchases on a server. The app reads them on the device.
 - Onboarding and the Apple TV shell after the paywall.

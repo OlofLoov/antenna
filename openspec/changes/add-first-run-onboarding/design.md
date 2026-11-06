@@ -72,7 +72,7 @@ While Connect runs it is disabled and shows an indeterminate indicator, a second
 
 The loading step is titled "Setting up <source name>".
 
-- Login: "Signed in", with "Account active until <date in the locale's long style>" and " · 1 connection" or " · <n> connections" beneath. `exp_date` is Unix seconds as a number or a numeric string; absent, null, non-numeric or 0 leaves the date out. `max_connections` absent, non-numeric or 0 leaves out the connections and their separator.
+- Login: "Signed in", with "Account active until <date in the locale's long style>" and " · 1 connection" or " · <n> connections" beneath. `exp_date` is Unix seconds as a number or a numeric string; absent, null, non-numeric or 0 leaves the date out. `max_connections` absent, non-numeric or 0 leaves out the connections. The line beneath shows only the parts that exist, joined by " · ": with no date it reads "1 connection" or "<n> connections" with no separator, and with neither part there is no line beneath "Signed in".
 - Playlist (M3U only): "Playlist downloaded" with the host beneath. An M3U source has no login or movies line.
 - Channels: "412 live channels in 18 groups", with the first eight group names and "and <n> more" beneath. Groups are the `channel-catalogue` groups without Favorites and All channels.
 - Movies: "1 240 movies and 86 series" with "Posters and descriptions load as you browse" beneath. After the 20 second cutoff it reads "Movies and series available" and counts as done.

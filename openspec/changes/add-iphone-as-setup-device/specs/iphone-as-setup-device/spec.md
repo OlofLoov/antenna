@@ -7,12 +7,12 @@ Lets the person setting up an Apple TV fill in a source on an iPhone, iPad or Ma
 ## ADDED Requirements
 
 ### Requirement: The Apple TV offers a QR code
-The system SHALL show a "Set up from iPhone" card with a scannable QR code on the Apple TV's setup details step when the TV is signed in to iCloud, in place of the keyboard card.
+The system SHALL show a "Set up from your iPhone" card with a scannable QR code on the Apple TV's setup details step when the TV is signed in to iCloud, in place of the keyboard card.
 
 #### Scenario: Reach the details step
 - **GIVEN** an Apple TV that is signed in to iCloud and on the setup details step
 - **WHEN** the step appears
-- **THEN** a "Set up from iPhone" card shows a scannable QR code for the setup link and a status reading "Waiting for iPhone"
+- **THEN** a "Set up from your iPhone" card shows a scannable QR code for the setup link and a status reading "Waiting for your iPhone"
 - **AND** VoiceOver describes the code as something to scan with an iPhone
 - **AND** the keyboard card is not shown
 
@@ -100,7 +100,7 @@ The system SHALL open a "Set up Apple TV" form on iPhone, iPad or Mac when the u
 #### Scenario: Scan or accept Handoff
 - **GIVEN** Antenna on an iPhone, iPad or Mac, on any screen
 - **WHEN** the user scans the code or accepts the Handoff offer
-- **THEN** a "Set up Apple TV" form opens with the banner "Opened from Apple TV" and onboarding's fields
+- **THEN** a "Set up Apple TV" form opens with the banner "Opened from your Apple TV" and onboarding's fields
 - **AND** the same code arriving again opens nothing new
 
 #### Scenario: A damaged or newer link
@@ -123,12 +123,12 @@ The system SHALL open a "Set up Apple TV" form on iPhone, iPad or Mac when the u
 - **THEN** an empty form opens on their phone and whatever they add lands in their own iCloud
 
 ### Requirement: The iPhone shows the source on its way
-The system SHALL turn the "Set up Apple TV" form into a "Sending to Apple TV" screen when Connect succeeds, which cannot be swiped or escaped away and offers "Continue on iPhone".
+The system SHALL turn the "Set up Apple TV" form into a "Sending to your Apple TV" screen when Connect succeeds, which cannot be swiped or escaped away and offers "Continue on iPhone".
 
 #### Scenario: Connect succeeds
 - **GIVEN** the "Set up Apple TV" form on iPhone, iPad or Mac
 - **WHEN** Connect succeeds
-- **THEN** the form becomes "Sending to Apple TV" with "Saved on this iPhone" done and the Apple TV row in progress
+- **THEN** the form becomes "Sending to your Apple TV" with "Saved on this iPhone" done and the Apple TV row in progress
 - **AND** it cannot be swiped or escaped away, and "Continue on iPhone" leads to onboarding's ready screen
 
 #### Scenario: Offline before Connect
@@ -155,7 +155,7 @@ The system SHALL serve a plain web page for the setup link that says what Antenn
 #### Scenario: Scan without Antenna installed
 - **GIVEN** an iPhone without Antenna installed
 - **WHEN** the camera opens the setup link
-- **THEN** Safari shows a page that says "Antenna sets up Apple TV from iPhone." with one link to the App Store, and no scripts, images or third-party content
+- **THEN** Safari shows a page that says "Antenna sets up your Apple TV from your iPhone." with one link to the App Store, and no scripts, images or third-party content
 
 #### Scenario: Open the link in Safari with Antenna installed
 - **GIVEN** an iPhone with Antenna installed
@@ -168,4 +168,4 @@ The system SHALL update the sending screen to say the source was handed to iClou
 #### Scenario: iCloud confirms
 - **GIVEN** the sending screen, including after it reads "Not sent yet"
 - **WHEN** iCloud confirms the upload
-- **THEN** the Apple TV row reads "Handed to iCloud. Open Antenna on Apple TV." and "Continue on iPhone" becomes the main button
+- **THEN** the Apple TV row reads "Handed to iCloud. Open Antenna on your Apple TV." and "Continue on iPhone" becomes the main button

@@ -34,41 +34,44 @@ Not drawn yet: the launch splash; prices loading; the lapsed paywall with its re
 
 `PaywallCopy` in AntennaCore maps each key to its en text so a core test can scan it. The view exposes the key as its accessibility value in debug builds for the status line, the lapsed note, the Yearly line and the restored note. Prices are always `Product.displayPrice` as given; the prices on the boards are layout samples.
 
-| Key | en text | Where |
-|---|---|---|
-| `title.default` | "Unlock Antenna" | title |
-| `title.lapsed` | "Antenna is locked again" | title after a lapse |
-| `body` | "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." | body |
-| `line.lifetime` | "Pay once. Yours for good." | Lifetime line |
-| `line.renews` | "Renews every year. Cancel any time." | Yearly line, no offer or not eligible |
-| `line.freeTrial` | "First <period> free, then <displayPrice> per year" | Yearly line, free trial |
-| `line.introPrice` | "<offer displayPrice> for <period>, then <displayPrice> per year" | Yearly line, pay up front |
-| `line.introPerPeriod` | "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" | Yearly line, pay as you go |
-| `unit.perYear` | "per year" | Yearly unit, every platform |
-| `unit.oneTime` | "one time" | Lifetime unit, touch platforms only |
-| `price.loading` | "Loading price" | VoiceOver value while prices load |
-| `price.unavailable` | "Price unavailable" | price slot on the lapsed paywall when the App Store does not answer |
-| `legal` | "Yearly renews automatically until cancelled in Settings. Payment is charged to your Apple Account. Terms of Use and Privacy Policy." | legal line; "Terms of Use" and "Privacy Policy" are the links |
-| `status.pending` | "Waiting for approval. Antenna unlocks as soon as the purchase is approved." | status, muted |
-| `status.failed` | "The purchase did not go through. Try again." | status, error |
-| `status.restoreFailed` | "Restore did not go through. Try again." | status, error |
-| `status.nothingFound` | "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." | status, muted |
-| `status.offline` | "You're offline. Connect to the internet and try again." | status, error |
-| `status.notAllowed` | "Purchases are turned off on this device. Check Screen Time, or ask the family organiser." | status, muted |
-| `status.notInStorefront` | "Antenna can't be bought in this App Store region yet." | status, and the unavailable panel body when the products are not sold here |
-| `restored.lifetime` | "Nothing more to pay. Your sources and favourites are where you left them." | restored note, Lifetime |
-| `restored.yearly` | "Renews on <expiresAt, locale long style>. Your sources and favourites are where you left them." | restored note, Yearly |
-| `lapsed.expired` | "Your yearly subscription ended on <date, locale long style>." | lapsed note |
-| `lapsed.revoked` | "The purchase on this Apple Account was refunded or is no longer shared with you." | lapsed note |
-| `unavailable.title` | "Can't reach the App Store" | unavailable panel title |
+| Key | en text | Where | Review |
+|---|---|---|---|
+| `title.default` | "Unlock Antenna" | title |  |
+| `title.lapsed` | "Antenna is locked again" | title after a lapse |  |
+| `body` | "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." | body |  |
+| `line.lifetime` | "Pay once. Yours for good." | Lifetime line |  |
+| `line.renews` | "Renews every year. Cancel any time." | Yearly line, no offer or not eligible |  |
+| `line.freeTrial` | "First <period> free, then <displayPrice> per year" | Yearly line, free trial |  |
+| `line.introPrice` | "<offer displayPrice> for <period>, then <displayPrice> per year" | Yearly line, pay up front |  |
+| `line.introPerPeriod` | "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" | Yearly line, pay as you go |  |
+| `unit.perYear` | "per year" | Yearly unit, every platform |  |
+| `unit.oneTime` | "one time" | Lifetime unit, touch platforms only |  |
+| `price.loading` | "Loading price" | VoiceOver value while prices load |  |
+| `price.unavailable` | "Price unavailable" | price slot on the lapsed paywall when the App Store does not answer |  |
+| `legal` | "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account. Terms of Use and Privacy Policy." | legal line; "Terms of Use" and "Privacy Policy" are the links |  |
+| `status.pending` | "Waiting for approval. Antenna unlocks as soon as the purchase is approved." | status, muted |  |
+| `status.failed` | "The purchase did not go through. Try again." | status, error |  |
+| `status.restoreFailed` | "Restore did not go through. Try again." | status, error |  |
+| `status.nothingFound` | "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." | status, muted |  |
+| `status.offline` | "You're offline. Connect to the internet and try again." | status, error |  |
+| `status.notAllowed` | "Purchases are turned off on this device. Check Screen Time, or ask the family organizer." | status, muted |  |
+| `status.notInStorefront` | "Antenna can't be bought in this App Store region yet." | status, and the unavailable panel body when the products are not sold here |  |
+| `restored.lifetime` | "Nothing more to pay. Your sources and favorites are where you left them." | restored note, Lifetime |  |
+| `restored.yearly` | "Renews on <expiresAt, locale long style>. Your sources and favorites are where you left them." | restored note, Yearly |  |
+| `lapsed.expired` | "Your yearly subscription ended on <date, locale long style>." | lapsed note |  |
+| `lapsed.revoked` | "The purchase on this Apple Account was refunded or is no longer shared with you." | lapsed note |  |
+| `unavailable.title` | "Can't reach the App Store" | unavailable panel title |  |
+| `product.lifetime` | "Lifetime" | Lifetime product name, and the restored kind for Lifetime | proposed, needs owner review |
+| `product.yearly` | "Yearly" | Yearly product name, and the restored kind for Yearly | proposed, needs owner review |
+| `family.included` | "Includes Family Sharing" | end of each product card on Apple TV; `paywall.familyNote` under the product rows on iPhone, iPad and Mac | proposed, needs owner review |
+| `line.waiting` | "Waiting for the App Store…" | selected product, in place of its line while a purchase runs | proposed, needs owner review |
+| `restored.title` | "Welcome back" | title after a restore | proposed, needs owner review |
+| `restored.body` | "Your purchase was found for this Apple Account." | body after a restore | proposed, needs owner review |
+| `restored.sharedTV` | " · Shared with you through Family Sharing" | appended to the restored kind on Apple TV when the purchase is family-shared | proposed, needs owner review |
+| `restored.sharedTouch` | " · Family Sharing" | appended to the restored kind on iPhone, iPad and Mac when the purchase is family-shared | proposed, needs owner review |
+| `unavailable.body` | "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back." | unavailable panel body when the App Store does not answer | proposed, needs owner review |
 
-Lines on the boards with no key named yet; the implementation adds keys for them:
-- Product names "Lifetime" and "Yearly".
-- On Apple TV each product card ends with "Includes Family Sharing".
-- While buying, the selected product shows "Waiting for the App Store…" in place of its line.
-- Restored title "Welcome back" and body "Your purchase was found for this Apple Account."
-- Restored kind: "Lifetime" or "Yearly", followed by " · Shared with you through Family Sharing" on Apple TV or " · Family Sharing" on touch platforms when the purchase is family-shared.
-- Unavailable panel body: "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back."
+Rows marked "proposed, needs owner review" take their text from the paywall boards and are not approved copy yet. The owner approves or rewrites each one before the implementation ships it, then clears the mark.
 
 Formatting:
 - `<period>` is the offer's total length (period times period count for pay as you go) and `<unit>` is its single period unit, both from `DateComponentsFormatter` with `unitsStyle = .full`. A one-unit free trial reads "First week free", "First month free" or "First day free". The core test checks "First week free", "First 3 days free" and "$0.99 per month for 3 months".
@@ -78,7 +81,7 @@ Formatting:
 
 ## Risks / Trade-offs
 
-- Open question: is 16 days of offline grace for a remembered Yearly purchase right, also for a cancelled one? 28 days or none are the alternatives. Can be decided during implementation.
+- Open question: is 16 days of offline grace for a remembered Yearly purchase right, also for a canceled one? 28 days or none are the alternatives. Can be decided during implementation.
 - Open question: Restore asks for a Continue tap so the user sees what was found, while a purchase leaves without one. Can be decided during implementation.
 - Open question: the lapsed title "Antenna is locked again" and its two reason lines are drafts for the owner.
 - [The Apple TV app has its own bundle id until the shared App Store record lands] → the Apple TV paywall is tested against the local StoreKit configuration only, and the cross-device requirement waits.
