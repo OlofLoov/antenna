@@ -58,6 +58,8 @@ targets:
       - Apps/Tests
     dependencies:
       - target: Antenna
+      - package: AntennaCore
+        product: AntennaTestSupport
       - package: SnapshotPreviews
         product: SnapshottingTests
     settings:

@@ -38,6 +38,9 @@ public actor FixtureServer {
         public var query: String?
         /// Header names lowercased.
         public var headers: [String: String]
+        /// The paths of the other requests whose connections were still open
+        /// when this one arrived.
+        public var openAtArrival: [String] = []
     }
 
     public enum ServerError: Error, Equatable {
@@ -60,6 +63,7 @@ public actor FixtureServer {
     private let queue = DispatchQueue(label: "se.codecrave.antenna.fixture-server")
     private var listener: NWListener?
     private var connections: [ObjectIdentifier: NWConnection] = [:]
+    private var pathsByConnection: [ObjectIdentifier: String] = [:]
     private var scripted: [String: [Behavior]] = [:]
     private var fallback: [String: Behavior] = [:]
     private var started = ContinuousClock.now
@@ -106,6 +110,7 @@ public actor FixtureServer {
         listener = nil
         connections.values.forEach { $0.cancel() }
         connections = [:]
+        pathsByConnection = [:]
         baseURL = nil
     }
 
@@ -119,6 +124,15 @@ public actor FixtureServer {
     public func always(_ path: String, _ behavior: Behavior) {
         fallback[normalized(path)] = behavior
     }
+
+    /// Drops the script and the `always` behavior for every path.
+    public func serveEverything() {
+        scripted = [:]
+        fallback = [:]
+    }
+
+    /// The paths whose connections are open now.
+    public var openPaths: [String] { pathsByConnection.values.sorted() }
 
     /// Forgets the requests seen so far and the connection peak.
     public func resetLog() {
@@ -150,10 +164,12 @@ public actor FixtureServer {
         }
         connection.start(queue: queue)
         do {
-            guard let head = try await Self.readHead(connection), let request = Self.parse(head) else {
+            guard let head = try await Self.readHead(connection), var request = Self.parse(head) else {
                 connection.cancel()
                 return
             }
+            request.openAtArrival = pathsByConnection.filter { $0.key != key }.map(\.value).sorted()
+            pathsByConnection[key] = request.path
             requests.append(request)
             try await respond(to: request, on: connection)
         } catch {
@@ -163,6 +179,7 @@ public actor FixtureServer {
 
     private func closed(_ key: ObjectIdentifier) {
         guard connections.removeValue(forKey: key) != nil else { return }
+        pathsByConnection[key] = nil
         openConnections -= 1
     }
 
@@ -215,6 +232,9 @@ public actor FixtureServer {
         switch behavior {
         case .stall(let bytes):
             try await Self.send(connection, head: head, body: slice.prefix(bytes))
+            // Keep reading so a client that hangs up is seen as closed.
+            while try await Self.receive(connection) != nil {}
+            connection.cancel()
         case .cut(let bytes):
             try await Self.send(connection, head: head, body: slice.prefix(bytes))
             connection.cancel()

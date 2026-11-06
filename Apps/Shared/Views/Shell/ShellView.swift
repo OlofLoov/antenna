@@ -37,8 +37,10 @@
     extension ShellModel.Dependencies {
         /// The engine, loader, Keychain check and clock the app runs on.
         static func live(loader: SourceLoader, guide: AppGuideStore?) -> Self {
-            .init(
-                engine: SystemPlaybackEngine(),
+            // Both routes play on Apple's player until the demuxing engine exists.
+            let player = AVPlayerEngine()
+            return .init(
+                engine: RoutedEngine(system: player, demuxer: player),
                 load: { try await loader.load($0) },
                 hasLogin: { loader.hasLogin($0) },
                 lastChannel: LastChannelStore(),
@@ -109,7 +111,7 @@
         /// Movies, Series and Search.
         private var picture: some View {
             ZStack {
-                VideoSurface(engine: model.engine)
+                PlayerSurfaceView(engine: model.engine)
                     .frame(
                         width: model.tab == .guide ? 480 : nil,
                         height: model.tab == .guide ? 270 : nil
