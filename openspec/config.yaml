@@ -1,0 +1,53 @@
+schema: spec-driven
+
+context: |
+  Antenna is a native IPTV player for iPhone, iPad, Mac and Apple TV. It plays
+  the user's own sources (M3U, Xtream, later Stalker, Jellyfin and Channels DVR)
+  and ships no content, no bundled playlists and no provider links.
+
+  Who it is for:
+  - Living-room viewer: watches live TV on Apple TV with the Siri Remote, mostly
+    news and sport, hops channels, wants it to feel like cable, fast and
+    predictable with no menus in the way.
+  - Household setter-upper: has one or more IPTV subscriptions, sets up several
+    Apple TVs and phones for the family, hates typing URLs and passwords with a
+    remote and hates doing it twice.
+  - Sports fan: wants several games at once, a quick way back to live after
+    pausing, and catch-up when they miss the start.
+  - On-the-go viewer: watches on iPhone, iPad or Mac, in bed, on a train, at a
+    desk, and expects the same channels, favorites and progress as at home.
+  - Movie and series watcher: uses the provider's on-demand library and wants it
+    to feel like a streaming app, not a file list.
+
+  Hard constraints every change keeps:
+  - AntennaCore is a UI-free Swift package; all parsing and protocol logic lives there (decision adr-0005).
+  - SwiftData with private CloudKit sync: every stored property optional or defaulted, no unique attributes, relationships optional (decision adr-0002).
+  - Secrets live only in the synchronizable iCloud Keychain, never in SwiftData or logs (decision adr-0003).
+  - Deployment target 26.0 on every platform, with no availability checks below it (decision adr-0004).
+  - Paid unlock only, no free tier (decision adr-0006).
+  - Per-device state stays in UserDefaults, outside CloudKit sync (decision adr-0009).
+  - Strict concurrency is complete; warnings are fixed, not suppressed.
+
+  Earlier decisions are archived changes under openspec/changes/archive/ named
+  <date>-adr-NNNN-<slug>. Screens follow the design-system capability; its
+  boards are in openspec/specs/design-system/boards/.
+
+  All prose follows the repo's no-ai-slop rules (.claude/skills/no-ai-slop/SKILL.md):
+  plain sentences, no em dashes, no puffery, American spelling.
+
+rules:
+  proposal:
+    - Say in the Why who the change is for and what they can do afterwards, in the user's words.
+    - List what is out of scope.
+    - In Impact, name the changes or capabilities this depends on, and anything it is blocked on.
+  specs:
+    - Write requirements and scenarios a person can read without the code; no type names, file names or identifiers.
+    - Give each requirement a short name that can become a stable test citation.
+    - Cover what a user notices at the edges (offline, slow source, empty state, tvOS remote and focus) as scenarios.
+  design:
+    - For a screen, name the boards in openspec/specs/design-system/boards/ and the design-system requirements it follows, and say what is not drawn yet.
+    - Record each hard-to-reverse decision with the options considered and why; cite earlier decisions by their archive name.
+    - Settle identifiers, types and layout here, not in specs.
+  tasks:
+    - Group tasks so each group can ship as one small pull request.
+    - End with a Verify group, with one task saying each requirement has a test citing <capability>/<requirement-slug> and one saying /opsx:verify passes.
