@@ -12,7 +12,7 @@ import Foundation
 /// unchanged.
 enum XMLEntitySanitizer {
     static func sanitize(_ data: Data) -> Data {
-        var output = Data()
+        var output = Data(capacity: data.count + data.count / 64)
         let rewritten = sanitize(data, flushingEvery: .max) { output.append(contentsOf: $0) }
         return rewritten ? output : data
     }

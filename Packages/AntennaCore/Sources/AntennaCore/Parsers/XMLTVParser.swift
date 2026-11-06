@@ -40,7 +40,10 @@ public struct XMLTVParser: Sendable {
             let delegate = Delegate()
             delegate.each = each
             parser.delegate = delegate
-            defer { parser.delegate = nil }
+            defer {
+                delegate.each = nil
+                parser.delegate = nil
+            }
             return parser.parse()
         }
         guard succeeded else {

@@ -28,6 +28,7 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
         let padded = Channel(id: "a", name: "A", streamURL: URL(filePath: "/a"), epgID: " sport1.se", sourceID: source)
         let key = try #require(GuideKey(channel: padded))
         #expect(index.current(for: key, at: guideTime(20, 30))?.title == "match")
+        #expect(index.current(for: key, at: guideTime(20, 30))?.channelID == "sport1.se")
         #expect(index.loadingState(for: padded) == .loaded)
 
         let otherCase = GuideKey(sourceID: source, epgID: "Sport1.se")

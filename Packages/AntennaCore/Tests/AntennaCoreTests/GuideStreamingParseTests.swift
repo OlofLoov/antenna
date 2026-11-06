@@ -23,11 +23,7 @@ import Testing
     @Test("A rewrite that falls on a piece boundary comes out whole", arguments: [1, 2, 3, 5, 7, 16, 64, 1 << 16])
     func pieceBoundaries(chunkSize: Int) {
         var output = Data()
-        var largestPiece = 0
-        let changed = XMLEntitySanitizer.sanitize(Self.messy, flushingEvery: chunkSize) { piece in
-            output.append(contentsOf: piece)
-            largestPiece = max(largestPiece, piece.count)
-        }
+        let changed = XMLEntitySanitizer.sanitize(Self.messy, flushingEvery: chunkSize) { output.append(contentsOf: $0) }
         #expect(changed)
         #expect(String(decoding: output, as: UTF8.self) == Self.rewritten)
     }

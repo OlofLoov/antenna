@@ -88,6 +88,13 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
         #expect(written.all.reduce(0, +) <= 100_000)
     }
 
+    @Test("0014/AC-17 a clean document after leading whitespace parses")
+    func cleanAfterWhitespace() throws {
+        let clean = GuideFetcherTests.xml(programmes: 30)
+        #expect(!clean.contains(UInt8(ascii: "&")))
+        #expect(try decode(Data("\n\n  ".utf8) + clean).count == 30)
+    }
+
     @Test("0014/AC-17 hundreds of newlines before XML are skipped")
     func longWhitespace() throws {
         let body = Data(String(repeating: "\n", count: 800).utf8) + (try guideFixture("guide.xmltv"))

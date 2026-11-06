@@ -23,7 +23,10 @@ final class GuideStubProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) private var isCancelled = false
 
     static func register(host: String, _ reply: Reply) {
-        lock.withLock { replies[host] = reply }
+        lock.withLock {
+            replies[host] = reply
+            paces[host] = nil
+        }
     }
 
     /// A 200 reply with `body` cut into `chunkSize` pieces and, when
@@ -34,8 +37,8 @@ final class GuideStubProtocol: URLProtocol, @unchecked Sendable {
         host: String, body: Data, chunkSize: Int = 1024, contentLength: Bool = true, finish: Bool = true, pace: Duration? = nil
     ) {
         let chunks = stride(from: 0, to: body.count, by: chunkSize).map { body.subdata(in: $0..<min(body.count, $0 + chunkSize)) }
-        lock.withLock { paces[host] = pace }
         register(host: host, .http(headers: contentLength ? ["Content-Length": "\(body.count)"] : [:], chunks: chunks, finish: finish))
+        lock.withLock { paces[host] = pace }
     }
 
     static func requests(host: String) -> [URLRequest] {
