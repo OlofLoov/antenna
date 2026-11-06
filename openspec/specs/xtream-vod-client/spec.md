@@ -19,7 +19,7 @@ The system SHALL send exactly one GET per call to `<server>/player_api.php` with
 - **THEN** it targets `<server>/xmltv.php` with `username` and `password` only, encoded the same way
 
 ### Requirement: VOD item fields
-The system SHALL read a movie row's stream id, name, poster, added date, rating, container extension and category, and SHALL give it the id `xtream#<host>#vod#<stream_id>`.
+The system SHALL read a movie row's stream id, name, poster, added date, rating, container extension and category, and SHALL give it the id `xtream#<host>#vod#<stream_id>`. A name or category given as a number SHALL be read as its text.
 
 #### Scenario: Dune
 - **GIVEN** a `get_vod_streams` row with `stream_id` 55, `name` "Dune", `stream_icon` "http://h/p.jpg", `added` "1730600000", `rating` "7.4", `container_extension` "mkv", `category_id` "12"
@@ -31,16 +31,21 @@ The system SHALL read a movie row's stream id, name, poster, added date, rating,
 - **WHEN** it is decoded
 - **THEN** the movie has no category
 
+#### Scenario: Numbers for text
+- **GIVEN** a row with `name` 1917 and `category_id` 12.0
+- **WHEN** it is decoded
+- **THEN** the movie is named "1917" and its category is "12"
+
 ### Requirement: Loose forms
-The system SHALL read ids given as numbers or strings, and dates and ratings given as numbers or numeric strings. "N/A", "", null and a rating of 0 SHALL give no value.
+The system SHALL read ids given as numbers or strings, and dates and ratings given as numbers or numeric strings. "N/A", "", null, a rating of 0 or below, and a rating that is not finite SHALL give no value.
 
 #### Scenario: Each form
 - **GIVEN** the Dune row with `stream_id` and `category_id` each as number or string, and `added` and `rating` each as a number, a numeric string, "N/A", "" and null
 - **WHEN** it is decoded
 - **THEN** the ids equal the Dune values in every form, `added` and `rating` equal them for the number and numeric-string forms and are absent for the others
 
-#### Scenario: Zero rating
-- **GIVEN** `rating` 0 or "0"
+#### Scenario: Zero, negative or infinite rating
+- **GIVEN** `rating` 0, "0", -2, "inf" or "nan"
 - **WHEN** it is decoded
 - **THEN** the rating is absent
 
@@ -61,7 +66,7 @@ The system SHALL leave the added date empty for any value that is not a usable U
 - **THEN** each gives no date and decoding never crashes
 
 ### Requirement: Broken rows are skipped
-The system SHALL skip and count a list row that is not an object, lacks its id or a non-blank `name`, has an id that is not a whole number, or repeats an earlier row's id. Other bad fields SHALL leave that field empty and keep the row. An integer SHALL decode only from a whole number in range, never truncated, never crashing.
+The system SHALL skip and count a list row that is not an object, lacks its id, lacks a `name` that is non-blank text or an integer, has an id that is not a whole number, or repeats an earlier row's id. Other bad fields SHALL leave that field empty and keep the row. An integer SHALL decode only from a whole number in range, never truncated, never crashing.
 
 #### Scenario: Six broken rows
 - **GIVEN** a movie list where one element is not an object, one row lacks `stream_id`, one lacks `name`, one has `stream_id` "abc", one has "1e400" and one repeats an earlier `stream_id`
@@ -110,7 +115,7 @@ The system SHALL fail a whole category list when any row lacks `category_name`, 
 - **THEN** it fails as a decoding error at path ""
 
 ### Requirement: VOD info
-The system SHALL read a movie's plot, year, duration, genre, age rating, backdrops and container extension. Duration SHALL come from `duration_secs` when above 0, else from `duration` as `hh:mm:ss` or `mm:ss`; 0 SHALL count as none. A missing or empty `info` SHALL leave every field empty.
+The system SHALL read a movie's plot, year, duration, genre, age rating, backdrops and container extension. Duration SHALL come from `duration_secs` when above 0, else from `duration` as `hh:mm:ss` or `mm:ss` of non-negative whole parts; 0 SHALL count as none. An `info` or `movie_data` that is missing, empty or not an object SHALL leave its fields empty.
 
 #### Scenario: A full info body
 - **GIVEN** a `get_vod_info` body with `info.plot` "A desert", `info.releasedate` "2024-03-01", `info.duration` "02:08:00", `info.duration_secs` 7680, `info.genre` "Sci-Fi", `info.age` "15", `info.backdrop_path` ["http://h/b1.jpg", "p.jpg"] and `movie_data.container_extension` "mkv"
@@ -122,10 +127,20 @@ The system SHALL read a movie's plot, year, duration, genre, age rating, backdro
 - **WHEN** it is decoded
 - **THEN** the duration is 7680 seconds from "02:08:00"
 
+#### Scenario: Other duration texts
+- **GIVEN** a `duration` of "02:08", "90:00", "1:2:3:4", "00:00:00" or "-1:00"
+- **WHEN** it is decoded
+- **THEN** "02:08" gives 128 seconds as minutes and seconds, "90:00" gives 5400 seconds, and the rest give no duration
+
+#### Scenario: Info of the wrong type
+- **GIVEN** a body `{"info":"x","movie_data":5}`
+- **WHEN** it is decoded
+- **THEN** every field is empty and the call does not fail
+
 #### Scenario: Year and shapes
 - **GIVEN** `info` absent, `{}` or `[]`; `movie_data` absent; `backdrop_path` as one string; a year in `release_date` or `releaseDate`; and a year of "0000"
 - **WHEN** they are decoded
-- **THEN** missing parts give empty fields, one backdrop string is accepted, the first non-empty of the three date keys gives the year, "0000" or a value not starting with four digits gives none, and `age` is read as number or string
+- **THEN** missing parts give empty fields, one backdrop string is accepted, the first non-empty of the three date keys gives the year even when a later key holds a better one, "0000" or a value not starting with four digits gives none, and `age` is read as number or string
 
 ### Requirement: Series row fields
 The system SHALL read a series row's id, name, cover, last-modified date and category, and SHALL give it the id `xtream#<host>#series#<series_id>`.
@@ -141,7 +156,7 @@ The system SHALL read a series row's id, name, cover, last-modified date and cat
 - **THEN** it follows the same rules
 
 ### Requirement: Episodes flatten
-The system SHALL turn the episodes of a series, keyed by season or given as an array, into one flat list. An episode's season SHALL be its own `season` field, else the season key when it is a number. Each episode SHALL get the id `xtream#<host>#episode#<id>`.
+The system SHALL turn the episodes of a series, keyed by season or given as an array, into one flat list. An episode's season SHALL be its own `season` field, else the season key when it is a number. A season key whose value is not an array SHALL give no episodes. Each episode SHALL get the id `xtream#<host>#episode#<id>`, and a title given as a number SHALL be read as its text.
 
 #### Scenario: Dictionary keyed by season
 - **GIVEN** a `get_series_info` whose `episodes` is keyed "1", "2" and "10", each episode with `id`, `episode_num`, `title`, `container_extension` and `info.duration_secs`
@@ -157,6 +172,11 @@ The system SHALL turn the episodes of a series, keyed by season or given as an a
 - **GIVEN** episodes with no `season` of their own, a non-numeric season key, or an `episode_num` that is absent or not a number
 - **WHEN** they are decoded
 - **THEN** the season comes from the key when numeric, else none, the number is none when not numeric, and the response's `seasons` array is ignored
+
+#### Scenario: Leading zeros, numbers and odd keys
+- **GIVEN** `episodes` keyed "01" holding an episode with `id` "9", `title` 42 and `episode_num` "3", and a key "x" holding 5
+- **WHEN** they are decoded
+- **THEN** the one episode is in season 1, number 3, titled "42", and the "x" key adds nothing and is not counted as skipped
 
 ### Requirement: Episode order
 The system SHALL sort episodes by season then number, numerically, with none before any value, keeping server order for ties.
@@ -188,10 +208,10 @@ The system SHALL skip and count an episode that is not an object, lacks an id, h
 - **THEN** the first three and the repeat are skipped and 4 are counted, and the two untitled episodes read "Episode <number>", or "Episode" when there is no number
 
 ### Requirement: Empty episodes shapes
-The system SHALL give no episodes, a season count of 0 and no skipped episodes when `episodes` is absent, `{}`, `[]` or `false`.
+The system SHALL give no episodes, a season count of 0 and no skipped episodes when `episodes` is absent, `{}`, `[]`, or any value that is neither an array nor an object, such as `false` or a string.
 
 #### Scenario: Each empty shape
-- **GIVEN** `episodes` absent, `{}`, `[]` or `false`
+- **GIVEN** `episodes` absent, `{}`, `[]`, `false` or `"x"`
 - **WHEN** it is decoded
 - **THEN** there are no episodes, the season count is 0 and none are skipped
 
@@ -225,7 +245,7 @@ The system SHALL decode a movie list of 50,000 rows in under 500 ms in a debug t
 - **THEN** it completes in under 500 ms
 
 ### Requirement: Transport failures carry no URL
-The system SHALL report a network failure as a transport error with its code only, carrying neither the server URL nor the credentials.
+The system SHALL report a network failure as a transport error with its code only, carrying neither the server URL nor the credentials. A failure that carries no network code SHALL be a transport error with the unknown code.
 
 #### Scenario: Each network failure
 - **GIVEN** the network fails as not connected, connection lost, data not allowed, timed out, host not found or secure connection failed
@@ -233,12 +253,12 @@ The system SHALL report a network failure as a transport error with its code onl
 - **THEN** it fails as a transport error with that code, and neither its description nor its user info holds the server URL or the credentials
 
 ### Requirement: Cancellation
-The system SHALL report a call whose task is cancelled in flight as cancelled, not as an Xtream error.
+The system SHALL report a call whose task is canceled in flight, or canceled once the response has arrived, as canceled, not as an Xtream error or a transport error.
 
-#### Scenario: Task cancelled
-- **GIVEN** the calling task is cancelled while the request is in flight
+#### Scenario: Task canceled
+- **GIVEN** the calling task is canceled while the request is in flight
 - **WHEN** any call runs
-- **THEN** it fails as cancelled
+- **THEN** it fails as canceled
 
 ### Requirement: Unauthorized
 The system SHALL fail every `player_api.php` call as a refused login on 401, 403, or a JSON object body whose `user_info.auth` is 0 as number or string. That check SHALL run only on object bodies, before other decoding. Other non-2xx SHALL fail with the status, a non-HTTP response with -1.
@@ -259,7 +279,7 @@ The system SHALL fail every `player_api.php` call as a refused login on 401, 403
 - **THEN** the array is never checked for a refused login, the account's auth reads 1 for the first object and is absent for the second
 
 ### Requirement: Empty list shapes
-The system SHALL treat a list or info body of `[]`, `{}`, `false` or `null` as empty. Any other info body that is not an object SHALL fail as a decoding error.
+The system SHALL treat a list or info body of `[]`, `{}`, `false` or `null` as empty. Any other info body that is not an object, a non-empty array included, SHALL fail as a decoding error.
 
 #### Scenario: Empty bodies
 - **GIVEN** a list call answering `[]`, `{}`, `false` or `null`, and a movie or series info call answering the same
@@ -267,7 +287,7 @@ The system SHALL treat a list or info body of `[]`, `{}`, `false` or `null` as e
 - **THEN** the list has no items and none skipped, and the info has every field empty, with no episodes, season count 0 and none skipped
 
 #### Scenario: Info body that is not an object
-- **GIVEN** an info body that is a string or a number
+- **GIVEN** an info body that is a string, a number or `[1]`
 - **WHEN** it is decoded
 - **THEN** it fails as a decoding error
 
@@ -280,9 +300,14 @@ The system SHALL give the same row the same id in every response, and SHALL keep
 - **THEN** equal rows give equal ids, and the four kinds give `xtream#h#55`, `xtream#h#vod#55`, `xtream#h#series#55` and `xtream#h#episode#55`
 
 ### Requirement: Title id round trip
-The system SHALL read a title id back into its host, kind and numeric id, and SHALL reject strings that are not well-formed title ids.
+The system SHALL read a title id back into its host, kind and numeric id, and SHALL reject strings that are not well-formed title ids, including any that would not print back to the same string.
 
 #### Scenario: Valid and invalid ids
 - **GIVEN** `xtream#h#55`, `xtream#h#vod#55`, `xtream#h#series#55`, `xtream#h#episode#55`, `xtream#h#vod#abc`, `xtream#h#movie#55`, `xtream##55` and `m3u#x`
 - **WHEN** each is read back
 - **THEN** the first four give host "h", kinds live, movie, series and episode, and id 55, and the last four give nothing, `xtream##55` because its host is empty
+
+#### Scenario: Forms that do not print back
+- **GIVEN** `xtream#h#live#55`, `xtream#h#055` and `xtream#h#-5`
+- **WHEN** each is read back
+- **THEN** the first two give nothing, and the third gives a live id of -5
