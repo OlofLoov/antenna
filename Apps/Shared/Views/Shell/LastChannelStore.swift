@@ -10,7 +10,7 @@
 
         /// Nil when the channel has no source, or when its id contains `://`.
         /// M3U ids embed the stream link, so those channels are not stored
-        /// until the 0001 follow-up that spec 0028 names.
+        /// until the session-restore change gives them ids without the link.
         init?(_ channel: Channel) {
             guard let sourceID = channel.sourceID, !channel.id.contains("://") else { return nil }
             self.sourceID = sourceID
