@@ -133,6 +133,9 @@ final class GuideDecoder {
         } catch {
             throw .network(.cannotWriteToFile)
         }
+        // The parse reads only `input`; dropping the source now keeps one
+        // copy of the document on disk.
+        if input != file { try? FileManager.default.removeItem(at: file) }
         guard let stream = InputStream(url: input) else { throw .network(.cannotOpenFile) }
         do {
             try XMLTVParser().parseSanitized(stream, each: each)
@@ -178,6 +181,9 @@ final class GuideDecoder {
         let rewritten = XMLEntitySanitizer.sanitize(document, flushingEvery: 1 << 16, write: write)
         if !rewritten {
             guard start != data.startIndex else { return file }
+            // The sanitizer may have written pieces before deciding to leave
+            // the document alone; start the file again.
+            try output.truncate(atOffset: 0)
             document.withUnsafeBytes { write($0) }
         }
         if let failure { throw failure }

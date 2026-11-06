@@ -74,8 +74,11 @@ struct SourceGuide: Sendable {
 
     private func string(_ ref: TextRef) -> String? {
         guard ref.length != TextRef.none.length else { return nil }
+        guard ref.length > 0 else { return "" }
         let start = Int(ref.offset)
-        return String(decoding: text[start..<start + Int(ref.length)], as: UTF8.self)
+        return text.withUnsafeBufferPointer { buffer in
+            String(decoding: UnsafeBufferPointer(rebasing: buffer[start..<start + Int(ref.length)]), as: UTF8.self)
+        }
     }
 
     /// Collects programmes one at a time, as the parser hands them over, so
