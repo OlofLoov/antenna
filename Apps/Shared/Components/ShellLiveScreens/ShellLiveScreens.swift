@@ -2,7 +2,7 @@ import SwiftUI
 
 /// What Live shows on Apple TV before a channel plays (spec 0015;
 /// `TV-Shell-Loading`, `TV-Shell-Empty` and their `-Menu` boards). Compiles
-/// on every platform so the snapshot job renders its previews (decision adr-0007).
+/// on every platform so the snapshot job renders its previews.
 enum ShellLoading {
     /// One source on the loading screen.
     struct Row: Identifiable, Equatable, Sendable {

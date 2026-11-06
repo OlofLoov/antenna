@@ -4,7 +4,7 @@ import Foundation
 /// still get distinct keys because `position` differs.
 ///
 /// Holds `Channel.id`, which can embed a stream URL with credentials, so
-/// a key is never logged or persisted (decision adr-0003).
+/// a key is never logged or persisted.
 public struct RowKey: Hashable, Sendable {
     /// The channel's `sourceID`.
     public let sourceID: UUID
