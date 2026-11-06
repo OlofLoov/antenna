@@ -125,6 +125,12 @@ The system SHALL turn each checklist line done or failed as the login, playlist,
 - **WHEN** the movies line has waited its limit
 - **THEN** the line stops waiting and says movies and series are available without counts
 
+#### Scenario: The account has no expiry date
+- **GIVEN** an Xtream account whose server gives a screen count but no expiry date
+- **WHEN** the login line turns done
+- **THEN** the account line shows only the screen count, such as "2 connections", with no " · " before it
+- **AND** when the server gives neither, the login line shows "Signed in" with nothing beneath
+
 #### Scenario: VoiceOver reads a line
 - **GIVEN** VoiceOver is on
 - **WHEN** the user moves to a checklist line

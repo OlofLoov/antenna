@@ -34,7 +34,7 @@ Out of scope:
 ## Capabilities
 
 ### New Capabilities
-- `iphone-as-setup-device`: setting up an Apple TV source from an iPhone, iPad or Mac by QR code or Handoff, with the source travelling through iCloud.
+- `iphone-as-setup-device`: setting up an Apple TV source from an iPhone, iPad or Mac by QR code or Handoff, with the source traveling through iCloud.
 
 ### Modified Capabilities
 

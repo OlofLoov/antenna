@@ -59,7 +59,7 @@ The system SHALL show each product with the price the App Store gives for the us
 - **GIVEN** the App Store answers with the two products
 - **WHEN** the paywall shows
 - **THEN** each product shows the App Store's price for the user's region, exactly as given
-- **AND** Yearly says it is per year and renews until cancelled
+- **AND** Yearly says it is per year and renews until canceled
 - **AND** an introductory offer is described with its price and length
 
 ### Requirement: Buy once and you're in
@@ -70,7 +70,7 @@ The system SHALL leave the paywall for onboarding or the app as soon as the App 
 - **WHEN** the user buys either product and the App Store confirms it
 - **THEN** the paywall leaves and onboarding or the app appears
 
-#### Scenario: Cancelled or failed
+#### Scenario: Canceled or failed
 - **WHEN** the user cancels a purchase, or it fails
 - **THEN** a cancel leaves the paywall as it was, and a failure adds a line asking the user to try again
 
