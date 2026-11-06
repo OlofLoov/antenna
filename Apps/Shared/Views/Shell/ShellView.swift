@@ -11,6 +11,7 @@
         @Environment(\.sourceLoader) private var loader
         @Environment(\.guideStore) private var guideStore
         @State private var model: ShellModel?
+        @State private var lifecycle: PlaybackLifecycle?
 
         var body: some View {
             ZStack {
@@ -22,7 +23,14 @@
             .guideRefreshTriggers()
             .task {
                 guard model == nil else { return }
-                model = ShellModel(dependencies())
+                let model = ShellModel(dependencies())
+                let engine = model.engine
+                let lifecycle = PlaybackLifecycle(engine: engine) {
+                    AVPlayerEngine.resolve(engine)?.continuesInPictureInPicture ?? false
+                }
+                lifecycle.start()
+                self.model = model
+                self.lifecycle = lifecycle
             }
         }
 
