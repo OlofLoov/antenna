@@ -13,5 +13,6 @@ To change a decision, write a new ADR that supersedes the old one.
 | [0006](0006-no-free-tier-paid-unlock-only.md) | Sell every feature behind one App Store unlock, with no free tier | Accepted |
 | [0007](0007-export-preview-snapshots-from-ci.md) | Export every SwiftUI preview as a PNG from CI | Proposed |
 | [0008](0008-compose-ui-from-compound-components.md) | Compose UI from compound components with state injected through the environment | Proposed |
+| [0009](0009-keep-per-device-state-in-userdefaults.md) | Keep per-device state in UserDefaults, outside CloudKit sync | Proposed |
 
 Template: [0000-template.md](0000-template.md). Create new ones with the `adr` skill.
