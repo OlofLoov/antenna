@@ -56,14 +56,20 @@ states MUST be drawn before the implementing pull request opens.
 - **THEN** the reviewer marks it not ready
 
 ### Requirement: Deviations from a design rule are named
-A screen MUST NOT depart from a design-system requirement unless its change
-names the requirement and gives the reason in one sentence. A mismatch with the board that the change did not name MUST be
+A screen MUST NOT depart from a design-system requirement unless its change,
+or the spec of the capability that owns the screen, names the requirement
+and gives the reason in one sentence. A mismatch with the board that the change did not name MUST be
 reported by the reviewer.
 
 #### Scenario: A named deviation
 - **GIVEN** a change says search results use a compact channel row and why
 - **WHEN** a reviewer compares the screen with the channel row rule
 - **THEN** the compact row is accepted
+
+#### Scenario: A deviation named in a capability spec
+- **GIVEN** the Apple TV shell spec says the open tab is filled white while focus is in its content, and why
+- **WHEN** a reviewer compares the tab bar with the focus rule
+- **THEN** the white open tab is accepted
 
 #### Scenario: An unnamed deviation
 - **WHEN** a screen differs from its board in a way the change did not name
@@ -98,6 +104,11 @@ is filled white.
 #### Scenario: Focus without the card
 - **WHEN** a reviewer finds a focused element shown only by a colored border or a size change
 - **THEN** it fails this requirement
+
+#### Scenario: An element that only holds focus
+- **GIVEN** the full-screen picture, a loading screen, or a screen whose only content is a line of text
+- **WHEN** it has focus on Apple TV
+- **THEN** it shows no card and no other focus effect, because there is nothing on it to lift
 
 ### Requirement: One accent color
 The accent blue from the reference MUST be the only accent color. It SHALL
