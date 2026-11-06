@@ -160,6 +160,19 @@ struct SourceLoader: Sendable {
         }
     }
 
+    /// False when an Xtream or Stalker source has no Keychain item on this
+    /// device yet. An item that cannot be read counts as present, so the load
+    /// runs and reports the failure.
+    func hasLogin(_ source: SourceDescriptor) -> Bool {
+        guard source.kind != .m3u else { return true }
+        guard let key = source.credentialKey else { return false }
+        do {
+            return try credentials.load(for: key) != nil
+        } catch {
+            return true
+        }
+    }
+
     /// The source's channels, and for a playlist the guide links its header names.
     func load(_ source: SourceDescriptor) async throws -> Playlist {
         switch source.kind {

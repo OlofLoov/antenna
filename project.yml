@@ -108,6 +108,17 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
 
+  AntennaTVUITests:
+    type: bundle.ui-testing
+    platform: tvOS
+    sources:
+      - Apps/TVUITests
+    dependencies:
+      - target: AntennaTV
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
 schemes:
   Antenna:
     build:
@@ -117,7 +128,7 @@ schemes:
       targets: [AntennaTests, AntennaUITests]
   AntennaTV:
     build:
-      targets: { AntennaTV: all, AntennaTVTests: [test] }
+      targets: { AntennaTV: all, AntennaTVTests: [test], AntennaTVUITests: [test] }
     run: { config: Debug }
     test:
-      targets: [AntennaTVTests]
+      targets: [AntennaTVTests, AntennaTVUITests]
