@@ -191,7 +191,8 @@ final class SteppingUptime: @unchecked Sendable {
         #expect(unknown.all.first == .downloading(sourceID: sourceID, bytesReceived: 1024, expectedBytes: nil))
     }
 
-    @Test func requestAndSessionConfiguration() async throws {
+    @Test("guide-data/download-limits-and-timeouts request, session and size limits")
+    func requestAndSessionConfiguration() async throws {
         GuideStubProtocol.register(host: "config.epg", body: try guideFixture("guide.xmltv"))
         _ = try await fetch(host: "config.epg")
         let request = try #require(GuideStubProtocol.requests(host: "config.epg").first)
@@ -206,5 +207,11 @@ final class SteppingUptime: @unchecked Sendable {
         #expect(configuration.httpShouldSetCookies == false)
         #expect(configuration.httpCookieAcceptPolicy == .never)
         #expect(configuration.httpCookieStorage == nil)
+
+        #if os(tvOS)
+            #expect(GuideLimits.platform == GuideLimits(compressedBytes: 32_000_000, unpackedBytes: 96_000_000))
+        #else
+            #expect(GuideLimits.platform == GuideLimits(compressedBytes: 96_000_000, unpackedBytes: 256_000_000))
+        #endif
     }
 }
