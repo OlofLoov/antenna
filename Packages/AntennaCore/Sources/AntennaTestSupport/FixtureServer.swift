@@ -67,6 +67,7 @@ public actor FixtureServer {
     private var scripted: [String: [Behavior]] = [:]
     private var fallback: [String: Behavior] = [:]
     private var started = ContinuousClock.now
+    private var cookie: String?
 
     public init(root: URL? = nil) throws {
         self.root = try root ?? Self.fixtures()
@@ -123,6 +124,11 @@ public actor FixtureServer {
     /// Every request for `path` gets `behavior` once its script runs out.
     public func always(_ path: String, _ behavior: Behavior) {
         fallback[normalized(path)] = behavior
+    }
+
+    /// Every response from now on sets this cookie, or none with nil.
+    public func setCookie(_ value: String?) {
+        cookie = value
     }
 
     /// Drops the script and the `always` behavior for every path.
@@ -200,11 +206,11 @@ public actor FixtureServer {
             return
         case .status(let code):
             let body = Data("status \(code)\n".utf8)
-            try await Self.send(connection, head: Self.head(status: code, type: "text/plain", length: body.count), body: body)
+            try await Self.send(connection, head: head(status: code, type: "text/plain", length: body.count), body: body)
             connection.cancel()
             return
         case .body(let data, let type):
-            try await Self.send(connection, head: Self.head(status: 200, type: type, length: data.count), body: data)
+            try await Self.send(connection, head: head(status: 200, type: type, length: data.count), body: data)
             connection.cancel()
             return
         case .serve, .ignoreRanges, .stall, .cut:
@@ -212,7 +218,7 @@ public actor FixtureServer {
         }
         guard let file = content(for: request.path) else {
             let body = Data("not found\n".utf8)
-            try await Self.send(connection, head: Self.head(status: 404, type: "text/plain", length: body.count), body: body)
+            try await Self.send(connection, head: head(status: 404, type: "text/plain", length: body.count), body: body)
             connection.cancel()
             return
         }
@@ -228,18 +234,18 @@ public actor FixtureServer {
                 extra.append("Content-Range: bytes \(range.lowerBound)-\(range.upperBound - 1)/\(file.count)")
             }
         }
-        let head = Self.head(status: status, type: type, length: slice.count, extra: extra)
+        let header = head(status: status, type: type, length: slice.count, extra: extra)
         switch behavior {
         case .stall(let bytes):
-            try await Self.send(connection, head: head, body: slice.prefix(bytes))
+            try await Self.send(connection, head: header, body: slice.prefix(bytes))
             // Keep reading so a client that hangs up is seen as closed.
             while try await Self.receive(connection) != nil {}
             connection.cancel()
         case .cut(let bytes):
-            try await Self.send(connection, head: head, body: slice.prefix(bytes))
+            try await Self.send(connection, head: header, body: slice.prefix(bytes))
             connection.cancel()
         default:
-            try await Self.send(connection, head: head, body: request.method == "HEAD" ? Data() : slice)
+            try await Self.send(connection, head: header, body: request.method == "HEAD" ? Data() : slice)
             connection.cancel()
         }
     }
@@ -320,6 +326,10 @@ extension FixtureServer {
     }
 
     // MARK: HTTP
+
+    func head(status: Int, type: String, length: Int, extra: [String] = []) -> String {
+        Self.head(status: status, type: type, length: length, extra: extra + (cookie.map { ["Set-Cookie: \($0); Path=/"] } ?? []))
+    }
 
     static func head(status: Int, type: String, length: Int, extra: [String] = []) -> String {
         let reason =
