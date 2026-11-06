@@ -50,4 +50,4 @@ Out of scope:
 - Amends the channel overlay, zap bar, guide grid, Live on iPhone, iPad and Mac, search, the catalogue and the tvOS shell (group lists, group names, which group shows after one disappears, the channel restored at launch), and Sources and Settings (a Groups row).
 - Depends on: `favorites`, `channel-catalogue`, `tvos-shell`, change `add-tv-channel-overlay`, change `add-tv-zap-bar-and-number-entry`, change `add-tv-guide-grid`, change `add-live-tv-on-iphone-ipad-mac`, change `add-search`, change `add-sources-and-settings`.
 - Depends on: the `m3u-playlists` follow-up that takes the stream link out of M3U channel ids. Until it ships, a channel from an M3U playlist cannot be saved into the user's own group, because the saved id would carry the provider login.
-- Blocked on: a new decision record for the three synced records that amends adr-0003 (credentials in iCloud Keychain) for the passcode check value.
+- Blocked on: a decision on the three new synced records. It must also settle whether the passcode check value may sync in a SwiftData record, since today secrets and anything derived from them live only in the iCloud Keychain.

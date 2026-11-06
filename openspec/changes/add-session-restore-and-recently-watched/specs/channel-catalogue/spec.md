@@ -23,7 +23,7 @@ The system SHALL list Favorites, then Recents when it has channels, then All cha
 #### Scenario: Group names
 - **GIVEN** group names that differ only in case or spacing inside the name
 - **WHEN** the catalogue is built
-- **THEN** they stay separate groups, because only empty and whitespace-only names are normalised
+- **THEN** they stay separate groups, because only empty and whitespace-only names are normalized
 
 #### Scenario: Recents in the group list
 - **GIVEN** the two-source catalogue and a recents list naming two channels that resolve

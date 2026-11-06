@@ -72,7 +72,7 @@ reported by the reviewer.
 ### Requirement: Live video keeps playing under overlays
 On Apple TV, showing the channel overlay, the zap bar, the guide or search
 while a channel plays MUST keep the same picture playing without a pause or
-restart. (was DR-1)
+restart.
 
 #### Scenario: Opening the channel overlay
 - **GIVEN** a channel is playing on Apple TV
@@ -88,7 +88,7 @@ restart. (was DR-1)
 On Apple TV the focused element MUST use the focus style from the reference:
 a light card with dark text and a drop shadow. Accent borders and focus shown
 by scale alone are not allowed, and nothing other than the focused element
-is filled white. (was DR-2)
+is filled white.
 
 #### Scenario: Moving focus down a list
 - **WHEN** the viewer moves focus to a row on Apple TV
@@ -102,7 +102,7 @@ is filled white. (was DR-2)
 ### Requirement: One accent color
 The accent blue from the reference MUST be the only accent color. It SHALL
 appear only on progress fills, the guide's now line, the NOW and UP NEXT
-badges, links and the selected iPhone tab. Nothing else is tinted. (was DR-3)
+badges, links and the selected iPhone tab. Nothing else is tinted.
 
 #### Scenario: A tinted icon
 - **WHEN** a reviewer finds an icon or label tinted in a color other than the accent
@@ -115,7 +115,7 @@ badges, links and the selected iPhone tab. Nothing else is tinted. (was DR-3)
 ### Requirement: Text stays above the platform caption floor
 Text MUST never be smaller than the platform's caption minimum in the
 reference type scale: 18 pt on Apple TV, 13 pt on iPad and Mac, 12 pt on
-iPhone. (was DR-4)
+iPhone.
 
 #### Scenario: Small metadata on Apple TV
 - **WHEN** a screen on Apple TV shows a caption
@@ -127,7 +127,7 @@ iPhone. (was DR-4)
 
 ### Requirement: Targets are large enough to hit
 Touch targets MUST be at least 44 pt in each direction. Focusable rows on
-Apple TV MUST be at least 64 pt tall. (was DR-5)
+Apple TV MUST be at least 64 pt tall.
 
 #### Scenario: A small button on iPhone
 - **WHEN** a reviewer measures a tappable control on iPhone, iPad or Mac
@@ -141,7 +141,7 @@ Apple TV MUST be at least 64 pt tall. (was DR-5)
 On every platform that lists channels, a channel row MUST show, in this
 order, the channel number in muted tabular digits, the logo tile, the name,
 the current programme title and a 3 to 4 pt accent progress bar. A channel
-with catch-up shows a clock-arrow glyph at the trailing edge. (was DR-6)
+with catch-up shows a clock-arrow glyph at the trailing edge.
 
 #### Scenario: A channel list on any platform
 - **WHEN** a viewer opens a channel list on Apple TV, iPhone, iPad or Mac
@@ -155,7 +155,7 @@ with catch-up shows a clock-arrow glyph at the trailing edge. (was DR-6)
 ### Requirement: A current programme always shows its progress
 Wherever a programme that is on now is shown, its progress bar MUST be shown
 with it: in channel rows, now panels, the zap bar, the player scrubber and
-continue-watching cards. (was DR-7)
+continue-watching cards.
 
 #### Scenario: Now and next panel
 - **WHEN** the viewer sees what is on now in a now panel or the zap bar
@@ -168,7 +168,7 @@ continue-watching cards. (was DR-7)
 ### Requirement: Channels without a logo show initials
 A channel whose logo has not loaded MUST show a tile in the placeholder color
 with up to four characters of the channel's initials. It MUST never show an
-empty frame or a system glyph. (was DR-8)
+empty frame or a system glyph.
 
 #### Scenario: Logo missing from the playlist
 - **GIVEN** a channel with no logo link
@@ -182,7 +182,7 @@ empty frame or a system glyph. (was DR-8)
 
 ### Requirement: Movies and series open content first
 The Movies and Series screens MUST open with a hero and rows of posters. A
-plain list MUST never be the first view. (was DR-9)
+plain list MUST never be the first view.
 
 #### Scenario: Opening Movies
 - **WHEN** the viewer opens Movies
@@ -191,7 +191,7 @@ plain list MUST never be the first view. (was DR-9)
 ### Requirement: One search across everything
 Search MUST be a single field that searches channels, guide programmes,
 movies and series together, with results in sections and the matched text
-highlighted. (was DR-10)
+highlighted.
 
 #### Scenario: Searching a name that is both a channel and a film
 - **WHEN** the viewer types a word that matches a channel and a movie
@@ -201,7 +201,7 @@ highlighted. (was DR-10)
 ### Requirement: Accessibility identifiers follow the board
 Accessibility identifiers MUST start with the screen prefix of the board the
 element belongs to, from the prefix list in the reference. Element names MUST
-come from the board's comments and labels. (was DR-11)
+come from the board's comments and labels.
 
 #### Scenario: An element on the zap bar
 - **WHEN** a reviewer inspects the progress bar on the zap bar
@@ -216,7 +216,7 @@ The app MUST draw no fake status bars and bundle no channels, titles,
 third-party logos or artwork. Sample names on the boards are for layout and
 never ship, and sample logins never use a real name. Copy MUST NOT name the
 user, the user's device or a state the app cannot see. Naming the platform
-is allowed. (was DR-12)
+is allowed.
 
 #### Scenario: Fresh install
 - **WHEN** the user opens the app before adding a source
@@ -233,7 +233,6 @@ is allowed. (was DR-12)
 ### Requirement: Text meets contrast minimums
 Text MUST reach a contrast ratio of at least 4.5:1 against what it sits on,
 including muted captions, and at least 3:1 for text at 24 pt and above.
-(was DR-13)
 
 #### Scenario: Muted caption on the background
 - **WHEN** a reviewer measures a muted caption on the app background
@@ -245,8 +244,8 @@ including muted captions, and at least 3:1 for text at 24 pt and above.
 
 ### Requirement: Nothing shows before the paywall
 The app MUST show none of these screens until the user has an active
-entitlement, per decision adr-0006 (no free tier, paid unlock only).
-Onboarding SHALL start after the paywall. (was DR-14)
+entitlement, because Antenna has no free tier.
+Onboarding SHALL start after the paywall.
 
 #### Scenario: First launch with no purchase
 - **GIVEN** a user with no entitlement
@@ -261,7 +260,7 @@ Onboarding SHALL start after the paywall. (was DR-14)
 ### Requirement: Loading shows real progress per step
 A load with several steps, such as onboarding or a source refresh, MUST show
 the state of each step with real counts as they arrive. A single spinner for
-the whole job is not allowed. (was DR-15)
+the whole job is not allowed.
 
 #### Scenario: Adding a large source
 - **WHEN** a source is loading its channels and then its guide

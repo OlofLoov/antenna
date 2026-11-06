@@ -21,7 +21,7 @@ Not reviewed yet.
 - A plain web page for an iPhone without Antenna, linking to the App Store.
 
 Out of scope:
-- Sending the login to the Apple TV. That waits for a decision that changes adr-0003 and a change after it. No password travels in the link, in iCloud records or over the local network.
+- Sending the login to the Apple TV. That waits for a decision on how a login can reach a device without iCloud Keychain, since secrets live only there and Apple TV does not offer it, and a change after it. No password travels in the link, in iCloud records or over the local network.
 - A QR code on the "sign in on this Apple TV" step for a source that synced without its login.
 - A QR code on the welcome step or in Settings after setup.
 - Scanning a provider's own QR code into the form.
@@ -34,7 +34,7 @@ Out of scope:
 ## Capabilities
 
 ### New Capabilities
-- `iphone-as-setup-device`: setting up an Apple TV source from an iPhone, iPad or Mac by QR code or Handoff, with the source travelling through iCloud.
+- `iphone-as-setup-device`: setting up an Apple TV source from an iPhone, iPad or Mac by QR code or Handoff, with the source traveling through iCloud.
 
 ### Modified Capabilities
 

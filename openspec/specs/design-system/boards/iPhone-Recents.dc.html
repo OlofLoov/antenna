@@ -45,7 +45,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </button>
   </div>
 
-  <!-- Group chips (scrolls horizontally). recents.chip sits after Favorites and before All channels; it is present only while at least one recent channel resolves (0028/AC-6a, AC-7) -->
+  <!-- Group chips (scrolls horizontally). recents.chip sits after Favorites and before All channels; it is present only while at least one recent channel resolves (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels) -->
   <div style="display: flex; gap: 8px; padding: 12px 16px 6px; overflow: hidden; white-space: nowrap">
     <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Favorites</span>
     <!-- recents.chip, selected -->
@@ -57,7 +57,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Documentary</span>
   </div>
 
-  <!-- Channel list: the Recents group, most recently watched first. The playing channel is always row one once it has been on for ten seconds (0028/AC-2b, AC-5). Rows keep 0010's anatomy and browse.row.<rowKey> identifiers; no list header at compact width (0010/AC-4) -->
+  <!-- Channel list: the Recents group, most recently watched first. The playing channel is always row one once it has been on for ten seconds (session-restore-and-recently-watched/a-channel-counts-as-watched-after-ten-seconds, session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels). Rows keep live-tv-on-iphone-ipad-mac's anatomy and browse.row.<rowKey> identifiers; no list header at compact width (live-tv-on-iphone-ipad-mac/pick-a-group) -->
   <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 4px 8px">
     <div style="display: flex; align-items: center; gap: 12px; height: 60px; padding: 0 8px; border-radius: 10px; background: rgba(255,255,255,0.12)">
       <span style="width: 52px; height: 34px; border-radius: 6px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #F2F4F8; flex: 0 0 auto">S1</span>

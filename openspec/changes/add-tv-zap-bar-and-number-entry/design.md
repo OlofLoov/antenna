@@ -8,8 +8,6 @@ Boards, under `openspec/specs/design-system/boards/`: `TV-ZapBar.dc.html`, `TV-Z
 
 Design-system requirements that apply: “Live video keeps playing under overlays”, “One accent color”, “Text stays above the platform caption floor”, “A current programme always shows its progress”, “Channels without a logo show initials”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”.
 
-Decisions this builds on: adr-0001 (hardware playback path for MPEG-TS), adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free).
-
 User flow: any channel change shows the bar for five seconds. With the bar hidden, play/pause shows it again. Menu hides it. Swiping up or down changes channel in the group. Select while the bar shows hides it and opens the channel overlay. On a keyboard, typing digits shows the box with the matching name; two seconds after the last digit, or on Return, Antenna tunes.
 
 ## Goals / Non-Goals
@@ -31,7 +29,7 @@ User flow: any channel change shows the bar for five seconds. With the bar hidde
 - Number entry: digits beyond the longest channel number in the catalogue's index (never fewer than four) are ignored. Matching uses the catalogue's index. "No channel n" lasts one second ±100 ms on the injected clock.
 - Select while the bar or box shows is consumed. The bar hides before the overlay opens, and select in the box tunes.
 - Remaining text and progress refresh each minute.
-- The bar and box never take focus. `Channel.streamURL` is never shown, logged or used in an identifier (adr-0003).
+- The bar and box never take focus. `Channel.streamURL` is never shown, logged or used in an identifier.
 - `TV-ZapBar.dc.html` is a composite. The box and bar are never on screen together, and the state boards are authoritative. The 132 by 88 identity tile uses radius 12, above the logo-tile range. Digit entry is narrowed to hardware keyboards per section 2 of the design system.
 - Digit handling lives in a model with injected key events and clock, since XCUITest cannot type into a non-text view on tvOS.
 - Play/pause, swiping and Menu tests run as UI tests; formatting rules run as core tests.
@@ -39,4 +37,4 @@ User flow: any channel change shows the bar for five seconds. With the bar hidde
 ## Risks / Trade-offs
 
 - [The quality badges depend on the playback engine change] → tested against a fake engine until it lands.
-- Open question: should the five-second delay be a setting? If it syncs, it needs a settings field and a decision record under adr-0002. Can be decided during implementation.
+- Open question: should the five-second delay be a setting? If it syncs, it needs a synced settings field, and adding one is a decision to record in design.md. Can be decided during implementation.

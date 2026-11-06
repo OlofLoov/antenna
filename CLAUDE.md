@@ -51,13 +51,12 @@ from `Config/Local.xcconfig.example` for device builds.
   design-system requirements it follows. No board, no change.
 - **Decisions live in design.md.** Anything hard to reverse (data model,
   playback path, sync, dependency) is decided in a change's `design.md` with
-  the options considered. Earlier decisions are archived changes named
-  `openspec/changes/archive/*-adr-NNNN-*`; read them before proposing
-  architecture changes.
+  the options considered. The standing rules those decisions produced are
+  the hard constraints below and in `openspec/config.yaml`.
 - **Views compose.** Components in `Apps/Shared/Components/` take values and
   closures, screens in `Apps/Shared/Views/` own queries and models and
   provide shared state through `@Entry`. No `Bool` picks a layout. The
-  `swiftui-composition` skill has the rules and a grep pass (decision adr-0008).
+  `swiftui-composition` skill has the rules and a grep pass.
 - **Diagrams follow the code.** C4 context and container diagrams live in
   `docs/architecture/` as `.drawio.svg`. A change that adds a container,
   external system or dependency updates them in the same PR.
@@ -81,8 +80,18 @@ from `Config/Local.xcconfig.example` for device builds.
 ## Hard constraints
 
 - CloudKit-backed SwiftData: every stored property optional or defaulted, no
-  `@Attribute(.unique)`, relationships optional. Decision adr-0002.
-- Secrets never go in SwiftData or logs. Keychain only, synchronizable. Decision adr-0003.
+  `@Attribute(.unique)`, relationships optional. Duplicates are resolved in code.
+- Secrets never go in SwiftData or logs. Keychain only, synchronizable.
+- AntennaCore imports Foundation only. Apps depend on it, never the reverse.
+- Two playback paths: `AVPlayer` for HLS and system-demuxable containers,
+  FFmpeg demux with VideoToolbox decode and `AVSampleBufferVideoRenderer` for
+  raw MPEG-TS. No software renderer. FFmpeg stays LGPL, linked dynamically.
+- Per-device state that is not a secret goes in `UserDefaults`, not SwiftData
+  or CloudKit. No secret or stream link is stored there.
+- Paid unlock only. One entitlement from StoreKit 2 unlocks everything; no
+  other feature gate and no trial logic in the app.
+- Every `#Preview` is deterministic (fixtures, no network, no clock). CI
+  exports each one as a PNG for review; nothing is compared automatically.
 - Strict concurrency is `complete`. Fix warnings, do not suppress them.
 - Deployment target is 26.0 on every platform. Do not add availability checks below it.
 - No bundled playlists, provider links, or marketplace features (App Review 5.2.3).

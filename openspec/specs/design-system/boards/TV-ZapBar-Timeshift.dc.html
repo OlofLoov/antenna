@@ -18,12 +18,12 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
   <!-- Live video stage, frozen on the paused frame -->
   <div style="position: absolute; inset: 0; background: #1A2535"></div>
 
-  <!-- No clock in full screen (0008/AC-20). No entry pill in this state. -->
+  <!-- No clock in full screen. No entry pill in this state. -->
 
   <!-- Zap bar, timeshift variant (zapBar.root): 274 tall, paused 12 minutes behind live -->
   <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 274px; box-sizing: border-box; padding: 32px 64px 40px; background: rgba(8, 10, 14, 0.88); display: flex; align-items: center; gap: 40px">
 
-    <!-- Channel identity (zapBar.logo, zapBar.number, zapBar.name, zapBar.position), as 0008 -->
+    <!-- Channel identity (zapBar.logo, zapBar.number, zapBar.name, zapBar.position), as tv-zap-bar-and-number-entry -->
     <div style="display: flex; align-items: center; gap: 24px; width: 420px; flex: 0 0 auto">
       <div style="width: 132px; height: 88px; border-radius: 12px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; letter-spacing: 1px">S1</div>
       <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
@@ -33,7 +33,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       </div>
     </div>
 
-    <!-- Now playing: the programme at the position (0019/AC-18), then the timeshift row -->
+    <!-- Now playing: the programme at the position (timeshift-catch-up-and-start-over/pause-live-tv-and-pick-up-where-you-left-off), then the timeshift row -->
     <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
       <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px">
         <div style="font-size: 34px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Premier League: Arsenal v Liverpool</div>
@@ -64,7 +64,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
           <div style="position: absolute; left: 0; top: 0; height: 8px; width: 80%; border-radius: 4px; background: {{accent}}"></div>
           <!-- timeshift.buffered from the knob to the recorded end (the live edge here) -->
           <div style="position: absolute; left: 80%; top: 0; height: 8px; width: 20%; border-radius: 0 4px 4px 0; background: rgba(255,255,255,0.35)"></div>
-          <!-- timeshift.knob: 18 accent circle with a 2 ground ring, centred on the position -->
+          <!-- timeshift.knob: 18 accent circle with a 2 ground ring, centered on the position -->
           <div style="position: absolute; left: calc(80% - 9px); top: -5px; width: 18px; height: 18px; border-radius: 9px; background: {{accent}}; box-sizing: border-box; border: 2px solid #0B0E13"></div>
         </div>
         <!-- timeshift.behindLive -->
@@ -72,7 +72,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       </div>
     </div>
 
-    <!-- Status badges: LIVE in its behind state (muted dot, outlined), format badges as 0008 -->
+    <!-- Status badges: LIVE in its behind state (muted dot, outlined), format badges as tv-zap-bar-and-number-entry -->
     <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 14px; flex: 0 0 auto">
       <div style="display: flex; gap: 10px">
         <!-- zapBar.badge.live, value "behind" -->
@@ -80,7 +80,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8">1080p</span>
         <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #A7B0BF; color: #D7DEE8">AAC 5.1</span>
       </div>
-      <!-- zapBar.catchup and zapBar.hint ("Hold play/pause for live", 0019/AC-16) -->
+      <!-- zapBar.catchup and zapBar.hint ("Hold play/pause for live", timeshift-catch-up-and-start-over/back-to-live) -->
       <div style="display: flex; gap: 10px; align-items: center; font-size: 20px; color: #A7B0BF">
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
         <span>Catch-up 7 days</span>

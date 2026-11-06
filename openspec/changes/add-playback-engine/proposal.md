@@ -51,4 +51,4 @@ None.
 - Replaces the current player view's direct use of Apple's player; the rules script narrows where Apple's player types may appear.
 - Adds an FFmpeg build to the app targets, local network and background audio entries to the targets' settings, and a stream fixture script for tests.
 - Depends on: `m3u-playlists`, `xtream-live-source`, `guide-data` (address redaction), `xtream-vod-client`.
-- Blocked on: the decision record on how FFmpeg is built, licensed and shipped for the second playback path, which decision adr-0001 asks for. Until it lands, the change assumes an LGPL build linked dynamically, and the first step ships with Apple's player on both routes.
+- Blocked on: a decision on how FFmpeg is built, licensed and shipped for the second playback path. Until it lands, the change assumes an LGPL build linked dynamically, and the first step ships with Apple's player on both routes.

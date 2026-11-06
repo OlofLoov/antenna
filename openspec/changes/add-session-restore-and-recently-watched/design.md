@@ -8,8 +8,6 @@ Design-system requirements that apply: "Live video keeps playing under overlays"
 
 Not drawn yet: the Recents row in the iPad and Mac sidebar, the Recents group row and header in the Apple TV overlay, the iPad Recents list header, and the loading screen with the restored channel already playing.
 
-Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free), adr-0009 (per-device state in UserDefaults).
-
 ## Goals / Non-Goals
 
 **Goals:**
@@ -22,10 +20,10 @@ Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), a
 
 ## Decisions
 
-- Storage is on-device `UserDefaults`, no SwiftData, no sync (adr-0009). Keys: `recents.list`, `recents.session`, and `shell.lastChannel` with exactly the payload `tvos-shell` asserts. `LastChannelKey` (source id, channel id) moves into AntennaCore. The session holds tab and group only, so the last channel has one home.
+- Storage is on-device `UserDefaults`, no SwiftData, no sync. Keys: `recents.list`, `recents.session`, and `shell.lastChannel` with exactly the payload `tvos-shell` asserts. `LastChannelKey` (source id, channel id) moves into AntennaCore. The session holds tab and group only, so the last channel has one home.
 - Every live tune on every device goes through one session tracker, which writes the last channel before the engine loads it and keeps it if the load fails. No other app code calls the engine's load. Playing a movie or episode is not a tune and cancels the ten-second count. Leaving the app, a new tune, or the engine leaving playing also cancel it.
 - A source observer watches local saves and remote changes on the app container, diffs source ids, and for each removed id clears the store, stops the count if the playing channel was in it, then asks for a catalogue rebuild. Only an observed deletion counts, not a missing record.
-- The store refuses any channel id containing `://`. The `m3u-playlists` follow-up that hashes the stream URL out of `Channel.id` removes the filter and drops the requirement on links with passwords. Ids are never logged or put in an identifier, label or error (adr-0003).
+- The store refuses any channel id containing `://`. The `m3u-playlists` follow-up that hashes the stream URL out of `Channel.id` removes the filter and drops the requirement on links with passwords. Ids are never logged or put in an identifier, label or error.
 - Only a group the user picks is written to the session. Groups the app selects as a fallback are shown but not written.
 - Live sources start loading when the app's root appears, not when Live is first shown, so a session restored to another tab has channels ready.
 - `channel-catalogue` gains a Recents group kind and a way to replace it without rebuilding the catalogue, within the favorites time bound. A channel id matching two channels does not resolve.
@@ -36,7 +34,7 @@ Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), a
 
 ## Risks / Trade-offs
 
-- Open question: syncing recents would change the Recents requirements and needs a decision record. `add-watch-progress-sync` syncs recent searches only.
+- Open question: syncing recents would change the Recents requirements and needs its own decision. `add-watch-progress-sync` syncs recent searches only.
 - Open question: restore plays the channel at launch, including on cellular. Showing it selected with a play button instead would change the last-channel requirement. Answer before the change is accepted.
 - Open question: swipe left toggles between two channels and swipe right opens Recents. A long press, or stepping back through all of Recents, would change those requirements.
 - Open question: storing a hash of the identity now would lift the M3U restore block, and change the value `tvos-shell` stores.

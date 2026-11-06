@@ -15,7 +15,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
 
-  <!-- Live video stage. The player keeps playing under both panels (DR-1). -->
+  <!-- Live video stage. The player keeps playing under both panels (design-system/live-video-keeps-playing-under-overlays). -->
   <div style="position: absolute; inset: 0; background: #1A2535"></div>
 
   <!-- player.panel: opened by a long press on select. Info segment selected and focused. -->
@@ -35,7 +35,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 
     <!-- player.panel.info -->
     <div style="display: flex; gap: 40px; align-items: flex-start">
-      <!-- player.panel.logo: logo or initials tile (DR-8) -->
+      <!-- player.panel.logo: logo or initials tile (design-system/channels-without-a-logo-show-initials) -->
       <div style="width: 132px; height: 88px; border-radius: 12px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; letter-spacing: 1px; flex: 0 0 auto">S1</div>
 
       <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
@@ -50,13 +50,13 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
           <div style="font-size: 34px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Premier League: Arsenal v Liverpool</div>
           <div style="font-size: 24px; color: #A7B0BF; white-space: nowrap; font-variant-numeric: tabular-nums">20:00 – 22:00 · 26 min left</div>
         </div>
-        <!-- player.panel.progress (DR-7) -->
+        <!-- player.panel.progress (design-system/a-current-programme-always-shows-its-progress) -->
         <div style="height: 6px; border-radius: 3px; background: rgba(255,255,255,0.16); position: relative">
           <div style="height: 6px; width: 78%; border-radius: 3px; background: {{accent}}"></div>
         </div>
         <!-- player.panel.summary -->
         <div style="font-size: 24px; line-height: 1.4; color: #D7DEE8; max-width: 1200px">Second half from the Emirates. Commentary by the studio team, with analysis at full time.</div>
-        <!-- player.panel.badges (0008/AC-7 mappings) and player.panel.stream -->
+        <!-- player.panel.badges (tv-zap-bar-and-number-entry/picture-and-sound-quality mappings) and player.panel.stream -->
         <div style="display: flex; align-items: center; gap: 24px; padding-top: 4px">
           <div style="display: flex; gap: 10px">
             <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.12)"><span style="width: 10px; height: 10px; border-radius: 5px; background: #FF5F57; display: inline-block"></span>LIVE</span>
@@ -69,7 +69,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </div>
   </div>
 
-  <!-- player.transport: shown only while 0019 timeshift is active. Paused, 2 min behind live. -->
+  <!-- player.transport: shown only while timeshift (timeshift-catch-up-and-start-over) is active. Paused, 2 min behind live. -->
   <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 168px; box-sizing: border-box; padding: 32px 64px 40px; background: rgba(8, 10, 14, 0.88); display: flex; align-items: center; gap: 32px">
     <!-- player.transport.playPause: reflects the engine state, not focusable; the play/pause button drives it -->
     <div style="width: 64px; height: 64px; border-radius: 32px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; justify-content: center; flex: 0 0 auto">

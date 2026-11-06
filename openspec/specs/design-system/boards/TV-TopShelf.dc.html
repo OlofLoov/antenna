@@ -15,13 +15,13 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
 
-  <!-- tvOS Home screen. The system draws the shelf, the section headers, the item titles, the focus lift and the progress bars; the app controls only the 908 by 512 px tile images (drawn here at 380 by 214), the title strings, the progress fractions and the section order. The wallpaper is the user's and is drawn here as the ground colour. -->
+  <!-- tvOS Home screen. The system draws the shelf, the section headers, the item titles, the focus lift and the progress bars; the app controls only the 908 by 512 px tile images (drawn here at 380 by 214), the title strings, the progress fractions and the section order. The wallpaper is the user's and is drawn here as the ground color. -->
 
-  <!-- topShelf.section.favorites: 0013/AC-8 order, at most 20 items -->
+  <!-- topShelf.section.favorites: channel-catalogue/favorites-resolve-to-loaded-channels order, at most 20 items -->
   <div style="position: absolute; left: 90px; top: 72px; font-size: 31px; font-weight: 600">Favorites</div>
   <div style="position: absolute; left: 90px; top: 120px; display: flex; gap: 36px; width: 1830px; overflow: hidden">
 
-    <!-- topShelf.item.<itemID>: tile with the channel logo centred on the placeholder ground (DR-8), title "<name> · <programme>", progress = elapsed over duration (DR-7). Focused: the system's lift and shadow, not the DR-2 card. -->
+    <!-- topShelf.item.<itemID>: tile with the channel logo centered on the placeholder ground (design-system/channels-without-a-logo-show-initials), title "<name> · <programme>", progress = elapsed over duration (design-system/a-current-programme-always-shows-its-progress). Focused: the system's lift and shadow, not the design-system/focus-is-the-lifted-white-card card. -->
     <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
       <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; box-shadow: 0 18px 44px rgba(0,0,0,0.55); transform: translateY(-8px); display: flex; align-items: center; justify-content: center">
         <!-- Logo stand-in. The real image is the channel's logo, at most 60% of the tile in either direction. -->
@@ -31,7 +31,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="font-size: 26px; font-weight: 600; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One · Match of the Day</div>
     </div>
 
-    <!-- Initials tile (DR-8): up to four characters per 0013/AC-7 at 200 px on the 908 px source -->
+    <!-- Initials tile (design-system/channels-without-a-logo-show-initials): up to four characters per channel-catalogue/initials at 200 px on the 908 px source -->
     <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
       <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 84px; font-weight: 700; letter-spacing: 2px; color: #F2F4F8">
         <span>E1</span>
@@ -48,7 +48,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">News24 · Evening Bulletin</div>
     </div>
 
-    <!-- Guide exhausted (AC-6a): no programme in the snapshot covers now, so the title is the name alone and there is no progress bar -->
+    <!-- Guide exhausted (top-shelf/a-channel-with-no-guide-left-shows-its-name): no programme in the snapshot covers now, so the title is the name alone and there is no progress bar -->
     <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
       <div style="width: 380px; height: 214px; border-radius: 12px; background: #26344A; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 84px; font-weight: 700; letter-spacing: 2px; color: #F2F4F8">
         <span>AH</span>
@@ -65,11 +65,11 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </div>
   </div>
 
-  <!-- topShelf.section.continueWatching: 0011/AC-4 order, at most 10 items, 16:9 tiles with the watch position as progress -->
+  <!-- topShelf.section.continueWatching: movies-and-series-browsing/continue-watching order, at most 10 items, 16:9 tiles with the watch position as progress -->
   <div style="position: absolute; left: 90px; top: 404px; font-size: 31px; font-weight: 600">Continue watching</div>
   <div style="position: absolute; left: 90px; top: 452px; display: flex; gap: 36px; width: 1830px; overflow: hidden">
 
-    <!-- Backdrop tile: the title's backdrop when cached, else the poster centred on the placeholder ground -->
+    <!-- Backdrop tile: the title's backdrop when cached, else the poster centered on the placeholder ground -->
     <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
       <div style="width: 380px; height: 214px; border-radius: 12px; background: #3B2F4A; position: relative; overflow: hidden">
         <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,0.22)"><div style="height: 6px; width: 42%; background: {{accent}}"></div></div>
@@ -84,7 +84,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="font-size: 26px; color: #D7DEE8; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Northern Lights · S2 E4</div>
     </div>
 
-    <!-- Artwork fallback (0011/AC-8): title text centred on the placeholder colour, 60 px on the 908 px source -->
+    <!-- Artwork fallback: title text centered on the placeholder color, 60 px on the 908 px source -->
     <div style="width: 380px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px">
       <div style="width: 380px; height: 214px; border-radius: 12px; background: #1E3A5F; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 32px; box-sizing: border-box; font-size: 25px; font-weight: 700; color: #F2F4F8">
         <span>Salt Road</span>
@@ -108,7 +108,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </div>
   </div>
 
-  <!-- Home screen app row, drawn by the system. Antenna's icon has focus, which is what makes the shelf above show Antenna's content. Neighbouring icons are neutral tiles (DR-12). -->
+  <!-- Home screen app row, drawn by the system. Antenna's icon has focus, which is what makes the shelf above show Antenna's content. Neighbouring icons are neutral tiles (design-system/nothing-fake-and-nothing-bundled). -->
   <div style="position: absolute; left: 0; right: 0; top: 806px; display: flex; justify-content: center; align-items: center; gap: 40px">
     <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>
     <div style="width: 300px; height: 180px; border-radius: 18px; background: rgba(255,255,255,0.08)"></div>

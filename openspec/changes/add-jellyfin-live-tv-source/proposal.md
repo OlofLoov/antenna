@@ -48,4 +48,4 @@ Out of scope:
 - Needs from `add-first-run-onboarding`: the Jellyfin card, wording for a forbidden account and an untrusted certificate, and Jellyfin sources in its Apple TV sign-in step.
 - Needs from `add-live-tv-on-iphone-ipad-mac`: a "Sign in again" row.
 - Needs from `guide-data`: a revision that takes programmes from the client.
-- Follow-up decision owed: where the per-device Jellyfin sign-in key lives. Decision adr-0003 syncs every Keychain item, but Jellyfin ties its key to the device that asked for it, so it must not sync. Until that decision exists the app keeps the key in memory and signs in once per launch. The requirements hold either way.
+- Follow-up decision owed: where the per-device Jellyfin sign-in key lives. The project rule is that every secret lives in the synchronizable iCloud Keychain, but Jellyfin ties its key to the device that asked for it, so it must not sync. Until that decision exists the app keeps the key in memory and signs in once per launch. The requirements hold either way.

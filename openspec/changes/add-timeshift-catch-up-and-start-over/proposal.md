@@ -18,7 +18,7 @@ Not reviewed yet.
 - Catch-up addresses are built for the common playlist styles (`default`, `append`, `shift`, `flussonic`, `xc`) and for Xtream accounts.
 - Start over for the programme on air now, by catch-up first and the local buffer second.
 - Skipping within a catch-up programme, and returning to live when it ends.
-- Defined behaviour when the buffer fills, storage is short, catch-up fails, the app goes to the background, or the stream cannot be recorded.
+- Defined behavior when the buffer fills, storage is short, catch-up fails, the app goes to the background, or the stream cannot be recorded.
 - A rewind row in the Apple TV zap bar and a two-row control strip on iPhone, iPad and Mac.
 
 Out of scope:
@@ -44,4 +44,4 @@ Out of scope:
 
 - Refines the player controls (its transport strip and keyboard seek keys go; its buffering and error screens show during catch-up loads), the channel overlay (Start over visible, focus order, Watch respects a user pause), the zap bar (play/pause reaches the engine, the live hint, the LIVE behind state, left and right skip), the guide grid and tvOS shell (no resume over a user pause), Live on iPhone, iPad and Mac (two-row strip, LIVE as a button while behind), the catalogue (favorite snapshots copy no catch-up fields), and the playback engine (timeshift, seek by date, buffer attach). The design system gains the buffered-fill token and the LIVE behind state.
 - Depends on: `m3u-playlists`, `xtream-live-source`, `source-management`, `channel-catalogue`, `guide-data`, `tvos-shell`, change `add-tv-channel-overlay`, change `add-tv-zap-bar-and-number-entry`, change `add-tv-guide-grid`, change `add-live-tv-on-iphone-ipad-mac`, change `add-playback-engine`, change `add-player-controls-and-playback-errors`.
-- Blocked on: a decision record for where the timeshift buffer lives and how big it is. Assumed meanwhile: files in the app cache, 60 minutes, 4 GB on Apple TV and Mac, 2 GB on iPhone and iPad.
+- Blocked on: a decision in this change's design.md on where the timeshift buffer lives and how big it is. Assumed meanwhile: files in the app cache, 60 minutes, 4 GB on Apple TV and Mac, 2 GB on iPhone and iPad.

@@ -151,9 +151,8 @@ same input; *Menu* is the back button; *play/pause* is its own button.
 
 ## 5. Accessibility identifier prefixes
 
-Used by the requirement "Accessibility identifiers follow the board" (was
-DR-11). Prefixes: `onboarding.`, `overlay.`, `zapBar.`, `guide.`, `browse.`,
-`movies.`, `series.`, `search.`, `shell.`, `player.`, `timeshift.`,
+Used by the requirement "Accessibility identifiers follow the board".
+Prefixes: `onboarding.`, `overlay.`, `zapBar.`, `guide.`, `browse.`, `movies.`, `series.`, `search.`, `shell.`, `player.`, `timeshift.`,
 `groups.`, `guideSources.`, `multiView.`, `settings.`, `paywall.`, `title.`,
 `episodes.`, `reminders.`, `recents.`, `profiles.`, `topShelf.`, `import.`.
 Element names come from the board's comments and labels, for example
@@ -163,7 +162,7 @@ Element names come from the board's comments and labels, for example
 
 - Requirements keep their names once code and tests cite them. A rule that no
   longer applies is removed through a change with a REMOVED delta and its
-  reason. Each requirement carries its old rule number as "(was DR-n)".
+  reason.
 - Reviewing a proposed change: a change that describes a screen names its
   boards and the design-system requirements that apply. A described state
   (focused, empty, loading, error) that is not on the board is a finding
@@ -173,5 +172,5 @@ Element names come from the board's comments and labels, for example
   board's structure and the inline sizes to section 1 here. Check identifier
   prefixes against section 5. A mismatch the change did not call out is a
   finding.
-- "Live video keeps playing under overlays" (was DR-1) is checkable in code:
+- "Live video keeps playing under overlays" is checkable in code:
   no `PlayerView` teardown and no `pause()` when an overlay is presented.

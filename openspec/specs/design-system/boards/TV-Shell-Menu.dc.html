@@ -15,13 +15,13 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
 
-  <!-- shell.player: live video stage, still playing (DR-1) -->
+  <!-- shell.player: live video stage, still playing (design-system/live-video-keeps-playing-under-overlays) -->
   <div style="position: absolute; inset: 0; background: #1A2535"></div>
 
   <!-- shell.scrim: full-frame dim under the tab bar -->
   <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.55)"></div>
 
-  <!-- shell.tabBar after Menu from full screen: Live is selected and focused, so it carries the Focus token; nothing else is white (DR-2) -->
+  <!-- shell.tabBar after Menu from full screen: Live is selected and focused, so it carries the Focus token; nothing else is white (design-system/focus-is-the-lifted-white-card) -->
   <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
     <!-- shell.mark: not focusable -->
     <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
@@ -29,7 +29,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <span>Antenna</span>
     </div>
     <div style="display: flex; align-items: center; gap: 14px">
-      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (DR-13 deviation in spec 0015) -->
+      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (design-system/text-meets-contrast-minimums deviation in tvos-shell) -->
       <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: #11151C">
         <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">Live</span>
         <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>

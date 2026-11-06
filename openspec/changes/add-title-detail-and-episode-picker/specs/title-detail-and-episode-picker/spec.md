@@ -17,7 +17,7 @@ The system SHALL open a movie's page at once from More info, showing what it alr
 #### Scenario: Leave before the details arrive
 - **GIVEN** a page whose details are still loading
 - **WHEN** the user leaves it
-- **THEN** the request is cancelled, a late reply changes nothing, and opening the page again asks again
+- **THEN** the request is canceled, a late reply changes nothing, and opening the page again asks again
 
 #### Scenario: The source is deleted
 - **GIVEN** a title's page open
