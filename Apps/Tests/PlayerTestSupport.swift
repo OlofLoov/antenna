@@ -77,6 +77,19 @@ struct PlayerHarness {
         return Data(lines.joined(separator: "\n").utf8)
     }
 
+    /// A finished HLS film of `segments` 2 second segments, made by
+    /// repeating the fixture's three, with full segment addresses.
+    func longPlaylist(segments: Int) throws -> Data {
+        var lines = ["#EXTM3U", "#EXT-X-VERSION:3", "#EXT-X-TARGETDURATION:2", "#EXT-X-MEDIA-SEQUENCE:0", "#EXT-X-PLAYLIST-TYPE:VOD"]
+        for index in 0..<segments {
+            if index > 0, index.isMultiple(of: 3) { lines.append("#EXT-X-DISCONTINUITY") }
+            lines.append("#EXTINF:2.0,")
+            lines.append(url("hls/segment\(index % 3).ts").absoluteString)
+        }
+        lines.append("#EXT-X-ENDLIST")
+        return Data(lines.joined(separator: "\n").utf8)
+    }
+
     func stop() async {
         await engine.stop()
         await server.stop()
