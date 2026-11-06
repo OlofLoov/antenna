@@ -52,10 +52,9 @@ enum ShellTabBar {
                     .accessibilityHidden(true)
                 Text("Antenna")
                     .font(.system(size: 28, weight: .bold))
+                    .accessibilityIdentifier("shell.mark")
             }
             .foregroundStyle(Palette.text)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("shell.mark")
         }
     }
 

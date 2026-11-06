@@ -40,7 +40,17 @@ final class ShellUITests: XCTestCase {
     }
 
     func expectFocus(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
-        expect(element(identifier), "hasFocus == true", file: file, line: line)
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: element(identifier))
+        guard XCTWaiter().wait(for: [expectation], timeout: 10) != .completed else { return }
+        XCTFail("\(identifier) never took focus; focused: \(focusedElements())", file: file, line: line)
+    }
+
+    /// What has focus, for failure messages.
+    func focusedElements() -> String {
+        let focused = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true"))
+        return focused.allElementsBoundByIndex
+            .map { "[\($0.identifier) type \($0.elementType.rawValue) label '\($0.label)']" }
+            .joined(separator: " ")
     }
 
     func expectEngine(_ summary: String, file: StaticString = #filePath, line: UInt = #line) {
@@ -73,7 +83,7 @@ extension ShellUITests {
         var previous = -CGFloat.infinity
         for identifier in order {
             let item = element(identifier)
-            XCTAssertTrue(item.waitForExistence(timeout: 10), "\(identifier) missing")
+            XCTAssertTrue(item.waitForExistence(timeout: 10), "\(identifier) missing in \(app.debugDescription)")
             XCTAssertGreaterThan(item.frame.minX, previous, "\(identifier) is out of order")
             previous = item.frame.minX
         }
