@@ -1,7 +1,7 @@
 # channel-catalogue Specification
 
 ## Purpose
-Gives every screen the same answers about the loaded channels: which groups exist and in what order, what number each channel has, what to draw when a logo is missing, which favorites can be shown, and which channel a typed number reaches. It serves the user who wants several subscriptions "merged into one channel list and one guide", the living-room viewer who wants "to flip channels quickly with the remote, by up and down or by typing a number", and the viewer who wants "my favorite channels together in one list".
+Gives the screens that list channels one set of answers about the loaded channels: which groups exist and in what order, what number each channel has, what to draw when a logo is missing, which favorites can be shown, and which channel a typed number reaches. It serves the user who wants several subscriptions "merged into one channel list and one guide", the living-room viewer who wants "to flip channels quickly with the remote, by up and down or by typing a number", and the viewer who wants "my favorite channels together in one list". No screen uses these answers yet, so the channel lists on every platform still show channels in load order.
 
 ## Requirements
 
@@ -32,9 +32,14 @@ The system SHALL list Favorites, then All channels, then for each source in inpu
 - **THEN** they fall in their source's Ungrouped group, which follows the named groups and is absent when the source has no such channels
 
 #### Scenario: Group names
-- **GIVEN** group names that differ only in case or spacing inside the name
+- **GIVEN** group names that differ only in case, or in spacing inside, before or after the name
 - **WHEN** the catalogue is built
 - **THEN** they stay separate groups, because only empty and whitespace-only names are normalized
+
+#### Scenario: Sources interleaved in the input
+- **GIVEN** input whose channels from sources A and B are mixed, with A's first channel ahead of B's
+- **WHEN** the catalogue is built
+- **THEN** A counts as the first source and B as the second, and each source's channels are taken in position order
 
 ### Requirement: Group counts
 The system SHALL count the channels in each group, with every count equal to the number of rows that group lists.
@@ -100,7 +105,7 @@ The system SHALL order All channels by assigned number, then source order, then 
 - **THEN** the order is 3 (A), 5 (A, position 2), 5 (A, position 9), 5 (B)
 
 ### Requirement: Initials
-The system SHALL derive up to four upper-case initials from a channel name, counting only letters and digits: the first four counting characters of a single counting word, or else the first counting character of each word. A name with none SHALL give "?".
+The system SHALL derive up to four upper-case initials from a channel name, counting only letters and digits: the first four counting characters of a single counting word, or else the first counting character of each of the first four words that have one. A name with none SHALL give "?".
 
 #### Scenario: Examples
 - **GIVEN** the names "Sport One", "Eurosport 1", "BBC - One", "Arena HD", "a b c d e", "news24", "24/7" and "** HD **"
