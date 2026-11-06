@@ -48,6 +48,21 @@ The system SHALL load every source in sort order into one channel list at every 
 - **WHEN** the sources are reordered, on this device or through sync
 - **THEN** the channels follow the new order and nothing is downloaded
 
+#### Scenario: Previous load gave no channels
+- **GIVEN** a source whose last load produced no channels
+- **WHEN** the channel list loads again
+- **THEN** that source is downloaded again
+
+#### Scenario: Source record without a URL
+- **GIVEN** a source record that has no URL, such as one that synced only in part
+- **WHEN** the channel list loads
+- **THEN** that source is skipped and the others load
+
+#### Scenario: A newer load starts first
+- **GIVEN** a load still running
+- **WHEN** the sources change and a newer load starts
+- **THEN** the older load's result is dropped and the list shows the newer load's channels
+
 ## REMOVED Requirements
 
 ### Requirement: Load failure is recorded
