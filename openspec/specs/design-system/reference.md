@@ -17,9 +17,10 @@ patterns and shared components the requirements point to.
 | Token | Value | Use |
 |-------|-------|-----|
 | Ground | `#0B0E13` | App background on every platform |
-| Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar |
+| Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar, the pill group of the tvOS tab bar |
 | Overlay scrim | `rgba(8,10,14,0.88)` | tvOS panels over live video |
-| Surface | `rgba(255,255,255,0.06)` to `0.12` | Rows, cards, chips; `0.12` is the selected row on touch platforms and the selected-but-unfocused group on tvOS |
+| Bar scrim | `rgba(8,10,14,0.55)` | Dims the tvOS picture or guide under the raised tab bar |
+| Surface | `rgba(255,255,255,0.06)` to `0.18` | Rows, cards, chips; `0.08` for dividers, `0.12` is the selected row on touch platforms and the selected-but-unfocused group or tab on tvOS, `0.18` the track of a loading ring |
 | Text | `#F2F4F8` | Primary |
 | Text secondary | `#D7DEE8` | Body copy and descriptions |
 | Text muted | `#A7B0BF` | Captions, metadata, section eyebrows. 9:1 on ground |
@@ -53,9 +54,11 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
   badges. Channel digits typed on a hardware keyboard appear top left.
 - Guide: PiP player (480 by 270) and programme detail on top, grid below
   with a 300 wide channel column, 370 per 30 minutes, accent now line.
-- Non-live sections (Movies, Series, Search) use the tvOS top tab bar:
-  Live, Guide, Movies, Series, Search, then the settings gear. Clock top
-  right. The `tvos-shell` capability owns the bar and its Menu behavior.
+- Non-live sections (Movies, Series, Search) use the tvOS top tab bar,
+  104 tall with 64 at each side: the Antenna mark, then Live, Guide,
+  Movies, Series, Search, then the settings gear. Clock top right; on the
+  Guide the bar keeps the clock's slot empty and the guide draws its own.
+  The `tvos-shell` capability owns the bar and its Menu behavior.
 - Sources and Settings: full-screen panel over the current tab, list
   (640, from x 64) | detail (1088, from x 768), title top left. Rows on
   the left, the selected row's detail on the right.
