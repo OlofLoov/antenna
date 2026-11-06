@@ -104,7 +104,7 @@
 
         // MARK: Layers
 
-        /// The same surface in every tab, so the player is never rebuilt (DR-1):
+        /// The same surface in every tab, so the player is never rebuilt (design-system/live-video-keeps-playing-under-overlays):
         /// full screen on Live, the 480 by 270 box on Guide, hidden behind
         /// Movies, Series and Search.
         private var picture: some View {
@@ -282,7 +282,7 @@
             }
         }
 
-        /// The DR-11 element name: `shell.tab.<identifier>`.
+        /// The element name design-system/accessibility-identifiers-follow-the-board asks for: `shell.tab.<identifier>`.
         var identifier: String {
             switch self {
             case .live: "live"

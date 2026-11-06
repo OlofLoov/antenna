@@ -1,7 +1,7 @@
 import Foundation
 
 /// Unpacks the first member of a gzip file (RFC 1952, deflate per RFC 1951)
-/// in Swift, so AntennaCore keeps to Foundation (ADR-0005). Output goes to
+/// in Swift, so AntennaCore keeps to Foundation (decision adr-0005). Output goes to
 /// `write` in blocks of about 64 KiB, and unpacking stops on the block that
 /// takes the total past `limit`. The CRC and length trailer are not checked;
 /// a damaged stream fails as a deflate error. Bytes after the first member

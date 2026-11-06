@@ -107,7 +107,7 @@ final class SteppingUptime: @unchecked Sendable {
         }
     }
 
-    @Test("0014/AC-12 failures say why", arguments: Cause.allCases)
+    @Test("guide-data/failures-say-why failures say why", arguments: Cause.allCases)
     func failures(cause: Cause) async throws {
         let host = "ac12-\(cause.rawValue.lowercased()).epg"
         let (loginURL, expected) = try register(cause, host: host)
@@ -119,7 +119,7 @@ final class SteppingUptime: @unchecked Sendable {
         case plainWithLength, plainWithoutLength, gzipWithLength, gzipWithoutLength, unpacksTooLarge
     }
 
-    @Test("0014/AC-12 too large stops within a chunk", arguments: Oversize.allCases)
+    @Test("guide-data/failures-say-why too large stops within a chunk", arguments: Oversize.allCases)
     func tooLarge(kind: Oversize) async throws {
         let host = "ac12-large-\(kind.rawValue.lowercased()).epg"
         var random = SystemRandomNumberGenerator()
@@ -155,7 +155,7 @@ final class SteppingUptime: @unchecked Sendable {
         }
     }
 
-    @Test("0014/AC-17 a gzip guide without Content-Encoding loads end to end")
+    @Test("guide-data/compressed-guides a gzip guide without Content-Encoding loads end to end")
     func gzipEndToEnd() async throws {
         GuideStubProtocol.register(host: "ac17-gzip.epg", body: try guideFixture("guide.xmltv.gz"), chunkSize: 5)
         let outcome = try await fetch(host: "ac17-gzip.epg")
@@ -166,7 +166,7 @@ final class SteppingUptime: @unchecked Sendable {
         #expect(guide.count == 6)
     }
 
-    @Test("0014/AC-9 download progress is throttled")
+    @Test("guide-data/progress-a-screen-can-show download progress is throttled")
     func progressThrottle() async throws {
         let body = Self.xml(programmes: 120)
         let size = body.count

@@ -30,7 +30,7 @@ import Testing
         Row(name: "Stalker without", kind: .stalker, expected: nil),
     ]
 
-    @Test("0014/AC-1 guide link per source", arguments: rows)
+    @Test("guide-data/find-the-guide-for-each-source guide link per source", arguments: rows)
     func resolve(row: Row) throws {
         let resolved = GuideURLResolver.resolve(
             kind: row.kind,
@@ -44,7 +44,7 @@ import Testing
 
 @Suite struct RedactionTests {
     @Test(
-        "0014/AC-15 redaction removes every login part",
+        "guide-data/logins-never-in-the-clear redaction removes every login part",
         arguments: [
             ("http://panel:8080/xmltv.php?username=alice7&password=s3cr3t", "http://panel:8080/xmltv.php?username=…&password=…"),
             ("https://alice7:s3cr3t@epg.example/guide.xml.gz", "https://epg.example/guide.xml.gz"),

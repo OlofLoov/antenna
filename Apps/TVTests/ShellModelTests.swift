@@ -58,9 +58,9 @@ import Testing
         await wait({ engine.loaded.last == channel.streamURL && engine.plays > 0 }, "\(channel.id) playing")
     }
 
-    // MARK: AC-2a
+    // MARK: tvos-shell/back-to-the-last-channel-on-launch
 
-    @Test("0015/AC-2a the remembered channel plays once its source loads")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch the remembered channel plays once its source loads")
     func remembered() async {
         let wanted = Channel.fixture("b2")
         await launch(remembering: wanted)
@@ -75,7 +75,7 @@ import Testing
         await wait({ store.read() == LastChannelKey(sourceID: sourceB.id, channelID: wanted.id) }, "last channel written")
     }
 
-    @Test("0015/AC-2a a remembered channel that is gone falls back to the first source to load")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch a remembered channel that is gone falls back to the first source to load")
     func rememberedGone() async {
         await launch(remembering: .fixture("gone"))
 
@@ -90,7 +90,7 @@ import Testing
         await wait({ store.read() == written }, "the channel that played is remembered")
     }
 
-    @Test("0015/AC-2a after 10 seconds the first source to load plays and a late source changes nothing")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch after 10 seconds the first source to load plays and a late source changes nothing")
     func deadline() async {
         await launch(remembering: .fixture("b2"))
         loader.finish(sourceA.id, with: [.fixture("a1")])
@@ -108,7 +108,8 @@ import Testing
         #expect(engine.loaded == [Channel.fixture("a1").streamURL])
     }
 
-    @Test("0015/AC-2a a remembered source that loads after 10 seconds plays its first channel, as the spec words it")
+    // tvos-shell/back-to-the-last-channel-on-launch
+    @Test("a remembered source that loads after 10 seconds plays its first channel, as the spec words it")
     func slowRememberedSource() async {
         await launch(remembering: .fixture("b2"))
         loader.finish(sourceA.id, with: [])
@@ -120,7 +121,7 @@ import Testing
         await playing(.fixture("b1"))
     }
 
-    @Test("0015/AC-2a with nothing remembered the first source to finish with channels plays")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch with nothing remembered the first source to finish with channels plays")
     func nothingRemembered() async {
         await launch()
         loader.finish(sourceB.id, with: [])
@@ -133,7 +134,7 @@ import Testing
 
 }
 
-// MARK: AC-5a
+// MARK: tvos-shell/the-video-pauses-behind-movies-series-and-search
 
 extension ShellModelTests {
     private func playingFirstChannel() async {
@@ -147,7 +148,8 @@ extension ShellModelTests {
         await wait { clock.requested.last == .seconds(30) }
     }
 
-    @Test("0015/AC-5a 30 seconds behind Movies pause the video and Live resumes it without a reload")
+    // tvos-shell/the-video-pauses-behind-movies-series-and-search
+    @Test("30 seconds behind Movies pause the video and Live resumes it without a reload")
     func pauseBehindMovies() async {
         await playingFirstChannel()
         _ = await model.select(.movies)
@@ -168,7 +170,7 @@ extension ShellModelTests {
         #expect(engine.loaded.count == 1, "resuming does not load the channel again")
     }
 
-    @Test("0015/AC-5a the timer runs on across Search and Series, and Guide resumes")
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search the timer runs on across Search and Series, and Guide resumes")
     func pauseAcrossContentTabs() async {
         await playingFirstChannel()
         _ = await model.select(.search)
@@ -183,7 +185,7 @@ extension ShellModelTests {
         #expect(engine.state == .playing)
     }
 
-    @Test("0015/AC-5a going back before 30 seconds neither pauses nor plays")
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search going back before 30 seconds neither pauses nor plays")
     func backBeforeDeadline() async {
         await playingFirstChannel()
         let plays = engine.plays

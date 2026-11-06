@@ -44,7 +44,7 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
         guide.programmes.mapValues { $0.map(\.title) }
     }
 
-    @Test("0014/AC-17 gzip gives the same programmes")
+    @Test("guide-data/compressed-guides gzip gives the same programmes")
     func gzipMatchesPlain() throws {
         let plain = try decode(try guideFixture("guide.xmltv"))
         let packed = try decode(try guideFixture("guide.xmltv.gz"), chunkSize: 7)
@@ -54,7 +54,7 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
     }
 
     @Test(
-        "0014/AC-17 gzip at every level and with stored blocks unpacks byte for byte",
+        "guide-data/compressed-guides gzip at every level and with stored blocks unpacks byte for byte",
         arguments: [1, 6, 9])
     func gunzipLevels(level: Int) throws {
         var random = SystemRandomNumberGenerator()
@@ -69,7 +69,7 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
         #expect(unpacked.all.reduce(Data(), +) == body)
     }
 
-    @Test("0014/AC-17 a short body in one fixed-code block unpacks")
+    @Test("guide-data/compressed-guides a short body in one fixed-code block unpacks")
     func fixedBlock() throws {
         let body = Data("<tv/>".utf8)
         let packed = try gzip(body)
@@ -78,7 +78,7 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
         #expect(unpacked.all.reduce(Data(), +) == body)
     }
 
-    @Test("0014/AC-12 gunzip stops at the block that crosses the limit")
+    @Test("guide-data/failures-say-why gunzip stops at the block that crosses the limit")
     func gunzipLimit() throws {
         let bomb = try gzip(Data(repeating: 0x20, count: 1_000_000))
         let written = Recorder<Int>()
@@ -88,28 +88,28 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
         #expect(written.all.reduce(0, +) <= 100_000)
     }
 
-    @Test("0014/AC-17 a clean document after leading whitespace parses")
+    @Test("guide-data/compressed-guides a clean document after leading whitespace parses")
     func cleanAfterWhitespace() throws {
         let clean = GuideFetcherTests.xml(programmes: 30)
         #expect(!clean.contains(UInt8(ascii: "&")))
         #expect(try decode(Data("\n\n  ".utf8) + clean).count == 30)
     }
 
-    @Test("0014/AC-17 hundreds of newlines before XML are skipped")
+    @Test("guide-data/compressed-guides hundreds of newlines before XML are skipped")
     func longWhitespace() throws {
         let body = Data(String(repeating: "\n", count: 800).utf8) + (try guideFixture("guide.xmltv"))
         #expect(try decode(body, chunkSize: 100).count == 6)
         #expect(try decode(try gzip(body)).count == 6)
     }
 
-    @Test("0014/AC-17 a byte order mark and whitespace before XML are accepted")
+    @Test("guide-data/compressed-guides a byte order mark and whitespace before XML are accepted")
     func byteOrderMark() throws {
         let body = Data([0xef, 0xbb, 0xbf]) + Data(" \n\t".utf8) + (try guideFixture("guide.xmltv"))
         #expect(try decode(body, chunkSize: 2).count == 6)
     }
 
     @Test(
-        "0014/AC-17 neither XML nor gzip is unsupported",
+        "guide-data/compressed-guides neither XML nor gzip is unsupported",
         arguments: [
             Data([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
             Data("{\"user_info\":{\"auth\":0}}".utf8),
@@ -120,13 +120,13 @@ final class Recorder<Element: Sendable>: @unchecked Sendable {
         #expect(throws: GuideError.unsupportedEncoding) { try decode(body, chunkSize: 1) }
     }
 
-    @Test("0014/AC-17 gzip inside gzip is unsupported")
+    @Test("guide-data/compressed-guides gzip inside gzip is unsupported")
     func nestedGzip() throws {
         let twice = try gzip(try guideFixture("guide.xmltv.gz"))
         #expect(throws: GuideError.unsupportedEncoding) { try decode(twice) }
     }
 
-    @Test("0014/AC-17 sniffing waits for enough bytes")
+    @Test("guide-data/compressed-guides sniffing waits for enough bytes")
     func sniffing() {
         #expect(GuideDecoder.sniff([]) == nil)
         #expect(GuideDecoder.sniff([0x1f]) == nil)

@@ -8,7 +8,7 @@ import Testing
         XtreamClient(credentials: XtreamCredentials(server: try #require(URL(string: server)), username: username, password: password))
     }
 
-    @Test("0016/AC-7 movie and episode URLs")
+    @Test("xtream-vod-client/playable-urls movie and episode URLs")
     func playableURLs() throws {
         let client = try client("http://h:8080")
         #expect(client.movieURL(streamID: 55, extension: "mkv").absoluteString == "http://h:8080/movie/u/p/55.mkv")
@@ -16,7 +16,7 @@ import Testing
     }
 
     @Test(
-        "0016/AC-7 extension is trimmed, one leading dot dropped, mp4 by default",
+        "xtream-vod-client/playable-urls extension is trimmed, one leading dot dropped, mp4 by default",
         arguments: [(" mkv ", "mkv"), (".mkv", "mkv"), (" .ts", "ts"), ("..mkv", ".mkv"), ("", "mp4"), ("  ", "mp4"), (nil, "mp4")]
             as [(String?, String)])
     func extensionRule(input: String?, expected: String) throws {
@@ -25,14 +25,14 @@ import Testing
         #expect(client.episodeURL(episodeID: 901, extension: input).lastPathComponent == "901.\(expected)")
     }
 
-    @Test("0016/AC-7 a server path is kept", arguments: ["http://h/xtream", "http://h/xtream/"])
+    @Test("xtream-vod-client/playable-urls a server path is kept", arguments: ["http://h/xtream", "http://h/xtream/"])
     func serverPath(server: String) throws {
         let client = try client(server)
         #expect(client.movieURL(streamID: 55, extension: "mkv").absoluteString == "http://h/xtream/movie/u/p/55.mkv")
         #expect(client.xmltvURL().absoluteString == "http://h/xtream/xmltv.php?username=u&password=p")
     }
 
-    @Test("0016/AC-7 reserved characters in credentials are percent-encoded in every URL")
+    @Test("xtream-vod-client/playable-urls reserved characters in credentials are percent-encoded in every URL")
     func encodedCredentials() throws {
         let client = try client("http://h:8080", password: "a&b/c+d")
         let stream = try JSONDecoder().decode(XtreamLiveStream.self, from: Data(#"{"name":"A","stream_id":42}"#.utf8))
@@ -50,7 +50,7 @@ import Testing
     ]
     static let forbidden = ["alice-7f3e", "s3cr3t-9b2a", ":8080", "player_api.php", "/movie/", "/series/", "/live/"]
 
-    @Test("0016/AC-8 errors carry no credentials or URLs", arguments: errors)
+    @Test("xtream-vod-client/errors-and-client-values-never-carry-credentials errors carry no credentials or URLs", arguments: errors)
     func errorsCarryNoSecrets(error: XtreamClient.XtreamError) {
         let texts = [String(describing: error), String(reflecting: error), String(describing: (error as NSError).userInfo)]
         for text in texts {
@@ -58,7 +58,7 @@ import Testing
         }
     }
 
-    @Test("0016/AC-8 credentials and client describe themselves by host only")
+    @Test("xtream-vod-client/errors-and-client-values-never-carry-credentials credentials and client describe themselves by host only")
     func valuesCarryNoSecrets() throws {
         let credentials = XtreamCredentials(
             server: try #require(URL(string: "http://panel.example:8080")), username: "alice-7f3e", password: "s3cr3t-9b2a")

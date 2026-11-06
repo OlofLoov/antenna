@@ -2,14 +2,14 @@ import SwiftUI
 
 /// What Live shows on Apple TV before a channel plays (spec 0015;
 /// `TV-Shell-Loading`, `TV-Shell-Empty` and their `-Menu` boards). Compiles
-/// on every platform so the snapshot job renders its previews (ADR-0007).
+/// on every platform so the snapshot job renders its previews (decision adr-0007).
 enum ShellLoading {
     /// One source on the loading screen.
     struct Row: Identifiable, Equatable, Sendable {
         enum Indicator: Equatable, Sendable {
             /// Still loading: a 44 pt ring with the accent arc.
             case working
-            /// Finished loading, with or without channels: an accent check (DR-3 deviation in 0015).
+            /// Finished loading, with or without channels: an accent check (design-system/one-accent-color deviation in tvos-shell).
             case done
             /// Failed or waiting: the 44 pt slot stays empty so names line up.
             case none

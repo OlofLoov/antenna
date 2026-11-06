@@ -17,7 +17,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         return try #require(list.items.first)
     }
 
-    @Test("0016/AC-2 VOD item fields")
+    @Test("xtream-vod-client/vod-item-fields VOD item fields")
     func vodItemFields() throws {
         let list = try XtreamClient.decodeVODList(try xtreamFixture("vod_streams.json"), host: host)
         let item = try #require(list.items.first)
@@ -34,7 +34,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-2a ids accept number or string",
+        "xtream-vod-client/loose-forms ids accept number or string",
         arguments: [
             (#""stream_id":55,"category_id":12"#), (#""stream_id":"55","category_id":"12""#),
             (#""stream_id":55,"category_id":"12""#), (#""stream_id":"55","category_id":12"#),
@@ -47,7 +47,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-2a added and rating loose forms",
+        "xtream-vod-client/loose-forms added and rating loose forms",
         arguments: [
             (#"1730600000"#, #"7.4"#, true), (#""1730600000""#, #""7.4""#, true), (#""N/A""#, #""N/A""#, false),
             (#""""#, #""""#, false), ("null", "null", false),
@@ -58,13 +58,13 @@ func xtreamFixture(_ name: String) throws -> Data {
         #expect(item.rating == (present ? 7.4 : nil))
     }
 
-    @Test("0016/AC-2a rating 0 is nil", arguments: ["0", #""0""#])
+    @Test("xtream-vod-client/loose-forms rating 0 is nil", arguments: ["0", #""0""#])
     func zeroRating(rating: String) throws {
         #expect(try vodRow(",\"rating\":\(rating)").rating == nil)
     }
 
     @Test(
-        "0016/AC-2b only http and https URLs with a host",
+        "xtream-vod-client/url-fields only http and https URLs with a host",
         arguments: [
             ("http://h/p.jpg", true), ("https://h/p.jpg", true), ("ftp://h/p", false), ("//h/p", false), ("p.jpg", false),
             ("", false), ("http://", false),
@@ -81,13 +81,13 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-3 unparseable added is nil and never traps",
+        "xtream-vod-client/unparseable-added-date unparseable added is nil and never traps",
         arguments: [#""0""#, #""""#, "null", #""abc""#, #""nan""#, #""inf""#, #""-inf""#, #""1e400""#, "1e400", "99999999999999999999"])
     func unparseableAdded(added: String) throws {
         #expect(try vodRow(",\"added\":\(added)").added == nil)
     }
 
-    @Test("0016/AC-4 broken and duplicate rows are skipped and counted")
+    @Test("xtream-vod-client/broken-rows-are-skipped broken and duplicate rows are skipped and counted")
     func brokenRows() throws {
         let list = try XtreamClient.decodeVODList(try xtreamFixture("vod_streams_broken.json"), host: host)
         #expect(list.items.map(\.name) == ["First", "Second", "Third"])
@@ -101,7 +101,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-4 ids must be whole numbers, never truncated",
+        "xtream-vod-client/broken-rows-are-skipped ids must be whole numbers, never truncated",
         arguments: [("55", true), ("55.0", true), (#""55.0""#, true), (#""55.7""#, false), ("55.7", false)])
     func wholeNumberIDs(id: String, kept: Bool) throws {
         let list = try XtreamClient.decodeVODList(Data("[{\"name\":\"Dune\",\"stream_id\":\(id)}]".utf8), host: host)
@@ -109,7 +109,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         #expect(list.skipped == (kept ? 0 : 1))
     }
 
-    @Test("0016/AC-4 empty or whitespace names are missing", arguments: [#""""#, #""   ""#, #""\t\n""#])
+    @Test("xtream-vod-client/broken-rows-are-skipped empty or whitespace names are missing", arguments: [#""""#, #""   ""#, #""\t\n""#])
     func blankNames(name: String) throws {
         let vod = try XtreamClient.decodeVODList(
             Data("[{\"name\":\(name),\"stream_id\":1},{\"name\":\"B\",\"stream_id\":2}]".utf8), host: host)
@@ -120,7 +120,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         #expect(series.skipped == 1)
     }
 
-    @Test("0016/AC-4 whitespace optional strings are nil")
+    @Test("xtream-vod-client/broken-rows-are-skipped whitespace optional strings are nil")
     func blankOptionalStrings() throws {
         let item = try vodRow(#","stream_icon":"  ","container_extension":" ","category_id":"\t""#)
         #expect(item.posterURL == nil)
@@ -133,7 +133,8 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-4 series rows skip on series_id", arguments: [#"{"name":"A"}"#, #"{"name":"A","series_id":"nan"}"#, #"{"series_id":2}"#])
+        "xtream-vod-client/broken-rows-are-skipped series rows skip on series_id",
+        arguments: [#"{"name":"A"}"#, #"{"name":"A","series_id":"nan"}"#, #"{"series_id":2}"#])
     func brokenSeriesRows(row: String) throws {
         let list = try XtreamClient.decodeSeriesList(Data("[{\"name\":\"Dark\",\"series_id\":7},\(row)]".utf8), host: host)
         #expect(list.items.map(\.seriesID) == [7])
@@ -141,7 +142,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-4a non-array list body throws decoding with an empty path",
+        "xtream-vod-client/non-array-list-body non-array list body throws decoding with an empty path",
         arguments: [#"{"error":"Invalid request","detail":"ask your provider"}"#, #""unexpected text from the panel""#, "true", "html"])
     func nonArrayListBody(body: String) throws {
         let data = body == "html" ? try xtreamFixture("html_login.html") : Data(body.utf8)
@@ -154,7 +155,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         }
     }
 
-    @Test("0016/AC-4a nested failures name the dotted coding path")
+    @Test("xtream-vod-client/non-array-list-body nested failures name the dotted coding path")
     func nestedPath() throws {
         let body = Data(#"[{"category_id":1,"category_name":"A"},{"category_id":2,"category_name":"B"}, {"category_id":3}]"#.utf8)
         let error = #expect(throws: XtreamClient.XtreamError.self) {
@@ -163,7 +164,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         #expect(error == .decoding(path: "[2].category_name"))
     }
 
-    @Test("0016/AC-5 VOD info fields")
+    @Test("xtream-vod-client/vod-info VOD info fields")
     func vodInfoFields() throws {
         let info = try XtreamClient.decodeVODInfo(try xtreamFixture("vod_info.json"), host: host)
         #expect(info.plot == "A desert")
@@ -176,7 +177,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-5 duration rule",
+        "xtream-vod-client/vod-info duration rule",
         arguments: [
             (#""duration_secs":7680"#, 7680.0), (#""duration_secs":"7680""#, 7680), (#""duration":"02:08:00""#, 7680),
             (#""duration_secs":0,"duration":"02:08:00""#, 7680), (#""duration_secs":"N/A","duration":"128:00""#, 7680),
@@ -188,7 +189,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-5 year rule",
+        "xtream-vod-client/vod-info year rule",
         arguments: [
             (#""releasedate":"2024-03-01""#, 2024), (#""release_date":"1999""#, 1999), (#""releaseDate":"2001-01-01""#, 2001),
             (#""releasedate":"","release_date":"2010-05-05""#, 2010), (#""releasedate":"0000-00-00""#, nil),
@@ -200,7 +201,7 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     @Test(
-        "0016/AC-5 info shapes, single backdrop and numeric age",
+        "xtream-vod-client/vod-info info shapes, single backdrop and numeric age",
         arguments: [
             #"{"movie_data":{"container_extension":"mkv"}}"#, #"{"info":{},"movie_data":{"container_extension":"mkv"}}"#,
             #"{"info":[],"movie_data":{"container_extension":"mkv"}}"#,
@@ -214,7 +215,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         #expect(other.backdropURLs == [try #require(URL(string: "https://h/b.jpg"))])
     }
 
-    @Test("0016/AC-12 empty list and info shapes", arguments: ["[]", "{}", "false", "null"])
+    @Test("xtream-vod-client/empty-list-shapes empty list and info shapes", arguments: ["[]", "{}", "false", "null"])
     func emptyShapes(body: String) throws {
         let data = Data(body.utf8)
         #expect(try XtreamClient.decodeVODList(data, host: host) == XtreamClient.DecodedList(items: [], skipped: 0))
@@ -225,7 +226,7 @@ func xtreamFixture(_ name: String) throws -> Data {
         #expect(series.episodes.isEmpty && series.seasonCount == 0 && series.skippedEpisodes == 0)
     }
 
-    @Test("0016/AC-12 other non-object info bodies throw", arguments: ["[1]", #""text""#, "true", "42", "html"])
+    @Test("xtream-vod-client/empty-list-shapes other non-object info bodies throw", arguments: ["[1]", #""text""#, "true", "42", "html"])
     func nonObjectInfo(body: String) throws {
         let data = body == "html" ? try xtreamFixture("html_login.html") : Data(body.utf8)
         #expect(throws: XtreamClient.XtreamError.decoding(path: "")) { _ = try XtreamClient.decodeVODInfo(data, host: host) }
@@ -233,9 +234,9 @@ func xtreamFixture(_ name: String) throws -> Data {
     }
 
     /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1`.
-    /// Reference machine: Apple M1, 16 GB, debug build (the 0013/AC-14 baseline).
+    /// Reference machine: Apple M1, 16 GB, debug build (the channel-catalogue/catalogue-build-is-fast baseline).
     @Test(
-        "0016/AC-9 50 000 VOD rows decode within 500 ms",
+        "xtream-vod-client/decoding-is-fast 50 000 VOD rows decode within 500 ms",
         .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"))
     func decodeSpeed() throws {
         let template = (0..<20).map { i in

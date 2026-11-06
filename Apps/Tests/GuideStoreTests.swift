@@ -57,7 +57,7 @@ import Testing
         Issue.record("timed out")
     }
 
-    @Test("0014/AC-1a Keychain miss and failure reach the guide")
+    @Test("guide-data/login-not-on-this-device Keychain miss and failure reach the guide")
     func keychain() async throws {
         let held = HeldCredentialStore()
         let missing = try insert(.xtream, url: "http://ac1a-app-missing.test", credentialKey: "ac1a-missing")
@@ -80,7 +80,7 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac1a-app-unreadable.test").isEmpty)
     }
 
-    @Test("0014/AC-13 loading channels triggers the guide")
+    @Test("guide-data/refreshed-about-twice-a-day loading channels triggers the guide")
     func channelLoadTriggers() async throws {
         StubURLProtocol.register(
             host: "ac13-list.test",
@@ -120,7 +120,7 @@ import Testing
             return window
         }
 
-        @Test("0014/AC-18 deleting a source in the store drops its guide through RootView")
+        @Test("guide-data/deleting-a-source-removes-its-guide deleting a source in the store drops its guide through RootView")
         func deletionThroughRootView() async throws {
             StubURLProtocol.register(host: "ac18-root-a.test", body: Self.guide)
             StubURLProtocol.register(host: "ac18-root-b.test", body: Self.guide)
@@ -139,7 +139,7 @@ import Testing
             #expect(guide.loadingState(for: key(kept)) == .loaded)
         }
 
-        @Test("0014/AC-13 launch asks for stale guides")
+        @Test("guide-data/refreshed-about-twice-a-day launch asks for stale guides")
         func launchTriggers() async throws {
             StubURLProtocol.register(host: "ac13-launch.test", body: Self.guide)
             try insert(.m3u, url: "http://ac13-launch-list.test/list.m3u", epgURL: "http://ac13-launch.test/guide.xml")
@@ -154,7 +154,7 @@ import Testing
         }
     #endif
 
-    @Test("0014/AC-18 a source gone from the store loses its guide")
+    @Test("guide-data/deleting-a-source-removes-its-guide a source gone from the store loses its guide")
     func deletion() async throws {
         StubURLProtocol.register(host: "ac18-a.test", body: Self.guide)
         StubURLProtocol.register(host: "ac18-b.test", body: Self.guide)

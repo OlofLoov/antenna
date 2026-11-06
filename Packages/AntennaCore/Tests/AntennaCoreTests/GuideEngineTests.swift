@@ -122,7 +122,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         GuideStubProtocol.register(host: host, body: try guideFixture("guide.xmltv"))
     }
 
-    @Test("0014/AC-1a missing login waits, unreadable login fails")
+    @Test("guide-data/login-not-on-this-device missing login waits, unreadable login fails")
     func credentials() async throws {
         let world = GuideWorld()
         let missing = world.add(.xtream, host: "ac1a-missing.panel", link: false)
@@ -154,7 +154,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         #expect(await engine.index.loadingState(for: key(missing)) == .loaded)
     }
 
-    @Test("0014/AC-11 state before the first load")
+    @Test("guide-data/a-guide-state-that-does-not-flicker state before the first load")
     func statesBeforeLoad() async throws {
         let world = GuideWorld()
         let unregistered = world.add(.m3u, host: "ac11-unregistered.epg", link: false)
@@ -177,7 +177,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         #expect(index.loadingState(for: key(broken)) == .failed(.httpStatus(500)))
     }
 
-    @Test("0014/AC-11 state holds through failed refreshes")
+    @Test("guide-data/a-guide-state-that-does-not-flicker state holds through failed refreshes")
     func stickyState() async throws {
         let world = GuideWorld()
         let source = world.add(host: "ac11-sticky.epg")
@@ -205,7 +205,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
             ])
     }
 
-    @Test("0014/AC-13 only stale or missing guides download")
+    @Test("guide-data/refreshed-about-twice-a-day only stale or missing guides download")
     func staleness() async throws {
         let world = GuideWorld()
         let stale = world.add(host: "ac13-stale.epg")
@@ -237,7 +237,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         _ = missing
     }
 
-    @Test("0014/AC-13 explicit refresh restarts")
+    @Test("guide-data/refreshed-about-twice-a-day explicit refresh restarts")
     func restart() async throws {
         let world = GuideWorld()
         let source = world.add(host: "ac13-restart.epg")
@@ -258,7 +258,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         #expect(await engine.index.loadingState(for: key(source)) == .loaded)
     }
 
-    @Test("0014/AC-13 no sources, no requests")
+    @Test("guide-data/refreshed-about-twice-a-day no sources, no requests")
     func noSources() async throws {
         let world = GuideWorld()
         let engine = world.engine()
@@ -270,7 +270,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         #expect(world.log.all.isEmpty)
     }
 
-    @Test("0014/AC-18 removing a source mid-load")
+    @Test("guide-data/deleting-a-source-removes-its-guide removing a source mid-load")
     func removeMidLoad() async throws {
         let world = GuideWorld()
         let doomed = world.add(host: "ac18-mid.epg")
@@ -297,7 +297,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         #expect(late.events.all.allSatisfy { $0.sourceID == other.sourceID })
     }
 
-    @Test("0014/AC-18 removing a loaded source")
+    @Test("guide-data/deleting-a-source-removes-its-guide removing a loaded source")
     func removeLoaded() async throws {
         let world = GuideWorld()
         let doomed = world.add(host: "ac18-loaded.epg")
@@ -327,7 +327,7 @@ func isFailed(_ event: GuideProgress) -> Bool {
         #expect(late.of(doomed).isEmpty)
     }
 
-    @Test("0014/AC-13 a removed source that comes back is loaded again")
+    @Test("guide-data/refreshed-about-twice-a-day a removed source that comes back is loaded again")
     func readded() async throws {
         let world = GuideWorld()
         let source = world.add(host: "ac13-readded.epg")

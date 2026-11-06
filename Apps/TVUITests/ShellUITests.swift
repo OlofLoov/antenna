@@ -72,7 +72,7 @@ final class ShellUITests: XCTestCase {
 // MARK: The bar
 
 extension ShellUITests {
-    // 0015/AC-1
+    // tvos-shell/the-tabs-in-order
     func testTabsInOrder() {
         launchPlaying()
         press(.menu)
@@ -91,7 +91,7 @@ extension ShellUITests {
         XCTAssertEqual(selected, ["shell.tab.live"])
     }
 
-    // 0015/AC-3
+    // tvos-shell/menu-shows-the-tab-bar-over-the-picture
     func testMenuShowsBarOverPicture() {
         launchPlaying()
         press(.menu)
@@ -100,7 +100,7 @@ extension ShellUITests {
         expectEngine("playing loads=1 file=a1.ts")
     }
 
-    // 0015/AC-3
+    // tvos-shell/menu-shows-the-tab-bar-over-the-picture
     func testMenuOverFailedStreamKeepsItFailed() {
         launch("failing")
         expectEngine("failed loads=1 file=a1.ts")
@@ -110,7 +110,7 @@ extension ShellUITests {
         expectEngine("failed loads=1 file=a1.ts")
     }
 
-    // 0015/AC-4
+    // tvos-shell/back-to-full-screen-from-the-tab-bar
     func testBackToFullScreen() {
         launchPlaying()
         for back: XCUIRemote.Button in [.menu, .down, .select] {
@@ -123,7 +123,7 @@ extension ShellUITests {
         }
     }
 
-    // 0015/AC-4
+    // tvos-shell/back-to-full-screen-from-the-tab-bar
     func testSelectLiveReloadsFailedStream() {
         launch("failing")
         expectEngine("failed loads=1 file=a1.ts")
@@ -134,7 +134,7 @@ extension ShellUITests {
         expectGone("shell.tab.live")
     }
 
-    // 0015/AC-13
+    // tvos-shell/moving-along-the-bar-does-not-switch-tabs
     func testMovingAlongBarKeepsTab() {
         launchPlaying()
         press(.menu)
@@ -147,7 +147,7 @@ extension ShellUITests {
         expect(element("shell.player"), "value == 'dimmed'")
     }
 
-    // 0015/AC-12a
+    // tvos-shell/open-settings
     func testSettingsOpensOverPicture() {
         launchPlaying()
         press(.menu)
@@ -165,7 +165,7 @@ extension ShellUITests {
 // MARK: Tabs
 
 extension ShellUITests {
-    // 0015/AC-6a
+    // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
     func testMenuFromTabReachesBar() {
         launchPlaying()
         press(.menu)
@@ -185,7 +185,7 @@ extension ShellUITests {
         XCTAssertTrue(element("movies.standIn").exists)
     }
 
-    // 0015/AC-6a
+    // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
     func testMenuFromGuideShowsBar() {
         launchPlaying()
         press(.menu)
@@ -202,7 +202,7 @@ extension ShellUITests {
         XCTAssertTrue(element("guide.standIn").exists)
     }
 
-    // 0015/AC-6b
+    // tvos-shell/menu-from-the-tab-bar-goes-back-to-live
     func testMenuFromBarGoesLive() {
         launchPlaying()
         press(.menu)
@@ -218,7 +218,7 @@ extension ShellUITests {
         expectEngine("playing loads=1 file=a1.ts")
     }
 
-    // 0015/AC-14a
+    // tvos-shell/other-screens-can-send-the-user-somewhere
     func testPickerTuneShowsLive() {
         launchPlaying()
         press(.select)
@@ -239,7 +239,7 @@ extension ShellUITests {
 // MARK: Before a channel plays
 
 extension ShellUITests {
-    // 0015/AC-10
+    // tvos-shell/a-loading-screen-at-launch
     func testLoadingScreen() {
         launch("loading")
         XCTAssertTrue(element("shell.loading").waitForExistence(timeout: 10))
@@ -256,7 +256,7 @@ extension ShellUITests {
         XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
     }
 
-    // 0015/AC-11
+    // tvos-shell/an-empty-screen-with-retry
     func testEmptyScreenRetry() {
         launch("empty")
         XCTAssertTrue(element("shell.empty").waitForExistence(timeout: 10))
@@ -273,7 +273,7 @@ extension ShellUITests {
         expect(element("shell.loading.00000000-0000-0000-0000-00000000000A"), "value == 'loading'")
     }
 
-    // 0015/AC-11
+    // tvos-shell/an-empty-screen-with-retry
     func testEmptyScreenReachesSettings() {
         launch("empty")
         expectFocus("shell.retry")

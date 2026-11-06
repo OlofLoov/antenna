@@ -127,7 +127,7 @@
         /// The picture or guide is dimmed under the raised bar.
         var dimmed: Bool { barRaised && !tab.isContent }
 
-        /// The tabs the bar lists: Movies and Series only with an Xtream source (0011/AC-1a).
+        /// The tabs the bar lists: Movies and Series only with an Xtream source (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
         var tabs: [ShellTab] {
             ShellTab.allCases.filter { offersMovies || ($0 != .movies && $0 != .series) }
         }

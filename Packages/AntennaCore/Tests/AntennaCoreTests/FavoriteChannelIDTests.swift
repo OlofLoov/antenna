@@ -6,7 +6,7 @@ import Testing
 /// A favorite stores a channel id. These tests reload a source with unchanged
 /// content and check the id the favorite holds still resolves.
 @Suite struct FavoriteChannelIDTests {
-    @Test("0005/AC-3 M3U entry with tvg-id keeps its id across reloads")
+    @Test("favorites/favorites-reference-stable-channel-ids M3U entry with tvg-id keeps its id across reloads")
     func m3uReload() throws {
         let text = """
             #EXTM3U
@@ -21,7 +21,7 @@ import Testing
         #expect(reloaded.filter { $0.id == favorite }.map(\.name) == ["BBC One"])
     }
 
-    @Test("0005/AC-3 Xtream stream keeps its id across reloads")
+    @Test("favorites/favorites-reference-stable-channel-ids Xtream stream keeps its id across reloads")
     func xtreamReload() throws {
         let credentials = XtreamCredentials(server: try #require(URL(string: "http://panel:8080")), username: "u", password: "p")
         let json = Data(#"[{"name":"BBC One","stream_id":42},{"name":"ITV","stream_id":43}]"#.utf8)

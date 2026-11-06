@@ -13,14 +13,14 @@ import Testing
         M3UParser().parse(text)
     }
 
-    @Test("0001/AC-1 header EPG URLs in order")
+    @Test("m3u-playlists/header-epg-urls header EPG URLs in order")
     func headerEPGURLs() throws {
         let playlist = parse(#"#EXTM3U url-tvg="http://a/epg.xml,http://b/epg.xml.gz""#)
         let expected = try [#require(URL(string: "http://a/epg.xml")), #require(URL(string: "http://b/epg.xml.gz"))]
         #expect(playlist.epgURLs == expected)
     }
 
-    @Test("0001/AC-2 standard attributes map to the channel")
+    @Test("m3u-playlists/standard-attributes-map-to-the-channel standard attributes map to the channel")
     func standardAttributes() throws {
         let playlist = parse(
             """
@@ -36,7 +36,7 @@ import Testing
         #expect(channel.number == 12)
     }
 
-    @Test("0001/AC-3 title fallback when tvg-name is missing or empty")
+    @Test("m3u-playlists/title-fallback title fallback when tvg-name is missing or empty")
     func titleFallback() {
         let playlist = parse(
             """
@@ -49,7 +49,7 @@ import Testing
         #expect(playlist.channels.map(\.name) == ["Channel Title", "Channel Title"])
     }
 
-    @Test("0001/AC-4 comma inside a quoted attribute")
+    @Test("m3u-playlists/comma-inside-a-quoted-attribute comma inside a quoted attribute")
     func commaInsideQuotedAttribute() throws {
         let playlist = parse(
             """
@@ -62,7 +62,7 @@ import Testing
         #expect(channel.name == "Cartoon Network")
     }
 
-    @Test("0001/AC-5 empty tvg-id is not an EPG id")
+    @Test("m3u-playlists/empty-tvg-id-is-not-an-epg-id empty tvg-id is not an EPG id")
     func emptyTvgID() throws {
         let playlist = parse(
             """
@@ -73,7 +73,7 @@ import Testing
         #expect(try #require(playlist.channels.first).epgID == nil)
     }
 
-    @Test("0001/AC-6 EXTGRP applies when no group-title, then clears")
+    @Test("m3u-playlists/extgrp-applies-when-no-group-title EXTGRP applies when no group-title, then clears")
     func extgrpAppliesOnce() {
         let playlist = parse(
             """
@@ -87,7 +87,7 @@ import Testing
         #expect(playlist.channels.map(\.group) == ["News", nil])
     }
 
-    @Test("0001/AC-7 group-title wins over EXTGRP")
+    @Test("m3u-playlists/group-title-wins-over-extgrp group-title wins over EXTGRP")
     func groupTitleWinsOverExtgrp() throws {
         let playlist = parse(
             """
@@ -99,7 +99,7 @@ import Testing
         #expect(try #require(playlist.channels.first).group == "Sport")
     }
 
-    @Test("0001/AC-8 catch-up flags")
+    @Test("m3u-playlists/catch-up-flags catch-up flags")
     func catchupFlags() throws {
         let playlist = parse(
             """
@@ -112,7 +112,7 @@ import Testing
         #expect(channel.catchupDays == 7)
     }
 
-    @Test("0001/AC-9 ids are stable across runs and unique within one")
+    @Test("m3u-playlists/stable-and-unique-ids ids are stable across runs and unique within one")
     func stableUniqueIDs() {
         let text = """
             #EXTM3U
@@ -132,7 +132,7 @@ import Testing
         #expect(first.first == "same.uk#http://s/one.ts")
     }
 
-    @Test("0001/AC-10 unknown directives are ignored")
+    @Test("m3u-playlists/unknown-directives-are-ignored unknown directives are ignored")
     func unknownDirectivesIgnored() throws {
         let playlist = parse(
             """
@@ -144,7 +144,7 @@ import Testing
         #expect(try #require(playlist.channels.first).streamURL.absoluteString == "http://s/after.ts")
     }
 
-    @Test("0001/AC-11 orphan URL lines are skipped")
+    @Test("m3u-playlists/orphan-url-lines-are-skipped orphan URL lines are skipped")
     func orphanURLSkipped() {
         let playlist = parse(
             """
@@ -156,14 +156,14 @@ import Testing
         #expect(playlist.channels.map(\.streamURL.absoluteString) == ["http://s/real.ts"])
     }
 
-    @Test("0001/AC-12 empty input", arguments: ["", "#EXTM3U"])
+    @Test("m3u-playlists/empty-input empty input", arguments: ["", "#EXTM3U"])
     func emptyInput(text: String) {
         let playlist = parse(text)
         #expect(playlist.channels.isEmpty)
         #expect(playlist.epgURLs.isEmpty)
     }
 
-    @Test("0001/AC-13 group list keeps first-seen order")
+    @Test("m3u-playlists/group-list-preserves-first-seen-order group list keeps first-seen order")
     func groupOrder() {
         let playlist = parse(
             """
@@ -183,7 +183,7 @@ import Testing
     /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1 swift test`.
     /// Reference machine: Apple M1, 16 GB, debug build.
     @Test(
-        "0001/AC-14 50,000 entries parse within 5 seconds",
+        "m3u-playlists/large-playlists-stay-fast 50,000 entries parse within 5 seconds",
         .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(1)))
     func largePlaylistBenchmark() {
@@ -198,7 +198,7 @@ import Testing
         #expect(elapsed < .seconds(5))
     }
 
-    @Test("0001/AC-15 catchup=\"0\" disables catch-up")
+    @Test("m3u-playlists/catch-up-disabled-explicitly catchup=\"0\" disables catch-up")
     func catchupDisabled() throws {
         let playlist = parse(
             """
@@ -209,7 +209,7 @@ import Testing
         #expect(try #require(playlist.channels.first).hasCatchup == false)
     }
 
-    @Test("0001/AC-16 legacy tvg-rec")
+    @Test("m3u-playlists/legacy-tvg-rec legacy tvg-rec")
     func legacyTvgRec() throws {
         let playlist = parse(
             """

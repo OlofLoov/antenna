@@ -2,10 +2,10 @@ import Foundation
 
 /// A favorite as the catalogue sees it. The app layer maps `FavoriteRecord`
 /// to and from this type, with `Token` as the record's persistent
-/// identifier; the catalogue never reads or writes the store (ADR-0005).
+/// identifier; the catalogue never reads or writes the store (decision adr-0005).
 ///
 /// `channelID` can embed a stream URL with credentials, so a snapshot is
-/// never logged (ADR-0003).
+/// never logged (decision adr-0003).
 public struct FavoriteSnapshot<Token: Hashable & Sendable>: Hashable, Sendable {
     /// The `Channel.id` of the favorited channel.
     public var channelID: String

@@ -14,7 +14,7 @@ import Testing
 
 /// Spec 0004. Records live in an in-memory container with CloudKit off.
 /// Credentials go to the simulator Keychain under a service of their own per
-/// test, except AC-4, which checks the production service and removes its item.
+/// test, except source-management/xtream-credentials-go-to-the-keychain-only, which checks the production service and removes its item.
 @MainActor
 @Suite struct SourceManagementTests {
     let container: ModelContainer
@@ -77,7 +77,7 @@ import Testing
 
     // MARK: Saving
 
-    @Test("0004/AC-1 invalid URL is rejected")
+    @Test("source-management/invalid-url-is-rejected invalid URL is rejected")
     func invalidURL() throws {
         let form = NewSource(kind: .m3u, url: "example.com/list.m3u")
         #expect(throws: NewSource.SaveError.invalidURL) { try form.save(into: context, credentials: store) }
@@ -85,7 +85,7 @@ import Testing
         #expect(try records().isEmpty)
     }
 
-    @Test("0004/AC-2 M3U source is saved")
+    @Test("source-management/m3u-source-is-saved M3U source is saved")
     func m3uSaved() throws {
         _ = try insert(.m3u, url: "http://a.test/a.m3u", sortOrder: 0)
         _ = try insert(.m3u, url: "http://b.test/b.m3u", sortOrder: 1)
@@ -101,13 +101,13 @@ import Testing
         #expect(saved.sortOrder == 2)
     }
 
-    @Test("0004/AC-3 name defaults to host")
+    @Test("source-management/name-defaults-to-host name defaults to host")
     func nameDefaultsToHost() throws {
         let saved = try NewSource(kind: .m3u, url: "http://example.com/list.m3u").save(into: context, credentials: store)
         #expect(saved.name == "example.com")
     }
 
-    @Test("0004/AC-4 Xtream credentials go to the Keychain only")
+    @Test("source-management/xtream-credentials-go-to-the-keychain-only Xtream credentials go to the Keychain only")
     func xtreamCredentialsInKeychain() throws {
         let username = "ac4-user-\(UUID().uuidString)"
         let password = "ac4-pass-\(UUID().uuidString)"
@@ -136,7 +136,7 @@ import Testing
         #expect(!stored.contains { $0.contains(username) || $0.contains(password) })
     }
 
-    @Test("0004/AC-5 Keychain failure blocks the save")
+    @Test("source-management/keychain-failure-blocks-the-save Keychain failure blocks the save")
     func keychainFailureBlocksSave() throws {
         let form = NewSource(kind: .xtream, url: "http://panel.test", username: "u", password: "p")
         do {
@@ -148,7 +148,7 @@ import Testing
         #expect(try records().isEmpty)
     }
 
-    @Test("0004/AC-13 Stalker type is stored")
+    @Test("source-management/stalker-type-is-stored Stalker type is stored")
     func stalkerStored() throws {
         let form = NewSource(kind: .stalker, url: "http://portal.test/c/", username: "00:1A:79:00:00:01", password: "secret")
         let saved = try form.save(into: context, credentials: store)
@@ -160,7 +160,7 @@ import Testing
 
     // MARK: Deleting
 
-    @Test("0004/AC-6 deleting a source removes its credential")
+    @Test("source-management/deleting-a-source-removes-its-credential deleting a source removes its credential")
     func deleteRemovesCredential() throws {
         let form = NewSource(kind: .xtream, url: "http://panel.test", username: "u", password: "p")
         let saved = try form.save(into: context, credentials: store)
@@ -175,7 +175,7 @@ import Testing
 
     // MARK: Loading
 
-    @Test("0004/AC-9 channels from all sources are combined in sortOrder")
+    @Test("source-management/channels-from-all-sources-are-combined channels from all sources are combined in sortOrder")
     func combined() async throws {
         let host = "ac9-xtream.test"
         StubURLProtocol.register(host: host, action: "get_live_categories", body: #"[{"category_id":"1","category_name":"News"}]"#)
@@ -194,7 +194,7 @@ import Testing
         #expect(model.channels.first { $0.name == "X1" }?.group == "News")
     }
 
-    @Test("0004/AC-10 missing Keychain item yields no channels")
+    @Test("source-management/missing-credential-yields-no-channels missing Keychain item yields no channels")
     func missingCredential() async throws {
         _ = try insert(.xtream, url: "http://ac10-xtream.test", sortOrder: 0, credentialKey: UUID().uuidString)
         _ = try insert(.m3u, url: twoChannelPlaylist(host: "ac10-m3u.test"), sortOrder: 1)
@@ -205,7 +205,7 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac10-xtream.test").isEmpty)
     }
 
-    @Test("0004/AC-16 nil credential key yields no channels")
+    @Test("source-management/source-without-a-credential-key-yields-no-channels nil credential key yields no channels")
     func nilCredentialKey() async throws {
         _ = try insert(.xtream, url: "http://ac16-xtream.test", sortOrder: 0, credentialKey: nil)
         _ = try insert(.m3u, url: twoChannelPlaylist(host: "ac16-m3u.test"), sortOrder: 1)
@@ -216,7 +216,7 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac16-xtream.test").isEmpty)
     }
 
-    @Test("0004/AC-11 one failing source does not block the rest")
+    @Test("source-management/one-failing-source-does-not-block-the-rest one failing source does not block the rest")
     func failingSourceDoesNotBlock() async throws {
         _ = try insert(.m3u, url: "http://ac11-down.test/list.m3u", sortOrder: 0)
         _ = try insert(.m3u, url: twoChannelPlaylist(host: "ac11-up.test"), sortOrder: 1)
@@ -226,7 +226,7 @@ import Testing
         #expect(model.channels.map(\.name) == ["ac11-up.test one", "ac11-up.test two"])
     }
 
-    @Test("0004/AC-15 the last load failure is recorded")
+    @Test("source-management/load-failure-is-recorded the last load failure is recorded")
     func lastFailureRecorded() async throws {
         let down = "http://ac15-down.test/list.m3u"
         let xtream = "ac15-xtream.test"
@@ -251,7 +251,7 @@ import Testing
         #expect(double.channels.count == 4)
     }
 
-    @Test("0004/AC-17 unreadable credential fails like any other source")
+    @Test("source-management/unreadable-credential unreadable credential fails like any other source")
     func unreadableCredential() async throws {
         _ = try insert(.xtream, url: "http://ac17-xtream.test", sortOrder: 0, credentialKey: UUID().uuidString)
         _ = try insert(.m3u, url: twoChannelPlaylist(host: "ac17-m3u.test"), sortOrder: 1)
@@ -283,7 +283,7 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac17-xtream.test").isEmpty)
     }
 
-    @Test("0004/AC-18 Stalker contributes no channels")
+    @Test("source-management/stalker-contributes-no-channels Stalker contributes no channels")
     func stalkerInert() async throws {
         let key = UUID().uuidString
         try held.save(.init(username: "00:1A:79:00:00:01", password: "p"), for: key)
@@ -298,7 +298,7 @@ import Testing
     }
 
     #if os(iOS)
-        @Test("0004/AC-8 no sources, no request")
+        @Test("source-management/empty-state no sources, no request")
         func emptyStateMakesNoRequest() async throws {
             let tag = "ac8-\(UUID().uuidString)"
             let loader = SourceLoader(session: StubURLProtocol.session(tag: tag), credentials: store)
@@ -323,12 +323,12 @@ import Testing
     #endif
 }
 
-/// 0004 edge cases fixed after the first slice. An extension so the suite
+/// source-management edge cases fixed after the first slice. An extension so the suite
 /// stays under SwiftLint's type body length.
 extension SourceManagementTests {
     // MARK: Edge cases fixed after the first 0004 slice (no criterion of their own)
 
-    @Test("0004 edge case: a repeated Xtream category id loads instead of crashing")
+    @Test("source-management/channels-from-all-sources-are-combined: a repeated Xtream category id loads instead of crashing")
     func repeatedCategoryID() async throws {
         let host = "dup-category.test"
         StubURLProtocol.register(
@@ -348,7 +348,7 @@ extension SourceManagementTests {
         #expect(model.channels.first?.group == "News")
     }
 
-    @Test("0004 edge case: an M3U URL answering 404 fails the source")
+    @Test("source-management/one-failing-source-does-not-block-the-rest: an M3U URL answering 404 fails the source")
     func m3uBadStatus() async throws {
         let host = "m3u-404.test"
         StubURLProtocol.register(host: host, status: 404, body: "<html>Not found</html>")
@@ -361,7 +361,7 @@ extension SourceManagementTests {
         #expect(model.channels.map(\.name) == ["m3u-404-up.test one", "m3u-404-up.test two"])
     }
 
-    @Test("0004 edge case: loading with no sources clears the channels and the error")
+    @Test("source-management/empty-state: loading with no sources clears the channels and the error")
     func reloadWithNoSourcesClears() async throws {
         _ = try insert(.m3u, url: twoChannelPlaylist(host: "clear.test"), sortOrder: 0)
         let model = try await load(credentials: store)
@@ -373,7 +373,7 @@ extension SourceManagementTests {
         #expect(model.error == nil)
     }
 
-    @Test("0004 edge case: unchanged sources are not downloaded again")
+    @Test("source-management/channels-from-all-sources-are-combined: unchanged sources are not downloaded again")
     func unchangedSourcesSkipped() async throws {
         let host = "unchanged.test"
         _ = try insert(.m3u, url: twoChannelPlaylist(host: host), sortOrder: 0)
@@ -387,7 +387,7 @@ extension SourceManagementTests {
         #expect(model.channels.count == 2)
     }
 
-    @Test("0004 edge case: a changed source reloads the list")
+    @Test("source-management/channels-from-all-sources-are-combined: a changed source reloads the list")
     func changedSourceReloads() async throws {
         let record = try insert(.m3u, url: twoChannelPlaylist(host: "before.test"), sortOrder: 0)
         let loader = SourceLoader(session: StubURLProtocol.session(), credentials: store)

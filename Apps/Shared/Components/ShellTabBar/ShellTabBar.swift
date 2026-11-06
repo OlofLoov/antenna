@@ -2,13 +2,13 @@ import SwiftUI
 
 /// The Apple TV shell's top bar (spec 0015; `TV-Shell-Menu`,
 /// `TV-Shell-FocusedTab`, `TV-Movies`, `TV-Shell-Guide-Menu`). Compiles on
-/// every platform so the snapshot job renders its previews (ADR-0007).
+/// every platform so the snapshot job renders its previews (decision adr-0007).
 enum ShellTabBar {
     /// How a pill looks when it does not have focus. A focused pill always
     /// carries the Focus token.
     enum Look: Equatable, Sendable {
         case plain
-        /// The open tab while focus is in the tab's content: white fill (DR-2 deviation in 0015).
+        /// The open tab while focus is in the tab's content: white fill (design-system/focus-is-the-lifted-white-card deviation in tvos-shell).
         case currentInContent
         /// The open tab while focus is elsewhere in the bar: 0.12 surface, weight 600.
         case currentInBar
