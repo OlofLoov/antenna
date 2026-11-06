@@ -5,7 +5,7 @@
     import SwiftUI
 
     /// Scripted sources and a recording engine for the Apple TV shell's UI
-    /// tests (spec 0015), compiled into Debug builds only.
+    /// tests (tvos-shell capability), compiled into Debug builds only.
     ///
     /// `-ui-testing-shell <scenario>` starts the app on an in-memory store
     /// with two sources. Nothing reaches the network, iCloud or the Keychain.

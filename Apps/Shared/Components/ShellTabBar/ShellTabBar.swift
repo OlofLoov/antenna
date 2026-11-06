@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The Apple TV shell's top bar (spec 0015; `TV-Shell-Menu`,
+/// The Apple TV shell's top bar (tvos-shell capability; `TV-Shell-Menu`,
 /// `TV-Shell-FocusedTab`, `TV-Movies`, `TV-Shell-Guide-Menu`). Compiles on
 /// every platform so the snapshot job renders its previews.
 enum ShellTabBar {

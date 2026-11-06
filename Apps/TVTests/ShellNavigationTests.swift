@@ -4,7 +4,7 @@ import Testing
 
 @testable import AntennaTV
 
-/// Spec 0015, what other screens and the bar ask of the shell, and the
+/// The tvos-shell capability, what other screens and the bar ask of the shell, and the
 /// sources that load again on Retry or in the foreground.
 @MainActor
 @Suite(.timeLimit(.minutes(1))) struct ShellNavigationTests {

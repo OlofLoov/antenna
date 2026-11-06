@@ -10,7 +10,7 @@ import Testing
 
 @testable import Antenna
 
-/// Spec 0014, app side: the Keychain mapping, the triggers and source
+/// The guide-data capability, app side: the Keychain mapping, the triggers and source
 /// deletion. The engine itself is tested in AntennaCore.
 @MainActor
 @Suite(.timeLimit(.minutes(1))) struct GuideStoreTests {

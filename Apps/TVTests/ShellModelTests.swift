@@ -4,7 +4,7 @@ import Testing
 
 @testable import AntennaTV
 
-/// Spec 0015, the shell's launch tune and pause rules, against a scripted
+/// The tvos-shell capability, the shell's launch tune and pause rules, against a scripted
 /// loader, a recording engine and a clock advanced by hand.
 @MainActor
 @Suite(.timeLimit(.minutes(1))) struct ShellModelTests {
