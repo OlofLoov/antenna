@@ -1,8 +1,9 @@
 # 0015. tvOS shell: tab bar, full-screen playback and Menu
 
-- Status: Accepted
+- Status: In progress
+- Progress: AC-2a, AC-5a in this PR
 - Date: 2026-11-03
-- Depends on ADRs: 0001, 0002, 0003, 0005, 0006
+- Depends on ADRs: 0001, 0002, 0003, 0005, 0006, 0009
 - Builds on specs: 0006, 0007, 0008, 0009, 0010, 0011, 0012, 0013, 0017
 - Platforms: tvOS
 - User stories: US-8, US-17
