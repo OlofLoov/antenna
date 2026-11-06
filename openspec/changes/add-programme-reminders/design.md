@@ -38,7 +38,7 @@ Not drawn yet: the set state of Remind me, the toggle on `TV-Guide-Future` and o
 
 - Open question: should reminders sync, or stay on the device where they were set? This is the blocking decision. Staying local would change the remove, notification and list requirements.
 - Open question: syncing the lead time would change the lead-time requirement and needs a synced settings record.
-- Open question: dropped programmes still remind, because guide gaps are common and the channel probably still shows the programme. Cancelling them instead would change the requirement for programmes leaving the guide.
+- Open question: dropped programmes still remind, because guide gaps are common and the channel probably still shows the programme. Canceling them instead would change the requirement for programmes leaving the guide.
 - Open question: the Apple TV banner takes the highlight from whatever the user was doing. A banner that waits for play/pause would change the banner requirement.
 - Open question: should a reminder set closer to start than the lead time warn the user instead of going off at once? That would change the notification requirement.
 - [CloudKit sync cannot run in CI] → the cross-device list check runs on a device with a second device setting the reminder.

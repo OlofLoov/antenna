@@ -6,7 +6,7 @@ See proposal.md for why. Live reads groups, numbers and favorite rows from `chan
 
 Boards, under `openspec/specs/design-system/boards/`: `iPad.dc.html`, `iPhone.dc.html`, `iPad-Loading.dc.html`, `iPhone-Loading.dc.html`, `iPad-NothingSelected.dc.html`, `iPad-Error.dc.html`, `iPhone-Error.dc.html`, `iPad-Banner.dc.html`, `iPhone-Banner.dc.html`, `iPad-Empty.dc.html`, `iPhone-EmptyFavorites.dc.html`, `iPad-Collapsed.dc.html`, `iPad-Collapsed-Narrow.dc.html`, `iPhone-FullScreen.dc.html`, `iPad-Focus.dc.html`.
 
-Not drawn: "Loading guide…" and "No programme information" in the details, the now-playing line and the row; the filled star; the greyed-out Picture in Picture button.
+Not drawn: "Loading guide…" and "No programme information" in the details, the now-playing line and the row; the filled star; the grayed-out Picture in Picture button.
 
 Design-system requirements that apply: “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “Channel rows share one anatomy”, “A current programme always shows its progress”, “Channels without a logo show initials”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”, “Nothing shows before the paywall”, “Loading shows real progress per step”.
 

@@ -50,10 +50,10 @@ The system SHALL list audio and subtitle tracks with readable names and sound fo
 - **WHEN** the stream's tracks change
 - **THEN** the list updates
 
-#### Scenario: Greyed-out button
+#### Scenario: Grayed-out button
 - **GIVEN** a channel on iPhone, iPad or Mac with one audio track and no subtitles
 - **WHEN** the controls show
-- **THEN** the audio-and-subtitles button is greyed out
+- **THEN** the audio-and-subtitles button is grayed out
 
 #### Scenario: Changing channel
 - **GIVEN** the user picked a language on one channel

@@ -19,7 +19,7 @@
 ## 4. Apple TV panel and track pickers
 
 - [ ] 4.1 Open the info panel on a long press with Info, Audio and Subtitles tabs, swallowing swipes and play/pause, and verify with a tvOS UI test citing `player-controls-and-playback-errors/see-what-s-on-without-stopping-the-picture-on-apple-tv`
-- [ ] 4.2 Build the track pickers on every platform with the greyed-out rule, and verify with UI tests citing `player-controls-and-playback-errors/choose-audio-and-subtitles`
+- [ ] 4.2 Build the track pickers on every platform with the grayed-out rule, and verify with UI tests citing `player-controls-and-playback-errors/choose-audio-and-subtitles`
 
 ## 5. iPhone, iPad and Mac controls
 

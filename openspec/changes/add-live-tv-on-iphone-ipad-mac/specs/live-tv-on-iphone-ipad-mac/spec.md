@@ -121,7 +121,7 @@ The system SHALL show pause, programme progress, the time of day, a LIVE badge a
 - **GIVEN** a channel is playing in place
 - **WHEN** the user taps or clicks the picture, or moves the pointer over it
 - **THEN** pause, the programme's progress, the time of day, a LIVE badge and full screen appear
-- **AND** on iPhone and iPad a Picture in Picture button appears, greyed out when the player cannot do it
+- **AND** on iPhone and iPad a Picture in Picture button appears, grayed out when the player cannot do it
 
 #### Scenario: Controls go away
 - **GIVEN** the controls are showing and the channel is playing

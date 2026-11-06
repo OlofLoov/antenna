@@ -51,7 +51,7 @@ Rows:
 - A row shows the number, the logo tile, the name and the programme title on one line, the progress bar below them, and the catch-up mark at the trailing edge. Progress is elapsed over duration, within 0.01.
 - A row is 92 pt tall unfocused and 100 pt focused, never under 64 pt.
 - The row's accessibility label is "<number>, <name>, <programme title or state text>, <remaining text>".
-- A nil or failing logo shows the `channel-catalogue` initials tile, which carries the initials as its accessibility value. Logo requests are cancelled when a row scrolls out of view.
+- A nil or failing logo shows the `channel-catalogue` initials tile, which carries the initials as its accessibility value. Logo requests are canceled when a row scrolls out of view.
 - Long names end in an ellipsis. The programme title gives way before the name does.
 - With no programme covering now, or while the guide loads, the row has no progress bar. A loading row switches to its programme or to "No programme information" within five seconds of the guide finishing. At a programme's stop time the row and panel move on within five seconds.
 

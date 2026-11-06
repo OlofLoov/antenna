@@ -18,7 +18,7 @@ Not reviewed yet.
 - Catch-up addresses are built for the common playlist styles (`default`, `append`, `shift`, `flussonic`, `xc`) and for Xtream accounts.
 - Start over for the programme on air now, by catch-up first and the local buffer second.
 - Skipping within a catch-up programme, and returning to live when it ends.
-- Defined behaviour when the buffer fills, storage is short, catch-up fails, the app goes to the background, or the stream cannot be recorded.
+- Defined behavior when the buffer fills, storage is short, catch-up fails, the app goes to the background, or the stream cannot be recorded.
 - A rewind row in the Apple TV zap bar and a two-row control strip on iPhone, iPad and Mac.
 
 Out of scope:
