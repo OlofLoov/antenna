@@ -15,11 +15,13 @@ final class RecordingEngine: PlaybackEngine {
 
     var state: PlaybackState { current }
 
-    func load(_ url: URL) async throws {
+    var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
+
+    func load(_ url: URL, options: PlaybackOptions) async throws {
         loaded.append(url)
         if failLoads {
-            current = .failed("failed")
-            throw SystemPlaybackEngine.LoadError.failed
+            current = .failed(.unreadable)
+            throw PlaybackFailure.unreadable
         }
         current = .loading
     }
@@ -39,6 +41,15 @@ final class RecordingEngine: PlaybackEngine {
         stops += 1
         current = .idle
     }
+
+    func seek(to time: Duration) async throws { throw SeekRefusal.live }
+    func selectAudio(_ id: MediaTrack.ID) async {}
+    func selectSubtitle(_ id: MediaTrack.ID?) async {}
+    func states() async -> AsyncStream<PlaybackState> { Broadcast(current).stream() }
+    func presentation() async -> AsyncStream<PresentationInfo?> { Broadcast(PresentationInfo?.none).stream() }
+    func tracks() async -> AsyncStream<TrackList> { Broadcast(TrackList.empty).stream() }
+    func position() async -> AsyncStream<PlaybackPosition> { Broadcast(PlaybackPosition.zero).stream() }
+    func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
 }
 
 /// Loads that finish when the test says so.
