@@ -6,7 +6,7 @@ Reads an XMLTV guide file of 20 to 100 MB in one event-driven pass into channel 
 ## Requirements
 
 ### Requirement: Channel display names
-The system SHALL name each `<channel>` by its first `<display-name>`, keyed by the channel's `id` attribute.
+The system SHALL name each `<channel>` by its first `<display-name>`, trimmed of whitespace and newlines, keyed by the channel's `id` attribute exactly as written. A `<display-name>` outside a `<channel>` SHALL be ignored.
 
 #### Scenario: Two display names
 - **GIVEN** `<channel id="a"><display-name>A HD</display-name><display-name>A</display-name></channel>`
@@ -23,6 +23,11 @@ The system SHALL name each `<channel>` by its first `<display-name>`, keyed by t
 - **WHEN** the guide is parsed
 - **THEN** the first display name across both wins
 
+#### Scenario: Spaces in the id and the name
+- **GIVEN** `<channel id=" a "><display-name> A </display-name></channel>`, and a `<display-name>X</display-name>` directly under `<tv>`
+- **WHEN** the guide is parsed
+- **THEN** the only name is "A", keyed by " a " with its spaces
+
 ### Requirement: Empty first display-name wins
 The system SHALL keep the first `<display-name>` even when it is empty.
 
@@ -32,7 +37,7 @@ The system SHALL keep the first `<display-name>` even when it is empty.
 - **THEN** channel "a" is named ""
 
 ### Requirement: Programme fields
-The system SHALL read each programme's channel, start, stop, `title`, `sub-title`, `desc`, `category` and `icon src`, trimming whitespace and newlines from text.
+The system SHALL read each programme's channel, start, stop, `title`, `sub-title`, `desc`, `category` and `icon src`, trimming whitespace and newlines from text. Element names SHALL match exactly, case included, and elements with a namespace prefix SHALL be ignored. The icon SHALL come from the last `<icon>` with a `src` anywhere inside the programme.
 
 #### Scenario: Sample guide
 - **GIVEN** the first programme of the sample guide fixture
@@ -45,14 +50,24 @@ The system SHALL read each programme's channel, start, stop, `title`, `sub-title
 - **THEN** the summary is "A bold c"
 
 #### Scenario: Several icons
-- **GIVEN** a programme with several `<icon>` elements, or one whose `src` is not a valid URL
+- **GIVEN** a programme with several `<icon>` elements, or one whose last `src` cannot form a link, such as `http://a b/`
 - **WHEN** the guide is parsed
-- **THEN** the last `src` wins, and an invalid one gives no icon
+- **THEN** the last `src` wins, and one that cannot form a link gives no icon even after a valid one
+
+#### Scenario: Relative icon
+- **GIVEN** a programme with `<icon src="rel.jpg"/>`
+- **WHEN** the guide is parsed
+- **THEN** the icon is the relative link `rel.jpg`
 
 #### Scenario: Missing title, empty channel or unknown channel
 - **GIVEN** a programme with no `<title>`, one with `channel=""`, and one whose channel has no `<channel>` element
 - **WHEN** the guide is parsed
 - **THEN** all three are kept, the first with an empty title and the second with an empty channel id, and attribute values are not trimmed
+
+#### Scenario: Element names in another case or with a prefix
+- **GIVEN** a programme with `<TITLE>T</TITLE>`, or a guide whose elements are all written as `<tv:programme>` and `<tv:title>`
+- **WHEN** the guide is parsed
+- **THEN** the first programme has an empty title and the second guide gives no programmes
 
 ### Requirement: Absent optional fields are nil
 The system SHALL leave subtitle, summary, category and icon empty when the programme does not carry them.
@@ -71,15 +86,20 @@ The system SHALL treat a text element holding only whitespace as absent.
 - **THEN** the summary is absent
 
 ### Requirement: Timestamp with zone offset
-The system SHALL apply a `±HHMM` or `±HH:MM` offset after the 14 timestamp digits, with or without spaces before it, when its hours are at most 14. Any other suffix SHALL be ignored and the first 14 characters read as UTC.
+The system SHALL apply a `±HHMM` or `±HH:MM` offset after the 14 timestamp digits, with or without spaces or tabs before it, when its hours are at most 14 and its minutes under 60. Any other suffix SHALL be ignored and the first 14 characters read as UTC.
 
 #### Scenario: Positive and negative offsets
 - **GIVEN** a programme with `start="20261103200000 +0100" stop="20261103210000 +0100"`, or the same with no space, or `-0530`
 - **WHEN** the guide is parsed
 - **THEN** the start is 2026-11-03T19:00:00Z for both `+0100` forms and 2026-11-04T01:30:00Z for `-0530`, and the stop is one hour later
 
+#### Scenario: Largest offset
+- **GIVEN** a start of `20261103200000 +1400`
+- **WHEN** the guide is parsed
+- **THEN** the start is 2026-11-03T06:00:00Z
+
 #### Scenario: Unrecognized suffix
-- **GIVEN** a timestamp ending in `UTC`, `+1` or `+9900`
+- **GIVEN** a timestamp ending in `UTC`, `+1`, `+9900` or `+0160`
 - **WHEN** the guide is parsed
 - **THEN** the suffix is ignored and the first 14 characters are read as UTC
 
@@ -100,7 +120,7 @@ The system SHALL read a timestamp with no offset as UTC.
 - **THEN** it runs from 2026-11-03T20:00:00Z to 21:00:00Z
 
 ### Requirement: Invalid intervals are dropped
-The system SHALL drop a programme whose stop is not after its start, or that lacks a parseable start, a parseable stop or a channel attribute, and SHALL keep parsing the programmes after it.
+The system SHALL drop a programme whose stop is not after its start, or that lacks a parseable start, a parseable stop or a channel attribute, and SHALL keep parsing the programmes after it. A timestamp is parseable only when its first 14 characters are the digits of a real calendar date and time.
 
 #### Scenario: Each invalid case
 - **GIVEN** a programme titled "Bad" whose stop is before its start, equal to its start, missing, or whose start is missing or reads `2026XX03200000`, or which has no `channel`, followed by a valid programme titled "Good"
@@ -109,6 +129,11 @@ The system SHALL drop a programme whose stop is not after its start, or that lac
 
 #### Scenario: Timestamp without seconds
 - **GIVEN** a timestamp in the form `yyyyMMddHHmm`
+- **WHEN** the guide is parsed
+- **THEN** the programme is dropped
+
+#### Scenario: Impossible dates and leading spaces
+- **GIVEN** a start of `20261332200000` (month 13), `20261103240000` (hour 24), `20260230200000` (February 30) or ` 20261103200000` with a leading space
 - **WHEN** the guide is parsed
 - **THEN** the programme is dropped
 
@@ -147,7 +172,7 @@ The system SHALL keep the first of several elements of the same kind in a progra
 - **THEN** the title is "A"
 
 ### Requirement: Empty first element is skipped
-The system SHALL skip an empty first `title`, `sub-title`, `desc` or `category` in favor of a later non-empty one.
+The system SHALL skip an empty or whitespace-only first `title`, `sub-title`, `desc` or `category` in favor of a later non-empty one.
 
 #### Scenario: Empty then filled
 - **GIVEN** a programme with `<title></title><title>T</title>`, `<sub-title> </sub-title><sub-title>S</sub-title>`, `<desc></desc><desc>D</desc>` and `<category/><category>C</category>`
@@ -195,12 +220,12 @@ The system SHALL read text inside CDATA sections as plain text.
 - **THEN** the title is "A & B" and the summary is "D"
 
 ### Requirement: Stray ampersands and HTML entities are read as text
-The system SHALL read an `&` that starts no valid XML reference as a literal ampersand, and the Latin-1 HTML named entities and common punctuation entities as their characters. A document with neither SHALL be parsed byte for byte unchanged, and other well-formedness errors SHALL still fail as malformed.
+The system SHALL read an `&` that starts no valid XML reference as a literal ampersand, and the Latin-1 HTML named entities, common punctuation entities and a few others such as `&euro;`, `&trade;` and `&scaron;` as their characters. Entity names SHALL match with their case. A document with neither SHALL be parsed byte for byte unchanged, and other well-formedness errors SHALL still fail as malformed.
 
 #### Scenario: Text a browser would show
-- **GIVEN** a programme titled `Tom & Jerry`, `A&nbsp;B`, or containing `&eacute;`, `&copy;` or `&ndash;`
+- **GIVEN** a programme titled `Tom & Jerry`, `A&nbsp;B`, or containing `&eacute;`, `&copy;`, `&ndash;` or `&euro;`
 - **WHEN** the guide is parsed
-- **THEN** the titles read "Tom & Jerry", "A" then a no-break space then "B", "é", "©" and "–"
+- **THEN** the titles read "Tom & Jerry", "A" then a no-break space then "B", "é", "©", "–" and "€"
 
 #### Scenario: Bare ampersand in an icon link
 - **GIVEN** an `icon src` holding a bare `&`
@@ -208,7 +233,7 @@ The system SHALL read an `&` that starts no valid XML reference as a literal amp
 - **THEN** the icon link is read as written
 
 #### Scenario: Entities left alone
-- **GIVEN** an unknown name such as `&foo;`, a name without its semicolon such as `&nbsp`, or a reference to a code point XML forbids such as `&#0;`
+- **GIVEN** an unknown name such as `&foo;`, a name in the wrong case such as `&NBSP;`, a name without its semicolon such as `&nbsp`, or a reference to a code point XML forbids such as `&#0;`
 - **WHEN** the guide is parsed
 - **THEN** each is read as literal text, and CDATA, comments, processing instructions and the DOCTYPE are never rewritten
 
