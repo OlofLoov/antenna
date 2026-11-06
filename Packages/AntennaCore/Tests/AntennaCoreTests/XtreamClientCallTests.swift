@@ -22,7 +22,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
         }
     }
 
-    /// The query after `action=`, as AC-1 states it, for a run with and without an id.
+    /// The query after `action=`, as xtream-vod-client/request-shape states it, for a run with and without an id.
     func expectedTail(withID: Bool) -> String? {
         switch self {
         case .accountInfo: nil
@@ -57,7 +57,8 @@ enum XtreamCall: String, CaseIterable, Sendable {
             session: URLSession(configuration: configuration))
     }
 
-    @Test("0016/AC-1 request shape with reserved characters in the password", arguments: XtreamCall.allCases, [false, true])
+    // xtream-vod-client/request-shape
+    @Test("request shape with reserved characters in the password", arguments: XtreamCall.allCases, [false, true])
     func requestShape(call: XtreamCall, withID: Bool) async throws {
         let host = "ac1-\(call.rawValue.lowercased())-\(withID).panel"
         let client = try client(host: host, reply: .http(200, Data(call.okBody.utf8)), username: "alice-7f3e", password: "a&b/c+d")
@@ -74,7 +75,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
             url.query(percentEncoded: true) == [credentials, call.expectedTail(withID: withID)].compactMap { $0 }.joined(separator: "&"))
     }
 
-    @Test("0016/AC-1 guide URL encodes credentials the same way")
+    @Test("xtream-vod-client/request-shape guide URL encodes credentials the same way")
     func guideURL() throws {
         let server = try #require(URL(string: "http://h:8080"))
         let client = XtreamClient(credentials: XtreamCredentials(server: server, username: "alice-7f3e", password: "a&b/c+d"))
@@ -82,7 +83,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
     }
 
     @Test(
-        "0016/AC-4b category lists fail whole with the coding path",
+        "xtream-vod-client/category-lists-fail-whole category lists fail whole with the coding path",
         arguments: [XtreamCall.vodCategories, .seriesCategories, .liveCategories])
     func categoryListFailsWhole(call: XtreamCall) async throws {
         let body = #"[{"category_id":1,"category_name":"A"},{"category_id":2},{"category_id":3,"category_name":"C"}]"#
@@ -90,14 +91,15 @@ enum XtreamCall: String, CaseIterable, Sendable {
         await #expect(throws: XtreamClient.XtreamError.decoding(path: "[1].category_name")) { try await call.run(on: client) }
     }
 
-    @Test("0016/AC-4b no call lets DecodingError escape on an HTML body", arguments: XtreamCall.allCases)
+    @Test("xtream-vod-client/category-lists-fail-whole no call lets DecodingError escape on an HTML body", arguments: XtreamCall.allCases)
     func htmlBody(call: XtreamCall) async throws {
         let client = try client(
             host: "ac4b-html-\(call.rawValue.lowercased()).panel", reply: .http(200, try xtreamFixture("html_login.html")))
         await #expect(throws: XtreamClient.XtreamError.decoding(path: "")) { try await call.run(on: client) }
     }
 
-    @Test("0016/AC-12 whole-fail lists accept the empty shapes", arguments: [("object", "{}"), ("false", "false"), ("null", "null")])
+    // xtream-vod-client/empty-list-shapes
+    @Test("whole-fail lists accept the empty shapes", arguments: [("object", "{}"), ("false", "false"), ("null", "null")])
     func wholeListEmptyShapes(name: String, body: String) async throws {
         let client = try client(host: "ac12-\(name).panel", reply: .http(200, Data(body.utf8)))
         #expect(try await client.liveCategories().isEmpty)
@@ -110,7 +112,8 @@ enum XtreamCall: String, CaseIterable, Sendable {
         .notConnectedToInternet, .networkConnectionLost, .dataNotAllowed, .timedOut, .cannotFindHost, .secureConnectionFailed,
     ]
 
-    @Test("0016/AC-10 transport failures carry the code and no URL", arguments: XtreamCall.allCases, transportCodes)
+    // xtream-vod-client/transport-failures-carry-no-url
+    @Test("transport failures carry the code and no URL", arguments: XtreamCall.allCases, transportCodes)
     func transportFailure(call: XtreamCall, code: URLError.Code) async throws {
         let host = "ac10-\(call.rawValue.lowercased())-\(-code.rawValue).panel"
         let client = try client(host: host, reply: .failure(code), username: "alice-7f3e", password: "s3cr3t-9b2a")
@@ -124,7 +127,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
         }
     }
 
-    @Test("0016/AC-10a cancellation throws CancellationError", .timeLimit(.minutes(1)), arguments: XtreamCall.allCases)
+    @Test("xtream-vod-client/cancellation cancellation throws CancellationError", .timeLimit(.minutes(1)), arguments: XtreamCall.allCases)
     func cancellation(call: XtreamCall) async throws {
         let host = "ac10a-\(call.rawValue.lowercased()).panel"
         let client = try client(host: host, reply: .hang)
@@ -134,13 +137,13 @@ enum XtreamCall: String, CaseIterable, Sendable {
         await #expect(throws: CancellationError.self) { try await task.value }
     }
 
-    @Test("0016/AC-11 401 and 403 are unauthorized", arguments: XtreamCall.allCases, [401, 403])
+    @Test("xtream-vod-client/unauthorized 401 and 403 are unauthorized", arguments: XtreamCall.allCases, [401, 403])
     func unauthorizedStatus(call: XtreamCall, status: Int) async throws {
         let client = try client(host: "ac11-\(call.rawValue.lowercased())-\(status).panel", reply: .http(status, Data("Denied".utf8)))
         await #expect(throws: XtreamClient.XtreamError.unauthorized) { try await call.run(on: client) }
     }
 
-    @Test("0016/AC-11 other statuses stay badStatus", arguments: XtreamCall.allCases)
+    @Test("xtream-vod-client/unauthorized other statuses stay badStatus", arguments: XtreamCall.allCases)
     func otherStatuses(call: XtreamCall) async throws {
         let name = call.rawValue.lowercased()
         let failing = try client(host: "ac11-\(name)-500.panel", reply: .http(500, Data("Oops".utf8)))
@@ -150,7 +153,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
     }
 
     @Test(
-        "0016/AC-11 auth 0 in a 200 body is unauthorized", arguments: XtreamCall.allCases,
+        "xtream-vod-client/unauthorized auth 0 in a 200 body is unauthorized", arguments: XtreamCall.allCases,
         [#"{"user_info":{"auth":0}}"#, #" {"user_info":{"auth":"0","status":"Active"}}"#])
     func authZero(call: XtreamCall, body: String) async throws {
         let host = "ac11-\(call.rawValue.lowercased())-auth\(body.contains("\"0\"") ? "s" : "n").panel"
@@ -158,12 +161,13 @@ enum XtreamCall: String, CaseIterable, Sendable {
         await #expect(throws: XtreamClient.XtreamError.unauthorized) { try await call.run(on: client) }
     }
 
-    @Test("0016/AC-11 the probe runs in the decode functions", arguments: [#"{"user_info":{"auth":0}}"#, #"{"user_info":{"auth":"0"}}"#])
+    // xtream-vod-client/unauthorized
+    @Test("the probe runs in the decode functions", arguments: [#"{"user_info":{"auth":0}}"#, #"{"user_info":{"auth":"0"}}"#])
     func probeInDecode(body: String) {
         #expect(throws: XtreamClient.XtreamError.unauthorized) { _ = try XtreamClient.decodeVODList(Data(body.utf8), host: "h") }
     }
 
-    @Test("0016/AC-11 array bodies are never probed")
+    @Test("xtream-vod-client/unauthorized array bodies are never probed")
     func arrayNotProbed() throws {
         let list = try XtreamClient.decodeVODList(Data(#"[{"user_info":{"auth":0}}]"#.utf8), host: "h")
         #expect(list == XtreamClient.DecodedList(items: [], skipped: 1))
@@ -174,7 +178,7 @@ enum XtreamCall: String, CaseIterable, Sendable {
     ]
 
     @Test(
-        "0016/AC-11 user_info.auth decodes loosely",
+        "xtream-vod-client/unauthorized user_info.auth decodes loosely",
         arguments: [("one", 1), ("onestring", 1), ("yes", nil), ("null", nil), ("absent", nil)] as [(String, Int?)])
     func authField(name: String, expected: Int?) async throws {
         let userInfo = try #require(Self.authBodies[name])

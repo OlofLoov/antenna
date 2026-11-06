@@ -16,7 +16,7 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
     let source = UUID()
     let other = UUID()
 
-    @Test("0014/AC-2 programmes join on trimmed id within their source")
+    @Test("guide-data/programmes-land-on-the-right-channels programmes join on trimmed id within their source")
     func join() throws {
         let index = GuideIndex(programmes: [
             source: [
@@ -45,7 +45,7 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
         #expect(index.current(for: GuideKey(sourceID: other, epgID: "one"), at: guideTime(20, 30))?.title == "one from B")
     }
 
-    @Test("0014/AC-9 the join counts channels with a guide, past-only included, and unmatched programmes")
+    @Test("guide-data/progress-a-screen-can-show the join counts channels with a guide, past-only included, and unmatched programmes")
     func joinSummary() {
         let guide = SourceGuide([
             programme("a", guideTime(20), guideTime(21)),
@@ -83,7 +83,7 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
             guide.programmes["b"] == [Programme(channelID: "b", start: guideTime(20), stop: guideTime(21), title: "", summary: "Other")])
     }
 
-    @Test("0014/AC-4 now and next")
+    @Test("guide-data/what-is-on-now-and-next now and next")
     func nowAndNext() {
         let key = GuideKey(sourceID: source, epgID: "ch")
         let index = GuideIndex(programmes: [
@@ -103,7 +103,7 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
         #expect(index.next(for: key, after: guideTime(22), count: 0).isEmpty)
     }
 
-    @Test("0014/AC-7 window, overlaps and reach")
+    @Test("guide-data/programmes-in-a-time-window window, overlaps and reach")
     func window() {
         let key = GuideKey(sourceID: source, epgID: "ch")
         let nested = GuideKey(sourceID: source, epgID: "nested")

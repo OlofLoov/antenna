@@ -5,7 +5,7 @@ import Foundation
 ///
 /// Entries are the kept channels in source order, then position. The build
 /// keeps closures and dictionary lookups per entry to a minimum because
-/// AC-14 times it in a debug build.
+/// the catalogue benchmark times it in a debug build.
 struct CatalogueIndex: Sendable {
     /// Provider numbers outside this range count as missing.
     static let providerNumbers = 1...99_999

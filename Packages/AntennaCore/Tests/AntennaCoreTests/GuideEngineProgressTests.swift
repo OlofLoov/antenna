@@ -12,7 +12,7 @@ import Testing
         events.filter(isLoaded)
     }
 
-    @Test("0014/AC-2 join holds in either order")
+    @Test("guide-data/programmes-land-on-the-right-channels join holds in either order")
     func eitherOrder() async throws {
         let world = GuideWorld()
         let channelsFirst = world.add(host: "ac2-channels-first.epg")
@@ -43,7 +43,7 @@ import Testing
         }
     }
 
-    @Test("0014/AC-9 loaded counts")
+    @Test("guide-data/progress-a-screen-can-show loaded counts")
     func loadedCounts() async throws {
         let world = GuideWorld()
         world.now = guideTime(30)
@@ -67,7 +67,7 @@ import Testing
         #expect(await engine.index.loadingState(for: GuideKey(sourceID: source.sourceID, epgID: "sport.se")) == .loaded)
     }
 
-    @Test("0014/AC-9 every listener hears every event, and a late one hears the latest per source")
+    @Test("guide-data/progress-a-screen-can-show every listener hears every event, and a late one hears the latest per source")
     func listeners() async throws {
         let world = GuideWorld()
         let failing = world.add(host: "ac9-late-a.epg")
@@ -96,7 +96,7 @@ import Testing
         #expect(late.events.all.dropFirst().first?.sourceID == working.sourceID)
     }
 
-    @Test("0014/AC-12 other sources are untouched")
+    @Test("guide-data/failures-say-why other sources are untouched")
     func otherSources() async throws {
         let world = GuideWorld()
         let healthy = world.add(host: "ac12-healthy.epg")
@@ -116,7 +116,7 @@ import Testing
         #expect(index.horizon == DateInterval(start: guideTime(18), end: guideTime(25)))
     }
 
-    @Test("0014/AC-15 logs and file names carry no login")
+    @Test("guide-data/logins-never-in-the-clear logs and file names carry no login")
     func noLoginInLogs() async throws {
         let world = GuideWorld()
         let link = "http://alice7:s3cr3t@ac15.epg/guide.xml?username=alice7&password=s3cr3t&token=abc123"

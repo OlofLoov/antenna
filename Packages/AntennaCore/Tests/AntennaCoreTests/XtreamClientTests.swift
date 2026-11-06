@@ -20,7 +20,7 @@ import Testing
         return XtreamClient(credentials: try credentials("http://\(host):8080"), session: URLSession(configuration: configuration))
     }
 
-    @Test("0003/AC-1 request shape, with and without a category")
+    @Test("xtream-live-source/request-shape request shape, with and without a category")
     func requestShape() async throws {
         let client = try stubbedClient(host: "ac1.panel", status: 200, body: "[]")
 
@@ -36,7 +36,7 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac1.panel").allSatisfy { $0.httpMethod == "GET" })
     }
 
-    @Test("0003/AC-2 loose numeric types decode")
+    @Test("xtream-live-source/loose-numeric-types-decode loose numeric types decode")
     func looseNumericTypes() throws {
         let streams = try decode(
             [XtreamLiveStream].self,
@@ -49,7 +49,7 @@ import Testing
         #expect(stream.categoryID == "3")
     }
 
-    @Test("0003/AC-3 category id as number or string")
+    @Test("xtream-live-source/category-id-as-number-or-string category id as number or string")
     func categoryIDNumberOrString() throws {
         let categories = try decode(
             [XtreamCategory].self,
@@ -57,7 +57,7 @@ import Testing
         #expect(categories.map(\.categoryID) == ["7", "8"])
     }
 
-    @Test("0003/AC-4 live stream URL for .ts and .m3u8")
+    @Test("xtream-live-source/live-stream-url live stream URL for .ts and .m3u8")
     func liveStreamURL() throws {
         let client = XtreamClient(credentials: try credentials("http://panel:8080"))
         let stream = try decode(XtreamLiveStream.self, #"{"name":"BBC One","stream_id":42}"#)
@@ -65,13 +65,13 @@ import Testing
         #expect(client.streamURL(for: stream, container: .m3u8).absoluteString.hasSuffix("42.m3u8"))
     }
 
-    @Test("0003/AC-5 guide URL")
+    @Test("xtream-live-source/guide-url guide URL")
     func guideURL() throws {
         let client = XtreamClient(credentials: try credentials("http://panel:8080"))
         #expect(client.xmltvURL().absoluteString == "http://panel:8080/xmltv.php?username=u&password=p")
     }
 
-    @Test("0003/AC-6 channel mapping")
+    @Test("xtream-live-source/channel-mapping channel mapping")
     func channelMapping() throws {
         let client = XtreamClient(credentials: try credentials("http://panel:8080"))
         let stream = try decode(
@@ -90,8 +90,9 @@ import Testing
 
     enum Endpoint: String, CaseIterable, Sendable { case liveCategories, liveStreams, accountInfo }
 
-    /// 0016/AC-11 supersedes the 403 case: it is now `unauthorized`; other statuses stay `badStatus`.
-    @Test("0003/AC-7 non-2xx response is a typed error", arguments: Endpoint.allCases, [403, 500])
+    /// xtream-vod-client/unauthorized supersedes the 403 case: it is now `unauthorized`; other statuses stay `badStatus`.
+    // xtream-live-source/non-2xx-response-is-a-typed-error
+    @Test("non-2xx response is a typed error", arguments: Endpoint.allCases, [403, 500])
     func nonSuccessStatus(endpoint: Endpoint, status: Int) async throws {
         let host = "ac7-\(endpoint.rawValue.lowercased())-\(status).panel"
         let client = try stubbedClient(host: host, status: status, body: "Forbidden")
@@ -105,8 +106,8 @@ import Testing
         }
     }
 
-    /// 0016/AC-4b supersedes `DecodingError`: the call throws `XtreamError.decoding(path: "")`.
-    @Test("0003/AC-8 malformed JSON is a decoding error, not a crash")
+    /// xtream-vod-client/category-lists-fail-whole supersedes `DecodingError`: the call throws `XtreamError.decoding(path: "")`.
+    @Test("xtream-live-source/malformed-json-is-an-error-not-a-crash malformed JSON is a decoding error, not a crash")
     func malformedJSON() async throws {
         let client = try stubbedClient(host: "ac8.panel", status: 200, body: "<html><body>Please log in</body></html>")
         await #expect(throws: XtreamClient.XtreamError.decoding(path: "")) {
@@ -115,7 +116,7 @@ import Testing
     }
 
     @Test(
-        "0016/AC-4 live rows with a stream_id that is not a whole number are skipped without trapping",
+        "xtream-vod-client/broken-rows-are-skipped live rows with a stream_id that is not a whole number are skipped without trapping",
         arguments: [
             ("fraction", #""55.7""#), ("fractionnumber", "55.7"), ("huge", "1e400"), ("hugestring", #""1e400""#), ("nan", #""nan""#),
             ("inf", #""inf""#), ("big", "1e20"), ("letters", #""abc""#), ("exponent", #""1e2""#), ("hex", #""0x37""#),
@@ -130,14 +131,16 @@ import Testing
         #expect(streams.map(\.name) == ["B", "B again"])
     }
 
-    @Test("0016/AC-4 live integers accept whole numbers in every form", arguments: ["55", "55.0", #""55""#, #""55.0""#])
+    @Test(
+        "xtream-vod-client/broken-rows-are-skipped live integers accept whole numbers in every form",
+        arguments: ["55", "55.0", #""55""#, #""55.0""#])
     func liveWholeNumbers(id: String) throws {
         let stream = try decode(XtreamLiveStream.self, "{\"name\":\"A\",\"stream_id\":\(id),\"num\":\(id)}")
         #expect(stream.streamID == 55)
         #expect(stream.num == 55)
     }
 
-    @Test("0016/AC-4 live optional integers that are not whole numbers are nil")
+    @Test("xtream-vod-client/broken-rows-are-skipped live optional integers that are not whole numbers are nil")
     func liveOptionalIntegers() throws {
         let stream = try decode(
             XtreamLiveStream.self,
@@ -148,7 +151,7 @@ import Testing
         #expect(stream.epgChannelID == nil)
     }
 
-    @Test("0003/AC-9 account info decodes loose types")
+    @Test("xtream-live-source/account-info-decodes-loose-types account info decodes loose types")
     func accountInfoLooseTypes() throws {
         let info = try decode(
             XtreamAccountInfo.self,
@@ -157,7 +160,7 @@ import Testing
         #expect(info.userInfo.maxConnections == "2")
     }
 
-    @Test("0003/AC-10 ids are stable per server and stream")
+    @Test("xtream-live-source/ids-are-stable-per-server-and-stream ids are stable per server and stream")
     func stableIDs() throws {
         let client = XtreamClient(credentials: try credentials("http://panel:8080"))
         let first = try decode(XtreamLiveStream.self, #"{"name":"A","stream_id":42}"#)

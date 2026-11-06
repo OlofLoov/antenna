@@ -10,7 +10,7 @@ import Testing
         try XtreamClient.decodeSeriesInfo(Data("{\"episodes\":\(episodes)}".utf8), host: host)
     }
 
-    @Test("0016/AC-6 series row fields")
+    @Test("xtream-vod-client/series-row-fields series row fields")
     func seriesRowFields() throws {
         let list = try XtreamClient.decodeSeriesList(try xtreamFixture("series.json"), host: host)
         let series = try #require(list.items.first)
@@ -28,14 +28,15 @@ import Testing
         #expect(second.lastModified == nil)
     }
 
-    @Test("0016/AC-6 last_modified follows the added rules", arguments: [#""0""#, #""abc""#, #""1e400""#, "1e400", "null"])
+    // xtream-vod-client/series-row-fields
+    @Test("last_modified follows the added rules", arguments: [#""0""#, #""abc""#, #""1e400""#, "1e400", "null"])
     func lastModifiedRule(value: String) throws {
         let list = try XtreamClient.decodeSeriesList(
             Data("[{\"name\":\"Dark\",\"series_id\":7,\"last_modified\":\(value)}]".utf8), host: host)
         #expect(try #require(list.items.first).lastModified == nil)
     }
 
-    @Test("0016/AC-6a episodes keyed by season flatten")
+    @Test("xtream-vod-client/episodes-flatten episodes keyed by season flatten")
     func episodesFlattenFromDictionary() throws {
         let info = try XtreamClient.decodeSeriesInfo(try xtreamFixture("series_info_dict.json"), host: host)
         #expect(info.plot == "A town")
@@ -55,7 +56,7 @@ import Testing
         #expect(info.seasonCount == 3)
     }
 
-    @Test("0016/AC-6a episodes as an array")
+    @Test("xtream-vod-client/episodes-flatten episodes as an array")
     func episodesFlattenFromArray() throws {
         let info = try XtreamClient.decodeSeriesInfo(try xtreamFixture("series_info_array.json"), host: host)
         #expect(info.plot == nil)
@@ -64,7 +65,7 @@ import Testing
         #expect(info.episodes.map(\.number) == [1, 2])
     }
 
-    @Test("0016/AC-6a season falls back to the key, then nil; number nil when not numeric")
+    @Test("xtream-vod-client/episodes-flatten season falls back to the key, then nil; number nil when not numeric")
     func seasonAndNumberFallback() throws {
         let info = try seriesInfo(episodes: #"{"x":[{"id":1,"episode_num":"one","title":"A"}],"4":[{"id":2,"title":"B"}]}"#)
         let byID = Dictionary(uniqueKeysWithValues: info.episodes.map { ($0.episodeID, $0) })
@@ -73,7 +74,7 @@ import Testing
         #expect(byID[2]?.season == 4)
     }
 
-    @Test("0016/AC-6b episodes sort by season then number, nil first, stable")
+    @Test("xtream-vod-client/episode-order episodes sort by season then number, nil first, stable")
     func episodeOrder() throws {
         let body = #"""
             [{"id":1,"season":10,"episode_num":1,"title":"s10e1"},
@@ -89,7 +90,8 @@ import Testing
         #expect(info.episodes.map(\.title) == ["nil e1", "s1 nil", "s1e1", "s2e1", "s2e2 first", "s2e2 second", "s2e10", "s10e1"])
     }
 
-    @Test("0016/AC-6b 0016/AC-6d season keys are visited in numeric order, then by name")
+    // xtream-vod-client/episode-order xtream-vod-client/episode-skipping-and-title-fallback
+    @Test("season keys are visited in numeric order, then by name")
     func seasonKeyOrder() throws {
         let body = #"""
             {"b":[{"id":9,"season":3,"episode_num":1,"title":"from b"}],
@@ -102,13 +104,13 @@ import Testing
         #expect(info.skippedEpisodes == 1)
     }
 
-    @Test("0016/AC-6c season count uses resolved seasons, not keys")
+    @Test("xtream-vod-client/season-count season count uses resolved seasons, not keys")
     func seasonCount() throws {
         let info = try seriesInfo(episodes: #"{"2":[{"id":1,"season":3,"title":"A"},{"id":2,"title":"B"},{"id":3,"title":"C"}]}"#)
         #expect(info.seasonCount == 2)
     }
 
-    @Test("0016/AC-6d broken and duplicate episodes are skipped; empty titles fall back")
+    @Test("xtream-vod-client/episode-skipping-and-title-fallback broken and duplicate episodes are skipped; empty titles fall back")
     func episodeSkipping() throws {
         let info = try XtreamClient.decodeSeriesInfo(try xtreamFixture("series_info_broken_episodes.json"), host: host)
         #expect(info.skippedEpisodes == 4)
@@ -116,7 +118,7 @@ import Testing
         #expect(info.episodes.map(\.title) == ["Episode", "Keep", "Episode 4"])
     }
 
-    @Test("0016/AC-6e empty episodes shapes", arguments: [nil, "{}", "[]", "false"])
+    @Test("xtream-vod-client/empty-episodes-shapes empty episodes shapes", arguments: [nil, "{}", "[]", "false"])
     func emptyEpisodes(episodes: String?) throws {
         let body = episodes.map { "{\"info\":{\"plot\":\"P\"},\"episodes\":\($0)}" } ?? #"{"info":{"plot":"P"}}"#
         let info = try XtreamClient.decodeSeriesInfo(Data(body.utf8), host: host)
@@ -126,7 +128,7 @@ import Testing
         #expect(info.skippedEpisodes == 0)
     }
 
-    @Test("0016/AC-13 ids are stable across responses and distinct per kind")
+    @Test("xtream-vod-client/ids-are-stable ids are stable across responses and distinct per kind")
     func stableIDs() throws {
         let first = try XtreamClient.decodeVODList(Data(#"[{"name":"A","stream_id":55}]"#.utf8), host: "h")
         let again = try XtreamClient.decodeVODList(Data(#"[{"name":"A","stream_id":"55","rating":"9"}]"#.utf8), host: "h")
@@ -146,7 +148,7 @@ import Testing
     }
 
     @Test(
-        "0016/AC-13a title id round trip",
+        "xtream-vod-client/title-id-round-trip title id round trip",
         arguments: [
             ("xtream#h#55", XtreamTitleID.Kind.live), ("xtream#h#vod#55", .vod), ("xtream#h#series#55", .series),
             ("xtream#h#episode#55", .episode),
@@ -160,7 +162,7 @@ import Testing
     }
 
     @Test(
-        "0016/AC-13a malformed title ids are nil",
+        "xtream-vod-client/title-id-round-trip malformed title ids are nil",
         arguments: ["xtream#h#vod#abc", "xtream#h#movie#55", "xtream##55", "m3u#x", "xtream#h#vod#055", "xtream#h#+55"])
     func titleIDRejects(string: String) {
         #expect(XtreamTitleID(parsing: string) == nil)

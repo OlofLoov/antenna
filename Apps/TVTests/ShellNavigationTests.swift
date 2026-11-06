@@ -57,7 +57,7 @@ import Testing
         await wait { engine.plays > 0 }
     }
 
-    @Test("0015/AC-6b Menu from the bar over a paused tab resumes Live without a reload")
+    @Test("tvos-shell/menu-from-the-tab-bar-goes-back-to-live Menu from the bar over a paused tab resumes Live without a reload")
     func menuFromBarResumes() async {
         await playing()
         _ = await model.select(.movies)
@@ -75,7 +75,7 @@ import Testing
         #expect(engine.loaded.count == 1)
     }
 
-    @Test("0015/AC-14a the navigator opens Search and the Guide at a programme")
+    @Test("tvos-shell/other-screens-can-send-the-user-somewhere the navigator opens Search and the Guide at a programme")
     func navigatorShows() async {
         await playing()
         _ = await model.select(.movies)
@@ -93,7 +93,7 @@ import Testing
         #expect(!model.barVisible)
     }
 
-    @Test("0015/AC-14a the navigator shows Live full screen after a tune")
+    @Test("tvos-shell/other-screens-can-send-the-user-somewhere the navigator shows Live full screen after a tune")
     func navigatorShowsLive() async {
         await playing()
         model.openPicker()
@@ -152,7 +152,7 @@ import Testing
         #expect(model.barVisible)
     }
 
-    @Test("0015/AC-4 selecting Live over the dimmed Guide loads a failed stream again")
+    @Test("tvos-shell/back-to-full-screen-from-the-tab-bar selecting Live over the dimmed Guide loads a failed stream again")
     func liveFromGuideRetriesFailedStream() async {
         engine.failLoads = true
         model.sourcesChanged([source])

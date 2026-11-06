@@ -22,21 +22,21 @@ import Testing
         try #require(ISO8601DateFormatter().date(from: iso))
     }
 
-    @Test("0002/AC-1 first display-name wins")
+    @Test("xmltv-guide-parsing/channel-display-names first display-name wins")
     func channelDisplayNames() throws {
         let result = try parse(
             document(#"<channel id="a"><display-name>A HD</display-name><display-name>A</display-name></channel>"#))
         #expect(result.channelNames == ["a": "A HD"])
     }
 
-    @Test("0002/AC-1b an empty first display-name still wins")
+    @Test("xmltv-guide-parsing/empty-first-display-name-wins an empty first display-name still wins")
     func emptyDisplayNameWins() throws {
         let result = try parse(
             document(#"<channel id="a"><display-name></display-name><display-name>A</display-name></channel>"#))
         #expect(result.channelNames == ["a": ""])
     }
 
-    @Test("0002/AC-2 programme fields map from the fixture")
+    @Test("xmltv-guide-parsing/programme-fields programme fields map from the fixture")
     func programmeFields() throws {
         let url = try #require(
             Bundle.module.url(forResource: "sample.xmltv", withExtension: nil, subdirectory: "Fixtures"))
@@ -53,7 +53,7 @@ import Testing
         #expect(result.programmes.first == expected)
     }
 
-    @Test("0002/AC-3 absent optional fields are nil")
+    @Test("xmltv-guide-parsing/absent-optional-fields-are-nil absent optional fields are nil")
     func absentOptionalFields() throws {
         let result = try parse(programme("<title>T</title>"))
         let parsed = try #require(result.programmes.first)
@@ -64,14 +64,14 @@ import Testing
         #expect(parsed.iconURL == nil)
     }
 
-    @Test("0002/AC-3b whitespace-only desc is nil")
+    @Test("xmltv-guide-parsing/whitespace-only-text-is-nil whitespace-only desc is nil")
     func whitespaceDescIsNil() throws {
         let result = try parse(programme("<title>T</title><desc>  </desc>"))
         #expect(try #require(result.programmes.first).summary == nil)
     }
 
     @Test(
-        "0002/AC-4 timestamp with zone offset, with or without a space",
+        "xmltv-guide-parsing/timestamp-with-zone-offset timestamp with zone offset, with or without a space",
         arguments: [
             (" +0100", "2026-11-03T19:00:00Z"),
             ("+0100", "2026-11-03T19:00:00Z"),
@@ -85,7 +85,7 @@ import Testing
         #expect(parsed.stop == (try utc(expectedStart)).addingTimeInterval(3600))
     }
 
-    @Test("0002/AC-4b negative zone offset")
+    @Test("xmltv-guide-parsing/negative-zone-offset negative zone offset")
     func timestampWithNegativeOffset() throws {
         let result = try parse(programme("<title>T</title>", start: "20261103200000 -0500", stop: "20261103210000 -0500"))
         let parsed = try #require(result.programmes.first)
@@ -93,7 +93,7 @@ import Testing
         #expect(parsed.stop == (try utc("2026-11-04T02:00:00Z")))
     }
 
-    @Test("0002/AC-5 timestamp without a usable zone is UTC", arguments: ["", " UTC", "+9900"])
+    @Test("xmltv-guide-parsing/timestamp-without-zone-is-utc timestamp without a usable zone is UTC", arguments: ["", " UTC", "+9900"])
     func timestampWithoutZone(suffix: String) throws {
         let result = try parse(
             programme("<title>T</title>", start: "20261103200000\(suffix)", stop: "20261103210000\(suffix)"))
@@ -103,7 +103,7 @@ import Testing
     }
 
     @Test(
-        "0002/AC-6 invalid intervals are dropped and the rest kept (AC-6a to AC-6f in argument order)",
+        "xmltv-guide-parsing/invalid-intervals-are-dropped invalid intervals are dropped and the rest kept (its scenarios in argument order)",
         arguments: [
             #"channel="a" start="20261103210000" stop="20261103200000""#,
             #"channel="a" start="20261103200000" stop="20261103200000""#,
@@ -122,7 +122,7 @@ import Testing
         #expect(result.programmes.map(\.title) == ["Good"])
     }
 
-    @Test("0002/AC-7 malformed XML throws XMLTVError.malformed with its position")
+    @Test("xmltv-guide-parsing/malformed-xml-throws-a-typed-error malformed XML throws XMLTVError.malformed with its position")
     func malformedThrows() {
         let xml = """
             <tv>
@@ -134,7 +134,7 @@ import Testing
     }
 
     @Test(
-        "0002/AC-7b empty data and gzip bytes throw XMLTVError.malformed",
+        "xmltv-guide-parsing/non-xml-data-throws empty data and gzip bytes throw XMLTVError.malformed",
         arguments: [Data(), Data([0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03])])
     func nonXMLDataThrows(data: Data) {
         let error = #expect(throws: XMLTVParser.XMLTVError.self) { try XMLTVParser().parse(data) }
@@ -144,13 +144,13 @@ import Testing
         }
     }
 
-    @Test("0002/AC-8 first repeated title wins")
+    @Test("xmltv-guide-parsing/first-repeated-title-wins first repeated title wins")
     func firstTitleWins() throws {
         let result = try parse(programme(#"<title lang="en">A</title><title lang="sv">B</title>"#))
         #expect(try #require(result.programmes.first).title == "A")
     }
 
-    @Test("0002/AC-8b an empty first element is skipped for a later non-empty one")
+    @Test("xmltv-guide-parsing/empty-first-element-is-skipped an empty first element is skipped for a later non-empty one")
     func emptyFirstElementSkipped() throws {
         let result = try parse(
             programme(
@@ -167,7 +167,7 @@ import Testing
         #expect(parsed.category == "C")
     }
 
-    @Test("0002/AC-9 channel icons are not attributed to programmes")
+    @Test("xmltv-guide-parsing/channel-icons-are-not-attributed-to-programmes channel icons are not attributed to programmes")
     func channelIconIgnored() throws {
         let result = try parse(
             document(
@@ -179,7 +179,7 @@ import Testing
     }
 
     @Test(
-        "0002/AC-10 airing check is start-inclusive and stop-exclusive",
+        "xmltv-guide-parsing/airing-check airing check is start-inclusive and stop-exclusive",
         arguments: [
             ("2026-11-03T20:00:00Z", true),
             ("2026-11-03T20:30:00Z", true),
@@ -192,7 +192,7 @@ import Testing
     }
 
     @Test(
-        "0002/AC-11 100,000 programmes parse within 20 seconds",
+        "xmltv-guide-parsing/large-documents-parse-in-bounded-time 100,000 programmes parse within 20 seconds",
         .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(2)))
     func largeGuideBenchmark() throws {
@@ -213,7 +213,7 @@ import Testing
         #expect(elapsed < .seconds(20))
     }
 
-    @Test("0002/AC-12 programmes keep document order, duplicates included")
+    @Test("xmltv-guide-parsing/programmes-keep-document-order programmes keep document order, duplicates included")
     func documentOrder() throws {
         let result = try parse(
             document(
@@ -224,7 +224,7 @@ import Testing
         #expect(result.programmes.map(\.title) == ["T1", "T2"])
     }
 
-    @Test("0002/AC-13 CDATA text is read")
+    @Test("xmltv-guide-parsing/cdata-text-is-read CDATA text is read")
     func cdataText() throws {
         let result = try parse(programme("<title><![CDATA[A & B]]></title><desc><![CDATA[D]]></desc>"))
         let parsed = try #require(result.programmes.first)
@@ -233,7 +233,7 @@ import Testing
     }
 
     @Test(
-        "0002/AC-14 stray ampersands and HTML entities are read as text",
+        "xmltv-guide-parsing/stray-ampersands-and-html-entities-are-read-as-text stray ampersands and HTML entities are read as text",
         arguments: [
             ("<title>Tom & Jerry</title>", "Tom & Jerry"),
             ("<title>A&nbsp;B</title>", "A\u{A0}B"),
@@ -245,13 +245,13 @@ import Testing
         #expect(try #require(result.programmes.first).title == title)
     }
 
-    @Test("0002/AC-14 a bare & in an icon URL is kept")
+    @Test("xmltv-guide-parsing/stray-ampersands-and-html-entities-are-read-as-text a bare & in an icon URL is kept")
     func strayAmpersandInAttribute() throws {
         let result = try parse(programme(#"<title>T</title><icon src="http://i/x?a=1&b=2"/>"#))
         #expect(try #require(result.programmes.first).iconURL?.absoluteString == "http://i/x?a=1&b=2")
     }
 
-    @Test("0002/AC-14 valid input reaches XMLParser byte for byte")
+    @Test("xmltv-guide-parsing/stray-ampersands-and-html-entities-are-read-as-text valid input reaches XMLParser byte for byte")
     func validInputUnchanged() throws {
         let url = try #require(
             Bundle.module.url(forResource: "sample.xmltv", withExtension: nil, subdirectory: "Fixtures"))
@@ -272,7 +272,7 @@ import Testing
     }
 
     @Test(
-        "0002/AC-14 documents that declare entities or are UTF-16 are left alone",
+        "xmltv-guide-parsing/stray-ampersands-and-html-entities-are-read-as-text documents that declare entities or are UTF-16 are left alone",
         arguments: [
             Data(#"<!DOCTYPE tv [ <!ENTITY x "y"> ]><tv><title>A & B</title></tv>"#.utf8),
             Data([0xFF, 0xFE]) + Data("<tv>A & B</tv>".utf8),
@@ -281,12 +281,12 @@ import Testing
         #expect(XMLEntitySanitizer.sanitize(data) == data)
     }
 
-    @Test("0002/AC-14 other well-formedness errors still throw")
+    @Test("xmltv-guide-parsing/stray-ampersands-and-html-entities-are-read-as-text other well-formedness errors still throw")
     func otherErrorsStillThrow() {
         #expect(throws: XMLTVParser.XMLTVError.self) { try parse(programme("<title>A < B</title>")) }
     }
 
-    @Test("0002/AC-14 a reference to a code point XML forbids is read as text")
+    @Test("xmltv-guide-parsing/stray-ampersands-and-html-entities-are-read-as-text a reference to a code point XML forbids is read as text")
     func forbiddenCharacterReference() throws {
         let result = try parse(programme("<title>A &#0; B</title>"))
         #expect(try #require(result.programmes.first).title == "A &#0; B")

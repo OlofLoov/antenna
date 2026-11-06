@@ -5,7 +5,7 @@ import XCTest
 /// (`UITestingStore`), so nothing reaches iCloud.
 @MainActor
 final class FavoritesUITests: XCTestCase {
-    // 0005/AC-1
+    // favorites/empty-state
     func testEmptyStateWhenThereAreNoFavorites() {
         let app = launch(favorites: [])
 
@@ -14,7 +14,7 @@ final class FavoritesUITests: XCTestCase {
         XCTAssertFalse(app.collectionViews["favorites.list"].exists)
     }
 
-    // 0005/AC-2
+    // favorites/list-order
     func testRowsFollowSortOrder() {
         let app = launch(favorites: [2, 0, 1])
 

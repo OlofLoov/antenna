@@ -13,7 +13,7 @@ extension Channel {
     }
 
     /// Up to four uppercase characters to draw in place of a missing logo,
-    /// or "?" when `name` has no letter or digit (DR-8).
+    /// or "?" when `name` has no letter or digit (design-system/channels-without-a-logo-show-initials).
     ///
     /// A one-word name gives its first four letters and digits ("news24" is
     /// "NEWS"); a longer name gives the first letter or digit of each word

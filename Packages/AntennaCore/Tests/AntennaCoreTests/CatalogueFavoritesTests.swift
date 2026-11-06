@@ -4,7 +4,7 @@ import Testing
 @testable import AntennaCore
 
 @Suite struct CatalogueFavoritesTests {
-    @Test("0013/AC-8 favorites resolve to loaded channels")
+    @Test("channel-catalogue/favorites-resolve-to-loaded-channels favorites resolve to loaded channels")
     func resolution() throws {
         let x = Snapshot(channelID: "x", sourceID: nil, sortOrder: 1)
         let y = Snapshot(channelID: "y", sourceID: sourceA, sortOrder: 0)
@@ -19,7 +19,7 @@ import Testing
         #expect(catalogue.unresolvedFavorites == [wSnap, zSnap])
     }
 
-    @Test("0013/AC-8 unresolved favorites with equal sortOrder order by channelID")
+    @Test("channel-catalogue/favorites-resolve-to-loaded-channels unresolved favorites with equal sortOrder order by channelID")
     func unresolvedOrder() {
         let late = Snapshot(channelID: "b", sourceID: nil, sortOrder: 1)
         let early = Snapshot(channelID: "a", sourceID: nil, sortOrder: 1)
@@ -39,7 +39,7 @@ import Testing
     static let inA = Channel.tagged([channel("c"), channel("d"), channel("e")], sourceID: sourceA)
     static let inB = Channel.tagged([channel("c")], sourceID: sourceB)
 
-    @Test("0013/AC-9a one row per favorite channel, at its lowest sortOrder")
+    @Test("channel-catalogue/one-row-per-favorite-channel one row per favorite channel, at its lowest sortOrder")
     func oneRowPerChannel() throws {
         let catalogue = TestCatalogue(channels: Self.inA + Self.inB, groupOrder: [:], favorites: Self.snapshots)
         let rows = catalogue.rows(in: .favorites)
@@ -47,7 +47,7 @@ import Testing
         #expect(catalogue.count(of: .favorites) == 3)
     }
 
-    @Test("0013/AC-9b removal set covers every matching snapshot")
+    @Test("channel-catalogue/removal-set removal set covers every matching snapshot")
     func removalSet() {
         let catalogue = TestCatalogue(channels: Self.inA + Self.inB, groupOrder: [:], favorites: Self.snapshots)
         let s = Self.snapshots
@@ -58,7 +58,7 @@ import Testing
         #expect(catalogue.favoritesToRemove(for: Self.inA[2]).isEmpty)
     }
 
-    @Test("0013/AC-9c isFavorite matches a non-empty removal set")
+    @Test("channel-catalogue/favorite-predicate isFavorite matches a non-empty removal set")
     func favoritePredicate() {
         let catalogue = TestCatalogue(channels: Self.inA + Self.inB, groupOrder: [:], favorites: Self.snapshots)
         for channel in Self.inA + Self.inB {
@@ -67,7 +67,7 @@ import Testing
         #expect((Self.inA + Self.inB).map(catalogue.isFavorite) == [true, true, false, true])
     }
 
-    @Test("0013/AC-10 adding a favorite")
+    @Test("channel-catalogue/adding-a-favorite adding a favorite")
     func addFavorite() {
         let c = Channel.tagged([channel("c"), channel("loaded")], sourceID: sourceA)
         let existing = [
@@ -82,7 +82,7 @@ import Testing
         #expect(empty.addFavorite(c[0])?.sortOrder == 0)
     }
 
-    @Test("0013/AC-23 addFavorite returns nil for an untagged channel")
+    @Test("channel-catalogue/adding-an-untagged-channel addFavorite returns nil for an untagged channel")
     func addFavoriteUntagged() {
         let tagged = Channel.tagged([channel("c")], sourceID: sourceA)
         let catalogue = TestCatalogue(channels: tagged, groupOrder: [:], favorites: [])
@@ -120,7 +120,7 @@ import Testing
     /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1 swift test`.
     /// Reference machine: Apple M1, 16 GB, debug build.
     @Test(
-        "0013/AC-14 50,000 channels build within 200 ms",
+        "channel-catalogue/catalogue-build-is-fast 50,000 channels build within 200 ms",
         .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(1)))
     func buildBenchmark() {
@@ -136,7 +136,7 @@ import Testing
         #expect(elapsed < .milliseconds(200))
     }
 
-    @Test("0013/AC-19 replacing favorites keeps every other group and number")
+    @Test("channel-catalogue/favorites-replaced-without-rebuild replacing favorites keeps every other group and number")
     func replaceFavorites() throws {
         let input = Self.ac14Input()
         let original = TestCatalogue(channels: input.channels, groupOrder: input.groupOrder, favorites: input.favorites)
@@ -164,7 +164,7 @@ import Testing
     /// Benchmark, not CI-gated. Run with `ANTENNA_BENCHMARKS=1 swift test`.
     /// Reference machine: Apple M1, 16 GB, debug build.
     @Test(
-        "0013/AC-19 replacing favorites takes under 20 ms",
+        "channel-catalogue/favorites-replaced-without-rebuild replacing favorites takes under 20 ms",
         .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"),
         .timeLimit(.minutes(1)))
     func replaceBenchmark() {

@@ -3,7 +3,7 @@
     import Foundation
 
     /// The channel last watched on this Apple TV, by source and channel id.
-    /// Never carries a stream link (ADR-0003).
+    /// Never carries a stream link (decision adr-0003).
     struct LastChannelKey: Codable, Equatable, Sendable {
         var sourceID: UUID
         var channelID: String
@@ -28,7 +28,7 @@
     }
 
     /// Reads and writes `shell.lastChannel` in `UserDefaults`, on this device
-    /// only and never synced (ADR-0009).
+    /// only and never synced (decision adr-0009).
     struct LastChannelStore {
         static let defaultsKey = "shell.lastChannel"
         private let defaults: UserDefaults
