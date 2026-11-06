@@ -97,6 +97,17 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv
         TARGETED_DEVICE_FAMILY: "3"
 
+  AntennaTVTests:
+    type: bundle.unit-test
+    platform: tvOS
+    sources:
+      - Apps/TVTests
+    dependencies:
+      - target: AntennaTV
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
 schemes:
   Antenna:
     build:
@@ -106,5 +117,7 @@ schemes:
       targets: [AntennaTests, AntennaUITests]
   AntennaTV:
     build:
-      targets: { AntennaTV: all }
+      targets: { AntennaTV: all, AntennaTVTests: [test] }
     run: { config: Debug }
+    test:
+      targets: [AntennaTVTests]
