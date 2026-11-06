@@ -1,6 +1,6 @@
 import XCTest
 
-/// Spec 0015 on Apple TV. Each test launches the app with
+/// The tvos-shell capability on Apple TV. Each test launches the app with
 /// `-ui-testing-shell <scenario>` (`UITestingShell`): two scripted sources on
 /// an in-memory store and a recording engine whose state the
 /// `shell.debug.engine` probe reads as `"<state> loads=<n> file=<name>"`.
