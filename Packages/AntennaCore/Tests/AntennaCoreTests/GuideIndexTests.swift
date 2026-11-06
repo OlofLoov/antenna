@@ -61,6 +61,27 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
         #expect(summary == .init(channelsWithGuide: 2, channelsTotal: 3, days: 1, unmatched: 1))
     }
 
+    @Test func compactStorageGivesBackEveryField() throws {
+        let icon = try #require(URL(string: "http://img.example/a.png"))
+        let input = [
+            Programme(
+                channelID: " a ", start: guideTime(20), stop: guideTime(21), title: "Same", subtitle: "Part 1",
+                summary: "Shared text", category: "News", iconURL: icon),
+            Programme(channelID: "a", start: guideTime(21), stop: guideTime(22), title: "Same", summary: "Shared text"),
+            Programme(channelID: "b", start: guideTime(20), stop: guideTime(21), title: "", summary: "Other"),
+        ]
+        let guide = SourceGuide(input)
+        #expect(
+            guide.programmes["a"] == [
+                Programme(
+                    channelID: "a", start: guideTime(20), stop: guideTime(21), title: "Same", subtitle: "Part 1",
+                    summary: "Shared text", category: "News", iconURL: icon),
+                Programme(channelID: "a", start: guideTime(21), stop: guideTime(22), title: "Same", summary: "Shared text"),
+            ])
+        #expect(
+            guide.programmes["b"] == [Programme(channelID: "b", start: guideTime(20), stop: guideTime(21), title: "", summary: "Other")])
+    }
+
     @Test("0014/AC-4 now and next")
     func nowAndNext() {
         let key = GuideKey(sourceID: source, epgID: "ch")

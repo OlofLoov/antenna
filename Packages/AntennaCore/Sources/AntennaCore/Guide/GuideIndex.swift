@@ -42,18 +42,18 @@ public struct GuideIndex: Sendable {
 
     /// The programme on at `date`, or nil when nothing is.
     public func current(for key: GuideKey, at date: Date) -> Programme? {
-        guard let list = list(for: key) else { return nil }
+        guard let (guide, list) = schedule(for: key) else { return nil }
         let index = firstIndex(in: list) { $0.start > date } - 1
         guard index >= 0, date < list[index].stop else { return nil }
-        return list[index]
+        return guide.programme(list[index], id: key.epgID)
     }
 
     /// Up to `count` programmes starting at or after `date`, in start order.
     /// Callers pass the current programme's stop, or now when nothing is on.
     public func next(for key: GuideKey, after date: Date, count: Int) -> [Programme] {
-        guard count > 0, let list = list(for: key) else { return [] }
+        guard count > 0, let (guide, list) = schedule(for: key) else { return [] }
         let first = firstIndex(in: list) { $0.start >= date }
-        return Array(list[first..<min(list.count, first + count)])
+        return list[first..<min(list.count, first + count)].map { guide.programme($0, id: key.epgID) }
     }
 
     /// Per key, every programme that overlaps `interval` (start before its end,
@@ -62,10 +62,10 @@ public struct GuideIndex: Sendable {
     public func programmes(for keys: [GuideKey], in interval: DateInterval) -> [GuideKey: [Programme]] {
         var result: [GuideKey: [Programme]] = [:]
         for key in keys {
-            guard let list = list(for: key) else { continue }
+            guard let (guide, list) = schedule(for: key) else { continue }
             let first = firstIndex(in: list) { $0.stop > interval.start }
             let end = firstIndex(in: list) { $0.start >= interval.end }
-            if first < end { result[key] = Array(list[first..<end]) }
+            if first < end { result[key] = list[first..<end].map { guide.programme($0, id: key.epgID) } }
         }
         return result
     }
@@ -76,7 +76,7 @@ public struct GuideIndex: Sendable {
     public func loadingState(for key: GuideKey) -> GuideLoadingState {
         guard let entry = sources[key.sourceID] else { return .loading }
         guard let guide = entry.guide else { return entry.state }
-        return guide.programmes[key.epgID]?.isEmpty == false ? .loaded : .noData
+        return guide.schedules[key.epgID]?.isEmpty == false ? .loaded : .noData
     }
 
     /// As `loadingState(for:)` with the channel's key. A channel without a
@@ -89,13 +89,14 @@ public struct GuideIndex: Sendable {
         return entry.guide == nil ? entry.state : .noData
     }
 
-    private func list(for key: GuideKey) -> [Programme]? {
-        sources[key.sourceID]?.guide?.programmes[key.epgID]
+    private func schedule(for key: GuideKey) -> (SourceGuide, [SourceGuide.Slot])? {
+        guard let guide = sources[key.sourceID]?.guide, let slots = guide.schedules[key.epgID] else { return nil }
+        return (guide, slots)
     }
 
     /// The first index whose element satisfies `predicate`, which must be
     /// false then true along the list; `list.count` when none does.
-    private func firstIndex(in list: [Programme], where predicate: (Programme) -> Bool) -> Int {
+    private func firstIndex(in list: [SourceGuide.Slot], where predicate: (SourceGuide.Slot) -> Bool) -> Int {
         var low = 0
         var high = list.count
         while low < high {

@@ -29,6 +29,25 @@ public struct XMLTVParser: Sendable {
         return Result(channelNames: delegate.channelNames, programmes: delegate.programmes)
     }
 
+    /// Parses a document read from `stream` and hands each programme to
+    /// `each` as its element ends, keeping none, so memory does not grow with
+    /// the document. Entities are not rewritten: callers pass a document that
+    /// `XMLEntitySanitizer` has already seen. Throws as `parse(_:)` does.
+    func parseSanitized(_ stream: InputStream, each: (Programme) -> Void) throws(XMLTVError) {
+        let parser = XMLParser(stream: stream)
+        parser.shouldProcessNamespaces = false
+        let succeeded = withoutActuallyEscaping(each) { each -> Bool in
+            let delegate = Delegate()
+            delegate.each = each
+            parser.delegate = delegate
+            defer { parser.delegate = nil }
+            return parser.parse()
+        }
+        guard succeeded else {
+            throw .malformed(line: parser.lineNumber, column: parser.columnNumber)
+        }
+    }
+
     /// The only error `parse` throws. No Foundation error reaches the caller.
     public enum XMLTVError: Error, Sendable, Equatable {
         /// The document is not well-formed XML. `line` and `column` are where
@@ -41,6 +60,8 @@ public struct XMLTVParser: Sendable {
     private final class Delegate: NSObject, XMLParserDelegate {
         var channelNames: [String: String] = [:]
         var programmes: [Programme] = []
+        /// When set, receives each programme instead of `programmes`.
+        var each: ((Programme) -> Void)?
 
         private var currentChannelID: String?
         private var inChannel = false
@@ -87,10 +108,25 @@ public struct XMLTVParser: Sendable {
             return sign == "-" ? -seconds : seconds
         }
 
+        /// Runs `body` in its own autorelease pool, so the bridged strings and
+        /// dates Foundation hands back for each element are freed as the parse
+        /// goes rather than when it ends.
+        private func drained(_ body: () -> Void) {
+            #if canImport(ObjectiveC)
+                autoreleasepool(invoking: body)
+            #else
+                body()
+            #endif
+        }
+
         func parser(
             _ parser: XMLParser, didStartElement name: String, namespaceURI: String?, qualifiedName: String?,
             attributes: [String: String] = [:]
         ) {
+            drained { start(name, attributes: attributes) }
+        }
+
+        private func start(_ name: String, attributes: [String: String]) {
             switch name {
             case "channel":
                 inChannel = true
@@ -114,6 +150,10 @@ public struct XMLTVParser: Sendable {
         }
 
         func parser(_ parser: XMLParser, didEndElement name: String, namespaceURI: String?, qualifiedName: String?) {
+            drained { end(name) }
+        }
+
+        private func end(_ name: String) {
             switch name {
             case "display-name":
                 if inChannel, let id = currentChannelID, channelNames[id] == nil {
@@ -129,14 +169,14 @@ public struct XMLTVParser: Sendable {
                 currentChannelID = nil
             case "programme":
                 if let ch = progChannel, let start = progStart, let stop = progStop, stop > start {
-                    programmes.append(
-                        Programme(
-                            channelID: ch, start: start, stop: stop, title: title,
-                            subtitle: subtitle.isEmpty ? nil : subtitle,
-                            summary: desc.isEmpty ? nil : desc,
-                            category: category.isEmpty ? nil : category,
-                            iconURL: icon
-                        ))
+                    let programme = Programme(
+                        channelID: ch, start: start, stop: stop, title: title,
+                        subtitle: subtitle.isEmpty ? nil : subtitle,
+                        summary: desc.isEmpty ? nil : desc,
+                        category: category.isEmpty ? nil : category,
+                        iconURL: icon
+                    )
+                    if let each { each(programme) } else { programmes.append(programme) }
                 }
                 progChannel = nil
             default:

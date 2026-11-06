@@ -25,8 +25,9 @@ public struct GuideLimits: Sendable, Equatable {
 
 /// Takes one guide body as it arrives, writes it to a file named after the
 /// source, then unpacks and parses it. The body is never held in memory
-/// whole: the file is mapped to parse it, so only a copy the entity
-/// sanitizer makes counts as resident.
+/// whole: the entity rewrite goes to a file in pieces, the parser reads that
+/// file as a stream, and programmes go straight into a compact
+/// `SourceGuide` as they are read.
 ///
 /// A body is XML when its first byte, after an optional UTF-8 byte order mark
 /// and whitespace, is `<`, and gzip when it starts with `1f 8b`. A gzip body
@@ -42,6 +43,7 @@ final class GuideDecoder {
     private let expectedLength: Int64?
     private let rawFile: URL
     private let xmlFile: URL
+    private let parseFile: URL
     private let handle: FileHandle
     private var head: [UInt8] = []
     private(set) var kind: Kind?
@@ -53,6 +55,7 @@ final class GuideDecoder {
         self.expectedLength = expectedLength
         rawFile = directory.appending(path: "\(sourceID.uuidString).download")
         xmlFile = directory.appending(path: "\(sourceID.uuidString).xml")
+        parseFile = directory.appending(path: "\(sourceID.uuidString).parse.xml")
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             guard FileManager.default.createFile(atPath: rawFile.path(), contents: nil) else { throw GuideError.network(.cannotCreateFile) }
@@ -66,6 +69,7 @@ final class GuideDecoder {
         try? handle.close()
         try? FileManager.default.removeItem(at: rawFile)
         try? FileManager.default.removeItem(at: xmlFile)
+        try? FileManager.default.removeItem(at: parseFile)
     }
 
     /// The limit on bytes received, once the body has been sniffed.
@@ -110,31 +114,75 @@ final class GuideDecoder {
             try unpack()
             file = xmlFile
         }
+        var builder = SourceGuide.Builder()
+        try parse(file, verifyXML: kind == .gzip) { builder.add($0) }
+        let guide = builder.build()
+        guard !guide.schedules.isEmpty else { throw .empty }
+        return guide
+    }
+
+    /// Streams the XML in `file` through the parser. The file is mapped, not
+    /// read, and the entity rewrite goes to `<sourceID>.parse.xml` in pieces,
+    /// so no copy of the document sits in memory.
+    private func parse(_ file: URL, verifyXML: Bool, each: (Programme) -> Void) throws(GuideError) {
+        let input: URL
+        do {
+            input = try prepare(file, verifyXML: verifyXML)
+        } catch let error as GuideError {
+            throw error
+        } catch {
+            throw .network(.cannotWriteToFile)
+        }
+        guard let stream = InputStream(url: input) else { throw .network(.cannotOpenFile) }
+        do {
+            try XMLTVParser().parseSanitized(stream, each: each)
+        } catch {
+            throw .malformed
+        }
+    }
+
+    /// The file the parser should read: `file` itself, or the rewritten copy
+    /// when the sanitizer changed something or the XML does not start at the
+    /// first byte (`XMLParser` rejects anything before an XML declaration).
+    private func prepare(_ file: URL, verifyXML: Bool) throws -> URL {
         let data: Data
         do {
             data = try Data(contentsOf: file, options: .alwaysMapped)
         } catch {
-            throw .network(.cannotOpenFile)
+            throw GuideError.network(.cannotOpenFile)
         }
-        if kind == .gzip {
+        if verifyXML {
             switch Self.sniff(data) {
             case .some(.some(.xml)): break
-            case .none: throw .empty
-            default: throw .unsupportedEncoding
+            case .none: throw GuideError.empty
+            default: throw GuideError.unsupportedEncoding
             }
         }
-        // XMLParser rejects anything before an XML declaration, so the parse
-        // starts at the first `<`. Slicing the mapped data copies nothing.
         let start = data.firstIndex(of: UInt8(ascii: "<")) ?? data.startIndex
-        let parsed: XMLTVParser.Result
-        do {
-            parsed = try XMLTVParser().parse(data[start...])
-        } catch {
-            throw .malformed
+        let document = data[start...]
+        guard FileManager.default.createFile(atPath: parseFile.path(), contents: nil) else {
+            throw GuideError.network(.cannotCreateFile)
         }
-        let guide = SourceGuide(parsed.programmes)
-        guard !guide.programmes.isEmpty else { throw .empty }
-        return guide
+        let output = try FileHandle(forWritingTo: parseFile)
+        defer { try? output.close() }
+        var failure: (any Error)?
+        func write(_ bytes: UnsafeRawBufferPointer) {
+            guard failure == nil, let base = bytes.baseAddress, !bytes.isEmpty else { return }
+            do {
+                try output.write(
+                    contentsOf: Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: base), count: bytes.count, deallocator: .none))
+            } catch {
+                failure = error
+            }
+        }
+        let rewritten = XMLEntitySanitizer.sanitize(document, flushingEvery: 1 << 16, write: write)
+        if !rewritten {
+            guard start != data.startIndex else { return file }
+            document.withUnsafeBytes { write($0) }
+        }
+        if let failure { throw failure }
+        try output.close()
+        return parseFile
     }
 
     private func unpack() throws(GuideError) {
