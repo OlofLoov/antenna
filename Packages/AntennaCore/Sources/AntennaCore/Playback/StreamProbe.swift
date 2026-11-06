@@ -24,6 +24,7 @@ public struct StreamProbe: Sendable, Equatable {
     /// has them. Throws a `PlaybackFailure` for a refusal or a network
     /// error, and `CancellationError` when cancelled.
     public static func run(_ url: URL, session: URLSession) async throws -> StreamProbe {
+        try StreamAddress.check(url)
         var request = URLRequest(url: url)
         request.setValue("bytes=0-\(headSize - 1)", forHTTPHeaderField: "Range")
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
@@ -34,7 +35,7 @@ public struct StreamProbe: Sendable, Equatable {
             (bytes, response) = try await session.bytes(for: request)
         } catch let error as URLError {
             if error.code == .cancelled, Task.isCancelled { throw CancellationError() }
-            throw PlaybackFailure(error)
+            throw PlaybackFailure(error, host: url.host())
         }
         guard let http = response as? HTTPURLResponse else { throw PlaybackFailure.unreadable }
         if let failure = PlaybackFailure(httpStatus: http.statusCode) {
@@ -50,7 +51,7 @@ public struct StreamProbe: Sendable, Equatable {
             }
         } catch let error as URLError {
             if error.code == .cancelled, Task.isCancelled { throw CancellationError() }
-            if head.isEmpty { throw PlaybackFailure(error) }
+            if head.isEmpty { throw PlaybackFailure(error, host: url.host()) }
         }
         bytes.task.cancel()
         try Task.checkCancellation()
@@ -58,44 +59,6 @@ public struct StreamProbe: Sendable, Equatable {
         return StreamProbe(
             status: http.statusCode, contentType: http.value(forHTTPHeaderField: "Content-Type"), acceptsRanges: ranges,
             sniff: StreamSniff(head))
-    }
-}
-
-extension PlaybackFailure {
-    /// The reason for an HTTP status, nil for a success.
-    public init?(httpStatus status: Int) {
-        switch status {
-        case 200..<300: return nil
-        case 401, 403: self = .notAllowed
-        case 404, 410: self = .notFound
-        case 429: self = .serverBusy
-        case 500..<600: self = .serverError
-        default: self = .refused(status: status)
-        }
-    }
-
-    /// The reason for a network error.
-    public init(_ error: URLError) {
-        switch error.code {
-        case .notConnectedToInternet, .dataNotAllowed, .internationalRoamingOff, .callIsActive:
-            self = .offline
-        case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
-            self = .unreachable
-        case .secureConnectionFailed, .serverCertificateHasBadDate, .serverCertificateUntrusted,
-            .serverCertificateHasUnknownRoot, .serverCertificateNotYetValid, .clientCertificateRejected,
-            .clientCertificateRequired, .appTransportSecurityRequiresSecureConnection:
-            self = .secureConnectionFailed
-        case .timedOut:
-            self = .timedOut
-        case .networkConnectionLost, .zeroByteResource, .cannotParseResponse, .badServerResponse:
-            self = .stoppedSendingData
-        case .userAuthenticationRequired, .userCancelledAuthentication, .noPermissionsToReadFile:
-            self = .notAllowed
-        case .fileDoesNotExist, .resourceUnavailable:
-            self = .notFound
-        default:
-            self = .unreadable
-        }
     }
 }
 
