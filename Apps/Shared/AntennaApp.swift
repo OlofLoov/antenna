@@ -7,7 +7,7 @@ struct AntennaApp: App {
     /// entitlements, so `.automatic` resolves to `iCloud.se.codecrave.antenna`.
     /// On tvOS with the "Runs as Current User" entitlement this becomes
     /// per-profile automatically. A Debug build launched by a UI test gets
-    /// the in-memory `UITestingStore` instead.
+    /// the in-memory `UITestingStore` or `UITestingShell` instead.
     private let container: ModelContainer
     /// Downloads and answers guide data for every screen (spec 0014).
     @State private var guideStore: AppGuideStore
@@ -21,6 +21,7 @@ struct AntennaApp: App {
     private static func makeContainer() -> ModelContainer {
         #if DEBUG
             if let seeded = UITestingStore.container() { return seeded }
+            if let seeded = UITestingShell.container() { return seeded }
         #endif
         let schema = Schema([SourceRecord.self, FavoriteRecord.self])
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
@@ -33,7 +34,7 @@ struct AntennaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            PlatformRoot()
                 .environment(\.guideStore, guideStore)
         }
         .modelContainer(container)
