@@ -34,8 +34,31 @@ check "decision adr-0003 no password or token in print/log calls" \
   '\b(print|debugPrint|NSLog|os_log|Logger\(\)\.[a-z]+|logger\.[a-z]+)\(.*(password|token|secret)' \
   Apps Packages/AntennaCore/Sources
 
-check "conventions: Apps do not construct AVPlayer outside the engine" \
-  'AVPlayer\(' \
-  Apps/Shared/Views Apps/Mobile Apps/TV
+# Like check, but hits in files matching the extended regex $3 are allowed.
+check_except() {
+  local name="$1" pattern="$2" allowed="$3"
+  shift 3
+  local hits
+  hits=$(grep -rnE --include='*.swift' "$pattern" "$@" | grep -vE "^($allowed):" | grep -vE '^[^:]+:[0-9]+:[[:space:]]*//' || true)
+  if [[ -n "$hits" ]]; then
+    printf 'FAIL %s\n%s\n\n' "$name" "$hits"
+    status=1
+  else
+    printf 'ok   %s\n' "$name"
+  fi
+}
+
+word='(^|[^A-Za-z0-9_])'
+end='([^A-Za-z0-9_]|$)'
+
+check_except "conventions: Apple's player types only in the engine" \
+  "${word}(AVPlayer|AVQueuePlayer|AVPlayerItem|AVPlayerViewController|VideoPlayer)${end}" \
+  'Apps/Shared/Player/AVPlayerEngine\.swift' \
+  Apps
+
+check_except "conventions: AVPlayerLayer only in the engine and the player surface" \
+  "${word}AVPlayerLayer${end}" \
+  'Apps/Shared/Player/(AVPlayerEngine|PlayerSurfaceView)\.swift' \
+  Apps
 
 exit "$status"

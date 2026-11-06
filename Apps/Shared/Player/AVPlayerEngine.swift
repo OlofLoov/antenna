@@ -1,6 +1,7 @@
 import AVFoundation
 import AntennaCore
 import Foundation
+import os
 
 /// Apple's player behind `PlaybackEngine`. It plays HLS and the files the
 /// system can read. Until the demuxing engine exists it also stands behind
@@ -22,6 +23,7 @@ final class AVPlayerEngine: PlaybackEngine {
     private let player = AVPlayer()
     private let session: URLSession
     private let sleep: @Sendable (Duration) async throws -> Void
+    private let log: @Sendable (String) -> Void
 
     private let stateCast = Broadcast(PlaybackState.idle)
     private let presentationCast = Broadcast(PresentationInfo?.none)
@@ -40,15 +42,28 @@ final class AVPlayerEngine: PlaybackEngine {
     private var itemObservation: NSKeyValueObservation?
     private var itemTokens: [any NSObjectProtocol] = []
     private var playerObservation: NSKeyValueObservation?
+    private var firstFrameWatch: Task<Void, Never>?
+
+    /// Data but no picture for this long fails the stream as unreadable.
+    static let firstFrameTimeout = Duration.seconds(15)
+
+    private nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
     /// `sleep` waits between retries and times the stall budget; tests pass
-    /// a faster one.
+    /// a faster one. `log` gets every line the engine logs, each made only of
+    /// the redacted address and a reason.
     init(
         session: URLSession = PlaybackNetwork.makeSession(),
-        sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+        sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
+        log: @escaping @Sendable (String) -> Void = { AVPlayerEngine.logger.info("\($0, privacy: .public)") }
     ) {
         self.session = session
         self.sleep = sleep
+        self.log = log
+        // Apple's player stores a stream server's cookies in the shared
+        // storage even when it sends none, and a cookie can carry the token.
+        // Nothing else in the app uses the shared storage.
+        HTTPCookieStorage.shared.cookieAcceptPolicy = .never
         playerObservation = player.observe(\.timeControlStatus) { [weak self] _, _ in
             Task { @MainActor in self?.timeControlChanged() }
         }
@@ -87,6 +102,14 @@ final class AVPlayerEngine: PlaybackEngine {
         hasPlayed = false
         budget = ReconnectBudget()
         set(.loading)
+        log("load \(redacted(url))")
+        do {
+            try StreamAddress.check(url)
+        } catch {
+            log("failed \(redacted(url)) \(PlaybackFailure.unreadable)")
+            set(.failed(.unreadable))
+            throw PlaybackFailure.unreadable
+        }
         let task = Task { [weak self, sleep] in
             if hadItem { try await Task.sleep(for: Self.releaseGrace) }
             return try await RetryPolicy.tune.run(sleep: sleep) { [weak self] in
@@ -100,9 +123,10 @@ final class AVPlayerEngine: PlaybackEngine {
             guard generation == mine else { throw CancellationError() }
             opening = nil
             stream = opened
-            if wantsPlay { player.play() }
+            if wantsPlay { startPlayback() }
         } catch let failure as PlaybackFailure {
             guard generation == mine else { throw CancellationError() }
+            log("failed \(redacted(url)) \(failure)")
             closeStream()
             set(.failed(failure))
             throw failure
@@ -127,7 +151,7 @@ final class AVPlayerEngine: PlaybackEngine {
         switch state {
         case .loading:
             wantsPlay = true
-            if stream != nil { player.play() }
+            if stream != nil { startPlayback() }
         case .paused:
             wantsPlay = true
             player.play()
@@ -168,6 +192,9 @@ final class AVPlayerEngine: PlaybackEngine {
     func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
     func subtitleCues() async -> AsyncStream<[SubtitleCue]> { cuesCast.stream() }
 
+}
+
+extension AVPlayerEngine {
     // MARK: Opening
 
     /// Probes `url`, puts a new item on the player and waits until it is
@@ -180,7 +207,9 @@ final class AVPlayerEngine: PlaybackEngine {
             probe = try await StreamProbe.run(url, session: session)
         }
         guard generation == mine else { throw CancellationError() }
+        // A web page, or raw video at an HLS address, is not a stream Apple's player can read.
         if probe?.sniff == .html { throw PlaybackFailure.unreadable }
+        if probe?.sniff == .mpegTS, url.pathExtension.lowercased() == "m3u8" { throw PlaybackFailure.unreadable }
         var assetOptions: [String: Any] = [AVURLAssetHTTPCookiesKey: [HTTPCookie]()]
         if probe?.sniff == .hls, url.pathExtension.lowercased() != "m3u8" {
             assetOptions[AVURLAssetOverrideMIMETypeKey] = "application/vnd.apple.mpegurl"
@@ -190,7 +219,7 @@ final class AVPlayerEngine: PlaybackEngine {
         observe(item)
         player.replaceCurrentItem(with: item)
         while item.status != .readyToPlay {
-            if item.status == .failed { throw Self.failure(from: item.error) }
+            if item.status == .failed { throw Self.failure(from: item.error, host: url.host()) }
             try await Task.sleep(for: .milliseconds(50))
             guard generation == mine else { throw CancellationError() }
         }
@@ -203,8 +232,9 @@ final class AVPlayerEngine: PlaybackEngine {
         itemObservation = item.observe(\.status) { [weak self] _, _ in
             Task { @MainActor in self?.itemStatusChanged(id) }
         }
+        let host = (item.asset as? AVURLAsset)?.url.host()
         let failed: @Sendable (Notification) -> Void = { [weak self] note in
-            let failure = Self.failure(from: note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? any Error)
+            let failure = Self.failure(from: note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? any Error, host: host)
             MainActor.assumeIsolated { self?.dropped(failure) }
         }
         let center = NotificationCenter.default
@@ -221,6 +251,8 @@ final class AVPlayerEngine: PlaybackEngine {
         reconnect = nil
         stallWatch?.cancel()
         stallWatch = nil
+        firstFrameWatch?.cancel()
+        firstFrameWatch = nil
         removeItem()
         presentationCast.send(nil)
         tracksCast.send(.empty)
@@ -245,6 +277,8 @@ final class AVPlayerEngine: PlaybackEngine {
         case .playing:
             stallWatch?.cancel()
             stallWatch = nil
+            firstFrameWatch?.cancel()
+            firstFrameWatch = nil
             switch state {
             case .loading, .buffering, .reconnecting, .paused:
                 wantsPlay = true
@@ -271,7 +305,7 @@ final class AVPlayerEngine: PlaybackEngine {
 
     private func itemStatusChanged(_ id: ObjectIdentifier) {
         guard let item = player.currentItem, ObjectIdentifier(item) == id, item.status == .failed, stream != nil else { return }
-        dropped(Self.failure(from: item.error))
+        dropped(Self.failure(from: item.error, host: stream?.url.host()))
     }
 
     private func startStallWatch() {
@@ -296,10 +330,12 @@ final class AVPlayerEngine: PlaybackEngine {
     private func dropped(_ failure: PlaybackFailure) {
         guard let stream, reconnect == nil else { return }
         guard hasPlayed, let next = budget.dropped(failure, at: .now) else {
+            log("failed \(redacted(stream.url)) \(failure)")
             closeStream()
             set(.failed(failure))
             return
         }
+        log("reconnect \(next.attempt)/\(budget.maxAttempts) \(redacted(stream.url)) \(failure)")
         let resumeAt = stream.isLive ? nil : player.currentTime()
         stallWatch?.cancel()
         set(.reconnecting(attempt: next.attempt, of: budget.maxAttempts))
@@ -340,16 +376,31 @@ final class AVPlayerEngine: PlaybackEngine {
         stateCast.sendIfChanged(new)
     }
 
-    /// The reason for an error Apple's player reports. Only the code is
-    /// read; the error and its user info, which can hold the address, are
-    /// dropped.
-    nonisolated static func failure(from error: (any Error)?) -> PlaybackFailure {
+    /// The reason for an error Apple's player reports. The error itself,
+    /// whose user info can hold the address, is not kept.
+    nonisolated static func failure(from error: (any Error)?, host: String?) -> PlaybackFailure {
         guard let error else { return .unreadable }
-        var current: NSError? = error as NSError
-        while let nsError = current {
-            if nsError.domain == NSURLErrorDomain { return PlaybackFailure(URLError(URLError.Code(rawValue: nsError.code))) }
-            current = nsError.userInfo[NSUnderlyingErrorKey] as? NSError
+        return PlaybackFailure.fromPlayerError(error, host: host)
+    }
+
+    // MARK: First frame
+
+    /// Plays the opened stream and fails it as unreadable when no picture
+    /// or sound starts within `firstFrameTimeout`.
+    private func startPlayback() {
+        player.play()
+        guard firstFrameWatch == nil, state == .loading else { return }
+        let mine = generation
+        firstFrameWatch = Task { [weak self] in
+            do {
+                try await Task.sleep(for: Self.firstFrameTimeout)
+            } catch {
+                return
+            }
+            guard let self, !Task.isCancelled, self.generation == mine, self.state == .loading, let stream = self.stream else { return }
+            self.log("failed \(redacted(stream.url)) \(PlaybackFailure.unreadable)")
+            self.closeStream()
+            self.set(.failed(.unreadable))
         }
-        return .unreadable
     }
 }
