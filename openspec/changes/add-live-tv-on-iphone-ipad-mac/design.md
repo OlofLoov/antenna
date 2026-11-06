@@ -10,8 +10,6 @@ Not drawn: "Loading guide…" and "No programme information" in the details, the
 
 Design-system requirements that apply: “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “Channel rows share one anatomy”, “A current programme always shows its progress”, “Channels without a logo show initials”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”, “Nothing shows before the paywall”, “Loading shows real progress per step”.
 
-Decisions this builds on: adr-0001 (hardware playback path for MPEG-TS), adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free).
-
 On iPad and Mac, Live is selected in the sidebar with Favorites, All channels and each group with its count below it. The middle column lists the group's channels, and the filter narrows them as the user types. Picking a channel plays it on the right with the programme, times, description, star and what is next underneath. Controls appear on a tap or when the pointer is over the picture.
 
 On iPhone, the Live tab shows the picture at the top, a line with the programme and a star, group chips and the channels. Tapping a channel plays it in place. The full-screen button, or turning the phone sideways, fills the screen.
@@ -33,7 +31,7 @@ On iPhone, the Live tab shows the picture at the top, a line with the programme 
 - Board deviations: “Channel rows share one anatomy”, the number trails the name on touch and pointer platforms; “A current programme always shows its progress”, the iPhone now-playing line has no bar; “Targets are large enough to hit”, controls drawn 30 to 40 pt get a 44 by 44 pt hit area; “Text stays above the platform caption floor”, the LIVE badge and tile initials sit one point under the floor. Mac leaves out the PiP control drawn on the iPad boards.
 - Controls hide three seconds after the last touch and one second after the pointer leaves.
 - Offline wording applies when every failure is `.notConnectedToInternet`, `.networkConnectionLost` or `.dataNotAllowed`, as in onboarding. A source without a credential counts as neither loaded nor failed. A credential that arrives is picked up within 5 s or at the next scene activation.
-- Tests use a fake engine that records loaded URLs to a file in the test's temp directory. Nothing derived from a stream URL goes on an accessibility attribute (adr-0003).
+- Tests use a fake engine that records loaded URLs to a file in the test's temp directory. Nothing derived from a stream URL goes on an accessibility attribute.
 - Accessibility identifiers use the prefix `browse.`. The filter has no debounce and does not match group names.
 - The Favorites tab on iOS, iPadOS and macOS is removed. The `favorites` delta removes its tab requirements; storage and sync stay as they are.
 - With no source at all, onboarding from change `add-first-run-onboarding` shows instead of Live.

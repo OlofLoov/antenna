@@ -8,8 +8,6 @@ Design-system requirements that apply: "One accent color", "Text stays above the
 
 Not drawn yet: the link-list, single-stream and unreadable-file messages; the one-link offer to add it as a source; the reading state; the "imported before" row with Replace and Import as new; replace mode; the "Import a file instead" link on onboarding's playlist form; the file-source row in Sources and Settings on every platform, including Apple TV and its waiting-for-iCloud and waiting-for-login text.
 
-Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free), adr-0006 (no free tier, paid unlock only).
-
 ## Goals / Non-Goals
 
 **Goals:**
@@ -22,18 +20,79 @@ Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), a
 
 ## Decisions
 
-- The previous revision of the old spec in git history holds the agreed texts for the summary rows and every error, and the order of the import checks.
+- The order of the import checks, the login rules, and the agreed texts for the summary rows and every error are in the sections below.
 - Storage, pending its decision: `SourceRecord` gains optional `playlistData` (external storage, synced as a CloudKit asset), `fileName` and `importedAt`; `kind` gains `m3uFile` with `url` nil. Lightweight migration. The CloudKit production schema needs the fields before release.
 - The size limit is 16 MB, about 50 000 entries. It is checked before reading when the size is known, during reading otherwise, and before decoding. The owner can raise it to 32 MB if real files exceed it, or lower it on Apple TV if memory runs short.
 - Core: `PlaylistImport.inspect(_:)` decides, in order, too large, decode (drop a UTF-8 byte-order mark, replace invalid bytes, accept UTF-16 with a mark), single HLS stream, link list, then `M3UParser` plus a filter that skips entries without a scheme. The loader uses the same filter.
 - A single stream is refused, not offered as a one-channel source. The owner can reverse it.
-- Logins: the query form (`username=…&password=…`), the Xtream path form (`/live/<user>/<pass>/<id>.ts`) and `user:pass@host` are replaced by placeholders and stored as one synchronizable Keychain item per source (adr-0003). The loader puts them back and never writes restored links to the store. Logs carry only the file name, byte count, outcome, number of moved logins and the source id.
+- Logins: the query form (`username=…&password=…`), the Xtream path form (`/live/<user>/<pass>/<id>.ts`) and `user:pass@host` are replaced by placeholders and stored as one synchronizable Keychain item per source. The loader puts them back and never writes restored links to the store. Logs carry only the file name, byte count, outcome, number of moved logins and the source id.
 - Edits to other changes, each its own PR: first-run onboarding (a file source counts as usable; the loading row names the file; the "Import a file instead" link), sources and settings (a record with no link is not skipped when it is a file source; delete calls the guide store's remove; the file source row shows "Imported <date> · <file>", has no Refresh and offers Re-import), guide data (guide links for a file source come from the file header), and live TV on iPhone, iPad and Mac plus the tvOS shell (waiting for iCloud is a terminal state shown where waiting for login is).
 - Document types: the Antenna target registers M3U and M3U8 as an alternate viewer, not plain text. The Apple TV target registers nothing. The Mac build is not sandboxed, so the open panel and drops need no entitlement.
 - Shared files land in `Documents/Inbox` on iOS. That copy is deleted after reading, whether or not the user imports. Security-scoped access is released before the sheet shows.
 - Reading and checking run off the main actor, can be cancelled, and stay within the M3U parser's parse time. Store changes are batched with a reload delay of about one second.
 - Re-import updates the same record, so channel ids that survive keep their favorites.
 - Ship as a stack: core checks and login stripping, then the sheet and ways in, then sync and waiting, then drag and drop.
+
+## Import checks
+
+`PlaylistImport.inspect(_:)` runs these checks in order, and the first that applies decides the outcome:
+
+1. Too large: more than `maximumBytes` (16 MB) gives `.tooLarge(bytes:)`, before any decoding, so an oversized file that is not UTF-8 is still "too large" and not "no channels". Exactly `maximumBytes` passes. When the file's `fileSize` is known the reader does not read it at all; when it is unknown the reader reads at most `maximumBytes + 1` bytes.
+2. Decode: drop a leading UTF-8 byte-order mark and decode as UTF-8, replacing each invalid byte with U+FFFD and keeping line endings. UTF-16 with a little- or big-endian mark is decoded as UTF-16, and the stored text is UTF-8. Windows-1252 bytes come out as U+FFFD, and UTF-16 without a mark ends as no channels. CRLF needs no conversion, because the M3U parser treats `\r\n` as one break.
+3. Single HLS stream: a line starting `#EXT-X-TARGETDURATION`, `#EXT-X-MEDIA-SEQUENCE` or `#EXT-X-STREAM-INF` gives `.hlsStream`, whatever else the file holds. `#EXT-X-SESSION-DATA` in a channel list does not count.
+4. Link list: when no line starts with `#EXTINF` and every non-empty line that does not start with `#` is an absolute `http` or `https` URL, at least one, the outcome is `.linkList(urls)` in file order.
+5. Playlist: `M3UParser`, then a filter that skips entries whose stream URL has no scheme. The outcome is `.playlist(text:, playlist:, skipped:)`. A group left with no channel after the filter is not counted. When nothing is left the outcome is `.noChannels(sawEntries:)`, with `sawEntries` true only when there were `#EXTINF` entries whose links all lacked a scheme. An empty file, `#EXTM3U` alone, an HTML page, a PNG and `#EXTINF` lines with no link lines are all `sawEntries` false.
+
+`PlaylistImport.channels(from:)` applies the same filter, so the loader lists exactly the channels the summary counted.
+
+## Logins in links
+
+- Two link forms are matched: the query form (`get.php?username=u1&password=p1&…`) and the path form, a path of exactly four segments whose first is `live`, `movie` or `series` and whose last is `<id>.<ext>` for any extension. `/live/u2/p2/9.m3u8` matches, `/live/u/p/8/9.ts` does not. `user:pass@host` is stripped too.
+- `PlaylistImport.stripCredentials` returns one `StreamCredential` per distinct (host and port, username, password), in first-seen order, so the same login under two hosts is two entries. The text gets `{antenna.<token>.user.N}` and `{antenna.<token>.pass.N}` in their place, where N is the credential's index and `<token>` is a per-import value stored with the list. `restoreCredentials` gives back the original text byte for byte.
+- Text in the file that only looks like a placeholder, such as `{antenna.user.0}` in a title, is left unchanged through stripping, storing and restoring.
+- A file with no login in its links stores the decoded text as is, with `credentialKey` nil.
+- Replacing a source's content with a file that has no logins sets `credentialKey` to nil and deletes the old Keychain item.
+- Placeholders but no Keychain item on this device: the source shows as waiting for login and makes no stream request, then loads when the item arrives. A malformed item, or one with fewer credentials than the placeholders reference, fails the source, and no request carries placeholder text.
+
+## Copy
+
+Sheet, inspected file:
+
+- `import.file` shows the file name and its size as `ByteCountFormatStyle(style: .file)`.
+- Channels row: "<n> channels in <g> groups", with the first eight group names and "and <k> more" beneath. Numbers use `formatted()`, so sv-SE reads "1 240 channels in 3 groups" with U+00A0 as the separator.
+- Guide row, only when the header has a guide link: "Guide link found" with the host beneath.
+- Skipped row, only when entries were skipped: "<n> entries skipped" with "Not links" beneath.
+- Name is prefilled with the file name without its extension, for example "home-playlist", and an empty Name saves as that. Guide URL is prefilled with the first header guide link. A Guide URL that does not parse saves as no guide link.
+
+Errors (`import.error` title, then body). Import is disabled and nothing is saved:
+
+| Case | Title | Body |
+|------|-------|------|
+| too large, size known | "This file is <size>. Antenna imports playlists up to 16 MB." (for example "This file is 41.7 MB. …") | "Split the file, or host it and add the link as an M3U source instead." |
+| too large, size unknown | "This file is larger than 16 MB. Antenna imports playlists up to 16 MB." | "Split the file, or host it and add the link as an M3U source instead." |
+| no channels, no entries | "No channels found in <file>." | "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." |
+| no channels, entries without links | "No channels found in <file>." | "The entries in this file are not links." |
+| one link | "This file is a link, not a playlist." | "If it points to a playlist or a stream, add it as a source." |
+| several links | "This file is a list of links, not a playlist." | "Add each link as its own M3U source." |
+| single stream | "This is a single stream, not a channel list." | "Add the channel's playlist instead." |
+| unreadable | "Could not read <file>. Make sure it is downloaded and try again." | none |
+
+- Too large and unreadable offer `import.pickFile`. With one link, `import.addAsURL` reads "Add the link as a source" in its place; it closes the sheet and opens the add-source sheet with M3U selected and the link in the URL field (onboarding's when onboarding shows, otherwise the Settings one).
+- A source whose Keychain item is unusable fails with "<name>: its saved login is unreadable. Re-import the file."
+
+Same file name and re-import:
+
+- When a file source with the same file name exists, a row reads "You imported <file> before as <name>", naming the one with the lowest `sortOrder`, then the earliest `createdAt`. `import.replace` reads "Replace <name>" (white) above `import.import` reading "Import as new" (surface). Guide URL is prefilled with that source's guide link, or the file header's when it has none.
+- Replace mode, from a source's Re-import: the title is "Re-import <name>", there is no Name field, and `import.import` reads "Replace". The same-name row and `import.replace` never show in replace mode. A file that fails a check leaves the source unchanged.
+- Replace keeps `id`, `name`, `sortOrder` and `createdAt`, and updates the content, `importedAt`, the guide link, the logins and, on re-import, `fileName`. When the source was deleted in the meantime, Replace inserts a new one.
+
+Other states:
+
+- Reading: `import.progress` inside `import.file` with a 26 pt indeterminate ring and "Reading <file>…" at 16 pt in place of the summary. Import is disabled. `import.cancel` stops the read and saves nothing.
+- Drop target (iPad and Mac): `import.dropTarget` reads "Drop to import <file>", or "Drop to import a playlist" when the item has no suggested name, with the muted line "M3U, M3U8 and text files, up to 16 MB" beneath. It accepts a file conforming to `public.m3u-playlist` or `public.plain-text`, or a file URL ending in `m3u`, `m3u8` or `txt`, and shows nothing for images, strings or web links. A drop takes the first accepted file by its index in the drop and ignores the rest.
+- Onboarding: "Import a file instead" is a 15 pt accent link under the Playlist URL field, identifier `import.pickFile`. After the import, the loading step's `onboarding.row.playlist` reads "Playlist imported" with the file name beneath.
+- Sources list row for a file source: the name, with the file name beneath, or "Waiting for iCloud" while the content has not arrived. No Refresh.
+- Waiting for iCloud in Live and the tvOS shell: "<name> · waiting for iCloud" in the slot waiting for login uses, and "<name>: waiting for its playlist to sync from iCloud" where the empty and error states list sources without a login.
 
 ## Risks / Trade-offs
 

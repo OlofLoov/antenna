@@ -43,4 +43,4 @@ None.
 - Shared onboarding views on every platform, and tvOS screens under the shell.
 - Reuses source validation and saving from `source-management`, the Xtream client from `xtream-vod-client`, channel order from `channel-catalogue` and guide loading from `guide-data`.
 - Depends on: `source-management`, `channel-catalogue`, `guide-data`, `tvos-shell`, `xtream-vod-client`, change `add-live-tv-on-iphone-ipad-mac`.
-- Blocked on: an amendment to decision adr-0003 (credentials in iCloud Keychain). That decision assumes passwords sync through iCloud Keychain, which Apple TV does not offer. Until it is amended, a password typed on an Apple TV stays on that Apple TV. If the amendment picks another store, the Apple TV sign-in requirement follows it.
+- Blocked on: a decision on where a password typed on an Apple TV is kept. The project rule is that secrets sync through iCloud Keychain, which Apple TV does not offer. Until that is decided, a password typed on an Apple TV stays on that Apple TV. If the decision picks another store, the Apple TV sign-in requirement follows it.

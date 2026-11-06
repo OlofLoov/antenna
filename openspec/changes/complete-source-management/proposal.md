@@ -1,6 +1,6 @@
 ## Why
 
-Source management shipped in commit 082034b, and its save, delete and loading rules have passing tests. The parts a user sees on screen do not: the add sheet staying open on a bad URL, the empty channel list, the Settings list order, sync to a second device, and the player opening on a tap. They wait for a UI test target and a manual two-device check. This change holds them until they are tested. It serves the household setter-upper who wants "sources I add on one device to appear on my other devices, so I never type a URL or password twice", and the user who wants "to edit, refresh or remove a source, and change how the app behaves, so my setup stays right as my subscription changes".
+Source management has shipped, and its save, delete and loading rules have passing tests. The parts a user sees on screen do not: the add sheet staying open on a bad URL, the empty channel list, the Settings list order, sync to a second device, and the player opening on a tap. They wait for a UI test target and a manual two-device check. This change holds them until they are tested. It serves the household setter-upper who wants "sources I add on one device to appear on my other devices, so I never type a URL or password twice", and the user who wants "to edit, refresh or remove a source, and change how the app behaves, so my setup stays right as my subscription changes".
 
 ## What Changes
 

@@ -44,4 +44,4 @@ Out of scope:
 - Platforms: iOS, iPadOS, macOS, tvOS.
 - Depends on: `source-management`, `channel-catalogue`, `xtream-vod-client`, and the changes `add-movies-and-series-browsing`, `add-search`.
 - Needs from other capabilities and changes: `add-movies-and-series-browsing` reads and writes progress and My list through this store and uses these thresholds. `add-search` stores recent searches here with the 100-character cap. `source-management`'s delete path removes the source's progress and My list entries.
-- Blocked on: a decision adding watch progress, My list entries and recent searches to the iCloud sync of adr-0002, together with the reminders of `add-programme-reminders`, and fixing the conflict rule (the most recent change wins). The requirements assume that outcome.
+- Blocked on: a decision adding watch progress, My list entries and recent searches to the records synced through iCloud, together with the reminders of `add-programme-reminders`, and fixing the conflict rule (the most recent change wins). The requirements assume that outcome.

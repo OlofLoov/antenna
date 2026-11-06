@@ -8,9 +8,7 @@ Design-system requirements that apply: "One accent color", "Text stays above the
 
 Not drawn yet: a shelf with only Favorites, and a shelf with only Continue watching.
 
-Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0004 (deployment target 26), adr-0005 (AntennaCore is UI-free), adr-0006 (no free tier, paid unlock only).
-
-The extension cannot open the app's database or guide cache. A decision record for the shared App Group and the snapshot file must exist before work starts (see proposal Impact).
+The extension cannot open the app's database or guide cache. The shared App Group and the snapshot file need a decision, recorded here with the options considered, before work starts (see proposal Impact).
 
 ## Goals / Non-Goals
 
@@ -25,7 +23,7 @@ The extension cannot open the app's database or guide cache. A decision record f
 ## Decisions
 
 - Target `AntennaTopShelf` (app extension, `com.apple.tv-top-shelf`, bundle id `se.codecrave.antenna.tv.topshelf`, sources in `Apps/TopShelf/`, embedded in `AntennaTV`, depends on AntennaCore only, no bundled resources). App Group `group.se.codecrave.antenna` on both, plus the user-management entitlement as in `add-tvos-profiles`. `AntennaTV` declares URL scheme `antenna`. The section mapping compiles into the `AntennaTV` test bundle too, since an extension cannot host tests.
-- AntennaCore holds the versioned snapshot (`TopShelfSnapshot`: version, written-at, favorites with name, tile file and programmes, titles with title, detail, tile file, progress, updated-at, and the count of unresolved favorites), the pure `sections(from:now:)`, the link format `antenna://topShelf/<uuid>` and `antenna://topShelf/empty`, and item ids. Item ids are a version 5 UUID over the source id and a SHA-256 of the channel or title id. SHA-256 is pure Swift in AntennaCore (adr-0005 keeps it Foundation only), tested against FIPS 180-4 vectors. Ids are derived, never stored.
+- AntennaCore holds the versioned snapshot (`TopShelfSnapshot`: version, written-at, favorites with name, tile file and programmes, titles with title, detail, tile file, progress, updated-at, and the count of unresolved favorites), the pure `sections(from:now:)`, the link format `antenna://topShelf/<uuid>` and `antenna://topShelf/empty`, and item ids. Item ids are a version 5 UUID over the source id and a SHA-256 of the channel or title id. SHA-256 is pure Swift in AntennaCore (AntennaCore imports Foundation only), tested against FIPS 180-4 vectors. Ids are derived, never stored.
 - The writer (`Apps/Shared/TopShelf/`, tvOS only) writes `TopShelf/snapshot.json` (atomic rename last), `TopShelf/tiles/<itemID>.png` and `TopShelf/empty.png`, then calls `topShelfContentDidChange()`. It never fetches. Artwork comes from the poster cache of `add-movies-and-series-browsing` and the channel logo cache `add-tv-channel-overlay` adds (a lookup by channel that returns nil without fetching). Composition and file IO stay off the main actor. A failed write logs only the error case name.
 - Writes batch in a 30-second window from the first trigger, not extended by later ones. Entering the background flushes inside a background task. No write while any source is still loading; the trigger waits. Triggers also include a source finishing loading and six hours passing while Antenna is open. Tiles fall back to the channel's initials without a logo, and to the title in text without artwork.
 - Caps: 20 favorites in catalogue order, 10 titles by most recent, programmes overlapping now to now + 12 h, `snapshot.json` under 256 KB. Programme start is inclusive and stop exclusive, as in `guide-data`.

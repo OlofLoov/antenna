@@ -10,8 +10,6 @@ Not drawn: the two-row strip on iPad and Mac and in full screen; the notice pill
 
 Design-system requirements that apply: “Live video keeps playing under overlays”, “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “A current programme always shows its progress”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”. Opening the overlay while paused keeps the pause; “Live video keeps playing under overlays” forbids stopping, not an existing pause. On Apple TV the bar and its rewind row are never focusable, and Start over is reached through the overlay.
 
-Decisions this builds on: adr-0001 (hardware playback path for MPEG-TS), adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free).
-
 On Apple TV, play/pause freezes the picture and the zap bar shows a rewind row whose marker drifts left as live moves on. Play/pause again continues. Left skips back 15 seconds, right forward 30, holding scans. Holding play/pause jumps to live. The overlay shows Start over when the programme can be restarted. Changing channel starts a fresh buffer.
 
 On iPhone, iPad and Mac, pause shows a scrubber with the marker at the right. Skip buttons move 15 back and 30 forward, dragging seeks on release, LIVE returns to live, Start over restarts the programme, and Left and Right skip with a keyboard.
@@ -29,9 +27,9 @@ On iPhone, iPad and Mac, pause shows a scrubber with the marker at the right. Sk
 ## Decisions
 
 - Numbers live in `TimeshiftLimits`: window 3600 s; byte cap 4 GiB tvOS and macOS, 2 GiB iOS and iPadOS; keep 1 GiB free; below 64 MiB usable, no timeshift; live-edge tolerance 10 s; skip back 15 s, forward 30 s; scan 60x; click under 0.3 s; hold for live 0.5 s; catch-up skips within 400 ms coalesce into one load; on a write failure drop the oldest 10% once and retry.
-- Catch-up details: playlists carry `catchup`, `catchup-source`, `catchup-correction` and `catchup-days`. Xtream channels with `tv_archive` above 0 are `xc` style. The Xtream server time zone is fetched once per source load and asked for again on first need when missing. Placeholders: `{utc}`/`{start}`, `{utcend}`/`{end}`, `{lutc}`/`{now}`/`{timestamp}`, `{duration}`, `{duration:60}`, `{offset}`, `{offset:60}`, `{Y}` to `{S}`; `xc` path `/timeshift/<user>/<pass>/<minutes>/<date>/<id>.ts`. Worked examples and the refusal rows are in the old AC-2 to AC-6 of `docs/specs/0019-timeshift-catch-up-and-start-over.md` at 0bce26a.
+- Catch-up details: playlists carry `catchup`, `catchup-source`, `catchup-correction` and `catchup-days`. Xtream channels with `tv_archive` above 0 are `xc` style. The Xtream server time zone is fetched once per source load and asked for again on first need when missing. Placeholders: `{utc}`/`{start}`, `{utcend}`/`{end}`, `{lutc}`/`{now}`/`{timestamp}`, `{duration}`, `{duration:60}`, `{offset}`, `{offset:60}`, `{Y}` to `{S}`; `xc` path `/timeshift/<user>/<pass>/<minutes>/<date>/<id>.ts`. Worked examples and the refusal rows are under Catch-up addresses below.
 - Core types in AntennaCore: `TimeshiftWindow`, `TimeshiftBuffer` (actor, pins the chunk last read and emits when eviction reaches it), `CatchupMode`, `CatchupURLBuilder`, `XtreamCatchupContext`, `StartOverPlanner`, `Platform`. `Channel` gains `catchupMode`, `catchupSource`, `catchupCorrectionHours` (in memory only). `XtreamAccountInfo` gains `serverInfo.timezone`. `XtreamClient` gains `timeshiftURL(streamID:start:durationMinutes:timeZone:)`.
-- The buffer writes only at points playback can start from (PAT, PMT then an IDR frame). Buffer directory: `<Caches>/se.codecrave.antenna.timeshift/<sessionUUID>/`, files excluded from backup, names never derived from channel id or address (adr-0003). The old session directory is renamed away before the new load returns, then deleted.
+- The buffer writes only at points playback can start from (PAT, PMT then an IDR frame). Buffer directory: `<Caches>/se.codecrave.antenna.timeshift/<sessionUUID>/`, files excluded from backup, names never derived from channel id or address. The old session directory is renamed away before the new load returns, then deleted.
 - Engine additions owed by change `add-playback-engine`: `supportsTimeshift`, `canSeek`, a window stream, a playhead stream for catch-up, `seek(to: Date)`, `seekToLive()`, `attach(_:)`, an end-of-stream event; `.paused` is reused. A failed catch-up load reattaches the kept buffer.
 - The player model tracks `userPaused`: set only by play/pause on the remote, the on-screen button, Space and remote-command pause or toggle; cleared by any play. Pauses from tab changes, interruptions and backgrounding never set it.
 - The default template accepts `{name}` and `${name}`. Unix placeholders are not shifted by the correction. `{duration:60}` and `{offset:60}` round minutes up. Xtream with no known zone builds no address rather than guessing UTC. Fixtures include a 2027-03-28 DST case.
@@ -39,9 +37,61 @@ On iPhone, iPad and Mac, pause shows a scrubber with the marker at the right. Sk
 - UI tests pin the locale to `en_US_POSIX` and the time zone to UTC. Text formatting is asserted in core.
 - The parser and Xtream mapping changes are added requirements on `m3u-playlists` and `xtream-live-source`.
 
+## Catch-up addresses
+
+Fixtures for `CatchupURLBuilder` and `XtreamClient.timeshiftURL`.
+
+Parsing. An entry with `catchup="default" catchup-source="http://a/arc?utc={utc}&d={duration}" catchup-correction="-1.5" catchup-days="7"` gives `catchupMode` "default", that `catchupSource`, `catchupCorrectionHours` -1.5, `hasCatchup` true and `catchupDays` 7. An entry with none of the three new attributes has nil for all three. Xtream entries with `tv_archive` 1 map to `catchupMode` "xc"; `tv_archive` 0 or absent maps to nil. `catchupSource` and `catchupCorrectionHours` are always nil for Xtream channels.
+
+Shared request: start 2026-11-04T20:00:00Z, duration 3600, now 2026-11-04T20:40:00Z, device time zone UTC.
+
+Default template. Channel with `catchupCorrectionHours` 1 and `catchupSource` `http://a/arc?s={utc}&e={utcend}&d={duration}&m={duration:60}&o={offset}&n={lutc}&t={Y}-{m}-{d}_{H}-{M}-{S}` gives `http://a/arc?s=1793822400&e=1793826000&d=3600&m=60&o=2400&n=1793824800&t=2026-11-04_21-00-00`.
+
+| Placeholder | Value |
+|---|---|
+| `{utc}`, `{start}` | start as Unix seconds |
+| `{utcend}`, `{end}` | stop as Unix seconds |
+| `{lutc}`, `{now}`, `{timestamp}` | now as Unix seconds |
+| `{duration}` | length in seconds |
+| `{duration:60}` | length in minutes, rounded up |
+| `{offset}` | now minus start, in seconds |
+| `{offset:60}` | now minus start, in minutes, rounded up |
+| `{Y}` `{m}` `{d}` `{H}` `{M}` `{S}` | start in the device time zone shifted by the correction, zero-padded |
+
+Append and shift, with `streamURL` `http://a/live/7.ts`:
+- "append" with `catchupSource` `?utc={utc}&lutc={lutc}`, and "shift" with `catchupSource` nil, both give `http://a/live/7.ts?utc=1793822400&lutc=1793824800`.
+- With `streamURL` `http://a/live/7.ts?token=x` the appended query starts with `&`.
+- "append" with `catchupSource` nil gives nil.
+
+Flussonic ("flussonic" or "fs"), keeping any query on the stream URL:
+
+| `streamURL` | Result |
+|---|---|
+| `http://a/ch/index.m3u8` | `http://a/ch/index-1793822400-3600.m3u8` |
+| `http://a/ch/video.m3u8` | `http://a/ch/video-1793822400-3600.m3u8` |
+| `http://a/ch/mono.m3u8` | `http://a/ch/mono-1793822400-3600.m3u8` |
+| `http://a/ch/mpegts` | `http://a/ch/archive-1793822400-3600.ts` |
+| any other last path component | nil |
+
+Xtream source. Start 2026-11-04T20:00:00Z, duration 2700, credentials for `http://panel:8080` user `u` password `p`, server time zone `Europe/Stockholm`. `XtreamClient.timeshiftURL(streamID: 42, start:, durationMinutes: 45, timeZone:)` and `CatchupURLBuilder.url` for channel `xtream#panel#42` in "xc" mode both give `http://panel:8080/timeshift/u/p/45/2026-11-04:21-00/42.ts`. The stream id is the last `#` component of `Channel.id`. User and password are percent-encoded the way `xtream-vod-client` encodes them. `XtreamClient.timeshiftURL` with `timeZone` nil formats the start in UTC (`2026-11-04:20-00`); `CatchupURLBuilder` with a context whose `timeZone` is nil gives nil.
+
+Server time zone. `player_api.php` with no action answering `{"user_info":{...},"server_info":{"timezone":"Europe/Stockholm"}}` decodes `serverInfo.timezone` as "Europe/Stockholm". A response without `server_info` decodes with `serverInfo` nil. `XtreamCatchupContext.timeZone` is `TimeZone(identifier:)` of the string, nil for an unknown identifier. The zone is kept in memory per `sourceID`; a failed `accountInfo()` leaves it nil and the channel load goes on.
+
+M3U channel in "xc" mode (an `id` that does not start with `xtream#`). `streamURL` `http://a/live/u/p/42.ts`, correction 0, the Xtream request above, device time zone `Europe/Stockholm`, `xtream` nil, gives `http://a/timeshift/u/p/45/2026-11-04:21-00/42.ts`. User, password and id come from the stream URL path, and the start is formatted in the device time zone shifted by the correction. A path that is not `/live/<user>/<pass>/<id>.<ext>` gives nil.
+
+Refusals. Each of these gives nil and requests nothing:
+- `hasCatchup` false.
+- `catchupMode` "vod" or an unknown string.
+- "default" with a placeholder not in the table above, or with `catchupSource` nil.
+- "xc" for an Xtream channel with no `XtreamCatchupContext` (credential not yet synced).
+- "xc" for an Xtream channel whose context has no time zone (`accountInfo()` failed, has not run since launch, or named an unknown zone).
+- A start after now, or a duration of 0 or less.
+- A start earlier than now minus `catchupDays` days, when `catchupDays` is above 0.
+- A template or stream URL that does not parse as an `http` or `https` URL.
+
 ## Risks / Trade-offs
 
-- [Buffer location and size are undecided] → the change is blocked on that decision record; the assumed numbers live in `TimeshiftLimits` so they change in one place.
+- [Buffer location and size are undecided] → the change is blocked on that decision; the assumed numbers live in `TimeshiftLimits` so they change in one place.
 - [Providers in another time zone] → the playlist's hour correction fixes it; without one the hour is wrong.
 - Open question: catch-up first, buffer second for Start over. The buffer is instant and cannot fail; catch-up keeps the user on one stream and frees the disk. Owner's call; flipping it changes the Start over requirements.
 - Open question: holding play/pause for live on Apple TV has no system precedent. A focusable "Go live" item or a double press are the alternatives; this changes the back-to-live requirement.

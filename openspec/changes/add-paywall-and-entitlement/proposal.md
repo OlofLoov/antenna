@@ -4,7 +4,7 @@
 
 > As a buyer, I want to pay once, share the purchase with my family, and restore it on a new device without contacting anyone.
 
-Decision adr-0006 says Antenna does nothing without a purchase, and every screen spec since assumes something checks for one. Nothing does. Without this change the first thing a buyer sees on Apple TV is undefined, and a refund or an ended subscription silently leaves the app open. The two complaints TiviMate users make most about paying, a five-device limit and a separate companion app, have no stated answer.
+Antenna has no free tier. One purchase unlocks everything, and the app does nothing without it. Every screen change assumes something checks for that purchase. Nothing does. Without this change the first thing a buyer sees on Apple TV is undefined, and a refund or an ended subscription silently leaves the app open. The two complaints TiviMate users make most about paying, a five-device limit and a separate companion app, have no stated answer.
 
 Not reviewed yet.
 

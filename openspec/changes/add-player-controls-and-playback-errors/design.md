@@ -10,8 +10,6 @@ Not drawn: the Apple TV Subtitles tab and its "No subtitles in this stream" row;
 
 Design-system requirements that apply: “Live video keeps playing under overlays”, “Focus is the lifted white card”, “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “A current programme always shows its progress”, “Channels without a logo show initials”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”, “Loading shows real progress per step”.
 
-Decisions this builds on: adr-0001 (hardware playback path for MPEG-TS), adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free), adr-0009 (keep per-device state in UserDefaults).
-
 On Apple TV, holding select slides a panel down over the top of the playing picture; right moves to Audio or Subtitles; the panel stays until Menu. A failed stream is replaced by the reason and a focused "Try again", and swiping up or down still changes channel.
 
 On iPhone, iPad and Mac a speech-bubble button opens Audio and Subtitles with a footer naming the stream format. AirPlay appears when the stream can be sent. On Mac a speaker button and slider set the volume. Leaving the app on iPhone or iPad continues in Picture in Picture, or as audio with the channel on the lock screen.
@@ -33,7 +31,7 @@ On iPhone, iPad and Mac a speech-bubble button opens Audio and Subtitles with a 
 - Identifiers use the `player.` prefix and follow the boards (“Accessibility identifiers follow the board”).
 - Numbers: long press 0.5 s; spinner after 0.5 s, caption after 10 s; Mac volume step 0.1; buttons at least 44 pt; offline recovery fires within 1 s of the network returning; missing-login check every 5 s.
 - The track picker is a sheet at compact width and a popover otherwise. AirPlay shows in full screen and regular width only. In full screen the error leaves only the exit-full-screen button.
-- Mac volume and the pre-mute value live in `UserDefaults` under `player.volume` and `player.volume.beforeMute`, per device, not synced. No SwiftData or CloudKit field and no secret is added (adr-0002, adr-0003).
+- Mac volume and the pre-mute value live in `UserDefaults` under `player.volume` and `player.volume.beforeMute`, per device, not synced. No SwiftData or CloudKit field and no secret is added.
 - Apple TV: holding select on the error acts as Try again; a single audio track is still listed rather than hidden; play/pause on the Guide and content tabs does nothing (the shell governs resume).
 - `project.yml`: `UIBackgroundModes` gains `audio` on the Mobile target (the engine change adds it on tvOS for PiP). Audio session `.playback` / `.moviePlayback`.
 - The panel opens on a long press of select, because a swipe down already changes channel in the zap bar.
