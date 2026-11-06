@@ -13,9 +13,9 @@ This is for anyone using Antenna on an Apple TV: it is the frame every other App
 
 ## Design
 
-Boards: `docs/design/boards/TV-Movies.dc.html`, `TV-Search.dc.html` (the tab bar as drawn there), `TV-Shell-Menu.dc.html`, `TV-Shell-FocusedTab.dc.html`, `TV-Shell-Loading.dc.html`, `TV-Shell-Empty.dc.html`.
+Boards: `docs/design/boards/TV-Movies.dc.html`, `TV-Search.dc.html` (the tab bar as drawn there), `TV-Shell-Menu.dc.html`, `TV-Shell-FocusedTab.dc.html`, `TV-Shell-Loading.dc.html`, `TV-Shell-Empty.dc.html`, `TV-Shell-Guide-Menu.dc.html` (the bar over the Guide, the shell's clock hidden and its space kept), `TV-Shell-Loading-Menu.dc.html` and `TV-Shell-Empty-Menu.dc.html` (the bar over the loading and empty screens, Retry without its highlight), `TV-Settings.dc.html` (Settings as it opens, first row focused; its content is 0023's).
 Design rules that apply: DR-1, DR-2, DR-3, DR-4, DR-5, DR-11, DR-12, DR-13, DR-14, DR-15.
-Not drawn: the tab bar and dimming over the Guide, with the shell's clock hidden and its space kept; the tab bar and dimming over the loading and empty screens, with Retry losing its highlight while the bar shows; the Settings screen as it opens.
+Not drawn: nothing.
 
 Layout, sizes, states and identifiers come from the boards and are settled in the implementation plan, not here.
 
