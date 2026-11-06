@@ -18,15 +18,23 @@ final class GuideStubProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) private static var replies: [String: Reply] = [:]
     nonisolated(unsafe) private static var recorded: [String: [URLRequest]] = [:]
     nonisolated(unsafe) private static var stopped: Set<String> = []
+    nonisolated(unsafe) private static var paces: [String: Duration] = [:]
+    private let cancelled = NSLock()
+    nonisolated(unsafe) private var isCancelled = false
 
     static func register(host: String, _ reply: Reply) {
         lock.withLock { replies[host] = reply }
     }
 
     /// A 200 reply with `body` cut into `chunkSize` pieces and, when
-    /// `contentLength` is true, a Content-Length header.
-    static func register(host: String, body: Data, chunkSize: Int = 1024, contentLength: Bool = true, finish: Bool = true) {
+    /// `contentLength` is true, a Content-Length header. With `pace`, one
+    /// piece goes out per `pace` from a background queue, as a network would
+    /// send it; without, every piece goes out at once.
+    static func register(
+        host: String, body: Data, chunkSize: Int = 1024, contentLength: Bool = true, finish: Bool = true, pace: Duration? = nil
+    ) {
         let chunks = stride(from: 0, to: body.count, by: chunkSize).map { body.subdata(in: $0..<min(body.count, $0 + chunkSize)) }
+        lock.withLock { paces[host] = pace }
         register(host: host, .http(headers: contentLength ? ["Content-Length": "\(body.count)"] : [:], chunks: chunks, finish: finish))
     }
 
@@ -52,9 +60,9 @@ final class GuideStubProtocol: URLProtocol, @unchecked Sendable {
             client?.urlProtocol(self, didFailWithError: URLError(.badURL))
             return
         }
-        let reply = Self.lock.withLock {
+        let (reply, pace) = Self.lock.withLock {
             Self.recorded[host, default: []].append(request)
-            return Self.replies[host]
+            return (Self.replies[host], Self.paces[host])
         }
         switch reply {
         case .http(let status, let headers, let chunks, let finish):
@@ -62,6 +70,10 @@ final class GuideStubProtocol: URLProtocol, @unchecked Sendable {
                 return
             }
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            if let pace {
+                send(chunks, finish: finish, pace: pace)
+                return
+            }
             for chunk in chunks { client?.urlProtocol(self, didLoad: chunk) }
             if finish { client?.urlProtocolDidFinishLoading(self) }
         case .failure(let code):
@@ -73,7 +85,21 @@ final class GuideStubProtocol: URLProtocol, @unchecked Sendable {
         }
     }
 
+    /// Sends one chunk per `pace` until done or stopped.
+    private func send(_ chunks: [Data], finish: Bool, pace: Duration) {
+        let microseconds = UInt32(pace.components.seconds * 1_000_000 + pace.components.attoseconds / 1_000_000_000_000)
+        DispatchQueue.global().async { [self] in
+            for chunk in chunks {
+                usleep(microseconds)
+                if cancelled.withLock({ isCancelled }) { return }
+                client?.urlProtocol(self, didLoad: chunk)
+            }
+            if finish, !cancelled.withLock({ isCancelled }) { client?.urlProtocolDidFinishLoading(self) }
+        }
+    }
+
     override func stopLoading() {
+        cancelled.withLock { isCancelled = true }
         guard let host = request.url?.host() else { return }
         _ = Self.lock.withLock { Self.stopped.insert(host) }
     }
