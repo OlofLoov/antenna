@@ -40,6 +40,7 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UIBackgroundModes: [audio]
+        NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
           # IPTV sources are overwhelmingly plain http. Tighten per-domain later if you can.
           NSAllowsArbitraryLoads: true
@@ -92,6 +93,8 @@ targets:
       properties:
         CFBundleDisplayName: Antenna
         UIUserInterfaceStyle: Automatic
+        UIBackgroundModes: [audio]
+        NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     settings:
