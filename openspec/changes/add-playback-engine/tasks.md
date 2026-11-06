@@ -22,7 +22,7 @@
 
 - [x] 4.1 Resume live at the live edge and films in place, and verify with an integration test citing `playback-engine/pause-and-play-again`
 - [x] 4.2 Add start position, seek and end for films, refusing them for live and unseekable streams, and verify with an integration test citing `playback-engine/films-start-where-you-left-off-skip-and-end`
-- [ ] 4.3 Handle background, audio interruptions, route changes and Picture in Picture, and verify with integration and device tests citing `playback-engine/leaving-the-app-phone-calls-and-picture-in-picture`
+- [x] 4.3 Handle background, audio interruptions, route changes and Picture in Picture, and verify with integration and device tests citing `playback-engine/leaving-the-app-phone-calls-and-picture-in-picture`
 
 ## 5. Format and languages
 
