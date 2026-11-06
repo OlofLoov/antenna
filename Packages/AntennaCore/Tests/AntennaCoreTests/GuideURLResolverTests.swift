@@ -46,17 +46,19 @@ import Testing
     @Test(
         "guide-data/logins-never-in-the-clear redaction removes every login part",
         arguments: [
-            ("http://panel:8080/xmltv.php?username=alice7&password=s3cr3t", "http://panel:8080/xmltv.php?username=…&password=…"),
-            ("https://alice7:s3cr3t@epg.example/guide.xml.gz", "https://epg.example/guide.xml.gz"),
-            ("http://epg.example/g.xml?token=abc123&key=k9#frag", "http://epg.example/g.xml?token=…&key=…"),
-            ("http://epg.example/g.xml?abc123", "http://epg.example/g.xml?…"),
-            ("http://epg.example/g.xml?abc123=&k9", "http://epg.example/g.xml?…&…"),
+            ("http://panel:8080/xmltv.php?username=alice7&password=s3cr3t", "http://panel:8080/….php?username=…&password=…"),
+            ("https://alice7:s3cr3t@epg.example/guide.xml.gz", "https://epg.example/….gz"),
+            ("http://epg.example/g.xml?token=abc123&key=k9#frag", "http://epg.example/….xml?token=…&key=…"),
+            ("http://epg.example/g.xml?abc123", "http://epg.example/….xml?…"),
+            ("http://epg.example/g.xml?abc123=&k9", "http://epg.example/….xml?…&…"),
+            ("http://panel:8080/live/alice7/s3cr3t/4711.ts?token=abc123", "http://panel:8080/….ts?token=…"),
+            ("http://panel:8080/live/alice7/s3cr3t/4711", "http://panel:8080/…"),
         ])
     func redaction(raw: String, expected: String) throws {
         let url = try #require(URL(string: raw))
         let shown = redacted(url)
         #expect(shown == expected)
-        for secret in ["alice7", "s3cr3t", "abc123", "k9", "frag"] {
+        for secret in ["alice7", "s3cr3t", "abc123", "k9", "frag", "4711", "live", "xmltv", "guide"] {
             #expect(!shown.contains(secret))
         }
         #expect(!shown.contains(raw))
