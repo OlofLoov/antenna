@@ -1,6 +1,6 @@
 ---
 name: no-ai-slop
-description: Edit drafts into sharper, more human writing while preserving the writer's personal voice, or detect AI-slop patterns without rewriting. Use when the user wants a draft clearer, more direct, more opinionated, or less AI-sounding, or asks whether writing reads as AI. In this repo it also applies to every doc, spec, ADR, README change, commit message, PR body, and to comments and user-facing strings in code; the no-ai-slop hook reminds you after each file change.
+description: Edit drafts into sharper, more human writing while preserving the writer's personal voice, or detect AI-slop patterns without rewriting. Use when the user wants a draft clearer, more direct, more opinionated, or less AI-sounding, or asks whether writing reads as AI. In this repo it also applies to every doc, spec, change proposal, design doc, README change, commit message, PR body, and to comments and user-facing strings in code; the no-ai-slop hook reminds you after each file change.
 ---
 
 # No AI slop

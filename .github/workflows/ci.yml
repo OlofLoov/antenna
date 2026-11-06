@@ -37,14 +37,25 @@ jobs:
           done
 
   specs:
-    name: Spec status
+    name: OpenSpec
     runs-on: ubuntu-latest
+    env:
+      OPENSPEC_VERSION: v1.16.0
+      OPENSPEC_SHA256: f27fb2ff5c6c4aafb207cb0b797189215adb3a1150d4b4600a2d6a0b6e192ae1
+      OPENSPEC_TELEMETRY: "0"
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
-      - name: Status matches tests
-        run: bash scripts/check-specs.sh
-      - name: Spec structure
-        run: bash scripts/lint-spec.sh
+      - name: Install OpenSpec
+        run: |
+          gh release download "$OPENSPEC_VERSION" --repo Fission-AI/OpenSpec --pattern openspec-linux-x64.tar.gz --dir "$RUNNER_TEMP"
+          echo "$OPENSPEC_SHA256  $RUNNER_TEMP/openspec-linux-x64.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/openspec-linux-x64.tar.gz" -C "$RUNNER_TEMP" openspec
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Validate specs and changes
+        run: openspec validate --all --strict --no-interactive
+      - name: Tests cite existing requirements
+        run: bash scripts/check-spec-refs.sh
 
   core:
     name: AntennaCore tests

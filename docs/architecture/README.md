@@ -1,6 +1,6 @@
 # Architecture
 
-C4 diagrams of Antenna as it is on main. The ADRs in [../adr](../adr/README.md)
+C4 diagrams of Antenna as it is on main. The archived decisions in [openspec/changes/archive](../../openspec/changes/archive)
 record why it looks this way.
 
 ## System context
@@ -22,7 +22,6 @@ exported `.drawio` copy, export back with `-e` so the SVG keeps its source:
 drawio -x -f svg -e -b 10 -o c4-container.drawio.svg c4-container.drawio
 ```
 
-A PR that touches project.yml, a Package.swift, entitlements, persistence,
-playback or adds a URLSession call must update these diagrams, add an ADR,
-or carry the commit trailer `Arch-Impact: none`. `scripts/check-arch.sh`
-enforces this in CI. The `arch-reviewer` agent decides which one applies.
+A change that touches project.yml, a Package.swift, entitlements,
+persistence or playback, or adds a URLSession call, updates these diagrams in
+the same PR and records the decision in its `design.md`.

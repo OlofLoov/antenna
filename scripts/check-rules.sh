@@ -18,19 +18,19 @@ check() {
   fi
 }
 
-check "ADR-0005 AntennaCore imports no UI framework" \
+check "decision adr-0005 AntennaCore imports no UI framework" \
   '^[[:space:]]*(@testable[[:space:]]+)?import[[:space:]]+(SwiftUI|SwiftData|UIKit|AppKit|WatchKit|TVUIKit)\b' \
   Packages/AntennaCore/Sources
 
-check "ADR-0002 no @Attribute(.unique) in SwiftData models" \
+check "decision adr-0002 no @Attribute(.unique) in SwiftData models" \
   '@Attribute\(([^)]*\.unique)' \
   Apps
 
-check "ADR-0004 no availability checks below 26" \
+check "decision adr-0004 no availability checks below 26" \
   '(@available|#available|#unavailable)\([^)]*\b(iOS|tvOS|macOS|macCatalyst|visionOS)[[:space:]]+([0-9]|1[0-9]|2[0-5])(\.[0-9]+)?\b' \
   Apps Packages/AntennaCore/Sources
 
-check "ADR-0003 no password or token in print/log calls" \
+check "decision adr-0003 no password or token in print/log calls" \
   '\b(print|debugPrint|NSLog|os_log|Logger\(\)\.[a-z]+|logger\.[a-z]+)\(.*(password|token|secret)' \
   Apps Packages/AntennaCore/Sources
 

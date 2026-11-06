@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Commit the current work with a conventional message and open a pull request, on its own or as one slice of a stack. Use whenever implementation work is finished, including an ADR or spec with no code, or the user says "commit", "PR", "ship it", "open a pull request". Every change reaches main through this skill.
+description: Commit the current work with a conventional message and open a pull request, on its own or as one slice of a stack. Use whenever implementation work is finished, including a change proposal with no code, or the user says "commit", "PR", "ship it", "open a pull request". Every change reaches main through this skill.
 ---
 
 # Commit and open a PR
@@ -15,34 +15,27 @@ If on `main`, create a branch first. Naming:
 
 | Change | Branch |
 |--------|--------|
-| Feature from spec NNNN | `feat/NNNN-slug` |
-| Slice k of a stacked feature | `feat/NNNN-slug-k`, from slice k-1 |
-| Bug fix | `fix/slug` or `fix/NNNN-slug` |
-| ADR only | `docs/adr-NNNN-slug` |
-| Spec only | `docs/spec-NNNN-slug` |
+| Work on OpenSpec change `<name>` | `feat/<name>` |
+| Slice k of a stacked change | `feat/<name>-k`, from slice k-1 |
+| Bug fix | `fix/slug` |
+| A change proposal only, no code | `docs/<name>` |
 | CI, tooling, skills | `chore/slug` or `ci/slug` |
 
 ## 2. Verify
 
 - `swift test --package-path Packages/AntennaCore` must pass. Paste the
   failing output and stop if it does not.
-- `bash scripts/check-specs.sh` must print `ok`. It fails when a spec says
-  Implemented without a test citing every criterion, or when a spec and the
-  boards in `docs/design/boards/` do not match.
+- `openspec validate --all --strict` and `bash scripts/check-spec-refs.sh`
+  must pass. The second fails when a test cites a requirement that is not
+  in `openspec/specs/`.
 - `swift format lint --strict --recursive --parallel Apps Packages` and
   `scripts/check-rules.sh` must pass. Run `swiftlint lint --strict` too when
   it is installed; CI runs all three.
 - If Apps/ changed, the iOS build must pass (see the `sim` skill).
-- `bash scripts/check-arch.sh` runs locally only; CI does not. The
-  `arch-review` hook runs it before each `git commit` and `gh pr create`
-  and says when it flags the branch. When it flags, or the work adds a
-  dependency, target or ADR, run the `arch-reviewer` agent. On UPDATE
-  DIAGRAMS edit `docs/architecture/` with the `drawio` skill. On NEEDS ADR
-  write it with the `adr` skill. When the change follows an existing ADR,
-  add the trailer `ADR: NNNN`. On NO IMPACT add `Arch-Impact: none`.
-  VIOLATION stops here.
-- If a spec exists for this work, run the `impl-reviewer` agent and fix
-  READY WITH FIXES items before continuing. NOT READY stops here.
+- If the work belongs to an OpenSpec change, run `/opsx:verify <name>` and
+  fix what it reports before continuing. When the work adds a dependency,
+  target or architecture decision, update `docs/architecture/` with the
+  `drawio` skill and record the decision in the change's `design.md`.
 
 ## 3. Commit
 
@@ -53,16 +46,15 @@ Conventional Commits, enforced by `scripts/lint-commit.sh`:
 
 <body: what and why, not how>
 
-Spec: NNNN          # when applicable
-ADR: NNNN           # when created or changed
-Arch-Impact: none   # when arch-reviewer says NO IMPACT
+Change: <name>      # the OpenSpec change this implements, when there is one
 ```
 
 Types: feat, fix, docs, refactor, test, build, ci, chore, perf, style, revert.
-Scopes: core, app, tv, mobile, adr, spec, ci, build, docs.
+Scopes: core, app, tv, mobile, spec, ci, build, docs.
 
-One logical change per commit. Specs and ADRs that accompany a feature go in
-their own commit before the code. No WIP, fixup or "address review"
+One logical change per commit. Proposal and spec edits that accompany a
+feature go in their own commit before the code. Archiving the change
+(`/opsx:archive`) goes in the last commit of its last PR. No WIP, fixup or "address review"
 commits: fold them into the commit they fix before pushing. Run
 `git diff --cached` and read it before committing. Never `--no-verify`.
 
@@ -74,8 +66,8 @@ gh pr create --title "<same conventional header as the main commit>" --body-file
 ```
 
 The body follows `.github/pull_request_template.md`. Fill every section.
-For a docs-only PR the criteria table says "n/a, no code" and the smoke
-section is deleted. Put the spec and ADR links in the body.
+For a docs-only PR the requirements table says "n/a, no code" and the smoke
+section is deleted. Link the change folder in the body.
 
 If `gh` is not authenticated, print the branch name and the body and tell
 the user to run `gh auth login`.
@@ -86,8 +78,8 @@ Give the PR URL and the one-line result of each verification step.
 
 ## Stacks
 
-A feature too big for one small PR ships as a stack. The `implement` skill
-decides the cut; this skill opens and maintains it with GitHub stacked PRs
+A change too big for one small PR ships as a stack. Its `tasks.md` groups
+decide the cut; this skill opens and maintains it with GitHub stacked PRs
 through the `gh stack` extension (`gh extension install github/gh-stack`).
 GitHub then shows the PRs as one stack, chains their bases, retargets them
 as slices merge, and can merge the stack in one operation.
@@ -101,10 +93,9 @@ gh stack submit --auto                # push every branch, open missing PRs
 ```
 
 Then set each new PR's title and body with `gh pr edit <n> --title "..."
---body-file <tmp>`, since `--auto` writes placeholder titles. The criteria
-table lists only that slice's rows. Every slice but the last sets the spec
-to `In progress` and lists its criteria on a `- Progress:` line; only the
-last says Implemented. The `implement` skill's step 7 has the format.
+--body-file <tmp>`, since `--auto` writes placeholder titles. The requirements
+table lists only that slice's rows. Each slice ticks its tasks in the
+change's `tasks.md`; only the last slice archives the change.
 
 Branches made without `gh stack` (by hand or by another tool) become a
 stack with `gh stack link <bottom> ... <top>`, using branch names or PR

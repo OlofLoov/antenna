@@ -1,13 +1,13 @@
-## Spec
+## Change
 
-Spec: docs/specs/NNNN-...
-ADRs created or changed: none
+OpenSpec change: openspec/changes/<name>/ (or "none")
+Capabilities touched: <capability>, ...
 
-## Criteria covered
+## Requirements covered
 
-| Criterion | Test |
-|-----------|------|
-| AC-1 | |
+| Requirement | Test |
+|-------------|------|
+| `<capability>/<requirement-slug>` | |
 
 ## Not covered and why
 
