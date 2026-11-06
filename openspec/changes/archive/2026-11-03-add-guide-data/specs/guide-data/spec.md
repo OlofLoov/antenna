@@ -1,0 +1,161 @@
+## Purpose
+
+Downloads each source's TV guide, matches its programmes to the user's channels, and answers what is on now, what is next and what is on between two times, while telling screens how far a download has got and why it failed. It serves the viewer who wants "to see what is on now and next without leaving the picture" and "a guide grid of what is on across channels over the coming days", and the user who wants several subscriptions "merged into one channel list and one guide".
+
+## ADDED Requirements
+
+### Requirement: Find the guide for each source
+The system SHALL use the guide link the user entered for a source, else for a playlist the first guide link the playlist names, else for an Xtream source the provider's guide link built from the user's login. Working this out SHALL send nothing over the network.
+
+#### Scenario: Order of preference
+- **GIVEN** a source
+- **WHEN** the app works out where its guide lives
+- **THEN** it uses the entered link, else the playlist's first link, else the Xtream provider's link, and nothing goes over the network
+
+#### Scenario: No guide
+- **GIVEN** a playlist with no guide link, or a Stalker portal without one
+- **WHEN** the app works out where its guide lives
+- **THEN** the source has no guide
+
+#### Scenario: Link changed on another device
+- **GIVEN** a guide link changed on another device
+- **WHEN** the next refresh runs
+- **THEN** the new link is used
+
+### Requirement: Login not on this device
+The system SHALL download nothing for an Xtream source without its own guide link whose login is missing or unreadable on this device, SHALL tell callers once, and SHALL load the guide at the next refresh trigger after the login arrives.
+
+#### Scenario: Login missing or unreadable
+- **GIVEN** an Xtream source with no guide link of its own whose login has not reached this device or cannot be read
+- **WHEN** its guide is due to load
+- **THEN** nothing is downloaded, callers hear once that the login is missing or unreadable, and its channels report the guide as unavailable while the login is missing, or failed when it cannot be read
+
+#### Scenario: Login arrives
+- **GIVEN** that source's login reaches the device
+- **WHEN** the next refresh trigger fires
+- **THEN** the guide loads without the user doing anything
+
+### Requirement: Programmes land on the right channels
+The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids and otherwise matching exactly, case included, whichever of the guide and the channel list loads first.
+
+#### Scenario: Ids with spaces, a channel without an id, two sources
+- **GIVEN** a channel and a programme whose guide ids differ only by spaces around them, a channel with no guide id, and two sources whose guides both use the id "one"
+- **WHEN** the guide and the channel list have both loaded, in either order
+- **THEN** the first channel gets its programme, the channel without an id gets none and reports no data, and each source's channels get programmes only from that source's guide
+
+#### Scenario: Stalker source with a guide link
+- **GIVEN** a Stalker source with its own guide link
+- **WHEN** the guide loads
+- **THEN** it downloads, and every programme is unmatched until the source has channels
+
+### Requirement: What is on now and next
+The system SHALL answer which programme is on a channel at a given time, a programme being on from its start time up to but not including its stop time, and which programmes come next, in order.
+
+#### Scenario: Now and the next three
+- **GIVEN** programmes 20:00 to 22:00, 22:00 to 23:00 and 23:15 to 00:00 on one channel
+- **WHEN** a caller asks what is on at 21:34 and at 22:00, and for the next three from 22:00
+- **THEN** 21:34 gives the 20:00 programme, 22:00 gives the 22:00 programme, a time with nothing on gives nothing, and the next three are the 22:00 and 23:15 programmes in order
+
+#### Scenario: Guide entirely in the past
+- **GIVEN** a guide whose programmes have all ended
+- **WHEN** a caller asks what is on now
+- **THEN** nothing is on, and the guide still counts as loaded
+
+### Requirement: Programmes in a time window
+The system SHALL return every programme overlapping a time window, in start order, leaving gaps empty. Where two overlap the later start SHALL win and the earlier SHALL be cut short, never split. The guide's reach SHALL run from the earliest start to the latest stop across all sources.
+
+#### Scenario: Gaps, overlaps and a zero-length programme
+- **GIVEN** programmes on a channel with a gap between two of them, some overlapping, and one that ends as it starts
+- **WHEN** a caller asks for 20:00 to 22:00, or how far the guide reaches
+- **THEN** it gets every overlapping programme in start order with the gap left empty, the later of two overlapping programmes wins, the zero-length one is ignored, and the reach spans all sources
+
+#### Scenario: No programmes anywhere
+- **GIVEN** no programmes from any source
+- **WHEN** a caller asks how far the guide reaches
+- **THEN** the guide has no reach
+
+### Requirement: Progress a screen can show
+The system SHALL report download progress in bytes, with the total when known, and then for each source the channels with a guide, the channels in total, the days covered and the unmatched programmes, or why the load failed. A caller that starts listening late SHALL first hear the latest news for each source.
+
+#### Scenario: Listening to a load
+- **GIVEN** guides loading
+- **WHEN** a caller listens for progress
+- **THEN** it hears bytes arrived and the total as the download runs, then per source the channels with a guide, the channel total, the days covered and the unmatched count, or the failure
+
+#### Scenario: Late listener
+- **GIVEN** guides that have already loaded
+- **WHEN** a caller starts listening
+- **THEN** it first hears the latest news for each source
+
+### Requirement: A guide state that does not flicker
+The system SHALL report each channel's guide as loading, unavailable or failed before its source's first completed download, and as having a guide or no data after one, keeping that state through later refreshes, failed and offline ones included.
+
+#### Scenario: Before and after the first download
+- **GIVEN** a source
+- **WHEN** a caller asks for a channel's guide state
+- **THEN** before the first completed download it is loading, unavailable (no guide link) or failed, and after one it is "has a guide" or "no data"
+
+#### Scenario: A later refresh fails
+- **GIVEN** a source whose guide loaded once
+- **WHEN** a later refresh fails or the device is offline
+- **THEN** the state does not change, the previous guide still answers, and the failure is reported only through progress
+
+### Requirement: Failures say why
+The system SHALL report a failed guide load as a server error with its code, a timeout, offline, malformed, empty, unsupported, login refused or too large, SHALL stop a download as soon as it crosses the size limit, and SHALL leave other sources' guides untouched.
+
+#### Scenario: Each failure
+- **GIVEN** a guide link that answers with an error, times out, fails offline, sends a damaged or unreadable file, sends a file with no programmes, refuses the user's login, or is larger than the limit
+- **WHEN** the guide loads
+- **THEN** the caller hears the matching reason, a too-large download stops as soon as it crosses the limit, and other sources' guides are untouched
+
+#### Scenario: HTML login page
+- **GIVEN** a provider that answers with an HTML login page instead of a guide
+- **WHEN** the guide loads
+- **THEN** it fails as empty or malformed, not as a crash or a silent blank
+
+### Requirement: Refreshed about twice a day
+The system SHALL download only guides that are missing or more than 12 hours old when the app launches, comes to the foreground, or finishes loading a source's channels, and never two at once for one source. An explicit refresh SHALL download regardless of age and restart one already running.
+
+#### Scenario: Stale and fresh sources
+- **GIVEN** sources whose guide on this device is missing or more than 12 hours old, and others refreshed more recently
+- **WHEN** the app launches, comes to the foreground, or finishes loading a source's channels
+- **THEN** only the missing or stale guides download, never two at once for one source, and a guide counts as fresh only if its programmes are on this device
+
+#### Scenario: Explicit refresh
+- **GIVEN** a guide loaded an hour ago, or one downloading now
+- **WHEN** a refresh of that source is asked for
+- **THEN** it downloads again, restarting a running download
+
+#### Scenario: Offline or suspended
+- **GIVEN** the device is offline without a previous guide, or the app is suspended mid-download
+- **WHEN** the app next comes to the foreground
+- **THEN** the guide is tried again, and with no sources nothing is requested
+
+### Requirement: Logins never in the clear
+The system SHALL keep every part of a login and the full guide link out of logs and file names. Logs SHALL show the link with query values replaced by "…" and the login removed, plus only the source and the kind of failure.
+
+#### Scenario: Link with credentials
+- **GIVEN** a guide link with a username, password or token in the query or before the host
+- **WHEN** anything is logged or a file name is chosen
+- **THEN** no log line or file name contains any part of the login or the full link
+
+### Requirement: Compressed guides
+The system SHALL unpack a gzip-compressed guide even when the server does not say it is compressed, and SHALL fail as unsupported anything that is neither XML nor gzip.
+
+#### Scenario: Gzip without a header
+- **GIVEN** a guide sent gzip-compressed without saying so
+- **WHEN** it loads
+- **THEN** it gives the same programmes as the uncompressed file
+
+#### Scenario: Neither XML nor gzip
+- **GIVEN** a guide link that sends some other kind of file
+- **WHEN** it loads
+- **THEN** it fails as unsupported
+
+### Requirement: Deleting a source removes its guide
+The system SHALL stop a deleted source's guide download, remove its programmes from every answer, shrink the guide's reach, report its channels as unavailable and send no more news about it, whether the delete happened on this device or through iCloud.
+
+#### Scenario: Delete during or after a load
+- **GIVEN** a source whose guide is loading or has loaded
+- **WHEN** the source is deleted on this device or through iCloud
+- **THEN** any download stops, its programmes disappear from every answer, the reach shrinks accordingly, its channels report unavailable, and callers hear nothing more about it
