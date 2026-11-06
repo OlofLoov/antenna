@@ -6,7 +6,7 @@ Boards: `openspec/specs/design-system/boards/TV-Title.dc.html`, `TV-Series.dc.ht
 
 Design-system requirements that apply: "Focus is the lifted white card", "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "A current programme always shows its progress", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled", "Text meets contrast minimums", "Loading shows real progress per step".
 
-Not drawn yet: loading bars for the details, loading episode rows, the two error states, no episodes, the Apple TV full-description sheet, the expanded description, the focused episode row and season chip on Apple TV, the greyed-out Play button, and the Play error line.
+Not drawn yet: loading bars for the details, loading episode rows, the two error states, no episodes, the Apple TV full-description sheet, the expanded description, the focused episode row and season chip on Apple TV, the grayed-out Play button, and the Play error line.
 
 ## Goals / Non-Goals
 

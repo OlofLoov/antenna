@@ -2,7 +2,7 @@
 
 ## 1. Input parsing
 
-- [ ] 1.1 Add MAC normalisation and portal address checks, and verify core tests for each accepted and rejected form
+- [ ] 1.1 Add MAC normalization and portal address checks, and verify core tests for each accepted and rejected form
 
 ## 2. Sign-in and session
 

@@ -109,7 +109,7 @@ The system SHALL play the channel of a picked programme that is on now, open the
 - **AND** the line stays until the user changes channel or the programme ends
 
 ### Requirement: Narrow to one kind
-The system SHALL show only one kind of result when the user taps its chip on iPad, Mac or iPhone, listing every guide match, with counts on each chip and a total on All, a greyed-out "0" chip when empty, and Movies and Series chips only when those sections exist.
+The system SHALL show only one kind of result when the user taps its chip on iPad, Mac or iPhone, listing every guide match, with counts on each chip and a total on All, a grayed-out "0" chip when empty, and Movies and Series chips only when those sections exist.
 
 #### Scenario: Tapping a chip
 - **GIVEN** results on iPad, Mac or iPhone
@@ -120,7 +120,7 @@ The system SHALL show only one kind of result when the user taps its chip on iPa
 #### Scenario: An empty chip and All
 - **GIVEN** a kind with no results
 - **WHEN** the chips show
-- **THEN** its chip is greyed out and reads "0"
+- **THEN** its chip is grayed out and reads "0"
 - **AND** All brings every section back
 
 #### Scenario: No movies or series

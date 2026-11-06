@@ -2,7 +2,7 @@
 
 ## Context
 
-Boards: `openspec/specs/design-system/boards/iPhone-Import.dc.html`, `iPhone-Import-TooLarge.dc.html`, `iPhone-Import-Malformed.dc.html` (iOS; iPadOS and macOS show the same sheet centred), `iPad-Import.dc.html`, `iPad-Import-TooLarge.dc.html`, `iPad-Import-Malformed.dc.html` (iPadOS and macOS, including the drop target), and `iPhone-Onboard-3.dc.html` (the reading ring is reused from it).
+Boards: `openspec/specs/design-system/boards/iPhone-Import.dc.html`, `iPhone-Import-TooLarge.dc.html`, `iPhone-Import-Malformed.dc.html` (iOS; iPadOS and macOS show the same sheet centered), `iPad-Import.dc.html`, `iPad-Import-TooLarge.dc.html`, `iPad-Import-Malformed.dc.html` (iPadOS and macOS, including the drop target), and `iPhone-Onboard-3.dc.html` (the reading ring is reused from it).
 
 Design-system requirements that apply: "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled", "Text meets contrast minimums", "Nothing shows before the paywall", "Loading shows real progress per step".
 
@@ -29,7 +29,7 @@ Not drawn yet: the link-list, single-stream and unreadable-file messages; the on
 - Edits to other changes, each its own PR: first-run onboarding (a file source counts as usable; the loading row names the file; the "Import a file instead" link), sources and settings (a record with no link is not skipped when it is a file source; delete calls the guide store's remove; the file source row shows "Imported <date> · <file>", has no Refresh and offers Re-import), guide data (guide links for a file source come from the file header), and live TV on iPhone, iPad and Mac plus the tvOS shell (waiting for iCloud is a terminal state shown where waiting for login is).
 - Document types: the Antenna target registers M3U and M3U8 as an alternate viewer, not plain text. The Apple TV target registers nothing. The Mac build is not sandboxed, so the open panel and drops need no entitlement.
 - Shared files land in `Documents/Inbox` on iOS. That copy is deleted after reading, whether or not the user imports. Security-scoped access is released before the sheet shows.
-- Reading and checking run off the main actor, can be cancelled, and stay within the M3U parser's parse time. Store changes are batched with a reload delay of about one second.
+- Reading and checking run off the main actor, can be canceled, and stay within the M3U parser's parse time. Store changes are batched with a reload delay of about one second.
 - Re-import updates the same record, so channel ids that survive keep their favorites.
 - Ship as a stack: core checks and login stripping, then the sheet and ways in, then sync and waiting, then drag and drop.
 

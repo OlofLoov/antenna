@@ -110,7 +110,7 @@ The system SHALL let the user add tiles up to the device's limit, four or two on
 #### Scenario: The limit is reached
 - **GIVEN** multi-view at its limit
 - **WHEN** the user opens the overlay or a Mac channel's menu
-- **THEN** the overlay offers no "Add as new tile" and the Mac menu shows a greyed "Multi-view is full"
+- **THEN** the overlay offers no "Add as new tile" and the Mac menu shows a grayed "Multi-view is full"
 
 #### Scenario: A channel already in a tile
 - **WHEN** the user tries to add a channel that is already in a tile

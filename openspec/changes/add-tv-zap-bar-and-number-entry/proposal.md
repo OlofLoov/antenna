@@ -14,7 +14,7 @@ User stories served:
 - The bar shows logo, number, name, group and position in it, the current programme with its times and progress, the next programme, time left, and picture and sound quality.
 - Swiping up and down changes channel within the current group. The current group is the one the user last tuned from in the overlay, or the channel's own group after a fresh launch.
 - Play/pause in full-screen live TV shows the bar instead of pausing. A later playback change may alter this.
-- Typing a channel number on a hardware keyboard, with correcting and cancelling.
+- Typing a channel number on a hardware keyboard, with correcting and canceling.
 
 Out of scope:
 - The channel overlay, the guide grid and the Apple TV home screen.

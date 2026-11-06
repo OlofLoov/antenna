@@ -6,7 +6,7 @@ See proposal.md for why. The controls sit on top of change `add-playback-engine`
 
 Boards, under `openspec/specs/design-system/boards/`: `TV-Player.dc.html`, `TV-Player-Tracks.dc.html`, `TV-Player-Error.dc.html`, `TV-Player-Buffering.dc.html`, `iPad-Player.dc.html`, `iPad-Player-Tracks.dc.html`, `iPad-Player-Error.dc.html`, `iPhone-Player.dc.html`, `iPhone-Player-Tracks.dc.html`, `iPhone-Player-Error.dc.html`.
 
-Not drawn: the Apple TV Subtitles tab and its "No subtitles in this stream" row; the Info tab without guide data; the reconnecting caption; the spinner on iPhone, iPad and Mac; the Picture in Picture and AirPlay placeholders; the iPhone full-screen controls; the error in full screen on iPhone, iPad and Mac; the greyed tracks button; the Apple TV "Sign in" button on the error; the error with the zap bar showing. Each is a variant of a drawn board with the same geometry.
+Not drawn: the Apple TV Subtitles tab and its "No subtitles in this stream" row; the Info tab without guide data; the reconnecting caption; the spinner on iPhone, iPad and Mac; the Picture in Picture and AirPlay placeholders; the iPhone full-screen controls; the error in full screen on iPhone, iPad and Mac; the grayed tracks button; the Apple TV "Sign in" button on the error; the error with the zap bar showing. Each is a variant of a drawn board with the same geometry.
 
 Design-system requirements that apply: “Live video keeps playing under overlays”, “Focus is the lifted white card”, “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “A current programme always shows its progress”, “Channels without a logo show initials”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”, “Loading shows real progress per step”.
 
@@ -27,7 +27,7 @@ On iPhone, iPad and Mac a speech-bubble button opens Audio and Subtitles with a 
 
 - The engine contract is the one from change `add-playback-engine`. The message table has one row per engine failure reason. The login-missing case needs the engine to build the Xtream address from the Keychain at load time, and that part of the recovery and error requirements waits for it. The copy for "Server busy", "Secure connection failed" and "No decoder free" was added in a trim and needs the owner's review.
 - Pure parts live in AntennaCore and take no URL: failure text, stream line, codec display names (h264/avc1 "H.264", hevc/hvc1/hev1 "HEVC", mpeg2video "MPEG-2", aac/mp4a "AAC", ac3 "AC-3", eac3/ec-3 "E-AC-3", others upper-cased), and track display names.
-- Player behaviour sits in a `@MainActor` `PlayerModel` in `Apps/Shared/Player/` with an injected engine, clock, `UserDefaults`, credential store, path monitor, audio session, scene phase, log sink and Now Playing sink.
+- Player behavior sits in a `@MainActor` `PlayerModel` in `Apps/Shared/Player/` with an injected engine, clock, `UserDefaults`, credential store, path monitor, audio session, scene phase, log sink and Now Playing sink.
 - Identifiers use the `player.` prefix and follow the boards (“Accessibility identifiers follow the board”).
 - Numbers: long press 0.5 s; spinner after 0.5 s, caption after 10 s; Mac volume step 0.1; buttons at least 44 pt; offline recovery fires within 1 s of the network returning; missing-login check every 5 s.
 - The track picker is a sheet at compact width and a popover otherwise. AirPlay shows in full screen and regular width only. In full screen the error leaves only the exit-full-screen button.

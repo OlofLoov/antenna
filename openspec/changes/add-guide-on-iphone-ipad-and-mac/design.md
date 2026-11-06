@@ -6,7 +6,7 @@ Boards: `openspec/specs/design-system/boards/iPad-Guide.dc.html`, `iPhone-Guide.
 
 Design-system requirements that apply: "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "Channel rows share one anatomy", "A current programme always shows its progress", "Channels without a logo show initials", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled", "Text meets contrast minimums", "Nothing shows before the paywall", "Loading shows real progress per step".
 
-Not drawn yet: details for a past, later, gap or placeholder programme; the empty group on iPhone; the loading and error states; the folded sidebar; other zoom levels and greyed-out zoom buttons; the now-playing chip without the live dot; nothing playing.
+Not drawn yet: details for a past, later, gap or placeholder programme; the empty group on iPhone; the loading and error states; the folded sidebar; other zoom levels and grayed-out zoom buttons; the now-playing chip without the live dot; nothing playing.
 
 ## Goals / Non-Goals
 

@@ -12,7 +12,7 @@
 ## 2. Search screens
 
 - [ ] 2.1 Build the Apple TV Search tab on the system search screen, the iPad and Mac Search section, and the iPhone Search tab, with a 300 ms debounce
-- [ ] 2.2 Add the kind chips with counts and greyed-out empty chips, and verify with a UI test citing `search/narrow-to-one-kind`
+- [ ] 2.2 Add the kind chips with counts and grayed-out empty chips, and verify with a UI test citing `search/narrow-to-one-kind`
 - [ ] 2.3 Add clear, and verify with a UI test citing `search/clear-the-field`
 - [ ] 2.4 Show no-results and still-loading states, and verify with a UI test citing `search/nothing-found`
 - [ ] 2.5 Add Command-F, arrows, Return and Escape, and verify with a UI test citing `search/search-with-a-keyboard`
