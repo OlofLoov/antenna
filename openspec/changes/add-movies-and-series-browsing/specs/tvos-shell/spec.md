@@ -15,6 +15,11 @@ The system SHALL show a tab bar holding, from left to right, the Antenna mark, L
 - **WHEN** the tab bar shows
 - **THEN** neither Movies nor Series appears
 
+#### Scenario: Bar over the Guide
+- **GIVEN** the Guide is open
+- **WHEN** the tab bar shows over it
+- **THEN** the bar leaves the clock's place empty, because the Guide shows its own clock
+
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
 - **WHEN** the tab bar shows
