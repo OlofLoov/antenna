@@ -8,15 +8,19 @@ public struct StreamProbe: Sendable, Equatable {
     public var contentType: String?
     /// True when the server answered the byte range or says it accepts ranges.
     public var acceptsRanges: Bool
+    /// The whole length in bytes, from Content-Range or Content-Length. Nil
+    /// for a stream with no end, such as live radio.
+    public var length: Int?
     public var sniff: StreamSniff
 
     /// How many bytes a probe reads before it lets the connection go.
     public static let headSize = 2048
 
-    public init(status: Int, contentType: String?, acceptsRanges: Bool, sniff: StreamSniff) {
+    public init(status: Int, contentType: String?, acceptsRanges: Bool, length: Int? = nil, sniff: StreamSniff) {
         self.status = status
         self.contentType = contentType
         self.acceptsRanges = acceptsRanges
+        self.length = length
         self.sniff = sniff
     }
 
@@ -56,9 +60,11 @@ public struct StreamProbe: Sendable, Equatable {
         bytes.task.cancel()
         try Task.checkCancellation()
         let ranges = http.statusCode == 206 || http.value(forHTTPHeaderField: "Accept-Ranges")?.lowercased() == "bytes"
+        let total = http.value(forHTTPHeaderField: "Content-Range")?.split(separator: "/").last.flatMap { Int($0) }
+        let length = http.statusCode == 206 ? total : http.value(forHTTPHeaderField: "Content-Length").flatMap { Int($0) }
         return StreamProbe(
             status: http.statusCode, contentType: http.value(forHTTPHeaderField: "Content-Type"), acceptsRanges: ranges,
-            sniff: StreamSniff(head))
+            length: length, sniff: StreamSniff(head))
     }
 }
 
