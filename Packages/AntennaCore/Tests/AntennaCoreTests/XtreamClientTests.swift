@@ -90,7 +90,7 @@ import Testing
 
     enum Endpoint: String, CaseIterable, Sendable { case liveCategories, liveStreams, accountInfo }
 
-    /// xtream-vod-client/unauthorized supersedes the 403 case: it is now `unauthorized`; other statuses stay `badStatus`.
+    // xtream-vod-client/unauthorized supersedes the 403 case: it is now `unauthorized`; other statuses stay `badStatus`.
     // xtream-live-source/non-2xx-response-is-a-typed-error
     @Test("non-2xx response is a typed error", arguments: Endpoint.allCases, [403, 500])
     func nonSuccessStatus(endpoint: Endpoint, status: Int) async throws {
