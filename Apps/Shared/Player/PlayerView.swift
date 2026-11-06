@@ -6,13 +6,23 @@ import SwiftUI
 /// the player controls change.
 struct PlayerView: View {
     let channel: Channel
-    @State private var engine = PlayerView.makeEngine()
+    @State private var engine: RoutedEngine
+    @State private var lifecycle: PlaybackLifecycle
+
+    init(channel: Channel) {
+        self.channel = channel
+        let player = AVPlayerEngine()
+        let engine = RoutedEngine(system: player, demuxer: player)
+        _engine = State(initialValue: engine)
+        _lifecycle = State(initialValue: PlaybackLifecycle(engine: engine) { player.continuesInPictureInPicture })
+    }
 
     var body: some View {
         PlayerSurfaceView(engine: engine)
             .ignoresSafeArea()
             .navigationTitle(channel.name)
             .task(id: channel.streamURL) {
+                lifecycle.start()
                 do {
                     try await engine.load(channel.streamURL)
                     await engine.play()
@@ -22,12 +32,8 @@ struct PlayerView: View {
                 }
             }
             .onDisappear {
+                lifecycle.end()
                 Task { await engine.stop() }
             }
-    }
-
-    private static func makeEngine() -> RoutedEngine {
-        let player = AVPlayerEngine()
-        return RoutedEngine(system: player, demuxer: player)
     }
 }
