@@ -3,7 +3,7 @@
 ## 1. Contract and fixtures
 
 - [x] 1.1 Define the engine contract, options, state, presentation, tracks, position and cue streams, keeping `load(_:)` source-compatible, and verify existing screens still build
-- [ ] 1.2 Add the fixture script with synthetic streams and the in-test server that can stall, cut or refuse, and verify it serves every fixture
+- [x] 1.2 Add the fixture script with synthetic streams and the in-test server that can stall, cut or refuse, and verify it serves every fixture
 
 ## 2. Routing and tuning
 
