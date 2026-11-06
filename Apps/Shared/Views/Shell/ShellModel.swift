@@ -106,7 +106,7 @@
         @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
         @ObservationIgnored private var finishOrder: [UUID] = []
         @ObservationIgnored private var stored: LastChannelKey?
-        @ObservationIgnored private var launched = false
+        private var launched = false
         @ObservationIgnored private var deadlinePassed = false
         @ObservationIgnored private var deadline: Task<Void, Never>?
         @ObservationIgnored private var pauseTimer: Task<Void, Never>?
@@ -130,8 +130,11 @@
             ShellTab.allCases.filter { offersMovies || ($0 != .movies && $0 != .series) }
         }
 
+        /// `.loading` until the first `sourcesChanged`, so the empty screen
+        /// never flashes at launch.
         var liveScreen: LiveScreen {
             if tuned != nil { return .playing }
+            if !launched { return .loading }
             return sources.contains { $0.state == .loading } ? .loading : .empty
         }
 
@@ -347,9 +350,8 @@
         func select(_ target: ShellTab) async -> ShellFocus {
             switch target {
             case .live:
-                let wasLive = tab == .live
                 await showLive()
-                if wasLive, let tuned, case .failed = await engine.state { tune(tuned) }
+                if let tuned, case .failed = await engine.state { tune(tuned) }
                 return liveFocus
             case .guide:
                 await open(.guide)
