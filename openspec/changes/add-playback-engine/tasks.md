@@ -7,10 +7,10 @@
 
 ## 2. Routing and tuning
 
-- [ ] 2.1 Route by extension with fallback from a raw-looking address to Apple's player, and verify with core and integration tests citing `playback-engine/every-common-stream-type-plays`
-- [ ] 2.2 Close the old connection before the new one, cancel reconnects and report clean state transitions, and verify with core and integration tests citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
-- [ ] 2.3 Add the tune retry policy on a simulated clock, and verify with a core test citing `playback-engine/a-channel-that-won-t-start-is-retried-briefly`
-- [ ] 2.4 Add the drop and stall reconnect policy with numbered attempts and reset, and verify with core and integration tests citing `playback-engine/a-dropped-channel-reconnects`
+- [x] 2.1 Route by extension with fallback from a raw-looking address to Apple's player, and verify with core and integration tests citing `playback-engine/every-common-stream-type-plays`
+- [x] 2.2 Close the old connection before the new one, cancel reconnects and report clean state transitions, and verify with core and integration tests citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
+- [x] 2.3 Add the tune retry policy on a simulated clock, and verify with a core test citing `playback-engine/a-channel-that-won-t-start-is-retried-briefly`
+- [x] 2.4 Add the drop and stall reconnect policy with numbered attempts and reset, and verify with core and integration tests citing `playback-engine/a-dropped-channel-reconnects`
 
 ## 3. Errors and privacy
 
