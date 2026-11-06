@@ -261,7 +261,7 @@ Things to match, because the community treats them as table stakes:
 Things to do better, where the complaints are loudest and Antenna's platform
 helps:
 
-1. **Sync via CloudKit** (already ADR-0002). Sources, favourites, groups,
+1. **Sync via CloudKit** (already decided). Sources, favourites, groups,
    logos, settings and "My List" appear on every device with no backup
    ritual. This is wish-list item 1 and the stated reason a loyal user left.
 2. **Touch and pointer UI** on iPhone, iPad and Mac, not a remote UI scaled
@@ -298,7 +298,7 @@ Risks to avoid:
 - Guide and channel switching performance.
 - Unified favourites and group management across sources.
 - Multi-view.
-- CloudKit sync of sources, favourites and settings (extends ADR-0002).
+- CloudKit sync of sources, favourites and settings, extending the sync that exists.
 - Timeshift buffer and catch-up.
 - EPG source management and manual channel-to-guide mapping.
 - Pricing, free tier scope and Family Sharing.

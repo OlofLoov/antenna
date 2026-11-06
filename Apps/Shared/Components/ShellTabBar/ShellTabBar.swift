@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The Apple TV shell's top bar (spec 0015; `TV-Shell-Menu`,
 /// `TV-Shell-FocusedTab`, `TV-Movies`, `TV-Shell-Guide-Menu`). Compiles on
-/// every platform so the snapshot job renders its previews (decision adr-0007).
+/// every platform so the snapshot job renders its previews.
 enum ShellTabBar {
     /// How a pill looks when it does not have focus. A focused pill always
     /// carries the Focus token.
