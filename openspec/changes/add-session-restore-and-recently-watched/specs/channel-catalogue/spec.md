@@ -21,9 +21,14 @@ The system SHALL list Favorites, then Recents when it has channels, then All cha
 - **THEN** they fall in their source's Ungrouped group, which follows the named groups and is absent when the source has no such channels
 
 #### Scenario: Group names
-- **GIVEN** group names that differ only in case or spacing inside the name
+- **GIVEN** group names that differ only in case, or in spacing inside, before or after the name
 - **WHEN** the catalogue is built
 - **THEN** they stay separate groups, because only empty and whitespace-only names are normalized
+
+#### Scenario: Sources interleaved in the input
+- **GIVEN** input whose channels from sources A and B are mixed, with A's first channel ahead of B's
+- **WHEN** the catalogue is built
+- **THEN** A counts as the first source and B as the second, and each source's channels are taken in position order
 
 #### Scenario: Recents in the group list
 - **GIVEN** the two-source catalogue and a recents list naming two channels that resolve
