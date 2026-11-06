@@ -48,6 +48,6 @@ Out of scope:
 - Needs from `tvos-shell`: play or resume from a shelf link, holding the request at launch.
 - Needs from `add-tv-channel-overlay`: a channel logo lookup that never fetches.
 - Needs from `add-movies-and-series-browsing` or `add-watch-progress-sync`: the Continue watching list the app can read.
-- Blocked on: a decision record for a storage area shared by the Apple TV app and its Top Shelf extension (an App Group) and the snapshot file the app writes there, because the extension cannot open the app's database or guide cache.
+- Blocked on: a decision on a storage area shared by the Apple TV app and its Top Shelf extension (an App Group) and the snapshot file the app writes there, because the extension cannot open the app's database or guide cache.
 - Blocked on: the decision `add-watch-progress-sync` is blocked on, for watch progress.
 - A new app extension target, an App Group on both targets, and an `antenna` URL scheme on the Apple TV app.

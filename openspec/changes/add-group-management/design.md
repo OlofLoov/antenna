@@ -14,8 +14,6 @@ Not drawn: the passcode prompt while the passcode has not synced yet; the lockou
 
 Design-system requirements that apply: “Live video keeps playing under overlays”, “Focus is the lifted white card”, “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “Channel rows share one anatomy”, “Channels without a logo show initials”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Text meets contrast minimums”.
 
-Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free), adr-0006 (no free tier, paid unlock only), adr-0009 (keep per-device state in UserDefaults).
-
 On Apple TV the user opens Groups from Settings, after the passcode prompt if any group is locked and locks are closed. The list shows All channels, every provider group, the user's own groups and New group, with Rename, Hide, Lock, Move up and Move down beside the selected row. Locking the first group asks for four digits twice. On iPad and Mac, Sources & Settings then Groups shows a middle list and a right-hand editor; rows drag to reorder and Add channels opens a picker. On iPhone, Settings then Groups; tapping a row opens its settings and Edit shows drag handles.
 
 ## Goals / Non-Goals
@@ -29,10 +27,10 @@ On Apple TV the user opens Groups from Settings, after the passcode prompt if an
 
 ## Decisions
 
-- Records (app layer, adr-0002 rules): a group record (kind, source id, provider name, custom name, hidden, locked, sort order, created at), a member record shaped like the favorite record, and a passcode record holding a salt and a check value (the verifier). Migration is additive. Malformed records are ignored and no record can hide or lock Favorites.
-- The passcode is never stored, synced or logged. The verifier is built in `Apps/Shared/Persistence` with CryptoKit because AntennaCore stays on Foundation (adr-0005). The decision record must say that four digits are only 10 000 values, so the verifier stops casual reading of the store and nothing more.
+- Records (app layer, following the CloudKit rules: every property optional or defaulted, no unique attribute, relationships optional): a group record (kind, source id, provider name, custom name, hidden, locked, sort order, created at), a member record shaped like the favorite record, and a passcode record holding a salt and a check value (the verifier). Migration is additive. Malformed records are ignored and no record can hide or lock Favorites.
+- The passcode is never stored, synced or logged. The verifier is built in `Apps/Shared/Persistence` with CryptoKit because AntennaCore imports Foundation only. The decision on these records must say that four digits are only 10 000 values, so the verifier stops casual reading of the store and nothing more.
 - The verifier syncs because tvOS Keychain items do not: a parent sets the passcode on the phone and the Apple TV is locked without anyone touching it. The open-locks state lives in memory per device; the search toggle and lockout state live in this device's `UserDefaults`.
-- Group keys in identifiers never contain a stream URL (adr-0003).
+- Group keys in identifiers never contain a stream URL.
 - The catalogue's `Catalogue` gains a group policy and a locks-open flag, both defaulting so that with no rules every query equals today's result. Rules for sources that have not finished loading are neither applied nor orphans.
 - Hiding never renumbers. A locked channel's number is hidden while locks are closed. All channels can be hidden but not locked.
 - Duplicate rules, user groups and passcode records: the earliest `createdAt` wins; the rest show as orphans (rules) or are deleted (passcode records).
@@ -42,6 +40,6 @@ On Apple TV the user opens Groups from Settings, after the passcode prompt if an
 
 ## Risks / Trade-offs
 
-- [A synced passcode check value can be brute-forced from the store] → four digits stop casual reading only; the decision record says so.
+- [A synced passcode check value can be brute-forced from the store] → four digits stop casual reading only; the decision says so.
 - [M3U channel ids carry the stream link] → own groups cannot save M3U channels until the `m3u-playlists` follow-up ships.
-- Open question: should the passcode check value sync through iCloud (chosen here), or should each device keep its own passcode? The decision record this change waits on settles it; a passcode per device changes the passcode and sync requirements.
+- Open question: should the passcode check value sync through iCloud (chosen here), or should each device keep its own passcode? The decision this change waits on settles it; a passcode per device changes the passcode and sync requirements.

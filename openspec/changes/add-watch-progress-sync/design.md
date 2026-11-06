@@ -6,8 +6,6 @@ Boards: none, no UI. `add-movies-and-series-browsing` and `add-search` show Cont
 
 Design-system requirements that apply: none.
 
-Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free).
-
 ## Goals / Non-Goals
 
 **Goals:**
@@ -21,10 +19,10 @@ Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), a
 
 ## Decisions
 
-- Three SwiftData records in `Apps/Shared/Persistence`, each with `id: UUID = UUID()`: progress (title id, series id, source id, position, duration, updated-at), list entry (title id, source id, added-at), recent search (query, updated-at). Per adr-0002 every property is optional or defaulted, with no unique attribute, no relationships and no `URL` column. Additive, lightweight migration.
-- Value types and the pure rules live in AntennaCore (adr-0005). One `ActivityStore` on the main context maps records to them and serves the movies and search screens. Search injects a `RecentSearchesStore` protocol. Every read resolves duplicates and never writes. Every write resolves first and deletes the losers in the same save.
+- Three SwiftData records in `Apps/Shared/Persistence`, each with `id: UUID = UUID()`: progress (title id, series id, source id, position, duration, updated-at), list entry (title id, source id, added-at), recent search (query, updated-at). As CloudKit sync requires, every property is optional or defaulted, with no unique attribute, no relationships and no `URL` column. Additive, lightweight migration.
+- Value types and the pure rules live in AntennaCore. One `ActivityStore` on the main context maps records to them and serves the movies and search screens. Search injects a `RecentSearchesStore` protocol. Every read resolves duplicates and never writes. Every write resolves first and deletes the losers in the same save.
 - Keys: `xtream-vod-client` title ids plus source id. Ties: progress by latest updated-at, then higher position, then lower id string. List by earliest added-at, then lower id. Searches by fold (trim, collapse whitespace, case and diacritic insensitive). A local progress write sets updated-at to the later of now and the survivor's time plus one millisecond.
-- Secrets: no record or snapshot holds a credential, a URL or a path. Title ids carry the host only. Writes refuse title ids containing `://` or `@`. The store logs nothing (adr-0003).
+- Secrets: no record or snapshot holds a credential, a URL or a path. Title ids carry the host only. Writes refuse title ids containing `://` or `@`. The store logs nothing.
 - A failed save rolls back and the call returns normally. The next read does not show it.
 - Fetching one title's progress or list state uses a predicate fetch, not the whole table. Budgets: resolve over 5,000 progress rows under 500 ms in CI, a point read over 20,000 rows under 500 ms in CI, reading all progress under 250 ms in CI.
 - Migration reads `UserDefaults` key `search.recents` (`[String]`, newest first), spaces migrated timestamps one second apart, merges with the cap in one save, then removes the key. A missing key means nothing to migrate.

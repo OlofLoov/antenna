@@ -44,4 +44,4 @@ Out of scope:
 
 - New Movies and Series screens on every platform; the iPhone, iPad and Mac Live screen's sidebar and tab bar gain their entries.
 - Depends on: `xtream-vod-client`, `tvos-shell`, change `add-live-tv-on-iphone-ipad-mac`, change `add-search`, change `add-playback-engine` (seeking, reporting the position, leaving movie playback), change `add-watch-progress-sync` (storing and syncing watch progress and My list).
-- Blocked on: the decision record that change `add-watch-progress-sync` names for storing watch progress and My list.
+- Blocked on: the decision in change `add-watch-progress-sync` on how watch progress and My list are stored.
