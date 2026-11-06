@@ -21,9 +21,12 @@ struct GuideEngineBenchmarkTests {
         return result == KERN_SUCCESS ? info.phys_footprint : 0
     }
 
-    /// Loads a 96 MB guide with stray `&`, so the entity sanitizer copies it,
-    /// twice through one engine, so the first guide is held during the second
-    /// load. Prints the peak footprint above the baseline. Not a device figure.
+    /// Loads a 96 MB guide with stray `&`, so the entity sanitizer rewrites
+    /// it, twice through one engine, so the first guide is held during the
+    /// second load. Prints the peak footprint above the baseline. The stub
+    /// sends 1 MB every 20 ms, as a network would; sent all at once, the
+    /// body waits in URLSession's buffers and the figure measures the stub.
+    /// Not a device figure.
     @Test func memoryForTheTVOSLimit() async throws {
         var text = "<tv>\n"
         var index = 0
@@ -43,7 +46,7 @@ struct GuideEngineBenchmarkTests {
 
         let world = GuideWorld()
         let source = world.add(host: "bench-memory.epg")
-        GuideStubProtocol.register(host: "bench-memory.epg", body: body, chunkSize: 1_000_000)
+        GuideStubProtocol.register(host: "bench-memory.epg", body: body, chunkSize: 1_000_000, pace: .milliseconds(20))
         let engine = world.engine(limits: GuideLimits(compressedBytes: 32_000_000, unpackedBytes: 96_000_000))
         let tap = ProgressTap(engine.progressStream())
         let baseline = Self.footprint()
