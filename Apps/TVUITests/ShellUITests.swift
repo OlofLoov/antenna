@@ -223,9 +223,11 @@ extension ShellUITests {
         launchPlaying()
         press(.select)
         XCTAssertTrue(element("overlay.channels").waitForExistence(timeout: 10))
-        expectFocus("overlay.channel.0")
+        // A List row takes focus as its cell, which carries no identifier.
+        let rows = app.cells
+        expect(rows.element(boundBy: 0), "hasFocus == true")
         press(.down)
-        expectFocus("overlay.channel.1")
+        expect(rows.element(boundBy: 1), "hasFocus == true")
         press(.select)
         expectGone("overlay.channels")
         expectGone("shell.tab.live")
