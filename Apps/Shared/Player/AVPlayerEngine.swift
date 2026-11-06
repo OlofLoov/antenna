@@ -1,4 +1,5 @@
 import AVFoundation
+import AVKit
 import AntennaCore
 import Foundation
 import os
@@ -13,41 +14,58 @@ import os
 @MainActor
 final class AVPlayerEngine: PlaybackEngine {
     /// What is open now.
-    private struct Stream: Sendable {
+    struct Stream: Sendable {
         var url: URL
         var options: PlaybackOptions
         var isLive: Bool
-        var acceptsRanges: Bool
+        /// False for a film whose server cannot skip.
+        var canSeek: Bool
     }
 
-    private let player = AVPlayer()
-    private let session: URLSession
-    private let sleep: @Sendable (Duration) async throws -> Void
-    private let log: @Sendable (String) -> Void
+    let player = AVPlayer()
+    let session: URLSession
+    let sleep: @Sendable (Duration) async throws -> Void
+    let log: @Sendable (String) -> Void
 
-    private let stateCast = Broadcast(PlaybackState.idle)
-    private let presentationCast = Broadcast(PresentationInfo?.none)
-    private let tracksCast = Broadcast(TrackList.empty)
-    private let positionCast = Broadcast(PlaybackPosition.zero)
-    private let cuesCast = Broadcast([SubtitleCue]())
+    let stateCast = Broadcast(PlaybackState.idle)
+    let presentationCast = Broadcast(PresentationInfo?.none)
+    let tracksCast = Broadcast(TrackList.empty)
+    let positionCast = Broadcast(PlaybackPosition.zero)
+    let cuesCast = Broadcast([SubtitleCue]())
 
-    private var stream: Stream?
-    private var generation = 0
-    private var wantsPlay = false
-    private var hasPlayed = false
-    private var budget = ReconnectBudget()
-    private var reconnect: Task<Void, Never>?
-    private var opening: Task<Stream, any Error>?
-    private var stallWatch: Task<Void, Never>?
-    private var itemObservation: NSKeyValueObservation?
-    private var itemTokens: [any NSObjectProtocol] = []
-    private var playerObservation: NSKeyValueObservation?
-    private var firstFrameWatch: Task<Void, Never>?
+    /// The last address asked for, kept to start it again after a pause
+    /// during loading or reconnecting, or after a film ended.
+    var request: (url: URL, options: PlaybackOptions)?
+    var stream: Stream?
+    var generation = 0
+    var wantsPlay = false
+    var hasPlayed = false
+    /// Play starts the stream again instead of resuming it.
+    var reopensOnPlay = false
+    var budget = ReconnectBudget()
+    var reconnect: Task<Void, Never>?
+    var opening: Task<Stream, any Error>?
+    var stallWatch: Task<Void, Never>?
+    var firstFrameWatch: Task<Void, Never>?
+    var itemObservation: NSKeyValueObservation?
+    var itemTokens: [any NSObjectProtocol] = []
+    var playerObservation: NSKeyValueObservation?
+    var timeObserver: Any?
+    var pictureInPicture: AVPictureInPictureController?
 
     /// Data but no picture for this long fails the stream as unreadable.
     static let firstFrameTimeout = Duration.seconds(15)
 
-    private nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
+    /// How long Apple's player takes to close the old connection after its
+    /// item is removed. It closes it from another process, so the engine
+    /// waits this long before it opens the next one. Measured at under 100 ms
+    /// on a Mac.
+    static let releaseGrace = Duration.milliseconds(200)
+
+    /// A skip lands within this of its target.
+    static let seekTolerance = CMTime(value: 1, timescale: 2)
+
+    nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
     /// `sleep` waits between retries and times the stall budget; tests pass
     /// a faster one. `log` gets every line the engine logs, each made only of
@@ -67,6 +85,9 @@ final class AVPlayerEngine: PlaybackEngine {
         playerObservation = player.observe(\.timeControlStatus) { [weak self] _, _ in
             Task { @MainActor in self?.timeControlChanged() }
         }
+        timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 2), queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.publishPosition(onlyWhilePlaying: true) }
+        }
     }
 
     /// The Apple player engine behind `engine`: the engine itself, or the
@@ -75,31 +96,50 @@ final class AVPlayerEngine: PlaybackEngine {
         (engine as? AVPlayerEngine) ?? ((engine as? RoutedEngine)?.system as? AVPlayerEngine)
     }
 
-    /// Draws this engine's picture into `layer`.
+    /// Draws this engine's picture into `layer`, and on iPhone, iPad and
+    /// Apple TV lets it continue in Picture in Picture.
     func attach(to layer: AVPlayerLayer) {
         if layer.player !== player { layer.player = player }
+        #if os(iOS) || os(tvOS)
+            guard AVPictureInPictureController.isPictureInPictureSupported(), pictureInPicture?.playerLayer !== layer else { return }
+            let controller = AVPictureInPictureController(playerLayer: layer)
+            #if os(iOS)
+                controller?.canStartPictureInPictureAutomaticallyFromInline = true
+            #endif
+            controller?.requiresLinearPlayback = stream?.isLive ?? true
+            pictureInPicture = controller
+        #endif
+    }
+
+    /// True while the picture plays, or can go on playing, in the Picture in
+    /// Picture window once the app leaves the screen.
+    var continuesInPictureInPicture: Bool {
+        guard let pictureInPicture else { return false }
+        return pictureInPicture.isPictureInPictureActive || pictureInPicture.isPictureInPicturePossible
     }
 
     var state: PlaybackState { stateCast.value }
 
-    var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
+    var capabilities: EngineCapabilities {
+        #if os(iOS) || os(tvOS)
+            EngineCapabilities(supportsPictureInPicture: AVPictureInPictureController.isPictureInPictureSupported())
+        #else
+            EngineCapabilities(supportsPictureInPicture: false)
+        #endif
+    }
 
     // MARK: Load and stop
-
-    /// How long Apple's player takes to close the old connection after its
-    /// item is removed. It closes it from another process, so the engine
-    /// waits this long before it opens the next one. Measured at under 100 ms
-    /// on a Mac.
-    static let releaseGrace = Duration.milliseconds(200)
 
     func load(_ url: URL, options: PlaybackOptions) async throws {
         generation += 1
         let mine = generation
         let hadItem = player.currentItem != nil
         closeStream()
+        request = (url, options)
         stream = nil
         wantsPlay = false
         hasPlayed = false
+        reopensOnPlay = false
         budget = ReconnectBudget()
         set(.loading)
         log("load \(redacted(url))")
@@ -114,7 +154,7 @@ final class AVPlayerEngine: PlaybackEngine {
             if hadItem { try await Task.sleep(for: Self.releaseGrace) }
             return try await RetryPolicy.tune.run(sleep: sleep) { [weak self] in
                 guard let self else { throw CancellationError() }
-                return try await self.open(url, options: options, generation: mine)
+                return try await self.open(url, options: options, startAt: options.startPosition, generation: mine)
             }
         }
         opening = task
@@ -139,9 +179,11 @@ final class AVPlayerEngine: PlaybackEngine {
     func stop() async {
         generation += 1
         closeStream()
+        request = nil
         stream = nil
         wantsPlay = false
         hasPlayed = false
+        reopensOnPlay = false
         set(.idle)
     }
 
@@ -152,34 +194,71 @@ final class AVPlayerEngine: PlaybackEngine {
         case .loading:
             wantsPlay = true
             if stream != nil { startPlayback() }
+        case .paused where reopensOnPlay, .ended:
+            await startAgain()
         case .paused:
             wantsPlay = true
+            if let stream, stream.isLive, let edge = player.currentItem?.seekableTimeRanges.last?.timeRangeValue.end {
+                // Live TV continues from what is on air now.
+                await player.currentItem?.seek(to: edge, toleranceBefore: .positiveInfinity, toleranceAfter: .zero)
+            }
             player.play()
-        case .idle, .playing, .buffering, .reconnecting, .ended, .failed:
+        case .idle, .playing, .buffering, .reconnecting, .failed:
             return
         }
     }
 
     func pause() async {
         switch state {
-        case .loading:
+        case .loading, .reconnecting:
+            // Stops the attempts; play starts the stream again.
+            generation += 1
+            closeStream()
+            stream = nil
             wantsPlay = false
-            player.pause()
+            reopensOnPlay = true
+            set(.paused)
         case .playing, .buffering:
             wantsPlay = false
             stallWatch?.cancel()
             player.pause()
+            reopensOnPlay = stream.map { !$0.isLive && !$0.canSeek } ?? false
             set(.paused)
-        case .idle, .paused, .reconnecting, .ended, .failed:
+            publishPosition(onlyWhilePlaying: false)
+        case .idle, .paused, .ended, .failed:
             return
         }
     }
 
-    // MARK: Seek and tracks
+    /// Loads the last address again from its start and plays it.
+    func startAgain() async {
+        guard let request else { return }
+        var options = request.options
+        if state == .ended { options.startPosition = nil }
+        do {
+            try await load(request.url, options: options)
+        } catch {
+            return
+        }
+        await play()
+    }
+
+    // MARK: Seek
 
     func seek(to time: Duration) async throws {
-        throw SeekRefusal.notSeekable
+        guard let stream, let item = player.currentItem else { throw SeekRefusal.notSeekable }
+        guard !stream.isLive else { throw SeekRefusal.live }
+        guard stream.canSeek, !item.seekableTimeRanges.isEmpty else { throw SeekRefusal.notSeekable }
+        let target = CMTime(seconds: time.seconds, preferredTimescale: 600)
+        if item.duration.isNumeric, target >= item.duration {
+            finish()
+            return
+        }
+        await item.seek(to: target, toleranceBefore: Self.seekTolerance, toleranceAfter: Self.seekTolerance)
+        publishPosition(onlyWhilePlaying: false)
     }
+
+    // MARK: Tracks
 
     func selectAudio(_ id: MediaTrack.ID) async {}
     func selectSubtitle(_ id: MediaTrack.ID?) async {}
@@ -191,216 +270,11 @@ final class AVPlayerEngine: PlaybackEngine {
     func tracks() async -> AsyncStream<TrackList> { tracksCast.stream() }
     func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
     func subtitleCues() async -> AsyncStream<[SubtitleCue]> { cuesCast.stream() }
-
 }
 
-extension AVPlayerEngine {
-    // MARK: Opening
-
-    /// Probes `url`, puts a new item on the player and waits until it is
-    /// ready. Throws a `PlaybackFailure`, or `CancellationError` once a newer
-    /// load or stop took over.
-    private func open(_ url: URL, options: PlaybackOptions, generation mine: Int) async throws -> Stream {
-        removeItem()
-        var probe: StreamProbe?
-        if url.scheme == "http" || url.scheme == "https" {
-            probe = try await StreamProbe.run(url, session: session)
-        }
-        guard generation == mine else { throw CancellationError() }
-        // A web page, or raw video at an HLS address, is not a stream Apple's player can read.
-        if probe?.sniff == .html { throw PlaybackFailure.unreadable }
-        if probe?.sniff == .mpegTS, url.pathExtension.lowercased() == "m3u8" { throw PlaybackFailure.unreadable }
-        var assetOptions: [String: Any] = [AVURLAssetHTTPCookiesKey: [HTTPCookie]()]
-        if probe?.sniff == .hls, url.pathExtension.lowercased() != "m3u8" {
-            assetOptions[AVURLAssetOverrideMIMETypeKey] = "application/vnd.apple.mpegurl"
-        }
-        let item = AVPlayerItem(asset: AVURLAsset(url: url, options: assetOptions))
-        item.preferredForwardBufferDuration = 8
-        observe(item)
-        player.replaceCurrentItem(with: item)
-        while item.status != .readyToPlay {
-            if item.status == .failed { throw Self.failure(from: item.error, host: url.host()) }
-            try await Task.sleep(for: .milliseconds(50))
-            guard generation == mine else { throw CancellationError() }
-        }
-        let isLive = options.isLive ?? item.duration.isIndefinite
-        return Stream(url: url, options: options, isLive: isLive, acceptsRanges: probe?.acceptsRanges ?? true)
-    }
-
-    private func observe(_ item: AVPlayerItem) {
-        let id = ObjectIdentifier(item)
-        itemObservation = item.observe(\.status) { [weak self] _, _ in
-            Task { @MainActor in self?.itemStatusChanged(id) }
-        }
-        let host = (item.asset as? AVURLAsset)?.url.host()
-        let failed: @Sendable (Notification) -> Void = { [weak self] note in
-            let failure = Self.failure(from: note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? any Error, host: host)
-            MainActor.assumeIsolated { self?.dropped(failure) }
-        }
-        let center = NotificationCenter.default
-        itemTokens = [
-            center.addObserver(forName: AVPlayerItem.failedToPlayToEndTimeNotification, object: item, queue: .main, using: failed)
-        ]
-    }
-
-    /// Closes the connection: cancels any reconnect and takes the item off the player.
-    private func closeStream() {
-        opening?.cancel()
-        opening = nil
-        reconnect?.cancel()
-        reconnect = nil
-        stallWatch?.cancel()
-        stallWatch = nil
-        firstFrameWatch?.cancel()
-        firstFrameWatch = nil
-        removeItem()
-        presentationCast.send(nil)
-        tracksCast.send(.empty)
-        positionCast.send(.zero)
-        cuesCast.send([])
-    }
-
-    private func removeItem() {
-        itemObservation?.invalidate()
-        itemObservation = nil
-        itemTokens.forEach(NotificationCenter.default.removeObserver)
-        itemTokens = []
-        player.pause()
-        player.replaceCurrentItem(with: nil)
-    }
-
-    // MARK: Observing
-
-    private func timeControlChanged() {
-        guard player.currentItem != nil, stream != nil else { return }
-        switch player.timeControlStatus {
-        case .playing:
-            stallWatch?.cancel()
-            stallWatch = nil
-            firstFrameWatch?.cancel()
-            firstFrameWatch = nil
-            switch state {
-            case .loading, .buffering, .reconnecting, .paused:
-                wantsPlay = true
-                hasPlayed = true
-                budget.playing(at: .now)
-                set(.playing)
-            case .idle, .playing, .ended, .failed:
-                break
-            }
-        case .waitingToPlayAtSpecifiedRate:
-            guard state == .playing else { return }
-            set(.buffering)
-            startStallWatch()
-        case .paused:
-            // Picture in Picture and the system can pause the player directly.
-            guard state == .playing || state == .buffering, player.currentItem?.status == .readyToPlay else { return }
-            wantsPlay = false
-            stallWatch?.cancel()
-            set(.paused)
-        @unknown default:
-            break
-        }
-    }
-
-    private func itemStatusChanged(_ id: ObjectIdentifier) {
-        guard let item = player.currentItem, ObjectIdentifier(item) == id, item.status == .failed, stream != nil else { return }
-        dropped(Self.failure(from: item.error, host: stream?.url.host()))
-    }
-
-    private func startStallWatch() {
-        stallWatch?.cancel()
-        let mine = generation
-        stallWatch = Task { [weak self, sleep] in
-            do {
-                try await sleep(RetryPolicy.stallBudget)
-            } catch {
-                return
-            }
-            guard let self, !Task.isCancelled, self.generation == mine, self.state == .buffering else { return }
-            self.dropped(.stoppedSendingData)
-        }
-    }
-
-    // MARK: Reconnecting
-
-    /// The stream was lost after it opened. Reconnects with numbered
-    /// attempts, or fails with `failure` when it is not retried or the
-    /// attempts ran out.
-    private func dropped(_ failure: PlaybackFailure) {
-        guard let stream, reconnect == nil else { return }
-        guard hasPlayed, let next = budget.dropped(failure, at: .now) else {
-            log("failed \(redacted(stream.url)) \(failure)")
-            closeStream()
-            set(.failed(failure))
-            return
-        }
-        log("reconnect \(next.attempt)/\(budget.maxAttempts) \(redacted(stream.url)) \(failure)")
-        let resumeAt = stream.isLive ? nil : player.currentTime()
-        stallWatch?.cancel()
-        set(.reconnecting(attempt: next.attempt, of: budget.maxAttempts))
-        let mine = generation
-        reconnect = Task { [weak self, sleep] in
-            do {
-                try await sleep(next.delay)
-            } catch {
-                return
-            }
-            guard let self, !Task.isCancelled, self.generation == mine else { return }
-            await self.reopen(stream, at: resumeAt, generation: mine)
-        }
-    }
-
-    private func reopen(_ previous: Stream, at time: CMTime?, generation mine: Int) async {
-        reconnect = nil
-        do {
-            let opened = try await open(previous.url, options: previous.options, generation: mine)
-            guard generation == mine else { return }
-            stream = opened
-            if let time, !opened.isLive, opened.acceptsRanges {
-                await player.currentItem?.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
-            }
-            guard generation == mine else { return }
-            player.play()
-        } catch let failure as PlaybackFailure {
-            guard generation == mine else { return }
-            dropped(failure)
-        } catch {
-            return
-        }
-    }
-
-    // MARK: Reasons
-
-    private func set(_ new: PlaybackState) {
-        stateCast.sendIfChanged(new)
-    }
-
-    /// The reason for an error Apple's player reports. The error itself,
-    /// whose user info can hold the address, is not kept.
-    nonisolated static func failure(from error: (any Error)?, host: String?) -> PlaybackFailure {
-        guard let error else { return .unreadable }
-        return PlaybackFailure.fromPlayerError(error, host: host)
-    }
-
-    // MARK: First frame
-
-    /// Plays the opened stream and fails it as unreadable when no picture
-    /// or sound starts within `firstFrameTimeout`.
-    private func startPlayback() {
-        player.play()
-        guard firstFrameWatch == nil, state == .loading else { return }
-        let mine = generation
-        firstFrameWatch = Task { [weak self] in
-            do {
-                try await Task.sleep(for: Self.firstFrameTimeout)
-            } catch {
-                return
-            }
-            guard let self, !Task.isCancelled, self.generation == mine, self.state == .loading, let stream = self.stream else { return }
-            self.log("failed \(redacted(stream.url)) \(PlaybackFailure.unreadable)")
-            self.closeStream()
-            self.set(.failed(.unreadable))
-        }
+extension Duration {
+    /// This duration in seconds, with its fraction.
+    var seconds: Double {
+        Double(components.seconds) + Double(components.attoseconds) / 1e18
     }
 }

@@ -51,14 +51,14 @@ check_except() {
 word='(^|[^A-Za-z0-9_])'
 end='([^A-Za-z0-9_]|$)'
 
-check_except "conventions: Apple's player types only in the engine" \
+check_except "conventions: Apple's player types only in the engine's files" \
   "${word}(AVPlayer|AVQueuePlayer|AVPlayerItem|AVPlayerViewController|VideoPlayer)${end}" \
-  'Apps/Shared/Player/AVPlayerEngine\.swift' \
+  'Apps/Shared/Player/AVPlayerEngine(\+[A-Za-z]+)?\.swift' \
   Apps
 
 check_except "conventions: AVPlayerLayer only in the engine and the player surface" \
   "${word}AVPlayerLayer${end}" \
-  'Apps/Shared/Player/(AVPlayerEngine|PlayerSurfaceView)\.swift' \
+  'Apps/Shared/Player/(AVPlayerEngine(\+[A-Za-z]+)?|PlayerSurfaceView)\.swift' \
   Apps
 
 exit "$status"
