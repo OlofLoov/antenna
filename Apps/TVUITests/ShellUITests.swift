@@ -166,6 +166,7 @@ extension ShellUITests {
 
 extension ShellUITests {
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/stand-in-screens
     func testMenuFromTabReachesBar() {
         launchPlaying()
         press(.menu)
@@ -186,6 +187,8 @@ extension ShellUITests {
     }
 
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/stand-in-screens
+    // tvos-shell/the-tabs-in-order
     func testMenuFromGuideShowsBar() {
         launchPlaying()
         press(.menu)
@@ -219,6 +222,7 @@ extension ShellUITests {
     }
 
     // tvos-shell/other-screens-can-send-the-user-somewhere
+    // tvos-shell/channel-list-over-the-picture
     func testPickerTuneShowsLive() {
         launchPlaying()
         press(.select)
