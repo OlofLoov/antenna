@@ -4,22 +4,26 @@
     import SwiftUI
     import UIKit
 
-    /// The picture of a `SystemPlaybackEngine`, edge to edge with no
-    /// controls. Any other engine shows the Ground colour.
-    struct VideoSurface: UIViewRepresentable {
+    /// The picture of the engine's Apple player, edge to edge with no
+    /// controls. An engine without one shows the Ground color.
+    struct PlayerSurfaceView: UIViewRepresentable {
         let engine: any PlaybackEngine
 
         func makeUIView(context: Context) -> PlayerLayerView {
             let view = PlayerLayerView()
             view.backgroundColor = UIColor(Palette.ground)
             view.playerLayer?.videoGravity = .resizeAspect
-            view.playerLayer?.player = (engine as? SystemPlaybackEngine)?.player
+            attach(view)
             return view
         }
 
         func updateUIView(_ view: PlayerLayerView, context: Context) {
-            let player = (engine as? SystemPlaybackEngine)?.player
-            if view.playerLayer?.player !== player { view.playerLayer?.player = player }
+            attach(view)
+        }
+
+        private func attach(_ view: PlayerLayerView) {
+            guard let layer = view.playerLayer else { return }
+            AVPlayerEngine.resolve(engine)?.attach(to: layer)
         }
 
         final class PlayerLayerView: UIView {
