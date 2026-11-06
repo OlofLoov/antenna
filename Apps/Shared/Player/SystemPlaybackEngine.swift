@@ -3,8 +3,8 @@
     import AntennaCore
     import Foundation
 
-    /// The AVPlayer engine behind `PlaybackEngine`. It stands in for spec
-    /// 0017's engines: until then both `EngineRouter` routes, demuxer
+    /// The AVPlayer engine behind `PlaybackEngine`. It stands in for the
+    /// engines of the playback-engine change: until then both `EngineRouter` routes, demuxer
     /// included, play through `AVPlayer`, as `PlayerView` does today.
     @MainActor
     final class SystemPlaybackEngine: PlaybackEngine {

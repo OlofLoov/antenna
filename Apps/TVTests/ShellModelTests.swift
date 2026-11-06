@@ -4,7 +4,7 @@ import Testing
 
 @testable import AntennaTV
 
-/// Spec 0015, the shell's launch tune and pause rules, against a scripted
+/// The tvos-shell capability, the shell's launch tune and pause rules, against a scripted
 /// loader, a recording engine and a clock advanced by hand.
 @MainActor
 @Suite(.timeLimit(.minutes(1))) struct ShellModelTests {
@@ -203,7 +203,7 @@ extension ShellModelTests {
 // MARK: Edge cases
 
 extension ShellModelTests {
-    @Test("removing every source stops the video and shows the empty screen")
+    @Test("tvos-shell/sources-change-while-the-app-runs removing every source stops the video and shows the empty screen")
     func allSourcesRemoved() async {
         await launch()
         loader.finish(sourceA.id, with: [.fixture("a1")])
@@ -215,7 +215,7 @@ extension ShellModelTests {
         await wait({ engine.stops == 1 }, "the engine stops")
     }
 
-    @Test("coming back to the foreground plays the same channel without a reload")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch coming back to the foreground plays the same channel without a reload")
     func foreground() async {
         await launch()
         loader.finish(sourceA.id, with: [.fixture("a1")])
@@ -227,14 +227,14 @@ extension ShellModelTests {
         #expect(engine.loaded.count == 1)
     }
 
-    @Test("a channel whose id holds a link is not remembered")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch a channel whose id holds a link is not remembered")
     func linkIDsNotStored() {
         let channel = Channel(
             id: "news#http://host/a.ts", name: "News", streamURL: URL(fileURLWithPath: "/a.ts"), sourceID: UUID())
         #expect(LastChannelKey(channel) == nil)
     }
 
-    @Test("an unreadable stored value reads as nothing")
+    @Test("tvos-shell/back-to-the-last-channel-on-launch an unreadable stored value reads as nothing")
     func unreadable() {
         defaults.set(Data("not json".utf8), forKey: LastChannelStore.defaultsKey)
         #expect(store.read() == nil)

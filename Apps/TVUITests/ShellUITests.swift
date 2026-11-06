@@ -1,6 +1,6 @@
 import XCTest
 
-/// Spec 0015 on Apple TV. Each test launches the app with
+/// The tvos-shell capability on Apple TV. Each test launches the app with
 /// `-ui-testing-shell <scenario>` (`UITestingShell`): two scripted sources on
 /// an in-memory store and a recording engine whose state the
 /// `shell.debug.engine` probe reads as `"<state> loads=<n> file=<name>"`.
@@ -166,6 +166,7 @@ extension ShellUITests {
 
 extension ShellUITests {
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/stand-in-screens
     func testMenuFromTabReachesBar() {
         launchPlaying()
         press(.menu)
@@ -186,6 +187,8 @@ extension ShellUITests {
     }
 
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/stand-in-screens
+    // tvos-shell/the-tabs-in-order
     func testMenuFromGuideShowsBar() {
         launchPlaying()
         press(.menu)
@@ -219,6 +222,7 @@ extension ShellUITests {
     }
 
     // tvos-shell/other-screens-can-send-the-user-somewhere
+    // tvos-shell/channel-list-over-the-picture
     func testPickerTuneShowsLive() {
         launchPlaying()
         press(.select)

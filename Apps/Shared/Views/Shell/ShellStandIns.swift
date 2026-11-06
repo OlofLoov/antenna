@@ -3,8 +3,9 @@
     import SwiftUI
 
     // Temporary screens for specs not built yet. Each goes when its spec
-    // ships: the Guide with 0009, Movies and Series with 0011, Search with
-    // 0012, the channel picker with 0007's overlay.
+    // ships: the Guide with the guide grid, Movies and Series with their
+    // browsing screens, Search with search, the channel picker with the
+    // channel overlay.
 
     /// One focusable line. Holds focus without the Focus token, like the
     /// loading screen's holder.
@@ -22,7 +23,7 @@
         }
     }
 
-    /// Stands in for the 0009 guide grid. The picture sits in the board's
+    /// Stands in for the guide grid. The picture sits in the board's
     /// 480 by 270 box (drawn by `ShellView`); the clock is the guide's.
     struct GuideStandIn: View {
         let date: Date
@@ -67,7 +68,7 @@
         }
     }
 
-    /// Stands in for the 0007 channel overlay so the user can change
+    /// Stands in for the channel overlay so the user can change
     /// channel: a list of loaded channels on the overlay scrim.
     struct ChannelPicker: View {
         let channels: [Channel]

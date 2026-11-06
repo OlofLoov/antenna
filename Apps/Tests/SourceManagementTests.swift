@@ -12,14 +12,14 @@ import Testing
 
 @testable import Antenna
 
-/// Spec 0004. Records live in an in-memory container with CloudKit off.
+/// The source-management capability. Records live in an in-memory container with CloudKit off.
 /// Credentials go to the simulator Keychain under a service of their own per
 /// test, except source-management/xtream-credentials-go-to-the-keychain-only, which checks the production service and removes its item.
 @MainActor
 @Suite struct SourceManagementTests {
     let container: ModelContainer
     let store = CredentialStore(service: "se.codecrave.antenna.tests.\(UUID().uuidString)")
-    /// For criteria that need a credential to exist but assert nothing about the Keychain.
+    /// For tests that need a credential to exist but assert nothing about the Keychain.
     let held = HeldCredentialStore()
 
     init() throws {
@@ -326,7 +326,7 @@ import Testing
 /// source-management edge cases fixed after the first slice. An extension so the suite
 /// stays under SwiftLint's type body length.
 extension SourceManagementTests {
-    // MARK: Edge cases fixed after the first 0004 slice (no criterion of their own)
+    // MARK: Edge cases fixed after the first slice
 
     @Test("source-management/channels-from-all-sources-are-combined: a repeated Xtream category id loads instead of crashing")
     func repeatedCategoryID() async throws {

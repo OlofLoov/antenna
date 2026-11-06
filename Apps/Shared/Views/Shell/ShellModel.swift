@@ -22,7 +22,7 @@
         case tab(ShellTab)
         case settings
         case content
-        /// A row of the channel picker that stands in for 0007's overlay.
+        /// A row of the channel picker that stands in for the channel overlay.
         case picker(Int)
     }
 
@@ -70,7 +70,7 @@
         case playing, loading, empty
     }
 
-    /// State and rules of the Apple TV shell (spec 0015): the open tab, the
+    /// State and rules of the Apple TV shell (tvos-shell capability): the open tab, the
     /// bar, the sources as they load, the channel tuned at launch and the
     /// pause behind Movies, Series and Search.
     @MainActor @Observable
@@ -152,7 +152,7 @@
             let list = all.filter { seen.insert($0.id).inserted }
             offersMovies = list.contains { $0.kind == .xtream }
             if list.isEmpty, tuned != nil {
-                // With every source gone nothing keeps playing (0006 stand-in).
+                // With every source gone nothing keeps playing (stand-in behavior).
                 tuned = nil
                 Task { await engine.stop() }
             }
@@ -439,7 +439,7 @@
         /// The navigator other screens use; `ShellView` provides it.
         var navigator: ShellNavigator { .forwarding(to: self) }
 
-        // MARK: Channel picker (stand-in for spec 0007)
+        // MARK: Channel picker (stand-in for the channel overlay)
 
         func openPicker() {
             pickerOpen = true

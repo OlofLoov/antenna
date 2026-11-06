@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// What Live shows on Apple TV before a channel plays (spec 0015;
+/// What Live shows on Apple TV before a channel plays (tvos-shell capability;
 /// `TV-Shell-Loading`, `TV-Shell-Empty` and their `-Menu` boards). Compiles
 /// on every platform so the snapshot job renders its previews.
 enum ShellLoading {

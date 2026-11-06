@@ -1,6 +1,6 @@
 import XCTest
 
-/// Spec 0005, the Favorites tab. Each test launches the app on an in-memory
+/// The favorites capability, the Favorites tab. Each test launches the app on an in-memory
 /// store seeded through the `-ui-testing-favorites` launch argument
 /// (`UITestingStore`), so nothing reaches iCloud.
 @MainActor
@@ -40,7 +40,7 @@ final class FavoritesUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-favorites", sortOrders.map(String.init).joined(separator: ",")]
         app.launch()
 
-        // The tab bar belongs to the shell, which spec 0005 does not cover, so
+        // The tab bar belongs to the shell, which the favorites capability does not cover, so
         // its button has no identifier and is found by its label.
         let tab = app.tabBars.buttons["Favorites"]
         let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Favorites"].firstMatch
