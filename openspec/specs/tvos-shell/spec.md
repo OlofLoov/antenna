@@ -6,12 +6,22 @@ The frame every other Apple TV screen sits in. Opening the app goes straight to 
 ## Requirements
 
 ### Requirement: The tabs, in order
-The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear only when a source offers them.
+The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear only when the user has an Xtream source, whether or not its provider offers movies or series.
 
 #### Scenario: Sources with movies
-- **GIVEN** the user has sources and at least one offers movies
+- **GIVEN** the user has sources and at least one is an Xtream source
 - **WHEN** the tab bar shows
 - **THEN** it holds the mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, in that order, with exactly one tab marked current
+
+#### Scenario: No Xtream source
+- **GIVEN** every source is an M3U playlist or a Stalker portal
+- **WHEN** the tab bar shows
+- **THEN** it holds the mark, Live, Guide, Search, the Settings button and the clock, with no Movies or Series
+
+#### Scenario: Bar over the Guide
+- **GIVEN** the Guide is open
+- **WHEN** the tab bar shows over it
+- **THEN** the bar leaves the clock's place empty, because the Guide shows its own clock
 
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
@@ -19,7 +29,7 @@ The system SHALL show a tab bar holding, from left to right, the Antenna mark, L
 - **THEN** it is read as a group of tabs, and the clock and the mark as plain text
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the channel last watched on this Apple TV full screen at launch once its source has loaded. If it no longer exists, or its source has not loaded within 10 seconds, the first channel of the first source to load SHALL play instead.
+The system SHALL play the channel last watched on this Apple TV full screen at launch once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept on this Apple TV only, never synced.
 
 #### Scenario: Last channel available
 - **GIVEN** the user watched a channel on this Apple TV before
@@ -34,7 +44,32 @@ The system SHALL play the channel last watched on this Apple TV full screen at l
 #### Scenario: Later sources and coming back
 - **GIVEN** a channel is already playing
 - **WHEN** another source finishes loading, or the app returns from the background
-- **THEN** the channel does not change
+- **THEN** the channel does not change and is not loaded again
+
+#### Scenario: A source with no channels
+- **GIVEN** nothing remembered, and a source that finishes first with no channels
+- **WHEN** a second source finishes with channels
+- **THEN** the second source's first channel plays
+
+#### Scenario: Remembered source later than 10 seconds
+- **GIVEN** a remembered channel whose source finishes after 10 seconds, and no source with channels before it
+- **WHEN** that source finishes
+- **THEN** its first channel plays, not the remembered one
+
+#### Scenario: What is remembered
+- **GIVEN** a channel the user tunes
+- **WHEN** its stream loads
+- **THEN** it becomes the last channel; a stream that fails to load leaves the last channel as it was
+
+#### Scenario: Last watched an M3U channel with a stream link in its id
+- **GIVEN** the last channel watched on this Apple TV came from an M3U playlist, whose ids hold the stream link
+- **WHEN** the user opens Antenna
+- **THEN** that channel was not remembered, and the first channel of the first source to finish with channels plays instead
+
+#### Scenario: Unreadable last channel
+- **GIVEN** the stored last channel cannot be read
+- **WHEN** the user opens Antenna
+- **THEN** it counts as nothing remembered
 
 ### Requirement: Menu shows the tab bar over the picture
 The system SHALL dim the picture and show the tab bar with Live highlighted when the user presses Menu over a full-screen channel with nothing else on screen, keeping the video playing, or failed.
@@ -57,6 +92,11 @@ The system SHALL hide the tab bar and carry on with the same stream full screen 
 - **WHEN** the user presses Menu, swipes down, or selects Live
 - **THEN** the tab bar goes away and the same stream carries on full screen
 
+#### Scenario: Swipe down over Movies, Series or Search
+- **GIVEN** Movies, Series or Search is open with the highlight in the bar
+- **WHEN** the user swipes down
+- **THEN** the bar stays and the highlight moves into the tab's content
+
 #### Scenario: Failed stream
 - **GIVEN** the stream had failed
 - **WHEN** the user selects Live
@@ -69,6 +109,26 @@ The system SHALL pause the video after 30 seconds with Movies, Series or Search 
 - **GIVEN** Movies, Series or Search is open and a channel is playing behind it
 - **WHEN** 30 seconds pass without the user going back to Live or Guide
 - **THEN** the video pauses, and resumes without restarting the channel when the user goes back to Live or Guide
+
+#### Scenario: Moving between Movies, Series and Search
+- **GIVEN** Movies was opened from Live less than 30 seconds ago
+- **WHEN** the user moves on to Search or Series
+- **THEN** the 30 seconds keep counting from when Movies opened
+
+#### Scenario: Back before 30 seconds
+- **GIVEN** Movies, Series or Search has been open less than 30 seconds
+- **WHEN** the user goes back to Live or Guide
+- **THEN** the video was never paused and is not played again
+
+#### Scenario: Video already stopped
+- **GIVEN** the video is paused, failed or idle when the 30 seconds pass
+- **WHEN** the user later goes back to Live or Guide
+- **THEN** the shell neither pauses nor resumes it
+
+#### Scenario: Back from the background while paused
+- **GIVEN** the shell paused the video behind Movies, Series or Search
+- **WHEN** the app returns from the background
+- **THEN** the video stays paused until the user goes back to Live or Guide
 
 ### Requirement: Menu from the top of a tab reaches the tab bar
 The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Menu at the top level of a tab or swipes up from the topmost item on Movies, Series or Search.
@@ -87,20 +147,30 @@ The system SHALL open Live full screen when the user presses Menu with the highl
 - **THEN** Live is open full screen, and a video paused behind the tab resumes without restarting
 
 ### Requirement: A loading screen at launch
-The system SHALL show a loading screen listing each source by name with its progress while no source has finished loading, and Menu SHALL still reach the tab bar and Settings.
+The system SHALL show a loading screen on Live while no channel plays and at least one source is still loading, and before the sources are read at launch. It SHALL list each source by name with "Loading channels", its channel count, "Offline", "Could not load channels" or "Waiting for its login to sync from iCloud". Menu SHALL still reach the tab bar and Settings.
 
 #### Scenario: Nothing loaded yet
 - **GIVEN** the user has sources and none has finished loading
 - **WHEN** they open Antenna
 - **THEN** a loading screen lists each source by name with how far it has got, and Menu reaches the tab bar and Settings
 
+#### Scenario: One source done, one still loading
+- **GIVEN** one source finished with no channels and another is still loading
+- **WHEN** Live is shown
+- **THEN** the loading screen stays, the finished source reads "0 channels" and the other "Loading channels"
+
+#### Scenario: Before the sources are read
+- **GIVEN** the app has just launched and has not read the stored sources yet
+- **WHEN** Live is shown
+- **THEN** the loading screen shows, never the empty screen
+
 #### Scenario: Late password
 - **GIVEN** a source whose password or record arrives after launch
 - **WHEN** the app returns to the foreground or the user presses Retry
-- **THEN** that source loads, and the loading screen never appears while a channel plays
+- **THEN** a source waiting for its password loads once the password is on this Apple TV, and the loading screen never appears while a channel plays
 
 ### Requirement: An empty screen with Retry
-The system SHALL show a "No channels yet" screen naming each source that added nothing and why, once every source has finished, failed or is waiting for its password without any channels. Retry SHALL load those sources again behind the loading screen.
+The system SHALL show a "No channels yet" screen naming each source that added nothing and why ("no channels", "offline", "could not load its channels" or "waiting for its login to sync from iCloud"), once no source is loading and no channel plays. Retry SHALL load those sources again behind the loading screen and give the last channel another 10 seconds.
 
 #### Scenario: Nothing to play
 - **GIVEN** every source has finished, failed or is waiting for its password, and none has any channels
@@ -110,7 +180,17 @@ The system SHALL show a "No channels yet" screen naming each source that added n
 #### Scenario: Offline at launch
 - **GIVEN** the device is offline at launch
 - **WHEN** every source fails
-- **THEN** the empty screen shows, with Retry and Settings as the ways on
+- **THEN** the empty screen shows each source as offline, with Retry and Settings as the ways on
+
+#### Scenario: Offline compared with other failures
+- **GIVEN** one source whose request fails because there is no connection or the connection dropped, and one that fails for any other reason
+- **WHEN** both have finished
+- **THEN** the first reads "offline" and the second "could not load its channels"
+
+#### Scenario: No sources at all
+- **GIVEN** the user has no sources
+- **WHEN** Live is shown
+- **THEN** "No channels yet" shows with no source lines, and Retry does nothing
 
 ### Requirement: Open Settings
 The system SHALL open Settings over the current screen without touching the video when the user selects the Settings button.
@@ -118,7 +198,12 @@ The system SHALL open Settings over the current screen without touching the vide
 #### Scenario: Settings button
 - **GIVEN** the tab bar shows
 - **WHEN** the user selects the Settings button
-- **THEN** Settings opens over what was there and the video is not touched
+- **THEN** Settings opens full screen over what was there, listing the sources and the way to add one, and the video is not touched
+
+#### Scenario: Closing Settings
+- **GIVEN** Settings is open
+- **WHEN** the user presses Menu
+- **THEN** Settings closes and the highlight is back on the Settings button
 
 ### Requirement: Moving along the bar does not switch tabs
 The system SHALL keep the current tab while the highlight moves along the bar, until the user selects a tab.
@@ -135,3 +220,55 @@ The system SHALL let other screens send the user to Search, to the Guide at a gi
 - **GIVEN** any tab or the channel overlay is showing
 - **WHEN** another screen asks for Search, for the Guide at a given programme, or for Live after tuning
 - **THEN** the overlay closes, that tab opens with the Guide told which programme to show, and Live is full screen with no tab bar
+
+### Requirement: Sources change while the app runs
+The system SHALL load a source that is added or edited while the shell runs and drop one that is removed. The channel playing SHALL keep playing when its source is removed, unless every source is gone; then the video SHALL stop and Live SHALL show the empty screen. A source listed twice counts once.
+
+#### Scenario: Every source removed
+- **GIVEN** a channel is playing
+- **WHEN** every source is removed, on this Apple TV or through sync
+- **THEN** the video stops and Live shows "No channels yet"
+
+#### Scenario: The playing channel's source removed
+- **GIVEN** a channel is playing and another source remains
+- **WHEN** the playing channel's source is removed
+- **THEN** the channel keeps playing and its source drops off the loading and empty screens
+
+### Requirement: Channel list over the picture
+The system SHALL open a list of every loaded channel over a dark scrim, with the first row highlighted, when the user presses select on the full-screen picture. Selecting a row SHALL tune that channel and go back to full screen, and Menu SHALL close the list without changing channel.
+
+#### Scenario: Changing channel
+- **GIVEN** a channel is playing full screen
+- **WHEN** the user presses select, moves down one row and presses select
+- **THEN** the list closes and the second channel plays full screen with no tab bar
+
+#### Scenario: The channel already playing
+- **GIVEN** the list is open
+- **WHEN** the user selects the channel that is already playing
+- **THEN** the list closes and the stream is not loaded again
+
+### Requirement: Stand-in screens
+The system SHALL show one line in place of each screen not built yet: "The programme guide is not available yet." on Guide, with the picture in a 480 by 270 box at the top left and the Guide's own clock, and "Movies are not available yet.", "Series are not available yet." or "Search is not available yet." under the tab bar on the other tabs.
+
+#### Scenario: Opening the Guide
+- **GIVEN** a channel is playing
+- **WHEN** the user opens the Guide
+- **THEN** the picture keeps playing in the small box, the clock shows top right and the stand-in line holds the highlight
+
+#### Scenario: Opening Movies
+- **GIVEN** the tab bar shows
+- **WHEN** the user selects Movies
+- **THEN** "Movies are not available yet." shows under the bar and holds the highlight, and the picture is hidden
+
+### Requirement: Deviations from the design rules
+The tab bar SHALL fill the open tab white while the highlight is in that tab's content, so the open tab stays visible, and SHALL put the tabs on the opaque tab bar color, because the dimmed picture shows through the scrim. The loading screen SHALL mark a finished source with a check on an accent circle, as its board draws it. These depart from the focus and one-accent design rules.
+
+#### Scenario: Focus in a tab's content
+- **GIVEN** Movies is open and the highlight is in its content
+- **WHEN** the tab bar shows
+- **THEN** the Movies tab is filled white with dark text, and once the highlight moves to another tab Movies falls back to a light gray fill
+
+#### Scenario: A finished source on the loading screen
+- **GIVEN** the loading screen shows a source that finished
+- **WHEN** the user looks at its row
+- **THEN** it has a check on an accent circle, where a loading source has a turning ring and a failed one has nothing

@@ -93,6 +93,7 @@ import Testing
         #expect(!model.barVisible)
     }
 
+    // tvos-shell/channel-list-over-the-picture
     @Test("tvos-shell/other-screens-can-send-the-user-somewhere the navigator shows Live full screen after a tune")
     func navigatorShowsLive() async {
         await playing()
@@ -109,7 +110,7 @@ import Testing
         #expect(!model.barVisible)
     }
 
-    @Test("Retry loads again only the sources that added nothing")
+    @Test("tvos-shell/an-empty-screen-with-retry Retry loads again only the sources that added nothing")
     func retry() async {
         model.sourcesChanged([source, xtream])
         await wait { loader.isWaiting(source.id) && loader.isWaiting(xtream.id) }
@@ -123,7 +124,7 @@ import Testing
         await wait { loader.calls.count == 4 }
     }
 
-    @Test("a source waiting for its login loads when the app comes back")
+    @Test("tvos-shell/a-loading-screen-at-launch a source waiting for its login loads when the app comes back")
     func loginArrives() async {
         logins.missing = [xtream.id]
         model.sourcesChanged([xtream])
@@ -139,7 +140,7 @@ import Testing
         #expect(model.liveScreen == .loading)
     }
 
-    @Test("swipe down lowers the bar only over Live and Guide")
+    @Test("tvos-shell/back-to-full-screen-from-the-tab-bar swipe down lowers the bar only over Live and Guide")
     func swipeDown() async {
         await playing()
         _ = await model.menu(from: .picture)
@@ -168,7 +169,7 @@ import Testing
         #expect(!model.barVisible)
     }
 
-    @Test("Live shows the loading screen, not the empty one, before the sources are read")
+    @Test("tvos-shell/a-loading-screen-at-launch Live shows the loading screen, not the empty one, before the sources are read")
     func noEmptyFlash() {
         #expect(model.liveScreen == .loading)
         model.sourcesChanged([])
