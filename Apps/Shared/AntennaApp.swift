@@ -9,7 +9,7 @@ struct AntennaApp: App {
     /// per-profile automatically. A Debug build launched by a UI test gets
     /// the in-memory `UITestingStore` or `UITestingShell` instead.
     private let container: ModelContainer
-    /// Downloads and answers guide data for every screen (spec 0014).
+    /// Downloads and answers guide data for every screen (guide-data capability).
     @State private var guideStore: AppGuideStore
 
     init() {

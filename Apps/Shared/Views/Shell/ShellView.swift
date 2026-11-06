@@ -3,7 +3,7 @@
     import SwiftData
     import SwiftUI
 
-    /// The Apple TV window root (spec 0015): the picture full screen, the tab
+    /// The Apple TV window root (tvos-shell capability): the picture full screen, the tab
     /// bar on Menu, the tabs and Settings. Builds its model once from the
     /// environment's loader and guide store, or from `UITestingShell` in a
     /// Debug build launched for UI tests.

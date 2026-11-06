@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Top-level navigation on iPhone, iPad and Mac: a regular tab bar on
 /// iPhone, the sidebar on iPad and Mac via `.sidebarAdaptable`. Apple TV
-/// opens on `ShellView` instead (spec 0015).
+/// opens on `ShellView` instead (tvos-shell capability).
 struct RootView: View {
     enum Tab: Hashable { case guide, channels, favorites, settings }
     @State private var selection: Tab = .channels

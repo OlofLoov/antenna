@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-/// The guide downloads every window root starts (spec 0014): stale guides
+/// The guide downloads every window root starts (guide-data capability): stale guides
 /// refresh at launch and on each return to the foreground, and a source
 /// deleted here or through iCloud loses its guide.
 struct GuideRefreshTriggers: ViewModifier {
