@@ -175,9 +175,12 @@ private actor Attempts {
         #expect(film.acceptsRanges)
         #expect(film.status == 206)
         #expect(film.contentType == "video/mp4")
+        let size = try Data(contentsOf: server.root.appending(path: "film.mp4")).count
+        #expect(film.length == size)
         await server.always("/film.mp4", .ignoreRanges)
         let noRanges = try await StreamProbe.run(base.appending(path: "film.mp4"), session: session)
         #expect(!noRanges.acceptsRanges)
+        #expect(noRanges.length == size)
         let hls = try await StreamProbe.run(base.appending(path: "hls/index.m3u8"), session: session)
         #expect(hls.sniff == .hls)
     }
