@@ -158,3 +158,37 @@ jobs:
           name: ui-tests-xcresult
           path: ui-tests.xcresult
           if-no-files-found: ignore
+
+  tvtests:
+    name: tvOS tests
+    runs-on: macos-26
+    needs: core
+    steps:
+      - uses: actions/checkout@v5
+      - name: Ensure tvOS simulator runtime
+        run: |
+          set -e
+          if ! xcrun simctl list runtimes available | grep -q "^tvOS "; then
+            xcodebuild -downloadPlatform tvOS
+          fi
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Run tvOS tests
+        run: |
+          set -e
+          line=$(xcrun simctl list devices available | grep -E '^ +Apple TV' | head -1)
+          echo "Simulator: $line"
+          id=$(printf '%s\n' "$line" | grep -oE '[0-9A-F]{8}-[0-9A-F-]{27}')
+          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
+            -destination "platform=tvOS Simulator,id=$id" \
+            -resultBundlePath tv-tests.xcresult \
+            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tv-tests-xcresult
+          path: tv-tests.xcresult
+          if-no-files-found: ignore
