@@ -9,8 +9,9 @@ sources (M3U, Xtream, later Stalker / Jellyfin / Channels DVR). Ships no content
 swift test --package-path Packages/AntennaCore          # core tests, no Xcode needed
 swift format lint --strict --recursive --parallel Apps Packages   # formatting, ships with the toolchain
 swiftlint lint --strict                                  # conventions; brew install swiftlint
-scripts/check-rules.sh                                   # ADR greps: layering, CloudKit, availability
-scripts/check-arch.sh                                    # local only: flags architectural change with no ADR or diagram update
+scripts/check-rules.sh                                   # decision greps: layering, CloudKit, availability
+openspec validate --all --strict                         # specs and changes; npm install -g @fission-ai/openspec@1.16.0
+scripts/check-spec-refs.sh                               # every requirement a test cites exists in openspec/specs
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO
@@ -34,49 +35,44 @@ from `Config/Local.xcconfig.example` for device builds.
 
 ## How we work
 
-- **Design first for screens.** Every screen has a board in `docs/design/`.
-  Specs cite the board and the design rules (`DR-n`) that apply; reviewers
-  check against them. No board, no spec, no code.
-- **Spec first, at behaviour level.** Feature work starts from a spec in
-  `docs/specs/`, written for a human reader: a plain Summary, the user
-  stories it serves (`docs/product/user-stories.md`), problem, scope and 5
-  to 12 Given/When/Then criteria a user or caller can observe. No layout,
-  types or identifiers; those go in the
-  plan. No feature code without a spec id. Use the `spec` skill to write
-  one, then run the `spec-reviewer` agent on it once. Write specs for the
-  next features to build, not a backlog.
-- **Views follow ADR-0008.** Components in `Apps/Shared/Components/` take
-  values and closures, screens in `Apps/Shared/Views/` own queries and
-  models and provide shared state through `@Entry`. No `Bool` picks a
-  layout. The `swiftui-composition` skill has the rules and a grep pass.
-- **Decisions are ADRs.** Anything that would be hard to reverse (data model,
-  playback path, sync, dependency) gets a record in `docs/adr/` via the `adr`
-  skill. Read `docs/adr/README.md` before proposing architecture changes.
+- **Specs and changes are OpenSpec.** `openspec/specs/<capability>/spec.md`
+  says what the app does today: requirements with WHEN/THEN scenarios a user
+  or caller can observe. New work is a change in `openspec/changes/<name>/`:
+  `proposal.md` (why, what, which capabilities), delta specs, `design.md`
+  (decisions, layout from the boards, identifiers) and `tasks.md`. Start one
+  with `/opsx:propose` (or `/opsx:explore` first), build it with
+  `/opsx:apply`, check it with `/opsx:verify`, and fold it into the specs
+  with `/opsx:archive` in its last PR. No feature code without a change.
+  `openspec/config.yaml` holds the project context and per-artifact rules
+  every change follows.
+- **Design first for screens.** Every screen has a board in
+  `openspec/specs/design-system/boards/`, and the design rules are the
+  `design-system` capability. A change's `design.md` names the boards and
+  design-system requirements it follows. No board, no change.
+- **Decisions live in design.md.** Anything hard to reverse (data model,
+  playback path, sync, dependency) is decided in a change's `design.md` with
+  the options considered. Earlier decisions are archived changes named
+  `openspec/changes/archive/*-adr-NNNN-*`; read them before proposing
+  architecture changes.
+- **Views compose.** Components in `Apps/Shared/Components/` take values and
+  closures, screens in `Apps/Shared/Views/` own queries and models and
+  provide shared state through `@Entry`. No `Bool` picks a layout. The
+  `swiftui-composition` skill has the rules and a grep pass (decision adr-0008).
 - **Diagrams follow the code.** C4 context and container diagrams live in
-  `docs/architecture/` as `.drawio.svg`. Before each commit and PR the
-  `arch-review` hook runs `scripts/check-arch.sh` and, when a change touches
-  architectural paths without them or an ADR, asks for the `arch-reviewer`
-  agent, which says which to update. It advises; CI does not run it.
+  `docs/architecture/` as `.drawio.svg`. A change that adds a container,
+  external system or dependency updates them in the same PR.
 - **Lint before commit.** The git pre-commit hook runs `swift format lint
   --strict` on staged Swift files, and `swiftlint` when it is installed.
-- **Tests cite criteria.** A test that proves acceptance criterion `AC-3` of
-  spec `0007` says so in its name or a comment: `// 0007/AC-3`.
-- **Implement with the `implement` skill.** Give it a spec id. It checks the
-  spec is Accepted and unblocked, writes a plan (approach, layout from the
-  boards, identifiers, decisions the spec left open, a test per criterion)
-  and has the `plan-reviewer` agent review it before any code, cuts the
-  work into the fewest small
-  shippable PRs, writes the code and a test per criterion, sets the spec to
-  Implemented in the last diff, runs the `impl-reviewer` agent, then hands
-  each PR to the `pr` skill. Main is rebase-merged. Nothing tracks status on the
-  side. `scripts/check-specs.sh` fails CI when a spec claims Implemented
-  without a test citing every criterion.
-- **Everything ends in a PR.** Code, specs, ADRs, CI changes, this file. Never
+- **Tests cite requirements.** A test that proves a requirement names it as
+  `<capability>/<requirement-slug>` in its name or a comment, for example
+  `// guide-data/programmes-in-a-time-window`. `scripts/check-spec-refs.sh`
+  fails CI when a cited requirement does not exist.
+- **Everything ends in a PR.** Code, changes, CI changes, this file. Never
   commit on main and never push to main. Hooks refuse both. Finish work with
   the `pr` skill, which branches, verifies, commits and opens the PR.
 - **Conventional Commits** are enforced by a commit-msg hook and in CI:
   `type(scope): subject`. Details in `docs/conventions.md`.
-- **No AI slop.** Every doc, spec, ADR, commit message, PR body and code
+- **No AI slop.** Every doc, spec, change, commit message, PR body and code
   comment goes through the `no-ai-slop` skill (imported from
   petergyang/no-ai-slop, MIT). A hook reminds you after each file change and
   before each commit or PR; run its Detect pass and fix what it names.
@@ -85,8 +81,8 @@ from `Config/Local.xcconfig.example` for device builds.
 ## Hard constraints
 
 - CloudKit-backed SwiftData: every stored property optional or defaulted, no
-  `@Attribute(.unique)`, relationships optional. See ADR-0002.
-- Secrets never go in SwiftData or logs. Keychain only, synchronizable. See ADR-0003.
+  `@Attribute(.unique)`, relationships optional. Decision adr-0002.
+- Secrets never go in SwiftData or logs. Keychain only, synchronizable. Decision adr-0003.
 - Strict concurrency is `complete`. Fix warnings, do not suppress them.
 - Deployment target is 26.0 on every platform. Do not add availability checks below it.
 - No bundled playlists, provider links, or marketplace features (App Review 5.2.3).

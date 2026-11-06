@@ -1,6 +1,6 @@
 ---
 name: swiftui-composition
-description: Composition rules for SwiftUI views in Apps/Shared per ADR-0008. Use when writing or reviewing a screen or component, when a view is growing Bool parameters or #if os branches, when siblings need the same state, or when the user says "component", "compound view", "boolean props", "environment", "variant" or "composition".
+description: Composition rules for SwiftUI views in Apps/Shared per decision adr-0008. Use when writing or reviewing a screen or component, when a view is growing Bool parameters or #if os branches, when siblings need the same state, or when the user says "component", "compound view", "boolean props", "environment", "variant" or "composition".
 ---
 
 # SwiftUI composition
@@ -8,7 +8,7 @@ description: Composition rules for SwiftUI views in Apps/Shared per ADR-0008. Us
 Adapted for Swift from Vercel's
 [composition-patterns](https://github.com/vercel-labs/agent-skills/tree/main/skills/composition-patterns)
 skill (MIT). The rules are theirs, the mapping to SwiftUI and the examples
-are ours. ADR-0008 is the decision; this file is how to follow it.
+are ours. The decision is archived as openspec/changes/archive/2026-11-04-adr-0008-compose-ui-from-compound-components; this file is how to follow it.
 
 React to SwiftUI, for readers who know the original:
 
@@ -74,7 +74,7 @@ combine: `Badge(.now)`, `Badge(.outline("4K"))`.
 ### 2. Compound components
 
 A part is a namespace enum. Each sub-view draws one thing the board names.
-Variants are composed from the sub-views, so DR-6 anatomy lives in one
+Variants are composed from the sub-views, so the row anatomy (design-system/channel-rows-share-one-anatomy) lives in one
 place and a reviewer can read a variant as a list of parts.
 
 ```swift
@@ -87,10 +87,10 @@ enum ChannelRow {
         }
     }
     struct Number: View { ... }     // tabular, muted
-    struct Logo: View { ... }       // tile with initials fallback, DR-8
+    struct Logo: View { ... }       // tile with initials fallback, design-system/channels-without-a-logo-show-initials
     struct Name: View { ... }
     struct Programme: View { ... }
-    struct Progress: View { ... }   // 3 to 4 pt accent bar, DR-7
+    struct Progress: View { ... }   // 3 to 4 pt accent bar, design-system/a-current-programme-always-shows-its-progress
     struct CatchUp: View { ... }    // clock-arrow glyph, trailing
 }
 ```
@@ -183,7 +183,7 @@ or about `SearchModel`.
 A component never runs a `@Query`, reads a `ModelContext`, hits the network
 or the Keychain. The screen does that and hands values down. The same
 component then works in a preview with fixtures, in a snapshot in CI
-(ADR-0007), and under a different screen tomorrow.
+(decision adr-0007), and under a different screen tomorrow.
 
 Before:
 
@@ -276,15 +276,15 @@ PosterRow(titles) { title in
 - `@Bindable` to bind into an `@Observable` model.
 - `.task` and `.task(id:)` for loading. Never `.onAppear { Task { } }`.
 - No `AnyView`. Generics or `@ViewBuilder` instead.
-- No availability checks. Deployment target is 26 (ADR-0004).
+- No availability checks. Deployment target is 26 (decision adr-0004).
 - Every variant has a `#Preview` with fixture data, deterministic: no
   network, no clock, in-memory `ModelContainer` if a screen needs one. CI
-  renders each preview to a PNG (ADR-0007), so a variant without a preview
+  renders each preview to a PNG (decision adr-0007), so a variant without a preview
   is invisible to reviewers.
 
 ## Review pass
 
-Run these over a diff before `impl-reviewer`. Each hit is a finding unless
+Run these over a diff before `/opsx:verify`. Each hit is a finding unless
 the PR body names the rule and the reason.
 
 ```sh

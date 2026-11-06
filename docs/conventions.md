@@ -28,15 +28,19 @@
 
 - All stored properties optional or with a default. No `@Attribute(.unique)`.
   Relationships optional. Enums stored as raw values with a computed accessor.
-- Schema changes need an ADR and a migration note in the spec.
+- Schema changes are decided in the change's `design.md`, with a migration note.
 
 ## Tests
 
 - AntennaCore: swift-testing, fixtures in `Tests/AntennaCoreTests/Fixtures`.
-- Every acceptance criterion in an accepted spec has at least one test that
-  names it: `@Test("0007/AC-3 empty tvg-id is not an EPG id")`. In an
-  XCUITest the citation is a comment, `// 0007/AC-3`. `scripts/check-specs.sh`
-  greps for exactly this form, so write the id as `NNNN/AC-n` with no spaces.
+- Every requirement a change adds has at least one test that names it as
+  `<capability>/<requirement-slug>`:
+  `@Test("m3u-playlists/empty-tvg-id-is-not-a-guide-id: ...")`. In an
+  XCUITest the citation is a comment. The slug is the requirement name
+  lowercased, with each run of other characters turned into one hyphen.
+  `scripts/check-spec-refs.sh` fails CI when a cited requirement is missing
+  from `openspec/specs/`, so a change that renames a requirement updates the
+  tests that cite it.
 - Benchmarks run only with `ANTENNA_BENCHMARKS=1`. Gate them with
   `.enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1")`.
 - UI tests use accessibility identifiers of the form `screen.element`
@@ -45,23 +49,24 @@
 ## Git
 
 - Nothing is committed on main or pushed to main. Every change, including a
-  single ADR, goes through a branch and a PR opened with the `pr` skill.
-- Branches: `feat/NNNN-slug`, `fix/slug`, `docs/adr-NNNN-slug`,
-  `docs/spec-NNNN-slug`, `chore/slug`, `ci/slug`.
+  single change proposal, goes through a branch and a PR opened with the
+  `pr` skill.
+- Branches: `feat/<change-name>`, `fix/slug`, `docs/<change-name>`,
+  `chore/slug`, `ci/slug`.
 - Conventional Commits, enforced locally by `scripts/githooks/commit-msg` and
   in CI on every PR commit and on the PR title:
   - `type(scope): subject`, header at most 72 characters, imperative, no
     trailing period.
   - Types: feat, fix, docs, refactor, test, build, ci, chore, perf, style, revert.
-  - Scopes (optional): core, app, tv, mobile, adr, spec, ci, build, docs.
-  - Footer `Spec: NNNN` on feature commits, `ADR: NNNN` when an ADR is added
-    or superseded. Breaking changes use `!` after the scope.
-- One logical change per commit. Specs and ADRs go in their own commit ahead
-  of the code that implements them.
+  - Scopes (optional): core, app, tv, mobile, spec, ci, build, docs.
+  - Footer `Change: <name>` on commits that implement an OpenSpec change.
+    Breaking changes use `!` after the scope.
+- One logical change per commit. Proposal and spec edits go in their own
+  commit ahead of the code that implements them; the archive goes last.
 - PR title is the conventional header of the main commit. PR body follows the
-  template and links spec and ADRs. Rebase-merge, so every commit on the
+  template and links the change folder. Rebase-merge, so every commit on the
   branch lands on main as pushed; no WIP or fixup commits in a PR.
-- A feature too big for one small PR ships as a stack: `feat/NNNN-slug-1`,
-  `-2` and so on, each based on the one before. The `implement` skill cuts
-  the stack, the `pr` skill opens and rebases it with `gh stack`, so GitHub
+- A change too big for one small PR ships as a stack: `feat/<name>-1`,
+  `-2` and so on, each based on the one before. The task groups in
+  `tasks.md` set the cut, the `pr` skill opens and rebases it with `gh stack`, so GitHub
   shows the PRs as one stack.

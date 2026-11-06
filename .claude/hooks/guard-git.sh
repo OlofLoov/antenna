@@ -19,7 +19,7 @@ git_word='(^|[^[:alnum:]_./-])git[[:space:]]+'
 
 while IFS= read -r line; do
   if [[ "$line" =~ ${git_word}commit([[:space:]]|$) && "$branch" == "main" ]]; then
-    deny "On main. Create a branch (feat/NNNN-slug, docs/adr-NNNN-slug) before committing. Everything lands through a PR."
+    deny "On main. Create a branch (feat/<change-name>, fix/<slug>, chore/<slug>) before committing. Everything lands through a PR."
   fi
   if [[ "$line" =~ ${git_word}push([[:space:]]|$) ]]; then
     if [[ "$line" =~ [[:space:]](origin[[:space:]]+)?(HEAD:)?main([[:space:]]|$) ]]; then

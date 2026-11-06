@@ -17,7 +17,7 @@ esac
 types='feat|fix|docs|refactor|test|build|ci|chore|perf|style|revert'
 pattern="^(${types})(\([a-z0-9._/-]+\))?!?: [^ ].*$"
 
-fail() { printf 'commit message rejected: %s\n\n  %s\n\nExpected: <type>(<scope>)?: <subject>\n  types: %s\n  scopes (optional): core, app, tv, mobile, adr, spec, ci, build, docs\n' "$1" "$header" "$types" >&2; exit 1; }
+fail() { printf 'commit message rejected: %s\n\n  %s\n\nExpected: <type>(<scope>)?: <subject>\n  types: %s\n  scopes (optional): core, app, tv, mobile, spec, ci, build, docs\n' "$1" "$header" "$types" >&2; exit 1; }
 
 [[ "$header" =~ $pattern ]] || fail "header does not match conventional format"
 (( ${#header} <= 72 )) || fail "header longer than 72 characters"
