@@ -1,0 +1,44 @@
+# Design
+
+## Context
+
+Boards: none, no UI. `add-movies-and-series-browsing` and `add-search` show Continue watching, My list, resume and recent searches.
+
+Design-system requirements that apply: none.
+
+Decisions this builds on: adr-0002 (SwiftData with private CloudKit for sync), adr-0003 (credentials in iCloud Keychain), adr-0005 (AntennaCore is UI-free).
+
+## Goals / Non-Goals
+
+**Goals:**
+- One store that the movies, series and search screens share, so neither invents its own rules.
+- Pure merge, threshold, fold and cap rules in AntennaCore, testable without SwiftData.
+
+**Non-Goals:**
+- Any screen.
+- Pruning history by age.
+- Removing records on this device in response to a deletion seen elsewhere.
+
+## Decisions
+
+- Three SwiftData records in `Apps/Shared/Persistence`, each with `id: UUID = UUID()`: progress (title id, series id, source id, position, duration, updated-at), list entry (title id, source id, added-at), recent search (query, updated-at). Per adr-0002 every property is optional or defaulted, with no unique attribute, no relationships and no `URL` column. Additive, lightweight migration.
+- Value types and the pure rules live in AntennaCore (adr-0005). One `ActivityStore` on the main context maps records to them and serves the movies and search screens. Search injects a `RecentSearchesStore` protocol. Every read resolves duplicates and never writes. Every write resolves first and deletes the losers in the same save.
+- Keys: `xtream-vod-client` title ids plus source id. Ties: progress by latest updated-at, then higher position, then lower id string. List by earliest added-at, then lower id. Searches by fold (trim, collapse whitespace, case and diacritic insensitive). A local progress write sets updated-at to the later of now and the survivor's time plus one millisecond.
+- Secrets: no record or snapshot holds a credential, a URL or a path. Title ids carry the host only. Writes refuse title ids containing `://` or `@`. The store logs nothing (adr-0003).
+- A failed save rolls back and the call returns normally. The next read does not show it.
+- Fetching one title's progress or list state uses a predicate fetch, not the whole table. Budgets: resolve over 5,000 progress rows under 500 ms in CI, a point read over 20,000 rows under 500 ms in CI, reading all progress under 250 ms in CI.
+- Migration reads `UserDefaults` key `search.recents` (`[String]`, newest first), spaces migrated timestamps one second apart, merges with the cap in one save, then removes the key. A missing key means nothing to migrate.
+- The change stream yields after any save on the container (local saves and CloudKit imports), a new stream per subscriber, nothing on creation.
+- `source-management`'s delete path calls the source removal after deleting the Keychain item and the source record, as `guide-data` does for the guide. Extra copies from sync are deleted on the next save.
+- Malformed records (empty title id, missing source, negative or non-finite position or length) are skipped by reads and never deleted. A bad length reads as unknown.
+- Whether to clamp how far ahead another device's clock may be (for example 24 hours) is settled in the implementation.
+
+## Risks / Trade-offs
+
+- Open question: the thresholds are 2% and 95% with no absolute floor, so a title left at 94% stays in Continue watching. "Watched when fewer than n minutes remain" would change the threshold requirement.
+- Open question: a title with no known length never resumes. Resuming from the saved position instead would change the threshold requirement.
+- Open question: progress includes the source in its identity, as movies and series browsing does. Matching on the title alone would survive deleting and re-adding a source, and would change the source deletion requirement.
+- Open question: recent searches sync account-wide. Keeping them per device would stop an Apple TV showing what was typed on an iPhone, and would change the recent searches and account requirements.
+- Open question: clearing watch history is out with no follow-up yet, and history is never pruned. The owner may want a minimal "clear all" in scope here, which would add a requirement.
+- [Two devices saving the same title without syncing in between] → the one whose clock runs ahead wins.
+- [CloudKit cannot run in CI] → the account requirement is checked by hand on several devices.
