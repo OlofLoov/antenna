@@ -87,7 +87,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span style="width: 64px; height: 42px; border-radius: 6px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #F2F4F8; flex: 0 0 auto">S1</span>
         <span style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One</span>
       </div>
-      <!-- programme block under the scrim: focus is in the tab bar, so it takes the selected-but-unfocused 0.12 surface (DR-2) -->
+      <!-- programme block under the scrim: focus is in the tab bar, so it takes the selected-but-unfocused 0.12 surface (design-system/focus-is-the-lifted-white-card) -->
       <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.12); color: #F2F4F8; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 16px; box-sizing: border-box">
         <div style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Premier League: Arsenal v Liverpool</div>
         <div style="font-size: 18px; color: #A7B0BF">20:00 – 22:00 · Live</div>
@@ -143,10 +143,10 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <div style="position: absolute; left: 1489px; top: 8px; padding: 4px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">21:34</div>
   </div>
 
-  <!-- shell.scrim: full-frame dim over the guide, the small picture keeps playing under it (DR-1) -->
+  <!-- shell.scrim: full-frame dim over the guide, the small picture keeps playing under it (design-system/live-video-keeps-playing-under-overlays) -->
   <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.55)"></div>
 
-  <!-- shell.tabBar after Menu from the guide grid: Guide is selected and focused. The guide keeps its own clock under the scrim, so the shell's clock is hidden and its 260 pt slot kept (spec 0015) -->
+  <!-- shell.tabBar after Menu from the guide grid: Guide is selected and focused. The guide keeps its own clock under the scrim, so the shell's clock is hidden and its 260 pt slot kept (tvos-shell) -->
   <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
     <!-- shell.mark: not focusable -->
     <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
@@ -154,7 +154,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <span>Antenna</span>
     </div>
     <div style="display: flex; align-items: center; gap: 14px">
-      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (DR-13 deviation in spec 0015) -->
+      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (design-system/text-meets-contrast-minimums deviation in tvos-shell) -->
       <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: #11151C">
         <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
         <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">Guide</span>

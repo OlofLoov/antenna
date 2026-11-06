@@ -15,12 +15,12 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
 
-  <!-- title.backdrop: top 520 only, so the season row and episodes sit on the ground colour -->
+  <!-- title.backdrop: top 520 only, so the season row and episodes sit on the ground color -->
   <div style="position: absolute; left: 0; top: 0; width: 1920px; height: 520px; background: #2F4A3B"></div>
   <div style="position: absolute; left: 0; top: 0; width: 1100px; height: 520px; background: rgba(11, 14, 19, 0.72)"></div>
   <div style="position: absolute; left: 0; right: 0; top: 380px; height: 140px; background: linear-gradient(to bottom, rgba(11,14,19,0), #0B0E13)"></div>
 
-  <!-- No shell tab bar and no clock on the detail (spec 0026): Menu pops back to the section. -->
+  <!-- No shell tab bar and no clock on the detail (title-detail-and-episode-picker): Menu pops back to the section. -->
 
   <!-- title.root: copy column -->
   <div style="position: absolute; left: 64px; top: 96px; width: 880px; display: flex; flex-direction: column; gap: 18px">
@@ -106,7 +106,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       </div>
     </div>
 
-    <!-- episodes.row.<id>, no title, no thumbnail, no plot: "Episode 6" from 0016/AC-6d, number tile in the placeholder colour. Cut by the frame to show scroll. -->
+    <!-- episodes.row.<id>, no title, no thumbnail, no plot: "Episode 6" from xtream-vod-client/episode-skipping-and-title-fallback, number tile in the placeholder color. Cut by the frame to show scroll. -->
     <div style="height: 128px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 24px; padding: 0 24px 0 10px; box-sizing: border-box">
       <div style="width: 192px; height: 108px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: #A7B0BF; flex: 0 0 auto">6</div>
       <div style="width: 40px; font-size: 26px; color: #A7B0BF; font-variant-numeric: tabular-nums; text-align: right; flex: 0 0 auto">6</div>

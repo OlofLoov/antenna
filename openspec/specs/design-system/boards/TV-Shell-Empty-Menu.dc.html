@@ -15,23 +15,23 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; align-items: center; justify-content: center">
 
-  <!-- shell.player: ground colour, nothing to tune. No tab bar, no clock; Menu still shows the bar. -->
+  <!-- shell.player: ground color, nothing to tune. No tab bar, no clock; Menu still shows the bar. -->
 
   <!-- shell.empty: 29 pt title, 24 pt muted line per source whose login has not synced -->
   <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; max-width: 1200px">
     <div style="font-size: 29px; font-weight: 700">No channels yet</div>
-    <!-- shell.empty.source.<sourceId>: one line per source that contributed no channel, name then its 0010/AC-16 state text -->
+    <!-- shell.empty.source.<sourceId>: one line per source that contributed no channel, name then its state text -->
     <div style="font-size: 24px; color: #A7B0BF">Home provider: waiting for its login to sync from iCloud</div>
     <div style="font-size: 24px; color: #A7B0BF">Cabin: waiting for its login to sync from iCloud</div>
 
-    <!-- shell.retry: focus is in the tab bar, so Retry takes the 0.12 surface fill and no shadow (DR-2) -->
+    <!-- shell.retry: focus is in the tab bar, so Retry takes the 0.12 surface fill and no shadow (design-system/focus-is-the-lifted-white-card) -->
     <button type="button" style="font: inherit; font-size: 26px; font-weight: 700; margin-top: 26px; padding: 18px 44px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Retry</button>
   </div>
 
   <!-- shell.scrim: full-frame dim over the empty screen -->
   <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.55)"></div>
 
-  <!-- shell.tabBar after Menu on the empty screen: Live is selected and focused, so Retry loses the Focus token (DR-2) -->
+  <!-- shell.tabBar after Menu on the empty screen: Live is selected and focused, so Retry loses the Focus token (design-system/focus-is-the-lifted-white-card) -->
   <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
     <!-- shell.mark: not focusable -->
     <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
@@ -39,7 +39,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <span>Antenna</span>
     </div>
     <div style="display: flex; align-items: center; gap: 14px">
-      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (DR-13 deviation in spec 0015) -->
+      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (design-system/text-meets-contrast-minimums deviation in tvos-shell) -->
       <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: #11151C">
         <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">Live</span>
         <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>
