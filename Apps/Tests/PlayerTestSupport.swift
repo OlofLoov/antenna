@@ -1,6 +1,7 @@
 import AntennaCore
 import AntennaTestSupport
 import Foundation
+import Testing
 
 @testable import Antenna
 
@@ -82,3 +83,20 @@ struct PlayerHarness {
         await server.stop()
     }
 }
+
+extension Trait where Self == ConditionTrait {
+    /// Turns a test off in the simulator. There, Apple's player fails every
+    /// progressive HTTP file (mp4, mp3, aac) with OSStatus -12792 right after
+    /// its first range request, from the in-test server and from a public
+    /// HTTPS server alike. The same files play from file URLs, HLS plays, and
+    /// the engine plays them on macOS. Run these tests on a device.
+    static var progressiveHTTP: Self {
+        .disabled(if: runsInSimulator, "the simulator cannot play progressive HTTP files")
+    }
+}
+
+#if targetEnvironment(simulator)
+    let runsInSimulator = true
+#else
+    let runsInSimulator = false
+#endif
