@@ -9,7 +9,12 @@ import Foundation
 public struct M3UParser: Sendable {
     public init() {}
 
+    /// A byte-order mark at the start of `text` is ignored.
     public func parse(_ text: String) -> Playlist {
+        var text = Substring(text)
+        if text.unicodeScalars.first == "\u{FEFF}" {
+            text = Substring(text.unicodeScalars.dropFirst())
+        }
         var channels: [Channel] = []
         channels.reserveCapacity(text.utf8.count / 120)
 
