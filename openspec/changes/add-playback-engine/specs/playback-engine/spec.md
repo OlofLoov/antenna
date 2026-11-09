@@ -24,8 +24,13 @@ The system SHALL play HLS addresses and ordinary audio and video files through A
 - **WHEN** it plays
 - **THEN** it plays and the screen decides what to show
 
+#### Scenario: An old SD channel
+- **GIVEN** a raw broadcast stream with MPEG-2 video and MP2 sound
+- **WHEN** it plays on iPhone, iPad, Mac or Apple TV
+- **THEN** it plays with picture and sound
+
 ### Requirement: Starting a channel replaces the old one cleanly
-The system SHALL close the old connection before opening a new one, call off planned reconnects, end an abandoned request quietly, report loading until the first frame and playing from then on, and report nothing left over from the previous channel.
+The system SHALL close the old connection before opening a new one, keep the old picture on screen until the new channel's first frame, call off planned reconnects, end an abandoned request quietly, report loading until the first frame and playing from then on, and report nothing left over from the previous channel.
 
 #### Scenario: Switching channel
 - **GIVEN** the engine idle, or a channel loading, playing, paused or reconnecting
@@ -35,10 +40,11 @@ The system SHALL close the old connection before opening a new one, call off pla
 - **AND** the engine reports loading until the first frame is on screen and playing from then on, or idle after stop, with no failure or pause in between
 - **AND** nothing from the previous channel (format, languages, time) is reported
 
-#### Scenario: The old picture on the FFmpeg path
-- **GIVEN** a channel plays on the FFmpeg path
-- **WHEN** the user switches to another channel on that path
-- **THEN** the old picture stays until the new one appears
+#### Scenario: The old picture stays
+- **GIVEN** a channel is playing, on either path
+- **WHEN** the user switches to another channel, on either path
+- **THEN** the last picture of the old channel stays on screen until the new channel's first frame replaces it
+- **AND** the screen never goes black in between
 
 #### Scenario: Zapping with a one-connection provider
 - **GIVEN** a provider that allows one connection at a time
@@ -112,8 +118,13 @@ The system SHALL tell the screen the resolution, frame rate, HDR type, video cod
 - **WHEN** a stream plays, and later stops
 - **THEN** the TV switches to the stream's mode, and leaves it when playback stops
 
+#### Scenario: Zapping between channels in the same mode
+- **GIVEN** an Apple TV matching the TV's mode, and two channels with the same frame rate and dynamic range
+- **WHEN** the user switches from one to the other
+- **THEN** the TV does not switch mode again
+
 ### Requirement: Audio and subtitle languages
-The system SHALL give the screen the audio and subtitle lists with their languages named, start with the user's preferred languages in order, apply a pick within 2 seconds, remove subtitles when turned off, and choose by preference again on the next channel.
+The system SHALL give the screen the audio and subtitle lists with their languages named, start with the user's preferred languages in order, apply a pick within 2 seconds, remove subtitles when turned off, choose by preference again on the next channel, and start a channel with the languages last picked on it on this device.
 
 #### Scenario: Starting by preference
 - **GIVEN** a stream with English (the default) and German sound and English and Swedish subtitles, and the user's preferred languages set
@@ -132,10 +143,42 @@ The system SHALL give the screen the audio and subtitle lists with their languag
 - **WHEN** the next channel starts
 - **THEN** it chooses by preference again
 
+#### Scenario: Returning to a channel
+- **GIVEN** the user picked German sound and Swedish subtitles on a channel
+- **WHEN** the user comes back to that channel later on the same device, and it still has those tracks
+- **THEN** it starts with German sound and Swedish subtitles
+
 #### Scenario: Provider track names
 - **GIVEN** the provider names its tracks with its own branding
 - **WHEN** the lists reach the screen
 - **THEN** the names are passed on as written
+
+### Requirement: Interlaced broadcasts are deinterlaced
+The system SHALL show interlaced video on the FFmpeg path as full progressive frames at the field rate, with no combing on motion, and SHALL leave progressive video untouched.
+
+#### Scenario: Interlaced sport and SD channels
+- **GIVEN** a raw broadcast stream in 1080i at 50 fields a second, and one in 576i
+- **WHEN** each plays
+- **THEN** it is shown at 50 full frames a second with no combing on moving edges
+- **AND** the screen is told the stream is interlaced and the frame rate it is shown at
+
+#### Scenario: Progressive video
+- **GIVEN** a progressive stream
+- **WHEN** it plays
+- **THEN** its frames are shown as they arrive, with nothing added
+
+### Requirement: Surround sound reaches the speakers
+The system SHALL send Dolby Digital, Dolby Digital Plus and Dolby Atmos undecoded to a receiver or TV that takes them, and decode them for any other output, on both paths.
+
+#### Scenario: A receiver that takes Dolby
+- **GIVEN** an Apple TV connected to a receiver that takes Dolby Digital Plus with Atmos
+- **WHEN** a channel with 5.1 Dolby Digital Plus, or a film with Atmos, plays
+- **THEN** the receiver gets the surround sound as sent, Atmos included
+
+#### Scenario: Speakers or headphones
+- **GIVEN** an iPhone, iPad or Mac playing through its speakers or headphones
+- **WHEN** the same channel plays
+- **THEN** the sound is decoded and mixed for that output
 
 ### Requirement: Streams that cannot play fail with a clear reason
 The system SHALL fail a stream that cannot play with one reason from a short fixed list, give the same reason on both paths for the same cause, and fail a broken address without contacting any server.
@@ -160,11 +203,6 @@ The system SHALL fail a stream that cannot play with one reason from a short fix
 - **GIVEN** there is no internet
 - **WHEN** a channel starts
 - **THEN** it fails at once so the screen can offer Retry
-
-#### Scenario: MPEG-2 on iPhone, iPad and Apple TV
-- **GIVEN** an old SD channel in MPEG-2
-- **WHEN** it plays on iPhone, iPad or Apple TV
-- **THEN** it fails with "can't decode" naming the codec
 
 #### Scenario: Local network refused
 - **GIVEN** the first stream from a server on the home network and the user says no to Apple's local network prompt

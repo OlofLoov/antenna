@@ -28,13 +28,38 @@
 
 - [ ] 5.1 Report presentation info and set display criteria on Apple TV, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`
 - [ ] 5.2 Report audio and subtitle tracks, choose by preference, apply picks and emit text cues on both routes, and verify with core and integration tests citing `playback-engine/audio-and-subtitle-languages`
+- [ ] 5.3 Keep the last language pick per channel under `player.languages` and start a returning channel with it, and verify with a core test citing `playback-engine/audio-and-subtitle-languages`
+- [ ] 5.4 Keep the last frame over Apple's player while the next item loads, and verify with an integration test citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
 
-## 6. FFmpeg path
+## 6. FFmpeg build
 
-- [ ] 6.1 Once the FFmpeg decision record is accepted, add the FFmpeg build and the demuxer engine with hardware decoding, silence FFmpeg's own logging, and run the contract suite against both engines, including the checks only that path has: the old picture stays while switching, the connection is let go while live TV is paused, and HLS found by the demuxer hands back to Apple's player
-- [ ] 6.2 Measure 50 switches per path in Instruments on an Apple TV 4K (3rd generation), and record the result in a test citing `playback-engine/channel-switching-is-fast`
+- [ ] 6.1 Add `scripts/build-ffmpeg.sh` for the LGPL demux build in design.md, a CI workflow that builds `FFmpeg.xcframework` on a tag and publishes it with its source, and the binary package `Packages/FFmpeg`, and verify a test opens the fixture `channel.ts` and lists its streams on iOS and tvOS simulators
+- [ ] 6.2 Add the FFmpeg notice under Settings, About, and verify with a UI test
 
-## 7. Verify
+## 7. Demux engine
 
-- [ ] 7.1 Each requirement has a test citing `playback-engine/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
+- [ ] 7.1 Add `DemuxEngine` with the AVIO callback on the ephemeral session, demux to `CMSampleBuffer`s for H.264 and AAC into the sample-buffer renderers and synchronizer, silence FFmpeg's logging, and run the contract suite against both engines, verify with integration tests citing `playback-engine/every-common-stream-type-plays`
+- [ ] 7.2 Hand HLS found by the demuxer back to Apple's player, keep the old picture while switching, and let the connection go while live TV is paused, and verify with integration tests citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly` and `playback-engine/pause-and-play-again`
+- [ ] 7.3 Start at the first keyframe, open the channels above and below ahead when the account allows more than one connection, and verify with core tests citing `playback-engine/channel-switching-is-fast` and `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
+- [ ] 7.4 Map demuxer failures to the shared reasons and route Matroska and AVI through it, and verify with integration tests citing `playback-engine/streams-that-cannot-play-fail-with-a-clear-reason`
+
+## 8. Picture and sound
+
+- [ ] 8.1 HEVC and HDR10/HLG through the renderer, display criteria kept across channels of the same mode, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`
+- [ ] 8.2 Add AC-3 and E-AC-3 fixtures to `scripts/make-stream-fixtures.sh`, pass AC-3 and E-AC-3 with Atmos passed through on tvOS and decoded elsewhere, on both routes, and verify with integration and device tests citing `playback-engine/surround-sound-reaches-the-speakers`
+- [ ] 8.3 Picture in Picture from the sample-buffer renderer, and verify with a device test citing `playback-engine/leaving-the-app-phone-calls-and-picture-in-picture`
+
+## 9. Old SD channels and interlaced video
+
+- [ ] 9.1 Decode MPEG-2 video and MP2 sound in software, and verify with integration tests citing `playback-engine/every-common-stream-type-plays`
+- [ ] 9.2 Add 1080i50 and 576i fixtures with moving edges to `scripts/make-stream-fixtures.sh`, detect interlaced streams, decode them through VideoToolbox, deinterlace in Metal at the field rate, and verify with integration tests on interlaced fixtures citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
+- [ ] 9.3 Confirm 1080i50 holds 50 frames a second on an Apple TV 4K, and record it in a device test citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
+
+## 10. Measure
+
+- [ ] 10.1 Measure 50 switches per path in Instruments on an Apple TV 4K (3rd generation), and record the result in a test citing `playback-engine/channel-switching-is-fast`
+
+## 11. Verify
+
+- [ ] 11.1 Each requirement has a test citing `playback-engine/<requirement-slug>`
+- [ ] 11.2 `/opsx:verify` passes

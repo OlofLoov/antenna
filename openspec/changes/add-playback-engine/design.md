@@ -21,7 +21,7 @@ The "test server" in the tests is a small web server inside the tests that serve
 
 ## Decisions
 
-- Ships in two steps. Until the FFmpeg engine exists (it waits on the FFmpeg decision record), the router is built with `AVPlayerEngine` for both routes. The change is complete only after the FFmpeg step.
+- Ships in two steps. Until the FFmpeg engine exists, the router is built with `AVPlayerEngine` for both routes and raw broadcast streams fail as unreadable. The change is complete only after the FFmpeg step.
 - Contract: `PlaybackEngine` with `states()`, `presentation()`, `tracks()`, `position()` and `subtitleCues()` streams; `load(_:)` kept as an extension forwarding `PlaybackOptions()` so the screens' `load(channel.streamURL)` holds; `RoutedEngine` is "the same engine instance" the overlay, guide grid, Live and shell use. Engines and `PlaybackLifecycle` live in `Apps/Shared/Player/`. `PlaybackOptions` has `startPosition`, an `isLive` override (catch-up passes false) and preferred audio and subtitle languages.
 - Numbers: tune policy 3 attempts (0.5 s, 1 s); drop policy 8 attempts (0.5, 1, 2, 4, 8, 10, 10, 10 s); reset after 60 s of play; stall budget 10 s; connect timeout 8 s; no-frame timeout 15 s; read-ahead at most 8 s; `position()` 1 to 4 times a second while playing and once on pause. `.offline` is retried during a reconnect, not at tune.
 - Redaction: `guide-data` owns `redacted(_:)` and changes it first. Keep scheme, host and port; the path becomes "/…" plus the last component's extension; query values become "…"; drop userinfo and fragment. Errors never hold the failing URL or an underlying error (`NSURLErrorFailingURL*`, `NSUnderlyingErrorKey`).
@@ -33,10 +33,44 @@ The "test server" in the tests is a small web server inside the tests that serve
 - Fixtures come from `scripts/make-stream-fixtures.sh` with synthetic patterns and tones, no third-party content.
 - Test layers: path choice, reason mapping, language choice, retry and reconnect timing run as core tests on a simulated clock; both paths run against the test server; HDR10, the TV mode switch, local network refusal, Picture in Picture and the switching budget run on device.
 
+### The FFmpeg path
+
+Options considered for raw broadcast streams, Matroska and AVI:
+
+| Option | Why not, or why |
+|---|---|
+| FFmpeg decodes everything, our own renderer | Throws away Apple's hardware decoders, HDR handling, Atmos passthrough and PiP, and puts A/V sync on us. |
+| VLCKit or mpv | Software renderers with weaker HDR, frame-rate matching and passthrough on Apple TV. Ruled out in the project constraints. |
+| KSPlayer or other wrappers | GPL or a commercial licence, and their own playback model to fight. |
+| A local server that repackages TS as HLS for Apple's player | No licence questions and AirPlay keeps working, but tuning waits for whole segments (2 to 4 seconds), missing the 1.0 second switching target. No Matroska, no MPEG-2. |
+| **FFmpeg unpacks, Apple decodes and renders** | Chosen. FFmpeg only demuxes. Compressed H.264, HEVC, AAC, AC-3 and E-AC-3 go as `CMSampleBuffer`s to `AVSampleBufferVideoRenderer` and `AVSampleBufferAudioRenderer` under one `AVSampleBufferRenderSynchronizer`, which decode in hardware and handle HDR, Atmos passthrough and PiP. |
+
+`DemuxEngine` in `Apps/Shared/Player/` owns the pipeline:
+
+```
+URLSession (ephemeral) -> AVIO read callback -> libavformat demux
+  progressive H.264/HEVC ---------------------------------------> video renderer (decodes)
+  interlaced H.264/HEVC -> VTDecompressionSession -> Metal deinterlace -> video renderer (pixel buffers)
+  MPEG-2 video -> libavcodec mpeg2video -> Metal deinterlace if interlaced -> video renderer
+  AAC / AC-3 / E-AC-3 ------------------------------------------> audio renderer (decodes or passes through)
+  MP2 -> libavcodec mp2 -> PCM ----------------------------------> audio renderer
+  text subtitles -> cues (as on the system route)
+```
+
+- **Build.** `scripts/build-ffmpeg.sh` builds FFmpeg 7.1 (LTS) with `--disable-everything` and then only the demuxers (mpegts, matroska, avi, mov, flv), parsers (h264, hevc, mpegvideo, aac, ac3, mpegaudio), the `mpeg2video` and `mp2` decoders, and no network protocols, since bytes come through our AVIO callback. No `--enable-gpl`, no `--enable-nonfree`. Output is one dynamic `FFmpeg.xcframework` for iOS, tvOS and macOS, device and simulator. A CI workflow builds it on a version tag and attaches it to a GitHub release; `Packages/FFmpeg` is a binary Swift package that points at that release with a checksum. Expected size is 3 to 6 MB per platform.
+- **Licence.** LGPL 2.1 is met by dynamic linking, the build script and FFmpeg's source published with the release, and an FFmpeg notice under Settings, About.
+- **MPEG-2 and MP2.** No Apple device decodes them in hardware, so they are the one exception to hardware decoding, in software through libavcodec. SD MPEG-2 at 25 or 30 frames a second is well within every supported device.
+- **Interlaced video.** The video renderer does not deinterlace. Interlaced streams (the H.264 or HEVC field flags, or MPEG-2's `progressive_sequence` off) are decoded by us and deinterlaced in a Metal compute shader with a motion-adaptive algorithm modelled on bwdif, output at the field rate (1080i50 becomes 1080p50). Progressive streams skip all of this and stay on the cheaper renderer-decodes path. Considered: libavfilter's bwdif on the CPU, too slow for 1080i on Apple TV; bob, which flickers on fine detail.
+- **Surround sound.** On tvOS the audio session asks for multichannel output and `AVSampleBufferAudioRenderer` gets compressed AC-3 and E-AC-3 (with Atmos metadata), which the system passes through when the HDMI sink takes it and decodes otherwise. Apple's player does the same on the system route.
+- **The old picture stays.** On the FFmpeg path the video renderer keeps its last frame until the first new one is enqueued; flushing waits for that. On the system route `AVPlayerEngine` copies the last frame from an `AVPlayerItemVideoOutput` into a layer over the player before replacing the item and removes it on the new item's first frame.
+- **Fast start.** Demuxing starts at the first keyframe, frames before it are dropped, and the first frame is shown as soon as it decodes with read-ahead growing to 8 seconds behind it. When an Xtream account reports more than one allowed connection, the channels above and below the current one are opened ahead and kept at their latest keyframe; with one allowed connection nothing is opened ahead.
+- **Display mode.** `AVDisplayCriteria` is set from the first frame's format description and kept when the next channel has the same frame rate and dynamic range, so zapping does not re-switch the TV.
+- **Languages per channel.** The last audio and subtitle pick per channel is kept in `UserDefaults.standard` under `player.languages`, as a JSON map from channel id to track languages, capped at 500 channels with the oldest dropped. It is per device and holds no address.
+- **AirPlay.** The FFmpeg path sends sound over AirPlay, not video; video AirPlay stays with Apple's player (HLS and films).
+
 ## Risks / Trade-offs
 
-- [FFmpeg licensing and build are undecided] → the change is blocked on that decision record and assumes an LGPL build linked dynamically.
-- Open question: iPhone, iPad and Apple TV cannot decode MPEG-2 video in hardware. A decision allowing software decoding for MPEG-2 only, as the one exception to the hardware decode path, is the likely answer. No requirement changes until then; a test before implementation settles whether the Mac can.
+- The FFmpeg build is ours to keep current. Pinning the LTS release and building it in CI keeps that to a version bump and a rerun.
+- The Metal deinterlacer is the part with the least prior art in the codebase. It is checked against fixture streams with moving edges, and a device test on Apple TV confirms it holds 50 frames a second at 1080i.
 - Open question: a 403 is "not allowed" and never retried, though some Xtream servers answer 403 for "too many connections" just after a switch. Retrying it once would change the tune retry requirement; decide with the multi-view change, which treats a 403 while another tile plays as "provider refused another stream".
-- Open question: Apple's player shows black between channels, because the old stream is removed to free its connection. Keeping a still of the last frame would hide it. Can be decided during implementation.
 - Open question: reporting Dolby Vision waits for a test stream. Can be decided during implementation.
