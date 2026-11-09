@@ -48,13 +48,16 @@ import Testing
         GuideKey(sourceID: record.id, epgID: "news.se")
     }
 
-    /// Waits up to five seconds for `condition`.
+    /// Waits up to 20 seconds for `condition`. The Preview snapshots job runs
+    /// these tests while it renders every preview, and there a guide load has
+    /// taken over five seconds to start.
     private func wait(_ condition: () -> Bool) async throws {
-        for _ in 0..<200 {
+        let deadline = ContinuousClock.now + .seconds(20)
+        while ContinuousClock.now < deadline {
             if condition() { return }
             try await Task.sleep(for: .milliseconds(25))
         }
-        Issue.record("timed out")
+        if !condition() { Issue.record("timed out") }
     }
 
     @Test("guide-data/login-not-on-this-device Keychain miss and failure reach the guide")
