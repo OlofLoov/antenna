@@ -163,6 +163,27 @@ import Testing
         #expect(playlist.epgURLs.isEmpty)
     }
 
+    @Test("m3u-playlists/leading-byte-order-mark-is-ignored header after a byte-order mark keeps its guide links")
+    func byteOrderMarkBeforeHeader() throws {
+        let playlist = parse("\u{FEFF}" + #"#EXTM3U url-tvg="http://a/epg.xml""#)
+        #expect(playlist.epgURLs == [try #require(URL(string: "http://a/epg.xml"))])
+    }
+
+    @Test("m3u-playlists/leading-byte-order-mark-is-ignored first channel after a byte-order mark is kept")
+    func byteOrderMarkBeforeFirstChannel() throws {
+        let playlist = parse("\u{FEFF}#EXTINF:-1,One\nhttp://s/1.ts")
+        let channel = try #require(playlist.channels.first)
+        #expect(channel.name == "One")
+        #expect(channel.streamURL.absoluteString == "http://s/1.ts")
+    }
+
+    @Test("m3u-playlists/leading-byte-order-mark-is-ignored a lone byte-order mark is empty input")
+    func byteOrderMarkOnly() {
+        let playlist = parse("\u{FEFF}")
+        #expect(playlist.channels.isEmpty)
+        #expect(playlist.epgURLs.isEmpty)
+    }
+
     @Test("m3u-playlists/group-list-preserves-first-seen-order group list keeps first-seen order")
     func groupOrder() {
         let playlist = parse(
