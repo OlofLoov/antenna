@@ -164,14 +164,17 @@ public actor FixtureServer {
         }
         connection.start(queue: queue)
         do {
-            guard let head = try await Self.readHead(connection), var request = Self.parse(head) else {
-                connection.cancel()
-                return
+            var keepOpen = true
+            while keepOpen {
+                guard let head = try await Self.readHead(connection), var request = Self.parse(head) else {
+                    connection.cancel()
+                    return
+                }
+                request.openAtArrival = pathsByConnection.filter { $0.key != key }.map(\.value).sorted()
+                pathsByConnection[key] = request.path
+                requests.append(request)
+                keepOpen = try await respond(to: request, on: connection)
             }
-            request.openAtArrival = pathsByConnection.filter { $0.key != key }.map(\.value).sorted()
-            pathsByConnection[key] = request.path
-            requests.append(request)
-            try await respond(to: request, on: connection)
         } catch {
             connection.cancel()
         }
@@ -192,22 +195,24 @@ public actor FixtureServer {
         return fallback[path] ?? .serve
     }
 
-    private func respond(to request: Request, on connection: NWConnection) async throws {
+    /// Answers one request. Returns true when the connection stays open for
+    /// the client's next request, which only a range request asks for.
+    private func respond(to request: Request, on connection: NWConnection) async throws -> Bool {
         let behavior = nextBehavior(for: request.path)
         print("DIAG server:", request.method, request.path, request.headers["range"] ?? "-", request.headers["user-agent"] ?? "-")
         switch behavior {
         case .refuse:
             connection.cancel()
-            return
+            return false
         case .status(let code):
             let body = Data("status \(code)\n".utf8)
             try await Self.send(connection, head: Self.head(status: code, type: "text/plain", length: body.count), body: body, final: true)
             await Self.finish(connection)
-            return
+            return false
         case .body(let data, let type):
             try await Self.send(connection, head: Self.head(status: 200, type: type, length: data.count), body: data, final: true)
             await Self.finish(connection)
-            return
+            return false
         case .serve, .ignoreRanges, .stall, .cut:
             break
         }
@@ -215,7 +220,7 @@ public actor FixtureServer {
             let body = Data("not found\n".utf8)
             try await Self.send(connection, head: Self.head(status: 404, type: "text/plain", length: body.count), body: body, final: true)
             await Self.finish(connection)
-            return
+            return false
         }
         let type = Self.contentType(for: request.path)
         var status = 200
@@ -240,9 +245,16 @@ public actor FixtureServer {
             try await Self.send(connection, head: head, body: slice.prefix(bytes))
             connection.cancel()
         default:
-            try await Self.send(connection, head: head, body: request.method == "HEAD" ? Data() : slice, final: true)
+            let body = request.method == "HEAD" ? Data() : slice
+            if request.headers["range"] != nil, request.headers["connection"]?.lowercased() != "close" {
+                let open = Self.head(status: status, type: type, length: slice.count, extra: extra, keepAlive: true)
+                try await Self.send(connection, head: open, body: body)
+                return true
+            }
+            try await Self.send(connection, head: head, body: body, final: true)
             await Self.finish(connection)
         }
+        return false
     }
 
 }
@@ -322,7 +334,7 @@ extension FixtureServer {
 
     // MARK: HTTP
 
-    static func head(status: Int, type: String, length: Int, extra: [String] = []) -> String {
+    static func head(status: Int, type: String, length: Int, extra: [String] = [], keepAlive: Bool = false) -> String {
         let reason =
             switch status {
             case 200: "OK"
@@ -336,7 +348,10 @@ extension FixtureServer {
             default: "Status"
             }
         let lines =
-            ["HTTP/1.1 \(status) \(reason)", "Content-Type: \(type)", "Content-Length: \(length)", "Connection: close"] + extra
+            [
+                "HTTP/1.1 \(status) \(reason)", "Content-Type: \(type)", "Content-Length: \(length)",
+                "Connection: \(keepAlive ? "keep-alive" : "close")",
+            ] + extra
         return lines.joined(separator: "\r\n") + "\r\n\r\n"
     }
 
