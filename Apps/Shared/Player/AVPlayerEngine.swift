@@ -344,6 +344,13 @@ final class AVPlayerEngine: PlaybackEngine {
     /// read; the error and its user info, which can hold the address, are
     /// dropped.
     nonisolated static func failure(from error: (any Error)?) -> PlaybackFailure {
+        var trace = error as NSError?
+        var chain: [String] = []
+        while let nsError = trace {
+            chain.append("\(nsError.domain) \(nsError.code)")
+            trace = nsError.userInfo[NSUnderlyingErrorKey] as? NSError
+        }
+        print("DIAG engine failure:", chain.isEmpty ? "no error" : chain.joined(separator: " <- "))
         guard let error else { return .unreadable }
         var current: NSError? = error as NSError
         while let nsError = current {
