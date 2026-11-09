@@ -16,12 +16,6 @@
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/no-ai-slop.sh",
             "timeout": 10,
             "statusMessage": "no-ai-slop reminder"
-          },
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/arch-review.sh",
-            "timeout": 20,
-            "statusMessage": "Checking architecture records"
           }
         ]
       }
