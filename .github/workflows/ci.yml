@@ -107,7 +107,7 @@ jobs:
     runs-on: macos-26
     needs: core
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Ensure iOS simulator runtime
         run: |
           set -e
@@ -130,7 +130,7 @@ jobs:
             CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
       - name: Upload snapshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: preview-snapshots
           path: snapshot-images
@@ -141,7 +141,7 @@ jobs:
     runs-on: macos-26
     needs: core
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Ensure iOS simulator runtime
         run: |
           set -e
@@ -164,7 +164,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
       - name: Upload result bundle
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ui-tests-xcresult
           path: ui-tests.xcresult
@@ -175,7 +175,7 @@ jobs:
     runs-on: macos-26
     needs: core
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Ensure tvOS simulator runtime
         run: |
           set -e
@@ -204,7 +204,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
       - name: Upload result bundle
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: tv-tests-xcresult
           path: |
