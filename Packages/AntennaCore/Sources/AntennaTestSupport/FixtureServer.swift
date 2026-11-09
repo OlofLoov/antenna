@@ -201,20 +201,20 @@ public actor FixtureServer {
             return
         case .status(let code):
             let body = Data("status \(code)\n".utf8)
-            try await Self.send(connection, head: Self.head(status: code, type: "text/plain", length: body.count), body: body)
-            connection.cancel()
+            try await Self.send(connection, head: Self.head(status: code, type: "text/plain", length: body.count), body: body, final: true)
+            await Self.finish(connection)
             return
         case .body(let data, let type):
-            try await Self.send(connection, head: Self.head(status: 200, type: type, length: data.count), body: data)
-            connection.cancel()
+            try await Self.send(connection, head: Self.head(status: 200, type: type, length: data.count), body: data, final: true)
+            await Self.finish(connection)
             return
         case .serve, .ignoreRanges, .stall, .cut:
             break
         }
         guard let file = content(for: request.path) else {
             let body = Data("not found\n".utf8)
-            try await Self.send(connection, head: Self.head(status: 404, type: "text/plain", length: body.count), body: body)
-            connection.cancel()
+            try await Self.send(connection, head: Self.head(status: 404, type: "text/plain", length: body.count), body: body, final: true)
+            await Self.finish(connection)
             return
         }
         let type = Self.contentType(for: request.path)
@@ -240,8 +240,8 @@ public actor FixtureServer {
             try await Self.send(connection, head: head, body: slice.prefix(bytes))
             connection.cancel()
         default:
-            try await Self.send(connection, head: head, body: request.method == "HEAD" ? Data() : slice)
-            connection.cancel()
+            try await Self.send(connection, head: head, body: request.method == "HEAD" ? Data() : slice, final: true)
+            await Self.finish(connection)
         }
     }
 
@@ -381,16 +381,34 @@ extension FixtureServer {
         }
     }
 
-    static func send(_ connection: NWConnection, head: String, body: Data) async throws {
+    /// Sends the head and body. `final` marks the response as the last data
+    /// on the connection, so the peer reads it all before the close.
+    static func send(_ connection: NWConnection, head: String, body: Data, final: Bool = false) async throws {
         var data = Data(head.utf8)
         data.append(body)
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
             connection.send(
                 content: data,
+                contentContext: final ? .finalMessage : .defaultMessage,
+                isComplete: final,
                 completion: .contentProcessed { error in
                     if let error { continuation.resume(throwing: error) } else { continuation.resume() }
                 })
         }
+    }
+}
+
+extension FixtureServer {
+    /// Waits for the peer to close after a final response, at most two
+    /// seconds, then cancels the connection.
+    static func finish(_ connection: NWConnection) async {
+        let deadline = Task {
+            try? await Task.sleep(for: .seconds(2))
+            connection.cancel()
+        }
+        while (try? await receive(connection)) != nil {}
+        deadline.cancel()
+        connection.cancel()
     }
 }
 
