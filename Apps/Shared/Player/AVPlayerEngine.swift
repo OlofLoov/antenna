@@ -190,7 +190,15 @@ final class AVPlayerEngine: PlaybackEngine {
         observe(item)
         player.replaceCurrentItem(with: item)
         while item.status != .readyToPlay {
-            if item.status == .failed { throw Self.failure(from: item.error) }
+            if item.status == .failed {
+                for event in item.errorLog()?.events ?? [] {
+                    print("DIAG errorLog:", event.errorStatusCode, event.errorDomain, event.errorComment ?? "-", event.uri ?? "-")
+                }
+                for event in item.accessLog()?.events ?? [] {
+                    print("DIAG accessLog:", event.uri ?? "-", event.numberOfBytesTransferred)
+                }
+                throw Self.failure(from: item.error)
+            }
             try await Task.sleep(for: .milliseconds(50))
             guard generation == mine else { throw CancellationError() }
         }

@@ -194,6 +194,7 @@ public actor FixtureServer {
 
     private func respond(to request: Request, on connection: NWConnection) async throws {
         let behavior = nextBehavior(for: request.path)
+        print("DIAG server:", request.method, request.path, request.headers["range"] ?? "-", request.headers["user-agent"] ?? "-")
         switch behavior {
         case .refuse:
             connection.cancel()
