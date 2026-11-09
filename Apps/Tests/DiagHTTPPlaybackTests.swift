@@ -5,7 +5,7 @@ import Testing
 
 @MainActor
 @Suite(.serialized) struct DiagHTTPPlaybackTests {
-    nonisolated static let variants = ["plain", "localhost", "cookies", "noranges"]
+    nonisolated static let variants = ["plain", "public", "localhost", "noranges"]
 
     @Test("diag: plain AVPlayer over the fixture server", arguments: variants)
     func opens(variant: String) async throws {
@@ -15,8 +15,9 @@ import Testing
             base = try #require(URL(string: "http://localhost:\(port)/"))
         }
         if variant == "noranges" { await server.always("/film.mp4", .ignoreRanges) }
-        let url = base.appending(path: "film.mp4")
-        let options: [String: Any] = variant == "cookies" ? [AVURLAssetHTTPCookiesKey: [HTTPCookie]()] : [:]
+        var url = base.appending(path: "film.mp4")
+        if variant == "public" { url = try #require(URL(string: "https://www.w3schools.com/html/mov_bbb.mp4")) }
+        let options: [String: Any] = [:]
         let item = AVPlayerItem(asset: AVURLAsset(url: url, options: options))
         let player = AVPlayer(playerItem: item)
         var waited = 0

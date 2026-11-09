@@ -351,6 +351,8 @@ extension FixtureServer {
             [
                 "HTTP/1.1 \(status) \(reason)", "Content-Type: \(type)", "Content-Length: \(length)",
                 "Connection: \(keepAlive ? "keep-alive" : "close")",
+                "Date: Mon, 09 Nov 2026 12:00:00 GMT", "Last-Modified: Mon, 02 Nov 2026 12:00:00 GMT",
+                "ETag: \"fixture-\(length)\"", "Server: FixtureServer",
             ] + extra
         return lines.joined(separator: "\r\n") + "\r\n\r\n"
     }
