@@ -83,13 +83,18 @@ extension AVPlayerEngine {
         cuesCast.send([])
     }
 
+    /// Takes the item off the player and cancels its asset's loading, so
+    /// Apple's player stops fetching (and retrying) the old address at once
+    /// instead of when the asset is freed.
     func removeItem() {
         itemObservation?.invalidate()
         itemObservation = nil
         itemTokens.forEach(NotificationCenter.default.removeObserver)
         itemTokens = []
         player.pause()
+        let asset = player.currentItem?.asset
         player.replaceCurrentItem(with: nil)
+        asset?.cancelLoading()
     }
 
     // MARK: Ending
