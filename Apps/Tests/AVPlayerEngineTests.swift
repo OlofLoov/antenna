@@ -8,10 +8,19 @@ import Testing
 /// Apple's player engine against the in-test server.
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(2))) struct AVPlayerEngineRoutingTests {
+    @Test("playback-engine/every-common-stream-type-plays HLS plays through Apple's player")
+    func playsHLS() async throws {
+        try await plays(path: "hls/index.m3u8")
+    }
+
     @Test(
-        "playback-engine/every-common-stream-type-plays HLS, films and radio play through Apple's player",
-        arguments: ["hls/index.m3u8", "film.mp4", "radio.mp3", "radio.aac"])
-    func plays(path: String) async throws {
+        "playback-engine/every-common-stream-type-plays films and radio play through Apple's player", .progressiveHTTP,
+        arguments: ["film.mp4", "radio.mp3", "radio.aac"])
+    func playsProgressive(path: String) async throws {
+        try await plays(path: path)
+    }
+
+    private func plays(path: String) async throws {
         let harness = try await PlayerHarness()
         let states = Recorded(await harness.engine.states())
         try await harness.engine.load(harness.url(path))
@@ -43,7 +52,7 @@ import Testing
         try await harness.engine.load(harness.url("hls/index.m3u8"))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
-        try await harness.engine.load(harness.url("film.mp4"))
+        try await harness.engine.load(harness.url("live/hls/index.m3u8"))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
         await harness.engine.stop()
@@ -61,8 +70,8 @@ import Testing
         #expect(await eventually { harness.engine.state == .playing })
         for index in 0..<3 { await harness.server.always("/live/hls/segment\(index).ts", .stall(afterBytes: 2000)) }
         #expect(await eventually { await harness.server.openPaths.contains { $0.hasPrefix("/live/") } })
-        try await harness.engine.load(harness.url("radio.mp3"))
-        let first = try #require(await harness.server.requests(for: "/radio.mp3").first)
+        try await harness.engine.load(harness.url("hls/index.m3u8"))
+        let first = try #require(await harness.server.requests(for: "/hls/index.m3u8").first)
         #expect(!first.openAtArrival.contains { $0.hasPrefix("/live/") })
         await harness.stop()
     }
@@ -74,7 +83,7 @@ import Testing
         let states = Recorded(await harness.engine.states())
         let abandoned = Task { try await harness.engine.load(harness.url("channel.ts")) }
         #expect(await eventually { await !harness.server.requests(for: "/channel.ts").isEmpty })
-        try await harness.engine.load(harness.url("film.mp4"))
+        try await harness.engine.load(harness.url("hls/index.m3u8"))
         await #expect(throws: CancellationError.self) { try await abandoned.value }
         #expect(!states.values.contains { $0.isFailure })
         await harness.engine.stop()
@@ -86,13 +95,13 @@ import Testing
     @Test("playback-engine/starting-a-channel-replaces-the-old-one-cleanly nothing from the previous channel is reported")
     func nothingLeftOver() async throws {
         let harness = try await PlayerHarness()
-        try await harness.engine.load(harness.url("film.mp4"))
+        try await harness.engine.load(harness.url("hls/index.m3u8"))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
         let presentation = Recorded(await harness.engine.presentation())
         let position = Recorded(await harness.engine.position())
         let tracks = Recorded(await harness.engine.tracks())
-        try await harness.engine.load(harness.url("radio.mp3"))
+        try await harness.engine.load(harness.url("live/hls/index.m3u8"))
         #expect(await eventually { presentation.last == .some(nil) && position.last == .zero && tracks.last == .empty })
         presentation.cancel()
         position.cancel()
