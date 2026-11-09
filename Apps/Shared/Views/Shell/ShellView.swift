@@ -37,6 +37,7 @@
         private func dependencies() -> ShellModel.Dependencies {
             #if DEBUG
                 if let scripted = UITestingShell.dependencies() { return scripted }
+                if let seeded = UITestingScreenshots.dependencies() { return seeded }
             #endif
             return .live(loader: loader, guide: guideStore)
         }
