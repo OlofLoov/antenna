@@ -38,9 +38,10 @@
   `@Test("m3u-playlists/empty-tvg-id-is-not-a-guide-id: ...")`. In an
   XCUITest the citation is a comment. The slug is the requirement name
   lowercased, with each run of other characters turned into one hyphen.
-  `scripts/check-spec-refs.sh` fails CI when a cited requirement is missing
-  from `openspec/specs/`, so a change that renames a requirement updates the
-  tests that cite it.
+  `scripts/check-spec-refs.sh` fails CI when a cited requirement is in
+  neither `openspec/specs/` nor the ADDED or MODIFIED section of an active
+  change, so a change that renames a requirement updates the tests that cite
+  it.
 - Benchmarks run only with `ANTENNA_BENCHMARKS=1`. Gate them with
   `.enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1")`.
 - UI tests use accessibility identifiers of the form `screen.element`
