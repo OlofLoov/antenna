@@ -12,6 +12,7 @@ swiftlint lint --strict                                  # conventions; brew ins
 scripts/check-rules.sh                                   # decision greps: layering, CloudKit, availability
 openspec validate --all --strict                         # specs and changes; npm install -g @fission-ai/openspec@1.16.0
 scripts/check-spec-refs.sh                               # every cited requirement exists in openspec/specs or an active change
+scripts/build-ffmpeg.sh macos                            # LGPL demux-only FFmpeg.framework; all platforms and the xcframework need Xcode
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO
