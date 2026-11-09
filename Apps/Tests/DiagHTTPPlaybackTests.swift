@@ -5,7 +5,7 @@ import Testing
 
 @MainActor
 @Suite(.serialized) struct DiagHTTPPlaybackTests {
-    static let variants = ["plain", "localhost", "cookies", "noranges"]
+    nonisolated static let variants = ["plain", "localhost", "cookies", "noranges"]
 
     @Test("diag: plain AVPlayer over the fixture server", arguments: variants)
     func opens(variant: String) async throws {
