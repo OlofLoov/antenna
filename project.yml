@@ -77,6 +77,17 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
 
+  AntennaJourneys:
+    type: bundle.ui-testing
+    supportedDestinations: [iOS]
+    sources:
+      - Apps/Journeys
+    dependencies:
+      - target: Antenna
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
   AntennaTV:
     type: application
     platform: tvOS
@@ -121,16 +132,28 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
 
+  AntennaTVJourneys:
+    type: bundle.ui-testing
+    platform: tvOS
+    sources:
+      - Apps/TVJourneys
+      - Apps/Journeys/Snap.swift
+    dependencies:
+      - target: AntennaTV
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
 schemes:
   Antenna:
     build:
-      targets: { Antenna: all, AntennaTests: [test], AntennaUITests: [test] }
+      targets: { Antenna: all, AntennaTests: [test], AntennaUITests: [test], AntennaJourneys: [test] }
     run: { config: Debug }
     test:
-      targets: [AntennaTests, AntennaUITests]
+      targets: [AntennaTests, AntennaUITests, AntennaJourneys]
   AntennaTV:
     build:
-      targets: { AntennaTV: all, AntennaTVTests: [test], AntennaTVUITests: [test] }
+      targets: { AntennaTV: all, AntennaTVTests: [test], AntennaTVUITests: [test], AntennaTVJourneys: [test] }
     run: { config: Debug }
     test:
-      targets: [AntennaTVTests, AntennaTVUITests]
+      targets: [AntennaTVTests, AntennaTVUITests, AntennaTVJourneys]
