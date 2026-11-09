@@ -14,7 +14,8 @@ Not reviewed yet.
 
 ## What Changes
 
-- Two ways to play behind one front door: Apple's player for HLS (Apple's streaming format) and ordinary video files, and a second path that reads raw broadcast streams with FFmpeg and decodes them on the device's video hardware. The app picks the path from the stream address and switches over if the guess was wrong.
+- Two ways to play behind one front door: Apple's player for HLS (Apple's streaming format) and ordinary video files, and a second path that unpacks raw broadcast streams, Matroska and AVI with FFmpeg and hands the picture and sound to Apple's hardware decoders and renderers. The app picks the path from the stream address and switches over if the guess was wrong.
+- Playback aims past what IPTV players usually manage: the old picture stays until the new channel's first frame, interlaced broadcasts are deinterlaced on the GPU, surround sound and Dolby Atmos pass through to the receiver, old SD channels in MPEG-2 play, and a language picked on a channel is used again when the user returns to it.
 - Screens can ask to play, pause, stop, jump to a time, and pick an audio or subtitle language.
 - Screens are told whether it is loading, playing, paused, waiting for data, reconnecting, finished or failed; the picture and sound format; the audio and subtitle languages; the current time; and subtitle text to draw.
 - A channel that fails to start is retried, and one that drops reconnects. Screens show the reconnect count the engine reports and do not retry on their own.
@@ -32,7 +33,6 @@ Out of scope:
 - DRM-protected streams.
 - AirPlay and external displays for the FFmpeg path.
 - Recording.
-- MPEG-2 video (old SD channels) on iPhone, iPad and Apple TV, which have no hardware decoder for it.
 - Picture-based subtitles and closed captions inside the video.
 - Saving how far the user got (change `add-movies-and-series-browsing`).
 - Stalker portal addresses.
@@ -49,6 +49,6 @@ None.
 ## Impact
 
 - Replaces the current player view's direct use of Apple's player; the rules script narrows where Apple's player types may appear.
-- Adds an FFmpeg build to the app targets, local network and background audio entries to the targets' settings, and a stream fixture script for tests.
+- Adds an FFmpeg build (built in CI and shipped as a binary Swift package) to the app targets, local network and background audio entries to the targets' settings, and a stream fixture script for tests.
 - Depends on: `m3u-playlists`, `xtream-live-source`, `guide-data` (address redaction), `xtream-vod-client`.
-- Blocked on: a decision on how FFmpeg is built, licensed and shipped for the second playback path. Until it lands, the change assumes an LGPL build linked dynamically, and the first step ships with Apple's player on both routes.
+- How FFmpeg is built, licensed and shipped is decided in design.md: an LGPL build of FFmpeg's demuxers plus the MPEG-2 and MP2 decoders, linked dynamically. Until that build lands, both routes play through Apple's player, so raw broadcast streams fail as unreadable.
