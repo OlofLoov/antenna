@@ -26,7 +26,7 @@ import Testing
         await harness.stop()
     }
 
-    @Test("playback-engine/pause-and-play-again a film continues within a second of where it stopped")
+    @Test("playback-engine/pause-and-play-again a film continues within a second of where it stopped", .progressiveHTTP)
     func filmResumesInPlace() async throws {
         let harness = try await PlayerHarness()
         let position = Recorded(await harness.engine.position())
@@ -76,7 +76,7 @@ import Testing
         await harness.engine.play()
         try await Task.sleep(for: .milliseconds(100))
         #expect(states.values == [.idle])
-        try await harness.engine.load(harness.url("film.mp4"))
+        try await harness.engine.load(harness.url("hls/index.m3u8"))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
         await harness.engine.pause()
@@ -92,7 +92,7 @@ import Testing
 
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(2))) struct AVPlayerEngineFilmTests {
-    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film opens at its saved time")
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film opens at its saved time", .progressiveHTTP)
     func opensAtTheSavedTime() async throws {
         let harness = try await PlayerHarness()
         let position = Recorded(await harness.engine.position())
@@ -105,7 +105,7 @@ import Testing
         await harness.stop()
     }
 
-    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a saved time past the end starts at the beginning")
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a saved time past the end starts at the beginning", .progressiveHTTP)
     func savedTimePastTheEnd() async throws {
         let harness = try await PlayerHarness()
         let position = Recorded(await harness.engine.position())
@@ -118,7 +118,9 @@ import Testing
         await harness.stop()
     }
 
-    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a skip lands within a second, past the end it finishes")
+    @Test(
+        "playback-engine/films-start-where-you-left-off-skip-and-end a skip lands within a second, past the end it finishes",
+        .progressiveHTTP)
     func skipAndFinish() async throws {
         let harness = try await PlayerHarness()
         let position = Recorded(await harness.engine.position())
@@ -141,7 +143,7 @@ import Testing
         await harness.stop()
     }
 
-    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film that plays to its end finishes")
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film that plays to its end finishes", .progressiveHTTP)
     func playsToTheEnd() async throws {
         let harness = try await PlayerHarness()
         try await harness.engine.load(harness.url("film.mp4"), options: PlaybackOptions(startPosition: .seconds(4)))
