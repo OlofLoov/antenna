@@ -57,6 +57,12 @@ final class LiveModel {
     private(set) var playing: Channel?
     /// The engine's state, as last reported.
     private(set) var playback: PlaybackState = .idle
+    /// The engine can move the picture into Picture in Picture.
+    private(set) var canPictureInPicture = false
+    /// The player controls are over the picture.
+    private(set) var controlsShown = false
+    /// The picture fills the window, or the iPhone screen.
+    private(set) var fullScreen = false
     /// False until the first `sourcesChanged`, so no empty state flashes at launch.
     private(set) var launched = false
     /// The description of the last failed source in source order
@@ -73,6 +79,8 @@ final class LiveModel {
     @ObservationIgnored private var failures: [UUID: String] = [:]
     @ObservationIgnored private var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
     @ObservationIgnored private var tuning: Task<Void, Never>?
+    @ObservationIgnored private var hiding: Task<Void, Never>?
+    @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -223,7 +231,10 @@ final class LiveModel {
     /// Follows the engine's state until the calling task ends.
     func observeEngine() async {
         for await state in await engine.states() {
+            let wasPaused = isPaused
             playback = state
+            // Paused, the controls stay; playing again, they go after a while.
+            if controlsShown, wasPaused != isPaused { showControls(after: lastInput) }
         }
     }
 
@@ -250,8 +261,51 @@ final class LiveModel {
                 return
             }
             guard !Task.isCancelled, playing == channel else { return }
+            canPictureInPicture = await engine.capabilities.supportsPictureInPicture
             await engine.play()
         }
+    }
+
+    var isPaused: Bool {
+        if case .paused = playback { return true }
+        return false
+    }
+
+    /// Pauses a playing channel, plays a paused one.
+    func playPause() {
+        guard playing != nil else { return }
+        if isPaused {
+            Task { await engine.play() }
+        } else {
+            Task { await engine.pause() }
+        }
+    }
+
+    /// Shows the player controls and hides them again when `ControlsTimer`
+    /// says (live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them).
+    /// The pointer leaving shows nothing that was hidden.
+    func showControls(after input: ControlsTimer.Input) {
+        guard playing != nil else { return }
+        lastInput = input
+        hiding?.cancel()
+        if input != .pointerLeft { controlsShown = true }
+        guard controlsShown, let delay = ControlsTimer.delay(after: input, isPaused: isPaused) else { return }
+        hiding = Task { [weak self] in
+            try? await Task.sleep(for: delay)
+            guard !Task.isCancelled else { return }
+            self?.controlsShown = false
+        }
+    }
+
+    func hideControls() {
+        hiding?.cancel()
+        controlsShown = false
+    }
+
+    /// Fills the window, or the iPhone screen, with the picture, or goes
+    /// back to the list (live-tv-on-iphone-ipad-mac/full-screen). The channel plays on.
+    func setFullScreen(_ on: Bool) {
+        fullScreen = on && playing != nil
     }
 
     /// What the now-playing line and the details say about `channel` at `date`.
@@ -269,6 +323,8 @@ final class LiveModel {
 
     private func stop() {
         playing = nil
+        fullScreen = false
+        hideControls()
         tuning?.cancel()
         Task { await engine.stop() }
     }
@@ -283,5 +339,30 @@ extension LiveModel.Dependencies {
             hasLogin: { loader.hasLogin($0) },
             guide: guide,
             programmes: .store(guide))
+    }
+}
+
+/// When the player controls go away
+/// (live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them).
+enum ControlsTimer {
+    /// What last kept the controls up.
+    enum Input: Equatable {
+        /// A tap, a click or a press on one of the controls.
+        case touch
+        /// The pointer moved over the picture.
+        case pointerInside
+        /// The pointer left the picture.
+        case pointerLeft
+    }
+
+    /// How long after `input` the controls hide, or nil while they stay:
+    /// paused, or with the pointer over the picture.
+    static func delay(after input: Input, isPaused: Bool) -> Duration? {
+        guard !isPaused else { return nil }
+        switch input {
+        case .touch: return .seconds(3)
+        case .pointerInside: return nil
+        case .pointerLeft: return .seconds(1)
+        }
     }
 }

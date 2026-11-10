@@ -73,6 +73,19 @@
         enum Folded { case sidebar, list }
 
         var body: some View {
+            if live.fullScreen {
+                // The picture fills the window (live-tv-on-iphone-ipad-mac/full-screen).
+                LivePicture()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
+                    .ignoresSafeArea()
+                    .environment(\.browseMetrics, .regular)
+            } else {
+                columns
+            }
+        }
+
+        private var columns: some View {
             GeometryReader { proxy in
                 let columns = LiveColumns(width: proxy.size.width)
                 ZStack(alignment: .topLeading) {

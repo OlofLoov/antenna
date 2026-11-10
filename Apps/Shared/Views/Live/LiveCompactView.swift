@@ -16,15 +16,20 @@
                 } else {
                     VStack(spacing: 0) {
                         LivePicture()
-                        if let channel = live.playing {
-                            LiveNowPlayingLine(channel: channel)
+                            .frame(maxHeight: live.fullScreen ? .infinity : nil)
+                        if !live.fullScreen {
+                            if let channel = live.playing {
+                                LiveNowPlayingLine(channel: channel)
+                            }
+                            content
+                                .frame(maxHeight: .infinity)
                         }
-                        content
-                            .frame(maxHeight: .infinity)
                     }
+                    .ignoresSafeArea(edges: live.fullScreen ? .all : [])
                 }
             }
             .background(Palette.ground)
+            .fullScreenChrome(live.fullScreen)
             .overlay {
                 #if DEBUG
                     UITestingLive.Probe(engine: live.engine)
@@ -42,6 +47,20 @@
                     LiveChannelList()
                 }
             }
+        }
+    }
+
+    extension View {
+        /// Hides the tab bar and the status bar while the picture fills the
+        /// iPhone screen (live-tv-on-iphone-ipad-mac/full-screen).
+        @ViewBuilder func fullScreenChrome(_ on: Bool) -> some View {
+            #if os(iOS)
+                toolbar(on ? .hidden : .visible, for: .tabBar)
+                    .statusBarHidden(on)
+                    .persistentSystemOverlays(on ? .hidden : .automatic)
+            #else
+                self
+            #endif
         }
     }
 

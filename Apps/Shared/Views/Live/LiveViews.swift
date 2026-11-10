@@ -28,27 +28,6 @@
         }
     }
 
-    /// The picture area, 16:9: the playing channel, or "Select a channel"
-    /// before one is picked. The same engine feeds it in every layout.
-    struct LivePicture: View {
-        @Environment(LiveModel.self) private var live
-
-        var body: some View {
-            Color.clear
-                .aspectRatio(16 / 9, contentMode: .fit)
-                .overlay {
-                    if live.playing != nil {
-                        PlayerSurfaceView(engine: live.engine)
-                    } else {
-                        Browse.NothingSelected()
-                    }
-                }
-                .clipped()
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("browse.player")
-        }
-    }
-
     /// The open group's channels in catalogue order, the playing one
     /// highlighted (live-tv-on-iphone-ipad-mac/pick-a-group). Each row says
     /// what is on now.

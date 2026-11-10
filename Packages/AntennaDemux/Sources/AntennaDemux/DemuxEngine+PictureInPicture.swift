@@ -49,6 +49,12 @@ extension DemuxEngine {
             return pictureInPicture.isPictureInPictureActive || pictureInPicture.isPictureInPicturePossible
         }
 
+        /// Moves the picture into the Picture in Picture window, when the
+        /// system allows it now. Call `enablePictureInPicture()` first.
+        public func startPictureInPicture() {
+            pictureInPicture?.startPictureInPicture()
+        }
+
         /// Tells the window the engine's play state or span changed.
         func pictureInPictureChanged() {
             pictureInPicture?.requiresLinearPlayback = isLive

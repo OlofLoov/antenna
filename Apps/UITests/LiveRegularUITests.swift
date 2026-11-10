@@ -112,4 +112,27 @@ final class LiveRegularUITests: XCTestCase {
         XCTAssertTrue(now.label.hasPrefix("No programme information"), now.label)
         XCTAssertFalse(app.element("browse.panel.next").exists)
     }
+
+    // live-tv-on-iphone-ipad-mac/full-screen, the picture fills the window on iPad
+    func testFullScreenFillsTheWindowWithThePictureAndItsControls() throws {
+        let app = try launch()
+        app.row(0).tap()
+        app.waitForEngine("playing loads=1")
+        app.element("browse.player.surface").tap()
+        XCTAssertTrue(app.element("browse.player.pip").waitForExistence(timeout: 2), "iPad shows Picture in Picture")
+        if !app.element("browse.player.controls").exists { app.element("browse.player.surface").tap() }
+        app.element("browse.player.fullscreen").tap()
+
+        let window = app.windows.firstMatch.frame
+        let sidebarGone = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == false"), object: app.element("browse.sidebar"))
+        XCTAssertEqual(XCTWaiter().wait(for: [sidebarGone], timeout: 3), .completed, "the columns stayed on screen")
+        XCTAssertEqual(app.element("browse.player").frame.width, window.width, accuracy: 1)
+        if !app.element("browse.player.controls").exists { app.element("browse.player.surface").tap() }
+        app.element("browse.player.fullscreen").tap()
+
+        XCTAssertTrue(app.element("browse.sidebar").waitForExistence(timeout: 3))
+        XCTAssertLessThan(app.element("browse.player").frame.width, window.width - 500)
+        app.waitForEngine("playing loads=1")
+    }
 }
