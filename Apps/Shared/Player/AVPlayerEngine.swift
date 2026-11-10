@@ -231,8 +231,10 @@ final class AVPlayerEngine: PlaybackEngine {
             await startAgain()
         case .paused:
             wantsPlay = true
-            if let stream, stream.isLive, let edge = player.currentItem?.seekableTimeRanges.last?.timeRangeValue.end {
-                // Live TV continues from what is on air now.
+            if let stream, stream.isLive, let edge = player.currentItem?.seekableTimeRanges.last?.timeRangeValue.end, edge.isNumeric {
+                // Live TV continues from what is on air now. Right after a
+                // pause the range can still be empty, and seeking to an
+                // invalid time throws; the player then resumes where it is.
                 await player.currentItem?.seek(to: edge, toleranceBefore: .positiveInfinity, toleranceAfter: .zero)
             }
             player.play()
