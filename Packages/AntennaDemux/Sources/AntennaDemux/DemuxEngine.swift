@@ -65,12 +65,12 @@ public final class DemuxEngine: PlaybackEngine {
     /// Streams kept open ahead of a zap, by address.
     var standby: [URL: Task<HTTPByteStream, any Error>] = [:]
     var generation = 0
-    private var wantsPlay = false
+    var wantsPlay = false
     private var hasPlayed = false
     /// Play opens the stream again instead of resuming it.
-    private var reopensOnPlay = false
+    var reopensOnPlay = false
     var isLive = true
-    private var budget = ReconnectBudget()
+    var budget = ReconnectBudget()
     private var ticker: Task<Void, Never>?
 
     #if os(iOS) || os(tvOS)
@@ -189,7 +189,7 @@ public final class DemuxEngine: PlaybackEngine {
     /// ahead for `url`, and starts a run, returning once its first frame is
     /// queued. Throws `CancellationError` when a newer load, stop or pause
     /// replaced it.
-    private func open(_ url: URL, options: PlaybackOptions, generation mine: Int) async throws {
+    func open(_ url: URL, options: PlaybackOptions, generation mine: Int) async throws {
         let session = self.session
         let sleep = self.sleep
         let ahead = standby.removeValue(forKey: url)
@@ -217,10 +217,12 @@ public final class DemuxEngine: PlaybackEngine {
         }
         let videoFeed = SampleFeed(renderer: videoLayer.sampleBufferRenderer, label: "video", limit: Self.videoLimit)
         let audioFeed = SampleFeed(renderer: audioRenderer, label: "audio", limit: Self.audioLimit)
-        let run = DemuxRun(bytes: bytes, videoFeed: videoFeed, audioFeed: audioFeed)
+        let source = SeekableSource(bytes, url: url, session: session)
+        let run = DemuxRun(bytes: source, videoFeed: videoFeed, audioFeed: audioFeed)
         current = Current(run: run, videoFeed: videoFeed, audioFeed: audioFeed)
         videoFeed.start()
         audioFeed.start()
+        let startAt = options.startPosition.map { CMTime(seconds: $0.inSeconds, preferredTimescale: 90000) }
         let timeout = firstFrameTimeout
         let watchdog = Task {
             try await Task.sleep(for: timeout)
@@ -235,6 +237,7 @@ public final class DemuxEngine: PlaybackEngine {
                         Task { @MainActor in self?.frameRateFound(rate, generation: mine) }
                     },
                     waitsForSound: !isScanning,
+                    startAt: startAt,
                     ended: { [weak self] failure in
                         Task { @MainActor in self?.bytesEnded(failure, generation: mine) }
                     })
@@ -254,11 +257,14 @@ public final class DemuxEngine: PlaybackEngine {
             matchDisplay(start)
         }
         startTicker()
+        // The synchronizer reports the new time a moment after setRate, so
+        // the first position comes from the start itself.
+        publishPosition(at: start.startTime)
     }
 
     /// Lets the stream that plays now go: its connection closes and the
     /// renderers are flushed, keeping the last picture and the format.
-    private func release() {
+    func release() {
         connecting?.cancel()
         connecting = nil
         reconnect?.cancel()
@@ -288,11 +294,13 @@ public final class DemuxEngine: PlaybackEngine {
         switch state {
         case .paused where reopensOnPlay:
             await startAgain()
+        case .ended:
+            await startAgain(fromStart: true)
         case .loading, .paused, .buffering:
             guard current?.start != nil else { return }
             wantsPlay = true
             synchronizer.rate = 1
-        case .idle, .playing, .reconnecting, .ended, .failed:
+        case .idle, .playing, .reconnecting, .failed:
             return
         }
     }
@@ -310,9 +318,9 @@ public final class DemuxEngine: PlaybackEngine {
             wantsPlay = false
             synchronizer.rate = 0
             publishPosition()
-            if isLive {
+            if isLive || current?.start?.canSeek == false {
                 // Live TV lets the provider's connections go; play opens
-                // what is on air then.
+                // what is on air then. A film that cannot skip starts again.
                 generation += 1
                 openAhead([])
                 release()
@@ -326,7 +334,7 @@ public final class DemuxEngine: PlaybackEngine {
 
     /// Opens the last address again and plays it, as after pausing live TV
     /// or a load or reconnect.
-    private func startAgain() async {
+    func startAgain(fromStart: Bool = false) async {
         guard let request else { return }
         generation += 1
         let mine = generation
@@ -335,7 +343,9 @@ public final class DemuxEngine: PlaybackEngine {
         budget = ReconnectBudget()
         set(.loading)
         do {
-            try await open(request.url, options: request.options, generation: mine)
+            var options = request.options
+            if fromStart { options.startPosition = nil }
+            try await open(request.url, options: options, generation: mine)
         } catch let failure as PlaybackFailure {
             guard generation == mine else { return }
             close()
@@ -343,10 +353,6 @@ public final class DemuxEngine: PlaybackEngine {
         } catch {
             return
         }
-    }
-
-    public func seek(to time: Duration) async throws {
-        throw isLive ? SeekRefusal.live : SeekRefusal.notSeekable
     }
 
     public func selectAudio(_ id: MediaTrack.ID) async {}
@@ -410,9 +416,10 @@ extension DemuxEngine {
 
     // MARK: Reporting
 
-    private func publishPosition() {
+    /// Reports where playback is: at `time` on the stream's clock, or now.
+    func publishPosition(at time: CMTime? = nil) {
         guard let current, let start = current.start else { return }
-        let elapsed = CMTimeSubtract(synchronizer.currentTime(), start.startTime)
+        let elapsed = CMTimeSubtract(time ?? synchronizer.currentTime(), start.origin)
         guard elapsed.isNumeric else { return }
         let duration = start.duration.map { Duration.seconds($0.seconds) }
         positionCast.send(PlaybackPosition(time: .seconds(max(0, elapsed.seconds)), duration: duration, isLive: isLive))
