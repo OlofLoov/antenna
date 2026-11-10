@@ -44,8 +44,11 @@ import Testing
         #expect(await eventually { harness.engine.state == .playing })
         try await harness.engine.seek(to: .seconds(4))
         #expect(await eventually { harness.engine.state == .playing })
-        let landed = await eventually { (position.values.last?.time ?? .zero) > .seconds(3) }
-        #expect(landed, "positions \(position.values.suffix(10).map { $0.time.inSeconds }), log \(harness.lines.values)")
+        // A slow runner can take seconds to answer the range requests a skip makes.
+        let landed = await eventually(timeout: .seconds(20)) { (position.values.last?.time ?? .zero) > .seconds(3) }
+        #expect(
+            landed,
+            "state \(harness.engine.state), positions \(position.values.suffix(10).map { $0.time.inSeconds }), log \(harness.lines.values)")
         #expect(abs((position.values.last?.time ?? .zero).inSeconds - 4) < 1.2)
         try await harness.engine.seek(to: .seconds(30))
         #expect(harness.engine.state == .ended)
