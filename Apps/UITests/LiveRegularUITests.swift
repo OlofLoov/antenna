@@ -135,4 +135,19 @@ final class LiveRegularUITests: XCTestCase {
         XCTAssertLessThan(app.element("browse.player").frame.width, window.width - 500)
         app.waitForEngine("playing loads=1")
     }
+
+    // live-tv-on-iphone-ipad-mac/star-a-channel, the sidebar count
+    func testTheStarRaisesAndLowersTheFavoritesCount() throws {
+        let app = try launch()
+        let favorites = app.element("browse.group.0")
+        XCTAssertTrue(favorites.label.hasSuffix("0"), favorites.label)
+        app.row(0).tap()
+        let star = app.element("browse.favorite")
+        XCTAssertTrue(star.waitForExistence(timeout: 5))
+
+        star.tap()
+        XCTAssertTrue(favorites.label.hasSuffix("1"), favorites.label)
+        star.tap()
+        XCTAssertTrue(favorites.label.hasSuffix("0"), favorites.label)
+    }
 }

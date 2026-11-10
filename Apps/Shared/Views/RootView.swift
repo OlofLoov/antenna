@@ -8,6 +8,7 @@
     struct RootView: View {
         @Environment(\.sourceLoader) private var loader
         @Environment(\.guideStore) private var guideStore
+        @Environment(\.currentProfile) private var profile
         @State private var live: LiveModel?
         @State private var lifecycle: PlaybackLifecycle?
         #if os(iOS)
@@ -61,7 +62,7 @@
             #if DEBUG
                 if let scripted = UITestingLive.dependencies() { return scripted }
             #endif
-            return .live(loader: loader, guide: guideStore)
+            return .live(loader: loader, guide: guideStore, profile: profile)
         }
     }
 

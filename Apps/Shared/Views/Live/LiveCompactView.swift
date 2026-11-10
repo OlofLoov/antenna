@@ -95,7 +95,7 @@
                 Browse.NowPlaying(title: text.title, detail: text.compact) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 } trailing: {
-                    EmptyView()
+                    LiveFavoriteButton(channel: channel)
                 }
             }
         }

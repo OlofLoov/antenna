@@ -182,6 +182,26 @@ final class LiveUITests: XCTestCase {
         let rowMoved = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS 'Second Half'"), object: row)
         XCTAssertEqual(XCTWaiter().wait(for: [rowMoved], timeout: 10), .completed, "the row still reads \(row.label)")
     }
+
+    // live-tv-on-iphone-ipad-mac/star-a-channel
+    func testTheStarAddsAndRemovesTheFavorite() throws {
+        let app = try launch()
+        app.row(1).tap()
+        let star = app.element("browse.favorite")
+        XCTAssertTrue(star.waitForExistence(timeout: 5))
+        XCTAssertEqual(star.label, "Add to favorites")
+
+        star.tap()
+        XCTAssertEqual(star.label, "Remove from favorites")
+        XCTAssertTrue(star.isSelected)
+        app.element("browse.group.0").tap()
+        XCTAssertTrue(app.row(1).waitForExistence(timeout: 2), "News Two is in Favorites")
+        XCTAssertFalse(app.row(0).exists)
+
+        star.tap()
+        XCTAssertEqual(star.label, "Add to favorites")
+        XCTAssertTrue(app.element("browse.emptyGroup").waitForExistence(timeout: 2), "Favorites is empty again")
+    }
 }
 
 extension XCUIApplication {
