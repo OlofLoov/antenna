@@ -70,6 +70,10 @@
     private struct CompactTabs: View {
         enum Tab: Hashable { case live, guide, movies, search, settings }
         @State private var selection: Tab = .live
+        @Environment(LiveModel.self) private var live
+        #if os(iOS)
+            @Environment(\.verticalSizeClass) private var verticalSizeClass
+        #endif
 
         var body: some View {
             TabView(selection: $selection) {
@@ -89,6 +93,15 @@
                     SettingsView()
                 }
             }
+            #if os(iOS)
+                // Turning an iPhone sideways on Live fills the screen with
+                // the picture; turning it back returns to the list
+                // (live-tv-on-iphone-ipad-mac/full-screen).
+                .onChange(of: verticalSizeClass) { _, size in
+                    guard selection == .live, UIDevice.current.userInterfaceIdiom == .phone else { return }
+                    live.setFullScreen(size == .compact)
+                }
+            #endif
         }
     }
 

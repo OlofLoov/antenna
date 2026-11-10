@@ -16,8 +16,8 @@
 
 - [x] 3.1 Play a picked channel in place without restarting the playing one, and verify with a UI test on the fake engine citing `live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list`
 - [x] 3.2 Show now and next in the details and the now-playing line, refreshing when a programme ends, and verify with core and UI tests citing `live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next`
-- [ ] 3.3 Show and hide the player controls and place the Picture in Picture button on iPhone and iPad, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them`
-- [ ] 3.4 Enter and leave full screen from the button and iPhone rotation, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/full-screen`
+- [x] 3.3 Show and hide the player controls and place the Picture in Picture button on iPhone and iPad, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them`
+- [x] 3.4 Enter and leave full screen from the button and iPhone rotation, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/full-screen`
 - [ ] 3.5 Add the keyboard shortcuts, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/keyboard-shortcuts`
 
 ## 4. Favorites
