@@ -95,13 +95,19 @@ public struct PresentationInfo: Sendable, Equatable {
         public var dynamicRange: DynamicRange
         /// A short codec name such as "h264" or "hevc".
         public var codec: String
+        /// True when the stream is interlaced. `frameRate` is then the rate
+        /// it is shown at after deinterlacing, one picture per field.
+        public var isInterlaced: Bool
 
-        public init(width: Int, height: Int, frameRate: Double?, dynamicRange: DynamicRange, codec: String) {
+        public init(
+            width: Int, height: Int, frameRate: Double?, dynamicRange: DynamicRange, codec: String, isInterlaced: Bool = false
+        ) {
             self.width = width
             self.height = height
             self.frameRate = frameRate
             self.dynamicRange = dynamicRange
             self.codec = codec
+            self.isInterlaced = isInterlaced
         }
     }
 

@@ -94,6 +94,55 @@ extension SampleBuilder {
         return buffer
     }
 
+    /// Whether an H.264 SPS allows field-coded (interlaced) pictures: its
+    /// frame_mbs_only_flag is 0. Nil when the SPS cannot be read.
+    static func h264IsInterlaced(sps: Data) -> Bool? {
+        var reader = BitReader(withoutEmulationPrevention(sps.dropFirst()))
+        guard let profile = reader.bits(8), reader.skip(16), reader.unsignedGolomb() != nil else { return nil }
+        if [100, 110, 122, 244, 44, 83, 86, 118, 128, 138, 139, 134, 135].contains(profile) {
+            guard let chroma = reader.unsignedGolomb() else { return nil }
+            if chroma == 3 { _ = reader.skip(1) }
+            guard reader.unsignedGolomb() != nil, reader.unsignedGolomb() != nil, reader.skip(1),
+                let scaling = reader.bits(1)
+            else { return nil }
+            if scaling == 1 {
+                for list in 0..<(chroma == 3 ? 12 : 8) where reader.bits(1) == 1 {
+                    guard reader.skipScalingList(size: list < 6 ? 16 : 64) else { return nil }
+                }
+            }
+        }
+        guard reader.unsignedGolomb() != nil, let order = reader.unsignedGolomb() else { return nil }
+        if order == 0 {
+            guard reader.unsignedGolomb() != nil else { return nil }
+        } else if order == 1 {
+            guard reader.skip(1), reader.signedGolomb() != nil, reader.signedGolomb() != nil,
+                let cycle = reader.unsignedGolomb()
+            else { return nil }
+            for _ in 0..<cycle where reader.signedGolomb() == nil { return nil }
+        }
+        guard reader.unsignedGolomb() != nil, reader.skip(1), reader.unsignedGolomb() != nil,
+            reader.unsignedGolomb() != nil, let frameOnly = reader.bits(1)
+        else { return nil }
+        return frameOnly == 0
+    }
+
+    /// The bytes of a NAL unit with its emulation-prevention bytes removed
+    /// (the 03 in each 00 00 03).
+    static func withoutEmulationPrevention(_ data: Data) -> [UInt8] {
+        var out: [UInt8] = []
+        out.reserveCapacity(data.count)
+        var zeros = 0
+        for byte in data {
+            if zeros >= 2, byte == 3 {
+                zeros = 0
+                continue
+            }
+            zeros = byte == 0 ? zeros + 1 : 0
+            out.append(byte)
+        }
+        return out
+    }
+
     // MARK: HEVC
 
     /// An HEVC NAL unit's type, from the first byte of its header.

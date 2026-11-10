@@ -23,6 +23,8 @@ struct DemuxStart: Sendable {
     var frameRate: Double?
     /// The first keyframe's format, for the TV's display criteria.
     let videoFormat: CMFormatDescription?
+    /// True when the stream is interlaced and shown deinterlaced.
+    let isInterlaced: Bool
     /// Channel count from the first sound, 0 without sound.
     let soundChannels: Int
 }
@@ -33,7 +35,7 @@ extension DemuxStart {
         let video = self.video.map {
             PresentationInfo.Video(
                 width: pictureSize.map { Int($0.width) } ?? $0.width, height: pictureSize.map { Int($0.height) } ?? $0.height,
-                frameRate: frameRate, dynamicRange: dynamicRange, codec: $0.codec)
+                frameRate: frameRate, dynamicRange: dynamicRange, codec: $0.codec, isInterlaced: isInterlaced)
         }
         let audio = self.audio.map { PresentationInfo.Audio(codec: $0.codec, channels: soundChannels, isDecodable: true) }
         return PresentationInfo(video: video, audio: audio)
@@ -180,6 +182,12 @@ final class DemuxRun: @unchecked Sendable {
         var announced = false
         var frameTimes: [Double] = []
         var rateKnown: Bool
+        /// Set for a stream whose pictures may be interlaced.
+        var fields: FieldPictures?
+        var fieldsDecided = false
+        /// Video before the first keyframe is dropped; after it, everything
+        /// goes to the builder, even while a decoder holds pictures back.
+        var sawKeyframe = false
     }
 
     /// Reads packets into the feeds until the end or `cancel`, calling
@@ -189,9 +197,17 @@ final class DemuxRun: @unchecked Sendable {
         var state = PumpState(rateKnown: prepared.video?.stream.frameRate != nil)
         reading: while !isCancelled, let packet = prepared.demuxer.nextPacket() {
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
-                if state.startTime == nil, !packet.isKeyframe { continue }
+                if !state.sawKeyframe, !packet.isKeyframe { continue }
+                state.sawKeyframe = true
+                if !state.fieldsDecided {
+                    state.fieldsDecided = true
+                    state.fields = Self.fieldPictures(for: builder, keyframe: packet)
+                }
                 for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
-                    guard takePicture(buffer, &state) else { break reading }
+                    let shown = (try? state.fields?.buffers(from: buffer)) ?? [buffer]
+                    for picture in shown {
+                        guard takePicture(picture, &state) else { break reading }
+                    }
                 }
             } else if packet.streamIndex == prepared.audio?.stream.index, let builder = prepared.audio {
                 for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
@@ -203,7 +219,8 @@ final class DemuxRun: @unchecked Sendable {
             let soundKnown = prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
             if !state.announced, let startTime = state.startTime, soundKnown {
                 state.announced = true
-                let start = describe(prepared, startTime: startTime, frameTimes: state.frameTimes)
+                let interlaced = state.fields.map { $0.sawFields || $0.isInterlacedBySPS } ?? false
+                let start = describe(prepared, startTime: startTime, frameTimes: state.frameTimes, interlaced: interlaced)
                 state.rateKnown = state.rateKnown || start.frameRate != nil || prepared.video == nil
                 ready(.success(start))
             }
@@ -252,7 +269,19 @@ final class DemuxRun: @unchecked Sendable {
             language: stream.language, frameRate: stream.frameRate, isDefault: stream.isDefault)
     }
 
-    private func describe(_ prepared: Prepared, startTime: CMTime, frameTimes: [Double]) -> DemuxStart {
+    /// Pictures of MPEG-2 can be interlaced frame by frame; H.264 only when
+    /// its SPS allows fields, and then VideoToolbox decodes it first.
+    private static func fieldPictures(for builder: SampleBuilder, keyframe: DemuxedPacket) -> FieldPictures? {
+        if builder.codecName == "mpeg2video" { return FieldPictures(decoder: nil) }
+        guard builder.codecName == "h264" else { return nil }
+        let sps = SampleBuilder.nalUnits(annexB: keyframe.data).first { SampleBuilder.h264Type($0) == 7 }
+        guard let sps, SampleBuilder.h264IsInterlaced(sps: sps) == true else { return nil }
+        _ = try? builder.sampleBuffer(for: keyframe)
+        guard let format = builder.formatDescription, let decoder = try? VideoDecoder(format: format) else { return nil }
+        return FieldPictures(decoder: decoder, isInterlacedBySPS: true)
+    }
+
+    private func describe(_ prepared: Prepared, startTime: CMTime, frameTimes: [Double], interlaced: Bool) -> DemuxStart {
         let picture = prepared.video?.formatDescription.map(CMVideoFormatDescriptionGetDimensions)
         let sound = prepared.audio?.formatDescription
             .flatMap(CMAudioFormatDescriptionGetStreamBasicDescription)
@@ -262,7 +291,7 @@ final class DemuxRun: @unchecked Sendable {
             audio: prepared.audio.map(Self.named), startTime: startTime, duration: prepared.demuxer.duration,
             pictureSize: picture, dynamicRange: prepared.video?.formatDescription.map(SampleBuilder.dynamicRange) ?? .sdr,
             frameRate: prepared.video.flatMap { $0.stream.frameRate ?? FrameRate.estimate(presentationTimes: frameTimes) },
-            videoFormat: prepared.video?.formatDescription,
+            videoFormat: prepared.video?.formatDescription, isInterlaced: interlaced,
             soundChannels: sound ?? prepared.audio?.stream.channels ?? 0)
     }
 

@@ -122,6 +122,16 @@ final class SoftwareDecoder: @unchecked Sendable {
                 out[2 * column + 1] = cr[column]
             }
         }
+        // Field order the way VideoToolbox marks it, so interlaced MPEG-2
+        // reaches the deinterlacer like interlaced H.264 does.
+        let flags = frame.pointee.flags
+        if flags & (1 << 3) != 0 {  // AV_FRAME_FLAG_INTERLACED
+            let topFirst = flags & (1 << 4) != 0  // AV_FRAME_FLAG_TOP_FIELD_FIRST
+            CVBufferSetAttachment(pixels, kCVImageBufferFieldCountKey, 2 as CFNumber, .shouldPropagate)
+            CVBufferSetAttachment(
+                pixels, kCVImageBufferFieldDetailKey,
+                topFirst ? kCVImageBufferFieldDetailTemporalTopFirst : kCVImageBufferFieldDetailTemporalBottomFirst, .shouldPropagate)
+        }
         if pixelFormat.map({ !CMVideoFormatDescriptionMatchesImageBuffer($0, imageBuffer: pixels) }) ?? true {
             var format: CMVideoFormatDescription?
             CMVideoFormatDescriptionCreateForImageBuffer(allocator: nil, imageBuffer: pixels, formatDescriptionOut: &format)
