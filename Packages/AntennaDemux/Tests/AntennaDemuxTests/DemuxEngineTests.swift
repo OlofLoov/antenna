@@ -148,7 +148,7 @@ func eventually(timeout: Duration = .seconds(10), _ condition: @MainActor () asy
 }
 
 /// The value a broadcast stream yields first, its current one.
-private func current<Value: Sendable>(_ stream: AsyncStream<Value>) async -> Value? {
+func current<Value: Sendable>(_ stream: AsyncStream<Value>) async -> Value? {
     var iterator = stream.makeAsyncIterator()
     return await iterator.next()
 }

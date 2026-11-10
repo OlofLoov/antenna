@@ -26,6 +26,7 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     private var failure: PlaybackFailure?
     private var response: HTTPURLResponse?
     private var responseWaiter: CheckedContinuation<Void, any Error>?
+    private var window: Int?
 
     /// The total body length when the server sent one; nil for live streams.
     public private(set) var expectedLength: Int?
@@ -78,6 +79,20 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         return taken
     }
 
+    /// While set, the stream is kept open ahead of a zap: it holds only its
+    /// newest bytes, about this many, and never pauses the download. Bytes
+    /// are dropped from the front in 188-byte steps, so an MPEG-TS stream
+    /// that started aligned stays aligned. Set it to nil before reading.
+    public var standbyWindow: Int? {
+        get { condition.withLock { window } }
+        set {
+            condition.withLock {
+                window = newValue
+                trimToWindow()
+            }
+        }
+    }
+
     /// Up to `count` bytes from the start of what is buffered, without
     /// taking them. Blocks until that many arrived or the body ended.
     public func peek(_ count: Int) -> Data {
@@ -109,6 +124,17 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         waiter?.resume(throwing: CancellationError())
     }
 
+    /// Drops the oldest bytes past `window`. Call with the lock held.
+    private func trimToWindow() {
+        guard let window, buffer.count > window else { return }
+        let excess = buffer.count - window
+        buffer.removeFirst(min(buffer.count, (excess + 187) / 188 * 188))
+        if suspended {
+            suspended = false
+            task?.resume()
+        }
+    }
+
     // MARK: URLSessionDataDelegate
 
     public func urlSession(
@@ -136,7 +162,8 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         condition.lock()
         buffer.append(data)
-        if buffer.count >= Self.bufferLimit, !suspended {
+        trimToWindow()
+        if window == nil, buffer.count >= Self.bufferLimit, !suspended {
             suspended = true
             dataTask.suspend()
         }
