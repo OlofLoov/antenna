@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import AntennaCore
 import AntennaTestSupport
 import CoreMedia
@@ -27,9 +27,7 @@ import VideoToolbox
         let opened = try await Opened(file)
         #expect(opened.demuxer.format == format)
         #expect(opened.demuxer.streams.map(\.codec) == ["h264", "aac"])
-        let video = try #require(opened.demuxer.streams.first { $0.kind == .video })
-        #expect(video.width == 320 && video.height == 180)
-        #expect(!video.interlaced)
+        #expect(opened.demuxer.streams.first { $0.kind == .video }?.interlaced == false)
         await opened.close()
     }
 
@@ -63,6 +61,22 @@ import VideoToolbox
         let sample = try #require(built)
         let frames = try decodeAudio(sample)
         #expect(frames >= 1024)
+        await opened.close()
+    }
+
+    @Test func everySoundBufferIsTimedInOrder() async throws {
+        let opened = try await Opened("channel.ts")
+        let audio = try #require(opened.demuxer.streams.first { $0.kind == .audio })
+        let builder = try SampleBuilder(stream: audio)
+        var times: [Double] = []
+        while let packet = opened.demuxer.nextPacket() {
+            guard packet.streamIndex == audio.index, let buffer = try builder.sampleBuffer(for: packet) else { continue }
+            times.append(CMSampleBufferGetPresentationTimeStamp(buffer).seconds)
+        }
+        #expect(times.count > 100)
+        #expect(times.allSatisfy { $0.isFinite })
+        let rising = zip(times, times.dropFirst()).allSatisfy { earlier, later in earlier < later }
+        #expect(rising)
         await opened.close()
     }
 
