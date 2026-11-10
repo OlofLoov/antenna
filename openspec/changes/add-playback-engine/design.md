@@ -45,7 +45,7 @@ Options considered for raw broadcast streams, Matroska and AVI:
 | A local server that repackages TS as HLS for Apple's player | No licence questions and AirPlay keeps working, but tuning waits for whole segments (2 to 4 seconds), missing the 1.0 second switching target. No Matroska, no MPEG-2. |
 | **FFmpeg unpacks, Apple decodes and renders** | Chosen. FFmpeg only demuxes. Compressed H.264, HEVC, AAC, AC-3 and E-AC-3 go as `CMSampleBuffer`s to `AVSampleBufferVideoRenderer` and `AVSampleBufferAudioRenderer` under one `AVSampleBufferRenderSynchronizer`, which decode in hardware and handle HDR, Atmos passthrough and PiP. |
 
-`DemuxEngine` in `Apps/Shared/Player/` owns the pipeline:
+The pipeline and `DemuxEngine` live in `Packages/AntennaDemux` (`HTTPByteStream`, `Demuxer`, `SampleBuilder`, the engine), which depends on AntennaCore and `Packages/FFmpeg` and runs its tests with `swift test` on macOS, decoding the built sample buffers with VideoToolbox and AVAudioConverter. AntennaCore stays free of FFmpeg and AVFoundation. The pipeline:
 
 ```
 URLSession (ephemeral) -> AVIO read callback -> libavformat demux
