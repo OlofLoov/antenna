@@ -70,6 +70,7 @@
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
         @State private var zapBar = ZapBarModel()
+        @State private var numbers = NumberEntryModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
         @State private var barLowered = ContinuousClock.now - .seconds(10)
         @State private var overlay = ChannelOverlayModel()
@@ -82,7 +83,7 @@
         var body: some View {
             ZStack(alignment: .topLeading) {
                 picture
-                liveScreen
+                ShellLiveLayer(model: model, focus: $focus)
                 tabContent
                 if zapBarShows, let channel = zapBar.channel {
                     ZapBarView(
@@ -119,6 +120,10 @@
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.tab)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: zapBarShows)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.pickerOpen)
+            .numberEntry(
+                numbers, enabled: model.tab == .live && !model.barVisible && !model.pickerOpen && model.tuned != nil,
+                catalogue: catalogue, typing: { zapBar.dismiss() }, tune: { channel in Task { await model.pick(channel) } }
+            )
             .onExitCommand(perform: menu)
             .onPlayPauseCommand {
                 guard model.tab == .live, !model.barVisible else { return }
@@ -126,7 +131,8 @@
                     Task { await model.togglePlayback() }
                     return
                 }
-                // Play/pause in full-screen live TV shows the info bar; the video plays on.
+                // Play/pause in full-screen live TV drops half-typed digits and shows the info bar.
+                numbers.cancel()
                 zapBar.playPause()
             }
             .onChange(of: catalogueInputs, initial: true) {
@@ -188,6 +194,7 @@
                     // bar lands here and `move` lowers the bar.
                     Button {
                         guard !model.barVisible else { return }
+                        if numbers.isOpen { return numbers.commit() }
                         // Select while the info bar shows hides it, then opens the list.
                         zapBar.dismiss()
                         let target = overlay.open(catalogue, playing: model.tuned)
@@ -201,31 +208,6 @@
                     .accessibilityLabel("Live picture")
                     .accessibilityIdentifier("shell.picture")
                     .focused($focus, equals: .picture)
-                }
-            }
-        }
-
-        @ViewBuilder private var liveScreen: some View {
-            if model.tab == .live {
-                switch model.liveScreen {
-                case .playing:
-                    EmptyView()
-                case .loading:
-                    ShellLoading.Screen(rows: model.sources.map(\.loadingRow))
-                        .focusable()
-                        .focusEffectDisabled()
-                        .focused($focus, equals: .liveScreen)
-                        .accessibilityElement(children: .contain)
-                        .accessibilityIdentifier("shell.loading")
-                case .empty:
-                    ShellEmpty.Screen(lines: model.sources.filter(\.state.addedNothing).map(\.emptyLine)) {
-                        ShellEmpty.RetryButton {
-                            model.retry()
-                            focus = .liveScreen
-                        }
-                        .focused($focus, equals: .liveScreen)
-                        .accessibilityIdentifier("shell.retry")
-                    }
                 }
             }
         }
@@ -317,6 +299,7 @@
         }
 
         private func menu() {
+            if numbers.isOpen { return numbers.cancel() }
             if model.pickerOpen {
                 model.closePicker()
                 focus = .picture
@@ -392,6 +375,7 @@
         /// Up and down on the full-screen picture change channel within the
         /// current list; a list of one shows the bar again for the same channel.
         private func zap(_ direction: MoveCommandDirection) {
+            numbers.cancel()
             let steps: Int
             switch direction {
             case .up: steps = 1
