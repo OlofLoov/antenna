@@ -79,10 +79,13 @@
                 liveScreen
                 tabContent
                 if zapBarShows, let channel = zapBar.channel {
-                    ZapBarView(channel: channel)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                        .allowsHitTesting(false)
-                        .transition(.opacity)
+                    ZapBarView(
+                        channel: channel, catalogue: catalogue, list: overlay.currentList(catalogue, for: channel), guide: overlayGuide,
+                        engine: model.engine
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
                 }
                 if model.dimmed { ShellScrim() }
                 if model.barVisible { bar }

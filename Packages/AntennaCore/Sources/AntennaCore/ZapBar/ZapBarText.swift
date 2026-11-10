@@ -52,3 +52,45 @@ public enum QualityBadge {
         return SoundFormat.display(codec: audio.codec, channels: audio.channels)
     }
 }
+
+/// The rest of the zap bar's words (tv-zap-bar-and-number-entry capability).
+public enum ZapBarText {
+    public static let guideUnavailable = "Guide unavailable"
+    public static let browseHint = "Press to browse channels"
+
+    /// The programme on now, or the guide grid's wording in its place:
+    /// "Loading guide…" while it loads, "Guide unavailable" after it failed,
+    /// "No programme information" otherwise
+    /// (tv-zap-bar-and-number-entry/what-is-on-and-what-is-next).
+    public static func line(state: GuideLoadingState, current: Programme?, now: Date) -> GuideLine {
+        let line = GuideLine(state: state, current: current, now: now)
+        if case .message = line, case .failed = state { return .message(guideUnavailable) }
+        return line
+    }
+
+    /// "Sport · 4 of 42", from the list's name and the 1-based position in it
+    /// (tv-zap-bar-and-number-entry/which-channel-this-is).
+    public static func position(list: String, index: Int, count: Int) -> String {
+        "\(list) · \(index) of \(count)"
+    }
+
+    /// The badges for the stream's state and format: LIVE, then the picture
+    /// size and the sound, only while it plays; none while it loads, buffers
+    /// or after a failure (tv-zap-bar-and-number-entry/picture-and-sound-quality).
+    public static func badges(state: PlaybackState, presentation: PresentationInfo?) -> [String] {
+        guard state == .playing else { return [] }
+        let picture = presentation?.video.flatMap { QualityBadge.picture(height: $0.height) }
+        let sound = presentation?.audio.flatMap(QualityBadge.sound)
+        return ["LIVE"] + [picture, sound].compactMap(\.self)
+    }
+}
+
+extension Channel {
+    /// The zap bar's footer before the browse hint: "Catch-up 7 days",
+    /// "Catch-up 1 day", "Catch-up" without a count, nil without catch-up
+    /// (tv-zap-bar-and-number-entry/catch-up-hint).
+    public var catchUpFooter: String? {
+        if let days = catchupDays, days > 0 { return "Catch-up \(days) \(days == 1 ? "day" : "days")" }
+        return hasCatchup ? "Catch-up" : nil
+    }
+}

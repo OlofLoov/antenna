@@ -12,10 +12,10 @@
 
 ## 3. Bar content
 
-- [ ] 3.1 Show logo or initials, number, name, and group with position or the Favorites and All channels names, and verify with a UI test citing `tv-zap-bar-and-number-entry/which-channel-this-is`
-- [ ] 3.2 Show current and next programme, progress and time left, with the no-programme, loading and unavailable wording, and verify with a UI test citing `tv-zap-bar-and-number-entry/what-is-on-and-what-is-next`
-- [ ] 3.3 Show the LIVE, picture and sound badges from the engine's state, absent while buffering, and verify with a UI test on a fake engine citing `tv-zap-bar-and-number-entry/picture-and-sound-quality`
-- [ ] 3.4 Show the catch-up footer or the browse hint, and verify with a UI test citing `tv-zap-bar-and-number-entry/catch-up-hint`
+- [x] 3.1 Show logo or initials, number, name, and group with position or the Favorites and All channels names, and verify with a UI test citing `tv-zap-bar-and-number-entry/which-channel-this-is`
+- [x] 3.2 Show current and next programme, progress and time left, with the no-programme, loading and unavailable wording, and verify with a UI test citing `tv-zap-bar-and-number-entry/what-is-on-and-what-is-next`
+- [x] 3.3 Show the LIVE, picture and sound badges from the engine's state, absent while buffering, and verify with a UI test on a fake engine citing `tv-zap-bar-and-number-entry/picture-and-sound-quality`
+- [x] 3.4 Show the catch-up footer or the browse hint, and verify with a UI test citing `tv-zap-bar-and-number-entry/catch-up-hint`
 
 ## 4. Channel up and down
 
