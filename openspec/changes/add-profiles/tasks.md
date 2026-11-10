@@ -12,7 +12,7 @@
 
 ## 3. Who's watching
 
-- [ ] 3.1 Add the picker on Apple TV (`TV-Profiles`) before the shell starts, with focus on the last profile used here and Menu doing nothing, and verify with a UI test citing `profiles/who-s-watching-at-launch`
+- [x] 3.1 Add the picker on Apple TV (`TV-Profiles`) before the shell starts, with focus on the last profile used here and Menu doing nothing, and verify with a UI test citing `profiles/who-s-watching-at-launch`
 - [ ] 3.2 Add the picker on iPhone, iPad and Mac (`iPhone-Profiles`) before the tabs, and verify with a UI test citing `profiles/who-s-watching-at-launch`
 - [ ] 3.3 Show nothing about profiles with one profile, and verify with UI tests on both platforms citing `profiles/who-s-watching-at-launch`
 
