@@ -66,6 +66,8 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.modelContext) private var context
         @State private var zapBar = ZapBarModel()
+        /// When the tab bar last went down; the press that lowered it does not also change channel.
+        @State private var barLowered = ContinuousClock.now - .seconds(10)
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
 
@@ -116,7 +118,10 @@
             .onExitCommand(perform: menu)
             .onPlayPauseCommand {
                 guard model.tab == .live, !model.barVisible else { return }
-                guard !model.pickerOpen else { return togglePlayback() }
+                guard !model.pickerOpen else {
+                    Task { await model.togglePlayback() }
+                    return
+                }
                 // Play/pause in full-screen live TV shows the info bar; the video plays on.
                 zapBar.playPause()
             }
@@ -298,17 +303,6 @@
             return nil
         }
 
-        /// Play/pause with the overlay open pauses or resumes the video; the overlay stays.
-        private func togglePlayback() {
-            Task {
-                if await model.engine.state == .paused {
-                    await model.engine.play()
-                } else {
-                    await model.engine.pause()
-                }
-            }
-        }
-
         /// The info bar shows on full-screen Live with nothing else over the picture.
         private var zapBarShows: Bool {
             zapBar.isVisible && model.tab == .live && !model.barVisible && !model.pickerOpen
@@ -368,15 +362,37 @@
                 focus = .tab(model.tab)
             case (.tab, .picture), (.tab, .liveScreen), (.tab, .content), (.settings, .picture), (.settings, .liveScreen),
                 (.settings, .content):
-                if model.barRaised, let target = model.swipeDown() { focus = target }
+                if model.barRaised, let target = model.swipeDown() {
+                    focus = target
+                    barLowered = .now
+                }
             default:
                 break
             }
         }
 
         private func move(_ direction: MoveCommandDirection) {
+            if focus == .picture, model.tab == .live, !model.barVisible, !model.pickerOpen {
+                guard ContinuousClock.now - barLowered > .milliseconds(500) else { return }
+                return zap(direction)
+            }
             guard direction == .down, barHasFocus, let target = model.swipeDown() else { return }
             focus = target
+            barLowered = .now
+        }
+
+        /// Up and down on the full-screen picture change channel within the
+        /// current list; a list of one shows the bar again for the same channel.
+        private func zap(_ direction: MoveCommandDirection) {
+            let steps: Int
+            switch direction {
+            case .up: steps = 1
+            case .down: steps = -1
+            default: return
+            }
+            guard let tuned = model.tuned, let next = overlay.step(catalogue, from: tuned, by: steps) else { return }
+            guard next != tuned else { return zapBar.playPause() }
+            Task { await model.pick(next) }
         }
     }
 

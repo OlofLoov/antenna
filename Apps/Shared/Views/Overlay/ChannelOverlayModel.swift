@@ -77,6 +77,18 @@
             return list
         }
 
+        /// The channel `steps` places from `channel` in its current list,
+        /// wrapping round at either end
+        /// (tv-zap-bar-and-number-entry/swipe-up-and-down-to-change-channel).
+        /// A list of one gives the same channel; nil when the channel is in
+        /// no list.
+        func step<Token>(_ catalogue: Catalogue<Token>, from channel: Channel, by steps: Int) -> Channel? {
+            let rows = catalogue.rows(in: currentList(catalogue, for: channel))
+            guard let key = RowKey(channel), let index = rows.firstIndex(of: key), !rows.isEmpty else { return nil }
+            let next = ((index + steps) % rows.count + rows.count) % rows.count
+            return catalogue.channel(for: rows[next])
+        }
+
         /// The highlight moved onto `group` in the group column.
         func show(_ group: CatalogueGroup) {
             self.group = group
