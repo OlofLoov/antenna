@@ -71,6 +71,9 @@ final class DemuxRun: @unchecked Sendable {
     private var answer: Once<Result<DemuxStart, any Error>>?
     private var rateFound: (@Sendable (Double) -> Void)?
     private var waitsForSound = true
+    /// Called when a film's saved time or skip target could not be reached
+    /// and it starts from the beginning instead.
+    var seekFailed: (@Sendable () -> Void)?
 
     /// Where a film starts, counted from its beginning; nil from the start.
     private var startAt: CMTime?
@@ -152,7 +155,7 @@ final class DemuxRun: @unchecked Sendable {
         // A saved time within a film that can skip: start at the keyframe
         // before it. Otherwise the film starts at the beginning.
         if let startAt, bytes.canSeek, let length = prepared.demuxer.duration, startAt < length {
-            _ = prepared.demuxer.seek(to: startAt)
+            if !prepared.demuxer.seek(to: startAt) { seekFailed?() }
         }
         let announced = pump(prepared, ready: ready)
         guard !isCancelled else { return }
