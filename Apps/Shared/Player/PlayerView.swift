@@ -1,9 +1,9 @@
 import AntennaCore
 import SwiftUI
 
-/// Plays one channel full screen through the routed engine. Both routes use
-/// Apple's player until the demuxing engine exists. Player controls come with
-/// the player controls change.
+/// Plays one channel full screen through the routed engine: HLS and files
+/// on Apple's player, raw broadcast streams, Matroska and AVI on the
+/// demuxing engine. Player controls come with the player controls change.
 struct PlayerView: View {
     let channel: Channel
     @State private var engine: RoutedEngine
@@ -11,10 +11,10 @@ struct PlayerView: View {
 
     init(channel: Channel) {
         self.channel = channel
-        let player = AVPlayerEngine()
-        let engine = RoutedEngine(system: player, demuxer: player)
+        let engine = RoutedEngine.app()
+        let player = AVPlayerEngine.resolve(engine)
         _engine = State(initialValue: engine)
-        _lifecycle = State(initialValue: PlaybackLifecycle(engine: engine) { player.continuesInPictureInPicture })
+        _lifecycle = State(initialValue: PlaybackLifecycle(engine: engine) { player?.continuesInPictureInPicture ?? false })
     }
 
     var body: some View {

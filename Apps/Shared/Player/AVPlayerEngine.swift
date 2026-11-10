@@ -5,8 +5,7 @@ import Foundation
 import os
 
 /// Apple's player behind `PlaybackEngine`. It plays HLS and the files the
-/// system can read. Until the demuxing engine exists it also stands behind
-/// the demuxer route, so a raw MPEG-TS stream fails here as unreadable.
+/// system can read; `DemuxEngine` plays the rest.
 ///
 /// Before each open it probes the address once through the ephemeral
 /// playback session, so refusals map to the same reasons the demuxer will

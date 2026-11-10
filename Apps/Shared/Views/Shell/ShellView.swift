@@ -46,10 +46,8 @@
     extension ShellModel.Dependencies {
         /// The engine, loader, Keychain check and clock the app runs on.
         @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?) -> Self {
-            // Both routes play on Apple's player until the demuxing engine exists.
-            let player = AVPlayerEngine()
-            return .init(
-                engine: RoutedEngine(system: player, demuxer: player),
+            .init(
+                engine: RoutedEngine.app(),
                 load: { try await loader.load($0) },
                 hasLogin: { loader.hasLogin($0) },
                 lastChannel: LastChannelStore(),
