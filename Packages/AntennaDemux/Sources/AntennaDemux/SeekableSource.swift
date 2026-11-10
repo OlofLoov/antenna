@@ -56,14 +56,7 @@ final class SeekableSource: @unchecked Sendable {
             return skip(target - position)
         }
         let next = HTTPByteStream(url: url, session: session, offset: target)
-        let opened = DispatchSemaphore(value: 0)
-        nonisolated(unsafe) var failed = false
-        Task {
-            do { try await next.open() } catch { failed = true }
-            opened.signal()
-        }
-        opened.wait()
-        guard !failed, next.status == 206 || target == 0 else {
+        guard next.openBlocking(), next.status == 206 || target == 0 else {
             next.cancel()
             return false
         }
