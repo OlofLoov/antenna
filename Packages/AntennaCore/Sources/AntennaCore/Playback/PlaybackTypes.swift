@@ -65,15 +65,19 @@ public struct PlaybackOptions: Sendable, Equatable {
     /// Language codes in the user's order, for example `["sv", "en"]`.
     public var preferredAudioLanguages: [String]
     public var preferredSubtitleLanguages: [String]
+    /// The languages last picked on this channel on this device. They win
+    /// over the preferences while the stream still has those tracks.
+    public var remembered: LanguagePick?
 
     public init(
         startPosition: Duration? = nil, isLive: Bool? = nil, preferredAudioLanguages: [String] = [],
-        preferredSubtitleLanguages: [String] = []
+        preferredSubtitleLanguages: [String] = [], remembered: LanguagePick? = nil
     ) {
         self.startPosition = startPosition
         self.isLive = isLive
         self.preferredAudioLanguages = preferredAudioLanguages
         self.preferredSubtitleLanguages = preferredSubtitleLanguages
+        self.remembered = remembered
     }
 }
 

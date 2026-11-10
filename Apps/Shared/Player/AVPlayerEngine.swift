@@ -1,6 +1,7 @@
 import AVFoundation
 import AVKit
 import AntennaCore
+import AntennaDemux
 import Foundation
 import os
 
@@ -51,6 +52,18 @@ final class AVPlayerEngine: PlaybackEngine {
     var playerObservation: NSKeyValueObservation?
     var timeObserver: Any?
     var pictureInPicture: AVPictureInPictureController?
+    /// Copies the picture on screen for `hold` when the item goes.
+    var videoOutput: AVPlayerItemVideoOutput?
+    /// The sound and subtitle choices of the item on the player.
+    var selection: MediaSelection?
+    var legibleRelay: LegibleRelay?
+    var presentationObservations: [NSKeyValueObservation] = []
+
+    /// The TV's mode on Apple TV, shared with the demuxing engine.
+    let display: DisplayMatcher
+    /// The last picture while the next item opens, shared with the
+    /// demuxing engine.
+    let hold: FrameHold
 
     /// Data but no picture for this long fails the stream as unreadable.
     static let firstFrameTimeout = Duration.seconds(15)
@@ -78,9 +91,13 @@ final class AVPlayerEngine: PlaybackEngine {
         session: URLSession = PlaybackNetwork.makeSession(),
         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
         readyTimeout: Duration = AVPlayerEngine.readyTimeout,
+        display: DisplayMatcher = DisplayMatcher(),
+        hold: FrameHold = FrameHold(),
         log: @escaping @Sendable (String) -> Void = { AVPlayerEngine.logger.info("\($0, privacy: .public)") }
     ) {
         self.readyTimeout = readyTimeout
+        self.display = display
+        self.hold = hold
         self.session = session
         self.sleep = sleep
         self.log = log
@@ -88,6 +105,8 @@ final class AVPlayerEngine: PlaybackEngine {
         // storage even when it sends none, and a cookie can carry the token.
         // Nothing else in the app uses the shared storage.
         HTTPCookieStorage.shared.cookieAcceptPolicy = .never
+        // Sound and subtitles follow `TrackChoice`, not the system's choice.
+        player.appliesMediaSelectionCriteriaAutomatically = false
         playerObservation = player.observe(\.timeControlStatus) { [weak self] _, _ in
             Task { @MainActor in self?.timeControlChanged() }
         }
@@ -183,8 +202,16 @@ final class AVPlayerEngine: PlaybackEngine {
     }
 
     func stop() async {
+        await handOver()
+        hold.clear()
+    }
+
+    /// Stops and leaves the last picture in `hold` for the demuxing engine's
+    /// first frame.
+    func handOver() async {
         generation += 1
         closeStream()
+        display.letGo()
         request = nil
         stream = nil
         wantsPlay = false
@@ -263,11 +290,6 @@ final class AVPlayerEngine: PlaybackEngine {
         await item.seek(to: target, toleranceBefore: Self.seekTolerance, toleranceAfter: Self.seekTolerance)
         publishPosition(onlyWhilePlaying: false)
     }
-
-    // MARK: Tracks
-
-    func selectAudio(_ id: MediaTrack.ID) async {}
-    func selectSubtitle(_ id: MediaTrack.ID?) async {}
 
     // MARK: Streams
 

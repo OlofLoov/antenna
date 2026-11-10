@@ -16,7 +16,10 @@ extension RoutedEngine {
     /// The engine every player screen uses: HLS and the files the system
     /// reads play on Apple's player, raw broadcast streams, Matroska and AVI
     /// on the demuxing engine.
+    /// Both share the TV's mode on Apple TV and the picture held over a switch.
     @MainActor static func app() -> RoutedEngine {
-        RoutedEngine(system: AVPlayerEngine(), demuxer: DemuxEngine())
+        let display = DisplayMatcher()
+        let hold = FrameHold()
+        return RoutedEngine(system: AVPlayerEngine(display: display, hold: hold), demuxer: DemuxEngine(display: display, hold: hold))
     }
 }

@@ -30,13 +30,15 @@ extension DemuxEngine {
         #if os(tvOS)
             guard let rate = start.frameRate, let format = start.videoFormat else { return }
             let mode = DisplayMode(frameRate: rate, dynamicRange: start.dynamicRange)
-            guard mode != displayMode else { return }
-            displayMode = mode
-            displayManager?.preferredDisplayCriteria = AVDisplayCriteria(refreshRate: Float(rate), formatDescription: format)
+            display.match(mode) { AVDisplayCriteria(refreshRate: Float(rate), formatDescription: format) }
         #endif
     }
 
     func set(_ new: PlaybackState) {
+        switch new {
+        case .playing, .failed: hold.clear()
+        default: break
+        }
         stateCast.sendIfChanged(new)
         #if os(iOS) || os(tvOS)
             pictureInPictureChanged()

@@ -8,6 +8,7 @@ struct PlayerView: View {
     let channel: Channel
     @State private var engine: RoutedEngine
     @State private var lifecycle: PlaybackLifecycle
+    @State private var languages = ChannelLanguages()
 
     init(channel: Channel) {
         self.channel = channel
@@ -22,8 +23,9 @@ struct PlayerView: View {
             .navigationTitle(channel.name)
             .task(id: channel.streamURL) {
                 lifecycle.start()
+                languages.watch(engine)
                 do {
-                    try await engine.load(channel.streamURL)
+                    try await engine.load(channel.streamURL, options: languages.options(for: channel))
                     await engine.play()
                 } catch {
                     // The engine reports the reason through its state; this
@@ -32,6 +34,7 @@ struct PlayerView: View {
             }
             .onDisappear {
                 lifecycle.end()
+                languages.stopWatching()
                 Task { await engine.stop() }
             }
     }

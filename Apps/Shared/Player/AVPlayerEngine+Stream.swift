@@ -28,6 +28,12 @@ extension AVPlayerEngine {
         }
         let item = AVPlayerItem(asset: AVURLAsset(url: url, options: assetOptions))
         item.preferredForwardBufferDuration = 8
+        let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+        ])
+        item.add(output)
+        videoOutput = output
+        addLegibleOutput(to: item)
         observe(item)
         player.replaceCurrentItem(with: item)
         let deadline = ContinuousClock.now + readyTimeout
@@ -39,6 +45,7 @@ extension AVPlayerEngine {
             try await Task.sleep(for: .milliseconds(50))
             guard generation == mine else { throw CancellationError() }
         }
+        try await chooseTracks(for: item, options: options, generation: mine)
         let isLive = options.isLive ?? item.duration.isIndefinite
         let opened = Stream(url: url, options: options, isLive: isLive, canSeek: probe.sniff == .hls || probe.acceptsRanges)
         pictureInPicture?.requiresLinearPlayback = isLive
@@ -68,6 +75,7 @@ extension AVPlayerEngine {
             center.addObserver(forName: AVPlayerItem.failedToPlayToEndTimeNotification, object: item, queue: .main, using: failed),
             center.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: item, queue: .main, using: ended),
         ]
+        observePresentation(of: item)
     }
 
     /// Closes the connection: cancels any reconnect and takes the item off the player.
@@ -91,8 +99,14 @@ extension AVPlayerEngine {
     /// Apple's player stops fetching (and retrying) the old address at once
     /// instead of when the asset is freed.
     func removeItem() {
+        holdPicture()
         itemObservation?.invalidate()
         itemObservation = nil
+        presentationObservations.forEach { $0.invalidate() }
+        presentationObservations = []
+        selection = nil
+        legibleRelay = nil
+        videoOutput = nil
         itemTokens.forEach(NotificationCenter.default.removeObserver)
         itemTokens = []
         player.pause()
@@ -236,6 +250,15 @@ extension AVPlayerEngine {
     // MARK: Reasons
 
     func set(_ new: PlaybackState) {
+        switch new {
+        case .playing:
+            hold.clear()
+            Task { await publishPresentation() }
+        case .failed:
+            hold.clear()
+        default:
+            break
+        }
         stateCast.sendIfChanged(new)
     }
 
