@@ -28,6 +28,8 @@ struct SettingsView: View {
                 }
                 Section("About") {
                     LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "–")
+                    NavigationLink("FFmpeg") { FFmpegNoticeView() }
+                        .accessibilityIdentifier("settings.ffmpegNotice")
                 }
             }
             .navigationTitle("Settings")
