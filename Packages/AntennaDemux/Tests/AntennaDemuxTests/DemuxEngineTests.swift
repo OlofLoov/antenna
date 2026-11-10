@@ -18,7 +18,7 @@ import Testing
         try await harness.engine.load(harness.url(file))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
-        #expect(states.values == [.idle, .loading, .playing])
+        #expect(await eventually { states.values == [.idle, .loading, .playing] })
         let presented = await current(harness.engine.presentation())
         let format = try #require(presented.flatMap { $0 })
         #expect(format.video?.width == 320 && format.video?.height == 180)

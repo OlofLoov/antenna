@@ -29,6 +29,7 @@ public final class DemuxEngine: PlaybackEngine {
     private let session: URLSession
     private let sleep: @Sendable (Duration) async throws -> Void
     private let log: @Sendable (String) -> Void
+    private let firstFrameTimeout: Duration
 
     private let stateCast = Broadcast(PlaybackState.idle)
     private let presentationCast = Broadcast(PresentationInfo?.none)
@@ -73,16 +74,23 @@ public final class DemuxEngine: PlaybackEngine {
 
     public nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
+    /// A stream that sends data but no picture for this long fails as
+    /// unreadable.
+    public static let firstFrameTimeout = Duration.seconds(15)
+
     /// `sleep` waits between retries and reconnects and times the stall
-    /// budget; tests pass a faster one. `log` gets every line the engine
-    /// logs, made only of the redacted address and a reason.
+    /// budget; tests pass a faster one, and a shorter `firstFrameTimeout`.
+    /// `log` gets every line the engine logs, made only of the redacted
+    /// address and a reason.
     public init(
         session: URLSession = PlaybackNetwork.makeSession(),
         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
+        firstFrameTimeout: Duration = DemuxEngine.firstFrameTimeout,
         log: @escaping @Sendable (String) -> Void = { DemuxEngine.logger.info("\($0, privacy: .public)") }
     ) {
         self.session = session
         self.sleep = sleep
+        self.firstFrameTimeout = firstFrameTimeout
         self.log = log
         synchronizer.addRenderer(videoLayer.sampleBufferRenderer)
         synchronizer.addRenderer(audioRenderer)
@@ -209,6 +217,12 @@ public final class DemuxEngine: PlaybackEngine {
         current = Current(run: run, videoFeed: videoFeed, audioFeed: audioFeed)
         videoFeed.start()
         audioFeed.start()
+        let timeout = firstFrameTimeout
+        let watchdog = Task {
+            try await Task.sleep(for: timeout)
+            run.giveUp(.unreadable)
+        }
+        defer { watchdog.cancel() }
         let start: DemuxStart = try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 run.start(

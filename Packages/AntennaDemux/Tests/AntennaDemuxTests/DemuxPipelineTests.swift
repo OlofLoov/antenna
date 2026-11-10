@@ -31,7 +31,7 @@ import VideoToolbox
         await opened.close()
     }
 
-    @Test(arguments: ["channel.ts", "channel.mkv"])
+    @Test(arguments: ["channel.ts", "channel.mkv", "channel.avi"])
     func videoToolboxDecodesTheFirstKeyframe(file: String) async throws {
         let opened = try await Opened(file)
         let video = try #require(opened.demuxer.streams.first { $0.kind == .video })
@@ -48,7 +48,7 @@ import VideoToolbox
         await opened.close()
     }
 
-    @Test(arguments: ["channel.ts", "channel.mkv"])
+    @Test(arguments: ["channel.ts", "channel.mkv", "channel.avi"])
     func audioConverterDecodesAAC(file: String) async throws {
         let opened = try await Opened(file)
         let audio = try #require(opened.demuxer.streams.first { $0.kind == .audio })
@@ -60,7 +60,7 @@ import VideoToolbox
         }
         let sample = try #require(built)
         let frames = try decodeAudio(sample)
-        #expect(frames >= 1024)
+        #expect(frames >= 1024 || (audio.codec == "mp3" && frames >= 1152))
         await opened.close()
     }
 
