@@ -81,6 +81,11 @@ final class ShellUITests: XCTestCase {
         expect(element(identifier), "exists == false", timeout: timeout, file: file, line: line)
     }
 
+    /// The channel overlay's rows in the shown group, top to bottom.
+    func overlayRows() -> XCUIElementQuery {
+        elements(prefix: "overlay.channel.")
+    }
+
     /// The `channels` scenario with its first channel playing full screen
     /// and the info bar from the launch tune gone again.
     func launchPlaying() {
@@ -253,8 +258,7 @@ extension ShellUITests {
         launchPlaying()
         press(.select)
         XCTAssertTrue(element("overlay.channels").waitForExistence(timeout: 10))
-        // A List row takes focus as its cell, which carries no identifier.
-        let rows = app.cells
+        let rows = overlayRows()
         expect(rows.element(boundBy: 0), "hasFocus == true")
         press(.down, toFocus: rows.element(boundBy: 1), from: rows.element(boundBy: 0))
         press(.select)

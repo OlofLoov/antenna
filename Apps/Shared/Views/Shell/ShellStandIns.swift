@@ -67,30 +67,4 @@
             .padding(.leading, 64)
         }
     }
-
-    /// Stands in for the channel overlay so the user can change
-    /// channel: a list of loaded channels on the overlay scrim.
-    struct ChannelPicker: View {
-        let channels: [Channel]
-        let focus: FocusState<ShellFocus?>.Binding
-        let pick: (Channel) -> Void
-
-        var body: some View {
-            ZStack(alignment: .leading) {
-                Palette.scrimTint.opacity(0.88).ignoresSafeArea()
-                List(Array(channels.enumerated()), id: \.offset) { index, channel in
-                    Button {
-                        pick(channel)
-                    } label: {
-                        ChannelRow(channel: channel)
-                    }
-                    .focused(focus, equals: .picker(index))
-                    .accessibilityIdentifier("overlay.channel.\(index)")
-                }
-                .frame(width: 700)
-                .padding(.leading, 64)
-                .accessibilityIdentifier("overlay.channels")
-            }
-        }
-    }
 #endif
