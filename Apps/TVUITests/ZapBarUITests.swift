@@ -160,3 +160,32 @@ extension ShellUITests {
         expect(element("zapBar.hint"), "label == 'Press to browse channels'")
     }
 }
+
+extension ShellUITests {
+    // tv-zap-bar-and-number-entry/swipe-up-and-down-to-change-channel
+    func testSwipeUpAndDownToChangeChannel() {
+        launchPlaying()
+        press(.up)
+        expectEngine("playing loads=2 file=a2.ts")
+        expect(element("zapBar.position"), "label CONTAINS '2 of 3'")
+        press(.down)
+        expectEngine("playing loads=3 file=a1.ts")
+        press(.down)
+        expectEngine("playing loads=4 file=a3.ts")
+        expect(element("zapBar.position"), "label CONTAINS '3 of 3'")
+        press(.up)
+        expectEngine("playing loads=5 file=a1.ts")
+    }
+
+    // tv-zap-bar-and-number-entry/swipe-up-and-down-to-change-channel
+    func testSwipeInAGroupWithOneChannel() {
+        launchPlaying()
+        tune("Channel b1", fromGroup: 3)
+        expectEngine("playing loads=2 file=b1.ts")
+        expectGone("zapBar.bar", timeout: 10)
+        press(.up)
+        XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 5), "the bar shows again")
+        expect(element("zapBar.name"), "label == 'Channel b1'")
+        expectEngine("playing loads=2 file=b1.ts")
+    }
+}

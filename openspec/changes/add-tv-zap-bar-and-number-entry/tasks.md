@@ -19,7 +19,7 @@
 
 ## 4. Channel up and down
 
-- [ ] 4.1 Track the current group, step through it with wrap-round on swipe, and verify with a UI test citing `tv-zap-bar-and-number-entry/swipe-up-and-down-to-change-channel`
+- [x] 4.1 Track the current group, step through it with wrap-round on swipe, and verify with a UI test citing `tv-zap-bar-and-number-entry/swipe-up-and-down-to-change-channel`
 
 ## 5. Number entry
 

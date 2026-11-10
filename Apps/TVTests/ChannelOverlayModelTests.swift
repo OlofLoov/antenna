@@ -138,4 +138,21 @@ import Testing
         model.show(.favorites)
         #expect(model.panelRow(all) == nil, "an empty group leaves the panel empty")
     }
+
+    @Test("tv-zap-bar-and-number-entry/swipe-up-and-down-to-change-channel up and down step through the current list and wrap")
+    func steps() throws {
+        let all = catalogue()
+        let s1 = try tagged("s1", in: all)
+        let s2 = try tagged("s2", in: all)
+        model.tuned(from: .named(home, "Sport"))
+        #expect(model.step(all, from: s1, by: 1) == s2)
+        #expect(model.step(all, from: s2, by: 1) == s1, "past the end wraps to the first")
+        #expect(model.step(all, from: s1, by: -1) == s2, "before the first wraps to the last")
+        let c1 = try tagged("c1", in: all)
+        model.tuned(from: .named(cabin, "Sport"))
+        #expect(model.step(all, from: c1, by: 1) == c1, "a list of one stays on the channel")
+        let n1 = try tagged("n1", in: all)
+        let fromAll = model.step(all, from: n1, by: 1)
+        #expect(fromAll == (try tagged("c1", in: all)), "outside the current list, All channels is stepped")
+    }
 }

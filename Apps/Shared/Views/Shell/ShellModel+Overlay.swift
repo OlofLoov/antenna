@@ -19,5 +19,14 @@
             }
             await pick(channel)
         }
+
+        /// Play/pause with the overlay open pauses or resumes the video; the overlay stays.
+        func togglePlayback() async {
+            if await engine.state == .paused {
+                await engine.play()
+            } else {
+                await engine.pause()
+            }
+        }
     }
 #endif
