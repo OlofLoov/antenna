@@ -43,6 +43,7 @@ Out of scope:
 
 ### Modified Capabilities
 - `favorites`: the Favorites tab gives way to the Favorites group in Live, so the tab's empty state and list order requirements are removed and sync is described against the group.
+- `source-management`: "Loading until the first channel" is removed. Live lists each source while it loads and shows a message with Retry when none loaded channels.
 
 ## Impact
 
