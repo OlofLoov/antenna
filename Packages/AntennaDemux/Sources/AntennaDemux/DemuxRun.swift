@@ -20,7 +20,7 @@ struct DemuxStart: Sendable {
     let dynamicRange: PresentationInfo.DynamicRange
     /// Frames a second: what the container says, or what the first
     /// frames' times show.
-    let frameRate: Double?
+    var frameRate: Double?
     /// The first keyframe's format, for the TV's display criteria.
     let videoFormat: CMFormatDescription?
     /// Channel count from the first sound, 0 without sound.
@@ -62,6 +62,7 @@ final class DemuxRun: @unchecked Sendable {
     private let lock = NSLock()
     private var cancelled = false
     private var answer: Once<Result<DemuxStart, any Error>>?
+    private var rateFound: (@Sendable (Double) -> Void)?
 
     init(bytes: HTTPByteStream, videoFeed: SampleFeed, audioFeed: SampleFeed) {
         self.bytes = bytes
@@ -93,10 +94,14 @@ final class DemuxRun: @unchecked Sendable {
     /// the `PlaybackFailure` that stops the stream from playing, or
     /// `CancellationError` when `cancel` came first. `ended` is called when a
     /// stream that started stops, with nil when the bytes ran out normally.
+    /// `rateFound` is called once when the frame rate becomes known after
+    /// the start: the start came before enough frames to tell.
     func start(
         ready: @escaping @Sendable (Result<DemuxStart, any Error>) -> Void,
+        rateFound: @escaping @Sendable (Double) -> Void = { _ in },
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
+        self.rateFound = rateFound
         let answer = Once(ready)
         lock.withLock { self.answer = answer }
         let thread = Thread { [self] in
@@ -176,6 +181,7 @@ final class DemuxRun: @unchecked Sendable {
         var heldSound: [CMSampleBuffer] = []
         var announced = false
         var frameTimes: [Double] = []
+        var rateKnown = prepared.video?.stream.frameRate != nil
         while !isCancelled, let packet = prepared.demuxer.nextPacket() {
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
                 if startTime == nil, !packet.isKeyframe { continue }
@@ -186,7 +192,13 @@ final class DemuxRun: @unchecked Sendable {
                     heldSound.filter { sampleTime($0) >= first }.forEach { audioFeed.push($0) }
                     heldSound = []
                 }
-                if !announced { frameTimes.append(sampleTime(buffer).seconds) }
+                if !rateKnown {
+                    frameTimes.append(sampleTime(buffer).seconds)
+                    if announced, let rate = FrameRate.estimate(presentationTimes: frameTimes), frameTimes.count >= 6 {
+                        rateKnown = true
+                        rateFound?(rate)
+                    }
+                }
                 guard videoFeed.push(buffer) else { break }
             } else if packet.streamIndex == prepared.audio?.stream.index, let builder = prepared.audio {
                 guard let buffer = try? builder.sampleBuffer(for: packet) else { continue }
@@ -203,7 +215,9 @@ final class DemuxRun: @unchecked Sendable {
             let soundKnown = prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
             if !announced, let startTime, soundKnown {
                 announced = true
-                ready(.success(describe(prepared, startTime: startTime, frameTimes: frameTimes)))
+                let start = describe(prepared, startTime: startTime, frameTimes: frameTimes)
+                rateKnown = rateKnown || start.frameRate != nil || prepared.video == nil
+                ready(.success(start))
             }
         }
         return announced

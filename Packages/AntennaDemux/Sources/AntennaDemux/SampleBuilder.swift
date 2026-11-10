@@ -7,7 +7,9 @@ import Foundation
 /// Apple's decoders and sample-buffer renderers read: H.264 (Annex B from
 /// MPEG-TS, or avcC from Matroska and MP4), HEVC (Annex B, or hvcC),
 /// MPEG-4 Part 2 video (AVI), AAC
-/// (ADTS from MPEG-TS, or raw with an AudioSpecificConfig) and MP3.
+/// (ADTS from MPEG-TS, or raw with an AudioSpecificConfig), MP3, and Dolby
+/// Digital and Dolby Digital Plus (AC-3, E-AC-3), which Apple TV passes to
+/// a receiver that takes them and every device decodes otherwise.
 public final class SampleBuilder {
     public enum BuildError: Error, Equatable {
         case unsupportedCodec(String)
@@ -23,6 +25,7 @@ public final class SampleBuilder {
         case mp3
         case hevcAnnexB
         case hevcHVCC
+        case dolby
     }
 
     private let codec: Codec
@@ -52,6 +55,8 @@ public final class SampleBuilder {
             formatDescription = try Self.hevcFormat(parameterSets: Self.hevcParameterSets(hvcC: stream.extradata))
         case "hevc":
             codec = .hevcAnnexB
+        case "ac3", "eac3":
+            codec = .dolby
         case "mpeg4":
             codec = .mpeg4Video
             if !stream.extradata.isEmpty {
@@ -95,6 +100,11 @@ public final class SampleBuilder {
             if formatDescription == nil { formatDescription = try Self.aacFormat(config: config) }
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         case .mp3:
+            return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
+        case .dolby:
+            if formatDescription == nil, let header = Self.dolbyHeader(packet.data) {
+                formatDescription = try Self.dolbyFormat(header)
+            }
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         }
     }

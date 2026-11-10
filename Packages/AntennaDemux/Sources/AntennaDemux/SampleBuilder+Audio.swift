@@ -123,4 +123,79 @@ extension SampleBuilder {
         guard status == noErr else { throw BuildError.malformed }
         return block
     }
+
+    // MARK: Dolby Digital and Dolby Digital Plus
+
+    /// What an AC-3 or E-AC-3 frame header says about its sound.
+    struct DolbyHeader: Equatable {
+        let isEnhanced: Bool
+        let sampleRate: Int
+        let channels: Int
+        /// Samples per channel in the frame: 1536 for AC-3, 256 per block for E-AC-3.
+        let samples: Int
+        /// The speaker layout, for more than two channels.
+        var layoutTag: AudioChannelLayoutTag {
+            switch channels {
+            case 1: kAudioChannelLayoutTag_Mono
+            case 2: kAudioChannelLayoutTag_Stereo
+            case 6: kAudioChannelLayoutTag_MPEG_5_1_C  // AC-3 order: L C R Ls Rs LFE
+            default: kAudioChannelLayoutTag_DiscreteInOrder | AudioChannelLayoutTag(channels)
+            }
+        }
+    }
+
+    /// The header of an AC-3 (bsid up to 10) or E-AC-3 (bsid 16) frame, nil
+    /// when the bytes do not start with one.
+    static func dolbyHeader(_ frame: Data) -> DolbyHeader? {
+        let bytes = [UInt8](frame.prefix(8))
+        guard bytes.count >= 8, bytes[0] == 0x0B, bytes[1] == 0x77 else { return nil }
+        let bsid = Int(bytes[5] >> 3)
+        let channelsByMode = [2, 1, 2, 3, 3, 4, 4, 5]
+        if bsid <= 10 {
+            let rates = [48000, 44100, 32000]
+            let fscod = Int(bytes[4] >> 6)
+            guard fscod < rates.count else { return nil }
+            let acmod = Int(bytes[6] >> 5)
+            // lfeon follows optional 2-bit mix levels that depend on acmod.
+            var bit = 3
+            if acmod & 1 != 0, acmod != 1 { bit += 2 }
+            if acmod & 4 != 0 { bit += 2 }
+            if acmod == 2 { bit += 2 }
+            let word = Int(bytes[6]) << 8 | Int(bytes[7])
+            let lfe = (word >> (15 - bit)) & 1
+            return DolbyHeader(isEnhanced: false, sampleRate: rates[fscod], channels: channelsByMode[acmod] + lfe, samples: 1536)
+        }
+        guard bsid == 16 else { return nil }
+        let fscod = Int(bytes[4] >> 6)
+        let second = Int((bytes[4] >> 4) & 0x03)
+        let rate: Int
+        let blocks: Int
+        if fscod == 3 {
+            guard second < 3 else { return nil }
+            rate = [24000, 22050, 16000][second]
+            blocks = 6
+        } else {
+            rate = [48000, 44100, 32000][fscod]
+            blocks = [1, 2, 3, 6][second]
+        }
+        let acmod = Int((bytes[4] >> 1) & 0x07)
+        let lfe = Int(bytes[4] & 0x01)
+        return DolbyHeader(isEnhanced: true, sampleRate: rate, channels: channelsByMode[acmod] + lfe, samples: blocks * 256)
+    }
+
+    static func dolbyFormat(_ header: DolbyHeader) throws -> CMFormatDescription {
+        var description = AudioStreamBasicDescription(
+            mSampleRate: Float64(header.sampleRate), mFormatID: header.isEnhanced ? kAudioFormatEnhancedAC3 : kAudioFormatAC3,
+            mFormatFlags: 0, mBytesPerPacket: 0, mFramesPerPacket: UInt32(header.samples), mBytesPerFrame: 0,
+            mChannelsPerFrame: UInt32(header.channels), mBitsPerChannel: 0, mReserved: 0)
+        var layout = AudioChannelLayout(
+            mChannelLayoutTag: header.layoutTag, mChannelBitmap: [], mNumberChannelDescriptions: 0,
+            mChannelDescriptions: AudioChannelDescription())
+        var format: CMAudioFormatDescription?
+        let status = CMAudioFormatDescriptionCreate(
+            allocator: nil, asbd: &description, layoutSize: MemoryLayout<AudioChannelLayout>.size, layout: &layout,
+            magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &format)
+        guard status == noErr, let format else { throw BuildError.malformed }
+        return format
+    }
 }

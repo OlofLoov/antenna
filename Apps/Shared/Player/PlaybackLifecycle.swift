@@ -46,6 +46,12 @@ final class PlaybackLifecycle {
         #if os(iOS) || os(tvOS)
             let session = AVAudioSession.sharedInstance()
             try? session.setCategory(.playback, mode: .moviePlayback)
+            #if os(tvOS)
+                // Dolby Digital, Dolby Digital Plus and Atmos go to a receiver
+                // or TV that takes them as sent, not downmixed to stereo
+                // (playback-engine/surround-sound-reaches-the-speakers).
+                try? session.setSupportsMultichannelContent(true)
+            #endif
             let center = NotificationCenter.default
             let background: @Sendable (Notification) -> Void = { [weak self] _ in
                 MainActor.assumeIsolated { self?.run { await $0.enteredBackground() } }

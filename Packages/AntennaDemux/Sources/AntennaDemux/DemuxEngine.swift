@@ -35,13 +35,13 @@ public final class DemuxEngine: PlaybackEngine {
     private let log: @Sendable (String) -> Void
     private let firstFrameTimeout: Duration
 
-    private let stateCast = Broadcast(PlaybackState.idle)
-    private let presentationCast = Broadcast(PresentationInfo?.none)
-    private let tracksCast = Broadcast(TrackList.empty)
+    let stateCast = Broadcast(PlaybackState.idle)
+    let presentationCast = Broadcast(PresentationInfo?.none)
+    let tracksCast = Broadcast(TrackList.empty)
     private let positionCast = Broadcast(PlaybackPosition.zero)
     private let cuesCast = Broadcast([SubtitleCue]())
 
-    private struct Current {
+    struct Current {
         let run: DemuxRun
         let videoFeed: SampleFeed
         let audioFeed: SampleFeed
@@ -53,13 +53,13 @@ public final class DemuxEngine: PlaybackEngine {
     }
 
     private var request: (url: URL, options: PlaybackOptions)?
-    private var current: Current?
+    var current: Current?
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
     private var reconnect: Task<Void, Never>?
     /// Streams kept open ahead of a zap, by address.
     private var standby: [URL: Task<HTTPByteStream, any Error>] = [:]
-    private var generation = 0
+    var generation = 0
     private var wantsPlay = false
     private var hasPlayed = false
     /// Play opens the stream again instead of resuming it.
@@ -74,7 +74,7 @@ public final class DemuxEngine: PlaybackEngine {
         /// range when the user has matching on, keeps the TV's mode while
         /// the next channel needs the same one, and lets it go on `stop`.
         public weak var displayManager: AVDisplayManager?
-        private var displayMode: DisplayMode?
+        var displayMode: DisplayMode?
     #endif
 
     /// Frames waiting ahead of the video renderer.
@@ -244,6 +244,9 @@ public final class DemuxEngine: PlaybackEngine {
             try await withCheckedThrowingContinuation { continuation in
                 run.start(
                     ready: { result in continuation.resume(with: result) },
+                    rateFound: { [weak self] rate in
+                        Task { @MainActor in self?.frameRateFound(rate, generation: mine) }
+                    },
                     ended: { [weak self] failure in
                         Task { @MainActor in self?.bytesEnded(failure, generation: mine) }
                     })
@@ -413,26 +416,6 @@ extension DemuxEngine {
     }
 
     // MARK: Reporting
-
-    /// Asks the TV for the stream's mode when it differs from the last one.
-    private func matchDisplay(_ start: DemuxStart) {
-        #if os(tvOS)
-            guard let rate = start.frameRate, let format = start.videoFormat else { return }
-            let mode = DisplayMode(frameRate: rate, dynamicRange: start.dynamicRange)
-            guard mode != displayMode else { return }
-            displayMode = mode
-            displayManager?.preferredDisplayCriteria = AVDisplayCriteria(refreshRate: Float(rate), formatDescription: format)
-        #endif
-    }
-
-    private func set(_ new: PlaybackState) {
-        stateCast.sendIfChanged(new)
-    }
-
-    private func publishFormat(_ start: DemuxStart) {
-        presentationCast.sendIfChanged(start.presentation)
-        tracksCast.sendIfChanged(start.trackList)
-    }
 
     private func publishPosition() {
         guard let current, let start = current.start else { return }
