@@ -43,6 +43,8 @@ final class LiveModel {
         /// What the rows, the now-playing line and the details read.
         var programmes: OverlayGuide
         var languages = ChannelLanguageStore()
+        /// How often to look for a login that has not arrived yet.
+        var loginCheck = Duration.seconds(5)
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -67,6 +69,8 @@ final class LiveModel {
     private(set) var fullScreen = false
     /// False until the first `sourcesChanged`, so no empty state flashes at launch.
     private(set) var launched = false
+    /// Sources whose failure banner the user dismissed.
+    private(set) var dismissed: Set<UUID> = []
     /// The description of the last failed source in source order
     /// (source-management/load-failure-is-recorded). Never shown on screen.
     private(set) var error: String?
@@ -81,6 +85,7 @@ final class LiveModel {
     @ObservationIgnored private var failures: [UUID: String] = [:]
     @ObservationIgnored private var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
     @ObservationIgnored private var tuning: Task<Void, Never>?
+    @ObservationIgnored private var loginWatch: Task<Void, Never>?
     @ObservationIgnored private var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
     @ObservationIgnored private var hiding: Task<Void, Never>?
     @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
@@ -133,6 +138,11 @@ final class LiveModel {
         }
     }
 
+    /// Hides the failure banner until another source fails or adds nothing.
+    func dismissBanner() {
+        dismissed.formUnion(sources.filter { $0.state.addedNothing && $0.state != .waitingForLogin }.map(\.id))
+    }
+
     /// Loads each source still waiting for its login whose login has
     /// arrived. Call when the scene becomes active and now and then while
     /// a source waits.
@@ -153,6 +163,7 @@ final class LiveModel {
         loads[source.id]?.cancel()
         channelsBySource[source.id] = nil
         failures[source.id] = nil
+        dismissed.remove(source.id)
         setState(.loading, for: source.id)
         rebuild()
         loads[source.id] = Task { [weak self] in
@@ -190,6 +201,21 @@ final class LiveModel {
             if state != .waitingForLogin { failures[source.id] = failure.localizedDescription }
             setState(state, for: source.id)
             rebuild()
+            if state == .waitingForLogin { watchLogins() }
+        }
+    }
+
+    /// Looks for arriving logins every few seconds while a source waits for
+    /// one (live-tv-on-iphone-ipad-mac/a-login-that-syncs-later).
+    private func watchLogins() {
+        guard loginWatch == nil else { return }
+        loginWatch = Task { [weak self] in
+            while let self, sources.contains(where: { $0.state == .waitingForLogin }) {
+                try? await Task.sleep(for: dependencies.loginCheck)
+                guard !Task.isCancelled else { break }
+                checkLogins()
+            }
+            self?.loginWatch = nil
         }
     }
 

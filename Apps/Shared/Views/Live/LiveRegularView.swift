@@ -159,6 +159,15 @@
                     }
                     .accessibilityIdentifier("browse.group.\(index)")
                 }
+                ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in
+                    Text("\(source.name) · waiting for login")
+                        .font(.callout)
+                        .foregroundStyle(Palette.textMuted)
+                        .lineLimit(1)
+                        .padding(.horizontal, 12)
+                        .frame(minHeight: 36)
+                        .accessibilityIdentifier("browse.group.waiting.\(source.id.uuidString)")
+                }
             } footer: {
                 sectionRow(.settings)
             }
@@ -236,22 +245,29 @@
         var body: some View {
             @Bindable var live = live
             VStack(spacing: 0) {
-                let count = live.catalogue.count(of: live.group)
-                Browse.ListHeader(title: live.group.label, count: count == 1 ? "1 channel" : "\(count) channels") {
-                    leading
-                } filter: {
-                    Browse.FilterField(text: $live.filter)
-                        .focused($filterFocused)
-                }
-                if live.channels.isEmpty {
-                    ProgressView("Loading channels…")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
+                switch live.status {
+                case .channels(let banner, _):
+                    let count = live.catalogue.count(of: live.group)
+                    if let banner {
+                        Browse.FailureBanner(text: banner, retry: live.retry, dismiss: live.dismissBanner)
+                            .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                    }
+                    Browse.ListHeader(title: live.group.label, count: count == 1 ? "1 channel" : "\(count) channels") {
+                        leading
+                    } filter: {
+                        Browse.FilterField(text: $live.filter)
+                            .focused($filterFocused)
+                    }
                     LiveChannelList(
                         picked: {
                             filterFocused = false
                             picked()
                         }, cursor: cursor)
+                case let status:
+                    HStack { leading }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                    LiveStatusMessage(status: status)
                 }
             }
             .background { shortcuts }

@@ -25,6 +25,18 @@
             case channels
             /// As `channels`, with Sport One a favorite.
             case favorites
+            /// Home loads; Cabin never finishes.
+            case loading
+            /// Both sources fail because the device is offline.
+            case offline
+            /// Home loads; Cabin's first load fails and the next succeeds.
+            case failing
+            /// Home fails; Cabin has no login on this device.
+            case error
+            /// Home loads no channels; Cabin has no login on this device.
+            case empty
+            /// Home loads; Cabin's login arrives 6 seconds after launch.
+            case waiting
         }
 
         static let homeID = UUID(uuidString: "00000000-0000-0000-0000-0000000000D1") ?? UUID()
@@ -34,7 +46,7 @@
             guard let index = arguments.firstIndex(of: argument) else { return nil }
             let next = arguments.index(after: index)
             guard next < arguments.endIndex, let scenario = Scenario(rawValue: arguments[next]) else {
-                fatalError("\(argument) takes channels or favorites")
+                fatalError("\(argument) takes channels, favorites, loading, offline, failing, error, empty or waiting")
             }
             return scenario
         }
@@ -87,14 +99,56 @@
         /// The Live screen's dependencies for the launch scenario, or nil.
         @MainActor
         static func dependencies() -> LiveModel.Dependencies? {
-            guard scenario() != nil else { return nil }
+            guard let scenario = scenario() else { return nil }
             let log = ProcessInfo.processInfo.environment[logVariable].map { URL(fileURLWithPath: $0) }
+            let script = Script(scenario: scenario)
             return LiveModel.Dependencies(
                 engine: Engine(log: log),
-                load: { source in Playlist(channels: source.id == homeID ? home : cabin) },
-                hasLogin: { _ in true },
+                load: { try await script.load($0) },
+                hasLogin: { script.hasLogin($0) },
                 guide: nil,
                 programmes: guide)
+        }
+
+        /// What each scenario's sources answer.
+        @MainActor
+        final class Script {
+            let scenario: Scenario
+            private var cabinLoads = 0
+
+            init(scenario: Scenario) {
+                self.scenario = scenario
+            }
+
+            func hasLogin(_ source: SourceDescriptor) -> Bool {
+                guard source.id == cabinID else { return true }
+                switch scenario {
+                case .error, .empty: return false
+                case .waiting: return Date.now.timeIntervalSince(launched) > 6
+                case .channels, .favorites, .loading, .offline, .failing: return true
+                }
+            }
+
+            func load(_ source: SourceDescriptor) async throws -> Playlist {
+                let isHome = source.id == homeID
+                if !isHome { cabinLoads += 1 }
+                switch scenario {
+                case .channels, .favorites, .waiting:
+                    return Playlist(channels: isHome ? home : cabin)
+                case .loading:
+                    if !isHome { try await Task.sleep(for: .seconds(3600)) }
+                    return Playlist(channels: home)
+                case .offline:
+                    throw URLError(.notConnectedToInternet)
+                case .failing:
+                    if !isHome, cabinLoads == 1 { throw URLError(.badServerResponse) }
+                    return Playlist(channels: isHome ? home : cabin)
+                case .error:
+                    throw URLError(.cannotFindHost)
+                case .empty:
+                    return Playlist(channels: [])
+                }
+            }
         }
 
         /// News One has a programme on now and four after it. Sport One's

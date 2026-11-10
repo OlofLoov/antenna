@@ -38,14 +38,15 @@
         }
 
         @ViewBuilder private var content: some View {
-            if live.channels.isEmpty {
-                ProgressView("Loading channels…")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
+            switch live.status {
+            case .channels(let banner, let waiting):
                 VStack(spacing: 0) {
+                    LiveBanners(banner: banner, waiting: waiting)
                     LiveGroupChips()
                     LiveChannelList()
                 }
+            case let status:
+                LiveStatusMessage(status: status)
             }
         }
     }
@@ -79,7 +80,7 @@
                         .accessibilityIdentifier("browse.group.\(index)")
                     }
                 }
-                .onAppear { proxy.scrollTo(live.group) }
+                .task { proxy.scrollTo(live.group) }
             }
         }
     }
