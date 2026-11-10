@@ -76,15 +76,15 @@ public actor RoutedEngine: PlaybackEngine {
     public func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
     public func subtitleCues() async -> AsyncStream<[SubtitleCue]> { cuesCast.stream() }
 
-    /// Stops the engine that played before when it is not `engine`, then
-    /// forwards `engine`'s streams.
+    /// Hands the screen over from the engine that played before when it is
+    /// not `engine`, then forwards `engine`'s streams.
     private func activate(_ engine: any PlaybackEngine) async {
         guard active !== engine else { return }
         let previous = active
         pumps.forEach { $0.cancel() }
         pumps = []
         active = engine
-        if let previous { await previous.stop() }
+        if let previous { await previous.handOver() }
         pumps = [
             Self.pump(await engine.states(), into: stateCast),
             Self.pump(await engine.presentation(), into: presentationCast),

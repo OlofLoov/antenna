@@ -66,6 +66,23 @@ final class SampleFeed: @unchecked Sendable {
         queue.sync { renderer.flush() }
     }
 
+    /// Drops what waits and what the renderer holds, and goes on feeding
+    /// what is pushed next, as when the sound track changes.
+    func flush() {
+        condition.lock()
+        guard !closed, !discarding else {
+            condition.unlock()
+            return
+        }
+        waiting.removeAll()
+        condition.broadcast()
+        condition.unlock()
+        queue.sync {
+            renderer.flush()
+            lastEnqueued = .invalid
+        }
+    }
+
     /// Stops feeding, drops what waits and flushes the renderer.
     func close() {
         condition.lock()

@@ -82,6 +82,7 @@
             var lastChannel: LastChannelStore
             var sleep: @MainActor (Duration) async throws -> Void
             var guide: AppGuideStore?
+            var languages = ChannelLanguageStore()
         }
 
         /// Thrown by a loader for a source whose login is not on this device.
@@ -113,10 +114,12 @@
         @ObservationIgnored private var deadline: Task<Void, Never>?
         @ObservationIgnored private var pauseTimer: Task<Void, Never>?
         @ObservationIgnored private(set) var pausedByShell = false
+        @ObservationIgnored private let languages: ChannelLanguages
 
         init(_ dependencies: Dependencies) {
             self.dependencies = dependencies
             self.engine = dependencies.engine
+            languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
         }
 
         // MARK: Derived state
@@ -312,7 +315,7 @@
             deadline?.cancel()
             Task {
                 do {
-                    try await engine.load(channel.streamURL)
+                    try await engine.load(channel.streamURL, options: languages.options(for: channel))
                 } catch is CancellationError {
                     return
                 } catch {

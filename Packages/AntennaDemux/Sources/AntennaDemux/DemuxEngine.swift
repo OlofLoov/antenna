@@ -39,7 +39,13 @@ public final class DemuxEngine: PlaybackEngine {
     let presentationCast = Broadcast(PresentationInfo?.none)
     let tracksCast = Broadcast(TrackList.empty)
     private let positionCast = Broadcast(PlaybackPosition.zero)
-    private let cuesCast = Broadcast([SubtitleCue]())
+    let cuesCast = Broadcast([SubtitleCue]())
+
+    /// The TV's mode on Apple TV, shared with Apple's player engine.
+    public let display: DisplayMatcher
+    /// The last picture held over a switch to or from Apple's player,
+    /// shared with that engine. Screens put its layer above both.
+    public let hold: FrameHold
 
     /// Whether the audio renderer runs the clock; false after it stalled.
     var audioOnClock = true
@@ -55,6 +61,10 @@ public final class DemuxEngine: PlaybackEngine {
         var bytesEnded: PlaybackFailure??
         /// When the renderers ran out of buffered media, if they have.
         var starvedSince: ContinuousClock.Instant?
+        /// Subtitle lines of every text stream not yet over.
+        var cues: [TimedCue] = []
+        /// Picture changes demuxed ahead of the clock.
+        var pictureChanges: [PictureChange] = []
     }
 
     var request: (url: URL, options: PlaybackOptions)?
@@ -83,15 +93,6 @@ public final class DemuxEngine: PlaybackEngine {
         var pictureInPicturePlayback: PictureInPicturePlayback?
     #endif
 
-    #if os(tvOS)
-        /// The display manager of the window the picture is in. With it set,
-        /// the engine asks the TV for each stream's frame rate and dynamic
-        /// range when the user has matching on, keeps the TV's mode while
-        /// the next channel needs the same one, and lets it go on `stop`.
-        public weak var displayManager: AVDisplayManager?
-        var displayMode: DisplayMode?
-    #endif
-
     /// Frames waiting ahead of the video renderer.
     static let videoLimit = 120
     /// Sound buffers waiting ahead of the audio renderer.
@@ -109,13 +110,18 @@ public final class DemuxEngine: PlaybackEngine {
     /// `sleep` waits between retries and reconnects and times the stall
     /// budget; tests pass a faster one, and a shorter `firstFrameTimeout`.
     /// `log` gets every line the engine logs, made only of the redacted
-    /// address and a reason.
+    /// address and a reason. `display` and `hold` are shared with Apple's
+    /// player engine when both play into one screen.
     public init(
         session: URLSession = PlaybackNetwork.makeSession(),
         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
         firstFrameTimeout: Duration = DemuxEngine.firstFrameTimeout,
+        display: DisplayMatcher = DisplayMatcher(),
+        hold: FrameHold = FrameHold(),
         log: @escaping @Sendable (String) -> Void = { DemuxEngine.logger.info("\($0, privacy: .public)") }
     ) {
+        self.display = display
+        self.hold = hold
         self.session = session
         self.sleep = sleep
         self.firstFrameTimeout = firstFrameTimeout
@@ -175,21 +181,6 @@ public final class DemuxEngine: PlaybackEngine {
         }
     }
 
-    public func stop() async {
-        generation += 1
-        wantsPlay = false
-        request = nil
-        openAhead([])
-        close()
-        videoLayer.isHidden = true
-        #if os(tvOS)
-            displayMode = nil
-            displayManager?.preferredDisplayCriteria = nil
-        #endif
-        set(.idle)
-        await videoLayer.sampleBufferRenderer.flush(removingDisplayedImage: true)
-    }
-
     /// Connects with the tune retry policy, or takes the stream kept open
     /// ahead for `url`, and starts a run, returning once its first frame is
     /// queued. Throws `CancellationError` when a newer load, stop or pause
@@ -224,8 +215,7 @@ public final class DemuxEngine: PlaybackEngine {
         let audioFeed = SampleFeed(renderer: audioRenderer, label: "audio", limit: Self.audioLimit)
         let source = SeekableSource(bytes, url: url, session: session)
         let run = DemuxRun(bytes: source, videoFeed: videoFeed, audioFeed: audioFeed)
-        let log = self.log
-        run.seekFailed = { log("demux seek \(redacted(url)) failed, starting from the beginning") }
+        listen(to: run, url: url, generation: mine)
         current = Current(run: run, videoFeed: videoFeed, audioFeed: audioFeed)
         videoFeed.start()
         audioFeed.start()
@@ -245,6 +235,7 @@ public final class DemuxEngine: PlaybackEngine {
                     },
                     waitsForSound: !isScanning,
                     startAt: startAt,
+                    options: options,
                     ended: { [weak self] failure in
                         Task { @MainActor in self?.bytesEnded(failure, generation: mine) }
                     })
@@ -288,7 +279,7 @@ public final class DemuxEngine: PlaybackEngine {
     }
 
     /// Releases the stream and clears what was reported about it.
-    private func close() {
+    func close() {
         release()
         presentationCast.send(nil)
         tracksCast.send(.empty)
@@ -362,9 +353,6 @@ public final class DemuxEngine: PlaybackEngine {
             return
         }
     }
-
-    public func selectAudio(_ id: MediaTrack.ID) async {}
-    public func selectSubtitle(_ id: MediaTrack.ID?) async {}
 
     // MARK: Streams
 
@@ -452,6 +440,7 @@ extension DemuxEngine {
         guard var current, let start = current.start else { return }
         watchClock(synchronizer.currentTime())
         let now = synchronizer.currentTime()
+        publishCues(at: now)
         let last = current.videoFeed.lastEnqueued.isValid ? current.videoFeed.lastEnqueued : current.audioFeed.lastEnqueued
         let starved = last.isValid && now >= last
         switch state {
@@ -467,6 +456,7 @@ extension DemuxEngine {
             }
         case .playing:
             publishPosition()
+            applyPictureChanges(at: now)
             guard starved else { break }
             if let ending = current.bytesEnded {
                 if !isLive, ending == nil {

@@ -30,6 +30,11 @@ public protocol PlaybackEngine: AnyObject, Sendable {
     /// Closes the stream and reports `.idle`.
     func stop() async
 
+    /// Closes the stream for another engine that plays into the same
+    /// screen, keeping the last picture on screen until that engine's first
+    /// frame. Engines with no shared screen stop.
+    func handOver() async
+
     /// Moves a film to `time`. Throws `SeekRefusal` for live TV and for
     /// films whose server cannot skip.
     func seek(to time: Duration) async throws
@@ -55,6 +60,10 @@ public protocol PlaybackEngine: AnyObject, Sendable {
 }
 
 extension PlaybackEngine {
+    public func handOver() async {
+        await stop()
+    }
+
     /// Opens `url` with default options: live or film decided by the stream,
     /// no start time and no language preferences.
     public func load(_ url: URL) async throws {

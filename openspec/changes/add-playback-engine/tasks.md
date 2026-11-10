@@ -26,10 +26,10 @@
 
 ## 5. Format and languages
 
-- [ ] 5.1 Report presentation info and set display criteria on Apple TV, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`
-- [ ] 5.2 Report audio and subtitle tracks, choose by preference, apply picks and emit text cues on both routes, and verify with core and integration tests citing `playback-engine/audio-and-subtitle-languages`
-- [ ] 5.3 Keep the last language pick per channel under `player.languages` and start a returning channel with it, and verify with a core test citing `playback-engine/audio-and-subtitle-languages`
-- [ ] 5.4 Keep the last frame over Apple's player while the next item loads, and verify with an integration test citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
+- [x] 5.1 Report presentation info and set display criteria on Apple TV, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`
+- [x] 5.2 Report audio and subtitle tracks, choose by preference, apply picks and emit text cues on both routes, and verify with core and integration tests citing `playback-engine/audio-and-subtitle-languages`
+- [x] 5.3 Keep the last language pick per channel under `player.languages` and start a returning channel with it, and verify with a core test citing `playback-engine/audio-and-subtitle-languages`
+- [x] 5.4 Keep the last frame over Apple's player while the next item loads, and verify with an integration test citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
 
 ## 6. FFmpeg build
 

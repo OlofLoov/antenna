@@ -24,7 +24,8 @@ import SwiftUI
 
         private func attach(_ view: PlayerLayerView) {
             AVPlayerEngine.resolve(engine)?.attach(to: view.playerLayer)
-            view.host(DemuxEngine.resolve(engine)?.videoLayer)
+            let demuxer = DemuxEngine.resolve(engine)
+            view.host(demuxer?.videoLayer, hold: demuxer?.hold.layer)
         }
 
         final class PlayerLayerView: NSView {
@@ -39,17 +40,30 @@ import SwiftUI
                 layer = playerLayer
             }
 
-            func host(_ sublayer: CALayer?) {
-                guard let sublayer, sublayer !== demuxLayer else { return }
-                demuxLayer?.removeFromSuperlayer()
-                playerLayer.addSublayer(sublayer)
-                sublayer.frame = bounds
-                demuxLayer = sublayer
+            private weak var holdLayer: CALayer?
+
+            /// Puts the demuxing engine's picture above Apple's player and
+            /// the held picture above both.
+            func host(_ sublayer: CALayer?, hold: CALayer?) {
+                if let sublayer, sublayer !== demuxLayer {
+                    demuxLayer?.removeFromSuperlayer()
+                    playerLayer.addSublayer(sublayer)
+                    sublayer.frame = bounds
+                    demuxLayer = sublayer
+                }
+                if let hold, hold !== holdLayer {
+                    holdLayer?.removeFromSuperlayer()
+                    playerLayer.addSublayer(hold)
+                    hold.frame = bounds
+                    holdLayer = hold
+                }
+                if let holdLayer { holdLayer.zPosition = 1 }
             }
 
             override func layout() {
                 super.layout()
                 demuxLayer?.frame = bounds
+                holdLayer?.frame = bounds
             }
 
             @available(*, unavailable)
@@ -83,12 +97,12 @@ import SwiftUI
             guard let layer = view.playerLayer else { return }
             AVPlayerEngine.resolve(engine)?.attach(to: layer)
             let demuxer = DemuxEngine.resolve(engine)
-            view.host(demuxer?.videoLayer)
+            view.host(demuxer?.videoLayer, hold: demuxer?.hold.layer)
             demuxer?.enablePictureInPicture()
             #if os(tvOS)
                 // The TV's mode follows the stream once the picture is in a window.
-                view.onWindow = { window in demuxer?.displayManager = window?.avDisplayManager }
-                demuxer?.displayManager = view.window?.avDisplayManager
+                view.onWindow = { window in demuxer?.display.displayManager = window?.avDisplayManager }
+                demuxer?.display.displayManager = view.window?.avDisplayManager
             #endif
         }
 
@@ -104,17 +118,30 @@ import SwiftUI
                 onWindow?(window)
             }
 
-            func host(_ sublayer: CALayer?) {
-                guard let sublayer, sublayer !== demuxLayer else { return }
-                demuxLayer?.removeFromSuperlayer()
-                layer.addSublayer(sublayer)
-                sublayer.frame = bounds
-                demuxLayer = sublayer
+            private weak var holdLayer: CALayer?
+
+            /// Puts the demuxing engine's picture above Apple's player and
+            /// the held picture above both.
+            func host(_ sublayer: CALayer?, hold: CALayer?) {
+                if let sublayer, sublayer !== demuxLayer {
+                    demuxLayer?.removeFromSuperlayer()
+                    layer.addSublayer(sublayer)
+                    sublayer.frame = bounds
+                    demuxLayer = sublayer
+                }
+                if let hold, hold !== holdLayer {
+                    holdLayer?.removeFromSuperlayer()
+                    layer.addSublayer(hold)
+                    hold.frame = bounds
+                    holdLayer = hold
+                }
+                if let holdLayer { holdLayer.zPosition = 1 }
             }
 
             override func layoutSubviews() {
                 super.layoutSubviews()
                 demuxLayer?.frame = bounds
+                holdLayer?.frame = bounds
             }
         }
     }

@@ -40,3 +40,62 @@ public enum FrameRate {
         return steps.min().flatMap { nearest(1 / $0) }
     }
 }
+
+/// Keeps the TV in one stream's mode across channel changes on Apple TV
+/// (playback-engine/the-screen-learns-the-picture-and-sound-format).
+///
+/// `match` says whether the TV has to be asked for a mode: only when it
+/// differs from the one it is in. `letGo` leaves the mode after
+/// `releaseDelay` unless a stream asks for one before then, so a switch
+/// between the two playback paths, which stops one engine before the other
+/// starts, does not switch the TV twice.
+@MainActor
+public final class DisplayModeKeeper {
+    public private(set) var mode: DisplayMode?
+    private let releaseDelay: Duration
+    private let sleep: @Sendable (Duration) async throws -> Void
+    private let leave: @MainActor () -> Void
+    private var release: Task<Void, Never>?
+
+    public static let releaseDelay = Duration.seconds(1)
+
+    /// `leave` returns the TV to its own mode.
+    public init(
+        releaseDelay: Duration = DisplayModeKeeper.releaseDelay,
+        sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
+        leave: @escaping @MainActor () -> Void
+    ) {
+        self.releaseDelay = releaseDelay
+        self.sleep = sleep
+        self.leave = leave
+    }
+
+    /// A stream needs `mode`. True when the TV is in another mode and the
+    /// caller should ask for this one.
+    public func match(_ mode: DisplayMode) -> Bool {
+        release?.cancel()
+        release = nil
+        guard mode != self.mode else { return false }
+        self.mode = mode
+        return true
+    }
+
+    /// Playback stopped. The TV leaves the mode once `releaseDelay` passes
+    /// with no stream asking for one.
+    public func letGo() {
+        guard mode != nil, release == nil else { return }
+        let sleep = self.sleep
+        let delay = releaseDelay
+        release = Task { [weak self] in
+            do {
+                try await sleep(delay)
+            } catch {
+                return
+            }
+            guard let self, !Task.isCancelled else { return }
+            self.release = nil
+            self.mode = nil
+            self.leave()
+        }
+    }
+}

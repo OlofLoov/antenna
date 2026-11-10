@@ -31,6 +31,8 @@ public struct DemuxedStream: Sendable, Equatable {
     public let frameRate: Double?
     /// True for the stream the container marks as its default.
     public let isDefault: Bool
+    /// The provider's name for the stream, as written, if the container has one.
+    public var title: String?
 }
 
 /// One compressed packet with its timing.
@@ -194,6 +196,9 @@ public final class Demuxer: @unchecked Sendable {
         let language = av_dict_get(stream.pointee.metadata, "language", nil, 0).flatMap { entry in
             entry.pointee.value.map { String(cString: $0) }
         }
+        let title = av_dict_get(stream.pointee.metadata, "title", nil, 0).flatMap { entry in
+            entry.pointee.value.map { String(cString: $0) }
+        }
         let interlaced = [AV_FIELD_TT, AV_FIELD_BB, AV_FIELD_TB, AV_FIELD_BT].contains(parameters.field_order)
         let rate = stream.pointee.avg_frame_rate
         return DemuxedStream(
@@ -202,7 +207,7 @@ public final class Demuxer: @unchecked Sendable {
             sampleRate: Int(parameters.sample_rate), channels: Int(parameters.ch_layout.nb_channels),
             interlaced: interlaced, language: language,
             frameRate: rate.den > 0 && rate.num > 0 ? Double(rate.num) / Double(rate.den) : nil,
-            isDefault: stream.pointee.disposition & AV_DISPOSITION_DEFAULT != 0)
+            isDefault: stream.pointee.disposition & AV_DISPOSITION_DEFAULT != 0, title: title)
     }
 }
 
