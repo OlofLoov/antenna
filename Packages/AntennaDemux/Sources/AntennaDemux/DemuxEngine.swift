@@ -1,5 +1,9 @@
 @preconcurrency import AVFoundation
 import AntennaCore
+
+#if os(tvOS)
+    import AVKit
+#endif
 import CoreMedia
 import Foundation
 import os
@@ -63,6 +67,15 @@ public final class DemuxEngine: PlaybackEngine {
     private var isLive = true
     private var budget = ReconnectBudget()
     private var ticker: Task<Void, Never>?
+
+    #if os(tvOS)
+        /// The display manager of the window the picture is in. With it set,
+        /// the engine asks the TV for each stream's frame rate and dynamic
+        /// range when the user has matching on, keeps the TV's mode while
+        /// the next channel needs the same one, and lets it go on `stop`.
+        public weak var displayManager: AVDisplayManager?
+        private var displayMode: DisplayMode?
+    #endif
 
     /// Frames waiting ahead of the video renderer.
     static let videoLimit = 120
@@ -148,6 +161,10 @@ public final class DemuxEngine: PlaybackEngine {
         openAhead([])
         close()
         videoLayer.isHidden = true
+        #if os(tvOS)
+            displayMode = nil
+            displayManager?.preferredDisplayCriteria = nil
+        #endif
         set(.idle)
         await videoLayer.sampleBufferRenderer.flush(removingDisplayedImage: true)
     }
@@ -240,6 +257,7 @@ public final class DemuxEngine: PlaybackEngine {
         videoLayer.isHidden = start.video == nil
         synchronizer.setRate(wantsPlay ? 1 : 0, time: start.startTime)
         publishFormat(start)
+        matchDisplay(start)
         startTicker()
     }
 
@@ -396,26 +414,24 @@ extension DemuxEngine {
 
     // MARK: Reporting
 
+    /// Asks the TV for the stream's mode when it differs from the last one.
+    private func matchDisplay(_ start: DemuxStart) {
+        #if os(tvOS)
+            guard let rate = start.frameRate, let format = start.videoFormat else { return }
+            let mode = DisplayMode(frameRate: rate, dynamicRange: start.dynamicRange)
+            guard mode != displayMode else { return }
+            displayMode = mode
+            displayManager?.preferredDisplayCriteria = AVDisplayCriteria(refreshRate: Float(rate), formatDescription: format)
+        #endif
+    }
+
     private func set(_ new: PlaybackState) {
         stateCast.sendIfChanged(new)
     }
 
     private func publishFormat(_ start: DemuxStart) {
-        let size = start.pictureSize
-        let video = start.video.map {
-            PresentationInfo.Video(
-                width: size.map { Int($0.width) } ?? $0.width, height: size.map { Int($0.height) } ?? $0.height,
-                frameRate: $0.frameRate, dynamicRange: .sdr, codec: $0.codec)
-        }
-        let audio = start.audio.map { PresentationInfo.Audio(codec: $0.codec, channels: start.soundChannels, isDecodable: true) }
-        presentationCast.sendIfChanged(PresentationInfo(video: video, audio: audio))
-        let audioStreams = start.streams.filter { $0.kind == .audio }
-        let sounds = zip(audioStreams.indices, audioStreams).map { number, stream in
-            MediaTrack(id: "audio-\(number)", kind: .audio, languageCode: stream.language, name: nil, isDefault: stream.isDefault)
-        }
-        let chosen = start.audio.flatMap { audio in audioStreams.firstIndex(of: audio) }
-        tracksCast.sendIfChanged(
-            TrackList(audio: sounds, subtitles: [], selectedAudio: chosen.map { sounds[$0].id }, selectedSubtitle: nil))
+        presentationCast.sendIfChanged(start.presentation)
+        tracksCast.sendIfChanged(start.trackList)
     }
 
     private func publishPosition() {

@@ -16,8 +16,39 @@ struct DemuxStart: Sendable {
     let duration: CMTime?
     /// The picture size from the first keyframe, nil without a picture.
     let pictureSize: CMVideoDimensions?
+    /// SDR, HDR10 or HLG, from the first keyframe's format.
+    let dynamicRange: PresentationInfo.DynamicRange
+    /// Frames a second: what the container says, or what the first
+    /// frames' times show.
+    let frameRate: Double?
+    /// The first keyframe's format, for the TV's display criteria.
+    let videoFormat: CMFormatDescription?
     /// Channel count from the first sound, 0 without sound.
     let soundChannels: Int
+}
+
+extension DemuxStart {
+    /// The picture and sound format to report.
+    var presentation: PresentationInfo {
+        let video = self.video.map {
+            PresentationInfo.Video(
+                width: pictureSize.map { Int($0.width) } ?? $0.width, height: pictureSize.map { Int($0.height) } ?? $0.height,
+                frameRate: frameRate, dynamicRange: dynamicRange, codec: $0.codec)
+        }
+        let audio = self.audio.map { PresentationInfo.Audio(codec: $0.codec, channels: soundChannels, isDecodable: true) }
+        return PresentationInfo(video: video, audio: audio)
+    }
+
+    /// The audio tracks to report, "audio-n" in stream order, with the one
+    /// that plays selected.
+    var trackList: TrackList {
+        let audioStreams = streams.filter { $0.kind == .audio }
+        let sounds = zip(audioStreams.indices, audioStreams).map { number, stream in
+            MediaTrack(id: "audio-\(number)", kind: .audio, languageCode: stream.language, name: nil, isDefault: stream.isDefault)
+        }
+        let chosen = audio.flatMap { audioStreams.firstIndex(of: $0) }
+        return TrackList(audio: sounds, subtitles: [], selectedAudio: chosen.map { sounds[$0].id }, selectedSubtitle: nil)
+    }
 }
 
 /// One stream from open to end on its own thread: FFmpeg demuxes the bytes,
@@ -144,6 +175,7 @@ final class DemuxRun: @unchecked Sendable {
         var startTime: CMTime?
         var heldSound: [CMSampleBuffer] = []
         var announced = false
+        var frameTimes: [Double] = []
         while !isCancelled, let packet = prepared.demuxer.nextPacket() {
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
                 if startTime == nil, !packet.isKeyframe { continue }
@@ -154,6 +186,7 @@ final class DemuxRun: @unchecked Sendable {
                     heldSound.filter { sampleTime($0) >= first }.forEach { audioFeed.push($0) }
                     heldSound = []
                 }
+                if !announced { frameTimes.append(sampleTime(buffer).seconds) }
                 guard videoFeed.push(buffer) else { break }
             } else if packet.streamIndex == prepared.audio?.stream.index, let builder = prepared.audio {
                 guard let buffer = try? builder.sampleBuffer(for: packet) else { continue }
@@ -170,13 +203,13 @@ final class DemuxRun: @unchecked Sendable {
             let soundKnown = prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
             if !announced, let startTime, soundKnown {
                 announced = true
-                ready(.success(describe(prepared, startTime: startTime)))
+                ready(.success(describe(prepared, startTime: startTime, frameTimes: frameTimes)))
             }
         }
         return announced
     }
 
-    private func describe(_ prepared: Prepared, startTime: CMTime) -> DemuxStart {
+    private func describe(_ prepared: Prepared, startTime: CMTime, frameTimes: [Double]) -> DemuxStart {
         let picture = prepared.video?.formatDescription.map(CMVideoFormatDescriptionGetDimensions)
         let sound = prepared.audio?.formatDescription
             .flatMap(CMAudioFormatDescriptionGetStreamBasicDescription)
@@ -184,7 +217,10 @@ final class DemuxRun: @unchecked Sendable {
         return DemuxStart(
             format: prepared.demuxer.format, streams: prepared.demuxer.streams, video: prepared.video?.stream,
             audio: prepared.audio?.stream, startTime: startTime, duration: prepared.demuxer.duration,
-            pictureSize: picture, soundChannels: sound ?? prepared.audio?.stream.channels ?? 0)
+            pictureSize: picture, dynamicRange: prepared.video?.formatDescription.map(SampleBuilder.dynamicRange) ?? .sdr,
+            frameRate: prepared.video.flatMap { $0.stream.frameRate ?? FrameRate.estimate(presentationTimes: frameTimes) },
+            videoFormat: prepared.video?.formatDescription,
+            soundChannels: sound ?? prepared.audio?.stream.channels ?? 0)
     }
 
     private func sampleTime(_ buffer: CMSampleBuffer) -> CMTime {
