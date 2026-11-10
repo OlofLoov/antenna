@@ -8,11 +8,17 @@ import os
 /// and AVI. FFmpeg demuxes; Apple's sample-buffer renderers decode in
 /// hardware and play under one synchronizer clock.
 ///
-/// The picture is drawn into `videoLayer`. Switching flushes the renderers
-/// without removing the last image, so the old picture stays until the next
-/// channel's first frame. The layer is hidden until the first stream starts
-/// and after `stop`, which also removes the image, so it never covers Apple's
-/// player when `RoutedEngine` switches to it.
+/// The picture is drawn into `videoLayer`. Switching, reconnecting and
+/// pausing live TV flush the renderers without removing the last image, so
+/// the old picture stays until the next first frame. The layer is hidden
+/// until the first stream starts and after `stop`, which also removes the
+/// image, so it never covers Apple's player when `RoutedEngine` switches to it.
+///
+/// A stream that played and then drops (its bytes end, fail, or stop for
+/// `RetryPolicy.stallBudget`) reconnects under `ReconnectBudget`. Pausing
+/// live TV lets the provider's connection go; play opens the channel again
+/// at what is on air now. An address that turns out to serve HLS throws
+/// `EngineHandoff.toSystemPlayer` for `RoutedEngine` to hand over.
 @MainActor
 public final class DemuxEngine: PlaybackEngine {
     /// Draws the picture. Screens put it in their view hierarchy.
@@ -33,17 +39,26 @@ public final class DemuxEngine: PlaybackEngine {
     private struct Current {
         let run: DemuxRun
         let videoFeed: SampleFeed
+        let audioFeed: SampleFeed
         var start: DemuxStart?
-        var isLive: Bool { start?.duration == nil }
         /// Set when the bytes ran out: nil for a normal end, or why they stopped.
         var bytesEnded: PlaybackFailure??
+        /// When the renderers ran out of buffered media, if they have.
+        var starvedSince: ContinuousClock.Instant?
     }
 
+    private var request: (url: URL, options: PlaybackOptions)?
     private var current: Current?
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
+    private var reconnect: Task<Void, Never>?
     private var generation = 0
     private var wantsPlay = false
+    private var hasPlayed = false
+    /// Play opens the stream again instead of resuming it.
+    private var reopensOnPlay = false
+    private var isLive = true
+    private var budget = ReconnectBudget()
     private var ticker: Task<Void, Never>?
 
     /// Frames waiting ahead of the video renderer.
@@ -53,9 +68,9 @@ public final class DemuxEngine: PlaybackEngine {
 
     public nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
-    /// `sleep` waits between tune retries; tests pass a faster one. `log`
-    /// gets every line the engine logs, made only of the redacted address
-    /// and a reason.
+    /// `sleep` waits between retries and reconnects and times the stall
+    /// budget; tests pass a faster one. `log` gets every line the engine
+    /// logs, made only of the redacted address and a reason.
     public init(
         session: URLSession = PlaybackNetwork.makeSession(),
         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
@@ -86,31 +101,15 @@ public final class DemuxEngine: PlaybackEngine {
         generation += 1
         let mine = generation
         close()
+        request = (url, options)
         wantsPlay = false
+        hasPlayed = false
+        reopensOnPlay = false
+        budget = ReconnectBudget()
         set(.loading)
         do {
             try StreamAddress.check(url)
-            let session = self.session
-            let sleep = self.sleep
-            let connect = Task {
-                try await RetryPolicy.tune.run(sleep: sleep) {
-                    let bytes = HTTPByteStream(url: url, session: session)
-                    try await bytes.open()
-                    return bytes
-                }
-            }
-            connecting = connect
-            let bytes = try await withTaskCancellationHandler {
-                try await connect.value
-            } onCancel: {
-                connect.cancel()
-            }
-            if generation == mine { connecting = nil }
-            guard generation == mine else {
-                bytes.cancel()
-                throw CancellationError()
-            }
-            try await begin(bytes, generation: mine)
+            try await open(url, options: options, generation: mine)
             log("demux load \(redacted(url)) ready")
         } catch let failure as PlaybackFailure {
             log("demux load \(redacted(url)) failed: \(failure)")
@@ -118,6 +117,11 @@ public final class DemuxEngine: PlaybackEngine {
             close()
             set(.failed(failure))
             throw failure
+        } catch EngineHandoff.toSystemPlayer {
+            guard generation == mine else { throw CancellationError() }
+            close()
+            set(.idle)
+            throw EngineHandoff.toSystemPlayer
         } catch {
             guard generation == mine else { throw CancellationError() }
             throw error
@@ -127,18 +131,41 @@ public final class DemuxEngine: PlaybackEngine {
     public func stop() async {
         generation += 1
         wantsPlay = false
+        request = nil
         close()
         videoLayer.isHidden = true
         set(.idle)
         await videoLayer.sampleBufferRenderer.flush(removingDisplayedImage: true)
     }
 
-    /// Starts a run on `bytes` and returns once its first frame is queued.
-    private func begin(_ bytes: HTTPByteStream, generation mine: Int) async throws {
+    /// Connects with the tune retry policy and starts a run, returning once
+    /// its first frame is queued. Throws `CancellationError` when a newer
+    /// load, stop or pause replaced it.
+    private func open(_ url: URL, options: PlaybackOptions, generation mine: Int) async throws {
+        let session = self.session
+        let sleep = self.sleep
+        let connect = Task {
+            try await RetryPolicy.tune.run(sleep: sleep) {
+                let bytes = HTTPByteStream(url: url, session: session)
+                try await bytes.open()
+                return bytes
+            }
+        }
+        connecting = connect
+        let bytes = try await withTaskCancellationHandler {
+            try await connect.value
+        } onCancel: {
+            connect.cancel()
+        }
+        if generation == mine { connecting = nil }
+        guard generation == mine else {
+            bytes.cancel()
+            throw CancellationError()
+        }
         let videoFeed = SampleFeed(renderer: videoLayer.sampleBufferRenderer, label: "video", limit: Self.videoLimit)
         let audioFeed = SampleFeed(renderer: audioRenderer, label: "audio", limit: Self.audioLimit)
         let run = DemuxRun(bytes: bytes, videoFeed: videoFeed, audioFeed: audioFeed)
-        current = Current(run: run, videoFeed: videoFeed)
+        current = Current(run: run, videoFeed: videoFeed, audioFeed: audioFeed)
         videoFeed.start()
         audioFeed.start()
         let start: DemuxStart = try await withTaskCancellationHandler {
@@ -154,22 +181,32 @@ public final class DemuxEngine: PlaybackEngine {
         }
         guard generation == mine else { throw CancellationError() }
         current?.start = start
+        isLive = options.isLive ?? (start.duration == nil)
         videoLayer.isHidden = start.video == nil
-        synchronizer.setRate(0, time: start.startTime)
+        synchronizer.setRate(wantsPlay ? 1 : 0, time: start.startTime)
         publishFormat(start)
         startTicker()
     }
 
-    /// Closes the stream that plays now. The renderers are flushed but keep
-    /// the last picture.
-    private func close() {
+    /// Lets the stream that plays now go: its connection closes and the
+    /// renderers are flushed, keeping the last picture and the format.
+    private func release() {
         connecting?.cancel()
         connecting = nil
+        reconnect?.cancel()
+        reconnect = nil
         ticker?.cancel()
         ticker = nil
-        synchronizer.rate = 0
+        // Stop feeding and flush before stopping the clock: setting the rate
+        // while the renderers still take buffers blocked for seconds.
         current?.run.cancel()
         current = nil
+        synchronizer.rate = 0
+    }
+
+    /// Releases the stream and clears what was reported about it.
+    private func close() {
+        release()
         presentationCast.send(nil)
         tracksCast.send(.empty)
         positionCast.send(.zero)
@@ -179,9 +216,11 @@ public final class DemuxEngine: PlaybackEngine {
     // MARK: Play and pause
 
     public func play() async {
-        guard let current, current.start != nil else { return }
         switch state {
+        case .paused where reopensOnPlay:
+            await startAgain()
         case .loading, .paused, .buffering:
+            guard current?.start != nil else { return }
             wantsPlay = true
             synchronizer.rate = 1
         case .idle, .playing, .reconnecting, .ended, .failed:
@@ -191,18 +230,53 @@ public final class DemuxEngine: PlaybackEngine {
 
     public func pause() async {
         switch state {
-        case .loading, .playing, .buffering:
+        case .loading, .reconnecting:
+            // Stops the attempts; play starts the stream again.
+            generation += 1
+            wantsPlay = false
+            release()
+            reopensOnPlay = true
+            set(.paused)
+        case .playing, .buffering:
             wantsPlay = false
             synchronizer.rate = 0
-            set(.paused)
             publishPosition()
-        case .idle, .paused, .reconnecting, .ended, .failed:
+            if isLive {
+                // Live TV lets the provider's connection go; play opens
+                // what is on air then.
+                generation += 1
+                release()
+                reopensOnPlay = true
+            }
+            set(.paused)
+        case .idle, .paused, .ended, .failed:
+            return
+        }
+    }
+
+    /// Opens the last address again and plays it, as after pausing live TV
+    /// or a load or reconnect.
+    private func startAgain() async {
+        guard let request else { return }
+        generation += 1
+        let mine = generation
+        reopensOnPlay = false
+        wantsPlay = true
+        budget = ReconnectBudget()
+        set(.loading)
+        do {
+            try await open(request.url, options: request.options, generation: mine)
+        } catch let failure as PlaybackFailure {
+            guard generation == mine else { return }
+            close()
+            set(.failed(failure))
+        } catch {
             return
         }
     }
 
     public func seek(to time: Duration) async throws {
-        throw (current?.isLive ?? true) ? SeekRefusal.live : SeekRefusal.notSeekable
+        throw isLive ? SeekRefusal.live : SeekRefusal.notSeekable
     }
 
     public func selectAudio(_ id: MediaTrack.ID) async {}
@@ -215,6 +289,54 @@ public final class DemuxEngine: PlaybackEngine {
     public func tracks() async -> AsyncStream<TrackList> { tracksCast.stream() }
     public func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
     public func subtitleCues() async -> AsyncStream<[SubtitleCue]> { cuesCast.stream() }
+
+}
+
+extension DemuxEngine {
+    // MARK: Drops and reconnects
+
+    /// The bytes ran out. What was queued plays out first; `tick` then ends
+    /// the film or treats the live stream as dropped.
+    private func bytesEnded(_ failure: PlaybackFailure?, generation mine: Int) {
+        guard generation == mine, current != nil else { return }
+        current?.bytesEnded = .some(failure)
+    }
+
+    /// A stream that played lost its data: reconnect after the budget's
+    /// wait, or fail with `failure` once the budget says so.
+    private func dropped(_ failure: PlaybackFailure) {
+        guard hasPlayed, let request, let next = budget.dropped(failure, at: .now) else {
+            close()
+            set(.failed(failure))
+            return
+        }
+        log("demux reconnect \(next.attempt)/\(budget.maxAttempts) \(redacted(request.url)) \(failure)")
+        generation += 1
+        let mine = generation
+        release()
+        set(.reconnecting(attempt: next.attempt, of: budget.maxAttempts))
+        let sleep = self.sleep
+        reconnect = Task { [weak self] in
+            do {
+                try await sleep(next.delay)
+            } catch {
+                return
+            }
+            await self?.reopen(generation: mine)
+        }
+    }
+
+    private func reopen(generation mine: Int) async {
+        guard generation == mine, let request else { return }
+        do {
+            try await open(request.url, options: request.options, generation: mine)
+        } catch let failure as PlaybackFailure {
+            guard generation == mine else { return }
+            dropped(failure)
+        } catch {
+            return
+        }
+    }
 
     // MARK: Reporting
 
@@ -230,13 +352,14 @@ public final class DemuxEngine: PlaybackEngine {
                 frameRate: $0.frameRate, dynamicRange: .sdr, codec: $0.codec)
         }
         let audio = start.audio.map { PresentationInfo.Audio(codec: $0.codec, channels: start.soundChannels, isDecodable: true) }
-        presentationCast.send(PresentationInfo(video: video, audio: audio))
+        presentationCast.sendIfChanged(PresentationInfo(video: video, audio: audio))
         let audioStreams = start.streams.filter { $0.kind == .audio }
         let sounds = zip(audioStreams.indices, audioStreams).map { number, stream in
             MediaTrack(id: "audio-\(number)", kind: .audio, languageCode: stream.language, name: nil, isDefault: stream.isDefault)
         }
         let chosen = start.audio.flatMap { audio in audioStreams.firstIndex(of: audio) }
-        tracksCast.send(TrackList(audio: sounds, subtitles: [], selectedAudio: chosen.map { sounds[$0].id }, selectedSubtitle: nil))
+        tracksCast.sendIfChanged(
+            TrackList(audio: sounds, subtitles: [], selectedAudio: chosen.map { sounds[$0].id }, selectedSubtitle: nil))
     }
 
     private func publishPosition() {
@@ -244,12 +367,10 @@ public final class DemuxEngine: PlaybackEngine {
         let elapsed = CMTimeSubtract(synchronizer.currentTime(), start.startTime)
         guard elapsed.isNumeric else { return }
         let duration = start.duration.map { Duration.seconds($0.seconds) }
-        positionCast.send(PlaybackPosition(time: .seconds(max(0, elapsed.seconds)), duration: duration, isLive: current.isLive))
+        positionCast.send(PlaybackPosition(time: .seconds(max(0, elapsed.seconds)), duration: duration, isLive: isLive))
     }
 
-    /// Four times a second: marks playing once the first frame's time is
-    /// reached, reports the position, and ends a film whose last frame
-    /// has played.
+    /// Four times a second while a stream is open.
     private func startTicker() {
         ticker?.cancel()
         ticker = Task { [weak self] in
@@ -260,33 +381,46 @@ public final class DemuxEngine: PlaybackEngine {
         }
     }
 
+    /// Marks playing once the first frame's time is reached, reports the
+    /// position, waits out a short stall as buffering, and handles the end:
+    /// a film ends once its last frame has played, and a live stream whose
+    /// data stopped counts as dropped.
     private func tick() {
-        guard let current, let start = current.start else { return }
+        guard var current, let start = current.start else { return }
         let now = synchronizer.currentTime()
-        if wantsPlay, state == .loading || state == .paused || state == .buffering, synchronizer.rate > 0, now >= start.startTime {
-            set(.playing)
-        }
-        if state == .playing {
+        let last = current.videoFeed.lastEnqueued.isValid ? current.videoFeed.lastEnqueued : current.audioFeed.lastEnqueued
+        let starved = last.isValid && now >= last
+        switch state {
+        case .loading, .reconnecting, .buffering:
+            // The clock moved past the first frame: it is on screen and
+            // time runs, which a stalled audio output would not let happen.
+            if wantsPlay, synchronizer.rate > 0, now > start.startTime, !starved {
+                current.starvedSince = nil
+                self.current = current
+                hasPlayed = true
+                budget.playing(at: .now)
+                set(.playing)
+            }
+        case .playing:
             publishPosition()
-            // The bytes ran out and what was queued has played: a film has
-            // ended, and a live stream has stopped sending.
-            let last = current.videoFeed.lastEnqueued
-            if let ending = current.bytesEnded, !last.isValid || now >= last {
-                if !current.isLive, ending == nil {
+            guard starved else { break }
+            if let ending = current.bytesEnded {
+                if !isLive, ending == nil {
                     synchronizer.rate = 0
                     set(.ended)
                 } else {
-                    close()
-                    set(.failed(ending ?? .stoppedSendingData))
+                    dropped(ending ?? .stoppedSendingData)
                 }
+                return
             }
+            current.starvedSince = .now
+            self.current = current
+            set(.buffering)
+        default:
+            break
         }
-    }
-
-    /// The bytes ran out. What was queued plays out first; `tick` then ends
-    /// the film or fails the live stream.
-    private func bytesEnded(_ failure: PlaybackFailure?, generation mine: Int) {
-        guard generation == mine, current != nil else { return }
-        current?.bytesEnded = .some(failure)
+        if state == .buffering, let since = current.starvedSince, ContinuousClock.now - since >= RetryPolicy.stallBudget {
+            dropped(current.bytesEnded.flatMap { $0 } ?? .stoppedSendingData)
+        }
     }
 }

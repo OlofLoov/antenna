@@ -122,7 +122,7 @@ private struct Harness {
 
 /// Every value a stream yielded, in order.
 @MainActor
-private final class Recorded<Value: Sendable> {
+final class Recorded<Value: Sendable> {
     private(set) var values: [Value] = []
     private var task: Task<Void, Never>?
 
@@ -138,7 +138,7 @@ private final class Recorded<Value: Sendable> {
 }
 
 @MainActor
-private func eventually(timeout: Duration = .seconds(10), _ condition: @MainActor () async -> Bool) async -> Bool {
+func eventually(timeout: Duration = .seconds(10), _ condition: @MainActor () async -> Bool) async -> Bool {
     let deadline = ContinuousClock.now + timeout
     while ContinuousClock.now < deadline {
         if await condition() { return true }
