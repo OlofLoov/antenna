@@ -34,7 +34,7 @@ Out of scope:
 - `tv-channel-overlay`: the three-column channel list over live video on Apple TV, with now and next, tuning and favorites.
 
 ### Modified Capabilities
-None.
+- `tvos-shell`: the list over the picture becomes the channel overlay and opens on the playing channel instead of the first row.
 
 ## Impact
 
