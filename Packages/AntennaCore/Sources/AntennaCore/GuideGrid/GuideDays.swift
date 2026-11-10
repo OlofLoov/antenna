@@ -34,15 +34,15 @@ extension GuideTimeline {
         return clamp(moved)
     }
 
-    /// "Today" for today, else the short weekday, "Tue". A day a week or
-    /// more ahead adds its date, "Tue 18", so no two chips read the same.
+    /// "Today" for any time today, else the short weekday, "Tue". A day a
+    /// week or more away adds its date, "Tue 18", so no two chips read the same.
     public func dayLabel(_ day: Date, today: Date, locale: Locale = .current) -> String {
         let start = calendar.startOfDay(for: today)
-        guard day > start else { return "Today" }
+        let distance = calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: day)).day ?? 0
+        guard distance != 0 else { return "Today" }
         var style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar, timeZone: calendar.timeZone)
             .weekday(.abbreviated)
-        let distance = calendar.dateComponents([.day], from: start, to: day).day ?? 0
-        if distance >= 7 { style = style.day() }
+        if abs(distance) >= 7 { style = style.day() }
         return day.formatted(style)
     }
 }
