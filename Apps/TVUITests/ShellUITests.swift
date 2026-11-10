@@ -77,15 +77,17 @@ final class ShellUITests: XCTestCase {
         expect(element("shell.debug.engine"), "value == '\(summary)'", file: file, line: line)
     }
 
-    func expectGone(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
-        expect(element(identifier), "exists == false", file: file, line: line)
+    func expectGone(_ identifier: String, timeout: TimeInterval = 10, file: StaticString = #filePath, line: UInt = #line) {
+        expect(element(identifier), "exists == false", timeout: timeout, file: file, line: line)
     }
 
-    /// The `channels` scenario with its first channel playing full screen.
+    /// The `channels` scenario with its first channel playing full screen
+    /// and the info bar from the launch tune gone again.
     func launchPlaying() {
         launch("channels")
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
+        expectGone("zapBar.bar", timeout: 10)
     }
 }
 
@@ -124,6 +126,8 @@ extension ShellUITests {
     func testMenuOverFailedStreamKeepsItFailed() {
         launch("failing")
         expectEngine("failed loads=1 file=a1.ts")
+        // The tune shows the info bar, which takes the first Menu press.
+        expectGone("zapBar.bar", timeout: 10)
         press(.menu)
         expectFocus("shell.tab.live")
         expect(element("shell.player"), "value == 'dimmed'")
@@ -147,6 +151,8 @@ extension ShellUITests {
     func testSelectLiveReloadsFailedStream() {
         launch("failing")
         expectEngine("failed loads=1 file=a1.ts")
+        // The tune shows the info bar, which takes the first Menu press.
+        expectGone("zapBar.bar", timeout: 10)
         press(.menu)
         expectFocus("shell.tab.live")
         press(.select)

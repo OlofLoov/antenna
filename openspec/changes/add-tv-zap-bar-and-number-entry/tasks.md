@@ -6,9 +6,9 @@
 
 ## 2. Showing and hiding the bar
 
-- [ ] 2.1 Show the bar on every channel change and hide it five seconds after the last one, and verify with a UI test citing `tv-zap-bar-and-number-entry/the-bar-appears-on-every-channel-change`
+- [x] 2.1 Show the bar on every channel change and hide it five seconds after the last one, and verify with a UI test citing `tv-zap-bar-and-number-entry/the-bar-appears-on-every-channel-change`
 - [ ] 2.2 Show the bar on play/pause in full-screen live TV, dropping half-typed digits, and verify with a UI test citing `tv-zap-bar-and-number-entry/play-pause-shows-the-bar`
-- [ ] 2.3 Hide the bar on Menu without leaving the player, consume select to open the overlay, and verify with a UI test citing `tv-zap-bar-and-number-entry/menu-hides-the-bar`
+- [x] 2.3 Hide the bar on Menu without leaving the player, consume select to open the overlay, and verify with a UI test citing `tv-zap-bar-and-number-entry/menu-hides-the-bar`
 
 ## 3. Bar content
 
