@@ -22,6 +22,8 @@
                 }
             }
             .guideRefreshTriggers()
+            // Leaving the shell, as when the profile changes, stops what plays.
+            .onDisappear { Task { [engine = model?.engine] in await engine?.stop() } }
             .task {
                 guard model == nil else { return }
                 let model = ShellModel(dependencies())

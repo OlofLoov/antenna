@@ -103,6 +103,15 @@ public struct ProfileList: Sendable, Equatable {
         return profiles.first { $0.id == id }
     }
 
+    /// The profile a running device stays on after the profiles changed
+    /// (profiles/editing-and-deleting-a-profile): `current` while it
+    /// exists, the only profile when one is left, else nil, meaning "Who's
+    /// watching?" has to ask again.
+    public func staying(on current: UUID) -> UUID? {
+        if profiles.contains(where: { $0.id == current }) { return current }
+        return showsPicker ? nil : profiles[0].id
+    }
+
     /// The profile the picker focuses first: the device's last one, else the first.
     public func focusedOnPicker(stored id: UUID?) -> Profile {
         profiles.first { $0.id == id } ?? profiles[0]

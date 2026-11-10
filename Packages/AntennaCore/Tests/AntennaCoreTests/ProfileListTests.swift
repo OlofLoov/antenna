@@ -104,4 +104,15 @@ import Testing
         #expect(!ProfileList.owns(kids, recordProfile: nil))
         #expect(ProfileList.owns(kids, recordProfile: kids))
     }
+
+    @Test("profiles/editing-and-deleting-a-profile a device on a deleted profile asks again or opens on the one left")
+    func deletedElsewhere() {
+        let dad = profile("Dad", order: 0)
+        let kids = profile("Kids", order: 1)
+        let mum = profile("Mum", order: 2)
+        #expect(ProfileList(stored: [dad, kids, mum]).staying(on: kids.id) == kids.id)
+        #expect(ProfileList(stored: [dad, mum]).staying(on: kids.id) == nil, "two or more left: ask again")
+        #expect(ProfileList(stored: [dad]).staying(on: kids.id) == dad.id, "one left: open on it")
+        #expect(ProfileList(stored: []).staying(on: kids.id) == Profile.mainID)
+    }
 }
