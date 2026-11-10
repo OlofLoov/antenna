@@ -50,8 +50,13 @@ final class ShellUITests: XCTestCase {
         press(button)
         let focused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: target)
         if XCTWaiter().wait(for: [focused], timeout: 3) == .completed { return }
+        let afterFirst = focusedElements()
         if origin.hasFocus { press(button) }
-        expect(target, "hasFocus == true", file: file, line: line)
+        let again = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: target)
+        guard XCTWaiter().wait(for: [again], timeout: 10) != .completed else { return }
+        XCTFail(
+            "\(target) never took focus; after the first press: \(afterFirst); now: \(focusedElements())",
+            file: file, line: line)
     }
 
     func expectFocus(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
