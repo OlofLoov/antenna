@@ -5,6 +5,7 @@ on:
     paths:
       - scripts/build-ffmpeg.sh
       - scripts/ffmpeg-smoke.swift
+      - Packages/FFmpeg/**
       - .github/workflows/ffmpeg.yml
   push:
     tags: ['ffmpeg-*']
@@ -58,6 +59,36 @@ jobs:
           name: ffmpeg-xcframework
           path: .build/ffmpeg/dist
           if-no-files-found: error
+
+  simulators:
+    name: Package tests on ${{ matrix.platform }} Simulator
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: iOS
+            device: iPhone
+          - platform: tvOS
+            device: Apple TV
+    steps:
+      - uses: actions/checkout@v7
+      - name: Ensure simulator runtime
+        run: |
+          set -e
+          if ! xcrun simctl list runtimes available | grep -q "^${{ matrix.platform }} "; then
+            xcodebuild -downloadPlatform ${{ matrix.platform }}
+          fi
+      - name: Test
+        working-directory: Packages/FFmpeg
+        run: |
+          set -e
+          name=$(xcrun simctl list devices available | grep -oE "${{ matrix.device }}[^(]+" | head -1 | sed 's/ *$//')
+          echo "Simulator: $name"
+          scheme=$(xcodebuild -list -json | python3 -c 'import json, sys; s = json.load(sys.stdin)["workspace"]["schemes"]; print(next((x for x in s if x.endswith("-Package")), s[0]))')
+          echo "Scheme: $scheme"
+          xcodebuild test -scheme "$scheme" \
+            -destination "platform=${{ matrix.platform }} Simulator,name=$name"
 
   release:
     name: Publish release
