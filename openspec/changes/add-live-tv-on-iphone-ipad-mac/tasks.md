@@ -27,10 +27,10 @@
 
 ## 5. Loading and failure states
 
-- [ ] 5.1 Show the per-source loading list, the failure banner with Retry and dismiss, the offline and empty messages, without source error text, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login`
-- [ ] 5.2 Load a source on its own once its credential arrives, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/a-login-that-syncs-later`
+- [x] 5.1 Show the per-source loading list, the failure banner with Retry and dismiss, the offline and empty messages, without source error text, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login`
+- [x] 5.2 Load a source on its own once its credential arrives, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/a-login-that-syncs-later`
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `live-tv-on-iphone-ipad-mac/<requirement-slug>`
+- [x] 6.1 Each requirement has a test citing `live-tv-on-iphone-ipad-mac/<requirement-slug>`
 - [ ] 6.2 `/opsx:verify` passes

@@ -175,6 +175,8 @@ jobs:
           xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
             -destination "platform=iOS Simulator,id=$id" \
             -only-testing:AntennaUITests/LiveRegularUITests \
+            -only-testing:AntennaUITests/LiveKeyboardUITests \
+            -only-testing:AntennaUITests/LiveStatesUITests \
             -retry-tests-on-failure -test-iterations 2 \
             -resultBundlePath ipad-ui-tests.xcresult \
             CODE_SIGNING_ALLOWED=NO
