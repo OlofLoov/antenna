@@ -2,7 +2,7 @@
 
 ## 1. Profiles in the core package
 
-- [ ] 1.1 Add `Profile` and `ProfileList` to AntennaCore: order, duplicates by id (earliest wins), the name rule, the eight-profile cap, adding the second profile with Main, deleting all but the last, the current profile and whether the picker shows, and verify with core tests citing `profiles/who-s-watching-at-launch`, `profiles/adding-a-profile`, `profiles/editing-and-deleting-a-profile` and `profiles/profiles-sync-between-devices`
+- [x] 1.1 Add `Profile` and `ProfileList` to AntennaCore: order, duplicates by id (earliest wins), the name rule, the eight-profile cap, adding the second profile with Main, deleting all but the last, the current profile and whether the picker shows, and verify with core tests citing `profiles/who-s-watching-at-launch`, `profiles/adding-a-profile`, `profiles/editing-and-deleting-a-profile` and `profiles/profiles-sync-between-devices`
 
 ## 2. Records and the current profile
 
