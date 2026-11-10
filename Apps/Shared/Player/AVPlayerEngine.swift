@@ -55,6 +55,11 @@ final class AVPlayerEngine: PlaybackEngine {
     /// Data but no picture for this long fails the stream as unreadable.
     static let firstFrameTimeout = Duration.seconds(15)
 
+    /// An item that is not ready to play after this long times out, and
+    /// the tune retry policy tries again.
+    static let readyTimeout = Duration.seconds(15)
+    let readyTimeout: Duration
+
     /// How long Apple's player takes to close the old connection after its
     /// item is removed. It closes it from another process, so the engine
     /// waits this long before it opens the next one. Measured at under 100 ms
@@ -67,13 +72,15 @@ final class AVPlayerEngine: PlaybackEngine {
     nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
     /// `sleep` waits between retries and times the stall budget; tests pass
-    /// a faster one. `log` gets every line the engine logs, each made only of
-    /// the redacted address and a reason.
+    /// a faster one, and a shorter `readyTimeout`. `log` gets every line the
+    /// engine logs, each made only of the redacted address and a reason.
     init(
         session: URLSession = PlaybackNetwork.makeSession(),
         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
+        readyTimeout: Duration = AVPlayerEngine.readyTimeout,
         log: @escaping @Sendable (String) -> Void = { AVPlayerEngine.logger.info("\($0, privacy: .public)") }
     ) {
+        self.readyTimeout = readyTimeout
         self.session = session
         self.sleep = sleep
         self.log = log

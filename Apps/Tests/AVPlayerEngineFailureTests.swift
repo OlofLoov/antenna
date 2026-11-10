@@ -169,3 +169,23 @@ struct PlayerHarnessPlaylist {
         return Data(lines.joined(separator: "\n").utf8)
     }
 }
+
+/// An item Apple's player never gets ready.
+@MainActor
+@Suite(.serialized, .timeLimit(.minutes(1))) struct AVPlayerEngineReadyTimeoutTests {
+    @Test("playback-engine/streams-that-cannot-play-fail-with-a-clear-reason an item that never gets ready times out")
+    func neverReady() async throws {
+        let server = try FixtureServer()
+        let base = try await server.start()
+        for index in 0..<3 { await server.always("/hls/segment\(index).ts", .stall(afterBytes: 0)) }
+        let engine = AVPlayerEngine(sleep: { _ in }, readyTimeout: .seconds(1))
+        let started = ContinuousClock.now
+        await #expect(throws: PlaybackFailure.timedOut) {
+            try await engine.load(base.appending(path: "hls/index.m3u8"))
+        }
+        #expect(ContinuousClock.now - started < .seconds(20), "load returns instead of waiting for good")
+        #expect(engine.state == .failed(.timedOut))
+        await engine.stop()
+        await server.stop()
+    }
+}

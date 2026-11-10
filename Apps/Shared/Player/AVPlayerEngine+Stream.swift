@@ -30,8 +30,12 @@ extension AVPlayerEngine {
         item.preferredForwardBufferDuration = 8
         observe(item)
         player.replaceCurrentItem(with: item)
+        let deadline = ContinuousClock.now + readyTimeout
         while item.status != .readyToPlay {
             if item.status == .failed { throw Self.failure(from: item.error, host: url.host()) }
+            // An item can stay unknown for good, for example when no segment
+            // ever arrives; without a limit `load` would never return.
+            guard ContinuousClock.now < deadline else { throw PlaybackFailure.timedOut }
             try await Task.sleep(for: .milliseconds(50))
             guard generation == mine else { throw CancellationError() }
         }
