@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV who is watching</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- profiles.picker: shown at launch with two or more profiles, before anything plays (profiles/who-s-watching-at-launch). No tab bar, no clock. -->
+  <div style="position: absolute; left: 0; right: 0; top: 230px; text-align: center; font-size: 56px; font-weight: 700">Who's watching?</div>
+  <div style="position: absolute; left: 0; right: 0; top: 400px; display: flex; justify-content: center; gap: 80px">
+    <!-- profiles.tile.0 (focused: lifted, white ring) -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 22px; width: 220px">
+      <div style="position: relative; width: 200px; height: 200px; border-radius: 100px; background: #5BB8FF; color: #0B0E13; display: flex; align-items: center; justify-content: center; font-size: 88px; font-weight: 700; transform: scale(1.08); box-shadow: 0 0 0 6px #F2F4F8, 0 18px 40px rgba(0,0,0,0.45);">D</div>
+      <div style="font-size: 32px; font-weight: 600; color: #F2F4F8">Dad</div>
+    </div>
+    <!-- profiles.tile.1 -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 22px; width: 220px">
+      <div style="position: relative; width: 200px; height: 200px; border-radius: 100px; background: #F87171; color: #0B0E13; display: flex; align-items: center; justify-content: center; font-size: 88px; font-weight: 700; ">M</div>
+      <div style="font-size: 32px; font-weight: 400; color: #D7DEE8">Mum</div>
+    </div>
+    <!-- profiles.tile.2 -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 22px; width: 220px">
+      <div style="position: relative; width: 200px; height: 200px; border-radius: 100px; background: #A3E635; color: #0B0E13; display: flex; align-items: center; justify-content: center; font-size: 88px; font-weight: 700; ">K</div>
+      <div style="font-size: 32px; font-weight: 400; color: #D7DEE8">Kids</div>
+    </div>
+  </div>
+  <!-- profiles.manage -->
+  <div style="position: absolute; left: 0; right: 0; top: 820px; display: flex; justify-content: center">
+    <span style="font-size: 26px; font-weight: 600; padding: 16px 32px; border-radius: 12px; background: rgba(255,255,255,0.12)">Manage profiles</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
