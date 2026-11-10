@@ -26,6 +26,10 @@ struct ProfileGate<Content: View>: View {
                 .environment(\.currentProfile, chosen)
                 .environment(\.switchProfile, { self.chosen = nil })
                 .id(chosen)
+                // A profile deleted on another device ends its session here.
+                .onChange(of: records.map(\.id)) {
+                    self.chosen = profiles.staying(on: chosen)
+                }
         } else if profiles.showsPicker {
             ProfileFlow(profiles: profiles, focused: profiles.focusedOnPicker(stored: store.read()).id, choose: choose)
         } else {

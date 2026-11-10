@@ -119,4 +119,26 @@ import Testing
         defaults.set("not a uuid", forKey: CurrentProfileStore.key)
         #expect(store.read() == nil, "a value that fails to decode reads as absent")
     }
+
+    @Test("profiles/sources-and-logins-are-shared every profile sees every source's channels")
+    func sourcesShared() throws {
+        let kids = try #require(ProfileStore.add(name: "Kids", colorIndex: 5, in: context))
+        let other = UUID()
+        let all =
+            channels + Channel.tagged([Channel(id: "c", name: "Channel c", streamURL: URL(fileURLWithPath: "/c.ts"))], sourceID: other)
+        let favorites = try context.fetch(FetchDescriptor<FavoriteRecord>())
+        let forKids = Catalogue<PersistentIdentifier>.shell(channels: all, favorites: favorites, profile: kids.id)
+        let forMain = Catalogue<PersistentIdentifier>.shell(channels: all, favorites: favorites, profile: Profile.mainID)
+        #expect(forKids.count(of: .all) == 3)
+        #expect(forKids.groups == forMain.groups, "groups and sources are the same for every profile")
+    }
+
+    @Test("profiles/profiles-sync-between-devices a device opens as one profile until profiles arrive")
+    func beforeProfilesArrive() throws {
+        let empty = try profiles()
+        #expect(!empty.showsPicker)
+        #expect(empty.current(stored: nil)?.id == Profile.mainID)
+        ProfileStore.add(name: "Kids", colorIndex: 5, in: context)
+        #expect(try profiles().staying(on: Profile.mainID) == Profile.mainID, "a running device stays on Main when Kids arrives")
+    }
 }
