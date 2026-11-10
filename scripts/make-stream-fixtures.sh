@@ -51,6 +51,62 @@ ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" -f lavfi -i "
     -disposition:a:0 default -disposition:a:1 0 -disposition:s:0 0 -disposition:s:1 0 \
     -movflags +faststart "$out/film.mp4"
 
+# The same film in Matroska for the FFmpeg path, with SubRip subtitles.
+ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" -f lavfi -i "$(tone 660 6)" \
+    -i "$work/en.srt" -i "$work/sv.srt" \
+    -map 0:v -map 1:a -map 2:a -map 3:s -map 4:s \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 48k -ac 2 -c:s srt \
+    -metadata:s:a:0 language=eng -metadata:s:a:1 language=ger -metadata:s:a:1 "title=Sport HD Kommentar" \
+    -metadata:s:s:0 language=eng -metadata:s:s:1 language=swe \
+    -disposition:a:0 default -disposition:a:1 0 -disposition:s:0 0 -disposition:s:1 0 "$out/film.mkv"
+
+# The same tracks over HLS: a picture, English (default) and German sound
+# renditions and English and Swedish WebVTT subtitles. ffmpeg writes one
+# subtitle language per variant, so the renditions are made one by one and
+# the multivariant playlist is written here. Segments start at 1.4 seconds
+# (MPEG-TS 126000), which the subtitles' timestamp map points at.
+tracks="$out/hls-tracks"
+mkdir -p "$tracks"
+hls_vod() { ff "$@" -f hls -hls_time 2 -hls_playlist_type vod; }
+hls_vod -f lavfi -i "$(video 320x180 25 6)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -hls_segment_filename "$tracks/video%d.ts" "$tracks/video.m3u8"
+hls_vod -f lavfi -i "$(tone 440 6)" -c:a aac -b:a 48k -ac 2 -hls_segment_filename "$tracks/audio-en%d.ts" "$tracks/audio-en.m3u8"
+hls_vod -f lavfi -i "$(tone 660 6)" -c:a aac -b:a 48k -ac 2 -hls_segment_filename "$tracks/audio-de%d.ts" "$tracks/audio-de.m3u8"
+for lang in en sv; do
+    {
+        printf 'WEBVTT\nX-TIMESTAMP-MAP=MPEGTS:126000,LOCAL:00:00:00.000\n\n'
+        sed -e 's/\([0-9]\),\([0-9]\)/\1.\2/g' -e '/^[0-9][0-9]*$/d' "$work/$lang.srt"
+    } >"$tracks/subs-$lang.vtt"
+    printf '#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:6\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXTINF:6.0,\nsubs-%s.vtt\n#EXT-X-ENDLIST\n' \
+        "$lang" >"$tracks/subs-$lang.m3u8"
+done
+cat >"$tracks/index.m3u8" <<'M3U8'
+#EXTM3U
+#EXT-X-VERSION:4
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud",LANGUAGE="en",NAME="English",DEFAULT=YES,AUTOSELECT=YES,URI="audio-en.m3u8"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud",LANGUAGE="de",NAME="Sport HD Kommentar",DEFAULT=NO,AUTOSELECT=YES,URI="audio-de.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",LANGUAGE="en",NAME="English",DEFAULT=NO,AUTOSELECT=YES,URI="subs-en.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",LANGUAGE="sv",NAME="Svenska",DEFAULT=NO,AUTOSELECT=YES,URI="subs-sv.m3u8"
+#EXT-X-STREAM-INF:BANDWIDTH=250000,CODECS="avc1.4d400c,mp4a.40.2",RESOLUTION=320x180,AUDIO="aud",SUBTITLES="subs"
+video.m3u8
+M3U8
+
+# Video with Opus sound, which no Apple decoder on the FFmpeg path takes.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a libopus -b:a 48k -ac 2 -f mpegts "$out/undecodable-sound.ts"
+
+# A channel whose picture grows from 320x180 to 640x360 after 2 seconds.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 48k -ac 2 -f mpegts "$work/small.ts"
+ff -f lavfi -i "$(video 640x360 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 300k \
+    -c:a aac -b:a 48k -ac 2 -output_ts_offset 2 -f mpegts "$work/large.ts"
+cat "$work/small.ts" "$work/large.ts" >"$out/resize.ts"
+
 # HLS with 2 second segments, ending with an end tag (a film over HLS).
 ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \

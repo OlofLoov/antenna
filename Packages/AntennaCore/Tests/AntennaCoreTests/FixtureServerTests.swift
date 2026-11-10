@@ -4,12 +4,16 @@ import Testing
 
 /// The in-test server the playback tests run against.
 @Suite(.timeLimit(.minutes(1))) struct FixtureServerTests {
-    static let fixtures = [
-        "film.mp4", "hls/index.m3u8", "hls/segment0.ts", "hls/segment1.ts", "hls/segment2.ts", "channel.ts", "channel.mkv",
-        "channel.avi", "mpeg2.ts", "hdr10.mp4", "hlg.mp4", "hdr10.ts", "hlg.ts", "surround-ac3.ts", "surround-eac3.ts",
-        "interlaced-1080i.ts", "interlaced-576i.ts",
-        "radio.aac", "radio.mp3", "page.html", "garbage.bin",
-    ]
+    static let fixtures =
+        [
+            "film.mp4", "hls/index.m3u8", "hls/segment0.ts", "hls/segment1.ts", "hls/segment2.ts", "channel.ts", "channel.mkv",
+            "channel.avi", "mpeg2.ts", "hdr10.mp4", "hlg.mp4", "hdr10.ts", "hlg.ts", "surround-ac3.ts", "surround-eac3.ts",
+            "interlaced-1080i.ts", "interlaced-576i.ts", "film.mkv", "undecodable-sound.ts", "resize.ts",
+            "radio.aac", "radio.mp3", "page.html", "garbage.bin",
+            "hls-tracks/index.m3u8", "hls-tracks/video.m3u8", "hls-tracks/audio-en.m3u8", "hls-tracks/audio-de.m3u8",
+            "hls-tracks/subs-en.m3u8", "hls-tracks/subs-sv.m3u8", "hls-tracks/subs-en.vtt", "hls-tracks/subs-sv.vtt",
+        ] + (0..<3).map { "hls-tracks/video\($0).ts" }
+        + ["en", "de"].flatMap { language in (0..<4).map { "hls-tracks/audio-\(language)\($0).ts" } }
 
     static func session() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral

@@ -312,6 +312,7 @@ extension FixtureServer {
         case "aac": "audio/aac"
         case "mp3": "audio/mpeg"
         case "html": "text/html"
+        case "vtt": "text/vtt"
         default: "application/octet-stream"
         }
     }
