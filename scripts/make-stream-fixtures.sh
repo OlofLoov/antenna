@@ -80,7 +80,18 @@ for kind in hdr10 hlg; do
         -x265-params "log-level=error:colorprim=bt2020:transfer=$transfer:colormatrix=bt2020nc" \
         -color_primaries bt2020 -color_trc "$transfer" -colorspace bt2020nc \
         -movflags +faststart "$out/$kind.mp4"
+    # The same picture as a raw broadcast stream, where HEVC arrives in Annex B.
+    ff -i "$out/$kind.mp4" -c copy -f mpegts "$out/$kind.ts"
 done
+
+# Surround sound: 5.1 Dolby Digital and Dolby Digital Plus under the same picture.
+# ffmpeg cannot encode Atmos; that is checked on a receiver.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a ac3 -b:a 384k -ac 6 -f mpegts "$out/surround-ac3.ts"
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a eac3 -b:a 384k -ac 6 -f mpegts "$out/surround-eac3.ts"
 
 # Radio: sound with no picture.
 ff -f lavfi -i "$(tone 440 6)" -c:a aac -b:a 48k -f adts "$out/radio.aac"
