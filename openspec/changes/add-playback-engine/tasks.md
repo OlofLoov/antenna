@@ -43,6 +43,8 @@
 - [x] 7.3 Start at the first keyframe, open the channels above and below ahead when the account allows more than one connection, and verify with core tests citing `playback-engine/channel-switching-is-fast` and `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
 - [x] 7.4 Map demuxer failures to the shared reasons and route Matroska and AVI through it, and verify with integration tests citing `playback-engine/streams-that-cannot-play-fail-with-a-clear-reason`
 
+- [ ] 7.5 Notice when the user is zapping (several changes in one direction within a short time): open the next channels in that direction ahead as far as the account's connections allow, show each first picture without waiting for sound, and hold back full buffering, TV mode switches and format reports until the user stays on a channel; verify with core tests citing `playback-engine/channel-switching-is-fast` and `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
+
 ## 8. Picture and sound
 
 - [ ] 8.1 HEVC and HDR10/HLG through the renderer, display criteria kept across channels of the same mode, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`
@@ -51,7 +53,7 @@
 
 ## 9. Old SD channels and interlaced video
 
-- [ ] 9.1 Decode MPEG-2 video and MP2 sound in software, and verify with integration tests citing `playback-engine/every-common-stream-type-plays`
+- [x] 9.1 Decode MPEG-2 video and MP2 sound in software, and verify with integration tests citing `playback-engine/every-common-stream-type-plays`
 - [ ] 9.2 Add 1080i50 and 576i fixtures with moving edges to `scripts/make-stream-fixtures.sh`, detect interlaced streams, decode them through VideoToolbox, deinterlace in Metal at the field rate, and verify with integration tests on interlaced fixtures citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
 - [ ] 9.3 Confirm 1080i50 holds 50 frames a second on an Apple TV 4K, and record it in a device test citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
 

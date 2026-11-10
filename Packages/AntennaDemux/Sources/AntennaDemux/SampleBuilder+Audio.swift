@@ -4,11 +4,35 @@ import CoreMedia
 import Foundation
 
 extension SampleBuilder {
-    static func mp3Format(sampleRate: Int, channels: Int) throws -> CMFormatDescription {
+    /// What an MPEG audio frame header says.
+    struct MPEGAudioHeader: Equatable {
+        /// 1, 2 or 3.
+        let layer: Int
+        let sampleRate: Int
+        let channels: Int
+        let samples: Int
+    }
+
+    /// The header of an MPEG-1, MPEG-2 or MPEG-2.5 audio frame, nil when the
+    /// bytes do not start with one.
+    static func mpegAudioHeader(_ frame: Data) -> MPEGAudioHeader? {
+        let bytes = [UInt8](frame.prefix(4))
+        guard bytes.count == 4, bytes[0] == 0xFF, bytes[1] & 0xE0 == 0xE0 else { return nil }
+        let version = Int((bytes[1] >> 3) & 0x03)  // 3 MPEG-1, 2 MPEG-2, 0 MPEG-2.5
+        let layer = 4 - Int((bytes[1] >> 1) & 0x03)
+        let rateIndex = Int((bytes[2] >> 2) & 0x03)
+        guard version != 1, (1...3).contains(layer), rateIndex < 3 else { return nil }
+        let rates = [[11025, 12000, 8000], [], [22050, 24000, 16000], [44100, 48000, 32000]][version]
+        let samples = layer == 1 ? 384 : (layer == 3 && version != 3 ? 576 : 1152)
+        let channels = bytes[3] >> 6 == 3 ? 1 : 2
+        return MPEGAudioHeader(layer: layer, sampleRate: rates[rateIndex], channels: channels, samples: samples)
+    }
+
+    static func mp3Format(sampleRate: Int, channels: Int, samples: Int = 1152) throws -> CMFormatDescription {
         guard sampleRate > 0, channels > 0 else { throw BuildError.malformed }
         var description = AudioStreamBasicDescription(
             mSampleRate: Float64(sampleRate), mFormatID: kAudioFormatMPEGLayer3, mFormatFlags: 0, mBytesPerPacket: 0,
-            mFramesPerPacket: 1152, mBytesPerFrame: 0, mChannelsPerFrame: UInt32(channels), mBitsPerChannel: 0, mReserved: 0)
+            mFramesPerPacket: UInt32(samples), mBytesPerFrame: 0, mChannelsPerFrame: UInt32(channels), mBitsPerChannel: 0, mReserved: 0)
         var format: CMAudioFormatDescription?
         let status = CMAudioFormatDescriptionCreate(
             allocator: nil, asbd: &description, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil,
