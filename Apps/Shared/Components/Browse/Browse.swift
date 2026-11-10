@@ -120,6 +120,18 @@ enum Browse {
     }
 }
 
+extension View {
+    /// The 2 pt ring in the Text color, with no fill, on the row the arrow
+    /// keys moved to (`iPad-Focus`). Distinct from the playing row's fill.
+    func browseFocusRing(_ shown: Bool) -> some View {
+        overlay {
+            if shown {
+                RoundedRectangle(cornerRadius: 10).strokeBorder(Palette.text, lineWidth: 2)
+            }
+        }
+    }
+}
+
 extension EnvironmentValues {
     /// Set by the Live screen: `.regular` on iPad and Mac.
     @Entry var browseMetrics = Browse.Metrics.compact

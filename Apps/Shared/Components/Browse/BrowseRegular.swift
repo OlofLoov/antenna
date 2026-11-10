@@ -32,6 +32,44 @@ extension Browse {
         }
     }
 
+    /// The filter field under the list's heading: a magnifier, "Search" as
+    /// the placeholder and a clear button while it holds text.
+    struct FilterField: View {
+        @Binding var text: String
+
+        var body: some View {
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(Palette.textMuted)
+                    .accessibilityHidden(true)
+                TextField("Search", text: $text, prompt: Text("Search").foregroundStyle(Palette.textMuted))
+                    .textFieldStyle(.plain)
+                    .autocorrectionDisabled()
+                    .accessibilityLabel("Search channels")
+                    .accessibilityIdentifier("browse.filter")
+                if !text.isEmpty {
+                    Button {
+                        text = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(Palette.textMuted)
+                            .frame(width: 32, height: 36)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Clear")
+                    .accessibilityIdentifier("browse.filter.clear")
+                }
+            }
+            .font(.callout)
+            .foregroundStyle(Palette.text)
+            .padding(.leading, 12)
+            .padding(.trailing, text.isEmpty ? 12 : 2)
+            .frame(height: 36)
+            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+        }
+    }
+
     /// A 36 pt square button that shows a folded column, with a 44 pt hit area.
     struct ToggleButton: View {
         let title: String
@@ -165,7 +203,16 @@ extension Browse.Metrics {
     Browse.ListHeader(title: "Sport", count: "42 channels") {
         Browse.ToggleButton(title: "Show sidebar", systemImage: "sidebar.left") {}
     } filter: {
+        Browse.FilterField(text: .constant(""))
+    }
+    .background(Palette.ground)
+}
+
+#Preview("List header, filtering", traits: .fixedLayout(width: 352, height: 140)) {
+    Browse.ListHeader(title: "Sport", count: "3 channels") {
         EmptyView()
+    } filter: {
+        Browse.FilterField(text: .constant("spo"))
     }
     .background(Palette.ground)
 }

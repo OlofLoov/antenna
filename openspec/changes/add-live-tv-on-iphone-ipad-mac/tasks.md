@@ -8,8 +8,8 @@
 
 ## 2. Groups, list and filter
 
-- [ ] 2.1 Show the picked group's channels with header, empty Favorites message and filter reset, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/pick-a-group`
-- [ ] 2.2 Add name and number filtering with Search's matching rules in the core package, and verify with core and UI tests citing `live-tv-on-iphone-ipad-mac/type-to-narrow-the-list`
+- [x] 2.1 Show the picked group's channels with header, empty Favorites message and filter reset, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/pick-a-group`
+- [x] 2.2 Add name and number filtering with Search's matching rules in the core package, and verify with core and UI tests citing `live-tv-on-iphone-ipad-mac/type-to-narrow-the-list`
 - [ ] 2.3 Check the 20 000 channel budgets on an iPhone 15 and the 50 ms filter budget in `swift test`
 
 ## 3. Playing in place
@@ -18,7 +18,7 @@
 - [x] 3.2 Show now and next in the details and the now-playing line, refreshing when a programme ends, and verify with core and UI tests citing `live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next`
 - [x] 3.3 Show and hide the player controls and place the Picture in Picture button on iPhone and iPad, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them`
 - [x] 3.4 Enter and leave full screen from the button and iPhone rotation, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/full-screen`
-- [ ] 3.5 Add the keyboard shortcuts, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/keyboard-shortcuts`
+- [x] 3.5 Add the keyboard shortcuts, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/keyboard-shortcuts`
 
 ## 4. Favorites
 
