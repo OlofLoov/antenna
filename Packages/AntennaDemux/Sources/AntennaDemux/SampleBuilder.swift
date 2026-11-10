@@ -26,10 +26,18 @@ public final class SampleBuilder {
         case hevcAnnexB
         case hevcHVCC
         case dolby
+        /// MPEG-2 video or MP2 sound, decoded in software.
+        case software(SoftwareDecoder)
+        /// MPEG audio of a layer the first frame header will tell: MPEG-TS
+        /// labels MP2 and MP3 alike.
+        case mpegAudio
     }
 
-    private let codec: Codec
+    private var codec: Codec
     public let stream: DemuxedStream
+    /// The codec the stream turned out to carry: the container's name, or
+    /// "mp2" or "mp3" once an MPEG audio frame header has said which.
+    public private(set) var codecName: String
     /// The format of the buffers built so far; nil for H.264 in MPEG-TS
     /// until the first parameter sets arrive.
     public private(set) var formatDescription: CMFormatDescription?
@@ -40,6 +48,7 @@ public final class SampleBuilder {
     /// Throws `unsupportedCodec` for a codec with no builder yet.
     public init(stream: DemuxedStream) throws {
         self.stream = stream
+        codecName = stream.codec
         switch stream.codec {
         case "h264" where stream.extradata.first == 1:
             codec = .h264AVCC
@@ -57,21 +66,36 @@ public final class SampleBuilder {
             codec = .hevcAnnexB
         case "ac3", "eac3":
             codec = .dolby
+        case "mpeg2video":
+            codec = .software(try SoftwareDecoder(codec: stream.codec))
+        case "mp2", "mp3":
+            codec = .mpegAudio
         case "mpeg4":
             codec = .mpeg4Video
             if !stream.extradata.isEmpty {
                 formatDescription = try Self.mpeg4VideoFormat(config: stream.extradata, width: stream.width, height: stream.height)
             }
-        case "mp3":
-            codec = .mp3
-            formatDescription = try Self.mp3Format(sampleRate: stream.sampleRate, channels: stream.channels)
         default:
             throw BuildError.unsupportedCodec(stream.codec)
         }
     }
 
+    /// The sample buffers for `packet`. A compressed codec gives one, or none
+    /// before its first parameter sets; a software decoder gives none while it
+    /// waits for a reference frame, and sometimes more than one.
+    public func sampleBuffers(for packet: DemuxedPacket) throws -> [CMSampleBuffer] {
+        if case .mpegAudio = codec { try resolveMPEGAudio(packet) }
+        guard case .software(let decoder) = codec else { return try sampleBuffer(for: packet).map { [$0] } ?? [] }
+        let buffers = try decoder.decode(packet)
+        if let first = buffers.first, formatDescription == nil {
+            formatDescription = CMSampleBufferGetFormatDescription(first)
+        }
+        return buffers
+    }
+
     /// The sample buffer for `packet`, or nil when it cannot be shown yet
-    /// (H.264 or HEVC before their first parameter sets).
+    /// (H.264 or HEVC before their first parameter sets). For a software
+    /// decoder, the first of `sampleBuffers(for:)`.
     public func sampleBuffer(for packet: DemuxedPacket) throws -> CMSampleBuffer? {
         switch codec {
         case .h264AnnexB:
@@ -101,11 +125,28 @@ public final class SampleBuilder {
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         case .mp3:
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
+        case .software, .mpegAudio:
+            return try sampleBuffers(for: packet).first
         case .dolby:
             if formatDescription == nil, let header = Self.dolbyHeader(packet.data) {
                 formatDescription = try Self.dolbyFormat(header)
             }
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
+        }
+    }
+
+    /// Picks the path for MPEG audio from its first frame header: layer III
+    /// is MP3, which Apple decodes; layers I and II go to the software
+    /// decoder.
+    private func resolveMPEGAudio(_ packet: DemuxedPacket) throws {
+        guard let header = Self.mpegAudioHeader(packet.data) else { return }
+        if header.layer == 3 {
+            codec = .mp3
+            codecName = "mp3"
+            formatDescription = try Self.mp3Format(sampleRate: header.sampleRate, channels: header.channels, samples: header.samples)
+        } else {
+            codec = .software(try SoftwareDecoder(codec: "mp2"))
+            codecName = "mp2"
         }
     }
 

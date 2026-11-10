@@ -46,7 +46,7 @@ extension DemuxStart {
         let sounds = zip(audioStreams.indices, audioStreams).map { number, stream in
             MediaTrack(id: "audio-\(number)", kind: .audio, languageCode: stream.language, name: nil, isDefault: stream.isDefault)
         }
-        let chosen = audio.flatMap { audioStreams.firstIndex(of: $0) }
+        let chosen = audio.flatMap { playing in audioStreams.firstIndex { $0.index == playing.index } }
         return TrackList(audio: sounds, subtitles: [], selectedAudio: chosen.map { sounds[$0].id }, selectedSubtitle: nil)
     }
 }
@@ -173,54 +173,83 @@ final class DemuxRun: @unchecked Sendable {
         return .success(Prepared(demuxer: demuxer, video: videoBuilder, audio: audioBuilder))
     }
 
-    /// Reads packets into the feeds until the end or `cancel`, calling
-    /// `ready` once the first picture (and, within half a second of stream,
-    /// the first sound) is queued. Returns whether it did.
-    private func pump(_ prepared: Prepared, ready: @Sendable (Result<DemuxStart, any Error>) -> Void) -> Bool {
+    /// What `pump` has seen so far.
+    private struct PumpState {
         var startTime: CMTime?
         var heldSound: [CMSampleBuffer] = []
         var announced = false
         var frameTimes: [Double] = []
-        var rateKnown = prepared.video?.stream.frameRate != nil
-        while !isCancelled, let packet = prepared.demuxer.nextPacket() {
+        var rateKnown: Bool
+    }
+
+    /// Reads packets into the feeds until the end or `cancel`, calling
+    /// `ready` once the first picture (and, within half a second of stream,
+    /// the first sound) is queued. Returns whether it did.
+    private func pump(_ prepared: Prepared, ready: @Sendable (Result<DemuxStart, any Error>) -> Void) -> Bool {
+        var state = PumpState(rateKnown: prepared.video?.stream.frameRate != nil)
+        reading: while !isCancelled, let packet = prepared.demuxer.nextPacket() {
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
-                if startTime == nil, !packet.isKeyframe { continue }
-                guard let buffer = try? builder.sampleBuffer(for: packet) else { continue }
-                if startTime == nil {
-                    let first = CMSampleBufferGetPresentationTimeStamp(buffer)
-                    startTime = first
-                    heldSound.filter { sampleTime($0) >= first }.forEach { audioFeed.push($0) }
-                    heldSound = []
+                if state.startTime == nil, !packet.isKeyframe { continue }
+                for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
+                    guard takePicture(buffer, &state) else { break reading }
                 }
-                if !rateKnown {
-                    frameTimes.append(sampleTime(buffer).seconds)
-                    if announced, let rate = FrameRate.estimate(presentationTimes: frameTimes), frameTimes.count >= 6 {
-                        rateKnown = true
-                        rateFound?(rate)
-                    }
-                }
-                guard videoFeed.push(buffer) else { break }
             } else if packet.streamIndex == prepared.audio?.stream.index, let builder = prepared.audio {
-                guard let buffer = try? builder.sampleBuffer(for: packet) else { continue }
-                if prepared.video != nil, startTime == nil {
-                    heldSound.append(buffer)
-                    if heldSound.count > 200 { heldSound.removeFirst() }
-                    continue
+                for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
+                    guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { break reading }
                 }
-                if startTime == nil { startTime = sampleTime(buffer) }
-                guard audioFeed.push(buffer) else { break }
             }
             // In MPEG-TS the first sound can follow the first keyframe.
-            let waited = startTime.map { CMTimeSubtract(packet.decodeTime, $0).seconds > 0.5 } ?? false
+            let waited = state.startTime.map { CMTimeSubtract(packet.decodeTime, $0).seconds > 0.5 } ?? false
             let soundKnown = prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
-            if !announced, let startTime, soundKnown {
-                announced = true
-                let start = describe(prepared, startTime: startTime, frameTimes: frameTimes)
-                rateKnown = rateKnown || start.frameRate != nil || prepared.video == nil
+            if !state.announced, let startTime = state.startTime, soundKnown {
+                state.announced = true
+                let start = describe(prepared, startTime: startTime, frameTimes: state.frameTimes)
+                state.rateKnown = state.rateKnown || start.frameRate != nil || prepared.video == nil
                 ready(.success(start))
             }
         }
-        return announced
+        return state.announced
+    }
+
+    /// Queues a picture. The first one sets the start and lets through the
+    /// sound held back for it; the next few tell the frame rate. Returns
+    /// false once the feed is closed.
+    private func takePicture(_ buffer: CMSampleBuffer, _ state: inout PumpState) -> Bool {
+        if state.startTime == nil {
+            let first = sampleTime(buffer)
+            state.startTime = first
+            state.heldSound.filter { sampleTime($0) >= first }.forEach { audioFeed.push($0) }
+            state.heldSound = []
+        }
+        if !state.rateKnown {
+            state.frameTimes.append(sampleTime(buffer).seconds)
+            if state.announced, state.frameTimes.count >= 6, let rate = FrameRate.estimate(presentationTimes: state.frameTimes) {
+                state.rateKnown = true
+                rateFound?(rate)
+            }
+        }
+        return videoFeed.push(buffer)
+    }
+
+    /// Queues a sound buffer, or holds it back until the first picture.
+    /// Returns false once the feed is closed.
+    private func takeSound(_ buffer: CMSampleBuffer, _ state: inout PumpState, hasVideo: Bool) -> Bool {
+        if hasVideo, state.startTime == nil {
+            state.heldSound.append(buffer)
+            if state.heldSound.count > 200 { state.heldSound.removeFirst() }
+            return true
+        }
+        if state.startTime == nil { state.startTime = sampleTime(buffer) }
+        return audioFeed.push(buffer)
+    }
+
+    /// The builder's stream under the codec name the stream turned out to carry.
+    private static func named(_ builder: SampleBuilder) -> DemuxedStream {
+        let stream = builder.stream
+        return DemuxedStream(
+            index: stream.index, kind: stream.kind, codec: builder.codecName, extradata: stream.extradata, width: stream.width,
+            height: stream.height, sampleRate: stream.sampleRate, channels: stream.channels, interlaced: stream.interlaced,
+            language: stream.language, frameRate: stream.frameRate, isDefault: stream.isDefault)
     }
 
     private func describe(_ prepared: Prepared, startTime: CMTime, frameTimes: [Double]) -> DemuxStart {
@@ -229,8 +258,8 @@ final class DemuxRun: @unchecked Sendable {
             .flatMap(CMAudioFormatDescriptionGetStreamBasicDescription)
             .map { Int($0.pointee.mChannelsPerFrame) }
         return DemuxStart(
-            format: prepared.demuxer.format, streams: prepared.demuxer.streams, video: prepared.video?.stream,
-            audio: prepared.audio?.stream, startTime: startTime, duration: prepared.demuxer.duration,
+            format: prepared.demuxer.format, streams: prepared.demuxer.streams, video: prepared.video.map(Self.named),
+            audio: prepared.audio.map(Self.named), startTime: startTime, duration: prepared.demuxer.duration,
             pictureSize: picture, dynamicRange: prepared.video?.formatDescription.map(SampleBuilder.dynamicRange) ?? .sdr,
             frameRate: prepared.video.flatMap { $0.stream.frameRate ?? FrameRate.estimate(presentationTimes: frameTimes) },
             videoFormat: prepared.video?.formatDescription,
