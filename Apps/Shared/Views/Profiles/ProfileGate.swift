@@ -24,27 +24,23 @@ struct ProfileGate<Content: View>: View {
         if let chosen {
             content
                 .environment(\.currentProfile, chosen)
+                .environment(\.switchProfile, { self.chosen = nil })
                 .id(chosen)
         } else if profiles.showsPicker {
-            let focused = profiles.focusedOnPicker(stored: store.read())
-            ProfilePicker(tiles: profiles.profiles.map(ProfileTile.init), focus: $focusTarget, choose: choose) {
-                EmptyView()
-            }
-            .defaultFocus($focusTarget, focused.id)
-            #if os(tvOS)
-                // Nothing is behind the picker, so Menu stays here.
-                .onExitCommand {}
-            #endif
+            ProfileFlow(profiles: profiles, focused: profiles.focusedOnPicker(stored: store.read()).id, choose: choose)
         } else {
             Color.clear
                 .task { chosen = profiles.current(stored: store.read())?.id ?? Profile.mainID }
         }
     }
 
-    @FocusState private var focusTarget: UUID?
-
     private func choose(_ id: UUID) {
         store.write(id)
         chosen = id
     }
+}
+
+extension EnvironmentValues {
+    /// Goes back to "Who's watching?" (profiles/switching-profile); nil outside a gate.
+    @Entry var switchProfile: (@MainActor () -> Void)?
 }

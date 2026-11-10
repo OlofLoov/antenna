@@ -69,6 +69,8 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
+        @Environment(\.switchProfile) private var switchProfile
+        @Query private var profileRecords: [ProfileRecord]
         @State private var zapBar = ZapBarModel()
         @State private var numbers = NumberEntryModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
@@ -239,6 +241,17 @@
                     .accessibilityIdentifier("shell.tab.\(tab.identifier)")
                 }
             } settings: {
+                if let profile = profiles.profiles.first(where: { $0.id == self.profile }), profiles.showsPicker {
+                    ShellTabBar.ProfileButton(tile: ProfileTile(profile)) {
+                        // Playback stops before "Who's watching?" (profiles/switching-profile).
+                        Task {
+                            await model.engine.stop()
+                            switchProfile?()
+                        }
+                    }
+                    .focused($focus, equals: .profile)
+                    .accessibilityIdentifier("shell.profile")
+                }
                 ShellTabBar.SettingsButton { model.settingsOpen = true }
                     .focused($focus, equals: .settings)
                     .accessibilityIdentifier("shell.settings")
@@ -258,7 +271,7 @@
 
         private var barHasFocus: Bool {
             switch focus {
-            case .tab, .settings: true
+            case .tab, .settings, .profile: true
             case .picture, .liveScreen, .content, .overlay, nil: false
             }
         }
@@ -276,6 +289,8 @@
             guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
             focus = .overlay(next)
         }
+
+        private var profiles: ProfileList { ProfileStore.list(profileRecords) }
 
         private var catalogueInputs: CatalogueInputs {
             CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
@@ -312,7 +327,7 @@
             }
             let origin: MenuOrigin =
                 switch focus {
-                case .tab, .settings: .bar
+                case .tab, .settings, .profile: .bar
                 case .content: .content
                 case .picture, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
                 }

@@ -20,7 +20,7 @@
 
 - [ ] 4.1 Add Manage profiles and the edit screen on Apple TV (`TV-Profiles-Manage`, `TV-Profiles-Edit`) and the edit sheet on iPhone (`iPhone-Profiles-Edit`), with the delete confirmation and the eight-profile line, and verify with UI tests citing `profiles/adding-a-profile` and `profiles/editing-and-deleting-a-profile`
 - [ ] 4.2 Add the Profiles row in Settings on every device, and verify with a UI test citing `profiles/switching-profile` and `profiles/adding-a-profile`
-- [ ] 4.3 Add the profile button to the Apple TV tab bar (`TV-Shell-Menu-Profile`) with two or more profiles, and switch: stop playback, set the current profile, rebuild the catalogue and start Live on the new profile, and verify with UI tests citing `tvos-shell/the-tabs-in-order` and `profiles/switching-profile`
+- [x] 4.3 Add the profile button to the Apple TV tab bar (`TV-Shell-Menu-Profile`) with two or more profiles, and switch: stop playback, set the current profile, rebuild the catalogue and start Live on the new profile, and verify with UI tests citing `tvos-shell/the-tabs-in-order` and `profiles/switching-profile`
 - [ ] 4.4 Show the picker, or open on the only profile left, when the current profile is deleted on another device, and verify with an integration test citing `profiles/editing-and-deleting-a-profile`
 
 ## 5. Shared sources and sync

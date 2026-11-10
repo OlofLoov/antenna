@@ -21,6 +21,8 @@
         case liveScreen
         case tab(ShellTab)
         case settings
+        /// The profile button, with two or more profiles.
+        case profile
         case content
         /// A group, channel or the Search entry in the channel overlay.
         case overlay(OverlayFocus)
