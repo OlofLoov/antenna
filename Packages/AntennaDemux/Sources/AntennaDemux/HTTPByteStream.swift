@@ -28,12 +28,22 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     private var responseWaiter: CheckedContinuation<Void, any Error>?
     private var window: Int?
 
-    /// The total body length when the server sent one; nil for live streams.
+    /// The length of the whole resource when the server said; nil for live
+    /// streams. For a range answer this is the total from Content-Range, not
+    /// the part sent.
     public private(set) var expectedLength: Int?
+    /// True when the server takes byte ranges, so a film can skip.
+    public private(set) var acceptsRanges = false
+    /// Where in the resource the body starts.
+    public let offset: Int
+    /// The answer's HTTP status, once it came.
+    public private(set) var status: Int?
 
-    public init(url: URL, session: URLSession = PlaybackNetwork.makeSession()) {
+    /// `offset` asks for the resource from that byte on, with a Range header.
+    public init(url: URL, session: URLSession = PlaybackNetwork.makeSession(), offset: Int = 0) {
         self.url = url
         self.session = session
+        self.offset = offset
     }
 
     /// Starts the request and returns once the headers arrive. Throws the
@@ -44,7 +54,9 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
                 condition.lock()
                 responseWaiter = continuation
-                let task = session.dataTask(with: url)
+                var request = URLRequest(url: url)
+                if offset > 0 { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
+                let task = session.dataTask(with: request)
                 task.delegate = self
                 self.task = task
                 condition.unlock()
@@ -145,7 +157,15 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         let refusal = http.flatMap { PlaybackFailure(httpStatus: $0.statusCode) }
         condition.lock()
         self.response = http
-        if response.expectedContentLength > 0 { expectedLength = Int(response.expectedContentLength) }
+        status = http?.statusCode
+        let range = http?.value(forHTTPHeaderField: "Content-Range")
+        if http?.statusCode == 206, let total = range?.split(separator: "/").last.flatMap({ Int($0) }) {
+            expectedLength = total
+            acceptsRanges = true
+        } else if response.expectedContentLength > 0 {
+            expectedLength = Int(response.expectedContentLength)
+            acceptsRanges = http?.value(forHTTPHeaderField: "Accept-Ranges")?.lowercased().contains("bytes") == true
+        }
         if let refusal { failure = refusal }
         let waiter = responseWaiter
         responseWaiter = nil

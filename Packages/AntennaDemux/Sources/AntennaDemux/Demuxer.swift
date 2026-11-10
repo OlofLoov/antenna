@@ -58,12 +58,18 @@ public final class Demuxer: @unchecked Sendable {
     /// Reads up to `count` bytes into the pointer; returns the count, 0 at
     /// the end, or -1 on failure.
     public typealias Read = @Sendable (UnsafeMutablePointer<UInt8>, Int) -> Int
+    /// Moves to a byte offset and returns the new position, or -1; asked for
+    /// `Int64(AVSEEK_SIZE)` it returns the total length, or -1.
+    public typealias Seek = @Sendable (Int64, Int32) -> Int64
 
     public private(set) var streams: [DemuxedStream] = []
     /// The container's name, such as "mpegts" or "matroska,webm".
     public private(set) var format = ""
     /// The container's length, nil for live streams.
     public private(set) var duration: CMTime?
+    /// When the container's first picture or sound is due, the zero point
+    /// of a film's position.
+    public private(set) var startTime: CMTime = .invalid
 
     private var context: UnsafeMutablePointer<AVFormatContext>?
     private var io: UnsafeMutablePointer<AVIOContext>?
@@ -74,13 +80,16 @@ public final class Demuxer: @unchecked Sendable {
 
     /// Opens the container and reads enough to know its streams. Blocks
     /// while `read` waits for bytes.
-    public init(read: @escaping Read) throws {
+    /// With `seek`, FFmpeg may jump in the bytes, as films need.
+    public init(read: @escaping Read, seek: Seek? = nil) throws {
         av_log_set_level(AV_LOG_QUIET)
-        reader = Unmanaged.passRetained(ReadBox(read))
+        reader = Unmanaged.passRetained(ReadBox(read, seek: seek))
         let size: Int32 = 64 * 1024
         guard let buffer = av_malloc(Int(size)) else { throw DemuxError.unrecognised }
         io = avio_alloc_context(
-            buffer.assumingMemoryBound(to: UInt8.self), size, 0, reader.toOpaque(), ReadBox.callback, nil, nil)
+            buffer.assumingMemoryBound(to: UInt8.self), size, 0, reader.toOpaque(), ReadBox.callback, nil,
+            seek == nil ? nil : ReadBox.seekCallback)
+        if seek != nil { io?.pointee.seekable = AVIO_SEEKABLE_NORMAL }
         var context = avformat_alloc_context()
         context?.pointee.pb = io
         context?.pointee.probesize = 256 * 1024
@@ -105,6 +114,9 @@ public final class Demuxer: @unchecked Sendable {
         format = String(cString: opened.pointee.iformat.pointee.name)
         if opened.pointee.duration > 0, opened.pointee.duration != Int64.min {
             duration = CMTime(value: opened.pointee.duration, timescale: CMTimeScale(AV_TIME_BASE))
+        }
+        if opened.pointee.start_time != Int64.min {
+            startTime = CMTime(value: opened.pointee.start_time, timescale: CMTimeScale(AV_TIME_BASE))
         }
         streams = (0..<Int(opened.pointee.nb_streams)).compactMap { index in
             guard let stream = opened.pointee.streams[index], let parameters = stream.pointee.codecpar else { return nil }
@@ -136,6 +148,15 @@ public final class Demuxer: @unchecked Sendable {
                 duration: Self.time(packet.pointee.duration, timeBase),
                 isKeyframe: packet.pointee.flags & AV_PKT_FLAG_KEY != 0)
         }
+    }
+
+    /// Moves to the keyframe at or before `time` into the film, counted from
+    /// its start. Returns false when the bytes cannot be skipped.
+    public func seek(to time: CMTime) -> Bool {
+        guard let context, time.isNumeric else { return false }
+        let origin = startTime.isNumeric ? startTime : .zero
+        let target = CMTimeConvertScale(CMTimeAdd(origin, time), timescale: CMTimeScale(AV_TIME_BASE), method: .roundTowardNegativeInfinity)
+        return av_seek_frame(context, -1, target.value, AVSEEK_FLAG_BACKWARD) >= 0
     }
 
     /// Frees FFmpeg's state. Safe to call more than once.
@@ -188,9 +209,19 @@ public final class Demuxer: @unchecked Sendable {
 /// Holds the read closure for FFmpeg's C callback.
 private final class ReadBox {
     let read: Demuxer.Read
+    let seek: Demuxer.Seek?
 
-    init(_ read: @escaping Demuxer.Read) {
+    init(_ read: @escaping Demuxer.Read, seek: Demuxer.Seek?) {
         self.read = read
+        self.seek = seek
+    }
+
+    typealias SeekCallback = @convention(c) (UnsafeMutableRawPointer?, Int64, Int32) -> Int64
+
+    static let seekCallback: SeekCallback = { opaque, offset, whence in
+        guard let opaque else { return -1 }
+        let box = Unmanaged<ReadBox>.fromOpaque(opaque).takeUnretainedValue()
+        return box.seek?(offset, whence) ?? -1
     }
 
     typealias Callback = @convention(c) (UnsafeMutableRawPointer?, UnsafeMutablePointer<UInt8>?, Int32) -> Int32

@@ -86,8 +86,16 @@ extension DemuxEngine {
             _ controller: AVPictureInPictureController, skipByInterval skipInterval: CMTime,
             completion completionHandler: @escaping () -> Void
         ) {
-            // Skipping waits for seeking on this path (task 7.6).
-            completionHandler()
+            guard let engine, let origin = engine.current?.start?.origin else {
+                completionHandler()
+                return
+            }
+            let now = CMTimeSubtract(engine.synchronizer.currentTime(), origin)
+            let target = max(0, CMTimeAdd(now, skipInterval).seconds)
+            Task {
+                try? await engine.seek(to: .seconds(target))
+                completionHandler()
+            }
         }
     }
 #endif

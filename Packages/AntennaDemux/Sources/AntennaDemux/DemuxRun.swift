@@ -25,6 +25,11 @@ struct DemuxStart: Sendable {
     let videoFormat: CMFormatDescription?
     /// True when the stream is interlaced and shown deinterlaced.
     let isInterlaced: Bool
+    /// The zero point of a film's position: the container's start time.
+    /// For live streams, the first picture.
+    let origin: CMTime
+    /// True for a film whose server takes byte ranges, so it can skip.
+    let canSeek: Bool
     /// Channel count from the first sound, 0 without sound.
     let soundChannels: Int
 }
@@ -58,7 +63,7 @@ extension DemuxStart {
 /// before the first keyframe and sound before the first picture are
 /// dropped, so playback starts on a whole frame.
 final class DemuxRun: @unchecked Sendable {
-    private let bytes: HTTPByteStream
+    private let bytes: SeekableSource
     private let videoFeed: SampleFeed
     private let audioFeed: SampleFeed
     private let lock = NSLock()
@@ -67,7 +72,10 @@ final class DemuxRun: @unchecked Sendable {
     private var rateFound: (@Sendable (Double) -> Void)?
     private var waitsForSound = true
 
-    init(bytes: HTTPByteStream, videoFeed: SampleFeed, audioFeed: SampleFeed) {
+    /// Where a film starts, counted from its beginning; nil from the start.
+    private var startAt: CMTime?
+
+    init(bytes: SeekableSource, videoFeed: SampleFeed, audioFeed: SampleFeed) {
         self.bytes = bytes
         self.videoFeed = videoFeed
         self.audioFeed = audioFeed
@@ -103,9 +111,11 @@ final class DemuxRun: @unchecked Sendable {
         ready: @escaping @Sendable (Result<DemuxStart, any Error>) -> Void,
         rateFound: @escaping @Sendable (Double) -> Void = { _ in },
         waitsForSound: Bool = true,
+        startAt: CMTime? = nil,
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
         self.rateFound = rateFound
+        self.startAt = startAt
         self.waitsForSound = waitsForSound
         let answer = Once(ready)
         lock.withLock { self.answer = answer }
@@ -139,6 +149,11 @@ final class DemuxRun: @unchecked Sendable {
             return
         }
         defer { prepared.demuxer.close() }
+        // A saved time within a film that can skip: start at the keyframe
+        // before it. Otherwise the film starts at the beginning.
+        if let startAt, bytes.canSeek, let length = prepared.demuxer.duration, startAt < length {
+            _ = prepared.demuxer.seek(to: startAt)
+        }
         let announced = pump(prepared, ready: ready)
         guard !isCancelled else { return }
         if announced {
@@ -160,7 +175,7 @@ final class DemuxRun: @unchecked Sendable {
         }
         let demuxer: Demuxer
         do {
-            demuxer = try Demuxer(read: { bytes.read(into: $0, count: $1) })
+            demuxer = try Demuxer(read: { bytes.read(into: $0, count: $1) }, seek: bytes.canSeek ? Self.seeker(bytes) : nil)
         } catch {
             return .failure(bytes.failureReason ?? PlaybackFailure.unreadable)
         }
@@ -284,6 +299,24 @@ final class DemuxRun: @unchecked Sendable {
         return FieldPictures(decoder: decoder, isInterlacedBySPS: true)
     }
 
+    /// FFmpeg's seek callback over `bytes`: SEEK_SET, SEEK_CUR and SEEK_END
+    /// move, and AVSEEK_SIZE asks for the length.
+    private static func seeker(_ bytes: SeekableSource) -> Demuxer.Seek {
+        { offset, whence in
+            if whence & 0x10000 != 0 { return Int64(bytes.length ?? -1) }  // AVSEEK_SIZE
+            let base: Int
+            switch whence & 0x3 {
+            case 0: base = 0
+            case 1: base = bytes.position
+            case 2: base = bytes.length ?? -1
+            default: return -1
+            }
+            guard base >= 0 else { return -1 }
+            let target = base + Int(offset)
+            return bytes.seek(to: target) ? Int64(target) : -1
+        }
+    }
+
     private func describe(_ prepared: Prepared, startTime: CMTime, frameTimes: [Double], interlaced: Bool) -> DemuxStart {
         let picture = prepared.video?.formatDescription.map(CMVideoFormatDescriptionGetDimensions)
         let sound = prepared.audio?.formatDescription
@@ -295,6 +328,8 @@ final class DemuxRun: @unchecked Sendable {
             pictureSize: picture, dynamicRange: prepared.video?.formatDescription.map(SampleBuilder.dynamicRange) ?? .sdr,
             frameRate: prepared.video.flatMap { $0.stream.frameRate ?? FrameRate.estimate(presentationTimes: frameTimes) },
             videoFormat: prepared.video?.formatDescription, isInterlaced: interlaced,
+            origin: prepared.demuxer.duration != nil && prepared.demuxer.startTime.isNumeric ? prepared.demuxer.startTime : startTime,
+            canSeek: bytes.canSeek && prepared.demuxer.duration != nil,
             soundChannels: sound ?? prepared.audio?.stream.channels ?? 0)
     }
 
