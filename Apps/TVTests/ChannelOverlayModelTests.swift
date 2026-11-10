@@ -125,4 +125,17 @@ import Testing
         #expect(model.group.label == "All channels")
         #expect(model.group.order == "Sorted by number")
     }
+
+    @Test("tv-channel-overlay/now-and-next-for-the-highlighted-channel the panel follows the highlighted row of the shown group")
+    func panelRow() throws {
+        let all = catalogue()
+        let playing = try tagged("s1", in: all)
+        _ = model.open(all, playing: playing)
+        #expect(model.panelRow(all) == RowKey(playing))
+        let s2 = try #require(RowKey(try tagged("s2", in: all)))
+        model.highlight(s2)
+        #expect(model.panelRow(all) == s2)
+        model.show(.favorites)
+        #expect(model.panelRow(all) == nil, "an empty group leaves the panel empty")
+    }
 }

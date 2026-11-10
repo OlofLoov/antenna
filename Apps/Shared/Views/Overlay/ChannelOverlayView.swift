@@ -14,6 +14,8 @@
         let focus: FocusState<ShellFocus?>.Binding
         /// A channel was selected in the shown group.
         let pick: (Channel, CatalogueGroup) -> Void
+        /// The favorite button was pressed for the highlighted channel.
+        let toggleFavorite: (Channel, RowKey) -> Void
         let openSearch: () -> Void
 
         var body: some View {
@@ -46,7 +48,11 @@
                 }
                 .focusSection()
             } panel: {
-                EmptyView()
+                if let key = model.panelRow(catalogue), let channel = catalogue.channel(for: key) {
+                    TimelineView(.everyMinute) { context in
+                        panel(key, channel, at: context.date)
+                    }
+                }
             } clock: {
                 TimelineView(.everyMinute) { context in
                     ShellTabBar.Clock(date: context.date, identifier: "overlay.clock")
@@ -117,6 +123,30 @@
             }
         }
 
+        private func panel(_ key: RowKey, _ channel: Channel, at date: Date) -> some View {
+            let guideNow = guide.panel(for: channel, at: date)
+            let now = guideNow.now.flatMap { programme -> ChannelOverlay.PanelNow? in
+                guard case .programme(_, let progress, let remaining) = guideNow.line else { return nil }
+                let times = "\(Self.time(programme.start)) – \(Self.time(programme.stop)) · \(remaining)"
+                return .init(title: programme.title, times: times, progress: progress, summary: programme.summary)
+            }
+            return ChannelOverlay.Panel(
+                name: channel.name, badges: [catalogue.number(for: key).map(String.init), channel.catchUpBadge].compactMap(\.self),
+                now: now, nothingOn: guideNow.line.text,
+                next: guideNow.next.map { .init(time: Self.time($0.start), title: $0.title) }
+            ) {
+                logo(channel)
+            } buttons: {
+                PanelButtons(
+                    isFavorite: catalogue.isFavorite(channel), focus: focus,
+                    watch: { pick(channel, model.group) }, toggle: { toggleFavorite(channel, key) })
+            }
+        }
+
+        private static func time(_ date: Date) -> String {
+            date.formatted(date: .omitted, time: .shortened)
+        }
+
         /// Brings the highlighted or playing row into view.
         private func scroll(_ proxy: ScrollViewProxy) {
             let target: RowKey?
@@ -126,6 +156,23 @@
                 target = model.entry(catalogue, playing: playing)
             }
             if let target { proxy.scrollTo(target, anchor: .center) }
+        }
+    }
+
+    /// Watch, then the favorite button, in the panel's focus order.
+    struct PanelButtons: View {
+        let isFavorite: Bool
+        let focus: FocusState<ShellFocus?>.Binding
+        let watch: () -> Void
+        let toggle: () -> Void
+
+        var body: some View {
+            ChannelOverlay.WatchButton(watch: watch)
+                .focused(focus, equals: .overlay(.watch))
+                .accessibilityIdentifier("overlay.watch")
+            ChannelOverlay.FavoriteButton(isFavorite: isFavorite, toggle: toggle)
+                .focused(focus, equals: .overlay(.favorite))
+                .accessibilityIdentifier("overlay.favorite")
         }
     }
 #endif

@@ -15,8 +15,8 @@
 
 ## 3. Now-and-next panel
 
-- [ ] 3.1 Show channel details, the current programme with times, time left, progress and description, and up to three following programmes, and verify with a UI test citing `tv-channel-overlay/now-and-next-for-the-highlighted-channel`
-- [ ] 3.2 Toggle favorites from the panel button with its label and the Favorites count, and verify with an integration test citing `tv-channel-overlay/add-or-remove-a-favorite`
+- [x] 3.1 Show channel details, the current programme with times, time left, progress and description, and up to three following programmes, and verify with a UI test citing `tv-channel-overlay/now-and-next-for-the-highlighted-channel`
+- [x] 3.2 Toggle favorites from the panel button with its label and the Favorites count, and verify with an integration test citing `tv-channel-overlay/add-or-remove-a-favorite`
 
 ## 4. Tuning, closing and Search
 
