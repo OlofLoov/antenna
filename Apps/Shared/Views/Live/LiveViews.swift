@@ -62,19 +62,21 @@
             if rows.isEmpty, live.group == .favorites {
                 Browse.EmptyGroup(text: "No favorites yet. Tap the star on a channel to add it.")
             } else {
-                TimelineView(.everyMinute) { context in
-                    List(rows, id: \.self) { key in
-                        if let channel = live.catalogue.channel(for: key) {
+                List(rows, id: \.self) { key in
+                    if let channel = live.catalogue.channel(for: key) {
+                        // Each row on screen moves on to the next programme
+                        // within seconds of it starting.
+                        TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                             row(key, channel, at: context.date)
-                                .listRowInsets(EdgeInsets(top: 1, leading: 8, bottom: 1, trailing: 8))
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
                         }
+                        .listRowInsets(EdgeInsets(top: 1, leading: 8, bottom: 1, trailing: 8))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .accessibilityIdentifier("browse.list")
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .accessibilityIdentifier("browse.list")
                 // A new group opens at its top.
                 .id(live.group)
             }
@@ -102,6 +104,13 @@
             .accessibilityIdentifier("browse.row.\(key.identifier)")
             .accessibilityLabel([channel.name, number.map(String.init), line.text, remaining].compactMap(\.self).joined(separator: ", "))
         }
+    }
+
+    /// How often Live redraws what is on now, so a programme that ends
+    /// gives way to the next within seconds
+    /// (live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next).
+    enum LiveClock {
+        static let tick: TimeInterval = 5
     }
 
     /// Stands in for onboarding, which change add-first-run-onboarding builds,

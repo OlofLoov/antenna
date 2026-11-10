@@ -71,13 +71,9 @@
         @Environment(LiveModel.self) private var live
 
         var body: some View {
-            TimelineView(.everyMinute) { context in
-                let line = live.programmes.line(for: channel, at: context.date)
-                let number = RowKey(channel).flatMap(live.catalogue.number(for:))
-                Browse.NowPlaying(
-                    title: line.text,
-                    detail: [number.map(String.init), channel.name].compactMap(\.self).joined(separator: " ")
-                ) {
+            TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                let text = live.nowText(for: channel, at: context.date)
+                Browse.NowPlaying(title: text.title, detail: text.compact) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 } trailing: {
                     EmptyView()

@@ -144,6 +144,44 @@ final class LiveUITests: XCTestCase {
         app.waitForEngine("playing loads=1")
         XCTAssertEqual(loaded, ["news-one.ts"])
     }
+
+    // live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next
+    func testTheNowPlayingLineShowsTheProgrammeItsTimesAndWhatIsNext() throws {
+        let app = try launch()
+        app.row(0).tap()
+
+        let line = app.element("browse.nowPlaying")
+        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        XCTAssertTrue(line.label.hasPrefix("Morning News, 1 News One · "), line.label)
+        XCTAssertTrue(line.label.hasSuffix(" · Next: Weather"), line.label)
+        XCTAssertFalse(line.label.contains("Business"), "one programme next on iPhone")
+    }
+
+    // live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next, nothing in the guide
+    func testAChannelWithoutAGuideSaysSo() throws {
+        let app = try launch()
+        app.row(3).tap()
+
+        let line = app.element("browse.nowPlaying")
+        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        XCTAssertEqual(line.label, "No programme information, 4 Kids One")
+    }
+
+    // live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next, a programme ends
+    func testWhenAProgrammeEndsTheLineAndTheRowMoveOn() throws {
+        let app = try launch()
+        app.row(2).tap()
+        let line = app.element("browse.nowPlaying")
+        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        XCTAssertTrue(line.label.hasPrefix("First Half"), line.label)
+
+        let moved = NSPredicate(format: "label BEGINSWITH 'Second Half'")
+        let wait = XCTNSPredicateExpectation(predicate: moved, object: line)
+        XCTAssertEqual(XCTWaiter().wait(for: [wait], timeout: 30), .completed, "the line still reads \(line.label)")
+        let row = app.row(2)
+        let rowMoved = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS 'Second Half'"), object: row)
+        XCTAssertEqual(XCTWaiter().wait(for: [rowMoved], timeout: 10), .completed, "the row still reads \(row.label)")
+    }
 }
 
 extension XCUIApplication {
