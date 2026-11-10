@@ -1,0 +1,23 @@
+#if os(tvOS)
+    import AntennaCore
+    import Foundation
+
+    extension ShellModel {
+        /// Select or Watch on `channel` in the channel overlay: another
+        /// channel tunes (tv-channel-overlay/select-changes-channel); the
+        /// playing one carries on, resumes when paused, and loads again
+        /// when it failed or never started
+        /// (tv-channel-overlay/select-on-the-playing-channel-does-not-restart-it).
+        /// Either way the overlay closes on full-screen Live.
+        func pickFromOverlay(_ channel: Channel) async {
+            if channel == tuned {
+                switch await engine.state {
+                case .paused: await engine.play()
+                case .failed, .idle: tune(channel)
+                case .loading, .playing, .buffering, .reconnecting, .ended: break
+                }
+            }
+            await pick(channel)
+        }
+    }
+#endif

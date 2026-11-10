@@ -194,3 +194,80 @@ extension ShellUITests {
         expectEngine("playing loads=1 file=a1.ts")
     }
 }
+
+extension ShellUITests {
+    // tv-channel-overlay/select-changes-channel
+    func testSelectChangesChannel() {
+        launchPlaying()
+        openOverlay()
+        let rows = overlayRows()
+        press(.down, toFocus: rows.element(boundBy: 1), from: rows.element(boundBy: 0))
+        press(.right, toFocus: element("overlay.watch"), from: rows.element(boundBy: 1))
+        press(.select)
+        expectGone("overlay.root")
+        expectEngine("playing loads=2 file=a2.ts")
+        XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 5), "the info bar appears")
+        expect(element("zapBar.name"), "label == 'Channel a2'")
+    }
+
+    // tv-channel-overlay/select-on-the-playing-channel-does-not-restart-it
+    func testSelectOnThePlayingChannelDoesNotRestartIt() {
+        launchPlaying()
+        openOverlay()
+        press(.select)
+        expectGone("overlay.root")
+        expectEngine("playing loads=1 file=a1.ts")
+
+        expectGone("zapBar.bar", timeout: 10)
+        openOverlay()
+        press(.playPause)
+        expectEngine("paused loads=1 file=a1.ts")
+        press(.select)
+        expectGone("overlay.root")
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+
+    // tv-channel-overlay/select-on-the-playing-channel-does-not-restart-it
+    func testSelectOnAFailedChannelLoadsItAgain() {
+        launch("failing")
+        expectEngine("failed loads=1 file=a1.ts")
+        expectGone("zapBar.bar", timeout: 10)
+        openOverlay()
+        press(.select)
+        expectEngine("failed loads=2 file=a1.ts")
+        expectGone("overlay.root")
+    }
+
+    // tv-channel-overlay/menu-closes-without-changing-anything
+    func testMenuClosesWithoutChangingAnything() {
+        launchPlaying()
+        openOverlay()
+        let rows = overlayRows()
+        press(.down, toFocus: rows.element(boundBy: 1), from: rows.element(boundBy: 0))
+        press(.menu)
+        expectGone("overlay.root")
+        XCTAssertFalse(element("shell.tab.live").exists, "Menu does not also raise the tab bar")
+        expect(element("shell.player"), "value == 'full'")
+        expectEngine("playing loads=1 file=a1.ts")
+        XCTAssertTrue(app.state == .runningForeground)
+
+        openOverlay()
+        expectFocusedRow("Channel a1")
+    }
+
+    // tv-channel-overlay/a-way-into-search
+    func testAWayIntoSearch() {
+        launchPlaying()
+        openOverlay()
+        press(.left, toFocus: element("overlay.group.2"), from: row(named: "Channel a1"))
+        press(.down, toFocus: element("overlay.group.3"), from: element("overlay.group.2"))
+        press(.down, toFocus: element("overlay.search"), from: element("overlay.group.3"))
+        press(.select)
+        expectGone("overlay.root")
+        XCTAssertTrue(element("search.standIn").waitForExistence(timeout: 10))
+        expectEngine("playing loads=1 file=a1.ts")
+        press(.menu)
+        expectFocus("shell.tab.search")
+        XCTAssertFalse(element("overlay.root").exists, "Menu in Search does not reopen the overlay")
+    }
+}

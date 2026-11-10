@@ -20,10 +20,10 @@
 
 ## 4. Tuning, closing and Search
 
-- [ ] 4.1 Tune on select or Watch, close, show the info bar and set the channel up and down group, and verify with a UI test citing `tv-channel-overlay/select-changes-channel`
-- [ ] 4.2 Close without restarting when the playing channel is selected, resuming a paused stream and reloading a failed one, and verify with a UI test citing `tv-channel-overlay/select-on-the-playing-channel-does-not-restart-it`
-- [ ] 4.3 Close on Menu without leaving the player, and verify with a UI test citing `tv-channel-overlay/menu-closes-without-changing-anything`
-- [ ] 4.4 Open the Search tab ready to type from the Search entry, with Menu there not reopening the overlay, and verify with a UI test citing `tv-channel-overlay/a-way-into-search`
+- [x] 4.1 Tune on select or Watch, close, show the info bar and set the channel up and down group, and verify with a UI test citing `tv-channel-overlay/select-changes-channel`
+- [x] 4.2 Close without restarting when the playing channel is selected, resuming a paused stream and reloading a failed one, and verify with a UI test citing `tv-channel-overlay/select-on-the-playing-channel-does-not-restart-it`
+- [x] 4.3 Close on Menu without leaving the player, and verify with a UI test citing `tv-channel-overlay/menu-closes-without-changing-anything`
+- [x] 4.4 Open the Search tab ready to type from the Search entry, with Menu there not reopening the overlay, and verify with a UI test citing `tv-channel-overlay/a-way-into-search`
 
 ## 5. Verify
 
