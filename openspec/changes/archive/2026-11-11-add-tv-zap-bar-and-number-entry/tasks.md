@@ -30,5 +30,5 @@
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `tv-zap-bar-and-number-entry/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.1 Each requirement has a test citing `tv-zap-bar-and-number-entry/<requirement-slug>`
+- [x] 6.2 `/opsx:verify` passes
