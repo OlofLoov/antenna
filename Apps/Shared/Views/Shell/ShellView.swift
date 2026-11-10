@@ -63,6 +63,7 @@
         @FocusState private var focus: ShellFocus?
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
+        @Environment(\.guideStore) private var guideStore
         @State private var zapBar = ZapBarModel()
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
@@ -86,7 +87,7 @@
                 if model.barVisible { bar }
                 if model.pickerOpen {
                     ChannelOverlayView(
-                        catalogue: catalogue, playing: model.tuned, model: overlay, focus: $focus,
+                        catalogue: catalogue, playing: model.tuned, guide: overlayGuide, model: overlay, focus: $focus,
                         pick: { channel, group in
                             overlay.tuned(from: group)
                             Task {
@@ -269,6 +270,13 @@
         private func look(for tab: ShellTab) -> ShellTabBar.Look {
             guard tab == model.tab else { return .plain }
             return barHasFocus ? .currentInBar : .currentInContent
+        }
+
+        private var overlayGuide: OverlayGuide {
+            #if DEBUG
+                if let scripted = UITestingShell.guide() { return scripted }
+            #endif
+            return .store(guideStore)
         }
 
         private var overlayFocus: OverlayFocus? {

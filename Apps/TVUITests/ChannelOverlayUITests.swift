@@ -87,3 +87,53 @@ extension ShellUITests {
         expectEngine("playing loads=1 file=a1.ts")
     }
 }
+
+extension ShellUITests {
+    func row(named name: String) -> XCUIElement {
+        overlayRows().matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch
+    }
+
+    func part(_ suffix: String, of row: XCUIElement) -> XCUIElement {
+        element("\(row.identifier).\(suffix)")
+    }
+
+    // tv-channel-overlay/each-channel-shows-what-is-on
+    func testEachChannelShowsWhatIsOn() {
+        launchPlaying()
+        openOverlay()
+        let news = row(named: "Channel a1")
+        XCTAssertTrue(news.waitForExistence(timeout: 5))
+        XCTAssertTrue(news.label.contains("Morning News"), news.label)
+        XCTAssertTrue(news.label.contains("min left"), news.label)
+        XCTAssertTrue(part("progress", of: news).exists, "a programme on now shows its progress")
+        XCTAssertTrue(part("logo", of: news).exists)
+
+        let loading = row(named: "Channel a2")
+        XCTAssertTrue(loading.label.contains("Loading guide…"), loading.label)
+        XCTAssertFalse(part("progress", of: loading).exists)
+        let none = row(named: "Channel a3")
+        XCTAssertTrue(none.label.contains("No programme information"), none.label)
+        XCTAssertFalse(part("progress", of: none).exists)
+        XCTAssertFalse(part("catchup", of: news).exists)
+
+        press(.left, toFocus: element("overlay.group.2"), from: news)
+        press(.down, toFocus: element("overlay.group.3"), from: element("overlay.group.2"))
+        let film = row(named: "Channel b1")
+        expect(film, "exists == true")
+        XCTAssertTrue(film.label.contains("Evening Film"), film.label)
+        XCTAssertTrue(part("catchup", of: film).exists, "a channel with catch-up carries the mark")
+    }
+
+    // tv-channel-overlay/empty-groups-tell-the-user-what-to-do
+    func testEmptyFavoritesTellTheUserWhatToDo() {
+        launchPlaying()
+        openOverlay()
+        press(.left, toFocus: element("overlay.group.2"), from: row(named: "Channel a1"))
+        press(.up, toFocus: element("overlay.group.1"), from: element("overlay.group.2"))
+        press(.up, toFocus: element("overlay.group.0"), from: element("overlay.group.1"))
+        expect(element("overlay.emptyGroup"), "label == 'No favorites yet. Press the star on a channel to add it.'")
+        XCTAssertEqual(overlayRows().count, 0)
+        press(.right)
+        expectFocus("overlay.group.0")
+    }
+}

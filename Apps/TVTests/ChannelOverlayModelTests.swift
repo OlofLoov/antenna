@@ -110,4 +110,19 @@ import Testing
         model.show(.favorites)
         #expect(model.entry(all, playing: playing) == nil, "an empty group leaves focus where it is")
     }
+
+    @Test("tv-channel-overlay/empty-groups-tell-the-user-what-to-do the empty Favorites and All channels lines")
+    func emptyText() {
+        let all = catalogue()
+        model.show(.favorites)
+        #expect(model.emptyText(all) == "No favorites yet. Press the star on a channel to add it.")
+        model.show(.all)
+        #expect(model.emptyText(all) == nil)
+        let empty = Catalogue<Int>(channels: [], groupOrder: [:], favorites: [])
+        _ = model.open(empty, playing: nil)
+        #expect(model.group == .all)
+        #expect(model.emptyText(empty) == "No channels yet. Add a source in Settings.")
+        #expect(model.group.label == "All channels")
+        #expect(model.group.order == "Sorted by number")
+    }
 }
