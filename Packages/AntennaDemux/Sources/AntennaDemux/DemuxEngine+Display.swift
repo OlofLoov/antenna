@@ -10,7 +10,14 @@ extension DemuxEngine {
     /// The frame rate became known after the start: report it and match
     /// the TV to it.
     func frameRateFound(_ rate: Double, generation mine: Int) {
-        guard generation == mine, var start = current?.start, start.frameRate == nil else { return }
+        guard generation == mine, current != nil else { return }
+        // The run can find the rate before `open` has stored the start; keep
+        // it for `open` to use.
+        guard var start = current?.start else {
+            earlyFrameRate = rate
+            return
+        }
+        guard start.frameRate == nil else { return }
         start.frameRate = rate
         current?.start = start
         publishFormat(start)

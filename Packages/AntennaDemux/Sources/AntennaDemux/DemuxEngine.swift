@@ -54,6 +54,8 @@ public final class DemuxEngine: PlaybackEngine {
 
     private var request: (url: URL, options: PlaybackOptions)?
     var current: Current?
+    /// A frame rate the run found before `open` stored its start.
+    var earlyFrameRate: Double?
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
     private var reconnect: Task<Void, Never>?
@@ -240,7 +242,7 @@ public final class DemuxEngine: PlaybackEngine {
             run.giveUp(.unreadable)
         }
         defer { watchdog.cancel() }
-        let start: DemuxStart = try await withTaskCancellationHandler {
+        var start: DemuxStart = try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 run.start(
                     ready: { result in continuation.resume(with: result) },
@@ -255,6 +257,8 @@ public final class DemuxEngine: PlaybackEngine {
             run.cancel()
         }
         guard generation == mine else { throw CancellationError() }
+        if start.frameRate == nil, let rate = earlyFrameRate { start.frameRate = rate }
+        earlyFrameRate = nil
         current?.start = start
         isLive = options.isLive ?? (start.duration == nil)
         videoLayer.isHidden = start.video == nil
@@ -277,6 +281,7 @@ public final class DemuxEngine: PlaybackEngine {
         // while the renderers still take buffers blocked for seconds.
         current?.run.cancel()
         current = nil
+        earlyFrameRate = nil
         synchronizer.rate = 0
     }
 
