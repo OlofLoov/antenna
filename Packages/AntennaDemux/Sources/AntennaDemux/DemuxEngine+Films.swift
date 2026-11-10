@@ -25,10 +25,16 @@ extension DemuxEngine {
         if playing { set(.buffering) }
         var options = request.options
         options.startPosition = time
+        log("demux seek \(redacted(request.url)) to \(Int(time.inSeconds))s")
         do {
             try await open(request.url, options: options, generation: mine)
+            // Where the reopened film starts, so a skip that lands elsewhere shows in the log.
+            if let landed = current?.start.map({ CMTimeSubtract($0.startTime, $0.origin).seconds }) {
+                log("demux seek \(redacted(request.url)) ready at \(String(format: "%.1f", landed))s")
+            }
         } catch let failure as PlaybackFailure {
             guard generation == mine else { return }
+            log("demux seek \(redacted(request.url)) failed: \(failure)")
             set(.failed(failure))
         } catch {
             return
