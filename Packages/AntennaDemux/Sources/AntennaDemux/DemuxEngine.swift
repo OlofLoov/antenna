@@ -30,7 +30,7 @@ public final class DemuxEngine: PlaybackEngine {
     let audioRenderer = AVSampleBufferAudioRenderer()
     let synchronizer = AVSampleBufferRenderSynchronizer()
 
-    private let session: URLSession
+    let session: URLSession
     private let sleep: @Sendable (Duration) async throws -> Void
     private let log: @Sendable (String) -> Void
     private let firstFrameTimeout: Duration
@@ -52,15 +52,18 @@ public final class DemuxEngine: PlaybackEngine {
         var starvedSince: ContinuousClock.Instant?
     }
 
-    private var request: (url: URL, options: PlaybackOptions)?
+    var request: (url: URL, options: PlaybackOptions)?
     var current: Current?
     /// A frame rate the run found before `open` stored its start.
     var earlyFrameRate: Double?
+
+    /// True while the user scans through channels; see `setScanning(_:)`.
+    public internal(set) var isScanning = false
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
     private var reconnect: Task<Void, Never>?
     /// Streams kept open ahead of a zap, by address.
-    private var standby: [URL: Task<HTTPByteStream, any Error>] = [:]
+    var standby: [URL: Task<HTTPByteStream, any Error>] = [:]
     var generation = 0
     private var wantsPlay = false
     private var hasPlayed = false
@@ -182,35 +185,6 @@ public final class DemuxEngine: PlaybackEngine {
         await videoLayer.sampleBufferRenderer.flush(removingDisplayedImage: true)
     }
 
-    /// Keeps `urls` open ahead of a zap, from `ZapAhead`, and closes the
-    /// streams kept open for addresses no longer listed. A later `load` of
-    /// one of them starts from its newest bytes with no new connection.
-    /// Each holds one of the account's connections until it is loaded,
-    /// dropped from the list, or the engine stops or pauses live TV.
-    public func openAhead(_ urls: [URL]) {
-        for (url, task) in standby where !urls.contains(url) {
-            standby[url] = nil
-            Self.drop(task)
-        }
-        let session = self.session
-        for url in urls where standby[url] == nil && url != request?.url {
-            standby[url] = Task {
-                let bytes = HTTPByteStream(url: url, session: session)
-                bytes.standbyWindow = Self.standbyWindow
-                try await bytes.open()
-                return bytes
-            }
-        }
-    }
-
-    /// The addresses kept open ahead now.
-    public var openAheadAddresses: Set<URL> { Set(standby.keys) }
-
-    private static func drop(_ task: Task<HTTPByteStream, any Error>) {
-        task.cancel()
-        Task { try? await task.value.cancel() }
-    }
-
     /// Connects with the tune retry policy, or takes the stream kept open
     /// ahead for `url`, and starts a run, returning once its first frame is
     /// queued. Throws `CancellationError` when a newer load, stop or pause
@@ -260,6 +234,7 @@ public final class DemuxEngine: PlaybackEngine {
                     rateFound: { [weak self] rate in
                         Task { @MainActor in self?.frameRateFound(rate, generation: mine) }
                     },
+                    waitsForSound: !isScanning,
                     ended: { [weak self] failure in
                         Task { @MainActor in self?.bytesEnded(failure, generation: mine) }
                     })
@@ -274,8 +249,10 @@ public final class DemuxEngine: PlaybackEngine {
         isLive = options.isLive ?? (start.duration == nil)
         videoLayer.isHidden = start.video == nil
         synchronizer.setRate(wantsPlay ? 1 : 0, time: start.startTime)
-        publishFormat(start)
-        matchDisplay(start)
+        if !isScanning {
+            publishFormat(start)
+            matchDisplay(start)
+        }
         startTicker()
     }
 

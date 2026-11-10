@@ -18,16 +18,23 @@ public enum ZapAhead {
 
     /// The addresses to keep open around `current` in `lineup`: none for one
     /// allowed connection or an unknown limit, the neighbor in `direction`
-    /// for two, both neighbors from three. The lineup wraps at its ends; the
-    /// current address and repeats are never returned.
+    /// for two, both neighbors from three. While the user is `scanning`, the
+    /// next two in `direction` instead of one each way, since the scan goes
+    /// on that way. The lineup wraps at its ends; the current address and
+    /// repeats are never returned.
     public static func addresses(
-        around current: Int, in lineup: [URL], allowedConnections: Int?, direction: Direction = .up
+        around current: Int, in lineup: [URL], allowedConnections: Int?, direction: Direction = .up, scanning: Bool = false
     ) -> [URL] {
         guard lineup.indices.contains(current), let allowed = allowedConnections, allowed > 1 else { return [] }
         let count = lineup.count
+        let step = direction == .up ? 1 : -1
+        let ahead = { (distance: Int) in lineup[((current + step * distance) % count + count) % count] }
         let up = lineup[(current + 1) % count]
         let down = lineup[(current - 1 + count) % count]
-        let wanted = allowed == 2 ? [direction == .up ? up : down] : [up, down]
+        let wanted =
+            allowed == 2
+            ? [direction == .up ? up : down]
+            : scanning ? [ahead(1), ahead(2)] : [up, down]
         var seen: Set<URL> = [lineup[current]]
         return wanted.filter { seen.insert($0).inserted }
     }

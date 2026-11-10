@@ -44,7 +44,7 @@
 - [x] 7.4 Map demuxer failures to the shared reasons and route Matroska and AVI through it, and verify with integration tests citing `playback-engine/streams-that-cannot-play-fail-with-a-clear-reason`
 
 - [ ] 7.6 Let films on the FFmpeg path (Matroska, AVI) start at a saved time, skip and end: range requests through `HTTPByteStream` and an AVIO seek callback, refusing for servers that cannot skip, and verify with integration tests citing `playback-engine/films-start-where-you-left-off-skip-and-end`
-- [ ] 7.5 Notice when the user is zapping (several changes in one direction within a short time): open the next channels in that direction ahead as far as the account's connections allow, show each first picture without waiting for sound, and hold back full buffering, TV mode switches and format reports until the user stays on a channel; verify with core tests citing `playback-engine/channel-switching-is-fast` and `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
+- [x] 7.5 Notice when the user is zapping (several changes in one direction within a short time): open the next channels in that direction ahead as far as the account's connections allow, show each first picture without waiting for sound, and hold back full buffering, TV mode switches and format reports until the user stays on a channel; verify with core tests citing `playback-engine/channel-switching-is-fast` and `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
 
 ## 8. Picture and sound
 

@@ -20,6 +20,7 @@ extension DemuxEngine {
         guard start.frameRate == nil else { return }
         start.frameRate = rate
         current?.start = start
+        guard !isScanning else { return }
         publishFormat(start)
         matchDisplay(start)
     }
