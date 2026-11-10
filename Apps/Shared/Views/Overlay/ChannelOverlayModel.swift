@@ -67,6 +67,16 @@
             return neighbor.map(OverlayFocus.channel) ?? .group(.favorites)
         }
 
+        /// The list the info bar counts `channel` in
+        /// (tv-zap-bar-and-number-entry/which-channel-this-is): the group last
+        /// tuned from, else the channel's own group; All channels when the
+        /// channel is not in that list, as after tuning by number or search.
+        func currentList<Token>(_ catalogue: Catalogue<Token>, for channel: Channel) -> CatalogueGroup {
+            let list = lastTuned ?? catalogue.sourceGroup(of: channel) ?? .all
+            guard let key = RowKey(channel), catalogue.position(of: key, in: list) != nil else { return .all }
+            return list
+        }
+
         /// The highlight moved onto `group` in the group column.
         func show(_ group: CatalogueGroup) {
             self.group = group
