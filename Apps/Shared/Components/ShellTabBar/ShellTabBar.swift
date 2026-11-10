@@ -104,6 +104,46 @@ enum ShellTabBar {
         }
     }
 
+    /// The current profile's color and initial, 56 by 56, between the tabs
+    /// and the gear when there are two or more profiles (`TV-Shell-Menu-Profile`).
+    struct ProfileButton: View {
+        let tile: ProfileTile
+        let open: () -> Void
+
+        var body: some View {
+            Button(action: open) {
+                Text(tile.initial)
+                    .font(.system(size: 26, weight: .bold))
+            }
+            .buttonStyle(ProfileStyle(color: Color(hex: tile.color)))
+            .accessibilityLabel("Profile, \(tile.name)")
+        }
+    }
+
+    private struct ProfileStyle: ButtonStyle {
+        let color: Color
+
+        func makeBody(configuration: Configuration) -> some View {
+            ProfileLabel(label: configuration.label, color: color)
+        }
+    }
+
+    private struct ProfileLabel<Label: View>: View {
+        let label: Label
+        let color: Color
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            label
+                .foregroundStyle(Palette.ground)
+                .frame(width: 56, height: 56)
+                .background(color, in: Circle())
+                .overlay(Circle().stroke(isFocused ? Palette.focus : .clear, lineWidth: 4).padding(-6))
+                .scaleEffect(isFocused ? 1.1 : 1)
+                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+        }
+    }
+
     /// The gear that opens Settings: 56 by 56 with a 30 pt glyph. Not a tab.
     struct SettingsButton: View {
         let open: () -> Void
