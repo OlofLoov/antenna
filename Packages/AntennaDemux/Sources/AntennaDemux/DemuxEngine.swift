@@ -52,6 +52,8 @@ public final class DemuxEngine: PlaybackEngine {
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
     private var reconnect: Task<Void, Never>?
+    /// Streams kept open ahead of a zap, by address.
+    private var standby: [URL: Task<HTTPByteStream, any Error>] = [:]
     private var generation = 0
     private var wantsPlay = false
     private var hasPlayed = false
@@ -65,6 +67,9 @@ public final class DemuxEngine: PlaybackEngine {
     static let videoLimit = 120
     /// Sound buffers waiting ahead of the audio renderer.
     static let audioLimit = 240
+    /// Bytes a stream opened ahead keeps: enough for a keyframe at
+    /// broadcast bitrates.
+    static let standbyWindow = 4 * 1024 * 1024
 
     public nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
@@ -132,20 +137,56 @@ public final class DemuxEngine: PlaybackEngine {
         generation += 1
         wantsPlay = false
         request = nil
+        openAhead([])
         close()
         videoLayer.isHidden = true
         set(.idle)
         await videoLayer.sampleBufferRenderer.flush(removingDisplayedImage: true)
     }
 
-    /// Connects with the tune retry policy and starts a run, returning once
-    /// its first frame is queued. Throws `CancellationError` when a newer
-    /// load, stop or pause replaced it.
+    /// Keeps `urls` open ahead of a zap, from `ZapAhead`, and closes the
+    /// streams kept open for addresses no longer listed. A later `load` of
+    /// one of them starts from its newest bytes with no new connection.
+    /// Each holds one of the account's connections until it is loaded,
+    /// dropped from the list, or the engine stops or pauses live TV.
+    public func openAhead(_ urls: [URL]) {
+        for (url, task) in standby where !urls.contains(url) {
+            standby[url] = nil
+            Self.drop(task)
+        }
+        let session = self.session
+        for url in urls where standby[url] == nil && url != request?.url {
+            standby[url] = Task {
+                let bytes = HTTPByteStream(url: url, session: session)
+                bytes.standbyWindow = Self.standbyWindow
+                try await bytes.open()
+                return bytes
+            }
+        }
+    }
+
+    /// The addresses kept open ahead now.
+    public var openAheadAddresses: Set<URL> { Set(standby.keys) }
+
+    private static func drop(_ task: Task<HTTPByteStream, any Error>) {
+        task.cancel()
+        Task { try? await task.value.cancel() }
+    }
+
+    /// Connects with the tune retry policy, or takes the stream kept open
+    /// ahead for `url`, and starts a run, returning once its first frame is
+    /// queued. Throws `CancellationError` when a newer load, stop or pause
+    /// replaced it.
     private func open(_ url: URL, options: PlaybackOptions, generation mine: Int) async throws {
         let session = self.session
         let sleep = self.sleep
+        let ahead = standby.removeValue(forKey: url)
         let connect = Task {
-            try await RetryPolicy.tune.run(sleep: sleep) {
+            if let ahead, let bytes = try? await ahead.value {
+                bytes.standbyWindow = nil
+                return bytes
+            }
+            return try await RetryPolicy.tune.run(sleep: sleep) {
                 let bytes = HTTPByteStream(url: url, session: session)
                 try await bytes.open()
                 return bytes
@@ -242,9 +283,10 @@ public final class DemuxEngine: PlaybackEngine {
             synchronizer.rate = 0
             publishPosition()
             if isLive {
-                // Live TV lets the provider's connection go; play opens
+                // Live TV lets the provider's connections go; play opens
                 // what is on air then.
                 generation += 1
+                openAhead([])
                 release()
                 reopensOnPlay = true
             }
