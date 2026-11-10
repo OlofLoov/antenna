@@ -23,9 +23,9 @@
 - [ ] 4.2 Open Antenna as it was for a stale, empty or damaged link, and verify a UI test per case
 - [ ] 4.3 Show the paywall or setup first and drop the tile's channel afterwards, and verify UI tests
 
-## 5. Per-user shelf
+## 5. The current profile's shelf
 
-- [ ] 5.1 Check on an Apple TV with two users that each sees only their own shelf, and record the result
+- [ ] 5.1 Write the snapshot for the current profile only, and rewrite it on a profile switch, and verify with a test citing `top-shelf/the-shelf-shows-the-current-profile`
 
 ## 6. Verify
 

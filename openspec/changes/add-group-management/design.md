@@ -28,6 +28,7 @@ On Apple TV the user opens Groups from Settings, after the passcode prompt if an
 ## Decisions
 
 - Records (app layer, following the CloudKit rules: every property optional or defaulted, no unique attribute, relationships optional): a group record (kind, source id, provider name, custom name, hidden, locked, sort order, created at), a member record shaped like the favorite record, and a passcode record holding a salt and a check value (the verifier). Migration is additive. Malformed records are ignored and no record can hide or lock Favorites.
+- Hiding is per profile (change `add-profiles`): a hidden-group record (profile id, group key, hidden) beside the group record, with a nil profile id meaning the first profile. Order, custom names, own groups, locks and the passcode stay shared by every profile.
 - The passcode is never stored, synced or logged. The verifier is built in `Apps/Shared/Persistence` with CryptoKit because AntennaCore imports Foundation only. The decision on these records must say that four digits are only 10 000 values, so the verifier stops casual reading of the store and nothing more.
 - The verifier syncs because tvOS Keychain items do not: a parent sets the passcode on the phone and the Apple TV is locked without anyone touching it. The open-locks state lives in memory per device; the search toggle and lockout state live in this device's `UserDefaults`.
 - Group keys in identifiers never contain a stream URL.
