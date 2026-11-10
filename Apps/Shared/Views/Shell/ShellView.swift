@@ -64,6 +64,7 @@
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.guideStore) private var guideStore
+        @Environment(\.modelContext) private var context
         @State private var zapBar = ZapBarModel()
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
@@ -95,6 +96,7 @@
                                 focus = .picture
                             }
                         },
+                        toggleFavorite: toggleFavorite,
                         openSearch: { Task { await model.show(.search) } }
                     )
                     .transition(reduceMotion ? .opacity : .move(edge: .leading))
@@ -272,6 +274,15 @@
             return barHasFocus ? .currentInBar : .currentInContent
         }
 
+        /// The favorite button in the overlay's panel. Removing the shown
+        /// channel from Favorites while Favorites is shown moves to a neighbor.
+        private func toggleFavorite(_ channel: Channel, _ key: RowKey) {
+            let before = catalogue
+            let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, context: context)
+            guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
+            focus = .overlay(next)
+        }
+
         private var overlayGuide: OverlayGuide {
             #if DEBUG
                 if let scripted = UITestingShell.guide() { return scripted }
@@ -333,7 +344,21 @@
                 overlay.show(group)
             case (.overlay(.group), .overlay(.channel(let key))):
                 // Right from a group lands on the playing channel when the group holds it.
-                if let entry = overlay.entry(catalogue, playing: model.tuned), entry != key { focus = .overlay(.channel(entry)) }
+                if let entry = overlay.entry(catalogue, playing: model.tuned), entry != key {
+                    focus = .overlay(.channel(entry))
+                } else {
+                    overlay.highlight(key)
+                }
+            case (.overlay(.watch), .overlay(.channel(let key))), (.overlay(.favorite), .overlay(.channel(let key))):
+                // Left from the panel comes back to the channel it describes.
+                if let highlighted = overlay.highlighted, highlighted != key {
+                    focus = .overlay(.channel(highlighted))
+                }
+            case (_, .overlay(.channel(let key))):
+                overlay.highlight(key)
+            case (.overlay(.channel), .overlay(.favorite)):
+                // Right from a channel reaches Watch first.
+                focus = .overlay(.watch)
             case (.content, .tab(let target)) where target != model.tab && model.tab.isContent:
                 focus = .tab(model.tab)
             case (.content, .settings) where model.tab.isContent:

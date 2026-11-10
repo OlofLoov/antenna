@@ -137,3 +137,60 @@ extension ShellUITests {
         expectFocus("overlay.group.0")
     }
 }
+
+extension ShellUITests {
+    // tv-channel-overlay/now-and-next-for-the-highlighted-channel
+    func testNowAndNextForTheHighlightedChannel() {
+        launchPlaying()
+        openOverlay()
+        expect(element("overlay.panel.now"), "label == 'Morning News'")
+        let times = element("overlay.panel.remaining")
+        XCTAssertTrue(times.label.contains("–") && times.label.contains("min left"), times.label)
+        XCTAssertTrue(element("overlay.panel.progress").exists)
+        expect(element("overlay.panel.summary"), "label == 'Headlines and weather.'")
+        let next = element("overlay.panel.next")
+        XCTAssertTrue(next.staticTexts["Weather"].exists && next.staticTexts["Business"].exists && next.staticTexts["Sport Tonight"].exists)
+        XCTAssertFalse(next.staticTexts["Late Film"].exists, "at most three follow")
+        XCTAssertTrue(element("overlay.panel.logo").exists)
+
+        let rows = overlayRows()
+        press(.down, toFocus: rows.element(boundBy: 1), from: rows.element(boundBy: 0))
+        expect(element("overlay.panel.now"), "label == 'Loading guide…'")
+        XCTAssertFalse(element("overlay.panel.progress").exists)
+        XCTAssertFalse(element("overlay.panel.next").exists)
+        press(.down, toFocus: rows.element(boundBy: 2), from: rows.element(boundBy: 1))
+        expect(element("overlay.panel.now"), "label == 'No programme information'")
+    }
+
+    // tv-channel-overlay/add-or-remove-a-favorite
+    func testAddOrRemoveAFavorite() {
+        launchPlaying()
+        openOverlay()
+        press(.right, toFocus: element("overlay.watch"), from: row(named: "Channel a1"))
+        press(.right, toFocus: element("overlay.favorite"), from: element("overlay.watch"))
+        let favorite = element("overlay.favorite")
+        expect(favorite, "label == 'Add to favorites'")
+        press(.select)
+        expect(favorite, "label == 'Remove from favorites'")
+        expect(element("overlay.group.0"), "value == '1'")
+        press(.select)
+        expect(favorite, "label == 'Add to favorites'")
+        expect(element("overlay.group.0"), "value == '0'")
+        press(.select)
+        expect(element("overlay.group.0"), "value == '1'")
+
+        // Removing it while Favorites is shown leaves no row, so focus goes to the group.
+        press(.left, toFocus: element("overlay.watch"), from: favorite)
+        press(.left, toFocus: row(named: "Channel a1"), from: element("overlay.watch"))
+        press(.left, toFocus: element("overlay.group.2"), from: row(named: "Channel a1"))
+        press(.up, toFocus: element("overlay.group.1"), from: element("overlay.group.2"))
+        press(.up, toFocus: element("overlay.group.0"), from: element("overlay.group.1"))
+        press(.right, toFocus: row(named: "Channel a1"), from: element("overlay.group.0"))
+        press(.right, toFocus: element("overlay.watch"), from: row(named: "Channel a1"))
+        press(.right, toFocus: favorite, from: element("overlay.watch"))
+        press(.select)
+        expectFocus("overlay.group.0")
+        expect(element("overlay.emptyGroup"), "exists == true")
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+}

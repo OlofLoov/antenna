@@ -7,6 +7,8 @@
     enum OverlayFocus: Hashable {
         case group(CatalogueGroup)
         case channel(RowKey)
+        case watch
+        case favorite
         case search
     }
 
@@ -19,6 +21,9 @@
         private(set) var group: CatalogueGroup = .all
         /// The group the user last tuned from, nil after a cold launch.
         private(set) var lastTuned: CatalogueGroup?
+        /// The channel row last highlighted; the panel describes it, also
+        /// while focus is on Watch or the favorite button.
+        private(set) var highlighted: RowKey?
 
         /// Picks the group and the row to highlight when the overlay opens
         /// (tv-channel-overlay/it-opens-where-the-user-left-off): the last
@@ -32,7 +37,34 @@
             if playing != nil, !playingIsListed { chosen = .all }
             if !catalogue.groups.contains(chosen) { chosen = .all }
             group = chosen
-            return highlight(in: catalogue, keeping: playingIsListed ? key : nil)
+            let target = highlight(in: catalogue, keeping: playingIsListed ? key : nil)
+            highlighted = target.row
+            return target
+        }
+
+        /// Focus moved onto a channel row.
+        func highlight(_ key: RowKey) {
+            highlighted = key
+        }
+
+        /// The row the panel describes when it is in the shown group, nil
+        /// otherwise, so an empty group leaves the panel empty.
+        func panelRow<Token>(_ catalogue: Catalogue<Token>) -> RowKey? {
+            guard let highlighted, catalogue.rows(in: group).contains(highlighted) else { return nil }
+            return highlighted
+        }
+
+        /// Where focus goes after the highlighted channel left Favorites
+        /// while Favorites is shown (tv-channel-overlay/add-or-remove-a-favorite):
+        /// the next row, else the one before, else the Favorites group.
+        /// `before` is the catalogue from before the removal.
+        func removedFromFavorites<Token>(_ key: RowKey, before: Catalogue<Token>) -> OverlayFocus? {
+            guard group == .favorites else { return nil }
+            let rows = before.rows(in: .favorites)
+            guard let index = rows.firstIndex(of: key) else { return nil }
+            let neighbor = index + 1 < rows.count ? rows[index + 1] : index > 0 ? rows[index - 1] : nil
+            highlighted = neighbor
+            return neighbor.map(OverlayFocus.channel) ?? .group(.favorites)
         }
 
         /// The highlight moved onto `group` in the group column.
@@ -74,10 +106,12 @@
             if let lastTuned, !catalogue.groups.contains(lastTuned) { self.lastTuned = nil }
             switch focused {
             case .channel(let key):
-                return highlight(in: catalogue, keeping: key)
+                let target = highlight(in: catalogue, keeping: key)
+                highlighted = target.row
+                return target
             case .group(let shown) where !catalogue.groups.contains(shown):
                 return .group(group)
-            case .group, .search, nil:
+            case .group, .watch, .favorite, .search, nil:
                 return focused
             }
         }
@@ -87,6 +121,14 @@
             if let key, rows.contains(key) { return .channel(key) }
             if let first = rows.first { return .channel(first) }
             return .group(group)
+        }
+    }
+
+    extension OverlayFocus {
+        /// The row this focus is on, if it is on one.
+        var row: RowKey? {
+            if case .channel(let key) = self { return key }
+            return nil
         }
     }
 

@@ -79,8 +79,8 @@
             @MainActor static let launched = Date.now
 
             /// A scripted guide for the shell's UI tests, or nil outside them:
-            /// a1 and b1 have a programme on now, a2's guide is still loading
-            /// and a3 has none.
+            /// a1 and b1 have a programme on now, a1 four more after it, a2's
+            /// guide is still loading and a3 has none.
             @MainActor
             static func guide() -> OverlayGuide? {
                 guard scenario() != nil else { return nil }
@@ -96,7 +96,15 @@
                         return title.map {
                             Programme(
                                 channelID: channel.id, start: launched.addingTimeInterval(-1800), stop: launched.addingTimeInterval(1800),
-                                title: $0)
+                                title: $0, summary: "Headlines and weather.")
+                        }
+                    },
+                    next: { channel, _, count in
+                        guard channel.id == "fixture/a1" else { return [] }
+                        let titles = ["Weather", "Business", "Sport Tonight", "Late Film"]
+                        return zip(titles.indices, titles).prefix(count).map { index, title in
+                            let start = launched.addingTimeInterval(1800 + Double(index) * 1800)
+                            return Programme(channelID: channel.id, start: start, stop: start.addingTimeInterval(1800), title: title)
                         }
                     })
             }
