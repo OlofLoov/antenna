@@ -16,6 +16,8 @@ configFiles:
 packages:
   AntennaCore:
     path: Packages/AntennaCore
+  AntennaDemux:
+    path: Packages/AntennaDemux
   SnapshotPreviews:
     url: https://github.com/EmergeTools/SnapshotPreviews
     from: 0.20.0
@@ -30,6 +32,7 @@ targets:
       - Apps/Mobile
     dependencies:
       - package: AntennaCore
+      - package: AntennaDemux
     entitlements:
       path: Config/Antenna.entitlements
     info:
@@ -97,6 +100,7 @@ targets:
       - Apps/TV
     dependencies:
       - package: AntennaCore
+      - package: AntennaDemux
     entitlements:
       path: Config/AntennaTV.entitlements
     info:

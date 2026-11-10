@@ -1,12 +1,14 @@
 import AVFoundation
 import AntennaCore
+import AntennaDemux
 import SwiftUI
 
 #if os(macOS)
     import AppKit
 
-    /// The picture of the engine's Apple player, edge to edge with no
-    /// controls. An engine without one shows the Ground color.
+    /// The engine's picture, edge to edge with no controls: Apple's player,
+    /// with the demuxing engine's layer above it while that engine plays.
+    /// An engine with neither shows the Ground color.
     struct PlayerSurfaceView: NSViewRepresentable {
         let engine: any PlaybackEngine
 
@@ -22,10 +24,12 @@ import SwiftUI
 
         private func attach(_ view: PlayerLayerView) {
             AVPlayerEngine.resolve(engine)?.attach(to: view.playerLayer)
+            view.host(DemuxEngine.resolve(engine)?.videoLayer)
         }
 
         final class PlayerLayerView: NSView {
             let playerLayer = AVPlayerLayer()
+            private weak var demuxLayer: CALayer?
 
             init() {
                 super.init(frame: .zero)
@@ -33,6 +37,19 @@ import SwiftUI
                 playerLayer.videoGravity = .resizeAspect
                 playerLayer.backgroundColor = NSColor(Palette.ground).cgColor
                 layer = playerLayer
+            }
+
+            func host(_ sublayer: CALayer?) {
+                guard let sublayer, sublayer !== demuxLayer else { return }
+                demuxLayer?.removeFromSuperlayer()
+                playerLayer.addSublayer(sublayer)
+                sublayer.frame = bounds
+                demuxLayer = sublayer
+            }
+
+            override func layout() {
+                super.layout()
+                demuxLayer?.frame = bounds
             }
 
             @available(*, unavailable)
@@ -44,8 +61,9 @@ import SwiftUI
 #else
     import UIKit
 
-    /// The picture of the engine's Apple player, edge to edge with no
-    /// controls. An engine without one shows the Ground color.
+    /// The engine's picture, edge to edge with no controls: Apple's player,
+    /// with the demuxing engine's layer above it while that engine plays.
+    /// An engine with neither shows the Ground color.
     struct PlayerSurfaceView: UIViewRepresentable {
         let engine: any PlaybackEngine
 
@@ -64,11 +82,26 @@ import SwiftUI
         private func attach(_ view: PlayerLayerView) {
             guard let layer = view.playerLayer else { return }
             AVPlayerEngine.resolve(engine)?.attach(to: layer)
+            view.host(DemuxEngine.resolve(engine)?.videoLayer)
         }
 
         final class PlayerLayerView: UIView {
             override static var layerClass: AnyClass { AVPlayerLayer.self }
             var playerLayer: AVPlayerLayer? { layer as? AVPlayerLayer }
+            private weak var demuxLayer: CALayer?
+
+            func host(_ sublayer: CALayer?) {
+                guard let sublayer, sublayer !== demuxLayer else { return }
+                demuxLayer?.removeFromSuperlayer()
+                layer.addSublayer(sublayer)
+                sublayer.frame = bounds
+                demuxLayer = sublayer
+            }
+
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                demuxLayer?.frame = bounds
+            }
         }
     }
 #endif

@@ -8,9 +8,11 @@ import os
 /// and AVI. FFmpeg demuxes; Apple's sample-buffer renderers decode in
 /// hardware and play under one synchronizer clock.
 ///
-/// The picture is drawn into `videoLayer`. Stopping or switching flushes
-/// the renderers without removing the last image, so the old picture stays
-/// until the next channel's first frame.
+/// The picture is drawn into `videoLayer`. Switching flushes the renderers
+/// without removing the last image, so the old picture stays until the next
+/// channel's first frame. The layer is hidden until the first stream starts
+/// and after `stop`, which also removes the image, so it never covers Apple's
+/// player when `RoutedEngine` switches to it.
 @MainActor
 public final class DemuxEngine: PlaybackEngine {
     /// Draws the picture. Screens put it in their view hierarchy.
@@ -64,6 +66,14 @@ public final class DemuxEngine: PlaybackEngine {
         self.log = log
         synchronizer.addRenderer(videoLayer.sampleBufferRenderer)
         synchronizer.addRenderer(audioRenderer)
+        videoLayer.videoGravity = .resizeAspect
+        videoLayer.isHidden = true
+    }
+
+    /// The demuxing engine behind `engine`: the engine itself, or the
+    /// demuxer route of a `RoutedEngine`.
+    public static func resolve(_ engine: any PlaybackEngine) -> DemuxEngine? {
+        (engine as? DemuxEngine) ?? ((engine as? RoutedEngine)?.demuxer as? DemuxEngine)
     }
 
     public var state: PlaybackState { stateCast.value }
@@ -118,7 +128,9 @@ public final class DemuxEngine: PlaybackEngine {
         generation += 1
         wantsPlay = false
         close()
+        videoLayer.isHidden = true
         set(.idle)
+        await videoLayer.sampleBufferRenderer.flush(removingDisplayedImage: true)
     }
 
     /// Starts a run on `bytes` and returns once its first frame is queued.
@@ -142,6 +154,7 @@ public final class DemuxEngine: PlaybackEngine {
         }
         guard generation == mine else { throw CancellationError() }
         current?.start = start
+        videoLayer.isHidden = start.video == nil
         synchronizer.setRate(0, time: start.startTime)
         publishFormat(start)
         startTicker()
