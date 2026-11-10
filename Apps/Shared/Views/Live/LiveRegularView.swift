@@ -74,12 +74,26 @@
 
         var body: some View {
             if live.fullScreen {
-                // The picture fills the window (live-tv-on-iphone-ipad-mac/full-screen).
+                // The picture fills the window (live-tv-on-iphone-ipad-mac/full-screen);
+                // Escape leaves (live-tv-on-iphone-ipad-mac/keyboard-shortcuts).
                 LivePicture()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
                     .ignoresSafeArea()
                     .environment(\.browseMetrics, .regular)
+                    .background {
+                        #if os(iOS)
+                            LiveEscapeKey { live.setFullScreen(false) }
+                                .frame(width: 0, height: 0)
+                                .accessibilityHidden(true)
+                        #else
+                            Button("Exit full screen") { live.setFullScreen(false) }
+                                .keyboardShortcut(.cancelAction)
+                                .frame(width: 0, height: 0)
+                                .opacity(0)
+                                .accessibilityHidden(true)
+                        #endif
+                    }
             } else {
                 columns
             }
@@ -215,22 +229,77 @@
         /// Called after a row is picked, so a list shown over the picture can close.
         let picked: () -> Void
         @Environment(LiveModel.self) private var live
+        @FocusState private var filterFocused: Bool
+        /// Where the arrow keys are in the list (live-tv-on-iphone-ipad-mac/keyboard-shortcuts).
+        @State private var cursor: RowKey?
 
         var body: some View {
+            @Bindable var live = live
             VStack(spacing: 0) {
                 let count = live.catalogue.count(of: live.group)
                 Browse.ListHeader(title: live.group.label, count: count == 1 ? "1 channel" : "\(count) channels") {
                     leading
                 } filter: {
-                    EmptyView()
+                    Browse.FilterField(text: $live.filter)
+                        .focused($filterFocused)
                 }
                 if live.channels.isEmpty {
                     ProgressView("Loading channels…")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    LiveChannelList(picked: picked)
+                    LiveChannelList(
+                        picked: {
+                            filterFocused = false
+                            picked()
+                        }, cursor: cursor)
                 }
             }
+            .background { shortcuts }
+            .onChange(of: live.group) { _, _ in cursor = nil }
+            .onChange(of: live.filter) { _, _ in cursor = nil }
+        }
+
+        /// The list's keys as key commands, so they work wherever focus is.
+        /// Outside the filter field, the arrows move the ring, Return plays
+        /// its channel and Space pauses; Command-F jumps to the filter.
+        private var shortcuts: some View {
+            ZStack {
+                Button("Find a channel") { filterFocused = true }
+                    .keyboardShortcut("f", modifiers: .command)
+                Group {
+                    Button("Next channel") { move(1) }
+                        .keyboardShortcut(.downArrow, modifiers: [])
+                    Button("Previous channel") { move(-1) }
+                        .keyboardShortcut(.upArrow, modifiers: [])
+                    Button("Play the channel") { playCursor() }
+                        .keyboardShortcut(.return, modifiers: [])
+                    Button("Pause or play") { live.playPause() }
+                        .keyboardShortcut(.space, modifiers: [])
+                }
+                .disabled(filterFocused)
+            }
+            .frame(width: 0, height: 0)
+            .opacity(0)
+            .accessibilityHidden(true)
+        }
+
+        private func playCursor() {
+            guard let cursor, let channel = live.catalogue.channel(for: cursor) else { return }
+            live.pick(channel)
+            picked()
+        }
+
+        /// Moves the focus ring by `step` rows without switching channel,
+        /// starting from the playing row or the top.
+        private func move(_ step: Int) {
+            let rows = live.rows
+            guard !rows.isEmpty else { return }
+            let start = cursor ?? live.playing.flatMap(RowKey.init)
+            guard let start, let index = rows.firstIndex(of: start) else {
+                cursor = rows[step > 0 ? 0 : rows.count - 1]
+                return
+            }
+            cursor = rows[min(max(index + step, 0), rows.count - 1)]
         }
     }
 

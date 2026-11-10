@@ -34,31 +34,44 @@
     struct LiveChannelList: View {
         /// Called after a row is picked.
         var picked: () -> Void = {}
+        /// The row the arrow keys moved to, drawn with a focus ring.
+        var cursor: RowKey?
         @Environment(LiveModel.self) private var live
 
         var body: some View {
-            let rows = live.catalogue.rows(in: live.group)
-            if rows.isEmpty, live.group == .favorites {
+            let rows = live.rows
+            if rows.isEmpty, live.group == .favorites, live.filter.isEmpty {
                 Browse.EmptyGroup(text: "No favorites yet. Tap the star on a channel to add it.")
+            } else if rows.isEmpty {
+                Browse.EmptyGroup(text: "No channels match.")
             } else {
-                List(rows, id: \.self) { key in
-                    if let channel = live.catalogue.channel(for: key) {
-                        // Each row on screen moves on to the next programme
-                        // within seconds of it starting.
-                        TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                            row(key, channel, at: context.date)
+                ScrollViewReader { proxy in
+                    list(rows)
+                        .onChange(of: cursor) { _, key in
+                            if let key { proxy.scrollTo(key) }
                         }
-                        .listRowInsets(EdgeInsets(top: 1, leading: 8, bottom: 1, trailing: 8))
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                    }
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .accessibilityIdentifier("browse.list")
-                // A new group opens at its top.
-                .id(live.group)
             }
+        }
+
+        private func list(_ rows: [RowKey]) -> some View {
+            List(rows, id: \.self) { key in
+                if let channel = live.catalogue.channel(for: key) {
+                    // Each row on screen moves on to the next programme
+                    // within seconds of it starting.
+                    TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                        row(key, channel, at: context.date)
+                    }
+                    .listRowInsets(EdgeInsets(top: 1, leading: 8, bottom: 1, trailing: 8))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                }
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .accessibilityIdentifier("browse.list")
+            // A new group opens at its top.
+            .id(live.group)
         }
 
         private func row(_ key: RowKey, _ channel: Channel, at date: Date) -> some View {
@@ -80,6 +93,9 @@
             } logo: {
                 Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: isPlaying)
             }
+            .browseFocusRing(key == cursor)
+            .accessibilityValue(key == cursor ? "Keyboard focus" : "")
+            .id(key)
             .accessibilityIdentifier("browse.row.\(key.identifier)")
             .accessibilityLabel([channel.name, number.map(String.init), line.text, remaining].compactMap(\.self).joined(separator: ", "))
         }

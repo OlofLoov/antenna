@@ -53,6 +53,8 @@ final class LiveModel {
     private(set) var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
     /// The group whose channels the list shows.
     private(set) var group: CatalogueGroup = .all
+    /// What the user typed into the filter field on iPad and Mac.
+    var filter = ""
     /// The channel playing in place, nil until the user picks one.
     private(set) var playing: Channel?
     /// The engine's state, as last reported.
@@ -79,6 +81,7 @@ final class LiveModel {
     @ObservationIgnored private var failures: [UUID: String] = [:]
     @ObservationIgnored private var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
     @ObservationIgnored private var tuning: Task<Void, Never>?
+    @ObservationIgnored private var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
     @ObservationIgnored private var hiding: Task<Void, Never>?
     @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
 
@@ -209,6 +212,7 @@ final class LiveModel {
         guard all != channels else { return }
         channels = all
         catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites)
+        names = ChannelNameIndex(catalogue)
         if !catalogue.groups.contains(group) { group = .all }
     }
 
@@ -221,9 +225,16 @@ final class LiveModel {
         catalogue = catalogue.replacingFavorites(snapshots)
     }
 
-    /// Shows `group`'s channels. The playing channel plays on.
+    /// Shows `group`'s channels and clears the filter. The playing channel plays on.
     func show(_ group: CatalogueGroup) {
         self.group = group
+        filter = ""
+    }
+
+    /// The open group's rows in catalogue order, narrowed by the filter
+    /// (live-tv-on-iphone-ipad-mac/type-to-narrow-the-list).
+    var rows: [RowKey] {
+        names.filter(catalogue.rows(in: group), by: ChannelFilter(filter))
     }
 
     // MARK: Playback
