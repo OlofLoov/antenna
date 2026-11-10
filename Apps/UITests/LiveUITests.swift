@@ -18,7 +18,8 @@ final class LiveUITests: XCTestCase {
         try? FileManager.default.removeItem(at: log)
     }
 
-    func launch(_ scenario: String = "channels", arguments: [String] = []) -> XCUIApplication {
+    func launch(_ scenario: String = "channels", arguments: [String] = []) throws -> XCUIApplication {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario] + arguments
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
@@ -33,8 +34,8 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone
-    func testThePictureSitsAboveTheLineChipsAndList() {
-        let app = launch()
+    func testThePictureSitsAboveTheLineChipsAndList() throws {
+        let app = try launch()
         let player = app.element("browse.player")
         XCTAssertTrue(app.element("browse.nothingSelected").exists)
         app.row(0).tap()
@@ -57,8 +58,8 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone, switching between narrow and wide
-    func testTurningThePhoneDoesNotInterruptTheChannel() {
-        let app = launch()
+    func testTurningThePhoneDoesNotInterruptTheChannel() throws {
+        let app = try launch()
         app.row(0).tap()
         app.waitForEngine("playing loads=1")
 
@@ -70,8 +71,8 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone, large text
-    func testLargeTextGrowsTheRowsAndKeepsThePictureShape() {
-        let app = launch(arguments: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityL"])
+    func testLargeTextGrowsTheRowsAndKeepsThePictureShape() throws {
+        let app = try launch(arguments: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityL"])
         let row = app.row(0)
         XCTAssertGreaterThan(row.frame.height, 66)
         row.tap()
@@ -81,8 +82,8 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/pick-a-group
-    func testPickingAGroupListsItsChannelsAndKeepsPlaying() {
-        let app = launch()
+    func testPickingAGroupListsItsChannelsAndKeepsPlaying() throws {
+        let app = try launch()
         app.row(2).tap()
         app.waitForEngine("playing loads=1")
 
@@ -99,24 +100,24 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/pick-a-group, empty Favorites
-    func testEmptyFavoritesSaysHowToAddOne() {
-        let app = launch()
+    func testEmptyFavoritesSaysHowToAddOne() throws {
+        let app = try launch()
         app.element("browse.group.0").tap()
         XCTAssertTrue(app.element("browse.emptyGroup").waitForExistence(timeout: 5))
         XCTAssertEqual(app.element("browse.emptyGroup").label, "No favorites yet. Tap the star on a channel to add it.")
     }
 
     // live-tv-on-iphone-ipad-mac/pick-a-group, VoiceOver reads a row
-    func testARowReadsNameNumberProgrammeAndTimeLeft() {
-        let app = launch()
+    func testARowReadsNameNumberProgrammeAndTimeLeft() throws {
+        let app = try launch()
         let label = app.row(0).label
         XCTAssertTrue(label.hasPrefix("News One, 1, Morning News, "), label)
         XCTAssertTrue(label.hasSuffix("left"), label)
     }
 
     // live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list
-    func testPickingAChannelPlaysItInPlace() {
-        let app = launch()
+    func testPickingAChannelPlaysItInPlace() throws {
+        let app = try launch()
         app.row(1).tap()
 
         app.waitForEngine("playing loads=1")
@@ -133,8 +134,8 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list, picking the playing channel
-    func testPickingThePlayingChannelDoesNotRestartIt() {
-        let app = launch()
+    func testPickingThePlayingChannelDoesNotRestartIt() throws {
+        let app = try launch()
         app.row(0).tap()
         app.waitForEngine("playing loads=1")
 
