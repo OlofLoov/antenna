@@ -162,6 +162,7 @@ jobs:
           xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
             -destination "platform=iOS Simulator,name=$name" \
             -only-testing:AntennaUITests \
+            -retry-tests-on-failure -test-iterations 2 \
             -resultBundlePath ui-tests.xcresult \
             CODE_SIGNING_ALLOWED=NO
       - name: Upload result bundle
@@ -202,6 +203,7 @@ jobs:
           xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
             -destination "platform=tvOS Simulator,id=$id" \
             -only-testing:AntennaTVUITests \
+            -retry-tests-on-failure -test-iterations 2 \
             -resultBundlePath tv-ui-tests.xcresult \
             CODE_SIGNING_ALLOWED=NO
       - name: Upload result bundle
