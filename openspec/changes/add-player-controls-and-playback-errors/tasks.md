@@ -2,7 +2,7 @@
 
 ## 1. Core text
 
-- [ ] 1.1 Add the stream line, codec names and track names to AntennaCore, and verify with core tests citing `player-controls-and-playback-errors/see-what-s-on-without-stopping-the-picture-on-apple-tv` and `player-controls-and-playback-errors/choose-audio-and-subtitles`
+- [x] 1.1 Add the stream line, codec names and track names to AntennaCore, and verify with core tests citing `player-controls-and-playback-errors/see-what-s-on-without-stopping-the-picture-on-apple-tv` and `player-controls-and-playback-errors/choose-audio-and-subtitles`
 - [ ] 1.2 Add the failure message table with a secret scan over every string, and verify with core and integration log-scan tests citing `player-controls-and-playback-errors/error-messages-for-each-reason`
 
 ## 2. Player model
