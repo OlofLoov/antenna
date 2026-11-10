@@ -5,8 +5,7 @@ import SwiftData
 struct AntennaApp: App {
     /// One container, CloudKit-backed. The iCloud container id comes from the
     /// entitlements, so `.automatic` resolves to `iCloud.se.codecrave.antenna`.
-    /// On tvOS with the "Runs as Current User" entitlement this becomes
-    /// per-profile automatically. A Debug build launched by a UI test gets
+    /// Profiles live inside it (profiles capability). A Debug build launched by a UI test gets
     /// the in-memory `UITestingStore`, `UITestingShell`, `UITestingScreenshots`
     /// or `UITestingLive` instead.
     private let container: ModelContainer
@@ -16,6 +15,9 @@ struct AntennaApp: App {
     init() {
         let container = Self.makeContainer()
         self.container = container
+        // A profile deleted on another device leaves its per-device values here.
+        let profiles = (try? container.mainContext.fetch(FetchDescriptor<ProfileRecord>())) ?? []
+        ProfileKeys.prune(.standard, keeping: ProfileStore.list(profiles).profiles.map(\.id))
         _guideStore = State(initialValue: AppGuideStore.live(container: container))
     }
 
@@ -26,7 +28,7 @@ struct AntennaApp: App {
             if let seeded = UITestingScreenshots.container() { return seeded }
             if let seeded = UITestingLive.container() { return seeded }
         #endif
-        let schema = Schema([SourceRecord.self, FavoriteRecord.self])
+        let schema = Schema(AntennaSchema.models)
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         do {
             return try ModelContainer(for: schema, configurations: [config])

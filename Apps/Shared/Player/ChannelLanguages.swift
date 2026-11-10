@@ -9,9 +9,12 @@ struct ChannelLanguageStore: Sendable {
     static let key = "player.languages"
 
     nonisolated(unsafe) let defaults: UserDefaults
+    /// `player.languages`, or its per-profile key for every profile but Main.
+    let storageKey: String
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, profile: UUID = Profile.mainID) {
         self.defaults = defaults
+        storageKey = ProfileKeys.key(Self.key, for: profile)
     }
 
     /// The key for `channel`, nil when it has no source or its id holds a link.
@@ -21,7 +24,7 @@ struct ChannelLanguageStore: Sendable {
     }
 
     var memory: LanguageMemory {
-        guard let data = defaults.data(forKey: Self.key) else { return LanguageMemory() }
+        guard let data = defaults.data(forKey: storageKey) else { return LanguageMemory() }
         return (try? JSONDecoder().decode(LanguageMemory.self, from: data)) ?? LanguageMemory()
     }
 
@@ -33,7 +36,7 @@ struct ChannelLanguageStore: Sendable {
         guard let key = Self.key(for: channel) else { return }
         var memory = self.memory
         memory.remember(pick, for: key)
-        if let data = try? JSONEncoder().encode(memory) { defaults.set(data, forKey: Self.key) }
+        if let data = try? JSONEncoder().encode(memory) { defaults.set(data, forKey: storageKey) }
     }
 }
 

@@ -6,9 +6,9 @@
 
 ## 2. Records and the current profile
 
-- [ ] 2.1 Add `ProfileRecord` and `FavoriteRecord.profileID` with an additive migration, and a `ProfileStore` that maps records to `ProfileList`, writes adds, edits and deletes (with the profile's favorites), and keeps `profiles.current` in `UserDefaults`, and verify with integration tests on an in-memory store citing `profiles/adding-a-profile`, `profiles/editing-and-deleting-a-profile` and `favorites/favorites-belong-to-a-profile`
+- [x] 2.1 Add `ProfileRecord` and `FavoriteRecord.profileID` with an additive migration, and a `ProfileStore` that maps records to `ProfileList`, writes adds, edits and deletes (with the profile's favorites), and keeps `profiles.current` in `UserDefaults`, and verify with integration tests on an in-memory store citing `profiles/adding-a-profile`, `profiles/editing-and-deleting-a-profile` and `favorites/favorites-belong-to-a-profile`
 - [ ] 2.2 Provide the current profile through an `@Entry` value, filter the catalogue's favorites and the Favorites tab by it, and write favorites with it, and verify with tests citing `favorites/favorites-belong-to-a-profile` and `profiles/what-each-profile-keeps`
-- [ ] 2.3 Key `shell.lastChannel` and `player.languages` per profile (`.<profile id>` for all but Main) and remove a deleted profile's keys at launch, and verify with tests citing `tvos-shell/back-to-the-last-channel-on-launch` and `profiles/what-each-profile-keeps`
+- [x] 2.3 Key `shell.lastChannel` and `player.languages` per profile (`.<profile id>` for all but Main) and remove a deleted profile's keys at launch, and verify with tests citing `tvos-shell/back-to-the-last-channel-on-launch` and `profiles/what-each-profile-keeps`
 
 ## 3. Who's watching
 

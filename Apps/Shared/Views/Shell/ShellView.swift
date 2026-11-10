@@ -10,6 +10,7 @@
     struct ShellView: View {
         @Environment(\.sourceLoader) private var loader
         @Environment(\.guideStore) private var guideStore
+        @Environment(\.currentProfile) private var profile
         @State private var model: ShellModel?
         @State private var lifecycle: PlaybackLifecycle?
 
@@ -39,20 +40,22 @@
                 if let scripted = UITestingShell.dependencies() { return scripted }
                 if let seeded = UITestingScreenshots.dependencies() { return seeded }
             #endif
-            return .live(loader: loader, guide: guideStore)
+            return .live(loader: loader, guide: guideStore, profile: profile)
         }
     }
 
     extension ShellModel.Dependencies {
         /// The engine, loader, Keychain check and clock the app runs on.
-        @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?) -> Self {
+        /// The last channel and language picks are `profile`'s on this Apple TV.
+        @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID) -> Self {
             .init(
                 engine: RoutedEngine.app(),
                 load: { try await loader.load($0) },
                 hasLogin: { loader.hasLogin($0) },
-                lastChannel: LastChannelStore(),
+                lastChannel: LastChannelStore(profile: profile),
                 sleep: { try await Task.sleep(for: $0) },
-                guide: guide)
+                guide: guide,
+                languages: ChannelLanguageStore(profile: profile))
         }
     }
 
@@ -65,6 +68,7 @@
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.guideStore) private var guideStore
         @Environment(\.modelContext) private var context
+        @Environment(\.currentProfile) private var profile
         @State private var zapBar = ZapBarModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
         @State private var barLowered = ContinuousClock.now - .seconds(10)
@@ -125,8 +129,8 @@
                 // Play/pause in full-screen live TV shows the info bar; the video plays on.
                 zapBar.playPause()
             }
-            .onChange(of: CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID)), initial: true) {
-                catalogue = .shell(channels: model.channels, favorites: favorites)
+            .onChange(of: catalogueInputs, initial: true) {
+                catalogue = .shell(channels: model.channels, favorites: favorites, profile: profile)
                 guard model.pickerOpen, let moved = overlay.catalogueChanged(catalogue, focused: overlayFocus) else { return }
                 focus = .overlay(moved)
             }
@@ -286,9 +290,13 @@
         /// channel from Favorites while Favorites is shown moves to a neighbor.
         private func toggleFavorite(_ channel: Channel, _ key: RowKey) {
             let before = catalogue
-            let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, context: context)
+            let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, profile: profile, context: context)
             guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
             focus = .overlay(next)
+        }
+
+        private var catalogueInputs: CatalogueInputs {
+            CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
         }
 
         private var overlayGuide: OverlayGuide {
@@ -400,6 +408,7 @@
     private struct CatalogueInputs: Equatable {
         let channels: [Channel]
         let favorites: [PersistentIdentifier]
+        let profile: UUID
     }
 
     /// Draws the label only: the full-screen picture holds focus with no

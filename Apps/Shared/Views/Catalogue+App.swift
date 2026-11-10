@@ -1,3 +1,4 @@
+import Foundation
 import AntennaCore
 import SwiftData
 
@@ -31,9 +32,10 @@ extension RowKey {
 
 extension Catalogue where Token == PersistentIdentifier {
     /// The app's catalogue: its channels in source order, groups in
-    /// first-appearance order, and the stored favorites.
-    static func shell(channels: [Channel], favorites: [FavoriteRecord]) -> Self {
-        Catalogue(channels: channels, groupOrder: [:], favorites: favorites.map(\.snapshot))
+    /// first-appearance order, and `profile`'s stored favorites (profiles capability).
+    static func shell(channels: [Channel], favorites: [FavoriteRecord], profile: UUID = Profile.mainID) -> Self {
+        let owned = favorites.filter { ProfileList.owns(profile, recordProfile: $0.profileID) }
+        return Catalogue(channels: channels, groupOrder: [:], favorites: owned.map(\.snapshot))
     }
 }
 

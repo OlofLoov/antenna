@@ -23,7 +23,7 @@
                 return order
             }
 
-            let schema = Schema([SourceRecord.self, FavoriteRecord.self])
+            let schema = Schema(AntennaSchema.models)
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
             do {
                 let container = try ModelContainer(for: schema, configurations: [config])
