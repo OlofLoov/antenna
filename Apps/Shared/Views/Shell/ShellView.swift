@@ -62,6 +62,7 @@
         @FocusState private var focus: ShellFocus?
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
+        @State private var zapBar = ZapBarModel()
 
         init(model: ShellModel) {
             self.model = model
@@ -72,6 +73,12 @@
                 picture
                 liveScreen
                 tabContent
+                if zapBarShows, let channel = zapBar.channel {
+                    ZapBarView(channel: channel)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        .allowsHitTesting(false)
+                        .transition(.opacity)
+                }
                 if model.dimmed { ShellScrim() }
                 if model.barVisible { bar }
                 if model.pickerOpen {
@@ -89,7 +96,19 @@
             .ignoresSafeArea()
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.barVisible)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.tab)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: zapBarShows)
             .onExitCommand(perform: menu)
+            .onPlayPauseCommand {
+                // Play/pause in full-screen live TV shows the info bar; the video plays on.
+                guard model.tab == .live, !model.barVisible, !model.pickerOpen else { return }
+                zapBar.playPause()
+            }
+            .onChange(of: model.tuned, initial: true) { _, channel in
+                zapBar.channelChanged(to: channel)
+            }
+            .onChange(of: model.barVisible) { _, raised in
+                if raised { zapBar.dismiss() }
+            }
             .onMoveCommand(perform: move)
             .environment(\.shellNavigator, model.navigator)
             .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
@@ -138,6 +157,8 @@
                     // bar lands here and `move` lowers the bar.
                     Button {
                         guard !model.barVisible else { return }
+                        // Select while the info bar shows hides it, then opens the list.
+                        zapBar.dismiss()
                         model.openPicker()
                         focus = .picker(0)
                     } label: {
@@ -233,10 +254,20 @@
             return barHasFocus ? .currentInBar : .currentInContent
         }
 
+        /// The info bar shows on full-screen Live with nothing else over the picture.
+        private var zapBarShows: Bool {
+            zapBar.isVisible && model.tab == .live && !model.barVisible && !model.pickerOpen
+        }
+
         private func menu() {
             if model.pickerOpen {
                 model.closePicker()
                 focus = .picture
+                return
+            }
+            // Menu hides the info bar and goes no further.
+            if zapBarShows {
+                zapBar.dismiss()
                 return
             }
             let origin: MenuOrigin =
