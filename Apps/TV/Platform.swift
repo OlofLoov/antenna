@@ -1,4 +1,13 @@
-// tvOS-specific code goes here (focus tweaks, Top Shelf extension hookup, TVUserManager profiles).
+// tvOS-specific code goes here (focus tweaks, Top Shelf extension hookup).
 
-/// The Apple TV window root (tvos-shell capability).
-typealias PlatformRoot = ShellView
+import SwiftUI
+
+/// The Apple TV window root: "Who's watching?" when there are two or more
+/// profiles (profiles capability), then the shell (tvos-shell capability).
+struct PlatformRoot: View {
+    var body: some View {
+        ProfileGate {
+            ShellView()
+        }
+    }
+}

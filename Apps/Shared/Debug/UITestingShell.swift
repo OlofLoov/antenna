@@ -11,6 +11,8 @@
     /// with two sources. Nothing reaches the network, iCloud or the Keychain.
     enum UITestingShell {
         static let argument = "-ui-testing-shell"
+        static let profilesArgument = "-ui-testing-profiles"
+        static let kidsID = UUID(uuidString: "00000000-0000-0000-0000-00000000000C") ?? UUID()
 
         enum Scenario: String {
             /// An M3U source with three channels and an Xtream source with one.
@@ -47,6 +49,12 @@
                 for (order, descriptor) in sources.enumerated() {
                     context.insert(SourceRecord(descriptor: descriptor, sortOrder: order))
                 }
+                // `-ui-testing-profiles` adds Dad (Main) and Kids, so launch asks who is watching.
+                if ProcessInfo.processInfo.arguments.contains(profilesArgument) {
+                    context.insert(ProfileRecord(Profile(id: Profile.mainID, name: "Dad", colorIndex: 0, sortOrder: 0, createdAt: .now)))
+                    context.insert(ProfileRecord(Profile(id: kidsID, name: "Kids", colorIndex: 5, sortOrder: 1, createdAt: .now)))
+                }
+                UserDefaults.standard.removeObject(forKey: CurrentProfileStore.key)
                 try context.save()
                 return container
             } catch {
