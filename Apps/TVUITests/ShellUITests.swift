@@ -39,6 +39,21 @@ final class ShellUITests: XCTestCase {
         XCTAssertEqual(result, .completed, "\(element) never matched \(predicate)", file: file, line: line)
     }
 
+    /// Presses `button` and waits for `target` to take focus. tvOS can drop
+    /// a press while a list that just appeared settles; when focus is still
+    /// on `origin` after three seconds the press is sent once more. A press
+    /// that landed moves focus off `origin`, so this never overshoots.
+    func press(
+        _ button: XCUIRemote.Button, toFocus target: XCUIElement, from origin: XCUIElement,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
+        press(button)
+        let focused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: target)
+        if XCTWaiter().wait(for: [focused], timeout: 3) == .completed { return }
+        if origin.hasFocus { press(button) }
+        expect(target, "hasFocus == true", file: file, line: line)
+    }
+
     func expectFocus(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
         let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: element(identifier))
         guard XCTWaiter().wait(for: [expectation], timeout: 10) != .completed else { return }
@@ -230,8 +245,7 @@ extension ShellUITests {
         // A List row takes focus as its cell, which carries no identifier.
         let rows = app.cells
         expect(rows.element(boundBy: 0), "hasFocus == true")
-        press(.down)
-        expect(rows.element(boundBy: 1), "hasFocus == true")
+        press(.down, toFocus: rows.element(boundBy: 1), from: rows.element(boundBy: 0))
         press(.select)
         expectGone("overlay.channels")
         expectGone("shell.tab.live")
