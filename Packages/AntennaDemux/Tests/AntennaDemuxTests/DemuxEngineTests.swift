@@ -23,6 +23,7 @@ import Testing
         let format = try #require(presented.flatMap { $0 })
         #expect(format.video?.width == 320 && format.video?.height == 180)
         #expect(format.video?.codec == "h264")
+        #expect(format.video?.frameRate == 25)
         #expect(format.audio == PresentationInfo.Audio(codec: "aac", channels: 2, isDecodable: true))
         let tracks = try #require(await current(harness.engine.tracks()))
         #expect(tracks.audio.map(\.id) == ["audio-0"])
