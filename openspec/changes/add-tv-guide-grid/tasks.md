@@ -2,9 +2,9 @@
 
 ## 1. Grid maths in the core package
 
-- [ ] 1.1 Add window, now line and scroll bounds functions over an injected clock and time zone, with a 2027-03-28 DST fixture, and verify with a core test citing `tv-guide-grid/the-grid-opens-around-now-and-keeps-time`
-- [ ] 1.2 Add block widths, minimum width, clipping, gaps and past/now/future state, and verify with a core test citing `tv-guide-grid/programmes-are-drawn-to-scale`
-- [ ] 1.3 Add the day list and the day that follows scrolling past midnight, and verify with a core test citing `tv-guide-grid/pick-a-day`
+- [x] 1.1 Add window, now line and scroll bounds functions over an injected clock and time zone, with a 2027-03-28 DST fixture, and verify with a core test citing `tv-guide-grid/the-grid-opens-around-now-and-keeps-time`
+- [x] 1.2 Add block widths, minimum width, clipping, gaps and past/now/future state, and verify with a core test citing `tv-guide-grid/programmes-are-drawn-to-scale`
+- [x] 1.3 Add the day list and the day that follows scrolling past midnight, and verify with a core test citing `tv-guide-grid/pick-a-day`
 
 ## 2. Guide tab and small picture
 
