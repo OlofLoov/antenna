@@ -26,7 +26,7 @@
                 let model = ShellModel(dependencies())
                 let engine = model.engine
                 let lifecycle = PlaybackLifecycle(engine: engine) {
-                    AVPlayerEngine.resolve(engine)?.continuesInPictureInPicture ?? false
+                    engine.continuesInPictureInPicture
                 }
                 lifecycle.start()
                 self.model = model

@@ -1,7 +1,7 @@
 @preconcurrency import AVFoundation
 import AntennaCore
 
-#if os(tvOS)
+#if os(iOS) || os(tvOS)
     import AVKit
 #endif
 import CoreMedia
@@ -66,9 +66,14 @@ public final class DemuxEngine: PlaybackEngine {
     private var hasPlayed = false
     /// Play opens the stream again instead of resuming it.
     private var reopensOnPlay = false
-    private var isLive = true
+    var isLive = true
     private var budget = ReconnectBudget()
     private var ticker: Task<Void, Never>?
+
+    #if os(iOS) || os(tvOS)
+        var pictureInPicture: AVPictureInPictureController?
+        var pictureInPicturePlayback: PictureInPicturePlayback?
+    #endif
 
     #if os(tvOS)
         /// The display manager of the window the picture is in. With it set,
@@ -121,7 +126,13 @@ public final class DemuxEngine: PlaybackEngine {
 
     public var state: PlaybackState { stateCast.value }
 
-    public var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
+    public var capabilities: EngineCapabilities {
+        #if os(iOS) || os(tvOS)
+            EngineCapabilities(supportsPictureInPicture: AVPictureInPictureController.isPictureInPictureSupported())
+        #else
+            EngineCapabilities(supportsPictureInPicture: false)
+        #endif
+    }
 
     // MARK: Load and stop
 

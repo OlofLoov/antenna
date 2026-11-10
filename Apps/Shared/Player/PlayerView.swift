@@ -12,9 +12,8 @@ struct PlayerView: View {
     init(channel: Channel) {
         self.channel = channel
         let engine = RoutedEngine.app()
-        let player = AVPlayerEngine.resolve(engine)
         _engine = State(initialValue: engine)
-        _lifecycle = State(initialValue: PlaybackLifecycle(engine: engine) { player?.continuesInPictureInPicture ?? false })
+        _lifecycle = State(initialValue: PlaybackLifecycle(engine: engine) { engine.continuesInPictureInPicture })
     }
 
     var body: some View {
