@@ -82,13 +82,26 @@ import SwiftUI
         private func attach(_ view: PlayerLayerView) {
             guard let layer = view.playerLayer else { return }
             AVPlayerEngine.resolve(engine)?.attach(to: layer)
-            view.host(DemuxEngine.resolve(engine)?.videoLayer)
+            let demuxer = DemuxEngine.resolve(engine)
+            view.host(demuxer?.videoLayer)
+            #if os(tvOS)
+                // The TV's mode follows the stream once the picture is in a window.
+                view.onWindow = { window in demuxer?.displayManager = window?.avDisplayManager }
+                demuxer?.displayManager = view.window?.avDisplayManager
+            #endif
         }
 
         final class PlayerLayerView: UIView {
             override static var layerClass: AnyClass { AVPlayerLayer.self }
             var playerLayer: AVPlayerLayer? { layer as? AVPlayerLayer }
             private weak var demuxLayer: CALayer?
+            /// Called when the view joins or leaves a window.
+            var onWindow: ((UIWindow?) -> Void)?
+
+            override func didMoveToWindow() {
+                super.didMoveToWindow()
+                onWindow?(window)
+            }
 
             func host(_ sublayer: CALayer?) {
                 guard let sublayer, sublayer !== demuxLayer else { return }
