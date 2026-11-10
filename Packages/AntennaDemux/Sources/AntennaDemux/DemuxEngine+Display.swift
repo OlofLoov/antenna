@@ -37,6 +37,9 @@ extension DemuxEngine {
 
     func set(_ new: PlaybackState) {
         stateCast.sendIfChanged(new)
+        #if os(iOS) || os(tvOS)
+            pictureInPictureChanged()
+        #endif
     }
 
     func publishFormat(_ start: DemuxStart) {

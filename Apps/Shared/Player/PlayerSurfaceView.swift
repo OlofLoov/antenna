@@ -84,6 +84,7 @@ import SwiftUI
             AVPlayerEngine.resolve(engine)?.attach(to: layer)
             let demuxer = DemuxEngine.resolve(engine)
             view.host(demuxer?.videoLayer)
+            demuxer?.enablePictureInPicture()
             #if os(tvOS)
                 // The TV's mode follows the stream once the picture is in a window.
                 view.onWindow = { window in demuxer?.displayManager = window?.avDisplayManager }
