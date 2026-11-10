@@ -92,7 +92,7 @@
                         pick: { channel, group in
                             overlay.tuned(from: group)
                             Task {
-                                await model.pick(channel)
+                                await model.pickFromOverlay(channel)
                                 focus = .picture
                             }
                         },
