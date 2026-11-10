@@ -33,7 +33,7 @@
 
 ## 6. FFmpeg build
 
-- [ ] 6.1 Add `scripts/build-ffmpeg.sh` for the LGPL demux build in design.md, a CI workflow that builds `FFmpeg.xcframework` on a tag and publishes it with its source, and the binary package `Packages/FFmpeg`, and verify a test opens the fixture `channel.ts` and lists its streams on iOS and tvOS simulators
+- [x] 6.1 Add `scripts/build-ffmpeg.sh` for the LGPL demux build in design.md, a CI workflow that builds `FFmpeg.xcframework` on a tag and publishes it with its source, and the binary package `Packages/FFmpeg`, and verify a test opens the fixture `channel.ts` and lists its streams on iOS and tvOS simulators
 - [ ] 6.2 Add the FFmpeg notice under Settings, About, and verify with a UI test
 
 ## 7. Demux engine
