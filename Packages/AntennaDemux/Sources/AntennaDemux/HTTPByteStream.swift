@@ -78,6 +78,17 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         return taken
     }
 
+    /// Up to `count` bytes from the start of what is buffered, without
+    /// taking them. Blocks until that many arrived or the body ended.
+    public func peek(_ count: Int) -> Data {
+        condition.lock()
+        defer { condition.unlock() }
+        while buffer.count < count, !finished, !cancelled {
+            condition.wait()
+        }
+        return Data(buffer.prefix(count))
+    }
+
     /// Why the stream ended early, if it did.
     public var failureReason: PlaybackFailure? {
         condition.lock()

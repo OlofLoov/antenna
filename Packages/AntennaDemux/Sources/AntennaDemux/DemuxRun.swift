@@ -67,85 +67,114 @@ final class DemuxRun: @unchecked Sendable {
         thread.start()
     }
 
+    /// FFmpeg open on the stream, with a builder for the first video and
+    /// the first audio stream it can build buffers for.
+    private struct Prepared {
+        let demuxer: Demuxer
+        let video: SampleBuilder?
+        let audio: SampleBuilder?
+    }
+
     private func run(
         ready: @escaping @Sendable (Result<DemuxStart, any Error>) -> Void,
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
+        let prepared: Prepared
+        switch prepare() {
+        case .success(let value):
+            prepared = value
+        case .failure(let error):
+            if !isCancelled { ready(.failure(error)) }
+            return
+        }
+        defer { prepared.demuxer.close() }
+        let announced = pump(prepared, ready: ready)
+        guard !isCancelled else { return }
+        if announced {
+            ended(bytes.failureReason)
+        } else {
+            ready(.failure(bytes.failureReason ?? PlaybackFailure.unreadable))
+        }
+    }
+
+    /// Looks at the first bytes, opens FFmpeg and picks the streams. HLS at
+    /// a raw-looking address goes to Apple's player; a web page is not a
+    /// stream.
+    private func prepare() -> Result<Prepared, any Error> {
         let bytes = self.bytes
+        switch StreamSniff(bytes.peek(512)) {
+        case .hls: return .failure(EngineHandoff.toSystemPlayer)
+        case .html: return .failure(PlaybackFailure.unreadable)
+        case .mpegTS, .other: break
+        }
         let demuxer: Demuxer
         do {
             demuxer = try Demuxer(read: { bytes.read(into: $0, count: $1) })
         } catch {
-            if !isCancelled { ready(.failure(bytes.failureReason ?? PlaybackFailure.unreadable)) }
-            return
+            return .failure(bytes.failureReason ?? PlaybackFailure.unreadable)
         }
-        defer { demuxer.close() }
         let video = demuxer.streams.first { $0.kind == .video }
         let audio = demuxer.streams.first { $0.kind == .audio }
-        let videoBuilder: SampleBuilder?
-        let audioBuilder: SampleBuilder?
-        do {
-            videoBuilder = try video.map(SampleBuilder.init)
-        } catch {
-            ready(.failure(PlaybackFailure.cannotDecode(codec: video?.codec ?? "video")))
-            return
+        guard let videoBuilder = Result(catching: { try video.map(SampleBuilder.init) }).success else {
+            demuxer.close()
+            return .failure(PlaybackFailure.cannotDecode(codec: video?.codec ?? "video"))
         }
-        audioBuilder = audio.flatMap { try? SampleBuilder(stream: $0) }
+        let audioBuilder = audio.flatMap { try? SampleBuilder(stream: $0) }
         guard videoBuilder != nil || audioBuilder != nil else {
-            ready(.failure(audio.map { PlaybackFailure.cannotDecode(codec: $0.codec) } ?? PlaybackFailure.unreadable))
-            return
+            demuxer.close()
+            return .failure(audio.map { PlaybackFailure.cannotDecode(codec: $0.codec) } ?? PlaybackFailure.unreadable)
         }
+        return .success(Prepared(demuxer: demuxer, video: videoBuilder, audio: audioBuilder))
+    }
 
+    /// Reads packets into the feeds until the end or `cancel`, calling
+    /// `ready` once the first picture (and, within half a second of stream,
+    /// the first sound) is queued. Returns whether it did.
+    private func pump(_ prepared: Prepared, ready: @Sendable (Result<DemuxStart, any Error>) -> Void) -> Bool {
         var startTime: CMTime?
         var heldSound: [CMSampleBuffer] = []
         var announced = false
-        while !isCancelled, let packet = demuxer.nextPacket() {
-            if packet.streamIndex == video?.index, let videoBuilder {
+        while !isCancelled, let packet = prepared.demuxer.nextPacket() {
+            if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
                 if startTime == nil, !packet.isKeyframe { continue }
-                guard let buffer = try? videoBuilder.sampleBuffer(for: packet) else { continue }
+                guard let buffer = try? builder.sampleBuffer(for: packet) else { continue }
                 if startTime == nil {
-                    startTime = CMSampleBufferGetPresentationTimeStamp(buffer)
-                    for sound in heldSound where startTime.map({ sampleTime(sound) >= $0 }) ?? false {
-                        audioFeed.push(sound)
-                    }
+                    let first = CMSampleBufferGetPresentationTimeStamp(buffer)
+                    startTime = first
+                    heldSound.filter { sampleTime($0) >= first }.forEach { audioFeed.push($0) }
                     heldSound = []
                 }
                 guard videoFeed.push(buffer) else { break }
-            } else if packet.streamIndex == audio?.index, let audioBuilder {
-                guard let buffer = try? audioBuilder.sampleBuffer(for: packet) else { continue }
-                if videoBuilder != nil, startTime == nil {
+            } else if packet.streamIndex == prepared.audio?.stream.index, let builder = prepared.audio {
+                guard let buffer = try? builder.sampleBuffer(for: packet) else { continue }
+                if prepared.video != nil, startTime == nil {
                     heldSound.append(buffer)
                     if heldSound.count > 200 { heldSound.removeFirst() }
                     continue
                 }
-                if startTime == nil { startTime = CMSampleBufferGetPresentationTimeStamp(buffer) }
+                if startTime == nil { startTime = sampleTime(buffer) }
                 guard audioFeed.push(buffer) else { break }
             }
-            // Wait for the first sound too (in MPEG-TS it can follow the
-            // first keyframe), so the format reported includes it, but no
-            // more than half a second of stream.
+            // In MPEG-TS the first sound can follow the first keyframe.
             let waited = startTime.map { CMTimeSubtract(packet.decodeTime, $0).seconds > 0.5 } ?? false
-            let soundKnown = audioBuilder == nil || audioBuilder?.formatDescription != nil || waited
+            let soundKnown = prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
             if !announced, let startTime, soundKnown {
                 announced = true
-                let picture = videoBuilder?.formatDescription.map(CMVideoFormatDescriptionGetDimensions)
-                let sound = audioBuilder?.formatDescription
-                    .flatMap(CMAudioFormatDescriptionGetStreamBasicDescription)
-                    .map { Int($0.pointee.mChannelsPerFrame) }
-                ready(
-                    .success(
-                        DemuxStart(
-                            format: demuxer.format, streams: demuxer.streams, video: videoBuilder.map(\.stream),
-                            audio: audioBuilder.map(\.stream), startTime: startTime, duration: demuxer.duration,
-                            pictureSize: picture, soundChannels: sound ?? audioBuilder?.stream.channels ?? 0)))
+                ready(.success(describe(prepared, startTime: startTime)))
             }
         }
-        guard !isCancelled else { return }
-        if !announced {
-            ready(.failure(bytes.failureReason ?? PlaybackFailure.unreadable))
-        } else {
-            ended(bytes.failureReason)
-        }
+        return announced
+    }
+
+    private func describe(_ prepared: Prepared, startTime: CMTime) -> DemuxStart {
+        let picture = prepared.video?.formatDescription.map(CMVideoFormatDescriptionGetDimensions)
+        let sound = prepared.audio?.formatDescription
+            .flatMap(CMAudioFormatDescriptionGetStreamBasicDescription)
+            .map { Int($0.pointee.mChannelsPerFrame) }
+        return DemuxStart(
+            format: prepared.demuxer.format, streams: prepared.demuxer.streams, video: prepared.video?.stream,
+            audio: prepared.audio?.stream, startTime: startTime, duration: prepared.demuxer.duration,
+            pictureSize: picture, soundChannels: sound ?? prepared.audio?.stream.channels ?? 0)
     }
 
     private func sampleTime(_ buffer: CMSampleBuffer) -> CMTime {
@@ -168,5 +197,13 @@ private final class Once<Value: Sendable>: @unchecked Sendable {
             return self.handler
         }
         handler?(value)
+    }
+}
+
+extension Result {
+    /// The success value, nil for a failure.
+    fileprivate var success: Success? {
+        if case .success(let value) = self { return value }
+        return nil
     }
 }
