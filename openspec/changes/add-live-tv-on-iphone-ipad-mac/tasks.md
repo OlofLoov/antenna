@@ -2,8 +2,8 @@
 
 ## 1. Layouts
 
-- [ ] 1.1 Build the three-column iPad and Mac layout with folding at 904 and 672 pt and the "Select a channel" state, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/sidebar-list-and-picture-side-by-side`
-- [ ] 1.2 Build the iPhone and narrow Split View layout with the pinned picture, now-playing line, chips and tab bar, keeping playback across size changes, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone`
+- [x] 1.1 Build the three-column iPad and Mac layout with folding at 904 and 672 pt and the "Select a channel" state, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/sidebar-list-and-picture-side-by-side`
+- [x] 1.2 Build the iPhone and narrow Split View layout with the pinned picture, now-playing line, chips and tab bar, keeping playback across size changes, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone`
 - [x] 1.3 Remove the iOS and macOS Channels and Favorites tabs and the separate full-screen player
 
 ## 2. Groups, list and filter

@@ -10,12 +10,15 @@
         @Environment(\.guideStore) private var guideStore
         @State private var live: LiveModel?
         @State private var lifecycle: PlaybackLifecycle?
+        #if os(iOS)
+            @Environment(\.horizontalSizeClass) private var sizeClass
+        #endif
 
         var body: some View {
             ZStack {
                 Palette.ground.ignoresSafeArea()
                 if let live {
-                    CompactTabs()
+                    layout
                         .modifier(LiveSync(live: live))
                 }
             }
@@ -32,6 +35,28 @@
             }
         }
 
+        /// The tab bar on iPhone and in a narrow iPad window, the columns on
+        /// a wider iPad window and on Mac. Both read the same model.
+        @ViewBuilder private var layout: some View {
+            #if os(iOS)
+                if sizeClass == .compact || forcedCompact {
+                    CompactTabs()
+                } else {
+                    LiveRegularView()
+                }
+            #else
+                LiveRegularView()
+            #endif
+        }
+
+        private var forcedCompact: Bool {
+            #if DEBUG
+                UITestingLive.Layout.shared.compact
+            #else
+                false
+            #endif
+        }
+
         private func dependencies() -> LiveModel.Dependencies {
             #if DEBUG
                 if let scripted = UITestingLive.dependencies() { return scripted }
@@ -40,7 +65,7 @@
         }
     }
 
-    /// The tab bar on iPhone: Live, Guide, Movies, Search and Settings. Series
+    /// The tab bar on iPhone and in a narrow iPad window: Live, Guide, Movies, Search and Settings. Series
     /// sits inside Movies.
     private struct CompactTabs: View {
         enum Tab: Hashable { case live, guide, movies, search, settings }

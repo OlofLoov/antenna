@@ -53,6 +53,8 @@
     /// highlighted (live-tv-on-iphone-ipad-mac/pick-a-group). Each row says
     /// what is on now.
     struct LiveChannelList: View {
+        /// Called after a row is picked.
+        var picked: () -> Void = {}
         @Environment(LiveModel.self) private var live
 
         var body: some View {
@@ -93,6 +95,7 @@
                 isPlaying: isPlaying
             ) {
                 live.pick(channel)
+                picked()
             } logo: {
                 Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: isPlaying)
             }
