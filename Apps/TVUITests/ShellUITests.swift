@@ -82,8 +82,10 @@ final class ShellUITests: XCTestCase {
     }
 
     /// The channel overlay's rows in the shown group, top to bottom.
+    /// Only the rows themselves: their logo, progress and catch-up parts
+    /// share the prefix.
     func overlayRows() -> XCUIElementQuery {
-        elements(prefix: "overlay.channel.")
+        app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "overlay.channel."))
     }
 
     /// The `channels` scenario with its first channel playing full screen

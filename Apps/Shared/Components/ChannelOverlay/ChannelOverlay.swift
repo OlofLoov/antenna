@@ -207,15 +207,22 @@ enum ChannelOverlay {
         }
     }
 
-    /// Number, logo tile, name, and the programme part under it (one row
-    /// anatomy, design-system/channel-rows-share-one-anatomy). 92 tall, 100
-    /// when focused.
-    struct ChannelRow<Logo: View, Programme: View>: View {
+    /// Number, logo tile, name with the programme title on the same line,
+    /// the progress bar under them, and the catch-up mark at the trailing
+    /// edge (design-system/channel-rows-share-one-anatomy). 92 tall, 100
+    /// when focused. The name keeps its room before the title gives way.
+    struct ChannelRow<Logo: View>: View {
         let number: Int?
         let name: String
+        /// The programme title or a state line such as "Loading guide…".
+        let detail: String
+        /// How far into the programme, 0 to 1; nil draws no bar.
+        let progress: Double?
+        let hasCatchUp: Bool
+        /// `overlay.channel.<rowKey>`; the parts add `.logo`, `.progress` and `.catchup`.
+        let identifier: String
         let select: () -> Void
         @ViewBuilder var logo: Logo
-        @ViewBuilder var programme: Programme
 
         var body: some View {
             Button(action: select) {
@@ -224,18 +231,88 @@ enum ChannelOverlay {
                     logo
                         .frame(width: 76, height: 50)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .accessibilityHidden(true)
+                        .accessibilityIdentifier("\(identifier).logo")
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(name)
-                            .font(.system(size: 29))
-                            .lineLimit(1)
-                            .layoutPriority(1)
-                        programme
+                        HStack(alignment: .firstTextBaseline, spacing: 16) {
+                            Text(name)
+                                .font(.system(size: 29))
+                                .lineLimit(1)
+                                .layoutPriority(1)
+                            Spacer(minLength: 0)
+                            DetailText(text: detail)
+                        }
+                        if let progress {
+                            ProgressBar(fraction: progress)
+                                .accessibilityIdentifier("\(identifier).progress")
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    if hasCatchUp {
+                        CatchUpMark()
+                            .accessibilityIdentifier("\(identifier).catchup")
+                    }
                 }
             }
             .buttonStyle(RowStyle())
+        }
+    }
+
+    private struct DetailText: View {
+        let text: String
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            Text(text)
+                .font(.system(size: 22))
+                .lineLimit(1)
+                .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
+        }
+    }
+
+    /// The 4 pt accent bar under a row's name (design-system/a-current-programme-always-shows-its-progress).
+    struct ProgressBar: View {
+        let fraction: Double
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(isFocused ? Color.black.opacity(0.12) : Palette.surface(0.16))
+                    Capsule().fill(Palette.accent)
+                        .frame(width: proxy.size.width * min(1, max(0, fraction)))
+                }
+            }
+            .frame(height: 4)
+            .accessibilityElement()
+            .accessibilityValue("\(Int((fraction * 100).rounded())) percent")
+        }
+    }
+
+    /// The clock-with-arrow glyph for a channel with catch-up.
+    private struct CatchUpMark: View {
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.system(size: 24))
+                .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
+                .accessibilityLabel("Catch-up")
+        }
+    }
+
+    /// The muted 26 pt line centered in the channel column when the group
+    /// has no channels; it takes no focus.
+    struct EmptyGroup: View {
+        let text: String
+
+        var body: some View {
+            Text(text)
+                .font(.system(size: 26))
+                .foregroundStyle(Palette.textMuted)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityIdentifier("overlay.emptyGroup")
         }
     }
 
@@ -294,6 +371,20 @@ enum ChannelOverlay {
 
 // MARK: Previews
 
+private struct PreviewRow {
+    let name: String
+    let detail: String
+    let progress: Double?
+}
+
+private let previewRows = [
+    PreviewRow(name: "Eurosport 1", detail: "Tennis: Paris Masters", progress: 0.35),
+    PreviewRow(name: "Eurosport 2", detail: "Cycling highlights", progress: 0.8),
+    PreviewRow(name: "Sport One", detail: "Premier League: Arsenal v Liverpool", progress: 0.78),
+    PreviewRow(name: "Sport Two", detail: "No programme information", progress: nil),
+    PreviewRow(name: "Arena HD", detail: "Loading guide…", progress: nil),
+]
+
 private struct OverlayPreview: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -310,11 +401,12 @@ private struct OverlayPreview: View {
                 }
             } channels: {
                 ChannelOverlay.ChannelColumn(title: "Sport", order: "Sorted by number") {
-                    ForEach(Array(["Eurosport 1", "Eurosport 2", "Sport One", "Sport Two"].enumerated()), id: \.offset) { index, name in
-                        ChannelOverlay.ChannelRow(number: 101 + index, name: name, select: {}) {
-                            ChannelOverlay.Initials(text: String(name.prefix(2)).uppercased())
-                        } programme: {
-                            EmptyView()
+                    ForEach(Array(previewRows.enumerated()), id: \.offset) { index, row in
+                        ChannelOverlay.ChannelRow(
+                            number: 101 + index, name: row.name, detail: row.detail, progress: row.progress, hasCatchUp: index == 2,
+                            identifier: "overlay.channel.\(index)", select: {}
+                        ) {
+                            ChannelOverlay.Initials(text: String(row.name.prefix(2)).uppercased())
                         }
                     }
                 }
@@ -331,23 +423,19 @@ private struct OverlayPreview: View {
     OverlayPreview()
 }
 
-#Preview("Channel overlay, Favorites in your order", traits: .fixedLayout(width: 1920, height: 1080)) {
+#Preview("Channel overlay, Favorites empty", traits: .fixedLayout(width: 1920, height: 1080)) {
     ZStack(alignment: .topLeading) {
         Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255)
         ChannelOverlay.Layout {
             ChannelOverlay.GroupColumn {
-                ChannelOverlay.GroupRow(title: "Favorites", systemImage: "star", count: 2, look: .selected) {}
+                ChannelOverlay.GroupRow(title: "Favorites", systemImage: "star", count: 0, look: .selected) {}
                 ChannelOverlay.GroupRow(title: "All channels", count: 12, look: .plain) {}
             } search: {
                 ChannelOverlay.SearchRow {}
             }
         } channels: {
             ChannelOverlay.ChannelColumn(title: "Favorites", order: "Your order") {
-                ChannelOverlay.ChannelRow(number: 7, name: "News 24", select: {}) {
-                    ChannelOverlay.Initials(text: "N2")
-                } programme: {
-                    EmptyView()
-                }
+                ChannelOverlay.EmptyGroup(text: "No favorites yet. Press the star on a channel to add it.")
             }
         } panel: {
             EmptyView()

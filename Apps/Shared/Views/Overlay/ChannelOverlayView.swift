@@ -9,6 +9,7 @@
     struct ChannelOverlayView: View {
         let catalogue: Catalogue<PersistentIdentifier>
         let playing: Channel?
+        let guide: OverlayGuide
         let model: ChannelOverlayModel
         let focus: FocusState<ShellFocus?>.Binding
         /// A channel was selected in the shown group.
@@ -37,7 +38,11 @@
                 .focusSection()
             } channels: {
                 ChannelOverlay.ChannelColumn(title: model.group.label, order: model.group.order) {
-                    rows
+                    if let empty = model.emptyText(catalogue) {
+                        ChannelOverlay.EmptyGroup(text: empty)
+                    } else {
+                        rows
+                    }
                 }
                 .focusSection()
             } panel: {
@@ -52,10 +57,13 @@
         private var rows: some View {
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 4) {
-                        ForEach(catalogue.rows(in: model.group), id: \.self) { key in
-                            if let channel = catalogue.channel(for: key) {
-                                row(key, channel)
+                    // Rows move on to the next programme at the minute it starts.
+                    TimelineView(.everyMinute) { context in
+                        LazyVStack(alignment: .leading, spacing: 4) {
+                            ForEach(catalogue.rows(in: model.group), id: \.self) { key in
+                                if let channel = catalogue.channel(for: key) {
+                                    row(key, channel, line: guide.line(for: channel, at: context.date))
+                                }
                             }
                         }
                     }
@@ -67,18 +75,31 @@
             }
         }
 
-        private func row(_ key: RowKey, _ channel: Channel) -> some View {
-            ChannelOverlay.ChannelRow(number: catalogue.number(for: key), name: channel.name) {
+        private func row(_ key: RowKey, _ channel: Channel, line: GuideLine) -> some View {
+            let number = catalogue.number(for: key)
+            let progress: Double?
+            let remaining: String?
+            switch line {
+            case .programme(_, let fraction, let left):
+                progress = fraction
+                remaining = left
+            case .message:
+                progress = nil
+                remaining = nil
+            }
+            let identifier = "overlay.channel.\(key.identifier)"
+            return ChannelOverlay.ChannelRow(
+                number: number, name: channel.name, detail: line.text, progress: progress, hasCatchUp: channel.catchUpBadge != nil,
+                identifier: identifier
+            ) {
                 pick(channel, model.group)
             } logo: {
                 logo(channel)
-            } programme: {
-                EmptyView()
             }
             .focused(focus, equals: .overlay(.channel(key)))
             .id(key)
-            .accessibilityIdentifier("overlay.channel.\(key.identifier)")
-            .accessibilityLabel([catalogue.number(for: key).map(String.init), channel.name].compactMap(\.self).joined(separator: ", "))
+            .accessibilityIdentifier(identifier)
+            .accessibilityLabel([number.map(String.init), channel.name, line.text, remaining].compactMap(\.self).joined(separator: ", "))
         }
 
         @ViewBuilder private func logo(_ channel: Channel) -> some View {

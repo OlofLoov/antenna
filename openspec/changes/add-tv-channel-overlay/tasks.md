@@ -10,8 +10,8 @@
 
 - [x] 2.1 List Favorites, All channels, every group with its count and a Search entry, updating in place, and verify with a UI test citing `tv-channel-overlay/every-group-with-its-size`
 - [x] 2.2 Show the highlighted group's channels under a heading with name and sort order, and verify with a UI test citing `tv-channel-overlay/picking-a-group-shows-its-channels`
-- [ ] 2.3 Build channel rows with number, logo or initials, name, current programme with progress, catch-up mark and the no-guide and loading states, and verify with a UI test citing `tv-channel-overlay/each-channel-shows-what-is-on`
-- [ ] 2.4 Show the empty Favorites and All channels explanations and keep focus out of the empty column, and verify with a UI test citing `tv-channel-overlay/empty-groups-tell-the-user-what-to-do`
+- [x] 2.3 Build channel rows with number, logo or initials, name, current programme with progress, catch-up mark and the no-guide and loading states, and verify with a UI test citing `tv-channel-overlay/each-channel-shows-what-is-on`
+- [x] 2.4 Show the empty Favorites and All channels explanations and keep focus out of the empty column, and verify with a UI test citing `tv-channel-overlay/empty-groups-tell-the-user-what-to-do`
 
 ## 3. Now-and-next panel
 

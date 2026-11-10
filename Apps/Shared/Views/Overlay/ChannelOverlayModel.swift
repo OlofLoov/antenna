@@ -54,6 +54,17 @@
             return rows.first
         }
 
+        /// The line the channel column shows when the shown group has no
+        /// channels (tv-channel-overlay/empty-groups-tell-the-user-what-to-do),
+        /// nil while it has some.
+        func emptyText<Token>(_ catalogue: Catalogue<Token>) -> String? {
+            guard catalogue.rows(in: group).isEmpty else { return nil }
+            switch group {
+            case .favorites: return "No favorites yet. Press the star on a channel to add it."
+            case .all, .named, .ungrouped: return "No channels yet. Add a source in Settings."
+            }
+        }
+
         /// The channels or favorites changed while the overlay is open
         /// (tv-channel-overlay/every-group-with-its-size). A group that is gone
         /// shows All channels; the highlight stays on `focused` while it

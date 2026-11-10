@@ -65,10 +65,43 @@
             ]
         }
 
+        /// b1 offers seven days of catch-up; the others none.
         static func channel(_ id: String) -> Channel {
-            Channel(id: "fixture/\(id)", name: "Channel \(id)", streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"))
+            Channel(
+                id: "fixture/\(id)", name: "Channel \(id)", streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"),
+                hasCatchup: id == "b1", catchupDays: id == "b1" ? 7 : nil)
         }
     }
+
+    #if os(tvOS)
+        extension UITestingShell {
+            /// When the app launched, so the scripted programmes are on now.
+            @MainActor static let launched = Date.now
+
+            /// A scripted guide for the shell's UI tests, or nil outside them:
+            /// a1 and b1 have a programme on now, a2's guide is still loading
+            /// and a3 has none.
+            @MainActor
+            static func guide() -> OverlayGuide? {
+                guard scenario() != nil else { return nil }
+                return OverlayGuide(
+                    state: { channel in channel.id == "fixture/a2" ? .loading : .loaded },
+                    current: { channel, _ in
+                        let title: String? =
+                            switch channel.id {
+                            case "fixture/a1": "Morning News"
+                            case "fixture/b1": "Evening Film"
+                            default: nil
+                            }
+                        return title.map {
+                            Programme(
+                                channelID: channel.id, start: launched.addingTimeInterval(-1800), stop: launched.addingTimeInterval(1800),
+                                title: $0)
+                        }
+                    })
+            }
+        }
+    #endif
 
     #if os(tvOS)
         extension UITestingShell {
