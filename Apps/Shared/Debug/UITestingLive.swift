@@ -97,25 +97,37 @@
                 programmes: guide)
         }
 
-        /// News One has a programme on now and four after it, News Two's
-        /// guide is still loading, the rest have none.
+        /// News One has a programme on now and four after it. Sport One's
+        /// First Half ends 15 seconds after launch and Second Half follows.
+        /// News Two's guide is still loading, the rest have none.
         @MainActor static var guide: OverlayGuide {
             OverlayGuide(
                 state: { channel in channel.id == "fixture/news-two" ? .loading : .loaded },
-                current: { channel, _ in
-                    guard channel.id == "fixture/news-one" else { return nil }
-                    return Programme(
-                        channelID: channel.id, start: launched.addingTimeInterval(-1800), stop: launched.addingTimeInterval(1800),
-                        title: "Morning News", summary: "Headlines and weather.")
-                },
-                next: { channel, _, count in
-                    guard channel.id == "fixture/news-one" else { return [] }
-                    let titles = ["Weather", "Business", "Sport Tonight", "Late Film"]
-                    return zip(titles.indices, titles).prefix(count).map { index, title in
+                current: { channel, date in programmes(for: channel).first { $0.start <= date && date < $0.stop } },
+                next: { channel, date, count in Array(programmes(for: channel).filter { $0.start >= date }.prefix(count)) })
+        }
+
+        @MainActor private static func programmes(for channel: Channel) -> [Programme] {
+            switch channel.id {
+            case "fixture/news-one":
+                let morning = Programme(
+                    channelID: channel.id, start: launched.addingTimeInterval(-1800), stop: launched.addingTimeInterval(1800),
+                    title: "Morning News", summary: "Headlines and weather.")
+                let titles = ["Weather", "Business", "Sport Tonight", "Late Film"]
+                return [morning]
+                    + zip(titles.indices, titles).map { index, title in
                         let start = launched.addingTimeInterval(1800 + Double(index) * 1800)
                         return Programme(channelID: channel.id, start: start, stop: start.addingTimeInterval(1800), title: title)
                     }
-                })
+            case "fixture/sport-one":
+                let change = launched.addingTimeInterval(15)
+                return [
+                    Programme(channelID: channel.id, start: launched.addingTimeInterval(-600), stop: change, title: "First Half"),
+                    Programme(channelID: channel.id, start: change, stop: change.addingTimeInterval(3600), title: "Second Half"),
+                ]
+            default:
+                return []
+            }
         }
 
         /// Records what Live asks of the player.

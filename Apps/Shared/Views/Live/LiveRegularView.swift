@@ -247,40 +247,27 @@
         }
     }
 
-    /// The details panel for the playing channel, refreshed each minute.
+    /// The details panel for the playing channel, with up to three
+    /// programmes after the current one.
     struct LiveDetails: View {
         let channel: Channel
         @Environment(LiveModel.self) private var live
 
         var body: some View {
-            TimelineView(.everyMinute) { context in
-                let panel = live.programmes.panel(for: channel, at: context.date)
-                let number = RowKey(channel).flatMap(live.catalogue.number(for:))
-                Browse.Panel(channel: channel.name, now: now(panel, number: number), next: panel.next.map(Self.next)) {
+            TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                let text = live.nowText(for: channel, at: context.date)
+                Browse.Panel(
+                    channel: channel.name,
+                    now: .init(
+                        title: text.title, times: text.times, meta: text.meta, summary: text.summary,
+                        progress: text.progress),
+                    next: text.next.map { .init(time: LiveModel.time($0.start), title: $0.title) }
+                ) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 } trailing: {
                     EmptyView()
                 }
             }
-        }
-
-        private func now(_ panel: OverlayGuide.Panel, number: Int?) -> Browse.PanelNow {
-            var meta = [channel.name, number.map(String.init)].compactMap(\.self)
-            guard case .programme(let title, let progress, let remaining) = panel.line, let programme = panel.now else {
-                return .init(title: panel.line.text, meta: meta.joined(separator: " · "))
-            }
-            meta.append(remaining)
-            return .init(
-                title: title, times: "\(Self.time(programme.start)) – \(Self.time(programme.stop))", meta: meta.joined(separator: " · "),
-                summary: programme.summary, progress: progress)
-        }
-
-        private static func next(_ programme: Programme) -> Browse.PanelNext {
-            .init(time: time(programme.start), title: programme.title)
-        }
-
-        private static func time(_ date: Date) -> String {
-            date.formatted(date: .omitted, time: .shortened)
         }
     }
 #endif

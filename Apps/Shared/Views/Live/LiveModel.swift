@@ -254,6 +254,19 @@ final class LiveModel {
         }
     }
 
+    /// What the now-playing line and the details say about `channel` at `date`.
+    func nowText(for channel: Channel, at date: Date) -> LiveNowText {
+        let panel = programmes.panel(for: channel, at: date)
+        return LiveNowText(
+            channel: channel.name, number: RowKey(channel).flatMap(catalogue.number(for:)), state: programmes.state(channel),
+            current: panel.now, next: panel.next, now: date, time: Self.time)
+    }
+
+    /// A programme's start or end in the user's locale.
+    static func time(_ date: Date) -> String {
+        date.formatted(date: .omitted, time: .shortened)
+    }
+
     private func stop() {
         playing = nil
         tuning?.cancel()

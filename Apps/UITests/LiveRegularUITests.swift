@@ -88,4 +88,28 @@ final class LiveRegularUITests: XCTestCase {
         let loaded = ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n")
         XCTAssertEqual(loaded, ["news-one.ts"])
     }
+
+    // live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next, up to three programmes next on iPad and Mac
+    func testTheDetailsListUpToThreeProgrammesNext() throws {
+        let app = try launch()
+        app.row(0).tap()
+
+        let next = app.element("browse.panel.next")
+        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        for title in ["Weather", "Business", "Sport Tonight"] {
+            XCTAssertTrue(next.staticTexts[title].exists, "\(title) is missing")
+        }
+        XCTAssertFalse(next.staticTexts["Late Film"].exists, "three at most")
+    }
+
+    // live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next, nothing in the guide
+    func testTheDetailsSayWhenTheGuideHasNothing() throws {
+        let app = try launch()
+        app.row(3).tap()
+
+        let now = app.element("browse.panel.now")
+        XCTAssertTrue(now.waitForExistence(timeout: 5))
+        XCTAssertTrue(now.label.hasPrefix("No programme information"), now.label)
+        XCTAssertFalse(app.element("browse.panel.next").exists)
+    }
 }
