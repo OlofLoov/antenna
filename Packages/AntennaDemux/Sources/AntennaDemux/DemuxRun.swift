@@ -65,6 +65,7 @@ final class DemuxRun: @unchecked Sendable {
     private var cancelled = false
     private var answer: Once<Result<DemuxStart, any Error>>?
     private var rateFound: (@Sendable (Double) -> Void)?
+    private var waitsForSound = true
 
     init(bytes: HTTPByteStream, videoFeed: SampleFeed, audioFeed: SampleFeed) {
         self.bytes = bytes
@@ -101,9 +102,11 @@ final class DemuxRun: @unchecked Sendable {
     func start(
         ready: @escaping @Sendable (Result<DemuxStart, any Error>) -> Void,
         rateFound: @escaping @Sendable (Double) -> Void = { _ in },
+        waitsForSound: Bool = true,
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
         self.rateFound = rateFound
+        self.waitsForSound = waitsForSound
         let answer = Once(ready)
         lock.withLock { self.answer = answer }
         let thread = Thread { [self] in
@@ -216,7 +219,7 @@ final class DemuxRun: @unchecked Sendable {
             }
             // In MPEG-TS the first sound can follow the first keyframe.
             let waited = state.startTime.map { CMTimeSubtract(packet.decodeTime, $0).seconds > 0.5 } ?? false
-            let soundKnown = prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
+            let soundKnown = !waitsForSound || prepared.audio == nil || prepared.audio?.formatDescription != nil || waited
             if !state.announced, let startTime = state.startTime, soundKnown {
                 state.announced = true
                 let interlaced = state.fields.map { $0.sawFields || $0.isInterlacedBySPS } ?? false

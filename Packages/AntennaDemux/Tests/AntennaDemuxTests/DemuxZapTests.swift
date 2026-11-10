@@ -35,6 +35,20 @@ import Testing
         await harness.stop()
     }
 
+    @Test("playback-engine/channel-switching-is-fast while scanning, format reports wait until the user settles")
+    func scanningHoldsBackTheFormat() async throws {
+        let harness = try await ZapHarness()
+        let presentation = Recorded(await harness.engine.presentation())
+        harness.engine.setScanning(true)
+        try await harness.engine.load(harness.url("channel.ts"))
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(presentation.values.allSatisfy { $0 == nil })
+        harness.engine.setScanning(false)
+        #expect(await eventually { presentation.values.last??.video?.width == 320 })
+        presentation.cancel()
+        await harness.stop()
+    }
+
     @Test("playback-engine/channel-switching-is-fast a channel dropped from the list is closed")
     func droppedFromTheListCloses() async throws {
         let harness = try await ZapHarness()
