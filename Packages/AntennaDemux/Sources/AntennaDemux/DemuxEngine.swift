@@ -32,7 +32,7 @@ public final class DemuxEngine: PlaybackEngine {
 
     let session: URLSession
     private let sleep: @Sendable (Duration) async throws -> Void
-    private let log: @Sendable (String) -> Void
+    let log: @Sendable (String) -> Void
     private let firstFrameTimeout: Duration
 
     let stateCast = Broadcast(PlaybackState.idle)
@@ -40,6 +40,11 @@ public final class DemuxEngine: PlaybackEngine {
     let tracksCast = Broadcast(TrackList.empty)
     private let positionCast = Broadcast(PlaybackPosition.zero)
     private let cuesCast = Broadcast([SubtitleCue]())
+
+    /// Whether the audio renderer runs the clock; false after it stalled.
+    var audioOnClock = true
+    /// The clock's last reading and since when it has stood there.
+    var clockCheck: (time: CMTime, since: ContinuousClock.Instant)?
 
     struct Current {
         let run: DemuxRun
@@ -253,6 +258,7 @@ public final class DemuxEngine: PlaybackEngine {
         current?.start = start
         isLive = options.isLive ?? (start.duration == nil)
         videoLayer.isHidden = start.video == nil
+        restoreAudioClock()
         synchronizer.setRate(wantsPlay ? 1 : 0, time: start.startTime)
         if !isScanning {
             publishFormat(start)
@@ -444,6 +450,7 @@ extension DemuxEngine {
     /// data stopped counts as dropped.
     private func tick() {
         guard var current, let start = current.start else { return }
+        watchClock(synchronizer.currentTime())
         let now = synchronizer.currentTime()
         let last = current.videoFeed.lastEnqueued.isValid ? current.videoFeed.lastEnqueued : current.audioFeed.lastEnqueued
         let starved = last.isValid && now >= last
