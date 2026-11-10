@@ -4,7 +4,7 @@
 
 - [ ] 1.1 Build the three-column iPad and Mac layout with folding at 904 and 672 pt and the "Select a channel" state, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/sidebar-list-and-picture-side-by-side`
 - [ ] 1.2 Build the iPhone and narrow Split View layout with the pinned picture, now-playing line, chips and tab bar, keeping playback across size changes, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone`
-- [ ] 1.3 Remove the iOS and macOS Channels and Favorites tabs and the separate full-screen player
+- [x] 1.3 Remove the iOS and macOS Channels and Favorites tabs and the separate full-screen player
 
 ## 2. Groups, list and filter
 
@@ -14,7 +14,7 @@
 
 ## 3. Playing in place
 
-- [ ] 3.1 Play a picked channel in place without restarting the playing one, and verify with a UI test on the fake engine citing `live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list`
+- [x] 3.1 Play a picked channel in place without restarting the playing one, and verify with a UI test on the fake engine citing `live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list`
 - [ ] 3.2 Show now and next in the details and the now-playing line, refreshing when a programme ends, and verify with core and UI tests citing `live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next`
 - [ ] 3.3 Show and hide the player controls and place the Picture in Picture button on iPhone and iPad, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them`
 - [ ] 3.4 Enter and leave full screen from the button and iPhone rotation, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/full-screen`
