@@ -58,9 +58,10 @@ import Testing
         return "http://\(host)/list.m3u"
     }
 
-    private func load(credentials: any CredentialStoring) async throws -> ChannelListModel {
-        let model = ChannelListModel()
-        await model.load(try descriptors(), using: SourceLoader(session: StubURLProtocol.session(), credentials: credentials))
+    private func load(credentials: any CredentialStoring) async throws -> LiveModel {
+        let model = LiveModel(.live(loader: SourceLoader(session: StubURLProtocol.session(), credentials: credentials), guide: nil))
+        model.sourcesChanged(try descriptors())
+        await model.settled()
         return model
     }
 
@@ -305,7 +306,7 @@ import Testing
             let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
             let window = UIWindow(windowScene: scene)
             window.rootViewController = UIHostingController(
-                rootView: ChannelsView().modelContainer(container).environment(\.sourceLoader, loader))
+                rootView: RootView().modelContainer(container).environment(\.sourceLoader, loader))
             window.makeKeyAndVisible()
             defer { window.isHidden = true }
 
@@ -367,7 +368,8 @@ extension SourceManagementTests {
         let model = try await load(credentials: store)
         #expect(model.channels.count == 2)
 
-        await model.load([], using: SourceLoader(session: StubURLProtocol.session(), credentials: store))
+        model.sourcesChanged([])
+        await model.settled()
 
         #expect(model.channels.isEmpty)
         #expect(model.error == nil)
@@ -378,10 +380,12 @@ extension SourceManagementTests {
         let host = "unchanged.test"
         _ = try insert(.m3u, url: twoChannelPlaylist(host: host), sortOrder: 0)
         let loader = SourceLoader(session: StubURLProtocol.session(), credentials: store)
-        let model = ChannelListModel()
+        let model = LiveModel(.live(loader: loader, guide: nil))
 
-        await model.load(try descriptors(), using: loader)
-        await model.load(try descriptors(), using: loader)
+        model.sourcesChanged(try descriptors())
+        await model.settled()
+        model.sourcesChanged(try descriptors())
+        await model.settled()
 
         #expect(StubURLProtocol.requests(host: host).count == 1)
         #expect(model.channels.count == 2)
@@ -391,11 +395,13 @@ extension SourceManagementTests {
     func changedSourceReloads() async throws {
         let record = try insert(.m3u, url: twoChannelPlaylist(host: "before.test"), sortOrder: 0)
         let loader = SourceLoader(session: StubURLProtocol.session(), credentials: store)
-        let model = ChannelListModel()
-        await model.load(try descriptors(), using: loader)
+        let model = LiveModel(.live(loader: loader, guide: nil))
+        model.sourcesChanged(try descriptors())
+        await model.settled()
 
         record.url = URL(string: twoChannelPlaylist(host: "after.test"))
-        await model.load(try descriptors(), using: loader)
+        model.sourcesChanged(try descriptors())
+        await model.settled()
 
         #expect(model.channels.map(\.name) == ["after.test one", "after.test two"])
     }

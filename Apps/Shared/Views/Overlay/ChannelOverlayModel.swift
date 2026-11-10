@@ -153,46 +153,4 @@
             return nil
         }
     }
-
-    extension CatalogueGroup {
-        /// The name the group column and the channel heading show.
-        var label: String {
-            switch self {
-            case .favorites: "Favorites"
-            case .all: "All channels"
-            case .named(_, let name): name
-            case .ungrouped: "Ungrouped"
-            }
-        }
-
-        /// How the channel column is sorted, under its heading.
-        var order: String {
-            self == .favorites ? "Your order" : "Sorted by number"
-        }
-
-        var systemImage: String? {
-            self == .favorites ? "star" : nil
-        }
-    }
-
-    extension RowKey {
-        /// The row's part of `overlay.channel.<rowKey>`: its source and
-        /// position, never the channel id, which can hold the stream link.
-        var identifier: String { "\(sourceID.uuidString).\(position)" }
-    }
-#endif
-
-#if os(tvOS)
-    import SwiftData
-
-    extension Catalogue where Token == PersistentIdentifier {
-        /// The shell's catalogue: its channels in source order, groups in
-        /// first-appearance order, and the stored favorites.
-        static func shell(channels: [Channel], favorites: [FavoriteRecord]) -> Self {
-            let snapshots = favorites.map {
-                FavoriteSnapshot(channelID: $0.channelID, sourceID: $0.sourceID, sortOrder: $0.sortOrder, recordToken: $0.persistentModelID)
-            }
-            return Catalogue(channels: channels, groupOrder: [:], favorites: snapshots)
-        }
-    }
 #endif

@@ -95,9 +95,10 @@ import Testing
         StubURLProtocol.register(host: "ac13-guide.test", body: Self.guide)
         let record = try insert(.m3u, url: "http://ac13-list.test/list.m3u")
         let guide = store()
-        let model = ChannelListModel()
+        let model = LiveModel(.live(loader: SourceLoader(session: StubURLProtocol.session()), guide: guide))
 
-        await model.load([try #require(record.descriptor)], using: SourceLoader(session: StubURLProtocol.session()), guide: guide)
+        model.sourcesChanged([try #require(record.descriptor)])
+        await model.settled()
 
         let channel = try #require(model.channels.first)
         #expect(channel.sourceID == record.id)
