@@ -6,6 +6,12 @@ import AntennaCore
 // every property optional or defaulted, no @Attribute(.unique), relationships optional.
 // Credentials are NOT stored here; they go in the Keychain (iCloud Keychain syncs them).
 
+/// Every model the app stores. Every container uses this list, so a screen
+/// that queries one model never meets a container without it.
+enum AntennaSchema {
+    static let models: [any PersistentModel.Type] = [SourceRecord.self, FavoriteRecord.self, ProfileRecord.self]
+}
+
 @Model
 final class SourceRecord {
     var id: UUID = UUID()
@@ -45,10 +51,36 @@ final class FavoriteRecord {
     var sourceID: UUID?
     var addedAt: Date = Date.now
     var sortOrder: Int = 0
+    /// The profile the favorite belongs to; nil is the first profile, Main (profiles capability).
+    var profileID: UUID?
 
-    init(channelID: String, sourceID: UUID?, sortOrder: Int = 0) {
+    init(channelID: String, sourceID: UUID?, sortOrder: Int = 0, profileID: UUID? = nil) {
         self.channelID = channelID
         self.sourceID = sourceID
         self.sortOrder = sortOrder
+        self.profileID = profileID
+    }
+}
+
+/// One person's profile (profiles capability). Main has no record until a second
+/// profile is added. Duplicates by `id` keep the earliest `createdAt`.
+@Model
+final class ProfileRecord {
+    var id: UUID = UUID()
+    var name: String = ""
+    var colorIndex: Int = 0
+    var sortOrder: Int = 0
+    var createdAt: Date = Date.now
+
+    init(_ profile: Profile) {
+        id = profile.id
+        name = profile.name
+        colorIndex = profile.colorIndex
+        sortOrder = profile.sortOrder
+        createdAt = profile.createdAt
+    }
+
+    var profile: Profile {
+        Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: sortOrder, createdAt: createdAt)
     }
 }

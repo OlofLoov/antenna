@@ -12,7 +12,7 @@ import Testing
     let container: ModelContainer
 
     init() throws {
-        let schema = Schema([SourceRecord.self, FavoriteRecord.self])
+        let schema = Schema(AntennaSchema.models)
         container = try ModelContainer(
             for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
     }

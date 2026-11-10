@@ -39,7 +39,7 @@
         /// The seeded store, or nil when the app was not launched for these tests.
         static func container() -> ModelContainer? {
             guard scenario() != nil else { return nil }
-            let schema = Schema([SourceRecord.self, FavoriteRecord.self])
+            let schema = Schema(AntennaSchema.models)
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
             do {
                 let container = try ModelContainer(for: schema, configurations: [config])
