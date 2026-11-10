@@ -54,8 +54,6 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
                 condition.lock()
                 responseWaiter = continuation
-                var request = URLRequest(url: url)
-                if offset > 0 { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
                 let task = session.dataTask(with: request)
                 task.delegate = self
                 self.task = task
@@ -65,6 +63,34 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         } onCancel: {
             cancel()
         }
+    }
+
+    /// Starts the request and blocks until the headers arrive or it fails,
+    /// without Swift concurrency, for the demuxing thread: a seek must not
+    /// wait for a thread of the shared pool, which can all be busy. Returns
+    /// false for a refusal, a network error or a cancel.
+    func openBlocking() -> Bool {
+        guard (try? StreamAddress.check(url)) != nil else { return false }
+        condition.lock()
+        let task = session.dataTask(with: request)
+        task.delegate = self
+        self.task = task
+        condition.unlock()
+        task.resume()
+        condition.lock()
+        defer { condition.unlock() }
+        while response == nil, !finished, !cancelled {
+            condition.wait()
+        }
+        return response != nil && failure == nil && !cancelled
+    }
+
+    /// The request for this stream: the address, with a Range header from
+    /// `offset` on when it is past the start.
+    private var request: URLRequest {
+        var request = URLRequest(url: url)
+        if offset > 0 { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
+        return request
     }
 
     /// Copies up to `count` bytes into `destination`. Returns the number
@@ -169,6 +195,7 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         if let refusal { failure = refusal }
         let waiter = responseWaiter
         responseWaiter = nil
+        condition.broadcast()
         condition.unlock()
         if let refusal {
             waiter?.resume(throwing: refusal)
