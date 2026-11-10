@@ -1,0 +1,123 @@
+#if os(tvOS)
+    import AntennaCore
+    import Foundation
+    import Observation
+
+    /// Where the Apple TV channel overlay has focus.
+    enum OverlayFocus: Hashable {
+        case group(CatalogueGroup)
+        case channel(RowKey)
+        case search
+    }
+
+    /// Which group the channel overlay shows and where it opens
+    /// (tv-channel-overlay capability). Remembers the group the user last tuned from for
+    /// as long as the app runs.
+    @MainActor @Observable
+    final class ChannelOverlayModel {
+        /// The group whose channels the middle column shows.
+        private(set) var group: CatalogueGroup = .all
+        /// The group the user last tuned from, nil after a cold launch.
+        private(set) var lastTuned: CatalogueGroup?
+
+        /// Picks the group and the row to highlight when the overlay opens
+        /// (tv-channel-overlay/it-opens-where-the-user-left-off): the last
+        /// tuned group, else the playing channel's own group, else All
+        /// channels; the playing channel in it, else its first channel. A
+        /// playing channel the catalogue no longer has opens All channels.
+        func open<Token>(_ catalogue: Catalogue<Token>, playing: Channel?) -> OverlayFocus {
+            let key = playing.flatMap(RowKey.init)
+            let playingIsListed = key.flatMap(catalogue.channel(for:)) != nil
+            var chosen = lastTuned ?? playing.flatMap(catalogue.sourceGroup(of:)) ?? .all
+            if playing != nil, !playingIsListed { chosen = .all }
+            if !catalogue.groups.contains(chosen) { chosen = .all }
+            group = chosen
+            return highlight(in: catalogue, keeping: playingIsListed ? key : nil)
+        }
+
+        /// The highlight moved onto `group` in the group column.
+        func show(_ group: CatalogueGroup) {
+            self.group = group
+        }
+
+        /// A channel was tuned from `group`; the next open starts there.
+        func tuned(from group: CatalogueGroup) {
+            lastTuned = group
+        }
+
+        /// The row focus lands on when it moves into the channel column: the
+        /// playing channel when the group holds it, else the first row. Nil
+        /// for an empty group, so focus stays where it is.
+        func entry<Token>(_ catalogue: Catalogue<Token>, playing: Channel?) -> RowKey? {
+            let rows = catalogue.rows(in: group)
+            if let key = playing.flatMap(RowKey.init), rows.contains(key) { return key }
+            return rows.first
+        }
+
+        /// The channels or favorites changed while the overlay is open
+        /// (tv-channel-overlay/every-group-with-its-size). A group that is gone
+        /// shows All channels; the highlight stays on `focused` while it
+        /// exists, else moves to the group's first channel.
+        func catalogueChanged<Token>(_ catalogue: Catalogue<Token>, focused: OverlayFocus?) -> OverlayFocus? {
+            if !catalogue.groups.contains(group) { group = .all }
+            if let lastTuned, !catalogue.groups.contains(lastTuned) { self.lastTuned = nil }
+            switch focused {
+            case .channel(let key):
+                return highlight(in: catalogue, keeping: key)
+            case .group(let shown) where !catalogue.groups.contains(shown):
+                return .group(group)
+            case .group, .search, nil:
+                return focused
+            }
+        }
+
+        private func highlight<Token>(in catalogue: Catalogue<Token>, keeping key: RowKey?) -> OverlayFocus {
+            let rows = catalogue.rows(in: group)
+            if let key, rows.contains(key) { return .channel(key) }
+            if let first = rows.first { return .channel(first) }
+            return .group(group)
+        }
+    }
+
+    extension CatalogueGroup {
+        /// The name the group column and the channel heading show.
+        var label: String {
+            switch self {
+            case .favorites: "Favorites"
+            case .all: "All channels"
+            case .named(_, let name): name
+            case .ungrouped: "Ungrouped"
+            }
+        }
+
+        /// How the channel column is sorted, under its heading.
+        var order: String {
+            self == .favorites ? "Your order" : "Sorted by number"
+        }
+
+        var systemImage: String? {
+            self == .favorites ? "star" : nil
+        }
+    }
+
+    extension RowKey {
+        /// The row's part of `overlay.channel.<rowKey>`: its source and
+        /// position, never the channel id, which can hold the stream link.
+        var identifier: String { "\(sourceID.uuidString).\(position)" }
+    }
+#endif
+
+#if os(tvOS)
+    import SwiftData
+
+    extension Catalogue where Token == PersistentIdentifier {
+        /// The shell's catalogue: its channels in source order, groups in
+        /// first-appearance order, and the stored favorites.
+        static func shell(channels: [Channel], favorites: [FavoriteRecord]) -> Self {
+            let snapshots = favorites.map {
+                FavoriteSnapshot(channelID: $0.channelID, sourceID: $0.sourceID, sortOrder: $0.sortOrder, recordToken: $0.persistentModelID)
+            }
+            return Catalogue(channels: channels, groupOrder: [:], favorites: snapshots)
+        }
+    }
+#endif

@@ -19,7 +19,7 @@ extension ShellUITests {
 
         press(.select)
         XCTAssertTrue(element("overlay.channels").waitForExistence(timeout: 10))
-        let rows = app.cells
+        let rows = overlayRows()
         expect(rows.element(boundBy: 0), "hasFocus == true")
         press(.down, toFocus: rows.element(boundBy: 1), from: rows.element(boundBy: 0))
         press(.select)

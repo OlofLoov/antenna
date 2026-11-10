@@ -22,8 +22,8 @@
         case tab(ShellTab)
         case settings
         case content
-        /// A row of the channel picker that stands in for the channel overlay.
-        case picker(Int)
+        /// A group, channel or the Search entry in the channel overlay.
+        case overlay(OverlayFocus)
     }
 
     /// Where Menu was pressed.

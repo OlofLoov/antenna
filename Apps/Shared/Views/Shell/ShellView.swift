@@ -59,10 +59,13 @@
     private struct ShellScreen: View {
         @Bindable var model: ShellModel
         @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
+        @Query(sort: \FavoriteRecord.sortOrder) private var favorites: [FavoriteRecord]
         @FocusState private var focus: ShellFocus?
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @State private var zapBar = ZapBarModel()
+        @State private var overlay = ChannelOverlayModel()
+        @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
 
         init(model: ShellModel) {
             self.model = model
@@ -82,12 +85,18 @@
                 if model.dimmed { ShellScrim() }
                 if model.barVisible { bar }
                 if model.pickerOpen {
-                    ChannelPicker(channels: model.channels, focus: $focus) { channel in
-                        Task {
-                            await model.pick(channel)
-                            focus = .picture
-                        }
-                    }
+                    ChannelOverlayView(
+                        catalogue: catalogue, playing: model.tuned, model: overlay, focus: $focus,
+                        pick: { channel, group in
+                            overlay.tuned(from: group)
+                            Task {
+                                await model.pick(channel)
+                                focus = .picture
+                            }
+                        },
+                        openSearch: { Task { await model.show(.search) } }
+                    )
+                    .transition(reduceMotion ? .opacity : .move(edge: .leading))
                 }
                 #if DEBUG
                     UITestingShell.Probe(engine: model.engine)
@@ -97,11 +106,18 @@
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.barVisible)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.tab)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: zapBarShows)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.pickerOpen)
             .onExitCommand(perform: menu)
             .onPlayPauseCommand {
+                guard model.tab == .live, !model.barVisible else { return }
+                guard !model.pickerOpen else { return togglePlayback() }
                 // Play/pause in full-screen live TV shows the info bar; the video plays on.
-                guard model.tab == .live, !model.barVisible, !model.pickerOpen else { return }
                 zapBar.playPause()
+            }
+            .onChange(of: CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID)), initial: true) {
+                catalogue = .shell(channels: model.channels, favorites: favorites)
+                guard model.pickerOpen, let moved = overlay.catalogueChanged(catalogue, focused: overlayFocus) else { return }
+                focus = .overlay(moved)
             }
             .onChange(of: model.tuned, initial: true) { _, channel in
                 zapBar.channelChanged(to: channel)
@@ -159,8 +175,9 @@
                         guard !model.barVisible else { return }
                         // Select while the info bar shows hides it, then opens the list.
                         zapBar.dismiss()
+                        let target = overlay.open(catalogue, playing: model.tuned)
                         model.openPicker()
-                        focus = .picker(0)
+                        focus = .overlay(target)
                     } label: {
                         Color.clear
                     }
@@ -245,13 +262,29 @@
         private var barHasFocus: Bool {
             switch focus {
             case .tab, .settings: true
-            case .picture, .liveScreen, .content, .picker, nil: false
+            case .picture, .liveScreen, .content, .overlay, nil: false
             }
         }
 
         private func look(for tab: ShellTab) -> ShellTabBar.Look {
             guard tab == model.tab else { return .plain }
             return barHasFocus ? .currentInBar : .currentInContent
+        }
+
+        private var overlayFocus: OverlayFocus? {
+            if case .overlay(let target) = focus { return target }
+            return nil
+        }
+
+        /// Play/pause with the overlay open pauses or resumes the video; the overlay stays.
+        private func togglePlayback() {
+            Task {
+                if await model.engine.state == .paused {
+                    await model.engine.play()
+                } else {
+                    await model.engine.pause()
+                }
+            }
         }
 
         /// The info bar shows on full-screen Live with nothing else over the picture.
@@ -274,7 +307,7 @@
                 switch focus {
                 case .tab, .settings: .bar
                 case .content: .content
-                case .picture, .liveScreen, .picker, nil: model.tab == .live ? .picture : .content
+                case .picture, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
                 }
             Task { focus = await model.menu(from: origin) }
         }
@@ -285,6 +318,14 @@
         /// this and `move` runs first.
         private func focusMoved(from old: ShellFocus?, to new: ShellFocus?) {
             switch (old, new) {
+            case (.overlay(.channel), .overlay(.group(let group))) where group != overlay.group:
+                // Left from the channels lands on the group they belong to.
+                focus = .overlay(.group(overlay.group))
+            case (_, .overlay(.group(let group))):
+                overlay.show(group)
+            case (.overlay(.group), .overlay(.channel(let key))):
+                // Right from a group lands on the playing channel when the group holds it.
+                if let entry = overlay.entry(catalogue, playing: model.tuned), entry != key { focus = .overlay(.channel(entry)) }
             case (.content, .tab(let target)) where target != model.tab && model.tab.isContent:
                 focus = .tab(model.tab)
             case (.content, .settings) where model.tab.isContent:
@@ -301,6 +342,12 @@
             guard direction == .down, barHasFocus, let target = model.swipeDown() else { return }
             focus = target
         }
+    }
+
+    /// What the overlay's catalogue is built from; it is rebuilt when either changes.
+    private struct CatalogueInputs: Equatable {
+        let channels: [Channel]
+        let favorites: [PersistentIdentifier]
     }
 
     /// Draws the label only: the full-screen picture holds focus with no

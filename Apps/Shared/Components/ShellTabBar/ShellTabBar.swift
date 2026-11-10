@@ -140,6 +140,8 @@ enum ShellTabBar {
     /// Hours and minutes in the user's locale, 260 wide, right aligned. Not focusable.
     struct Clock: View {
         let date: Date
+        /// `overlay.clock` when the channel overlay shows it.
+        var identifier = "shell.clock"
 
         var body: some View {
             Text(date, format: .dateTime.hour().minute())
@@ -148,7 +150,7 @@ enum ShellTabBar {
                 .monospacedDigit()
                 .foregroundStyle(Palette.text)
                 .frame(width: 260, alignment: .trailing)
-                .accessibilityIdentifier("shell.clock")
+                .accessibilityIdentifier(identifier)
         }
     }
 
