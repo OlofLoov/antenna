@@ -138,10 +138,10 @@ The system SHALL show the paywall or setup, as on a normal launch, when a tile i
 - **WHEN** the user selects a shelf tile
 - **THEN** the paywall or setup is shown as on a normal launch, and after buying or adding a source Antenna launches normally, without playing the tile's channel
 
-### Requirement: Each Apple TV user has their own shelf
-The system SHALL show only the current Apple TV user's favorites and progress on the shelf.
+### Requirement: The shelf shows the current profile
+The system SHALL show only the favorites and progress of the profile last current in Antenna on this Apple TV.
 
-#### Scenario: Switch user
-- **GIVEN** two Apple TV users, each with their own favorites
-- **WHEN** one switches user and highlights Antenna
-- **THEN** the shelf shows only the current user's favorites and progress
+#### Scenario: Switch profile
+- **GIVEN** the profiles Dad and Kids, each with their own favorites
+- **WHEN** Kids is chosen in Antenna and the user goes back to the Home screen and highlights Antenna
+- **THEN** the shelf shows only Kids's favorites and progress

@@ -44,7 +44,7 @@ Out of scope:
 ## Impact
 
 - Platforms: tvOS.
-- Depends on: `favorites`, `channel-catalogue`, `guide-data`, `tvos-shell`, and the changes `add-first-run-onboarding`, `add-tv-channel-overlay`, `add-movies-and-series-browsing`, `add-watch-progress-sync`, `add-tvos-profiles`, `add-paywall-and-entitlement`.
+- Depends on: `favorites`, `channel-catalogue`, `guide-data`, `tvos-shell`, and the changes `add-first-run-onboarding`, `add-tv-channel-overlay`, `add-movies-and-series-browsing`, `add-watch-progress-sync`, `add-profiles`, `add-paywall-and-entitlement`.
 - Needs from `tvos-shell`: play or resume from a shelf link, holding the request at launch.
 - Needs from `add-tv-channel-overlay`: a channel logo lookup that never fetches.
 - Needs from `add-movies-and-series-browsing` or `add-watch-progress-sync`: the Continue watching list the app can read.

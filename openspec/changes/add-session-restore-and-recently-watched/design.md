@@ -21,6 +21,7 @@ Not drawn yet: the Recents row in the iPad and Mac sidebar, the Recents group ro
 ## Decisions
 
 - Storage is on-device `UserDefaults`, no SwiftData, no sync. Keys: `recents.list`, `recents.session`, and `shell.lastChannel` with exactly the payload `tvos-shell` asserts. `LastChannelKey` (source id, channel id) moves into AntennaCore. The session holds tab and group only, so the last channel has one home.
+- With profiles (change `add-profiles`), each key is per profile: the keys above for the first profile, the same key with `.<profile id>` appended for the others.
 - Every live tune on every device goes through one session tracker, which writes the last channel before the engine loads it and keeps it if the load fails. No other app code calls the engine's load. Playing a movie or episode is not a tune and cancels the ten-second count. Leaving the app, a new tune, or the engine leaving playing also cancel it.
 - A source observer watches local saves and remote changes on the app container, diffs source ids, and for each removed id clears the store, stops the count if the playing channel was in it, then asks for a catalogue rebuild. Only an observed deletion counts, not a missing record.
 - The store refuses any channel id containing `://`. The `m3u-playlists` follow-up that hashes the stream URL out of `Channel.id` removes the filter and drops the requirement on links with passwords. Ids are never logged or put in an identifier, label or error.

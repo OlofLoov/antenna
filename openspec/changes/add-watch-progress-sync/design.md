@@ -20,6 +20,7 @@ Design-system requirements that apply: none.
 ## Decisions
 
 - Three SwiftData records in `Apps/Shared/Persistence`, each with `id: UUID = UUID()`: progress (title id, series id, source id, position, duration, updated-at), list entry (title id, source id, added-at), recent search (query, updated-at). As CloudKit sync requires, every property is optional or defaulted, with no unique attribute, no relationships and no `URL` column. Additive, lightweight migration.
+- Each of the three records also carries `profileID: UUID?` (change `add-profiles`); nil means the first profile. Reads and duplicate resolution are per profile.
 - Value types and the pure rules live in AntennaCore. One `ActivityStore` on the main context maps records to them and serves the movies and search screens. Search injects a `RecentSearchesStore` protocol. Every read resolves duplicates and never writes. Every write resolves first and deletes the losers in the same save.
 - Keys: `xtream-vod-client` title ids plus source id. Ties: progress by latest updated-at, then higher position, then lower id string. List by earliest added-at, then lower id. Searches by fold (trim, collapse whitespace, case and diacritic insensitive). A local progress write sets updated-at to the later of now and the survivor's time plus one millisecond.
 - Secrets: no record or snapshot holds a credential, a URL or a path. Title ids carry the host only. Writes refuse title ids containing `://` or `@`. The store logs nothing.
