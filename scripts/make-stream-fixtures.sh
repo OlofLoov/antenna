@@ -93,6 +93,16 @@ ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
     -c:a eac3 -b:a 384k -ac 6 -f mpegts "$out/surround-eac3.ts"
 
+# Interlaced broadcasts, top field first: 1080i H.264 and 576i MPEG-2. The
+# pattern moves at 50 frames a second, so each field shows a different moment.
+ff -f lavfi -i "$(video 1920x1080 50 1)" -f lavfi -i "$(tone 440 1)" \
+    -vf "interlace=scan=tff,setfield=tff" \
+    -c:v libx264 -preset veryfast -profile:v high -pix_fmt yuv420p -flags +ildct+ilme -x264opts tff=1 -g 25 -b:v 1M \
+    -c:a aac -b:a 48k -ac 2 -f mpegts "$out/interlaced-1080i.ts"
+ff -f lavfi -i "$(video 720x576 50 1)" -f lavfi -i "$(tone 440 1)" \
+    -vf "interlace=scan=tff,setfield=tff" \
+    -c:v mpeg2video -flags +ildct+ilme -b:v 1M -g 12 -c:a mp2 -b:a 128k -f mpegts "$out/interlaced-576i.ts"
+
 # Radio: sound with no picture.
 ff -f lavfi -i "$(tone 440 6)" -c:a aac -b:a 48k -f adts "$out/radio.aac"
 ff -f lavfi -i "$(tone 440 6)" -c:a libmp3lame -b:a 48k "$out/radio.mp3"

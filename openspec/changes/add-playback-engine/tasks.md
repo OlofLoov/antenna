@@ -54,7 +54,7 @@
 ## 9. Old SD channels and interlaced video
 
 - [x] 9.1 Decode MPEG-2 video and MP2 sound in software, and verify with integration tests citing `playback-engine/every-common-stream-type-plays`
-- [ ] 9.2 Add 1080i50 and 576i fixtures with moving edges to `scripts/make-stream-fixtures.sh`, detect interlaced streams, decode them through VideoToolbox, deinterlace in Metal at the field rate, and verify with integration tests on interlaced fixtures citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
+- [x] 9.2 Add 1080i50 and 576i fixtures with moving edges to `scripts/make-stream-fixtures.sh`, detect interlaced streams, decode them through VideoToolbox, deinterlace in Metal at the field rate, and verify with integration tests on interlaced fixtures citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
 - [ ] 9.3 Confirm 1080i50 holds 50 frames a second on an Apple TV 4K, and record it in a device test citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
 
 ## 10. Measure
