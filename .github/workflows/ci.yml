@@ -66,6 +66,8 @@ jobs:
         run: xcodebuild -version && swift --version
       - name: Test
         run: swift test --package-path Packages/AntennaCore
+      - name: Test the FFmpeg path
+        run: swift test --package-path Packages/AntennaDemux
 
   apps:
     name: Build apps

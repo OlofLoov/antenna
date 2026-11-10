@@ -14,6 +14,7 @@ openspec validate --all --strict                         # specs and changes; np
 scripts/check-spec-refs.sh                               # every cited requirement exists in openspec/specs or an active change
 scripts/build-ffmpeg.sh macos                            # LGPL demux-only FFmpeg.framework; all platforms and the xcframework need Xcode
 swift test --disable-keychain --package-path Packages/FFmpeg   # the published FFmpeg build against the stream fixtures
+swift test --disable-keychain --package-path Packages/AntennaDemux   # the FFmpeg playback path, decoded by VideoToolbox
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO
@@ -30,6 +31,9 @@ from `Config/Local.xcconfig.example` for device builds.
 - `Packages/AntennaCore/` pure Swift, no UI: models, M3U + XMLTV parsers,
   Xtream client, `PlaybackEngine` protocol and `EngineRouter`. Swift 6 language
   mode, swift-testing. All parsing and protocol logic goes here, never in Apps.
+- `Packages/AntennaDemux/` the FFmpeg playback path: HTTP bytes, FFmpeg demuxing,
+  sample buffers for Apple's decoders. `Packages/FFmpeg/` is the LGPL FFmpeg
+  build it links, published by `scripts/build-ffmpeg.sh`.
 - `Apps/Shared/` SwiftUI shared by every platform. SwiftData records and the
   Keychain `CredentialStore` live in `Persistence/`.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
