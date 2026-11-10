@@ -44,7 +44,8 @@ import Testing
         #expect(await eventually { harness.engine.state == .playing })
         try await harness.engine.seek(to: .seconds(4))
         #expect(await eventually { harness.engine.state == .playing })
-        #expect(await eventually { (position.values.last?.time ?? .zero) > .seconds(3) })
+        let landed = await eventually { (position.values.last?.time ?? .zero) > .seconds(3) }
+        #expect(landed, "positions \(position.values.suffix(10).map { $0.time.inSeconds }), log \(harness.lines.values)")
         #expect(abs((position.values.last?.time ?? .zero).inSeconds - 4) < 1.2)
         try await harness.engine.seek(to: .seconds(30))
         #expect(harness.engine.state == .ended)
@@ -80,8 +81,12 @@ private struct FilmHarness {
     init() async throws {
         server = try FixtureServer()
         base = try await server.start()
-        engine = DemuxEngine(sleep: { _ in }, log: { _ in })
+        let lines = LogLines()
+        self.lines = lines
+        engine = DemuxEngine(sleep: { _ in }, log: { lines.add($0) })
     }
+
+    let lines: LogLines
 
     func url(_ path: String) -> URL {
         base.appending(path: path)
@@ -91,4 +96,16 @@ private struct FilmHarness {
         await engine.stop()
         await server.stop()
     }
+}
+
+/// The engine's log lines, for failure messages.
+private final class LogLines: @unchecked Sendable {
+    private let lock = NSLock()
+    private var all: [String] = []
+
+    func add(_ line: String) {
+        lock.withLock { all.append(line) }
+    }
+
+    var values: [String] { lock.withLock { all } }
 }

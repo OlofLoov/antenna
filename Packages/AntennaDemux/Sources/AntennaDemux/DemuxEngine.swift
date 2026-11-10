@@ -219,6 +219,8 @@ public final class DemuxEngine: PlaybackEngine {
         let audioFeed = SampleFeed(renderer: audioRenderer, label: "audio", limit: Self.audioLimit)
         let source = SeekableSource(bytes, url: url, session: session)
         let run = DemuxRun(bytes: source, videoFeed: videoFeed, audioFeed: audioFeed)
+        let log = self.log
+        run.seekFailed = { log("demux seek \(redacted(url)) failed, starting from the beginning") }
         current = Current(run: run, videoFeed: videoFeed, audioFeed: audioFeed)
         videoFeed.start()
         audioFeed.start()
