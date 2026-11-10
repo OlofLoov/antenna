@@ -15,6 +15,7 @@ final class SampleFeed: @unchecked Sendable {
     private let queue: DispatchQueue
     private var waiting: [CMSampleBuffer] = []
     private var closed = false
+    private var discarding = false
 
     /// The presentation time of the last buffer the renderer took.
     private(set) var lastEnqueued: CMTime = .invalid
@@ -36,6 +37,10 @@ final class SampleFeed: @unchecked Sendable {
     @discardableResult
     func push(_ buffer: CMSampleBuffer) -> Bool {
         condition.lock()
+        if discarding {
+            condition.unlock()
+            return true
+        }
         while waiting.count >= limit, !closed {
             condition.wait()
         }
@@ -47,6 +52,18 @@ final class SampleFeed: @unchecked Sendable {
         condition.unlock()
         queue.async { [weak self] in self?.drain() }
         return true
+    }
+
+    /// Drops every buffer from now on without blocking the demuxing thread,
+    /// as when the renderer no longer plays.
+    func discard() {
+        condition.lock()
+        discarding = true
+        waiting.removeAll()
+        condition.broadcast()
+        condition.unlock()
+        renderer.stopRequestingMediaData()
+        queue.sync { renderer.flush() }
     }
 
     /// Stops feeding, drops what waits and flushes the renderer.
