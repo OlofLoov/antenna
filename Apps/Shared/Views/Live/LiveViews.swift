@@ -11,6 +11,7 @@
         @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
         @Query(sort: \FavoriteRecord.sortOrder) private var favorites: [FavoriteRecord]
         @Environment(\.scenePhase) private var scenePhase
+        @Environment(\.currentProfile) private var profile
 
         func body(content: Content) -> some View {
             content
@@ -18,13 +19,35 @@
                 .task(id: records.compactMap(\.descriptor)) {
                     live.sourcesChanged(records.compactMap(\.descriptor))
                 }
-                .onChange(of: favorites.map(\.snapshot), initial: true) { _, snapshots in
+                // The current profile's favorites, on this device or through sync.
+                .onChange(of: ownFavorites, initial: true) { _, snapshots in
                     live.favoritesChanged(snapshots)
                 }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .active { live.checkLogins() }
                 }
                 .task { await live.observeEngine() }
+        }
+
+        private var ownFavorites: [FavoriteSnapshot<PersistentIdentifier>] {
+            favorites.filter { ProfileList.owns(profile, recordProfile: $0.profileID) }.map(\.snapshot)
+        }
+    }
+
+    /// The star for the playing channel (live-tv-on-iphone-ipad-mac/star-a-channel):
+    /// filled while it is one of the current profile's favorites; a tap
+    /// adds or removes it through the store.
+    struct LiveFavoriteButton: View {
+        let channel: Channel
+        @Environment(LiveModel.self) private var live
+        @Environment(\.modelContext) private var context
+        @Environment(\.currentProfile) private var profile
+
+        var body: some View {
+            Browse.FavoriteButton(isFavorite: live.catalogue.isFavorite(channel)) {
+                FavoriteRecord.toggle(channel, in: live.catalogue, profile: profile, context: context)
+            }
+            .accessibilityIdentifier("browse.favorite")
         }
     }
 

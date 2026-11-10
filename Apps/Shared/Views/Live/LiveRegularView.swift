@@ -347,7 +347,8 @@
                 ) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 } trailing: {
-                    EmptyView()
+                    LiveFavoriteButton(channel: channel)
+                        .environment(\.browseMetrics, .regular)
                 }
             }
         }

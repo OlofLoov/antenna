@@ -343,13 +343,15 @@ final class LiveModel {
 
 extension LiveModel.Dependencies {
     /// The engine, loader, Keychain check and guide the app runs on.
-    @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?) -> Self {
+    /// The language picks are `profile`'s on this device.
+    @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID = Profile.mainID) -> Self {
         .init(
             engine: RoutedEngine.app(),
             load: { try await loader.load($0) },
             hasLogin: { loader.hasLogin($0) },
             guide: guide,
-            programmes: .store(guide))
+            programmes: .store(guide),
+            languages: ChannelLanguageStore(profile: profile))
     }
 }
 

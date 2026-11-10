@@ -22,8 +22,8 @@
 
 ## 4. Favorites
 
-- [ ] 4.1 Add the star that toggles a favorite and updates the group and count, and verify with integration and UI tests citing `live-tv-on-iphone-ipad-mac/star-a-channel`
-- [ ] 4.2 Update the favorites sync check to look in the Favorites group, citing `favorites/favorites-sync-between-devices`
+- [x] 4.1 Add the star that toggles a favorite and updates the group and count, and verify with integration and UI tests citing `live-tv-on-iphone-ipad-mac/star-a-channel`
+- [x] 4.2 Update the favorites sync check to look in the Favorites group, citing `favorites/favorites-sync-between-devices`
 
 ## 5. Loading and failure states
 

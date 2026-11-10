@@ -89,6 +89,41 @@ extension Browse {
     }
 }
 
+extension Browse {
+    /// The star next to the playing channel: 36 pt on iPhone, 40 on iPad
+    /// and Mac, with a 44 pt hit area, filled while the channel is a favorite.
+    struct FavoriteButton: View {
+        let isFavorite: Bool
+        let toggle: () -> Void
+        @Environment(\.browseMetrics) private var metrics
+
+        var body: some View {
+            let side: CGFloat = metrics == .regular ? 40 : 36
+            Button(action: toggle) {
+                Image(systemName: isFavorite ? "star.fill" : "star")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
+                    .frame(width: side, height: side)
+                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
+            .accessibilityAddTraits(isFavorite ? .isSelected : [])
+        }
+    }
+}
+
+#Preview("Favorite star, off and on") {
+    HStack {
+        Browse.FavoriteButton(isFavorite: false) {}
+        Browse.FavoriteButton(isFavorite: true) {}
+    }
+    .padding()
+    .background(Palette.ground)
+}
+
 #Preview("Group chips") {
     Browse.Chips {
         Browse.Chip(title: "Favorites", isSelected: false) {}
@@ -107,7 +142,7 @@ extension Browse {
     ) {
         Browse.Initials(text: "S1", isSelected: true)
     } trailing: {
-        EmptyView()
+        Browse.FavoriteButton(isFavorite: false) {}
     }
     .frame(width: 390)
     .background(Palette.ground)
