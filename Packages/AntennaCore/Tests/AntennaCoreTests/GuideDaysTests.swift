@@ -17,6 +17,8 @@ import Testing
         #expect(days == (22...30).map { march($0, 0) })
         let labels = days.map { timeline.dayLabel($0, today: now, locale: locale) }
         #expect(labels == ["Today", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon 29", "Tue 30"])
+        #expect(timeline.dayLabel(march(22, 23, 30), today: now, locale: locale) == "Today")
+        #expect(timeline.dayLabel(march(21, 0), today: now, locale: locale) == "Sun")
     }
 
     @Test("tv-guide-grid/pick-a-day picking a day keeps the time of day")
