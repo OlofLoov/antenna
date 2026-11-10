@@ -2,7 +2,7 @@
 
 ## 1. Formatting in the core package
 
-- [ ] 1.1 Add remaining-time text, progress fraction, resolution and audio badge functions to AntennaCore, and verify with core tests citing `tv-zap-bar-and-number-entry/what-is-on-and-what-is-next` and `tv-zap-bar-and-number-entry/picture-and-sound-quality`
+- [x] 1.1 Add remaining-time text, progress fraction, resolution and audio badge functions to AntennaCore, and verify with core tests citing `tv-zap-bar-and-number-entry/what-is-on-and-what-is-next` and `tv-zap-bar-and-number-entry/picture-and-sound-quality`
 
 ## 2. Showing and hiding the bar
 
