@@ -83,12 +83,12 @@ jobs:
         working-directory: Packages/FFmpeg
         run: |
           set -e
-          name=$(xcrun simctl list devices available | grep -oE "${{ matrix.device }}[^(]+" | head -1 | sed 's/ *$//')
-          echo "Simulator: $name"
+          device=$(xcrun simctl list devices available -j | python3 -c 'import json, sys; d = json.load(sys.stdin)["devices"]; print(next(x["udid"] + " " + x["name"] for r, xs in d.items() if "${{ matrix.platform }}" in r for x in xs if x["name"].startswith("${{ matrix.device }}")))')
+          echo "Simulator: $device"
           scheme=$(xcodebuild -list -json | python3 -c 'import json, sys; s = json.load(sys.stdin)["workspace"]["schemes"]; print(next((x for x in s if x.endswith("-Package")), s[0]))')
           echo "Scheme: $scheme"
           xcodebuild test -scheme "$scheme" \
-            -destination "platform=${{ matrix.platform }} Simulator,name=$name"
+            -destination "platform=${{ matrix.platform }} Simulator,id=${device%% *}"
 
   release:
     name: Publish release
