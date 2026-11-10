@@ -4,8 +4,8 @@ import Foundation
 
 /// Turns one stream's compressed packets into `CMSampleBuffer`s that
 /// Apple's decoders and sample-buffer renderers read: H.264 (Annex B from
-/// MPEG-TS, or avcC from Matroska and MP4) and AAC (ADTS from MPEG-TS, or
-/// raw with an AudioSpecificConfig).
+/// MPEG-TS, or avcC from Matroska and MP4), MPEG-4 Part 2 video (AVI), AAC
+/// (ADTS from MPEG-TS, or raw with an AudioSpecificConfig) and MP3.
 public final class SampleBuilder {
     public enum BuildError: Error, Equatable {
         case unsupportedCodec(String)
@@ -17,6 +17,8 @@ public final class SampleBuilder {
         case h264AVCC
         case aacADTS
         case aacRaw(config: Data)
+        case mpeg4Video
+        case mp3
     }
 
     private let codec: Codec
@@ -41,6 +43,14 @@ public final class SampleBuilder {
             codec = .aacRaw(config: stream.extradata)
         case "aac":
             codec = .aacADTS
+        case "mpeg4":
+            codec = .mpeg4Video
+            if !stream.extradata.isEmpty {
+                formatDescription = try Self.mpeg4VideoFormat(config: stream.extradata, width: stream.width, height: stream.height)
+            }
+        case "mp3":
+            codec = .mp3
+            formatDescription = try Self.mp3Format(sampleRate: stream.sampleRate, channels: stream.channels)
         default:
             throw BuildError.unsupportedCodec(stream.codec)
         }
@@ -81,6 +91,17 @@ public final class SampleBuilder {
             }
             guard let format = formatDescription else { return nil }
             return try soundBuffer([packet.data], format: format, packet: packet)
+        case .mpeg4Video:
+            // No configuration in the header: AVI often carries it in front
+            // of the first frame.
+            if formatDescription == nil, let config = Self.mpeg4Config(inFrame: packet.data) {
+                formatDescription = try Self.mpeg4VideoFormat(config: config, width: stream.width, height: stream.height)
+            }
+            guard let format = formatDescription else { return nil }
+            return try Self.videoBuffer(packet.data, format: format, packet: packet)
+        case .mp3:
+            guard let format = formatDescription else { return nil }
+            return try soundBuffer([packet.data], format: format, packet: packet)
         }
     }
 
@@ -92,7 +113,8 @@ public final class SampleBuilder {
             let rate = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee.mSampleRate, rate > 0
         else { return nil }
         let buffer = try Self.audioBuffer(frames, format: format, time: time)
-        nextSoundTime = CMTimeAdd(time, CMTime(value: CMTimeValue(frames.count * 1024), timescale: CMTimeScale(rate)))
+        let perFrame = CMAudioFormatDescriptionGetStreamBasicDescription(format).map { Int($0.pointee.mFramesPerPacket) } ?? 1024
+        nextSoundTime = CMTimeAdd(time, CMTime(value: CMTimeValue(frames.count * perFrame), timescale: CMTimeScale(rate)))
         return buffer
     }
 
@@ -181,6 +203,52 @@ public final class SampleBuilder {
         return buffer
     }
 
+    // MARK: MPEG-4 Part 2 and MP3
+
+    /// MPEG-4 Part 2 video described by an `esds` wrapping the stream's
+    /// configuration (its VOL header), the form VideoToolbox reads.
+    static func mpeg4VideoFormat(config: Data, width: Int, height: Int) throws -> CMFormatDescription {
+        guard !config.isEmpty, width > 0, height > 0 else { throw BuildError.malformed }
+        let extensions: [CFString: Any] = [
+            // As an atom, esds is a full box: version and flags come first.
+            kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms: [
+                "esds": Data(count: 4) + esds(config: config, objectType: 0x20, streamType: 0x11)
+            ]
+        ]
+        var format: CMFormatDescription?
+        let status = CMVideoFormatDescriptionCreate(
+            allocator: nil, codecType: kCMVideoCodecType_MPEG4Video, width: Int32(width), height: Int32(height),
+            extensions: extensions as CFDictionary, formatDescriptionOut: &format)
+        guard status == noErr, let format else { throw BuildError.malformed }
+        return format
+    }
+
+    /// The configuration in front of an MPEG-4 Part 2 frame: everything
+    /// before its first picture start code (00 00 01 B6), nil when the frame
+    /// starts with the picture.
+    static func mpeg4Config(inFrame data: Data) -> Data? {
+        let bytes = [UInt8](data)
+        guard bytes.count > 4 else { return nil }
+        let pictureStart: [UInt8] = [0, 0, 1, 0xB6]
+        for index in 0..<(bytes.count - 3) where Array(bytes[index..<(index + 4)]) == pictureStart {
+            return index > 0 ? Data(bytes[0..<index]) : nil
+        }
+        return nil
+    }
+
+    static func mp3Format(sampleRate: Int, channels: Int) throws -> CMFormatDescription {
+        guard sampleRate > 0, channels > 0 else { throw BuildError.malformed }
+        var description = AudioStreamBasicDescription(
+            mSampleRate: Float64(sampleRate), mFormatID: kAudioFormatMPEGLayer3, mFormatFlags: 0, mBytesPerPacket: 0,
+            mFramesPerPacket: 1152, mBytesPerFrame: 0, mChannelsPerFrame: UInt32(channels), mBitsPerChannel: 0, mReserved: 0)
+        var format: CMAudioFormatDescription?
+        let status = CMAudioFormatDescriptionCreate(
+            allocator: nil, asbd: &description, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil,
+            extensions: nil, formatDescriptionOut: &format)
+        guard status == noErr, let format else { throw BuildError.malformed }
+        return format
+    }
+
     // MARK: AAC
 
     struct ADTSFrame {
@@ -229,7 +297,7 @@ public final class SampleBuilder {
             mSampleRate: Float64(aacSampleRates[rateIndex]), mFormatID: kAudioFormatMPEG4AAC,
             mFormatFlags: AudioFormatFlags(objectType), mBytesPerPacket: 0, mFramesPerPacket: 1024,
             mBytesPerFrame: 0, mChannelsPerFrame: UInt32(channels), mBitsPerChannel: 0, mReserved: 0)
-        let cookie = esds(config: config)
+        let cookie = esds(config: config, objectType: 0x40, streamType: 0x15)
         var format: CMAudioFormatDescription?
         let status = cookie.withUnsafeBytes { raw in
             CMAudioFormatDescriptionCreate(
@@ -240,11 +308,13 @@ public final class SampleBuilder {
         return format
     }
 
-    /// An MPEG-4 elementary stream descriptor for AAC with `config`.
-    static func esds(config: Data) -> Data {
+    /// An MPEG-4 elementary stream descriptor with `config` as its decoder
+    /// configuration: object type 0x40 and stream type 0x15 for AAC, 0x20
+    /// and 0x11 for MPEG-4 Part 2 video. Configurations up to 100 bytes.
+    static func esds(config: Data, objectType: UInt8, streamType: UInt8) -> Data {
         let decoderSpecific = [UInt8(0x05), UInt8(config.count)] + [UInt8](config)
         let decoderConfig: [UInt8] =
-            [0x04, UInt8(13 + decoderSpecific.count), 0x40, 0x15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] + decoderSpecific
+            [0x04, UInt8(13 + decoderSpecific.count), objectType, streamType, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] + decoderSpecific
         let slConfig: [UInt8] = [0x06, 0x01, 0x02]
         let body: [UInt8] = [0, 0, 0] + decoderConfig + slConfig
         return Data([0x03, UInt8(body.count)] + body)

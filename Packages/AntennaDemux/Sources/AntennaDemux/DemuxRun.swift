@@ -30,6 +30,7 @@ final class DemuxRun: @unchecked Sendable {
     private let audioFeed: SampleFeed
     private let lock = NSLock()
     private var cancelled = false
+    private var answer: Once<Result<DemuxStart, any Error>>?
 
     init(bytes: HTTPByteStream, videoFeed: SampleFeed, audioFeed: SampleFeed) {
         self.bytes = bytes
@@ -39,6 +40,14 @@ final class DemuxRun: @unchecked Sendable {
 
     private var isCancelled: Bool {
         lock.withLock { cancelled }
+    }
+
+    /// Fails the start with `failure` if it has not happened yet, and stops
+    /// reading. Used when no picture arrives in time.
+    func giveUp(_ failure: PlaybackFailure) {
+        let answer = lock.withLock { self.answer }
+        answer?.call(.failure(failure))
+        cancel()
     }
 
     /// Stops reading. The connection closes and the thread ends quietly.
@@ -57,8 +66,9 @@ final class DemuxRun: @unchecked Sendable {
         ready: @escaping @Sendable (Result<DemuxStart, any Error>) -> Void,
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
+        let answer = Once(ready)
+        lock.withLock { self.answer = answer }
         let thread = Thread { [self] in
-            let answer = Once(ready)
             run(ready: answer.call, ended: ended)
             answer.call(.failure(CancellationError()))
         }

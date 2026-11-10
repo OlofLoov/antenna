@@ -41,7 +41,7 @@
 - [x] 7.1 Add `DemuxEngine` with the AVIO callback on the ephemeral session, demux to `CMSampleBuffer`s for H.264 and AAC into the sample-buffer renderers and synchronizer, silence FFmpeg's logging, and run the contract suite against both engines, verify with integration tests citing `playback-engine/every-common-stream-type-plays`
 - [x] 7.2 Hand HLS found by the demuxer back to Apple's player, keep the old picture while switching, and let the connection go while live TV is paused, and verify with integration tests citing `playback-engine/starting-a-channel-replaces-the-old-one-cleanly` and `playback-engine/pause-and-play-again`
 - [x] 7.3 Start at the first keyframe, open the channels above and below ahead when the account allows more than one connection, and verify with core tests citing `playback-engine/channel-switching-is-fast` and `playback-engine/starting-a-channel-replaces-the-old-one-cleanly`
-- [ ] 7.4 Map demuxer failures to the shared reasons and route Matroska and AVI through it, and verify with integration tests citing `playback-engine/streams-that-cannot-play-fail-with-a-clear-reason`
+- [x] 7.4 Map demuxer failures to the shared reasons and route Matroska and AVI through it, and verify with integration tests citing `playback-engine/streams-that-cannot-play-fail-with-a-clear-reason`
 
 ## 8. Picture and sound
 
