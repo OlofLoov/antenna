@@ -14,14 +14,23 @@ public struct DemuxedStream: Sendable, Equatable {
     /// Codec setup from the container (avcC, an AudioSpecificConfig), empty
     /// when the codec carries it in band, as H.264 and AAC in MPEG-TS do.
     public let extradata: Data
+    /// The picture size the container header gives, 0 when only the
+    /// stream itself says (MPEG-TS); `SampleBuilder.formatDescription` has
+    /// it once the first keyframe arrives.
     public let width: Int
     public let height: Int
+    /// The sound format the container header gives, 0 when only the stream
+    /// itself says.
     public let sampleRate: Int
     public let channels: Int
     /// True when the container or codec marks the video as interlaced.
     public let interlaced: Bool
     /// The stream's language tag, if the container has one.
     public let language: String?
+    /// Average frames a second for video, nil when the container does not say.
+    public let frameRate: Double?
+    /// True for the stream the container marks as its default.
+    public let isDefault: Bool
 }
 
 /// One compressed packet with its timing.
@@ -53,6 +62,8 @@ public final class Demuxer: @unchecked Sendable {
     public private(set) var streams: [DemuxedStream] = []
     /// The container's name, such as "mpegts" or "matroska,webm".
     public private(set) var format = ""
+    /// The container's length, nil for live streams.
+    public private(set) var duration: CMTime?
 
     private var context: UnsafeMutablePointer<AVFormatContext>?
     private var io: UnsafeMutablePointer<AVIOContext>?
@@ -72,19 +83,29 @@ public final class Demuxer: @unchecked Sendable {
             buffer.assumingMemoryBound(to: UInt8.self), size, 0, reader.toOpaque(), ReadBox.callback, nil, nil)
         var context = avformat_alloc_context()
         context?.pointee.pb = io
-        // Fast start: look at about half a second of a live stream, not the default five.
-        context?.pointee.probesize = 512 * 1024
-        context?.pointee.max_analyze_duration = 500_000
+        context?.pointee.probesize = 256 * 1024
+        // The container names each codec, so FFmpeg does not probe streams
+        // for theirs. While a stream waits for that probe, FFmpeg holds back
+        // the packets of every stream.
+        context?.pointee.max_probe_packets = 0
         guard avformat_open_input(&context, nil, nil, nil) == 0, let opened = context else {
             close()
             throw DemuxError.unrecognised
         }
         self.context = opened
-        guard avformat_find_stream_info(opened, nil) >= 0, opened.pointee.nb_streams > 0 else {
+        // No avformat_find_stream_info: it decodes a little of every stream,
+        // and with no H.264 or AAC decoder in this build it reads until its
+        // limit before giving up, seconds on a slow stream. The container
+        // header names each codec; picture size and sound format come from
+        // the first keyframe and the first AAC frame instead.
+        guard opened.pointee.nb_streams > 0 else {
             close()
             throw DemuxError.noStreams
         }
         format = String(cString: opened.pointee.iformat.pointee.name)
+        if opened.pointee.duration > 0, opened.pointee.duration != Int64.min {
+            duration = CMTime(value: opened.pointee.duration, timescale: CMTimeScale(AV_TIME_BASE))
+        }
         streams = (0..<Int(opened.pointee.nb_streams)).compactMap { index in
             guard let stream = opened.pointee.streams[index], let parameters = stream.pointee.codecpar else { return nil }
             timeBases[index] = stream.pointee.time_base
@@ -153,11 +174,14 @@ public final class Demuxer: @unchecked Sendable {
             entry.pointee.value.map { String(cString: $0) }
         }
         let interlaced = [AV_FIELD_TT, AV_FIELD_BB, AV_FIELD_TB, AV_FIELD_BT].contains(parameters.field_order)
+        let rate = stream.pointee.avg_frame_rate
         return DemuxedStream(
             index: index, kind: kind, codec: String(cString: avcodec_get_name(parameters.codec_id)),
             extradata: extradata, width: Int(parameters.width), height: Int(parameters.height),
             sampleRate: Int(parameters.sample_rate), channels: Int(parameters.ch_layout.nb_channels),
-            interlaced: interlaced, language: language)
+            interlaced: interlaced, language: language,
+            frameRate: rate.den > 0 && rate.num > 0 ? Double(rate.num) / Double(rate.den) : nil,
+            isDefault: stream.pointee.disposition & AV_DISPOSITION_DEFAULT != 0)
     }
 }
 

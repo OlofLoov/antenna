@@ -24,6 +24,9 @@ public final class SampleBuilder {
     /// The format of the buffers built so far; nil for H.264 in MPEG-TS
     /// until the first parameter sets arrive.
     public private(set) var formatDescription: CMFormatDescription?
+    /// Where the next AAC frame starts, for frames FFmpeg gives no time:
+    /// it times only the first frame of a multi-frame packet.
+    private var nextSoundTime: CMTime = .invalid
 
     /// Throws `unsupportedCodec` for a codec with no builder yet.
     public init(stream: DemuxedStream) throws {
@@ -71,14 +74,26 @@ public final class SampleBuilder {
                 formatDescription = try Self.aacFormat(config: first.config)
             }
             guard let format = formatDescription else { return nil }
-            return try Self.audioBuffer(frames.map(\.payload), format: format, packet: packet)
+            return try soundBuffer(frames.map(\.payload), format: format, packet: packet)
         case .aacRaw(let config):
             if formatDescription == nil {
                 formatDescription = try Self.aacFormat(config: config)
             }
             guard let format = formatDescription else { return nil }
-            return try Self.audioBuffer([packet.data], format: format, packet: packet)
+            return try soundBuffer([packet.data], format: format, packet: packet)
         }
+    }
+
+    /// An AAC buffer timed by the packet, or right after the previous one
+    /// when the packet has no time.
+    private func soundBuffer(_ frames: [Data], format: CMFormatDescription, packet: DemuxedPacket) throws -> CMSampleBuffer? {
+        let time = packet.presentationTime.isValid ? packet.presentationTime : nextSoundTime
+        guard time.isValid,
+            let rate = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee.mSampleRate, rate > 0
+        else { return nil }
+        let buffer = try Self.audioBuffer(frames, format: format, time: time)
+        nextSoundTime = CMTimeAdd(time, CMTime(value: CMTimeValue(frames.count * 1024), timescale: CMTimeScale(rate)))
+        return buffer
     }
 
     // MARK: H.264
@@ -235,7 +250,7 @@ public final class SampleBuilder {
         return Data([0x03, UInt8(body.count)] + body)
     }
 
-    static func audioBuffer(_ frames: [Data], format: CMFormatDescription, packet: DemuxedPacket) throws -> CMSampleBuffer {
+    static func audioBuffer(_ frames: [Data], format: CMFormatDescription, time: CMTime) throws -> CMSampleBuffer {
         var data = Data()
         var descriptions: [AudioStreamPacketDescription] = []
         for frame in frames {
@@ -248,7 +263,7 @@ public final class SampleBuilder {
         var buffer: CMSampleBuffer?
         let status = CMAudioSampleBufferCreateReadyWithPacketDescriptions(
             allocator: nil, dataBuffer: block, formatDescription: format, sampleCount: frames.count,
-            presentationTimeStamp: packet.presentationTime, packetDescriptions: descriptions,
+            presentationTimeStamp: time, packetDescriptions: descriptions,
             sampleBufferOut: &buffer)
         guard status == noErr, let buffer else { throw BuildError.malformed }
         return buffer
