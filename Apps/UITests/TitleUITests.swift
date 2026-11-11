@@ -188,4 +188,68 @@ final class TitleUITests: XCTestCase {
         XCTAssertEqual(app.element("title.remaining").label, "32 min left")
         XCTAssertFalse(app.element("episodes.seasons").exists, "one season, no picker")
     }
+
+    func expectPlayer(_ app: XCUIApplication, _ summary: String, file: StaticString = #filePath, line: UInt = #line) {
+        expect(app.element("shelf.debug.engine"), "value == '\(summary)'", file: file, line: line)
+    }
+
+    // title-detail-and-episode-picker/play-or-resume-a-movie
+    func testResumeAMovieAndComeBackToItsPage() throws {
+        let app = try launch("watching")
+        openSection(app, "movies")
+        let poster = card(app, "movies", in: "recentlyAdded", "xtream#cabin#vod#2")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        poster.press(forDuration: 1.2)
+        app.element("movies.menu.info").tap()
+        let play = app.element("title.play")
+        XCTAssertTrue(play.waitForExistence(timeout: 5))
+        XCTAssertEqual(play.label, "Resume")
+        XCTAssertEqual(app.element("title.remaining").label, "54 min left")
+
+        play.tap()
+        expectPlayer(app, "playing 2.mp4 from 2160")
+        app.element("movies.player.close").tap()
+        expect(app.element("movies.player"), "exists == false")
+        XCTAssertTrue(app.element("title.name").exists, "back on the page")
+        XCTAssertEqual(play.label, "Resume")
+        XCTAssertTrue(app.element("title.progress").exists)
+    }
+
+    // title-detail-and-episode-picker/play-an-episode-and-come-back
+    func testPlayAnEpisodeAndComeBackWithItInView() throws {
+        let app = try launch("watching")
+        openNorthernLights(app)
+        row(app, 13).tap()
+        expectPlayer(app, "playing 13.mp4 from 0")
+        app.element("series.player.close").tap()
+        expect(app.element("series.player"), "exists == false")
+        XCTAssertTrue(app.element("episodes.season.season-2").isSelected, "its season shows")
+        XCTAssertTrue(row(app, 13).isHittable, "the episode is in view")
+
+        app.element("title.play").tap()
+        expectPlayer(app, "playing 12.mp4 from 0")
+    }
+
+    // title-detail-and-episode-picker/my-list-from-the-page
+    func testMyListOnThePageAgreesWithTheBanner() throws {
+        let app = try launch()
+        openSection(app, "movies")
+        expect(app.element("movies.hero.title"), "label == 'The Long Harbor'")
+        XCTAssertEqual(app.element("movies.hero.myList").label, "Add to My list")
+        app.element("movies.hero.info").tap()
+        let button = app.element("title.myList")
+        XCTAssertTrue(button.waitForExistence(timeout: 5))
+        XCTAssertEqual(button.label, "Add to my list")
+        button.tap()
+        expect(button, "label == 'Remove from my list'")
+
+        app.element("title.back").tap()
+        expect(app.element("movies.hero.myList"), "label == 'Remove from My list'")
+        app.element("movies.hero.info").tap()
+        expect(button, "label == 'Remove from my list'")
+        button.tap()
+        expect(button, "label == 'Add to my list'")
+        app.element("title.back").tap()
+        expect(app.element("movies.hero.myList"), "label == 'Add to My list'")
+    }
 }

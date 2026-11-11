@@ -19,6 +19,8 @@ struct EpisodesContext {
         /// On Apple TV, how long focus rests on a chip before its season
         /// shows; nil picks on select only.
         var dwell: Duration?
+        /// The episode to bring into view, the one just played.
+        var reveal: String?
     }
 
     /// Where the list stands.
@@ -244,15 +246,22 @@ enum EpisodePicker {
 
         var body: some View {
             if let episodes {
-                LazyVStack(alignment: .leading, spacing: type.spacing) {
-                    ForEach(episodes.state.rows) { row in
-                        EpisodeRow(type: type, row: row) { episodes.actions.play(row.episode) }
-                            .id(row.id)
+                ScrollViewReader { proxy in
+                    LazyVStack(alignment: .leading, spacing: type.spacing) {
+                        ForEach(episodes.state.rows) { row in
+                            EpisodeRow(type: type, row: row) { episodes.actions.play(row.episode) }
+                                .id(row.id)
+                        }
+                    }
+                    .padding(.horizontal, type.gutter)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("episodes.list")
+                    .task(id: episodes.state.reveal) {
+                        // Back from playback, the episode just played is in view.
+                        guard let reveal = episodes.state.reveal else { return }
+                        proxy.scrollTo(reveal, anchor: .center)
                     }
                 }
-                .padding(.horizontal, type.gutter)
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("episodes.list")
             }
         }
     }

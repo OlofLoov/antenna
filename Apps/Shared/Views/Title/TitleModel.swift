@@ -26,6 +26,8 @@ final class TitleModel {
     var pickedSeason: String?
     /// The movie with the info call's file extension once it answers.
     private(set) var playable: ShelfTitle
+    /// The episode played last from this page, brought into view on the way back.
+    private(set) var lastPlayed: String?
 
     @ObservationIgnored private let shelf: ShelfModel
 
@@ -64,6 +66,15 @@ final class TitleModel {
             return false
         }
         return true
+    }
+
+    /// Where `episode` plays from, keeping its season picked and the
+    /// episode to bring into view when playback ends
+    /// (title-detail-and-episode-picker/play-an-episode-and-come-back).
+    func willPlay(_ episode: Episode, progress: [String: WatchProgress]) -> Double {
+        pickedSeason = groups.first { $0.episodes.contains(episode) }?.id
+        lastPlayed = episode.id
+        return progress[episode.id]?.resumePosition ?? 0
     }
 
     /// True while the title's source is still in the library.
