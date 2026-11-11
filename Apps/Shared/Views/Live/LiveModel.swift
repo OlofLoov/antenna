@@ -92,6 +92,7 @@ final class LiveModel {
     @ObservationIgnored private var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
     @ObservationIgnored private var hiding: Task<Void, Never>?
     @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
+    @ObservationIgnored private var suspended = false
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -304,6 +305,25 @@ final class LiveModel {
             canPictureInPicture = await engine.capabilities.supportsPictureInPicture
             await engine.play()
         }
+    }
+
+    /// A movie or episode is about to play: the channel stops and starts
+    /// again the next time Live opens
+    /// (movies-and-series-browsing/resume-where-you-left-off).
+    func suspend() async {
+        guard playing != nil else { return }
+        suspended = true
+        tuning?.cancel()
+        hideControls()
+        fullScreen = false
+        await engine.stop()
+    }
+
+    /// Live opened: the channel a movie stopped plays again.
+    func resumeIfSuspended() {
+        guard suspended, let playing else { return }
+        suspended = false
+        tune(playing)
     }
 
     var isPaused: Bool {

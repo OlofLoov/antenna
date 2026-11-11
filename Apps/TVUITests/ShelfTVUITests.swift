@@ -149,4 +149,21 @@ final class ShelfTVUITests: XCTestCase {
         expect(button, "value == 'Not on My list'")
         expect(element("movies.row.myList"), "exists == false")
     }
+
+    // movies-and-series-browsing/resume-where-you-left-off, on Apple TV
+    func testPlayStartsTheMovieAndMenuGoesBack() {
+        openMovies()
+        press(.select)
+        expect(element("shelf.debug.engine"), "value == 'playing 1.mp4 from 0'")
+        expect(element("shell.debug.engine"), "value BEGINSWITH 'idle'")
+        press(.menu)
+        expect(element("movies.player"), "exists == false")
+        expectFocus("movies.hero.play")
+        press(.menu)
+        expectFocus("shell.tab.movies")
+        press(.left, times: 2)
+        expectFocus("shell.tab.live")
+        press(.select)
+        expect(element("shell.debug.engine"), "value BEGINSWITH 'playing loads=2'")
+    }
 }

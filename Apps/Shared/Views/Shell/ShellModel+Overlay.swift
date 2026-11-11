@@ -29,4 +29,14 @@
             }
         }
     }
+
+    extension PlaybackState {
+        /// Failed, or idle after a movie stopped it.
+        var hasStopped: Bool {
+            switch self {
+            case .failed, .idle: true
+            case .loading, .playing, .paused, .buffering, .reconnecting, .ended: false
+            }
+        }
+    }
 #endif

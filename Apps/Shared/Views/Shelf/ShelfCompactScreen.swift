@@ -15,8 +15,12 @@
         /// The grid in place of the rows; nil shows the rows.
         @State private var list: ShelfList?
 
-        /// Play arrives with task 4.1; My list goes through the activity.
-        private var actions: ShelfActions { .with(activity) { _ in } }
+        @Environment(ShelfPlayback.self) private var playback
+
+        /// Posters and the banner play through the playback; My list goes through the activity.
+        private var actions: ShelfActions {
+            .with(activity) { [library, activity, playback] title in playback.play(title, library: library, activity: activity) }
+        }
 
         var body: some View {
             let model = library.model(kind)
