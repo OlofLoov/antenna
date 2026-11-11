@@ -8,7 +8,7 @@
 
 ## 2. Source deletion
 
-- [ ] 2.1 Add the source observer that clears a deleted source's recents, session group and last channel, and verify core and integration tests for local and remote deletions
+- [x] 2.1 Add the source observer that clears a deleted source's recents, session group and last channel, and verify core and integration tests for local and remote deletions
 
 ## 3. Catalogue
 

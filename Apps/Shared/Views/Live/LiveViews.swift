@@ -34,6 +34,7 @@
                     default: break
                     }
                 }
+                .modifier(SourceDeletions(removed: live.sourceDeleted, defaults: live.session.store.defaults))
                 .task { await live.observeEngine() }
                 .task { await live.player.observeDetails() }
                 // The controls hide again a while after the track list closes.

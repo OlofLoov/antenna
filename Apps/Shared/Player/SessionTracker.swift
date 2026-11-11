@@ -62,6 +62,13 @@ final class SessionTracker {
         }
     }
 
+    /// `source` was deleted: a channel of it playing now no longer counts.
+    func remove(source: UUID) {
+        guard channel?.sourceID == source else { return }
+        stopCount()
+        counted = true
+    }
+
     /// A movie or episode is starting, or the app left the screen.
     func interrupt() {
         stopCount()
