@@ -22,9 +22,9 @@
 
 ## 5. Restore on iPhone, iPad and Mac
 
-- [ ] 5.1 Restore the tab and the user-picked group with the fallbacks, and verify UI tests including a missing and a late group
-- [ ] 5.2 Start sources at the app root and replay the last channel once its source loads, and verify UI tests for success, offline retry and a missing channel
-- [ ] 5.3 Restore after the system closes the app in the background, and verify a UI test that terminates the app
+- [x] 5.1 Restore the tab and the user-picked group with the fallbacks, and verify UI tests including a missing and a late group
+- [x] 5.2 Start sources at the app root and replay the last channel once its source loads, and verify UI tests for success, offline retry and a missing channel
+- [x] 5.3 Restore after the system closes the app in the background, and verify a UI test that terminates the app
 
 ## 6. Apple TV swipes and shell
 

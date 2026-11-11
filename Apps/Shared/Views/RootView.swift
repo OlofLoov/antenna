@@ -105,6 +105,9 @@
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
         @Environment(SearchModel.self) private var search
+        @Query private var records: [SourceRecord]
+        /// The last session's tab was opened once, at the first appearance.
+        @State private var restored = false
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -137,6 +140,13 @@
             }
             .onChange(of: selection) { old, new in
                 if new == .search, old != .search { beforeSearch = old }
+                live.opened(new.session)
+            }
+            // Opens on the tab the user left (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
+            .onAppear {
+                guard !restored else { return }
+                restored = true
+                selection = Tab(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
             }
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with
@@ -147,6 +157,27 @@
                     live.setFullScreen(size == .compact)
                 }
             #endif
+        }
+    }
+
+    extension CompactTabs.Tab {
+        /// Series sits inside Movies; Movies without an Xtream source opens Live.
+        init(_ tab: LiveSession.Tab, hasXtream: Bool) {
+            switch tab {
+            case .guide: self = .guide
+            case .movies, .series: self = hasXtream ? .movies : .live
+            case .live, .search, .settings: self = .live
+            }
+        }
+
+        var session: LiveSession.Tab {
+            switch self {
+            case .live: .live
+            case .guide: .guide
+            case .movies: .movies
+            case .search: .search
+            case .settings: .settings
+            }
         }
     }
 
@@ -181,7 +212,7 @@
         /// Shows Live with `channel` playing, in All channels when the open
         /// group does not hold it. Search keeps its query.
         private func watch(_ channel: Channel) {
-            if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all) }
+            if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all, picked: false) }
             live.pick(channel)
             selection = .live
         }

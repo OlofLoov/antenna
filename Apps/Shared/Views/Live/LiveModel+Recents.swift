@@ -15,14 +15,17 @@ extension LiveModel {
     }
 
     /// Shows `group`'s channels and clears the filter. The playing channel
-    /// plays on. Recents opens in its newest order.
-    func show(_ group: CatalogueGroup) {
+    /// plays on. Recents opens in its newest order. A group the user
+    /// `picked` is the one restored at launch; one the app chose is not
+    /// (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
+    func show(_ group: CatalogueGroup, picked: Bool = true) {
         if shownRecents != latestRecents {
             shownRecents = latestRecents
             catalogue = catalogue.replacingRecents(shownRecents)
         }
         self.group = catalogue.groups.contains(group) ? group : .all
         filter = ""
+        if picked { restore.picked(group) }
     }
 
     /// A channel counted as watched. Recents on screen keeps its order
