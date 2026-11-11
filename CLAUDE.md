@@ -21,7 +21,8 @@ xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'gene
 ```
 
 Run `scripts/setup.sh` once per clone. It points git at `scripts/githooks`
-(commit lint, no commits on main) and checks for xcodegen and gh.
+(commit lint, no commits on main, `scripts/fast-checks.sh` before each push)
+and checks for xcodegen and gh.
 
 `Config/Local.xcconfig` holds `DEVELOPMENT_TEAM` and is git-ignored. Copy it
 from `Config/Local.xcconfig.example` for device builds.
@@ -68,6 +69,13 @@ from `Config/Local.xcconfig.example` for device builds.
   external system or dependency updates them in the same PR.
 - **Lint before commit.** The git pre-commit hook runs `swift format lint
   --strict` on staged Swift files, and `swiftlint` when it is installed.
+- **Simulator tests run nightly.** PR CI builds the apps, runs AntennaCore
+  and renders previews. The iPhone, iPad and tvOS UI tests and the tvOS unit
+  tests run in the `UI tests` workflow, split across parallel jobs, every
+  night on main. A failing night opens an issue. To run them on a PR, add
+  the `ui-tests` label; to run them on any branch, `gh workflow run
+  ui-tests.yml --ref <branch>`. Run the UI test classes a change touches on
+  a local simulator before opening its PR (see the `sim` skill).
 - **Tests cite requirements.** A test that proves a requirement names it as
   `<capability>/<requirement-slug>` in its name or a comment, for example
   `// guide-data/programmes-in-a-time-window`. `scripts/check-spec-refs.sh`

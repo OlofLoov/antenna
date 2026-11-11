@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Runs scripts/fast-checks.sh before a push. A push that only deletes
+# branches skips it.
+set -u
+zero=0000000000000000000000000000000000000000
+while read -r _ local_sha _ _; do
+  if [[ "$local_sha" != "$zero" ]]; then
+    exec bash "$(git rev-parse --show-toplevel)/scripts/fast-checks.sh"
+  fi
+done
+exit 0
