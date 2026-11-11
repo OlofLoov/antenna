@@ -9,6 +9,11 @@ struct PlayerSubject: Equatable, Sendable {
     var source: String
     /// The channel's number in the catalogue, nil when it has none.
     var number: Int?
+
+    /// "104 Sport One", or the name alone without a number.
+    var line: String {
+        [number.map(String.init), channel.name].compactMap(\.self).joined(separator: " ")
+    }
 }
 
 /// What the player draws over the picture while it waits for data.

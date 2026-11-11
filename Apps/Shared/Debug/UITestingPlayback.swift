@@ -10,10 +10,11 @@
     /// - `stall`: every load stays loading and never plays.
     /// - `reconnect`: a second after playing, the stream drops and the
     ///   engine reports attempt 2 of 3.
-    /// - `fail-<reason>`: the first load fails with `<reason>` (`offline`,
-    ///   `notFound`, `loginNotOnDevice`, `notAllowed`, `unreadable`), later
-    ///   loads play. With `fail-offline` the connection is gone at launch
-    ///   and returns `UITESTING_NETWORK_SECONDS` seconds later, 3 unless set.
+    /// - `fail-<reason>`: the first load of each stream fails with
+    ///   `<reason>` (`offline`, `notFound`, `loginNotOnDevice`, `notAllowed`,
+    ///   `unreadable`), later loads of it play. With `fail-offline` the
+    ///   connection is gone at launch and returns `UITESTING_NETWORK_SECONDS`
+    ///   seconds later, 3 unless set.
     ///
     /// `UITESTING_SLOW_SECONDS` sets how long the spinner shows before it
     /// names the source as slow, 10 unless set.
@@ -64,12 +65,14 @@
             }
         }
 
-        /// The state a load leaves the engine in, or the failure it throws.
-        /// `loads` counts this load.
-        static func afterLoad(_ loads: Int) -> Result<PlaybackState, PlaybackFailure> {
-            if case .fail(let reason) = script, loads == 1 { return .failure(reason) }
-            return .success(.loading)
+        /// The state a load of `file` leaves the engine in, or the failure
+        /// it throws. With `fail-<reason>`, the first load of each file fails.
+        @MainActor static func afterLoad(_ file: String) -> Result<PlaybackState, PlaybackFailure> {
+            guard case .fail(let reason) = script, failed.insert(file).inserted else { return .success(.loading) }
+            return .failure(reason)
         }
+
+        @MainActor private static var failed: Set<String> = []
 
         /// False while the script keeps every stream loading.
         static var plays: Bool { script != .stall }

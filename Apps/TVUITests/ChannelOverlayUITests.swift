@@ -228,14 +228,16 @@ extension ShellUITests {
     }
 
     // tv-channel-overlay/select-on-the-playing-channel-does-not-restart-it
+    // player-controls-and-playback-errors/try-again-or-recover-on-its-own:
+    // the error replaces the picture, so select on a failed channel is Try
+    // again and loads it once more without opening the overlay.
     func testSelectOnAFailedChannelLoadsItAgain() {
         launch("failing")
         expectEngine("failed loads=1 file=a1.ts")
-        expectGone("zapBar.bar", timeout: 10)
-        openOverlay()
+        expect(element("player.retry"), "hasFocus == true")
         press(.select)
         expectEngine("failed loads=2 file=a1.ts")
-        expectGone("overlay.root")
+        XCTAssertFalse(element("overlay.root").exists)
     }
 
     // tv-channel-overlay/menu-closes-without-changing-anything
