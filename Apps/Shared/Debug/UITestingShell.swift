@@ -178,7 +178,7 @@
                 // `UITESTING_LAST_CHANNEL=b1` makes Cabin's channel the one the launch tunes.
                 let cabinFirst = Channel.tagged([channel("b1")], sourceID: xtreamID).first.flatMap { LastChannelKey($0) }
                 if ProcessInfo.processInfo.environment["UITESTING_LAST_CHANNEL"] == "b1", let cabinFirst {
-                    LastChannelStore(defaults: defaults).write(cabinFirst)
+                    RecentsStore(defaults: defaults).write(cabinFirst)
                 }
                 let credentials = MemoryCredentials()
                 var cabinLoaded = false
@@ -196,7 +196,7 @@
                         // plays, until the sign-in step stores one.
                         return (try? credentials.load(for: source.credentialKey ?? "")) != nil
                     },
-                    lastChannel: LastChannelStore(defaults: defaults),
+                    recents: RecentsStore(defaults: defaults),
                     sleep: { try await Task.sleep(for: $0) },
                     guide: nil,
                     credentials: credentials,

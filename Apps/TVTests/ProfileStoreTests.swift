@@ -94,9 +94,9 @@ import Testing
     func perDevice() throws {
         let kids = UUID()
         let key = LastChannelKey(sourceID: source, channelID: "a")
-        LastChannelStore(defaults: defaults, profile: kids).write(key)
-        #expect(LastChannelStore(defaults: defaults, profile: kids).read() == key)
-        #expect(LastChannelStore(defaults: defaults).read() == nil, "Main's last channel is its own")
+        RecentsStore(defaults: defaults, profile: kids).write(key)
+        #expect(RecentsStore(defaults: defaults, profile: kids).read() == key)
+        #expect(RecentsStore(defaults: defaults).read() == nil, "Main's last channel is its own")
         #expect(defaults.data(forKey: "shell.lastChannel.\(kids.uuidString)") != nil)
 
         let channel = channels[0]
@@ -105,7 +105,7 @@ import Testing
         #expect(ChannelLanguageStore(defaults: defaults).pick(for: channel) == LanguagePick(audio: "ger", subtitle: nil))
 
         ProfileKeys.prune(defaults, keeping: [Profile.mainID])
-        #expect(LastChannelStore(defaults: defaults, profile: kids).read() == nil, "a deleted profile's values go")
+        #expect(RecentsStore(defaults: defaults, profile: kids).read() == nil, "a deleted profile's values go")
         #expect(ChannelLanguageStore(defaults: defaults).pick(for: channel) != nil, "Main's stay")
     }
 

@@ -27,12 +27,12 @@ import Testing
                 engine: engine,
                 load: { try await loader.load($0) },
                 hasLogin: { _ in true },
-                lastChannel: LastChannelStore(defaults: defaults),
+                recents: RecentsStore(defaults: defaults),
                 sleep: { try await clock.sleep($0) },
                 guide: nil))
     }
 
-    private var store: LastChannelStore { LastChannelStore(defaults: defaults) }
+    private var store: RecentsStore { RecentsStore(defaults: defaults) }
 
     /// Yields until `condition` holds, failing after a few thousand turns.
     private func wait(_ condition: () -> Bool, _ comment: Comment? = nil) async {
@@ -236,7 +236,7 @@ extension ShellModelTests {
 
     @Test("tvos-shell/back-to-the-last-channel-on-launch an unreadable stored value reads as nothing")
     func unreadable() {
-        defaults.set(Data("not json".utf8), forKey: LastChannelStore.defaultsKey)
+        defaults.set(Data("not json".utf8), forKey: RecentsStore.lastChannelKey)
         #expect(store.read() == nil)
     }
 }

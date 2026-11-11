@@ -24,7 +24,15 @@
                     live.favoritesChanged(snapshots)
                 }
                 .onChange(of: scenePhase) { _, phase in
-                    if phase == .active { live.checkLogins() }
+                    // Leaving the app stops the ten-second count; coming back
+                    // starts it again from zero when the channel still plays.
+                    switch phase {
+                    case .active:
+                        live.checkLogins()
+                        live.session.stateChanged(live.playback)
+                    case .background: live.session.interrupt()
+                    default: break
+                    }
                 }
                 .task { await live.observeEngine() }
                 .task { await live.player.observeDetails() }

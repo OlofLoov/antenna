@@ -111,7 +111,7 @@
                     engine: UITestingShell.Engine(failing: false),
                     load: { try await loader.load($0) },
                     hasLogin: { loader.hasLogin($0) },
-                    lastChannel: LastChannelStore(defaults: defaults),
+                    recents: RecentsStore(defaults: defaults),
                     sleep: { try await Task.sleep(for: $0) },
                     guide: nil)
             }

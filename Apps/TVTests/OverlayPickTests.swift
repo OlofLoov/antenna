@@ -20,7 +20,7 @@ import Testing
         model = ShellModel(
             .init(
                 engine: engine, load: { try await loader.load($0) }, hasLogin: { _ in true },
-                lastChannel: LastChannelStore(defaults: defaults), sleep: { try await clock.sleep($0) }, guide: nil))
+                recents: RecentsStore(defaults: defaults), sleep: { try await clock.sleep($0) }, guide: nil))
     }
 
     private func wait(_ condition: () -> Bool, _ comment: Comment? = nil) async {

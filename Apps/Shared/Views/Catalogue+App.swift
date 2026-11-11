@@ -7,6 +7,7 @@ extension CatalogueGroup {
     var label: String {
         switch self {
         case .favorites: "Favorites"
+        case .recents: "Recents"
         case .all: "All channels"
         case .named(_, let name): name
         case .ungrouped: "Ungrouped"
@@ -15,11 +16,25 @@ extension CatalogueGroup {
 
     /// How the Apple TV channel column is sorted, under its heading.
     var order: String {
-        self == .favorites ? "Your order" : "Sorted by number"
+        switch self {
+        case .favorites: "Your order"
+        case .recents: "Newest first"
+        case .all, .named, .ungrouped: "Sorted by number"
+        }
     }
 
     var systemImage: String? {
-        self == .favorites ? "star" : nil
+        switch self {
+        case .favorites: "star"
+        case .recents: "clock.arrow.circlepath"
+        case .all, .named, .ungrouped: nil
+        }
+    }
+
+    /// What VoiceOver reads for the group with `count` channels
+    /// (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels).
+    func spokenLabel(count: Int) -> String {
+        "\(label), \(count == 1 ? "1 channel" : "\(count) channels")"
     }
 }
 

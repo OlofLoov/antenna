@@ -2,9 +2,9 @@
 
 ## 1. Store and tracker in AntennaCore
 
-- [ ] 1.1 Add the on-device store for recents, the session and the last channel with the 20-entry newest-first rule, and verify core tests for move-to-top, overflow and damaged data
-- [ ] 1.2 Refuse channel ids that contain a stream link, and verify a core test that such a channel is neither listed nor saved while an Xtream channel is
-- [ ] 1.3 Add the session tracker with the ten-second count and its cancel rules, and verify an integration test for each interruption
+- [x] 1.1 Add the on-device store for recents, the session and the last channel with the 20-entry newest-first rule, and verify core tests for move-to-top, overflow and damaged data
+- [x] 1.2 Refuse channel ids that contain a stream link, and verify a core test that such a channel is neither listed nor saved while an Xtream channel is
+- [x] 1.3 Add the session tracker with the ten-second count and its cancel rules, and verify an integration test for each interruption
 
 ## 2. Source deletion
 
@@ -12,7 +12,7 @@
 
 ## 3. Catalogue
 
-- [ ] 3.1 Add the Recents group between Favorites and All channels and its replace-without-rebuild path, and verify core tests for order, absence when empty, ambiguous ids and the 20 ms bound
+- [x] 3.1 Add the Recents group between Favorites and All channels and its replace-without-rebuild path, and verify core tests for order, absence when empty, ambiguous ids and the 20 ms bound
 
 ## 4. Recents on screen
 
