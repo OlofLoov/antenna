@@ -45,6 +45,9 @@ final class LiveModel {
         var languages = ChannelLanguageStore()
         /// How often to look for a login that has not arrived yet.
         var loginCheck = Duration.seconds(5)
+        /// How long a tap keeps the controls up while playing. UI tests
+        /// raise it, since a slow runner can take longer than that to read them.
+        var touchHold = ControlsTimer.touchHold
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -326,7 +329,9 @@ final class LiveModel {
         lastInput = input
         hiding?.cancel()
         if input != .pointerLeft { controlsShown = true }
-        guard controlsShown, let delay = ControlsTimer.delay(after: input, isPaused: isPaused) else { return }
+        guard controlsShown, let delay = ControlsTimer.delay(after: input, isPaused: isPaused, touchHold: dependencies.touchHold) else {
+            return
+        }
         hiding = Task { [weak self] in
             try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }
@@ -394,12 +399,15 @@ enum ControlsTimer {
         case pointerLeft
     }
 
+    /// How long a tap keeps the controls up while playing.
+    static let touchHold = Duration.seconds(3)
+
     /// How long after `input` the controls hide, or nil while they stay:
     /// paused, or with the pointer over the picture.
-    static func delay(after input: Input, isPaused: Bool) -> Duration? {
+    static func delay(after input: Input, isPaused: Bool, touchHold: Duration = touchHold) -> Duration? {
         guard !isPaused else { return nil }
         switch input {
-        case .touch: return .seconds(3)
+        case .touch: return touchHold
         case .pointerInside: return nil
         case .pointerLeft: return .seconds(1)
         }

@@ -219,7 +219,7 @@ extension XCUIApplication {
         let probe = element("browse.debug.engine")
         let matches = NSPredicate(format: "value == %@", summary)
         let wait = XCTNSPredicateExpectation(predicate: matches, object: probe)
-        let result = XCTWaiter().wait(for: [wait], timeout: 5)
+        let result = XCTWaiter().wait(for: [wait], timeout: 15)
         XCTAssertEqual(result, .completed, "engine is \(probe.value as? String ?? "missing"), expected \(summary)", file: file, line: line)
     }
 }
