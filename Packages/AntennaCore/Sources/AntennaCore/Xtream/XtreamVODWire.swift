@@ -79,10 +79,15 @@ struct InfoFields: Decodable {
     var genre: String?
     var ageRating: String?
     var backdropURLs: [URL] = []
+    var cast: String?
+    var director: String?
+    var rating: Double?
+    var trailerURL: URL?
 
     enum CodingKeys: String, CodingKey {
         case plot, releasedate, releaseDateSnake = "release_date", releaseDate, duration
         case durationSecs = "duration_secs", genre, age, backdropPath = "backdrop_path"
+        case cast, actors, director, rating, youtubeTrailer = "youtube_trailer", trailer
     }
 
     init() {}
@@ -100,6 +105,10 @@ struct InfoFields: Decodable {
         } else if let single = Loose.webURL(c.nonEmptyString(.backdropPath)) {
             backdropURLs = [single]
         }
+        cast = c.looseString(.cast) ?? c.looseString(.actors)
+        director = c.looseString(.director)
+        rating = c.looseDouble(.rating).flatMap { $0 > 0 ? $0 : nil }
+        trailerURL = Loose.trailer(c.nonEmptyString(.youtubeTrailer) ?? c.nonEmptyString(.trailer))
     }
 }
 
@@ -160,11 +169,15 @@ struct EpisodeRow: Decodable {
     var title: String?
     var containerExtension: String?
     var duration: TimeInterval?
+    var plot: String?
+    var thumbnailURL: URL?
 
     enum CodingKeys: String, CodingKey {
         case id, season, number = "episode_num", title, containerExtension = "container_extension", info
     }
-    enum InfoKeys: String, CodingKey { case durationSecs = "duration_secs", duration }
+    enum InfoKeys: String, CodingKey {
+        case durationSecs = "duration_secs", duration, plot, overview, movieImage = "movie_image", coverBig = "cover_big"
+    }
 
     init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -175,6 +188,8 @@ struct EpisodeRow: Decodable {
         containerExtension = c.looseString(.containerExtension)
         if let info = try? c.nestedContainer(keyedBy: InfoKeys.self, forKey: .info) {
             duration = Loose.duration(seconds: info.looseDouble(.durationSecs), clock: info.nonEmptyString(.duration))
+            plot = info.nonEmptyString(.plot) ?? info.nonEmptyString(.overview)
+            thumbnailURL = Loose.webURL(info.nonEmptyString(.movieImage)) ?? Loose.webURL(info.nonEmptyString(.coverBig))
         }
     }
 }
@@ -197,7 +212,8 @@ extension XtreamClient {
                     Episode(
                         id: XtreamTitleID(host: host, kind: .episode, rawID: row.episodeID).description, episodeID: row.episodeID,
                         season: row.season ?? group.seasonKey, number: row.number, title: title,
-                        containerExtension: row.containerExtension, duration: row.duration))
+                        containerExtension: row.containerExtension, duration: row.duration, plot: row.plot,
+                        thumbnailURL: row.thumbnailURL))
             }
         }
         let sorted = episodes.enumerated().sorted { lhs, rhs in

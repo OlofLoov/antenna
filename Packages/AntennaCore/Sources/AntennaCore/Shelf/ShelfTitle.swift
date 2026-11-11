@@ -20,11 +20,15 @@ public struct ShelfTitle: Sendable, Hashable, Identifiable {
     public var category: String?
     /// A movie's file extension for its playable address, such as "mkv".
     public var containerExtension: String?
+    /// The list row's rating, nil when the provider sends none. The page
+    /// prefers the info call's.
+    public var rating: Double?
 
     public init(
         id: String, kind: Kind, sourceID: UUID, name: String, posterURL: URL? = nil, added: Date? = nil, category: String? = nil,
-        containerExtension: String? = nil
+        containerExtension: String? = nil, rating: Double? = nil
     ) {
+        self.rating = rating
         self.id = id
         self.kind = kind
         self.sourceID = sourceID
@@ -39,7 +43,7 @@ public struct ShelfTitle: Sendable, Hashable, Identifiable {
     public init(movie: VODItem, sourceID: UUID, categories: [String: String]) {
         self.init(
             id: movie.id, kind: .movie, sourceID: sourceID, name: movie.name, posterURL: movie.posterURL, added: movie.added,
-            category: movie.categoryID.flatMap { categories[$0] }, containerExtension: movie.containerExtension)
+            category: movie.categoryID.flatMap { categories[$0] }, containerExtension: movie.containerExtension, rating: movie.rating)
     }
 
     /// A series row; series order by when they last changed

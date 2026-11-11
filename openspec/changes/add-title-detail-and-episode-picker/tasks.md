@@ -2,14 +2,14 @@
 
 ## 1. Xtream client fields
 
-- [ ] 1.1 Decode cast, director, rating and the trailer link for movies and series, and verify decoder tests for a full body, a 0 rating, a YouTube id and a bad link
-- [ ] 1.2 Decode each episode's description and picture, and verify decoder tests with and without them
+- [x] 1.1 Decode cast, director, rating and the trailer link for movies and series, and verify decoder tests for a full body, a 0 rating, a YouTube id and a bad link
+- [x] 1.2 Decode each episode's description and picture, and verify decoder tests with and without them
 
 ## 2. Rules in AntennaCore
 
-- [ ] 2.1 Add the details line and labels, and verify core tests for full and missing fields
-- [ ] 2.2 Add season grouping with Specials and Other, and verify core tests and the 5 000-episode benchmark
-- [ ] 2.3 Add the play-target rule and button labels, and verify core tests for in progress, after finished, wrapping, nothing started, all watched and no episodes
+- [x] 2.1 Add the details line and labels, and verify core tests for full and missing fields
+- [x] 2.2 Add season grouping with Specials and Other, and verify core tests and the 5 000-episode benchmark
+- [x] 2.3 Add the play-target rule and button labels, and verify core tests for in progress, after finished, wrapping, nothing started, all watched and no episodes
 
 ## 3. Opening the page
 

@@ -71,11 +71,21 @@ public struct VODInfo: Sendable, Hashable {
     public var backdropURLs: [URL]
     /// From `movie_data.container_extension`.
     public var containerExtension: String?
+    /// From `info.cast`, else `info.actors`, as the panel wrote it.
+    public var cast: String?
+    /// From `info.director`.
+    public var director: String?
+    /// From `info.rating`. Nil when the panel sends 0 or no usable number.
+    public var rating: Double?
+    /// From `info.youtube_trailer`, else `info.trailer`: a web address as is, an
+    /// 11-character YouTube id as `https://www.youtube.com/watch?v=<id>`, anything else nil.
+    public var trailerURL: URL?
 
     /// Builds a value. `decodeVODInfo(_:host:)` is the usual source.
     public init(
         plot: String? = nil, year: Int? = nil, duration: TimeInterval? = nil, genre: String? = nil, ageRating: String? = nil,
-        backdropURLs: [URL] = [], containerExtension: String? = nil
+        backdropURLs: [URL] = [], containerExtension: String? = nil, cast: String? = nil, director: String? = nil,
+        rating: Double? = nil, trailerURL: URL? = nil
     ) {
         self.plot = plot
         self.year = year
@@ -84,6 +94,10 @@ public struct VODInfo: Sendable, Hashable {
         self.ageRating = ageRating
         self.backdropURLs = backdropURLs
         self.containerExtension = containerExtension
+        self.cast = cast
+        self.director = director
+        self.rating = rating
+        self.trailerURL = trailerURL
     }
 }
 
@@ -127,6 +141,14 @@ public struct SeriesInfo: Sendable, Hashable {
     public var ageRating: String?
     /// From `info.backdrop_path`, with the rules of `VODInfo.backdropURLs`.
     public var backdropURLs: [URL]
+    /// With the rules of `VODInfo.cast`.
+    public var cast: String?
+    /// With the rules of `VODInfo.director`.
+    public var director: String?
+    /// With the rules of `VODInfo.rating`.
+    public var rating: Double?
+    /// With the rules of `VODInfo.trailerURL`.
+    public var trailerURL: URL?
     /// Flat, sorted by season then number, nil first, ties in server order.
     public var episodes: [Episode]
     /// Number of distinct non-nil `Episode.season` values.
@@ -137,13 +159,18 @@ public struct SeriesInfo: Sendable, Hashable {
     /// Builds a value. `decodeSeriesInfo(_:host:)` is the usual source.
     public init(
         plot: String? = nil, year: Int? = nil, genre: String? = nil, ageRating: String? = nil, backdropURLs: [URL] = [],
-        episodes: [Episode] = [], skippedEpisodes: Int = 0
+        cast: String? = nil, director: String? = nil, rating: Double? = nil, trailerURL: URL? = nil, episodes: [Episode] = [],
+        skippedEpisodes: Int = 0
     ) {
         self.plot = plot
         self.year = year
         self.genre = genre
         self.ageRating = ageRating
         self.backdropURLs = backdropURLs
+        self.cast = cast
+        self.director = director
+        self.rating = rating
+        self.trailerURL = trailerURL
         self.episodes = episodes
         self.skippedEpisodes = skippedEpisodes
     }
@@ -165,12 +192,18 @@ public struct Episode: Sendable, Hashable, Identifiable {
     public var containerExtension: String?
     /// Seconds, with the rule of `VODInfo.duration` over the episode's `info`.
     public var duration: TimeInterval?
+    /// From `info.plot`, else `info.overview`. Nil when absent or blank.
+    public var plot: String?
+    /// From `info.movie_image`, else `info.cover_big`, with the rules of `VODItem.posterURL`.
+    public var thumbnailURL: URL?
 
     /// Builds an episode. `decodeSeriesInfo(_:host:)` is the usual source.
     public init(
         id: String, episodeID: Int, season: Int? = nil, number: Int? = nil, title: String, containerExtension: String? = nil,
-        duration: TimeInterval? = nil
+        duration: TimeInterval? = nil, plot: String? = nil, thumbnailURL: URL? = nil
     ) {
+        self.plot = plot
+        self.thumbnailURL = thumbnailURL
         self.id = id
         self.episodeID = episodeID
         self.season = season

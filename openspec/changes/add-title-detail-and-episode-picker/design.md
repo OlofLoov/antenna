@@ -32,6 +32,16 @@ Not drawn yet: loading bars for the details, loading episode rows, the two error
 - Leaving before a reply cancels the request as the Xtream client does, and a late reply changes nothing. A deleted source dismisses the page with no further request. Trailer opens through an injected `openURL`. Identifier prefixes `title.` and `episodes.`.
 - Budgets: grouping and play target each under 50 ms for 5 000 episodes in 40 seasons with 1 000 progress values (debug `swift test`, `ANTENNA_BENCHMARKS=1`, the Xtream client's baseline). A 2 000-episode season scrolls with no hitch over 100 ms on Apple TV 4K (3rd generation) and iPhone 15, and image requests at the top stay within the visible rows plus one screen.
 
+## Implementation decisions
+
+Made while building the change, without the owner available. Each can be revisited in review.
+
+- **Xtream keys.** Cast is `info.cast`, else `info.actors`. Director is `info.director`. Rating is `info.rating` as number or string, 0 counts as none. The trailer is `info.youtube_trailer`, else `info.trailer`; an 11-character id uses the YouTube id alphabet (letters, digits, `-`, `_`). An episode's description is `info.plot`, else `info.overview`, and its picture `info.movie_image`, else `info.cover_big`, under the poster URL rules.
+- **Rating on the list row.** `ShelfTitle` keeps the list row's rating, so the page can fall back to it as the decision above asks. Series list rows carry none.
+- **Season order and wrapping.** The play target walks episodes in the picker's order: seasons by number, then Specials, then Other. So finishing the last episode of the last season offers the first special before wrapping to Season 1. Ties between finished episodes go to the earlier one, as they do for episodes in progress.
+- **Seasons count.** The details line counts numbered seasons only, so Specials and Other do not add a season.
+- **Benchmark.** The 5 000-episode benchmark spreads episodes over 40 seasons and saves 1 000 positions, a third of them in progress. It runs with `ANTENNA_BENCHMARKS=1` on the CLT toolchain.
+
 ## Risks / Trade-offs
 
 The owner answers each one that changes a requirement before the change is accepted.
