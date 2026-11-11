@@ -6,6 +6,8 @@ extension Browse {
     /// group, and Sources & Settings at the bottom. 232 wide on the
     /// sidebar color.
     struct Sidebar<Sections: View, Groups: View, Footer: View>: View {
+        /// The label over the groups: "Groups" on Live, "Genres" on Movies and Series.
+        var eyebrow = "Groups"
         @ViewBuilder var sections: Sections
         @ViewBuilder var groups: Groups
         @ViewBuilder var footer: Footer
@@ -22,7 +24,7 @@ extension Browse {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
                         sections
-                        Eyebrow(text: "Groups")
+                        Eyebrow(text: eyebrow)
                             .padding(EdgeInsets(top: 22, leading: 12, bottom: 8, trailing: 12))
                         groups
                     }

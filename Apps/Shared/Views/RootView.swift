@@ -10,6 +10,7 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.currentProfile) private var profile
         @State private var live: LiveModel?
+        @State private var shelves: ShelfLibrary?
         @State private var lifecycle: PlaybackLifecycle?
         #if os(iOS)
             @Environment(\.horizontalSizeClass) private var sizeClass
@@ -18,9 +19,10 @@
         var body: some View {
             ZStack {
                 Palette.ground.ignoresSafeArea()
-                if let live {
+                if let live, let shelves {
                     layout
                         .modifier(LiveSync(live: live))
+                        .modifier(ShelfSync(library: shelves))
                 }
             }
             .preferredColorScheme(.dark)
@@ -32,6 +34,7 @@
                 let lifecycle = PlaybackLifecycle(engine: engine) { engine.continuesInPictureInPicture }
                 lifecycle.start()
                 self.live = live
+                self.shelves = .app(loader)
                 self.lifecycle = lifecycle
             }
         }
@@ -61,17 +64,20 @@
         private func dependencies() -> LiveModel.Dependencies {
             #if DEBUG
                 if let scripted = UITestingLive.dependencies() { return scripted }
+                if let scripted = UITestingShelf.liveDependencies() { return scripted }
             #endif
             return .live(loader: loader, guide: guideStore, profile: profile)
         }
     }
 
     /// The tab bar on iPhone and in a narrow iPad window: Live, Guide, Movies, Search and Settings. Series
-    /// sits inside Movies.
+    /// sits inside Movies, and Movies shows only with an Xtream source
+    /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
     private struct CompactTabs: View {
         enum Tab: Hashable { case live, guide, movies, search, settings }
         @State private var selection: Tab = .live
         @Environment(LiveModel.self) private var live
+        @Environment(ShelfLibrary.self) private var shelves
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -84,8 +90,10 @@
                 SwiftUI.Tab("Guide", systemImage: "list.bullet.rectangle", value: .guide) {
                     GuideView()
                 }
-                SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
-                    StandIn(title: "Movies", systemImage: "film")
+                if shelves.hasXtream {
+                    SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
+                        ShelfCompactScreen()
+                    }
                 }
                 SwiftUI.Tab("Search", systemImage: "magnifyingglass", value: .search) {
                     StandIn(title: "Search", systemImage: "magnifyingglass")
@@ -93,6 +101,10 @@
                 SwiftUI.Tab("Settings", systemImage: "gearshape", value: .settings) {
                     SettingsView()
                 }
+            }
+            // The Movies tab goes with the last Xtream source.
+            .onChange(of: shelves.hasXtream) { _, has in
+                if !has, selection == .movies { selection = .live }
             }
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with

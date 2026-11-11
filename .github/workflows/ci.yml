@@ -177,6 +177,7 @@ jobs:
             -only-testing:AntennaUITests/LiveRegularUITests \
             -only-testing:AntennaUITests/LiveKeyboardUITests \
             -only-testing:AntennaUITests/LiveStatesUITests \
+            -only-testing:AntennaUITests/ShelfRegularUITests \
             -retry-tests-on-failure -test-iterations 2 \
             -resultBundlePath ipad-ui-tests.xcresult \
             CODE_SIGNING_ALLOWED=NO

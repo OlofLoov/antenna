@@ -57,6 +57,8 @@ extension Browse {
     struct Message: View {
         let title: String
         let lines: [String]
+        /// The Retry button's identifier; Movies and Series use their own prefix.
+        var retryIdentifier = "browse.retry"
         let retry: () -> Void
 
         var body: some View {
@@ -79,7 +81,7 @@ extension Browse {
                 }
                 .buttonStyle(.plain)
                 .padding(.top, 8)
-                .accessibilityIdentifier("browse.retry")
+                .accessibilityIdentifier(retryIdentifier)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 24)
@@ -91,6 +93,8 @@ extension Browse {
     /// Retry and a dismiss button (`iPhone-Banner`, `iPad-Banner`).
     struct FailureBanner: View {
         let text: String
+        /// The banner's identifier, and the start of its parts' identifiers.
+        var identifier = "browse.banner.failed"
         let retry: () -> Void
         let dismiss: () -> Void
 
@@ -99,12 +103,12 @@ extension Browse {
                 Text(text)
                     .font(.subheadline)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .accessibilityIdentifier("browse.banner.failed.text")
+                    .accessibilityIdentifier("\(identifier).text")
                 Button("Retry", action: retry)
                     .font(.subheadline.weight(.semibold))
                     .buttonStyle(.plain)
                     .frame(minWidth: 44, minHeight: 44)
-                    .accessibilityIdentifier("browse.banner.failed.retry")
+                    .accessibilityIdentifier("\(identifier).retry")
                 Button(action: dismiss) {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .semibold))
@@ -114,13 +118,13 @@ extension Browse {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Dismiss")
-                .accessibilityIdentifier("browse.banner.failed.dismiss")
+                .accessibilityIdentifier("\(identifier).dismiss")
             }
             .foregroundStyle(Palette.text)
             .padding(.leading, 14)
             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
             .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("browse.banner.failed")
+            .accessibilityIdentifier(identifier)
         }
     }
 

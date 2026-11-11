@@ -41,6 +41,20 @@ On iPhone the Movies tab shows the Movies | Series switch, a tall banner with ge
 - The rules live in `AntennaCore/Shelf`: `ShelfTitle` (a movie or series from any source), `Shelf.banner` and `Shelf.rows`, `ContinueWatching` and `ShelfText`. Screens map Xtream rows to `ShelfTitle` and read progress from `ActivityStore`.
 - Continue watching keeps a series whose latest episode is finished as "Next episode" until its episode list shows nothing unwatched, so the row does not load every series' episodes up front. Selecting a series whose episodes are all finished starts the first from the beginning.
 
+## Implementation decisions
+
+Made while building the screens, without the user available. Each can be revisited in review.
+
+- **Loading.** Each section loads its titles from every Xtream source the first time it opens, and keeps them while the app runs. Options were loading at launch, which costs every launch a catalogue fetch the user may never look at, or loading on each open, which makes switching tabs slow. A source waiting for its login is tried again when the section opens, when the app returns to the foreground and every five seconds while it waits, as Live does.
+- **Banner details.** The list calls carry no year, length or description, so the banner asks the provider's info call for the title on show and the next one, once each. Until it answers, the banner shows the name and category. The art is the first backdrop from that call, else the poster.
+- **iPhone banner text.** `iPhone-Movies` draws no description, but the requirement asks for one, so the iPhone banner shows it on two lines under the facts.
+- **Eyebrow.** "Recently added · <category>" for movies and series alike, as the boards draw it.
+- **Paging.** iPhone and iPad page the banner with a sideways swipe of 40 pt; the dots also show a title when tapped, and VoiceOver adjusts the pager. On Apple TV, moving right from My list or left from Play pages it. Focus on any banner button, a finger on the banner or the pointer over it holds the title. Paging wraps at both ends with or without Reduce Motion.
+- **Status.** `ShelfStatus` in AntennaCore decides between loading, offline, "Could not load movies", "Nothing here yet" and titles. Loading shows until any source has titles; once one has, titles show and the others report through the banner or a waiting note.
+- **Identifiers.** Rows and genres use a slug of the category name (`movies.row.kids-family`, `movies.genres.kids-family`) instead of a category id, because a merged row has one id per source. Posters are `movies.card.<title id>`. The banner's parts are `movies.hero`, `.hero.title`, `.hero.play`, `.hero.info`, `.hero.myList` and `.hero.pager`. States are `movies.loading`, `.error`, `.empty`, `.retry`, `.failure` (the failed-source banner) and `.waiting.<source id>`. The iPhone switch is `movies.kind` with `movies.kind.movies` and `movies.kind.series`. Series uses the same names under `series.`.
+- **Apple TV focus.** The banner's Play button takes the shell's content focus, so opening the tab lands on Play and swiping up from it reaches the open tab. The `tvos-shell` stand-in requirement changes with this change, since Movies and Series are no longer stand-ins.
+- **UI tests.** `-ui-testing-shelf <scenario>` seeds Home (M3U) and the Xtream sources Cabin and Office with scripted titles, and `-ui-testing-reduce-motion` makes the banner act as with Reduce Motion on.
+
 ## Badge rules
 
 - "4K" shows when the movie's `name` contains "2160p", "4K" or "UHD", ignoring case.

@@ -199,24 +199,23 @@ extension ShellUITests {
 
 extension ShellUITests {
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
-    // tvos-shell/stand-in-screens
     func testMenuFromTabReachesBar() {
         launchPlaying()
         press(.menu)
         press(.right, times: 2)
         expectFocus("shell.tab.movies")
         press(.select)
-        expectFocus("movies.standIn")
+        expectFocus("movies.hero.play")
         press(.menu)
         expectFocus("shell.tab.movies")
         XCTAssertTrue(element("shell.tab.movies").isSelected)
-        XCTAssertTrue(element("movies.standIn").exists)
+        XCTAssertTrue(element("movies.hero.play").exists)
 
         press(.select)
-        expectFocus("movies.standIn")
+        expectFocus("movies.hero.play")
         press(.up)
         expectFocus("shell.tab.movies")
-        XCTAssertTrue(element("movies.standIn").exists)
+        XCTAssertTrue(element("movies.hero.play").exists)
     }
 
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
@@ -244,12 +243,12 @@ extension ShellUITests {
         press(.menu)
         press(.right, times: 2)
         press(.select)
-        expectFocus("movies.standIn")
+        expectFocus("movies.hero.play")
         press(.menu)
         expectFocus("shell.tab.movies")
         press(.menu)
         expectGone("shell.tab.live")
-        expectGone("movies.standIn")
+        expectGone("movies.hero.play")
         expect(element("shell.player"), "value == 'full'")
         expectEngine("playing loads=1 file=a1.ts")
     }
