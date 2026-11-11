@@ -89,7 +89,8 @@ struct TitleScreen<Page: View>: View {
         return EpisodesContext(
             state: .init(
                 seasons: groups.map { .init(id: $0.id, title: $0.title, count: $0.countLabel) }, picked: picked, rows: rows, phase: phase,
-                skipped: model.phase == .loaded ? EpisodeText.skipped(model.skipped) : nil, dwell: dwell),
+                skipped: model.phase == .loaded ? EpisodeText.skipped(model.skipped) : nil, dwell: dwell,
+                reveal: playback.playing == nil ? model.lastPlayed : nil),
             actions: .init(pick: { model.pickedSeason = $0 }, play: playEpisode, retry: { attempt += 1 }))
     }
 
@@ -139,17 +140,8 @@ struct TitleScreen<Page: View>: View {
 
     private var play: TitlePageContext.PlayState {
         switch route.title.kind {
-        case .movie:
-            let saved = activity.progress(of: route.title)
-            guard let saved, saved.state == .inProgress else { return .init(label: PlayLabel.text(resumes: false), enabled: true) }
-            return .init(
-                label: PlayLabel.text(resumes: true), enabled: true, fraction: EpisodeText.fraction(saved), remaining: ShelfText.left(saved)
-            )
-        case .series:
-            guard let target else { return .init(label: PlayLabel.text(resumes: false), enabled: false) }
-            let saved = target.resumes ? seriesProgress[target.episode.id] : nil
-            return .init(
-                label: target.label, enabled: true, fraction: saved.flatMap(EpisodeText.fraction), remaining: saved.flatMap(ShelfText.left))
+        case .movie: .movie(activity.progress(of: route.title))
+        case .series: .series(target, progress: seriesProgress)
         }
     }
 
@@ -162,6 +154,7 @@ struct TitleScreen<Page: View>: View {
             playback.play(model.playable, library: library, activity: activity)
         case .series:
             guard let target else { return }
+            _ = model.willPlay(target.episode, progress: seriesProgress)
             playback.play(target.episode, of: route.title, from: target.position, library: library, activity: activity)
         }
     }
@@ -170,8 +163,7 @@ struct TitleScreen<Page: View>: View {
     /// for the return (title-detail-and-episode-picker/play-an-episode-and-come-back).
     private func playEpisode(_ episode: Episode) {
         guard model.checkLogin() else { return }
-        model.pickedSeason = model.groups.first { $0.episodes.contains(episode) }?.id
-        let from = seriesProgress[episode.id]?.resumePosition ?? 0
+        let from = model.willPlay(episode, progress: seriesProgress)
         playback.play(episode, of: route.title, from: from, library: library, activity: activity)
     }
 }
@@ -200,3 +192,23 @@ struct TitleScreen<Page: View>: View {
         }
     }
 #endif
+
+extension TitlePageContext.PlayState {
+    /// A movie's button: Resume with the bar and minutes left while it is
+    /// in progress, else Play from the start
+    /// (title-detail-and-episode-picker/play-or-resume-a-movie).
+    static func movie(_ saved: WatchProgress?) -> Self {
+        guard let saved, saved.state == .inProgress else { return Self(label: PlayLabel.text(resumes: false), enabled: true) }
+        return Self(
+            label: PlayLabel.text(resumes: true), enabled: true, fraction: EpisodeText.fraction(saved), remaining: ShelfText.left(saved))
+    }
+
+    /// A series' button, naming the episode Play starts; disabled until
+    /// there is one (title-detail-and-episode-picker/play-starts-the-right-episode).
+    static func series(_ target: SeriesPlayTarget?, progress: [String: WatchProgress]) -> Self {
+        guard let target else { return Self(label: PlayLabel.text(resumes: false), enabled: false) }
+        let saved = target.resumes ? progress[target.episode.id] : nil
+        return Self(
+            label: target.label, enabled: true, fraction: saved.flatMap(EpisodeText.fraction), remaining: saved.flatMap(ShelfText.left))
+    }
+}

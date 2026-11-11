@@ -27,9 +27,9 @@
 
 ## 5. Playing and My list
 
-- [ ] 5.1 Add Play and Resume for a movie and the return to the page with progress updated, and verify integration and UI tests with a stand-in player
-- [ ] 5.2 Play an episode, save progress as it plays and return with the episode in view, and verify integration and UI tests
-- [ ] 5.3 Add My list on the page in agreement with the banner, and verify a test of fast repeated presses
+- [x] 5.1 Add Play and Resume for a movie and the return to the page with progress updated, and verify integration and UI tests with a stand-in player
+- [x] 5.2 Play an episode, save progress as it plays and return with the episode in view, and verify integration and UI tests
+- [x] 5.3 Add My list on the page in agreement with the banner, and verify a test of fast repeated presses
 
 ## 6. Going back
 
