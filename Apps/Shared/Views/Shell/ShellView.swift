@@ -217,9 +217,7 @@
             case .live:
                 EmptyView()
             case .guide:
-                TimelineView(.everyMinute) { context in
-                    GuideStandIn(date: context.date, focus: $focus)
-                }
+                GuideScreen(shell: model, catalogue: catalogue, overlay: overlay, guide: overlayGuide, focus: $focus)
             case .movies:
                 ContentStandIn(text: "Movies are not available yet.", identifier: "movies.standIn", focus: $focus)
             case .series:
