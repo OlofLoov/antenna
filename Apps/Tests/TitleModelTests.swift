@@ -123,6 +123,36 @@ import Testing
         #expect(!page.checkLogin())
         #expect(TitleProblem.waitingForLogin("Cabin").message(.movie) == "Cabin: waiting for its login to sync from iCloud")
     }
+
+    @Test("title-detail-and-episode-picker/what-each-episode-shows a series groups its episodes and counts the unreadable ones")
+    func seriesEpisodes() async throws {
+        let series = ShelfTitle(id: "xtream#h#series#3", kind: .series, sourceID: source, name: "Northern Lights", category: "Drama")
+        let episodes = [
+            Episode(id: "e1", episodeID: 1, season: 2, number: 1, title: "A"),
+            Episode(id: "e2", episodeID: 2, season: 1, number: 1, title: "B"),
+            Episode(id: "e3", episodeID: 3, season: 0, number: 1, title: "C"),
+        ]
+        for (list, skipped) in [(episodes, 2), ([], 0)] {
+            let dependencies = ShelfModel.Dependencies(
+                load: { _, kind in ShelfCatalogue(titles: kind == .series ? [series] : [], categories: ["Drama"]) },
+                hasLogin: { _ in true }, details: { _, _ in ShelfDetails() }, episodes: { _, _ in [] },
+                info: { _, _ in .series(SeriesInfo(episodes: list, skippedEpisodes: skipped)) })
+            let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
+            library.sourcesChanged([descriptor])
+            library.openPage(series, from: .poster, in: .series)
+            let model = try #require(library.page?.model)
+            await model.load()
+            #expect(model.phase == .loaded)
+            #expect(model.skipped == skipped)
+            if list.isEmpty {
+                #expect(model.groups.isEmpty, "no episodes: the page says so and Play is disabled")
+            } else {
+                #expect(model.groups.map(\.title) == ["Season 1", "Season 2", "Specials"])
+                #expect(model.metadata.detailsLine == "2 seasons")
+                #expect(library.series.episodes[series.id]?.count == 3, "kept for Continue watching")
+            }
+        }
+    }
 }
 
 /// Holds an answer back until the test opens it.

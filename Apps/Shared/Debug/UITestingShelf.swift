@@ -31,8 +31,8 @@
             case error
             /// Cabin answers with nothing; Office has no login on this device.
             case empty
-            /// As `titles`, with Second Act 40% in, Northern Lights' first
-            /// episode finished, Harbor Watch's first episode 30% in, Salt
+            /// As `titles`, with Second Act 40% in, Northern Lights' S2 E1
+            /// finished last, its S1 E1 finished and S1 E2 barely started, Harbor Watch's first episode 30% in, Salt
             /// Road finished, and Paper Cities then Night Ferry added to
             /// My list, with an entry for a movie that is not loaded.
             case watching
@@ -102,6 +102,8 @@
             }
             progress("xtream#cabin#vod#2", at: 0.4, ago: 60)
             progress("xtream#cabin#episode#11", series: "xtream#cabin#series#1", at: 0.99, ago: 30)
+            progress("xtream#cabin#episode#101", series: "xtream#cabin#series#1", at: 0.99, ago: 300)
+            progress("xtream#cabin#episode#102", series: "xtream#cabin#series#1", at: 0.01, ago: 250)
             progress("xtream#cabin#episode#21", series: "xtream#cabin#series#2", at: 0.3, ago: 10)
             progress("xtream#cabin#vod#3", at: 0.99, ago: 5)
             let entries = [
@@ -183,9 +185,11 @@
 
             private var officeEpisodeLoads = 0
 
-            /// Northern Lights: three episodes of season 2. Harbor Watch: two of
-            /// season 1. Small Rooms: none. Long Winter (Office): the first
-            /// load fails, then two episodes.
+            /// Northern Lights: two episodes of season 1, three of season 2
+            /// (ids 11 to 13), one of season 3, a special and one with no
+            /// season or number. Harbor Watch: two of season 1. Small Rooms:
+            /// none. Long Winter (Office): the first load fails, then two
+            /// episodes.
             func episodes(_ series: ShelfTitle) async throws -> [Episode] {
                 let parts = series.id.split(separator: "#")
                 let host = parts.count > 1 ? String(parts[1]) : ""
@@ -195,19 +199,38 @@
                     if officeEpisodeLoads == 1 { throw URLError(.badServerResponse) }
                 }
                 if host == "cabin", number == 3 { return [] }
-                let northern = number == 1 && host == "cabin"
-                return (1...(northern ? 3 : 2)).map { index in
+                if host == "cabin", number == 1 { return northernLights }
+                return (1...2).map { index in
                     Episode(
-                        id: "xtream#\(host)#episode#\(number * 10 + index)", episodeID: number * 10 + index, season: northern ? 2 : 1,
+                        id: "xtream#\(host)#episode#\(number * 10 + index)", episodeID: number * 10 + index, season: 1,
                         number: index, title: "Episode \(index)", containerExtension: "mp4", duration: 2700)
                 }
+            }
+
+            private var northernLights: [Episode] {
+                func episode(_ id: Int, _ season: Int?, _ number: Int?, _ title: String, _ plot: String?) -> Episode {
+                    Episode(
+                        id: "xtream#cabin#episode#\(id)", episodeID: id, season: season, number: number, title: title,
+                        containerExtension: "mp4", duration: 2700, plot: plot)
+                }
+                return [
+                    episode(2, nil, nil, "Episode", nil),
+                    episode(1, 0, 1, "Behind the Lights", "How the station was built for the screen."),
+                    episode(101, 1, 1, "Arrival", "The relief crew lands the week the lights return."),
+                    episode(102, 1, 2, "Static", "The radio picks up a voice from the last team."),
+                    episode(11, 2, 1, "The Weir", "The generator fails on the first night."),
+                    episode(12, 2, 2, "Low Water", "The tide drops further than the charts allow."),
+                    episode(13, 2, 3, "Ice Road", nil),
+                    episode(301, 3, 1, "Thaw", "Spring comes early to the station."),
+                ]
             }
 
             private var infoLoads: [String: Int] = [:]
 
             /// The title page's info call. The Long Harbor has every field and
             /// a trailer; Night Ferry has a trailer too; Salt Road only a length; Copper Hills (Office) fails
-            /// once, then answers. A series carries its episodes.
+            /// once, then answers. A series carries its episodes and answers
+            /// after half a second.
             func info(_ title: ShelfTitle) async throws -> TitleInfo {
                 infoLoads[title.id, default: 0] += 1
                 switch title.kind {
@@ -236,11 +259,13 @@
                                 trailerURL: trailer))
                     }
                 case .series:
+                    // A series answers after half a second, so the page shows its name first.
+                    try await Task.sleep(for: .milliseconds(500))
                     let details = details(title)
                     return .series(
                         SeriesInfo(
                             plot: details.plot, year: details.year, genre: title.category, rating: 8.1,
-                            episodes: try await episodes(title)))
+                            episodes: try await episodes(title), skippedEpisodes: title.id == "xtream#cabin#series#1" ? 1 : 0))
                 }
             }
 

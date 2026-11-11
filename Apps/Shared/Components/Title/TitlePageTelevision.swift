@@ -14,9 +14,10 @@
             /// The backdrop's height: full screen for a movie, the top 520 for a series.
             let artHeight: CGFloat
             @ViewBuilder var below: Below
+            @Environment(\.titlePage) private var page
             @FocusState private var focused: Part?
 
-            enum Part: Hashable { case play }
+            enum Part: Hashable { case play, myList }
 
             var body: some View {
                 let type = Sizes.tv
@@ -45,6 +46,7 @@
                                         .fixedSize()
                                         .focused($focused, equals: .play)
                                     MyListButton(type: type)
+                                        .focused($focused, equals: .myList)
                                 }
                                 .padding(.top, 8)
                                 Progress(type: type)
@@ -66,6 +68,11 @@
                 .background(Palette.ground)
                 .ignoresSafeArea()
                 .defaultFocus($focused, .play)
+                // A series' Play waits for its episodes, and a disabled button
+                // cannot hold focus; once Play can play, focus moves to it.
+                .onChange(of: page?.state.play.enabled ?? false) { _, enabled in
+                    if enabled { focused = .play }
+                }
             }
         }
     }
