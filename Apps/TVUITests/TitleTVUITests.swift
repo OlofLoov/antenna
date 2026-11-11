@@ -73,4 +73,42 @@ final class TitleTVUITests: XCTestCase {
         XCTAssertTrue(element("title.myList").exists)
         XCTAssertFalse(element("title.trailer").exists)
     }
+
+    /// Series from the bar with the shelf's `titles` script, then Northern
+    /// Lights, the third poster in Recently added.
+    func openNorthernLights() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "titles"]
+        app.launch()
+        press(.menu)
+        XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
+        press(.right, times: 3)
+        expectFocus("shell.tab.series")
+        press(.select)
+        expectFocus("series.hero.play")
+        press(.down)
+        expectFocus("series.card.xtream#cabin#series#2")
+        press(.right, times: 2)
+        expectFocus("series.card.xtream#cabin#series#1")
+        press(.select)
+        expectFocus("title.play")
+    }
+
+    // title-detail-and-episode-picker/pick-a-season, resting on a chip
+    // title-detail-and-episode-picker/what-each-episode-shows
+    func testRestingOnASeasonChipShowsItsEpisodes() {
+        openNorthernLights()
+        XCTAssertEqual(element("title.play").label, "Play S1 E1")
+        expect(element("episodes.season.season-1"), "isSelected == true")
+        press(.down)
+        expectFocus("episodes.season.season-1")
+        press(.right)
+        expectFocus("episodes.season.season-2")
+        expect(element("episodes.season.season-2"), "isSelected == true", timeout: 3)
+        XCTAssertTrue(element("episodes.row.xtream#cabin#episode#11").waitForExistence(timeout: 3))
+        XCTAssertFalse(element("episodes.row.xtream#cabin#episode#101").exists)
+        press(.down)
+        expectFocus("episodes.row.xtream#cabin#episode#11")
+        XCTAssertEqual(element("episodes.row.xtream#cabin#episode#11").label, "Episode 1, The Weir, 45 min")
+    }
 }

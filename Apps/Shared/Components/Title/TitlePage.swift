@@ -366,7 +366,9 @@ enum TitlePage {
                         }
                     }
                     .frame(width: type.buttonHeight * 3, height: type.progress)
-                    .accessibilityHidden(true)
+                    .accessibilityElement()
+                    .accessibilityLabel("Progress")
+                    .accessibilityValue("\(Int((min(1, max(0, fraction)) * 100).rounded())) percent")
                     .accessibilityIdentifier("title.progress")
                     if let remaining = play.remaining {
                         Text(remaining)

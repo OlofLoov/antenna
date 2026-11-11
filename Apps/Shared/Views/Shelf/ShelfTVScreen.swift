@@ -36,7 +36,7 @@
                         TitlePage.Television(
                             plotLines: page.title.kind == .movie ? 4 : 2, artHeight: page.title.kind == .movie ? 1080 : 520
                         ) {
-                            EmptyView()
+                            EpisodePicker.Section(type: .tv)
                         }
                     }
                     .environment(\.shelfMetrics, .tv)

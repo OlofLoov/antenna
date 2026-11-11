@@ -110,13 +110,82 @@ final class TitleUITests: XCTestCase {
         XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
         XCTAssertEqual(app.element("title.name").label, "Northern Lights")
         XCTAssertEqual(app.element("title.eyebrow").label, "Series · Drama")
-        expect(app.element("title.play"), "label == 'Play S2 E1'")
-        expect(app.element("title.meta"), "label CONTAINS '1 season'")
+        expect(app.element("title.play"), "label == 'Play S1 E1'")
+        expect(app.element("title.meta"), "label CONTAINS '3 seasons'")
         XCTAssertFalse(app.element("series.player").exists, "nothing plays")
 
         app.element("title.back").tap()
         XCTAssertTrue(app.element("series.hero.info").waitForExistence(timeout: 5))
         app.element("series.hero.info").tap()
         XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+    }
+
+    func openNorthernLights(_ app: XCUIApplication) {
+        openSection(app, "series")
+        let poster = card(app, "series", in: "recentlyAdded", "xtream#cabin#series#1")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        poster.tap()
+        XCTAssertTrue(app.element("episodes.list").waitForExistence(timeout: 5))
+    }
+
+    func row(_ app: XCUIApplication, _ id: Int) -> XCUIElement {
+        app.element("episodes.row.xtream#cabin#episode#\(id)")
+    }
+
+    // title-detail-and-episode-picker/pick-a-season
+    // title-detail-and-episode-picker/play-starts-the-right-episode
+    func testThePickerOpensOnTheUpNextSeasonAndShowsOnlyThePickedOne() throws {
+        let app = try launch("watching")
+        openNorthernLights(app)
+        for id in ["season-1", "season-2", "season-3", "specials", "other"] {
+            XCTAssertTrue(app.element("episodes.season.\(id)").exists, "no chip \(id)")
+        }
+        XCTAssertTrue(app.element("episodes.season.season-2").isSelected, "opens on the season Play would start")
+        XCTAssertEqual(app.element("title.play").label, "Play S2 E2")
+        XCTAssertTrue(row(app, 12).label.hasSuffix("up next"), "the episode Play starts carries UP NEXT")
+        XCTAssertEqual(app.element("episodes.count").label, "3 episodes")
+        XCTAssertTrue(row(app, 11).exists && row(app, 12).exists && row(app, 13).exists)
+
+        app.element("episodes.season.season-3").tap()
+        expect(row(app, 301), "exists == true")
+        XCTAssertFalse(row(app, 11).exists)
+        XCTAssertEqual(app.element("episodes.count").label, "1 episode")
+        XCTAssertTrue(app.element("episodes.season.season-3").isSelected)
+    }
+
+    // title-detail-and-episode-picker/what-each-episode-shows
+    func testEachEpisodeShowsItsStateAndVoiceOverReadsIt() throws {
+        let app = try launch("watching")
+        openNorthernLights(app)
+        XCTAssertEqual(row(app, 11).label, "Episode 1, The Weir, 45 min, watched")
+        XCTAssertEqual(row(app, 12).label, "Episode 2, Low Water, 45 min, up next")
+        XCTAssertEqual(row(app, 13).label, "Episode 3, Ice Road, 45 min")
+
+        app.element("episodes.season.season-1").tap()
+        expect(row(app, 102), "exists == true")
+        XCTAssertEqual(row(app, 102).label, "Episode 2, Static, 45 min", "barely started looks unwatched")
+
+        app.element("episodes.season.other").tap()
+        expect(row(app, 2), "exists == true")
+        XCTAssertEqual(row(app, 2).label, "Episode, 45 min", "no number, nothing invented")
+        app.swipeUp()
+        XCTAssertTrue(app.element("episodes.skipped").exists)
+        XCTAssertEqual(app.element("episodes.skipped").label, "1 episode could not be read from the provider's list.")
+    }
+
+    // title-detail-and-episode-picker/what-each-episode-shows, in progress
+    func testAnEpisodeInProgressShowsItsBarAndMinutesLeft() throws {
+        let app = try launch("watching")
+        openSection(app, "series")
+        let poster = card(app, "series", in: "recentlyAdded", "xtream#cabin#series#2")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        poster.tap()
+        let episode = app.element("episodes.row.xtream#cabin#episode#21")
+        XCTAssertTrue(episode.waitForExistence(timeout: 5))
+        XCTAssertEqual(episode.label, "Episode 1, 45 min, 32 min left, up next")
+        XCTAssertEqual(app.element("title.play").label, "Resume S1 E1")
+        XCTAssertTrue(app.element("title.progress").exists)
+        XCTAssertEqual(app.element("title.remaining").label, "32 min left")
+        XCTAssertFalse(app.element("episodes.seasons").exists, "one season, no picker")
     }
 }
