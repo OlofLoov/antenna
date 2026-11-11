@@ -38,7 +38,7 @@ extension ContinueWatching {
             })
     }
 
-    /// The progress of a series' episodes by episode id, for `episodeToPlay`.
+    /// The progress of a series' episodes by episode id, for `SeriesPlayTarget`.
     public static func episodeProgress(_ progress: [WatchProgress], seriesID: String, sourceID: UUID) -> [String: WatchProgress] {
         Dictionary(
             progress.filter { $0.seriesID == seriesID && $0.sourceID == sourceID }.map { ($0.titleID, $0) },

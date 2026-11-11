@@ -100,19 +100,22 @@ import Testing
         #expect(ContinueWatching.items(progress: saved, titles: [movie(1)]).isEmpty)
     }
 
-    @Test("movies-and-series-browsing/play-a-series-from-the-next-episode the first unfinished episode, at its place")
-    func episodeToPlay() throws {
+    @Test("movies-and-series-browsing/play-a-series-from-the-next-episode the poster follows the title page's Play")
+    func seriesPosterPlays() throws {
         let episodes = (1...3).map { Episode(id: "e\($0)", episodeID: $0, season: 1, number: $0, title: "Episode \($0)") }
         let watched = progress("e1", at: 98, saved: 0)
         let partway = progress("e2", at: 40, saved: 1)
-        let pick = try #require(ContinueWatching.episodeToPlay(episodes, progress: ["e1": watched, "e2": partway]))
+        let pick = try #require(SeriesPlayTarget.resolve(episodes: episodes, progress: ["e1": watched, "e2": partway]))
         #expect(pick.episode.id == "e2")
-        #expect(pick.from == 40)
-        #expect(try #require(ContinueWatching.episodeToPlay(episodes, progress: [:])).episode.id == "e1")
+        #expect(pick.resumes && pick.position == 40)
+        #expect(try #require(SeriesPlayTarget.resolve(episodes: episodes, progress: [:])).episode.id == "e1")
+        let skippedPilot = try #require(SeriesPlayTarget.resolve(episodes: episodes, progress: ["e2": progress("e2", at: 99, saved: 0)]))
+        #expect(skippedPilot.episode.id == "e3", "after the last one finished, not back to the pilot")
         let all = Dictionary(uniqueKeysWithValues: episodes.map { ($0.id, progress($0.id, at: 99, saved: 0)) })
         #expect(!ContinueWatching.hasUnwatched(episodes, progress: all))
-        #expect(try #require(ContinueWatching.episodeToPlay(episodes, progress: all)).from == 0, "all finished, the first from the start")
-        #expect(ContinueWatching.episodeToPlay([], progress: [:]) == nil)
+        let again = try #require(SeriesPlayTarget.resolve(episodes: episodes, progress: all))
+        #expect(again.episode.id == "e1" && !again.resumes, "all finished, the first from the start")
+        #expect(SeriesPlayTarget.resolve(episodes: [], progress: [:]) == nil)
     }
 
     @Test("movies-and-series-browsing/resume-where-you-left-off part-way resumes, barely started or finished starts over")

@@ -54,17 +54,6 @@ public enum ContinueWatching {
         return items.sorted { WatchProgress.newestFirst($0.progress, $1.progress) }
     }
 
-    /// The episode a series poster starts and where: the first episode in
-    /// the list's order the user has not finished, at its resume position;
-    /// with every episode finished, the first from the start. Nil without
-    /// episodes (movies-and-series-browsing/play-a-series-from-the-next-episode).
-    public static func episodeToPlay(_ episodes: [Episode], progress: [String: WatchProgress]) -> (episode: Episode, from: Double)? {
-        if let next = episodes.first(where: { progress[$0.id]?.state != .watched }) {
-            return (next, progress[next.id]?.resumePosition ?? 0)
-        }
-        return episodes.first.map { ($0, 0) }
-    }
-
     /// True while a series has an episode the user has not finished.
     public static func hasUnwatched(_ episodes: [Episode], progress: [String: WatchProgress]) -> Bool {
         episodes.contains { progress[$0.id]?.state != .watched }
