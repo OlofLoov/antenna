@@ -36,6 +36,7 @@ On iPhone the Movies tab shows the Movies | Series switch, a tall banner with ge
 - Board deviations: “Focus is the lifted white card” for the banner's Play button and the focused poster shadow, “One accent color” for the accent eyebrow, “Text stays above the platform caption floor” for outlined badges and the eyebrow up to 2 pt under the caption floor, “Loading shows real progress per step” for placeholder posters only until a source answers.
 - Identifier prefixes are `movies.` and `series.` with the same element names.
 - A position saved on another device updates Continue watching within five seconds of the local store change.
+- When to save is `PositionSaving` in AntennaCore: 30 seconds of wall time while playing, counted again from each play, and at once on pause, stop, background and end. The end saves the full length so the title counts as watched. Live positions are never saved. The player screen feeds it the engine's positions and states and writes what it returns through `ActivityStore.saveProgress`.
 - The tvOS tab bar shows Movies and Series for any Xtream source, so the `tvos-shell` tab requirement changes with this.
 
 ## Badge rules
