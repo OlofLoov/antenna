@@ -118,9 +118,13 @@ final class LiveRegularUITests: XCTestCase {
         let app = try launch()
         app.row(0).tap()
         app.waitForEngine("playing loads=1")
-        app.element("browse.player.surface").tap()
-        XCTAssertTrue(app.element("browse.player.pip").waitForExistence(timeout: 2), "iPad shows Picture in Picture")
+        // Paused, the controls stay, so the taps below cannot race the
+        // three-second timer on a slow runner.
         if !app.element("browse.player.controls").exists { app.element("browse.player.surface").tap() }
+        XCTAssertTrue(app.element("browse.player.playPause").waitForExistence(timeout: 2))
+        app.element("browse.player.playPause").tap()
+        app.waitForEngine("paused loads=1")
+        XCTAssertTrue(app.element("browse.player.pip").waitForExistence(timeout: 2), "iPad shows Picture in Picture")
         app.element("browse.player.fullscreen").tap()
 
         let window = app.windows.firstMatch.frame
@@ -133,7 +137,7 @@ final class LiveRegularUITests: XCTestCase {
 
         XCTAssertTrue(app.element("browse.sidebar").waitForExistence(timeout: 3))
         XCTAssertLessThan(app.element("browse.player").frame.width, window.width - 500)
-        app.waitForEngine("playing loads=1")
+        app.waitForEngine("paused loads=1")
     }
 
     // live-tv-on-iphone-ipad-mac/star-a-channel, the sidebar count
