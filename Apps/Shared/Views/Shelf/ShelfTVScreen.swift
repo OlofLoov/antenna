@@ -142,18 +142,13 @@
                     .fixedSize()
                     .focused(focus, equals: .content)
                     .focused($focused, equals: .play)
+                    .onMoveCommand { if $0 == .left { banner?.actions.page(-1) } }
                 ShelfBanner.InfoButton(type: .tv, title: "More info")
                     .fixedSize()
                     .focused($focused, equals: .info)
                 ShelfBanner.MyListButton(type: .tv)
                     .focused($focused, equals: .myList)
-            }
-            .onMoveCommand { direction in
-                switch (direction, focused) {
-                case (.right, .myList?): banner?.actions.page(1)
-                case (.left, .play?): banner?.actions.page(-1)
-                default: break
-                }
+                    .onMoveCommand { if $0 == .right { banner?.actions.page(1) } }
             }
             .onChange(of: focused != nil) { _, inside in
                 banner?.actions.interacting(inside)
