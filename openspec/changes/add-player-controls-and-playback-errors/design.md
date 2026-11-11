@@ -44,3 +44,17 @@ On iPhone, iPad and Mac a speech-bubble button opens Audio and Subtitles with a 
 - Open question: "Try again" is shown even for a format the device cannot play, so every error has the same focused button on Apple TV. Hiding it and offering "Choose another channel" is the alternative. Can be decided during implementation.
 - Open question: AirPlay has no button on a narrow iPhone layout; it is in full screen and Control Center. An overflow menu is the alternative. Can be decided during implementation.
 - Open question: closing Picture in Picture pauses rather than stops. With no live buffer the paused frame can be minutes old. Change `add-timeshift-catch-up-and-start-over` decides what resume means.
+
+## Implementation decisions
+
+Made while building, without a review round. Each names what was picked and why.
+
+- `PlayerModel` does not load streams. `LiveModel` and `ShellModel` keep tuning, tell it about each tune with `tuned(_:)`, and hand it `reload` (load the same channel without counting as a channel change) and `hasLogin`. Moving loading into the player model would have rewritten the launch tune, the last-channel store and the language picks of two finished changes for no visible gain.
+- Try again shows the spinner at once instead of after half a second, so the press has a visible answer.
+- The slow-source line comes ten seconds after the spinner appears, as the "spinner has shown for ten seconds" scenario reads, so 10.5 seconds after waiting starts.
+- While the engine reconnects, the count replaces the ring entirely, as "in place of the spinner" reads; the board draws it in the caption's position and style.
+- Recovery after an offline error waits for the connection to go and come back. Reloading whenever the system reports a connection would loop when the system says online and the server still fails the same way.
+- No engine reports a missing login yet: a source whose login has not arrived never loads its channels, so nothing plays. The model, its five-second check and the messages are built and tested on a scripted engine; they take effect once the engine builds the Xtream address from the Keychain at load time, as Decisions says.
+- Spec conflict: "Provider error" reads "Acme TV returned <code>", but the engine's server-error reason in change `add-playback-engine` carries no status code. The message says "returned a server error" until the engine passes the code on. The other change's spec is left as it is.
+- The Apple TV shell numbers the channel in player messages by the playlist's own number, since the catalogue number lives in the shell's view; the info panel reads the catalogue number.
+- UI tests script the player with `UITESTING_PLAYBACK` (`stall`, `reconnect`, `fail-<reason>`), `UITESTING_SLOW_SECONDS` and `UITESTING_NETWORK_SECONDS`, read by the Debug engines of `UITestingLive` and `UITestingShell`.
