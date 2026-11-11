@@ -53,6 +53,12 @@ final class PlayerModel {
         var spinnerDelay = Duration.milliseconds(500)
         var slowDelay = Duration.seconds(10)
         var loginCheck = Duration.seconds(5)
+        /// Where the Mac keeps its volume; nil where the system sets the volume.
+        var volume: PlayerVolumeStore? = PlayerVolumeStore.current
+        /// Sets the engines' level and mute; nil sets them on `engine`.
+        var applyVolume: (@MainActor (Float, Bool) -> Void)?
+        /// Yields true while the stream plays on AirPlay; nil asks `engine`.
+        var airPlay: (@MainActor () -> AsyncStream<Bool>)?
     }
 
     /// The channel on screen, nil before the first tune.
@@ -75,6 +81,11 @@ final class PlayerModel {
     var panel: PanelTab?
     /// The audio and subtitles list is open on iPhone, iPad or Mac.
     var pickerOpen = false
+    /// The Mac's sound level, 0 to 1.
+    private(set) var volume: Float = 1
+    private(set) var muted = false
+    /// The stream plays on an AirPlay device.
+    private(set) var airPlayActive = false
 
     /// Loads the channel again. The owner sets it.
     @ObservationIgnored var reload: @MainActor (Channel) -> Void = { _ in }
@@ -90,6 +101,52 @@ final class PlayerModel {
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
         engine = dependencies.engine
+        if let store = dependencies.volume {
+            volume = store.restored()
+            applyVolume()
+        }
+    }
+
+    // MARK: Volume
+
+    /// Sets the Mac's level and keeps it on this device. Moving the level
+    /// unmutes.
+    func setVolume(_ level: Float) {
+        volume = min(1, max(0, level))
+        muted = false
+        volumeChanged()
+    }
+
+    /// M on a Mac, and the mute button.
+    func toggleMute() {
+        muted.toggle()
+        volumeChanged()
+    }
+
+    /// Command-Up and Command-Down.
+    func stepVolume(up: Bool) {
+        setVolume(volume + (up ? PlayerVolumeStore.step : -PlayerVolumeStore.step))
+    }
+
+    private func volumeChanged() {
+        applyVolume()
+        dependencies.volume?.write(volume: volume, muted: muted)
+    }
+
+    private func applyVolume() {
+        if let apply = dependencies.applyVolume {
+            apply(volume, muted)
+        } else {
+            engine.setVolume(volume, muted: muted)
+        }
+    }
+
+    /// Follows whether the stream plays on AirPlay until the calling task ends.
+    func observeAirPlay() async {
+        let updates = dependencies.airPlay?() ?? engine.airPlayActivity()
+        for await active in updates {
+            airPlayActive = active
+        }
     }
 
     var device: FailureMessage.Device { dependencies.device }

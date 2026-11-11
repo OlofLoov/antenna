@@ -85,8 +85,14 @@
         /// The guide id is the channel's own, so Search finds its programmes.
         static func channel(_ id: String, _ name: String, group: String?, number: Int, catchUp: Int? = nil) -> Channel {
             Channel(
-                id: "fixture/\(id)", name: name, streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"), group: group, epgID: id,
-                number: number, hasCatchup: catchUp != nil, catchupDays: catchUp)
+                id: "fixture/\(id)", name: name, streamURL: URL(fileURLWithPath: "/fixture/\(id).\(streamExtension)"), group: group,
+                epgID: id, number: number, hasCatchup: catchUp != nil, catchupDays: catchUp)
+        }
+
+        /// "m3u8" with `UITESTING_HLS=1`, so every stream goes to Apple's
+        /// player and can go to AirPlay; "ts" otherwise.
+        static var streamExtension: String {
+            ProcessInfo.processInfo.environment["UITESTING_HLS"] == "1" ? "m3u8" : "ts"
         }
 
         static let home = [
