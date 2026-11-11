@@ -2,9 +2,9 @@
 
 ## 1. Rules in AntennaCore
 
-- [ ] 1.1 Add the value types and the merge rules for progress, list entries and searches, and verify core tests for each tie-break
-- [ ] 1.2 Add the in-progress and watched thresholds and the resume position, and verify core tests at 1.9%, 2%, 94.9%, 95% and unknown length
-- [ ] 1.3 Add the search fold, the 100-character cut and the cap of ten, and verify core tests for case, accents, blanks and overflow
+- [x] 1.1 Add the value types and the merge rules for progress, list entries and searches, and verify core tests for each tie-break
+- [x] 1.2 Add the in-progress and watched thresholds and the resume position, and verify core tests at 1.9%, 2%, 94.9%, 95% and unknown length
+- [x] 1.3 Add the search fold, the 100-character cut and the cap of ten, and verify core tests for case, accents, blanks and overflow
 
 ## 2. Records and store
 
