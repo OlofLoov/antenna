@@ -1,0 +1,24 @@
+name: Simulator project
+description: Installs the simulator runtime when the image lacks it and generates the Xcode project.
+inputs:
+  platform:
+    description: iOS or tvOS
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Ensure simulator runtime
+      shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
+      run: |
+        set -e
+        if ! xcrun simctl list runtimes available | grep -q "^$PLATFORM "; then
+          xcodebuild -downloadPlatform "$PLATFORM"
+        fi
+    - name: Install XcodeGen
+      shell: bash
+      run: brew install xcodegen
+    - name: Generate project
+      shell: bash
+      run: xcodegen generate

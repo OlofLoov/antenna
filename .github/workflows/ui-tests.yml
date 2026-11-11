@@ -1,0 +1,193 @@
+name: UI tests
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Plan shards
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ui-tests')
+    outputs:
+      iphone: ${{ steps.shards.outputs.iphone }}
+      tv: ${{ steps.shards.outputs.tv }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: shards
+        run: |
+          set -e
+          to_json() { jq -R . | jq -sc 'to_entries | map({shard: (.key + 1), args: .value})'; }
+          echo "iphone=$(bash scripts/ui-test-shards.sh Apps/UITests AntennaUITests 3 | to_json)" >> "$GITHUB_OUTPUT"
+          echo "tv=$(bash scripts/ui-test-shards.sh Apps/TVUITests AntennaTVUITests 3 | to_json)" >> "$GITHUB_OUTPUT"
+
+  iphone:
+    name: iPhone UI ${{ matrix.shard }}
+    runs-on: macos-26
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.iphone) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/simulator
+        with:
+          platform: iOS
+      - name: Run UI tests
+        env:
+          ARGS: ${{ matrix.args }}
+        run: |
+          set -e
+          read -ra only <<< "$ARGS"
+          name=$(xcrun simctl list devices available | grep -oE 'iPhone [^(]+' | head -1 | sed 's/ *$//')
+          echo "Simulator: $name"
+          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
+            -destination "platform=iOS Simulator,name=$name" \
+            "${only[@]}" \
+            -retry-tests-on-failure -test-iterations 2 \
+            -resultBundlePath ui-tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: iphone-ui-${{ matrix.shard }}-xcresult
+          path: ui-tests.xcresult
+          if-no-files-found: ignore
+
+  ipad:
+    name: iPad UI
+    runs-on: macos-26
+    needs: plan
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/simulator
+        with:
+          platform: iOS
+      - name: Run iPad UI tests
+        run: |
+          set -e
+          device=$(xcrun simctl list devices available | grep -E 'iPad Pro 13' | head -1)
+          [ -n "$device" ] || device=$(xcrun simctl list devices available | grep -E 'iPad ' | head -1)
+          id=$(echo "$device" | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          echo "Simulator: $device"
+          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
+            -destination "platform=iOS Simulator,id=$id" \
+            -only-testing:AntennaUITests/LiveRegularUITests \
+            -only-testing:AntennaUITests/LiveKeyboardUITests \
+            -only-testing:AntennaUITests/LiveStatesUITests \
+            -only-testing:AntennaUITests/ShelfRegularUITests \
+            -only-testing:AntennaUITests/TitleRegularUITests \
+            -retry-tests-on-failure -test-iterations 2 \
+            -resultBundlePath ipad-ui-tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ipad-ui-xcresult
+          path: ipad-ui-tests.xcresult
+          if-no-files-found: ignore
+
+  tvunit:
+    name: tvOS unit
+    runs-on: macos-26
+    needs: plan
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/simulator
+        with:
+          platform: tvOS
+      - name: Run tvOS unit tests
+        run: |
+          set -e
+          line=$(xcrun simctl list devices available | grep -E '^ +Apple TV' | head -1)
+          echo "Simulator: $line"
+          id=$(printf '%s\n' "$line" | grep -oE '[0-9A-F]{8}-[0-9A-F-]{27}')
+          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
+            -destination "platform=tvOS Simulator,id=$id" \
+            -only-testing:AntennaTVTests \
+            -resultBundlePath tv-tests.xcresult \
+            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: tv-unit-xcresult
+          path: tv-tests.xcresult
+          if-no-files-found: ignore
+
+  tvui:
+    name: tvOS UI ${{ matrix.shard }}
+    runs-on: macos-26
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.tv) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/simulator
+        with:
+          platform: tvOS
+      - name: Run tvOS UI tests
+        env:
+          ARGS: ${{ matrix.args }}
+        run: |
+          set -e
+          read -ra only <<< "$ARGS"
+          line=$(xcrun simctl list devices available | grep -E '^ +Apple TV' | head -1)
+          echo "Simulator: $line"
+          id=$(printf '%s\n' "$line" | grep -oE '[0-9A-F]{8}-[0-9A-F-]{27}')
+          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
+            -destination "platform=tvOS Simulator,id=$id" \
+            "${only[@]}" \
+            -retry-tests-on-failure -test-iterations 2 \
+            -resultBundlePath tv-ui-tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: tv-ui-${{ matrix.shard }}-xcresult
+          path: tv-ui-tests.xcresult
+          if-no-files-found: ignore
+
+  report:
+    name: Report nightly result
+    runs-on: ubuntu-latest
+    needs: [iphone, ipad, tvunit, tvui]
+    if: always() && github.event_name == 'schedule'
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      FAILED: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+      RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Open, update or close the nightly issue
+        run: |
+          set -e
+          title="Nightly UI tests fail on main"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [ "$FAILED" = "true" ]; then
+            if [ -n "$open" ]; then
+              gh issue comment "$open" --body "Still failing: $RUN"
+            else
+              gh issue create --title "$title" --body "The nightly UI test run failed on main: $RUN"
+            fi
+          elif [ -n "$open" ]; then
+            gh issue close "$open" --comment "Passing again: $RUN"
+          fi

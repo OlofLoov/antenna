@@ -72,7 +72,6 @@ jobs:
   apps:
     name: Build apps
     runs-on: macos-26
-    needs: core
     steps:
       - uses: actions/checkout@v7
       # The image's default Xcode is the only one guaranteed to have its
@@ -107,7 +106,6 @@ jobs:
   snapshots:
     name: Preview snapshots
     runs-on: macos-26
-    needs: core
     steps:
       - uses: actions/checkout@v7
       - name: Ensure iOS simulator runtime
@@ -137,99 +135,3 @@ jobs:
           name: preview-snapshots
           path: snapshot-images
           if-no-files-found: warn
-
-  uitests:
-    name: UI tests
-    runs-on: macos-26
-    needs: core
-    steps:
-      - uses: actions/checkout@v7
-      - name: Ensure iOS simulator runtime
-        run: |
-          set -e
-          if ! xcrun simctl list runtimes available | grep -q "^iOS "; then
-            xcodebuild -downloadPlatform iOS
-          fi
-      - name: Install XcodeGen
-        run: brew install xcodegen
-      - name: Generate project
-        run: xcodegen generate
-      - name: Run UI tests
-        run: |
-          set -e
-          name=$(xcrun simctl list devices available | grep -oE 'iPhone [^(]+' | head -1 | sed 's/ *$//')
-          echo "Simulator: $name"
-          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
-            -destination "platform=iOS Simulator,name=$name" \
-            -only-testing:AntennaUITests \
-            -retry-tests-on-failure -test-iterations 2 \
-            -resultBundlePath ui-tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO
-      - name: Run iPad UI tests
-        run: |
-          set -e
-          device=$(xcrun simctl list devices available | grep -E 'iPad Pro 13' | head -1)
-          [ -n "$device" ] || device=$(xcrun simctl list devices available | grep -E 'iPad ' | head -1)
-          id=$(echo "$device" | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
-          echo "Simulator: $device"
-          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
-            -destination "platform=iOS Simulator,id=$id" \
-            -only-testing:AntennaUITests/LiveRegularUITests \
-            -only-testing:AntennaUITests/LiveKeyboardUITests \
-            -only-testing:AntennaUITests/LiveStatesUITests \
-            -only-testing:AntennaUITests/ShelfRegularUITests \
-            -retry-tests-on-failure -test-iterations 2 \
-            -resultBundlePath ipad-ui-tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO
-      - name: Upload result bundle
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: ui-tests-xcresult
-          path: |
-            ui-tests.xcresult
-            ipad-ui-tests.xcresult
-          if-no-files-found: ignore
-
-  tvtests:
-    name: tvOS tests
-    runs-on: macos-26
-    needs: core
-    steps:
-      - uses: actions/checkout@v7
-      - name: Ensure tvOS simulator runtime
-        run: |
-          set -e
-          if ! xcrun simctl list runtimes available | grep -q "^tvOS "; then
-            xcodebuild -downloadPlatform tvOS
-          fi
-      - name: Install XcodeGen
-        run: brew install xcodegen
-      - name: Generate project
-        run: xcodegen generate
-      - name: Run tvOS tests
-        run: |
-          set -e
-          line=$(xcrun simctl list devices available | grep -E '^ +Apple TV' | head -1)
-          echo "Simulator: $line"
-          id=$(printf '%s\n' "$line" | grep -oE '[0-9A-F]{8}-[0-9A-F-]{27}')
-          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
-            -destination "platform=tvOS Simulator,id=$id" \
-            -only-testing:AntennaTVTests \
-            -resultBundlePath tv-tests.xcresult \
-            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
-          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
-            -destination "platform=tvOS Simulator,id=$id" \
-            -only-testing:AntennaTVUITests \
-            -retry-tests-on-failure -test-iterations 2 \
-            -resultBundlePath tv-ui-tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO
-      - name: Upload result bundle
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: tv-tests-xcresult
-          path: |
-            tv-tests.xcresult
-            tv-ui-tests.xcresult
-          if-no-files-found: ignore
