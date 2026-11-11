@@ -2,12 +2,15 @@
 
 import SwiftUI
 
-/// The window root on iPhone, iPad and Mac: "Who's watching?" when there
-/// are two or more profiles (profiles capability), then the tabs.
+/// The window root on iPhone, iPad and Mac: onboarding while there is no
+/// source (first-run-onboarding capability), then "Who's watching?" when
+/// there are two or more profiles (profiles capability), then the tabs.
 struct PlatformRoot: View {
     var body: some View {
-        ProfileGate {
-            RootView()
+        OnboardingGate {
+            ProfileGate {
+                RootView()
+            }
         }
     }
 }

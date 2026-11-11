@@ -10,6 +10,6 @@ final class SmokeJourney: XCTestCase {
 
     func testFirstScreen() {
         let journey = Journey(self, scenario: "empty")
-        journey.snap("channels-empty", anchor: "channels.emptyState")
+        journey.snap("welcome", anchor: "onboarding.welcome")
     }
 }

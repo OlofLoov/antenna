@@ -7,7 +7,7 @@ final class SettingsUITests: XCTestCase {
     func testAboutShowsTheFFmpegNotice() {
         continueAfterFailure = false
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-favorites", ""]
+        app.launchArguments = ["-ui-testing-live", "channels"]
         app.launch()
 
         let tab = app.tabBars.buttons["Settings"]
