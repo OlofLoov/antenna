@@ -18,6 +18,7 @@ struct AntennaApp: App {
         // A profile deleted on another device leaves its per-device values here.
         let profiles = (try? container.mainContext.fetch(FetchDescriptor<ProfileRecord>())) ?? []
         ProfileKeys.prune(.standard, keeping: ProfileStore.list(profiles).profiles.map(\.id))
+        ActivityStore.carryOverSearches(from: .standard, into: container.mainContext)
         _guideStore = State(initialValue: AppGuideStore.live(container: container))
     }
 

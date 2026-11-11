@@ -9,7 +9,9 @@ import AntennaCore
 /// Every model the app stores. Every container uses this list, so a screen
 /// that queries one model never meets a container without it.
 enum AntennaSchema {
-    static let models: [any PersistentModel.Type] = [SourceRecord.self, FavoriteRecord.self, ProfileRecord.self]
+    static let models: [any PersistentModel.Type] = [
+        SourceRecord.self, FavoriteRecord.self, ProfileRecord.self, ProgressRecord.self, ListEntryRecord.self, RecentSearchRecord.self,
+    ]
 }
 
 @Model

@@ -8,23 +8,23 @@
 
 ## 2. Records and store
 
-- [ ] 2.1 Add the three synced records and the store that resolves on read and deletes losers on write, and verify integration tests that one entry remains and no record holds a link or credential
-- [ ] 2.2 Add per-series progress and My list by kind, and verify integration tests for ordering and other kinds kept but hidden
-- [ ] 2.3 Keep records whose source has not arrived and skip malformed ones, and verify integration tests that nothing is deleted
-- [ ] 2.4 Roll back a failed save, and verify an integration test that the next read does not show it
-- [ ] 2.5 Meet the read and resolve budgets, and verify the CI benchmarks
+- [x] 2.1 Add the three synced records and the store that resolves on read and deletes losers on write, and verify integration tests that one entry remains and no record holds a link or credential
+- [x] 2.2 Add per-series progress and My list by kind, and verify integration tests for ordering and other kinds kept but hidden
+- [x] 2.3 Keep records whose source has not arrived and skip malformed ones, and verify integration tests that nothing is deleted
+- [x] 2.4 Roll back a failed save, and verify an integration test that the next read does not show it
+- [x] 2.5 Meet the read and resolve budgets, and verify the CI benchmarks
 
 ## 3. Source deletion
 
-- [ ] 3.1 Remove a deleted source's progress and list entries from the delete path, and verify an integration test that the other source and recent searches stay
+- [x] 3.1 Remove a deleted source's progress and list entries from the delete path, and verify an integration test that the other source and recent searches stay
 
 ## 4. Recent searches migration
 
-- [ ] 4.1 Move locally kept recent searches into the synced list once, and verify integration tests for order, merge, the cap and a kill halfway
+- [x] 4.1 Move locally kept recent searches into the synced list once, and verify integration tests for order, merge, the cap and a kill halfway
 
 ## 5. Change notifications
 
-- [ ] 5.1 Add the change stream for local saves and imports, and verify an integration test with two subscribers
+- [x] 5.1 Add the change stream for local saves and imports, and verify an integration test with two subscribers
 
 ## 6. Sync on devices
 

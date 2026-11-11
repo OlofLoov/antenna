@@ -40,7 +40,7 @@ enum ProfileStore {
         return true
     }
 
-    /// Deletes `id` and its favorites everywhere
+    /// Deletes `id` with its favorites, progress, My list and searches everywhere
     /// (profiles/editing-and-deleting-a-profile). The last profile stays.
     @discardableResult
     static func delete(_ id: UUID, in context: ModelContext) -> Bool {
@@ -49,6 +49,7 @@ enum ProfileStore {
         records.filter { $0.id == id }.forEach(context.delete)
         let favorites = (try? context.fetch(FetchDescriptor<FavoriteRecord>())) ?? []
         favorites.filter { ProfileList.owns(id, recordProfile: $0.profileID) }.forEach(context.delete)
+        ActivityStore.removeProfile(id, in: context)
         save(context, resolving: records.filter { $0.id != id })
         return true
     }
