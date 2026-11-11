@@ -85,6 +85,7 @@
                     .background(Color.black)
                     .ignoresSafeArea()
                     .environment(\.browseMetrics, .regular)
+                    .environment(\.playerFailureMetrics, .regular)
                     .background {
                         #if os(iOS)
                             LiveEscapeKey { live.setFullScreen(false) }
@@ -139,6 +140,7 @@
             }
             .background(Palette.ground)
             .environment(\.browseMetrics, .regular)
+            .environment(\.playerFailureMetrics, .regular)
             .overlay {
                 #if DEBUG
                     UITestingLive.Probe(engine: live.engine)

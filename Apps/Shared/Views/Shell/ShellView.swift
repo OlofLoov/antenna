@@ -142,6 +142,13 @@
             .onExitCommand(perform: menu)
             .onPlayPauseCommand {
                 guard model.tab == .live, !model.barVisible else { return }
+                // Play/pause on the error is Try again (player-controls-and-playback-errors/try-again-or-recover-on-its-own).
+                // It still shows the info bar, as play/pause in full-screen live TV does.
+                if model.player.failure != nil, !model.pickerOpen {
+                    numbers.cancel()
+                    zapBar.playPause()
+                    return model.player.retry()
+                }
                 guard !model.pickerOpen else {
                     Task { await model.togglePlayback() }
                     return
@@ -165,6 +172,14 @@
             .environment(\.shellNavigator, model.navigator)
             .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
                 SettingsView()
+            }
+            .fullScreenCover(item: $model.signInRequest, onDismiss: { focus = model.liveFocus }) { request in
+                SignInView(request: request) { username, password in
+                    try model.saveLogin(for: request, username: username, password: password)
+                }
+            }
+            .onChange(of: model.player.failure != nil) { _, failed in
+                failureChanged(failed)
             }
             .task(id: records.compactMap(\.descriptor)) {
                 model.sourcesChanged(records.compactMap(\.descriptor))
@@ -190,28 +205,25 @@
         /// Movies, Series and Search.
         private var picture: some View {
             ZStack {
-                PlayerSurfaceView(engine: model.engine)
-                    .frame(
-                        width: model.tab == .guide ? 480 : nil,
-                        height: model.tab == .guide ? 270 : nil
-                    )
-                    .frame(maxWidth: model.tab == .guide ? nil : .infinity, maxHeight: model.tab == .guide ? nil : .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: model.tab == .guide ? 14 : 0))
-                    .padding(.leading, model.tab == .guide ? 64 : 0)
-                    .padding(.top, model.tab == .guide ? 48 : 0)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .opacity(model.tab.isContent || model.tuned == nil ? 0 : 1)
-                    .accessibilityElement()
-                    .accessibilityLabel("Picture")
-                    .accessibilityValue(model.dimmed ? "dimmed" : "full")
-                    .accessibilityIdentifier("shell.player")
-                    .overlay {
-                        if model.tab == .live, model.tuned != nil {
-                            PlayerWaitingLayer(player: model.player)
-                                .environment(\.playerStatusMetrics, .television)
-                        }
-                    }
-                if model.tab == .live, model.tuned != nil {
+                ZStack {
+                    PlayerSurfaceView(engine: model.engine)
+                        .accessibilityElement()
+                        .accessibilityLabel("Picture")
+                        .accessibilityValue(model.dimmed ? "dimmed" : "full")
+                        .accessibilityIdentifier("shell.player")
+                    pictureStatus
+                }
+                .frame(
+                    width: model.tab == .guide ? 480 : nil,
+                    height: model.tab == .guide ? 270 : nil
+                )
+                .frame(maxWidth: model.tab == .guide ? nil : .infinity, maxHeight: model.tab == .guide ? nil : .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: model.tab == .guide ? 14 : 0))
+                .padding(.leading, model.tab == .guide ? 64 : 0)
+                .padding(.top, model.tab == .guide ? 48 : 0)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .opacity(model.tab.isContent || model.tuned == nil ? 0 : 1)
+                if model.tab == .live, model.tuned != nil, model.player.failure == nil {
                     // Stays focusable under the raised bar, so swiping down from the
                     // bar lands here and `move` lowers the bar.
                     Button {
@@ -234,6 +246,33 @@
             }
         }
 
+        /// The spinner or the error over the picture, sized to it: the full
+        /// error with its buttons on Live, the short one in the Guide's box
+        /// (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).
+        @ViewBuilder private var pictureStatus: some View {
+            if model.tuned != nil {
+                if let message = model.player.message {
+                    if model.tab == .live {
+                        PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn)
+                    } else {
+                        PlayerStatus.Failure(channel: nil, title: message.title, explanation: message.explanation) { EmptyView() }
+                    }
+                } else {
+                    PlayerWaitingLayer(player: model.player)
+                        .environment(\.playerStatusMetrics, model.tab == .live ? .television : .compact)
+                }
+            }
+        }
+
+        /// Sign in on the error, nil when the failure is not about the login
+        /// or the source has no login, as a playlist has none.
+        private var signIn: (() -> Void)? {
+            guard let failure = model.player.failure, failure == .loginNotOnDevice || failure == .notAllowed,
+                let source = model.tuned?.sourceID, model.descriptors[source]?.credentialKey != nil
+            else { return nil }
+            return { model.signIn(to: source) }
+        }
+
         @ViewBuilder private var tabContent: some View {
             switch model.tab {
             case .live:
@@ -254,7 +293,7 @@
         private var barHasFocus: Bool {
             switch focus {
             case .tab, .settings, .profile: true
-            case .picture, .liveScreen, .content, .overlay, nil: false
+            case .picture, .retry, .signIn, .liveScreen, .content, .overlay, nil: false
             }
         }
 
@@ -292,7 +331,7 @@
             if numbers.isOpen { return numbers.cancel() }
             if model.pickerOpen {
                 model.closePicker()
-                focus = .picture
+                focus = model.liveFocus
                 return
             }
             // Menu hides the info bar and goes no further.
@@ -304,7 +343,7 @@
                 switch focus {
                 case .tab, .settings, .profile: .bar
                 case .content: .content
-                case .picture, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
+                case .picture, .retry, .signIn, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
                 }
             Task { focus = await model.menu(from: origin) }
         }
@@ -341,8 +380,8 @@
                 focus = .tab(model.tab)
             case (.content, .settings) where model.tab.isContent:
                 focus = .tab(model.tab)
-            case (.tab, .picture), (.tab, .liveScreen), (.tab, .content), (.settings, .picture), (.settings, .liveScreen),
-                (.settings, .content):
+            case (.tab, .picture), (.tab, .retry), (.tab, .signIn), (.tab, .liveScreen), (.tab, .content), (.settings, .picture),
+                (.settings, .retry), (.settings, .signIn), (.settings, .liveScreen), (.settings, .content):
                 if model.barRaised, let target = model.swipeDown() {
                     focus = target
                     barLowered = .now
@@ -353,7 +392,7 @@
         }
 
         private func move(_ direction: MoveCommandDirection) {
-            if focus == .picture, model.tab == .live, !model.barVisible, !model.pickerOpen {
+            if focus == .picture || focus == .retry || focus == .signIn, model.tab == .live, !model.barVisible, !model.pickerOpen {
                 guard ContinuousClock.now - barLowered > .milliseconds(500) else { return }
                 return zap(direction)
             }
@@ -375,6 +414,18 @@
             guard let tuned = model.tuned, let next = overlay.step(catalogue, from: tuned, by: steps) else { return }
             guard next != tuned else { return zapBar.playPause() }
             Task { await model.pick(next) }
+        }
+    }
+
+    extension ShellScreen {
+        /// The error takes focus from the picture; once it goes, focus is
+        /// back on the picture.
+        private func failureChanged(_ failed: Bool) {
+            switch focus {
+            case .picture where failed: focus = .retry
+            case .retry where !failed, .signIn where !failed: focus = model.liveFocus
+            default: break
+            }
         }
     }
 

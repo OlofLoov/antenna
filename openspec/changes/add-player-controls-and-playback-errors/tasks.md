@@ -10,11 +10,11 @@
 - [ ] 2.1 Build the player model with injected engine, clock, defaults, credential store, path monitor, audio session, scene phase and sinks
 - [x] 2.2 Show the spinner after 0.5 s and the slow-source caption after 10 s, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-spinner-while-waiting-and-a-reason-if-it-is-slow`
 - [x] 2.3 Show the reconnect count from the engine and the error only on give-up, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-dropped-stream-shows-that-it-is-reconnecting`
-- [ ] 2.4 Retry on Try again, on network return and on login arrival, with Sign in on Apple TV, and verify with integration and UI tests citing `player-controls-and-playback-errors/try-again-or-recover-on-its-own`
+- [x] 2.4 Retry on Try again, on network return and on login arrival, with Sign in on Apple TV, and verify with integration and UI tests citing `player-controls-and-playback-errors/try-again-or-recover-on-its-own`
 
 ## 3. Error screen
 
-- [ ] 3.1 Build the error screen on each platform, closing panels, pickers and PiP first, and verify with UI tests citing `player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong`
+- [x] 3.1 Build the error screen on each platform, closing panels, pickers and PiP first, and verify with UI tests citing `player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong`
 
 ## 4. Apple TV panel and track pickers
 

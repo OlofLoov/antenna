@@ -211,7 +211,7 @@
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loads += 1
                 append(url.lastPathComponent)
-                switch UITestingPlayback.afterLoad(loads) {
+                switch UITestingPlayback.afterLoad(url.lastPathComponent) {
                 case .success(let next):
                     state = next
                 case .failure(let reason):

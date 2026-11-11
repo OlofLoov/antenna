@@ -44,18 +44,7 @@ extension Browse {
                     .accessibilityIdentifier("browse.player.clock")
                 LiveBadge()
                 extras
-                Button(action: toggleFullScreen) {
-                    Image(
-                        systemName: isFullScreen
-                            ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right"
-                    )
-                    .font(.system(size: 16, weight: .semibold))
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(isFullScreen ? "Exit full screen" : "Full screen")
-                .accessibilityIdentifier("browse.player.fullscreen")
+                FullScreenButton(isFullScreen: isFullScreen, toggle: toggleFullScreen)
             }
             .foregroundStyle(Palette.text)
             .padding(.horizontal, regular ? 12 : 6)
@@ -63,6 +52,37 @@ extension Browse {
             .background(Palette.scrimTint.opacity(0.72))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("browse.player.controls")
+        }
+    }
+
+    /// Full screen, or Exit full screen while the picture fills the screen.
+    struct FullScreenButton: View {
+        let isFullScreen: Bool
+        let toggle: () -> Void
+
+        var body: some View {
+            Button(action: toggle) {
+                Image(
+                    systemName: isFullScreen
+                        ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right"
+                )
+                .font(.system(size: 16, weight: .semibold))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Palette.text)
+            .accessibilityLabel(isFullScreen ? "Exit full screen" : "Full screen")
+            .accessibilityIdentifier("browse.player.fullscreen")
+        }
+    }
+
+    /// Exit full screen alone, over the error in full screen.
+    struct ExitFullScreenButton: View {
+        let exit: () -> Void
+
+        var body: some View {
+            FullScreenButton(isFullScreen: true, toggle: exit)
         }
     }
 

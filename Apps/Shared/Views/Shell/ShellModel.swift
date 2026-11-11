@@ -17,6 +17,10 @@
     enum ShellFocus: Hashable {
         /// Full-screen Live with a channel tuned.
         case picture
+        /// Try again on the error in place of the full-screen picture.
+        case retry
+        /// Sign in on the error, for a source whose login is missing or refused.
+        case signIn
         /// The loading screen's holder or the empty screen's Retry.
         case liveScreen
         case tab(ShellTab)
@@ -85,6 +89,8 @@
             var sleep: @MainActor (Duration) async throws -> Void
             var guide: AppGuideStore?
             var languages = ChannelLanguageStore()
+            /// Where Sign in on the error stores a login.
+            var credentials: any CredentialStoring = CredentialStore()
             /// The connection the player watches to recover from an offline error.
             var network: NetworkWatch = .system
             /// How long the spinner shows before it names the source as slow.
@@ -108,12 +114,14 @@
         private(set) var pickerOpen = false
         private(set) var offersMovies = false
         var settingsOpen = false
+        /// The source Sign in on the error asks a login for, nil while closed.
+        var signInRequest: SignInRequest?
 
         @ObservationIgnored let engine: any PlaybackEngine
         /// The spinner, the reconnect count and the error for the tuned channel.
         @ObservationIgnored let player: PlayerModel
         @ObservationIgnored let dependencies: Dependencies
-        @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
+        @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]
         @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
         @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
         @ObservationIgnored private var finishOrder: [UUID] = []
@@ -368,9 +376,12 @@
             return tab == .live ? liveFocus : .content
         }
 
-        /// Where focus goes on Live: the picture once tuned, else the loading
-        /// or empty screen.
-        var liveFocus: ShellFocus { tuned == nil ? .liveScreen : .picture }
+        /// Where focus goes on Live: the picture once tuned, Try again while
+        /// the error shows, else the loading or empty screen.
+        var liveFocus: ShellFocus {
+            guard tuned != nil else { return .liveScreen }
+            return player.failure == nil ? .picture : .retry
+        }
 
         /// Opens `target`, lowering the bar. Entering Movies, Series or Search
         /// from Live or Guide starts the pause timer; leaving them for Live or

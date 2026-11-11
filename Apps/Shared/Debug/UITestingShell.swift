@@ -3,6 +3,7 @@
     import Foundation
     import SwiftData
     import SwiftUI
+    import Synchronization
 
     /// Scripted sources and a recording engine for the Apple TV shell's UI
     /// tests (tvos-shell capability), compiled into Debug builds only.
@@ -174,15 +175,50 @@
                 let script = Script(scenario: scenario)
                 let defaults = UserDefaults(suiteName: "ui-testing-shell") ?? .standard
                 defaults.removePersistentDomain(forName: "ui-testing-shell")
+                // `UITESTING_LAST_CHANNEL=b1` makes Cabin's channel the one the launch tunes.
+                let cabinFirst = Channel.tagged([channel("b1")], sourceID: xtreamID).first.flatMap { LastChannelKey($0) }
+                if ProcessInfo.processInfo.environment["UITESTING_LAST_CHANNEL"] == "b1", let cabinFirst {
+                    LastChannelStore(defaults: defaults).write(cabinFirst)
+                }
+                let credentials = MemoryCredentials()
+                var cabinLoaded = false
                 return ShellModel.Dependencies(
                     engine: engine,
                     load: { try await script.load($0) },
-                    hasLogin: { source in scenario != .empty || source.id != xtreamID },
+                    hasLogin: { source in
+                        guard source.id == xtreamID else { return true }
+                        guard scenario != .empty else { return false }
+                        guard UITestingPlayback.script == .fail(.loginNotOnDevice), cabinLoaded else {
+                            cabinLoaded = true
+                            return true
+                        }
+                        // Cabin's channels load, then its login is missing when a stream
+                        // plays, until the sign-in step stores one.
+                        return (try? credentials.load(for: source.credentialKey ?? "")) != nil
+                    },
                     lastChannel: LastChannelStore(defaults: defaults),
                     sleep: { try await Task.sleep(for: $0) },
                     guide: nil,
+                    credentials: credentials,
                     network: UITestingPlayback.network,
                     slowDelay: UITestingPlayback.slowDelay)
+            }
+
+            /// Logins the sign-in step stores, kept in memory, never in the Keychain.
+            final class MemoryCredentials: CredentialStoring {
+                private let items = Mutex<[String: CredentialStore.Credential]>([:])
+
+                func save(_ credential: CredentialStore.Credential, for key: String) throws {
+                    items.withLock { $0[key] = credential }
+                }
+
+                func load(for key: String) throws -> CredentialStore.Credential? {
+                    items.withLock { $0[key] }
+                }
+
+                func delete(for key: String) throws {
+                    items.withLock { _ = $0.removeValue(forKey: key) }
+                }
             }
 
             /// What each scenario's sources answer.
@@ -236,7 +272,7 @@
                         state = .failed(.unreadable)
                         throw PlaybackFailure.unreadable
                     }
-                    switch UITestingPlayback.afterLoad(loads) {
+                    switch UITestingPlayback.afterLoad(url.lastPathComponent) {
                     case .success(let next):
                         state = next
                     case .failure(let reason):

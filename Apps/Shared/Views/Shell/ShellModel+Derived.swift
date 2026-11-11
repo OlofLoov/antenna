@@ -2,6 +2,14 @@
     import AntennaCore
     import Foundation
 
+    /// A source the sign-in step asks a login for. Holds the Keychain key,
+    /// never the login itself.
+    struct SignInRequest: Identifiable, Equatable {
+        var id: UUID
+        var name: String
+        var credentialKey: String
+    }
+
     extension ShellModel {
         /// The bar shows when raised by Menu and always on Movies, Series and Search.
         var barVisible: Bool { barRaised || tab.isContent }
@@ -42,6 +50,21 @@
                 if !pausedByShell { await engine.play() }
                 if let key = LastChannelKey(channel) { dependencies.lastChannel.write(key) }
             }
+        }
+
+        /// Opens the sign-in step for the source with `id`
+        /// (player-controls-and-playback-errors/try-again-or-recover-on-its-own).
+        func signIn(to id: UUID) {
+            guard let source = descriptors[id], let key = source.credentialKey else { return }
+            signInRequest = SignInRequest(id: id, name: source.name, credentialKey: key)
+        }
+
+        /// Stores the login the sign-in step took, closes it and loads the
+        /// channel again.
+        func saveLogin(for request: SignInRequest, username: String, password: String) throws {
+            try dependencies.credentials.save(.init(username: username, password: password), for: request.credentialKey)
+            signInRequest = nil
+            player.retry()
         }
 
         /// Tunes `channel` from the picker and shows Live full screen.

@@ -29,12 +29,15 @@
                             .accessibilityAction { live.showControls(after: .touch) }
                             .accessibilityIdentifier("browse.player.surface")
                         PlayerWaitingLayer(player: live.player)
+                        if let message = live.player.message {
+                            failure(message)
+                        }
                     } else {
                         Browse.NothingSelected()
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    if live.controlsShown, live.playing != nil {
+                    if live.controlsShown, live.playing != nil, live.player.failure == nil {
                         controls
                             .transition(.opacity)
                     }
@@ -43,6 +46,23 @@
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("browse.player")
+        }
+
+        /// The error in place of the picture with Try again. In full screen
+        /// only the exit button stays, and the error names the channel.
+        private func failure(_ message: FailureMessage) -> some View {
+            PlayerStatus.Failure(
+                channel: live.fullScreen ? live.playing.map { live.subject(for: $0).line } : nil, title: message.title,
+                explanation: message.explanation
+            ) {
+                PlayerStatus.RetryButton { live.player.retry() }
+            }
+            .overlay(alignment: .topTrailing) {
+                if live.fullScreen {
+                    Browse.ExitFullScreenButton { live.setFullScreen(false) }
+                        .padding(8)
+                }
+            }
         }
 
         private var controls: some View {
