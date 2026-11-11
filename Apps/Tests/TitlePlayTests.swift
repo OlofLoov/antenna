@@ -118,7 +118,7 @@ import Testing
         var follow: Task<Void, Never>?
         defer { follow?.cancel() }
         let activity = await activity(&follow)
-        library.openPage(series, from: .poster, in: .series)
+        library.openPage(series, from: .poster(row: "recentlyAdded"), in: .series)
         let model = try #require(library.page?.model)
         await model.load()
         let progress = { ContinueWatching.episodeProgress(activity.progress, seriesID: series.id, sourceID: source) }

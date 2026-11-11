@@ -34,8 +34,10 @@
 ## 6. Going back
 
 - [ ] 6.1 Return to the section at the same scroll position with the starting poster focused or in view, and to Search with the query kept, and verify UI tests on every platform
+  - Open: the return to the section is done and tested on iPhone (Back and the edge swipe), iPad (Back) and Apple TV (Menu to the banner's More info and to a poster deep in a row). Search does not exist yet (change `add-search`), so there is no query to keep. Escape on an iPad keyboard is wired as Live's full screen does it, but the simulator's UI tests do not deliver Escape, so it needs a check on a real iPad or Mac.
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
 - [ ] 7.2 `/opsx:verify` passes
+  - Open: verify reports 3.2 and 6.1 as incomplete, both for the missing Search. Every requirement maps to code and a test that cites it. The 2 000-episode scroll budget in design.md needs an Apple TV 4K (3rd generation) and an iPhone 15; a simulator cannot measure it.

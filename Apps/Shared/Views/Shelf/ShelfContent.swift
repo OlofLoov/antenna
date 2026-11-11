@@ -20,12 +20,12 @@ struct ShelfActions {
             toggleMyList: { activity.toggleMyList($0) }, isOnMyList: { activity.isOnMyList($0) })
     }
 
-    /// What selecting a poster does: a movie plays, a series opens its
-    /// page (title-detail-and-episode-picker/open-a-series-page).
-    @MainActor func select(_ title: ShelfTitle) {
+    /// What selecting a poster in `row` does: a movie plays, a series
+    /// opens its page (title-detail-and-episode-picker/open-a-series-page).
+    @MainActor func select(_ title: ShelfTitle, in row: String) {
         switch title.kind {
         case .movie: play(title)
-        case .series: open(title, .poster)
+        case .series: open(title, .poster(row: row))
         }
     }
 }
@@ -125,6 +125,7 @@ struct ShelfRowsContent: View {
                     ShelfContinueCard(item: item, actions: actions)
                 }
             }
+            .environment(\.shelfRow, "continueWatching")
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.continueWatching")
         }
@@ -137,6 +138,7 @@ struct ShelfRowsContent: View {
                     ShelfPoster(title: title, actions: actions)
                 }
             }
+            .environment(\.shelfRow, "myList")
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.myList")
         }
@@ -148,6 +150,7 @@ struct ShelfRowsContent: View {
                     ShelfPoster(title: title, actions: actions)
                 }
             }
+            .environment(\.shelfRow, row.identifier)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
         }
@@ -164,11 +167,13 @@ struct ShelfPoster: View {
     @Environment(ShelfActivity.self) private var activity
     @Environment(ShelfPlayback.self) private var playback
     @Environment(\.shelfPrefix) private var prefix
+    @Environment(\.shelfRow) private var row
 
     var body: some View {
         ShelfView.PosterCard(title: title, label: ShelfText.posterLabel(title, progress: activity.progress(of: title))) {
-            actions.select(title)
+            actions.select(title, in: row)
         }
+        .modifier(ReturnFocus(title: title, origin: .poster(row: row)))
         // A series' poster shows it is working while its episode list loads
         // (movies-and-series-browsing/play-a-series-from-the-next-episode).
         .overlay {
@@ -182,7 +187,7 @@ struct ShelfPoster: View {
         }
         .contextMenu {
             if title.kind == .movie {
-                ShelfView.MoreInfoMenuItem { actions.open(title, .poster) }
+                ShelfView.MoreInfoMenuItem { actions.open(title, .poster(row: row)) }
             }
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(title)) { actions.toggleMyList(title) }
         }
@@ -197,6 +202,7 @@ struct ShelfContinueCard: View {
     let item: ContinueWatching.Item
     let actions: ShelfActions
     @Environment(ShelfLibrary.self) private var library
+    @Environment(\.shelfRow) private var row
 
     var body: some View {
         let episode = library.series.episodes[item.title.id]?.first { $0.id == item.progress.titleID }
@@ -209,13 +215,40 @@ struct ShelfContinueCard: View {
         }
         .contextMenu {
             if item.title.kind == .movie {
-                ShelfView.MoreInfoMenuItem { actions.open(item.title, .poster) }
+                ShelfView.MoreInfoMenuItem { actions.open(item.title, .poster(row: row)) }
             }
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(item.title)) { actions.toggleMyList(item.title) }
         }
+        .modifier(ReturnFocus(title: item.title, origin: .poster(row: row)))
         .task(id: item.id) {
             if item.title.kind == .series { await library.series.prefetchEpisodes(item.title) }
         }
+    }
+}
+
+/// Takes focus back when the page this poster opened closes, so Apple TV
+/// lands where the user started
+/// (title-detail-and-episode-picker/back-to-where-you-were). Elsewhere the
+/// poster is still where it was, since the section stays under the page.
+struct ReturnFocus: ViewModifier {
+    let title: ShelfTitle
+    let origin: TitleRoute.Origin
+    @Environment(ShelfLibrary.self) private var library
+    @FocusState private var focused: Bool
+
+    func body(content: Content) -> some View {
+        #if os(tvOS)
+            content
+                .focused($focused)
+                .task(id: library.returning?.title) {
+                    guard let back = library.returning, back.title == title, back.origin == origin else { return }
+                    await Task.yield()
+                    focused = true
+                    library.returned()
+                }
+        #else
+            content
+        #endif
     }
 }
 

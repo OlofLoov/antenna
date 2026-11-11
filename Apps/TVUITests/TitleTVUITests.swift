@@ -111,4 +111,20 @@ final class TitleTVUITests: XCTestCase {
         expectFocus("episodes.row.xtream#cabin#episode#11")
         XCTAssertEqual(element("episodes.row.xtream#cabin#episode#11").label, "Episode 1, The Weir, 45 min")
     }
+
+    // title-detail-and-episode-picker/back-to-where-you-were, from the banner
+    func testMenuGoesBackToMoreInfoOnTheBanner() {
+        openMoviePage()
+        press(.menu)
+        expectFocus("movies.hero.info")
+        XCTAssertEqual(element("movies.hero.title").label, "Night Ferry")
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were, from a poster deep in a row
+    func testMenuGoesBackToThePosterThatOpenedThePage() {
+        openNorthernLights()
+        press(.menu)
+        expectFocus("series.card.xtream#cabin#series#1")
+        XCTAssertTrue(element("series.row.recentlyAdded").exists, "the rows stay as they were")
+    }
 }

@@ -44,7 +44,7 @@ import Testing
     func asksOnce() async throws {
         let calls = Counter()
         let library = await library(calls: calls)
-        library.openPage(movie, from: .poster, in: .movie)
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let model = try #require(library.page?.model)
         #expect(model.metadata.name == "Salt Road")
         #expect(model.metadata.eyebrow == "Movie · Drama")
@@ -62,7 +62,7 @@ import Testing
         let calls = Counter()
         let gate = Gate()
         let library = await library(calls: calls, gate: gate)
-        library.openPage(movie, from: .poster, in: .movie)
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let model = try #require(library.page?.model)
         let load = Task { await model.load() }
         #expect(await eventually { calls.value == 1 })
@@ -73,7 +73,7 @@ import Testing
         #expect(model.phase == .loading, "the late reply is dropped")
         #expect(model.metadata.detailsLine == nil)
 
-        library.openPage(movie, from: .poster, in: .movie)
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let again = try #require(library.page?.model)
         #expect(again !== model)
         await again.load()
@@ -84,7 +84,7 @@ import Testing
     @Test("title-detail-and-episode-picker/open-a-movie-s-page the page knows when its source is deleted")
     func sourceDeleted() async throws {
         let library = await library(calls: Counter())
-        library.openPage(movie, from: .poster, in: .movie)
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let model = try #require(library.page?.model)
         #expect(model.sourceExists)
         library.sourcesChanged([])
@@ -95,9 +95,9 @@ import Testing
     func twoSources() async throws {
         let library = await library(calls: Counter())
         let other = ShelfTitle(id: movie.id, kind: .movie, sourceID: UUID(), name: "Salt Road")
-        library.openPage(movie, from: .poster, in: .movie)
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let first = try #require(library.page)
-        library.openPage(other, from: .poster, in: .movie)
+        library.openPage(other, from: .poster(row: "recentlyAdded"), in: .movie)
         let second = try #require(library.page)
         #expect(first != second)
         #expect(first.title.activityKey != second.title.activityKey, "each keeps its own progress")
@@ -106,7 +106,7 @@ import Testing
     @Test("title-detail-and-episode-picker/when-details-or-episodes-do-not-load a failure and a missing login say so")
     func failures() async throws {
         let failing = await library(calls: Counter(), fails: true)
-        failing.openPage(movie, from: .poster, in: .movie)
+        failing.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let model = try #require(failing.page?.model)
         await model.load()
         #expect(model.phase == .failed(.failed))
@@ -115,7 +115,7 @@ import Testing
 
         let calls = Counter()
         let waiting = await library(calls: calls, login: false)
-        waiting.openPage(movie, from: .poster, in: .movie)
+        waiting.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let page = try #require(waiting.page?.model)
         await page.load()
         #expect(page.phase == .failed(.waitingForLogin("Cabin")))
@@ -139,7 +139,7 @@ import Testing
                 info: { _, _ in .series(SeriesInfo(episodes: list, skippedEpisodes: skipped)) })
             let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
             library.sourcesChanged([descriptor])
-            library.openPage(series, from: .poster, in: .series)
+            library.openPage(series, from: .poster(row: "recentlyAdded"), in: .series)
             let model = try #require(library.page?.model)
             await model.load()
             #expect(model.phase == .loaded)

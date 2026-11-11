@@ -173,6 +173,9 @@ extension EnvironmentValues {
     @Entry var shelfPrefix = "movies"
     /// Set by the screens to the app's poster cache.
     @Entry var posterLoader: ShelfView.PosterLoader?
+    /// The row or grid a poster sits in, `recentlyAdded` or a category's
+    /// slug, so a page can return to the poster that opened it.
+    @Entry var shelfRow = ""
 }
 
 extension ShelfTitle.Kind {

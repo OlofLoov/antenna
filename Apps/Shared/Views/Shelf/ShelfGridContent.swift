@@ -75,6 +75,7 @@ struct ShelfGridContent: View {
                     ShelfContinueCard(item: item, actions: actions)
                 }
             }
+            .environment(\.shelfRow, "grid")
         case .all, .genre, .myList:
             let titles = titles(of: list)
             ShelfView.Grid(title: list.name(model.kind), count: ShelfText.titles(titles.count)) {
@@ -82,6 +83,7 @@ struct ShelfGridContent: View {
                     ShelfPoster(title: title, actions: actions)
                 }
             }
+            .environment(\.shelfRow, "grid")
         }
     }
 
