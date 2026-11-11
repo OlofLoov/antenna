@@ -33,7 +33,7 @@ import Testing
                 engine: engine,
                 load: { try await loader.load($0) },
                 hasLogin: { !logins.missing.contains($0.id) },
-                lastChannel: LastChannelStore(defaults: defaults),
+                recents: RecentsStore(defaults: defaults),
                 sleep: { try await clock.sleep($0) },
                 guide: nil))
     }

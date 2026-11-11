@@ -1,10 +1,12 @@
 import Foundation
 
 /// A group the catalogue lists. The UI supplies the labels for
-/// `.favorites`, `.all` and `.ungrouped`; `.named` carries the provider's name.
+/// `.favorites`, `.recents`, `.all` and `.ungrouped`; `.named` carries the provider's name.
 public enum CatalogueGroup: Hashable, Sendable {
     /// The resolved favorites, one row per channel.
     case favorites
+    /// The channels watched lately on this device, newest first.
+    case recents
     /// Every channel of every source.
     case all
     /// A source's channels whose group is this provider name.

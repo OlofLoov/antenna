@@ -115,7 +115,7 @@
             guard catalogue.rows(in: group).isEmpty else { return nil }
             switch group {
             case .favorites: return "No favorites yet. Press the star on a channel to add it."
-            case .all, .named, .ungrouped: return "No channels yet. Add a source in Settings."
+            case .all, .named, .ungrouped, .recents: return "No channels yet. Add a source in Settings."
             }
         }
 

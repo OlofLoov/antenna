@@ -212,7 +212,7 @@ struct CatalogueIndex: Sendable {
             case let .ungrouped(id):
                 source = id
                 ungrouped.insert(id)
-            case .favorites, .all:
+            case .favorites, .recents, .all:
                 continue
             }
             if seenSources.insert(source).inserted { sources.append(source) }

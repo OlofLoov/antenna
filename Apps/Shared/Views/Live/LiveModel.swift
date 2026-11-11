@@ -52,6 +52,11 @@ final class LiveModel {
         var network: NetworkWatch = .system
         /// How long the spinner shows before it names the source as slow.
         var slowDelay = Duration.seconds(10)
+        /// The current profile's recents, session and last channel. Tests and
+        /// previews keep theirs apart from the app's.
+        var recents = RecentsStore.scratch
+        /// How the ten-second count waits.
+        var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -91,6 +96,8 @@ final class LiveModel {
     @ObservationIgnored let player: PlayerModel
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private let languages: ChannelLanguages
+    /// Stores the last channel and counts a channel as watched.
+    @ObservationIgnored let session: SessionTracker
     @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
     @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
@@ -108,6 +115,7 @@ final class LiveModel {
         engine = dependencies.engine
         programmes = dependencies.programmes
         languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
+        session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
         player = PlayerModel(
             .init(engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay))
         player.reload = { [weak self] channel in self?.load(channel) }
@@ -291,6 +299,7 @@ final class LiveModel {
             let wasPaused = isPaused
             playback = state
             player.stateChanged(state)
+            session.stateChanged(state)
             // Paused, the controls stay; playing again, they go after a while.
             if controlsShown, wasPaused != isPaused { showControls(after: lastInput) }
         }
@@ -322,7 +331,7 @@ final class LiveModel {
         tuning = Task { [weak self] in
             guard let self else { return }
             do {
-                try await engine.load(channel.streamURL, options: languages.options(for: channel))
+                try await session.load(channel, on: engine, options: languages.options(for: channel))
             } catch {
                 if let failure = error as? PlaybackFailure, playing == channel { player.loadFailed(failure) }
                 return
@@ -353,6 +362,7 @@ final class LiveModel {
         guard playing != nil else { return }
         suspended = true
         tuning?.cancel()
+        session.interrupt()
         hideControls()
         fullScreen = false
         await engine.stop()
@@ -410,6 +420,19 @@ final class LiveModel {
         fullScreen = on && playing != nil
     }
 
+    private func stop() {
+        later = nil
+        playing = nil
+        player.tuned(nil)
+        session.tuned(nil)
+        fullScreen = false
+        hideControls()
+        tuning?.cancel()
+        Task { await engine.stop() }
+    }
+}
+
+extension LiveModel {
     /// What the now-playing line and the details say about `channel` at `date`.
     func nowText(for channel: Channel, at date: Date) -> LiveNowText {
         let panel = programmes.panel(for: channel, at: date)
@@ -421,16 +444,6 @@ final class LiveModel {
     /// A programme's start or end in the user's locale.
     static func time(_ date: Date) -> String {
         date.formatted(date: .omitted, time: .shortened)
-    }
-
-    private func stop() {
-        later = nil
-        playing = nil
-        player.tuned(nil)
-        fullScreen = false
-        hideControls()
-        tuning?.cancel()
-        Task { await engine.stop() }
     }
 }
 
@@ -444,7 +457,8 @@ extension LiveModel.Dependencies {
             hasLogin: { loader.hasLogin($0) },
             guide: guide,
             programmes: .store(guide),
-            languages: ChannelLanguageStore(profile: profile))
+            languages: ChannelLanguageStore(profile: profile),
+            recents: RecentsStore(profile: profile))
     }
 }
 

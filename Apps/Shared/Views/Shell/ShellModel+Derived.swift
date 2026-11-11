@@ -37,7 +37,7 @@
         func load(_ channel: Channel) {
             Task {
                 do {
-                    try await engine.load(channel.streamURL, options: languages.options(for: channel))
+                    try await session.load(channel, on: engine, options: languages.options(for: channel))
                 } catch is CancellationError {
                     return
                 } catch {
@@ -48,7 +48,13 @@
                 guard tuned == channel else { return }
                 // A pause from the timer while the load ran stands.
                 if !pausedByShell { await engine.play() }
-                if let key = LastChannelKey(channel) { dependencies.lastChannel.write(key) }
+            }
+        }
+
+        /// Tells the session tracker each engine state until the calling task ends.
+        func trackSession() async {
+            for await state in await engine.states() {
+                session.stateChanged(state)
             }
         }
 

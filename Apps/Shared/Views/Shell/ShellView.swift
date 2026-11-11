@@ -62,7 +62,7 @@
                 engine: RoutedEngine.app(),
                 load: { try await loader.load($0) },
                 hasLogin: { loader.hasLogin($0) },
-                lastChannel: LastChannelStore(profile: profile),
+                recents: RecentsStore(profile: profile),
                 sleep: { try await Task.sleep(for: $0) },
                 guide: guide,
                 languages: ChannelLanguageStore(profile: profile))
@@ -200,8 +200,10 @@
                 model.sourcesChanged(records.compactMap(\.descriptor))
             }
             .task { await model.player.run() }
+            .task { await model.trackSession() }
             .onChange(of: scenePhase) { _, phase in
-                guard phase == .active else { return }
+                // Leaving the app stops the ten-second count.
+                guard phase == .active else { return model.session.interrupt() }
                 Task { await model.becameActive() }
             }
             .onChange(of: model.liveScreen, initial: true) { _, _ in

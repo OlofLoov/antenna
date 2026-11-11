@@ -87,7 +87,7 @@
             var engine: any PlaybackEngine
             var load: @MainActor (SourceDescriptor) async throws -> Playlist
             var hasLogin: @MainActor (SourceDescriptor) -> Bool
-            var lastChannel: LastChannelStore
+            var recents: RecentsStore
             var sleep: @MainActor (Duration) async throws -> Void
             var guide: AppGuideStore?
             var languages = ChannelLanguageStore()
@@ -134,11 +134,14 @@
         @ObservationIgnored private var pauseTimer: Task<Void, Never>?
         @ObservationIgnored private(set) var pausedByShell = false
         @ObservationIgnored let languages: ChannelLanguages
+        /// Stores the last channel and counts a channel as watched.
+        @ObservationIgnored let session: SessionTracker
 
         init(_ dependencies: Dependencies) {
             self.dependencies = dependencies
             self.engine = dependencies.engine
             languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
+            session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
             player = PlayerModel(
                 .init(
                     engine: dependencies.engine, sleep: dependencies.sleep, network: dependencies.network,
@@ -175,11 +178,12 @@
                 // With every source gone nothing keeps playing (stand-in behavior).
                 tuned = nil
                 player.tuned(nil)
+                session.tuned(nil)
                 Task { await engine.stop() }
             }
             if !launched {
                 launched = true
-                stored = dependencies.lastChannel.read()
+                stored = dependencies.recents.read()
                 startDeadline()
             }
             let ids = Set(list.map(\.id))
@@ -227,6 +231,7 @@
         func becameActive() async {
             guard launched else { return }
             if tuned != nil, !pausedByShell { await engine.play() }
+            session.stateChanged(await engine.state)
             for row in sources where row.state == .waitingForLogin {
                 if let source = descriptors[row.id], dependencies.hasLogin(source) { startLoad(source) }
             }

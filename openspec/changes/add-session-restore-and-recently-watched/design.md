@@ -41,3 +41,12 @@ Not drawn yet: the Recents row in the iPad and Mac sidebar, the Recents group ro
 - Open question: storing a hash of the identity now would lift the M3U restore block, and change the value `tvos-shell` stores.
 - Open question: Apple TV still forgets the current group at launch. Restoring it needs a change to `add-tv-zap-bar-and-number-entry`.
 - [No M3U channel appears in Recents or is restored until the `m3u-playlists` follow-up] → the filter is silent, and the follow-up removes it.
+
+## Implementation decisions
+
+- The list, session and channel key are value types in AntennaCore (`RecentChannels`, `LiveSession`, `LastChannelKey`). Reading and writing `UserDefaults` stays in the app's `RecentsStore`, because `openspec/config.yaml` says only the app touches `UserDefaults`.
+- The last channel is written once its stream loads, not before the load starts. `tvos-shell` "What is remembered" says a stream that fails to load leaves the last channel as it was, and writing first would break that.
+- `SessionTracker.load(_:on:options:)` is the one place a live channel loads, on both `LiveModel` and `ShellModel`. Movies and episodes load through `ShelfPlayback` as before; they are not tunes.
+- The ten-second count starts when the engine reports playing and stops on any other state, on a new tune, when a movie starts and when the scene goes to the background. Coming back to the app restarts it from zero if the channel still plays. On Mac only the background phase stops it, so a window that loses focus keeps counting.
+- Deleting a source clears its channels for every profile on the device, not only the current one.
+- Not drawn: Recents uses the `clock.arrow.circlepath` symbol where Favorites has the star, and the Apple TV channel column says "Newest first" under its heading.
