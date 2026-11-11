@@ -1,0 +1,128 @@
+import XCTest
+
+/// The Search tab on Apple TV (search capability), on the scripted shell
+/// of `ShellUITests`: Channel a1 to a3 and b1, a1's Morning News on now with
+/// Weather, Business, Sport Tonight and Late Film after it, and b1's Evening
+/// Film on now.
+@MainActor
+final class SearchTVUITests: XCTestCase {
+    let remote = XCUIRemote.shared
+    var app = XCUIApplication()
+
+    override func setUp() {
+        continueAfterFailure = false
+    }
+
+    func element(_ identifier: String) -> XCUIElement {
+        app.descendants(matching: .any)[identifier].firstMatch
+    }
+
+    func press(_ button: XCUIRemote.Button, times: Int = 1) {
+        for _ in 0..<times { remote.press(button) }
+    }
+
+    func expect(
+        _ element: XCUIElement, _ predicate: String, timeout: TimeInterval = 10, file: StaticString = #filePath, line: UInt = #line
+    ) {
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicate), object: element)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [expectation], timeout: timeout), .completed, "\(element) never matched \(predicate)", file: file,
+            line: line)
+    }
+
+    func expectFocus(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
+        expect(element(identifier), "hasFocus == true", file: file, line: line)
+    }
+
+    func expectEngine(_ summary: String, file: StaticString = #filePath, line: UInt = #line) {
+        expect(element("shell.debug.engine"), "value == '\(summary)'", file: file, line: line)
+    }
+
+    /// What has focus, for failure messages.
+    func focusedElements() -> String {
+        app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).allElementsBoundByIndex
+            .map { "[\($0.identifier) '\($0.label)']" }.joined(separator: " ")
+    }
+
+    /// Launches with a1 playing and opens the Search tab from the bar.
+    func openSearch() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launch()
+        expectEngine("playing loads=1 file=a1.ts")
+        expectFocus("shell.picture")
+        expect(element("zapBar.bar"), "exists == false")
+        press(.menu)
+        expectFocus("shell.tab.live")
+        press(.right, times: 4)
+        expectFocus("shell.tab.search")
+        press(.select)
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
+        expectFocus("shell.tab.search")
+        press(.down)
+    }
+
+    /// Types `text` with the search keyboard.
+    func type(_ text: String) {
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        field.typeText(text)
+    }
+
+    /// Swipes down from the keyboard until a result has focus.
+    func moveToResults(_ identifier: String) {
+        let target = element(identifier)
+        XCTAssertTrue(target.waitForExistence(timeout: 10))
+        for _ in 0..<4 {
+            if target.hasFocus { return }
+            press(.down)
+            _ = XCTWaiter().wait(
+                for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: target)], timeout: 2)
+        }
+        XCTAssertTrue(target.hasFocus, "never reached \(identifier); focused: \(focusedElements())")
+    }
+
+    // search/results-grouped-best-first
+    // search/very-long-result-lists, Apple TV lists every programme
+    func testEverySectionShowsWithoutChips() {
+        openSearch()
+        type("film")
+        let first = element("search.result.programme.0")
+        XCTAssertTrue(first.waitForExistence(timeout: 10))
+        XCTAssertTrue(first.label.hasPrefix("In the guide, Evening Film, Now Channel b1"), first.label)
+        XCTAssertTrue(element("search.result.programme.1").label.hasPrefix("In the guide, Late Film"))
+        XCTAssertFalse(element("search.chips").exists, "Apple TV shows every section")
+        XCTAssertFalse(element("search.section.channels").exists)
+    }
+
+    // search/pick-a-channel-or-title-to-watch
+    func testPickingAChannelPlaysItFullScreen() {
+        openSearch()
+        type("a2")
+        moveToResults("search.result.channel.0")
+        press(.select)
+        expectEngine("playing loads=2 file=a2.ts")
+        expectFocus("shell.picture")
+    }
+
+    // search/pick-a-channel-or-title-to-watch, back from a result to the keyboard
+    func testSwipingUpFromAResultReachesTheKeyboard() {
+        openSearch()
+        type("a2")
+        moveToResults("search.result.channel.0")
+        press(.up)
+        expect(element("search.result.channel.0"), "hasFocus == false")
+        XCTAssertFalse(element("shell.tab.search").hasFocus, "one swipe up lands on the keyboard: \(focusedElements())")
+        app.searchFields.firstMatch.typeText("x")
+        expect(app.searchFields.firstMatch, "value == 'a2x'")
+    }
+
+    // search/pick-a-programme
+    func testPickingAProgrammeOnNowPlaysItsChannel() {
+        openSearch()
+        type("evening")
+        moveToResults("search.result.programme.0")
+        press(.select)
+        expectEngine("playing loads=2 file=b1.ts")
+    }
+}

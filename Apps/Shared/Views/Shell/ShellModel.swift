@@ -365,7 +365,9 @@
                 return liveFocus
             case .guide, .movies, .series, .search:
                 await open(target)
-                return .content
+                // The system search keyboard cannot take focus from code, so on
+                // Search the highlight stays on the tab and one swipe down reaches it.
+                return target == .search ? .tab(.search) : .content
             }
         }
 

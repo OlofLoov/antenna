@@ -176,7 +176,7 @@ extension ShellUITests {
         expectFocus("shell.tab.search")
         XCTAssertTrue(element("shell.tab.live").isSelected)
         XCTAssertFalse(element("shell.tab.search").isSelected)
-        XCTAssertFalse(element("search.standIn").exists)
+        XCTAssertFalse(element("search.results").exists)
         expect(element("shell.player"), "value == 'dimmed'")
     }
 

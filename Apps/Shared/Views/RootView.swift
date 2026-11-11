@@ -1,4 +1,5 @@
 #if os(iOS) || os(macOS)
+    import AntennaCore
     import SwiftData
     import SwiftUI
 
@@ -13,6 +14,8 @@
         @State private var shelves: ShelfLibrary?
         @State private var playback: ShelfPlayback?
         @State private var lifecycle: PlaybackLifecycle?
+        /// Search keeps its query across tabs and layouts.
+        @State private var search = SearchModel()
         #if os(iOS)
             @Environment(\.horizontalSizeClass) private var sizeClass
         #endif
@@ -22,6 +25,7 @@
                 Palette.ground.ignoresSafeArea()
                 if let live, let shelves, let playback {
                     layout
+                        .environment(search)
                         .modifier(LiveSync(live: live))
                         .modifier(ShelfSync(library: shelves, playback: playback))
                 }
@@ -78,8 +82,12 @@
     private struct CompactTabs: View {
         enum Tab: Hashable { case live, guide, movies, search, settings }
         @State private var selection: Tab = .live
+        /// The tab Search was opened from, where Cancel goes back to.
+        @State private var beforeSearch: Tab = .live
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
+        @Environment(ShelfActivity.self) private var activity
+        @Environment(ShelfPlayback.self) private var playback
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -98,7 +106,8 @@
                     }
                 }
                 SwiftUI.Tab("Search", systemImage: "magnifyingglass", value: .search) {
-                    StandIn(title: "Search", systemImage: "magnifyingglass")
+                    SearchCompactScreen { selection = beforeSearch }
+                        .modifier(SearchSupply(picks: picks))
                 }
                 SwiftUI.Tab("Settings", systemImage: "gearshape", value: .settings) {
                     SettingsView()
@@ -107,6 +116,9 @@
             // The Movies tab goes with the last Xtream source.
             .onChange(of: shelves.hasXtream) { _, has in
                 if !has, selection == .movies { selection = .live }
+            }
+            .onChange(of: selection) { old, new in
+                if new == .search, old != .search { beforeSearch = old }
             }
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with
@@ -120,14 +132,28 @@
         }
     }
 
-    /// Holds the place of a screen that a later change builds.
-    private struct StandIn: View {
-        let title: String
-        let systemImage: String
+    extension CompactTabs {
+        /// A channel or programme plays in Live; a movie plays and a series
+        /// opens its page, as from the Movies tab
+        /// (search/pick-a-channel-or-title-to-watch).
+        private var picks: SearchPicks {
+            SearchPicks(
+                channel: { watch($0) },
+                programme: { _, channel in watch(channel) },
+                title: { title in
+                    switch title.kind {
+                    case .movie: playback.play(title, library: shelves, activity: activity)
+                    case .series: shelves.openPage(title, from: .search, in: title.kind)
+                    }
+                })
+        }
 
-        var body: some View {
-            ContentUnavailableView(title, systemImage: systemImage, description: Text("Not available yet."))
-                .background(Palette.ground)
+        /// Shows Live with `channel` playing, in All channels when the open
+        /// group does not hold it. Search keeps its query.
+        private func watch(_ channel: Channel) {
+            if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all) }
+            live.pick(channel)
+            selection = .live
         }
     }
 

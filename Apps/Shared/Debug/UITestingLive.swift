@@ -82,10 +82,11 @@
             }
         }
 
+        /// The guide id is the channel's own, so Search finds its programmes.
         static func channel(_ id: String, _ name: String, group: String?, number: Int, catchUp: Int? = nil) -> Channel {
             Channel(
-                id: "fixture/\(id)", name: name, streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"), group: group, number: number,
-                hasCatchup: catchUp != nil, catchupDays: catchUp)
+                id: "fixture/\(id)", name: name, streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"), group: group, epgID: id,
+                number: number, hasCatchup: catchUp != nil, catchupDays: catchUp)
         }
 
         static let home = [
@@ -95,6 +96,14 @@
             channel("kids-one", "Kids One", group: nil, number: 4),
         ]
         static let cabin = [channel("cabin-film", "Cabin Film", group: "Films", number: 5, catchUp: 7)]
+
+        /// With this argument Home adds Harbour 1 to Harbour 600, numbered
+        /// from 1000, for Search's long lists (search/very-long-result-lists).
+        static let manyChannelsArgument = "-ui-testing-many-channels"
+        static var harbour: [Channel] {
+            guard ProcessInfo.processInfo.arguments.contains(manyChannelsArgument) else { return [] }
+            return (1...600).map { channel("harbour-\($0)", "Harbour \($0)", group: "Harbour", number: 999 + $0) }
+        }
 
         /// When the app launched, so the scripted programmes are on now.
         @MainActor static let launched = Date.now
@@ -187,6 +196,11 @@
                     Programme(channelID: channel.id, start: launched.addingTimeInterval(-600), stop: change, title: "First Half"),
                     Programme(channelID: channel.id, start: change, stop: change.addingTimeInterval(3600), title: "Second Half"),
                 ]
+            case let id where id.hasPrefix("fixture/harbour-"):
+                // Harbour 1 to 6 each have Harbour Talk, ten minutes apart.
+                guard let number = Int(id.dropFirst("fixture/harbour-".count)), number <= 6 else { return [] }
+                let start = launched.addingTimeInterval(Double(number) * 600)
+                return [Programme(channelID: channel.id, start: start, stop: start.addingTimeInterval(1800), title: "Harbour Talk")]
             default:
                 return []
             }

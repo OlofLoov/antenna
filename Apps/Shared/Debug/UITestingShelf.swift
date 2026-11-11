@@ -134,7 +134,7 @@
             guard scenario() != nil else { return nil }
             return LiveModel.Dependencies(
                 engine: UITestingLive.Engine(log: nil),
-                load: { $0.id == homeID ? Playlist(channels: UITestingLive.home) : Playlist(channels: []) },
+                load: { $0.id == homeID ? Playlist(channels: UITestingLive.home + UITestingLive.harbour) : Playlist(channels: []) },
                 hasLogin: { _ in true },
                 guide: nil,
                 programmes: UITestingLive.guide)
