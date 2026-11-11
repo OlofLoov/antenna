@@ -25,9 +25,11 @@
 
 ## 4. Recent searches
 
-- [ ] 4.1 Store recents per device through an injected store, ten newest first with case merged, and verify with integration and UI tests citing `search/recent-searches`
+- [x] 4.1 Store recents per device through an injected store, ten newest first with case merged, and verify with integration and UI tests citing `search/recent-searches`
+  - The store is the synced one from change `add-watch-progress-sync` rather than `UserDefaults`; see "Spec conflict" in design.md.
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `search/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.1 Each requirement has a test citing `search/<requirement-slug>`
+- [x] 5.2 `/opsx:verify` passes
+  - Verify maps every requirement to code and to tests that cite it. The one open task, 2.5, waits only on an Escape check with a hardware keyboard.

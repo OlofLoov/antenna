@@ -38,5 +38,5 @@
 ## 7. Verify
 
 - [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
-  - Open: verify reports 3.2 and 6.1 as incomplete, both for the missing Search. Every requirement maps to code and a test that cites it. The 2 000-episode scroll budget in design.md needs an Apple TV 4K (3rd generation) and an iPhone 15; a simulator cannot measure it.
+- [x] 7.2 `/opsx:verify` passes
+  - Verify reports only 6.1 as incomplete, for the Escape check on a hardware keyboard. Every requirement maps to code and a test that cites it. The 2 000-episode scroll budget in design.md needs an Apple TV 4K (3rd generation) and an iPhone 15; a simulator cannot measure it.
