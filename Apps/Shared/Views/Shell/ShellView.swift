@@ -12,13 +12,15 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.currentProfile) private var profile
         @State private var model: ShellModel?
+        @State private var shelves: ShelfLibrary?
         @State private var lifecycle: PlaybackLifecycle?
 
         var body: some View {
             ZStack {
                 Palette.ground.ignoresSafeArea()
-                if let model {
+                if let model, let shelves {
                     ShellScreen(model: model)
+                        .modifier(ShelfSync(library: shelves))
                 }
             }
             .guideRefreshTriggers()
@@ -36,6 +38,7 @@
                     UITestingShell.requestGuide(from: model)
                 #endif
                 self.model = model
+                self.shelves = .app(loader)
                 self.lifecycle = lifecycle
             }
         }
@@ -224,9 +227,9 @@
             case .guide:
                 GuideScreen(shell: model, catalogue: catalogue, overlay: overlay, guide: overlayGuide, focus: $focus)
             case .movies:
-                ContentStandIn(text: "Movies are not available yet.", identifier: "movies.standIn", focus: $focus)
+                ShelfTVScreen(kind: .movie, focus: $focus)
             case .series:
-                ContentStandIn(text: "Series are not available yet.", identifier: "series.standIn", focus: $focus)
+                ShelfTVScreen(kind: .series, focus: $focus)
             case .search:
                 ContentStandIn(text: "Search is not available yet.", identifier: "search.standIn", focus: $focus)
             }

@@ -2,11 +2,11 @@
 
 ## 1. Section entry
 
-- [ ] 1.1 Show Movies and Series for any Xtream source on every platform, with the iPhone switch, and update the tvOS tab bar, and verify with UI tests citing `movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them` and `tvos-shell/the-tabs-in-order`
+- [x] 1.1 Show Movies and Series for any Xtream source on every platform, with the iPhone switch, and update the tvOS tab bar, and verify with UI tests citing `movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them` and `tvos-shell/the-tabs-in-order`
 
 ## 2. Banner and rows
 
-- [ ] 2.1 Pick the four newest titles in the core package and build the banner with rotation, pausing, paging and Reduce Motion, and verify with core and UI tests citing `movies-and-series-browsing/new-titles-up-front`
+- [x] 2.1 Pick the four newest titles in the core package and build the banner with rotation, pausing, paging and Reduce Motion, and verify with core and UI tests citing `movies-and-series-browsing/new-titles-up-front`
 - [x] 2.2 Order Recently added and category rows with merging by category name in the core package, and verify with a core test citing `movies-and-series-browsing/rows-in-a-predictable-order`
 - [x] 2.3 Add the poster cache keyed on a URL hash with the name tile fallback, and check the 50 MB and 500 MB limits
 - [ ] 2.4 Build the genre, My list, All and See all grids with sorting on iPad and Mac and a separate screen on Apple TV, and verify with a UI test citing `movies-and-series-browsing/browse-a-genre-or-sort-the-lot`

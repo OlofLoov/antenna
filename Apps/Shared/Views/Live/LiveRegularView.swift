@@ -66,6 +66,7 @@
     /// picture with its details side by side, folding as the window narrows.
     struct LiveRegularView: View {
         @Environment(LiveModel.self) private var live
+        @Environment(ShelfLibrary.self) private var shelves
         @State private var section: LiveSection = .live
         /// A folded column the user opened over the others.
         @State private var shown: Folded?
@@ -128,6 +129,10 @@
                 }
                 .animation(.easeOut(duration: 0.2), value: shown)
                 .onChange(of: columns) { _, _ in shown = nil }
+                // Movies and Series go with the last Xtream source.
+                .onChange(of: shelves.hasXtream) { _, has in
+                    if !has, section == .movies || section == .series { section = .live }
+                }
             }
             .background(Palette.ground)
             .environment(\.browseMetrics, .regular)
@@ -143,33 +148,47 @@
         }
 
         private func sidebar(_ columns: LiveColumns) -> some View {
-            Browse.Sidebar {
-                ForEach(LiveSection.allCases.filter { $0 != .settings }, id: \.self) { item in
+            Browse.Sidebar(eyebrow: section == .movies || section == .series ? "Genres" : "Groups") {
+                ForEach(sections, id: \.self) { item in
                     sectionRow(item)
                 }
             } groups: {
-                ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                    Browse.GroupRow(
-                        title: group.label, systemImage: group.systemImage, count: live.catalogue.count(of: group),
-                        isSelected: section == .live && group == live.group
-                    ) {
-                        live.show(group)
-                        section = .live
-                        shown = columns == .picture ? .list : nil
-                    }
-                    .accessibilityIdentifier("browse.group.\(index)")
-                }
-                ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in
-                    Text("\(source.name) · waiting for login")
-                        .font(.callout)
-                        .foregroundStyle(Palette.textMuted)
-                        .lineLimit(1)
-                        .padding(.horizontal, 12)
-                        .frame(minHeight: 36)
-                        .accessibilityIdentifier("browse.group.waiting.\(source.id.uuidString)")
+                if section != .movies, section != .series {
+                    liveGroups(columns)
                 }
             } footer: {
                 sectionRow(.settings)
+            }
+        }
+
+        /// Movies and Series only with an Xtream source
+        /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
+        private var sections: [LiveSection] {
+            LiveSection.allCases.filter { item in
+                item != .settings && (shelves.hasXtream || (item != .movies && item != .series))
+            }
+        }
+
+        @ViewBuilder private func liveGroups(_ columns: LiveColumns) -> some View {
+            ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
+                Browse.GroupRow(
+                    title: group.label, systemImage: group.systemImage, count: live.catalogue.count(of: group),
+                    isSelected: section == .live && group == live.group
+                ) {
+                    live.show(group)
+                    section = .live
+                    shown = columns == .picture ? .list : nil
+                }
+                .accessibilityIdentifier("browse.group.\(index)")
+            }
+            ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in
+                Text("\(source.name) · waiting for login")
+                    .font(.callout)
+                    .foregroundStyle(Palette.textMuted)
+                    .lineLimit(1)
+                    .padding(.horizontal, 12)
+                    .frame(minHeight: 36)
+                    .accessibilityIdentifier("browse.group.waiting.\(source.id.uuidString)")
             }
         }
 
@@ -206,7 +225,11 @@
                 }
             case .guide:
                 folded(columns) { GuideView() }
-            case .movies, .series, .search:
+            case .movies:
+                ShelfRegularScreen(kind: .movie) { sidebarButton(columns) }
+            case .series:
+                ShelfRegularScreen(kind: .series) { sidebarButton(columns) }
+            case .search:
                 folded(columns) {
                     ContentUnavailableView(section.title, systemImage: section.systemImage, description: Text("Not available yet."))
                 }

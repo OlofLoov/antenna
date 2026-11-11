@@ -3,7 +3,7 @@
     import SwiftUI
 
     // Temporary screens for specs not built yet. Each goes when its spec
-    // ships: Movies and Series with their browsing screens, Search with search.
+    // ships: Search with search.
 
     /// One focusable line. Holds focus without the Focus token, like the
     /// loading screen's holder.
@@ -21,7 +21,7 @@
         }
     }
 
-    /// Stands in for Movies, Series or Search under the tab bar.
+    /// Stands in for Search under the tab bar.
     struct ContentStandIn: View {
         let text: String
         let identifier: String

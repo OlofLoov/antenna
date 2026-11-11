@@ -45,4 +45,26 @@ public enum ShelfText {
         if rating.allSatisfy(\.isASCII), let age = Int(rating), (0...21).contains(age), String(age) == rating { return rating }
         return ratings.contains(rating) ? rating : nil
     }
+
+    /// A category name as an identifier part: lowercased, each run of other
+    /// characters one hyphen, "Kids & Family" as "kids-family".
+    public static func slug(_ name: String) -> String {
+        var out = ""
+        var pendingHyphen = false
+        for scalar in name.lowercased().unicodeScalars {
+            if CharacterSet.alphanumerics.contains(scalar) {
+                if pendingHyphen, !out.isEmpty { out.append("-") }
+                pendingHyphen = false
+                out.unicodeScalars.append(scalar)
+            } else {
+                pendingHyphen = true
+            }
+        }
+        return out
+    }
+
+    /// "1 title" or "214 titles", the count in a row header.
+    public static func titles(_ count: Int) -> String {
+        count == 1 ? "1 title" : "\(count) titles"
+    }
 }
