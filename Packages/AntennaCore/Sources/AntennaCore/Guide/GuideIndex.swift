@@ -22,8 +22,9 @@ public struct GuideIndex: Sendable {
     }
 
     /// An index in which every listed source has completed with these
-    /// programmes. Tests use it; the app gets its index from the guide engine.
-    init(programmes: [UUID: [Programme]]) {
+    /// programmes. Tests, previews and UI test scripts use it; the app gets
+    /// its index from the guide engine.
+    public init(programmes: [UUID: [Programme]]) {
         sources = programmes.mapValues { SourceEntry(guide: SourceGuide($0), state: .loading) }
     }
 

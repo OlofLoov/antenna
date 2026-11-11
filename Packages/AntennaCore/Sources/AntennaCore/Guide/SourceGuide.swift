@@ -72,7 +72,7 @@ struct SourceGuide: Sendable {
         Dictionary(uniqueKeysWithValues: schedules.map { id, slots in (id, slots.map { programme($0, id: id) }) })
     }
 
-    private func string(_ ref: TextRef) -> String? {
+    func string(_ ref: TextRef) -> String? {
         guard ref.length != TextRef.none.length else { return nil }
         guard ref.length > 0 else { return "" }
         let start = Int(ref.offset)

@@ -2,12 +2,14 @@
 
 ## 1. Index and matching in the core package
 
-- [ ] 1.1 Build the search index and the token matcher with case and accent folding, and verify with a core test citing `search/find-things-the-way-you-type-them`
-- [ ] 1.2 Add number-prefix matching with leading zeros stripped, and verify with a core test citing `search/find-a-channel-by-its-number`
+- [x] 1.1 Build the search index and the token matcher with case and accent folding, and verify with a core test citing `search/find-things-the-way-you-type-them`
+- [x] 1.2 Add number-prefix matching with leading zeros stripped, and verify with a core test citing `search/find-a-channel-by-its-number`
 - [ ] 1.3 Add ranking bands, section order, counts and highlight ranges, and verify with core and UI tests citing `search/results-grouped-best-first`
-- [ ] 1.4 Add the seven-day horizon, on-air state and catch-up marks at query time, and verify with a core test citing `search/seven-days-of-guide`
+  - Open: the core rules and their tests are in. The UI tests come with the screens in group 2.
+- [x] 1.4 Add the seven-day horizon, on-air state and catch-up marks at query time, and verify with a core test citing `search/seven-days-of-guide`
 - [ ] 1.5 Add the 500-row and four-programme caps, and verify with core and UI tests citing `search/very-long-result-lists`
-- [ ] 1.6 Check the index and query budgets in a debug `swift test`
+  - Open: the caps and their core tests are in. The UI tests come with the screens in group 2.
+- [x] 1.6 Check the index and query budgets in a debug `swift test`
 
 ## 2. Search screens
 
