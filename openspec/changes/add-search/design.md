@@ -36,3 +36,15 @@ User flow: the user opens Search and the field is ready, with recent searches li
 
 - [Guide requirements depend on guide data being present] → without it the guide section is absent and those tests run against fixture programmes.
 - [Substring matching across 20 000 channels on every keystroke] → the 300 ms debounce and the index budget keep it in check.
+
+## Implementation decisions
+
+Calls made while building, recorded here instead of asked.
+
+- The index reads the guide's own snapshot (`SearchIndex(channels:guide:titles:now:)`) rather than a list of programmes per channel. The guide already stores each repeated title once per source, so the index names a text by where the guide keeps it and folds each distinct title once. Building from programme lists took 1.5 s in a debug build; this takes 0.97 s. UI test scripts and previews make their guide with `GuideIndex(programmes:)`, now public for that.
+- The index keeps programmes from its build time to eight days ahead. A query still applies the seven days from its own `now`, so an index stays good for a day. Screens build it again whenever channels, the guide or titles change.
+- Programmes are kept in result order at build time (start, then channel rank) and a query builds a result row only when the row is read. A query that matches 185 000 programmes answers in 0.16 s in a debug build instead of 4 s.
+- A programme is a result once per guide, under the lowest-numbered channel that uses that guide. Two channels with their own guides that show the same programme still give two rows.
+- A programme matches on its title or on its episode title, each a field of its own, so every word has to be in one of them.
+- Channels found by number sort by number, so typing 104 lists 104, 1040, 1041 in that order. The other ranks sort by name, as the decisions above say.
+- Benchmark, `SearchBenchmarkTests`, Apple M1, debug `swift test`: 20 000 channels, half-hour programmes for seven days on 2 000 of them (672 000) and 10 000 titles index in 0.97 s and use 47 MB; the slowest of ten queries takes 0.16 s.
