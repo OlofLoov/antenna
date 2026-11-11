@@ -29,6 +29,7 @@ struct AntennaApp: App {
             if let seeded = UITestingScreenshots.container() { return seeded }
             if let seeded = UITestingLive.container() { return seeded }
             if let seeded = UITestingShelf.container() { return seeded }
+            if let empty = UITestingOnboarding.container() { return empty }
         #endif
         let schema = Schema(AntennaSchema.models)
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
