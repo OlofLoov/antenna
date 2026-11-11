@@ -137,13 +137,13 @@ The system SHALL replace the rows with a poster grid and count when the user pic
 - **THEN** the rows come back
 
 ### Requirement: Play a series from the next episode
-The system SHALL show that a series poster is working while its episode list loads and then start the first episode the user has not finished, and SHALL say when a series has no episodes or its list fails.
+The system SHALL show that a series poster is working while its episode list loads and then start the episode Play on its title page starts: the one last in progress, else the first unwatched one after the last one finished. It SHALL say when a series has no episodes or its list fails.
 
 #### Scenario: Selecting a series
 - **GIVEN** a series poster
 - **WHEN** the user selects it
 - **THEN** the poster shows it is working while the episode list loads
-- **AND** the first episode the user has not finished starts
+- **AND** the episode last in progress resumes, or with none in progress, the first unwatched episode after the last one finished starts
 
 #### Scenario: No episodes or a failed list
 - **GIVEN** a series has no episodes, or its episode list fails to load
