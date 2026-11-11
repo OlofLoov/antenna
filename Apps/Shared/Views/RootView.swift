@@ -139,7 +139,11 @@
         private var picks: SearchPicks {
             SearchPicks(
                 channel: { watch($0) },
-                programme: { _, channel in watch(channel) },
+                programme: { hit, channel in
+                    guard !hit.isOnNow else { return watch(channel) }
+                    watch(channel)
+                    live.pick(channel, later: hit.programme)
+                },
                 title: { title in
                     switch title.kind {
                     case .movie: playback.play(title, library: shelves, activity: activity)

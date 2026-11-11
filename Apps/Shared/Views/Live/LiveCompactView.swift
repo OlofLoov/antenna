@@ -20,6 +20,7 @@
                         if !live.fullScreen {
                             if let channel = live.playing {
                                 LiveNowPlayingLine(channel: channel)
+                                LiveLaterLine()
                             }
                             content
                                 .frame(maxHeight: .infinity)

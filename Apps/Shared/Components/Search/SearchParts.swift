@@ -140,6 +140,47 @@ enum SearchParts {
         }
     }
 
+    /// The iPad and Mac row under Up next for a programme picked in Search:
+    /// "Later" in the time column, then its day, time and title
+    /// (search/pick-a-programme).
+    struct LaterRow: View {
+        let text: String
+
+        var body: some View {
+            HStack(alignment: .firstTextBaseline, spacing: 14) {
+                Text("Later")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.accent)
+                    .frame(width: 52, alignment: .leading)
+                Text(text)
+                    .font(.callout)
+                    .lineLimit(1)
+            }
+            .foregroundStyle(Palette.text)
+            .padding(.top, 8)
+            .frame(maxWidth: .infinity, minHeight: 36, alignment: .topLeading)
+            .overlay(alignment: .top) { Rectangle().fill(Palette.surface(0.08)).frame(height: 1) }
+            .accessibilityElement(children: .combine)
+        }
+    }
+
+    /// The iPhone line under the now-playing line: "Later: Tomorrow 21:30 ·
+    /// Northern Soul Night" (search/pick-a-programme).
+    struct LaterLine: View {
+        let text: String
+        @ScaledMetric(relativeTo: .footnote) private var size: CGFloat = 13
+
+        var body: some View {
+            Text("\(Text("Later: ").foregroundStyle(Palette.accent))\(text)")
+                .font(.system(size: size))
+                .lineLimit(1)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 6)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+        }
+    }
+
     /// A centered message: no results with its hint, or sources still loading
     /// (search/nothing-found).
     struct Message: View {
