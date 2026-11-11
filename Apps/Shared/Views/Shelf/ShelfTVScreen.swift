@@ -155,6 +155,7 @@
     private struct ShelfTVBannerButtons: View {
         let focus: FocusState<ShellFocus?>.Binding
         @Environment(\.shelfBanner) private var banner
+        @Environment(ShelfLibrary.self) private var library
         @FocusState private var focused: Part?
 
         enum Part: Hashable { case play, info, myList }
@@ -175,6 +176,14 @@
             }
             .onChange(of: focused != nil) { _, inside in
                 banner?.actions.interacting(inside)
+            }
+            // Back from the page More info opened, focus is on More info again
+            // (title-detail-and-episode-picker/back-to-where-you-were).
+            .task(id: library.returning?.title) {
+                guard library.returning?.origin == .banner else { return }
+                await Task.yield()
+                focused = .info
+                library.returned()
             }
         }
     }

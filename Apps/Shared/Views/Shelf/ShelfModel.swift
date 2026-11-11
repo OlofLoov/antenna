@@ -268,6 +268,9 @@ final class ShelfLibrary {
     /// The title page open over a section, nil when none is
     /// (title-detail-and-episode-picker).
     private(set) var page: TitleRoute?
+    /// The page just closed, until the poster or button that opened it
+    /// takes focus back (title-detail-and-episode-picker/back-to-where-you-were).
+    private(set) var returning: TitleRoute?
     /// True with at least one Xtream source, whether or not it has answered
     /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
     private(set) var hasXtream = false
@@ -302,7 +305,13 @@ final class ShelfLibrary {
 
     /// Closes the page; the section shows as it was.
     func closePage() {
+        returning = page
         page = nil
+    }
+
+    /// The starting poster or button has focus again.
+    func returned() {
+        returning = nil
     }
 
     /// The app came back to the foreground: sources waiting for a login try again.
@@ -331,8 +340,9 @@ struct TitleRoute: Equatable {
     enum Origin: Equatable {
         /// The banner's More info button.
         case banner
-        /// A poster, or the More info item in its menu.
-        case poster
+        /// A poster, or the More info item in its menu, in the row or grid
+        /// named by its identifier part.
+        case poster(row: String)
     }
 
     var title: ShelfTitle

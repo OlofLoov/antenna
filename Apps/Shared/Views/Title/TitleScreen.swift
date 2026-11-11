@@ -34,6 +34,10 @@ struct TitleScreen<Page: View>: View {
             #else
                 .background { keys }
             #endif
+            #if os(iOS)
+                // iPadOS keeps Escape unless a key command asks for priority.
+                .background { LiveEscapeKey { library.closePage() } }
+            #endif
     }
 
     private var context: TitlePageContext {
