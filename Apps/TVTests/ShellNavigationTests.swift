@@ -169,6 +169,21 @@ import Testing
         #expect(!model.barVisible)
     }
 
+    @Test("tv-guide-grid/the-channel-keeps-playing-in-a-small-picture opening the Guide resumes a paused stream without a reload")
+    func guideResumesPausedStream() async {
+        await playing()
+        await engine.pause()
+        let plays = engine.plays
+        #expect(await model.select(.guide) == .content)
+        #expect(engine.plays == plays + 1)
+        #expect(engine.loaded.count == 1)
+        #expect(engine.state == .playing)
+
+        // A playing stream is left alone.
+        _ = await model.select(.guide)
+        #expect(engine.plays == plays + 1)
+    }
+
     @Test("tvos-shell/a-loading-screen-at-launch Live shows the loading screen, not the empty one, before the sources are read")
     func noEmptyFlash() {
         #expect(model.liveScreen == .loading)

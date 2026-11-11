@@ -88,33 +88,62 @@
 
             /// A scripted guide for the shell's UI tests, or nil outside them:
             /// a1 and b1 have a programme on now, a1 four more after it, a2's
-            /// guide is still loading and a3 has none.
+            /// guide is still loading and a3 has none, or failed to load with
+            /// `-ui-testing-guide-failed`. The guide reaches from an hour
+            /// before launch to three hours after.
             @MainActor
             static func guide() -> OverlayGuide? {
                 guard scenario() != nil else { return nil }
+                let a3Failed = ProcessInfo.processInfo.arguments.contains(failedGuideArgument)
+                let current = scriptedCurrent
+                let next = scriptedNext
                 return OverlayGuide(
-                    state: { channel in channel.id == "fixture/a2" ? .loading : .loaded },
-                    current: { channel, _ in
-                        let title: String? =
-                            switch channel.id {
-                            case "fixture/a1": "Morning News"
-                            case "fixture/b1": "Evening Film"
-                            default: nil
-                            }
-                        return title.map {
-                            Programme(
-                                channelID: channel.id, start: launched.addingTimeInterval(-1800), stop: launched.addingTimeInterval(1800),
-                                title: $0, summary: "Headlines and weather.")
+                    state: { channel in
+                        switch channel.id {
+                        case "fixture/a2": .loading
+                        case "fixture/a3" where a3Failed: .failed(.timeout)
+                        default: .loaded
                         }
                     },
-                    next: { channel, _, count in
-                        guard channel.id == "fixture/a1" else { return [] }
-                        let titles = ["Weather", "Business", "Sport Tonight", "Late Film"]
-                        return zip(titles.indices, titles).prefix(count).map { index, title in
-                            let start = launched.addingTimeInterval(1800 + Double(index) * 1800)
-                            return Programme(channelID: channel.id, start: start, stop: start.addingTimeInterval(1800), title: title)
-                        }
-                    })
+                    current: current,
+                    next: next,
+                    programmes: { channel, interval in
+                        ([current(channel, launched)].compactMap(\.self) + next(channel, launched, 4))
+                            .filter { $0.stop > interval.start && $0.start < interval.end }
+                    },
+                    horizon: { DateInterval(start: launched.addingTimeInterval(-3600), end: launched.addingTimeInterval(3 * 3600)) })
+            }
+
+            /// Makes Channel a3's guide fail to load instead of loading empty.
+            static let failedGuideArgument = "-ui-testing-guide-failed"
+
+            /// Morning News on a1 and Evening Film on b1, from half an hour
+            /// before launch to half an hour after.
+            @MainActor
+            private static let scriptedCurrent: @MainActor (Channel, Date) -> Programme? = { channel, _ in
+                let title: String? =
+                    switch channel.id {
+                    case "fixture/a1": "Morning News"
+                    case "fixture/b1": "Evening Film"
+                    default: nil
+                    }
+                return title.map {
+                    Programme(
+                        channelID: channel.id, start: launched.addingTimeInterval(-1800), stop: launched.addingTimeInterval(1800),
+                        title: $0, summary: "Headlines and weather.", category: "News")
+                }
+            }
+
+            /// Weather, Business, Sport Tonight and Late Film on a1 after
+            /// Morning News, half an hour each.
+            @MainActor
+            private static let scriptedNext: @MainActor (Channel, Date, Int) -> [Programme] = { channel, _, count in
+                guard channel.id == "fixture/a1" else { return [] }
+                let titles = ["Weather", "Business", "Sport Tonight", "Late Film"]
+                return zip(titles.indices, titles).prefix(count).map { index, title in
+                    let start = launched.addingTimeInterval(1800 + Double(index) * 1800)
+                    return Programme(channelID: channel.id, start: start, stop: start.addingTimeInterval(1800), title: title)
+                }
             }
         }
     #endif

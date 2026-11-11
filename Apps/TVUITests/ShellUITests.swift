@@ -228,14 +228,14 @@ extension ShellUITests {
         press(.right)
         expectFocus("shell.tab.guide")
         press(.select)
-        expectFocus("guide.standIn")
+        expectFocus("guide.grid")
         expectGone("shell.tab.guide")
         press(.menu)
         expectFocus("shell.tab.guide")
         expect(element("shell.player"), "value == 'dimmed'")
         XCTAssertFalse(element("shell.clock").exists)
         XCTAssertTrue(element("guide.clock").exists)
-        XCTAssertTrue(element("guide.standIn").exists)
+        XCTAssertTrue(element("guide.grid").exists)
     }
 
     // tvos-shell/menu-from-the-tab-bar-goes-back-to-live

@@ -3,9 +3,7 @@
     import SwiftUI
 
     // Temporary screens for specs not built yet. Each goes when its spec
-    // ships: the Guide with the guide grid, Movies and Series with their
-    // browsing screens, Search with search, the channel picker with the
-    // channel overlay.
+    // ships: Movies and Series with their browsing screens, Search with search.
 
     /// One focusable line. Holds focus without the Focus token, like the
     /// loading screen's holder.
@@ -20,33 +18,6 @@
                 .focusable()
                 .focusEffectDisabled()
                 .focused(focus, equals: .content)
-        }
-    }
-
-    /// Stands in for the guide grid. The picture sits in the board's
-    /// 480 by 270 box (drawn by `ShellView`); the clock is the guide's.
-    struct GuideStandIn: View {
-        let date: Date
-        let focus: FocusState<ShellFocus?>.Binding
-
-        var body: some View {
-            VStack(alignment: .leading, spacing: 40) {
-                HStack(alignment: .top) {
-                    Spacer()
-                    Text(date, format: .dateTime.hour().minute())
-                        .font(.system(size: 34, weight: .semibold))
-                        .monospacedDigit()
-                        .foregroundStyle(Palette.text)
-                        .accessibilityIdentifier("guide.clock")
-                }
-                .frame(height: 270, alignment: .top)
-                StandInLine(text: "The programme guide is not available yet.", focus: focus)
-                    .accessibilityIdentifier("guide.standIn")
-                Spacer()
-            }
-            .padding(.top, 54)
-            .padding(.leading, 584)
-            .padding(.trailing, 64)
         }
     }
 

@@ -360,10 +360,7 @@
                 await showLive()
                 if let tuned, case .failed = await engine.state { tune(tuned) }
                 return liveFocus
-            case .guide:
-                await open(.guide)
-                return .content
-            case .movies, .series, .search:
+            case .guide, .movies, .series, .search:
                 await open(target)
                 return .content
             }
@@ -392,6 +389,8 @@
                 if !wasContent { startPauseTimer() }
             } else {
                 await resume()
+                // The Guide's small picture plays on a stream the user paused (tv-guide-grid/the-channel-keeps-playing-in-a-small-picture).
+                if target == .guide, await engine.state == .paused { await engine.play() }
             }
         }
 

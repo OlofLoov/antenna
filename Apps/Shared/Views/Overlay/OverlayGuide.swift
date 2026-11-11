@@ -1,14 +1,19 @@
 import AntennaCore
 import Foundation
 
-/// The guide the channel overlay reads: each channel's loading state and
-/// the programme on at a time. The app reads `AppGuideStore`; the shell's
-/// UI tests pass a scripted one.
+/// The guide the channel overlay, info bar and guide grid read: each
+/// channel's loading state, the programme on at a time and the programmes
+/// in a stretch of time. The app reads `AppGuideStore`; the shell's UI
+/// tests pass a scripted one.
 struct OverlayGuide {
     let state: @MainActor (Channel) -> GuideLoadingState
     let current: @MainActor (Channel, Date) -> Programme?
     /// Up to the given count of programmes starting at or after the date.
     let next: @MainActor (Channel, Date, Int) -> [Programme]
+    /// The programmes that overlap the interval, in start order.
+    var programmes: @MainActor (Channel, DateInterval) -> [Programme] = { _, _ in [] }
+    /// From the earliest start to the latest stop the guide holds, nil with no guide.
+    var horizon: @MainActor () -> DateInterval? = { nil }
 
     /// What `channel`'s row says at `date`.
     @MainActor func line(for channel: Channel, at date: Date) -> GuideLine {
@@ -38,6 +43,11 @@ struct OverlayGuide {
             current: { channel, date in GuideKey(channel: channel).flatMap { store?.current(for: $0, at: date) } },
             next: { channel, date, count in
                 GuideKey(channel: channel).map { store?.next(for: $0, after: date, count: count) ?? [] } ?? []
-            })
+            },
+            programmes: { channel, interval in
+                guard let key = GuideKey(channel: channel) else { return [] }
+                return store?.programmes(for: [key], in: interval)[key] ?? []
+            },
+            horizon: { store?.horizon })
     }
 }
