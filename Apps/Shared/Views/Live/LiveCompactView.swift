@@ -30,6 +30,7 @@
             }
             .background(Palette.ground)
             .fullScreenChrome(live.fullScreen)
+            .task { live.resumeIfSuspended() }
             .overlay {
                 #if DEBUG
                     UITestingLive.Probe(engine: live.engine)

@@ -359,7 +359,8 @@
             switch target {
             case .live:
                 await showLive()
-                if let tuned, case .failed = await engine.state { tune(tuned) }
+                // A failed stream, or one a movie stopped, loads again.
+                if let tuned, await engine.state.hasStopped { tune(tuned) }
                 return liveFocus
             case .guide, .movies, .series, .search:
                 await open(target)

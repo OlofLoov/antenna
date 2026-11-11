@@ -232,22 +232,8 @@
                 if live.launched, live.sources.isEmpty {
                     LiveNoSources()
                 } else {
-                    HStack(spacing: 0) {
-                        if columns != .picture {
-                            LiveListColumn(leading: { sidebarButton(columns) }, picked: {})
-                                .frame(width: 352)
-                            divider
-                        }
-                        LiveDetailColumn {
-                            if columns == .picture {
-                                HStack(spacing: 4) {
-                                    sidebarButton(columns)
-                                    Browse.ToggleButton(title: "Show channel list", systemImage: "list.bullet") { shown = .list }
-                                        .accessibilityIdentifier("browse.toggleList")
-                                }
-                            }
-                        }
-                    }
+                    liveColumns(columns)
+                        .task { live.resumeIfSuspended() }
                 }
             case .guide:
                 folded(columns) { GuideView() }
@@ -261,6 +247,26 @@
                 }
             case .settings:
                 folded(columns) { SettingsView() }
+            }
+        }
+
+        /// The channel list and the picture with its details.
+        private func liveColumns(_ columns: LiveColumns) -> some View {
+            HStack(spacing: 0) {
+                if columns != .picture {
+                    LiveListColumn(leading: { sidebarButton(columns) }, picked: {})
+                        .frame(width: 352)
+                    divider
+                }
+                LiveDetailColumn {
+                    if columns == .picture {
+                        HStack(spacing: 4) {
+                            sidebarButton(columns)
+                            Browse.ToggleButton(title: "Show channel list", systemImage: "list.bullet") { shown = .list }
+                                .accessibilityIdentifier("browse.toggleList")
+                        }
+                    }
+                }
             }
         }
 

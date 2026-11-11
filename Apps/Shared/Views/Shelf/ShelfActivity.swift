@@ -66,6 +66,12 @@ final class ShelfActivity {
             progress: progress, titles: library.movies.titles + library.series.titles, finishedSeries: finished)
     }
 
+    /// Saves where the user is in a movie or episode.
+    func saveProgress(titleID: String, seriesID: String?, source: UUID, position: Double, duration: Double?) {
+        store?.saveProgress(titleID: titleID, seriesID: seriesID, source: source, position: position, duration: duration)
+        reload()
+    }
+
     /// The saved position of a movie, for its poster's label.
     func progress(of title: ShelfTitle) -> WatchProgress? {
         progress.first { $0.titleID == title.id && $0.sourceID == title.sourceID }

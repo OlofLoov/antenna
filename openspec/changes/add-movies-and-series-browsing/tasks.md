@@ -19,9 +19,9 @@
 
 ## 4. Playing
 
-- [ ] 4.1 Seek to the saved position before the first frame, and verify with an integration test citing `movies-and-series-browsing/resume-where-you-left-off`
-- [ ] 4.2 Load a series' episodes and start the first unfinished one, with the no-episodes and failed states, and verify with core and UI tests citing `movies-and-series-browsing/play-a-series-from-the-next-episode`
-- [ ] 4.3 Save the position every 30 seconds and on pause, stop, background and end, and verify with an integration test citing `movies-and-series-browsing/your-place-is-saved-as-you-watch`
+- [x] 4.1 Seek to the saved position before the first frame, and verify with an integration test citing `movies-and-series-browsing/resume-where-you-left-off`
+- [x] 4.2 Load a series' episodes and start the first unfinished one, with the no-episodes and failed states, and verify with core and UI tests citing `movies-and-series-browsing/play-a-series-from-the-next-episode`
+- [x] 4.3 Save the position every 30 seconds and on pause, stop, background and end, and verify with an integration test citing `movies-and-series-browsing/your-place-is-saved-as-you-watch`
 
 ## 5. Series, failures and search
 

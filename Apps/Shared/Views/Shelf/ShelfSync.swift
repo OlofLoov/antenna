@@ -8,6 +8,7 @@ import SwiftUI
 /// above every layout.
 struct ShelfSync: ViewModifier {
     let library: ShelfLibrary
+    let playback: ShelfPlayback
     @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
@@ -16,7 +17,24 @@ struct ShelfSync: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .disabled(playback.playing != nil)
+            .overlay {
+                if let target = playback.playing {
+                    ShelfPlayerView(playback: playback, target: target)
+                }
+            }
+            // "No episodes available" with OK, or "Could not load episodes"
+            // with Retry (movies-and-series-browsing/play-a-series-from-the-next-episode).
+            .alert(playback.problem?.message ?? "", isPresented: showsProblem, presenting: playback.problem) { problem in
+                if problem.retries {
+                    Button("Retry") { playback.retry(problem.series, library: library, activity: activity) }
+                    Button("Cancel", role: .cancel) {}
+                } else {
+                    Button("OK", role: .cancel) {}
+                }
+            }
             .environment(library)
+            .environment(playback)
             .environment(activity)
             .task(id: profile) {
                 await activity.follow(ActivityStore(context: context, profile: profile))
@@ -27,7 +45,12 @@ struct ShelfSync: ViewModifier {
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { library.becameActive() }
+                if phase == .background { playback.background() }
             }
+    }
+
+    private var showsProblem: Binding<Bool> {
+        Binding(get: { playback.problem != nil }, set: { if !$0 { playback.problem = nil } })
     }
 }
 
@@ -39,5 +62,27 @@ extension ShelfLibrary {
             if let scripted = UITestingShelf.library() { return scripted }
         #endif
         return .live(ShelfLoader(session: loader.session, credentials: loader.credentials))
+    }
+}
+
+extension ShelfPlayback {
+    /// Playback for the app: a scripted engine in a Debug build launched for
+    /// UI tests, otherwise the routed engine with addresses built from the
+    /// Keychain login. `willPlay` stops live TV.
+    static func app(_ loader: SourceLoader, willPlay: @escaping @MainActor () async -> Void) -> ShelfPlayback {
+        #if DEBUG
+            if let scripted = UITestingShelf.playback(willPlay: willPlay) { return scripted }
+        #endif
+        let shelf = ShelfLoader(session: loader.session, credentials: loader.credentials)
+        return ShelfPlayback(
+            .init(
+                engine: RoutedEngine.app(),
+                address: { source, target in
+                    switch target {
+                    case .movie(let movie): try shelf.movieURL(source, movie: movie)
+                    case .episode(let episode, _): try shelf.episodeURL(source, episode: episode)
+                    }
+                },
+                willPlay: willPlay))
     }
 }

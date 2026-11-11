@@ -142,10 +142,23 @@ struct ShelfPoster: View {
     let title: ShelfTitle
     let actions: ShelfActions
     @Environment(ShelfActivity.self) private var activity
+    @Environment(ShelfPlayback.self) private var playback
+    @Environment(\.shelfPrefix) private var prefix
 
     var body: some View {
         ShelfView.PosterCard(title: title, label: ShelfText.posterLabel(title, progress: activity.progress(of: title))) {
             actions.play(title)
+        }
+        // A series' poster shows it is working while its episode list loads
+        // (movies-and-series-browsing/play-a-series-from-the-next-episode).
+        .overlay {
+            if playback.working == title.id {
+                ProgressView()
+                    .controlSize(.large)
+                    .tint(Palette.text)
+                    .accessibilityLabel("Loading episodes")
+                    .accessibilityIdentifier("\(prefix).card.\(title.id).working")
+            }
         }
         .contextMenu {
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(title)) { actions.toggleMyList(title) }

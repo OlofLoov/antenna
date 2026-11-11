@@ -11,6 +11,7 @@
         @Environment(\.currentProfile) private var profile
         @State private var live: LiveModel?
         @State private var shelves: ShelfLibrary?
+        @State private var playback: ShelfPlayback?
         @State private var lifecycle: PlaybackLifecycle?
         #if os(iOS)
             @Environment(\.horizontalSizeClass) private var sizeClass
@@ -19,10 +20,10 @@
         var body: some View {
             ZStack {
                 Palette.ground.ignoresSafeArea()
-                if let live, let shelves {
+                if let live, let shelves, let playback {
                     layout
                         .modifier(LiveSync(live: live))
-                        .modifier(ShelfSync(library: shelves))
+                        .modifier(ShelfSync(library: shelves, playback: playback))
                 }
             }
             .preferredColorScheme(.dark)
@@ -35,6 +36,7 @@
                 lifecycle.start()
                 self.live = live
                 self.shelves = .app(loader)
+                self.playback = .app(loader) { await live.suspend() }
                 self.lifecycle = lifecycle
             }
         }

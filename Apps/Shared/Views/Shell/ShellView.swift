@@ -13,14 +13,15 @@
         @Environment(\.currentProfile) private var profile
         @State private var model: ShellModel?
         @State private var shelves: ShelfLibrary?
+        @State private var playback: ShelfPlayback?
         @State private var lifecycle: PlaybackLifecycle?
 
         var body: some View {
             ZStack {
                 Palette.ground.ignoresSafeArea()
-                if let model, let shelves {
+                if let model, let shelves, let playback {
                     ShellScreen(model: model)
-                        .modifier(ShelfSync(library: shelves))
+                        .modifier(ShelfSync(library: shelves, playback: playback))
                 }
             }
             .guideRefreshTriggers()
@@ -39,6 +40,7 @@
                 #endif
                 self.model = model
                 self.shelves = .app(loader)
+                self.playback = .app(loader) { await engine.stop() }
                 self.lifecycle = lifecycle
             }
         }
