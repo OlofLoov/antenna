@@ -7,7 +7,7 @@
 ## 2. Banner and rows
 
 - [ ] 2.1 Pick the four newest titles in the core package and build the banner with rotation, pausing, paging and Reduce Motion, and verify with core and UI tests citing `movies-and-series-browsing/new-titles-up-front`
-- [ ] 2.2 Order Recently added and category rows with merging by category name in the core package, and verify with a core test citing `movies-and-series-browsing/rows-in-a-predictable-order`
+- [x] 2.2 Order Recently added and category rows with merging by category name in the core package, and verify with a core test citing `movies-and-series-browsing/rows-in-a-predictable-order`
 - [ ] 2.3 Add the poster cache keyed on a URL hash with the name tile fallback, and check the 50 MB and 500 MB limits
 - [ ] 2.4 Build the genre, My list, All and See all grids with sorting on iPad and Mac and a separate screen on Apple TV, and verify with a UI test citing `movies-and-series-browsing/browse-a-genre-or-sort-the-lot`
 - [ ] 2.5 Check the two-second budget with 20 000 items in 400 categories on Apple TV 4K and iPhone 15
