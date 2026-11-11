@@ -55,11 +55,15 @@ final class LivePlayerUITests: XCTestCase {
         app.element("browse.player.surface").tap()
 
         XCTAssertTrue(app.element("browse.player.controls").waitForExistence(timeout: 2))
-        for part in ["progress", "clock", "live", "fullscreen"] {
-            _ = control(app, part)
-        }
         XCTAssertEqual(control(app, "playPause").label, "Pause")
-        XCTAssertFalse(control(app, "pip").isEnabled, "the fake engine cannot do Picture in Picture")
+        // Paused, the controls stay, so reading each part cannot race the
+        // three-second timer on a slow runner.
+        control(app, "playPause").tap()
+        app.waitForEngine("paused loads=1")
+        for part in ["playPause", "progress", "clock", "live", "fullscreen", "pip"] {
+            XCTAssertTrue(app.element("browse.player.\(part)").exists, "no \(part)")
+        }
+        XCTAssertFalse(app.element("browse.player.pip").isEnabled, "the fake engine cannot do Picture in Picture")
     }
 
     // live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them, controls go away
