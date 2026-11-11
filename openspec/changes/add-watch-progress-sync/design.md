@@ -30,7 +30,8 @@ Design-system requirements that apply: none.
 - The change stream yields after any save on the container (local saves and CloudKit imports), a new stream per subscriber, nothing on creation.
 - `source-management`'s delete path calls the source removal after deleting the Keychain item and the source record, as `guide-data` does for the guide. Extra copies from sync are deleted on the next save.
 - Malformed records (empty title id, missing source, negative or non-finite position or length) are skipped by reads and never deleted. A bad length reads as unknown.
-- Whether to clamp how far ahead another device's clock may be (for example 24 hours) is settled in the implementation.
+- No clamp on how far ahead another device's clock may be. A save on this device stamps just after the copy it replaces, so the user's latest save wins however far ahead the other clock ran; a clamp would only matter for copies nobody saves over, and those show the other device's answer on every device anyway.
+- The rules are `WatchProgress`, `ListEntry` and `RecentSearch` in `AntennaCore/Activity`, each with a `resolve` that returns the winners and the indices a write deletes.
 
 ## Risks / Trade-offs
 
