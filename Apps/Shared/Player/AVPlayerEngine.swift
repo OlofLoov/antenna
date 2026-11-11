@@ -52,6 +52,13 @@ final class AVPlayerEngine: PlaybackEngine {
     var playerObservation: NSKeyValueObservation?
     var timeObserver: Any?
     var pictureInPicture: AVPictureInPictureController?
+    #if os(iOS) || os(tvOS)
+        /// Told when the Picture in Picture window opens, closes or restores
+        /// the app. The controller holds it weakly.
+        weak var pictureInPictureDelegate: (any AVPictureInPictureControllerDelegate)? {
+            didSet { pictureInPicture?.delegate = pictureInPictureDelegate }
+        }
+    #endif
     /// Copies the picture on screen for `hold` when the item goes.
     var videoOutput: AVPlayerItemVideoOutput?
     /// The sound and subtitle choices of the item on the player.
@@ -132,6 +139,7 @@ final class AVPlayerEngine: PlaybackEngine {
                 controller?.canStartPictureInPictureAutomaticallyFromInline = true
             #endif
             controller?.requiresLinearPlayback = stream?.isLive ?? true
+            controller?.delegate = pictureInPictureDelegate
             pictureInPicture = controller
         #endif
     }

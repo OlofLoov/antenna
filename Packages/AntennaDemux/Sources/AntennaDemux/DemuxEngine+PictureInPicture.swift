@@ -38,6 +38,7 @@ extension DemuxEngine {
                 controller.canStartPictureInPictureAutomaticallyFromInline = true
             #endif
             controller.requiresLinearPlayback = isLive
+            controller.delegate = pictureInPictureDelegate
             pictureInPicture = controller
             pictureInPicturePlayback = playback
         }
@@ -53,6 +54,11 @@ extension DemuxEngine {
         /// system allows it now. Call `enablePictureInPicture()` first.
         public func startPictureInPicture() {
             pictureInPicture?.startPictureInPicture()
+        }
+
+        /// Closes the Picture in Picture window, when one is open.
+        public func stopPictureInPicture() {
+            pictureInPicture?.stopPictureInPicture()
         }
 
         /// Tells the window the engine's play state or span changed.
