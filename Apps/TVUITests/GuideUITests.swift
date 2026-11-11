@@ -215,3 +215,23 @@ extension ShellUITests {
         expectEngine("playing loads=1 file=a1.ts")
     }
 }
+
+// MARK: Entry from Search
+
+extension ShellUITests {
+    // tv-guide-grid/open-at-a-programme-found-in-search
+    func testOpenAtAProgrammeFoundInSearch() {
+        // b1's Evening Film, asked for once a1 plays, as Search will. b1 is not in a1's group.
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-guide-request"]
+        app.launch()
+        expectFocus("guide.grid")
+        expectHighlight("guide.block.00000000-0000-0000-0000-00000000000B.0.")
+        XCTAssertTrue(highlighted().label.contains("Evening Film"), highlighted().label)
+        expect(element("guide.panel.title"), "label == 'Evening Film'")
+        let cells = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'guide.channel.'"))
+        expect(cells.firstMatch, "exists == true")
+        XCTAssertEqual(cells.count, 4, "the group became All channels")
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+}

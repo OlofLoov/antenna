@@ -99,7 +99,8 @@
         private(set) var sources: [ShellSource] = []
         private(set) var channels: [Channel] = []
         private(set) var tuned: Channel?
-        private(set) var guideRequest: ProgrammeKey?
+        /// The programme Search asked the Guide to show; the Guide clears it once shown.
+        var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
         private(set) var offersMovies = false
         var settingsOpen = false
