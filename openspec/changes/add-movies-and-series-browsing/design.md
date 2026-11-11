@@ -38,6 +38,8 @@ On iPhone the Movies tab shows the Movies | Series switch, a tall banner with ge
 - A position saved on another device updates Continue watching within five seconds of the local store change.
 - When to save is `PositionSaving` in AntennaCore: 30 seconds of wall time while playing, counted again from each play, and at once on pause, stop, background and end. The end saves the full length so the title counts as watched. Live positions are never saved. The player screen feeds it the engine's positions and states and writes what it returns through `ActivityStore.saveProgress`.
 - The tvOS tab bar shows Movies and Series for any Xtream source, so the `tvos-shell` tab requirement changes with this.
+- The rules live in `AntennaCore/Shelf`: `ShelfTitle` (a movie or series from any source), `Shelf.banner` and `Shelf.rows`, `ContinueWatching` and `ShelfText`. Screens map Xtream rows to `ShelfTitle` and read progress from `ActivityStore`.
+- Continue watching keeps a series whose latest episode is finished as "Next episode" until its episode list shows nothing unwatched, so the row does not load every series' episodes up front. Selecting a series whose episodes are all finished starts the first from the beginning.
 
 ## Badge rules
 
