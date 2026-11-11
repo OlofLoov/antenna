@@ -69,8 +69,6 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
-        @Environment(\.switchProfile) private var switchProfile
-        @Query private var profileRecords: [ProfileRecord]
         @State private var zapBar = ZapBarModel()
         @State private var numbers = NumberEntryModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
@@ -97,7 +95,7 @@
                     .transition(.opacity)
                 }
                 if model.dimmed { ShellScrim() }
-                if model.barVisible { bar }
+                if model.barVisible { ShellBarLayer(model: model, focus: $focus, barHasFocus: barHasFocus) }
                 if model.pickerOpen {
                     ChannelOverlayView(
                         catalogue: catalogue, playing: model.tuned, guide: overlayGuide, model: overlay, focus: $focus,
@@ -231,42 +229,6 @@
             }
         }
 
-        private var bar: some View {
-            ShellTabBar.Bar {
-                ForEach(model.tabs, id: \.self) { tab in
-                    ShellTabBar.Pill(title: tab.title, look: look(for: tab)) {
-                        Task { focus = await model.select(tab) }
-                    }
-                    .focused($focus, equals: .tab(tab))
-                    .accessibilityIdentifier("shell.tab.\(tab.identifier)")
-                }
-            } settings: {
-                if let profile = profiles.profiles.first(where: { $0.id == self.profile }), profiles.showsPicker {
-                    ShellTabBar.ProfileButton(tile: ProfileTile(profile)) {
-                        // Playback stops before "Who's watching?" (profiles/switching-profile).
-                        Task {
-                            await model.engine.stop()
-                            switchProfile?()
-                        }
-                    }
-                    .focused($focus, equals: .profile)
-                    .accessibilityIdentifier("shell.profile")
-                }
-                ShellTabBar.SettingsButton { model.settingsOpen = true }
-                    .focused($focus, equals: .settings)
-                    .accessibilityIdentifier("shell.settings")
-            } trailing: {
-                if model.tab == .guide {
-                    ShellTabBar.ClockSlot()
-                } else {
-                    TimelineView(.everyMinute) { context in
-                        ShellTabBar.Clock(date: context.date)
-                    }
-                }
-            }
-            .focusSection()
-        }
-
         // MARK: Input
 
         private var barHasFocus: Bool {
@@ -274,11 +236,6 @@
             case .tab, .settings, .profile: true
             case .picture, .liveScreen, .content, .overlay, nil: false
             }
-        }
-
-        private func look(for tab: ShellTab) -> ShellTabBar.Look {
-            guard tab == model.tab else { return .plain }
-            return barHasFocus ? .currentInBar : .currentInContent
         }
 
         /// The favorite button in the overlay's panel. Removing the shown
@@ -289,8 +246,6 @@
             guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
             focus = .overlay(next)
         }
-
-        private var profiles: ProfileList { ProfileStore.list(profileRecords) }
 
         private var catalogueInputs: CatalogueInputs {
             CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
