@@ -99,3 +99,13 @@ The title is "Sign in on this Apple TV". Server is filled from the record with t
 
 - [The project rule is that secrets sync through iCloud Keychain, and Apple TV has no iCloud Keychain] → the Apple TV sign-in requirement covers it until a decision says where a password typed on an Apple TV is kept. The options are an encrypted CloudKit field in SwiftData, or the Keychain on that Apple TV with sign-in as the permanent path. The change is blocked on that decision.
 - Open question: should Fill in understand provider messages that contain more than a single link? Can be decided during implementation.
+
+## Implementation decisions
+
+- `OnboardingGate` wraps the window root on every platform and shows onboarding while the store holds no source record. Any record opens the app, with or without its password and with or without channels, so the user who left during loading and the user whose password has not synced both land on their channels. Deleting the last source shows onboarding again. On Apple TV the gate sits outside the profile picker, so "Who's watching?" never shows before a source exists.
+- The app behind the gate is not built while onboarding shows, so no source loads and no server is contacted. The guide store exists from launch but starts no download on its own.
+- Paying is assumed. No entitlement exists until `add-paywall-and-entitlement` is built, so task 1.3 stays open.
+- The iCloud note reads `FileManager.ubiquityIdentityToken` once when the welcome screen appears. On iPhone, iPad and Mac the note is the "Synced with iCloud" feature row; on Apple TV it is the line at the bottom. Both go when the device is not signed in.
+- iPad and Mac show the iPhone welcome at most 520 pt wide, centered in the window, not a separate board.
+- "What is a source?" is a sheet on iPhone, iPad and Mac and a full-screen cover on Apple TV, closed by Done.
+- `-ui-testing-onboarding signedIn|signedOut` launches a Debug build on an empty in-memory store with the iCloud state scripted.
