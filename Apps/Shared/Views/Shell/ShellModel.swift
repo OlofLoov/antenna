@@ -97,10 +97,9 @@
             var network: NetworkWatch = .system
             /// How long the spinner shows before it names the source as slow.
             var slowDelay = Duration.seconds(10)
+            /// How the ten-second count waits, when not as `sleep`.
+            var watchSleep: (@MainActor (Duration) async throws -> Void)?
         }
-
-        /// Thrown by a loader for a source whose login is not on this device.
-        enum LoadFailure: Error { case waitingForLogin }
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
         static let launchDeadline = Duration.seconds(10)
@@ -111,6 +110,8 @@
         private(set) var sources: [ShellSource] = []
         private(set) var channels: [Channel] = []
         private(set) var tuned: Channel?
+        /// The channels watched lately on this Apple TV, newest first.
+        var recents: [LastChannelKey] = []
         /// The programme Search asked the Guide to show; the Guide clears it once shown.
         var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
@@ -142,7 +143,7 @@
             self.dependencies = dependencies
             self.engine = dependencies.engine
             languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
-            session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
+            session = SessionTracker(store: dependencies.recents, sleep: dependencies.watchSleep ?? dependencies.sleep)
             player = PlayerModel(
                 .init(
                     engine: dependencies.engine, sleep: dependencies.sleep, network: dependencies.network,

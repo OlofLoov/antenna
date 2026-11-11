@@ -30,6 +30,7 @@
                             if let entry = model.entry(catalogue, playing: playing) { focus.wrappedValue = .overlay(.channel(entry)) }
                         }
                         .focused(focus, equals: .overlay(.group(group)))
+                        .groupSpokenLabel(group, count: catalogue.count(of: group))
                         .accessibilityIdentifier("overlay.group.\(index)")
                     }
                 } search: {

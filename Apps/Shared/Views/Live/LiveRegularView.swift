@@ -217,6 +217,7 @@
                     section = .live
                     shown = columns == .picture ? .list : nil
                 }
+                .groupSpokenLabel(group, count: live.catalogue.count(of: group))
                 .accessibilityIdentifier("browse.group.\(index)")
             }
             ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in

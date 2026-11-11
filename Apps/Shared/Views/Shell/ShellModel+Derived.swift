@@ -11,6 +11,9 @@
     }
 
     extension ShellModel {
+        /// Thrown by a loader for a source whose login is not on this device.
+        enum LoadFailure: Error { case waitingForLogin }
+
         /// The bar shows when raised by Menu and always on Movies, Series and Search.
         var barVisible: Bool { barRaised || tab.isContent }
 
@@ -58,10 +61,14 @@
         func sourceDeleted(_ id: UUID) {
             session.remove(source: id)
             if stored?.sourceID == id { stored = nil }
+            recents.removeAll { $0.sourceID == id }
         }
 
-        /// Tells the session tracker each engine state until the calling task ends.
+        /// Reads the stored recents, then tells the session tracker each
+        /// engine state until the calling task ends.
         func trackSession() async {
+            recents = session.store.recents.entries
+            session.recorded = { [weak self] list in self?.recents = list.entries }
             for await state in await engine.states() {
                 session.stateChanged(state)
             }
@@ -109,6 +116,21 @@
             case .series: "series"
             case .search: "search"
             }
+        }
+    }
+
+    extension ShellModel.Dependencies {
+        /// The engine, loader, Keychain check and clock the app runs on.
+        /// The last channel and language picks are `profile`'s on this Apple TV.
+        @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID) -> Self {
+            .init(
+                engine: RoutedEngine.app(),
+                load: { try await loader.load($0) },
+                hasLogin: { loader.hasLogin($0) },
+                recents: RecentsStore(profile: profile),
+                sleep: { try await Task.sleep(for: $0) },
+                guide: guide,
+                languages: ChannelLanguageStore(profile: profile))
         }
     }
 #endif
