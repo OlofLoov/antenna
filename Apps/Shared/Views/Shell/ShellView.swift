@@ -79,6 +79,7 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
+        @Environment(\.switchProfile) private var switchProfile
         @State private var zapBar = ZapBarModel()
         @State private var numbers = NumberEntryModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
@@ -181,6 +182,8 @@
             .environment(\.shellNavigator, model.navigator)
             .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
                 SettingsView()
+                    // Playback stops before "Who's watching?" (profiles/switching-profile).
+                    .environment(\.switchProfile, stoppingFirst)
             }
             .fullScreenCover(item: $model.signInRequest, onDismiss: { focus = model.liveFocus }) { request in
                 SignInView(request: request) { username, password in
@@ -421,6 +424,17 @@
 
     /// The player's layers and inputs: the spinner, the error, the info panel.
     extension ShellScreen {
+        /// `switchProfile` after the engine stops; nil outside a profile gate.
+        fileprivate var stoppingFirst: (@MainActor () -> Void)? {
+            guard let switchProfile else { return nil }
+            return { [model] in
+                Task {
+                    await model.engine.stop()
+                    switchProfile()
+                }
+            }
+        }
+
         /// The spinner or the error over the picture, sized to it: the full
         /// error with its buttons on Live, the short one in the Guide's box
         /// (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).

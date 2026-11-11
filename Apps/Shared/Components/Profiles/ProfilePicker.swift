@@ -17,7 +17,7 @@ struct ProfilePicker<Footer: View>: View {
             Spacer(minLength: 0)
             Text("Who's watching?")
                 .font(.system(size: Metrics.title, weight: .bold))
-            HStack(spacing: Metrics.tileGap) {
+            LazyVGrid(columns: columns, spacing: Metrics.rowGap) {
                 ForEach(Array(zip(tiles.indices, tiles)), id: \.1.id) { index, tile in
                     Button {
                         choose(tile.id)
@@ -40,6 +40,11 @@ struct ProfilePicker<Footer: View>: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("profiles.picker")
     }
+
+    /// One row on Apple TV, two columns on iPhone, iPad and Mac (`iPhone-Profiles`).
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.fixed(Metrics.column), spacing: Metrics.tileGap), count: max(1, min(tiles.count, Metrics.columns)))
+    }
 }
 
 private enum Metrics {
@@ -47,12 +52,18 @@ private enum Metrics {
         static let title: CGFloat = 56
         static let titleGap: CGFloat = 80
         static let tileGap: CGFloat = 80
+        static let rowGap: CGFloat = 60
+        static let column: CGFloat = 220
+        static let columns = ProfileList.limit
         static let footerBottom: CGFloat = 120
     #else
         static let title: CGFloat = 28
-        static let titleGap: CGFloat = 40
-        static let tileGap: CGFloat = 28
-        static let footerBottom: CGFloat = 40
+        static let titleGap: CGFloat = 48
+        static let tileGap: CGFloat = 40
+        static let rowGap: CGFloat = 32
+        static let column: CGFloat = 130
+        static let columns = 2
+        static let footerBottom: CGFloat = 60
     #endif
 }
 

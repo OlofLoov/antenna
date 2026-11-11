@@ -93,5 +93,24 @@ import Testing
             try sync(profile: kids)
             #expect(favoriteNames == ["One"])
         }
+
+        // profiles/what-each-profile-keeps: favorites apart.
+        @Test("favorites/favorites-belong-to-a-profile Dad and Kids each list and change only their own favorites")
+        func favoritesApart() throws {
+            let kids = UUID()
+            try sync(profile: Profile.mainID)
+            FavoriteRecord.toggle(try channel("One"), in: live.catalogue, profile: Profile.mainID, context: context)
+            try sync(profile: kids)
+            FavoriteRecord.toggle(try channel("Three"), in: live.catalogue, profile: kids, context: context)
+            try sync(profile: kids)
+            #expect(favoriteNames == ["Three"], "Kids sees only Kids's favorite")
+            #expect(!live.catalogue.isFavorite(try channel("One")))
+
+            FavoriteRecord.toggle(try channel("Three"), in: live.catalogue, profile: kids, context: context)
+            try sync(profile: Profile.mainID)
+            #expect(favoriteNames == ["One"], "Kids removing a favorite leaves Dad's alone")
+            let stored = try context.fetch(FetchDescriptor<FavoriteRecord>())
+            #expect(stored.map(\.profileID) == [nil], "Main's favorites store no profile id")
+        }
     }
 #endif
