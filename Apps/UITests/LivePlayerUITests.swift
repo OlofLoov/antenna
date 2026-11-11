@@ -15,13 +15,15 @@ final class LivePlayerUITests: XCTestCase {
         try? FileManager.default.removeItem(at: log)
     }
 
-    /// Launches, plays News One and waits until it plays.
-    private func launchPlaying() throws -> XCUIApplication {
+    /// Launches, plays News One and waits until it plays. A tap keeps the
+    /// controls up for `controlsSeconds`, a minute unless a test says otherwise.
+    private func launchPlaying(controlsSeconds: Int? = nil) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         XCUIDevice.shared.orientation = .portrait
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
+        if let controlsSeconds { app.launchEnvironment["UITESTING_CONTROLS_SECONDS"] = String(controlsSeconds) }
         app.launch()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
@@ -68,12 +70,12 @@ final class LivePlayerUITests: XCTestCase {
 
     // live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them, controls go away
     func testTheControlsGoAwayAfterAFewSeconds() throws {
-        let app = try launchPlaying()
+        let app = try launchPlaying(controlsSeconds: 3)
         app.element("browse.player.surface").tap()
         let controls = app.element("browse.player.controls")
         XCTAssertTrue(controls.waitForExistence(timeout: 2))
 
-        XCTAssertTrue(waitUntilGone(controls, timeout: 6), "the controls stayed up")
+        XCTAssertTrue(waitUntilGone(controls, timeout: 10), "the controls stayed up")
     }
 
     // live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them, paused

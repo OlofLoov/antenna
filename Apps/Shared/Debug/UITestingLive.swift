@@ -17,6 +17,9 @@
     enum UITestingLive {
         static let argument = "-ui-testing-live"
         static let logVariable = "UITESTING_ENGINE_LOG"
+        /// Seconds a tap keeps the player controls up. Unset, they stay up
+        /// for a minute, so a slow runner can read them before they hide.
+        static let controlsVariable = "UITESTING_CONTROLS_SECONDS"
 
         enum Scenario: String {
             /// Home (M3U) with News One and News Two in News, Sport One in
@@ -100,14 +103,17 @@
         @MainActor
         static func dependencies() -> LiveModel.Dependencies? {
             guard let scenario = scenario() else { return nil }
-            let log = ProcessInfo.processInfo.environment[logVariable].map { URL(fileURLWithPath: $0) }
+            let environment = ProcessInfo.processInfo.environment
+            let log = environment[logVariable].map { URL(fileURLWithPath: $0) }
             let script = Script(scenario: scenario)
-            return LiveModel.Dependencies(
+            var dependencies = LiveModel.Dependencies(
                 engine: Engine(log: log),
                 load: { try await script.load($0) },
                 hasLogin: { script.hasLogin($0) },
                 guide: nil,
                 programmes: guide)
+            dependencies.touchHold = .seconds(environment[controlsVariable].flatMap(Double.init) ?? 60)
+            return dependencies
         }
 
         /// What each scenario's sources answer.
