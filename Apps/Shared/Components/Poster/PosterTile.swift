@@ -8,6 +8,8 @@ struct PosterTile: View {
     let name: String
     let image: CGImage?
     var cornerRadius: CGFloat = 8
+    /// The name's size on the plain tile; Apple TV posters use a larger one.
+    var nameSize: CGFloat = 15
 
     var body: some View {
         ZStack {
@@ -16,7 +18,7 @@ struct PosterTile: View {
                 Image(decorative: image, scale: 1).resizable().scaledToFill()
             } else {
                 Text(name)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: nameSize, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .multilineTextAlignment(.center)
                     .lineLimit(4)

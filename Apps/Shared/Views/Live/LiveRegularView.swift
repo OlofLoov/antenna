@@ -68,6 +68,8 @@
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
         @State private var section: LiveSection = .live
+        /// Movies' or Series' rows or grid; picking a section resets it.
+        @State private var browse = ShelfBrowse()
         /// A folded column the user opened over the others.
         @State private var shown: Folded?
 
@@ -153,8 +155,10 @@
                     sectionRow(item)
                 }
             } groups: {
-                if section != .movies, section != .series {
-                    liveGroups(columns)
+                switch section {
+                case .movies: genres(.movie, columns)
+                case .series: genres(.series, columns)
+                default: liveGroups(columns)
                 }
             } footer: {
                 sectionRow(.settings)
@@ -167,6 +171,25 @@
             LiveSection.allCases.filter { item in
                 item != .settings && (shelves.hasXtream || (item != .movies && item != .series))
             }
+        }
+
+        /// All movies or All series, then each genre with its count; the one
+        /// whose grid shows is filled
+        /// (movies-and-series-browsing/browse-a-genre-or-sort-the-lot).
+        @ViewBuilder private func genres(_ kind: ShelfTitle.Kind, _ columns: LiveColumns) -> some View {
+            let model = shelves.model(kind)
+            genreRow(.all, count: model.titles.count, kind: kind)
+            ForEach(Shelf.genres(model.rows)) { genre in
+                genreRow(.genre(genre.name), count: genre.count, kind: kind)
+            }
+        }
+
+        private func genreRow(_ list: ShelfList, count: Int, kind: ShelfTitle.Kind) -> some View {
+            Browse.GroupRow(title: list.name(kind), systemImage: nil, count: count, isSelected: browse.list == list) {
+                browse.pick(list)
+                shown = nil
+            }
+            .accessibilityIdentifier("\(kind.prefix).genres.\(list.identifier)")
         }
 
         @ViewBuilder private func liveGroups(_ columns: LiveColumns) -> some View {
@@ -195,6 +218,7 @@
         private func sectionRow(_ item: LiveSection) -> some View {
             Browse.SectionRow(title: item.title, systemImage: item.systemImage, isSelected: section == item) {
                 section = item
+                browse = ShelfBrowse()
                 shown = nil
             }
             .accessibilityIdentifier("browse.section.\(item.identifier)")
@@ -226,9 +250,9 @@
             case .guide:
                 folded(columns) { GuideView() }
             case .movies:
-                ShelfRegularScreen(kind: .movie) { sidebarButton(columns) }
+                ShelfRegularScreen(kind: .movie, browse: $browse) { sidebarButton(columns) }
             case .series:
-                ShelfRegularScreen(kind: .series) { sidebarButton(columns) }
+                ShelfRegularScreen(kind: .series, browse: $browse) { sidebarButton(columns) }
             case .search:
                 folded(columns) {
                     ContentUnavailableView(section.title, systemImage: section.systemImage, description: Text("Not available yet."))
