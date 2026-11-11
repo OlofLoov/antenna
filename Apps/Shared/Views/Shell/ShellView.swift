@@ -169,6 +169,7 @@
             .task(id: records.compactMap(\.descriptor)) {
                 model.sourcesChanged(records.compactMap(\.descriptor))
             }
+            .task { await model.player.run() }
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 Task { await model.becameActive() }
@@ -204,6 +205,12 @@
                     .accessibilityLabel("Picture")
                     .accessibilityValue(model.dimmed ? "dimmed" : "full")
                     .accessibilityIdentifier("shell.player")
+                    .overlay {
+                        if model.tab == .live, model.tuned != nil {
+                            PlayerWaitingLayer(player: model.player)
+                                .environment(\.playerStatusMetrics, .television)
+                        }
+                    }
                 if model.tab == .live, model.tuned != nil {
                     // Stays focusable under the raised bar, so swiping down from the
                     // bar lands here and `move` lowers the bar.

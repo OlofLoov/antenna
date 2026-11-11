@@ -28,6 +28,7 @@
                             .accessibilityAddTraits(.isButton)
                             .accessibilityAction { live.showControls(after: .touch) }
                             .accessibilityIdentifier("browse.player.surface")
+                        PlayerWaitingLayer(player: live.player)
                     } else {
                         Browse.NothingSelected()
                     }

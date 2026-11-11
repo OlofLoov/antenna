@@ -3,13 +3,13 @@
 ## 1. Core text
 
 - [x] 1.1 Add the stream line, codec names and track names to AntennaCore, and verify with core tests citing `player-controls-and-playback-errors/see-what-s-on-without-stopping-the-picture-on-apple-tv` and `player-controls-and-playback-errors/choose-audio-and-subtitles`
-- [ ] 1.2 Add the failure message table with a secret scan over every string, and verify with core and integration log-scan tests citing `player-controls-and-playback-errors/error-messages-for-each-reason`
+- [x] 1.2 Add the failure message table with a secret scan over every string, and verify with core and integration log-scan tests citing `player-controls-and-playback-errors/error-messages-for-each-reason`
 
 ## 2. Player model
 
 - [ ] 2.1 Build the player model with injected engine, clock, defaults, credential store, path monitor, audio session, scene phase and sinks
-- [ ] 2.2 Show the spinner after 0.5 s and the slow-source caption after 10 s, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-spinner-while-waiting-and-a-reason-if-it-is-slow`
-- [ ] 2.3 Show the reconnect count from the engine and the error only on give-up, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-dropped-stream-shows-that-it-is-reconnecting`
+- [x] 2.2 Show the spinner after 0.5 s and the slow-source caption after 10 s, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-spinner-while-waiting-and-a-reason-if-it-is-slow`
+- [x] 2.3 Show the reconnect count from the engine and the error only on give-up, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-dropped-stream-shows-that-it-is-reconnecting`
 - [ ] 2.4 Retry on Try again, on network return and on login arrival, with Sign in on Apple TV, and verify with integration and UI tests citing `player-controls-and-playback-errors/try-again-or-recover-on-its-own`
 
 ## 3. Error screen

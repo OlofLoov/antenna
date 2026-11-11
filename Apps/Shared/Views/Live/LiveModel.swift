@@ -48,6 +48,10 @@ final class LiveModel {
         /// How long a tap keeps the controls up while playing. UI tests
         /// raise it, since a slow runner can take longer than that to read them.
         var touchHold = ControlsTimer.touchHold
+        /// The connection the player watches to recover from an offline error.
+        var network: NetworkWatch = .system
+        /// How long the spinner shows before it names the source as slow.
+        var slowDelay = Duration.seconds(10)
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -80,6 +84,8 @@ final class LiveModel {
 
     @ObservationIgnored let engine: any PlaybackEngine
     @ObservationIgnored let programmes: OverlayGuide
+    /// The spinner, the reconnect count and the error for the playing channel.
+    @ObservationIgnored let player: PlayerModel
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private let languages: ChannelLanguages
     @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
@@ -99,6 +105,13 @@ final class LiveModel {
         engine = dependencies.engine
         programmes = dependencies.programmes
         languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
+        player = PlayerModel(
+            .init(engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay))
+        player.reload = { [weak self] channel in self?.load(channel) }
+        player.hasLogin = { [weak self] id in
+            guard let self, let source = descriptors[id] else { return false }
+            return self.dependencies.hasLogin(source)
+        }
     }
 
     // MARK: Sources
@@ -274,6 +287,7 @@ final class LiveModel {
         for await state in await engine.states() {
             let wasPaused = isPaused
             playback = state
+            player.stateChanged(state)
             // Paused, the controls stay; playing again, they go after a while.
             if controlsShown, wasPaused != isPaused { showControls(after: lastInput) }
         }
@@ -293,18 +307,33 @@ final class LiveModel {
 
     private func tune(_ channel: Channel) {
         playing = channel
+        player.tuned(subject(for: channel))
+        load(channel)
+    }
+
+    /// Loads `channel` without telling the player it changed, so Try
+    /// again keeps its spinner.
+    private func load(_ channel: Channel) {
         tuning?.cancel()
         tuning = Task { [weak self] in
             guard let self else { return }
             do {
                 try await engine.load(channel.streamURL, options: languages.options(for: channel))
             } catch {
+                if let failure = error as? PlaybackFailure, playing == channel { player.loadFailed(failure) }
                 return
             }
             guard !Task.isCancelled, playing == channel else { return }
             canPictureInPicture = await engine.capabilities.supportsPictureInPicture
             await engine.play()
         }
+    }
+
+    /// The names the player's messages use for `channel`.
+    func subject(for channel: Channel) -> PlayerSubject {
+        PlayerSubject(
+            channel: channel, source: sources.first { $0.id == channel.sourceID }?.name ?? PlayerModel.unnamedSource,
+            number: RowKey(channel).flatMap(catalogue.number(for:)))
     }
 
     /// A movie or episode is about to play: the channel stops and starts
@@ -385,6 +414,7 @@ final class LiveModel {
 
     private func stop() {
         playing = nil
+        player.tuned(nil)
         fullScreen = false
         hideControls()
         tuning?.cancel()

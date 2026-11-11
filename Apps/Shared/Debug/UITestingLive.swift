@@ -113,6 +113,8 @@
                 guide: nil,
                 programmes: guide)
             dependencies.touchHold = .seconds(environment[controlsVariable].flatMap(Double.init) ?? 60)
+            dependencies.network = UITestingPlayback.network
+            dependencies.slowDelay = UITestingPlayback.slowDelay
             return dependencies
         }
 
@@ -208,12 +210,27 @@
 
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loads += 1
-                state = .loading
                 append(url.lastPathComponent)
+                switch UITestingPlayback.afterLoad(loads) {
+                case .success(let next):
+                    state = next
+                case .failure(let reason):
+                    state = .failed(reason)
+                    throw reason
+                }
             }
 
             func play() async {
+                if case .failed = state { return }
+                guard UITestingPlayback.plays else { return }
                 state = .playing
+                guard UITestingPlayback.drops else { return }
+                let loaded = loads
+                Task { [weak self] in
+                    try? await Task.sleep(for: .seconds(1))
+                    guard let self, loads == loaded, state == .playing else { return }
+                    state = .reconnecting(attempt: 2, of: 3)
+                }
             }
 
             func pause() async {
