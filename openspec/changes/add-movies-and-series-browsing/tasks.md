@@ -11,6 +11,7 @@
 - [x] 2.3 Add the poster cache keyed on a URL hash with the name tile fallback, and check the 50 MB and 500 MB limits
 - [x] 2.4 Build the genre, My list, All and See all grids with sorting on iPad and Mac and a separate screen on Apple TV, and verify with a UI test citing `movies-and-series-browsing/browse-a-genre-or-sort-the-lot`
 - [ ] 2.5 Check the two-second budget with 20 000 items in 400 categories on Apple TV 4K and iPhone 15
+  - Open: needs an Apple TV 4K (3rd generation) and an iPhone 15; a simulator cannot measure it.
 
 ## 3. My list and Continue watching
 
@@ -25,11 +26,14 @@
 
 ## 5. Series, failures and search
 
-- [ ] 5.1 Apply the section to series with last-changed order and season counts, and verify with core and UI tests citing `movies-and-series-browsing/series-work-the-same-way`
-- [ ] 5.2 Show the failed-source banner, "Could not load movies" with Retry, "Nothing here yet" and waiting sources, and verify with a UI test citing `movies-and-series-browsing/when-sources-fail`
+- [x] 5.1 Apply the section to series with last-changed order and season counts, and verify with core and UI tests citing `movies-and-series-browsing/series-work-the-same-way`
+- [x] 5.2 Show the failed-source banner, "Could not load movies" with Retry, "Nothing here yet" and waiting sources, and verify with a UI test citing `movies-and-series-browsing/when-sources-fail`
 - [ ] 5.3 Open Search set to movies or series from the section on iPhone, iPad and Mac, and verify with a UI test citing `movies-and-series-browsing/search-from-the-section`
+  - Open: Search is built by change `add-search`, which has not started. The section has no Search screen to open, so this waits for it.
 
 ## 6. Verify
 
 - [ ] 6.1 Each requirement has a test citing `movies-and-series-browsing/<requirement-slug>`
+  - Open: every requirement but `search-from-the-section` has one; that test comes with 5.3.
 - [ ] 6.2 `/opsx:verify` passes
+  - Open: verify reports 2.5 and 5.3 as incomplete and "Search from the section" as not implemented. Every other requirement maps to code and tests.

@@ -36,6 +36,8 @@
             /// Road finished, and Paper Cities then Night Ferry added to
             /// My list, with an entry for a movie that is not loaded.
             case watching
+            /// Cabin loads; Office's login arrives 6 seconds after launch.
+            case waiting
         }
 
         static let homeID = UUID(uuidString: "00000000-0000-0000-0000-0000000000E1") ?? UUID()
@@ -46,7 +48,7 @@
             guard let index = arguments.firstIndex(of: argument) else { return nil }
             let next = arguments.index(after: index)
             guard next < arguments.endIndex, let scenario = Scenario(rawValue: arguments[next]) else {
-                fatalError("\(argument) takes titles, watching, noXtream, loading, failing, offline, error or empty")
+                fatalError("\(argument) takes titles, watching, waiting, noXtream, loading, failing, offline, error or empty")
             }
             return scenario
         }
@@ -150,14 +152,18 @@
 
             func hasLogin(_ source: SourceDescriptor) -> Bool {
                 guard source.id == officeID else { return true }
-                return scenario != .error && scenario != .empty
+                switch scenario {
+                case .error, .empty: return false
+                case .waiting: return Date.now.timeIntervalSince(launched) > 6
+                case .titles, .watching, .noXtream, .loading, .failing, .offline: return true
+                }
             }
 
             func load(_ source: SourceDescriptor, kind: ShelfTitle.Kind) async throws -> ShelfCatalogue {
                 let isCabin = source.id == cabinID
                 if !isCabin { officeLoads += 1 }
                 switch scenario {
-                case .titles, .watching, .noXtream:
+                case .titles, .watching, .waiting, .noXtream:
                     return catalogue(source.id, kind: kind)
                 case .loading:
                     if !isCabin { try await Task.sleep(for: .seconds(3600)) }
