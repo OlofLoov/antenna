@@ -40,6 +40,7 @@ struct ShelfSync: ViewModifier {
                 await activity.follow(ActivityStore(context: context, profile: profile))
             }
             .environment(\.posterLoader, ShelfView.PosterLoader { await PosterCache.shared.poster(for: $0) })
+            .modifier(TrailerOpener())
             .task(id: records.compactMap(\.descriptor)) {
                 library.sourcesChanged(records.compactMap(\.descriptor))
             }
@@ -51,6 +52,24 @@ struct ShelfSync: ViewModifier {
 
     private var showsProblem: Binding<Bool> {
         Binding(get: { playback.problem != nil }, set: { if !$0 { playback.problem = nil } })
+    }
+}
+
+/// In a Debug build launched for UI tests, links the title page opens are
+/// recorded instead of leaving the app. Otherwise nothing changes.
+private struct TrailerOpener: ViewModifier {
+    func body(content: Content) -> some View {
+        #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains(UITestingShelf.argument) {
+                content
+                    .environment(\.openURL, UITestingShelf.Opened.shared.action)
+                    .overlay { UITestingShelf.OpenedProbe() }
+            } else {
+                content
+            }
+        #else
+            content
+        #endif
     }
 }
 

@@ -14,6 +14,10 @@ final class ShelfModel {
         var details: @MainActor (SourceDescriptor, ShelfTitle) async throws -> ShelfDetails
         /// A series' episodes in the client's order.
         var episodes: @MainActor (SourceDescriptor, ShelfTitle) async throws -> [Episode]
+        /// A title page's info call.
+        var info: @MainActor (SourceDescriptor, ShelfTitle) async throws -> TitleInfo = { _, _ in
+            throw ShelfLoader.LoadError.unknownTitle
+        }
         /// How often to look for a login that has not arrived yet.
         var loginCheck = Duration.seconds(5)
     }
@@ -229,6 +233,27 @@ final class ShelfModel {
         return list
     }
 
+    /// The info call for a title page, asked every time. A series' episodes
+    /// are kept for Continue watching. Throws `LoadFailure.waitingForLogin`
+    /// when the source's login is not on this device.
+    func info(_ title: ShelfTitle) async throws -> TitleInfo {
+        guard let source = descriptors[title.sourceID] else { throw ShelfLoader.LoadError.unknownTitle }
+        guard dependencies.hasLogin(source) else { throw LoadFailure.waitingForLogin }
+        let info = try await dependencies.info(source, title)
+        if case .series(let series) = info { episodes[title.id] = series.episodes }
+        return info
+    }
+
+    /// True when the title's source has its login on this device.
+    func hasLogin(_ title: ShelfTitle) -> Bool {
+        descriptors[title.sourceID].map(dependencies.hasLogin) ?? false
+    }
+
+    /// True while the title's source is still in the library.
+    func hasSource(_ title: ShelfTitle) -> Bool {
+        sources.contains { $0.id == title.sourceID }
+    }
+
     /// Loads a series' episodes for its Continue watching caption, ignoring failures.
     func prefetchEpisodes(_ series: ShelfTitle) async {
         _ = try? await loadEpisodes(series)
@@ -240,6 +265,9 @@ final class ShelfModel {
 final class ShelfLibrary {
     let movies: ShelfModel
     let series: ShelfModel
+    /// The title page open over a section, nil when none is
+    /// (title-detail-and-episode-picker).
+    private(set) var page: TitleRoute?
     /// True with at least one Xtream source, whether or not it has answered
     /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
     private(set) var hasXtream = false
@@ -267,6 +295,16 @@ final class ShelfLibrary {
         series.open()
     }
 
+    /// Opens a title's page over the section it was picked in.
+    func openPage(_ title: ShelfTitle, from origin: TitleRoute.Origin, in section: ShelfTitle.Kind) {
+        page = TitleRoute(title: title, section: section, origin: origin, model: TitleModel(title: title, shelf: model(title.kind)))
+    }
+
+    /// Closes the page; the section shows as it was.
+    func closePage() {
+        page = nil
+    }
+
     /// The app came back to the foreground: sources waiting for a login try again.
     func becameActive() {
         movies.checkLogins()
@@ -283,5 +321,28 @@ extension ShelfLibrary {
             details: { try await loader.details($0, title: $1) },
             episodes: { try await loader.episodes($0, series: $1) })
         return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
+    }
+}
+
+/// An open title page and where it was opened from, so going back can put
+/// focus or the scroll position on the starting point
+/// (title-detail-and-episode-picker/back-to-where-you-were).
+struct TitleRoute: Equatable {
+    enum Origin: Equatable {
+        /// The banner's More info button.
+        case banner
+        /// A poster, or the More info item in its menu.
+        case poster
+    }
+
+    var title: ShelfTitle
+    /// The section the page shows over.
+    var section: ShelfTitle.Kind
+    var origin: Origin
+    /// The page's details and episodes, new each time a page opens.
+    let model: TitleModel
+
+    static func == (lhs: TitleRoute, rhs: TitleRoute) -> Bool {
+        lhs.title == rhs.title && lhs.section == rhs.section && lhs.origin == rhs.origin && lhs.model === rhs.model
     }
 }

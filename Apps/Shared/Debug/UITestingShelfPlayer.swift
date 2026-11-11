@@ -24,6 +24,35 @@
                     willPlay: willPlay))
         }
 
+        /// The links the title page opened, instead of leaving the app.
+        @MainActor @Observable
+        final class Opened {
+            static let shared = Opened()
+            private(set) var last = ""
+
+            /// Records `url` and keeps the app in front.
+            var action: OpenURLAction {
+                OpenURLAction { url in
+                    self.last = url.absoluteString
+                    return .handled
+                }
+            }
+        }
+
+        /// The last link the page opened, read by the UI tests through
+        /// `shelf.debug.opened`.
+        struct OpenedProbe: View {
+            var body: some View {
+                Text(Opened.shared.last)
+                    .font(.system(size: 8))
+                    .foregroundStyle(Palette.textMuted)
+                    .accessibilityIdentifier("shelf.debug.opened")
+                    .accessibilityValue(Opened.shared.last)
+                    .allowsHitTesting(false)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+            }
+        }
+
         /// Records what the Movies and Series sections ask of the player.
         @MainActor @Observable
         final class Engine: PlaybackEngine {

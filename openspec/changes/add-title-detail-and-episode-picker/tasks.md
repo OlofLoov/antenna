@@ -13,16 +13,17 @@
 
 ## 3. Opening the page
 
-- [ ] 3.1 Open a movie's page from More info on the banner and in the poster menu, with one details request, and verify UI tests
+- [x] 3.1 Open a movie's page from More info on the banner and in the poster menu, with one details request, and verify UI tests
 - [ ] 3.2 Open a series' page from posters, the banner and search, keep Continue watching playing straight away, and verify UI tests
-- [ ] 3.3 Hide the Apple TV tab bar and clock on the page, and verify a UI test that swiping up does not reach the bar
+  - Open: posters, the banner and Continue watching are done and tested. Search is built by change `add-search`, which has not started, so there is no search result to open a page from yet.
+- [x] 3.3 Hide the Apple TV tab bar and clock on the page, and verify a UI test that swiping up does not reach the bar
 
 ## 4. Page content
 
-- [ ] 4.1 Show backdrop, details, badges, description with More, cast and director, leaving out missing fields, and verify UI tests
+- [x] 4.1 Show backdrop, details, badges, description with More, cast and director, leaving out missing fields, and verify UI tests
 - [ ] 4.2 Add the season picker and the episode list with progress, Watched and UP NEXT, and verify UI tests including keyboard and VoiceOver
 - [ ] 4.3 Add loading and error states with Retry, the waiting-login line and the empty and unreadable episode lines, and verify integration and UI tests
-- [ ] 4.4 Add Trailer on iPhone, iPad and Mac through an injected opener, and verify it is absent on Apple TV
+- [x] 4.4 Add Trailer on iPhone, iPad and Mac through an injected opener, and verify it is absent on Apple TV
 
 ## 5. Playing and My list
 

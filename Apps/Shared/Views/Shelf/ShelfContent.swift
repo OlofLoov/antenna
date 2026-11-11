@@ -4,12 +4,29 @@ import SwiftUI
 /// What a poster or the banner does, given by the screen that hosts the section.
 struct ShelfActions {
     var play: @MainActor (ShelfTitle) -> Void
+    /// Opens the title's page (title-detail-and-episode-picker).
+    var open: @MainActor (ShelfTitle, TitleRoute.Origin) -> Void
     var toggleMyList: @MainActor (ShelfTitle) -> Void
     var isOnMyList: @MainActor (ShelfTitle) -> Bool
 
-    /// My list through `activity`; `play` is the screen's.
-    @MainActor static func with(_ activity: ShelfActivity, play: @escaping @MainActor (ShelfTitle) -> Void) -> ShelfActions {
-        ShelfActions(play: play, toggleMyList: { activity.toggleMyList($0) }, isOnMyList: { activity.isOnMyList($0) })
+    /// The section `kind`'s actions: playing through `playback`, pages
+    /// through `library` and My list through `activity`.
+    @MainActor static func section(
+        _ kind: ShelfTitle.Kind, library: ShelfLibrary, activity: ShelfActivity, playback: ShelfPlayback
+    ) -> ShelfActions {
+        ShelfActions(
+            play: { playback.play($0, library: library, activity: activity) },
+            open: { library.openPage($0, from: $1, in: kind) },
+            toggleMyList: { activity.toggleMyList($0) }, isOnMyList: { activity.isOnMyList($0) })
+    }
+
+    /// What selecting a poster does: a movie plays, a series opens its
+    /// page (title-detail-and-episode-picker/open-a-series-page).
+    @MainActor func select(_ title: ShelfTitle) {
+        switch title.kind {
+        case .movie: play(title)
+        case .series: open(title, .poster)
+        }
     }
 }
 
@@ -71,7 +88,8 @@ struct ShelfBannerHost<Content: View>: View {
                 text: BannerText(title, details: details), artURL: details?.backdropURL ?? title.posterURL,
                 isOnMyList: actions.isOnMyList(title), index: min(index, count - 1), count: count),
             actions: .init(
-                play: { actions.play(title) }, moreInfo: {}, toggleMyList: { actions.toggleMyList(title) },
+                play: { actions.play(title) }, moreInfo: { actions.open(title, .banner) },
+                toggleMyList: { actions.toggleMyList(title) },
                 page: { page($0, count: count) },
                 show: { target in
                     var pager = BannerPager(count: count)
@@ -136,8 +154,10 @@ struct ShelfRowsContent: View {
     }
 }
 
-/// A poster that plays on select and offers My list in its menu, a long
-/// press on Apple TV (movies-and-series-browsing/keep-a-list-for-later).
+/// A poster that plays a movie or opens a series' page on select, and
+/// offers More info for a movie and My list in its menu, a long press on
+/// Apple TV (movies-and-series-browsing/keep-a-list-for-later,
+/// title-detail-and-episode-picker/open-a-movie-s-page).
 struct ShelfPoster: View {
     let title: ShelfTitle
     let actions: ShelfActions
@@ -147,7 +167,7 @@ struct ShelfPoster: View {
 
     var body: some View {
         ShelfView.PosterCard(title: title, label: ShelfText.posterLabel(title, progress: activity.progress(of: title))) {
-            actions.play(title)
+            actions.select(title)
         }
         // A series' poster shows it is working while its episode list loads
         // (movies-and-series-browsing/play-a-series-from-the-next-episode).
@@ -161,13 +181,18 @@ struct ShelfPoster: View {
             }
         }
         .contextMenu {
+            if title.kind == .movie {
+                ShelfView.MoreInfoMenuItem { actions.open(title, .poster) }
+            }
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(title)) { actions.toggleMyList(title) }
         }
     }
 }
 
-/// A Continue watching card with its caption. A series' card loads its
-/// episode list once it shows, for the season and episode.
+/// A Continue watching card with its caption. It plays straight away, a
+/// series from the episode its page's Play would start
+/// (title-detail-and-episode-picker/open-a-series-page). A series' card
+/// loads its episode list once it shows, for the season and episode.
 struct ShelfContinueCard: View {
     let item: ContinueWatching.Item
     let actions: ShelfActions
@@ -183,6 +208,9 @@ struct ShelfContinueCard: View {
             actions.play(item.title)
         }
         .contextMenu {
+            if item.title.kind == .movie {
+                ShelfView.MoreInfoMenuItem { actions.open(item.title, .poster) }
+            }
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(item.title)) { actions.toggleMyList(item.title) }
         }
         .task(id: item.id) {

@@ -85,6 +85,7 @@
         @State private var barLowered = ContinuousClock.now - .seconds(10)
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+        @Environment(ShelfLibrary.self) private var shelves
 
         init(model: ShellModel) {
             self.model = model
@@ -105,7 +106,11 @@
                     .transition(.opacity)
                 }
                 if model.dimmed { ShellScrim() }
-                if model.barVisible { ShellBarLayer(model: model, focus: $focus, barHasFocus: barHasFocus) }
+                // A title page hides the bar and clock, so swiping up from it reaches nothing
+                // (tvos-shell/the-tab-bar-stays-hidden-on-a-title-page).
+                if model.barVisible, shelves.page == nil {
+                    ShellBarLayer(model: model, focus: $focus, barHasFocus: barHasFocus)
+                }
                 if model.pickerOpen {
                     ChannelOverlayView(
                         catalogue: catalogue, playing: model.tuned, guide: overlayGuide, model: overlay, focus: $focus,
