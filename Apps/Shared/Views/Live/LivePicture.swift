@@ -31,6 +31,9 @@
                             .accessibilityAddTraits(.isButton)
                             .accessibilityAction { live.showControls(after: .touch) }
                             .accessibilityIdentifier("browse.player.surface")
+                        if live.player.airPlayActive {
+                            PlayerStatus.Elsewhere(text: "Playing on AirPlay", systemImage: "airplayvideo")
+                        }
                         PlayerWaitingLayer(player: live.player)
                         if let message = live.player.message {
                             failure(message)
@@ -46,6 +49,7 @@
                     }
                 }
                 .clipped()
+                .background { keys }
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("browse.player")
@@ -98,8 +102,33 @@
         private var trackLists: TrackPicker.Lists {
             let player = live.player
             return TrackPicker.Lists(
-                audio: player.audioRows, subtitles: player.subtitleRows, footer: [player.streamLine],
+                audio: player.audioRows, subtitles: player.subtitleRows,
+                footer: [player.streamLine] + (player.route == .demuxer ? [Self.noAirPlay] : []),
                 pickAudio: { player.selectAudio($0) }, pickSubtitle: { player.selectSubtitle($0) })
+        }
+
+        /// Antenna reads this stream itself, so it cannot go to AirPlay.
+        static let noAirPlay = "AirPlay not available for this stream"
+
+        /// The Mac's M, Command-Up and Command-Down, off while the filter
+        /// field takes typing (player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac).
+        @ViewBuilder private var keys: some View {
+            #if os(macOS)
+                if live.playing != nil {
+                    ZStack {
+                        Button("Mute") { live.player.toggleMute() }
+                            .keyboardShortcut("m", modifiers: [])
+                            .disabled(live.typing)
+                        Button("Volume up") { live.player.stepVolume(up: true) }
+                            .keyboardShortcut(.upArrow, modifiers: .command)
+                        Button("Volume down") { live.player.stepVolume(up: false) }
+                            .keyboardShortcut(.downArrow, modifiers: .command)
+                    }
+                    .frame(width: 0, height: 0)
+                    .opacity(0)
+                    .accessibilityHidden(true)
+                }
+            #endif
         }
 
         private var controls: some View {
@@ -117,6 +146,16 @@
                     }
                 ) {
                     tracksButton
+                    // AirPlay at compact width is reached from full screen or Control Center.
+                    if live.player.route == .system, live.fullScreen || !isCompact {
+                        AirPlayPicker()
+                    }
+                    #if os(macOS)
+                        PlayerVolumeControls.MuteButton(isMuted: live.player.muted, level: live.player.volume) {
+                            live.player.toggleMute()
+                        }
+                        PlayerVolumeControls.Slider(level: live.player.muted ? 0 : live.player.volume) { live.player.setVolume($0) }
+                    #endif
                     #if os(iOS)
                         Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
                             live.engine.startPictureInPicture()
