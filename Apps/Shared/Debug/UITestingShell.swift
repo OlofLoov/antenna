@@ -180,7 +180,9 @@
                     hasLogin: { source in scenario != .empty || source.id != xtreamID },
                     lastChannel: LastChannelStore(defaults: defaults),
                     sleep: { try await Task.sleep(for: $0) },
-                    guide: nil)
+                    guide: nil,
+                    network: UITestingPlayback.network,
+                    slowDelay: UITestingPlayback.slowDelay)
             }
 
             /// What each scenario's sources answer.
@@ -234,12 +236,26 @@
                         state = .failed(.unreadable)
                         throw PlaybackFailure.unreadable
                     }
-                    state = .loading
+                    switch UITestingPlayback.afterLoad(loads) {
+                    case .success(let next):
+                        state = next
+                    case .failure(let reason):
+                        state = .failed(reason)
+                        throw reason
+                    }
                 }
 
                 func play() async {
                     if case .failed = state { return }
+                    guard UITestingPlayback.plays else { return }
                     state = .playing
+                    guard UITestingPlayback.drops else { return }
+                    let loaded = loads
+                    Task { [weak self] in
+                        try? await Task.sleep(for: .seconds(1))
+                        guard let self, loads == loaded, state == .playing else { return }
+                        state = .reconnecting(attempt: 2, of: 3)
+                    }
                 }
 
                 func pause() async {

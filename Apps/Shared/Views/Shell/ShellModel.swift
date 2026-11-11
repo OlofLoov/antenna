@@ -85,6 +85,10 @@
             var sleep: @MainActor (Duration) async throws -> Void
             var guide: AppGuideStore?
             var languages = ChannelLanguageStore()
+            /// The connection the player watches to recover from an offline error.
+            var network: NetworkWatch = .system
+            /// How long the spinner shows before it names the source as slow.
+            var slowDelay = Duration.seconds(10)
         }
 
         /// Thrown by a loader for a source whose login is not on this device.
@@ -106,7 +110,9 @@
         var settingsOpen = false
 
         @ObservationIgnored let engine: any PlaybackEngine
-        @ObservationIgnored private let dependencies: Dependencies
+        /// The spinner, the reconnect count and the error for the tuned channel.
+        @ObservationIgnored let player: PlayerModel
+        @ObservationIgnored let dependencies: Dependencies
         @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
         @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
         @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
@@ -117,26 +123,24 @@
         @ObservationIgnored private var deadline: Task<Void, Never>?
         @ObservationIgnored private var pauseTimer: Task<Void, Never>?
         @ObservationIgnored private(set) var pausedByShell = false
-        @ObservationIgnored private let languages: ChannelLanguages
+        @ObservationIgnored let languages: ChannelLanguages
 
         init(_ dependencies: Dependencies) {
             self.dependencies = dependencies
             self.engine = dependencies.engine
             languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
+            player = PlayerModel(
+                .init(
+                    engine: dependencies.engine, sleep: dependencies.sleep, network: dependencies.network,
+                    slowDelay: dependencies.slowDelay))
+            player.reload = { [weak self] channel in self?.load(channel) }
+            player.hasLogin = { [weak self] id in
+                guard let self, let source = descriptors[id] else { return false }
+                return self.dependencies.hasLogin(source)
+            }
         }
 
         // MARK: Derived state
-
-        /// The bar shows when raised by Menu and always on Movies, Series and Search.
-        var barVisible: Bool { barRaised || tab.isContent }
-
-        /// The picture or guide is dimmed under the raised bar.
-        var dimmed: Bool { barRaised && !tab.isContent }
-
-        /// The tabs the bar lists: Movies and Series only with an Xtream source (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
-        var tabs: [ShellTab] {
-            ShellTab.allCases.filter { offersMovies || ($0 != .movies && $0 != .series) }
-        }
 
         /// `.loading` until the first `sourcesChanged`, so the empty screen
         /// never flashes at launch.
@@ -160,6 +164,7 @@
             if list.isEmpty, tuned != nil {
                 // With every source gone nothing keeps playing (stand-in behavior).
                 tuned = nil
+                player.tuned(nil)
                 Task { await engine.stop() }
             }
             if !launched {
@@ -315,21 +320,9 @@
         /// channel; a failed one leaves the stored channel as it was.
         func tune(_ channel: Channel) {
             tuned = channel
+            player.tuned(subject(for: channel))
             deadline?.cancel()
-            Task {
-                do {
-                    try await engine.load(channel.streamURL, options: languages.options(for: channel))
-                } catch is CancellationError {
-                    return
-                } catch {
-                    Self.logger.info("tune failed, the stored channel is kept")
-                    return
-                }
-                guard tuned == channel else { return }
-                // A pause from the timer while the load ran stands.
-                if !pausedByShell { await engine.play() }
-                if let key = LastChannelKey(channel) { dependencies.lastChannel.write(key) }
-            }
+            load(channel)
         }
 
         // MARK: Navigation
@@ -442,9 +435,6 @@
             await engine.play()
         }
 
-        /// The navigator other screens use; `ShellView` provides it.
-        var navigator: ShellNavigator { .forwarding(to: self) }
-
         // MARK: Channel picker (stand-in for the channel overlay)
 
         func openPicker() {
@@ -453,12 +443,6 @@
 
         func closePicker() {
             pickerOpen = false
-        }
-
-        /// Tunes `channel` from the picker and shows Live full screen.
-        func pick(_ channel: Channel) async {
-            if channel != tuned { tune(channel) }
-            await showLive()
         }
     }
 #endif
