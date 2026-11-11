@@ -96,4 +96,27 @@ final class ShelfTVUITests: XCTestCase {
         press(.left)
         expect(pager, "value == '3 of 3'", timeout: 5)
     }
+
+    // movies-and-series-browsing/browse-a-genre-or-sort-the-lot, on Apple TV
+    func testAGenreOpensItsOwnScreenThatMenuCloses() {
+        openMovies()
+        let all = element("movies.genres.all")
+        for _ in 0..<8 where !(all.exists && all.hasFocus) {
+            press(.down)
+            Thread.sleep(forTimeInterval: 0.7)
+        }
+        expectFocus("movies.genres.all")
+        press(.right)
+        expectFocus("movies.genres.drama")
+        press(.select)
+        let grid = element("movies.grid")
+        XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertFalse(element("movies.hero").exists)
+        XCTAssertTrue(grid.staticTexts["2 titles"].exists)
+
+        press(.menu)
+        expect(grid, "exists == false")
+        expectFocus("movies.hero.play")
+        XCTAssertTrue(element("shell.tab.movies").isSelected)
+    }
 }

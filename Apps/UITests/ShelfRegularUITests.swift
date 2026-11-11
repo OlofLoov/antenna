@@ -55,4 +55,35 @@ final class ShelfRegularUITests: XCTestCase {
         let moved = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '2 of 4'"), object: pager)
         XCTAssertEqual(XCTWaiter().wait(for: [moved], timeout: 5), .completed)
     }
+
+    // movies-and-series-browsing/browse-a-genre-or-sort-the-lot
+    func testAGenreOrASortShowsAGridAndTheSectionBringsTheRowsBack() throws {
+        let app = try launch()
+        app.element("browse.section.movies").tap()
+        XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 10))
+
+        app.element("movies.genres.drama").tap()
+        let grid = app.element("movies.grid")
+        XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertTrue(grid.staticTexts["4 titles"].exists)
+        XCTAssertTrue(app.element("movies.genres.drama").isSelected)
+        XCTAssertFalse(app.element("movies.hero").exists)
+
+        app.element("browse.section.movies").tap()
+        XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 5))
+
+        app.element("movies.sort").tap()
+        app.element("movies.sort.title").tap()
+        XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertTrue(grid.staticTexts["All movies"].exists)
+        XCTAssertEqual(app.element("movies.sort").value as? String, "Title")
+        let first = app.element("movies.card.xtream#office#vod#3")
+        let second = app.element("movies.card.xtream#cabin#vod#6")
+        XCTAssertLessThan(first.frame.minX, second.frame.minX, "Copper Hills before Glass Orchard")
+
+        app.element("movies.sort").tap()
+        app.element("movies.sort.recentlyAdded").tap()
+        XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 5))
+        XCTAssertFalse(grid.exists)
+    }
 }

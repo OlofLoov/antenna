@@ -58,7 +58,7 @@ enum ShelfView {
         @State private var poster: Poster?
 
         var body: some View {
-            PosterTile(name: name, image: poster?.image, cornerRadius: metrics.corner)
+            PosterTile(name: name, image: poster?.image, cornerRadius: metrics.corner, nameSize: metrics.caption + 2)
                 .task(id: url) {
                     poster = nil
                     guard let url, let loader else { return }

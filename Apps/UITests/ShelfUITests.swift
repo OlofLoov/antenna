@@ -106,4 +106,22 @@ final class ShelfUITests: XCTestCase {
         XCTAssertTrue(app.element("movies.row.action").waitForExistence(timeout: 5))
         XCTAssertTrue(app.element("movies.row.drama").exists)
     }
+
+    // movies-and-series-browsing/browse-a-genre-or-sort-the-lot
+    func testAGenreChipSwapsTheRowsForAGrid() throws {
+        let app = try launch()
+        openMovies(app)
+        XCTAssertTrue(app.element("movies.genres.all").isSelected)
+        app.element("movies.genres.drama").tap()
+        let grid = app.element("movies.grid")
+        XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertTrue(grid.staticTexts["4 titles"].exists)
+        XCTAssertTrue(app.element("movies.genres.drama").isSelected)
+        XCTAssertFalse(app.element("movies.row.recentlyAdded").exists)
+        XCTAssertTrue(app.element("movies.hero").exists, "the banner stays over the grid")
+
+        app.element("movies.genres.all").tap()
+        XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 5))
+        XCTAssertFalse(grid.exists)
+    }
 }
