@@ -41,6 +41,17 @@ public struct GuideIndex: Sendable {
         return DateInterval(start: start, end: end)
     }
 
+    /// How many programmes the completed sources hold, used ones or not.
+    /// Changes when a source's guide loads, refreshes or goes.
+    public var programmeCount: Int {
+        sources.values.reduce(0) { $0 + ($1.guide?.count ?? 0) }
+    }
+
+    /// How many sources are past loading: completed, failed or without a guide.
+    public var settledSourceCount: Int {
+        sources.values.count { $0.guide != nil || $0.state != .loading }
+    }
+
     /// The programme on at `date`, or nil when nothing is.
     public func current(for key: GuideKey, at date: Date) -> Programme? {
         guard let (guide, list) = schedule(for: key) else { return nil }

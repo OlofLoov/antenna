@@ -13,6 +13,8 @@ final class ShelfActivity {
     private(set) var progress: [WatchProgress] = []
     private(set) var movies: [ListEntry] = []
     private(set) var series: [ListEntry] = []
+    /// The ten newest searches, newest first (search/recent-searches).
+    private(set) var searches: [String] = []
     @ObservationIgnored private var store: ActivityStore?
     private var listed: Set<ActivityKey> = []
 
@@ -32,6 +34,7 @@ final class ShelfActivity {
         progress = store.allProgress()
         movies = store.myList(.movie)
         series = store.myList(.series)
+        searches = store.recentSearches().map(\.query)
         listed = Set((movies + series).map { ActivityKey(titleID: $0.titleID, sourceID: $0.sourceID) })
     }
 
@@ -64,6 +67,12 @@ final class ShelfActivity {
         let finished = ContinueWatching.finishedSeries(progress: progress, episodes: library.series.episodes)
         return ContinueWatching.items(
             progress: progress, titles: library.movies.titles + library.series.titles, finishedSeries: finished)
+    }
+
+    /// Remembers a search whose result the user picked.
+    func recordSearch(_ query: String) {
+        store?.recordSearch(query)
+        reload()
     }
 
     /// Saves where the user is in a movie or episode.

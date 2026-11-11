@@ -24,7 +24,7 @@
         }
 
         var body: some View {
-            let page = library.page.flatMap { $0.section == kind ? $0 : nil }
+            let page = library.page.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
             ZStack {
                 section
                     .opacity(page == nil ? 1 : 0)

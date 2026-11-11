@@ -86,6 +86,8 @@
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
         @Environment(ShelfLibrary.self) private var shelves
+        /// Search keeps its query while the app runs.
+        @State private var search = SearchModel()
 
         init(model: ShellModel) {
             self.model = model
@@ -269,7 +271,8 @@
             case .series:
                 ShelfTVScreen(kind: .series, focus: $focus)
             case .search:
-                ContentStandIn(text: "Search is not available yet.", identifier: "search.standIn", focus: $focus)
+                SearchTVScreen(shell: model, catalogue: catalogue, overlayGuide: overlayGuide) { focus = .picture }
+                    .environment(search)
             }
         }
 

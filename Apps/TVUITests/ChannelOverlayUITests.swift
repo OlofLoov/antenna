@@ -266,7 +266,7 @@ extension ShellUITests {
         press(.down, toFocus: element("overlay.search"), from: element("overlay.group.3"))
         press(.select)
         expectGone("overlay.root")
-        XCTAssertTrue(element("search.standIn").waitForExistence(timeout: 10))
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
         expectEngine("playing loads=1 file=a1.ts")
         press(.menu)
         expectFocus("shell.tab.search")

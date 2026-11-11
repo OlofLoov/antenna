@@ -343,6 +343,8 @@ struct TitleRoute: Equatable {
         /// A poster, or the More info item in its menu, in the row or grid
         /// named by its identifier part.
         case poster(row: String)
+        /// A search result; the page shows over Search, not the section.
+        case search
     }
 
     var title: ShelfTitle

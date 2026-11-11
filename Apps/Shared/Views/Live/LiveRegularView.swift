@@ -68,6 +68,7 @@
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
         @Environment(ShelfActivity.self) private var activity
+        @Environment(ShelfPlayback.self) private var playback
         @State private var section: LiveSection = .live
         /// Movies' or Series' rows or grid; picking a section resets it.
         @State private var browse = ShelfBrowse()
@@ -153,7 +154,7 @@
         }
 
         private func sidebar(_ columns: LiveColumns) -> some View {
-            Browse.Sidebar(eyebrow: section == .movies || section == .series ? "Genres" : "Groups") {
+            Browse.Sidebar(eyebrow: eyebrow) {
                 ForEach(sections, id: \.self) { item in
                     sectionRow(item)
                 }
@@ -161,10 +162,20 @@
                 switch section {
                 case .movies: genres(.movie, columns)
                 case .series: genres(.series, columns)
+                case .search: SearchSidebarRecents()
                 default: liveGroups(columns)
                 }
             } footer: {
                 sectionRow(.settings)
+            }
+        }
+
+        /// "Genres" on Movies and Series, "Recent" on Search, "Groups" elsewhere.
+        private var eyebrow: String {
+            switch section {
+            case .movies, .series: "Genres"
+            case .search: "Recent"
+            default: "Groups"
             }
         }
 
@@ -244,12 +255,34 @@
             case .series:
                 ShelfRegularScreen(kind: .series, browse: $browse) { sidebarButton(columns) }
             case .search:
-                folded(columns) {
-                    ContentUnavailableView(section.title, systemImage: section.systemImage, description: Text("Not available yet."))
-                }
+                SearchRegularScreen { sidebarButton(columns) }
+                    .modifier(SearchSupply(picks: searchPicks))
             case .settings:
                 folded(columns) { SettingsView() }
             }
+        }
+
+        /// A channel or programme plays in Live; a movie plays and a series
+        /// opens its page, as from the Movies section
+        /// (search/pick-a-channel-or-title-to-watch).
+        private var searchPicks: SearchPicks {
+            SearchPicks(
+                channel: { watch($0) },
+                programme: { _, channel in watch(channel) },
+                title: { title in
+                    switch title.kind {
+                    case .movie: playback.play(title, library: shelves, activity: activity)
+                    case .series: shelves.openPage(title, from: .search, in: title.kind)
+                    }
+                })
+        }
+
+        /// Shows Live with `channel` playing, in All channels when the open
+        /// group does not hold it. Search keeps its query.
+        private func watch(_ channel: Channel) {
+            if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all) }
+            live.pick(channel)
+            section = .live
         }
 
         /// The channel list and the picture with its details.
