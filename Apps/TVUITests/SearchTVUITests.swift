@@ -125,4 +125,30 @@ final class SearchTVUITests: XCTestCase {
         press(.select)
         expectEngine("playing loads=2 file=b1.ts")
     }
+
+    // search/pick-a-programme
+    func testPickingALaterProgrammeOpensTheGuideAtIt() {
+        openSearch()
+        type("late film")
+        moveToResults("search.result.programme.0")
+        press(.select)
+        expectFocus("guide.grid")
+        expect(element("guide.panel.title"), "label == 'Late Film'")
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    func testMenuOnASeriesPageReturnsToSearchWithTheQuery() {
+        openSearch()
+        type("long winter")
+        moveToResults("search.result.title.0")
+        press(.select)
+        XCTAssertTrue(element("title.name").waitForExistence(timeout: 10))
+        XCTAssertFalse(element("shell.tab.search").exists, "the page hides the tab bar")
+
+        press(.menu)
+        expect(element("title.name"), "exists == false")
+        expect(app.searchFields.firstMatch, "value BEGINSWITH 'long winter'")
+        XCTAssertTrue(element("search.result.title.0").exists)
+    }
 }

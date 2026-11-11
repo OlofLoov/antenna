@@ -66,6 +66,9 @@ final class LiveModel {
     var filter = ""
     /// The channel playing in place, nil until the user picks one.
     private(set) var playing: Channel?
+    /// A later programme picked in Search, shown under what is on next
+    /// until the channel changes (search/pick-a-programme).
+    private(set) var later: Programme?
     /// The engine's state, as last reported.
     private(set) var playback: PlaybackState = .idle
     /// The engine can move the picture into Picture in Picture.
@@ -306,6 +309,7 @@ final class LiveModel {
     }
 
     private func tune(_ channel: Channel) {
+        if channel != playing { later = nil }
         playing = channel
         player.tuned(subject(for: channel))
         load(channel)
@@ -334,6 +338,12 @@ final class LiveModel {
         PlayerSubject(
             channel: channel, source: sources.first { $0.id == channel.sourceID }?.name ?? PlayerModel.unnamedSource,
             number: RowKey(channel).flatMap(catalogue.number(for:)))
+    }
+
+    /// Plays `channel` and shows `programme` as Later under what is on next.
+    func pick(_ channel: Channel, later programme: Programme) {
+        pick(channel)
+        later = programme
     }
 
     /// A movie or episode is about to play: the channel stops and starts
@@ -414,6 +424,7 @@ final class LiveModel {
     }
 
     private func stop() {
+        later = nil
         playing = nil
         player.tuned(nil)
         fullScreen = false

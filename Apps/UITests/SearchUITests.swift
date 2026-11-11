@@ -202,4 +202,63 @@ final class SearchUITests: XCTestCase {
         }
         return element.exists
     }
+
+    /// Home's channel row at `position`.
+    func row(_ app: XCUIApplication, _ position: Int) -> XCUIElement {
+        app.element("browse.row.00000000-0000-0000-0000-0000000000E1.\(position)")
+    }
+
+    // search/pick-a-programme
+    func testPickingALaterProgrammePlaysItsChannelAndShowsItAsLater() throws {
+        let app = try launch()
+        search(app, "late film")
+        let result = app.element("search.result.programme.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        XCTAssertFalse(result.label.contains(", Now "), "Late Film starts later")
+        result.tap()
+
+        XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
+        expect(app.element("browse.nowPlaying"), "label CONTAINS 'News One'")
+        let later = app.element("browse.later")
+        XCTAssertTrue(later.waitForExistence(timeout: 5))
+        XCTAssertTrue(later.label.hasPrefix("Later: "), later.label)
+        XCTAssertTrue(later.label.hasSuffix("Late Film"), later.label)
+
+        row(app, 1).tap()
+        expect(app.element("browse.nowPlaying"), "label CONTAINS 'News Two'")
+        XCTAssertFalse(later.exists, "a channel change clears it")
+    }
+
+    // search/pick-a-programme, a programme on now
+    func testPickingAProgrammeOnNowPlaysItsChannelWithoutALaterLine() throws {
+        let app = try launch()
+        search(app, "morning")
+        let result = app.element("search.result.programme.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        result.tap()
+        expect(app.element("browse.nowPlaying"), "label CONTAINS 'News One'")
+        XCTAssertFalse(app.element("browse.later").exists)
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    func testBackFromASeriesPageReturnsToSearchWithTheQuery() throws {
+        let app = try launch()
+        search(app, "harbor watch")
+        let result = app.element("search.result.title.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 10))
+        result.tap()
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+
+        app.element("title.back").tap()
+        expect(app.element("title.name"), "exists == false")
+        expect(app.element("search.field"), "value == 'harbor watch'")
+        XCTAssertTrue(result.isHittable, "the result is back in view")
+
+        result.tap()
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+        let edge = app.coordinate(withNormalizedOffset: CGVector(dx: 0.005, dy: 0.5))
+        edge.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.5)))
+        expect(app.element("title.name"), "exists == false")
+        expect(app.element("search.field"), "value == 'harbor watch'")
+    }
 }

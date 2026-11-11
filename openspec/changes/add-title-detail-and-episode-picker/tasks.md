@@ -14,8 +14,7 @@
 ## 3. Opening the page
 
 - [x] 3.1 Open a movie's page from More info on the banner and in the poster menu, with one details request, and verify UI tests
-- [ ] 3.2 Open a series' page from posters, the banner and search, keep Continue watching playing straight away, and verify UI tests
-  - Open: posters, the banner and Continue watching are done and tested. Search is built by change `add-search`, which has not started, so there is no search result to open a page from yet.
+- [x] 3.2 Open a series' page from posters, the banner and search, keep Continue watching playing straight away, and verify UI tests
 - [x] 3.3 Hide the Apple TV tab bar and clock on the page, and verify a UI test that swiping up does not reach the bar
 
 ## 4. Page content
@@ -34,7 +33,7 @@
 ## 6. Going back
 
 - [ ] 6.1 Return to the section at the same scroll position with the starting poster focused or in view, and to Search with the query kept, and verify UI tests on every platform
-  - Open: the return to the section is done and tested on iPhone (Back and the edge swipe), iPad (Back) and Apple TV (Menu to the banner's More info and to a poster deep in a row). Search does not exist yet (change `add-search`), so there is no query to keep. Escape on an iPad keyboard is wired as Live's full screen does it, but the simulator's UI tests do not deliver Escape, so it needs a check on a real iPad or Mac.
+  - Open: the return to the section and to Search with the query kept is done and UI tested on iPhone (Back and the edge swipe), iPad (Back) and Apple TV (Menu). Escape on an iPad keyboard is wired as Live's full screen does it, but the simulator's UI tests do not deliver Escape, so it needs a check on a real iPad or Mac.
 
 ## 7. Verify
 

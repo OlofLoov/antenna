@@ -98,4 +98,36 @@ final class SearchRegularUITests: XCTestCase {
         XCTAssertFalse(app.element("search.chips").waitForExistence(timeout: 2))
         XCTAssertFalse(app.element("search.empty").exists)
     }
+
+    // search/pick-a-programme
+    func testPickingALaterProgrammeShowsItAsLaterUnderUpNext() throws {
+        let app = try launch()
+        let field = openSearch(app)
+        field.typeText("late film")
+        let result = app.element("search.result.programme.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        result.tap()
+
+        expect(app.element("browse.panel.now"), "label CONTAINS 'News One'")
+        let later = app.element("browse.later")
+        XCTAssertTrue(later.waitForExistence(timeout: 5))
+        XCTAssertTrue(later.label.contains("Late Film"), later.label)
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    func testBackFromASeriesPageReturnsToSearchWithTheQuery() throws {
+        let app = try launch()
+        let field = openSearch(app)
+        field.typeText("harbor watch")
+        let result = app.element("search.result.title.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 10))
+        result.tap()
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+        XCTAssertTrue(app.element("browse.section.search").isSelected, "the page shows in the Search column")
+
+        app.element("title.back").tap()
+        expect(app.element("title.name"), "exists == false")
+        expect(app.element("search.field"), "value == 'harbor watch'")
+        XCTAssertTrue(result.isHittable)
+    }
 }
