@@ -58,11 +58,14 @@ struct NewSource: Equatable {
 }
 
 extension SourceRecord {
-    /// Deletes the record and its Keychain item. A Keychain failure is ignored:
-    /// the record goes regardless and the item is left behind.
+    /// Deletes the record and its Keychain item, then the source's watch
+    /// progress and My list entries (source-management/deleting-a-source-removes-its-watch-history).
+    /// A Keychain failure is ignored: the record goes regardless and the item is left behind.
     @MainActor
     static func delete(_ record: SourceRecord, from context: ModelContext, credentials: any CredentialStoring) {
         if let key = record.credentialKey { try? credentials.delete(for: key) }
+        let id = record.id
         context.delete(record)
+        ActivityStore.removeSource(id, in: context)
     }
 }
