@@ -40,6 +40,13 @@ Made while building the change, without the owner available. Each can be revisit
 - **Rating on the list row.** `ShelfTitle` keeps the list row's rating, so the page can fall back to it as the decision above asks. Series list rows carry none.
 - **Season order and wrapping.** The play target walks episodes in the picker's order: seasons by number, then Specials, then Other. So finishing the last episode of the last season offers the first special before wrapping to Season 1. Ties between finished episodes go to the earlier one, as they do for episodes in progress.
 - **Seasons count.** The details line counts numbered seasons only, so Specials and Other do not add a season.
+- **Opening the page.** The page shows over its section instead of being pushed on a navigation stack. The section stays alive underneath, hidden and disabled, so going back finds the same rows at the same scroll position without reloading. iPhone keeps the tab bar and goes back with the Back button or a swipe in from the left edge; iPad and Mac keep the sidebar, with Back in the toolbar; Apple TV covers the screen and Menu goes back. Picking another section or list in the iPad and Mac sidebar closes the page.
+- **Apple TV bar.** The shell leaves out the tab bar layer, clock included, while a page is open, so there is nothing to swipe up to. Menu on the page closes it before the shell sees the press.
+- **One call for a series.** A series' details and episodes come from the same `get_series_info` call, so a failure shows "Could not load episodes" and the details keep the name and category.
+- **No description.** A title without a description shows no description area. `iPhone-Title` draws "No description from your provider.", but the requirement says a missing field is simply missing, so the requirement wins.
+- **More.** On iPhone, iPad and Mac, More shows the whole description in place. On Apple TV it opens a sheet (`title.plotSheet`), as `TV-Title` notes.
+- **Continue watching.** A series card still plays at once, now picking its episode with `SeriesPlayTarget`, the page's rule. The banner's Play for a series also still plays at once; only More info opens the page. A movie card in Continue watching gets More info in its menu, as a poster does.
+- **Trailer in UI tests.** A Debug build launched with `-ui-testing-shelf` records the links the page opens and shows the last one in `shelf.debug.opened`, so tests check Trailer without leaving the app.
 - **Benchmark.** The 5 000-episode benchmark spreads episodes over 40 seasons and saves 1 000 positions, a third of them in progress. It runs with `ANTENNA_BENCHMARKS=1` on the CLT toolchain.
 
 ## Risks / Trade-offs

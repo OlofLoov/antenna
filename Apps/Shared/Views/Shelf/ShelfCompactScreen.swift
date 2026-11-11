@@ -17,14 +17,46 @@
 
         @Environment(ShelfPlayback.self) private var playback
 
-        /// Posters and the banner play through the playback; My list goes through the activity.
+        /// Posters and the banner play through the playback, open pages through the library, and
+        /// change My list through the activity.
         private var actions: ShelfActions {
-            .with(activity) { [library, activity, playback] title in playback.play(title, library: library, activity: activity) }
+            .section(kind, library: library, activity: activity, playback: playback)
         }
 
         var body: some View {
+            let page = library.page.flatMap { $0.section == kind ? $0 : nil }
+            ZStack {
+                section
+                    .opacity(page == nil ? 1 : 0)
+                    .accessibilityHidden(page != nil)
+                    .disabled(page != nil)
+                if let page {
+                    TitleScreen(route: page) {
+                        TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EmptyView() }
+                    }
+                    .simultaneousGesture(edgeSwipe)
+                    .environment(\.shelfMetrics, .phone)
+                    .environment(\.shelfPrefix, kind.prefix)
+                }
+            }
+            .background(Palette.ground)
+        }
+
+        /// A swipe in from the left edge goes back, as a pushed page does
+        /// (title-detail-and-episode-picker/back-to-where-you-were).
+        private var edgeSwipe: some Gesture {
+            DragGesture(minimumDistance: 20)
+                .onEnded { drag in
+                    guard drag.startLocation.x < 28, drag.translation.width > 80,
+                        abs(drag.translation.height) < drag.translation.width
+                    else { return }
+                    library.closePage()
+                }
+        }
+
+        private var section: some View {
             let model = library.model(kind)
-            GeometryReader { proxy in
+            return GeometryReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.phone.rowSpacing) {
                         switch model.status {

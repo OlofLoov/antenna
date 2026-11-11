@@ -106,6 +106,20 @@ extension ShelfView {
         }
     }
 
+    /// The poster menu's More info item, which opens a movie's page
+    /// (title-detail-and-episode-picker/open-a-movie-s-page).
+    struct MoreInfoMenuItem: View {
+        let open: () -> Void
+        @Environment(\.shelfPrefix) private var prefix
+
+        var body: some View {
+            Button(action: open) {
+                Label("More info", systemImage: "info.circle")
+            }
+            .accessibilityIdentifier("\(prefix).menu.info")
+        }
+    }
+
     /// The poster menu's item: add to My list, or remove once added
     /// (movies-and-series-browsing/keep-a-list-for-later).
     struct MyListMenuItem: View {

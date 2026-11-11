@@ -66,6 +66,7 @@ final class ShelfPlayerUITests: XCTestCase {
     }
 
     // movies-and-series-browsing/play-a-series-from-the-next-episode
+    // title-detail-and-episode-picker/open-a-series-page, Continue watching plays straight away
     func testASeriesStartsItsFirstUnfinishedEpisode() throws {
         let app = try launch()
         open(app, "series")
@@ -78,7 +79,9 @@ final class ShelfPlayerUITests: XCTestCase {
     }
 
     // movies-and-series-browsing/play-a-series-from-the-next-episode, no episodes or a failed list
-    func testNoEpisodesAndAFailedListSaySo() throws {
+    // title-detail-and-episode-picker/play-starts-the-right-episode, no episodes
+    // title-detail-and-episode-picker/when-details-or-episodes-do-not-load
+    func testNoEpisodesAndAFailedListSaySoOnThePage() throws {
         let app = try launch()
         open(app, "series")
         let small = app.element("series.card.xtream#cabin#series#3")
@@ -87,15 +90,21 @@ final class ShelfPlayerUITests: XCTestCase {
         }
         XCTAssertTrue(small.isHittable)
         small.tap()
-        let alert = app.alerts.firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: 5))
-        XCTAssertTrue(alert.staticTexts["No episodes available"].exists)
-        alert.buttons["OK"].tap()
+        let play = app.element("title.play")
+        XCTAssertTrue(play.waitForExistence(timeout: 5))
+        XCTAssertFalse(play.isEnabled, "nothing to play")
+        app.element("title.back").tap()
 
-        app.element("series.card.xtream#office#series#1").tap()
-        XCTAssertTrue(alert.waitForExistence(timeout: 5))
-        XCTAssertTrue(alert.staticTexts["Could not load episodes"].exists)
-        alert.buttons["Retry"].tap()
+        let office = app.element("series.card.xtream#office#series#1")
+        XCTAssertTrue(office.waitForExistence(timeout: 5))
+        office.tap()
+        let error = app.element("title.error")
+        XCTAssertTrue(error.waitForExistence(timeout: 5))
+        XCTAssertEqual(error.label, "Could not load episodes")
+        app.element("title.retry").tap()
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: play)
+        XCTAssertEqual(XCTWaiter().wait(for: [enabled], timeout: 5), .completed)
+        play.tap()
         expectPlayer(app, "playing 11.mp4 from 0")
     }
 

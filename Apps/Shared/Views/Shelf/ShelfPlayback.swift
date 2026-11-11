@@ -88,8 +88,8 @@ final class ShelfPlayback {
 
     // MARK: Starting
 
-    /// Plays a movie from where the user stopped, or a series from its first
-    /// unfinished episode once its episode list loads.
+    /// Plays a movie from where the user stopped, or a series from the
+    /// episode the title page's Play would start, once its episode list loads.
     func play(_ title: ShelfTitle, library: ShelfLibrary, activity: ShelfActivity) {
         self.activity = activity
         switch title.kind {
@@ -99,6 +99,13 @@ final class ShelfPlayback {
         case .series:
             Task { await startSeries(title, library: library, activity: activity) }
         }
+    }
+
+    /// Plays one episode of a series from `position` seconds, as the title
+    /// page asks (title-detail-and-episode-picker/play-an-episode-and-come-back).
+    func play(_ episode: Episode, of series: ShelfTitle, from position: Double, library: ShelfLibrary, activity: ShelfActivity) {
+        self.activity = activity
+        start(.episode(episode, series: series), from: position, source: library.series.source(of: series))
     }
 
     /// Asks again for the episode list of `series` that failed.
@@ -119,11 +126,13 @@ final class ShelfPlayback {
             return
         }
         let progress = ContinueWatching.episodeProgress(activity.progress, seriesID: series.id, sourceID: series.sourceID)
-        guard let pick = ContinueWatching.episodeToPlay(episodes, progress: progress) else {
+        // The page's rule, so Continue watching and Play agree
+        // (title-detail-and-episode-picker/open-a-series-page).
+        guard let pick = SeriesPlayTarget.resolve(episodes: episodes, progress: progress) else {
             problem = .noEpisodes(series)
             return
         }
-        start(.episode(pick.episode, series: series), from: pick.from, source: library.series.source(of: series))
+        start(.episode(pick.episode, series: series), from: pick.position, source: library.series.source(of: series))
     }
 
     /// Loads the title with the start position set before the first frame.

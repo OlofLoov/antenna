@@ -16,7 +16,7 @@ struct BannerContext {
 
     struct Actions {
         var play: () -> Void
-        /// Does nothing until the title detail page exists.
+        /// Opens the title's page.
         var moreInfo: () -> Void
         var toggleMyList: () -> Void
         /// Moves by a number of titles, wrapping.
@@ -197,7 +197,8 @@ enum ShelfBanner {
         }
     }
 
-    /// More info: shown, but inert until the detail page exists.
+    /// More info, which opens the title's page
+    /// (title-detail-and-episode-picker/open-a-movie-s-page).
     struct InfoButton: View {
         let type: Sizes
         let title: String

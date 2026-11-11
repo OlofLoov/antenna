@@ -121,7 +121,8 @@
                 load: { try await script.load($0, kind: $1) },
                 hasLogin: { script.hasLogin($0) },
                 details: { _, title in script.details(title) },
-                episodes: { _, series in try await script.episodes(series) })
+                episodes: { _, series in try await script.episodes(series) },
+                info: { _, title in try await script.info(title) })
             return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
         }
 
@@ -199,6 +200,47 @@
                     Episode(
                         id: "xtream#\(host)#episode#\(number * 10 + index)", episodeID: number * 10 + index, season: northern ? 2 : 1,
                         number: index, title: "Episode \(index)", containerExtension: "mp4", duration: 2700)
+                }
+            }
+
+            private var infoLoads: [String: Int] = [:]
+
+            /// The title page's info call. The Long Harbor has every field and
+            /// a trailer; Night Ferry has a trailer too; Salt Road only a length; Copper Hills (Office) fails
+            /// once, then answers. A series carries its episodes.
+            func info(_ title: ShelfTitle) async throws -> TitleInfo {
+                infoLoads[title.id, default: 0] += 1
+                switch title.kind {
+                case .movie:
+                    switch title.id {
+                    case "xtream#cabin#vod#1":
+                        return .movie(
+                            VODInfo(
+                                plot: "A harbour pilot uncovers a smuggling ring the night before the port is sold. One tide to decide "
+                                    + "who gets out. With the buyers arriving at dawn and her own crew split down the middle, she has "
+                                    + "until the water turns to choose a side, and every channel out of the harbour is watched.",
+                                year: 2024, duration: 7_680, genre: "Thriller", ageRating: "15", containerExtension: "mkv",
+                                cast: "Mira Holt, Jonas Reeve, Adaeze Okafor", director: "Sanna Weiss", rating: 7.4,
+                                trailerURL: URL(string: "https://trailers.example/long-harbor")))
+                    case "xtream#cabin#vod#3":
+                        return .movie(VODInfo(duration: 5_520))
+                    case "xtream#office#vod#3" where infoLoads[title.id] == 1:
+                        throw URLError(.badServerResponse)
+                    default:
+                        let details = details(title)
+                        // Night Ferry has a trailer, for the Apple TV page that shows none.
+                        let trailer = title.id == "xtream#office#vod#1" ? URL(string: "https://trailers.example/night-ferry") : nil
+                        return .movie(
+                            VODInfo(
+                                plot: details.plot, year: details.year, duration: details.duration, genre: title.category,
+                                trailerURL: trailer))
+                    }
+                case .series:
+                    let details = details(title)
+                    return .series(
+                        SeriesInfo(
+                            plot: details.plot, year: details.year, genre: title.category, rating: 8.1,
+                            episodes: try await episodes(title)))
                 }
             }
 

@@ -45,6 +45,17 @@ struct ShelfLoader: Sendable {
         }
     }
 
+    /// Everything the title page shows: the movie's or series' info call,
+    /// asked once per call (title-detail-and-episode-picker/open-a-movie-s-page).
+    func info(_ source: SourceDescriptor, title: ShelfTitle) async throws -> TitleInfo {
+        let client = try client(for: source)
+        let rawID = try rawID(title.id)
+        switch title.kind {
+        case .movie: return .movie(try await client.vodInfo(streamID: rawID))
+        case .series: return .series(try await client.seriesInfo(seriesID: rawID))
+        }
+    }
+
     /// A series' episodes in the client's order.
     func episodes(_ source: SourceDescriptor, series: ShelfTitle) async throws -> [Episode] {
         try await client(for: source).seriesInfo(seriesID: try rawID(series.id)).episodes
@@ -70,4 +81,10 @@ struct ShelfLoader: Sendable {
         guard let id = XtreamTitleID(parsing: titleID) else { throw LoadError.unknownTitle }
         return id.rawID
     }
+}
+
+/// What the info call answered for a title page.
+enum TitleInfo: Sendable, Equatable {
+    case movie(VODInfo)
+    case series(SeriesInfo)
 }

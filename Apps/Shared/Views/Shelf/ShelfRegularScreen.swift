@@ -17,14 +17,40 @@
 
         @Environment(ShelfPlayback.self) private var playback
 
-        /// Posters and the banner play through the playback; My list goes through the activity.
+        /// Posters and the banner play through the playback, open pages through the library, and
+        /// change My list through the activity.
         private var actions: ShelfActions {
-            .with(activity) { [library, activity, playback] title in playback.play(title, library: library, activity: activity) }
+            .section(kind, library: library, activity: activity, playback: playback)
         }
 
         var body: some View {
+            let page = library.page.flatMap { $0.section == kind ? $0 : nil }
+            ZStack {
+                section
+                    .opacity(page == nil ? 1 : 0)
+                    .accessibilityHidden(page != nil)
+                    .disabled(page != nil)
+                if let page {
+                    // The page replaces the content column; the sidebar stays.
+                    TitleScreen(route: page) {
+                        TitlePage.Pad(plotLines: page.title.kind == .movie ? 5 : 2) { EmptyView() }
+                    }
+                    .environment(\.shelfMetrics, .pad)
+                    .environment(\.shelfPrefix, kind.prefix)
+                }
+            }
+            // Another section or list in the sidebar closes the page.
+            .task(id: kind) {
+                if library.page?.section != kind { library.closePage() }
+            }
+            .task(id: browse.list) {
+                if library.page != nil, browse.list != nil { library.closePage() }
+            }
+        }
+
+        private var section: some View {
             let model = library.model(kind)
-            VStack(alignment: .leading, spacing: 0) {
+            return VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 8) {
                     leading
                     Text(kind.sectionTitle)

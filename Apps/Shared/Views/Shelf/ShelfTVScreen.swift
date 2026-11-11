@@ -17,14 +17,37 @@
 
         @Environment(ShelfPlayback.self) private var playback
 
-        /// Posters and the banner play through the playback; My list goes through the activity.
+        /// Posters and the banner play through the playback, open pages through the library, and
+        /// change My list through the activity.
         private var actions: ShelfActions {
-            .with(activity) { [library, activity, playback] title in playback.play(title, library: library, activity: activity) }
+            .section(kind, library: library, activity: activity, playback: playback)
         }
 
         var body: some View {
+            let page = library.page.flatMap { $0.section == kind ? $0 : nil }
+            ZStack {
+                section
+                    .opacity(page == nil ? 1 : 0)
+                    .accessibilityHidden(page != nil)
+                    .disabled(page != nil)
+                if let page {
+                    // Full screen: the shell hides the tab bar and clock while a page is open.
+                    TitleScreen(route: page) {
+                        TitlePage.Television(
+                            plotLines: page.title.kind == .movie ? 4 : 2, artHeight: page.title.kind == .movie ? 1080 : 520
+                        ) {
+                            EmptyView()
+                        }
+                    }
+                    .environment(\.shelfMetrics, .tv)
+                    .environment(\.shelfPrefix, kind.prefix)
+                }
+            }
+        }
+
+        private var section: some View {
             let model = library.model(kind)
-            Group {
+            return Group {
                 if let list {
                     grid(model, list)
                 } else {
