@@ -2,7 +2,7 @@
     import SwiftUI
 
     /// The board's sample rows for "north", for previews only.
-    private enum SearchSample {
+    @MainActor private enum SearchSample {
         static func ranges(_ text: String, _ word: String = "North") -> [Range<String.Index>] {
             text.range(of: word, options: .caseInsensitive).map { [$0] } ?? []
         }
