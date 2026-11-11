@@ -9,13 +9,13 @@
 - [x] 2.1 Pick the four newest titles in the core package and build the banner with rotation, pausing, paging and Reduce Motion, and verify with core and UI tests citing `movies-and-series-browsing/new-titles-up-front`
 - [x] 2.2 Order Recently added and category rows with merging by category name in the core package, and verify with a core test citing `movies-and-series-browsing/rows-in-a-predictable-order`
 - [x] 2.3 Add the poster cache keyed on a URL hash with the name tile fallback, and check the 50 MB and 500 MB limits
-- [ ] 2.4 Build the genre, My list, All and See all grids with sorting on iPad and Mac and a separate screen on Apple TV, and verify with a UI test citing `movies-and-series-browsing/browse-a-genre-or-sort-the-lot`
+- [x] 2.4 Build the genre, My list, All and See all grids with sorting on iPad and Mac and a separate screen on Apple TV, and verify with a UI test citing `movies-and-series-browsing/browse-a-genre-or-sort-the-lot`
 - [ ] 2.5 Check the two-second budget with 20 000 items in 400 categories on Apple TV 4K and iPhone 15
 
 ## 3. My list and Continue watching
 
-- [ ] 3.1 Add and remove My list entries from the banner and the poster menu, and verify with integration and UI tests citing `movies-and-series-browsing/keep-a-list-for-later`
-- [ ] 3.2 Build Continue watching from saved positions with the 2% and 95% rules and Next episode, and verify with core and integration tests citing `movies-and-series-browsing/continue-watching`
+- [x] 3.1 Add and remove My list entries from the banner and the poster menu, and verify with integration and UI tests citing `movies-and-series-browsing/keep-a-list-for-later`
+- [x] 3.2 Build Continue watching from saved positions with the 2% and 95% rules and Next episode, and verify with core and integration tests citing `movies-and-series-browsing/continue-watching`
 
 ## 4. Playing
 

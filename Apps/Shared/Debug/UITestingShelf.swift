@@ -31,6 +31,11 @@
             case error
             /// Cabin answers with nothing; Office has no login on this device.
             case empty
+            /// As `titles`, with Second Act 40% in, Northern Lights' first
+            /// episode finished, Harbor Watch's first episode 30% in, Salt
+            /// Road finished, and Paper Cities then Night Ferry added to
+            /// My list, with an entry for a movie that is not loaded.
+            case watching
         }
 
         static let homeID = UUID(uuidString: "00000000-0000-0000-0000-0000000000E1") ?? UUID()
@@ -41,7 +46,7 @@
             guard let index = arguments.firstIndex(of: argument) else { return nil }
             let next = arguments.index(after: index)
             guard next < arguments.endIndex, let scenario = Scenario(rawValue: arguments[next]) else {
-                fatalError("\(argument) takes titles, noXtream, loading, failing, offline, error or empty")
+                fatalError("\(argument) takes titles, watching, noXtream, loading, failing, offline, error or empty")
             }
             return scenario
         }
@@ -76,10 +81,32 @@
                         context.insert(SourceRecord(descriptor: descriptor, sortOrder: order))
                     }
                 }
+                if scenario == .watching { seedActivity(context) }
                 try context.save()
                 return container
             } catch {
                 fatalError("Could not create the shelf UI testing store: \(error)")
+            }
+        }
+
+        private static func seedActivity(_ context: ModelContext) {
+            let now = Date.now
+            func progress(_ id: String, series: String? = nil, at share: Double, ago: Double) {
+                let length = series == nil ? 5400.0 : 2700.0
+                let value = WatchProgress(
+                    id: "", titleID: id, seriesID: series, sourceID: cabinID, position: share * length, duration: length,
+                    updatedAt: now.addingTimeInterval(-ago))
+                context.insert(ProgressRecord(value, profileID: nil))
+            }
+            progress("xtream#cabin#vod#2", at: 0.4, ago: 60)
+            progress("xtream#cabin#episode#11", series: "xtream#cabin#series#1", at: 0.99, ago: 30)
+            progress("xtream#cabin#episode#21", series: "xtream#cabin#series#2", at: 0.3, ago: 10)
+            progress("xtream#cabin#vod#3", at: 0.99, ago: 5)
+            let entries = [
+                ("xtream#cabin#vod#4", cabinID, 100.0), ("xtream#office#vod#1", officeID, 50), ("xtream#cabin#vod#99", cabinID, 10),
+            ]
+            for (id, source, ago) in entries {
+                context.insert(ListEntryRecord(titleID: id, sourceID: source, addedAt: now.addingTimeInterval(-ago), profileID: nil))
             }
         }
 
@@ -91,7 +118,8 @@
             let dependencies = ShelfModel.Dependencies(
                 load: { try await script.load($0, kind: $1) },
                 hasLogin: { script.hasLogin($0) },
-                details: { _, title in script.details(title) })
+                details: { _, title in script.details(title) },
+                episodes: { _, series in try await script.episodes(series) })
             return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
         }
 
@@ -129,7 +157,7 @@
                 let isCabin = source.id == cabinID
                 if !isCabin { officeLoads += 1 }
                 switch scenario {
-                case .titles, .noXtream:
+                case .titles, .watching, .noXtream:
                     return catalogue(source.id, kind: kind)
                 case .loading:
                     if !isCabin { try await Task.sleep(for: .seconds(3600)) }
@@ -143,6 +171,28 @@
                     throw URLError(.cannotFindHost)
                 case .empty:
                     return ShelfCatalogue(titles: [], categories: [])
+                }
+            }
+
+            private var officeEpisodeLoads = 0
+
+            /// Northern Lights: three episodes of season 2. Harbor Watch: two of
+            /// season 1. Small Rooms: none. Long Winter (Office): the first
+            /// load fails, then two episodes.
+            func episodes(_ series: ShelfTitle) async throws -> [Episode] {
+                let parts = series.id.split(separator: "#")
+                let host = parts.count > 1 ? String(parts[1]) : ""
+                let number = Int(parts.last ?? "") ?? 0
+                if host == "office" {
+                    officeEpisodeLoads += 1
+                    if officeEpisodeLoads == 1 { throw URLError(.badServerResponse) }
+                }
+                if host == "cabin", number == 3 { return [] }
+                let northern = number == 1 && host == "cabin"
+                return (1...(northern ? 3 : 2)).map { index in
+                    Episode(
+                        id: "xtream#\(host)#episode#\(number * 10 + index)", episodeID: number * 10 + index, season: northern ? 2 : 1,
+                        number: index, title: "Episode \(index)", containerExtension: "mp4", duration: 2700)
                 }
             }
 

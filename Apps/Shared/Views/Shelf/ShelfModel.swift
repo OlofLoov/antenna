@@ -12,6 +12,8 @@ final class ShelfModel {
         var load: @MainActor (SourceDescriptor, ShelfTitle.Kind) async throws -> ShelfCatalogue
         var hasLogin: @MainActor (SourceDescriptor) -> Bool
         var details: @MainActor (SourceDescriptor, ShelfTitle) async throws -> ShelfDetails
+        /// A series' episodes in the client's order.
+        var episodes: @MainActor (SourceDescriptor, ShelfTitle) async throws -> [Episode]
         /// How often to look for a login that has not arrived yet.
         var loginCheck = Duration.seconds(5)
     }
@@ -31,6 +33,8 @@ final class ShelfModel {
     private(set) var opened = false
     /// Failed sources whose banner the user dismissed.
     private(set) var dismissed: Set<UUID> = []
+    /// Series' episode lists by series id, once loaded.
+    private(set) var episodes: [String: [Episode]] = [:]
 
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
@@ -212,6 +216,23 @@ final class ShelfModel {
         guard let found = try? await dependencies.details(source, title) else { return }
         details[title.id] = found
     }
+
+    // MARK: Episodes
+
+    /// A series' episodes, from memory once loaded. Throws when the list
+    /// fails to load, so the caller can offer Retry.
+    func loadEpisodes(_ series: ShelfTitle) async throws -> [Episode] {
+        if let known = episodes[series.id] { return known }
+        guard let source = descriptors[series.sourceID] else { throw ShelfLoader.LoadError.unknownTitle }
+        let list = try await dependencies.episodes(source, series)
+        episodes[series.id] = list
+        return list
+    }
+
+    /// Loads a series' episodes for its Continue watching caption, ignoring failures.
+    func prefetchEpisodes(_ series: ShelfTitle) async {
+        _ = try? await loadEpisodes(series)
+    }
 }
 
 /// Movies and Series side by side, so switching sections reloads nothing.
@@ -238,6 +259,14 @@ final class ShelfLibrary {
         series.sourcesChanged(all)
     }
 
+    /// One section opened. Both load, because Continue watching shows
+    /// movies and series together
+    /// (movies-and-series-browsing/continue-watching).
+    func open() {
+        movies.open()
+        series.open()
+    }
+
     /// The app came back to the foreground: sources waiting for a login try again.
     func becameActive() {
         movies.checkLogins()
@@ -251,7 +280,8 @@ extension ShelfLibrary {
         let dependencies = ShelfModel.Dependencies(
             load: { try await loader.load($0, kind: $1) },
             hasLogin: { loader.hasLogin($0) },
-            details: { try await loader.details($0, title: $1) })
+            details: { try await loader.details($0, title: $1) },
+            episodes: { try await loader.episodes($0, series: $1) })
         return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
     }
 }

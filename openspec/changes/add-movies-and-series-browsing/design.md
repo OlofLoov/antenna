@@ -55,7 +55,10 @@ Made while building the screens, without the user available. Each can be revisit
 - **Apple TV focus.** The banner's Play button takes the shell's content focus, so opening the tab lands on Play and swiping up from it reaches the open tab. The `tvos-shell` stand-in requirement changes with this change, since Movies and Series are no longer stand-ins.
 - **Year sort.** The list calls carry no year, so Year reads it from the title's name, the last number from 1900 to 2099 standing alone ("Dune (2021)", "Dune - 2021"). Titles without one follow by name. Asking the info call for thousands of titles was the other option and is too slow.
 - **Grids.** Picking a genre or All in the iPad and Mac sidebar keeps the current order; Title or Year with no grid open shows All. On iPhone the chips sit over the banner's art and the banner stays above the grid. On Apple TV the Genres row starts with an All movies chip, the grid replaces the rows under the tab bar, and Menu closes it with focus back on the banner's Play button.
-- **UI tests.** `-ui-testing-shelf <scenario>` seeds Home (M3U) and the Xtream sources Cabin and Office with scripted titles, and `-ui-testing-reduce-motion` makes the banner act as with Reduce Motion on.
+- **Both sections load together.** Opening Movies or Series loads both, because Continue watching mixes movies and series in each section.
+- **Continue watching captions.** A series card loads its series' episode list once it shows on screen, to read "S2 E4" and to drop a series with nothing left to watch. Until then it shows the minutes left, or "Next episode" for a finished episode. The cards crop the poster to 16:9, since the list calls carry no wide artwork.
+- **My list.** The row and the iPad and Mac sidebar entry count only loaded titles of the section's kind. The poster menu is the system context menu: a long press on iPhone and Apple TV, a secondary click on iPad and Mac. On Apple TV the Genres row starts with My list, then All movies.
+- **UI tests.** `-ui-testing-shelf <scenario>` seeds Home (M3U) and the Xtream sources Cabin and Office with scripted titles (and for `watching`, saved positions and My list entries), and `-ui-testing-reduce-motion` makes the banner act as with Reduce Motion on.
 
 ## Badge rules
 
