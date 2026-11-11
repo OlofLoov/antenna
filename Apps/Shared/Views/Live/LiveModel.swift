@@ -69,6 +69,8 @@ final class LiveModel {
     private(set) var group: CatalogueGroup = .all
     /// What the user typed into the filter field on iPad and Mac.
     var filter = ""
+    /// The filter field has the keyboard, so single-key shortcuts stay off.
+    var typing = false
     /// The channel playing in place, nil until the user picks one.
     private(set) var playing: Channel?
     /// A later programme picked in Search, shown under what is on next

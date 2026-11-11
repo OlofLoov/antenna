@@ -367,6 +367,7 @@
             .background { shortcuts }
             .onChange(of: live.group) { _, _ in cursor = nil }
             .onChange(of: live.filter) { _, _ in cursor = nil }
+            .onChange(of: filterFocused) { _, focused in live.typing = focused }
         }
 
         /// The list's keys as key commands, so they work wherever focus is.

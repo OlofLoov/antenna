@@ -24,7 +24,8 @@
 ## 5. iPhone, iPad and Mac controls
 
 - [ ] 5.1 Add the audio-and-subtitles, AirPlay, mute and volume controls and the Mac keys, and verify with UI and device tests citing `player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac`
-- [ ] 5.2 Store the Mac volume per device, and verify with an integration test citing `player-controls-and-playback-errors/the-mac-remembers-its-volume`
+  - Open: built and tested on simulators; the AirPlay hand-off to a real device, "Playing on AirPlay" on a real route and the Mac's M and Command-Up/Down keys need a device or a Mac UI test target
+- [x] 5.2 Store the Mac volume per device, and verify with an integration test citing `player-controls-and-playback-errors/the-mac-remembers-its-volume`
 
 ## 6. Background, PiP and lock screen
 

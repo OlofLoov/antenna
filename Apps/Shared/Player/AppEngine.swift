@@ -26,6 +26,24 @@ extension PlaybackEngine {
     }
 }
 
+extension PlaybackEngine {
+    /// Sets the sound level and mute on both of the app's engines, so it
+    /// holds whichever one plays the next stream.
+    @MainActor func setVolume(_ volume: Float, muted: Bool) {
+        AVPlayerEngine.resolve(self)?.setVolume(volume, muted: muted)
+        DemuxEngine.resolve(self)?.setVolume(volume, muted: muted)
+    }
+
+    /// Yields true while Apple's player sends the stream to AirPlay. An
+    /// engine without Apple's player yields false once.
+    @MainActor func airPlayActivity() -> AsyncStream<Bool> {
+        guard let system = AVPlayerEngine.resolve(self) else {
+            return AsyncStream { $0.yield(false) }
+        }
+        return system.externalPlayback()
+    }
+}
+
 extension RoutedEngine {
     /// The engine every player screen uses: HLS and the files the system
     /// reads play on Apple's player, raw broadcast streams, Matroska and AVI
