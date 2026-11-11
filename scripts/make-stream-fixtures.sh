@@ -120,6 +120,9 @@ ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
 
 # The same picture in Matroska and AVI.
 ff -i "$out/channel.ts" -c copy "$out/channel.mkv"
+# The same Matroska film with no index (Cues), as a muxer writing to a pipe
+# leaves it; a skip has to read forward to its keyframe.
+"$ffmpeg_bin" -hide_banner -loglevel error -i "$out/channel.mkv" -c copy -f matroska - >"$out/film-no-index.mkv"
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v mpeg4 -q:v 10 -c:a libmp3lame -b:a 48k "$out/channel.avi"
 

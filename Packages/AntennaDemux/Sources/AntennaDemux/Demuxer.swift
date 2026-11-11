@@ -152,11 +152,19 @@ public final class Demuxer: @unchecked Sendable {
         }
     }
 
+    /// Where a film's position counts from when it starts somewhere other
+    /// than its first frame: the container's start time, or zero when the
+    /// container does not say.
+    public var seekOrigin: CMTime {
+        startTime.isNumeric ? startTime : .zero
+    }
+
     /// Moves to the keyframe at or before `time` into the film, counted from
-    /// its start. Returns false when the bytes cannot be skipped.
-    public func seek(to time: CMTime) -> Bool {
+    /// `origin`, by default `seekOrigin`. Returns false when the bytes cannot
+    /// be skipped.
+    public func seek(to time: CMTime, from origin: CMTime? = nil) -> Bool {
         guard let context, time.isNumeric else { return false }
-        let origin = startTime.isNumeric ? startTime : .zero
+        let origin = origin ?? seekOrigin
         let target = CMTimeConvertScale(CMTimeAdd(origin, time), timescale: CMTimeScale(AV_TIME_BASE), method: .roundTowardNegativeInfinity)
         return av_seek_frame(context, -1, target.value, AVSEEK_FLAG_BACKWARD) >= 0
     }

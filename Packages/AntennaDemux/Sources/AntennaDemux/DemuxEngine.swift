@@ -185,7 +185,7 @@ public final class DemuxEngine: PlaybackEngine {
     /// ahead for `url`, and starts a run, returning once its first frame is
     /// queued. Throws `CancellationError` when a newer load, stop or pause
     /// replaced it.
-    func open(_ url: URL, options: PlaybackOptions, generation mine: Int) async throws {
+    func open(_ url: URL, options: PlaybackOptions, origin: CMTime? = nil, generation mine: Int) async throws {
         let session = self.session
         let sleep = self.sleep
         let ahead = standby.removeValue(forKey: url)
@@ -235,6 +235,7 @@ public final class DemuxEngine: PlaybackEngine {
                     },
                     waitsForSound: !isScanning,
                     startAt: startAt,
+                    origin: origin,
                     options: options,
                     ended: { [weak self] failure in
                         Task { @MainActor in self?.bytesEnded(failure, generation: mine) }
