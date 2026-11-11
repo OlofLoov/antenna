@@ -18,6 +18,8 @@
                 title: message.title, explanation: message.explanation, detail: detail, hint: PlayerStatusText.changeChannelHint
             ) {
                 PlayerStatus.TelevisionButton(title: PlayerStatusText.tryAgain) { player.retry() }
+                    // Holding select on the error is Try again too.
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in player.retry() })
                     .focused(focus, equals: .retry)
                     .accessibilityIdentifier("player.retry")
                 if let signIn {

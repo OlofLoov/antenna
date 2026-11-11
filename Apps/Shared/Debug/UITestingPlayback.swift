@@ -18,6 +18,10 @@
     ///
     /// `UITESTING_SLOW_SECONDS` sets how long the spinner shows before it
     /// names the source as slow, 10 unless set.
+    ///
+    /// Every stream has English, English commentary and an unnamed sound
+    /// track and English subtitles, or one English sound track and no
+    /// subtitles with `UITESTING_TRACKS=single`.
     enum UITestingPlayback {
         static let variable = "UITESTING_PLAYBACK"
         static let slowVariable = "UITESTING_SLOW_SECONDS"
@@ -73,6 +77,51 @@
         }
 
         @MainActor private static var failed: Set<String> = []
+
+        /// The tracks every scripted stream has.
+        static var tracks: TrackList {
+            let english = MediaTrack(id: "audio-0", kind: .audio, languageCode: "en", name: nil, isDefault: true)
+            guard ProcessInfo.processInfo.environment["UITESTING_TRACKS"] != "single" else {
+                return TrackList(audio: [english], subtitles: [], selectedAudio: english.id, selectedSubtitle: nil)
+            }
+            return TrackList(
+                audio: [
+                    english,
+                    MediaTrack(id: "audio-1", kind: .audio, languageCode: "en", name: "Commentary", isDefault: false),
+                    MediaTrack(id: "audio-2", kind: .audio, languageCode: nil, name: nil, isDefault: false),
+                ],
+                subtitles: [MediaTrack(id: "subtitle-0", kind: .subtitle, languageCode: "en", name: nil, isDefault: false)],
+                selectedAudio: english.id, selectedSubtitle: nil)
+        }
+
+        /// 1080p H.264 with 5.1 AAC sound.
+        static let presentation = PresentationInfo(
+            video: .init(width: 1920, height: 1080, frameRate: 25, dynamicRange: .sdr, codec: "h264"),
+            audio: .init(codec: "aac", channels: 6, isDecodable: true))
+
+        /// The tracks of one scripted engine; a pick changes the selection.
+        final class Tracks: Sendable {
+            let cast = Broadcast(UITestingPlayback.tracks)
+            let format = Broadcast(PresentationInfo?.some(UITestingPlayback.presentation))
+
+            /// A new stream opened: its tracks with the defaults picked, and its format.
+            func reset() {
+                cast.send(UITestingPlayback.tracks)
+                format.send(UITestingPlayback.presentation)
+            }
+
+            func selectAudio(_ id: MediaTrack.ID) {
+                var list = cast.value
+                list.selectedAudio = id
+                cast.send(list)
+            }
+
+            func selectSubtitle(_ id: MediaTrack.ID?) {
+                var list = cast.value
+                list.selectedSubtitle = id
+                cast.send(list)
+            }
+        }
 
         /// False while the script keeps every stream loading.
         static var plays: Bool { script != .stall }

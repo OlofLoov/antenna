@@ -255,6 +255,7 @@
                     didSet { stateCast.send(state) }
                 }
                 @ObservationIgnored private let stateCast = Broadcast(PlaybackState.idle)
+                @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
                 private(set) var loads = 0
                 private(set) var lastFile = ""
                 private let failing: Bool
@@ -268,6 +269,7 @@
                 func load(_ url: URL, options: PlaybackOptions) async throws {
                     loads += 1
                     lastFile = url.lastPathComponent
+                    trackList.reset()
                     if failing {
                         state = .failed(.unreadable)
                         throw PlaybackFailure.unreadable
@@ -303,20 +305,13 @@
                 }
 
                 func seek(to time: Duration) async throws { throw SeekRefusal.live }
-                func selectAudio(_ id: MediaTrack.ID) async {}
-                func selectSubtitle(_ id: MediaTrack.ID?) async {}
+                func selectAudio(_ id: MediaTrack.ID) async { trackList.selectAudio(id) }
+                func selectSubtitle(_ id: MediaTrack.ID?) async { trackList.selectSubtitle(id) }
                 func states() async -> AsyncStream<PlaybackState> { stateCast.stream() }
 
                 /// Every scripted stream reports 1080p with 5.1 AAC sound.
-                func presentation() async -> AsyncStream<PresentationInfo?> {
-                    Broadcast(
-                        PresentationInfo?.some(
-                            PresentationInfo(
-                                video: .init(width: 1920, height: 1080, frameRate: 25, dynamicRange: .sdr, codec: "h264"),
-                                audio: .init(codec: "aac", channels: 6, isDecodable: true)))
-                    ).stream()
-                }
-                func tracks() async -> AsyncStream<TrackList> { Broadcast(TrackList.empty).stream() }
+                func presentation() async -> AsyncStream<PresentationInfo?> { trackList.format.stream() }
+                func tracks() async -> AsyncStream<TrackList> { trackList.cast.stream() }
                 func position() async -> AsyncStream<PlaybackPosition> { Broadcast(PlaybackPosition.zero).stream() }
                 func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
 

@@ -383,7 +383,8 @@ final class LiveModel {
         }
         hiding = Task { [weak self] in
             try? await Task.sleep(for: delay)
-            guard !Task.isCancelled else { return }
+            // The controls stay while the track list hangs from them.
+            guard !Task.isCancelled, self?.player.pickerOpen == false else { return }
             self?.controlsShown = false
         }
     }

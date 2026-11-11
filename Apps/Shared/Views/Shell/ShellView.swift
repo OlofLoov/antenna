@@ -105,6 +105,11 @@
                     .allowsHitTesting(false)
                     .transition(.opacity)
                 }
+                if model.tab == .live, !model.barVisible, model.player.panel != nil, let channel = model.tuned {
+                    PlayerTVPanel(player: model.player, channel: channel, catalogue: catalogue, guide: overlayGuide, focus: $focus)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .transition(reduceMotion ? .identity : .move(edge: .top))
+                }
                 if model.dimmed { ShellScrim() }
                 // A title page hides the bar and clock, so swiping up from it reaches nothing
                 // (tvos-shell/the-tab-bar-stays-hidden-on-a-title-page).
@@ -135,13 +140,15 @@
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.tab)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: zapBarShows)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.pickerOpen)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.player.panel != nil)
             .numberEntry(
-                numbers, enabled: model.tab == .live && !model.barVisible && !model.pickerOpen && model.tuned != nil,
+                numbers, enabled: numbersEnabled,
                 catalogue: catalogue, typing: { zapBar.dismiss() }, tune: { channel in Task { await model.pick(channel) } }
             )
             .onExitCommand(perform: menu)
             .onPlayPauseCommand {
-                guard model.tab == .live, !model.barVisible else { return }
+                // Play/pause does nothing while the info panel is open.
+                guard model.tab == .live, !model.barVisible, model.player.panel == nil else { return }
                 // Play/pause on the error is Try again (player-controls-and-playback-errors/try-again-or-recover-on-its-own).
                 // It still shows the info bar, as play/pause in full-screen live TV does.
                 if model.player.failure != nil, !model.pickerOpen {
@@ -180,6 +187,9 @@
             }
             .onChange(of: model.player.failure != nil) { _, failed in
                 failureChanged(failed)
+            }
+            .onChange(of: model.player.panel == nil) { _, closed in
+                if closed, case .panel = focus { focus = model.liveFocus }
             }
             .task(id: records.compactMap(\.descriptor)) {
                 model.sourcesChanged(records.compactMap(\.descriptor))
@@ -238,39 +248,14 @@
                         Color.clear
                     }
                     .buttonStyle(HolderStyle())
-                    .disabled(model.pickerOpen)
+                    // Holding select opens the info panel; a swipe down already changes channel.
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
+                    .disabled(model.pickerOpen || model.player.panel != nil)
                     .accessibilityLabel("Live picture")
                     .accessibilityIdentifier("shell.picture")
                     .focused($focus, equals: .picture)
                 }
             }
-        }
-
-        /// The spinner or the error over the picture, sized to it: the full
-        /// error with its buttons on Live, the short one in the Guide's box
-        /// (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).
-        @ViewBuilder private var pictureStatus: some View {
-            if model.tuned != nil {
-                if let message = model.player.message {
-                    if model.tab == .live {
-                        PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn)
-                    } else {
-                        PlayerStatus.Failure(channel: nil, title: message.title, explanation: message.explanation) { EmptyView() }
-                    }
-                } else {
-                    PlayerWaitingLayer(player: model.player)
-                        .environment(\.playerStatusMetrics, model.tab == .live ? .television : .compact)
-                }
-            }
-        }
-
-        /// Sign in on the error, nil when the failure is not about the login
-        /// or the source has no login, as a playlist has none.
-        private var signIn: (() -> Void)? {
-            guard let failure = model.player.failure, failure == .loginNotOnDevice || failure == .notAllowed,
-                let source = model.tuned?.sourceID, model.descriptors[source]?.credentialKey != nil
-            else { return nil }
-            return { model.signIn(to: source) }
         }
 
         @ViewBuilder private var tabContent: some View {
@@ -290,10 +275,15 @@
 
         // MARK: Input
 
+        /// Digits change channel on full-screen Live with nothing over the picture.
+        private var numbersEnabled: Bool {
+            model.tab == .live && !model.barVisible && !model.pickerOpen && model.tuned != nil && model.player.panel == nil
+        }
+
         private var barHasFocus: Bool {
             switch focus {
             case .tab, .settings, .profile: true
-            case .picture, .retry, .signIn, .liveScreen, .content, .overlay, nil: false
+            case .picture, .retry, .signIn, .panel, .liveScreen, .content, .overlay, nil: false
             }
         }
 
@@ -328,6 +318,12 @@
         }
 
         private func menu() {
+            // Menu closes the info panel and goes no further.
+            if model.player.panel != nil {
+                model.player.closePanel()
+                focus = model.liveFocus
+                return
+            }
             if numbers.isOpen { return numbers.cancel() }
             if model.pickerOpen {
                 model.closePicker()
@@ -343,7 +339,7 @@
                 switch focus {
                 case .tab, .settings, .profile: .bar
                 case .content: .content
-                case .picture, .retry, .signIn, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
+                case .picture, .retry, .signIn, .panel, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
                 }
             Task { focus = await model.menu(from: origin) }
         }
@@ -354,6 +350,9 @@
         /// this and `move` runs first.
         private func focusMoved(from old: ShellFocus?, to new: ShellFocus?) {
             switch (old, new) {
+            case (_, .panel(.segment(let tab))):
+                // Moving onto Audio or Subtitles opens that tab.
+                model.player.panel = tab
             case (.overlay(.channel), .overlay(.group(let group))) where group != overlay.group:
                 // Left from the channels lands on the group they belong to.
                 focus = .overlay(.group(overlay.group))
@@ -417,7 +416,44 @@
         }
     }
 
+    /// The player's layers and inputs: the spinner, the error, the info panel.
     extension ShellScreen {
+        /// The spinner or the error over the picture, sized to it: the full
+        /// error with its buttons on Live, the short one in the Guide's box
+        /// (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).
+        @ViewBuilder private var pictureStatus: some View {
+            if model.tuned != nil {
+                if let message = model.player.message {
+                    if model.tab == .live {
+                        PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn)
+                    } else {
+                        PlayerStatus.Failure(channel: nil, title: message.title, explanation: message.explanation) { EmptyView() }
+                    }
+                } else {
+                    PlayerWaitingLayer(player: model.player)
+                        .environment(\.playerStatusMetrics, model.tab == .live ? .television : .compact)
+                }
+            }
+        }
+
+        /// Sign in on the error, nil when the failure is not about the login
+        /// or the source has no login, as a playlist has none.
+        private var signIn: (() -> Void)? {
+            guard let failure = model.player.failure, failure == .loginNotOnDevice || failure == .notAllowed,
+                let source = model.tuned?.sourceID, model.descriptors[source]?.credentialKey != nil
+            else { return nil }
+            return { model.signIn(to: source) }
+        }
+
+        /// Opens the info panel on Info with focus on its tab.
+        private func openPanel() {
+            guard !model.barVisible, !model.pickerOpen else { return }
+            numbers.cancel()
+            zapBar.dismiss()
+            model.player.openPanel()
+            if model.player.panel != nil { focus = .panel(.segment(.info)) }
+        }
+
         /// The error takes focus from the picture; once it goes, focus is
         /// back on the picture.
         private func failureChanged(_ failed: Bool) {
@@ -441,29 +477,6 @@
     private struct HolderStyle: ButtonStyle {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label.contentShape(Rectangle())
-        }
-    }
-
-    extension ShellTab {
-        var title: String {
-            switch self {
-            case .live: "Live"
-            case .guide: "Guide"
-            case .movies: "Movies"
-            case .series: "Series"
-            case .search: "Search"
-            }
-        }
-
-        /// The element name design-system/accessibility-identifiers-follow-the-board asks for: `shell.tab.<identifier>`.
-        var identifier: String {
-            switch self {
-            case .live: "live"
-            case .guide: "guide"
-            case .movies: "movies"
-            case .series: "series"
-            case .search: "search"
-            }
         }
     }
 #endif

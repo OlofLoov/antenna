@@ -72,6 +72,17 @@ final class PlayerErrorTVUITests: XCTestCase {
         expect(element("player.error"), "exists == false")
     }
 
+    // player-controls-and-playback-errors/try-again-or-recover-on-its-own, holding select
+    func testHoldingSelectOnTheErrorTriesAgainWithoutAPanel() {
+        launchFailing("notFound")
+
+        remote.press(.select, forDuration: 1)
+
+        expectEngine("playing loads=2 file=a1.ts")
+        expect(element("player.error"), "exists == false")
+        XCTAssertFalse(element("player.panel").exists, "no panel opens over the error")
+    }
+
     // player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong, swiping still changes channel
     // player-controls-and-playback-errors/try-again-or-recover-on-its-own, changing channel from the error
     func testSwipingDownFromTheErrorChangesChannel() {
