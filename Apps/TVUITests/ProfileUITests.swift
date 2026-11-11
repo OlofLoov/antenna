@@ -127,3 +127,54 @@ extension ShellUITests {
         expect(element("profiles.tile.2"), "label == 'Edit Mum'")
     }
 }
+
+extension ShellUITests {
+    /// Opens Settings from the tab bar; its first row is Profiles.
+    func openSettingsOnProfiles() {
+        press(.menu)
+        expectFocus("shell.tab.live")
+        let settings = element("shell.settings")
+        for _ in 0..<8 where !settings.hasFocus { press(.right) }
+        expectFocus("shell.settings")
+        press(.select)
+        XCTAssertTrue(element("settings.profile").waitForExistence(timeout: 10))
+        expectProfilesRowFocused()
+    }
+
+    /// Focus lands on the Form cell around the row, which carries the row's label.
+    func expectProfilesRowFocused(file: StaticString = #filePath, line: UInt = #line) {
+        let focused = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true AND label == 'Profiles'"))
+        XCTAssertTrue(focused.firstMatch.waitForExistence(timeout: 5), "the Profiles row never took focus", file: file, line: line)
+    }
+
+    // profiles/switching-profile
+    func testSwitchingProfileFromSettings() {
+        launchAsDad()
+        openSettingsOnProfiles()
+        expect(element("settings.profile"), "value == 'Dad'")
+        press(.select)
+        XCTAssertTrue(element("profiles.picker").waitForExistence(timeout: 10))
+        XCTAssertFalse(element("shell.debug.engine").exists, "playback stopped with the shell")
+        press(.right, toFocus: element("profiles.tile.1"), from: element("profiles.tile.0"))
+        press(.select)
+        expectEngine("playing loads=1 file=a1.ts")
+        expectGone("zapBar.bar", timeout: 10)
+        openSettingsOnProfiles()
+        expect(element("settings.profile"), "value == 'Kids'")
+    }
+
+    // profiles/adding-a-profile
+    func testOneProfileAddsFromSettings() {
+        launch("channels")
+        expectEngine("playing loads=1 file=a1.ts")
+        expectGone("zapBar.bar", timeout: 10)
+        openSettingsOnProfiles()
+        expect(element("settings.profile"), "value == 'Add a profile'")
+        press(.select)
+        XCTAssertTrue(element("profiles.add").waitForExistence(timeout: 5))
+        expectFocus("profiles.tile.0")
+        press(.menu)
+        expectProfilesRowFocused()
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+}

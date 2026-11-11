@@ -10,6 +10,7 @@
         @Environment(\.sourceLoader) private var loader
         @Environment(\.guideStore) private var guideStore
         @Environment(\.currentProfile) private var profile
+        @Environment(\.switchProfile) private var switchProfile
         @State private var live: LiveModel?
         @State private var shelves: ShelfLibrary?
         @State private var playback: ShelfPlayback?
@@ -26,6 +27,8 @@
                 if let live, let shelves, let playback {
                     layout
                         .environment(search)
+                        // Playback stops before "Who's watching?" (profiles/switching-profile).
+                        .environment(\.switchProfile, stopping(live))
                         .modifier(LiveSync(live: live))
                         .modifier(ShelfSync(library: shelves, playback: playback))
                 }
@@ -57,6 +60,17 @@
             #else
                 LiveRegularView()
             #endif
+        }
+
+        /// `switchProfile` after the engine stops; nil outside a profile gate.
+        private func stopping(_ live: LiveModel) -> (@MainActor () -> Void)? {
+            guard let switchProfile else { return nil }
+            return {
+                Task {
+                    await live.engine.stop()
+                    switchProfile()
+                }
+            }
         }
 
         private var forcedCompact: Bool {

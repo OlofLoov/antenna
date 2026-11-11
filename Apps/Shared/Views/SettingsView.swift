@@ -10,6 +10,9 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    ProfileSettingsRow()
+                }
                 Section("Sources") {
                     ForEach(sources) { source in
                         VStack(alignment: .leading) {

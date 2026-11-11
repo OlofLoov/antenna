@@ -74,7 +74,14 @@
                         sortOrder: 1))
                 if scenario == .favorites {
                     context.insert(FavoriteRecord(channelID: "fixture/sport-one", sourceID: homeID, sortOrder: 0))
+                    // With `-ui-testing-profiles`, Kids One is Kids's favorite (favorites/favorites-belong-to-a-profile).
+                    if UITestingProfiles.isOn {
+                        context.insert(
+                            FavoriteRecord(
+                                channelID: "fixture/kids-one", sourceID: homeID, sortOrder: 0, profileID: UITestingProfiles.kidsID))
+                    }
                 }
+                UITestingProfiles.seed(context)
                 try context.save()
                 return container
             } catch {
