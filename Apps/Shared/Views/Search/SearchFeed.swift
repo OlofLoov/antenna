@@ -60,6 +60,15 @@ struct SearchFeed {
 
 extension EnvironmentValues {
     @Entry var searchFeed: SearchFeed?
+    /// Opens Search set to a kind with text carried over; nil where the
+    /// sections offer no way into Search, as on Apple TV.
+    @Entry var openSearch: SearchOpener?
+}
+
+/// What the Movies and Series sections call to open Search
+/// (movies-and-series-browsing/search-from-the-section).
+struct SearchOpener {
+    let open: @MainActor (ShelfTitle.Kind, String) -> Void
 }
 
 /// A channel result with its logo, highlight and what is on now.

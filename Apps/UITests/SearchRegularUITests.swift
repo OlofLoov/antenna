@@ -130,4 +130,45 @@ final class SearchRegularUITests: XCTestCase {
         expect(app.element("search.field"), "value == 'harbor watch'")
         XCTAssertTrue(result.isHittable)
     }
+
+    // search/recent-searches
+    func testRecentSearchesInTheSidebarRunAgain() throws {
+        let app = try launch()
+        let field = openSearch(app)
+        field.typeText("kids")
+        let result = app.element("search.result.channel.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        result.tap()
+        expect(app.element("browse.panel.now"), "label CONTAINS 'Kids One'")
+
+        app.element("browse.section.search").tap()
+        let recent = app.element("search.recent.0")
+        XCTAssertTrue(recent.waitForExistence(timeout: 5), "the sidebar lists recent searches")
+        XCTAssertEqual(recent.label, "Recent search, kids")
+        app.element("search.clear").tap()
+        recent.tap()
+        expect(app.element("search.field"), "value == 'kids'")
+        XCTAssertTrue(app.element("search.result.channel.0").waitForExistence(timeout: 5))
+    }
+
+    // movies-and-series-browsing/search-from-the-section
+    func testTypingInTheMoviesToolbarOpensSearchWithTheText() throws {
+        let app = try launch()
+        let section = app.element("browse.section.movies")
+        XCTAssertTrue(section.waitForExistence(timeout: 10))
+        section.tap()
+        let toolbar = app.textFields["movies.search"].firstMatch
+        XCTAssertTrue(toolbar.waitForExistence(timeout: 10))
+        toolbar.tap()
+        toolbar.typeText("h")
+
+        let field = app.element("search.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        expect(field, "value == 'h'")
+        expect(field, "hasKeyboardFocus == true")
+        field.typeText("arbor")
+        XCTAssertTrue(app.element("search.result.title.0").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.element("search.chip.movies").isSelected)
+        XCTAssertFalse(app.element("search.result.title.1").exists, "only movies")
+    }
 }

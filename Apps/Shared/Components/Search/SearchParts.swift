@@ -140,6 +140,50 @@ enum SearchParts {
         }
     }
 
+    /// The round search button in the Movies and Series top bar on iPhone
+    /// (`iPhone-Movies`).
+    struct SectionButton: View {
+        let action: () -> Void
+
+        var body: some View {
+            Button(action: action) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Palette.text)
+                    .frame(width: 36, height: 36)
+                    .background(Palette.scrimTint.opacity(0.6), in: Circle())
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Search")
+        }
+    }
+
+    /// The 220 pt search field in the Movies and Series toolbar on iPad and
+    /// Mac (`iPad-Movies`). Whatever is typed goes to Search.
+    struct SectionField: View {
+        let prompt: String
+        @Binding var text: String
+
+        var body: some View {
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(Palette.textMuted)
+                    .accessibilityHidden(true)
+                TextField(prompt, text: $text, prompt: Text(prompt).foregroundStyle(Palette.textMuted))
+                    .textFieldStyle(.plain)
+                    .autocorrectionDisabled()
+                    .accessibilityLabel(prompt)
+            }
+            .font(.system(size: 15))
+            .foregroundStyle(Palette.text)
+            .padding(.horizontal, 12)
+            .frame(width: 220, height: 34)
+            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+        }
+    }
+
     /// The iPad and Mac row under Up next for a programme picked in Search:
     /// "Later" in the time column, then its day, time and title
     /// (search/pick-a-programme).

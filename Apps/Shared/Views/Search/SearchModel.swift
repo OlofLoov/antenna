@@ -140,6 +140,15 @@ final class SearchModel {
         }
     }
 
+    /// Opens set to `scope` with `text` in the field and the cursor in it,
+    /// as the Movies and Series sections ask
+    /// (movies-and-series-browsing/search-from-the-section).
+    func start(_ scope: SearchScope, text: String) {
+        self.scope = scope
+        type(text)
+        focus()
+    }
+
     /// Searches for `text` straight away, as picking a recent search does.
     func run(_ text: String) {
         typing?.cancel()

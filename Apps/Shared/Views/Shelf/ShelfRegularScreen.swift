@@ -16,6 +16,7 @@
         @Environment(ShelfActivity.self) private var activity
 
         @Environment(ShelfPlayback.self) private var playback
+        @Environment(\.openSearch) private var openSearch
 
         /// Posters and the banner play through the playback, open pages through the library, and
         /// change My list through the activity.
@@ -48,6 +49,17 @@
             }
         }
 
+        /// The toolbar field hands each keystroke to Search, which opens set
+        /// to this kind with the text carried over.
+        private var typed: Binding<String> {
+            Binding(
+                get: { "" },
+                set: { text in
+                    guard !text.isEmpty else { return }
+                    openSearch?.open(kind, text)
+                })
+        }
+
         private var section: some View {
             let model = library.model(kind)
             return VStack(alignment: .leading, spacing: 0) {
@@ -58,6 +70,10 @@
                         .foregroundStyle(Palette.text)
                         .accessibilityAddTraits(.isHeader)
                     Spacer()
+                    if openSearch != nil {
+                        SearchParts.SectionField(prompt: "Search \(kind == .movie ? "movies" : "series")", text: typed)
+                            .accessibilityIdentifier("\(kind.prefix).search")
+                    }
                     sortMenu
                 }
                 .padding(EdgeInsets(top: 18, leading: 24, bottom: 0, trailing: 24))

@@ -261,4 +261,44 @@ final class SearchUITests: XCTestCase {
         expect(app.element("title.name"), "exists == false")
         expect(app.element("search.field"), "value == 'harbor watch'")
     }
+
+    // search/recent-searches
+    func testAPickedSearchIsListedWithAnEmptyFieldAndRunsAgain() throws {
+        let app = try launch()
+        search(app, "sport")
+        let result = app.element("search.result.channel.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        result.tap()
+        XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
+
+        app.tabBars.buttons["Search"].tap()
+        app.element("search.clear").tap()
+        let recent = app.element("search.recent.0")
+        XCTAssertTrue(recent.waitForExistence(timeout: 5), "an empty field lists recent searches")
+        XCTAssertEqual(recent.label, "Recent search, sport")
+
+        recent.tap()
+        expect(app.element("search.field"), "value == 'sport'")
+        XCTAssertTrue(app.element("search.result.channel.0").waitForExistence(timeout: 5))
+    }
+
+    // movies-and-series-browsing/search-from-the-section
+    func testTheSearchButtonInMoviesOpensSearchSetToMovies() throws {
+        let app = try launch()
+        let tab = app.tabBars.buttons["Movies"]
+        XCTAssertTrue(tab.waitForExistence(timeout: 10))
+        tab.tap()
+        let button = app.element("movies.search")
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+
+        XCTAssertTrue(app.tabBars.buttons["Search"].isSelected)
+        let field = app.element("search.field")
+        expect(field, "hasKeyboardFocus == true")
+        field.typeText("harbor")
+        XCTAssertTrue(app.element("search.result.title.0").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.element("search.chip.movies").isSelected, "Search opens set to movies")
+        XCTAssertEqual(app.element("search.result.title.0").label, "Movies & series, The Long Harbor")
+        XCTAssertFalse(app.element("search.result.title.1").exists, "Harbor Watch is a series")
+    }
 }
