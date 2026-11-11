@@ -30,6 +30,9 @@
                     engine.continuesInPictureInPicture
                 }
                 lifecycle.start()
+                #if DEBUG
+                    UITestingShell.requestGuide(from: model)
+                #endif
                 self.model = model
                 self.lifecycle = lifecycle
             }

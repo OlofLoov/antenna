@@ -89,6 +89,16 @@ import Testing
         #expect(model.rowWindow.drawn(of: data.rows.count) == 3..<10)
     }
 
+    @Test("tv-guide-grid/open-at-a-programme-found-in-search the programme's half hour and row are in view, highlighted")
+    func openAtAProgramme() {
+        let data = data()
+        model.open(data, row: 8, start: at(21, day: 24))
+        #expect(model.windowStart == at(21, day: 24))
+        #expect(model.highlightedRow(data) == 8)
+        #expect(model.rowWindow.drawn(of: data.rows.count).contains(8))
+        #expect(model.area == .grid)
+    }
+
     @Test("tv-guide-grid/an-empty-group puts the highlight on the day list")
     func emptyGroup() {
         let data = data(rows: [])

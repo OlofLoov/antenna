@@ -35,7 +35,12 @@
             TimelineView(.everyMinute) { context in
                 screen(data(at: context.date), now: context.date)
             }
-            .task {
+            .task(id: shell.guideRequest) {
+                if let request = shell.guideRequest {
+                    shell.guideRequest = nil
+                    if open(at: request) { return }
+                }
+                guard !opened else { return }
                 let now = Date.now
                 let data = data(at: now)
                 model.open(data, playing: playingKey, now: now)
@@ -176,6 +181,24 @@
             case nil:
                 break
             }
+        }
+
+        /// Opens on the programme Search picked, switching the current group
+        /// to All channels when its channel is not in it
+        /// (tv-guide-grid/open-at-a-programme-found-in-search). False when no
+        /// channel has that guide.
+        private func open(at request: ProgrammeKey) -> Bool {
+            let matches = { (key: RowKey) in catalogue.channel(for: key).flatMap(GuideKey.init(channel:)) == request.guideKey }
+            if !catalogue.rows(in: group).contains(where: matches) {
+                guard catalogue.rows(in: .all).contains(where: matches) else { return false }
+                overlay.tuned(from: .all)
+            }
+            let data = data(at: .now)
+            guard let row = data.rows.firstIndex(where: matches) else { return false }
+            model.open(data, row: row, start: request.start)
+            opened = true
+            focus.wrappedValue = .content
+            return true
         }
 
         /// Menu on Watch: the highlight goes back to the grid and the guide stays.

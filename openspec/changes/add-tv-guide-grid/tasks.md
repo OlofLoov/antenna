@@ -23,9 +23,9 @@
 
 ## 4. Entry from Search
 
-- [ ] 4.1 Open at a programme picked in Search, switching to All channels when needed, and verify with a UI test citing `tv-guide-grid/open-at-a-programme-found-in-search`
+- [x] 4.1 Open at a programme picked in Search, switching to All channels when needed, and verify with a UI test citing `tv-guide-grid/open-at-a-programme-found-in-search`
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `tv-guide-grid/<requirement-slug>`
+- [x] 5.1 Each requirement has a test citing `tv-guide-grid/<requirement-slug>`
 - [ ] 5.2 `/opsx:verify` passes

@@ -76,7 +76,7 @@
         /// b1 offers seven days of catch-up; the others none.
         static func channel(_ id: String) -> Channel {
             Channel(
-                id: "fixture/\(id)", name: "Channel \(id)", streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"),
+                id: "fixture/\(id)", name: "Channel \(id)", streamURL: URL(fileURLWithPath: "/fixture/\(id).ts"), epgID: id,
                 hasCatchup: id == "b1", catchupDays: id == "b1" ? 7 : nil)
         }
     }
@@ -116,6 +116,22 @@
 
             /// Makes Channel a3's guide fail to load instead of loading empty.
             static let failedGuideArgument = "-ui-testing-guide-failed"
+
+            /// Opens the Guide at b1's Evening Film once a channel plays, as
+            /// picking it in Search will.
+            static let guideRequestArgument = "-ui-testing-guide-request"
+
+            /// With `-ui-testing-guide-request`, waits for the launch tune and
+            /// sends the shell to the Guide at b1's programme on now.
+            @MainActor
+            static func requestGuide(from model: ShellModel) {
+                guard scenario() != nil, ProcessInfo.processInfo.arguments.contains(guideRequestArgument) else { return }
+                Task {
+                    while model.tuned == nil { try? await Task.sleep(for: .milliseconds(100)) }
+                    let key = GuideKey(sourceID: xtreamID, epgID: "b1")
+                    await model.show(.guide(programmeKey: ProgrammeKey(guideKey: key, start: launched.addingTimeInterval(-1800))))
+                }
+            }
 
             /// Morning News on a1 and Evening Film on b1, from half an hour
             /// before launch to half an hour after.
