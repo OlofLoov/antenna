@@ -67,6 +67,7 @@
     struct LiveRegularView: View {
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
+        @Environment(ShelfActivity.self) private var activity
         @State private var section: LiveSection = .live
         /// Movies' or Series' rows or grid; picking a section resets it.
         @State private var browse = ShelfBrowse()
@@ -173,11 +174,12 @@
             }
         }
 
-        /// All movies or All series, then each genre with its count; the one
+        /// My list, All movies or All series, then each genre with its count; the one
         /// whose grid shows is filled
         /// (movies-and-series-browsing/browse-a-genre-or-sort-the-lot).
         @ViewBuilder private func genres(_ kind: ShelfTitle.Kind, _ columns: LiveColumns) -> some View {
             let model = shelves.model(kind)
+            genreRow(.myList, count: activity.myList(model).count, kind: kind)
             genreRow(.all, count: model.titles.count, kind: kind)
             ForEach(Shelf.genres(model.rows)) { genre in
                 genreRow(.genre(genre.name), count: genre.count, kind: kind)

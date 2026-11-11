@@ -3,11 +3,14 @@ import SwiftUI
 
 /// What a poster or the banner does, given by the screen that hosts the section.
 struct ShelfActions {
-    var play: (ShelfTitle) -> Void
-    var toggleMyList: (ShelfTitle) -> Void
-    var isOnMyList: (ShelfTitle) -> Bool
+    var play: @MainActor (ShelfTitle) -> Void
+    var toggleMyList: @MainActor (ShelfTitle) -> Void
+    var isOnMyList: @MainActor (ShelfTitle) -> Bool
 
-    static var none: ShelfActions { ShelfActions(play: { _ in }, toggleMyList: { _ in }, isOnMyList: { _ in false }) }
+    /// My list through `activity`; `play` is the screen's.
+    @MainActor static func with(_ activity: ShelfActivity, play: @escaping @MainActor (ShelfTitle) -> Void) -> ShelfActions {
+        ShelfActions(play: play, toggleMyList: { activity.toggleMyList($0) }, isOnMyList: { activity.isOnMyList($0) })
+    }
 }
 
 /// Shows the banner's title, moves on every eight seconds while nobody
@@ -79,25 +82,98 @@ struct ShelfBannerHost<Content: View>: View {
     }
 }
 
-/// Recently added and a row per category. Rows and their posters build as
-/// they scroll into view, so only visible posters load
+/// Continue watching and My list when they have titles, then Recently
+/// added and a row per category. Rows and their posters build as they
+/// scroll into view, so only visible posters load
 /// (movies-and-series-browsing/rows-in-a-predictable-order).
 struct ShelfRowsContent: View {
     let model: ShelfModel
     let actions: ShelfActions
+    /// Opens the Continue watching grid.
+    let seeAll: () -> Void
+    @Environment(ShelfLibrary.self) private var library
+    @Environment(ShelfActivity.self) private var activity
     @Environment(\.shelfPrefix) private var prefix
 
     var body: some View {
+        let watching = activity.continueWatching(library)
+        if !watching.isEmpty {
+            ShelfView.Row {
+                ShelfView.RowHeader(title: "Continue watching", count: nil) {
+                    ShelfView.SeeAllButton(open: seeAll)
+                }
+            } cards: {
+                ForEach(watching) { item in
+                    ShelfContinueCard(item: item, actions: actions)
+                }
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("\(prefix).row.continueWatching")
+        }
+        let listed = activity.myList(model)
+        if !listed.isEmpty {
+            ShelfView.Row {
+                ShelfView.RowHeader(title: "My list", count: ShelfText.titles(listed.count)) { EmptyView() }
+            } cards: {
+                ForEach(listed) { title in
+                    ShelfPoster(title: title, actions: actions)
+                }
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("\(prefix).row.myList")
+        }
         ForEach(model.rows) { row in
             ShelfView.Row {
                 ShelfView.RowHeader(title: row.name, count: ShelfText.titles(row.count)) { EmptyView() }
             } cards: {
                 ForEach(row.titles) { title in
-                    ShelfView.PosterCard(title: title, label: title.name) { actions.play(title) }
+                    ShelfPoster(title: title, actions: actions)
                 }
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
+        }
+    }
+}
+
+/// A poster that plays on select and offers My list in its menu, a long
+/// press on Apple TV (movies-and-series-browsing/keep-a-list-for-later).
+struct ShelfPoster: View {
+    let title: ShelfTitle
+    let actions: ShelfActions
+    @Environment(ShelfActivity.self) private var activity
+
+    var body: some View {
+        ShelfView.PosterCard(title: title, label: ShelfText.posterLabel(title, progress: activity.progress(of: title))) {
+            actions.play(title)
+        }
+        .contextMenu {
+            ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(title)) { actions.toggleMyList(title) }
+        }
+    }
+}
+
+/// A Continue watching card with its caption. A series' card loads its
+/// episode list once it shows, for the season and episode.
+struct ShelfContinueCard: View {
+    let item: ContinueWatching.Item
+    let actions: ShelfActions
+    @Environment(ShelfLibrary.self) private var library
+
+    var body: some View {
+        let episode = library.series.episodes[item.title.id]?.first { $0.id == item.progress.titleID }
+        let length = item.progress.knownDuration ?? 1
+        ShelfView.ProgressCard(
+            title: item.title, caption: ShelfText.continueCaption(item, episode: episode),
+            fraction: item.isNextEpisode ? 1 : item.progress.position / length
+        ) {
+            actions.play(item.title)
+        }
+        .contextMenu {
+            ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(item.title)) { actions.toggleMyList(item.title) }
+        }
+        .task(id: item.id) {
+            if item.title.kind == .series { await library.series.prefetchEpisodes(item.title) }
         }
     }
 }
