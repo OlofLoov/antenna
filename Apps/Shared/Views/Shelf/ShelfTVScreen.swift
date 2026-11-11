@@ -9,10 +9,14 @@
         let kind: ShelfTitle.Kind
         let focus: FocusState<ShellFocus?>.Binding
         @Environment(ShelfLibrary.self) private var library
+        @Environment(ShelfActivity.self) private var activity
 
         /// The grid open over the rows, a screen of its own that Menu closes.
         @State private var list: ShelfList?
         @State private var scrolled = false
+
+        /// Play arrives with task 4.1; My list goes through the activity.
+        private var actions: ShelfActions { .with(activity) { _ in } }
 
         var body: some View {
             let model = library.model(kind)
@@ -28,7 +32,7 @@
             .environment(\.shelfPrefix, kind.prefix)
             .task(id: kind) {
                 list = nil
-                model.open()
+                library.open()
             }
             // The loading holder had focus; once titles replace it, Play takes it.
             .onChange(of: model.status.showsTitles) { _, titles in
@@ -42,7 +46,7 @@
                 LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.tv.rowSpacing) {
                     switch model.status {
                     case .titles(let banner, let waiting):
-                        ShelfBannerHost(model: model, actions: .none) {
+                        ShelfBannerHost(model: model, actions: actions) {
                             ShelfBanner.Television {
                                 ShelfTVBannerButtons(focus: focus)
                             }
@@ -50,7 +54,7 @@
                         // Full bleed behind the tab bar.
                         .padding(.top, -Self.barHeight)
                         ShelfNotices(model: model, banner: banner, waiting: waiting)
-                        ShelfRowsContent(model: model, actions: .none)
+                        ShelfRowsContent(model: model, actions: actions) { list = .continueWatching }
                         genres(model)
                     case let status:
                         ShelfTVStatus(model: model, status: status, focus: focus)
@@ -78,12 +82,14 @@
         /// The tab bar's height; rows scroll to just under it.
         static let barHeight: CGFloat = 120
 
-        /// The Genres row after the last category (`TV-Movies-Rows`): All
-        /// movies, then a chip per genre.
+        /// The Genres row after the last category (`TV-Movies-Rows`): My list,
+        /// All movies, then a chip per genre.
         private func genres(_ model: ShelfModel) -> some View {
             VStack(alignment: .leading, spacing: ShelfView.Metrics.tv.headerSpacing) {
                 ShelfView.RowHeader(title: "Genres", count: nil) { EmptyView() }
                 ShelfGenreChips(model: model, selection: nil, select: { list = $0 }) {
+                    ShelfView.Chip(title: "My list", isSelected: false) { list = .myList }
+                        .accessibilityIdentifier("\(kind.prefix).genres.myList")
                     ShelfView.Chip(title: ShelfList.all.name(kind), isSelected: false) { list = .all }
                         .accessibilityIdentifier("\(kind.prefix).genres.all")
                 }
@@ -94,7 +100,7 @@
         /// to the rows (movies-and-series-browsing/browse-a-genre-or-sort-the-lot).
         private func grid(_ model: ShelfModel, _ list: ShelfList) -> some View {
             ScrollView {
-                ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: .none)
+                ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: actions)
                     .padding(.top, 128)
                     .padding(.bottom, 60)
             }

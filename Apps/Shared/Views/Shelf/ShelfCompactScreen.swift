@@ -9,10 +9,14 @@
     /// switch stays pinned on the ground color.
     struct ShelfCompactScreen: View {
         @Environment(ShelfLibrary.self) private var library
+        @Environment(ShelfActivity.self) private var activity
         @State private var kind: ShelfTitle.Kind = .movie
         @State private var pinned = false
         /// The grid in place of the rows; nil shows the rows.
         @State private var list: ShelfList?
+
+        /// Play arrives with task 4.1; My list goes through the activity.
+        private var actions: ShelfActions { .with(activity) { _ in } }
 
         var body: some View {
             let model = library.model(kind)
@@ -21,7 +25,7 @@
                     LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.phone.rowSpacing) {
                         switch model.status {
                         case .titles(let banner, let waiting):
-                            ShelfBannerHost(model: model, actions: .none) {
+                            ShelfBannerHost(model: model, actions: actions) {
                                 ShelfBanner.Phone {
                                     VStack(alignment: .leading, spacing: 2) {
                                         topBar
@@ -30,6 +34,8 @@
                                         ShelfGenreChips(model: model, selection: list, select: { list = $0 }) {
                                             ShelfView.Chip(title: "All", isSelected: list == nil) { list = nil }
                                                 .accessibilityIdentifier("\(kind.prefix).genres.all")
+                                            ShelfView.Chip(title: "My list", isSelected: list == .myList) { list = .myList }
+                                                .accessibilityIdentifier("\(kind.prefix).genres.myList")
                                         }
                                     }
                                     .padding(.top, proxy.safeAreaInsets.top)
@@ -37,9 +43,9 @@
                             }
                             ShelfNotices(model: model, banner: banner, waiting: waiting)
                             if let list {
-                                ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: .none)
+                                ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: actions)
                             } else {
-                                ShelfRowsContent(model: model, actions: .none)
+                                ShelfRowsContent(model: model, actions: actions) { list = .continueWatching }
                             }
                         case let status:
                             topBar.padding(.top, proxy.safeAreaInsets.top)
@@ -66,7 +72,7 @@
             .background(Palette.ground)
             .environment(\.shelfMetrics, .phone)
             .environment(\.shelfPrefix, kind.prefix)
-            .task(id: kind) { model.open() }
+            .task(id: kind) { library.open() }
         }
 
         private var topBar: some View {

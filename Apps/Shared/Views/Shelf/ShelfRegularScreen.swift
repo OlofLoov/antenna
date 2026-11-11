@@ -13,6 +13,10 @@
         /// The sidebar button while the sidebar is folded.
         @ViewBuilder var leading: Leading
         @Environment(ShelfLibrary.self) private var library
+        @Environment(ShelfActivity.self) private var activity
+
+        /// Play arrives with task 4.1; My list goes through the activity.
+        private var actions: ShelfActions { .with(activity) { _ in } }
 
         var body: some View {
             let model = library.model(kind)
@@ -31,15 +35,15 @@
                     LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.pad.rowSpacing) {
                         switch model.status {
                         case .titles(let banner, let waiting) where browse.list == nil:
-                            ShelfBannerHost(model: model, actions: .none) {
+                            ShelfBannerHost(model: model, actions: actions) {
                                 ShelfBanner.Pad()
                                     .padding(.horizontal, 24)
                             }
                             ShelfNotices(model: model, banner: banner, waiting: waiting)
-                            ShelfRowsContent(model: model, actions: .none)
+                            ShelfRowsContent(model: model, actions: actions) { browse.pick(.continueWatching) }
                         case .titles(let banner, let waiting) where browse.list != nil:
                             ShelfNotices(model: model, banner: banner, waiting: waiting)
-                            ShelfGridContent(model: model, list: browse.list ?? .all, sort: browse.sort, actions: .none)
+                            ShelfGridContent(model: model, list: browse.list ?? .all, sort: browse.sort, actions: actions)
                         case let status:
                             ShelfStatusContent(model: model, status: status)
                         }
@@ -51,7 +55,7 @@
             .background(Palette.ground)
             .environment(\.shelfMetrics, .pad)
             .environment(\.shelfPrefix, kind.prefix)
-            .task(id: kind) { model.open() }
+            .task(id: kind) { library.open() }
         }
 
         /// Recently added, Title or Year; the label reads the current order

@@ -3,16 +3,24 @@ import SwiftData
 import SwiftUI
 
 /// Feeds the Movies and Series library from the store and the system: the
-/// sources, and returns to the foreground. Applied once at the window root,
+/// sources, the current profile's progress and My list, and returns to the
+/// foreground. Applied once at the window root,
 /// above every layout.
 struct ShelfSync: ViewModifier {
     let library: ShelfLibrary
     @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var context
+    @Environment(\.currentProfile) private var profile
+    @State private var activity = ShelfActivity()
 
     func body(content: Content) -> some View {
         content
             .environment(library)
+            .environment(activity)
+            .task(id: profile) {
+                await activity.follow(ActivityStore(context: context, profile: profile))
+            }
             .environment(\.posterLoader, ShelfView.PosterLoader { await PosterCache.shared.poster(for: $0) })
             .task(id: records.compactMap(\.descriptor)) {
                 library.sourcesChanged(records.compactMap(\.descriptor))

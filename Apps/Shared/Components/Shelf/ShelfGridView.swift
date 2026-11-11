@@ -9,6 +9,9 @@ extension ShelfView {
     struct Grid<Cards: View>: View {
         let title: String
         let count: String
+        /// The width of a wide card, for a grid of Continue watching cards;
+        /// nil for posters.
+        var cardWidth: CGFloat?
         @ViewBuilder var cards: Cards
         @Environment(\.shelfMetrics) private var metrics
         @Environment(\.shelfPrefix) private var prefix
@@ -27,8 +30,8 @@ extension ShelfView {
         }
 
         private var columns: [GridItem] {
-            let size = metrics.poster.width
-            guard metrics != .pad else {
+            let size = cardWidth ?? metrics.poster.width
+            guard metrics != .pad, cardWidth == nil else {
                 return [GridItem(.adaptive(minimum: size, maximum: size), spacing: metrics.gap, alignment: .top)]
             }
             return Array(repeating: GridItem(.fixed(size), spacing: metrics.gap, alignment: .top), count: metrics.columns)

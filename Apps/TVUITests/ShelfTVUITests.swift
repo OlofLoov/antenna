@@ -86,25 +86,40 @@ final class ShelfTVUITests: XCTestCase {
         XCTAssertEqual(element("movies.hero.title").label, "Night Ferry")
         press(.right, times: 2)
         expectFocus("movies.hero.myList")
-        press(.right)
-        expect(pager, "value == '2 of 3'")
+        page(.right, pager, to: "2 of 3")
         XCTAssertEqual(element("movies.hero.title").label, "Snow Day")
         press(.left, times: 2)
         expectFocus("movies.hero.play")
-        press(.left)
-        expect(pager, "value == '1 of 3'")
-        press(.left)
-        expect(pager, "value == '3 of 3'", timeout: 5)
+        page(.left, pager, to: "1 of 3")
+        page(.left, pager, to: "3 of 3")
+    }
+
+    /// Presses `button` until the pager reads `value`, at most twice: tvOS
+    /// can drop a press while the banner settles, and a press that landed
+    /// changes the value, so this never pages twice.
+    func page(_ button: XCUIRemote.Button, _ pager: XCUIElement, to value: String, file: StaticString = #filePath, line: UInt = #line) {
+        press(button)
+        let paged = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", value), object: pager)
+        if XCTWaiter().wait(for: [paged], timeout: 3) == .completed { return }
+        press(button)
+        expect(pager, "value == '\(value)'", file: file, line: line)
     }
 
     // movies-and-series-browsing/browse-a-genre-or-sort-the-lot, on Apple TV
     func testAGenreOpensItsOwnScreenThatMenuCloses() {
         openMovies()
-        let all = element("movies.genres.all")
-        for _ in 0..<8 where !(all.exists && all.hasFocus) {
+        let chips = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'movies.genres.' AND hasFocus == true"))
+        for _ in 0..<10 where !chips.firstMatch.exists {
             press(.down)
-            Thread.sleep(forTimeInterval: 0.7)
+            Thread.sleep(forTimeInterval: 1)
         }
+        let first = element("movies.genres.myList")
+        for _ in 0..<4 where !first.hasFocus {
+            press(.left)
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        expectFocus("movies.genres.myList")
+        press(.right)
         expectFocus("movies.genres.all")
         press(.right)
         expectFocus("movies.genres.drama")
@@ -118,5 +133,20 @@ final class ShelfTVUITests: XCTestCase {
         expect(grid, "exists == false")
         expectFocus("movies.hero.play")
         XCTAssertTrue(element("shell.tab.movies").isSelected)
+    }
+
+    // movies-and-series-browsing/keep-a-list-for-later, on Apple TV
+    func testTheBannerAddsToMyList() {
+        openMovies()
+        press(.right, times: 2)
+        expectFocus("movies.hero.myList")
+        let button = element("movies.hero.myList")
+        expect(button, "value == 'Not on My list'")
+        press(.select)
+        expect(button, "value == 'On My list'")
+        XCTAssertTrue(element("movies.row.myList").waitForExistence(timeout: 5))
+        press(.select)
+        expect(button, "value == 'Not on My list'")
+        expect(element("movies.row.myList"), "exists == false")
     }
 }
