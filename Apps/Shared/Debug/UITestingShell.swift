@@ -166,12 +166,11 @@
                 guard let scenario = scenario() else { return nil }
                 let engine = Engine(failing: scenario == .failing)
                 let script = Script(scenario: scenario)
-                let defaults = UserDefaults(suiteName: "ui-testing-shell") ?? .standard
-                defaults.removePersistentDomain(forName: "ui-testing-shell")
+                let store = UITestingRecents.store { $0.hasPrefix("b") ? xtreamID : playlistID }
                 // `UITESTING_LAST_CHANNEL=b1` makes Cabin's channel the one the launch tunes.
                 let cabinFirst = Channel.tagged([channel("b1")], sourceID: xtreamID).first.flatMap { LastChannelKey($0) }
                 if ProcessInfo.processInfo.environment["UITESTING_LAST_CHANNEL"] == "b1", let cabinFirst {
-                    RecentsStore(defaults: defaults).write(cabinFirst)
+                    store.write(cabinFirst)
                 }
                 let credentials = MemoryCredentials()
                 var cabinLoaded = false
@@ -189,12 +188,13 @@
                         // plays, until the sign-in step stores one.
                         return (try? credentials.load(for: source.credentialKey ?? "")) != nil
                     },
-                    recents: RecentsStore(defaults: defaults),
+                    recents: store,
                     sleep: { try await Task.sleep(for: $0) },
                     guide: nil,
                     credentials: credentials,
                     network: UITestingPlayback.network,
-                    slowDelay: UITestingPlayback.slowDelay)
+                    slowDelay: UITestingPlayback.slowDelay,
+                    watchSleep: UITestingRecents.sleep)
             }
 
             /// Logins the sign-in step stores, kept in memory, never in the Keychain.

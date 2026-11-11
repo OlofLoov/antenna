@@ -137,6 +137,8 @@
             dependencies.touchHold = .seconds(environment[controlsVariable].flatMap(Double.init) ?? 60)
             dependencies.network = UITestingPlayback.network
             dependencies.slowDelay = UITestingPlayback.slowDelay
+            dependencies.recents = UITestingRecents.store { id in cabin.contains { $0.id == "fixture/\(id)" } ? cabinID : homeID }
+            dependencies.sleep = UITestingRecents.sleep
             return dependencies
         }
 

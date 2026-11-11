@@ -95,7 +95,10 @@
         }
 
         /// A channel was tuned from `group`; the next open starts there.
+        /// Recents never becomes the current group
+        /// (session-restore-and-recently-watched/playing-from-recents-keeps-your-group-on-apple-tv).
         func tuned(from group: CatalogueGroup) {
+            guard group != .recents else { return }
             lastTuned = group
         }
 

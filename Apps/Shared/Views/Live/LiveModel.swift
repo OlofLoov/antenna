@@ -70,9 +70,9 @@ final class LiveModel {
 
     private(set) var sources: [LiveSource] = []
     private(set) var channels: [Channel] = []
-    private(set) var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+    var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
     /// The group whose channels the list shows.
-    private(set) var group: CatalogueGroup = .all
+    var group: CatalogueGroup = .all
     /// What the user typed into the filter field on iPad and Mac.
     var filter = ""
     /// The filter field has the keyboard, so single-key shortcuts stay off.
@@ -111,6 +111,10 @@ final class LiveModel {
     @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
     @ObservationIgnored private var failures: [UUID: String] = [:]
     @ObservationIgnored private var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
+    /// The recents the catalogue lists. While Recents is on screen a newer
+    /// list waits in `latestRecents` (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
+    @ObservationIgnored var shownRecents: [LastChannelKey] = []
+    @ObservationIgnored var latestRecents: [LastChannelKey] = []
     @ObservationIgnored private var tuning: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
     @ObservationIgnored private var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
@@ -124,10 +128,13 @@ final class LiveModel {
         programmes = dependencies.programmes
         languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
         session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
+        latestRecents = dependencies.recents.recents.entries
+        shownRecents = latestRecents
         player = PlayerModel(
             .init(
                 engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay,
                 pictureInPicture: dependencies.pictureInPicture))
+        session.recorded = { [weak self] list in self?.recentsChanged(list.entries) }
         player.reload = { [weak self] channel in self?.load(channel) }
         player.hasLogin = { [weak self] id in
             guard let self, let source = descriptors[id] else { return false }
@@ -167,13 +174,6 @@ final class LiveModel {
         if list.isEmpty, playing != nil { stop() }
         rebuild()
         changed.forEach(startLoad)
-    }
-
-    /// A source was deleted, here or on another device, and its channels
-    /// left the stored recents (session-restore-and-recently-watched/deleting-a-source-clears-its-channels).
-    /// Its channel playing now stops counting as watched.
-    func sourceDeleted(_ id: UUID) {
-        session.remove(source: id)
     }
 
     /// Loads again every source that added nothing. The playing channel plays on.
@@ -282,7 +282,7 @@ final class LiveModel {
         error = sources.last { failures[$0.id] != nil }.flatMap { failures[$0.id] }
         guard all != channels else { return }
         channels = all
-        catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites)
+        catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents)
         names = ChannelNameIndex(catalogue)
         if !catalogue.groups.contains(group) { group = .all }
     }
@@ -294,12 +294,6 @@ final class LiveModel {
         guard snapshots != favorites else { return }
         favorites = snapshots
         catalogue = catalogue.replacingFavorites(snapshots)
-    }
-
-    /// Shows `group`'s channels and clears the filter. The playing channel plays on.
-    func show(_ group: CatalogueGroup) {
-        self.group = group
-        filter = ""
     }
 
     /// The open group's rows in catalogue order, narrowed by the filter
@@ -469,33 +463,5 @@ extension LiveModel.Dependencies {
             programmes: .store(guide),
             languages: ChannelLanguageStore(profile: profile),
             recents: RecentsStore(profile: profile))
-    }
-}
-
-/// When the player controls go away
-/// (live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them).
-enum ControlsTimer {
-    /// What last kept the controls up.
-    enum Input: Equatable {
-        /// A tap, a click or a press on one of the controls.
-        case touch
-        /// The pointer moved over the picture.
-        case pointerInside
-        /// The pointer left the picture.
-        case pointerLeft
-    }
-
-    /// How long a tap keeps the controls up while playing.
-    static let touchHold = Duration.seconds(3)
-
-    /// How long after `input` the controls hide, or nil while they stay:
-    /// paused, or with the pointer over the picture.
-    static func delay(after input: Input, isPaused: Bool, touchHold: Duration = touchHold) -> Duration? {
-        guard !isPaused else { return nil }
-        switch input {
-        case .touch: return touchHold
-        case .pointerInside: return nil
-        case .pointerLeft: return .seconds(1)
-        }
     }
 }

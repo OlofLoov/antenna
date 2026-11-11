@@ -79,6 +79,7 @@
                             live.show(group)
                         }
                         .id(group)
+                        .groupSpokenLabel(group, count: live.catalogue.count(of: group))
                         .accessibilityIdentifier("browse.group.\(index)")
                     }
                 }
