@@ -21,13 +21,14 @@ extension DemuxEngine {
         generation += 1
         let mine = generation
         let playing = state == .playing || state == .buffering
+        let origin = current?.start?.origin
         release()
         if playing { set(.buffering) }
         var options = request.options
         options.startPosition = time
         log("demux seek \(redacted(request.url)) to \(Int(time.inSeconds))s")
         do {
-            try await open(request.url, options: options, generation: mine)
+            try await open(request.url, options: options, origin: origin, generation: mine)
             // Where the reopened film starts, so a skip that lands elsewhere shows in the log.
             if let landed = current?.start.map({ CMTimeSubtract($0.startTime, $0.origin).seconds }) {
                 log("demux seek \(redacted(request.url)) ready at \(String(format: "%.1f", landed))s")

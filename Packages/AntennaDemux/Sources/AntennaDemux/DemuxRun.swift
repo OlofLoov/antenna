@@ -36,6 +36,11 @@ final class DemuxRun: @unchecked Sendable {
 
     /// Where a film starts, counted from its beginning; nil from the start.
     private var startAt: CMTime?
+    /// The film's zero point from an earlier run of the same film, so a
+    /// skip counts from where the film's first run started.
+    private var knownOrigin: CMTime?
+    /// The zero point `startAt` was counted from, once the skip is made.
+    private var seekedOrigin: CMTime?
 
     /// How much of each sound stream is kept for a switch.
     static let soundRing = CMTime(value: 10, timescale: 1)
@@ -91,11 +96,13 @@ final class DemuxRun: @unchecked Sendable {
         rateFound: @escaping @Sendable (Double) -> Void = { _ in },
         waitsForSound: Bool = true,
         startAt: CMTime? = nil,
+        origin: CMTime? = nil,
         options: PlaybackOptions = PlaybackOptions(),
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
         self.rateFound = rateFound
         self.startAt = startAt
+        knownOrigin = origin
         self.waitsForSound = waitsForSound
         self.options = options
         let answer = Once(ready)
@@ -139,7 +146,12 @@ final class DemuxRun: @unchecked Sendable {
         // A saved time within a film that can skip: start at the keyframe
         // before it. Otherwise the film starts at the beginning.
         if let startAt, bytes.canSeek, let length = prepared.demuxer.duration, startAt < length {
-            if !prepared.demuxer.seek(to: startAt) { seekFailed?() }
+            let origin = knownOrigin ?? prepared.demuxer.seekOrigin
+            if prepared.demuxer.seek(to: startAt, from: origin) {
+                seekedOrigin = origin
+            } else {
+                seekFailed?()
+            }
         }
         let announced = pump(prepared, ready: ready)
         guard !isCancelled else { return }
@@ -349,6 +361,15 @@ final class DemuxRun: @unchecked Sendable {
         return audioFeed.push(buffer)
     }
 
+    /// A film counts from the container's start time, or from the zero point
+    /// a skip was counted from; otherwise from the first frame. Counting a
+    /// skipped film from its first frame would put its position back at zero.
+    private func origin(_ prepared: Prepared, firstFrame: CMTime) -> CMTime {
+        guard prepared.demuxer.duration != nil else { return firstFrame }
+        if prepared.demuxer.startTime.isNumeric { return prepared.demuxer.startTime }
+        return seekedOrigin ?? knownOrigin ?? firstFrame
+    }
+
     private func describe(_ prepared: Prepared, startTime: CMTime, frameTimes: [Double], interlaced: Bool) -> DemuxStart {
         let picture = prepared.video?.formatDescription.map(CMVideoFormatDescriptionGetDimensions)
         let builder = prepared.audio.flatMap { prepared.sounds[$0.stream.index] }
@@ -359,7 +380,7 @@ final class DemuxRun: @unchecked Sendable {
             pictureSize: picture, dynamicRange: prepared.video?.formatDescription.map(SampleBuilder.dynamicRange) ?? .sdr,
             frameRate: prepared.video.flatMap { $0.stream.frameRate ?? FrameRate.estimate(presentationTimes: frameTimes) },
             videoFormat: prepared.video?.formatDescription, isInterlaced: interlaced,
-            origin: prepared.demuxer.duration != nil && prepared.demuxer.startTime.isNumeric ? prepared.demuxer.startTime : startTime,
+            origin: origin(prepared, firstFrame: startTime),
             canSeek: bytes.canSeek && prepared.demuxer.duration != nil,
             soundChannels: builder.flatMap(Self.channels) ?? prepared.audio?.stream.channels ?? 0,
             soundDecodable: prepared.audio == nil || builder != nil,

@@ -16,8 +16,11 @@ import Testing
         try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(startPosition: .seconds(3)))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
-        #expect(await eventually { (position.values.last?.time ?? .zero) > .seconds(2) })
-        #expect(abs((position.values.last?.time ?? .zero).inSeconds - 3) < 1.2)
+        #expect(await eventually { position.values.contains { $0.duration != nil } })
+        // The film's first position, not a later one: counted from the
+        // landing it would read zero.
+        let first = position.values.first { $0.duration != nil }?.time.inSeconds ?? 0
+        #expect(abs(first - 3) < 1.2)
         position.cancel()
         await harness.stop()
     }
@@ -42,14 +45,7 @@ import Testing
         try await harness.engine.load(harness.url("channel.mkv"))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
-        try await harness.engine.seek(to: .seconds(4))
-        #expect(await eventually { harness.engine.state == .playing })
-        // A slow runner can take seconds to answer the range requests a skip makes.
-        let landed = await eventually(timeout: .seconds(20)) { (position.values.last?.time ?? .zero) > .seconds(3) }
-        #expect(
-            landed,
-            "state \(harness.engine.state), positions \(position.values.suffix(10).map { $0.time.inSeconds }), log \(harness.lines.values)")
-        #expect(abs((position.values.last?.time ?? .zero).inSeconds - 4) < 1.2)
+        try await expectSkipLands(harness, position)
         try await harness.engine.seek(to: .seconds(30))
         #expect(harness.engine.state == .ended)
         let asked = await harness.server.requests(for: "/channel.mkv").count
@@ -58,6 +54,32 @@ import Testing
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
         #expect((position.values.last?.time ?? .seconds(99)) < .seconds(1.5))
+        position.cancel()
+        await harness.stop()
+    }
+
+    /// Skips to 4s and expects the first position after it near 4s: the
+    /// keyframe at or before it, counted from the film's start.
+    private func expectSkipLands(_ harness: FilmHarness, _ position: Recorded<PlaybackPosition>) async throws {
+        let before = position.values.count
+        try await harness.engine.seek(to: .seconds(4))
+        // A slow runner can take seconds to answer the range requests a skip makes.
+        let film = { position.values.dropFirst(before).first { $0.duration != nil } }
+        #expect(await eventually(timeout: .seconds(20)) { film() != nil })
+        let landed = film()?.time.inSeconds ?? 0
+        #expect(
+            abs(landed - 4) < 1.2,
+            "landed \(landed), state \(harness.engine.state), log \(harness.lines.values)")
+    }
+
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film with no index still lands where asked")
+    func skipWithoutIndex() async throws {
+        let harness = try await FilmHarness()
+        let position = Recorded(await harness.engine.position())
+        try await harness.engine.load(harness.url("film-no-index.mkv"))
+        await harness.engine.play()
+        #expect(await eventually { harness.engine.state == .playing })
+        try await expectSkipLands(harness, position)
         position.cancel()
         await harness.stop()
     }
