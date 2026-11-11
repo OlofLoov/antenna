@@ -79,6 +79,18 @@ Eight identity colors in order: `#5BB8FF`, `#FFB454`, `#4FD1C5`, `#C084FC`, `#F8
 - [Fixed id for Main] → the id is a constant, never derived from a user or device, so it carries nothing personal.
 - [Every per-person query gains a filter] → covered by tests per screen; the filter lives in one place in `ProfileStore`.
 
+## Implementation decisions
+
+Made while building the iPhone, iPad and Mac screens and the Settings row, without the user available. Each can be revisited in review.
+
+- **Switching from Settings.** With two or more profiles the Profiles row stops playback and goes back to "Who's watching?", as the Apple TV tab bar button does. Manage profiles is one tap from there. With one profile the row reads "Add a profile" and opens Manage profiles directly. The other option, a list of profiles in Settings with a checkmark, would be a second picker with its own board.
+- **The open tab after a switch.** Switching rebuilds the tabs for the new profile, so iPhone, iPad and Mac open on Live. This answers the open question; keeping the tab would mean carrying tab state across the profile boundary for little gain.
+- **Manage profiles on iPhone, iPad and Mac.** Not drawn. It is a sheet with a list: each profile's color, initial and name, then Add profile while there is room, the eight-profile line as the section footer, and Done in the bar. A row opens the edit sheet, as a tile does on Apple TV. Rows keep `profiles.tile.<index>`, labelled "Edit <name>".
+- **Edit sheet copy.** The title is "Edit profile" or "Add profile" and the button "Delete profile", in the sentence case of the copy above rather than the board's title case. The color dots are 36 pt inside 44 pt targets.
+- **Picker layout.** Two columns on iPhone, iPad and Mac (`iPhone-Profiles`), one row on Apple TV, from the same `ProfilePicker`.
+- **Playback stops before the picker.** `RootView` and the Apple TV Settings cover wrap `switchProfile` so the engine stops first; the profile gate then drops the screens for the old profile.
+- **Two-device sync (task 5.3).** Needs two devices on one iCloud account; the simulators do not sync CloudKit. Left open until it is checked by hand.
+
 ## Open Questions
 
-- Should switching profile on iPhone keep the open tab, or go back to Live? Can be decided during implementation; the spec only asks that the new profile's data shows.
+- None left. Switching profile on iPhone opens on Live; see Implementation decisions.
