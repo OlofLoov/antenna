@@ -2,9 +2,9 @@ import AntennaCore
 import SwiftUI
 
 /// A title page over its section (title-detail-and-episode-picker). Loads
-/// the details while it shows, says what Play and My list do, and closes
-/// when the user goes back or the title's source is deleted. The host
-/// screen picks the arrangement with `page`.
+/// the details while it shows, says what Play, My list and each episode do,
+/// and closes when the user goes back or the title's source is deleted. The
+/// host screen picks the arrangement with `page`.
 struct TitleScreen<Page: View>: View {
     let route: TitleRoute
     @ViewBuilder var page: Page
@@ -20,6 +20,7 @@ struct TitleScreen<Page: View>: View {
     var body: some View {
         page
             .environment(\.titlePage, context)
+            .environment(\.episodes, route.title.kind == .series ? episodes : nil)
             .task(id: attempt) { await model.load() }
             .onChange(of: model.sourceExists) { _, exists in
                 // A deleted source closes the page (title-detail-and-episode-picker/open-a-movie-s-page).
@@ -30,6 +31,8 @@ struct TitleScreen<Page: View>: View {
                 .sheet(isPresented: $expanded) {
                     PlotSheet(name: model.metadata.name, text: model.metadata.description ?? "")
                 }
+            #else
+                .background { keys }
             #endif
     }
 
@@ -55,17 +58,83 @@ struct TitleScreen<Page: View>: View {
         #endif
     }
 
+    /// A movie's failure shows under the buttons; a series' shows in place of its episodes.
     private var problem: String? {
-        guard case .failed(let problem) = model.phase else { return nil }
-        return problem.message(route.title.kind)
+        guard route.title.kind == .movie, case .failed(let problem) = model.phase else { return nil }
+        return problem.message(.movie)
     }
+
+    // MARK: Episodes
+
+    private var episodes: EpisodesContext {
+        let groups = model.groups
+        let target = target
+        let picked =
+            model.pickedSeason ?? target.flatMap { target in groups.first { $0.episodes.contains(target.episode) }?.id }
+            ?? groups.first?.id
+        let progress = seriesProgress
+        let rows = (groups.first { $0.id == picked }?.episodes ?? []).map { episode in
+            let saved = progress[episode.id]
+            let upNext = target?.episode.id == episode.id
+            return EpisodesContext.Row(
+                episode: episode, status: EpisodeText.status(episode, progress: saved), fraction: EpisodeText.fraction(saved),
+                upNext: upNext, label: EpisodeText.accessibilityLabel(episode, progress: saved, upNext: upNext))
+        }
+        let phase: EpisodesContext.Phase =
+            switch model.phase {
+            case .loading: .loading
+            case .failed(let problem): .failed(problem.message(.series))
+            case .loaded: groups.isEmpty ? .empty : .episodes
+            }
+        return EpisodesContext(
+            state: .init(
+                seasons: groups.map { .init(id: $0.id, title: $0.title, count: $0.countLabel) }, picked: picked, rows: rows, phase: phase,
+                skipped: model.phase == .loaded ? EpisodeText.skipped(model.skipped) : nil, dwell: dwell),
+            actions: .init(pick: { model.pickedSeason = $0 }, play: playEpisode, retry: { attempt += 1 }))
+    }
+
+    /// On Apple TV a season shows after focus rests on its chip for 300 ms.
+    private var dwell: Duration? {
+        #if os(tvOS)
+            .milliseconds(300)
+        #else
+            nil
+        #endif
+    }
+
+    /// The picked season moved by `steps`, for the arrow keys.
+    private func moveSeason(_ steps: Int) {
+        let ids = model.groups.map(\.id)
+        guard let current = episodes.state.picked, let index = ids.firstIndex(of: current) else { return }
+        model.pickedSeason = ids[min(max(0, index + steps), ids.count - 1)]
+    }
+
+    #if !os(tvOS)
+        /// Left and right pick the season before or after, Return presses Play.
+        private var keys: some View {
+            ZStack {
+                Button("Previous season") { moveSeason(-1) }
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+                Button("Next season") { moveSeason(1) }
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+                Button("Play") { start() }
+                    .keyboardShortcut(.return, modifiers: [])
+            }
+            .opacity(0)
+            .accessibilityHidden(true)
+        }
+    #endif
 
     // MARK: Play
 
+    /// The series' saved positions by episode id.
+    private var seriesProgress: [String: WatchProgress] {
+        ContinueWatching.episodeProgress(activity.progress, seriesID: route.title.id, sourceID: route.title.sourceID)
+    }
+
     /// The episode Play starts, for a series once its episodes are in.
     private var target: SeriesPlayTarget? {
-        let progress = ContinueWatching.episodeProgress(activity.progress, seriesID: route.title.id, sourceID: route.title.sourceID)
-        return SeriesPlayTarget.resolve(episodes: model.episodes, progress: progress)
+        SeriesPlayTarget.resolve(episodes: model.episodes, progress: seriesProgress)
     }
 
     private var play: TitlePageContext.PlayState {
@@ -78,14 +147,10 @@ struct TitleScreen<Page: View>: View {
             )
         case .series:
             guard let target else { return .init(label: PlayLabel.text(resumes: false), enabled: false) }
-            let saved = target.resumes ? episodeProgress(target.episode) : nil
+            let saved = target.resumes ? seriesProgress[target.episode.id] : nil
             return .init(
                 label: target.label, enabled: true, fraction: saved.flatMap(EpisodeText.fraction), remaining: saved.flatMap(ShelfText.left))
         }
-    }
-
-    private func episodeProgress(_ episode: Episode) -> WatchProgress? {
-        activity.progress.first { $0.titleID == episode.id && $0.sourceID == route.title.sourceID }
     }
 
     /// Plays the movie or the episode Play names. Without the login on this
@@ -99,6 +164,15 @@ struct TitleScreen<Page: View>: View {
             guard let target else { return }
             playback.play(target.episode, of: route.title, from: target.position, library: library, activity: activity)
         }
+    }
+
+    /// Plays an episode from where the user stopped, with its season kept
+    /// for the return (title-detail-and-episode-picker/play-an-episode-and-come-back).
+    private func playEpisode(_ episode: Episode) {
+        guard model.checkLogin() else { return }
+        model.pickedSeason = model.groups.first { $0.episodes.contains(episode) }?.id
+        let from = seriesProgress[episode.id]?.resumePosition ?? 0
+        playback.play(episode, of: route.title, from: from, library: library, activity: activity)
     }
 }
 

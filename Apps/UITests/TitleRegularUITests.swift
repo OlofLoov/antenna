@@ -56,4 +56,24 @@ final class TitleRegularUITests: XCTestCase {
         XCTAssertEqual(app.element("title.name").label, "Harbor Watch")
         XCTAssertEqual(app.element("title.back").label, "Back to Series")
     }
+
+    // title-detail-and-episode-picker/pick-a-season, by the arrow keys
+    func testTheArrowKeysPickTheSeason() throws {
+        let app = try launch()
+        app.element("browse.section.series").tap()
+        let poster = app.element("series.card.xtream#cabin#series#1")
+        XCTAssertTrue(poster.waitForExistence(timeout: 10))
+        poster.tap()
+        let first = app.element("episodes.season.season-1")
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(first.isSelected)
+        for _ in 0..<3 where !app.element("episodes.season.season-2").isSelected {
+            // The simulator sometimes drops the first key press.
+            app.typeKey(.rightArrow, modifierFlags: [])
+        }
+        expect(app.element("episodes.season.season-2"), "isSelected == true")
+        XCTAssertTrue(app.element("episodes.row.xtream#cabin#episode#11").exists)
+        app.typeKey(.leftArrow, modifierFlags: [])
+        expect(app.element("episodes.season.season-1"), "isSelected == true")
+    }
 }

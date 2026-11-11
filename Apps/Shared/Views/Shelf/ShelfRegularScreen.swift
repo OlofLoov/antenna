@@ -33,7 +33,7 @@
                 if let page {
                     // The page replaces the content column; the sidebar stays.
                     TitleScreen(route: page) {
-                        TitlePage.Pad(plotLines: page.title.kind == .movie ? 5 : 2) { EmptyView() }
+                        TitlePage.Pad(plotLines: page.title.kind == .movie ? 5 : 2) { EpisodePicker.Section(type: .pad) }
                     }
                     .environment(\.shelfMetrics, .pad)
                     .environment(\.shelfPrefix, kind.prefix)

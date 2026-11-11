@@ -32,7 +32,7 @@
                     .disabled(page != nil)
                 if let page {
                     TitleScreen(route: page) {
-                        TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EmptyView() }
+                        TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EpisodePicker.Section(type: .phone) }
                     }
                     .simultaneousGesture(edgeSwipe)
                     .environment(\.shelfMetrics, .phone)
