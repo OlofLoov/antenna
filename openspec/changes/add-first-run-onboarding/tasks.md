@@ -8,11 +8,11 @@
 
 ## 2. Add-source form and connect
 
-- [ ] 2.1 Build the provider type picker and fields on tvOS and the shared sheet, with Stalker shown but disabled, and verify against the onboarding boards
-- [ ] 2.2 Validate through the `source-management` rules before any network call and verify with an integration test citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting`
-- [ ] 2.3 Map rejected login, inactive account, server error, unreadable reply, unreachable and offline to their messages, keep the fields, save nothing, and verify with an integration test citing `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
-- [ ] 2.4 Save or reuse the provider and store its password in the Keychain, and verify with an integration test citing `first-run-onboarding/a-working-provider-is-saved-once`
-- [ ] 2.5 Detect a copied link without reading the pasteboard, read it only on Fill in, route it to Xtream or playlist fields, show no banner on macOS, and verify with an integration test citing `first-run-onboarding/fill-the-form-from-a-copied-link`
+- [x] 2.1 Build the provider type picker and fields on tvOS and the shared sheet, with Stalker shown but disabled, and verify against the onboarding boards
+- [x] 2.2 Validate through the `source-management` rules before any network call and verify with an integration test citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting`
+- [x] 2.3 Map rejected login, inactive account, server error, unreadable reply, unreachable and offline to their messages, keep the fields, save nothing, and verify with an integration test citing `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
+- [x] 2.4 Save or reuse the provider and store its password in the Keychain, and verify with an integration test citing `first-run-onboarding/a-working-provider-is-saved-once`
+- [x] 2.5 Detect a copied link without reading the pasteboard, read it only on Fill in, route it to Xtream or playlist fields, show no banner on macOS, and verify with an integration test citing `first-run-onboarding/fill-the-form-from-a-copied-link`
 
 ## 3. Loading checklist and summary
 

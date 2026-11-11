@@ -109,3 +109,12 @@ The title is "Sign in on this Apple TV". Server is filled from the record with t
 - iPad and Mac show the iPhone welcome at most 520 pt wide, centered in the window, not a separate board.
 - "What is a source?" is a sheet on iPhone, iPad and Mac and a full-screen cover on Apple TV, closed by Done.
 - `-ui-testing-onboarding signedIn|signedOut` launches a Debug build on an empty in-memory store with the iCloud state scripted.
+- The form rules, the failure sentences and the copied-link parsing are in AntennaCore (`SourceFields`, `ConnectFailure`, `CopiedLink`, `SourceLink`). `SourceConnector` in the app makes the one request and saves through `NewSource.save`, the path the Settings sheet uses.
+- The form checks that the server, username and password are filled in before Connect. The `source-management` save path still stores blank values as typed, so the "Blank username or password" scenario holds for that path and not for this form.
+- A provider counts as the same when its type matches and its link matches after dropping spaces and one trailing slash and lower-casing the scheme and host. A reused Xtream source gets the typed login written under its credential key, and a key is set on a record that synced without one.
+- A Keychain item counts as written by this Connect only when none existed under that key before. Back from an empty provider deletes only such an item, so a login that synced from another device stays.
+- A playlist answering 401 or 403 shows the server error message, because a playlist link has no login to reject.
+- Fill in takes only a single http or https link. A provider message with text around the link counts as no link, which answers the open question for now.
+- Apple TV moves through the steps in a `NavigationStack`, so Menu goes back one step and leaving the form cancels a running Connect. The boards' "Back" label and step dots are not drawn on Apple TV, since Menu is the way back. iPhone, iPad and Mac show the form in a sheet with Back in the navigation bar.
+- The show-password control is on iPhone, iPad and Mac only. Apple TV uses the system secure field and its full-screen keyboard.
+- `-ui-testing-clipboard <text>` stands in for the pasteboard in UI tests.

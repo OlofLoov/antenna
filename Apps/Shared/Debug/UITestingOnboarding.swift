@@ -34,6 +34,18 @@
             }
         }
 
+        static let clipboardArgument = "-ui-testing-clipboard"
+
+        /// `-ui-testing-clipboard <text>` stands in for the pasteboard with
+        /// `text` on it; an empty value is a clipboard without a link. Nil
+        /// when the argument is absent.
+        @MainActor static func clipboard(arguments: [String] = ProcessInfo.processInfo.arguments) -> Clipboard? {
+            guard let index = arguments.firstIndex(of: clipboardArgument) else { return nil }
+            let next = arguments.index(after: index)
+            let text = next < arguments.endIndex ? arguments[next] : ""
+            return Clipboard(hasLink: { !text.isEmpty }, read: { text })
+        }
+
         /// The scripted iCloud state, or nil outside these tests.
         static func signedInToICloud() -> Bool? {
             scenario().map { $0 == .signedIn }
