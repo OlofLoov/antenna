@@ -21,10 +21,14 @@ struct RecentsStore: Sendable {
         self.profile = profile
     }
 
-    /// A store outside the app's own values, for tests and previews.
-    static var scratch: RecentsStore {
-        RecentsStore(defaults: UserDefaults(suiteName: "antenna.scratch") ?? .standard)
-    }
+    /// A store outside the app's own values for tests and previews, empty
+    /// at each launch.
+    static let scratch: RecentsStore = {
+        let suite = "antenna.scratch"
+        let defaults = UserDefaults(suiteName: suite) ?? .standard
+        defaults.removePersistentDomain(forName: suite)
+        return RecentsStore(defaults: defaults)
+    }()
 
     // MARK: Last channel
 
@@ -42,6 +46,9 @@ struct RecentsStore: Sendable {
     func write(_ channel: LastChannelKey) {
         guard LastChannelKey.canStore(channel.channelID), let data = try? JSONEncoder().encode(channel) else { return }
         defaults.set(data, forKey: key(Self.lastChannelKey))
+        #if DEBUG
+            UITestingRecents.mirror(channel)
+        #endif
     }
 
     // MARK: Recents
@@ -56,6 +63,9 @@ struct RecentsStore: Sendable {
         var list = recents
         list.record(channel)
         defaults.set(list.data, forKey: key(Self.listKey))
+        #if DEBUG
+            UITestingRecents.mirror(list)
+        #endif
         return list
     }
 

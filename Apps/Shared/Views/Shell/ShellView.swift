@@ -54,21 +54,6 @@
         }
     }
 
-    extension ShellModel.Dependencies {
-        /// The engine, loader, Keychain check and clock the app runs on.
-        /// The last channel and language picks are `profile`'s on this Apple TV.
-        @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID) -> Self {
-            .init(
-                engine: RoutedEngine.app(),
-                load: { try await loader.load($0) },
-                hasLogin: { loader.hasLogin($0) },
-                recents: RecentsStore(profile: profile),
-                sleep: { try await Task.sleep(for: $0) },
-                guide: guide,
-                languages: ChannelLanguageStore(profile: profile))
-        }
-    }
-
     private struct ShellScreen: View {
         @Bindable var model: ShellModel
         @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
@@ -86,6 +71,9 @@
         @State private var barLowered = ContinuousClock.now - .seconds(10)
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+        /// The recents the catalogue lists; Recents open in the overlay keeps its order
+        /// (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
+        @State private var shownRecents: [LastChannelKey] = []
         @Environment(ShelfLibrary.self) private var shelves
         /// Search keeps its query while the app runs.
         @State private var search = SearchModel()
@@ -168,10 +156,11 @@
                 zapBar.playPause()
             }
             .onChange(of: catalogueInputs, initial: true) {
-                catalogue = .shell(channels: model.channels, favorites: favorites, profile: profile)
-                guard model.pickerOpen, let moved = overlay.catalogueChanged(catalogue, focused: overlayFocus) else { return }
-                focus = .overlay(moved)
+                catalogue = .shell(channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents)
+                overlayCatalogueChanged()
             }
+            .onChange(of: model.recents) { _, _ in showLatestRecents() }
+            .onChange(of: model.pickerOpen) { _, _ in showLatestRecents() }
             .onChange(of: model.tuned, initial: true) { _, channel in
                 zapBar.channelChanged(to: channel)
             }
@@ -296,15 +285,6 @@
             }
         }
 
-        /// The favorite button in the overlay's panel. Removing the shown
-        /// channel from Favorites while Favorites is shown moves to a neighbor.
-        private func toggleFavorite(_ channel: Channel, _ key: RowKey) {
-            let before = catalogue
-            let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, profile: profile, context: context)
-            guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
-            focus = .overlay(next)
-        }
-
         private var catalogueInputs: CatalogueInputs {
             CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
         }
@@ -422,6 +402,31 @@
             guard let tuned = model.tuned, let next = overlay.step(catalogue, from: tuned, by: steps) else { return }
             guard next != tuned else { return zapBar.playPause() }
             Task { await model.pick(next) }
+        }
+    }
+
+    /// Favorites and recents in the overlay's catalogue.
+    extension ShellScreen {
+        /// The favorite button in the overlay's panel. Removing the shown
+        /// channel from Favorites while Favorites is shown moves to a neighbor.
+        private func toggleFavorite(_ channel: Channel, _ key: RowKey) {
+            let before = catalogue
+            let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, profile: profile, context: context)
+            guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
+            focus = .overlay(next)
+        }
+
+        /// Lists the newest recents, except in Recents open in the overlay.
+        private func showLatestRecents() {
+            guard shownRecents != model.recents, !(model.pickerOpen && overlay.group == .recents) else { return }
+            shownRecents = model.recents
+            catalogue = catalogue.replacingRecents(shownRecents)
+            overlayCatalogueChanged()
+        }
+
+        private func overlayCatalogueChanged() {
+            guard model.pickerOpen, let moved = overlay.catalogueChanged(catalogue, focused: overlayFocus) else { return }
+            focus = .overlay(moved)
         }
     }
 

@@ -16,9 +16,9 @@
 
 ## 4. Recents on screen
 
-- [ ] 4.1 Show Recents in the iPhone chips, the iPad and Mac sidebar and the Apple TV overlay, and verify UI tests for order, hiding and the VoiceOver label
-- [ ] 4.2 Keep an open Recents list in place while playing from it, and verify a UI test
-- [ ] 4.3 Keep the current group on Apple TV when playing from Recents, and verify a UI test that up and down still step through it
+- [x] 4.1 Show Recents in the iPhone chips, the iPad and Mac sidebar and the Apple TV overlay, and verify UI tests for order, hiding and the VoiceOver label
+- [x] 4.2 Keep an open Recents list in place while playing from it, and verify a UI test
+- [x] 4.3 Keep the current group on Apple TV when playing from Recents, and verify a UI test that up and down still step through it
 
 ## 5. Restore on iPhone, iPad and Mac
 
