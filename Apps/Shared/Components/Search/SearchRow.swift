@@ -72,6 +72,8 @@ enum SearchRow {
         let logo: URL?
         let select: () -> Void
         @Environment(\.searchMetrics) private var metrics
+        /// Grows with the text size, so rows and highlights follow large text.
+        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
 
         var body: some View {
             Button(action: select) {
@@ -81,17 +83,17 @@ enum SearchRow {
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     VStack(alignment: .leading, spacing: 3) {
                         Highlighted(text: name, ranges: nameRanges)
-                            .font(.system(size: metrics.title))
+                            .font(.system(size: metrics.title * scale))
                             .lineLimit(1)
                         Highlighted(text: detail, ranges: detailRanges)
-                            .font(.system(size: metrics.detail))
+                            .font(.system(size: metrics.detail * scale))
                             .foregroundStyle(Palette.textMuted)
                             .lineLimit(1)
                     }
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, metrics.padding)
-                .frame(minHeight: metrics.channelHeight)
+                .frame(minHeight: metrics.channelHeight * scale)
                 .contentShape(Rectangle())
             }
             .buttonStyle(RowStyle())
@@ -112,6 +114,8 @@ enum SearchRow {
         let hasCatchup: Bool
         let select: () -> Void
         @Environment(\.searchMetrics) private var metrics
+        /// Grows with the text size, so rows and highlights follow large text.
+        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
 
         var body: some View {
             Button(action: select) {
@@ -119,7 +123,7 @@ enum SearchRow {
                     Group {
                         if let lead {
                             Text(lead)
-                                .font(.system(size: metrics.lead).monospacedDigit())
+                                .font(.system(size: metrics.lead * scale).monospacedDigit())
                                 .foregroundStyle(Browse.textSecondary)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
@@ -130,23 +134,23 @@ enum SearchRow {
                     .frame(width: metrics.leadWidth, alignment: .leading)
                     VStack(alignment: .leading, spacing: 3) {
                         Highlighted(text: title, ranges: ranges)
-                            .font(.system(size: metrics.title))
+                            .font(.system(size: metrics.title * scale))
                             .lineLimit(1)
                         Text(detail)
-                            .font(.system(size: metrics.detail))
+                            .font(.system(size: metrics.detail * scale))
                             .foregroundStyle(Palette.textMuted)
                             .lineLimit(1)
                     }
                     Spacer(minLength: 0)
                     if hasCatchup {
                         Image(systemName: "clock.arrow.circlepath")
-                            .font(.system(size: metrics.detail))
+                            .font(.system(size: metrics.detail * scale))
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityHidden(true)
                     }
                 }
                 .padding(.horizontal, metrics.padding)
-                .frame(minHeight: metrics.programmeHeight)
+                .frame(minHeight: metrics.programmeHeight * scale)
                 .contentShape(Rectangle())
             }
             .buttonStyle(RowStyle())
@@ -159,10 +163,12 @@ enum SearchRow {
     /// The accent NOW badge.
     struct NowBadge: View {
         @Environment(\.searchMetrics) private var metrics
+        /// Grows with the text size, so rows and highlights follow large text.
+        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
 
         var body: some View {
             Text("NOW")
-                .font(.system(size: metrics.badge, weight: .bold))
+                .font(.system(size: metrics.badge * scale, weight: .bold))
                 .tracking(1)
                 .foregroundStyle(Palette.ground)
                 .padding(.horizontal, metrics.badge * 0.6)
@@ -180,6 +186,8 @@ enum SearchRow {
         let select: () -> Void
         @ViewBuilder var poster: Poster
         @Environment(\.searchMetrics) private var metrics
+        /// Grows with the text size, so rows and highlights follow large text.
+        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
 
         var body: some View {
             Button(action: select) {
@@ -189,7 +197,7 @@ enum SearchRow {
                         .overlay(alignment: .topLeading) {
                             if isSeries {
                                 Text("SERIES")
-                                    .font(.system(size: metrics.badge, weight: .bold))
+                                    .font(.system(size: metrics.badge * scale, weight: .bold))
                                     .tracking(1)
                                     .foregroundStyle(Palette.text)
                                     .padding(.horizontal, 6)
@@ -199,7 +207,7 @@ enum SearchRow {
                             }
                         }
                     Highlighted(text: name, ranges: ranges)
-                        .font(.system(size: metrics.posterName))
+                        .font(.system(size: metrics.posterName * scale))
                         .lineLimit(1)
                         .frame(width: metrics.poster.width, alignment: .leading)
                 }
@@ -217,6 +225,8 @@ enum SearchRow {
         let text: String
         let select: () -> Void
         @Environment(\.searchMetrics) private var metrics
+        /// Grows with the text size, so rows and highlights follow large text.
+        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
 
         var body: some View {
             Button(action: select) {
@@ -225,7 +235,7 @@ enum SearchRow {
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityHidden(true)
                     Text(text)
-                        .font(.system(size: metrics.title))
+                        .font(.system(size: metrics.title * scale))
                         .foregroundStyle(Browse.textSecondary)
                         .lineLimit(1)
                     Spacer(minLength: 0)

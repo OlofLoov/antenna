@@ -69,6 +69,7 @@
         @Environment(ShelfLibrary.self) private var shelves
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
+        @Environment(SearchModel.self) private var search
         @State private var section: LiveSection = .live
         /// Movies' or Series' rows or grid; picking a section resets it.
         @State private var browse = ShelfBrowse()
@@ -252,8 +253,10 @@
                 folded(columns) { GuideView() }
             case .movies:
                 ShelfRegularScreen(kind: .movie, browse: $browse) { sidebarButton(columns) }
+                    .environment(\.openSearch, searchOpener)
             case .series:
                 ShelfRegularScreen(kind: .series, browse: $browse) { sidebarButton(columns) }
+                    .environment(\.openSearch, searchOpener)
             case .search:
                 SearchRegularScreen { sidebarButton(columns) }
                     .modifier(SearchSupply(picks: searchPicks))
@@ -279,6 +282,15 @@
                     case .series: shelves.openPage(title, from: .search, in: title.kind)
                     }
                 })
+        }
+
+        /// Typing in the Movies or Series toolbar field opens Search set to
+        /// that kind with the text carried over.
+        private var searchOpener: SearchOpener {
+            SearchOpener { kind, text in
+                search.start(kind == .movie ? .movies : .series, text: text)
+                section = .search
+            }
         }
 
         /// Shows Live with `channel` playing, in All channels when the open

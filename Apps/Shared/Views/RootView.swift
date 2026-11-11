@@ -88,6 +88,7 @@
         @Environment(ShelfLibrary.self) private var shelves
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
+        @Environment(SearchModel.self) private var search
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -103,6 +104,7 @@
                 if shelves.hasXtream {
                     SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
                         ShelfCompactScreen()
+                            .environment(\.openSearch, opener)
                     }
                 }
                 SwiftUI.Tab("Search", systemImage: "magnifyingglass", value: .search) {
@@ -150,6 +152,14 @@
                     case .series: shelves.openPage(title, from: .search, in: title.kind)
                     }
                 })
+        }
+
+        /// The Movies tab's search button opens Search set to movies or series.
+        private var opener: SearchOpener {
+            SearchOpener { kind, text in
+                search.start(kind == .movie ? .movies : .series, text: text)
+                selection = .search
+            }
         }
 
         /// Shows Live with `channel` playing, in All channels when the open

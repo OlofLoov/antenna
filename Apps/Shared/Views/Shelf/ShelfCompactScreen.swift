@@ -16,6 +16,7 @@
         @State private var list: ShelfList?
 
         @Environment(ShelfPlayback.self) private var playback
+        @Environment(\.openSearch) private var openSearch
 
         /// Posters and the banner play through the playback, open pages through the library, and
         /// change My list through the activity.
@@ -118,6 +119,10 @@
                     list = nil
                 }
                 Spacer()
+                if let openSearch {
+                    SearchParts.SectionButton { openSearch.open(kind, "") }
+                        .accessibilityIdentifier("\(kind.prefix).search")
+                }
             }
             .padding(.horizontal, 16)
         }

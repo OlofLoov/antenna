@@ -151,4 +151,39 @@ final class SearchTVUITests: XCTestCase {
         expect(app.searchFields.firstMatch, "value BEGINSWITH 'long winter'")
         XCTAssertTrue(element("search.result.title.0").exists)
     }
+
+    // search/recent-searches
+    func testRecentSearchesShowWithAnEmptyField() {
+        openSearch()
+        type("a2")
+        moveToResults("search.result.channel.0")
+        press(.select)
+        expectEngine("playing loads=2 file=a2.ts")
+        expectFocus("shell.picture")
+        expect(element("zapBar.bar"), "exists == false")
+
+        press(.menu)
+        expectFocus("shell.tab.live")
+        press(.right, times: 4)
+        expectFocus("shell.tab.search")
+        press(.select)
+        press(.down)
+        let field = app.searchFields.firstMatch
+        expect(field, "value BEGINSWITH 'a2'")
+        field.typeText(XCUIKeyboardKey.delete.rawValue + XCUIKeyboardKey.delete.rawValue)
+        let recent = element("search.recent.0")
+        XCTAssertTrue(recent.waitForExistence(timeout: 10), "an empty field lists recent searches")
+        XCTAssertEqual(recent.label, "Recent search, a2")
+    }
+
+    // movies-and-series-browsing/search-from-the-section
+    func testMoviesHasNoSearchButtonOnAppleTV() {
+        openSearch()
+        press(.menu)
+        press(.left, times: 2)
+        expectFocus("shell.tab.movies")
+        press(.select)
+        XCTAssertTrue(element("movies.hero").waitForExistence(timeout: 10))
+        XCTAssertFalse(element("movies.search").exists, "the Search tab is the way to search")
+    }
 }
