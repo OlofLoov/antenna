@@ -54,4 +54,26 @@ final class OnboardingTVUITests: XCTestCase {
         XCUIRemote.shared.press(.menu)
         XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10) || app.state == .runningBackgroundSuspended)
     }
+
+    // first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting
+    func testPickXtreamAndConnectWithEmptyFields() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.kind.stalker").exists)
+        XCUIRemote.shared.press(.right)
+        XCTAssertTrue(element(app, "onboarding.kind.xtream").hasFocus)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.connect").exists)
+        while !element(app, "onboarding.connect").hasFocus {
+            XCUIRemote.shared.press(.down)
+        }
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.error").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "onboarding.error").label, "Enter the server address.")
+        XCUIRemote.shared.press(.menu)
+        XCTAssertTrue(element(app, "onboarding.kind.xtream").waitForExistence(timeout: 5))
+    }
 }

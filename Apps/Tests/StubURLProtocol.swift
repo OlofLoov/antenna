@@ -14,11 +14,17 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
     private static let lock = NSLock()
     nonisolated(unsafe) private static var responses: [String: Response] = [:]
     nonisolated(unsafe) private static var recorded: [String: [URLRequest]] = [:]
+    nonisolated(unsafe) private static var failures: [String: URLError.Code] = [:]
     nonisolated(unsafe) private static var tagged: [String: Int] = [:]
     private static let tagHeader = "X-Stub-Tag"
 
     static func register(host: String, action: String? = nil, status: Int = 200, body: String) {
         lock.withLock { responses[key(host, action)] = Response(status: status, body: Data(body.utf8)) }
+    }
+
+    /// Makes every request to `host` fail with `code`, as when offline.
+    static func fail(host: String, with code: URLError.Code) {
+        lock.withLock { failures[host] = code }
     }
 
     static func requests(host: String) -> [URLRequest] {
@@ -52,10 +58,14 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
         }
         let action = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?.first { $0.name == "action" }?.value
-        let response: Response? = Self.lock.withLock {
+        let (response, failure): (Response?, URLError.Code?) = Self.lock.withLock {
             Self.recorded[host, default: []].append(request)
             if let tag = request.value(forHTTPHeaderField: Self.tagHeader) { Self.tagged[tag, default: 0] += 1 }
-            return Self.responses[Self.key(host, action)]
+            return (Self.responses[Self.key(host, action)], Self.failures[host])
+        }
+        if let failure {
+            client?.urlProtocol(self, didFailWithError: URLError(failure))
+            return
         }
         guard let response,
             let http = HTTPURLResponse(url: url, statusCode: response.status, httpVersion: "HTTP/1.1", headerFields: nil)
