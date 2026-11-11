@@ -1,5 +1,6 @@
 #if os(iOS) || os(macOS)
     import AntennaCore
+    import SwiftData
     import SwiftUI
 
     /// Which columns an iPad or Mac window shows side by side
@@ -75,6 +76,9 @@
         @State private var browse = ShelfBrowse()
         /// A folded column the user opened over the others.
         @State private var shown: Folded?
+        @Query private var records: [SourceRecord]
+        /// The last session's section was opened once, at the first appearance.
+        @State private var restored = false
 
         enum Folded { case sidebar, list }
 
@@ -138,6 +142,13 @@
                 // Movies and Series go with the last Xtream source.
                 .onChange(of: shelves.hasXtream) { _, has in
                     if !has, section == .movies || section == .series { section = .live }
+                }
+                .onChange(of: section) { _, new in live.opened(new.session) }
+                // Opens on the section the user left (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
+                .onAppear {
+                    guard !restored else { return }
+                    restored = true
+                    section = LiveSection(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
                 }
             }
             .background(Palette.ground)
@@ -248,7 +259,8 @@
                     LiveNoSources()
                 } else {
                     liveColumns(columns)
-                        .task { live.resumeIfSuspended() }
+                        .onAppear { live.appeared() }
+                        .onDisappear { live.restore.liveShown = false }
                 }
             case .guide:
                 folded(columns) { GuideView() }
@@ -297,7 +309,7 @@
         /// Shows Live with `channel` playing, in All channels when the open
         /// group does not hold it. Search keeps its query.
         private func watch(_ channel: Channel) {
-            if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all) }
+            if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all, picked: false) }
             live.pick(channel)
             section = .live
         }

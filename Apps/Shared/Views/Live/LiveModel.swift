@@ -115,6 +115,8 @@ final class LiveModel {
     /// list waits in `latestRecents` (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
     @ObservationIgnored var shownRecents: [LastChannelKey] = []
     @ObservationIgnored var latestRecents: [LastChannelKey] = []
+    /// The tab, group and channel to bring back from the last session.
+    @ObservationIgnored var restore = LiveRestore()
     @ObservationIgnored private var tuning: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
     @ObservationIgnored private var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
@@ -129,6 +131,7 @@ final class LiveModel {
         languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
         session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
         latestRecents = dependencies.recents.recents.entries
+        restore = LiveRestore(store: dependencies.recents)
         shownRecents = latestRecents
         player = PlayerModel(
             .init(
@@ -140,6 +143,7 @@ final class LiveModel {
             guard let self, let source = descriptors[id] else { return false }
             return self.dependencies.hasLogin(source)
         }
+        restoreGroup()
     }
 
     // MARK: Sources
@@ -236,6 +240,7 @@ final class LiveModel {
             channelsBySource[source.id] = tagged
             setState(.loaded(channels: tagged.count), for: source.id)
             rebuild()
+            replay()
             if let guide = dependencies.guide {
                 await guide.register(epgURLs: playlist.epgURLs, for: source.id)
                 await guide.update(channels: tagged)
@@ -284,7 +289,7 @@ final class LiveModel {
         channels = all
         catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents)
         names = ChannelNameIndex(catalogue)
-        if !catalogue.groups.contains(group) { group = .all }
+        restoreGroup()
     }
 
     // MARK: Favorites and groups
@@ -320,6 +325,7 @@ final class LiveModel {
     /// The channel already playing carries on; when paused it resumes, and
     /// when it failed or never started it loads again.
     func pick(_ channel: Channel) {
+        restore.channel = nil
         guard channel == playing else { return tune(channel) }
         switch playback {
         case .paused: Task { await engine.play() }
@@ -328,7 +334,7 @@ final class LiveModel {
         }
     }
 
-    private func tune(_ channel: Channel) {
+    func tune(_ channel: Channel) {
         if channel != playing { later = nil }
         playing = channel
         player.tuned(subject(for: channel))
@@ -377,11 +383,6 @@ final class LiveModel {
         guard suspended, let playing else { return }
         suspended = false
         tune(playing)
-    }
-
-    var isPaused: Bool {
-        if case .paused = playback { return true }
-        return false
     }
 
     /// Pauses a playing channel, plays a paused one.
