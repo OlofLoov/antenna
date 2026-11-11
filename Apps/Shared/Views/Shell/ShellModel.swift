@@ -21,6 +21,8 @@
         case retry
         /// Sign in on the error, for a source whose login is missing or refused.
         case signIn
+        /// A tab or track in the info panel over the picture.
+        case panel(PanelFocus)
         /// The loading screen's holder or the empty screen's Retry.
         case liveScreen
         case tab(ShellTab)

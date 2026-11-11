@@ -65,6 +65,16 @@ final class PlayerModel {
     private(set) var failure: PlaybackFailure?
     /// When the failed attempt happened.
     private(set) var failedAt: Date?
+    /// The stream's audio and subtitle tracks, as last reported.
+    var tracks = TrackList.empty
+    /// The picture and sound format, nil until the first frame.
+    var presentation: PresentationInfo?
+    /// The path that plays the stream.
+    var route = EngineRouter.Route.demuxer
+    /// The Apple TV info panel's open tab, nil while it is closed.
+    var panel: PanelTab?
+    /// The audio and subtitles list is open on iPhone, iPad or Mac.
+    var pickerOpen = false
 
     /// Loads the channel again. The owner sets it.
     @ObservationIgnored var reload: @MainActor (Channel) -> Void = { _ in }
@@ -93,11 +103,28 @@ final class PlayerModel {
 
     // MARK: Engine
 
-    /// Follows the engine until the calling task ends.
+    /// Follows the engine's state, tracks and picture format until the
+    /// calling task ends.
     func run() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.observeStates() }
+            group.addTask { await self.observeDetails() }
+        }
+    }
+
+    private func observeStates() async {
         for await state in await engine.states() {
             stateChanged(state)
         }
+    }
+
+    func tracksChanged(_ list: TrackList) {
+        tracks = list
+    }
+
+    func presentationChanged(_ info: PresentationInfo?) async {
+        presentation = info
+        route = await currentRoute()
     }
 
     func stateChanged(_ new: PlaybackState) {
@@ -127,6 +154,12 @@ final class PlayerModel {
     /// A channel was tuned, or the player stopped with nil. Any error,
     /// recovery and wait for the old channel go.
     func tuned(_ new: PlayerSubject?) {
+        if new?.channel != subject?.channel {
+            // A new channel starts fresh (player-controls-and-playback-errors/choose-audio-and-subtitles).
+            closeOverlays()
+            tracks = .empty
+            presentation = nil
+        }
         subject = new
         clearFailure()
         stopWaiting()
@@ -184,6 +217,9 @@ final class PlayerModel {
         stopWaiting()
         guard subject != nil else { return }
         dependencies.log.write("playback failed: \(reason.logName)")
+        // The panel and picker close before the error shows
+        // (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).
+        closeOverlays()
         failure = reason
         failedAt = dependencies.now()
         recovery?.cancel()
@@ -192,6 +228,11 @@ final class PlayerModel {
         case .loginNotOnDevice: recovery = Task { [weak self] in await self?.reloadWhenLoginArrives() }
         default: recovery = nil
         }
+    }
+
+    private func closeOverlays() {
+        panel = nil
+        pickerOpen = false
     }
 
     private func clearFailure() {

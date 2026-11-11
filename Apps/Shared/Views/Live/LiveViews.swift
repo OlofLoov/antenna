@@ -27,6 +27,11 @@
                     if phase == .active { live.checkLogins() }
                 }
                 .task { await live.observeEngine() }
+                .task { await live.player.observeDetails() }
+                // The controls hide again a while after the track list closes.
+                .onChange(of: live.player.pickerOpen) { _, open in
+                    if !open, live.controlsShown { live.showControls(after: .touch) }
+                }
         }
 
         private var ownFavorites: [FavoriteSnapshot<PersistentIdentifier>] {

@@ -7,6 +7,9 @@
     /// every layout, so moving it never restarts the channel.
     struct LivePicture: View {
         @Environment(LiveModel.self) private var live
+        #if os(iOS)
+            @Environment(\.horizontalSizeClass) private var sizeClass
+        #endif
 
         var body: some View {
             Color.clear
@@ -65,6 +68,40 @@
             }
         }
 
+        /// The audio-and-subtitles button with its list: a sheet at compact
+        /// width, a popover above the button otherwise
+        /// (player-controls-and-playback-errors/choose-audio-and-subtitles).
+        private var tracksButton: some View {
+            @Bindable var player = live.player
+            return TrackPicker.OpenButton(isAvailable: player.hasTrackChoices) { player.openPicker() }
+                .popover(isPresented: $player.pickerOpen, arrowEdge: .bottom) {
+                    if isCompact {
+                        TrackPicker.Sheet(lists: trackLists) { player.closePicker() }
+                            .presentationDetents([.medium, .large])
+                            .presentationDragIndicator(.visible)
+                    } else {
+                        TrackPicker.Popover(lists: trackLists)
+                            .presentationCompactAdaptation(.popover)
+                    }
+                }
+        }
+
+        /// True at compact width on iPhone and iPad, never on a Mac.
+        private var isCompact: Bool {
+            #if os(iOS)
+                sizeClass == .compact
+            #else
+                false
+            #endif
+        }
+
+        private var trackLists: TrackPicker.Lists {
+            let player = live.player
+            return TrackPicker.Lists(
+                audio: player.audioRows, subtitles: player.subtitleRows, footer: [player.streamLine],
+                pickAudio: { player.selectAudio($0) }, pickSubtitle: { player.selectSubtitle($0) })
+        }
+
         private var controls: some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                 let progress = live.playing.map { live.nowText(for: $0, at: context.date) }?.progress
@@ -79,6 +116,7 @@
                         live.showControls(after: .touch)
                     }
                 ) {
+                    tracksButton
                     #if os(iOS)
                         Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
                             live.engine.startPictureInPicture()

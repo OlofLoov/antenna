@@ -125,7 +125,7 @@ extension ZapBar {
 extension View {
     /// A zap bar badge: 18 pt semibold, the LIVE one on the 0.12 surface,
     /// the quality ones outlined.
-    fileprivate func badge(filled: Bool) -> some View {
+    func badge(filled: Bool) -> some View {
         font(.system(size: 18, weight: .semibold))
             .tracking(1)
             .padding(.horizontal, 12)

@@ -73,4 +73,27 @@
             await showLive()
         }
     }
+
+    extension ShellTab {
+        var title: String {
+            switch self {
+            case .live: "Live"
+            case .guide: "Guide"
+            case .movies: "Movies"
+            case .series: "Series"
+            case .search: "Search"
+            }
+        }
+
+        /// The element name design-system/accessibility-identifiers-follow-the-board asks for: `shell.tab.<identifier>`.
+        var identifier: String {
+            switch self {
+            case .live: "live"
+            case .guide: "guide"
+            case .movies: "movies"
+            case .series: "series"
+            case .search: "search"
+            }
+        }
+    }
 #endif

@@ -199,6 +199,7 @@
                 didSet { stateCast.send(state) }
             }
             @ObservationIgnored private let stateCast = Broadcast(PlaybackState.idle)
+            @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
             private(set) var loads = 0
             private let log: URL?
 
@@ -211,6 +212,7 @@
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loads += 1
                 append(url.lastPathComponent)
+                trackList.reset()
                 switch UITestingPlayback.afterLoad(url.lastPathComponent) {
                 case .success(let next):
                     state = next
@@ -242,11 +244,11 @@
             }
 
             func seek(to time: Duration) async throws { throw SeekRefusal.live }
-            func selectAudio(_ id: MediaTrack.ID) async {}
-            func selectSubtitle(_ id: MediaTrack.ID?) async {}
+            func selectAudio(_ id: MediaTrack.ID) async { trackList.selectAudio(id) }
+            func selectSubtitle(_ id: MediaTrack.ID?) async { trackList.selectSubtitle(id) }
             func states() async -> AsyncStream<PlaybackState> { stateCast.stream() }
-            func presentation() async -> AsyncStream<PresentationInfo?> { Broadcast(PresentationInfo?.none).stream() }
-            func tracks() async -> AsyncStream<TrackList> { Broadcast(TrackList.empty).stream() }
+            func presentation() async -> AsyncStream<PresentationInfo?> { trackList.format.stream() }
+            func tracks() async -> AsyncStream<TrackList> { trackList.cast.stream() }
             func position() async -> AsyncStream<PlaybackPosition> { Broadcast(PlaybackPosition.zero).stream() }
             func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
 
