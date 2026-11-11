@@ -34,7 +34,8 @@ extension XtreamClient {
         let info = wire.info ?? InfoFields()
         return VODInfo(
             plot: info.plot, year: info.year, duration: info.duration, genre: info.genre, ageRating: info.ageRating,
-            backdropURLs: info.backdropURLs, containerExtension: wire.containerExtension)
+            backdropURLs: info.backdropURLs, containerExtension: wire.containerExtension, cast: info.cast, director: info.director,
+            rating: info.rating, trailerURL: info.trailerURL)
     }
 
     /// Decodes a `get_series_info` body. Episodes come out flat and sorted by season then number, nil
@@ -47,7 +48,8 @@ extension XtreamClient {
         let (episodes, skipped) = flatten(wire.episodes, host: host)
         return SeriesInfo(
             plot: info.plot, year: info.year, genre: info.genre, ageRating: info.ageRating, backdropURLs: info.backdropURLs,
-            episodes: episodes, skippedEpisodes: skipped)
+            cast: info.cast, director: info.director, rating: info.rating, trailerURL: info.trailerURL, episodes: episodes,
+            skippedEpisodes: skipped)
     }
 }
 
@@ -251,6 +253,16 @@ enum Loose {
         guard parts.count == 2 || parts.count == 3, parts.allSatisfy({ ($0 ?? -1) >= 0 }) else { return nil }
         let total = parts.compactMap { $0 }.reduce(0.0) { $0 * 60 + Double($1) }
         return total > 0 ? total : nil
+    }
+
+    /// A trailer link: a web address as is, an 11-character YouTube id as its
+    /// watch link, anything else nil.
+    static func trailer(_ string: String?) -> URL? {
+        guard let string = string?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
+        if let url = webURL(string) { return url }
+        let idCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
+        guard string.unicodeScalars.count == 11, string.unicodeScalars.allSatisfy(idCharacters.contains) else { return nil }
+        return URL(string: "https://www.youtube.com/watch?v=\(string)")
     }
 
     /// The year at the start of a date string, nil for "0000" or when it does not start with four digits.
