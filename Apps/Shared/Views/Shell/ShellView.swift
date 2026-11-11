@@ -201,6 +201,7 @@
             }
             .task { await model.player.run() }
             .task { await model.trackSession() }
+            .modifier(SourceDeletions(removed: model.sourceDeleted, defaults: model.session.store.defaults))
             .onChange(of: scenePhase) { _, phase in
                 // Leaving the app stops the ten-second count.
                 guard phase == .active else { return model.session.interrupt() }

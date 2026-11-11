@@ -161,6 +161,13 @@ final class LiveModel {
         changed.forEach(startLoad)
     }
 
+    /// A source was deleted, here or on another device, and its channels
+    /// left the stored recents (session-restore-and-recently-watched/deleting-a-source-clears-its-channels).
+    /// Its channel playing now stops counting as watched.
+    func sourceDeleted(_ id: UUID) {
+        session.remove(source: id)
+    }
+
     /// Loads again every source that added nothing. The playing channel plays on.
     func retry() {
         for row in sources where row.state.addedNothing {

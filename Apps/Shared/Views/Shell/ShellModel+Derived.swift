@@ -51,6 +51,15 @@
             }
         }
 
+        /// A source was deleted, here or on another device
+        /// (session-restore-and-recently-watched/deleting-a-source-clears-its-channels):
+        /// its channel is no longer the one to tune at launch, and its
+        /// channel playing now stops counting as watched.
+        func sourceDeleted(_ id: UUID) {
+            session.remove(source: id)
+            if stored?.sourceID == id { stored = nil }
+        }
+
         /// Tells the session tracker each engine state until the calling task ends.
         func trackSession() async {
             for await state in await engine.states() {

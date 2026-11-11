@@ -127,7 +127,8 @@
         @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
         @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
         @ObservationIgnored private var finishOrder: [UUID] = []
-        @ObservationIgnored private var stored: LastChannelKey?
+        /// The channel to tune at launch, read once.
+        @ObservationIgnored var stored: LastChannelKey?
         private var launched = false
         @ObservationIgnored private var deadlinePassed = false
         @ObservationIgnored private var deadline: Task<Void, Never>?
