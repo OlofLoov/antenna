@@ -59,6 +59,8 @@ final class PlayerModel {
         var applyVolume: (@MainActor (Float, Bool) -> Void)?
         /// Yields true while the stream plays on AirPlay; nil asks `engine`.
         var airPlay: (@MainActor () -> AsyncStream<Bool>)?
+        /// The Picture in Picture window; nil watches `engine`'s.
+        var pictureInPicture: PictureInPictureHooks?
     }
 
     /// The channel on screen, nil before the first tune.
@@ -86,6 +88,8 @@ final class PlayerModel {
     private(set) var muted = false
     /// The stream plays on an AirPlay device.
     private(set) var airPlayActive = false
+    /// The picture plays in the Picture in Picture window.
+    private(set) var pictureInPictureActive = false
 
     /// Loads the channel again. The owner sets it.
     @ObservationIgnored var reload: @MainActor (Channel) -> Void = { _ in }
@@ -97,10 +101,12 @@ final class PlayerModel {
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var waitTimer: Task<Void, Never>?
     @ObservationIgnored private var recovery: Task<Void, Never>?
+    @ObservationIgnored private let pictureInPicture: PictureInPictureHooks
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
         engine = dependencies.engine
+        pictureInPicture = dependencies.pictureInPicture ?? .app(dependencies.engine)
         if let store = dependencies.volume {
             volume = store.restored()
             applyVolume()
@@ -138,6 +144,13 @@ final class PlayerModel {
             apply(volume, muted)
         } else {
             engine.setVolume(volume, muted: muted)
+        }
+    }
+
+    /// Follows the Picture in Picture window until the calling task ends.
+    func observePictureInPicture() async {
+        for await active in pictureInPicture.activity() {
+            pictureInPictureActive = active
         }
     }
 
@@ -274,9 +287,11 @@ final class PlayerModel {
         stopWaiting()
         guard subject != nil else { return }
         dependencies.log.write("playback failed: \(reason.logName)")
-        // The panel and picker close before the error shows
+        // The panel, the picker and the Picture in Picture window close
+        // before the error shows in the app
         // (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).
         closeOverlays()
+        pictureInPicture.stop()
         failure = reason
         failedAt = dependencies.now()
         recovery?.cancel()

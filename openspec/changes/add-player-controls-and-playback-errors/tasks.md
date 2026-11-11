@@ -7,7 +7,7 @@
 
 ## 2. Player model
 
-- [ ] 2.1 Build the player model with injected engine, clock, defaults, credential store, path monitor, audio session, scene phase and sinks
+- [x] 2.1 Build the player model with injected engine, clock, defaults, credential store, path monitor, audio session, scene phase and sinks
 - [x] 2.2 Show the spinner after 0.5 s and the slow-source caption after 10 s, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-spinner-while-waiting-and-a-reason-if-it-is-slow`
 - [x] 2.3 Show the reconnect count from the engine and the error only on give-up, and verify with integration and UI tests citing `player-controls-and-playback-errors/a-dropped-stream-shows-that-it-is-reconnecting`
 - [x] 2.4 Retry on Try again, on network return and on login arrival, with Sign in on Apple TV, and verify with integration and UI tests citing `player-controls-and-playback-errors/try-again-or-recover-on-its-own`
@@ -30,10 +30,13 @@
 ## 6. Background, PiP and lock screen
 
 - [ ] 6.1 Add Picture in Picture entry, channel change, restore and close, and verify with integration, UI and device tests citing `player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad`
+  - Open: the window state, closing, restoring and giving up are tested on a scripted engine; entering on the Home gesture, a channel change inside the window and the window itself need a device
 - [ ] 6.2 Add the background audio mode and interruption handling, and verify with integration and device tests citing `player-controls-and-playback-errors/keep-listening-in-the-background`
-- [ ] 6.3 Publish Now Playing info with play and pause only, and verify with an integration test citing `player-controls-and-playback-errors/the-channel-shows-on-the-lock-screen`
+  - Open: background play and pausing for a call are tested through `PlaybackLifecycle` on a scripted engine; a real lock, app switch, call or alarm needs a device
+- [x] 6.3 Publish Now Playing info with play and pause only, and verify with an integration test citing `player-controls-and-playback-errors/the-channel-shows-on-the-lock-screen`
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `player-controls-and-playback-errors/<requirement-slug>`
+- [x] 7.1 Each requirement has a test citing `player-controls-and-playback-errors/<requirement-slug>`
 - [ ] 7.2 `/opsx:verify` passes
+  - Open: verify finds every requirement implemented and cited, and flags 5.1, 6.1 and 6.2, which wait for device runs

@@ -33,6 +33,8 @@
                             .accessibilityIdentifier("browse.player.surface")
                         if live.player.airPlayActive {
                             PlayerStatus.Elsewhere(text: "Playing on AirPlay", systemImage: "airplayvideo")
+                        } else if live.player.pictureInPictureActive {
+                            PlayerStatus.Elsewhere(text: "Playing in Picture in Picture", systemImage: "pip")
                         }
                         PlayerWaitingLayer(player: live.player)
                         if let message = live.player.message {

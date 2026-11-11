@@ -91,6 +91,11 @@ public final class DemuxEngine: PlaybackEngine {
     #if os(iOS) || os(tvOS)
         var pictureInPicture: AVPictureInPictureController?
         var pictureInPicturePlayback: PictureInPicturePlayback?
+        /// Told when the Picture in Picture window opens, closes or restores
+        /// the app. The controller holds it weakly.
+        public weak var pictureInPictureDelegate: (any AVPictureInPictureControllerDelegate)? {
+            didSet { pictureInPicture?.delegate = pictureInPictureDelegate }
+        }
     #endif
 
     /// Frames waiting ahead of the video renderer.

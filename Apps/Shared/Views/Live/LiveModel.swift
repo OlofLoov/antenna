@@ -57,6 +57,12 @@ final class LiveModel {
         var recents = RecentsStore.scratch
         /// How the ten-second count waits.
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+        /// The lock screen and Control Center; nil uses the system's.
+        var nowPlaying: NowPlayingSink?
+        /// How often the lock screen catches up with the programme.
+        var nowPlayingInterval = Duration.seconds(5)
+        /// The Picture in Picture window; nil watches the engine's.
+        var pictureInPicture: PictureInPictureHooks?
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -96,7 +102,7 @@ final class LiveModel {
     @ObservationIgnored let programmes: OverlayGuide
     /// The spinner, the reconnect count and the error for the playing channel.
     @ObservationIgnored let player: PlayerModel
-    @ObservationIgnored private let dependencies: Dependencies
+    @ObservationIgnored let dependencies: Dependencies
     @ObservationIgnored private let languages: ChannelLanguages
     /// Stores the last channel and counts a channel as watched.
     @ObservationIgnored let session: SessionTracker
@@ -119,7 +125,9 @@ final class LiveModel {
         languages = ChannelLanguages(store: dependencies.languages, watching: dependencies.engine)
         session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
         player = PlayerModel(
-            .init(engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay))
+            .init(
+                engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay,
+                pictureInPicture: dependencies.pictureInPicture))
         player.reload = { [weak self] channel in self?.load(channel) }
         player.hasLogin = { [weak self] id in
             guard let self, let source = descriptors[id] else { return false }
@@ -342,13 +350,6 @@ final class LiveModel {
             canPictureInPicture = await engine.capabilities.supportsPictureInPicture
             await engine.play()
         }
-    }
-
-    /// The names the player's messages use for `channel`.
-    func subject(for channel: Channel) -> PlayerSubject {
-        PlayerSubject(
-            channel: channel, source: sources.first { $0.id == channel.sourceID }?.name ?? PlayerModel.unnamedSource,
-            number: RowKey(channel).flatMap(catalogue.number(for:)))
     }
 
     /// Plays `channel` and shows `programme` as Later under what is on next.

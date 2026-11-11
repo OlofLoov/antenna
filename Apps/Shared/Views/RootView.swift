@@ -39,7 +39,9 @@
                 guard live == nil else { return }
                 let live = LiveModel(dependencies())
                 let engine = live.engine
-                let lifecycle = PlaybackLifecycle(engine: engine) { engine.continuesInPictureInPicture }
+                // Live keeps its sound when the app leaves the screen
+                // (player-controls-and-playback-errors/keep-listening-in-the-background).
+                let lifecycle = PlaybackLifecycle(engine: engine) { true }
                 lifecycle.start()
                 self.live = live
                 self.shelves = .app(loader)
