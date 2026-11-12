@@ -10,7 +10,7 @@ import Foundation
 /// Every sound stream with a builder is read, and the last `soundRing` of
 /// each kept, so `selectAudio` switches within a moment: what is queued of
 /// the old sound is flushed and the new one starts at the clock's time.
-/// Text subtitles of every stream go to `cueFound`.
+/// Text subtitles and DVB subtitle pictures of every stream go to `cueFound`.
 final class DemuxRun: @unchecked Sendable {
     private let bytes: any DemuxBytes
     private let videoFeed: SampleFeed
@@ -27,7 +27,8 @@ final class DemuxRun: @unchecked Sendable {
     /// Called when a film's saved time or skip target could not be reached
     /// and it starts from the beginning instead.
     var seekFailed: (@Sendable () -> Void)?
-    /// Called with each subtitle line of every text subtitle stream.
+    /// Called with each subtitle line of every text subtitle stream, and
+    /// each picture of every DVB subtitle stream.
     var cueFound: (@Sendable (TimedCue) -> Void)?
     /// Called when the picture changes size or dynamic range after the start.
     var pictureChanged: (@Sendable (PictureChange) -> Void)?
@@ -125,6 +126,8 @@ final class DemuxRun: @unchecked Sendable {
         let sounds: [Int: SampleBuilder]
         let audioTracks: [TrackStream]
         let subtitleTracks: [TrackStream]
+        /// DVB subtitle decoders by container stream index.
+        let pictureSubtitles: [Int: DVBSubtitleDecoder]
         /// The sound that plays first, decodable or not.
         let audio: TrackStream?
         let subtitle: TrackStream?
@@ -201,7 +204,8 @@ final class DemuxRun: @unchecked Sendable {
         return .success(
             Prepared(
                 demuxer: demuxer, video: videoBuilder, sounds: sounds, audioTracks: tracks.audio, subtitleTracks: tracks.subtitles,
-                audio: audio, subtitle: tracks.subtitles.first { $0.track.id == chosen.subtitle }))
+                pictureSubtitles: DVBSubtitleDecoder.decoders(for: tracks.subtitles), audio: audio,
+                subtitle: tracks.subtitles.first { $0.track.id == chosen.subtitle }))
     }
 
     /// What `pump` has seen so far.
@@ -256,6 +260,8 @@ final class DemuxRun: @unchecked Sendable {
                 for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
                     guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { break reading }
                 }
+            } else if let decoder = prepared.pictureSubtitles[packet.streamIndex] {
+                pictureCues(from: packet, decoder: decoder)
             } else if let codec = subtitleCodecs[packet.streamIndex] {
                 cue(from: packet, codec: codec)
             }

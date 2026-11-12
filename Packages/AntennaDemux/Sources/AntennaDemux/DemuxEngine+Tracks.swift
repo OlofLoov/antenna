@@ -46,8 +46,16 @@ extension DemuxEngine {
     }
 
     func cueFound(_ cue: TimedCue, generation mine: Int) {
-        guard generation == mine, current != nil else { return }
-        current?.cues.append(cue)
+        guard generation == mine, var current else { return }
+        if cue.isPage {
+            // A DVB page replaces what the stream's earlier page shows.
+            for index in current.cues.indices
+            where current.cues[index].isPage && current.cues[index].streamIndex == cue.streamIndex && current.cues[index].end > cue.start {
+                current.cues[index].end = cue.start
+            }
+        }
+        current.cues.append(cue)
+        self.current = current
     }
 
     /// Sends the lines of the selected subtitles due at `time`, and forgets
@@ -57,8 +65,8 @@ extension DemuxEngine {
         current.cues.removeAll { $0.end < time }
         self.current = current
         let selected = start.subtitleTracks.first { $0.track.id == start.selectedSubtitle }?.stream.index
-        let due = current.cues.filter { $0.streamIndex == selected && $0.start <= time }
-        cuesCast.sendIfChanged(due.map { SubtitleCue(text: $0.text) })
+        let due = current.cues.filter { $0.streamIndex == selected && $0.start <= time && ($0.image != nil || !$0.text.isEmpty) }
+        cuesCast.sendIfChanged(due.map { SubtitleCue(text: $0.text, image: $0.image) })
     }
 
     /// Hears what `run` finds after its start: subtitle lines, picture

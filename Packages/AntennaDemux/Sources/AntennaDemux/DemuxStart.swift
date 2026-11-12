@@ -8,12 +8,16 @@ struct TrackStream: Sendable, Equatable {
     let stream: DemuxedStream
 }
 
-/// A subtitle line from the container, timed on the stream's clock.
+/// A subtitle line or picture from the container, timed on the stream's clock.
 struct TimedCue: Sendable, Equatable {
     let streamIndex: Int
     let start: CMTime
-    let end: CMTime
+    var end: CMTime
     let text: String
+    /// A DVB subtitle picture, nil for text.
+    var image: SubtitleImage?
+    /// True for a DVB page, which replaces the stream's earlier page when it shows.
+    var isPage = false
 }
 
 /// The picture changed size or dynamic range partway through, from `time`
@@ -85,10 +89,17 @@ extension DemuxStart {
             selectedSubtitle: selectedSubtitle)
     }
 
-    /// The tracks of `streams`: every sound, and the subtitles in a text format.
-    static func tracks(of streams: [DemuxedStream]) -> (audio: [TrackStream], subtitles: [TrackStream]) {
+    /// The tracks of `streams`: every sound, and the subtitles in a text
+    /// format or, when the build can decode them, DVB pictures. Teletext is
+    /// left out (playback-engine/picture-subtitles-in-broadcast-streams).
+    static func tracks(
+        of streams: [DemuxedStream], decodesPictures: Bool = DVBSubtitleDecoder.isAvailable
+    ) -> (audio: [TrackStream], subtitles: [TrackStream]) {
         let sounds = streams.filter { $0.kind == .audio }
-        let texts = streams.filter { $0.kind == .subtitle && SubtitleText.textCodecs.contains($0.codec) }
+        let texts = streams.filter { stream in
+            stream.kind == .subtitle
+                && (SubtitleText.textCodecs.contains(stream.codec) || (decodesPictures && stream.codec == DVBSubtitleDecoder.codec))
+        }
         func listed(_ streams: [DemuxedStream], _ prefix: String, _ kind: MediaTrack.Kind) -> [TrackStream] {
             zip(streams.indices, streams).map { number, stream in
                 TrackStream(

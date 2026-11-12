@@ -118,6 +118,21 @@ ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
     -c:a aac -b:a 48k -ac 2 -f mpegts "$out/channel.ts"
 
+# DVB picture subtitles in raw MPEG-TS: German sound, and German and English
+# subtitle streams. ffmpeg cannot draw text into pictures, so
+# make-pgs-subtitles.py writes picture subtitles (a white bar with a dark
+# band) and ffmpeg turns them into DVB subtitles. German shows from 0.5 to 2
+# seconds, English from 0.5 to 2 and from 3 to 4.5.
+python3 -I scripts/make-pgs-subtitles.py "$work/de.sup" 720x576 0.5-2
+python3 -I scripts/make-pgs-subtitles.py "$work/en.sup" 720x576 0.5-2,3-4.5
+ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
+    -fix_sub_duration -i "$work/de.sup" -fix_sub_duration -i "$work/en.sup" \
+    -map 0:v -map 1:a -map 2:s -map 3:s \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 48k -ac 2 -c:s dvbsub \
+    -metadata:s:a:0 language=ger -metadata:s:s:0 language=ger -metadata:s:s:1 language=eng \
+    -max_interleave_delta 0 -f mpegts "$out/dvb-subtitles.ts"
+
 # The same picture in Matroska and AVI.
 ff -i "$out/channel.ts" -c copy "$out/channel.mkv"
 # The same Matroska film with no index (Cues), as a muxer writing to a pipe
