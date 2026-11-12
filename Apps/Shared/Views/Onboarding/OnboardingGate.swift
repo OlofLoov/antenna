@@ -62,13 +62,13 @@ extension SourceConnector {
 
 extension OnboardingGate {
     /// On Apple TV, the sources to sign in when every source is an Xtream
-    /// login, a Stalker portal or a Jellyfin server and none of their logins
-    /// is on this device (first-run-onboarding/sign-in-again-on-an-apple-tv).
-    /// Empty elsewhere.
+    /// login, a Stalker portal, a Jellyfin server or a Channels DVR server
+    /// with a proxy login, and none of their logins is on this device
+    /// (first-run-onboarding/sign-in-again-on-an-apple-tv). Empty elsewhere.
     static func needingSignIn(_ records: [SourceRecord], loader: SourceLoader = .app) -> [SourceDescriptor] {
         #if os(tvOS)
             let sources = records.sorted { $0.sortOrder < $1.sortOrder }.compactMap(\.descriptor)
-            guard !sources.isEmpty, sources.count == records.count, sources.allSatisfy(\.kind.signsInOnAppleTV),
+            guard !sources.isEmpty, sources.count == records.count, sources.allSatisfy(\.signsInOnAppleTV),
                 !sources.contains(where: loader.hasLogin)
             else { return [] }
             return sources
@@ -79,9 +79,20 @@ extension OnboardingGate {
 }
 
 extension SourceKind {
-    /// The kinds whose login the Apple TV sign-in asks for.
+    /// The kinds whose login the Apple TV sign-in asks for. A Channels DVR
+    /// server joins them when it has a proxy login; see `SourceDescriptor.signsInOnAppleTV`.
     var signsInOnAppleTV: Bool {
         self == .xtream || self == .stalker || self == .jellyfin
+    }
+}
+
+extension SourceDescriptor {
+    /// True when the Apple TV asks for this source's login: an Xtream
+    /// source, Stalker portal or Jellyfin server, or a Channels DVR server
+    /// whose record names a Keychain item
+    /// (apple-tv-login-from-iphone/every-kind-of-source-with-a-login).
+    var signsInOnAppleTV: Bool {
+        LoginRequestPlan.carriesLogin(kind, hasCredentialKey: credentialKey != nil)
     }
 }
 

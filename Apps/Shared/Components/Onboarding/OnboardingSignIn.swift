@@ -4,22 +4,24 @@ import SwiftUI
 /// "Sign in on this Apple TV" (`TV-Onboard-SignIn`): a source that synced
 /// without its login, the server or portal filled in, empty login fields,
 /// and the sources still to sign in after this one. A portal asks for its
-/// MAC address, with the login and password optional.
+/// MAC address, with the login and password optional. The card beside the
+/// fields is the QR card (`TV-Onboard-SignIn-QR`) or the keyboard card.
 enum OnboardingSignIn {
-    struct Television: View {
+    /// The muted line naming the sources still to sign in, in order.
+    static func remaining(_ names: [String]) -> String? {
+        guard !names.isEmpty else { return nil }
+        let count = names.count == 1 ? "1 more source" : "\(names.count) more sources"
+        return "\(count) to sign in after this one: \(names.joined(separator: ", "))"
+    }
+
+    struct Television<Card: View>: View {
         /// The source's kind and address, and what the user types.
         @Binding var fields: SourceFields
         /// "1 more source to sign in after this one: Holiday flat"; nil for the last.
         let remaining: String?
         let status: OnboardingForm.Status
         let connect: () -> Void
-
-        /// The muted line naming the sources still to sign in, in order.
-        static func remaining(_ names: [String]) -> String? {
-            guard !names.isEmpty else { return nil }
-            let count = names.count == 1 ? "1 more source" : "\(names.count) more sources"
-            return "\(count) to sign in after this one: \(names.joined(separator: ", "))"
-        }
+        @ViewBuilder var card: Card
 
         var body: some View {
             HStack(alignment: .center, spacing: 80) {
@@ -77,7 +79,7 @@ enum OnboardingSignIn {
                     .padding(.top, 6)
                 }
                 .frame(width: 820)
-                OnboardingForm.TypeOnPhoneCard()
+                card
             }
             .foregroundStyle(Palette.text)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -88,10 +90,16 @@ enum OnboardingSignIn {
     }
 }
 
+extension OnboardingSignIn.Television where Card == OnboardingForm.TypeOnPhoneCard {
+    init(fields: Binding<SourceFields>, remaining: String?, status: OnboardingForm.Status, connect: @escaping () -> Void) {
+        self.init(fields: fields, remaining: remaining, status: status, connect: connect) { OnboardingForm.TypeOnPhoneCard() }
+    }
+}
+
 #Preview("Sign in on this Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
     @Previewable @State var fields = SourceFields(kind: .xtream, url: "http://tv.example-provider.net:8080")
     OnboardingSignIn.Television(
-        fields: $fields, remaining: OnboardingSignIn.Television.remaining(["Holiday flat"]), status: .init(), connect: {})
+        fields: $fields, remaining: OnboardingSignIn.remaining(["Holiday flat"]), status: .init(), connect: {})
 }
 
 #Preview("Sign in on this Apple TV, Stalker portal", traits: .fixedLayout(width: 1920, height: 1080)) {

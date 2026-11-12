@@ -3,18 +3,31 @@ import Foundation
 
 /// Where sealed logins wait for an Apple TV
 /// (apple-tv-login-from-iphone/only-the-apple-tv-that-showed-the-code-can-read-the-login):
-/// one delivery per code, kept until the TV deletes it or a sweep finds it
-/// older than ten minutes. `CloudKitLoginDrops` is the app's store;
-/// `InMemoryLoginDrops` stands in for it in tests, previews and UI tests.
+/// one delivery per code. Picking it up deletes the sealed box and leaves
+/// an empty marker, so a second sender learns the code was used; a sweep
+/// deletes markers and boxes older than ten minutes. `CloudKitLoginDrops`
+/// is the app's store; `InMemoryLoginDrops` stands in for it in tests,
+/// previews and UI tests.
 protocol LoginDropping: Sendable {
-    /// Saves a new delivery. A second save for the same code throws `.alreadyUsed`.
+    /// Saves a new delivery. A second save for the same code, even after
+    /// pickup, throws `.alreadyUsed`.
     func save(_ sealed: SealedLogin, token: PairingToken) async throws(LoginDropError)
     /// The delivery for a code, or nil when none is there.
-    func fetch(token: PairingToken) async throws(LoginDropError) -> SealedLogin?
+    func fetch(token: PairingToken) async throws(LoginDropError) -> LoginDrop?
+    /// Deletes the sealed box for a code and leaves the used marker.
+    func pickUp(token: PairingToken) async throws(LoginDropError)
     /// Deletes the delivery for a code; deleting one that is gone is not an error.
     func delete(token: PairingToken) async throws(LoginDropError)
     /// Deletes every delivery saved before `cutoff` and returns how many.
     @discardableResult func sweep(olderThan cutoff: Date) async throws(LoginDropError) -> Int
+}
+
+/// What the store holds for one code.
+enum LoginDrop: Equatable, Sendable {
+    /// Sealed and waiting for the TV.
+    case waiting(SealedLogin)
+    /// The TV took it; nothing secret is left.
+    case pickedUp
 }
 
 /// Why the drop store did not do what was asked.
@@ -49,7 +62,7 @@ enum LoginDrops {
 
 /// Deliveries kept in memory, with the time each was saved.
 actor InMemoryLoginDrops: LoginDropping {
-    private var drops: [String: (sealed: SealedLogin, savedAt: Date)] = [:]
+    private var drops: [String: (drop: LoginDrop, savedAt: Date)] = [:]
     private var failure: LoginDropError?
     private let now: @Sendable () -> Date
 
@@ -62,22 +75,29 @@ actor InMemoryLoginDrops: LoginDropping {
         failure = error
     }
 
-    /// How many deliveries are waiting.
+    /// How many deliveries and markers are kept.
     var count: Int { drops.count }
 
-    /// True when nothing is waiting.
+    /// True when nothing is kept.
     var isEmpty: Bool { drops.isEmpty }
 
     func save(_ sealed: SealedLogin, token: PairingToken) throws(LoginDropError) {
         if let failure { throw failure }
         let name = LoginDrops.recordName(token)
         guard drops[name] == nil else { throw .alreadyUsed }
-        drops[name] = (sealed, now())
+        drops[name] = (.waiting(sealed), now())
     }
 
-    func fetch(token: PairingToken) throws(LoginDropError) -> SealedLogin? {
+    func fetch(token: PairingToken) throws(LoginDropError) -> LoginDrop? {
         if let failure { throw failure }
-        return drops[LoginDrops.recordName(token)]?.sealed
+        return drops[LoginDrops.recordName(token)]?.drop
+    }
+
+    func pickUp(token: PairingToken) throws(LoginDropError) {
+        if let failure { throw failure }
+        let name = LoginDrops.recordName(token)
+        guard let kept = drops[name] else { return }
+        drops[name] = (.pickedUp, kept.savedAt)
     }
 
     func delete(token: PairingToken) throws(LoginDropError) {

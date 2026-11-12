@@ -268,7 +268,7 @@ extension OnboardingChecklistTests {
         #expect(model.fields.url == "http://\(host):8080")
         #expect(model.fields.username.isEmpty)
         #expect(model.signInsAfterThis == ["Holiday flat"])
-        #expect(OnboardingSignIn.Television.remaining(model.signInsAfterThis) == "1 more source to sign in after this one: Holiday flat")
+        #expect(OnboardingSignIn.remaining(model.signInsAfterThis) == "1 more source to sign in after this one: Holiday flat")
 
         await model.signIn(into: context)
         #expect(model.error == "Enter the username.")

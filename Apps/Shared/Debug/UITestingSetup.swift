@@ -27,8 +27,12 @@
         @MainActor static func pairingDependencies() -> SetupPairingModel.Dependencies? {
             guard let scenario = UITestingOnboarding.scenario() else { return nil }
             var dependencies = SetupPairingModel.Dependencies(
-                identity: FixedICloudIdentity(signedIn: scenario != .signedOut), activity: NoSetupActivity())
+                identity: FixedICloudIdentity(signedIn: scenario != .signedOut), activity: NoSetupActivity(),
+                drops: UITestingLoginDrops.store ?? InMemoryLoginDrops())
             dependencies.pollInterval = .milliseconds(500)
+            if let seconds = ProcessInfo.processInfo.environment[UITestingLoginDrops.waitVariable].flatMap(TimeInterval.init) {
+                dependencies.loginWait = seconds
+            }
             if let seconds = ProcessInfo.processInfo.environment[hintVariable].flatMap(TimeInterval.init) {
                 dependencies.hintDelay = seconds
             }
@@ -77,11 +81,13 @@
                 while pairing.link == nil {
                     guard (try? await Task.sleep(for: .milliseconds(200))) != nil else { return }
                 }
-                guard (try? await Task.sleep(for: .seconds(1))) != nil else { return }
+                guard (try? await Task.sleep(for: .seconds(1))) != nil, let link = pairing.link else { return }
                 let record = SourceRecord(descriptor: descriptor(kind))
                 record.kindRaw = kind
                 context.insert(record)
                 try? context.save()
+                // With -ui-testing-login-drops, the login follows the source.
+                await UITestingLoginDrops.deliver(for: [record.id], to: link)
             }
         }
 

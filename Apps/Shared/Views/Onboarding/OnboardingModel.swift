@@ -37,6 +37,8 @@ final class OnboardingModel {
     private(set) var signedIn = false
     /// The Apple TV's QR card while the details step shows (iphone-as-setup-device capability).
     var pairing: SetupPairingModel?
+    /// The sign-in step's QR card (apple-tv-login-from-iphone/the-apple-tv-sign-in-offers-a-qr-code).
+    var receiver: LoginReceiverModel?
     /// A login source sent from the iPhone that this Apple TV is signing in to.
     private(set) var arrival: SourceDescriptor?
     /// The fields as typed before `arrival`, restored when the user leaves the step.
@@ -135,7 +137,7 @@ final class OnboardingModel {
     /// portal filled in. Playlists are skipped.
     func startSignIn(_ sources: [SourceDescriptor]) {
         guard signIns.isEmpty, setups.isEmpty else { return }
-        signIns = sources.filter(\.kind.signsInOnAppleTV)
+        signIns = sources.filter(\.signsInOnAppleTV)
         prepareSignIn()
     }
 
@@ -158,34 +160,47 @@ final class OnboardingModel {
         error = nil
         connecting = true
         defer { connecting = false }
-        let host = source.url.host() ?? source.url.absoluteString
-        let reply: SourceConnector.Connection.Reply
         do {
-            reply = try await connector.probe(
-                source.kind, link: source.url, username: login.username, password: login.password, login: login.login, host: host)
-        } catch is CancellationError {
-            return
+            signedIn(try await LoginKeeper(connector: connector).keep(login, for: source, in: context))
         } catch {
-            self.error = ConnectFailure(error, host: host).message
-            return
+            if case .refused(let message) = error { self.error = message }
         }
-        let key = source.credentialKey ?? source.id.uuidString
-        do {
-            try connector.credentials.save(login, for: key)
-        } catch {
-            self.error = ConnectFailure.credentials("\(error)").message
-            return
+    }
+
+    /// Logins sent from the iPhone (apple-tv-login-from-iphone/the-apple-tv-checks-a-login-before-keeping-it):
+    /// each one for a source still to sign in is checked and kept as if
+    /// typed, others are ignored. A login that does not work puts its
+    /// source on screen with empty fields and the reason.
+    func receive(_ payload: LoginPayload, into context: ModelContext) async {
+        let wanted = payload.logins.filter { login in signIns.contains { $0.id == login.source } }
+        guard !wanted.isEmpty, !connecting else { return }
+        error = nil
+        connecting = true
+        defer { connecting = false }
+        var failure: (source: SourceDescriptor, message: String)?
+        for login in wanted {
+            guard let source = signIns.first(where: { $0.id == login.source }) else { continue }
+            do {
+                signedIn(try await LoginKeeper(connector: connector).keep(.init(login), for: source, in: context))
+            } catch {
+                guard case .refused(let message) = error else { return }
+                if failure == nil { failure = (source, message) }
+            }
         }
-        if source.credentialKey == nil {
-            let id = source.id
-            try? context.fetch(FetchDescriptor<SourceRecord>(predicate: #Predicate { $0.id == id })).first?.credentialKey = key
-            try? context.save()
-        }
-        var signed = source
-        signed.credentialKey = key
-        let connection = SourceConnector.Connection(descriptor: signed, reply: reply, login: login, inserted: false, createdCredential: nil)
+        guard let failure, let index = signIns.firstIndex(where: { $0.id == failure.source.id }) else { return }
+        signIns.insert(signIns.remove(at: index), at: 0)
+        prepareSignIn()
+        error = Self.deliveredFailure(failure.message)
+    }
+
+    /// The sign-in's message for a delivered login that did not work.
+    static func deliveredFailure(_ message: String) -> String {
+        "The login from your iPhone didn't work here. \(message)"
+    }
+
+    private func signedIn(_ connection: SourceConnector.Connection) {
         pendingSignedIn.append(connection)
-        signIns.removeFirst()
+        signIns.removeAll { $0.id == connection.descriptor.id }
         arrival = nil
         typedBeforeArrival = nil
         if signIns.isEmpty {
@@ -266,7 +281,7 @@ final class OnboardingModel {
     func received(_ source: SourceDescriptor) async {
         cancel()
         error = nil
-        guard source.kind.signsInOnAppleTV else { return await adopt(source) }
+        guard source.signsInOnAppleTV else { return await adopt(source) }
         typedBeforeArrival = fields
         fields.kind = source.kind
         fields.name = source.name
