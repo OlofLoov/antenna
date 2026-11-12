@@ -44,3 +44,15 @@ Design-system requirements that apply: "Nothing fake and nothing bundled", "Noth
 - [The 10-second background deadline is a guess] → can be settled during implementation.
 - [Logos show only for `https` links, so `http` logos drop out of Shortcuts] → can be settled during implementation.
 - [Stored reference formats cannot change once shipped] → a follow-up decision freezes them, and parsing accepts every format ever shipped.
+
+## Implementation decisions
+
+Made while building the change, with the user's go-ahead to proceed without questions.
+
+- Scope: widgets, Control Center, Live Activities, Spotlight and Focus filters stay out, as the user asked. Nothing here indexes channels or titles in Spotlight.
+- Open questions answered with the spec as written: a locked channel fails with the locked-group reply and never opens the unlock prompt; a hidden channel is left out of suggestions but can still be named and still plays from a saved shortcut; Open Search refuses before the unlock or without sources like every other action; Tune Channel plays on Live as a pick from the list would, inline on iPhone; Toggle Favorite acts on the channel playing in this process; a number-only query finds numbers, never names.
+- Matching goes through `ChannelMatcher`, built once per catalogue and kept, rather than folding every name per query. `Catalogue.channels(matching:limit:)` builds one per call for single use. Names are compared as folded UTF-8 bytes with a name order computed at build time, which keeps 50 000 channels under 50 ms in a debug build.
+- Exact matches win alone: a query that equals a channel's whole folded name returns only the channels with that name, and a number that equals a channel number returns only the channels with that number. Two equal matches still make Siri ask which. Without an exact match, names rank in Search's bands and numbers by prefix.
+- A gone channel or title has no name to say, since a reference holds only ids, so the reply reads "That channel is no longer in Cabin." The reply for a title whose source is gone is "That title's source is no longer in Antenna.", mirroring the channel one.
+- A name that looks like a link or a login ("://", "@", or a host and port such as "host.tv:8080") is replaced with "your source", "This channel" or "This title" in every reply and description. A ratio such as "16:9" stays.
+- A title reference accepts only `vod` and `series` Xtream title ids. Title ids hold the server host but no login, as the shelf already stores them.
