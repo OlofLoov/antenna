@@ -1,0 +1,12 @@
+#EXTM3U
+
+#EXTINF:-1 channel-id="nbc" tvg-id="nbc" tvg-chno="6000" tvg-logo="https://img.example/s28717.png?w=360&h=270" tvc-guide-stationid="20378" tvg-name="KGWDT" group-title="HD",NBC
+http://192.168.1.20:8089/devices/ANY/channels/6000/hls/master.m3u8?codec=copy
+#EXTINF:-1 channel-id="6.1" tvg-id="6.1" tvg-chno="6.1" tvg-logo="https://img.example/kgw.png" tvc-guide-stationid="19571" tvg-name="KGW" group-title="Antenna",KGW 8
+http://192.168.1.20:8089/devices/ANY/channels/6.1/hls/master.m3u8?codec=copy
+#EXTINF:-1 channel-id="6.2" tvg-id="6.2" tvg-chno="6.2" tvg-logo="https://img.example/kgwds.png" tvc-guide-stationid="19572" tvg-name="KGWDS" group-title="Antenna",
+http://192.168.1.20:8089/devices/ANY/channels/6.2/hls/master.m3u8?codec=copy
+#EXTINF:-1 channel-id="cnn" tvg-id="cnn" tvg-chno="202" tvg-logo="https://img.example/cnn.png" tvc-guide-stationid="58646" tvg-name="CNNHD" group-title="News",CNN
+http://192.168.1.20:8089/devices/ANY/channels/202/hls/master.m3u8?codec=copy
+#EXTINF:-1 channel-id="espn" tvg-id="espn" tvg-chno="206" tvg-logo="https://img.example/espn.png" tvc-guide-stationid="32645" tvg-name="ESPNHD" group-title="Sports",ESPN
+http://192.168.1.20:8089/devices/ANY/channels/206/hls/master.m3u8?codec=copy

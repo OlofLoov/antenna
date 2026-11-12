@@ -12,7 +12,8 @@ extension Channel: CustomStringConvertible, CustomDebugStringConvertible, Custom
         Mirror(
             self,
             children: [
-                "name": name, "group": group as Any, "epgID": epgID as Any, "number": number as Any, "hasCatchup": hasCatchup,
+                "name": name, "group": group as Any, "epgID": epgID as Any, "number": number as Any, "minorNumber": minorNumber as Any,
+                "hasCatchup": hasCatchup,
                 "catchupDays": catchupDays as Any, "sourceID": sourceID as Any, "position": position as Any,
             ], displayStyle: .struct)
     }

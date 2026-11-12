@@ -14,6 +14,9 @@ struct CatalogueIndex: Sendable {
     let keys: [RowKey]
     /// Assigned number per entry, the provider's or the fallback.
     let numbers: [Int]
+    /// The provider's minor number per entry, nil when it has none or its
+    /// number was not used.
+    let minors: [Int?]
     /// Named and ungrouped groups in display order, without `.favorites` and `.all`.
     let groups: [CatalogueGroup]
     /// Rows of each named or ungrouped group, sorted.
@@ -69,7 +72,10 @@ struct CatalogueIndex: Sendable {
         }
 
         let numbers = Self.assignNumbers(channels)
-        let allOrder = Self.sortByNumber(numbers)
+        let minors = channels.indices.map { entry in
+            channels[entry].number == numbers[entry] ? channels[entry].minorNumber : nil
+        }
+        let allOrder = Self.sortByMinor(Self.sortByNumber(numbers), numbers: numbers, minors: minors)
 
         var allRank = [Int](repeating: 0, count: channels.count)
         var groupRank = [Int](repeating: 0, count: channels.count)
@@ -87,6 +93,7 @@ struct CatalogueIndex: Sendable {
         self.channels = channels
         self.keys = keys
         self.numbers = numbers
+        self.minors = minors
         self.groups = Self.orderGroups(groupSlots, groupOrder: groupOrder)
         self.rowsByGroup = Dictionary(uniqueKeysWithValues: zip(groupSlots, slotRows))
         self.allRows = allRows
@@ -193,6 +200,24 @@ struct CatalogueIndex: Sendable {
             next[numbers[entry]] += 1
         }
         return order
+    }
+
+    /// `order` with each run of one major number sorted by minor number, a
+    /// missing minor first, ties kept in entry order. Runs without a minor
+    /// number are left alone.
+    private static func sortByMinor(_ order: [Int], numbers: [Int], minors: [Int?]) -> [Int] {
+        guard minors.contains(where: { $0 != nil }) else { return order }
+        var sorted = order
+        var start = 0
+        while start < sorted.count {
+            var end = start + 1
+            while end < sorted.count, numbers[sorted[end]] == numbers[sorted[start]] { end += 1 }
+            if end - start > 1, sorted[start..<end].contains(where: { minors[$0] != nil }) {
+                sorted[start..<end].sort { (minors[$0] ?? -1, $0) < (minors[$1] ?? -1, $1) }
+            }
+            start = end
+        }
+        return sorted
     }
 
     /// Per source in source order: the `groupOrder` names that have channels,
