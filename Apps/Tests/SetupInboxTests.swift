@@ -37,10 +37,10 @@ import Testing
     @Test("iphone-as-setup-device/scanning-opens-the-setup-form-on-the-iphone: a damaged or newer link opens the plain form")
     func damagedOrNewer() throws {
         let inbox = SetupInbox()
-        #expect(inbox.receive(try #require(URL(string: "https://antenna.codecrave.se/setup?v=1&t=broken"))))
+        #expect(inbox.receive(try #require(URL(string: "https://antenna.code-crave.se/setup?v=1&t=broken"))))
         #expect(inbox.pending?.kind == .damaged)
         inbox.take()
-        #expect(inbox.receive(try #require(URL(string: "https://antenna.codecrave.se/setup?v=3&t=whatever"))))
+        #expect(inbox.receive(try #require(URL(string: "https://antenna.code-crave.se/setup?v=3&t=whatever"))))
         #expect(inbox.pending?.kind == .newer)
         inbox.take()
         // Not a setup link at all: left to the other handlers, such as a shared file.

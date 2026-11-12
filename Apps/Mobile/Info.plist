@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AntennaPrivacyURL</key>
-	<string>https://codecrave.se/antenna/privacy</string>
+	<string>https://antenna.code-crave.se/privacy</string>
 	<key>AntennaTermsURL</key>
-	<string>https://codecrave.se/antenna/terms</string>
+	<string>https://antenna.code-crave.se/terms</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

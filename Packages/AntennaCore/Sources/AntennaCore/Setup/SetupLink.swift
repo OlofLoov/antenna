@@ -89,7 +89,7 @@ enum Base64URL {
 public struct SetupLink: Hashable, Sendable {
     /// The host serving the association file and the fallback page.
     /// An assumption until the hosting decision picks one.
-    public static let host = "antenna.codecrave.se"
+    public static let host = "antenna.code-crave.se"
     /// The newest version this build writes and reads.
     public static let version = "2"
     /// The versions this build reads.

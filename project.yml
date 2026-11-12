@@ -53,8 +53,8 @@ targets:
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
             LSItemContentTypes: [public.m3u-playlist]
-        AntennaTermsURL: https://codecrave.se/antenna/terms
-        AntennaPrivacyURL: https://codecrave.se/antenna/privacy
+        AntennaTermsURL: https://antenna.code-crave.se/terms
+        AntennaPrivacyURL: https://antenna.code-crave.se/privacy
         NSUserActivityTypes: [se.codecrave.antenna.setup]
     settings:
       base:
@@ -124,8 +124,8 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: se.codecrave.antenna.tv
             CFBundleURLSchemes: [antenna]
-        AntennaTermsURL: https://codecrave.se/antenna/terms
-        AntennaPrivacyURL: https://codecrave.se/antenna/privacy
+        AntennaTermsURL: https://antenna.code-crave.se/terms
+        AntennaPrivacyURL: https://antenna.code-crave.se/privacy
         UIBackgroundModes: [audio]
         NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
