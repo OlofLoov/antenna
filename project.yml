@@ -55,6 +55,7 @@ targets:
             LSItemContentTypes: [public.m3u-playlist]
         AntennaTermsURL: https://codecrave.se/antenna/terms
         AntennaPrivacyURL: https://codecrave.se/antenna/privacy
+        NSUserActivityTypes: [se.codecrave.antenna.setup]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna

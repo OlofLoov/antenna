@@ -2,8 +2,8 @@
 
 ## 1. Device checks and hosting
 
-- [ ] 1.1 Check on devices whether tvOS offers Handoff to a nearby iPhone, whether SwiftData posts CloudKit export events, and whether the TV target needs the associated domain, and record the answers in design.md
-- [ ] 1.2 Publish the association file and the plain fallback page on the chosen host, and verify the page has no scripts, images or third-party content
+- [ ] 1.1 Check on devices whether tvOS offers Handoff to a nearby iPhone, whether SwiftData posts CloudKit export events, and whether the TV target needs the associated domain, and record the answers in design.md. Open: needs an Apple TV and an iPhone on one iCloud account.
+- [ ] 1.2 Publish the association file and the plain fallback page on the chosen host, and verify the page has no scripts, images or third-party content. Open: the hosting decision and the team id are not made; `Web/setup/index.html` and its test are in the repo.
 
 ## 2. Setup link
 
@@ -19,11 +19,11 @@
 
 ## 4. iPhone, iPad and Mac
 
-- [ ] 4.1 Open the "Set up Apple TV" form from the link or Handoff on any screen, once per code, and verify UI tests including a damaged link, a newer link and the paywall
-- [ ] 4.2 Turn the form into the sending screen on Connect, and verify a UI test that it cannot be swiped away
-- [ ] 4.3 Show "Not sent yet" after 30 seconds or at once without iCloud, and "Handed to iCloud" on confirmation, and verify integration tests
+- [x] 4.1 Open the "Set up Apple TV" form from the link or Handoff on any screen, once per code, and verify UI tests including a damaged link, a newer link and the paywall
+- [x] 4.2 Turn the form into the sending screen on Connect, and verify a UI test that it cannot be swiped away
+- [x] 4.3 Show "Not sent yet" after 30 seconds or at once without iCloud, and "Handed to iCloud" on confirmation, and verify integration tests
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [ ] 5.2 `/opsx:verify` passes. Open until 1.1 and 1.2 are done.

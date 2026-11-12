@@ -126,7 +126,7 @@ import Testing
     @Test("iphone-as-setup-device/nothing-arrives-and-the-tv-says-why-that-might-be: an unknown kind is noted, not used")
     func unknownKind() {
         var arrivals = SetupArrivals(present: [], shownAt: shown)
-        #expect(arrivals.check([candidate("channelsDVR", after: 5), candidate("m3u", after: 6, address: false)]) == nil)
+        #expect(arrivals.check([candidate("plex", after: 5), candidate("m3u", after: 6, address: false)]) == nil)
         #expect(arrivals.sawUnusable)
         let playlist = candidate("m3u", after: 7)
         #expect(arrivals.check([playlist]) == .playlist(playlist.id))

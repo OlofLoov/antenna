@@ -96,7 +96,7 @@ final class SetupTVUITests: XCTestCase {
 
     // iphone-as-setup-device/nothing-arrives-and-the-tv-says-why-that-might-be
     func testASourceTheCardCannotSetUpAsksToUpdate() {
-        let app = launch("signedIn", send: "channelsDVR", hintSeconds: 4)
+        let app = launch("signedIn", send: "plex", hintSeconds: 4)
         openDetails(app)
         let hint = element(app, "onboarding.qr.hint")
         XCTAssertTrue(hint.waitForExistence(timeout: 12))

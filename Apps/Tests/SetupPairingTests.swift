@@ -213,7 +213,7 @@ import Testing
     @Test("iphone-as-setup-device/nothing-arrives-and-the-tv-says-why-that-might-be: a kind the card cannot set up asks to update")
     func hintForUnusableKind() async throws {
         let (_, pairing) = await onboarding()
-        try send("channelsDVR", name: "DVR", url: "http://dvr.test")
+        try send("plex", name: "DVR", url: "http://dvr.test")
         pairing.check()
         #expect(pairing.arrived == nil && pairing.hint == nil)
         clock.now += 120

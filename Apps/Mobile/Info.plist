@@ -48,6 +48,10 @@
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Antenna connects to TV servers on your home network when one of your sources points there.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>se.codecrave.antenna.setup</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

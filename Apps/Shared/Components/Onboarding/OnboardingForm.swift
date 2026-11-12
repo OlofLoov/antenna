@@ -36,16 +36,19 @@ enum OnboardingForm {
     /// iPhone, and the sheet on iPad and Mac: the type picker, the clipboard
     /// banner, the grouped fields and Connect pinned at the bottom, so it
     /// stays reachable at the largest text size.
-    struct Phone: View {
+    struct Phone<Header: View>: View {
         @Binding var fields: SourceFields
         @Binding var revealsPassword: Bool
         let status: Status
         let actions: Actions
+        /// Above the type picker: the "Opened from your Apple TV" banner, or nothing.
+        @ViewBuilder var header: Header
 
         var body: some View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
+                        header
                         KindPicker(kind: fields.kind, choose: actions.choose)
                         if status.clipboard != .hidden {
                             ClipboardBanner(offer: status.clipboard, fillIn: actions.fillIn)
@@ -382,5 +385,11 @@ enum OnboardingForm {
 extension OnboardingForm.Television where Side == OnboardingForm.TypeOnPhoneCard {
     init(fields: Binding<SourceFields>, status: OnboardingForm.Status, actions: OnboardingForm.Actions) {
         self.init(fields: fields, status: status, actions: actions) { OnboardingForm.TypeOnPhoneCard() }
+    }
+}
+
+extension OnboardingForm.Phone where Header == EmptyView {
+    init(fields: Binding<SourceFields>, revealsPassword: Binding<Bool>, status: OnboardingForm.Status, actions: OnboardingForm.Actions) {
+        self.init(fields: fields, revealsPassword: revealsPassword, status: status, actions: actions) { EmptyView() }
     }
 }
