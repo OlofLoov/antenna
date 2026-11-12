@@ -164,6 +164,7 @@ targets:
     sources:
       - Apps/TVTests
       - Apps/TopShelf/TopShelfItems.swift
+      - Apps/Tests/LoginSealTests.swift
       - path: Config/Antenna.storekit
         buildPhase: resources
     dependencies:
