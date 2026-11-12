@@ -32,5 +32,5 @@
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [ ] 6.2 `/opsx:verify` passes. Open: it reports task 5.2 incomplete until the FFmpeg release is published and the package points at it
