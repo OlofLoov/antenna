@@ -44,6 +44,7 @@
                 .modifier(GroupRulesFeed(changed: live.rulesChanged))
                 .task { await live.observeEngine() }
                 .task { await live.player.observeDetails() }
+                .task { await live.player.timeshift.run() }
                 .task { await live.player.observeAirPlay() }
                 .task { await live.player.observePictureInPicture() }
                 .task { await live.publishNowPlaying() }

@@ -65,6 +65,8 @@ final class LiveModel {
         var pictureInPicture: PictureInPictureHooks?
         /// The tiles' engines and limit when multi-view starts on a Mac.
         var multiView = MultiViewModel.Dependencies()
+        /// Builds Start over's catch-up addresses.
+        var catchup = CatchupAddresses()
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -111,7 +113,7 @@ final class LiveModel {
     @ObservationIgnored private let languages: ChannelLanguages
     /// Stores the last channel and counts a channel as watched.
     @ObservationIgnored let session: SessionTracker
-    @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
+    @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]
     @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
     @ObservationIgnored private var failures: [UUID: String] = [:]
@@ -144,6 +146,8 @@ final class LiveModel {
                 pictureInPicture: dependencies.pictureInPicture))
         session.recorded = { [weak self] list in self?.recentsChanged(list.entries) }
         player.reload = { [weak self] channel in self?.load(channel) }
+        player.timeshift.restartChannel = { [weak self] in self?.restartWithNewBuffer() }
+        wireStartOver()
         player.hasLogin = { [weak self] id in
             guard let self, let source = descriptors[id] else { return false }
             return self.dependencies.hasLogin(source)
@@ -324,7 +328,7 @@ final class LiveModel {
         }
         guard channel == playing else { return tune(channel) }
         switch playback {
-        case .paused: Task { await engine.play() }
+        case .paused: player.timeshift.userPlay()
         case .failed, .idle: tune(channel)
         case .loading, .playing, .buffering, .reconnecting, .ended: break
         }
@@ -339,12 +343,12 @@ final class LiveModel {
 
     /// Loads `channel` without telling the player it changed, so Try
     /// again keeps its spinner.
-    private func load(_ channel: Channel) {
+    func load(_ channel: Channel) {
         tuning?.cancel()
         tuning = Task { [weak self] in
             guard let self else { return }
             do {
-                try await session.load(channel, on: engine, options: languages.options(for: channel))
+                try await session.load(channel, on: engine, options: languages.options(for: channel).recordingLive())
             } catch {
                 if let failure = error as? PlaybackFailure, playing == channel { player.loadFailed(failure) }
                 return
@@ -419,15 +423,11 @@ final class LiveModel {
 
 // The setters these need are private to this file.
 extension LiveModel {
-    /// Pauses a playing channel, plays a paused one.
+    /// Pauses a playing channel, plays a paused one, as the user's own pause.
     func playPause() {
         // Space and the lock screen pause no tile (multi-view/sound-follows-the-highlighted-tile).
         guard playing != nil, multiView == nil else { return }
-        if isPaused {
-            Task { await engine.play() }
-        } else {
-            Task { await engine.pause() }
-        }
+        player.timeshift.toggle(isPaused: isPaused)
     }
 
     /// Fills the window, or the iPhone screen, with the picture, or goes

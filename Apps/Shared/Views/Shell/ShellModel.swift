@@ -27,6 +27,8 @@
             var watchSleep: (@MainActor (Duration) async throws -> Void)?
             /// The tiles' engines and limit when multi-view starts.
             var multiView = MultiViewModel.Dependencies()
+            /// Builds Start over's catch-up addresses.
+            var catchup = CatchupAddresses()
         }
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
@@ -81,6 +83,7 @@
                     engine: dependencies.engine, sleep: dependencies.sleep, network: dependencies.network,
                     slowDelay: dependencies.slowDelay))
             player.reload = { [weak self] channel in self?.load(channel) }
+            wireStartOver()
             player.hasLogin = { [weak self] id in
                 guard let self, let source = descriptors[id] else { return false }
                 return self.dependencies.hasLogin(source)
@@ -324,7 +327,8 @@
             } else {
                 await resume()
                 // The Guide's small picture plays on a stream the user paused (tv-guide-grid/the-channel-keeps-playing-in-a-small-picture).
-                if target == .guide, await engine.state == .paused { await engine.play() }
+                // A pause the user made stays (timeshift-catch-up-and-start-over/leaving-the-app-calls-and-other-interruptions).
+                if target == .guide, !player.timeshift.userPaused, await engine.state == .paused { await engine.play() }
             }
         }
 
@@ -358,6 +362,7 @@
                 guard !Task.isCancelled, tab.isContent else { return }
                 switch await engine.state {
                 case .playing, .loading, .buffering, .reconnecting:
+                    player.timeshift.interrupted()
                     await engine.pause()
                     pausedByShell = true
                 case .idle, .paused, .ended, .failed:
@@ -371,7 +376,7 @@
             pauseTimer = nil
             guard pausedByShell else { return }
             pausedByShell = false
-            await engine.play()
+            player.timeshift.interruptionEnded()
         }
 
     }

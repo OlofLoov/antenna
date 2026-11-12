@@ -95,6 +95,62 @@ import Testing
         await harness.stop()
     }
 
+    @Test("timeshift-catch-up-and-start-over/start-the-programme-from-the-beginning the live buffer is kept until catch-up plays")
+    func catchupKeepsBufferUntilItPlays() async throws {
+        let harness = try await TimeshiftHarness()
+        try await harness.loadPaced("channel.ts")
+        await harness.engine.play()
+        #expect(await eventually { harness.status.window != nil })
+        let folder = harness.folders()
+
+        await harness.engine.parkTimeshift()
+        try await harness.engine.load(harness.url("film.mkv"), options: PlaybackOptions(isLive: false))
+        #expect(harness.folders() == folder, "the parked buffer stays while catch-up starts")
+        await harness.engine.play()
+        #expect(await eventually { harness.engine.state == .playing })
+        await harness.engine.dropParkedTimeshift()
+        #expect(await eventually { harness.folders().isEmpty })
+        await harness.stop()
+    }
+
+    @Test("timeshift-catch-up-and-start-over/when-the-provider-s-catch-up-fails a failed catch-up brings live back with its buffer")
+    func failedCatchupResumesBuffer() async throws {
+        let harness = try await TimeshiftHarness()
+        try await harness.loadPaced("channel.ts")
+        await harness.engine.play()
+        #expect(await eventually(timeout: .seconds(15)) { (harness.status.window?.duration ?? 0) > 3 })
+        let window = try #require(harness.status.window)
+
+        await harness.engine.parkTimeshift()
+        await #expect(throws: PlaybackFailure.notFound) {
+            try await harness.engine.load(harness.url("missing.ts"), options: PlaybackOptions(isLive: false))
+        }
+        try await harness.engine.resumeParkedTimeshift(at: window.start)
+        #expect(await eventually { harness.engine.state == .playing })
+        #expect(await eventually { harness.status.recording == .recording })
+        #expect(await eventually { (harness.status.playhead?.timeIntervalSince(window.start) ?? 99) < 1.5 })
+        #expect(await harness.server.requests(for: "/channel.ts").count == 1, "the recording never stopped")
+        await harness.stop()
+    }
+
+    @Test("timeshift-catch-up-and-start-over/logins-stay-private no log line holds the login of a live or catch-up address")
+    func logsAreRedacted() async throws {
+        let lines = TimeshiftLog()
+        let harness = try await TimeshiftHarness(log: lines)
+        await harness.server.always("/channel.ts", .paced(bytesPerSecond: Self.rate))
+        let live = try #require(URL(string: harness.url("channel.ts").absoluteString + "?username=secret-user&password=secret-pass"))
+        try await harness.engine.load(live, options: harness.options)
+        await harness.engine.play()
+        #expect(await eventually { harness.status.window != nil })
+        await harness.engine.parkTimeshift()
+        let catchup = harness.url("timeshift/secret-user/secret-pass/60/2026-11-04:21-00/42.ts")
+        await #expect(throws: PlaybackFailure.notFound) { try await harness.engine.load(catchup, options: PlaybackOptions(isLive: false)) }
+        try await harness.engine.resumeParkedTimeshift(at: nil)
+        await harness.stop()
+        #expect(!lines.all.isEmpty)
+        #expect(lines.all.allSatisfy { !$0.contains("secret") }, "\(lines.all)")
+    }
+
     @Test("timeshift-catch-up-and-start-over/when-the-stream-cannot-be-recorded a stream the buffer cannot record plays as before")
     func cannotRecord() async throws {
         let harness = try await TimeshiftHarness()
@@ -140,6 +196,18 @@ import Testing
     }
 }
 
+/// The lines an engine logs.
+final class TimeshiftLog: @unchecked Sendable {
+    private let lock = NSLock()
+    private var lines: [String] = []
+
+    func add(_ line: String) {
+        lock.withLock { lines.append(line) }
+    }
+
+    var all: [String] { lock.withLock { lines } }
+}
+
 /// Appends that start failing for lack of space after a number of them.
 final class FailingFiles: TimeshiftFiles, @unchecked Sendable {
     private let disk = DiskTimeshiftFiles()
@@ -174,10 +242,12 @@ private final class TimeshiftHarness {
     let options: PlaybackOptions
     private var statuses: Recorded<TimeshiftStatus>?
 
-    init(limits: TimeshiftLimits = .standard(for: .mac), files: any TimeshiftFiles = DiskTimeshiftFiles()) async throws {
+    init(
+        limits: TimeshiftLimits = .standard(for: .mac), files: any TimeshiftFiles = DiskTimeshiftFiles(), log: TimeshiftLog = TimeshiftLog()
+    ) async throws {
         server = try FixtureServer()
         base = try await server.start()
-        engine = DemuxEngine(sleep: { _ in try await Task.sleep(for: .milliseconds(10)) }, log: { _ in })
+        engine = DemuxEngine(sleep: { _ in try await Task.sleep(for: .milliseconds(10)) }, log: { log.add($0) })
         store = TimeshiftStore(root: FileManager.default.temporaryDirectory.appending(path: "timeshift-\(UUID().uuidString)"))
         options = PlaybackOptions(timeshift: TimeshiftRequest(store: store, limits: limits, files: files))
         statuses = Recorded(await engine.timeshift())

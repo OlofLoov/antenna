@@ -98,6 +98,8 @@ final class PlayerModel {
     @ObservationIgnored var hasLogin: @MainActor (UUID) -> Bool = { _ in true }
 
     @ObservationIgnored let engine: any PlaybackEngine
+    /// Pause, rewind and back to live for the channel on screen.
+    @ObservationIgnored let timeshift: TimeshiftModel
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var waitTimer: Task<Void, Never>?
     @ObservationIgnored private var recovery: Task<Void, Never>?
@@ -106,6 +108,7 @@ final class PlayerModel {
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
         engine = dependencies.engine
+        timeshift = TimeshiftModel(.init(engine: dependencies.engine, sleep: dependencies.sleep))
         pictureInPicture = dependencies.pictureInPicture ?? .app(dependencies.engine)
         if let store = dependencies.volume {
             volume = store.restored()
@@ -185,6 +188,7 @@ final class PlayerModel {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await self.observeStates() }
             group.addTask { await self.observeDetails() }
+            group.addTask { await self.timeshift.run() }
         }
     }
 
@@ -212,6 +216,9 @@ final class PlayerModel {
             waitTimer?.cancel()
             waiting = .reconnecting(caption: PlayerStatusText.reconnecting(attempt: attempt, of: total))
         case .failed(let reason):
+            // A catch-up start that fails falls back to live with no error
+            // (timeshift-catch-up-and-start-over/when-the-provider-s-catch-up-fails).
+            guard !timeshift.ignoresFailures else { return stopWaiting() }
             fail(reason)
         case .playing, .paused, .idle, .ended:
             stopWaiting()
@@ -235,6 +242,7 @@ final class PlayerModel {
             closeOverlays()
             tracks = .empty
             presentation = nil
+            timeshift.channelChanged()
         }
         subject = new
         clearFailure()

@@ -88,6 +88,21 @@ public actor RoutedEngine: PlaybackEngine {
 
     public func seekToLive() async { await active?.seekToLive() }
 
+    /// Only the demuxer records, so the buffer is parked there whichever
+    /// engine plays the catch-up programme.
+    public func parkTimeshift() async { await demuxer.parkTimeshift() }
+
+    public func resumeParkedTimeshift(at date: Date?) async throws {
+        generation += 1
+        let mine = generation
+        let demuxer = self.demuxer
+        await activate(demuxer)
+        guard generation == mine else { throw CancellationError() }
+        try await demuxer.resumeParkedTimeshift(at: date)
+    }
+
+    public func dropParkedTimeshift() async { await demuxer.dropParkedTimeshift() }
+
     public func selectAudio(_ id: MediaTrack.ID) async { await active?.selectAudio(id) }
     public func selectSubtitle(_ id: MediaTrack.ID?) async { await active?.selectSubtitle(id) }
 

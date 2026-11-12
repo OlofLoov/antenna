@@ -33,7 +33,10 @@ extension ShellUITests {
         launchPlaying()
         press(.playPause)
         XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 5))
+        expectEngine("paused loads=1 file=a1.ts")
+        press(.playPause)
         expectEngine("playing loads=1 file=a1.ts")
+        XCTAssertTrue(element("zapBar.bar").exists)
         expectGone("zapBar.bar", timeout: 9)
         expectEngine("playing loads=1 file=a1.ts")
     }
@@ -60,11 +63,16 @@ extension ShellUITests {
 }
 
 extension ShellUITests {
-    /// Play/pause shows the bar for five fresh seconds, so checks after a
-    /// slow launch do not race its hiding.
+    /// Play/pause twice, pausing and playing again, shows the bar for five
+    /// fresh seconds, so checks after a slow launch do not race its hiding.
     func freshBar() {
         press(.playPause)
         XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 5))
+        let engine = element("shell.debug.engine")
+        let paused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value BEGINSWITH 'paused'"), object: engine)
+        guard XCTWaiter().wait(for: [paused], timeout: 1.5) == .completed else { return }
+        press(.playPause)
+        expect(engine, "NOT (value BEGINSWITH 'paused')")
     }
 
     /// Tunes the row named `name` in the overlay, from group `group` when given.
