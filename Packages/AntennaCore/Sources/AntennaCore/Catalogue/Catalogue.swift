@@ -109,6 +109,14 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         return index.numbers[entry]
     }
 
+    /// The number to show for `key`, with the provider's part after the dot
+    /// when it has one (channel-catalogue/numbers-with-a-part-after-the-dot).
+    /// Nil where `number(for:)` is nil.
+    public func channelNumber(for key: RowKey) -> ChannelNumber? {
+        guard let major = number(for: key), let entry = index.entry(for: key) else { return nil }
+        return ChannelNumber(major: major, minor: index.minors[entry])
+    }
+
     /// The source group `channel` belongs to, `.named` when its group has a
     /// non-whitespace character and `.ungrouped` otherwise. Nil when the
     /// channel has no `sourceID`.

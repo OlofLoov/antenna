@@ -10,6 +10,9 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
     /// XMLTV channel id (`tvg-id`) used to attach guide data.
     public var epgID: String?
     public var number: Int?
+    /// The part after the dot of an over-the-air number such as 6.1, where
+    /// `number` holds the 6. Nil for a whole number.
+    public var minorNumber: Int?
     public var hasCatchup: Bool
     /// Catch-up window in days, when the source advertises one.
     public var catchupDays: Int?
@@ -36,6 +39,7 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         logoURL: URL? = nil,
         epgID: String? = nil,
         number: Int? = nil,
+        minorNumber: Int? = nil,
         hasCatchup: Bool = false,
         catchupDays: Int? = nil,
         catchupMode: CatchupMode? = nil,
@@ -51,6 +55,7 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         self.logoURL = logoURL
         self.epgID = epgID
         self.number = number
+        self.minorNumber = minorNumber
         self.hasCatchup = hasCatchup
         self.catchupDays = catchupDays
         self.catchupMode = catchupMode
@@ -64,6 +69,6 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
     /// that encodes a channel keeps them
     /// (timeshift-catch-up-and-start-over/logins-stay-private).
     enum CodingKeys: String, CodingKey {
-        case id, name, streamURL, group, logoURL, epgID, number, hasCatchup, catchupDays, sourceID, position
+        case id, name, streamURL, group, logoURL, epgID, number, minorNumber, hasCatchup, catchupDays, sourceID, position
     }
 }

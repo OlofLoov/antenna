@@ -7,7 +7,20 @@ import Foundation
 /// Unknown directives are ignored. Parsing is line-based and allocation-light,
 /// so playlists with tens of thousands of entries stay fast.
 public struct M3UParser: Sendable {
-    public init() {}
+    /// Where a channel's name comes from.
+    public enum NameSource: Sendable {
+        /// `tvg-name`, then the title after the comma when it is absent or empty.
+        case tvgName
+        /// The title after the comma, then `tvg-name` when the title is empty
+        /// (m3u-playlists/title-first-channel-names).
+        case title
+    }
+
+    public var nameSource: NameSource
+
+    public init(nameSource: NameSource = .tvgName) {
+        self.nameSource = nameSource
+    }
 
     /// A byte-order mark at the start of `text` is ignored.
     public func parse(_ text: String) -> Playlist {
@@ -55,7 +68,7 @@ public struct M3UParser: Sendable {
             }
             if entry.group == nil { entry.group = groupOverride }
             index += 1
-            channels.append(entry.channel(url: url, fallbackIndex: index))
+            channels.append(entry.channel(url: url, fallbackIndex: index, nameSource: nameSource))
             pending = nil
             groupOverride = nil
         }
@@ -70,24 +83,45 @@ public struct M3UParser: Sendable {
         var attributes: [String: String]
         var group: String?
 
-        func channel(url: URL, fallbackIndex: Int) -> Channel {
+        func channel(url: URL, fallbackIndex: Int, nameSource: NameSource = .tvgName) -> Channel {
+            let tvgName = attributes["tvg-name"].flatMap { $0.isEmpty ? nil : $0 }
+            let name =
+                switch nameSource {
+                case .tvgName: tvgName ?? title
+                case .title: title.isEmpty ? tvgName ?? "" : title
+                }
+            let number = attributes["tvg-chno"].flatMap(M3UParser.channelNumber)
             let epgID = attributes["tvg-id"].flatMap { $0.isEmpty ? nil : $0 }
             let catchup = attributes["catchup"] ?? attributes["tvg-rec"]
             let catchupDays = (attributes["catchup-days"] ?? attributes["tvg-rec"]).flatMap(Int.init)
             return Channel(
                 id: epgID.map { "\($0)#\(url.absoluteString)" } ?? "m3u#\(url.absoluteString)#\(fallbackIndex)",
-                name: attributes["tvg-name"].flatMap { $0.isEmpty ? nil : $0 } ?? title,
+                name: name,
                 streamURL: url,
                 group: group,
                 logoURL: attributes["tvg-logo"].flatMap(URL.init(string:)),
                 epgID: epgID,
-                number: attributes["tvg-chno"].flatMap(Int.init),
+                number: number?.major,
+                minorNumber: number?.minor,
                 hasCatchup: catchup != nil && catchup != "0",
                 catchupDays: catchupDays,
                 catchupMode: attributes["catchup"].flatMap(CatchupMode.init(attribute:)),
                 catchupSource: attributes["catchup-source"].flatMap { $0.isEmpty ? nil : $0 },
                 catchupCorrectionHours: attributes["catchup-correction"].flatMap(M3UParser.hours)
             )
+        }
+    }
+
+    /// "104" as 104 with no minor number, "6.1" as 6 and 1
+    /// (m3u-playlists/minor-channel-numbers). Nil for anything else.
+    static func channelNumber(_ text: String) -> (major: Int, minor: Int?)? {
+        let parts = text.trimmingCharacters(in: .whitespaces).split(separator: ".", omittingEmptySubsequences: false)
+        let digits = parts.allSatisfy { !$0.isEmpty && $0.allSatisfy(\.isASCII) && $0.allSatisfy(\.isNumber) }
+        guard digits, let major = Int(parts[0]) else { return nil }
+        switch parts.count {
+        case 1: return (major, nil)
+        case 2: return Int(parts[1]).map { (major, $0) }
+        default: return nil
         }
     }
 

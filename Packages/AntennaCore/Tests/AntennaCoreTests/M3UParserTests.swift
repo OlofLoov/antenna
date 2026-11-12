@@ -260,3 +260,30 @@ import Testing
         #expect(playlist.groups == ["UK | Sports", "Kids, Family", "News"])
     }
 }
+
+@Suite struct M3UNameAndNumberTests {
+    private let entry = """
+        #EXTM3U
+        #EXTINF:-1 tvg-name="KGWDT" tvg-chno="6.1",NBC
+        http://s/a.ts
+        #EXTINF:-1 tvg-name="KGWDT" tvg-chno="104",
+        http://s/b.ts
+        """
+
+    @Test("m3u-playlists/title-first-channel-names the title wins, tvg-name stands in for an empty one")
+    func titleFirst() {
+        let titled = M3UParser(nameSource: .title).parse(entry).channels
+        #expect(titled.map(\.name) == ["NBC", "KGWDT"])
+        #expect(M3UParser().parse(entry).channels.map(\.name) == ["KGWDT", "KGWDT"])
+    }
+
+    @Test("m3u-playlists/minor-channel-numbers a number with a part after the dot")
+    func minorNumbers() {
+        let channels = M3UParser().parse(entry).channels
+        #expect(channels[0].number == 6 && channels[0].minorNumber == 1)
+        #expect(channels[1].number == 104 && channels[1].minorNumber == nil)
+        for text in ["6.", ".1", "6.1.2", "six", "-3", "6,1"] {
+            #expect(M3UParser.channelNumber(text) == nil, "\(text)")
+        }
+    }
+}

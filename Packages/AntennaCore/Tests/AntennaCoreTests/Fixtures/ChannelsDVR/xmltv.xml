@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tv SYSTEM "xmltv.dtd">
+<tv generator-info-name="channels-dvr-fixture">
+  <channel id="nbc">
+    <display-name>NBC</display-name>
+    <display-name>6000</display-name>
+    <display-name>KGWDT</display-name>
+    <icon src="https://img.example/s28717.png"/>
+  </channel>
+  <channel id="6.1">
+    <display-name>KGW 8</display-name>
+    <display-name>6.1</display-name>
+    <display-name>KGW</display-name>
+  </channel>
+  <channel id="6.2">
+    <display-name>6.2</display-name>
+    <display-name>KGWDS</display-name>
+  </channel>
+  <channel id="cnn">
+    <display-name>CNN</display-name>
+    <display-name>202</display-name>
+  </channel>
+  <channel id="espn">
+    <display-name>ESPN</display-name>
+    <display-name>206</display-name>
+  </channel>
+  <programme channel="nbc" start="20261112180000 +0000" stop="20261112183000 +0000">
+    <title>Evening News</title>
+  </programme>
+  <programme channel="nbc" start="20261112183000 +0000" stop="20261112190000 +0000">
+    <title>Game Night</title>
+  </programme>
+  <programme channel="6.1" start="20261112180000 +0000" stop="20261112190000 +0000">
+    <title>Local News at Six</title>
+  </programme>
+  <programme channel="6.2" start="20261112180000 +0000" stop="20261112190000 +0000">
+    <title>Classic Western</title>
+  </programme>
+  <programme channel="cnn" start="20261112180000 +0000" stop="20261112190000 +0000">
+    <title>The Situation Room</title>
+  </programme>
+  <programme channel="espn" start="20261112180000 +0000" stop="20261112210000 +0000">
+    <title>Monday Night Football</title>
+  </programme>
+</tv>
