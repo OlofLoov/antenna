@@ -83,6 +83,7 @@
                         .groupSpokenLabel(group, count: live.catalogue.count(of: group))
                         .accessibilityIdentifier("browse.group.\(index)")
                     }
+                    LockedGroupChips()
                 }
                 .task { proxy.scrollTo(live.group) }
             }

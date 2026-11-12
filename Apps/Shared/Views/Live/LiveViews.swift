@@ -43,6 +43,13 @@
                 }
                 .modifier(SourceDeletions(removed: live.sourceDeleted, defaults: live.session.store.defaults))
                 .modifier(GroupRulesFeed(changed: live.rulesChanged))
+                .modifier(UnlockGroupPrompt(name: live.catalogue.label(of:), opened: live.unlocked))
+                .modifier(
+                    LockedChannelGuard(
+                        isLocked: live.playingIsLocked, name: live.playing?.name ?? "This channel",
+                        pause: { Task { await live.engine.pause() } }, resume: { Task { await live.engine.play() } },
+                        leave: live.leaveLockedChannel)
+                )
                 .task { await live.observeEngine() }
                 .task { await live.player.observeDetails() }
                 .task { await live.player.timeshift.run() }

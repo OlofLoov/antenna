@@ -75,6 +75,7 @@
                         .id(group)
                         .accessibilityIdentifier("guide.group.\(index)")
                     }
+                    LockedGroupChips()
                 }
                 .task { proxy.scrollTo(live.group) }
             }

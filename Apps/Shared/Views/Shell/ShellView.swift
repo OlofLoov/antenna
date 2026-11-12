@@ -152,7 +152,7 @@
             .task { await model.player.run() }
             .task { await model.trackSession() }
             .modifier(SourceDeletions(removed: model.sourceDeleted, defaults: model.session.store.defaults))
-            .modifier(GroupRulesFeed { groupRules = $0 })
+            .modifier(ShellGroupLocks(model: model, catalogue: catalogue) { groupRules = $0 })
             .modifier(multiViewHost)
             .onChange(of: scenePhase) { _, phase in
                 // Leaving the app stops the ten-second count.

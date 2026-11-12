@@ -102,4 +102,25 @@ final class GroupsUITests: XCTestCase {
         XCTAssertTrue(element(app, "groups.member.00000000-0000-0000-0000-0000000000D1.2").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "groups.member.00000000-0000-0000-0000-0000000000D2.0").exists)
     }
+
+    // group-management/unlock-with-the-passcode
+    // group-management/locked-channels-stay-out-of-reach
+    func testPickingALockedGroupAsksForThePasscodeThenShowsIt() {
+        continueAfterFailure = false
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-live", "channels", "-ui-testing-groups", "locked"]
+        app.launch()
+        let locked = element(app, "browse.locked.named.00000000-0000-0000-0000-0000000000D1.Sport")
+        XCTAssertTrue(locked.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["Sport"].exists)
+        // The chip row scrolls sideways; the locked chip comes after the open ones.
+        element(app, "browse.group.0").swipeLeft()
+        locked.tap()
+        XCTAssertTrue(element(app, "groups.passcode").waitForExistence(timeout: 5))
+        type(app, "2580")
+        let sport = app.descendants(matching: .any).matching(
+            NSPredicate(format: "identifier BEGINSWITH 'browse.group.' AND label == 'Sport'"))
+        XCTAssertTrue(sport.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertFalse(locked.exists)
+    }
 }

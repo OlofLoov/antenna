@@ -20,18 +20,18 @@
 
 - [x] 4.1 Hide locked channels, counts and numbers while locks are closed, and verify with a core test citing `group-management/locked-channels-stay-out-of-reach`
 - [x] 4.2 Set the first passcode and store only a salted verifier, and verify with an integration test citing `group-management/lock-a-group-with-a-passcode`
-- [ ] 4.3 Show the prompt on locked groups and open the locks on the right passcode, and verify with a UI test citing `group-management/unlock-with-the-passcode`
+- [x] 4.3 Show the prompt on locked groups and open the locks on the right passcode, and verify with a UI test citing `group-management/unlock-with-the-passcode`
 - [x] 4.4 Add the per-device lockout that survives relaunch, and verify with an integration test citing `group-management/guessing-the-passcode-is-slow`
 - [x] 4.5 Close locks on Lock now, relaunch and idle, and verify with an integration test citing `group-management/locks-close-again-on-their-own`
 - [x] 4.6 Add Forgot passcode with device authentication on iPhone, iPad and Mac, and verify with a UI test citing `group-management/reset-a-forgotten-passcode`
-- [ ] 4.7 Pause and prompt when the playing channel becomes locked, with the current-group fallback, and verify with an integration test citing `group-management/a-channel-that-gets-locked-stops-playing`
+- [x] 4.7 Pause and prompt when the playing channel becomes locked, with the current-group fallback, and verify with an integration test citing `group-management/a-channel-that-gets-locked-stops-playing`
 
 ## 5. Screens and sync
 
 - [x] 5.1 Build the Groups screen on every platform from the boards, reached from a Groups row in Sources and Settings, and check the 400-group first-frame budget
-- [ ] 5.2 Check on two devices that hide, rename, lock and an own group sync while locks stay closed, citing `group-management/changes-follow-you-to-every-device`
+- [ ] 5.2 Check on two devices that hide, rename, lock and an own group sync while locks stay closed, citing `group-management/changes-follow-you-to-every-device` (open: needs two devices on one iCloud account; CloudKit does not sync between simulators)
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `group-management/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.1 Each requirement has a test citing `group-management/<requirement-slug>`
+- [ ] 6.2 `/opsx:verify` passes (open until 5.2 is done)

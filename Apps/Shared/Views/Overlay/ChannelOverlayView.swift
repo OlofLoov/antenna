@@ -22,8 +22,19 @@
         /// Start over for the playing channel's programme on now, nil while it cannot work
         /// (timeshift-catch-up-and-start-over/start-over-shows-only-when-it-can-work).
         var startOver: (() -> Void)?
+        @Environment(\.unlockGroup) private var unlock
+        /// The locked group last picked; it opens once the passcode adds it to the list.
+        @State private var asked: CatalogueGroup?
 
         var body: some View {
+            layout.onChange(of: catalogue.groups) { _, groups in
+                guard let asked, groups.contains(asked) else { return }
+                self.asked = nil
+                model.show(asked)
+            }
+        }
+
+        private var layout: some View {
             ChannelOverlay.Layout {
                 ChannelOverlay.GroupColumn {
                     ForEach(Array(catalogue.groups.enumerated()), id: \.element) { index, group in
@@ -37,6 +48,17 @@
                         .focused(focus, equals: .overlay(.group(group)))
                         .groupSpokenLabel(group, count: catalogue.count(of: group))
                         .accessibilityIdentifier("overlay.group.\(index)")
+                    }
+                    ForEach(catalogue.lockedGroups, id: \.self) { group in
+                        ChannelOverlay.GroupRow(
+                            title: catalogue.label(of: group), systemImage: "lock.fill", count: 0, look: .plain
+                        ) {
+                            asked = group
+                            unlock?(group)
+                        }
+                        .focused(focus, equals: .overlay(.group(group)))
+                        .accessibilityLabel("\(catalogue.label(of: group)), locked")
+                        .accessibilityIdentifier("overlay.locked.\(group.storageKey)")
                     }
                 } search: {
                     // The picker for a multi-view tile has no Search.
