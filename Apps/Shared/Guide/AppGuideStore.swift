@@ -14,6 +14,9 @@ final class AppGuideStore {
     /// screen. Kept apart from `index` because download progress changes it
     /// several times a second.
     private(set) var statuses: [UUID: GuideSourceStatus] = [:]
+    /// Each source's channels as the loaders last handed them over, for the
+    /// Guide sources screen's list.
+    private(set) var channels: [UUID: [Channel]] = [:]
     @ObservationIgnored private let engine: GuideEngine
     @ObservationIgnored private var knownSources: Set<UUID> = []
     @ObservationIgnored private var listeners: [Task<Void, Never>] = []
@@ -167,6 +170,19 @@ extension AppGuideStore: @MainActor GuideStore {
 
     func update(channels: [Channel]) async {
         engine.update(channels: channels)
+        if let id = channels.first?.sourceID, channels.allSatisfy({ $0.sourceID == id }) {
+            self.channels[id] = channels
+        } else {
+            for (id, list) in Dictionary(grouping: channels, by: \.sourceID) {
+                guard let id else { continue }
+                self.channels[id] = list
+            }
+        }
+    }
+
+    /// The links of the source's guides, for the add form's duplicate check.
+    func guideLinks(sourceID: UUID) async -> [URL] {
+        await engine.guideLinks(sourceID: sourceID)
     }
 
     func register(epgURLs: [URL], for sourceID: UUID) async {
@@ -174,6 +190,7 @@ extension AppGuideStore: @MainActor GuideStore {
     }
 
     func remove(sourceID: UUID) async {
+        channels[sourceID] = nil
         await engine.remove(sourceID: sourceID)
     }
 }

@@ -72,6 +72,7 @@ struct SourceDetailsScreen: View {
             if let editor, record.url != nil {
                 SourceFieldsSection(editor: editor)
             }
+            GuideRowSection(id: record.id)
             Section {
                 if record.url != nil {
                     Button("Refresh now") { refresher?.refresh([record.id]) }
@@ -214,5 +215,27 @@ private struct SourceFieldsSection: View {
     /// The dots stand for a saved password; a portal without one shows that the field is optional.
     private var passwordPrompt: String {
         editor.kind == .stalker && !editor.hasPassword ? "Optional" : "••••••••"
+    }
+}
+
+/// The Guide row: how many channels have no guide, and the Guide sources
+/// screen behind it (guide-sources-and-channel-mapping capability).
+private struct GuideRowSection: View {
+    let id: UUID
+    @Environment(\.guideStore) private var store
+
+    var body: some View {
+        Section {
+            NavigationLink {
+                GuideSourcesScreen(id: id)
+            } label: {
+                LabeledContent("Guide") {
+                    if let count = GuideSourcesModel.missingCount(id, store: store) {
+                        Text(count == 1 ? "1 channel without guide" : "\(count) channels without guide")
+                    }
+                }
+            }
+            .accessibilityIdentifier("settings.details.guide.sources")
+        }
     }
 }

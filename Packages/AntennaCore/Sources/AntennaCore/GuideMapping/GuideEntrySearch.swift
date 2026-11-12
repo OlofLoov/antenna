@@ -24,6 +24,11 @@ public struct GuideEntry: Sendable, Equatable, Identifiable {
 }
 
 extension GuideIndex {
+    /// The display name the source's highest loaded guide gives `id`.
+    public func entryName(sourceID: UUID, id: String) -> String? {
+        sources[sourceID]?.layers.lazy.compactMap { $0.guide.names[id] }.first
+    }
+
     /// Every guide id the source's turned-on, loaded guides list or have
     /// programmes for.
     public func entries(sourceID: UUID) -> [GuideEntry] {
@@ -54,6 +59,11 @@ public struct GuideEntrySearch: Sendable {
         public var entries: [GuideEntry]
         /// Every match, shown or not.
         public var total: Int
+
+        public init(entries: [GuideEntry], total: Int) {
+            self.entries = entries
+            self.total = total
+        }
     }
 
     private struct Folded: Sendable {
