@@ -21,9 +21,19 @@ The system SHALL use every guide link a playlist names, the guide link saved wit
 - **THEN** the provider's own guide is listed turned off, and the user can turn it on
 
 #### Scenario: No guide
-- **GIVEN** a playlist with no guide link, or a Stalker portal without one
+- **GIVEN** a playlist with no guide link
 - **WHEN** the app works out where its guide lives
 - **THEN** the source has no guide
+
+#### Scenario: Stalker portal without a guide link
+- **GIVEN** a Stalker portal source with no guide link entered
+- **WHEN** the app works out where its guide lives
+- **THEN** the source uses the portal's own guide
+
+#### Scenario: Stalker session turned down while loading the guide
+- **GIVEN** a Stalker portal guide download that the portal turns down
+- **WHEN** the guide loads
+- **THEN** the portal session is renewed once and the download is tried once more
 
 #### Scenario: Link changed on another device
 - **GIVEN** a guide link changed on another device
