@@ -9,16 +9,31 @@
     /// select hide it at once.
     @MainActor @Observable
     final class ZapBarModel {
-        static let showFor = Duration.seconds(5)
+        nonisolated static let showFor = Duration.seconds(5)
+
+        /// `showFor`, or in Debug builds the time a UI test launched with.
+        nonisolated static var hideAfterAtLaunch: Duration {
+            #if DEBUG
+                UITestingShell.zapBarHideAfter
+            #else
+                showFor
+            #endif
+        }
 
         private(set) var isVisible = false
         /// The channel the bar describes.
         private(set) var channel: Channel?
 
+        @ObservationIgnored private let hideAfter: Duration
         @ObservationIgnored private let sleep: @MainActor (Duration) async throws -> Void
         @ObservationIgnored private var hideTimer: Task<Void, Never>?
 
-        init(sleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
+        /// `hideAfter` is how long the bar stays after the last change, `showFor` unless a UI test sets it.
+        init(
+            hideAfter: Duration = ZapBarModel.showFor,
+            sleep: @escaping @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+        ) {
+            self.hideAfter = hideAfter
             self.sleep = sleep
         }
 
@@ -58,9 +73,9 @@
             isVisible = true
             hideTimer?.cancel()
             guard !kept else { return }
-            hideTimer = Task { [weak self, sleep] in
+            hideTimer = Task { [weak self, sleep, hideAfter] in
                 do {
-                    try await sleep(Self.showFor)
+                    try await sleep(hideAfter)
                 } catch {
                     return
                 }

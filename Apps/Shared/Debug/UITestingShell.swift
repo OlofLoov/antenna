@@ -161,6 +161,13 @@
 
     #if os(tvOS)
         extension UITestingShell {
+            /// How long the zap bar stays after the last change:
+            /// `UITESTING_ZAP_BAR_SECONDS`, or the app's five seconds when unset.
+            static var zapBarHideAfter: Duration {
+                let seconds = ProcessInfo.processInfo.environment["UITESTING_ZAP_BAR_SECONDS"].flatMap(Double.init)
+                return seconds.map { .seconds($0) } ?? ZapBarModel.showFor
+            }
+
             /// The shell's dependencies for the launch scenario, or nil.
             @MainActor
             static func dependencies() -> ShellModel.Dependencies? {
