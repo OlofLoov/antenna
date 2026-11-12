@@ -90,7 +90,7 @@ The system SHALL play a picked channel full screen on Apple TV and in Live elsew
 - **THEN** it plays as it does from the Movies or Series section
 
 ### Requirement: Pick a programme
-The system SHALL play the channel of a picked programme that is on now and open the guide at a picked later programme on every device. Watching a later programme from there on iPhone, iPad or Mac SHALL play its channel and show the programme as "Later" under what is on next until the channel changes or the programme ends.
+The system SHALL play the channel of a picked programme that is on now and open the guide at a picked later programme on every device. Watching a later programme from there on iPhone, iPad or Mac SHALL play its channel and show the programme as "Later" under what is on next until the channel changes or the programme ends. On iPhone, iPad and Mac a later programme's row SHALL carry a bell that sets or removes a reminder without opening anything.
 
 #### Scenario: A programme on now
 - **GIVEN** a programme on now in the results
@@ -107,6 +107,11 @@ The system SHALL play the channel of a picked programme that is on now and open 
 - **WHEN** the user taps Watch
 - **THEN** its channel plays in Live and the programme shows as "Later" with its day, time and title beneath what is on next
 - **AND** the line stays until the user changes channel or the programme ends
+
+#### Scenario: The bell on a later programme
+- **GIVEN** a later programme in the results on iPhone, iPad or Mac
+- **WHEN** the user taps the bell at the end of its row
+- **THEN** a reminder is set, or removed if it had one, and the results stay as they were
 
 ### Requirement: Narrow to one kind
 The system SHALL show only one kind of result when the user taps its chip on iPad, Mac or iPhone, listing every guide match, with counts on each chip and a total on All, a grayed-out "0" chip when empty, and Movies and Series chips only when those sections exist.

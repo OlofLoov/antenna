@@ -115,7 +115,7 @@ The system SHALL highlight what is on now on the playing channel's row when the 
 - **THEN** the highlight is on the first row
 
 ### Requirement: The panel describes the highlighted programme
-The system SHALL show in the panel when the highlighted programme is on, its channel, title, times and length, category and description when known, picture quality for the playing channel, progress when on now, and a Watch button and nothing else.
+The system SHALL show in the panel when the highlighted programme is on, its channel, title, times and length, category and description when known, picture quality for the playing channel, progress when on now, a Watch button, and Remind me right of Watch for a programme that has not started, and nothing else.
 
 #### Scenario: A highlighted programme
 - **GIVEN** a programme is highlighted
@@ -123,7 +123,7 @@ The system SHALL show in the panel when the highlighted programme is on, its cha
 - **THEN** it shows whether it is on now or which day and time it starts, the channel, the title, the times and length
 - **AND** the category and description when the guide has them
 - **AND** the picture quality for the playing channel, and how far in it is when on now
-- **AND** a Watch button and nothing else
+- **AND** a Watch button, with Remind me right of it when the programme has not started, and nothing else
 
 #### Scenario: A programme with no title
 - **GIVEN** the highlighted programme has no title

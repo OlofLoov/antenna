@@ -182,3 +182,11 @@ The system SHALL let the user change which screen opens at launch, how many hour
 - **GIVEN** Settings open with unsaved changes
 - **WHEN** the purchase ends
 - **THEN** the paywall replaces Settings and the unsaved changes are lost
+
+### Requirement: Reach your reminders
+The system SHALL list a Reminders row in Settings that opens the Reminders page and shows how many upcoming reminders there are, with no count when there are none.
+
+#### Scenario: Reminders in Settings
+- **GIVEN** Settings on any device
+- **WHEN** the user looks at the list
+- **THEN** a Reminders row shows the number of upcoming reminders, or no number at zero, and opens the Reminders page

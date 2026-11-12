@@ -20,7 +20,7 @@ User flow: the user picks Guide from the tab bar and the channel keeps playing i
 **Non-Goals:**
 - Group switching inside the guide.
 - Zooming the time scale.
-- Remind me and Start over, both hidden.
+- Start over, hidden. Remind me, added by `add-programme-reminders`, sits right of Watch for a programme that has not started.
 
 ## Decisions
 

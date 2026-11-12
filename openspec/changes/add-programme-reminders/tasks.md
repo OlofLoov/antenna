@@ -2,7 +2,7 @@
 
 ## 1. Amendments to other changes
 
-- [ ] 1.1 Amend the guide grid, channel overlay, search, settings and phone guide changes with the Remind me placements, and verify each names the button or row
+- [x] 1.1 Amend the guide grid, channel overlay, search, settings and phone guide changes with the Remind me placements, and verify each names the button or row
 
 ## 2. Reminder record and logic in AntennaCore
 
