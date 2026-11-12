@@ -48,6 +48,16 @@ actor PosterCache {
         return poster
     }
 
+    /// The poster from memory or disk, never the network; nil when it was
+    /// never loaded or has been trimmed. The Top Shelf tiles use it.
+    func cached(for url: URL) -> Poster? {
+        let key = Self.key(url)
+        if let kept = memory.object(forKey: key as NSString) { return kept }
+        guard let data = try? Data(contentsOf: directory.appending(path: key)), let poster = Poster(data: data) else { return nil }
+        remember(poster, key: key)
+        return poster
+    }
+
     private func load(_ url: URL, key: String) async -> Poster? {
         let file = directory.appending(path: key)
         if let data = try? Data(contentsOf: file), let poster = Poster(data: data) {

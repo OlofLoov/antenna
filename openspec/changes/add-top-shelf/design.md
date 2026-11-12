@@ -50,3 +50,9 @@ The extension cannot open the app's database or guide cache. The shared App Grou
 - Continue watching on the shelf takes titles in progress only. A series offered as "Next episode" in the app is left out: its bar would read as finished, and the requirement names titles in progress.
 - A snapshot over 256 KB halves the programmes kept per favorite until it fits, so the programme on now always survives.
 - `unresolvedFavorites` above zero with nothing else to show gives a blank shelf, not the add-favorites tile. A cleared snapshot (unlock lapsed) has zero and gives the tile.
+- `add-tv-channel-overlay` shipped logos through `AsyncImage`, with no logo cache of its own. The writer reads a logo from `URLCache.shared`, which `AsyncImage` fills, and never sends a request. `PosterCache.cached(for:)` reads memory and disk only.
+- The hand-off sits behind `TopShelfStoring` in AntennaCore. `TopShelfFolder` is the App Group folder, and tests use a temporary folder or an in-memory fake. Without the App Group, as in an unsigned simulator build, `TopShelfFolder.shared()` is nil and nothing is written.
+- A favorite counts as unresolved when its source exists and has not loaded with channels, which covers a source still loading, waiting for its login, offline or failed. A favorite whose channel is gone from a loaded source does not count, so it cannot keep the shelf blank forever.
+- An episode's "S2 E4" comes from the series' episode list once the app has loaded it. Before that the tile shows the series name alone.
+- `TopShelfSync` lives on the shell, under the profile gate, so it reads the current profile's catalogue and Continue watching. A profile switch rebuilds the shell, whose first change starts a write.
+- A lapsed unlock clears the summary from the window root (`TopShelfLock`), since the shell is not built while the paywall shows. It also runs at launch when the app starts locked.

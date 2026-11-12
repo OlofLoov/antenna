@@ -153,6 +153,7 @@
             .modifier(SourceDeletions(removed: model.sourceDeleted, defaults: model.session.store.defaults))
             .modifier(ShellGroupLocks(model: model, catalogue: catalogue) { groupRules = $0 })
             .modifier(multiViewHost)
+            .modifier(TopShelfSync(model: model, catalogue: catalogue))
             .onChange(of: scenePhase) { _, phase in
                 // Leaving the app stops the ten-second count.
                 guard phase == .active else { return model.session.interrupt() }
@@ -243,13 +244,6 @@
             model.tab == .live && !model.barVisible && !model.pickerOpen && model.tuned != nil && model.player.panel == nil
         }
 
-        private var barHasFocus: Bool {
-            switch focus {
-            case .tab, .settings, .profile: true
-            case .picture, .retry, .signIn, .panel, .liveScreen, .content, .overlay, nil: false
-            }
-        }
-
         private var catalogueInputs: ShellCatalogueInputs {
             ShellCatalogueInputs(
                 channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile, rules: groupRules)
@@ -260,11 +254,6 @@
                 if let scripted = UITestingShell.guide() { return scripted }
             #endif
             return .store(guideStore)
-        }
-
-        private var overlayFocus: OverlayFocus? {
-            if case .overlay(let target) = focus { return target }
-            return nil
         }
 
         /// The info bar shows on full-screen Live with nothing else over the picture.
@@ -431,6 +420,18 @@
 
     /// The player's layers and inputs: the spinner, the error, the info panel.
     extension ShellScreen {
+        private var barHasFocus: Bool {
+            switch focus {
+            case .tab, .settings, .profile: true
+            case .picture, .retry, .signIn, .panel, .liveScreen, .content, .overlay, nil: false
+            }
+        }
+
+        private var overlayFocus: OverlayFocus? {
+            if case .overlay(let target) = focus { return target }
+            return nil
+        }
+
         /// `switchProfile` after the engine stops; nil outside a profile gate.
         fileprivate var stoppingFirst: (@MainActor () -> Void)? {
             guard let switchProfile else { return nil }
