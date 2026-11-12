@@ -15,6 +15,9 @@
             enum Kind: Equatable {
                 /// "Set up Apple TV" for this link.
                 case setup(SetupLink)
+                /// "Sign in your Apple TV" for a code that asks for logins
+                /// (apple-tv-login-from-iphone/the-iphone-asks-before-it-sends).
+                case signIn(SetupLink)
                 /// A link from a newer Antenna: the plain form with a line asking to update.
                 case newer
                 /// A setup link that does not parse: the plain form, no banner, no error.
@@ -37,7 +40,7 @@
         func receive(_ url: URL) -> Bool {
             let kind: Request.Kind
             do {
-                kind = .setup(try SetupLink(url: url))
+                kind = Self.kind(of: try SetupLink(url: url))
             } catch .notASetupLink {
                 return false
             } catch .unsupportedVersion {
@@ -52,7 +55,11 @@
         /// The Handoff offer, holding the code in its user info.
         func receive(handoff info: [AnyHashable: Any]?) {
             guard let link = SetupLink(userInfo: info) else { return }
-            open(.setup(link))
+            open(Self.kind(of: link))
+        }
+
+        private static func kind(of link: SetupLink) -> Request.Kind {
+            link.asksForLogins ? .signIn(link) : .setup(link)
         }
 
         /// Marks the code on screen as used; Continue calls it.
@@ -69,7 +76,12 @@
         /// sheet is open is dropped.
         private func open(_ kind: Request.Kind) {
             guard pending == nil else { return }
-            if case .setup(let link) = kind, used.contains(link.token) { return }
+            switch kind {
+            case .setup(let link), .signIn(let link):
+                if used.contains(link.token) { return }
+            case .newer, .damaged:
+                break
+            }
             pending = Request(kind: kind)
         }
     }
@@ -107,7 +119,11 @@
         func body(content: Content) -> some View {
             content
                 .sheet(item: Binding(get: { inbox?.pending }, set: { if $0 == nil { inbox?.take() } })) { request in
-                    SetupFromTVScreen(request: request, use: { inbox?.use($0) }, close: { inbox?.take() })
+                    if case .signIn(let link) = request.kind {
+                        SendLoginsScreen(link: link, use: { inbox?.use($0) }, close: { inbox?.take() })
+                    } else {
+                        SetupFromTVScreen(request: request, use: { inbox?.use($0) }, close: { inbox?.take() })
+                    }
                 }
         }
     }

@@ -66,8 +66,17 @@ actor InMemoryLoginDrops: LoginDropping {
     private var failure: LoginDropError?
     private let now: @Sendable () -> Date
 
-    init(now: @escaping @Sendable () -> Date = { Date.now }) {
+    /// `failure`, when given, is thrown by every call until `fail(with: nil)`.
+    init(now: @escaping @Sendable () -> Date = { Date.now }, failure: LoginDropError? = nil) {
         self.now = now
+        self.failure = failure
+    }
+
+    /// Picks up every waiting delivery, as a TV would; for UI tests.
+    func pickUpWaiting() {
+        for (name, kept) in drops where kept.drop != .pickedUp {
+            drops[name] = (.pickedUp, kept.savedAt)
+        }
     }
 
     /// Every later call throws `error`, or works again for nil.
