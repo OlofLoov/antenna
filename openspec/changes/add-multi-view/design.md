@@ -60,3 +60,9 @@ Made while building, without a review round. Each names what was picked and why.
 - The tile limit reads the device model from `hw.machine`, or the simulator's model identifier, and a Mac's architecture at build time.
 - The overlay never opens over a failed playing channel, since select on the error is Try again, so "Add to multi-view" cannot show there in the first place.
 - The stream line in the info panel names the player by the router's pick when one engine takes both routes, as the shell's scripted UI-test engine does now that it is routed.
+- On a Mac, multi-view replaces the Live detail column. While it is open the window lays out as if it were narrower than 904 pt, so the sidebar folds and the list header's sidebar button brings it back. The tile area's minimum width (1024 minus the 352 pt list and its divider) holds the window at 1024 pt; SwiftUI grows a narrower window to its content's minimum.
+- "The screen is too narrow" means the Mac's main screen is under 1024 pt wide. Command-Shift-M adds the channel under the list's keyboard ring.
+- A click in the list changes the selected tile's channel, and the list's selected fill marks that tile's channel. The single channel stays as it was until multi-view ends.
+- Tiles play at the window's volume level, and mute alone picks the tile heard. When multi-view ends, the single player's level and mute are set again from the volume store.
+- Now Playing shows the selected tile's channel, playing unless that tile failed; Space and the lock screen's play and pause do nothing while tiles play.
+- `LiveModel.swift` and `LiveRegularView.swift` were near their limits: the guide-text helpers and `LiveModel.Dependencies.live` moved to `LiveModel+Text.swift`, `LiveDetails` moved to `LiveViews.swift`, and the multi-view additions sit in same-file extensions or new files.

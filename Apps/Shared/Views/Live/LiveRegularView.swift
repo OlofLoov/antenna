@@ -113,7 +113,7 @@
 
         private var columns: some View {
             GeometryReader { proxy in
-                let columns = LiveColumns(width: proxy.size.width)
+                let columns = LiveColumns(width: live.multiView == nil ? proxy.size.width : min(proxy.size.width, 903))
                 ZStack(alignment: .topLeading) {
                     HStack(spacing: 0) {
                         if columns == .all {
@@ -406,6 +406,7 @@
             ZStack {
                 Button("Find a channel") { filterFocused = true }
                     .keyboardShortcut("f", modifiers: .command)
+                LiveMultiViewKey(cursor: cursor)
                 Group {
                     Button("Next channel") { move(1) }
                         .keyboardShortcut(.downArrow, modifiers: [])
@@ -449,6 +450,14 @@
         @Environment(LiveModel.self) private var live
 
         var body: some View {
+            if let multiView = live.multiView {
+                MultiViewWindow(model: multiView)
+            } else {
+                details
+            }
+        }
+
+        private var details: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     toggles
@@ -467,31 +476,6 @@
                 .padding(20)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-    }
-
-    /// The details panel for the playing channel, with up to three
-    /// programmes after the current one.
-    struct LiveDetails: View {
-        let channel: Channel
-        @Environment(LiveModel.self) private var live
-
-        var body: some View {
-            TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                let text = live.nowText(for: channel, at: context.date)
-                Browse.Panel(
-                    channel: channel.name,
-                    now: .init(
-                        title: text.title, times: text.times, meta: text.meta, summary: text.summary,
-                        progress: text.progress),
-                    next: text.next.map { .init(time: LiveModel.time($0.start), title: $0.title) }
-                ) {
-                    Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
-                } trailing: {
-                    LiveFavoriteButton(channel: channel)
-                        .environment(\.browseMetrics, .regular)
-                }
-            }
         }
     }
 #endif

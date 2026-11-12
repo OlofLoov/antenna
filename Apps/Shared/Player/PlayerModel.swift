@@ -134,6 +134,12 @@ final class PlayerModel {
         setVolume(volume + (up ? PlayerVolumeStore.step : -PlayerVolumeStore.step))
     }
 
+    /// Sets the engines to the level and mute shown, as when multi-view
+    /// hands its kept tile back.
+    func restoreVolume() {
+        applyVolume()
+    }
+
     private func volumeChanged() {
         applyVolume()
         dependencies.volume?.write(volume: volume, muted: muted)

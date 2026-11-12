@@ -63,6 +63,8 @@ final class LiveModel {
         var nowPlayingInterval = Duration.seconds(5)
         /// The Picture in Picture window; nil watches the engine's.
         var pictureInPicture: PictureInPictureHooks?
+        /// The tiles' engines and limit when multi-view starts on a Mac.
+        var multiView = MultiViewModel.Dependencies()
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -97,6 +99,8 @@ final class LiveModel {
     /// The description of the last failed source in source order
     /// (source-management/load-failure-is-recorded). Never shown on screen.
     private(set) var error: String?
+    /// Multi-view in the Mac window, nil while one channel plays.
+    var multiView: MultiViewModel?
 
     @ObservationIgnored let engine: any PlaybackEngine
     @ObservationIgnored let programmes: OverlayGuide
@@ -286,6 +290,7 @@ final class LiveModel {
         let all = sources.flatMap { channelsBySource[$0.id] ?? [] }
         error = sources.last { failures[$0.id] != nil }.flatMap { failures[$0.id] }
         guard all != channels else { return }
+        if multiView != nil { Task { await multiViewChannelsChanged() } }
         channels = all
         catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents)
         names = ChannelNameIndex(catalogue)
@@ -326,6 +331,11 @@ final class LiveModel {
     /// when it failed or never started it loads again.
     func pick(_ channel: Channel) {
         restore.channel = nil
+        // In multi-view the list fills the selected tile (multi-view/change-a-tile-s-channel).
+        if let multiView {
+            Task { await multiView.change(multiView.session.selected, to: channel) }
+            return
+        }
         guard channel == playing else { return tune(channel) }
         switch playback {
         case .paused: Task { await engine.play() }
@@ -385,16 +395,6 @@ final class LiveModel {
         tune(playing)
     }
 
-    /// Pauses a playing channel, plays a paused one.
-    func playPause() {
-        guard playing != nil else { return }
-        if isPaused {
-            Task { await engine.play() }
-        } else {
-            Task { await engine.pause() }
-        }
-    }
-
     /// Shows the player controls and hides them again when `ControlsTimer`
     /// says (live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them).
     /// The pointer leaving shows nothing that was hidden.
@@ -419,12 +419,6 @@ final class LiveModel {
         controlsShown = false
     }
 
-    /// Fills the window, or the iPhone screen, with the picture, or goes
-    /// back to the list (live-tv-on-iphone-ipad-mac/full-screen). The channel plays on.
-    func setFullScreen(_ on: Bool) {
-        fullScreen = on && playing != nil
-    }
-
     private func stop() {
         later = nil
         playing = nil
@@ -437,32 +431,46 @@ final class LiveModel {
     }
 }
 
+// The setters these need are private to this file.
 extension LiveModel {
-    /// What the now-playing line and the details say about `channel` at `date`.
-    func nowText(for channel: Channel, at date: Date) -> LiveNowText {
-        let panel = programmes.panel(for: channel, at: date)
-        return LiveNowText(
-            channel: channel.name, number: RowKey(channel).flatMap(catalogue.number(for:)), state: programmes.state(channel),
-            current: panel.now, next: panel.next, now: date, time: Self.time)
+    /// Pauses a playing channel, plays a paused one.
+    func playPause() {
+        // Space and the lock screen pause no tile (multi-view/sound-follows-the-highlighted-tile).
+        guard playing != nil, multiView == nil else { return }
+        if isPaused {
+            Task { await engine.play() }
+        } else {
+            Task { await engine.pause() }
+        }
     }
 
-    /// A programme's start or end in the user's locale.
-    static func time(_ date: Date) -> String {
-        date.formatted(date: .omitted, time: .shortened)
+    /// Fills the window, or the iPhone screen, with the picture, or goes
+    /// back to the list (live-tv-on-iphone-ipad-mac/full-screen). The channel plays on.
+    func setFullScreen(_ on: Bool) {
+        fullScreen = on && playing != nil
     }
-}
 
-extension LiveModel.Dependencies {
-    /// The engine, loader, Keychain check and guide the app runs on.
-    /// The language picks are `profile`'s on this device.
-    @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID = Profile.mainID) -> Self {
-        .init(
-            engine: RoutedEngine.app(),
-            load: { try await loader.load($0) },
-            hasLogin: { loader.hasLogin($0) },
-            guide: guide,
-            programmes: .store(guide),
-            languages: ChannelLanguageStore(profile: profile),
-            recents: RecentsStore(profile: profile))
+    /// The options a channel opens with, its remembered languages among them.
+    var languageOptions: @MainActor (Channel) -> PlaybackOptions {
+        { [languages] in languages.options(for: $0) }
+    }
+
+    /// Multi-view ended with `channel`'s player now playing in the window
+    /// with no reload, or with every tile stopped when nil
+    /// (multi-view/leave-multi-view). It counts as one channel change, and
+    /// the channel is the last one.
+    func multiViewEnded(keeping channel: Channel?) async {
+        multiView = nil
+        guard let channel else { return stop() }
+        later = nil
+        playing = channel
+        player.tuned(subject(for: channel))
+        session.tuned(channel)
+        if let key = LastChannelKey(channel) { session.store.write(key) }
+        let state = await engine.state
+        playback = state
+        player.stateChanged(state)
+        session.stateChanged(state)
+        player.restoreVolume()
     }
 }
