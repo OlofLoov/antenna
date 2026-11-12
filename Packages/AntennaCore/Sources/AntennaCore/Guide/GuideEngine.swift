@@ -268,7 +268,7 @@ public actor GuideEngine {
         var credential: (username: String, password: String)?
         if source.epgURL == nil {
             switch source.kind {
-            case .m3u:
+            case .m3u, .m3uFile:
                 guard playlistLinks[id] != nil else { return }
             case .xtream:
                 let lookup = source.credentialKey.map(configuration.credential) ?? .missing

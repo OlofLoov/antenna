@@ -12,6 +12,8 @@ final class SourceRefresher {
     struct Dependencies {
         var load: @Sendable (SourceDescriptor) async throws -> Playlist
         var hasLogin: @Sendable (SourceDescriptor) -> Bool
+        /// True for a file source whose text has not synced yet.
+        var waitsForICloud: @Sendable (SourceDescriptor) -> Bool = { _ in false }
         var lastLoads: LastLoadStore = LastLoadStore()
         var guide: AppGuideStore?
         /// How long one source may take before it counts as unreachable.
@@ -20,7 +22,9 @@ final class SourceRefresher {
 
         /// Loads through `loader`, the network and the Keychain.
         static func app(loader: SourceLoader, guide: AppGuideStore?) -> Self {
-            Self(load: { try await loader.load($0) }, hasLogin: { loader.hasLogin($0) }, guide: guide)
+            Self(
+                load: { try await loader.load($0) }, hasLogin: { loader.hasLogin($0) }, waitsForICloud: { loader.waitsForICloud($0) },
+                guide: guide)
         }
     }
 
@@ -35,6 +39,9 @@ final class SourceRefresher {
     @ObservationIgnored private var reloader: (([UUID]) -> Void)?
     @ObservationIgnored private var queue: Task<Void, Never>?
     @ObservationIgnored private var guideWatch: Task<Void, Never>?
+    /// Imported file sources, which change only when re-imported and so
+    /// never refresh (local-m3u-file-import/import-and-watch).
+    @ObservationIgnored private var fileSources: Set<UUID> = []
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -56,7 +63,7 @@ final class SourceRefresher {
     /// False when an Xtream source's login is not on this device; its status says it waits.
     func hasLogin(_ source: SourceDescriptor) -> Bool {
         let has = dependencies.hasLogin(source)
-        if !has { update(source.id) { $0.load = .waitingForLogin } }
+        if !has { update(source.id) { $0.load = dependencies.waitsForICloud(source) ? .waitingForICloud : .waitingForLogin } }
         return has
     }
 
@@ -66,6 +73,7 @@ final class SourceRefresher {
     func load(_ source: SourceDescriptor) async throws -> Playlist {
         let previous = queue
         let id = source.id
+        if source.kind == .m3uFile { fileSources.insert(id) }
         update(id) { $0.load = .loading }
         let work = Task<Result<Playlist, any Error>, Never> { [dependencies] in
             await previous?.value
@@ -97,6 +105,10 @@ final class SourceRefresher {
         case .failure(let error):
             if error is CancellationError || Task.isCancelled {
                 update(id) { $0.load = $0.channels == nil ? .idle : .loaded }
+            } else if case SourceLoader.LoadError.waitingForICloud? = error as? SourceLoader.LoadError {
+                update(id) { $0.load = .waitingForICloud }
+            } else if case SourceLoader.LoadError.loginUnreadable? = error as? SourceLoader.LoadError {
+                update(id) { $0.load = .failed(SourceLoader.LoadError.loginUnreadable.localizedDescription) }
             } else {
                 update(id) { $0.load = .failed(ConnectFailure(Self.mapped(error), host: source.url.host() ?? "the server").message) }
             }
@@ -106,8 +118,10 @@ final class SourceRefresher {
 
     /// Refresh now on one source, or Refresh all with every id in order
     /// (sources-and-settings/refresh-by-hand). Channels stay while they load.
+    /// A file source is left out: it changes only when re-imported.
     func refresh(_ ids: [UUID]) {
-        reloader?(ids)
+        let ids = ids.filter { !fileSources.contains($0) }
+        if !ids.isEmpty { reloader?(ids) }
     }
 
     /// The sources loaded in this run whose last load is older than
@@ -118,7 +132,7 @@ final class SourceRefresher {
         let now = dependencies.now()
         let seconds = TimeInterval(interval.components.seconds)
         return statuses.compactMap { id, status in
-            guard status.load == .loaded || status.channels != nil, status.load != .loading,
+            guard !fileSources.contains(id), status.load == .loaded || status.channels != nil, status.load != .loading,
                 let last = status.lastSuccess, now.timeIntervalSince(last) >= seconds
             else { return nil }
             return id

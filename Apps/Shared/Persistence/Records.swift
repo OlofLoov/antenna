@@ -26,6 +26,15 @@ final class SourceRecord {
     var sortOrder: Int = 0
     var createdAt: Date = Date.now
     var lastRefreshedAt: Date?
+    /// An imported file's text as UTF-8, with the logins in its links
+    /// replaced by placeholders. Synced as a CloudKit asset; nil on another
+    /// device until it arrives (local-m3u-file-import capability).
+    @Attribute(.externalStorage) var playlistData: Data?
+    /// The imported file's name, such as "home-playlist.m3u".
+    var fileName: String?
+    var importedAt: Date?
+    /// The value inside this list's login placeholders, kept across re-imports.
+    var playlistToken: String?
 
     init(descriptor: SourceDescriptor, sortOrder: Int = 0) {
         self.id = descriptor.id
@@ -42,8 +51,10 @@ final class SourceRecord {
     /// The order Settings lists sources in and Channels loads them in.
     static var displayOrder: [SortDescriptor<SourceRecord>] { [SortDescriptor(\.sortOrder)] }
 
+    /// Nil for a link source whose link has not synced. A file source has
+    /// no link and gets a stand-in that changes with each import.
     var descriptor: SourceDescriptor? {
-        guard let url else { return nil }
+        guard let url = url ?? (kind == .m3uFile ? PlaylistFileStore.standIn(id: id, importedAt: importedAt) : nil) else { return nil }
         return SourceDescriptor(id: id, name: name, kind: kind, url: url, epgURL: epgURL, credentialKey: credentialKey)
     }
 }

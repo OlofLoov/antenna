@@ -18,6 +18,7 @@ struct AntennaApp: App {
     init() {
         let container = Self.makeContainer()
         self.container = container
+        PlaylistFileStore.shared.container = container
         // A profile deleted on another device leaves its per-device values here.
         let profiles = (try? container.mainContext.fetch(FetchDescriptor<ProfileRecord>())) ?? []
         ProfileKeys.prune(.standard, keeping: ProfileStore.list(profiles).profiles.map(\.id))

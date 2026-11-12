@@ -51,7 +51,7 @@ struct SourceConnector: Sendable {
     func probe(_ kind: SourceKind, link: URL, username: String, password: String, host: String) async throws -> Connection.Reply {
         do {
             switch kind {
-            case .m3u:
+            case .m3u, .m3uFile:
                 return .playlist(try await download(link))
             case .xtream, .stalker:
                 let client = XtreamClient(credentials: .init(server: link, username: username, password: password), session: session)

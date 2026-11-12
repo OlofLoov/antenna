@@ -2,13 +2,13 @@
 
 ## 1. Storage
 
-- [ ] 1.1 Add the file source kind with its contents, file name and import date to the source record, and verify a migration test with an existing store
+- [x] 1.1 Add the file source kind with its contents, file name and import date to the source record, and verify a migration test with an existing store
 
 ## 2. Import checks and logins in AntennaCore
 
-- [ ] 2.1 Add the import check for size, decoding, single stream, link list and channel list, and verify a test per outcome including a web page named `.m3u`
-- [ ] 2.2 Add the summary of channels, groups, guide link and skipped entries, and verify it against the 412-channel fixture
-- [ ] 2.3 Strip logins in the query, Xtream path and `user:pass@host` forms into one Keychain item per source and restore them on load, and verify tests that the stored text holds no login
+- [x] 2.1 Add the import check for size, decoding, single stream, link list and channel list, and verify a test per outcome including a web page named `.m3u`
+- [x] 2.2 Add the summary of channels, groups, guide link and skipped entries, and verify it against the 412-channel fixture
+- [x] 2.3 Strip logins in the query, Xtream path and `user:pass@host` forms into one Keychain item per source and restore them on load, and verify tests that the stored text holds no login
 
 ## 3. Import sheet and ways in
 

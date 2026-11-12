@@ -28,7 +28,7 @@ public struct SourceFields: Equatable, Sendable {
     public func check() -> ConnectFailure? {
         let required: [(SourceField, String)] =
             switch kind {
-            case .m3u: [(.playlist, url)]
+            case .m3u, .m3uFile: [(.playlist, url)]
             case .xtream, .stalker: [(.server, url), (.username, username), (.password, password)]
             }
         if let empty = required.first(where: { $0.1.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) {
