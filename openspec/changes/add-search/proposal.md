@@ -38,5 +38,5 @@ None.
 ## Impact
 
 - A search index and matcher in the core package; Search screens on every platform.
-- The Live screen on iPhone, iPad and Mac uses the same matcher for its filter, and shows a programme picked in Search as a "Later" line under what is on next.
+- The Live screen on iPhone, iPad and Mac uses the same matcher for its filter, and shows a later programme found in Search and watched from the guide as a "Later" line under what is on next.
 - Depends on: `channel-catalogue`, `guide-data`, `tvos-shell`, `xtream-vod-client`, change `add-tv-channel-overlay`, change `add-tv-guide-grid`, change `add-live-tv-on-iphone-ipad-mac`, change `add-movies-and-series-browsing`.
