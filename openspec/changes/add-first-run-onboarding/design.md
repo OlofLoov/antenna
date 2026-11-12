@@ -47,6 +47,8 @@ Exact strings. `<...>` is a value filled in at runtime. Counts use the locale's 
 - Welcome title "Welcome to Antenna". Help headings "M3U playlist" and "Xtream login".
 - The Stalker card reads "Stalker portal" with "A portal address and a MAC address, the way a MAG box signs in." and the footnote "Also called Ministra". On iOS the segment reads "Stalker" and has no caption under the picker. Both open the portal form like the other two kinds.
 - Stalker fields: Name (optional), Portal, MAC address, Login (optional), Password (optional). On iPhone, iPad and Mac the group is headed "Portal", the row labels are "Portal", "MAC", "Login" and "Password", Portal has the placeholder "http://", MAC "00:1A:79:12:34:56", and Login and Password "Optional". On Apple TV the title is "Stalker portal" and the line under it reads "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one." The Keychain line is the Xtream one.
+- The Jellyfin card reads "Jellyfin" with "Your own Jellyfin server's Live TV, signed in with your Jellyfin username and password." and the footnote "Live TV and guide from your server". On iOS the segment reads "Jellyfin". Apple TV shows the four cards narrower, in one row.
+- Jellyfin fields: Name (optional), Server, Username, Password. On iPhone, iPad and Mac the group is headed "Server", the row labels are "Server", "Username" and "Password", and Server has the placeholder "http://jellyfin.local:8096". On Apple TV the title is "Jellyfin server" and the line under it reads "The address you open Jellyfin at in a browser, with the username and password you sign in with." The Keychain line is the Xtream one.
 - M3U fields: Name (optional), Playlist URL, Guide URL (optional). On iPhone, iPad and Mac the row labels are "Playlist" and "Guide", and Guide has the placeholder "Optional XMLTV link".
 - Xtream fields: Name (optional), Server, Username, Password, with a control that shows or hides the password.
 - The add-source sheet title is "Add a source".
@@ -66,7 +68,10 @@ Shown as `onboarding.error` in the error style (15 pt on iOS, 22 pt on tvOS, `#F
 | The portal does not accept the MAC address or login | "Could not sign in. Check the MAC address, and the login if you have one." |
 | The portal refuses the device with a message | "The portal refused this device with the message “<message>”." with the MAC replaced by "…" |
 | No address the portal could be under answers as a portal | "No Stalker portal answered at <host>. Check the address and try again." |
-| The Xtream client throws its unauthorized error | "Could not sign in. Check the username and password." |
+| No Jellyfin server answers at the address (no password is sent) | "No Jellyfin server answered at <host>. Check the address and try again." |
+| The Jellyfin server does not let this account sign in from this device | "This account is not allowed to sign in from this device." |
+| The Jellyfin server's certificate cannot be verified | "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate." |
+| The Xtream client or the Jellyfin server turns the username and password down | "Could not sign in. Check the username and password." |
 | `user_info.status` is present, not empty and not "Active" (case-insensitive) | "This account is <status in lowercase>." |
 | `URLError` `.notConnectedToInternet`, `.networkConnectionLost` or `.dataNotAllowed`, also inside the Xtream client's transport error | "You're offline. Connect to the internet and try again." |
 | Any other `URLError` | "Could not reach <host>. Check the address and try again." |
@@ -80,6 +85,7 @@ While Connect runs it is disabled and shows an indeterminate indicator, a second
 The loading step is titled "Setting up <source name>".
 
 - Stalker portal: "Signed in" with the portal's host beneath, in place of the playlist line. A portal has no movies line.
+- Jellyfin server: "Signed in" with the server's host beneath, in place of the playlist line. A Jellyfin server has no movies line and no guide line; its guide loads once onboarding closes.
 - Login: "Signed in", with "Account active until <date in the locale's long style>" and " · 1 connection" or " · <n> connections" beneath. `exp_date` is Unix seconds as a number or a numeric string; absent, null, non-numeric or 0 leaves the date out. `max_connections` absent, non-numeric or 0 leaves out the connections. The line beneath shows only the parts that exist, joined by " · ": with no date it reads "1 connection" or "<n> connections" with no separator, and with neither part there is no line beneath "Signed in".
 - Playlist (M3U only): "Playlist downloaded" with the host beneath. An M3U source has no login or movies line.
 - Channels: "412 live channels in 18 groups", with the first eight group names and "and <n> more" beneath. Groups are the `channel-catalogue` groups without Favorites and All channels.
@@ -101,7 +107,7 @@ Each line is one VoiceOver element that reads state, title and detail. The summa
 
 ### Apple TV sign-in
 
-The title is "Sign in on this Apple TV". Server is filled from the record with the lowest `sortOrder`, Username and Password are empty. For a Stalker portal the filled row is labeled "Portal" and the fields are MAC address, Login (optional) and Password (optional), all empty. A muted line reads "<n> more source(s) to sign in after this one: <names in sortOrder>" and is absent for the last record. Connect runs the same checks and messages as the form.
+The title is "Sign in on this Apple TV". Server is filled from the record with the lowest `sortOrder`, Username and Password are empty. For a Stalker portal the filled row is labeled "Portal" and the fields are MAC address, Login (optional) and Password (optional), all empty. A Jellyfin server asks for Username and Password like an Xtream login, with its address in the Server row. A muted line reads "<n> more source(s) to sign in after this one: <names in sortOrder>" and is absent for the last record. Connect runs the same checks and messages as the form.
 
 ## Risks / Trade-offs
 
@@ -145,3 +151,6 @@ The title is "Sign in on this Apple TV". Server is filled from the record with t
 - The portal's "not authorized" answer gets its own sentence about the MAC address and login, since the Xtream one names a username the portal form does not have.
 - The Stalker checklist has no guide line. Connect hands the portal's channels to the checklist, and the portal's own guide loads through the app's guide store once onboarding closes, the way it does for a portal added before. Account expiry from the portal is not shown, since the account call is not on the Connect path.
 - The Stalker form and sign-in have no boards. They reuse the Xtream layout, rows and Keychain line, with the fields and copy above.
+- Jellyfin servers are enabled in this change and `add-jellyfin-live-tv-source`. Connect asks `/System/Info/Public` first, so an address that is not a Jellyfin server fails before the password is sent, then signs in and loads the Live TV channels; Connect hands those channels to the checklist, as for a portal. The Keychain item keeps the username and password, as for Xtream, and the sign-in key stays in memory on each device until the per-device key decision exists.
+- An address that answers the server check with something other than Jellyfin's answer, or with 404, reads as "No Jellyfin server answered". Any other failure uses the rows above.
+- The Jellyfin form and sign-in have no boards. They reuse the Xtream layout, rows and Keychain line, with the fields and copy above. The Apple TV kind step shows four cards 400 points wide instead of three at 480, since four at 480 do not fit 1920.

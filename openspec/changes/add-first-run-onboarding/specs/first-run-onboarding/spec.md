@@ -253,3 +253,34 @@ The system SHALL offer a Stalker portal as a third kind of provider on every pla
 - **GIVEN** the "What kind of source?" step on Apple TV
 - **WHEN** the user selects the Stalker portal card with the remote
 - **THEN** the portal form opens, like the M3U and Xtream cards do
+
+### Requirement: Add a Jellyfin server
+The system SHALL offer a Jellyfin server as a kind of provider on every platform, SHALL connect with the server address, username and password, SHALL check the address is a Jellyfin server before sending the password, and SHALL say which failure happened when it does not connect.
+
+#### Scenario: A Jellyfin server with Live TV
+- **GIVEN** a user with a Jellyfin server address, username and password
+- **WHEN** the user picks Jellyfin, fills in those three and chooses Connect
+- **THEN** Antenna signs in to the server and shows the loading checklist with the server's Live TV channels
+
+#### Scenario: Not a Jellyfin server
+- **GIVEN** an address where something other than a Jellyfin server answers
+- **WHEN** the user chooses Connect
+- **THEN** a message under the form says no Jellyfin server answered there
+- **AND** the password was not sent and nothing is saved
+
+#### Scenario: The server keeps the account out or its certificate is not trusted
+- **GIVEN** a server that turns down the password, does not let this account sign in from this device, or has a certificate Antenna cannot verify
+- **WHEN** the user chooses Connect
+- **THEN** a message under the form says which of these happened, and for the certificate suggests `http` on the home network or a trusted certificate
+- **AND** nothing is saved
+
+#### Scenario: Picking Jellyfin on Apple TV
+- **GIVEN** the "What kind of source?" step on Apple TV
+- **WHEN** the user selects the Jellyfin card with the remote
+- **THEN** the Jellyfin form opens, like the other cards do
+
+#### Scenario: A Jellyfin server synced without its password
+- **GIVEN** the providers are logins and none of them is on this Apple TV, one of them a Jellyfin server
+- **WHEN** the user opens Antenna on Apple TV
+- **THEN** the Jellyfin server asks for its username and password with the server address already filled in
+- **AND** the server is checked the way Connect checks it before the login is kept on this Apple TV
