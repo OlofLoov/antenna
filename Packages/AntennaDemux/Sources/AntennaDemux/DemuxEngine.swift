@@ -86,6 +86,11 @@ public final class DemuxEngine: PlaybackEngine {
     var reopensOnPlay = false
     var isLive = true
     var budget = ReconnectBudget()
+    /// A busy server and server errors fail at once instead of being tried
+    /// again, while another multi-view tile plays from the same source.
+    public var refusalsAreFinal = false {
+        didSet { budget.refusalsAreFinal = refusalsAreFinal }
+    }
     private var ticker: Task<Void, Never>?
 
     #if os(iOS) || os(tvOS)
@@ -163,7 +168,7 @@ public final class DemuxEngine: PlaybackEngine {
         wantsPlay = false
         hasPlayed = false
         reopensOnPlay = false
-        budget = ReconnectBudget()
+        budget = ReconnectBudget(refusalsAreFinal: refusalsAreFinal)
         set(.loading)
         do {
             try StreamAddress.check(url)
@@ -193,13 +198,14 @@ public final class DemuxEngine: PlaybackEngine {
     func open(_ url: URL, options: PlaybackOptions, origin: CMTime? = nil, generation mine: Int) async throws {
         let session = self.session
         let sleep = self.sleep
+        let tune = RetryPolicy.tune.refusals(final: refusalsAreFinal)
         let ahead = standby.removeValue(forKey: url)
         let connect = Task {
             if let ahead, let bytes = try? await ahead.value {
                 bytes.standbyWindow = nil
                 return bytes
             }
-            return try await RetryPolicy.tune.run(sleep: sleep) {
+            return try await tune.run(sleep: sleep) {
                 let bytes = HTTPByteStream(url: url, session: session)
                 try await bytes.open()
                 return bytes
@@ -345,7 +351,7 @@ public final class DemuxEngine: PlaybackEngine {
         let mine = generation
         reopensOnPlay = false
         wantsPlay = true
-        budget = ReconnectBudget()
+        budget = ReconnectBudget(refusalsAreFinal: refusalsAreFinal)
         set(.loading)
         do {
             var options = request.options

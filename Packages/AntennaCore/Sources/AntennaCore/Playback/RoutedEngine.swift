@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 /// The engine screens hold. It sends each address to the system or demuxer
 /// engine by `EngineRouter`, stops the other engine before switching, and
@@ -8,9 +9,21 @@ import Foundation
 ///
 /// Passing the same instance for both routes is allowed; that engine then
 /// handles every address and replaces its own streams.
+///
+/// Two routed engines can trade their engines with `exchange(with:)`, so a
+/// stream playing in one carries on in the other with no reload.
 public actor RoutedEngine: PlaybackEngine {
-    public nonisolated let system: any PlaybackEngine
-    public nonisolated let demuxer: any PlaybackEngine
+    private struct Pair: Sendable {
+        var system: any PlaybackEngine
+        var demuxer: any PlaybackEngine
+    }
+
+    private nonisolated let pair: Mutex<Pair>
+
+    /// The engine for HLS and the files the system reads.
+    public nonisolated var system: any PlaybackEngine { pair.withLock { $0.system } }
+    /// The engine for raw broadcast streams.
+    public nonisolated var demuxer: any PlaybackEngine { pair.withLock { $0.demuxer } }
 
     private var active: (any PlaybackEngine)?
     private var generation = 0
@@ -22,8 +35,7 @@ public actor RoutedEngine: PlaybackEngine {
     private let cuesCast = Broadcast([SubtitleCue]())
 
     public init(system: any PlaybackEngine, demuxer: any PlaybackEngine) {
-        self.system = system
-        self.demuxer = demuxer
+        pair = Mutex(Pair(system: system, demuxer: demuxer))
     }
 
     /// The engine playing the current address, nil before the first load.
@@ -40,6 +52,7 @@ public actor RoutedEngine: PlaybackEngine {
     public func load(_ url: URL, options: PlaybackOptions) async throws {
         generation += 1
         let mine = generation
+        let system = self.system
         let target = EngineRouter.route(for: url) == .system ? system : demuxer
         await activate(target)
         guard generation == mine else { throw CancellationError() }
@@ -76,6 +89,42 @@ public actor RoutedEngine: PlaybackEngine {
     public func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
     public func subtitleCues() async -> AsyncStream<[SubtitleCue]> { cuesCast.stream() }
 
+    /// Trades engines with `other`: whatever plays in one carries on in the
+    /// other, with no reload, and each forwards its new engines' reports
+    /// from then on (multi-view/leave-multi-view). A load still running in
+    /// either carries on in the engine it started on, and the call that
+    /// asked for it throws `CancellationError`.
+    public func exchange(with other: RoutedEngine) async {
+        guard other !== self else { return }
+        let mine = detach()
+        let theirs = await other.detach()
+        await attach(theirs)
+        await other.attach(mine)
+    }
+
+    private func detach() -> (Pair, (any PlaybackEngine)?) {
+        pumps.forEach { $0.cancel() }
+        pumps = []
+        let taken = (pair.withLock { $0 }, active)
+        active = nil
+        return taken
+    }
+
+    private func attach(_ taken: (Pair, (any PlaybackEngine)?)) async {
+        generation += 1
+        pair.withLock { $0 = taken.0 }
+        active = taken.1
+        if let engine = taken.1 {
+            await forward(engine)
+        } else {
+            stateCast.send(.idle)
+            presentationCast.send(nil)
+            tracksCast.send(.empty)
+            positionCast.send(.zero)
+            cuesCast.send([])
+        }
+    }
+
     /// Hands the screen over from the engine that played before when it is
     /// not `engine`, then forwards `engine`'s streams.
     private func activate(_ engine: any PlaybackEngine) async {
@@ -85,6 +134,10 @@ public actor RoutedEngine: PlaybackEngine {
         pumps = []
         active = engine
         if let previous { await previous.handOver() }
+        await forward(engine)
+    }
+
+    private func forward(_ engine: any PlaybackEngine) async {
         pumps = [
             Self.pump(await engine.states(), into: stateCast),
             Self.pump(await engine.presentation(), into: presentationCast),

@@ -39,3 +39,15 @@ Not drawn yet: the overlay's "Add to multi-view" button over full-screen live, t
 - Open question: whether a later version includes iPad.
 - [The hardware run uses wired Ethernet] → a Wi-Fi run waits for the wired numbers.
 - [Provider connection limits refuse the second tile from one account] → the tile says so in plain words and stays failed rather than looping.
+
+## Implementation decisions
+
+Made while building, without a review round. Each names what was picked and why.
+
+- Tiles never reload on the way in or out because routed engines trade their engines. `RoutedEngine.exchange(with:)` swaps the Apple-player and demuxer pair between two routed engines and forwards the new pair's reports. On entry the single player's pair moves into tile 1 and the single player sits idle with a fresh pair; on leave the kept tile's pair moves back. The shell, its player model, the language picks and the last-channel tracker keep the same engine object throughout. Replacing the shell's engine instead would have meant rebuilding every object that holds it.
+- Mute is an app-level call on both of a routed engine's engines, `setMuted(_:)`, next to the `setVolume(_:muted:)` that change `add-player-controls-and-playback-errors` added, not a `PlaybackEngine` protocol method. It is synchronous, so commands run in order are muted in order. There is no separate `startsMuted`: mute holds across loads, and a new tile's engine is muted before its first load.
+- `TilePlayback` holds the two tile settings. The 1080p cap is `maximumVideoHeight` on Apple's player, set as the item's preferred maximum resolution (1920 by 1080), which reaches HLS only. `DisplayMatcher.appliesDisplayCriteria` false leaves the TV's mode alone: a mode a tile asks for waits, and letting go does nothing, so a tile changing channel never returns the TV to its own mode. When the kept tile turns it back on, its waiting mode is applied.
+- The "no decoder free" reason already existed as `PlaybackFailure.noDecoderFree`, which neither retry policy retries. No `decoderBusy` was added.
+- The engine maps every 5xx to `serverError` and keeps no status code, so 503 and 509 cannot be told apart from 500. While another tile plays from the same source, `refusalsAreFinal` stops both engines from retrying a busy server or any server error, on the first connection and on reconnects. It is set per tile each time the set of tiles changes, so the older tile on a one-stream account fails once the new tile pushes it off.
+- Each tile gets its own `PlaybackLifecycle`, rather than one observer that handles several engines. It pauses on Apple TV and leaves a Mac alone, as the single player's does, and mute is untouched by a pause, so the same tile is heard after the app comes back.
+- The signpost is an event named "tile audible" carrying the tile id, emitted when a tile is unmuted. Timing the first unmuted audio buffer needs a hook inside both engines' renderers; it waits for the hardware run in task 6.1, which is the only place it is read.

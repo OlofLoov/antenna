@@ -2,16 +2,16 @@
 
 ## 1. Playback engine support
 
-- [ ] 1.1 Add muted start and mute without reload to the engine, and verify a test that switches sound between two fake engines never has both unmuted
-- [ ] 1.2 Add the 1080p cap and the option to leave the TV's display mode alone, and verify an integration test reads both back while tiles play
-- [ ] 1.3 Add the "no decoder free" reason and the no-retry rule for 503 and 509 while another tile on the same source plays, and verify engine tests for both
+- [x] 1.1 Add muted start and mute without reload to the engine, and verify a test that switches sound between two fake engines never has both unmuted
+- [x] 1.2 Add the 1080p cap and the option to leave the TV's display mode alone, and verify an integration test reads both back while tiles play
+- [x] 1.3 Add the "no decoder free" reason and the no-retry rule for 503 and 509 while another tile on the same source plays, and verify engine tests for both
 
 ## 2. Session model in AntennaCore
 
-- [ ] 2.1 Add the capacity table and the session cap that drops after a decoder refusal, and verify tests for Apple TV HD, Intel Mac, 4K and the drop
-- [ ] 2.2 Add the layout rule for two to four tiles on both containers, and verify tests against the worked frames
-- [ ] 2.3 Add the session that applies start, add, change, remove, enlarge and leave and returns ordered commands, and verify a test per action
-- [ ] 2.4 Add the failure text for a refused stream, a 403 and a busy decoder, and verify tests for each wording
+- [x] 2.1 Add the capacity table and the session cap that drops after a decoder refusal, and verify tests for Apple TV HD, Intel Mac, 4K and the drop
+- [x] 2.2 Add the layout rule for two to four tiles on both containers, and verify tests against the worked frames
+- [x] 2.3 Add the session that applies start, add, change, remove, enlarge and leave and returns ordered commands, and verify a test per action
+- [x] 2.4 Add the failure text for a refused stream, a 403 and a busy decoder, and verify tests for each wording
 
 ## 3. Apple TV
 
