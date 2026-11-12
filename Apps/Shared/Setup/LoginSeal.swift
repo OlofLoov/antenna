@@ -8,7 +8,7 @@ import Foundation
 /// replaced or the card goes away. It is never written to the Keychain,
 /// disk or logs, and prints as its type name only.
 struct LoginReceiverKey: CustomStringConvertible, CustomDebugStringConvertible, @unchecked Sendable {
-    fileprivate let privateKey: Curve25519.KeyAgreement.PrivateKey
+    fileprivate let privateKey: Curve25519.KeyAgreement.PrivateKey  // gitleaks:allow, a type name, not a key
 
     /// A new key from the system's random source.
     init() {
