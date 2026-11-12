@@ -39,7 +39,7 @@ struct AntennaApp: App {
         TimeshiftStore.standard.clearLeftovers()
         let guideStore = AppGuideStore.live(container: container)
         _guideStore = State(initialValue: guideStore)
-        _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore)))
+        _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore, container: container)))
         _reminders = State(initialValue: Self.reminderCenter(container: container))
         _unlock = State(initialValue: Unlock.app())
     }
@@ -64,11 +64,11 @@ struct AntennaApp: App {
         #endif
     }
 
-    private static func refresherDependencies(guide: AppGuideStore) -> SourceRefresher.Dependencies {
+    private static func refresherDependencies(guide: AppGuideStore, container: ModelContainer) -> SourceRefresher.Dependencies {
         #if DEBUG
             if let scripted = UITestingLive.refresherDependencies() { return scripted }
         #endif
-        return .app(loader: SourceLoader(), guide: guide)
+        return .app(loader: SourceLoader(), guide: guide, container: container)
     }
 
     private static func makeContainer() -> ModelContainer {

@@ -1,6 +1,7 @@
 import AntennaCore
 import Foundation
 import Observation
+import SwiftData
 import SwiftUI
 
 /// Loads sources for the screen that lists channels, one at a time in the
@@ -19,12 +20,20 @@ final class SourceRefresher {
         /// How long one source may take before it counts as unreachable.
         var timeout = Duration.seconds(30)
         var now: @MainActor () -> Date = { .now }
+        /// Moves saved references from a loaded source's earlier channel ids
+        /// to its ids now (favorites/favorites-saved-before-the-id-change-carry-over).
+        var migrateIDs: @MainActor (UUID, [String: String]) -> Void = { _, _ in }
 
-        /// Loads through `loader`, the network and the Keychain.
-        static func app(loader: SourceLoader, guide: AppGuideStore?) -> Self {
-            Self(
+        /// Loads through `loader`, the network and the Keychain, and rewrites
+        /// earlier channel ids in `container`.
+        static func app(loader: SourceLoader, guide: AppGuideStore?, container: ModelContainer? = nil) -> Self {
+            var dependencies = Self(
                 load: { try await loader.load($0) }, hasLogin: { loader.hasLogin($0) }, waitsForICloud: { loader.waitsForICloud($0) },
                 guide: guide)
+            if let container {
+                dependencies.migrateIDs = { ChannelIDMigration.apply($1, source: $0, in: container.mainContext) }
+            }
+            return dependencies
         }
     }
 
@@ -101,6 +110,7 @@ final class SourceRefresher {
                 $0.lastSuccess = now
                 if $0.guide == .notStarted, Self.hasGuide(source, playlist) == false { $0.guide = .none }
             }
+            if !playlist.formerIDs.isEmpty { dependencies.migrateIDs(id, playlist.formerIDs) }
             return playlist
         case .failure(let error):
             if error is CancellationError || Task.isCancelled {

@@ -234,6 +234,26 @@ extension ShellModelTests {
         #expect(LastChannelKey(channel) == nil)
     }
 
+    @Test("tvos-shell/back-to-the-last-channel-on-launch an M3U channel is remembered without its link")
+    func m3uRemembered() async throws {
+        let text = """
+            #EXTM3U
+            #EXTINF:-1 tvg-id="news.uk",News
+            http://panel:8080/live/alice/s3cr3t/1.ts
+            #EXTINF:-1,Sport
+            http://panel:8080/live/alice/s3cr3t/2.ts
+            """
+        let parsed = M3UParser().parse(text).channels
+        await launch(remembering: parsed[1])
+        loader.finish(sourceA.id, with: [.fixture("a1")])
+        loader.finish(sourceB.id, with: parsed)
+        await playing(parsed[1])
+        await wait({ store.read()?.channelID == parsed[1].id }, "last channel written")
+        let data = try #require(defaults.data(forKey: RecentsStore.lastChannelKey))
+        let stored = String(decoding: data, as: UTF8.self)
+        #expect(!stored.contains("alice") && !stored.contains("s3cr3t") && !stored.contains("panel"))
+    }
+
     @Test("tvos-shell/back-to-the-last-channel-on-launch an unreadable stored value reads as nothing")
     func unreadable() {
         defaults.set(Data("not json".utf8), forKey: RecentsStore.lastChannelKey)
