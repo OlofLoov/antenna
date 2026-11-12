@@ -14,6 +14,8 @@ struct AntennaApp: App {
     @State private var guideStore: AppGuideStore
     /// Loads sources one at a time and keeps their status (sources-and-settings capability).
     @State private var refresher: SourceRefresher
+    /// Whether the group locks are open on this device (group-management capability).
+    @State private var locks = GroupLocks()
 
     init() {
         let container = Self.makeContainer()
@@ -61,6 +63,8 @@ struct AntennaApp: App {
             PlatformRoot()
                 .environment(\.guideStore, guideStore)
                 .environment(\.sourceRefresher, refresher)
+                .environment(locks)
+                .modifier(GroupLockTimers(locks: locks))
         }
         .modelContainer(container)
     }

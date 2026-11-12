@@ -2,7 +2,7 @@
 
 ## 1. Records and policy
 
-- [ ] 1.1 Add the group, member and passcode records with additive migration, ignoring malformed records
+- [x] 1.1 Add the group, member and passcode records with additive migration, ignoring malformed records
 - [x] 1.2 Add the group policy and locks-open flag to the catalogue with no-rules defaults, and verify with a core test citing `channel-catalogue/group-list-and-order`
 
 ## 2. Hide, order, rename
@@ -19,10 +19,10 @@
 ## 4. Passcode and locks
 
 - [x] 4.1 Hide locked channels, counts and numbers while locks are closed, and verify with a core test citing `group-management/locked-channels-stay-out-of-reach`
-- [ ] 4.2 Set the first passcode and store only a salted verifier, and verify with an integration test citing `group-management/lock-a-group-with-a-passcode`
+- [x] 4.2 Set the first passcode and store only a salted verifier, and verify with an integration test citing `group-management/lock-a-group-with-a-passcode`
 - [ ] 4.3 Show the prompt on locked groups and open the locks on the right passcode, and verify with a UI test citing `group-management/unlock-with-the-passcode`
-- [ ] 4.4 Add the per-device lockout that survives relaunch, and verify with an integration test citing `group-management/guessing-the-passcode-is-slow`
-- [ ] 4.5 Close locks on Lock now, relaunch and idle, and verify with an integration test citing `group-management/locks-close-again-on-their-own`
+- [x] 4.4 Add the per-device lockout that survives relaunch, and verify with an integration test citing `group-management/guessing-the-passcode-is-slow`
+- [x] 4.5 Close locks on Lock now, relaunch and idle, and verify with an integration test citing `group-management/locks-close-again-on-their-own`
 - [ ] 4.6 Add Forgot passcode with device authentication on iPhone, iPad and Mac, and verify with a UI test citing `group-management/reset-a-forgotten-passcode`
 - [ ] 4.7 Pause and prompt when the playing channel becomes locked, with the current-group fallback, and verify with an integration test citing `group-management/a-channel-that-gets-locked-stops-playing`
 

@@ -60,3 +60,6 @@ On Apple TV the user opens Groups from Settings, after the passcode prompt if an
 - Deleting a playlist deletes its group records, hidden flags and own-group members. Deleting a profile deletes its hidden flags.
 - The fallback when the group on screen disappears is the first group listed after Favorites and Recents, so All channels unless hidden, else Favorites.
 - Searching hidden groups is a per-device `UserDefaults` flag, `groups.searchHidden`.
+- The passcode check value is an HMAC-SHA256 of the digits keyed by a random 16-byte salt, in `PasscodeRecord` (salt, verifier, created at, changed at). Changing the passcode rewrites the record in effect with a new salt. Duplicates keep the earliest `createdAt` and the rest are deleted.
+- "Changed on another device" compares the record in effect with the record id and change time this device last set or entered, kept in `UserDefaults` under `groups.passcodeKnown`. The wait after wrong entries is `groups.lockout`. Neither holds the digits.
+- Open locks live in memory in `GroupLocks`, so a relaunch starts with them closed. Apple TV counts a focus move in the shell as remote input for the 15-minute idle close; screens over the shell, such as Settings, do not reset it.
