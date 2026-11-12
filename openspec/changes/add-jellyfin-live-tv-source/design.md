@@ -130,3 +130,10 @@ public struct JellyfinClient: Sendable {
 - `DecodedList` moved to the top level of AntennaCore. `XtreamClient.DecodedList` stays as a typealias so the Xtream call sites and tests are unchanged.
 - AntennaCore ships `JellyfinMemorySessionStore`, the in-memory store the app uses until the per-device key decision exists.
 - Channel ids lower-case the host, so `JF.local` and `jf.local` are one server.
+- The source is addable from onboarding and Settings in this change, through `first-run-onboarding/add-a-jellyfin-server` and `sources-and-settings/look-after-a-jellyfin-server`. The proposal's "Any screen" stays true of this change's own capability; the screens live in those two changes.
+- `SourceKind` gains `.jellyfin`. The record stores its raw value, so an older build that reads a Jellyfin record from iCloud sees an unknown kind; that build cannot load it either way.
+- The app keeps one in-memory `JellyfinMemorySessionStore` per credential key in `JellyfinClients`, shared by the channel loader and the guide. Connect and the Settings check sign in with a throwaway store, so a failed check leaves no key behind; the first load after it signs in once more. A changed login in Settings drops the source's key.
+- The device id is a UUID made once and kept under `jellyfin.deviceID` in `UserDefaults.standard`. The device name comes from the hardware model ("iPad…" reads as iPad, anything else on iOS as iPhone, an iOS app on a Mac as Mac, tvOS as Apple TV), so it needs no main-actor `UIDevice` call.
+- Connect reads the server check failing to decode, or a 404, as "No Jellyfin server answered". Any other failure maps like the sign-in that follows.
+- The guide engine asks a Jellyfin source for the server ids of the channels it holds. Before the channel list arrives the source stays loading, and the arriving list queues the guide. Batch progress is a new `GuideProgress.fetching` event; the Settings row shows it as "Downloading guide…". The window is now to seven days ahead.
+- Streams are not resolved at tune time. The stream address is built at load with the key, as the decision above says, so `StreamResolver` has no Jellyfin case.
