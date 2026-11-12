@@ -13,7 +13,7 @@
             if channel == tuned {
                 switch await engine.state {
                 // Watch is the user's own play, so it ends their pause too.
-                case .paused: player.timeshift.userPlay()
+                case .paused: await player.timeshift.play()
                 case .failed, .idle: tune(channel)
                 case .loading, .playing, .buffering, .reconnecting, .ended: break
                 }
@@ -23,7 +23,11 @@
 
         /// Play/pause with the overlay open pauses or resumes the video; the overlay stays.
         func togglePlayback() async {
-            player.timeshift.toggle(isPaused: await engine.state == .paused)
+            if await engine.state == .paused {
+                await player.timeshift.play()
+            } else {
+                await player.timeshift.pause()
+            }
         }
     }
 
