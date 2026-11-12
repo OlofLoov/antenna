@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension Browse {
@@ -7,7 +8,7 @@ extension Browse {
     /// the number after the name as design.md records). The playing row is
     /// highlighted. Rows grow with the text size.
     struct ChannelRow<Logo: View>: View {
-        let number: Int?
+        let number: ChannelNumber?
         let name: String
         /// The programme title or a state line such as "Loading guide…".
         let detail: String
@@ -34,7 +35,7 @@ extension Browse {
                                 .lineLimit(1)
                             Spacer(minLength: 0)
                             if let number {
-                                Text(String(number))
+                                Text(number.description)
                                     .font(.system(size: metrics.detail * scale))
                                     .monospacedDigit()
                                     .foregroundStyle(Palette.textMuted)
@@ -88,7 +89,8 @@ private struct RowsPreview: View {
         VStack(spacing: 2) {
             ForEach(Array(previewRows.enumerated()), id: \.offset) { index, row in
                 Browse.ChannelRow(
-                    number: 101 + index, name: row.name, detail: row.detail, progress: row.progress, hasCatchUp: index == 0,
+                    number: ChannelNumber(major: 101 + index), name: row.name, detail: row.detail, progress: row.progress,
+                    hasCatchUp: index == 0,
                     isPlaying: index == 1, select: {}
                 ) {
                     Browse.Initials(text: row.initials, isSelected: index == 1)

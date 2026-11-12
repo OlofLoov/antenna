@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The parts of a multi-view tile and the words around the grid (boards
@@ -33,7 +34,7 @@ enum MultiViewParts {
     /// Number, name and the sound glyph in the tile's bottom left: a dark
     /// card, white while the tile has the highlight.
     struct Label: View {
-        let number: Int?
+        let number: ChannelNumber?
         let name: String
         let audible: Bool
         let highlighted: Bool
@@ -44,7 +45,7 @@ enum MultiViewParts {
         var body: some View {
             HStack(spacing: metrics.labelInset * 0.7) {
                 if let number {
-                    Text(String(number))
+                    Text(number.description)
                         .font(.system(size: metrics.number).monospacedDigit())
                         .foregroundStyle(highlighted ? MultiViewParts.mutedOnCard : Palette.textMuted)
                 }

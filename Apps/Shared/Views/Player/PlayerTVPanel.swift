@@ -51,7 +51,7 @@
                 programme = .init(title: title, times: times, progress: progress, summary: now.summary)
             }
             return InfoPanel.Info(
-                number: RowKey(channel).flatMap(catalogue.number(for:)) ?? channel.number, channel: channel.name,
+                number: RowKey(channel).flatMap(catalogue.channelNumber(for:)) ?? channel.channelNumber, channel: channel.name,
                 source: player.subject?.source ?? PlayerModel.unnamedSource, programme: programme, message: line.text,
                 badges: ZapBarText.badges(state: player.state, presentation: player.presentation), stream: player.streamLine
             ) {

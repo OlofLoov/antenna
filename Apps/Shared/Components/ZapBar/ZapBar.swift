@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The Apple TV info bar over the full-screen picture
@@ -36,7 +37,7 @@ enum ZapBar {
 
     /// Logo tile, number, name and the line under it.
     struct ChannelIdentity<Logo: View>: View {
-        let number: Int?
+        let number: ChannelNumber?
         let name: String
         /// The current list and the channel's place in it, as in "Sport · 4 of 42".
         var position: String?
@@ -50,7 +51,7 @@ enum ZapBar {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 8) {
                     if let number {
-                        Text(String(number))
+                        Text(number.description)
                             .font(.system(size: 26).monospacedDigit())
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("zapBar.number")

@@ -35,7 +35,7 @@
             let visible = cells.filter { $0.stop > window.start && $0.start < window.end }
             let blocks = GuideRowLayout.blocks(visible.map(\.segment), in: window, now: now, scale: data.timeline.scale)
             return GuideGrid.Row {
-                GuideGrid.ChannelCell(number: catalogue.number(for: key) ?? channel.number, name: channel.name, look: look) {
+                GuideGrid.ChannelCell(number: catalogue.channelNumber(for: key) ?? channel.channelNumber, name: channel.name, look: look) {
                     GuideLogo(channel: channel, look: look)
                 }
                 .accessibilityIdentifier("guide.channel.\(key.identifier)")

@@ -40,6 +40,18 @@ import Testing
         #expect(catalogue.channelNumber(for: big) == ChannelNumber(major: 2))
     }
 
+    @Test("channel-catalogue/numbers-with-a-part-after-the-dot screens name the channel with its part after the dot")
+    func shownOnScreens() throws {
+        let input = Channel.tagged([numbered("six-one", 6, 1)], sourceID: sourceA)
+        let catalogue = TestCatalogue(channels: input, groupOrder: [:], favorites: [])
+        let key = try #require(catalogue.rows(in: .all).first)
+        let number = catalogue.channelNumber(for: key)
+        let playing = GuideNowPlaying(channel: "KGW", number: number, state: .loaded, current: nil, now: .now)
+        #expect(playing.channel == "6.1 KGW")
+        #expect(MultiViewText.spokenLabel(number: number, name: "KGW", audible: true) == "6.1, KGW, sound on")
+        #expect(input[0].channelNumber?.description == "6.1")
+    }
+
     @Test("channel-catalogue/numbers-with-a-part-after-the-dot shown with and without the part after the dot")
     func description() {
         #expect(ChannelNumber(major: 6, minor: 1).description == "6.1")

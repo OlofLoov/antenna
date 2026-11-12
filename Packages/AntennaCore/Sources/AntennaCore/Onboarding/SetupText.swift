@@ -15,7 +15,7 @@ public struct ChannelTally: Equatable, Sendable {
     /// The lowest-numbered channel of the first group, the one Start watching plays.
     public var firstChannel: Channel?
     /// The number the catalogue shows for `firstChannel`.
-    public var firstNumber: Int?
+    public var firstNumber: ChannelNumber?
 
     public init(channels: Int = 0, groups: [String] = [], catchUpChannels: Int = 0, catchUpDays: Int? = nil, firstChannel: Channel? = nil) {
         self.channels = channels
@@ -41,7 +41,7 @@ public struct ChannelTally: Equatable, Sendable {
         catchUpDays = days.max { ($0.value.count, $1.key) < ($1.value.count, $0.key) }?.key
         let first = groups.first.flatMap { catalogue.rows(in: $0).first }
         firstChannel = first.flatMap(catalogue.channel(for:))
-        firstNumber = first.flatMap(catalogue.number(for:))
+        firstNumber = first.flatMap(catalogue.channelNumber(for:))
     }
 }
 

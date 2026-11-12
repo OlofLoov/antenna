@@ -32,7 +32,7 @@
         func subject(for channel: Channel) -> PlayerSubject {
             PlayerSubject(
                 channel: channel, source: sources.first { $0.id == channel.sourceID }?.name ?? PlayerModel.unnamedSource,
-                number: channel.number)
+                number: channel.channelNumber)
         }
 
         /// Loads `channel` without telling the player or the info bar it

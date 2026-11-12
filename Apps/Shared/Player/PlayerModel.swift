@@ -8,11 +8,11 @@ struct PlayerSubject: Equatable, Sendable {
     /// The source's display name, such as "Acme TV".
     var source: String
     /// The channel's number in the catalogue, nil when it has none.
-    var number: Int?
+    var number: ChannelNumber?
 
     /// "104 Sport One", or the name alone without a number.
     var line: String {
-        [number.map(String.init), channel.name].compactMap(\.self).joined(separator: " ")
+        [number.map(\.description), channel.name].compactMap(\.self).joined(separator: " ")
     }
 }
 

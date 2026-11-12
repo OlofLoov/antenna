@@ -209,14 +209,14 @@ enum GuideGrid {
 
     /// The channel's number, logo or initials, and name. Takes no focus.
     struct ChannelCell<Logo: View>: View {
-        let number: Int?
+        let number: ChannelNumber?
         let name: String
         let look: ChannelLook
         @ViewBuilder var logo: Logo
 
         var body: some View {
             HStack(spacing: 16) {
-                Text(number.map(String.init) ?? "")
+                Text(number.map(\.description) ?? "")
                     .font(.system(size: 20))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)

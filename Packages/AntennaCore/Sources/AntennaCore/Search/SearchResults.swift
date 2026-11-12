@@ -7,6 +7,8 @@ public struct SearchChannel: Sendable, Hashable {
     public var group: String?
     /// The number the catalogue shows for it.
     public var number: Int?
+    /// The part after the dot of the provider's number, such as the 1 of 6.1.
+    public var minorNumber: Int?
     /// Its source's place in the source list, the last tie-break.
     public var sourceOrder: Int
     /// Where its programmes are, nil without a guide id.
@@ -37,9 +39,11 @@ public struct SearchChannel: Sendable, Hashable {
     ) -> [SearchChannel] {
         catalogue.searchRows(includingHidden: includingHidden).compactMap { key in
             guard let channel = catalogue.channel(for: key) else { return nil }
-            return SearchChannel(
+            var found = SearchChannel(
                 key: key, name: channel.name, group: channel.group, number: catalogue.number(for: key),
                 sourceOrder: sourceOrder[key.sourceID] ?? .max, guideKey: GuideKey(channel: channel), hasCatchup: channel.hasCatchup)
+            found.minorNumber = catalogue.channelNumber(for: key)?.minor
+            return found
         }
     }
 }

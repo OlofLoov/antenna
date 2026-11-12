@@ -27,15 +27,15 @@ public struct LiveNowText: Sendable, Equatable {
     ///     after `now` without one, in order. Only the first three are kept.
     ///   - time: formats a start or end time for the user's locale.
     public init(
-        channel: String, number: Int?, state: GuideLoadingState, current: Programme?, next: [Programme], now: Date,
+        channel: String, number: ChannelNumber?, state: GuideLoadingState, current: Programme?, next: [Programme], now: Date,
         time: (Date) -> String
     ) {
         let line = GuideLine(state: state, current: current, now: now)
         let upcoming = Array(next.prefix(3))
         self.next = upcoming
         title = line.text
-        let identity = [number.map(String.init), channel].compactMap(\.self).joined(separator: " ")
-        var metaParts = [channel] + [number.map(String.init)].compactMap(\.self)
+        let identity = [number.map(\.description), channel].compactMap(\.self).joined(separator: " ")
+        var metaParts = [channel] + [number.map(\.description)].compactMap(\.self)
         var compactParts = [identity]
         if case .programme(_, let fraction, let remaining) = line, let current {
             let span = "\(time(current.start)) – \(time(current.stop))"

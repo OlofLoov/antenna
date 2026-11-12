@@ -6,7 +6,7 @@ extension LiveModel {
     func subject(for channel: Channel) -> PlayerSubject {
         PlayerSubject(
             channel: channel, source: sources.first { $0.id == channel.sourceID }?.name ?? PlayerModel.unnamedSource,
-            number: RowKey(channel).flatMap(catalogue.number(for:)))
+            number: RowKey(channel).flatMap(catalogue.channelNumber(for:)))
     }
 
     /// What the lock screen shows for the playing channel at `date`, nil

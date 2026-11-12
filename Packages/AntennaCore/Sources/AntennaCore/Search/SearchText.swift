@@ -51,7 +51,7 @@ public struct SearchText: Sendable {
     /// A channel's second line: "201 · Now: Late Edition", "201 · Matches
     /// Northern Report" for a group match, or the number alone.
     public static func channelLine(_ hit: SearchResults.ChannelHit, now programme: String?) -> String {
-        let number = hit.channel.number.map(String.init)
+        let number = hit.channel.number.map { ChannelNumber(major: $0, minor: hit.channel.minorNumber).description }
         let detail: String? =
             if hit.match == .group, let group = hit.channel.group {
                 "Matches \(group)"

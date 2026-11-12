@@ -268,7 +268,7 @@
 
         private var caption: String {
             guard let channel = shell.tuned else { return "" }
-            let number = RowKey(channel).flatMap(catalogue.number(for:)) ?? channel.number
+            let number = RowKey(channel).flatMap(catalogue.channelNumber(for:)) ?? channel.channelNumber
             return [number.map(String.init), channel.name].compactMap(\.self).joined(separator: " ")
         }
 

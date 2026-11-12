@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The Apple TV channel overlay over live video (tv-channel-overlay
@@ -212,7 +213,7 @@ enum ChannelOverlay {
     /// edge (design-system/channel-rows-share-one-anatomy). 92 tall, 100
     /// when focused. The name keeps its room before the title gives way.
     struct ChannelRow<Logo: View>: View {
-        let number: Int?
+        let number: ChannelNumber?
         let name: String
         /// The programme title or a state line such as "Loading guide…".
         let detail: String
@@ -307,11 +308,11 @@ enum ChannelOverlay {
     }
 
     private struct NumberText: View {
-        let number: Int?
+        let number: ChannelNumber?
         @Environment(\.isFocused) private var isFocused
 
         var body: some View {
-            Text(number.map(String.init) ?? "")
+            Text(number.map(\.description) ?? "")
                 .font(.system(size: 24))
                 .monospacedDigit()
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
@@ -393,7 +394,8 @@ private struct OverlayPreview: View {
                 ChannelOverlay.ChannelColumn(title: "Sport", order: "Sorted by number") {
                     ForEach(Array(previewRows.enumerated()), id: \.offset) { index, row in
                         ChannelOverlay.ChannelRow(
-                            number: 101 + index, name: row.name, detail: row.detail, progress: row.progress, hasCatchUp: index == 2,
+                            number: ChannelNumber(major: 101 + index), name: row.name, detail: row.detail, progress: row.progress,
+                            hasCatchUp: index == 2,
                             identifier: "overlay.channel.\(index)", select: {}
                         ) {
                             ChannelOverlay.Initials(text: String(row.name.prefix(2)).uppercased())
