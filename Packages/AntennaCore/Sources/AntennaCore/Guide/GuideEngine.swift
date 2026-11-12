@@ -52,6 +52,9 @@ public actor GuideEngine {
         public var now: @Sendable () -> Date
         public var uptime: @Sendable () -> Duration
         public var chunkSize: Int
+        /// The shared client of a Stalker source, for its portal guide. Nil
+        /// when the source's login is not on this device.
+        public var stalkerClient: @Sendable (UUID) async -> StalkerClient?
 
         private static let processStart = ContinuousClock.now
 
@@ -69,7 +72,8 @@ public actor GuideEngine {
             log: @escaping @Sendable (String) -> Void,
             now: @escaping @Sendable () -> Date = { .now },
             uptime: @escaping @Sendable () -> Duration = Configuration.processUptime,
-            chunkSize: Int = 65_536
+            chunkSize: Int = 65_536,
+            stalkerClient: @escaping @Sendable (UUID) async -> StalkerClient? = { _ in nil }
         ) {
             self.session = session
             self.directory = directory
@@ -80,6 +84,7 @@ public actor GuideEngine {
             self.now = now
             self.uptime = uptime
             self.chunkSize = chunkSize
+            self.stalkerClient = stalkerClient
         }
     }
 
@@ -278,7 +283,8 @@ public actor GuideEngine {
                     return
                 }
             case .stalker:
-                break
+                await loadPortalGuide(source, generation: generation)
+                return
             }
         }
         guard
@@ -303,6 +309,34 @@ public actor GuideEngine {
         let outcome = await fetcher.fetch(
             url, sourceID: id, loginURL: source.epgURL == nil && source.kind == .xtream,
             progress: { hub.emit($0, order: order, generation: generation) })
+        await complete(source, outcome: outcome, generation: generation, from: redacted(url))
+    }
+
+    /// The portal's own guide for a Stalker source without a guide link
+    /// (guide-data/find-the-guide-for-each-source). A source whose login is
+    /// not on this device reports a missing credential.
+    private func loadPortalGuide(_ source: GuideSourceDescriptor, generation: Int) async {
+        let id = source.sourceID
+        guard let client = await configuration.stalkerClient(id) else {
+            failBeforeRequest(source, .credentialMissing, state: .unavailable)
+            return
+        }
+        guard hub.generation(of: id) == generation, !removed.contains(id) else { return }
+        if entries[id]?.guide == nil {
+            entries[id] = GuideIndex.SourceEntry(guide: nil, state: .loading)
+            publish()
+        }
+        configuration.log("guide load \(id.uuidString) portal \(client)")
+        let read = await PortalGuideFetcher(session: configuration.session, limits: configuration.limits).fetch(client)
+        if read.skipped > 0 { configuration.log("guide \(id.uuidString) skipped \(read.skipped) portal rows") }
+        await complete(source, outcome: read.outcome, generation: generation, from: "portal \(client)")
+    }
+
+    /// Applies a finished download. `place` names where it came from, as a
+    /// log line may show it.
+    private func complete(_ source: GuideSourceDescriptor, outcome: GuideFetcher.Outcome, generation: Int, from place: String) async {
+        let id = source.sourceID
+        let order = source.sortOrder
         guard hub.generation(of: id) == generation, !removed.contains(id) else { return }
 
         switch outcome {
@@ -312,7 +346,7 @@ public actor GuideEngine {
             publish()
             await reportLoaded(id)
         case .failed(let error):
-            configuration.log("guide failed \(id.uuidString) \(redacted(url)) \(error)")
+            configuration.log("guide failed \(id.uuidString) \(place) \(error)")
             hub.emit(.failed(sourceID: id, error), order: order, generation: generation)
             if entries[id]?.guide == nil {
                 entries[id] = GuideIndex.SourceEntry(guide: nil, state: .failed(error))

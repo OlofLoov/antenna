@@ -1,0 +1,16 @@
+
+{"js":{"data":{
+"101":[
+{"id":"1","ch_id":"101","time":"2026-11-12 10:00:00","time_to":"2026-11-12 11:00:00","duration":3600,"name":"Morning News","descr":"Headlines","start_timestamp":1794477600,"stop_timestamp":1794481200,"category":"News"},
+{"id":"2","ch_id":"101","name":"Noon News","descr":"","start_timestamp":"1794481200","duration":"1800"},
+{"id":"3","ch_id":"101","name":"Backwards","start_timestamp":1794490000,"stop_timestamp":1794480000}
+],
+"102":[
+{"id":"4","ch_id":"102","name":"Match","start_timestamp":1794477600,"stop_timestamp":1794484800},
+{"id":"5","ch_id":"102","start_timestamp":1794484800,"stop_timestamp":1794488400}
+],
+"999":[
+{"id":"6","ch_id":"999","name":"Elsewhere","start_timestamp":1794477600,"stop_timestamp":1794481200}
+],
+"bad":"not a list"
+}}}

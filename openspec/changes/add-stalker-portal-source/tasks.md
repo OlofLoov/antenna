@@ -13,8 +13,8 @@
 
 ## 3. Channels
 
-- [ ] 3.1 Load genres and channels with numbers, logos, catch-up days and stable ids, skipping the "All" genre and broken rows, and verify core tests including counts of skipped rows
-- [ ] 3.2 Turn unreadable answers into a reading error that quotes nothing, and verify core tests for HTML, XML and empty bodies
+- [x] 3.1 Load genres and channels with numbers, logos, catch-up days and stable ids, skipping the "All" genre and broken rows, and verify core tests including counts of skipped rows
+- [x] 3.2 Turn unreadable answers into a reading error that quotes nothing, and verify core tests for HTML, XML and empty bodies
 - [ ] 3.3 Load Stalker channels into the combined list in source management, and verify the Stalker beside M3U test
 
 ## 4. Tuning
@@ -27,7 +27,7 @@
 
 ## 6. Secrets and Keychain
 
-- [ ] 6.1 Redact the MAC, login, password, session key, device ids, stream addresses and portal path from every printed value and error, and verify core tests that print each one
+- [x] 6.1 Redact the MAC, login, password, session key, device ids, stream addresses and portal path from every printed value and error, and verify core tests that print each one
 - [ ] 6.2 Add the optional login to the Keychain item and read old items unchanged, and verify an integration test for the three item kinds
 
 ## 7. Verify
