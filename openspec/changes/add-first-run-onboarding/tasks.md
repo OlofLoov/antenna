@@ -35,7 +35,13 @@
 - [x] 6.2 Check the portal and MAC address before any request, give each portal failure its sentence, and verify with tests citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting` and `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
 - [x] 6.3 Ask each Stalker portal for its MAC address in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
 
-## 7. Verify
+## 7. Jellyfin servers
 
-- [x] 7.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes. Open until 1.3 can be done.
+- [ ] 7.1 Add the Jellyfin card and segment with the Server, Username and Password fields on every platform, check the server before signing in, and verify with an integration test citing `first-run-onboarding/add-a-jellyfin-server`
+- [ ] 7.2 Give the not-a-Jellyfin-server, forbidden and untrusted-certificate failures their sentences, and verify with tests citing `first-run-onboarding/add-a-jellyfin-server`
+- [ ] 7.3 Ask each Jellyfin server for its username and password in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/add-a-jellyfin-server`
+
+## 8. Verify
+
+- [x] 8.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
+- [ ] 8.2 `/opsx:verify` passes. Open until 1.3 can be done.
