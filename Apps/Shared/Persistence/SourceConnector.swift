@@ -45,19 +45,37 @@ struct SourceConnector: Sendable {
         if let problem = fields.check() { throw problem }
         guard var link = fields.link else { throw ConnectFailure.invalidURL }
         if fields.kind == .stalker, let portal = StalkerPortal(link.absoluteString) { link = portal.url }
-        let reply = try await probe(fields.kind, link: link, username: fields.username, password: fields.password, host: fields.host)
-        let username = fields.kind == .stalker ? MACAddress(fields.username)?.text ?? fields.username : fields.username
-        let login = fields.kind == .m3u ? nil : CredentialStore.Credential(username: username, password: fields.password)
+        let login = Self.credential(for: fields)
+        let reply = try await probe(
+            fields.kind, link: link, username: login?.username ?? "", password: fields.password, login: login?.login, host: fields.host)
         try Task.checkCancellation()
         return try save(fields, link: link, reply: reply, login: login, into: context)
     }
 
+    /// The Keychain item a form saves: the username and password for Xtream,
+    /// the MAC in colon form with the optional login for a portal, nil for a playlist.
+    static func credential(for fields: SourceFields) -> CredentialStore.Credential? {
+        switch fields.kind {
+        case .m3u, .m3uFile:
+            return nil
+        case .xtream:
+            return .init(username: fields.username, password: fields.password)
+        case .stalker:
+            let login = fields.username.trimmingCharacters(in: .whitespacesAndNewlines)
+            return .init(
+                username: MACAddress(fields.mac)?.text ?? fields.mac, password: fields.password, login: login.isEmpty ? nil : login)
+        }
+    }
+
     /// Asks the server once, saving nothing: downloads the playlist, signs
     /// in to the Xtream account and checks it is active, or signs in to the
-    /// Stalker portal and loads its channels. Throws a
-    /// `ConnectFailure`, or `CancellationError` when cancelled
+    /// Stalker portal with `username` as the MAC and the optional `login`
+    /// and loads its channels. Throws a `ConnectFailure`, or
+    /// `CancellationError` when cancelled
     /// (sources-and-settings/fix-a-source-s-link-or-login).
-    func probe(_ kind: SourceKind, link: URL, username: String, password: String, host: String) async throws -> Connection.Reply {
+    func probe(
+        _ kind: SourceKind, link: URL, username: String, password: String, login: String? = nil, host: String
+    ) async throws -> Connection.Reply {
         do {
             switch kind {
             case .m3u, .m3uFile:
@@ -67,7 +85,8 @@ struct SourceConnector: Sendable {
                 // keeps it as the downloaded list and nothing is fetched twice.
                 guard let portal = StalkerPortal(link.absoluteString) else { throw ConnectFailure.invalidURL }
                 guard let mac = MACAddress(username) else { throw ConnectFailure.invalidMAC }
-                let client = StalkerClient(credentials: .init(portal: portal, mac: mac, password: password), session: portalSession)
+                let client = StalkerClient(
+                    credentials: .init(portal: portal, mac: mac, password: password, login: login), session: portalSession)
                 return .playlist(Playlist(channels: try await client.liveLoad(guide: .portal).channels))
             case .xtream:
                 let client = XtreamClient(credentials: .init(server: link, username: username, password: password), session: session)
@@ -130,8 +149,8 @@ struct SourceConnector: Sendable {
             return Connection(descriptor: saved, reply: reply, login: login, inserted: false, createdCredential: created)
         }
         let form = NewSource(
-            kind: fields.kind, name: fields.name, url: link.absoluteString, epgURL: fields.epgURL, username: fields.username,
-            password: fields.password)
+            kind: fields.kind, name: fields.name, url: link.absoluteString, epgURL: fields.epgURL, username: login?.username ?? "",
+            password: fields.password, login: login?.login ?? "")
         let record: SourceRecord
         do {
             record = try form.save(into: context, credentials: credentials)

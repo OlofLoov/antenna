@@ -258,13 +258,12 @@ extension OnboardingChecklistTests {
         let first = SourceDescriptor(name: "Home provider", kind: .xtream, url: try #require(URL(string: "http://\(host):8080")))
         let second = SourceDescriptor(
             name: "Holiday flat", kind: .xtream, url: try #require(URL(string: "http://\(host):9090")), credentialKey: "holiday-key")
-        let portal = SourceDescriptor(name: "Portal", kind: .stalker, url: try #require(URL(string: "http://portal.test")))
-        for (index, source) in [first, second, portal].enumerated() {
+        for (index, source) in [first, second].enumerated() {
             context.insert(SourceRecord(descriptor: source, sortOrder: index))
         }
         try context.save()
         let model = model(host, dependencies: dependencies(channels: Self.channels(2, groups: ["News"], host: host)))
-        model.startSignIn([first, second, portal])
+        model.startSignIn([first, second])
         #expect(model.holdsApp)
         #expect(model.fields.url == "http://\(host):8080")
         #expect(model.fields.username.isEmpty)
@@ -286,7 +285,7 @@ extension OnboardingChecklistTests {
         model.fields.password = "two"
         await model.signIn(into: context)
         #expect(try held.load(for: "holiday-key") == .init(username: "bo", password: "two"))
-        #expect(try context.fetchCount(FetchDescriptor<SourceRecord>()) == 3)
+        #expect(try context.fetchCount(FetchDescriptor<SourceRecord>()) == 2)
         #expect(model.setups.map(\.name) == ["Home provider", "Holiday flat"])
         #expect(model.showsChecklist)
         let progress = OnboardingProgress(setups: [try #require(model.setups.first)], signedIn: model.signedIn)

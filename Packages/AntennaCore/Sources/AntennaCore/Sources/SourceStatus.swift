@@ -11,12 +11,10 @@ public struct SourceStatus: Equatable, Sendable {
         case loaded
         /// The last load failed with this sentence.
         case failed(String)
-        /// An Xtream source whose login is not on this device.
+        /// An Xtream source or Stalker portal whose login is not on this device.
         case waitingForLogin
         /// A record that synced without its link.
         case waitingForICloud
-        /// A Stalker portal, which loads nothing yet.
-        case unsupported
     }
 
     public enum Guide: Equatable, Sendable {
@@ -95,8 +93,6 @@ public struct SourceStatusText: Sendable {
             return [Line(television ? "Not signed in on this Apple TV" : "Waiting for login from iCloud", style: .muted)]
         case .waitingForICloud:
             return [Line("Waiting for iCloud…", style: .muted)]
-        case .unsupported:
-            return [Line("Stalker portals are coming later", style: .muted)]
         case .idle, .loading:
             if let channels = status.channels, status.load == .loading {
                 return [Line("\(count(channels)) · Refreshing…", busy: true)]
@@ -140,7 +136,7 @@ public struct SourceStatusText: Sendable {
     /// The details' status block, one line each.
     public func detailLines(_ status: SourceStatus, account: String?, now: Date) -> [Line] {
         switch status.load {
-        case .waitingForLogin, .waitingForICloud, .unsupported:
+        case .waitingForLogin, .waitingForICloud:
             return rowLines(status, now: now)
         case .idle, .loading, .loaded, .failed:
             break

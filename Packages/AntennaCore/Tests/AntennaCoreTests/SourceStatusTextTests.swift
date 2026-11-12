@@ -32,7 +32,6 @@ import Testing
         #expect(row(SourceStatus(load: .waitingForLogin)) == ["Waiting for login from iCloud"])
         #expect(row(SourceStatus(load: .waitingForLogin), television: true) == ["Not signed in on this Apple TV"])
         #expect(row(SourceStatus(load: .waitingForICloud)) == ["Waiting for iCloud…"])
-        #expect(row(SourceStatus(load: .unsupported)) == ["Stalker portals are coming later"])
     }
 
     @Test("sources-and-settings/see-how-each-source-is-doing: the guide part of the loaded line")

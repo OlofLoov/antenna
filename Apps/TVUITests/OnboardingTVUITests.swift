@@ -77,6 +77,23 @@ final class OnboardingTVUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.kind.xtream").waitForExistence(timeout: 5))
     }
 
+    // first-run-onboarding/add-a-stalker-portal
+    func testPickAStalkerPortal() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        while !element(app, "onboarding.kind.stalker").hasFocus {
+            XCUIRemote.shared.press(.right)
+        }
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.field.portal").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.field.mac").exists)
+        XCTAssertFalse(element(app, "onboarding.field.server").exists)
+        XCUIRemote.shared.press(.menu)
+        XCTAssertTrue(element(app, "onboarding.kind.stalker").waitForExistence(timeout: 5))
+    }
+
     // first-run-onboarding/a-summary-when-everything-has-loaded
     // first-run-onboarding/start-watching-without-waiting-for-the-guide
     func testConnectShowsTheSummaryAndStartWatchingOpensLive() {

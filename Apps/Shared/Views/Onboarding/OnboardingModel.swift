@@ -25,7 +25,7 @@ final class OnboardingModel {
     var addingAnother = false
     /// True on the form after Back from a provider with nothing to watch.
     private(set) var returnedToForm = false
-    /// Xtream sources still to sign in on this Apple TV, in sort order
+    /// Xtream sources and Stalker portals still to sign in on this Apple TV, in sort order
     /// (first-run-onboarding/sign-in-again-on-an-apple-tv).
     private(set) var signIns: [SourceDescriptor] = []
     /// How a connected source loads. Set by the screen before Connect;
@@ -46,9 +46,8 @@ final class OnboardingModel {
         self.clipboard = clipboard
     }
 
-    /// Picks the form for `kind`. Stalker cannot be picked.
+    /// Picks the form for `kind`.
     func choose(_ kind: SourceKind) {
-        guard kind != .stalker else { return }
         fields.kind = kind
         error = nil
     }
@@ -112,17 +111,18 @@ final class OnboardingModel {
     /// The checklist or summary shows in place of the form.
     var showsChecklist: Bool { !setups.isEmpty && !addingAnother && signIns.isEmpty }
 
-    /// Asks for the login of each Xtream source in `sources`, in order,
-    /// with the server filled in. Stalker and playlists are skipped.
+    /// Asks for the login of each Xtream source and the MAC of each
+    /// Stalker portal in `sources`, in order, with the server or portal
+    /// filled in. Playlists are skipped.
     func startSignIn(_ sources: [SourceDescriptor]) {
         guard signIns.isEmpty, setups.isEmpty else { return }
-        signIns = sources.filter { $0.kind == .xtream }
+        signIns = sources.filter { $0.kind == .xtream || $0.kind == .stalker }
         prepareSignIn()
     }
 
     private func prepareSignIn() {
         guard let next = signIns.first else { return }
-        fields = SourceFields(kind: .xtream, name: next.name, url: next.url.absoluteString)
+        fields = SourceFields(kind: next.kind, name: next.name, url: next.url.absoluteString)
         error = nil
     }
 
@@ -131,17 +131,19 @@ final class OnboardingModel {
     /// adding no source. After the last one the checklist shows.
     func signIn(into context: ModelContext) async {
         guard !connecting, let source = signIns.first else { return }
-        if fields.username.isEmpty || fields.password.isEmpty {
-            error = (fields.username.isEmpty ? ConnectFailure.missingField(.username) : .missingField(.password)).message
+        if let problem = fields.check() {
+            error = problem.message
             return
         }
+        guard let login = SourceConnector.credential(for: fields) else { return }
         error = nil
         connecting = true
         defer { connecting = false }
         let host = source.url.host() ?? source.url.absoluteString
         let reply: SourceConnector.Connection.Reply
         do {
-            reply = try await connector.probe(.xtream, link: source.url, username: fields.username, password: fields.password, host: host)
+            reply = try await connector.probe(
+                source.kind, link: source.url, username: login.username, password: login.password, login: login.login, host: host)
         } catch is CancellationError {
             return
         } catch {
@@ -149,7 +151,6 @@ final class OnboardingModel {
             return
         }
         let key = source.credentialKey ?? source.id.uuidString
-        let login = CredentialStore.Credential(username: fields.username, password: fields.password)
         do {
             try connector.credentials.save(login, for: key)
         } catch {
