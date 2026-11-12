@@ -60,6 +60,8 @@ targets:
     supportedDestinations: [iOS, macOS]
     sources:
       - Apps/Tests
+      - path: Config/Antenna.storekit
+        buildPhase: resources
     dependencies:
       - target: Antenna
       - package: AntennaCore
@@ -122,6 +124,8 @@ targets:
     platform: tvOS
     sources:
       - Apps/TVTests
+      - path: Config/Antenna.storekit
+        buildPhase: resources
     dependencies:
       - target: AntennaTV
     settings:
@@ -155,12 +159,12 @@ schemes:
   Antenna:
     build:
       targets: { Antenna: all, AntennaTests: [test], AntennaUITests: [test], AntennaJourneys: [test] }
-    run: { config: Debug }
+    run: { config: Debug, storeKitConfiguration: Config/Antenna.storekit }
     test:
       targets: [AntennaTests, AntennaUITests, AntennaJourneys]
   AntennaTV:
     build:
       targets: { AntennaTV: all, AntennaTVTests: [test], AntennaTVUITests: [test], AntennaTVJourneys: [test] }
-    run: { config: Debug }
+    run: { config: Debug, storeKitConfiguration: Config/Antenna.storekit }
     test:
       targets: [AntennaTVTests, AntennaTVUITests, AntennaTVJourneys]

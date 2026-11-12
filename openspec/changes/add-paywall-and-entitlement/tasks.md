@@ -8,9 +8,9 @@
 
 ## 2. StoreKit provider and cache
 
-- [ ] 2.1 Add the StoreKit provider that listens from launch and ignores unverified transactions, and verify integration tests against the local StoreKit configuration
-- [ ] 2.2 Add the versioned cache that holds the verdict and lapse only, and verify a test that an offline launch after a purchase opens the app
-- [ ] 2.3 Add the two-launch rule for an empty App Store answer, and verify an integration test
+- [ ] 2.1 Add the StoreKit provider that listens from launch and ignores unverified transactions, and verify integration tests against the local StoreKit configuration. Open: the iOS 26.5 simulator fails every StoreKitTest purchase (FB23566876), so the suite is written but gated behind `ANTENNA_STOREKIT_TESTS=1` and has not run green.
+- [x] 2.2 Add the versioned cache that holds the verdict and lapse only, and verify a test that an offline launch after a purchase opens the app
+- [x] 2.3 Add the two-launch rule for an empty App Store answer, and verify an integration test
 
 ## 3. Paywall screen
 
