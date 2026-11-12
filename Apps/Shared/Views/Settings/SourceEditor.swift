@@ -4,8 +4,8 @@ import Observation
 import SwiftData
 
 /// A source's details form (sources-and-settings/fix-a-source-s-link-or-login):
-/// the name, the link, the guide link, the Xtream login, or a portal's MAC
-/// address and optional login. The saved password never reaches a field;
+/// the name, the link, the guide link, the Xtream login, a portal's MAC
+/// address and optional login, or a Channels DVR server address. The saved password never reaches a field;
 /// an empty password field keeps it
 /// (sources-and-settings/your-password-stays-hidden).
 @MainActor @Observable
@@ -65,6 +65,7 @@ final class SourceEditor {
         case .m3u, .m3uFile: return linkChanged
         case .xtream, .jellyfin: return linkChanged || username != (saved?.username ?? "")
         case .stalker: return linkChanged || mac != (saved?.username ?? "") || username != (saved?.login ?? "")
+        case .channelsDVR: return linkChanged
         }
     }
 
@@ -80,7 +81,12 @@ final class SourceEditor {
             apply(to: record, url: original.url, in: context)
             return true
         }
-        guard var url = URL(string: trimmedLink), url.scheme != nil else {
+        if kind == .channelsDVR, let problem = SourceFields(kind: .channelsDVR, url: trimmedLink).check() {
+            error = problem.message
+            return false
+        }
+        let typed = kind == .channelsDVR ? ChannelsDVRClient.serverURL(from: trimmedLink) : URL(string: trimmedLink)
+        guard var url = typed, url.scheme != nil else {
             error = ConnectFailure.invalidURL.message
             return false
         }
@@ -173,7 +179,7 @@ final class SourceEditor {
         }
         let account: String
         switch kind {
-        case .m3u, .m3uFile: return !others.isEmpty
+        case .m3u, .m3uFile, .channelsDVR: return !others.isEmpty
         case .xtream, .jellyfin: account = username
         case .stalker: account = MACAddress(mac)?.text ?? mac
         }

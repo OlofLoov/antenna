@@ -16,6 +16,8 @@ extension OnboardingForm {
                     .accessibilityLabel("Stalker portal")
                 segment("Jellyfin", .jellyfin)
                     .accessibilityLabel("Jellyfin server")
+                segment("Channels", .channelsDVR)
+                    .accessibilityLabel("Channels DVR")
             }
             .padding(4)
             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 12))
@@ -29,7 +31,7 @@ extension OnboardingForm {
                 Text(title)
                     .font(.system(size: 14, weight: selected ? .semibold : .regular))
                     .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .minimumScaleFactor(0.7)
                     .frame(maxWidth: .infinity, minHeight: 36)
                     .foregroundStyle(selected ? Palette.ground : Palette.text)
                     .background(selected ? Palette.text : .clear, in: RoundedRectangle(cornerRadius: 9))

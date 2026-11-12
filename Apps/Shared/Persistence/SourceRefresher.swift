@@ -191,10 +191,11 @@ final class SourceRefresher {
 
     /// A playlist's bad status as the server error the copy names.
     private static func mapped(_ error: any Error) -> any Error {
-        if case SourceLoader.LoadError.badStatus(let status)? = error as? SourceLoader.LoadError {
-            return ConnectFailure.serverError(status: status)
+        switch error as? SourceLoader.LoadError {
+        case .badStatus(let status): return ConnectFailure.serverError(status: status)
+        case .channelsDVR(let failure, _): return failure
+        default: return error
         }
-        return error
     }
 
     private static func withTimeout<T: Sendable>(_ limit: Duration, _ body: @escaping @Sendable () async throws -> T) async throws -> T {

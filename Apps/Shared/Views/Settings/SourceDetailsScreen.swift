@@ -186,7 +186,7 @@ private struct SourceFieldsSection: View {
     private var linkLabel: String {
         switch editor.kind {
         case .m3u, .m3uFile: "Playlist"
-        case .xtream, .jellyfin: "Server"
+        case .xtream, .jellyfin, .channelsDVR: "Server"
         case .stalker: "Portal"
         }
     }

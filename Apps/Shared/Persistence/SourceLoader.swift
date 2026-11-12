@@ -21,6 +21,11 @@ struct SourceLoader: Sendable {
     /// The per-source Jellyfin sign-in keys, shared with the guide.
     var jellyfinClients: JellyfinClients = .shared
 
+    /// Channels DVR requests keep no cookies and no cache.
+    var channelsDVRSession: URLSession = SourceLoader.channelsDVRSession
+
+    static let channelsDVRSession = URLSession(configuration: .channelsDVR)
+
     /// The time zones every loader in the app records into.
     static let sharedTimeZones = XtreamTimeZones()
 
@@ -38,6 +43,9 @@ struct SourceLoader: Sendable {
         case portal(StalkerError)
         /// A Jellyfin call failed for a reason other than the connection.
         case jellyfin(JellyfinClient.JellyfinError)
+        /// A Channels DVR server failed for a reason other than being
+        /// offline, which arrives as a `URLError` instead.
+        case channelsDVR(ChannelsDVRError, host: String)
 
         var errorDescription: String? {
             switch self {
@@ -46,6 +54,7 @@ struct SourceLoader: Sendable {
             case .loginUnreadable: "Its saved login is unreadable. Re-import the file."
             case .portal(let error): Self.message(error)
             case .jellyfin(let error): Self.message(error)
+            case .channelsDVR(let error, let host): ConnectFailure(error, host: host).message
             }
         }
 
@@ -70,12 +79,14 @@ struct SourceLoader: Sendable {
         }
     }
 
-    /// False when an Xtream or Stalker source has no Keychain item on this
-    /// device yet, or a Stalker item's username is not a MAC. An item that
+    /// False when an Xtream or Stalker source, or a Channels DVR source with
+    /// a proxy login, has no Keychain item on this device yet, or a Stalker
+    /// item's username is not a MAC. An item that
     /// cannot be read counts as present, so the load runs and reports the
     /// failure.
     func hasLogin(_ source: SourceDescriptor) -> Bool {
         guard source.kind != .m3u else { return true }
+        if source.kind == .channelsDVR, source.credentialKey == nil { return true }
         if source.kind == .m3uFile {
             guard files.hasContents(source.id) else { return false }
             guard source.credentialKey != nil else { return true }
@@ -130,6 +141,33 @@ struct SourceLoader: Sendable {
             } catch let error as StalkerError {
                 throw LoadError.portal(error)
             }
+        case .channelsDVR:
+            return try await loadChannelsDVR(source)
+        }
+    }
+
+    /// A Channels DVR server's lineup after its status check
+    /// (channels-dvr-source/one-unreachable-server-does-not-hold-up-the-rest).
+    /// A login not on this device gives no channels; `hasLogin` keeps such a
+    /// source waiting before it gets here.
+    private func loadChannelsDVR(_ source: SourceDescriptor) async throws -> Playlist {
+        do {
+            let result = try await ChannelsDVRClient.load(
+                server: source.url, credentialKey: source.credentialKey,
+                credential: { key in
+                    do {
+                        guard let found = try credentials.load(for: key) else { return .missing }
+                        return .found(username: found.username, password: found.password)
+                    } catch {
+                        return .unreadable
+                    }
+                }, session: channelsDVRSession)
+            guard case .loaded(let channels) = result else { return Playlist(channels: []) }
+            return Playlist(channels: channels)
+        } catch ChannelsDVRError.offline {
+            throw URLError(.notConnectedToInternet)
+        } catch let error as ChannelsDVRError {
+            throw LoadError.channelsDVR(error, host: source.url.host() ?? "the server")
         }
     }
 

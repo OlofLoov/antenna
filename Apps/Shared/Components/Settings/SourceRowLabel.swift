@@ -24,6 +24,7 @@ struct SourceRowLabel: View {
         case .xtream: "XTREAM"
         case .stalker: "STALKER"
         case .jellyfin: "JELLYFIN"
+        case .channelsDVR: "CHANNELS DVR"
         case .m3uFile: "FILE"
         }
     }
