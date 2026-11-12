@@ -20,7 +20,7 @@
 ## 4. Guide
 
 - [x] 4.1 Fetch programmes in channel batches over the requested window, including programmes already on air, and verify core tests for 120 channels and for an empty request
-- [ ] 4.2 Let the guide take programmes from the client in batches with batch progress, and verify a guide-data test that no XMLTV download happens
+- [x] 4.2 Let the guide take programmes from the client in batches with batch progress, and verify a guide-data test that no XMLTV download happens
 
 ## 5. Secrets
 

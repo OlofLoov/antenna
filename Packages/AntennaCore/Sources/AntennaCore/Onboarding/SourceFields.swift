@@ -6,12 +6,13 @@ import Foundation
 public struct SourceFields: Equatable, Sendable {
     public var kind: SourceKind
     public var name: String
-    /// The playlist URL for M3U, the server for Xtream, the portal for Stalker.
+    /// The playlist URL for M3U, the server for Xtream and Jellyfin, the
+    /// portal for Stalker.
     public var url: String
     public var epgURL: String
-    /// The Xtream username, or the optional Stalker portal login.
+    /// The Xtream or Jellyfin username, or the optional Stalker portal login.
     public var username: String
-    /// The Xtream password, or the optional Stalker portal password.
+    /// The Xtream or Jellyfin password, or the optional Stalker portal password.
     public var password: String
     /// The MAC address a Stalker portal knows the device by. Other kinds ignore it.
     public var mac: String
@@ -37,13 +38,18 @@ public struct SourceFields: Equatable, Sendable {
         let required: [(SourceField, String)] =
             switch kind {
             case .m3u, .m3uFile: [(.playlist, url)]
-            case .xtream: [(.server, url), (.username, username), (.password, password)]
+            case .xtream, .jellyfin: [(.server, url), (.username, username), (.password, password)]
             case .stalker: [(.portal, url), (.mac, mac)]
             }
         if let empty = required.first(where: { $0.1.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) {
             return .missingField(empty.0)
         }
-        guard link != nil else { return .invalidURL }
+        guard let link else { return .invalidURL }
+        if kind == .jellyfin {
+            // first-run-onboarding/add-a-jellyfin-server
+            let scheme = link.scheme?.lowercased()
+            return (scheme == "http" || scheme == "https") && link.host()?.isEmpty == false ? nil : .invalidURL
+        }
         guard kind == .stalker else { return nil }
         guard StalkerPortal(url) != nil else { return .invalidURL }
         return MACAddress(mac) == nil ? .invalidMAC : nil

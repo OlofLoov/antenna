@@ -135,4 +135,34 @@ import Testing
         #expect(ConnectFailure(StalkerError.transport(.notConnectedToInternet), host: host) == .offline)
         #expect(ConnectFailure(StalkerError.serverError(status: 503), host: host) == .serverError(status: 503))
     }
+
+    @Test("first-run-onboarding/add-a-jellyfin-server: a server needs an http address, username and password")
+    func jellyfinFields() {
+        let server = SourceFields(kind: .jellyfin, url: "http://jellyfin.local:8096", username: "anna", password: "s3cret")
+        #expect(server.check() == nil)
+        #expect(SourceFields(kind: .jellyfin, username: "anna", password: "p").check() == .missingField(.server))
+        #expect(SourceFields(kind: .jellyfin, url: "http://jf.local", password: "p").check() == .missingField(.username))
+        #expect(SourceFields(kind: .jellyfin, url: "http://jf.local", username: "anna").check() == .missingField(.password))
+        #expect(SourceFields(kind: .jellyfin, url: "jf.local:8096", username: "a", password: "p").check() == .invalidURL)
+        #expect(SourceFields(kind: .jellyfin, url: "ftp://jf.local", username: "a", password: "p").check() == .invalidURL)
+        #expect(SourceFields(kind: .jellyfin, url: "https://jf.example.test/jellyfin/", username: "a", password: "p").check() == nil)
+    }
+
+    @Test("first-run-onboarding/add-a-jellyfin-server: each Jellyfin failure has its sentence")
+    func jellyfinFailureMessages() {
+        let host = "jf.local"
+        #expect(ConnectFailure(JellyfinClient.JellyfinError.unauthorized, host: host) == .rejected)
+        #expect(
+            ConnectFailure(JellyfinClient.JellyfinError.forbidden, host: host).message
+                == "This account is not allowed to sign in from this device.")
+        #expect(
+            ConnectFailure(JellyfinClient.JellyfinError.untrustedCertificate, host: host).message
+                == "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate.")
+        #expect(
+            ConnectFailure.noJellyfin(host: host).message == "No Jellyfin server answered at jf.local. Check the address and try again.")
+        #expect(ConnectFailure(JellyfinClient.JellyfinError.transport(.notConnectedToInternet), host: host) == .offline)
+        #expect(ConnectFailure(JellyfinClient.JellyfinError.transport(.timedOut), host: host) == .unreachable(host: host))
+        #expect(ConnectFailure(JellyfinClient.JellyfinError.badStatus(500), host: host) == .serverError(status: 500))
+        #expect(ConnectFailure(JellyfinClient.JellyfinError.decoding(path: "Items"), host: host) == .unreadable)
+    }
 }

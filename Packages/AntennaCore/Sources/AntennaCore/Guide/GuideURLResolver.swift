@@ -23,7 +23,7 @@ public enum GuideURLResolver {
             guard let credential else { return nil }
             let login = XtreamCredentials(server: url, username: credential.username, password: credential.password)
             return XtreamClient(credentials: login).xmltvURL()
-        case .stalker:
+        case .stalker, .jellyfin:
             return nil
         }
     }

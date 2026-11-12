@@ -30,6 +30,12 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     /// The Stalker portal refused the device with this message, the MAC
     /// already replaced by "…".
     case deviceRefused(message: String)
+    /// No Jellyfin server answered the server check at this address.
+    case noJellyfin(host: String)
+    /// The Jellyfin server does not let this account sign in from this device.
+    case forbidden
+    /// The server's certificate is self-signed, unknown, expired or not yet valid.
+    case untrustedCertificate
 
     /// The sentence shown under the form.
     public var message: String {
@@ -47,6 +53,9 @@ public enum ConnectFailure: Error, Equatable, Sendable {
         case .portalRejected: "Could not sign in. Check the MAC address, and the login if you have one."
         case .noPortal(let host): "No Stalker portal answered at \(host). Check the address and try again."
         case .deviceRefused(let message): "The portal refused this device with the message “\(message)”."
+        case .noJellyfin(let host): "No Jellyfin server answered at \(host). Check the address and try again."
+        case .forbidden: "This account is not allowed to sign in from this device."
+        case .untrustedCertificate: "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate."
         }
     }
 
@@ -74,12 +83,25 @@ public enum ConnectFailure: Error, Equatable, Sendable {
             case .noPortal: self = .noPortal(host: host)
             case .unreadable, .notStalkerChannel, .noLink: self = .unreadable
             }
+        case let jellyfin as JellyfinClient.JellyfinError:
+            self = Self(jellyfin: jellyfin, host: host)
         case let urlError as URLError:
             self = Self(code: urlError.code, host: host)
         case is DecodingError:
             self = .unreadable
         default:
             self = .unreachable(host: host)
+        }
+    }
+
+    private init(jellyfin: JellyfinClient.JellyfinError, host: String) {
+        switch jellyfin {
+        case .unauthorized: self = .rejected
+        case .forbidden: self = .forbidden
+        case .untrustedCertificate: self = .untrustedCertificate
+        case .badStatus(let status): self = .serverError(status: status)
+        case .decoding: self = .unreadable
+        case .transport(let code): self = Self(code: code, host: host)
         }
     }
 
