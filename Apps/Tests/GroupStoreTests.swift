@@ -116,6 +116,23 @@ import Testing
         #expect(try catalogue().orphanedGroups.isEmpty)
     }
 
+    @Test("group-management/put-groups-in-your-order the Groups screen's data for 400 groups builds well within a second")
+    func fourHundredGroups() {
+        let many = Channel.tagged(
+            (0..<20_000).map { Channel(id: "\($0)", name: "C\($0)", streamURL: URL(filePath: "/\($0)"), group: "G\($0 % 400)") },
+            sourceID: source)
+        for index in 0..<400 where index.isMultiple(of: 4) {
+            GroupStore.setLocked(.named(source, "G\(index)"), true, in: context)
+        }
+        let records = (try? context.fetch(FetchDescriptor<GroupRecord>())) ?? []
+        let elapsed = ContinuousClock().measure {
+            let data = GroupsData(channels: many, groups: records, members: [], hidden: [], sources: [], profile: Profile.mainID)
+            #expect(data.groups.count == 401)
+            #expect(data.orphans.isEmpty)
+        }
+        #expect(elapsed < .milliseconds(500), "took \(elapsed)")
+    }
+
     @Test("group-management/lock-a-group-with-a-passcode All channels and Favorites cannot be locked")
     func locks() throws {
         GroupStore.setLocked(.all, true, in: context)

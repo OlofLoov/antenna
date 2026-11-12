@@ -37,7 +37,7 @@ final class PasscodeRecord {
 @MainActor
 enum PasscodeStore {
     /// Four ASCII digits, the only passcodes accepted.
-    static func isWellFormed(_ digits: String) -> Bool {
+    nonisolated static func isWellFormed(_ digits: String) -> Bool {
         digits.count == 4 && digits.unicodeScalars.allSatisfy { ("0"..."9").contains($0) }
     }
 
@@ -59,21 +59,28 @@ enum PasscodeStore {
     static func set(_ digits: String, in context: ModelContext, now: Date = .now) -> PasscodeRecord? {
         guard isWellFormed(digits) else { return nil }
         let records = (try? context.fetch(FetchDescriptor<PasscodeRecord>())) ?? []
-        let salt = Data((0..<16).map { _ in UInt8.random(in: .min ... .max) })
-        let verifier = check(digits, salt: salt)
+        guard let fresh = record(for: digits, now: now) else { return nil }
         let record: PasscodeRecord
         if let existing = current(records) {
-            existing.salt = salt
-            existing.verifier = verifier
+            existing.salt = fresh.salt
+            existing.verifier = fresh.verifier
             existing.changedAt = now
             record = existing
         } else {
-            record = PasscodeRecord(salt: salt, verifier: verifier, now: now)
+            record = fresh
             context.insert(record)
         }
         records.filter { $0.persistentModelID != record.persistentModelID }.forEach(context.delete)
         try? context.save()
         return record
+    }
+
+    /// A new, unsaved record for `digits` with a fresh salt; nil for digits
+    /// that are not four digits.
+    nonisolated static func record(for digits: String, now: Date) -> PasscodeRecord? {
+        guard isWellFormed(digits) else { return nil }
+        let salt = Data((0..<16).map { _ in UInt8.random(in: .min ... .max) })
+        return PasscodeRecord(salt: salt, verifier: check(digits, salt: salt), now: now)
     }
 
     /// Deletes every record but the one in effect, as when two offline
@@ -87,7 +94,7 @@ enum PasscodeStore {
         try? context.save()
     }
 
-    private static func check(_ digits: String, salt: Data) -> Data {
+    private nonisolated static func check(_ digits: String, salt: Data) -> Data {
         Data(HMAC<SHA256>.authenticationCode(for: Data(digits.utf8), using: SymmetricKey(data: salt)))
     }
 }

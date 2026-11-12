@@ -82,6 +82,7 @@
                     }
                 }
                 UITestingProfiles.seed(context)
+                UITestingGroups.seed(context, locking: .named(homeID, "Sport"))
                 try context.save()
                 return container
             } catch {

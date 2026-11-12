@@ -49,6 +49,7 @@
                     context.insert(SourceRecord(descriptor: descriptor, sortOrder: order))
                 }
                 UITestingProfiles.seed(context)
+                UITestingGroups.seed(context, locking: .ungrouped(xtreamID))
                 try context.save()
                 return container
             } catch {

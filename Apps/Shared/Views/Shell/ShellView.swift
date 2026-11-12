@@ -131,6 +131,7 @@
             .environment(\.shellNavigator, model.navigator.settingGroup { overlay.tuned(from: $0) })
             .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
                 SettingsView()
+                    .environment(\.loadedChannels, model.channels)
                     // Playback stops before "Who's watching?" (profiles/switching-profile).
                     .environment(\.switchProfile, stoppingFirst)
             }

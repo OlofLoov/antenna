@@ -18,6 +18,7 @@
         func body(content: Content) -> some View {
             content
                 .environment(live)
+                .environment(\.loadedChannels, live.channels)
                 .task(id: records.compactMap(\.descriptor)) {
                     live.sourcesChanged(records.compactMap(\.descriptor))
                 }
