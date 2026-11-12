@@ -8,8 +8,8 @@
 
 ## 2. Buffer
 
-- [ ] 2.1 Build the timeshift window and buffer actor with the limits, writing only at start points, and verify with integration tests on a simulated clock citing `timeshift-catch-up-and-start-over/when-the-buffer-runs-out`
-- [ ] 2.2 Start a fresh buffer per channel, delete the old one off the main path and clear leftovers at launch, and verify with an integration test citing `timeshift-catch-up-and-start-over/changing-channel-starts-fresh`
+- [x] 2.1 Build the timeshift window and buffer actor with the limits, writing only at start points, and verify with integration tests on a simulated clock citing `timeshift-catch-up-and-start-over/when-the-buffer-runs-out`
+- [x] 2.2 Start a fresh buffer per channel, delete the old one off the main path and clear leftovers at launch, and verify with an integration test citing `timeshift-catch-up-and-start-over/changing-channel-starts-fresh`
 - [ ] 2.3 Handle unrecordable streams, short storage and partway failures with their notices, and verify with integration, UI and device tests citing `timeshift-catch-up-and-start-over/when-the-stream-cannot-be-recorded`
 
 ## 3. Moving in time

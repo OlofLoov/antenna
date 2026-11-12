@@ -57,6 +57,31 @@ public protocol PlaybackEngine: AnyObject, Sendable {
 
     /// The subtitle lines to draw now. An empty list clears them.
     func subtitleCues() async -> AsyncStream<[SubtitleCue]>
+
+    /// The local buffer of the live channel playing, when the load asked
+    /// for one. Engines that never record yield `.off`.
+    func timeshift() async -> AsyncStream<TimeshiftStatus>
+
+    /// Moves live TV to `date` inside the buffer, clamped to what it holds,
+    /// keeping play or pause. Throws `SeekRefusal.live` without a buffer.
+    func seek(to date: Date) async throws
+
+    /// Moves live TV to the newest moment in the buffer. Does nothing without one.
+    func seekToLive() async
+}
+
+extension PlaybackEngine {
+    public func timeshift() async -> AsyncStream<TimeshiftStatus> {
+        AsyncStream { continuation in
+            continuation.yield(.off)
+        }
+    }
+
+    public func seek(to date: Date) async throws {
+        throw SeekRefusal.live
+    }
+
+    public func seekToLive() async {}
 }
 
 extension PlaybackEngine {

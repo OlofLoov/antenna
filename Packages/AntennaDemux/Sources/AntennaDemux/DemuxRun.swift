@@ -12,7 +12,7 @@ import Foundation
 /// the old sound is flushed and the new one starts at the clock's time.
 /// Text subtitles of every stream go to `cueFound`.
 final class DemuxRun: @unchecked Sendable {
-    private let bytes: SeekableSource
+    private let bytes: any DemuxBytes
     private let videoFeed: SampleFeed
     private let audioFeed: SampleFeed
     private let lock = NSLock()
@@ -45,7 +45,7 @@ final class DemuxRun: @unchecked Sendable {
     /// How much of each sound stream is kept for a switch.
     static let soundRing = CMTime(value: 10, timescale: 1)
 
-    init(bytes: SeekableSource, videoFeed: SampleFeed, audioFeed: SampleFeed) {
+    init(bytes: any DemuxBytes, videoFeed: SampleFeed, audioFeed: SampleFeed) {
         self.bytes = bytes
         self.videoFeed = videoFeed
         self.audioFeed = audioFeed

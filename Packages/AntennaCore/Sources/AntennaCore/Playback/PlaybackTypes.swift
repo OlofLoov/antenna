@@ -68,16 +68,20 @@ public struct PlaybackOptions: Sendable, Equatable {
     /// The languages last picked on this channel on this device. They win
     /// over the preferences while the stream still has those tracks.
     public var remembered: LanguagePick?
+    /// Records live TV to a local buffer while it plays. Engines that
+    /// cannot record a stream play it as before and say so in `timeshift()`.
+    public var timeshift: TimeshiftRequest?
 
     public init(
         startPosition: Duration? = nil, isLive: Bool? = nil, preferredAudioLanguages: [String] = [],
-        preferredSubtitleLanguages: [String] = [], remembered: LanguagePick? = nil
+        preferredSubtitleLanguages: [String] = [], remembered: LanguagePick? = nil, timeshift: TimeshiftRequest? = nil
     ) {
         self.startPosition = startPosition
         self.isLive = isLive
         self.preferredAudioLanguages = preferredAudioLanguages
         self.preferredSubtitleLanguages = preferredSubtitleLanguages
         self.remembered = remembered
+        self.timeshift = timeshift
     }
 }
 

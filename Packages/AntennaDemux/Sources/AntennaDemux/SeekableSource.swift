@@ -10,7 +10,7 @@ import Foundation
 /// and gave the length. A jump of up to 256 KB forward reads through
 /// instead of reopening. `read`, `seek` and `peek` block, so call them from
 /// the demuxing thread; `cancel` from anywhere.
-final class SeekableSource: @unchecked Sendable {
+final class SeekableSource: DemuxBytes, @unchecked Sendable {
     private let url: URL
     private let session: URLSession
     private let lock = NSLock()

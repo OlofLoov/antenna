@@ -27,6 +27,7 @@ extension DemuxEngine {
         request = nil
         openAhead([])
         close()
+        retireTimeshift()
         display.letGo()
         set(.idle)
         guard !keepingPicture else { return }
