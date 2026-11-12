@@ -14,8 +14,8 @@
 
 ## 3. Sealing and delivery
 
-- [ ] 3.1 Add the sealing and the in-memory receiver key, and verify app unit tests on iOS and tvOS for a round trip, a wrong key, a wrong token and an unknown payload version
-- [ ] 3.2 Add the CloudKit delivery store, its sweep and an in-memory fake, and verify integration tests against the fake for create-only saves, delete and the ten-minute sweep
+- [x] 3.1 Add the sealing and the in-memory receiver key, and verify app unit tests on iOS and tvOS for a round trip, a wrong key, a wrong token and an unknown payload version
+- [x] 3.2 Add the CloudKit delivery store, its sweep and an in-memory fake, and verify integration tests against the fake for create-only saves, delete and the ten-minute sweep
 
 ## 4. Apple TV
 
