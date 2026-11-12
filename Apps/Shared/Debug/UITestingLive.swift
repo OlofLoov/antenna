@@ -142,6 +142,20 @@
             return dependencies
         }
 
+        /// The app's refresher loading the scenario's sources, so Settings
+        /// shows their status (sources-and-settings capability). Nil outside these tests.
+        @MainActor
+        static func refresherDependencies() -> SourceRefresher.Dependencies? {
+            guard let scenario = scenario() else { return nil }
+            let script = Script(scenario: scenario)
+            let defaults = UserDefaults(suiteName: "ui-testing-live") ?? .standard
+            defaults.removePersistentDomain(forName: "ui-testing-live")
+            return SourceRefresher.Dependencies(
+                load: { source in try await script.load(source) },
+                hasLogin: { source in MainActor.assumeIsolated { script.hasLogin(source) } },
+                lastLoads: LastLoadStore(defaults: defaults), timeout: .seconds(3600))
+        }
+
         /// What each scenario's sources answer.
         @MainActor
         final class Script {

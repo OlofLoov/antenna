@@ -12,6 +12,8 @@
         @Environment(\.guideStore) private var guideStore
         @Environment(\.currentProfile) private var profile
         @Environment(\.onboardingHandoff) private var handoff
+        @Environment(\.sourceRefresher) private var refresher
+        @Environment(\.modelContext) private var launchContext
         @State private var model: ShellModel?
         @State private var shelves: ShelfLibrary?
         @State private var playback: ShelfPlayback?
@@ -40,7 +42,12 @@
                     UITestingShell.requestGuide(from: model)
                 #endif
                 self.model = model
-                handoff?.apply(to: model)
+                if handoff?.request != nil {
+                    handoff?.apply(to: model)
+                } else {
+                    model.openOnLaunch(in: launchContext)
+                }
+                refresher?.attach { [weak model] in model?.reload($0) }
                 self.shelves = .app(loader)
                 self.playback = .app(loader) { await engine.stop() }
                 self.lifecycle = lifecycle
@@ -53,7 +60,7 @@
                 if let seeded = UITestingScreenshots.dependencies() { return seeded }
                 if let scripted = UITestingOnboarding.loader() { return .live(loader: scripted, guide: nil, profile: profile) }
             #endif
-            return .live(loader: loader, guide: guideStore, profile: profile)
+            return .live(loader: loader, guide: guideStore, profile: profile, refresher: refresher)
         }
     }
 

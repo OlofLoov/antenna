@@ -12,6 +12,8 @@
         @Query(sort: \FavoriteRecord.sortOrder) private var favorites: [FavoriteRecord]
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.currentProfile) private var profile
+        @Environment(\.sourceRefresher) private var refresher
+        @Query private var preferences: [PreferencesRecord]
 
         func body(content: Content) -> some View {
             content
@@ -30,6 +32,10 @@
                     case .active:
                         live.checkLogins()
                         live.session.stateChanged(live.playback)
+                        // Sources that failed, as when offline at launch, and sources past their
+                        // refresh interval load again (sources-and-settings/sources-refresh-on-a-schedule).
+                        live.retry()
+                        refresher?.refreshDue(interval: PreferencesStore.current(preferences).refresh.duration)
                     case .background: live.session.interrupt()
                     default: break
                     }

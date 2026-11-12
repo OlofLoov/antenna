@@ -10,8 +10,9 @@
         @Environment(\.sourceLoader) private var loader
         @Environment(\.guideStore) private var guideStore
         @Environment(\.currentProfile) private var profile
-        @Environment(\.onboardingHandoff) private var handoff
         @Environment(\.switchProfile) private var switchProfile
+        @Environment(\.onboardingHandoff) private var handoff
+        @Environment(\.sourceRefresher) private var refresher
         @State private var live: LiveModel?
         @State private var shelves: ShelfLibrary?
         @State private var playback: ShelfPlayback?
@@ -49,6 +50,7 @@
                 let lifecycle = PlaybackLifecycle(engine: engine) { true }
                 lifecycle.start()
                 self.live = live
+                refresher?.attach { [weak live] in live?.reload($0) }
                 // Start watching in onboarding plays its first channel here.
                 if let channel = handoff?.takeChannel() { live.pick(channel) }
                 self.shelves = .app(loader)
@@ -96,7 +98,14 @@
 
         private func dependencies() -> LiveModel.Dependencies {
             #if DEBUG
-                if let scripted = UITestingLive.dependencies() { return scripted }
+                if var scripted = UITestingLive.dependencies() {
+                    // Settings reads the scripted sources' status from the app's refresher.
+                    if let refresher {
+                        scripted.load = { try await refresher.load($0) }
+                        scripted.hasLogin = { refresher.hasLogin($0) }
+                    }
+                    return scripted
+                }
                 if let scripted = UITestingShelf.liveDependencies() { return scripted }
                 if let scripted = UITestingOnboarding.loader() {
                     var dependencies = LiveModel.Dependencies.live(loader: scripted, guide: nil, profile: profile)
@@ -105,7 +114,7 @@
                     return dependencies
                 }
             #endif
-            return .live(loader: loader, guide: guideStore, profile: profile)
+            return .live(loader: loader, guide: guideStore, profile: profile, refresher: refresher)
         }
     }
 
@@ -127,6 +136,7 @@
         @State private var restored = false
         @Environment(GuideBoardModel.self) private var guide
         @Environment(\.onboardingHandoff) private var handoff
+        @Query private var preferences: [PreferencesRecord]
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -167,8 +177,15 @@
                 guard !restored else { return }
                 restored = true
                 selection = Tab(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
-                // Browse movies in onboarding opens Movies.
-                if handoff?.takeMovies() == true { selection = .movies }
+                // Browse movies in onboarding opens Movies; otherwise the launch
+                // preference, when not Live, wins over the restored tab
+                // (sources-and-settings/choose-how-the-app-behaves).
+                if handoff?.takeMovies() == true { return selection = .movies }
+                switch PreferencesStore.current(preferences).launchScreen(offersMovies: records.contains { $0.kind == .xtream }) {
+                case .live: break
+                case .guide: selection = .guide
+                case .movies: selection = .movies
+                }
             }
             .environment(\.shellNavigator, navigator)
             #if os(iOS)
