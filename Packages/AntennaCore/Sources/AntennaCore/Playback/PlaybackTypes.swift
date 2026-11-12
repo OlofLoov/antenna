@@ -213,11 +213,49 @@ public struct PlaybackPosition: Sendable, Equatable {
     }
 }
 
-/// One subtitle line to draw.
+/// One subtitle line or picture to draw.
 public struct SubtitleCue: Sendable, Equatable {
+    /// The line, empty for a picture.
     public var text: String
+    /// A broadcast subtitle picture, nil for a line of text
+    /// (playback-engine/picture-subtitles-in-broadcast-streams).
+    public var image: SubtitleImage?
 
-    public init(text: String) {
+    public init(text: String, image: SubtitleImage? = nil) {
         self.text = text
+        self.image = image
+    }
+}
+
+/// A subtitle picture and where it sits on the video.
+public struct SubtitleImage: Sendable, Equatable {
+    /// Where the picture sits, as fractions of the video's width and height
+    /// from its top left corner.
+    public struct Frame: Sendable, Equatable {
+        public var x: Double
+        public var y: Double
+        public var width: Double
+        public var height: Double
+
+        public init(x: Double, y: Double, width: Double, height: Double) {
+            self.x = x
+            self.y = y
+            self.width = width
+            self.height = height
+        }
+    }
+
+    public var width: Int
+    public var height: Int
+    /// Four bytes a pixel, red, green, blue and alpha, not premultiplied,
+    /// row after row.
+    public var rgba: Data
+    public var frame: Frame
+
+    public init(width: Int, height: Int, rgba: Data, frame: Frame) {
+        self.width = width
+        self.height = height
+        self.rgba = rgba
+        self.frame = frame
     }
 }
