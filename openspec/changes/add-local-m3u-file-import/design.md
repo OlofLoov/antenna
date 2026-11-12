@@ -102,3 +102,14 @@ Other states:
 - [Two devices re-importing the same source at once lose one copy without notice] → accepted for now.
 - [iCloud storage full leaves the source on this device only with no message] → accepted for now.
 - [Old Windows encodings show replacement characters in names] → accepted; only UTF-8 and UTF-16 with a mark are decoded.
+
+## Implementation decisions
+
+- The size limit is 16 000 000 bytes, decimal like the sizes `ByteCountFormatStyle` shows, so a file the sheet calls "16.2 MB" is never accepted.
+- A file source's record keeps `url` nil, as decided. Its `SourceDescriptor` gets an `antenna-file:<id>?imported=<ms>` stand-in instead of making `url` optional across the app. The stamp changes with each import, so the screens that key their load on the descriptor load again after a re-import.
+- `SourceRecord` also gains `playlistToken`, the value inside the placeholders. Replace keeps it when the new text does not contain it, so the channel ids stay the same.
+- Channel ids come from the stored text with its placeholders, and links, logos and guide links from the text with the logins put back. A favorite's channel id therefore never holds a login, and a changed password does not change the ids.
+- The logins item reuses `CredentialStoring`: one item per source, keyed by the record id, its username field set to `antenna.stream-logins` and its password field holding the JSON list of `StreamCredential`. No new Keychain code is needed.
+- The loader reads the text through `PlaylistFileStore`, which holds the app's `ModelContainer` and opens its own `ModelContext` off the main actor. Whether the text has arrived is a count query on `playlistData != nil`, so the 5-second login check never reads the text.
+- The header's guide link is not copied into `epgURL` while the Guide URL field still holds it. The loader reads it from the restored text, so a login in the guide link stays out of the synced store too.
+- `SourceRefresher` leaves file sources out of Refresh all and the schedule once they have loaded in a run.
