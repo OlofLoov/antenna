@@ -44,3 +44,19 @@ On Apple TV the user opens Groups from Settings, after the passcode prompt if an
 - [A synced passcode check value can be brute-forced from the store] → four digits stop casual reading only; the decision says so.
 - [M3U channel ids carry the stream link] → own groups cannot save M3U channels until the `m3u-playlists` follow-up ships.
 - Open question: should the passcode check value sync through iCloud (chosen here), or should each device keep its own passcode? The decision this change waits on settles it; a passcode per device changes the passcode and sync requirements.
+
+## Implementation decisions
+
+- The synced records are settled here, which lifts the block named in the proposal. `GroupRecord` (one per group: kind, source id, provider name, custom name, locked, sort order, created at; an own group uses its id as the record id), `GroupMemberRecord` (group id, channel id, source id, sort order, added at) and `HiddenGroupRecord` (profile id, group key, hidden, created at). All fields are optional or defaulted and nothing is unique, so adding them to the schema is an additive migration. Options considered: one record holding every rule as JSON (one write conflicts with every other, and a bad blob loses everything), or per-profile copies of every rule (order and names would drift between profiles). One record per group won.
+- The passcode check value syncs in a SwiftData record. The other option, a synchronizable Keychain item, does not reach Apple TV, so a passcode set on a phone would never lock the TV. Four digits are 10 000 values, so anyone who can read the store can recover them; the salted verifier only stops someone reading the digits off the record.
+- A group key is `all`, `named.<source>.<provider name>`, `ungrouped.<source>` or `own.<id>`. It is what `HiddenGroupRecord` stores and what accessibility identifiers use. It never holds a channel id, so never a stream link.
+- Locked groups leave `Catalogue.groups` while locks are closed, as the `channel-catalogue` delta says, and `Catalogue.lockedGroups` lists them for the screens that show a lock row. The `group-management` spec asks for a lock on the group, the catalogue delta for the group to be absent; the two lists keep both true.
+- Hiding a provider group takes its channels out of All channels and out of the number match, as well as out of the group list. Its favorites stay in Favorites and Recents. Hiding an own group hides only the group, since its channels belong to their provider groups.
+- Locking an own group locks its channels everywhere while locks are closed, as locking a provider group does.
+- A channel is "in" an own group when its source and id match a loaded channel; the earliest such channel in All channels order wins, as favorites resolve. Own groups list even when empty.
+- Own groups refuse channels whose id holds `://`, which is every M3U channel today, until the `m3u-playlists` follow-up takes the link out of M3U ids. The rule is on the id, not the source kind, so it lifts by itself when that ships.
+- Duplicate `GroupRecord`s for one group: the earliest `createdAt` wins and the others are listed with the groups that are gone, each with Remove.
+- Rules for a source with no loaded channels (loading, failed, waiting for its login, or loaded empty) are neither applied nor listed as gone.
+- Deleting a playlist deletes its group records, hidden flags and own-group members. Deleting a profile deletes its hidden flags.
+- The fallback when the group on screen disappears is the first group listed after Favorites and Recents, so All channels unless hidden, else Favorites.
+- Searching hidden groups is a per-device `UserDefaults` flag, `groups.searchHidden`.
