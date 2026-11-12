@@ -29,10 +29,11 @@ final class SessionTracker {
 
     /// Loads `channel` on `engine`. Once the stream loads, it becomes the
     /// last channel; a stream that fails to load leaves the last channel as
-    /// it was. Throws what the engine throws.
+    /// it was. Throws what the engine throws, or a `PlaybackFailure` when a
+    /// portal channel gets no address.
     func load(_ channel: Channel, on engine: any PlaybackEngine, options: PlaybackOptions) async throws {
         tuned(channel)
-        try await engine.load(channel.streamURL, options: options)
+        try await engine.load(try await StreamResolver.address(for: channel), options: options)
         guard self.channel == channel, let key = LastChannelKey(channel) else { return }
         store.write(key)
     }

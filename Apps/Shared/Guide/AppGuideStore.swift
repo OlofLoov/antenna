@@ -31,7 +31,8 @@ final class AppGuideStore {
         container: ModelContainer,
         session: URLSession = URLSession(configuration: .guide),
         credentials: any CredentialStoring = CredentialStore(),
-        directory: URL = .cachesDirectory.appending(path: "Guide")
+        directory: URL = .cachesDirectory.appending(path: "Guide"),
+        stalkerClients: StalkerClients = .shared
     ) -> AppGuideStore {
         let logger = Logger(subsystem: "se.codecrave.antenna", category: "guide")
         let configuration = GuideEngine.Configuration(
@@ -46,7 +47,13 @@ final class AppGuideStore {
                     return .unreadable
                 }
             },
-            log: { line in logger.info("\(line, privacy: .public)") }
+            log: { line in logger.info("\(line, privacy: .public)") },
+            stalkerClient: { id in
+                if let client = stalkerClients.client(sourceID: id) { return client }
+                let source = await MainActor.run { AppGuideStore.source(id, in: container.mainContext) }
+                guard let source, let key = source.credentialKey, let credential = try? credentials.load(for: key) else { return nil }
+                return stalkerClients.client(for: source, credential: credential)
+            }
         )
         return AppGuideStore(engine: GuideEngine(configuration))
     }
@@ -67,6 +74,12 @@ final class AppGuideStore {
                 sourceID: record.id, kind: record.kind, url: url, epgURL: record.epgURL,
                 credentialKey: record.credentialKey, sortOrder: record.sortOrder)
         }
+    }
+
+    /// The stored source with `id`, nil when there is none.
+    static func source(_ id: UUID, in context: ModelContext) -> SourceDescriptor? {
+        let records = (try? context.fetch(FetchDescriptor<SourceRecord>(predicate: #Predicate { $0.id == id }))) ?? []
+        return records.first?.descriptor
     }
 
     /// Removes the guide of every source seen in an earlier call and missing

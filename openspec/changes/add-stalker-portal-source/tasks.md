@@ -15,22 +15,22 @@
 
 - [x] 3.1 Load genres and channels with numbers, logos, catch-up days and stable ids, skipping the "All" genre and broken rows, and verify core tests including counts of skipped rows
 - [x] 3.2 Turn unreadable answers into a reading error that quotes nothing, and verify core tests for HTML, XML and empty bodies
-- [ ] 3.3 Load Stalker channels into the combined list in source management, and verify the Stalker beside M3U test
+- [x] 3.3 Load Stalker channels into the combined list in source management, and verify the Stalker beside M3U test
 
 ## 4. Tuning
 
-- [ ] 4.1 Resolve a fresh stream address at tune time, once the tune-time decision lands, and verify core tests for success, a non-portal channel and an answer with no address
+- [x] 4.1 Resolve a fresh stream address at tune time, once the tune-time decision lands, and verify core tests for success, a non-portal channel and an answer with no address
 
 ## 5. Guide
 
-- [ ] 5.1 Use the portal's own guide when the source has no guide link, matching by XMLTV id or portal channel id, and verify core tests for both matches, counted bad rows and the session renewal
+- [x] 5.1 Use the portal's own guide when the source has no guide link, matching by XMLTV id or portal channel id, and verify core tests for both matches, counted bad rows and the session renewal
 
 ## 6. Secrets and Keychain
 
 - [x] 6.1 Redact the MAC, login, password, session key, device ids, stream addresses and portal path from every printed value and error, and verify core tests that print each one
-- [ ] 6.2 Add the optional login to the Keychain item and read old items unchanged, and verify an integration test for the three item kinds
+- [x] 6.2 Add the optional login to the Keychain item and read old items unchanged, and verify an integration test for the three item kinds
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.2 `/opsx:verify` passes

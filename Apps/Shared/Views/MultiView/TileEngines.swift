@@ -107,7 +107,7 @@ final class TileEngines {
         loads[tile]?.cancel()
         loads[tile] = Task {
             do {
-                try await engine.load(channel.streamURL, options: options)
+                try await engine.load(try await StreamResolver.address(for: channel), options: options)
             } catch let failure as PlaybackFailure {
                 return failed(tile, failure)
             } catch {

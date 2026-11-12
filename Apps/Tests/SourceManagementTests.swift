@@ -284,20 +284,6 @@ import Testing
         #expect(StubURLProtocol.requests(host: "ac17-xtream.test").isEmpty)
     }
 
-    @Test("source-management/stalker-contributes-no-channels Stalker contributes no channels")
-    func stalkerInert() async throws {
-        let key = UUID().uuidString
-        try held.save(.init(username: "00:1A:79:00:00:01", password: "p"), for: key)
-        defer { try? held.delete(for: key) }
-        _ = try insert(.stalker, url: "http://ac18-portal.test/c/", sortOrder: 0, credentialKey: key)
-        _ = try insert(.m3u, url: twoChannelPlaylist(host: "ac18-m3u.test"), sortOrder: 1)
-
-        let model = try await load(credentials: held)
-
-        #expect(model.channels.count == 2)
-        #expect(StubURLProtocol.requests(host: "ac18-portal.test").isEmpty)
-    }
-
     #if os(iOS)
         @Test("source-management/empty-state no sources, no request")
         func emptyStateMakesNoRequest() async throws {

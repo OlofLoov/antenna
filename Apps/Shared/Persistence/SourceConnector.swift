@@ -9,6 +9,10 @@ import SwiftData
 struct SourceConnector: Sendable {
     var session: URLSession = .shared
     var credentials: any CredentialStoring = CredentialStore()
+    /// Stalker portals are asked with no cookies and no cache.
+    var portalSession: URLSession = SourceConnector.portalSession
+
+    static let portalSession = URLSession(configuration: .stalker)
 
     /// What one successful Connect saved and what the server said.
     struct Connection: Sendable {
@@ -39,15 +43,18 @@ struct SourceConnector: Sendable {
     @MainActor
     func connect(_ fields: SourceFields, into context: ModelContext) async throws -> Connection {
         if let problem = fields.check() { throw problem }
-        guard let link = fields.link else { throw ConnectFailure.invalidURL }
+        guard var link = fields.link else { throw ConnectFailure.invalidURL }
+        if fields.kind == .stalker, let portal = StalkerPortal(link.absoluteString) { link = portal.url }
         let reply = try await probe(fields.kind, link: link, username: fields.username, password: fields.password, host: fields.host)
-        let login = fields.kind == .m3u ? nil : CredentialStore.Credential(username: fields.username, password: fields.password)
+        let username = fields.kind == .stalker ? MACAddress(fields.username)?.text ?? fields.username : fields.username
+        let login = fields.kind == .m3u ? nil : CredentialStore.Credential(username: username, password: fields.password)
         try Task.checkCancellation()
         return try save(fields, link: link, reply: reply, login: login, into: context)
     }
 
-    /// Asks the server once, saving nothing: downloads the playlist, or
-    /// signs in to the Xtream account and checks it is active. Throws a
+    /// Asks the server once, saving nothing: downloads the playlist, signs
+    /// in to the Xtream account and checks it is active, or signs in to the
+    /// Stalker portal and loads its channels. Throws a
     /// `ConnectFailure`, or `CancellationError` when cancelled
     /// (sources-and-settings/fix-a-source-s-link-or-login).
     func probe(_ kind: SourceKind, link: URL, username: String, password: String, host: String) async throws -> Connection.Reply {
@@ -55,7 +62,14 @@ struct SourceConnector: Sendable {
             switch kind {
             case .m3u, .m3uFile:
                 return .playlist(try await download(link))
-            case .xtream, .stalker:
+            case .stalker:
+                // The portal hands out its channel list as one answer, so Connect
+                // keeps it as the downloaded list and nothing is fetched twice.
+                guard let portal = StalkerPortal(link.absoluteString) else { throw ConnectFailure.invalidURL }
+                guard let mac = MACAddress(username) else { throw ConnectFailure.invalidMAC }
+                let client = StalkerClient(credentials: .init(portal: portal, mac: mac, password: password), session: portalSession)
+                return .playlist(Playlist(channels: try await client.liveLoad(guide: .portal).channels))
+            case .xtream:
                 let client = XtreamClient(credentials: .init(server: link, username: username, password: password), session: session)
                 let info = try await client.accountInfo().userInfo
                 if let inactive = ConnectFailure.accountStatus(info.status) { throw inactive }

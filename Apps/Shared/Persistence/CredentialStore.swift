@@ -13,9 +13,18 @@ protocol CredentialStoring: Sendable {
 /// iCloud Keychain carries them between the user's devices without us ever
 /// seeing them. Playlist URLs live in SwiftData; secrets live here.
 struct CredentialStore: CredentialStoring {
+    /// For a Stalker source `username` holds the MAC and `login` the
+    /// optional portal login. Items saved without `login` decode with nil.
     struct Credential: Codable, Sendable, Equatable {
         var username: String
         var password: String
+        var login: String?
+
+        init(username: String, password: String, login: String? = nil) {
+            self.username = username
+            self.password = password
+            self.login = login
+        }
     }
 
     enum StoreError: Error { case unexpectedStatus(OSStatus), encoding }
