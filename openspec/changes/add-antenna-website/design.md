@@ -61,7 +61,7 @@ Publisher: Code Crave. Contact: `support@code-crave.se`, a placeholder the owner
 
 ## Risks / Trade-offs
 
-- [GitHub Pages serves a file with no extension as `application/octet-stream`, not `application/json`] → Apple's documentation asks for JSON, and whether its CDN accepts this file as served is not verified. After the first deploy the owner runs `curl -sI https://antenna.code-crave.se/.well-known/apple-app-site-association` and checks the app opens a setup link. If Apple refuses the file, move hosting to Cloudflare Pages with a `_headers` file; `Web/` and the script carry over unchanged.
+- [GitHub Pages picks a type from the file extension and cannot set headers, so the extensionless association file may not be served as `application/json`] → Apple's documentation asks for JSON, and whether its CDN accepts this file as served is not verified. After the first deploy the owner runs `curl -sI https://antenna.code-crave.se/.well-known/apple-app-site-association` and checks the app opens a setup link. If Apple refuses the file, move hosting to Cloudflare Pages with a `_headers` file; `Web/` and the script carry over unchanged.
 - [The legal text is not reviewed by a lawyer] → the owner has it reviewed before submission.
 - [The terms describe the app as built today] → a change that adds a server, an SDK or a new kind of synced data updates the Privacy Policy in the same PR.
 
