@@ -142,6 +142,36 @@ import Testing
         #expect(allowed.banner == nil)
     }
 
+    // programme-reminders/a-banner-while-antenna-is-open, returning to a missed reminder
+    @Test func aReminderMissedInTheBackgroundShowsOnReturn() async throws {
+        var clock = now
+        let center = await center(RecordingNotifier(state: .denied)) { clock }
+        center.active = false
+        center.toggle(programme(in: 3), on: channel)
+        #expect(center.banner == nil, "a banner while in the background")
+        clock = now.addingTimeInterval(10 * 60)
+        center.active = true
+        center.reload()
+        #expect(center.banner?.title == "Match of the Day")
+        center.dismissBanner()
+        center.active = false
+        center.active = true
+        center.reload()
+        #expect(center.banner == nil, "the banner came back")
+    }
+
+    // programme-reminders/a-banner-while-antenna-is-open: a programme that ended is not shown on return
+    @Test func anEndedProgrammeShowsNoBannerOnReturn() async throws {
+        var clock = now
+        let center = await center(RecordingNotifier(state: .denied)) { clock }
+        center.active = false
+        center.toggle(programme(in: 3), on: channel)
+        clock = now.addingTimeInterval(64 * 60)
+        center.active = true
+        center.reload()
+        #expect(center.banner == nil)
+    }
+
     // programme-reminders/watch-plays-the-channel, the paid unlock has lapsed
     @Test func lockedShowsNoBannerAndWatchesNothing() async throws {
         let center = await center(RecordingNotifier(state: .denied)) { now }

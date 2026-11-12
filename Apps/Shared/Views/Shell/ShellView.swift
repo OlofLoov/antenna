@@ -77,6 +77,7 @@
                     )
                     .transition(reduceMotion ? .opacity : .move(edge: .leading))
                 }
+                ShellReminderBanner(model: model, catalogue: catalogue, overlay: overlay, focus: $focus)
                 #if DEBUG
                     UITestingShell.Probe(engine: model.engine).id(model.multiViewEnds)
                 #endif
@@ -120,9 +121,7 @@
             }
             .onChange(of: model.recents) { _, _ in showLatestRecents() }
             .onChange(of: model.pickerOpen) { _, _ in showLatestRecents() }
-            .onChange(of: model.tuned, initial: true) { _, channel in
-                zapBar.channelChanged(to: channel)
-            }
+            .onChange(of: model.tuned, initial: true) { _, channel in zapBar.channelChanged(to: channel) }
             .onChange(of: model.barVisible) { _, raised in
                 if raised { zapBar.dismiss() }
             }
