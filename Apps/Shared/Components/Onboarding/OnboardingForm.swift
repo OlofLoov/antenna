@@ -217,7 +217,9 @@ enum OnboardingForm {
                         case .channelsDVR:
                             Stacked(label: "Server") {
                                 TextField("", text: $fields.url)
-                                    .keyboardType(.URL)
+                                    #if os(iOS)
+                                        .keyboardType(.URL)
+                                    #endif
                                     .accessibilityIdentifier("onboarding.field.server")
                             }
                         case .xtream, .jellyfin:
