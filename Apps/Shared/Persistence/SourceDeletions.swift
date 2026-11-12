@@ -23,5 +23,20 @@ struct SourceDeletions: ViewModifier {
                 removed(id)
             }
         }
+        .modifier(GuideSettingsSync())
+    }
+}
+
+/// Hands guide settings saved here or arriving through iCloud to the guide,
+/// which applies them without a download
+/// (guide-sources-and-channel-mapping/settings-follow-you-to-every-device).
+private struct GuideSettingsSync: ViewModifier {
+    @Query private var settings: [GuideSettingsRecord]
+    @Environment(\.guideStore) private var guideStore
+
+    func body(content: Content) -> some View {
+        content.onChange(of: settings.map { "\($0.sourceID?.uuidString ?? "")@\($0.modifiedAt.timeIntervalSince1970)" }) {
+            Task { await guideStore?.settingsChanged() }
+        }
     }
 }

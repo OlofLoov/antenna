@@ -45,6 +45,7 @@ struct SourceRemoval {
         }
         GroupStore.removeSource(id, in: context)
         ReminderStore.removeSource(id, in: context)
+        GuideSettingsStore.removeSource(id, in: context, credentials: credentials)
         SourceRecord.delete(record, from: context, credentials: credentials)
         try? context.save()
         refresher?.forget(id)
