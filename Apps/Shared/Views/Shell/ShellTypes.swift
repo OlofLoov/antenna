@@ -65,6 +65,9 @@
         var id: UUID
         var name: String
         var state: State
+        /// A file source waiting for its playlist rather than its login
+        /// (tvos-shell/a-file-source-waiting-for-icloud).
+        var waitsForICloud = false
     }
 
     /// What Live shows when nothing has been tuned yet, or the picture.

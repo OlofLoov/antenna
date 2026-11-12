@@ -238,7 +238,7 @@
                 .accessibilityIdentifier("browse.group.\(index)")
             }
             ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in
-                Text("\(source.name) · waiting for login")
+                Text(source.waitingTag)
                     .font(.callout)
                     .foregroundStyle(Palette.textMuted)
                     .lineLimit(1)

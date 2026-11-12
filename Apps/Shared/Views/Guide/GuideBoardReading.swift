@@ -73,7 +73,7 @@
                 GuideBanner(id: source.id, kind: .failed, text: "Could not load the guide for \(source.name)")
             }
             let waiting = live.sources.filter { $0.state == .waitingForLogin }.map { source in
-                GuideBanner(id: source.id, kind: .waiting, text: "\(source.name): waiting for its login to sync from iCloud")
+                GuideBanner(id: source.id, kind: .waiting, text: source.waitingLine)
             }
             return failed + waiting
         }
