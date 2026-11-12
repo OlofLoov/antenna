@@ -250,3 +250,11 @@ The system SHALL load a Stalker portal source's channels into the combined chann
 - **GIVEN** a Stalker source first in order with a stored credential and 3 channels, and an M3U source second with 2 channels
 - **WHEN** the channel list loads
 - **THEN** it holds the 3 Stalker channels followed by the 2 M3U channels
+
+### Requirement: A source can wait for its credential
+The system SHALL report a source whose password has not reached this device as waiting for its credential, separately from a source that loaded or failed.
+
+#### Scenario: Password not synced yet
+- **GIVEN** a source that needs a password and whose Keychain item has not arrived on this device
+- **WHEN** the sources load
+- **THEN** that source reports waiting for its credential, sends no request, and the other sources load
