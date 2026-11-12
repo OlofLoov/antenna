@@ -14,10 +14,10 @@
 
 ## 3. Paywall screen
 
-- [ ] 3.1 Build the paywall on every platform with App Store prices, renewal wording and any introductory offer, and verify an integration test
-- [ ] 3.2 Handle purchase success, cancel, failure, Ask to Buy and purchases turned off, and verify an integration test for each outcome
-- [ ] 3.3 Add Restore purchase with "Welcome back", nothing found and an ended subscription, and verify integration tests
-- [ ] 3.4 Add the unreachable and not-sold panels, and verify a test that a late answer replaces the panel
+- [x] 3.1 Build the paywall on every platform with App Store prices, renewal wording and any introductory offer, and verify an integration test
+- [x] 3.2 Handle purchase success, cancel, failure, Ask to Buy and purchases turned off, and verify an integration test for each outcome
+- [x] 3.3 Add Restore purchase with "Welcome back", nothing found and an ended subscription, and verify integration tests
+- [x] 3.4 Add the unreachable and not-sold panels, and verify a test that a late answer replaces the panel
 - [ ] 3.5 Add offer code redemption on iPhone, iPad and Mac, and verify it is absent on Apple TV
 
 ## 4. App root and locking
