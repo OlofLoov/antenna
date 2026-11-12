@@ -48,6 +48,8 @@ targets:
           # IPTV sources are overwhelmingly plain http. Tighten per-domain later if you can.
           NSAllowsArbitraryLoads: true
         LSApplicationCategoryType: public.app-category.entertainment
+        AntennaTermsURL: https://codecrave.se/antenna/terms
+        AntennaPrivacyURL: https://codecrave.se/antenna/privacy
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna
@@ -110,6 +112,8 @@ targets:
       properties:
         CFBundleDisplayName: Antenna
         UIUserInterfaceStyle: Automatic
+        AntennaTermsURL: https://codecrave.se/antenna/terms
+        AntennaPrivacyURL: https://codecrave.se/antenna/privacy
         UIBackgroundModes: [audio]
         NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
