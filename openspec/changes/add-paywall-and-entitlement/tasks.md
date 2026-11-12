@@ -2,9 +2,9 @@
 
 ## 1. Entitlement in AntennaCore
 
-- [ ] 1.1 Add the entitlement states, the resolver over purchase evidence and the fixed stand-in provider, and verify core tests for Lifetime, Yearly, grace period, refund and owning both
-- [ ] 1.2 Add the offline grace rule for a remembered Yearly purchase, and verify a core test at 16 days past the end date
-- [ ] 1.3 Add the paywall copy table with no provider, channel or content wording, and verify a core test over every line
+- [x] 1.1 Add the entitlement states, the resolver over purchase evidence and the fixed stand-in provider, and verify core tests for Lifetime, Yearly, grace period, refund and owning both
+- [x] 1.2 Add the offline grace rule for a remembered Yearly purchase, and verify a core test at 16 days past the end date
+- [x] 1.3 Add the paywall copy table with no provider, channel or content wording, and verify a core test over every line
 
 ## 2. StoreKit provider and cache
 
