@@ -103,12 +103,13 @@ The system SHALL let the user move through the days the guide covers by day chip
 - **THEN** the now line and day chips move, and the details stay open
 
 ### Requirement: Read about a programme
-The system SHALL open a programme's details from the grid or a row, showing when and where it airs, its title, times, length, progress if on now, its description and a Watch button.
+The system SHALL open a programme's details from the grid or a row, showing when and where it airs, its title, times, length, progress if on now, its description, a Watch button and, for a programme that has not started, Remind me after Watch.
 
 #### Scenario: Open a programme's details
 - **GIVEN** a programme in the grid or a row
 - **WHEN** the user taps or clicks it, or on a keyboard moves to it with the arrow keys and presses Return
 - **THEN** its details open, a popover on iPad and Mac and a sheet on iPhone, with when and where it airs, the title, times and length, how far it has run if on now, its description, and Watch
+- **AND** Remind me after Watch when the programme has not started
 - **AND** the usual dismiss gestures and Escape close it
 
 #### Scenario: VoiceOver

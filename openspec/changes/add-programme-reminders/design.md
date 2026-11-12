@@ -42,3 +42,19 @@ Not drawn yet: the set state of Remind me, the toggle on `TV-Guide-Future` and o
 - Open question: the Apple TV banner takes the highlight from whatever the user was doing. A banner that waits for play/pause would change the banner requirement.
 - Open question: should a reminder set closer to start than the lead time warn the user instead of going off at once? That would change the notification requirement.
 - [CloudKit sync cannot run in CI] → the cross-device list check runs on a device with a second device setting the reminder.
+
+## Implementation decisions
+
+Calls made while building, recorded here instead of asked.
+
+- Reminders sync. They are a fourth kind of synced record, `ReminderRecord`, in the same CloudKit-backed store as sources and favorites. The other option, reminders kept on the device where they were set, would have changed the remove, notification and list requirements, which all assume sync. A device not signed in to iCloud keeps them locally, as it does sources.
+- The record adds one field to the list above, `notListed`, defaulted to false, for "No longer in the guide". It is synced so every device shows the same note.
+- The guide on iPhone, iPad and Mac shows Remind me after Watch in a programme's details, as the proposal says. The first requirement now names that place too.
+- On Apple TV the overlay's next programmes become buttons. Select on one turns its reminder on or off; the row shows "Remind me" or "Reminder set" at its end while focused, and a bell while set.
+- "The guide covers the start" means the channel's own schedule, from its first programme's start to its last programme's stop, contains the reminder's start. A channel with no programmes at all changes nothing.
+- Per device, user defaults hold `reminders.leadTime` (minutes) and `reminders.delivery`: the reminders this device has already reminded about and the notifications it last scheduled. A reminder counts as reminded once its notification was due while scheduled, or once its banner showed. Entries go when the reminder is deleted.
+- One rule covers the banner while open and on return: a reminder that is due (its lead time reached, its programme not ended) and that this device has not reminded about shows a banner, one at a time, soonest first.
+- On iPhone, iPad and Mac with notifications allowed, a reminder that goes off while Antenna is in front shows as the system's own banner, and the in-app banner stays away. The iPhone banner board describes the in-app banner replacing the notification; the requirement, which shows the in-app banner only when notifications are off, wins.
+- The notification center sits behind a `ReminderNotifying` protocol. UI tests cannot answer the system permission prompt reliably, so a Debug build launched with `-ui-testing-notifications <notDetermined|allowed|denied>` uses a scripted center that answers the prompt as told and records what it scheduled. The system center is never touched under that argument.
+- The Apple TV banner does not wait while the user types a channel number. It shows at once and takes focus to Watch; Menu closes it and the number entry carries on.
+

@@ -121,7 +121,7 @@ The system SHALL show for each channel row its number, logo or initials, name, t
 - **THEN** it is read once as number, name, programme and time left
 
 ### Requirement: Now and next for the highlighted channel
-The system SHALL show in the right panel the highlighted channel's logo, name, number and catch-up days, the current programme with its times, time left, progress and description, and up to three programmes that follow.
+The system SHALL show in the right panel the highlighted channel's logo, name, number and catch-up days, the current programme with its times, time left, progress and description, and up to three programmes that follow, each a row the remote can reach that sets or removes a reminder.
 
 #### Scenario: A channel with guide data
 - **GIVEN** a channel is highlighted
@@ -129,6 +129,11 @@ The system SHALL show in the right panel the highlighted channel's logo, name, n
 - **THEN** it shows the channel's logo, name, number and how many days of catch-up it has
 - **AND** the current programme with its times, time left, progress and description
 - **AND** up to three programmes that follow
+
+#### Scenario: Remind me on a programme that follows
+- **GIVEN** the panel lists programmes that follow
+- **WHEN** the user moves to one of them
+- **THEN** its row offers Remind me, or reads "Reminder set" when it has one, and select turns the reminder on or off without leaving the overlay
 
 #### Scenario: Nothing on now
 - **GIVEN** the guide has nothing for now on the highlighted channel
