@@ -170,11 +170,13 @@ enum OnboardingForm {
     }
 
     /// Apple TV: the title, the stacked fields, Connect with the Keychain
-    /// line, and the card about typing on iPhone beside them.
-    struct Television: View {
+    /// line, and `side` beside them: the card about typing on iPhone, or
+    /// the QR card (iphone-as-setup-device capability).
+    struct Television<Side: View>: View {
         @Binding var fields: SourceFields
         let status: Status
         let actions: Actions
+        @ViewBuilder var side: Side
 
         var body: some View {
             HStack(alignment: .center, spacing: 80) {
@@ -239,7 +241,7 @@ enum OnboardingForm {
                     .padding(.top, 6)
                 }
                 .frame(width: 820)
-                TypeOnPhoneCard()
+                side
             }
             .foregroundStyle(Palette.text)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -352,4 +354,10 @@ enum OnboardingForm {
         fields: $fields,
         status: .init(error: "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate."),
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+extension OnboardingForm.Television where Side == OnboardingForm.TypeOnPhoneCard {
+    init(fields: Binding<SourceFields>, status: OnboardingForm.Status, actions: OnboardingForm.Actions) {
+        self.init(fields: fields, status: status, actions: actions) { OnboardingForm.TypeOnPhoneCard() }
+    }
 }

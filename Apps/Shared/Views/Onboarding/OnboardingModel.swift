@@ -35,6 +35,12 @@ final class OnboardingModel {
     @ObservationIgnored private var pendingSignedIn: [SourceConnector.Connection] = []
     /// True when the sources were signed in rather than added, which the summary's eyebrow says.
     private(set) var signedIn = false
+    /// The Apple TV's QR card while the details step shows (iphone-as-setup-device capability).
+    var pairing: SetupPairingModel?
+    /// A login source sent from the iPhone that this Apple TV is signing in to.
+    private(set) var arrival: SourceDescriptor?
+    /// The fields as typed before `arrival`, restored when the user leaves the step.
+    @ObservationIgnored private var typedBeforeArrival: SourceFields?
 
     @ObservationIgnored let connector: SourceConnector
     @ObservationIgnored private let clipboard: Clipboard?
@@ -70,6 +76,7 @@ final class OnboardingModel {
                 self.connection = connection
                 self.addingAnother = false
                 self.returnedToForm = false
+                self.pairing?.stop()
                 self.begin(connection)
             } catch is CancellationError {
                 return
@@ -106,7 +113,7 @@ final class OnboardingModel {
     /// Onboarding stays up while a connected source is in it, even though
     /// the store now holds a source, and on the form after Back from a
     /// provider with nothing, while the store catches up with the delete.
-    var holdsApp: Bool { !setups.isEmpty || returnedToForm || !signIns.isEmpty }
+    var holdsApp: Bool { !setups.isEmpty || returnedToForm || !signIns.isEmpty || pairing?.holdsApp == true }
 
     /// The checklist or summary shows in place of the form.
     var showsChecklist: Bool { !setups.isEmpty && !addingAnother && signIns.isEmpty }
@@ -167,6 +174,8 @@ final class OnboardingModel {
         let connection = SourceConnector.Connection(descriptor: signed, reply: reply, login: login, inserted: false, createdCredential: nil)
         pendingSignedIn.append(connection)
         signIns.removeFirst()
+        arrival = nil
+        typedBeforeArrival = nil
         if signIns.isEmpty {
             signedIn = true
             pendingSignedIn.forEach(begin)
@@ -234,6 +243,59 @@ final class OnboardingModel {
         returnedToForm = false
         signedIn = false
         fields = SourceFields()
+    }
+
+    /// A source sent from the iPhone arrived while the QR card showed. A
+    /// playlist goes on to loading and the typed text is discarded
+    /// (iphone-as-setup-device/a-playlist-source-sent-from-the-iphone-starts-loading-on-the-tv).
+    /// A login source fills in and locks Name and the server, keeps the
+    /// login fields as typed, and waits for Connect
+    /// (iphone-as-setup-device/a-login-source-sent-from-the-iphone-needs-only-its-login-on-the-tv).
+    func received(_ source: SourceDescriptor) async {
+        cancel()
+        error = nil
+        guard source.kind.signsInOnAppleTV else { return await adopt(source) }
+        typedBeforeArrival = fields
+        fields.kind = source.kind
+        fields.name = source.name
+        fields.url = source.url.absoluteString
+        signIns = [source]
+        arrival = source
+    }
+
+    /// Downloads an arrived playlist and starts its checklist, adding no source.
+    private func adopt(_ source: SourceDescriptor) async {
+        connecting = true
+        defer { connecting = false }
+        let host = source.url.host() ?? source.url.absoluteString
+        do {
+            let reply = try await connector.probe(source.kind, link: source.url, username: "", password: "", host: host)
+            let connection = SourceConnector.Connection(
+                descriptor: source, reply: reply, login: nil, inserted: false, createdCredential: nil)
+            fields = SourceFields()
+            self.connection = connection
+            begin(connection)
+        } catch is CancellationError {
+            return
+        } catch {
+            fields = SourceFields(kind: source.kind, name: source.name, url: source.url.absoluteString)
+            self.error = ConnectFailure(error, host: host).message
+        }
+    }
+
+    /// Menu from the details step: an arrived login source is let go, and
+    /// Name and the server go back to what the user had typed.
+    func leaveArrival() {
+        guard arrival != nil else { return }
+        if let typed = typedBeforeArrival {
+            fields.kind = typed.kind
+            fields.name = typed.name
+            fields.url = typed.url
+        }
+        typedBeforeArrival = nil
+        arrival = nil
+        signIns = []
+        error = nil
     }
 
     /// Asks the system whether the clipboard holds a probable link, which

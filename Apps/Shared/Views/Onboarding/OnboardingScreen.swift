@@ -66,7 +66,7 @@ struct OnboardingScreen: View {
 
     #if os(tvOS)
         @ViewBuilder private var content: some View {
-            if !model.signIns.isEmpty {
+            if !model.signIns.isEmpty, model.arrival == nil {
                 OnboardingSignInScreen(model: model)
             } else if model.showsChecklist {
                 OnboardingProgressScreen(model: model, signedInToICloud: signedInToICloud, finish: finish) {
@@ -83,7 +83,7 @@ struct OnboardingScreen: View {
                                     path.append(.form)
                                 }
                             case .form:
-                                OnboardingFormScreen(model: model)
+                                OnboardingFormScreen(model: model).modifier(SetupPairingRuntime(model: model))
                             }
                         }
                 }
@@ -188,7 +188,20 @@ struct OnboardingFormScreen: View {
 
     @ViewBuilder private var form: some View {
         #if os(tvOS)
-            OnboardingForm.Television(fields: $model.fields, status: status, actions: actions)
+            if let arrival = model.arrival, case .code(let link) = model.pairing?.card {
+                SetupSignIn.Television(fields: $model.fields, link: link.url, status: status) {
+                    Task { await model.signIn(into: context) }
+                }
+                .id(arrival.id)
+            } else {
+                OnboardingForm.Television(fields: $model.fields, status: status, actions: actions) {
+                    if let link = model.pairing?.link {
+                        SetupCard.Television(link: link.url, status: .waiting(hint: model.pairing?.hint.map(SetupCard.text)))
+                    } else {
+                        OnboardingForm.TypeOnPhoneCard()
+                    }
+                }
+            }
         #else
             OnboardingForm.Phone(fields: $model.fields, revealsPassword: $model.revealsPassword, status: status, actions: actions)
                 .navigationTitle("Add a source")

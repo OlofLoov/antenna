@@ -11,11 +11,11 @@
 
 ## 3. Apple TV QR card
 
-- [ ] 3.1 Show the QR card when signed in to iCloud and the keyboard card otherwise, swapping on sign-in changes, and verify UI and integration tests
-- [ ] 3.2 Watch for a playlist source created after the step was reached and go on to loading, and verify integration tests for old sources, two senders and typed text being discarded
-- [ ] 3.3 Fill in and lock Name and the server or portal for an arrived Xtream source or Stalker portal and save the typed login or MAC address for it, and verify a UI test that no second source is added
-- [ ] 3.4 Show the two-minute hint, with the update wording for a source the card cannot set up, and verify an integration test
-- [ ] 3.5 Keep typing on the TV working and drop the card once Connect succeeds, and verify an integration test
+- [x] 3.1 Show the QR card when signed in to iCloud and the keyboard card otherwise, swapping on sign-in changes, and verify UI and integration tests
+- [x] 3.2 Watch for a playlist source created after the step was reached and go on to loading, and verify integration tests for old sources, two senders and typed text being discarded
+- [x] 3.3 Fill in and lock Name and the server or portal for an arrived Xtream source or Stalker portal and save the typed login or MAC address for it, and verify a UI test that no second source is added
+- [x] 3.4 Show the two-minute hint, with the update wording for a source the card cannot set up, and verify an integration test
+- [x] 3.5 Keep typing on the TV working and drop the card once Connect succeeds, and verify an integration test
 
 ## 4. iPhone, iPad and Mac
 
