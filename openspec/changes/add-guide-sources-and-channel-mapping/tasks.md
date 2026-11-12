@@ -8,8 +8,8 @@
 
 ## 2. Settings record and privacy
 
-- [ ] 2.1 Add the per-source guide settings record with order, flags, added links, matches, tombstones, merge and size cap
-- [ ] 2.2 Split added links into Keychain and stored parts and show them redacted, and verify with an integration test citing `guide-sources-and-channel-mapping/passwords-in-guide-links-stay-private`
+- [x] 2.1 Add the per-source guide settings record with order, flags, added links, matches, tombstones, merge and size cap
+- [x] 2.2 Split added links into Keychain and stored parts and show them redacted, and verify with an integration test citing `guide-sources-and-channel-mapping/passwords-in-guide-links-stay-private`
 
 ## 3. Guide sources screen
 

@@ -74,6 +74,7 @@ final class AppGuideStore {
                     return .unreadable
                 }
             },
+            addedLink: { sourceID, linkID in GuideSettingsStore.link(sourceID, linkID, credentials: credentials) },
             log: { line in logger.info("\(line, privacy: .public)") },
             stalkerClient: { id in
                 if let client = stalkerClients.client(sourceID: id) { return client }
@@ -103,11 +104,12 @@ final class AppGuideStore {
             logger.error("guide could not read sources")
             return []
         }
+        let settings = GuideSettingsStore.all(in: context)
         return records.compactMap { record in
             guard let url = record.url else { return nil }
             return GuideSourceDescriptor(
                 sourceID: record.id, kind: record.kind, url: url, epgURL: record.epgURL,
-                credentialKey: record.credentialKey, sortOrder: record.sortOrder)
+                credentialKey: record.credentialKey, sortOrder: record.sortOrder, settings: settings[record.id] ?? .empty)
         }
     }
 

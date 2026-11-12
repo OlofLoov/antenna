@@ -22,7 +22,7 @@ import Testing
 
     init() throws {
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
-        container = try ModelContainer(for: SourceRecord.self, FavoriteRecord.self, configurations: configuration)
+        container = try ModelContainer(for: Schema(AntennaSchema.models), configurations: configuration)
     }
 
     private var context: ModelContext { container.mainContext }
