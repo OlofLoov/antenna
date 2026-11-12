@@ -24,7 +24,7 @@
 
 ## 5. DVB picture subtitles
 
-- [ ] 5.1 Add the `dvbsub` decoder to `scripts/build-ffmpeg.sh`, build it locally for every platform, and record the build in design.md
+- [x] 5.1 Add the `dvbsub` decoder to `scripts/build-ffmpeg.sh`, build it locally for every platform, and record the build in design.md
 - [ ] 5.2 Publish the build as `ffmpeg-7.1.3-2` and move `Packages/FFmpeg/Package.swift` to its url and checksum
 - [ ] 5.3 Make a TS fixture with a DVB subtitle stream and record the command that made it
 - [ ] 5.4 List DVB subtitle streams as tracks, decode their pages into picture cues with place and time, and test against the fixture citing `playback-engine/picture-subtitles-in-broadcast-streams`

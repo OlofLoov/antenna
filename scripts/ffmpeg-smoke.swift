@@ -1,5 +1,5 @@
 // Checks a built FFmpeg.framework: the licence is LGPL 2.1, the only decoders
-// are MPEG-2 video and MP2, and each fixture container opens through a custom
+// are MPEG-2 video, MP2 and DVB subtitles, and each fixture container opens through a custom
 // AVIO read callback (the way the app feeds FFmpeg) with the expected streams.
 // Run by .github/workflows/ffmpeg.yml against the macOS slice:
 //   swiftc -F <frameworks/macos> -framework FFmpeg scripts/ffmpeg-smoke.swift -o smoke
@@ -73,6 +73,8 @@ for library in [avformat_license(), avcodec_license(), avutil_license(), swresam
 }
 check(avcodec_find_decoder(AV_CODEC_ID_MPEG2VIDEO) != nil, "MPEG-2 video decoder present")
 check(avcodec_find_decoder(AV_CODEC_ID_MP2) != nil, "MP2 decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE) != nil, "DVB subtitle decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_DVB_TELETEXT) == nil, "no teletext decoder")
 check(avcodec_find_decoder(AV_CODEC_ID_H264) == nil, "no H.264 decoder, Apple's hardware decodes it")
 
 struct Expected {
