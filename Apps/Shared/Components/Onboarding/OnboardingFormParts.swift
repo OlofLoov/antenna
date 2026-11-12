@@ -198,6 +198,7 @@ extension OnboardingForm {
             .frame(width: 480, alignment: .leading)
             .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 20))
             .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("onboarding.keyboardCard")
         }
     }
 }
