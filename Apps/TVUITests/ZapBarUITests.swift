@@ -151,10 +151,12 @@ extension ShellUITests {
         expectEngine("failed loads=1 file=a1.ts")
         XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 10))
         freshBar()
+        // The programme is read before the badges: the bar hides five seconds
+        // after the press, and each query takes a while on a busy runner.
         expect(element("zapBar.name"), "label == 'Channel a1'")
+        expect(element("zapBar.programme"), "label == 'Morning News'")
         XCTAssertFalse(element("zapBar.live").exists)
         XCTAssertFalse(element("zapBar.quality").exists)
-        expect(element("zapBar.programme"), "label == 'Morning News'")
     }
 
     // tv-zap-bar-and-number-entry/catch-up-hint
