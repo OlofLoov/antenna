@@ -16,6 +16,9 @@ final class TimeshiftUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_TIMESHIFT"] = script
+        // Behind is rounded up to the minute. A buffer of exactly 20 minutes
+        // reads 20 or 21 at its start, depending on the last tick; 20.5 always reads 21.
+        app.launchEnvironment["UITESTING_TIMESHIFT_MINUTES"] = "20.5"
         app.launchEnvironment["TZ"] = "UTC"
         app.launch()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
