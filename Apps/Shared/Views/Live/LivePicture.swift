@@ -37,6 +37,11 @@
                             PlayerStatus.Elsewhere(text: "Playing in Picture in Picture", systemImage: "pip")
                         }
                         PlayerWaitingLayer(player: live.player)
+                        if let notice = live.player.timeshift.notice {
+                            Timeshift.Notice(text: notice)
+                                .frame(maxHeight: .infinity, alignment: .top)
+                                .padding(.top, 12)
+                        }
                         if let message = live.player.message {
                             failure(message)
                         }
@@ -52,6 +57,7 @@
                 }
                 .clipped()
                 .background { keys }
+                .background { LiveSkipKeys(live: live) }
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("browse.player")
@@ -133,7 +139,15 @@
             #endif
         }
 
-        private var controls: some View {
+        @ViewBuilder private var controls: some View {
+            if live.player.timeshift.canRewind {
+                LiveTimeshiftStrip(extras: { extras })
+            } else {
+                strip
+            }
+        }
+
+        private var strip: some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                 let progress = live.playing.map { live.nowText(for: $0, at: context.date) }?.progress
                 Browse.Controls(
@@ -147,24 +161,29 @@
                         live.showControls(after: .touch)
                     }
                 ) {
-                    tracksButton
-                    // AirPlay at compact width is reached from full screen or Control Center.
-                    if live.player.route == .system, live.fullScreen || !isCompact {
-                        AirPlayPicker()
-                    }
-                    #if os(macOS)
-                        PlayerVolumeControls.MuteButton(isMuted: live.player.muted, level: live.player.volume) {
-                            live.player.toggleMute()
-                        }
-                        PlayerVolumeControls.Slider(level: live.player.muted ? 0 : live.player.volume) { live.player.setVolume($0) }
-                    #endif
-                    #if os(iOS)
-                        Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
-                            live.engine.startPictureInPicture()
-                        }
-                    #endif
+                    extras
                 }
             }
+        }
+
+        /// The buttons each platform adds to the strip.
+        @ViewBuilder private var extras: some View {
+            tracksButton
+            // AirPlay at compact width is reached from full screen or Control Center.
+            if live.player.route == .system, live.fullScreen || !isCompact {
+                AirPlayPicker()
+            }
+            #if os(macOS)
+                PlayerVolumeControls.MuteButton(isMuted: live.player.muted, level: live.player.volume) {
+                    live.player.toggleMute()
+                }
+                PlayerVolumeControls.Slider(level: live.player.muted ? 0 : live.player.volume) { live.player.setVolume($0) }
+            #endif
+            #if os(iOS)
+                Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
+                    live.engine.startPictureInPicture()
+                }
+            #endif
         }
     }
 #endif

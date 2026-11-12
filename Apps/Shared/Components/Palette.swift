@@ -13,6 +13,8 @@ enum Palette {
     static let scrimTint = Color(red: 8 / 255, green: 10 / 255, blue: 14 / 255)
 
     static func surface(_ opacity: Double) -> Color { Color.white.opacity(opacity) }
+    /// What the buffer holds past the marker on a timeshift scrubber.
+    static let buffered = surface(0.35)
 }
 
 /// The 0.55 scrim the Apple TV shell lays over the picture or the guide

@@ -4,6 +4,7 @@ import Foundation
 extension DemuxEngine {
     public func stop() async {
         hold.clear()
+        await dropParkedTimeshift()
         await shutDown()
     }
 

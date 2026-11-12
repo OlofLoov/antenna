@@ -10,6 +10,8 @@ enum ZapBar {
 
     /// The strip. `nowPlaying` and `status` fill the middle and the right.
     struct Bar<Identity: View, NowPlaying: View, Status: View>: View {
+        /// 236 tall, 274 with the rewind row.
+        var height: CGFloat = 236
         @ViewBuilder var identity: Identity
         @ViewBuilder var nowPlaying: NowPlaying
         @ViewBuilder var status: Status
@@ -24,7 +26,7 @@ enum ZapBar {
             }
             .padding(EdgeInsets(top: 32, leading: 64, bottom: 40, trailing: 64))
             .frame(maxWidth: .infinity)
-            .frame(height: 236)
+            .frame(height: height)
             .background(Palette.scrimTint.opacity(0.88))
             .foregroundStyle(Palette.text)
             .accessibilityElement(children: .contain)

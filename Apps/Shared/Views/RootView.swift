@@ -47,6 +47,7 @@
                 // Live keeps its sound when the app leaves the screen
                 // (player-controls-and-playback-errors/keep-listening-in-the-background).
                 let lifecycle = PlaybackLifecycle(engine: engine) { true }
+                lifecycle.follow(live.player.timeshift)
                 lifecycle.start()
                 self.live = live
                 // Start watching in onboarding plays its first channel here.

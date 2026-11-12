@@ -225,19 +225,20 @@ extension DemuxEngine {
     /// paused or behind, playback goes on from the buffer while the
     /// recorder reconnects on its own.
     func recordingEnded(_ failure: PlaybackFailure?, by recorder: TimeshiftRecorder) {
-        guard let session = timeshift, session.recorder === recorder, let buffer = session.recordingBuffer else { return }
+        let owner = [timeshift, parked].compactMap(\.self).first { $0.recorder === recorder }
+        guard let session = owner, let buffer = session.recordingBuffer else { return }
         session.recorder = nil
         buffer.markGap()
         let atLive = currentStatus.isAtLive(tolerance: session.request.limits.liveEdgeTolerance)
-        if atLive, state == .playing || state == .buffering {
+        if session === timeshift, atLive, state == .playing || state == .buffering {
             dropped(failure ?? .stoppedSendingData)
             return
         }
-        reconnectRecorder(after: failure ?? .stoppedSendingData)
+        reconnectRecorder(session, after: failure ?? .stoppedSendingData)
     }
 
-    private func reconnectRecorder(after failure: PlaybackFailure) {
-        guard let session = timeshift, let buffer = session.recordingBuffer else { return }
+    private func reconnectRecorder(_ session: TimeshiftSession, after failure: PlaybackFailure) {
+        guard let buffer = session.recordingBuffer else { return }
         guard let next = session.budget.dropped(failure, at: .now) else {
             buffer.finish()
             return
@@ -251,7 +252,7 @@ extension DemuxEngine {
                 try await sleep(next.delay)
                 let bytes = HTTPByteStream(url: url, session: network)
                 try await bytes.open()
-                guard !Task.isCancelled, let self, self.timeshift === session else { return bytes.cancel() }
+                guard !Task.isCancelled, let self, self.timeshift === session || self.parked === session else { return bytes.cancel() }
                 buffer.markGap()
                 let recorder = TimeshiftRecorder(bytes: bytes, buffer: buffer)
                 session.recorder = recorder
@@ -261,7 +262,7 @@ extension DemuxEngine {
                 session.budget.playing(at: .now)
             } catch {
                 guard !Task.isCancelled else { return }
-                self?.reconnectRecorder(after: (error as? PlaybackFailure) ?? .unreachable)
+                self?.reconnectRecorder(session, after: (error as? PlaybackFailure) ?? .unreachable)
             }
         }
     }

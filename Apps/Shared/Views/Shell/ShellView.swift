@@ -40,7 +40,7 @@
                 if zapBarShows, let channel = zapBar.channel {
                     ZapBarView(
                         channel: channel, catalogue: catalogue, list: overlay.currentList(catalogue, for: channel), guide: overlayGuide,
-                        engine: model.engine
+                        engine: model.engine, timeshift: model.player.timeshift
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     .allowsHitTesting(false)
@@ -68,7 +68,8 @@
                             }
                         },
                         toggleFavorite: toggleFavorite,
-                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer
+                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer,
+                        startOver: overlayStartOver
                     )
                     .transition(reduceMotion ? .opacity : .move(edge: .leading))
                 }
@@ -101,9 +102,12 @@
                     Task { await model.togglePlayback() }
                     return
                 }
-                // Play/pause in full-screen live TV drops half-typed digits and shows the info bar.
+                // Play/pause in full-screen live TV drops half-typed digits, shows the info bar
+                // and pauses or plays (timeshift-catch-up-and-start-over/pause-live-tv-and-pick-up-where-you-left-off).
                 numbers.cancel()
                 zapBar.playPause()
+                guard !model.player.timeshift.takeHeldPress() else { return }
+                Task { await model.togglePlayback() }
             }
             .onChange(of: catalogueInputs, initial: true) {
                 catalogue = .shell(channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents)
@@ -118,6 +122,7 @@
                 if raised { zapBar.dismiss() }
             }
             .onMoveCommand(perform: move)
+            .modifier(ShellTimeshift(timeshift: model.player.timeshift, zapBar: zapBar, active: fullScreenLive))
             .environment(\.shellNavigator, model.navigator.settingGroup { overlay.tuned(from: $0) })
             .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
                 SettingsView()
@@ -340,14 +345,21 @@
             barLowered = .now
         }
 
+    }
+
+    /// Favorites and recents in the overlay's catalogue.
+    extension ShellScreen {
         /// Up and down on the full-screen picture change channel within the
         /// current list; a list of one shows the bar again for the same channel.
-        private func zap(_ direction: MoveCommandDirection) {
+        func zap(_ direction: MoveCommandDirection) {
             numbers.cancel()
             let steps: Int
             switch direction {
             case .up: steps = 1
             case .down: steps = -1
+            // Behind live or paused, left and right skip (timeshift-catch-up-and-start-over/skip-scan-and-drag).
+            case .left where model.player.timeshift.showsRewindRow: return model.player.timeshift.skip(forward: false)
+            case .right where model.player.timeshift.showsRewindRow: return model.player.timeshift.skip(forward: true)
             case .left: return previousChannel()
             case .right: return openRecents()
             default: return
@@ -356,10 +368,26 @@
             guard next != tuned else { return zapBar.playPause() }
             Task { await model.pick(next) }
         }
-    }
 
-    /// Favorites and recents in the overlay's catalogue.
-    extension ShellScreen {
+        /// The overlay's Start over while it can work: the overlay closes, the bar shows
+        /// CATCH-UP or the earlier time, and the programme plays from its start.
+        var overlayStartOver: (() -> Void)? {
+            guard model.player.timeshift.startOver.isAvailable else { return nil }
+            return {
+                model.player.timeshift.startOverNow()
+                zapBar.playPause()
+                Task {
+                    await model.showLive()
+                    focus = .picture
+                }
+            }
+        }
+
+        /// Full-screen live TV with nothing open over it.
+        var fullScreenLive: Bool {
+            model.tab == .live && !model.barVisible && !model.pickerOpen && model.player.panel == nil && numbers.phase == .closed
+        }
+
         /// Swipe left on the full-screen picture plays the most recent
         /// other channel in Recents; with none, nothing happens.
         private func previousChannel() {

@@ -68,6 +68,17 @@ public protocol PlaybackEngine: AnyObject, Sendable {
 
     /// Moves live TV to the newest moment in the buffer. Does nothing without one.
     func seekToLive() async
+
+    /// Sets the live buffer aside, still recording, so the next `load` (a
+    /// catch-up programme) does not delete it. Does nothing without one.
+    func parkTimeshift() async
+
+    /// Plays the parked buffer again as the live channel, from `date` or
+    /// from live for nil. Throws `SeekRefusal.live` when none is parked.
+    func resumeParkedTimeshift(at date: Date?) async throws
+
+    /// Deletes the parked buffer.
+    func dropParkedTimeshift() async
 }
 
 extension PlaybackEngine {
@@ -82,6 +93,14 @@ extension PlaybackEngine {
     }
 
     public func seekToLive() async {}
+
+    public func parkTimeshift() async {}
+
+    public func resumeParkedTimeshift(at date: Date?) async throws {
+        throw SeekRefusal.live
+    }
+
+    public func dropParkedTimeshift() async {}
 }
 
 extension PlaybackEngine {

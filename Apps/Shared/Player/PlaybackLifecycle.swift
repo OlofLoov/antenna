@@ -17,6 +17,10 @@ final class PlaybackLifecycle {
     private var pausedForBackground = false
     private var pausedForInterruption = false
     private var tokens: [any NSObjectProtocol] = []
+    /// Told when this lifecycle pauses playback, before the engine pauses.
+    var willPause: @MainActor () -> Void = {}
+    /// Plays again what this lifecycle paused; nil plays the engine.
+    var resume: (@MainActor () async -> Void)?
 
     /// Leaving the app pauses on iPhone, iPad and Apple TV, not on a Mac.
     static var platformPausesInBackground: Bool {
@@ -105,6 +109,7 @@ final class PlaybackLifecycle {
         guard pausesInBackground, !continuesInBackground() else { return }
         switch await engine.state {
         case .playing, .buffering, .loading, .reconnecting:
+            willPause()
             await engine.pause()
             pausedForBackground = true
         case .idle, .paused, .ended, .failed:
@@ -116,7 +121,11 @@ final class PlaybackLifecycle {
     func becameActive() async {
         guard pausedForBackground else { return }
         pausedForBackground = false
-        await engine.play()
+        await playAgain()
+    }
+
+    private func playAgain() async {
+        if let resume { await resume() } else { await engine.play() }
     }
 
     func handle(_ event: Interruption) async {
@@ -124,6 +133,7 @@ final class PlaybackLifecycle {
         case .began:
             switch await engine.state {
             case .playing, .buffering, .loading, .reconnecting:
+                willPause()
                 await engine.pause()
                 pausedForInterruption = true
             case .idle, .paused, .ended, .failed:
@@ -132,7 +142,7 @@ final class PlaybackLifecycle {
         case .ended(let shouldResume):
             let resume = pausedForInterruption && shouldResume
             pausedForInterruption = false
-            if resume { await engine.play() }
+            if resume { await playAgain() }
         case .unknown:
             break
         }

@@ -40,7 +40,7 @@
         func load(_ channel: Channel) {
             Task {
                 do {
-                    try await session.load(channel, on: engine, options: languages.options(for: channel))
+                    try await session.load(channel, on: engine, options: languages.options(for: channel).recordingLive())
                 } catch is CancellationError {
                     return
                 } catch {

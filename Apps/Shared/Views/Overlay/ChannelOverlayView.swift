@@ -19,6 +19,9 @@
         let openSearch: () -> Void
         /// The multi-view button, and the picker's wording while a tile picks a channel.
         var multiView: OverlayMultiView?
+        /// Start over for the playing channel's programme on now, nil while it cannot work
+        /// (timeshift-catch-up-and-start-over/start-over-shows-only-when-it-can-work).
+        var startOver: (() -> Void)?
 
         var body: some View {
             ChannelOverlay.Layout {
@@ -146,6 +149,7 @@
                 PanelButtons(
                     isFavorite: catalogue.isFavorite(channel), focus: focus, watchTitle: multiView?.watchTitle ?? "Watch",
                     watch: { pick(channel, model.group) }, toggle: { toggleFavorite(channel, key) },
+                    startOver: channel == playing ? startOver : nil,
                     multiView: multiView.flatMap { offer in offer.offered(channel) ? (offer.title, { offer.add(channel) }) : nil })
             }
         }
@@ -174,6 +178,8 @@
         var watchTitle = "Watch"
         let watch: () -> Void
         let toggle: () -> Void
+        /// Start over; nil leaves it out.
+        var startOver: (() -> Void)?
         /// The multi-view button's title and action; nil leaves it out.
         var multiView: (title: String, add: () -> Void)?
 
@@ -181,6 +187,11 @@
             ChannelOverlay.WatchButton(title: watchTitle, watch: watch)
                 .focused(focus, equals: .overlay(.watch))
                 .accessibilityIdentifier("overlay.watch")
+            if let startOver {
+                ChannelOverlay.WatchButton(title: "Start over", watch: startOver)
+                    .focused(focus, equals: .overlay(.startOver))
+                    .accessibilityIdentifier("overlay.startOver")
+            }
             ChannelOverlay.FavoriteButton(isFavorite: isFavorite, toggle: toggle)
                 .focused(focus, equals: .overlay(.favorite))
                 .accessibilityIdentifier("overlay.favorite")

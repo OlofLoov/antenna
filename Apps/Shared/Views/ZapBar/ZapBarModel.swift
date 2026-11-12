@@ -35,6 +35,16 @@
             show()
         }
 
+        /// While `on`, the bar stays up, as during the user's pause; after
+        /// it, the bar hides five seconds later.
+        func keep(_ on: Bool) {
+            guard channel != nil else { return }
+            kept = on
+            show()
+        }
+
+        @ObservationIgnored private var kept = false
+
         /// Menu or select while the bar shows. False when it was not showing,
         /// so the press goes on to the shell.
         @discardableResult
@@ -47,6 +57,7 @@
         private func show() {
             isVisible = true
             hideTimer?.cancel()
+            guard !kept else { return }
             hideTimer = Task { [weak self, sleep] in
                 do {
                     try await sleep(Self.showFor)

@@ -78,23 +78,46 @@ extension ZapBar {
 
     /// The badges over the footer: LIVE with its dot, then the outlined
     /// quality badges; the catch-up days, a dot, and the browse hint.
+    /// The LIVE badge at live, or behind it (timeshift-catch-up-and-start-over/back-to-live).
+    enum LiveStyle: Equatable {
+        case live, behind
+    }
+
     struct Status: View {
         /// "LIVE" first when playing, then picture and sound.
         let badges: [String]
         let catchUp: String?
         let hint: String
+        /// How the LIVE badge looks: red dot at live, muted and outlined behind it.
+        var live = LiveStyle.live
+
+        /// The badge shown in place of LIVE while catch-up plays.
+        static let catchUp = "CATCH-UP"
 
         var body: some View {
             VStack(alignment: .trailing, spacing: 14) {
                 HStack(spacing: 10) {
                     ForEach(badges, id: \.self) { badge in
-                        if badge == "LIVE" {
+                        if badge == Self.catchUp {
+                            Text(badge)
+                                .font(.system(size: 18, weight: .semibold))
+                                .tracking(1)
+                                .foregroundStyle(Palette.ground)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 6))
+                                .accessibilityIdentifier("zapBar.catchupBadge")
+                        } else if badge == "LIVE" {
                             HStack(spacing: 8) {
-                                Circle().fill(Color(red: 0xFF / 255, green: 0x45 / 255, blue: 0x3A / 255)).frame(width: 10, height: 10)
+                                Circle().fill(
+                                    live == .live ? Color(red: 0xFF / 255, green: 0x45 / 255, blue: 0x3A / 255) : Palette.textMuted
+                                )
+                                .frame(width: 10, height: 10)
                                 Text(badge)
                             }
-                            .badge(filled: true)
+                            .badge(filled: live == .live)
                             .accessibilityIdentifier("zapBar.live")
+                            .accessibilityValue(live == .live ? "live" : "behind")
                         } else {
                             Text(badge)
                                 .badge(filled: false)

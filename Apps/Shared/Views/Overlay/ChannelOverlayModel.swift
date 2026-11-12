@@ -8,6 +8,8 @@
         case group(CatalogueGroup)
         case channel(RowKey)
         case watch
+        /// Start over, on the playing channel only.
+        case startOver
         case favorite
         /// "Add to multi-view", or "Add as new tile" in a tile's picker.
         case multiView
@@ -156,7 +158,7 @@
                 return target
             case .group(let shown) where !catalogue.groups.contains(shown):
                 return .group(group)
-            case .group, .watch, .favorite, .multiView, .search, nil:
+            case .group, .watch, .startOver, .favorite, .multiView, .search, nil:
                 return focused
             }
         }
