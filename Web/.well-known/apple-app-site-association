@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID_PLACEHOLDER.se.codecrave.antenna"],
+        "components": [{ "/": "/setup" }]
+      }
+    ]
+  }
+}

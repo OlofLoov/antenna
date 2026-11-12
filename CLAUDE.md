@@ -38,8 +38,12 @@ from `Config/Local.xcconfig.example` for device builds.
 - `Apps/Shared/` SwiftUI shared by every platform. SwiftData records and the
   Keychain `CredentialStore` live in `Persistence/`.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
-- `Web/` the static files served for the setup link: the page Safari shows
-  on an iPhone without Antenna. No scripts, images or third-party content.
+- `Web/` the static site at antenna.code-crave.se, published by
+  `.github/workflows/pages.yml` through `scripts/publish-web.sh`: the setup
+  page, the Terms of Use and Privacy Policy the paywall links to, and the
+  association file whose Apple team id the publish step fills from the
+  `APPLE_TEAM_ID` repository variable. No scripts, images or third-party
+  content. `WebsiteTests` and `SetupPageTests` in AntennaCore check it.
 - `project.yml` is the source of truth for the Xcode project. Edit it, not the pbxproj.
 
 ## How we work
