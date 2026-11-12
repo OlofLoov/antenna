@@ -79,6 +79,16 @@ Formatting:
 - At most one status line shows at a time. A new attempt removes it first, and a new status replaces the old one. In the unavailable panel the status takes the place of the panel body.
 - No value contains "IPTV", "provider", a number followed by "channels", "free" (except in `line.freeTrial`), or the name of any service or playlist vendor.
 
+## Implementation decisions
+
+Made while building the change, without the owner available. Each can be revisited in review.
+
+- **Offline grace.** 16 days past the end date, for a canceled Yearly purchase too. `EntitlementResolver.remembered` applies it whenever the verdict comes from the cache. 28 days or none stay one constant away (`offlineGrace`).
+- **Owning both, and own over shared.** Lifetime wins over Yearly. When the same kind is both bought and shared, the restored note does not say Family Sharing.
+- **The lapse reason.** An ended Yearly purchase reads as expired on its last counted day, the end of billing grace when there was one. A refunded or unshared purchase with no ended Yearly purchase beside it reads as revoked.
+- **Unit names in English.** The offer lines spell day, week, month and year in English in code instead of through `DateComponentsFormatter`, because the surrounding copy is English only and a Swedish device would otherwise read "First 3 dagar free". Dates in the restored and lapsed notes still use the device locale's long style.
+- **Copy marked for owner review.** The rows marked "proposed, needs owner review" ship with the boards' text. The owner was not available to approve them, so the marks stay until they do.
+
 ## Risks / Trade-offs
 
 - Open question: is 16 days of offline grace for a remembered Yearly purchase right, also for a canceled one? 28 days or none are the alternatives. Can be decided during implementation.
