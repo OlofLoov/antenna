@@ -2,7 +2,7 @@
 
 ## 1. Shared pieces from other changes
 
-- [ ] 1.1 Parameterise the Apple TV guide layout by column, block and channel widths, and verify the tvOS layout tests still pass with 370, 40 and 300
+- [x] 1.1 Parameterise the Apple TV guide layout by column, block and channel widths, and verify the tvOS layout tests still pass with 370, 40 and 300
 - [ ] 1.2 Make the shell navigator build on every platform with a current-group setter, and verify a test that Guide and Live share the group
 - [ ] 1.3 Add a stable row identifier token with no stream link, and verify a UI test that no guide identifier contains a fixture stream's scheme, host or query
 
