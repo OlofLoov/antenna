@@ -181,6 +181,7 @@
             ZStack {
                 ZStack {
                     PlayerSurfaceView(engine: model.engine).id(model.multiViewEnds)
+                        .overlay { PlayerSubtitles(engine: model.engine) }
                         .accessibilityElement()
                         .accessibilityLabel("Picture")
                         .accessibilityValue(model.dimmed ? "dimmed" : "full")

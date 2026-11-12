@@ -17,6 +17,7 @@
                 .overlay {
                     if live.playing != nil {
                         PlayerSurfaceView(engine: live.engine)
+                            .overlay { PlayerSubtitles(engine: live.engine, raised: live.controlsShown ? 52 : 0) }
                             .contentShape(Rectangle())
                             .onTapGesture { live.controlsShown ? live.hideControls() : live.showControls(after: .touch) }
                             .onContinuousHover { phase in
@@ -169,6 +170,13 @@
         /// The buttons each platform adds to the strip.
         @ViewBuilder private var extras: some View {
             tracksButton
+            // The subtitles switch shows where AirPlay can: full screen, regular width and Mac.
+            if live.fullScreen || !isCompact {
+                TrackPicker.SubtitlesButton(isOn: live.player.subtitlesOn, isAvailable: live.player.canSwitchSubtitles) {
+                    live.player.switchSubtitles()
+                    live.showControls(after: .touch)
+                }
+            }
             // AirPlay at compact width is reached from full screen or Control Center.
             if live.player.route == .system, live.fullScreen || !isCompact {
                 AirPlayPicker()

@@ -66,6 +66,14 @@ extension PlayerModel {
     /// False for one sound and no subtitles: the button is grayed out.
     var hasTrackChoices: Bool { TrackMenu.hasChoices(tracks) }
 
+    /// True when full subtitles are on; forced ones alone read as off
+    /// (player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step).
+    var subtitlesOn: Bool { TrackChoice.fullSubtitlesOn(tracks) }
+
+    /// False when the stream has no full subtitles, when the switch is
+    /// grayed out or, on Apple TV, not shown.
+    var canSwitchSubtitles: Bool { tracks.subtitles.contains { !$0.isForced } }
+
     /// "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player", or that details
     /// are not available yet.
     var streamLine: String {
@@ -86,6 +94,15 @@ extension PlayerModel {
         let track = id == TrackMenu.offID ? nil : id
         if let track, !tracks.subtitles.contains(where: { $0.id == track }) { return }
         Task { await engine.selectSubtitle(track) }
+    }
+
+    /// Turns subtitles off, or on in the first of `languages` the stream
+    /// has, else its first full track
+    /// (player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step).
+    func switchSubtitles(languages: [String] = Locale.preferredLanguages) {
+        guard canSwitchSubtitles else { return }
+        let next = TrackChoice.switched(tracks, preferred: languages)
+        Task { await engine.selectSubtitle(next) }
     }
 
     // MARK: Panel and picker

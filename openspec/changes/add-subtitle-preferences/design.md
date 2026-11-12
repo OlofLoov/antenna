@@ -10,7 +10,7 @@ See proposal.md for why. The engines already list sound and subtitle tracks, pic
 Boards, under `openspec/specs/design-system/boards/`:
 - Changed: `iPad-Player.dc.html` (the subtitles button after `player.tracks`, the tracks icon as a speech bubble with lines), `iPhone-Settings.dc.html` and `TV-Settings-Preferences.dc.html` (the Subtitles row).
 - New: `iPhone-FullScreen-Subtitles.dc.html` (full-screen controls with tracks, the subtitles button on, AirPlay, and a subtitle line on the picture), `TV-Player-Subtitles.dc.html` (the panel on the Subtitles tab with the "Subtitles On" switch after the tabs, and a subtitle line under the panel).
-- Not drawn: the Mac strip (the iPad board's order with mute and volume, as today), the grayed subtitles button (the grayed tracks button's 0.4 opacity), the Apple TV Subtitles choice list (a standard tvOS picker push, as Guide window), and a DVB picture subtitle (it is the broadcaster's own picture, placed where the stream says).
+- Not drawn: the Mac strip (the iPad board's order with mute and volume, as today), the grayed subtitles button (the grayed tracks button's 0.4 opacity), the Apple TV Subtitles choice list (the standard tvOS pushed picker list), and a DVB picture subtitle (it is the broadcaster's own picture, placed where the stream says).
 
 Design-system requirements that apply: "Live video keeps playing under overlays", "Focus is the lifted white card", "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Text meets contrast minimums", "Nothing fake and nothing bundled".
 
@@ -107,4 +107,7 @@ None.
 - `ChannelLanguages` and `ShelfPlayback` take the device's languages as an injected closure, `Locale.preferredLanguages` by default, so tests do not depend on the simulator's language.
 - The screens hand the preference over with one modifier, `followsSubtitlePreference`, which queries `PreferencesRecord` itself. `ShellView` is near the 500-line limit, so it gains one line.
 - The Subtitles row's explanation is the Preferences section's footer, so it sits right under the row. On Apple TV the row is a pushed list (`.navigationLink` picker style) as the board draws it; on iPhone, iPad and Mac it is the menu picker the other rows use.
+- `SubtitleOverlay` puts the lines 12 percent of the picture's height above its bottom edge, and `raised` lifts them over the 52 pt control strip on iPhone, iPad and Mac while the controls show. On Apple TV the panel covers the top, so the lines stay put.
+- The switch asks for the device's languages at the press (`switchSubtitles(languages:)`, `Locale.preferredLanguages` by default) rather than keeping them in the player model.
+- `InfoPanel.Frame` gained an `accessory` slot after the segments; a constrained initializer keeps the two-closure form for the previews and any caller without one.
 - The scripted UI-test engines now start with an empty track list and apply `TrackChoice.initial` on load, and their language picks live in their own emptied defaults suite. Before, the first track list differed from the chosen one and was kept as a pick, and picks leaked from one test to the next through `UserDefaults.standard`.

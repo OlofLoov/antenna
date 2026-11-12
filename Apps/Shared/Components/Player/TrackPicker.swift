@@ -13,7 +13,7 @@ enum TrackPicker {
 
         var body: some View {
             Button(action: open) {
-                Image(systemName: "captions.bubble")
+                Image(systemName: "text.bubble")
                     .font(.system(size: 16, weight: .semibold))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
@@ -24,6 +24,31 @@ enum TrackPicker {
             .opacity(isAvailable ? 1 : 0.4)
             .accessibilityLabel("Audio and subtitles")
             .accessibilityIdentifier("player.tracks")
+        }
+    }
+
+    /// Subtitles on or off in one press, filled while full subtitles are on,
+    /// grayed out when the stream has none (`iPhone-FullScreen-Subtitles`,
+    /// `iPad-Player`; player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step).
+    struct SubtitlesButton: View {
+        let isOn: Bool
+        let isAvailable: Bool
+        let toggle: () -> Void
+
+        var body: some View {
+            Button(action: toggle) {
+                Image(systemName: isOn ? "captions.bubble.fill" : "captions.bubble")
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Palette.text)
+            .disabled(!isAvailable)
+            .opacity(isAvailable ? 1 : 0.4)
+            .accessibilityLabel("Subtitles")
+            .accessibilityValue(isOn ? "On" : "Off")
+            .accessibilityIdentifier("player.subtitles")
         }
     }
 
@@ -195,6 +220,15 @@ extension TrackPicker {
         lists: TrackPicker.Lists(
             audio: [TrackRow(id: "audio-0", name: "English", detail: "AAC Stereo", isSelected: true)], subtitles: [],
             footer: ["HLS · H.264 720p · AAC Stereo · Apple player"], pickAudio: { _ in }, pickSubtitle: { _ in }))
+}
+
+#Preview("Subtitles button, on and off", traits: .fixedLayout(width: 160, height: 60)) {
+    HStack {
+        TrackPicker.SubtitlesButton(isOn: true, isAvailable: true) {}
+        TrackPicker.SubtitlesButton(isOn: false, isAvailable: true) {}
+        TrackPicker.SubtitlesButton(isOn: false, isAvailable: false) {}
+    }
+    .background(Palette.ground)
 }
 
 #Preview("Tracks button, grayed out", traits: .fixedLayout(width: 60, height: 60)) {

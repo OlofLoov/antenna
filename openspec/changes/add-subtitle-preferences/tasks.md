@@ -17,10 +17,10 @@
 
 ## 4. Subtitles on screen and the switch
 
-- [ ] 4.1 Add `SubtitleOverlay` and `PlayerSubtitles` and draw text cues over the picture in Live, the tvOS shell and the movie player, with previews
-- [ ] 4.2 Add `TrackChoice.switched` and the subtitles button next to the tracks button on iPhone, iPad and Mac where AirPlay can show, with core tests citing `player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step`
-- [ ] 4.3 Add the Subtitles On/Off switch to the Apple TV info panel
-- [ ] 4.4 Make the scripted engines apply the starting rule and emit a cue, add `UITESTING_TRACKS=foreign` and `UITESTING_SUBTITLES`, and add UI tests on iPhone, iPad and Apple TV for Auto, forced subtitles and the switch
+- [x] 4.1 Add `SubtitleOverlay` and `PlayerSubtitles` and draw text cues over the picture in Live, the tvOS shell and the movie player, with previews
+- [x] 4.2 Add `TrackChoice.switched` and the subtitles button next to the tracks button on iPhone, iPad and Mac where AirPlay can show, with core tests citing `player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step`
+- [x] 4.3 Add the Subtitles On/Off switch to the Apple TV info panel
+- [x] 4.4 Make the scripted engines apply the starting rule and emit a cue, add `UITESTING_TRACKS=foreign` and `UITESTING_SUBTITLES`, and add UI tests on iPhone, iPad and Apple TV for Auto, forced subtitles and the switch
 
 ## 5. DVB picture subtitles
 
