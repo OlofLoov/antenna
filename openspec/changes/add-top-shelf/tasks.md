@@ -14,8 +14,9 @@
 
 ## 3. Extension
 
-- [ ] 3.1 Add the Top Shelf extension target, App Group and URL scheme in `project.yml`, and verify the tvOS build
-- [ ] 3.2 Provide sectioned content from the snapshot with no network requests, dropping missing tiles and empty sections, and verify tests in the Apple TV test bundle
+- [x] 3.1 Add the Top Shelf extension target, App Group and URL scheme in `project.yml`, and verify the tvOS build
+- [x] 3.2 Provide sectioned content from the snapshot with no network requests, dropping missing tiles and empty sections, and verify tests in the Apple TV test bundle
+- [ ] 3.3 On an Apple TV, check the shelf shows what the app wrote to the App Group folder. Device only: the App Group needs signing, and builds here run with CODE_SIGNING_ALLOWED=NO
 
 ## 4. Selecting a tile
 

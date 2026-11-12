@@ -110,13 +110,19 @@ targets:
     dependencies:
       - package: AntennaCore
       - package: AntennaDemux
+      - target: AntennaTopShelf
     entitlements:
       path: Config/AntennaTV.entitlements
+      properties:
+        com.apple.security.application-groups: [group.se.codecrave.antenna]
     info:
       path: Apps/TV/Info.plist
       properties:
         CFBundleDisplayName: Antenna
         UIUserInterfaceStyle: Automatic
+        CFBundleURLTypes:
+          - CFBundleURLName: se.codecrave.antenna.tv
+            CFBundleURLSchemes: [antenna]
         AntennaTermsURL: https://codecrave.se/antenna/terms
         AntennaPrivacyURL: https://codecrave.se/antenna/privacy
         UIBackgroundModes: [audio]
@@ -128,11 +134,35 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv
         TARGETED_DEVICE_FAMILY: "3"
 
+  AntennaTopShelf:
+    type: app-extension
+    platform: tvOS
+    sources:
+      - Apps/TopShelf
+    dependencies:
+      - package: AntennaCore
+    entitlements:
+      path: Config/AntennaTopShelf.entitlements
+      properties:
+        com.apple.security.application-groups: [group.se.codecrave.antenna]
+    info:
+      path: Apps/TopShelf/Info.plist
+      properties:
+        CFBundleDisplayName: Antenna
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.tv-top-shelf
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ContentProvider
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv.topshelf
+        TARGETED_DEVICE_FAMILY: "3"
+
   AntennaTVTests:
     type: bundle.unit-test
     platform: tvOS
     sources:
       - Apps/TVTests
+      - Apps/TopShelf/TopShelfItems.swift
       - path: Config/Antenna.storekit
         buildPhase: resources
     dependencies:
