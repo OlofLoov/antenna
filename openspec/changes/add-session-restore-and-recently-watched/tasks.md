@@ -28,10 +28,10 @@
 
 ## 6. Apple TV swipes and shell
 
-- [ ] 6.1 Add swipe left for the previous channel and swipe right for the overlay on Recents, and verify UI tests including no other channel and no Recents
-- [ ] 6.2 Read the shell's last channel from the shared store, and verify the existing shell launch test still passes with the debug mirror file
+- [x] 6.1 Add swipe left for the previous channel and swipe right for the overlay on Recents, and verify UI tests including no other channel and no Recents
+- [x] 6.2 Read the shell's last channel from the shared store, and verify the existing shell launch test still passes with the debug mirror file
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
 - [ ] 7.2 `/opsx:verify` passes
