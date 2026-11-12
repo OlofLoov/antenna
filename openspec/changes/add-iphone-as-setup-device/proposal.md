@@ -8,7 +8,7 @@
 
 > As a household setter-upper, I want to type long details on my iPhone instead of with the TV remote, so setting up an Apple TV is not a chore.
 
-Setting up a source with the Siri Remote takes minutes and goes wrong often. Users report that a stray space after a pasted address breaks the login. The iPhone has a keyboard, a clipboard and the provider's email, but today the Apple TV offers the iPhone's keyboard for one field at a time, and onboarding's hint that sources added on iPhone appear on the TV leaves the user to find the right screen themselves. Until logins can reach the Apple TV, this removes all typing for playlist sources and all but the login for Xtream sources.
+Setting up a source with the Siri Remote takes minutes and goes wrong often. Users report that a stray space after a pasted address breaks the login. The iPhone has a keyboard, a clipboard and the provider's email, but today the Apple TV offers the iPhone's keyboard for one field at a time, and onboarding's hint that sources added on iPhone appear on the TV leaves the user to find the right screen themselves. Until logins can reach the Apple TV, this removes all typing for playlist sources and all but the login for Xtream sources and the MAC address for Stalker portals.
 
 Not reviewed yet.
 
@@ -17,7 +17,7 @@ Not reviewed yet.
 - A QR code on the Apple TV's setup details step when the TV is signed in to iCloud. The code holds a web link with a random one-time code and nothing else.
 - A Handoff offer while the QR code is shown, so a nearby iPhone, iPad or Mac can open Antenna without scanning.
 - On iPhone, iPad and Mac, the link or Handoff opens the add-source form in a "Set up Apple TV" version, then a screen showing the source being sent.
-- The Apple TV notices the new source arriving through iCloud, shows a hint if nothing comes, and for Xtream offers to sign in with Name and Server already filled.
+- The Apple TV notices the new source arriving through iCloud, shows a hint if nothing comes, and for Xtream or Stalker offers to sign in with Name and the server or portal already filled.
 - A plain web page for an iPhone without Antenna, linking to the App Store.
 
 Out of scope:
