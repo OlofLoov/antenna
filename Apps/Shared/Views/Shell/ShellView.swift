@@ -68,12 +68,12 @@
                             }
                         },
                         toggleFavorite: toggleFavorite,
-                        openSearch: { Task { await model.show(.search) } }
+                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer
                     )
                     .transition(reduceMotion ? .opacity : .move(edge: .leading))
                 }
                 #if DEBUG
-                    UITestingShell.Probe(engine: model.engine)
+                    UITestingShell.Probe(engine: model.engine).id(model.multiViewEnds)
                 #endif
             }
             .ignoresSafeArea()
@@ -141,6 +141,7 @@
             .task { await model.player.run() }
             .task { await model.trackSession() }
             .modifier(SourceDeletions(removed: model.sourceDeleted, defaults: model.session.store.defaults))
+            .modifier(multiViewHost)
             .onChange(of: scenePhase) { _, phase in
                 // Leaving the app stops the ten-second count.
                 guard phase == .active else { return model.session.interrupt() }
@@ -163,7 +164,7 @@
         private var picture: some View {
             ZStack {
                 ZStack {
-                    PlayerSurfaceView(engine: model.engine)
+                    PlayerSurfaceView(engine: model.engine).id(model.multiViewEnds)
                         .accessibilityElement()
                         .accessibilityLabel("Picture")
                         .accessibilityValue(model.dimmed ? "dimmed" : "full")
@@ -235,8 +236,8 @@
             }
         }
 
-        private var catalogueInputs: CatalogueInputs {
-            CatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
+        private var catalogueInputs: ShellCatalogueInputs {
+            ShellCatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
         }
 
         private var overlayGuide: OverlayGuide {
@@ -384,6 +385,13 @@
             let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, profile: profile, context: context)
             guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
             focus = .overlay(next)
+        }
+
+        /// Multi-view over Live; the channel it hands back shows the info bar.
+        fileprivate var multiViewHost: ShellMultiViewHost {
+            ShellMultiViewHost(
+                model: model, catalogue: catalogue, guide: overlayGuide, overlay: overlay, focus: $focus, toggleFavorite: toggleFavorite
+            ) { zapBar.channelChanged(to: model.tuned) }
         }
 
         /// Lists the newest recents, except in Recents open in the overlay.

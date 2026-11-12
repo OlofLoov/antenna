@@ -17,6 +17,8 @@
         /// The favorite button was pressed for the highlighted channel.
         let toggleFavorite: (Channel, RowKey) -> Void
         let openSearch: () -> Void
+        /// The multi-view button, and the picker's wording while a tile picks a channel.
+        var multiView: OverlayMultiView?
 
         var body: some View {
             ChannelOverlay.Layout {
@@ -34,9 +36,12 @@
                         .accessibilityIdentifier("overlay.group.\(index)")
                     }
                 } search: {
-                    ChannelOverlay.SearchRow(open: openSearch)
-                        .focused(focus, equals: .overlay(.search))
-                        .accessibilityIdentifier("overlay.search")
+                    // The picker for a multi-view tile has no Search.
+                    if multiView?.pickTarget == nil {
+                        ChannelOverlay.SearchRow(open: openSearch)
+                            .focused(focus, equals: .overlay(.search))
+                            .accessibilityIdentifier("overlay.search")
+                    }
                 }
                 .focusSection()
             } channels: {
@@ -97,7 +102,7 @@
             let identifier = "overlay.channel.\(key.identifier)"
             return ChannelOverlay.ChannelRow(
                 number: number, name: channel.name, detail: line.text, progress: progress, hasCatchUp: channel.catchUpBadge != nil,
-                identifier: identifier
+                identifier: identifier, badge: multiView?.tileBadge(key).map(MultiViewText.tileBadge)
             ) {
                 pick(channel, model.group)
             } logo: {
@@ -134,13 +139,14 @@
             return ChannelOverlay.Panel(
                 name: channel.name, badges: [catalogue.number(for: key).map(String.init), channel.catchUpBadge].compactMap(\.self),
                 now: now, nothingOn: guideNow.line.text,
-                next: guideNow.next.map { .init(time: Self.time($0.start), title: $0.title) }
+                next: guideNow.next.map { .init(time: Self.time($0.start), title: $0.title) }, eyebrow: multiView?.pickTarget
             ) {
                 logo(channel)
             } buttons: {
                 PanelButtons(
-                    isFavorite: catalogue.isFavorite(channel), focus: focus,
-                    watch: { pick(channel, model.group) }, toggle: { toggleFavorite(channel, key) })
+                    isFavorite: catalogue.isFavorite(channel), focus: focus, watchTitle: multiView?.watchTitle ?? "Watch",
+                    watch: { pick(channel, model.group) }, toggle: { toggleFavorite(channel, key) },
+                    multiView: multiView.flatMap { offer in offer.offered(channel) ? (offer.title, { offer.add(channel) }) : nil })
             }
         }
 
@@ -160,20 +166,46 @@
         }
     }
 
-    /// Watch, then the favorite button, in the panel's focus order.
+    /// Watch, the favorite button, then the multi-view button when it is
+    /// offered, in the panel's focus order.
     struct PanelButtons: View {
         let isFavorite: Bool
         let focus: FocusState<ShellFocus?>.Binding
+        var watchTitle = "Watch"
         let watch: () -> Void
         let toggle: () -> Void
+        /// The multi-view button's title and action; nil leaves it out.
+        var multiView: (title: String, add: () -> Void)?
 
         var body: some View {
-            ChannelOverlay.WatchButton(watch: watch)
+            ChannelOverlay.WatchButton(title: watchTitle, watch: watch)
                 .focused(focus, equals: .overlay(.watch))
                 .accessibilityIdentifier("overlay.watch")
             ChannelOverlay.FavoriteButton(isFavorite: isFavorite, toggle: toggle)
                 .focused(focus, equals: .overlay(.favorite))
                 .accessibilityIdentifier("overlay.favorite")
+            if let multiView {
+                ChannelOverlay.MultiViewButton(title: multiView.title, add: multiView.add)
+                    .focused(focus, equals: .overlay(.multiView))
+                    .accessibilityIdentifier("overlay.multiView")
+            }
         }
+    }
+
+    /// What the overlay offers for multi-view (multi-view/start-multi-view-on-apple-tv,
+    /// multi-view/change-a-tile-s-channel): over full-screen live, "Add to
+    /// multi-view"; in the picker for a tile, "Add as new tile", the tile
+    /// it changes and the tiles each channel is in.
+    struct OverlayMultiView {
+        let title: String
+        /// Whether the button shows for this channel.
+        let offered: (Channel) -> Bool
+        let add: (Channel) -> Void
+        /// "Changing tile 2 of 3" in the picker, nil over full-screen live.
+        var pickTarget: String?
+        /// "Show in tile 2" in the picker.
+        var watchTitle: String?
+        /// The tile a channel is in, counted from 1.
+        var tileBadge: (RowKey) -> Int? = { _ in nil }
     }
 #endif

@@ -219,8 +219,10 @@ enum ChannelOverlay {
         /// How far into the programme, 0 to 1; nil draws no bar.
         let progress: Double?
         let hasCatchUp: Bool
-        /// `overlay.channel.<rowKey>`; the parts add `.logo`, `.progress` and `.catchup`.
+        /// `overlay.channel.<rowKey>`; the parts add `.logo`, `.progress`, `.catchup` and `.tile`.
         let identifier: String
+        /// "TILE 1" on a channel already in a multi-view tile.
+        var badge: String?
         let select: () -> Void
         @ViewBuilder var logo: Logo
 
@@ -250,6 +252,10 @@ enum ChannelOverlay {
                     if hasCatchUp {
                         CatchUpMark()
                             .accessibilityIdentifier("\(identifier).catchup")
+                    }
+                    if let badge {
+                        TileBadge(text: badge)
+                            .accessibilityIdentifier("\(identifier).tile")
                     }
                 }
             }
@@ -297,22 +303,6 @@ enum ChannelOverlay {
                 .font(.system(size: 24))
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
                 .accessibilityLabel("Catch-up")
-        }
-    }
-
-    /// The muted 26 pt line centered in the channel column when the group
-    /// has no channels; it takes no focus.
-    struct EmptyGroup: View {
-        let text: String
-
-        var body: some View {
-            Text(text)
-                .font(.system(size: 26))
-                .foregroundStyle(Palette.textMuted)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .accessibilityIdentifier("overlay.emptyGroup")
         }
     }
 

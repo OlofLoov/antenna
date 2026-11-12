@@ -15,11 +15,11 @@
 
 ## 3. Apple TV
 
-- [ ] 3.1 Add "Add to multi-view" to the overlay and the two-tile start, and verify a UI test with fake engines for the start and for each case where the option is hidden
-- [ ] 3.2 Move sound with focus and make swipes, number entry and play/pause inert, and verify with fake engine logs
-- [ ] 3.3 Add pick mode for changing a tile and "Add as new tile", and verify UI tests for change, add, the full limit and duplicates
-- [ ] 3.4 Add tile actions, full screen and back, remove and leave, and verify UI tests including VoiceOver actions
-- [ ] 3.5 Add per-tile loading and failure states and the pause on background, and verify UI and lifecycle tests
+- [x] 3.1 Add "Add to multi-view" to the overlay and the two-tile start, and verify a UI test with fake engines for the start and for each case where the option is hidden
+- [x] 3.2 Move sound with focus and make swipes, number entry and play/pause inert, and verify with fake engine logs
+- [x] 3.3 Add pick mode for changing a tile and "Add as new tile", and verify UI tests for change, add, the full limit and duplicates
+- [x] 3.4 Add tile actions, full screen and back, remove and leave, and verify UI tests including VoiceOver actions
+- [x] 3.5 Add per-tile loading and failure states and the pause on background, and verify UI and lifecycle tests
 
 ## 4. Mac
 
@@ -29,7 +29,7 @@
 
 ## 5. Shell
 
-- [ ] 5.1 Host multi-view in the Apple TV shell and keep the surviving tile's player on leave, and verify a UI test that the tab bar stays hidden
+- [x] 5.1 Host multi-view in the Apple TV shell and keep the surviving tile's player on leave, and verify a UI test that the tab bar stays hidden
 
 ## 6. Hardware
 
