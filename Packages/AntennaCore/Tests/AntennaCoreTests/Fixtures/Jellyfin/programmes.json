@@ -1,0 +1,10 @@
+{"Items":[
+{"Name":"Morning News","EpisodeTitle":"Tuesday","Overview":"The day's headlines.","Genres":["News","Talk"],"ChannelId":"c0ffee01","Id":"p1","StartDate":"2026-11-12T06:00:00.0000000Z","EndDate":"2026-11-12T07:00:00.0000000Z","ImageTags":{"Primary":"ptag1"}},
+{"Name":"Already On","ChannelId":"c0ffee01","Id":"p2","StartDate":"2026-11-12T07:00:00Z","EndDate":"2026-11-12T09:30:00+01:00"},
+{"Name":"Late Show","ChannelId":"c0ffee02","Id":"p3","StartDate":"2026-11-12T22:00:00.5Z","EndDate":"2026-11-12T23:00:00","Genres":[]},
+{"Name":"Backwards","ChannelId":"c0ffee02","Id":"p4","StartDate":"2026-11-12T23:00:00Z","EndDate":"2026-11-12T22:00:00Z"},
+{"Name":"Bad Date","ChannelId":"c0ffee02","Id":"p5","StartDate":"tomorrow","EndDate":"2026-11-12T22:00:00Z"},
+{"Name":"No Channel","Id":"p6","StartDate":"2026-11-12T06:00:00Z","EndDate":"2026-11-12T07:00:00Z"},
+{"ChannelId":"c0ffee01","Id":"p7","StartDate":"2026-11-12T06:00:00Z","EndDate":"2026-11-12T07:00:00Z"},
+42
+],"TotalRecordCount":8,"StartIndex":0}

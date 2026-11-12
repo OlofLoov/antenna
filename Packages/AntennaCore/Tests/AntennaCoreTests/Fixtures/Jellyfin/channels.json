@@ -1,0 +1,11 @@
+{"Items":[
+{"Name":"News One","ServerId":"f2a1","Id":"c0ffee01","ChannelNumber":"101","Type":"TvChannel","ChannelType":"TV","ImageTags":{"Primary":"tag01"}},
+{"Name":"Sport Two","ServerId":"f2a1","Id":"c0ffee02","ChannelNumber":"5.1","Type":"TvChannel","ChannelType":"TV","ImageTags":{}},
+{"Name":"Jazz Radio","ServerId":"f2a1","Id":"c0ffee03","ChannelNumber":"900","Type":"TvChannel","ChannelType":"Radio","ImageTags":{"Primary":"tag03"}},
+{"Name":"No Number","ServerId":"f2a1","Id":"c0ffee04","Type":"TvChannel","ChannelType":"TV"},
+{"Name":"Missing Id","ServerId":"f2a1","ChannelNumber":"7","Type":"TvChannel"},
+{"Id":"c0ffee06","ChannelNumber":"8","Type":"TvChannel"},
+{"Name":"News One Again","Id":"c0ffee01","ChannelNumber":"101"},
+"not a row",
+{"Name":"   ","Id":"c0ffee09"}
+],"TotalRecordCount":9,"StartIndex":0}
