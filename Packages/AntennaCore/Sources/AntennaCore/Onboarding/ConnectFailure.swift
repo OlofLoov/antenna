@@ -21,6 +21,13 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     case unreadable
     /// The Keychain refused the password; the raw status follows the message.
     case credentials(String)
+    /// The MAC address is not six pairs of hex digits.
+    case invalidMAC
+    /// No Stalker portal answered at any address the portal could be under.
+    case noPortal(host: String)
+    /// The Stalker portal refused the device with this message, the MAC
+    /// already replaced by "…".
+    case deviceRefused(message: String)
 
     /// The sentence shown under the form.
     public var message: String {
@@ -34,6 +41,9 @@ public enum ConnectFailure: Error, Equatable, Sendable {
         case .serverError(let status): "The server answered with an error (\(status)). Check the address and try again."
         case .unreadable: "The server replied with something Antenna could not read."
         case .credentials(let reason): "Could not store credentials: \(reason)"
+        case .invalidMAC: "Enter the MAC address as six pairs of letters and digits, like 00:1A:79:12:34:56."
+        case .noPortal(let host): "No Stalker portal answered at \(host). Check the portal address."
+        case .deviceRefused(let message): "The portal turned this device down. It said “\(message)”."
         }
     }
 
@@ -51,6 +61,15 @@ public enum ConnectFailure: Error, Equatable, Sendable {
             case .badStatus(let status): self = .serverError(status: status)
             case .decoding: self = .unreadable
             case .transport(let code): self = Self(code: code, host: host)
+            }
+        case let stalker as StalkerError:
+            switch stalker {
+            case .transport(let code): self = Self(code: code, host: host)
+            case .serverError(let status): self = .serverError(status: status)
+            case .notAuthorized: self = .rejected
+            case .deviceRefused(let message): self = .deviceRefused(message: message)
+            case .noPortal: self = .noPortal(host: host)
+            case .unreadable, .notStalkerChannel, .noLink: self = .unreadable
             }
         case let urlError as URLError:
             self = Self(code: urlError.code, host: host)

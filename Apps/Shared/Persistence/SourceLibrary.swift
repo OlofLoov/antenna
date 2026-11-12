@@ -12,6 +12,8 @@ struct NewSource: Equatable {
     var epgURL = ""
     var username = ""
     var password = ""
+    /// The optional Stalker portal login, kept in the Keychain item.
+    var login = ""
 
     enum SaveError: Error, Equatable {
         case invalidURL
@@ -32,9 +34,10 @@ struct NewSource: Equatable {
     @MainActor
     @discardableResult
     func save(into context: ModelContext, credentials: any CredentialStoring) throws(SaveError) -> SourceRecord {
-        guard let serverURL = URL(string: url.trimmingCharacters(in: .whitespaces)), serverURL.scheme != nil else {
+        guard var serverURL = URL(string: url.trimmingCharacters(in: .whitespaces)), serverURL.scheme != nil else {
             throw .invalidURL
         }
+        if kind == .stalker, let portal = StalkerPortal(url) { serverURL = portal.url }
         var descriptor = SourceDescriptor(
             name: name.isEmpty ? serverURL.host() ?? "Source" : name,
             kind: kind,
@@ -44,7 +47,8 @@ struct NewSource: Equatable {
         if kind != .m3u {
             let key = descriptor.id.uuidString
             do {
-                try credentials.save(.init(username: username, password: password), for: key)
+                let mac = kind == .stalker ? MACAddress(username)?.text ?? username : username
+                try credentials.save(.init(username: mac, password: password, login: login.isEmpty ? nil : login), for: key)
             } catch {
                 throw .credentials("\(error)")
             }

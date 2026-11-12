@@ -16,6 +16,8 @@ struct SourceLoader: Sendable {
     var timeZones: XtreamTimeZones = SourceLoader.sharedTimeZones
     /// Where imported files' text is read from.
     var files: PlaylistFileStore = .shared
+    /// The per-source portal clients, shared with the guide and playback.
+    var stalkerClients: StalkerClients = .shared
 
     /// The time zones every loader in the app records into.
     static let sharedTimeZones = XtreamTimeZones()
@@ -29,18 +31,34 @@ struct SourceLoader: Sendable {
         /// logins than its links name. No request is made.
         case loginUnreadable
 
+        /// A Stalker portal call failed for a reason other than the
+        /// connection, which arrives as a `URLError` instead.
+        case portal(StalkerError)
+
         var errorDescription: String? {
             switch self {
             case .badStatus(let code): "The playlist server answered with status \(code)."
             case .waitingForICloud: "Waiting for its playlist to sync from iCloud."
             case .loginUnreadable: "Its saved login is unreadable. Re-import the file."
+            case .portal(let error): Self.message(error)
+            }
+        }
+
+        private static func message(_ error: StalkerError) -> String {
+            switch error {
+            case .serverError(let status): "The portal answered with status \(status)."
+            case .notAuthorized: "The portal turned down this MAC address or login."
+            case .deviceRefused(let message): "The portal turned this device down. It said “\(message)”."
+            case .noPortal: "No Stalker portal answered at this address."
+            case .transport, .unreadable, .notStalkerChannel, .noLink: "The portal replied with something Antenna could not read."
             }
         }
     }
 
     /// False when an Xtream or Stalker source has no Keychain item on this
-    /// device yet. An item that cannot be read counts as present, so the load
-    /// runs and reports the failure.
+    /// device yet, or a Stalker item's username is not a MAC. An item that
+    /// cannot be read counts as present, so the load runs and reports the
+    /// failure.
     func hasLogin(_ source: SourceDescriptor) -> Bool {
         guard source.kind != .m3u else { return true }
         if source.kind == .m3uFile {
@@ -49,7 +67,8 @@ struct SourceLoader: Sendable {
         }
         guard let key = source.credentialKey else { return false }
         do {
-            return try credentials.load(for: key) != nil
+            guard let found = try credentials.load(for: key) else { return false }
+            return source.kind != .stalker || MACAddress(found.username) != nil
         } catch {
             return true
         }
@@ -84,8 +103,16 @@ struct SourceLoader: Sendable {
         case .m3uFile:
             return try loadFile(source)
         case .stalker:
-            // TODO: Stalker/MAG portal handshake (handshake → get_profile → get_all_channels).
-            return Playlist(channels: [])
+            guard let key = source.credentialKey, let cred = try credentials.load(for: key),
+                let client = stalkerClients.client(for: source, credential: cred)
+            else { return Playlist(channels: []) }
+            do {
+                return Playlist(channels: try await client.liveLoad(guide: source.epgURL == nil ? .portal : .xmltv).channels)
+            } catch StalkerError.transport(let code) {
+                throw URLError(code)
+            } catch let error as StalkerError {
+                throw LoadError.portal(error)
+            }
         }
     }
 
