@@ -43,7 +43,7 @@ Options considered:
 
 The hard constraint today: "Secrets live only in the synchronizable iCloud Keychain, never in SwiftData, logs, identifiers or labels." `add-iphone-as-setup-device` adds "No password travels in the link, in iCloud records or over the local network."
 
-Proposed wording, for the owner to confirm before this change is accepted: "Secrets live only in the synchronizable iCloud Keychain, never in SwiftData, logs, identifiers or labels. The one exception is a login sent to an Apple TV: it may sit in the user's private CloudKit database for at most ten minutes, sealed to a key that exists only in that Apple TV's memory, and is deleted when picked up." The local-network part stays as it is. On confirmation, task 2.1 updates `openspec/config.yaml` and CLAUDE.md.
+The owner approved the exception on 2026-11-12, worded narrowly: "Secrets live only in the synchronizable iCloud Keychain, never in SwiftData, logs, identifiers or labels. The one exception is a login drop for an Apple TV: sealed with HPKE to a key that exists only in that Apple TV's memory, it may sit in the user's private CloudKit database for at most ten minutes, in the record's encrypted values, and is deleted when the TV picks it up." The local-network part stays as it is. Task 2.1 put this wording in `openspec/config.yaml` and CLAUDE.md.
 
 ## Decision: a new kind of synced record
 
@@ -145,10 +145,27 @@ Task 7.2 is a manual checklist for these, recorded in this file.
 
 ## Risks / Trade-offs
 
-- [Ciphertext of a login sits in iCloud for up to ten minutes] → sealed to a key only one TV has in memory, deleted on pickup, swept after ten minutes. Needs the owner's confirmation of the rule change.
+- [Ciphertext of a login sits in iCloud for up to ten minutes] → sealed to a key only one TV has in memory, deleted on pickup, swept after ten minutes. The owner approved the rule change on 2026-11-12.
 - [Polling CloudKit every 3 seconds for up to ten minutes is about 200 requests] → only while the card is on screen, with backoff on rate limits. Measure on devices.
 - [The sending device cannot tell a wrong-account TV from a slow one] → the sheet compares the requested ids with its own sources and says when it has none.
 - [The 60-second "not picked up" and the 120-second TV hint are guesses] → measure on devices.
-- Open question: should the TV ask for confirmation before keeping a delivered login? Today it checks with the server and keeps what works, since only the user's own devices can write to their private database. Changes the "checks a login before keeping it" requirement.
-- Open question: should the iPhone require Face ID before Send? Keychain items here are readable after first unlock without it. Can be settled during implementation.
+- Settled 2026-11-12: the TV does not ask before keeping a delivered login. It checks each login with the server and keeps what works, since only the user's own devices can write to their private database.
+- Settled 2026-11-12: Send needs no Face ID. Keychain items here are readable after first unlock without it, and the sheet already lists what leaves the device before Send.
 - The `iphone-as-setup-device` delta modifies requirements that exist only in that change. `openspec validate` passes, and archive works only after `add-iphone-as-setup-device` is archived.
+
+## Implementation decisions
+
+Owner decisions, 2026-11-12:
+
+1. The sealed login may sit in the user's private CloudKit database for up to ten minutes. This is an approved exception to "secrets live only in the Keychain", and `openspec/config.yaml` and CLAUDE.md now say so in the narrow wording under "Rule change": HPKE-sealed login drops only, private database only, deleted on pickup, ten-minute expiry.
+2. The `LoginDrops` zone outside SwiftData is approved. The sealed payload goes in `CKRecord.encryptedValues`, so CloudKit also encrypts it with the user's account keys on top of the HPKE seal.
+3. No extra confirmation step: no "keep this login?" prompt on the TV and no Face ID before Send. Both open questions under "Risks / Trade-offs" are closed.
+
+Made while building:
+
+- `SetupKey` in AntennaCore holds the public key as text and bytes and reads only the canonical 43-character form, the same rule `PairingToken` follows. The two share one base64url reader, so a key or code with nonzero spare bits is rejected rather than read two ways.
+- `SetupLink(token:key:sources:)` writes version 1 without a key and version 2 with one, and drops sources when there is no key. A version 1 link ignores `k` and `s`, so an older TV's link reads as before. A Handoff user info with both `link` and `token` reads the link first.
+- Channels DVR servers with a proxy login count as login arrivals on the setup card. `SetupArrivals.Candidate` gained `hasCredentialKey`, and a server whose record names a Keychain item waits for its login like an Xtream source. Without a key it still loads at once.
+- `LoginPayload` keeps the version under the JSON key `v` but names the Swift property `version`, since the lint rules refuse one-letter names.
+- The undrawn states from "Board states and copy" are drawn as new boards copied from the drawn ones, each changing only the status area: `TV-Onboard-SignIn-QR-Checking`, `TV-Onboard-SignIn-QR-Unreadable`, `TV-Settings-SignIn-QR`, `iPhone-SignIn-FromTV-Sending`, `iPhone-SignIn-FromTV-NotPickedUp`, `iPhone-SignIn-FromTV-Offline`, `iPhone-SignIn-FromTV-NotSignedIn`, `iPhone-SignIn-FromTV-Used`, `iPhone-SignIn-FromTV-None`, `iPhone-SignIn-FromTV-Enter` and `iPhone-Onboard-2-FromTV-Login`. "iCloud storage full" uses the Offline board with its own sentence. `TV-Onboard-3-QR-Received` already shows "Waiting for the login…" and its copy did not change.
+- The container diagram names what crosses the CloudKit edge, so it now lists the sealed TV logins next to sources and favorites.

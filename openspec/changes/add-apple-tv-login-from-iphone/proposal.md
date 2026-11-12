@@ -8,7 +8,7 @@
 
 Logins live only in the Keychain, and Apple TV has no iCloud Keychain. A source that syncs to an Apple TV arrives without its login, so today the user types the Xtream username and password, the Stalker MAC address, or the Jellyfin login with the Siri Remote, once per source and once per Apple TV. The iPhone in their hand already has that login. After this change the user scans a code on the TV's "Sign in on this Apple TV" step, taps Send on the iPhone, and the TV signs in by itself.
 
-Not reviewed yet.
+Reviewed by the owner on 2026-11-12, who approved the rule change below.
 
 ## What Changes
 
@@ -19,7 +19,7 @@ Not reviewed yet.
 - The QR card from `add-iphone-as-setup-device` carries the same key, so a login source set up from the iPhone brings its login with it, and the TV's "Waiting for the login…" state, drawn for this change, becomes real.
 - Copy for every failure on both sides, VoiceOver and Reduce Motion behavior, and a split between what simulators can test and what needs two devices.
 
-**Rule change for the owner to confirm.** The project rule says secrets live only in the synchronizable iCloud Keychain and never anywhere else, and `add-iphone-as-setup-device` says no password travels in iCloud records. This change puts a login in an iCloud record: sealed to a key that exists only in one Apple TV's memory, for at most ten minutes, then deleted. The rule this change proposes in its place is in design.md. Nothing travels over the local network, so that rule stays as it is.
+**Rule change, approved 2026-11-12.** The project rule says secrets live only in the synchronizable iCloud Keychain and never anywhere else, and `add-iphone-as-setup-device` says no password travels in iCloud records. This change puts a login in an iCloud record: sealed to a key that exists only in one Apple TV's memory, for at most ten minutes, then deleted. The narrow exception that replaces it is in design.md. Nothing travels over the local network, so that rule stays as it is.
 
 Out of scope:
 - Keeping logins on Apple TV in iCloud for good, so a second Apple TV or a reinstall signs in without the iPhone. That is the broader decision first-run onboarding names.
@@ -43,4 +43,4 @@ Out of scope:
 - Platforms: iOS, iPadOS, macOS, tvOS.
 - Depends on: `add-iphone-as-setup-device` for the setup link, the pairing code, the link and Handoff handling, the QR card and the fallback page. This change extends its link to version 2 and reuses the rest. Also `add-first-run-onboarding` (the Apple TV sign-in step), `add-sources-and-settings` (Sign in on this Apple TV in a source's details), `add-channels-dvr-source` (its optional proxy login), `source-management` and `jellyfin-live-tv-source`.
 - New: a CloudKit record zone in the user's private database, outside SwiftData, holding sealed boxes for up to ten minutes. No SwiftData schema change.
-- Blocked on: the owner confirming the rule change above, and the hosting decision `add-iphone-as-setup-device` is blocked on, since the code is the same link.
+- Blocked on: the hosting decision `add-iphone-as-setup-device` is blocked on, since the code is the same link.
