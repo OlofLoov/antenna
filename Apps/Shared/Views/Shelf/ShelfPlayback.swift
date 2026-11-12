@@ -16,6 +16,8 @@ final class ShelfPlayback {
         /// Stops live TV before a title plays.
         var willPlay: @MainActor () async -> Void
         var clock: @MainActor () -> ContinuousClock.Instant = { .now }
+        /// The device's languages in the user's order.
+        var languages: @MainActor () -> [String] = { Locale.preferredLanguages }
     }
 
     /// What plays: a movie, or one episode of a series.
@@ -71,6 +73,9 @@ final class ShelfPlayback {
     private(set) var working: String?
     /// The series that could not start, shown as an alert.
     var problem: Problem?
+    /// The Subtitles preference, which the screen keeps current
+    /// (playback-engine/subtitles-start-by-the-subtitle-setting).
+    @ObservationIgnored var subtitles = SubtitleMode.auto
 
     @ObservationIgnored let engine: any PlaybackEngine
     @ObservationIgnored private let dependencies: Dependencies
@@ -144,11 +149,15 @@ final class ShelfPlayback {
         playing = target
         let engine = engine
         let willPlay = dependencies.willPlay
+        let languages = dependencies.languages()
+        let start: Duration? = position > 0 ? .milliseconds(Int64(position * 1000)) : nil
+        let options = PlaybackOptions(
+            startPosition: start, isLive: false, preferredAudioLanguages: languages, preferredSubtitleLanguages: languages,
+            subtitleMode: subtitles)
         watching = Task { [weak self] in
             await willPlay()
-            let start: Duration? = position > 0 ? .milliseconds(Int64(position * 1000)) : nil
             do {
-                try await engine.load(url, options: PlaybackOptions(startPosition: start, isLive: false))
+                try await engine.load(url, options: options)
             } catch {
                 return
             }

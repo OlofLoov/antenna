@@ -79,10 +79,11 @@ extension AVPlayerEngine {
         let subtitleGroup = try? await asset.loadMediaSelectionGroup(for: .legible)
         guard generation == mine else { throw CancellationError() }
         let sounds = audioGroup?.options ?? []
-        // Text subtitles only: closed captions inside the video and forced
-        // subtitles are not offered.
+        // Text subtitles, forced ones included and marked; closed captions
+        // inside the video are not offered
+        // (playback-engine/forced-subtitles-in-your-language-show).
         let texts = (subtitleGroup?.options ?? []).filter { option in
-            (option.mediaType == .subtitle || option.mediaType == .text) && !option.hasMediaCharacteristic(.containsOnlyForcedSubtitles)
+            option.mediaType == .subtitle || option.mediaType == .text
         }
         var audio: [(track: MediaTrack, option: AVMediaSelectionOption)] = []
         for (number, option) in zip(sounds.indices, sounds) {
@@ -118,7 +119,7 @@ extension AVPlayerEngine {
         let title = try? await item?.load(.stringValue)
         return MediaTrack(
             id: id, kind: kind, languageCode: option.extendedLanguageTag ?? option.locale?.identifier, name: title,
-            isDefault: group?.defaultOption == option)
+            isDefault: group?.defaultOption == option, isForced: option.hasMediaCharacteristic(.containsOnlyForcedSubtitles))
     }
 
     /// Takes the item's subtitle lines as text and keeps Apple's player

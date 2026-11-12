@@ -9,10 +9,17 @@ public enum TrackName {
     /// brackets when it says more, as in "English (Commentary)". A track with
     /// no language reads as its provider name, or "Track n" counted from 1
     /// in stream order. A forced subtitle with nothing else to go by reads
-    /// "Forced".
+    /// "Forced", and one with a language "English (Forced)"
+    /// (playback-engine/forced-subtitles-in-your-language-show).
     public static func display(
         _ track: MediaTrack, position: Int, isForced: Bool = false, locale: Locale = Locale(identifier: "en_US")
     ) -> String {
+        let name = plain(track, position: position, isForced: isForced, locale: locale)
+        guard isForced, track.kind == .subtitle, name.range(of: "forced", options: .caseInsensitive) == nil else { return name }
+        return "\(name) (Forced)"
+    }
+
+    private static func plain(_ track: MediaTrack, position: Int, isForced: Bool, locale: Locale) -> String {
         let language = languageName(track.languageCode, locale: locale)
         let name = track.name?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
         switch (language, name) {

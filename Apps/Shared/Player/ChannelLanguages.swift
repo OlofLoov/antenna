@@ -49,19 +49,32 @@ final class ChannelLanguages {
     private var channel: Channel?
     private var initial: TrackList?
     private var watch: Task<Void, Never>?
+    /// The device's languages in the user's order.
+    private let languages: @MainActor () -> [String]
 
     /// With `engine`, starts following its tracks at once, as `watch(_:)` does.
-    init(store: ChannelLanguageStore = ChannelLanguageStore(), watching engine: (any PlaybackEngine)? = nil) {
+    init(
+        store: ChannelLanguageStore = ChannelLanguageStore(), watching engine: (any PlaybackEngine)? = nil,
+        languages: @escaping @MainActor () -> [String] = { Locale.preferredLanguages }
+    ) {
         self.store = store
+        self.languages = languages
         if let engine { watch(engine) }
     }
 
-    /// The options to load `channel` with: the device's languages first for
-    /// sound, and the pick last made on the channel.
+    /// The Subtitles preference, which the screen keeps current
+    /// (playback-engine/subtitles-start-by-the-subtitle-setting).
+    var subtitles = SubtitleMode.auto
+
+    /// The options to load `channel` with: the device's languages for sound
+    /// and subtitles, the Subtitles preference, and the pick last made on
+    /// the channel.
     func options(for channel: Channel) -> PlaybackOptions {
         self.channel = channel
         initial = nil
-        return PlaybackOptions(preferredAudioLanguages: Locale.preferredLanguages, remembered: store.pick(for: channel))
+        return PlaybackOptions(
+            preferredAudioLanguages: languages(), preferredSubtitleLanguages: languages(), subtitleMode: subtitles,
+            remembered: store.pick(for: channel))
     }
 
     /// Follows `engine`'s tracks and keeps each pick for the channel last

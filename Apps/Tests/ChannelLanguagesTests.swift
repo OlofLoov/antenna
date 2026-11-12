@@ -50,6 +50,17 @@ private final class TracksEngine: PlaybackEngine {
             selectedAudio: audio, selectedSubtitle: subtitle)
     }
 
+    @Test("playback-engine/subtitles-start-by-the-subtitle-setting a channel starts by the device's languages and the setting")
+    func passesLanguagesAndSetting() throws {
+        let languages = ChannelLanguages(store: ChannelLanguageStore(defaults: defaults), languages: { ["sv-SE", "en"] })
+        let auto = languages.options(for: try channel("news"))
+        #expect(auto.preferredAudioLanguages == ["sv-SE", "en"])
+        #expect(auto.preferredSubtitleLanguages == ["sv-SE", "en"])
+        #expect(auto.subtitleMode == .auto)
+        languages.subtitles = .off
+        #expect(languages.options(for: try channel("news")).subtitleMode == .off)
+    }
+
     @Test("playback-engine/audio-and-subtitle-languages returning to a channel starts with the languages picked on it")
     func keepsPicksPerChannel() async throws {
         let store = ChannelLanguageStore(defaults: defaults)

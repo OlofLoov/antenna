@@ -13,30 +13,48 @@ public struct LanguagePick: Sendable, Equatable, Codable {
         self.subtitle = subtitle
     }
 
-    /// The languages of the tracks `tracks` has selected.
+    /// The languages of the tracks `tracks` has selected. Forced subtitles
+    /// count as off: the starting rule brings them back on its own.
     public init(_ tracks: TrackList) {
         audio = tracks.audio.first { $0.id == tracks.selectedAudio }?.languageCode
-        subtitle = tracks.subtitles.first { $0.id == tracks.selectedSubtitle }?.languageCode
+        subtitle = tracks.subtitles.first { $0.id == tracks.selectedSubtitle && !$0.isForced }?.languageCode
     }
 }
 
+/// When a stream's subtitles start (playback-engine/subtitles-start-by-the-subtitle-setting).
+public enum SubtitleMode: String, Sendable, CaseIterable, Codable {
+    /// Off. Forced subtitles in the user's language still show.
+    case off
+    /// On in the user's language when the sound is not in one of the user's languages.
+    case auto
+    /// On in the user's first language the stream has, whatever the sound.
+    case always
+}
+
 /// Which audio and subtitle tracks a stream starts with
-/// (playback-engine/audio-and-subtitle-languages).
+/// (playback-engine/audio-and-subtitle-languages,
+/// playback-engine/subtitles-start-by-the-subtitle-setting,
+/// playback-engine/forced-subtitles-in-your-language-show).
 ///
 /// A pick remembered for the channel wins while the stream still has those
-/// tracks. Otherwise the user's preferred languages decide in order: sound in
-/// the first preferred language the stream has, else the stream's default
-/// sound, else its first; subtitles in the first preferred subtitle language
-/// it has, else none.
+/// tracks. Otherwise sound is in the first preferred audio language the
+/// stream has, else its default, else its first. Subtitles follow the
+/// subtitle mode: Auto starts them in the first preferred subtitle language
+/// the stream has when the chosen sound is in none of those languages,
+/// Always starts them whatever the sound, Off leaves them off. With no full
+/// subtitles on, a forced track in the first preferred language that has
+/// one shows.
 public enum TrackChoice {
     /// The audio and subtitle track ids to start with.
     public static func initial(
         audio: [MediaTrack], subtitles: [MediaTrack], options: PlaybackOptions
     ) -> (audio: MediaTrack.ID?, subtitle: MediaTrack.ID?) {
-        (
-            self.audio(audio, preferred: options.preferredAudioLanguages, remembered: options.remembered),
-            subtitle(subtitles, preferred: options.preferredSubtitleLanguages, remembered: options.remembered)
-        )
+        let sound = self.audio(audio, preferred: options.preferredAudioLanguages, remembered: options.remembered)
+        let spoken = audio.first { $0.id == sound }?.languageCode
+        let subtitle = subtitle(
+            subtitles, preferred: options.preferredSubtitleLanguages, mode: options.subtitleMode, sound: spoken,
+            remembered: options.remembered)
+        return (sound, subtitle)
     }
 
     static func audio(_ tracks: [MediaTrack], preferred: [String], remembered: LanguagePick?) -> MediaTrack.ID? {
@@ -49,17 +67,54 @@ public enum TrackChoice {
         return (tracks.first(where: \.isDefault) ?? tracks.first)?.id
     }
 
-    static func subtitle(_ tracks: [MediaTrack], preferred: [String], remembered: LanguagePick?) -> MediaTrack.ID? {
+    static func subtitle(
+        _ tracks: [MediaTrack], preferred: [String], mode: SubtitleMode, sound: String?, remembered: LanguagePick?
+    ) -> MediaTrack.ID? {
+        let full = tracks.filter { !$0.isForced }
         if let remembered {
             // Subtitles turned off on this channel stay off; a remembered
-            // language the stream no longer has falls back to preference.
-            guard let code = remembered.subtitle else { return nil }
-            if let track = tracks.first(where: { sameLanguage($0.languageCode, code) }) { return track.id }
+            // language the stream no longer has falls back to the mode.
+            guard let code = remembered.subtitle else { return forced(tracks, preferred: preferred) }
+            if let track = full.first(where: { sameLanguage($0.languageCode, code) }) { return track.id }
         }
+        // Sound with no language counts as understood.
+        let understood = sound.flatMap(base).map { spoken in preferred.contains { base($0) == spoken } } ?? true
+        switch mode {
+        case .off: break
+        case .auto where understood: break
+        case .auto, .always:
+            if let track = first(of: full, in: preferred) { return track.id }
+        }
+        return forced(tracks, preferred: preferred)
+    }
+
+    /// The forced track in the first of `preferred` that has one.
+    private static func forced(_ tracks: [MediaTrack], preferred: [String]) -> MediaTrack.ID? {
+        first(of: tracks.filter(\.isForced), in: preferred)?.id
+    }
+
+    private static func first(of tracks: [MediaTrack], in preferred: [String]) -> MediaTrack? {
         for code in preferred {
-            if let track = tracks.first(where: { sameLanguage($0.languageCode, code) }) { return track.id }
+            if let track = tracks.first(where: { sameLanguage($0.languageCode, code) }) { return track }
         }
         return nil
+    }
+
+    // MARK: The subtitles switch
+
+    /// True when full subtitles are on; forced ones alone read as off
+    /// (player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step).
+    public static func fullSubtitlesOn(_ tracks: TrackList) -> Bool {
+        tracks.subtitles.contains { $0.id == tracks.selectedSubtitle && !$0.isForced }
+    }
+
+    /// What one press of the subtitles switch selects: nil when full
+    /// subtitles are on, otherwise the first of `preferred` the stream has
+    /// in full subtitles, else its first full track, else nil.
+    public static func switched(_ tracks: TrackList, preferred: [String]) -> MediaTrack.ID? {
+        guard !fullSubtitlesOn(tracks) else { return nil }
+        let full = tracks.subtitles.filter { !$0.isForced }
+        return (first(of: full, in: preferred) ?? full.first)?.id
     }
 
     /// True when two language codes name the same language: "en", "eng" and
