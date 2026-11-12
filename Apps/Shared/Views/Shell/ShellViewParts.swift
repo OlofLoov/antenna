@@ -37,6 +37,7 @@
                 let lifecycle = PlaybackLifecycle(engine: engine) {
                     engine.continuesInPictureInPicture
                 }
+                lifecycle.follow(model.player.timeshift)
                 lifecycle.start()
                 #if DEBUG
                     UITestingShell.requestGuide(from: model)

@@ -123,7 +123,7 @@ extension Browse {
         }
     }
 
-    private struct ProgressTrack: View {
+    struct ProgressTrack: View {
         let fraction: Double
         let height: CGFloat
 

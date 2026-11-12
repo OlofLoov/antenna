@@ -176,7 +176,7 @@
                 }
                 let credentials = MemoryCredentials()
                 var cabinLoaded = false
-                return ShellModel.Dependencies(
+                var dependencies = ShellModel.Dependencies(
                     engine: engine,
                     load: { try await script.load($0) },
                     hasLogin: { source in
@@ -198,6 +198,8 @@
                     slowDelay: UITestingPlayback.slowDelay,
                     watchSleep: UITestingRecents.sleep,
                     multiView: multiView)
+                dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
+                return dependencies
             }
 
             /// Logins the sign-in step stores, kept in memory, never in the Keychain.
@@ -247,11 +249,12 @@
             /// Records what the shell asks of the player, for the probe.
             @MainActor @Observable
             final class Engine: PlaybackEngine {
-                private(set) var state: PlaybackState = .idle {
+                var state: PlaybackState = .idle {
                     didSet { stateCast.send(state) }
                 }
                 @ObservationIgnored private let stateCast = Broadcast(PlaybackState.idle)
                 @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
+                @ObservationIgnored let buffer = UITestingTimeshift()
                 private(set) var loads = 0
                 private(set) var lastFile = ""
                 /// Set by multi-view, which mutes every tile but the highlighted one.
@@ -272,6 +275,12 @@
                     loads += 1
                     lastFile = url.lastPathComponent
                     trackList.reset()
+                    buffer.played = { [weak self] in self?.state = .playing }
+                    if UITestingTimeshift.catchupFails(url) {
+                        state = .failed(.notFound)
+                        throw PlaybackFailure.notFound
+                    }
+                    if url.host() != UITestingTimeshift.catchupHost { buffer.loaded() }
                     if let reason = UITestingShell.tileFailure(lastFile, tile: isTile) {
                         state = .failed(reason)
                         throw reason
@@ -293,6 +302,7 @@
                     if case .failed = state { return }
                     guard UITestingPlayback.plays else { return }
                     state = .playing
+                    buffer.play()
                     guard UITestingPlayback.drops else { return }
                     let loaded = loads
                     Task { [weak self] in
@@ -304,6 +314,7 @@
 
                 func pause() async {
                     state = .paused
+                    buffer.pause()
                 }
 
                 func stop() async {

@@ -71,6 +71,8 @@ public final class DemuxEngine: PlaybackEngine {
     var current: Current?
     /// The buffer of the live channel playing, when its load asked for one.
     var timeshift: TimeshiftSession?
+    /// The live buffer set aside while a catch-up programme plays.
+    var parked: TimeshiftSession?
     let timeshiftCast = Broadcast(TimeshiftStatus.off)
     /// A frame rate the run found before `open` stored its start.
     var earlyFrameRate: Double?

@@ -8,7 +8,7 @@
         @Bindable var model: ShellModel
         @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
         @Query(sort: \FavoriteRecord.sortOrder) private var favorites: [FavoriteRecord]
-        @FocusState private var focus: ShellFocus?
+        @FocusState var focus: ShellFocus?
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.guideStore) private var guideStore
@@ -17,8 +17,8 @@
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
         @Environment(\.switchProfile) private var switchProfile
-        @State private var zapBar = ZapBarModel()
-        @State private var numbers = NumberEntryModel()
+        @State var zapBar = ZapBarModel()
+        @State var numbers = NumberEntryModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
         @State private var barLowered = ContinuousClock.now - .seconds(10)
         @State private var overlay = ChannelOverlayModel()
@@ -44,7 +44,7 @@
                 if zapBarShows, let channel = zapBar.channel {
                     ZapBarView(
                         channel: channel, catalogue: catalogue, list: overlay.currentList(catalogue, for: channel), guide: overlayGuide,
-                        engine: model.engine
+                        engine: model.engine, timeshift: model.player.timeshift
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     .allowsHitTesting(false)
@@ -72,7 +72,8 @@
                             }
                         },
                         toggleFavorite: toggleFavorite,
-                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer
+                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer,
+                        startOver: overlayStartOver
                     )
                     .transition(reduceMotion ? .opacity : .move(edge: .leading))
                 }
@@ -105,9 +106,12 @@
                     Task { await model.togglePlayback() }
                     return
                 }
-                // Play/pause in full-screen live TV drops half-typed digits and shows the info bar.
+                // Play/pause in full-screen live TV drops half-typed digits, shows the info bar
+                // and pauses or plays (timeshift-catch-up-and-start-over/pause-live-tv-and-pick-up-where-you-left-off).
                 numbers.cancel()
                 zapBar.playPause()
+                guard !model.player.timeshift.takeHeldPress() else { return }
+                Task { await model.togglePlayback() }
             }
             .onChange(of: catalogueInputs, initial: true) {
                 catalogue = .shell(
@@ -123,6 +127,7 @@
                 if raised { zapBar.dismiss() }
             }
             .onMoveCommand(perform: move)
+            .modifier(ShellTimeshift(timeshift: model.player.timeshift, zapBar: zapBar, active: fullScreenLive))
             .environment(\.shellNavigator, model.navigator.settingGroup { overlay.tuned(from: $0) })
             .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
                 SettingsView()
@@ -363,6 +368,9 @@
             switch direction {
             case .up: steps = 1
             case .down: steps = -1
+            // Behind live or paused, left and right skip (timeshift-catch-up-and-start-over/skip-scan-and-drag).
+            case .left where model.player.timeshift.showsRewindRow: return model.player.timeshift.skip(forward: false)
+            case .right where model.player.timeshift.showsRewindRow: return model.player.timeshift.skip(forward: true)
             case .left: return previousChannel()
             case .right: return openRecents()
             default: return
@@ -371,10 +379,7 @@
             guard next != tuned else { return zapBar.playPause() }
             Task { await model.pick(next) }
         }
-    }
 
-    /// Favorites and recents in the overlay's catalogue.
-    extension ShellScreen {
         /// Swipe left on the full-screen picture plays the most recent
         /// other channel in Recents; with none, nothing happens.
         private func previousChannel() {

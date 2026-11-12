@@ -139,6 +139,7 @@
             dependencies.slowDelay = UITestingPlayback.slowDelay
             dependencies.recents = UITestingRecents.store { id in cabin.contains { $0.id == "fixture/\(id)" } ? cabinID : homeID }
             dependencies.sleep = UITestingRecents.sleep
+            dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
             return dependencies
         }
 
@@ -261,11 +262,12 @@
         /// Records what Live asks of the player.
         @MainActor @Observable
         final class Engine: PlaybackEngine {
-            private(set) var state: PlaybackState = .idle {
+            var state: PlaybackState = .idle {
                 didSet { stateCast.send(state) }
             }
             @ObservationIgnored private let stateCast = Broadcast(PlaybackState.idle)
             @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
+            @ObservationIgnored let buffer = UITestingTimeshift()
             private(set) var loads = 0
             private let log: URL?
 
@@ -279,6 +281,12 @@
                 loads += 1
                 append(url.lastPathComponent)
                 trackList.reset()
+                buffer.played = { [weak self] in self?.state = .playing }
+                if UITestingTimeshift.catchupFails(url) {
+                    state = .failed(.notFound)
+                    throw PlaybackFailure.notFound
+                }
+                if url.host() != UITestingTimeshift.catchupHost { buffer.loaded() }
                 switch UITestingPlayback.afterLoad(url.lastPathComponent) {
                 case .success(let next):
                     state = next
@@ -292,6 +300,7 @@
                 if case .failed = state { return }
                 guard UITestingPlayback.plays else { return }
                 state = .playing
+                buffer.play()
                 guard UITestingPlayback.drops else { return }
                 let loaded = loads
                 Task { [weak self] in
@@ -303,6 +312,7 @@
 
             func pause() async {
                 state = .paused
+                buffer.pause()
             }
 
             func stop() async {
@@ -328,22 +338,6 @@
                 } else {
                     try? data.write(to: log)
                 }
-            }
-
-            /// `"<state> loads=<n>"`.
-            var summary: String {
-                let name =
-                    switch state {
-                    case .idle: "idle"
-                    case .loading: "loading"
-                    case .playing: "playing"
-                    case .paused: "paused"
-                    case .buffering: "buffering"
-                    case .reconnecting: "reconnecting"
-                    case .ended: "ended"
-                    case .failed: "failed"
-                    }
-                return "\(name) loads=\(loads)"
             }
         }
 
@@ -381,6 +375,24 @@
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 }
             }
+        }
+    }
+
+    extension UITestingLive.Engine {
+        /// `"<state> loads=<n>"`.
+        var summary: String {
+            let name =
+                switch state {
+                case .idle: "idle"
+                case .loading: "loading"
+                case .playing: "playing"
+                case .paused: "paused"
+                case .buffering: "buffering"
+                case .reconnecting: "reconnecting"
+                case .ended: "ended"
+                case .failed: "failed"
+                }
+            return "\(name) loads=\(loads)"
         }
     }
 #endif
