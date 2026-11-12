@@ -56,3 +56,6 @@ The extension cannot open the app's database or guide cache. The shared App Grou
 - An episode's "S2 E4" comes from the series' episode list once the app has loaded it. Before that the tile shows the series name alone.
 - `TopShelfSync` lives on the shell, under the profile gate, so it reads the current profile's catalogue and Continue watching. A profile switch rebuilds the shell, whose first change starts a write.
 - A lapsed unlock clears the summary from the window root (`TopShelfLock`), since the shell is not built while the paywall shows. It also runs at launch when the app starts locked.
+- The App Group entitlement is declared in `project.yml` for `AntennaTV` and `AntennaTopShelf`, since XcodeGen writes the entitlements files. The extension's provider uses the completion-handler `loadTopShelfContent`, because the async override cannot return the non-Sendable content under strict concurrency.
+- `Apps/TopShelf/TopShelfItems.swift` builds the sectioned content and compiles into `AntennaTVTests` as well; `ContentProvider.swift` only reads the shared folder and calls it. Channel and title tiles set both the play and the display action to their link; the add-favorites tile sets only the display action.
+- The C4 container diagram gains the Top Shelf extension and the shelf folder (App Group files) it reads.
