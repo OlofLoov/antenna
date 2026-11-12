@@ -1,22 +1,26 @@
 import Foundation
 
-extension XtreamClient {
-    /// A decoded list together with the number of rows the decoder dropped.
-    ///
-    /// `items` keeps server order. `skipped` counts rows that were not objects,
-    /// lacked an id or a name, had an id that is not an integer, or repeated an
-    /// earlier row's id.
-    public struct DecodedList<T: Sendable & Hashable>: Sendable, Hashable {
-        /// The usable rows in server order, no two with the same id.
-        public var items: [T]
-        /// Rows dropped as broken or duplicate.
-        public var skipped: Int
+/// A decoded list together with the number of rows the decoder dropped.
+/// Shared by the Xtream VOD client and the Jellyfin client.
+///
+/// `items` keeps server order. `skipped` counts rows the decoder dropped as
+/// broken or repeated; each decoder says which rows those are.
+public struct DecodedList<T: Sendable & Hashable>: Sendable, Hashable {
+    /// The usable rows in server order, no two with the same id.
+    public var items: [T]
+    /// Rows dropped as broken or duplicate.
+    public var skipped: Int
 
-        public init(items: [T], skipped: Int) {
-            self.items = items
-            self.skipped = skipped
-        }
+    public init(items: [T], skipped: Int) {
+        self.items = items
+        self.skipped = skipped
     }
+}
+
+extension XtreamClient {
+    /// The Xtream decoders skip rows that are not objects, lack an id or a
+    /// name, have an id that is not an integer, or repeat an earlier row's id.
+    public typealias DecodedList<T: Sendable & Hashable> = AntennaCore.DecodedList<T>
 }
 
 /// A movie row from `get_vod_streams`.
