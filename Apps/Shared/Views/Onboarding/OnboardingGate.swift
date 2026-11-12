@@ -40,6 +40,9 @@ struct OnboardingGate<Content: View>: View {
                 if let request { handoff.hand(request) }
                 onboarding.finish()
             }
+            #if os(tvOS)
+                .dropsShelfLinks()
+            #endif
         case .app:
             content.environment(\.onboardingHandoff, handoff)
         }

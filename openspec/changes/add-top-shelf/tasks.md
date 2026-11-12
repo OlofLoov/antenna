@@ -20,9 +20,9 @@
 
 ## 4. Selecting a tile
 
-- [ ] 4.1 Tune or resume from a shelf link while running and at launch, holding the request until the source loads, and verify tvOS UI tests with a recording navigator
-- [ ] 4.2 Open Antenna as it was for a stale, empty or damaged link, and verify a UI test per case
-- [ ] 4.3 Show the paywall or setup first and drop the tile's channel afterwards, and verify UI tests
+- [x] 4.1 Tune or resume from a shelf link while running and at launch, holding the request until the source loads, and verify tvOS UI tests with a recording navigator
+- [x] 4.2 Open Antenna as it was for a stale, empty or damaged link, and verify a UI test per case
+- [x] 4.3 Show the paywall or setup first and drop the tile's channel afterwards, and verify UI tests
 
 ## 5. The current profile's shelf
 
@@ -30,5 +30,5 @@
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 6.2 `/opsx:verify` passes
