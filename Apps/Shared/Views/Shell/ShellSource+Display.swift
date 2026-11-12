@@ -16,6 +16,8 @@
                 (detail, indicator) = ("Offline", .none)
             case .failed:
                 (detail, indicator) = ("Could not load channels", .none)
+            case .waitingForLogin where waitsForICloud:
+                (detail, indicator) = ("Waiting for its playlist to sync from iCloud", .none)
             case .waitingForLogin:
                 (detail, indicator) = ("Waiting for its login to sync from iCloud", .none)
             }
@@ -30,7 +32,7 @@
                 case .loaded: "no channels"
                 case .offline: "offline"
                 case .failed: "could not load its channels"
-                case .waitingForLogin: "waiting for its login to sync from iCloud"
+                case .waitingForLogin: "waiting for its \(waitsForICloud ? "playlist" : "login") to sync from iCloud"
                 }
             return .init(id: id, text: "\(name): \(reason)", value: value)
         }

@@ -3,30 +3,6 @@ import Foundation
 import Observation
 import SwiftData
 
-/// One source as Live lists it while channels load.
-struct LiveSource: Identifiable, Equatable, Sendable {
-    enum State: Equatable, Sendable {
-        case loading
-        case loaded(channels: Int)
-        case offline
-        case failed
-        case waitingForLogin
-
-        /// True once the source finished and added nothing: loaded empty,
-        /// offline, failed or waiting for its login.
-        var addedNothing: Bool { self != .loading && !isLoadedWithChannels }
-
-        var isLoadedWithChannels: Bool {
-            if case .loaded(let count) = self { return count > 0 }
-            return false
-        }
-    }
-
-    var id: UUID
-    var name: String
-    var state: State
-}
-
 /// State and rules of the Live screen on iPhone, iPad and Mac
 /// (live-tv-on-iphone-ipad-mac capability): the sources as they load, the
 /// catalogue, the group on screen and the channel playing in place. Both
@@ -67,6 +43,8 @@ final class LiveModel {
         var multiView = MultiViewModel.Dependencies()
         /// Builds Start over's catch-up addresses.
         var catchup = CatchupAddresses()
+        /// True for a file source whose playlist has not synced yet.
+        var waitsForICloud: @MainActor (SourceDescriptor) -> Bool = { _ in false }
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -273,6 +251,7 @@ final class LiveModel {
     private func setState(_ state: LiveSource.State, for id: UUID) {
         guard let index = sources.firstIndex(where: { $0.id == id }) else { return }
         sources[index].state = state
+        sources[index].waitsForICloud = state == .waitingForLogin && descriptors[id].map(dependencies.waitsForICloud) == true
     }
 
     /// Rebuilds the channels and the catalogue from the sources that loaded.

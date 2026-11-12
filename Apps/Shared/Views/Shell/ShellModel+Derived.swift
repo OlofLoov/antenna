@@ -124,7 +124,7 @@
         /// The last channel and language picks are `profile`'s on this Apple TV.
         /// With `refresher`, sources load through it one at a time and report their status.
         @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID, refresher: SourceRefresher? = nil) -> Self {
-            .init(
+            var dependencies = Self(
                 engine: RoutedEngine.app(),
                 load: { source in
                     if let refresher { return try await refresher.load(source) }
@@ -135,6 +135,8 @@
                 sleep: { try await Task.sleep(for: $0) },
                 guide: guide,
                 languages: ChannelLanguageStore(profile: profile))
+            dependencies.waitsForICloud = { loader.waitsForICloud($0) }
+            return dependencies
         }
     }
 #endif
