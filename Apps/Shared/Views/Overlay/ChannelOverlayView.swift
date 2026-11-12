@@ -22,6 +22,7 @@
         /// Start over for the playing channel's programme on now, nil while it cannot work
         /// (timeshift-catch-up-and-start-over/start-over-shows-only-when-it-can-work).
         var startOver: (() -> Void)?
+        @Environment(\.reminders) private var reminders
 
         var body: some View {
             ChannelOverlay.Layout {
@@ -145,12 +146,32 @@
                 next: guideNow.next.map { .init(time: Self.time($0.start), title: $0.title) }, eyebrow: multiView?.pickTarget
             ) {
                 logo(channel)
+            } nextRow: { item in
+                nextRow(item, programmes: guideNow.next, channel: channel, at: date)
             } buttons: {
                 PanelButtons(
                     isFavorite: catalogue.isFavorite(channel), focus: focus, watchTitle: multiView?.watchTitle ?? "Watch",
                     watch: { pick(channel, model.group) }, toggle: { toggleFavorite(channel, key) },
                     startOver: channel == playing ? startOver : nil,
                     multiView: multiView.flatMap { offer in offer.offered(channel) ? (offer.title, { offer.add(channel) }) : nil })
+            }
+        }
+
+        /// A programme that follows, as a row that sets or removes its
+        /// reminder when the channel has a guide id
+        /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+        @ViewBuilder
+        private func nextRow(_ item: ChannelOverlay.PanelNext, programmes: [Programme], channel: Channel, at date: Date) -> some View {
+            let index = programmes.firstIndex { Self.time($0.start) == item.time && $0.title == item.title }
+            if let index, let reminders, reminders.offers(programmes[index], on: channel, now: date) {
+                let programme = programmes[index]
+                ChannelOverlay.NextReminderRow(item: item, isSet: reminders.isSet(programme, on: channel)) {
+                    reminders.toggle(programme, on: channel)
+                }
+                .focused(focus, equals: .overlay(.next(index)))
+                .accessibilityIdentifier("overlay.panel.next.\(index)")
+            } else {
+                ChannelOverlay.NextLine(item: item)
             }
         }
 

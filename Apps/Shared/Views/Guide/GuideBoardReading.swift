@@ -91,6 +91,18 @@
         func watch(_ target: GuideTarget, data: GuideData, now: Date) {
             watch(target.key, programme: cell(target, data)?.programme, now: now)
         }
+
+        /// Remind me for a programme that has not started, nil otherwise
+        /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+        func reminder(
+            _ target: GuideTarget, _ data: GuideData, _ reminders: ReminderCenter?, now: Date
+        ) -> GuideBoard.Details.ReminderToggle? {
+            guard let reminders, let programme = cell(target, data)?.programme, let channel = channel(target.key) else { return nil }
+            guard reminders.offers(programme, on: channel, now: now) else { return nil }
+            return GuideBoard.Details.ReminderToggle(isSet: reminders.isSet(programme, on: channel)) {
+                reminders.toggle(programme, on: channel)
+            }
+        }
     }
 
     extension GuideBoardModel {

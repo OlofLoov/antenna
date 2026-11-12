@@ -149,8 +149,12 @@ extension ShellUITests {
         XCTAssertTrue(element("overlay.panel.progress").exists)
         expect(element("overlay.panel.summary"), "label == 'Headlines and weather.'")
         let next = element("overlay.panel.next")
-        XCTAssertTrue(next.staticTexts["Weather"].exists && next.staticTexts["Business"].exists && next.staticTexts["Sport Tonight"].exists)
-        XCTAssertFalse(next.staticTexts["Late Film"].exists, "at most three follow")
+        // Each programme that follows is a row that sets a reminder (programme-reminders capability).
+        let titled = { (title: String) in
+            next.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
+        }
+        XCTAssertTrue(titled("Weather").exists && titled("Business").exists && titled("Sport Tonight").exists)
+        XCTAssertFalse(titled("Late Film").exists, "at most three follow")
         XCTAssertTrue(element("overlay.panel.logo").exists)
 
         let rows = overlayRows()

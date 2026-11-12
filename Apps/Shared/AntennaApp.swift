@@ -16,6 +16,8 @@ struct AntennaApp: App {
     @State private var refresher: SourceRefresher
     /// Whether the group locks are open on this device (group-management capability).
     @State private var locks = GroupLocks()
+    /// Reminders on this device (programme-reminders capability).
+    @State private var reminders: ReminderCenter
     #if !os(tvOS)
         /// Files shared to Antenna wait here, outside every gate, until a
         /// screen can show the import sheet (local-m3u-file-import/bring-a-file-in).
@@ -36,6 +38,27 @@ struct AntennaApp: App {
         let guideStore = AppGuideStore.live(container: container)
         _guideStore = State(initialValue: guideStore)
         _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore)))
+        _reminders = State(initialValue: Self.reminderCenter(container: container))
+    }
+
+    private static func reminderCenter(container: ModelContainer) -> ReminderCenter {
+        #if DEBUG
+            UITestingReminders.seed(container)
+            if let defaults = UITestingReminders.defaults() {
+                return ReminderCenter(
+                    context: container.mainContext, notifier: UITestingReminders.notifier() ?? systemNotifier(), defaults: defaults)
+            }
+        #endif
+        return ReminderCenter(context: container.mainContext, notifier: systemNotifier())
+    }
+
+    /// The system's notification center; none on Apple TV.
+    private static func systemNotifier() -> any ReminderNotifying {
+        #if os(tvOS)
+            NoReminderNotifications()
+        #else
+            SystemReminderNotifications()
+        #endif
     }
 
     private static func refresherDependencies(guide: AppGuideStore) -> SourceRefresher.Dependencies {
@@ -70,6 +93,7 @@ struct AntennaApp: App {
                 .environment(\.sourceRefresher, refresher)
                 .environment(locks)
                 .modifier(GroupLockTimers(locks: locks))
+                .modifier(ReminderRuntime(center: reminders))
                 #if !os(tvOS)
                     .receivingFiles(into: inbox)
                 #endif

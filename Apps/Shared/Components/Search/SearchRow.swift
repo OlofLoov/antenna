@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// Search's result rows, recent searches and section parts (boards
@@ -157,6 +158,29 @@ enum SearchRow {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("In the guide, \(title), \(lead ?? "Now") \(detail)\(hasCatchup ? ", catch-up" : "")")
             .accessibilityAddTraits(.isButton)
+        }
+    }
+
+    /// The bell at the end of a later programme's row on iPhone, iPad and
+    /// Mac: sets or removes its reminder without opening anything
+    /// (search/pick-a-programme, programme-reminders/set-a-reminder-in-one-tap).
+    struct Bell: View {
+        let isSet: Bool
+        let toggle: () -> Void
+        @Environment(\.searchMetrics) private var metrics
+        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
+
+        var body: some View {
+            Button(action: toggle) {
+                Image(systemName: isSet ? "bell.fill" : "bell")
+                    .font(.system(size: metrics.title * scale))
+                    .foregroundStyle(isSet ? Palette.text : Palette.textMuted)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isSet ? ReminderText.reminderSet : ReminderText.remindMe)
+            .accessibilityAddTraits(isSet ? .isSelected : [])
         }
     }
 

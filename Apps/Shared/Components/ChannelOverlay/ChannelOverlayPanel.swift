@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension ChannelOverlay {
@@ -20,8 +21,9 @@ extension ChannelOverlay {
     /// The now-and-next panel for the highlighted channel (`Main`): logo,
     /// name and badges; the programme on now with its times, time left,
     /// progress and description, or a line saying there is none; up to
-    /// three programmes that follow; then Watch and the favorite button.
-    struct Panel<Logo: View, Buttons: View>: View {
+    /// three programmes that follow, each drawn by `nextRow`; then Watch
+    /// and the favorite button.
+    struct Panel<Logo: View, NextRow: View, Buttons: View>: View {
         let name: String
         /// The channel number and the catch-up badge, in that order.
         let badges: [String]
@@ -32,6 +34,7 @@ extension ChannelOverlay {
         /// "Changing tile 2 of 3" above the logo while a multi-view tile picks a channel.
         var eyebrow: String?
         @ViewBuilder var logo: Logo
+        @ViewBuilder var nextRow: (PanelNext) -> NextRow
         @ViewBuilder var buttons: Buttons
 
         var body: some View {
@@ -127,22 +130,93 @@ extension ChannelOverlay {
         }
 
         private var nextSection: some View {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 4) {
                 ForEach(next) { item in
-                    HStack(alignment: .firstTextBaseline, spacing: 20) {
-                        Text(item.time)
-                            .font(.system(size: 22).monospacedDigit())
-                            .foregroundStyle(Palette.textMuted)
-                            .frame(width: 92, alignment: .leading)
-                        Text(item.title)
-                            .font(.system(size: 26))
-                            .lineLimit(1)
-                    }
-                    .accessibilityElement(children: .combine)
+                    nextRow(item)
                 }
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("overlay.panel.next")
+        }
+    }
+
+    /// A programme that follows, as text.
+    struct NextLine: View {
+        let item: PanelNext
+
+        var body: some View {
+            NextLabel(item: item, mark: nil)
+                .padding(.vertical, 7)
+                .accessibilityElement(children: .combine)
+        }
+    }
+
+    /// A programme that follows as a row the remote reaches: select sets or
+    /// removes its reminder (programme-reminders/set-a-reminder-in-one-tap).
+    /// Focused, it says what select does; a set reminder shows a bell.
+    struct NextReminderRow: View {
+        let item: PanelNext
+        let isSet: Bool
+        let toggle: () -> Void
+
+        var body: some View {
+            Button(action: toggle) {
+                NextLabel(item: item, mark: isSet)
+            }
+            .buttonStyle(NextRowStyle())
+            .accessibilityLabel("\(item.time) \(item.title)")
+            .accessibilityValue(isSet ? ReminderText.reminderSet : ReminderText.remindMe)
+        }
+    }
+
+    private struct NextLabel: View {
+        let item: PanelNext
+        /// Nil for a plain line; otherwise whether a reminder is set.
+        let mark: Bool?
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            HStack(alignment: .firstTextBaseline, spacing: 20) {
+                Text(item.time)
+                    .font(.system(size: 22).monospacedDigit())
+                    .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
+                    .frame(width: 92, alignment: .leading)
+                Text(item.title)
+                    .font(.system(size: 26))
+                    .lineLimit(1)
+                Spacer(minLength: 12)
+                if let mark, isFocused {
+                    Text(mark ? ReminderText.reminderSet : ReminderText.remindMe)
+                        .font(.system(size: 22, weight: .semibold))
+                        .lineLimit(1)
+                }
+                if mark == true {
+                    Image(systemName: "bell.fill")
+                        .font(.system(size: 20))
+                        .accessibilityHidden(true)
+                }
+            }
+        }
+    }
+
+    private struct NextRowStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            NextRowCard(label: configuration.label)
+        }
+    }
+
+    private struct NextRowCard<Label: View>: View {
+        let label: Label
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            label
+                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
+                .padding(.vertical, 7)
+                .padding(.horizontal, 12)
+                .background(isFocused ? Palette.focus : Color.clear, in: RoundedRectangle(cornerRadius: 10))
+                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+                .padding(.horizontal, -12)
         }
     }
 
@@ -242,6 +316,8 @@ extension ChannelOverlay {
         ]
     ) {
         ChannelOverlay.Initials(text: "S1")
+    } nextRow: { item in
+        ChannelOverlay.NextReminderRow(item: item, isSet: item.time == "22:00") {}
     } buttons: {
         ChannelOverlay.WatchButton {}
         ChannelOverlay.FavoriteButton(isFavorite: false) {}
@@ -255,6 +331,8 @@ extension ChannelOverlay {
         name: "Arena HD", badges: ["106"], now: nil, nothingOn: "No programme information", next: [], eyebrow: "Changing tile 2 of 3"
     ) {
         ChannelOverlay.Initials(text: "ARN")
+    } nextRow: { item in
+        ChannelOverlay.NextLine(item: item)
     } buttons: {
         ChannelOverlay.WatchButton(title: "Show in tile 2") {}
         ChannelOverlay.FavoriteButton(isFavorite: false) {}
@@ -266,6 +344,8 @@ extension ChannelOverlay {
 #Preview("Channel overlay panel, nothing on now", traits: .fixedLayout(width: 860, height: 1080)) {
     ChannelOverlay.Panel(name: "Arena HD", badges: ["106"], now: nil, nothingOn: "No programme information", next: []) {
         ChannelOverlay.Initials(text: "AH")
+    } nextRow: { item in
+        ChannelOverlay.NextLine(item: item)
     } buttons: {
         ChannelOverlay.WatchButton {}
         ChannelOverlay.FavoriteButton(isFavorite: true) {}

@@ -4,12 +4,21 @@ import SwiftUI
 extension GuideBoard {
     /// A programme's details (guide-on-iphone-ipad-and-mac/read-about-a-programme):
     /// when and where it airs, the title, times and length, progress when it
-    /// is on now, the description and Watch. The popover on iPad and Mac
-    /// and the sheet on iPhone use the same parts at their own sizes.
+    /// is on now, the description and Watch, with Remind me after Watch for a
+    /// programme that has not started. The popover on iPad and Mac and the
+    /// sheet on iPhone use the same parts at their own sizes.
     enum Details {
+        /// Remind me's state and action; nil leaves the button out
+        /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+        struct ReminderToggle {
+            let isSet: Bool
+            let toggle: () -> Void
+        }
+
         /// The popover, 340 pt wide, with a close button beside the eyebrow.
         struct Popover: View {
             let details: GuidePanel.Details
+            var reminder: ReminderToggle?
             let watch: () -> Void
             let close: () -> Void
 
@@ -35,6 +44,9 @@ extension GuideBoard {
                     Texts(details: details, titleSize: 17, summarySize: 14)
                     WatchButton(height: 44, size: 15, watch: watch)
                         .padding(.top, 4)
+                    if let reminder {
+                        RemindButton(height: 44, size: 15, reminder: reminder)
+                    }
                 }
                 .padding(EdgeInsets(top: 16, leading: 16, bottom: 14, trailing: 16))
                 .frame(width: 340, alignment: .leading)
@@ -48,6 +60,7 @@ extension GuideBoard {
         /// The sheet at the medium detent on iPhone, with a 50 pt Watch.
         struct Sheet: View {
             let details: GuidePanel.Details
+            var reminder: ReminderToggle?
             let watch: () -> Void
 
             var body: some View {
@@ -57,6 +70,9 @@ extension GuideBoard {
                         Texts(details: details, titleSize: 22, summarySize: 15)
                         WatchButton(height: 50, size: 17, watch: watch)
                             .padding(.top, 6)
+                        if let reminder {
+                            RemindButton(height: 50, size: 17, reminder: reminder)
+                        }
                     }
                     .padding(EdgeInsets(top: 24, leading: 20, bottom: 20, trailing: 20))
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -141,6 +157,33 @@ extension GuideBoard {
         }
     }
 
+    /// Remind me, or Reminder set with a filled bell, on the 0.12 surface
+    /// under Watch. Setting it keeps the details open
+    /// (programme-reminders/set-a-reminder-in-one-tap).
+    struct RemindButton: View {
+        let height: CGFloat
+        let size: CGFloat
+        let reminder: Details.ReminderToggle
+
+        var body: some View {
+            Button(action: reminder.toggle) {
+                Label(
+                    reminder.isSet ? ReminderText.reminderSet : ReminderText.remindMe,
+                    systemImage: reminder.isSet ? "bell.fill" : "bell"
+                )
+                .font(.system(size: size, weight: .semibold))
+                .foregroundStyle(Palette.text)
+                .frame(maxWidth: .infinity)
+                .frame(height: height)
+                .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: height > 44 ? 12 : 10))
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityValue(reminder.isSet ? "On" : "Off")
+            .accessibilityIdentifier("guide.remind")
+        }
+    }
+
     /// The details' ground.
     static let panelGround = Color(red: 0x16 / 255, green: 0x1B / 255, blue: 0x24 / 255)
 }
@@ -153,6 +196,16 @@ private let previewDetails = GuidePanel.Details(
     GuideBoard.Details.Popover(details: previewDetails, watch: {}, close: {})
         .padding()
         .background(Palette.ground)
+}
+
+#Preview("Guide details popover, a later programme") {
+    GuideBoard.Details.Popover(
+        details: GuidePanel.Details(
+            eyebrow: "Today 22:00 · Sport One", look: .other, title: "Match of the Day", meta: "22:00 – 23:15 · 1 h 15 min"),
+        reminder: .init(isSet: true, toggle: {}), watch: {}, close: {}
+    )
+    .padding()
+    .background(Palette.ground)
 }
 
 #Preview("Guide details sheet") {

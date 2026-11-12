@@ -14,6 +14,8 @@
         /// "Add to multi-view", or "Add as new tile" in a tile's picker.
         case multiView
         case search
+        /// A programme that follows in the panel, by its place in the list.
+        case next(Int)
     }
 
     /// Which group the channel overlay shows and where it opens
@@ -159,7 +161,7 @@
                 return target
             case .group(let shown) where !catalogue.groups.contains(shown):
                 return .group(group)
-            case .group, .watch, .startOver, .favorite, .multiView, .search, nil:
+            case .group, .watch, .startOver, .favorite, .multiView, .search, .next, nil:
                 return focused
             }
         }
