@@ -54,6 +54,7 @@ struct SettingsView: View {
             .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud) { record in delete(record) }
             .task { signedInToICloud = ICloudAccount.isSignedIn() }
             #if !os(tvOS)
+                .playlistDropTarget { fileImport = FileImportAsk(dropped: $0) }
                 .modifier(SettingsFileImport(ask: $fileImport))
             #endif
         }
@@ -126,7 +127,16 @@ struct SettingsView: View {
         #else
             let text = SourceStatusText()
         #endif
-        return text.rowLines(Self.status(of: source, refresher: refresher), now: now)
+        return Self.fileLines(source) + text.rowLines(Self.status(of: source, refresher: refresher), now: now)
+    }
+
+    /// "Imported 3 November 2026 · home-playlist.m3u" for a file source,
+    /// nothing for a link source (local-m3u-file-import/import-and-watch).
+    static func fileLines(_ source: SourceRecord) -> [SourceStatusText.Line] {
+        guard source.kind == .m3uFile else { return [] }
+        let date = source.importedAt.map { "Imported \($0.formatted(date: .long, time: .omitted))" }
+        let parts = [date, source.fileName].compactMap(\.self)
+        return parts.isEmpty ? [] : [.init(parts.joined(separator: " · "))]
     }
 
     /// A record's status: waiting for iCloud without a link, the Stalker

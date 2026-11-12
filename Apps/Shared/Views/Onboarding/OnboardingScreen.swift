@@ -19,6 +19,7 @@ struct OnboardingScreen: View {
         @State private var path: [Step] = []
     #else
         @State private var showingAdd = false
+        @Environment(\.importInbox) private var inbox
     #endif
 
     /// The Apple TV steps after the welcome screen.
@@ -97,6 +98,7 @@ struct OnboardingScreen: View {
     #else
         private var content: some View {
             OnboardingWelcome.Phone(signedInToICloud: signedInToICloud, actions: actions)
+                .playlistDropTarget { inbox?.receive($0) }
                 .sheet(isPresented: $showingAdd, onDismiss: { _ = model.leaveForm() }) {
                     NavigationStack {
                         sheetContent
@@ -143,6 +145,7 @@ struct OnboardingFormScreen: View {
             .task { await model.lookForLink() }
             #if !os(tvOS)
                 .playlistPicker(isPresented: $pickingFile) { importing = ImportRequest(url: $0) }
+                .playlistDropTarget { importing = ImportRequest(url: $0) }
                 .sheet(item: $importing) { request in
                     ImportSheet(
                         request,

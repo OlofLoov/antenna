@@ -18,20 +18,20 @@
 
 ## 4. Re-import and delete
 
-- [ ] 4.1 Add Re-import onto the same record and the "imported before" choice, and verify an integration test that favorites survive
-- [ ] 4.2 Delete a file source with its contents, guide and login, and verify an integration test
+- [x] 4.1 Add Re-import onto the same record and the "imported before" choice, and verify an integration test that favorites survive
+- [x] 4.2 Delete a file source with its contents, guide and login, and verify an integration test
 
 ## 5. Sync and other devices
 
-- [ ] 5.1 Show waiting for iCloud and waiting for login for a file source on Apple TV and other devices, and verify on an Apple TV that channels arrive and play
-- [ ] 5.2 Take a file source's guide links from its header, and verify a guide data test
-- [ ] 5.3 Register no import control or document type on Apple TV, and verify a UI test
+- [ ] 5.1 Show waiting for iCloud and waiting for login for a file source on Apple TV and other devices, and verify on an Apple TV that channels arrive and play (left open: needs an Apple TV and a real iCloud account; CloudKit does not sync on a simulator. The waiting state and the reload are covered by `FileSourceShellTests`.)
+- [x] 5.2 Take a file source's guide links from its header, and verify a guide data test
+- [x] 5.3 Register no import control or document type on Apple TV, and verify a UI test
 
 ## 6. Drag and drop
 
-- [ ] 6.1 Add the drop target on iPad and Mac for Settings, welcome and the add-source sheet, and verify UI tests for a file and for non-file drags
+- [x] 6.1 Add the drop target on iPad and Mac for Settings, welcome and the add-source sheet, and verify UI tests for a file and for non-file drags
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.2 `/opsx:verify` passes

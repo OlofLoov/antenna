@@ -144,4 +144,16 @@ struct PlaylistImportTests {
         #expect(ImportText.defaultName(fileName: "home-playlist.m3u") == "home-playlist")
         #expect(ImportText.defaultName(fileName: "list") == "list")
     }
+
+    @Test("guide-data/guide-links-for-an-imported-file: the header's link, or the one the user entered")
+    func guideLinks() throws {
+        let header = try #require(URL(string: "http://guide.example.com/epg.xml.gz"))
+        let entered = try #require(URL(string: "http://other.example.com/epg.xml"))
+        let standIn = try #require(URL(string: "antenna-file:00000000-0000-0000-0000-000000000001"))
+        let fromHeader = GuideURLResolver.resolve(kind: .m3uFile, url: standIn, epgURL: nil, playlistEPGURLs: [header], credential: nil)
+        #expect(fromHeader == header)
+        let fromField = GuideURLResolver.resolve(kind: .m3uFile, url: standIn, epgURL: entered, playlistEPGURLs: [header], credential: nil)
+        #expect(fromField == entered)
+        #expect(GuideURLResolver.resolve(kind: .m3uFile, url: standIn, epgURL: nil, playlistEPGURLs: [], credential: nil) == nil)
+    }
 }

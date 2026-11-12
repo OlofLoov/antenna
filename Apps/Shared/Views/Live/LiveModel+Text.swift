@@ -23,7 +23,7 @@ extension LiveModel.Dependencies {
     @MainActor static func live(
         loader: SourceLoader, guide: AppGuideStore?, profile: UUID = Profile.mainID, refresher: SourceRefresher? = nil
     ) -> Self {
-        .init(
+        var dependencies = Self(
             engine: RoutedEngine.app(),
             load: { source in
                 if let refresher { return try await refresher.load(source) }
@@ -34,5 +34,7 @@ extension LiveModel.Dependencies {
             programmes: .store(guide),
             languages: ChannelLanguageStore(profile: profile),
             recents: RecentsStore(profile: profile))
+        dependencies.waitsForICloud = { loader.waitsForICloud($0) }
+        return dependencies
     }
 }

@@ -29,6 +29,8 @@
             var multiView = MultiViewModel.Dependencies()
             /// Builds Start over's catch-up addresses.
             var catchup = CatchupAddresses()
+            /// True for a file source whose playlist has not synced yet.
+            var waitsForICloud: @MainActor (SourceDescriptor) -> Bool = { _ in false }
         }
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
@@ -213,6 +215,7 @@
         private func setState(_ state: ShellSource.State, for id: UUID) {
             guard let index = sources.firstIndex(where: { $0.id == id }) else { return }
             sources[index].state = state
+            sources[index].waitsForICloud = state == .waitingForLogin && descriptors[id].map(dependencies.waitsForICloud) == true
         }
 
         private func rebuildChannels() {
