@@ -16,12 +16,12 @@
 
 ## 3. Loading with other sources
 
-- [ ] 3.1 Report a source as waiting for its credential, failed on an unreadable credential, or loaded without touching the Keychain, and verify integration tests for the three states
-- [ ] 3.2 Show an unreachable server as failed without asking for its lineup or guide while other sources load, and verify an integration test with mixed sources
+- [x] 3.1 Report a source as waiting for its credential, failed on an unreadable credential, or loaded without touching the Keychain, and verify integration tests for the three states
+- [x] 3.2 Show an unreachable server as failed without asking for its lineup or guide while other sources load, and verify an integration test with mixed sources
 
 ## 4. Guide
 
-- [ ] 4.1 Work out the guide address from the source when no hand-set link exists and send the proxy password, and verify guide-data tests
+- [x] 4.1 Work out the guide address from the source when no hand-set link exists and send the proxy password, and verify guide-data tests
 - [x] 4.2 Match every guide channel to exactly one Antenna channel, and verify a core test against a lineup and guide fixture from one server
 
 ## 5. Secrets
@@ -30,9 +30,9 @@
 
 ## 6. Adding a server in the app
 
-- [ ] 6.1 Add the Channels DVR source kind to the app's loader, connector, guide store and playback, and the local network usage description, and verify an iOS build and the integration tests of group 3
-- [ ] 6.2 Add the Channels DVR card and Server field to onboarding on every platform, with its wording and the local network hint, and verify integration tests citing `first-run-onboarding/add-a-channels-dvr-server`
-- [ ] 6.3 Add a Channels DVR server from Settings, edit its address in its details, and keep it out of the Apple TV sign-in while it has no password, and verify integration tests citing `sources-and-settings/fix-a-source-s-link-or-login`
+- [x] 6.1 Add the Channels DVR source kind to the app's loader, connector, guide store and playback, and the local network usage description, and verify an iOS build and the integration tests of group 3
+- [x] 6.2 Add the Channels DVR card and Server field to onboarding on every platform, with its wording and the local network hint, and verify integration tests citing `first-run-onboarding/add-a-channels-dvr-server`
+- [x] 6.3 Add a Channels DVR server from Settings, edit its address in its details, and keep it out of the Apple TV sign-in while it has no password, and verify integration tests citing `sources-and-settings/fix-a-source-s-link-or-login`
 - [ ] 6.4 Show a number like 6.1 wherever a channel number is shown, and verify the iOS build and the touched UI test classes on a simulator
 
 ## 7. Verify
