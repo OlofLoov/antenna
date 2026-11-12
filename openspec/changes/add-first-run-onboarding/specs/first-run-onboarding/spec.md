@@ -284,3 +284,22 @@ The system SHALL offer a Jellyfin server as a kind of provider on every platform
 - **WHEN** the user opens Antenna on Apple TV
 - **THEN** the Jellyfin server asks for its username and password with the server address already filled in
 - **AND** the server is checked the way Connect checks it before the login is kept on this Apple TV
+
+### Requirement: Add a Channels DVR server
+The system SHALL offer a Channels DVR server as a kind of provider on every platform, SHALL connect with only the address the server shows, and SHALL show the server's version in the loading checklist.
+
+#### Scenario: A server at home
+- **GIVEN** a Channels DVR server on the home network at 192.168.1.20
+- **WHEN** the user picks Channels DVR, types "192.168.1.20" and chooses Connect
+- **THEN** Antenna checks the server, shows the loading checklist with a Server line naming its version, and lists its channels
+- **AND** the user was never asked for a password
+
+#### Scenario: Local network access refused
+- **GIVEN** an iPhone, iPad or Mac where Antenna may not reach the home network, and a server address at home
+- **WHEN** Connect cannot reach the server
+- **THEN** the message under the form also asks the user to allow local network access for Antenna in Settings
+
+#### Scenario: Picking the server on Apple TV
+- **GIVEN** the "What kind of source?" step on Apple TV
+- **WHEN** the user selects the Channels DVR card with the remote
+- **THEN** the server form opens, like the other cards do
