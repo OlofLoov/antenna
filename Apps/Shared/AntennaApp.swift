@@ -22,6 +22,8 @@ struct AntennaApp: App {
         /// Files shared to Antenna wait here, outside every gate, until a
         /// screen can show the import sheet (local-m3u-file-import/bring-a-file-in).
         @State private var inbox = ImportInbox()
+        /// Setup links from an Apple TV wait here the same way (iphone-as-setup-device capability).
+        @State private var setupInbox = SetupInbox()
     #endif
     /// Whether the app is unlocked, read before anything else (paywall-and-entitlement capability).
     @State private var unlock: Unlock
@@ -106,6 +108,7 @@ struct AntennaApp: App {
             }
             #if !os(tvOS)
                 .receivingFiles(into: inbox)
+                .receivingSetupLinks(into: setupInbox)
             #endif
         }
         .modelContainer(container)

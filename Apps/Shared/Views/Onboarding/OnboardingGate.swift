@@ -27,10 +27,14 @@ struct OnboardingGate<Content: View>: View {
     @State private var onboarding = OnboardingModel(connector: .app, clipboard: .system)
     @State private var handoff = OnboardingHandoff()
     @ViewBuilder var content: Content
+    #if !os(tvOS)
+        /// The "Set up Apple TV" sheet keeps the welcome screen under it (iphone-as-setup-device capability).
+        @Environment(\.setupInbox) private var setupInbox
+    #endif
 
     var body: some View {
         let signIn = Self.needingSignIn(records)
-        switch OnboardingRoute(sourceCount: records.count, holding: onboarding.holdsApp || !signIn.isEmpty) {
+        switch OnboardingRoute(sourceCount: records.count, holding: onboarding.holdsApp || !signIn.isEmpty || setupSheetOpen) {
         case .welcome:
             OnboardingScreen(model: onboarding, signIn: signIn) { request in
                 if let request { handoff.hand(request) }
@@ -97,5 +101,15 @@ enum ICloudAccount {
             if let scripted = UITestingOnboarding.signedInToICloud() { return scripted }
         #endif
         return FileManager.default.ubiquityIdentityToken != nil
+    }
+}
+
+extension OnboardingGate {
+    fileprivate var setupSheetOpen: Bool {
+        #if os(tvOS)
+            false
+        #else
+            setupInbox?.holdsApp == true
+        #endif
     }
 }

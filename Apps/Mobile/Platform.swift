@@ -9,6 +9,7 @@ import SwiftUI
 /// sheet over whichever shows (local-m3u-file-import/bring-a-file-in).
 struct PlatformRoot: View {
     @Environment(\.importInbox) private var inbox
+    @Environment(\.setupInbox) private var setupInbox
 
     var body: some View {
         OnboardingGate {
@@ -17,6 +18,7 @@ struct PlatformRoot: View {
             }
         }
         .modifier(ImportInboxSheet(inbox: inbox))
+        .modifier(SetupInboxSheet(inbox: setupInbox))
     }
 }
 

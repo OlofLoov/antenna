@@ -38,6 +38,8 @@ from `Config/Local.xcconfig.example` for device builds.
 - `Apps/Shared/` SwiftUI shared by every platform. SwiftData records and the
   Keychain `CredentialStore` live in `Persistence/`.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
+- `Web/` the static files served for the setup link: the page Safari shows
+  on an iPhone without Antenna. No scripts, images or third-party content.
 - `project.yml` is the source of truth for the Xcode project. Edit it, not the pbxproj.
 
 ## How we work
