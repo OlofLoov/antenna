@@ -11,9 +11,9 @@
 
 ## 3. The Subtitles preference
 
-- [ ] 3.1 Add `AppPreferences.subtitles` and `PreferencesRecord.subtitlesRaw` defaulted to Auto, with core and app tests citing `sources-and-settings/choose-when-subtitles-show`
-- [ ] 3.2 Add the Subtitles row with its explanation line to Preferences on every platform, and hand the value to the live, shell and movie players
-- [ ] 3.3 UI tests on iPhone and Apple TV: the row reads Auto, picking Always starts subtitles on the next channel, citing `sources-and-settings/choose-when-subtitles-show` and `playback-engine/subtitles-start-by-the-subtitle-setting`
+- [x] 3.1 Add `AppPreferences.subtitles` and `PreferencesRecord.subtitlesRaw` defaulted to Auto, with core and app tests citing `sources-and-settings/choose-when-subtitles-show`
+- [x] 3.2 Add the Subtitles row with its explanation line to Preferences on every platform, and hand the value to the live, shell and movie players
+- [x] 3.3 UI tests on iPhone and Apple TV: the row reads Auto, picking Always starts subtitles on the next channel, citing `sources-and-settings/choose-when-subtitles-show` and `playback-engine/subtitles-start-by-the-subtitle-setting`
 
 ## 4. Subtitles on screen and the switch
 

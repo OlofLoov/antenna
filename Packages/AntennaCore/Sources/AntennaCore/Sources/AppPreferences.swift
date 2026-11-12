@@ -57,14 +57,18 @@ public struct AppPreferences: Equatable, Sendable {
     public var guideHours: Int
     public var refresh: RefreshInterval
     public var swipe: Swipe
+    /// When subtitles start (sources-and-settings/choose-when-subtitles-show).
+    public var subtitles: SubtitleMode
 
     public init(
-        openOnLaunch: LaunchScreen = .live, guideHours: Int = 2, refresh: RefreshInterval = .twelve, swipe: Swipe = .changesChannel
+        openOnLaunch: LaunchScreen = .live, guideHours: Int = 2, refresh: RefreshInterval = .twelve, swipe: Swipe = .changesChannel,
+        subtitles: SubtitleMode = .auto
     ) {
         self.openOnLaunch = openOnLaunch
         self.guideHours = Self.guideHours.contains(guideHours) ? guideHours : 2
         self.refresh = refresh
         self.swipe = swipe
+        self.subtitles = subtitles
     }
 
     /// "2 hours".
@@ -81,5 +85,25 @@ public struct AppPreferences: Equatable, Sendable {
         copies.min { lhs, rhs in
             lhs.updated != rhs.updated ? lhs.updated > rhs.updated : lhs.id < rhs.id
         }?.id
+    }
+}
+
+extension SubtitleMode {
+    /// "Off", "Auto" or "Always", in the listed order.
+    public var title: String {
+        switch self {
+        case .off: "Off"
+        case .auto: "Auto"
+        case .always: "Always"
+        }
+    }
+
+    /// The line under the Subtitles row saying what the choice does.
+    public var explanation: String {
+        switch self {
+        case .off: "Subtitles start off. Forced subtitles in your language still show."
+        case .auto: "Subtitles show when the sound is not in one of your languages."
+        case .always: "Subtitles show in your language whenever the stream has them."
+        }
     }
 }

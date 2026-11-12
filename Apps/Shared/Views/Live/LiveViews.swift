@@ -22,6 +22,7 @@
                 .task(id: records.compactMap(\.descriptor)) {
                     live.sourcesChanged(records.compactMap(\.descriptor))
                 }
+                .followsSubtitlePreference { live.languages.subtitles = $0 }
                 // The current profile's favorites, on this device or through sync.
                 .onChange(of: ownFavorites, initial: true) { _, snapshots in
                     live.favoritesChanged(snapshots)

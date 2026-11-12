@@ -13,6 +13,8 @@ final class PreferencesRecord {
     /// Hours between scheduled refreshes; 0 is manual only.
     var refreshHours: Int = AppPreferences.RefreshInterval.twelve.rawValue
     var swipeRaw: String = AppPreferences.Swipe.changesChannel.rawValue
+    /// Off, Auto or Always (sources-and-settings/choose-when-subtitles-show).
+    var subtitlesRaw: String = SubtitleMode.auto.rawValue
     var updatedAt: Date = Date.now
 
     init() {}
@@ -21,7 +23,8 @@ final class PreferencesRecord {
         AppPreferences(
             openOnLaunch: AppPreferences.LaunchScreen(rawValue: openOnLaunchRaw) ?? .live, guideHours: guideHours,
             refresh: AppPreferences.RefreshInterval(rawValue: refreshHours) ?? .twelve,
-            swipe: AppPreferences.Swipe(rawValue: swipeRaw) ?? .changesChannel)
+            swipe: AppPreferences.Swipe(rawValue: swipeRaw) ?? .changesChannel,
+            subtitles: SubtitleMode(rawValue: subtitlesRaw) ?? .auto)
     }
 
     func store(_ preferences: AppPreferences, at date: Date) {
@@ -29,6 +32,7 @@ final class PreferencesRecord {
         guideHours = preferences.guideHours
         refreshHours = preferences.refresh.rawValue
         swipeRaw = preferences.swipe.rawValue
+        subtitlesRaw = preferences.subtitles.rawValue
         updatedAt = date
     }
 }

@@ -21,7 +21,10 @@
     ///
     /// Every stream has English, English commentary and an unnamed sound
     /// track and English subtitles, or one English sound track and no
-    /// subtitles with `UITESTING_TRACKS=single`.
+    /// subtitles with `UITESTING_TRACKS=single`, or German sound with German,
+    /// English and forced English subtitles with `UITESTING_TRACKS=foreign`.
+    /// A load starts the tracks `TrackChoice` picks from its options, and
+    /// while subtitles are on the engine shows one cue naming the track.
     enum UITestingPlayback {
         static let variable = "UITESTING_PLAYBACK"
         static let slowVariable = "UITESTING_SLOW_SECONDS"
@@ -81,8 +84,21 @@
         /// The tracks every scripted stream has.
         static var tracks: TrackList {
             let english = MediaTrack(id: "audio-0", kind: .audio, languageCode: "en", name: nil, isDefault: true)
-            guard ProcessInfo.processInfo.environment["UITESTING_TRACKS"] != "single" else {
+            switch ProcessInfo.processInfo.environment["UITESTING_TRACKS"] {
+            case "single":
                 return TrackList(audio: [english], subtitles: [], selectedAudio: english.id, selectedSubtitle: nil)
+            case "foreign":
+                let german = MediaTrack(id: "audio-0", kind: .audio, languageCode: "de", name: nil, isDefault: true)
+                return TrackList(
+                    audio: [german],
+                    subtitles: [
+                        MediaTrack(id: "subtitle-0", kind: .subtitle, languageCode: "de", name: nil, isDefault: false),
+                        MediaTrack(id: "subtitle-1", kind: .subtitle, languageCode: "en", name: nil, isDefault: false),
+                        MediaTrack(id: "subtitle-2", kind: .subtitle, languageCode: "en", name: nil, isDefault: false, isForced: true),
+                    ],
+                    selectedAudio: german.id, selectedSubtitle: nil)
+            default:
+                break
             }
             return TrackList(
                 audio: [
@@ -101,13 +117,26 @@
 
         /// The tracks of one scripted engine; a pick changes the selection.
         final class Tracks: Sendable {
-            let cast = Broadcast(UITestingPlayback.tracks)
+            let cast = Broadcast(TrackList.empty)
             let format = Broadcast(PresentationInfo?.some(UITestingPlayback.presentation))
+            /// One line naming the subtitle track while one is on.
+            let cues = Broadcast([SubtitleCue]())
 
-            /// A new stream opened: its tracks with the defaults picked, and its format.
-            func reset() {
-                cast.send(UITestingPlayback.tracks)
+            /// A new stream opened: its tracks with the ones `options` start
+            /// with, and its format.
+            func reset(_ options: PlaybackOptions) {
+                var list = UITestingPlayback.tracks
+                let chosen = TrackChoice.initial(audio: list.audio, subtitles: list.subtitles, options: options)
+                list.selectedAudio = chosen.audio
+                list.selectedSubtitle = chosen.subtitle
+                cast.send(list)
+                showCue(for: list)
                 format.send(UITestingPlayback.presentation)
+            }
+
+            private func showCue(for list: TrackList) {
+                guard let track = list.subtitles.first(where: { $0.id == list.selectedSubtitle }) else { return cues.send([]) }
+                cues.send([SubtitleCue(text: "Subtitle \(track.id)")])
             }
 
             func selectAudio(_ id: MediaTrack.ID) {
@@ -120,7 +149,17 @@
                 var list = cast.value
                 list.selectedSubtitle = id
                 cast.send(list)
+                showCue(for: list)
             }
+        }
+
+        /// Language picks in their own defaults, emptied at launch, so one
+        /// test's pick never starts the next test's channel.
+        static func languageStore() -> ChannelLanguageStore {
+            let suite = "ui-testing-languages"
+            let defaults = UserDefaults(suiteName: suite) ?? .standard
+            defaults.removePersistentDomain(forName: suite)
+            return ChannelLanguageStore(defaults: defaults)
         }
 
         /// False while the script keeps every stream loading.

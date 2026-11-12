@@ -82,6 +82,7 @@
                     }
                 }
                 UITestingProfiles.seed(context)
+                UITestingSubtitles.seed(context)
                 UITestingGroups.seed(context, locking: .named(homeID, "Sport"))
                 try context.save()
                 return container
@@ -138,6 +139,7 @@
             dependencies.touchHold = .seconds(environment[controlsVariable].flatMap(Double.init) ?? 60)
             dependencies.network = UITestingPlayback.network
             dependencies.slowDelay = UITestingPlayback.slowDelay
+            dependencies.languages = UITestingPlayback.languageStore()
             dependencies.recents = UITestingRecents.store { id in cabin.contains { $0.id == "fixture/\(id)" } ? cabinID : homeID }
             dependencies.sleep = UITestingRecents.sleep
             dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
@@ -281,7 +283,7 @@
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loads += 1
                 append(url.lastPathComponent)
-                trackList.reset()
+                trackList.reset(options)
                 buffer.played = { [weak self] in self?.state = .playing }
                 if UITestingTimeshift.catchupFails(url) {
                     state = .failed(.notFound)
@@ -327,7 +329,7 @@
             func presentation() async -> AsyncStream<PresentationInfo?> { trackList.format.stream() }
             func tracks() async -> AsyncStream<TrackList> { trackList.cast.stream() }
             func position() async -> AsyncStream<PlaybackPosition> { Broadcast(PlaybackPosition.zero).stream() }
-            func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
+            func subtitleCues() async -> AsyncStream<[SubtitleCue]> { trackList.cues.stream() }
 
             private func append(_ line: String) {
                 guard let log else { return }

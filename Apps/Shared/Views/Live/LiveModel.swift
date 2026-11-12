@@ -88,7 +88,7 @@ final class LiveModel {
     /// The spinner, the reconnect count and the error for the playing channel.
     @ObservationIgnored let player: PlayerModel
     @ObservationIgnored let dependencies: Dependencies
-    @ObservationIgnored private let languages: ChannelLanguages
+    @ObservationIgnored let languages: ChannelLanguages
     /// Stores the last channel and counts a channel as watched.
     @ObservationIgnored let session: SessionTracker
     @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]

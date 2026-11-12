@@ -120,6 +120,7 @@
                 overlayCatalogueChanged()
             }
             .onChange(of: model.recents) { _, _ in showLatestRecents() }
+            .followsSubtitlePreference { model.languages.subtitles = $0 }
             .onChange(of: model.pickerOpen) { _, _ in showLatestRecents() }
             .onChange(of: model.tuned, initial: true) { _, channel in zapBar.channelChanged(to: channel) }
             .onChange(of: model.barVisible) { _, raised in

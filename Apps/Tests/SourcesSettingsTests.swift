@@ -227,4 +227,17 @@ import Testing
         #expect(PreferencesStore.current(in: context).guideHours == 4)
         #expect(try context.fetchCount(FetchDescriptor<PreferencesRecord>()) == 1)
     }
+
+    @Test("sources-and-settings/choose-when-subtitles-show: the choice is stored in the synced record, Auto when unreadable")
+    func subtitlesPreference() throws {
+        #expect(PreferencesStore.current(in: context).subtitles == .auto)
+        var preferences = AppPreferences()
+        preferences.subtitles = .always
+        PreferencesStore.save(preferences, in: context)
+        #expect(PreferencesStore.current(in: context).subtitles == .always)
+        let record = try #require(try context.fetch(FetchDescriptor<PreferencesRecord>()).first)
+        #expect(record.subtitlesRaw == "always")
+        record.subtitlesRaw = "sometimes"
+        #expect(PreferencesStore.current(in: context).subtitles == .auto)
+    }
 }

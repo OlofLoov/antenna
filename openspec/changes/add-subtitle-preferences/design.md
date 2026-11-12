@@ -105,3 +105,6 @@ None.
 - `TrackChoice.switched` and `fullSubtitlesOn` landed with the starting rule in slice 2, since they share its helpers; the buttons that call them come in slice 4.
 - AntennaDemux tests do not load on this Mac (macOS 15.6, the package targets macOS 26), so `DemuxForcedTests` runs in PR CI only.
 - `ChannelLanguages` and `ShelfPlayback` take the device's languages as an injected closure, `Locale.preferredLanguages` by default, so tests do not depend on the simulator's language.
+- The screens hand the preference over with one modifier, `followsSubtitlePreference`, which queries `PreferencesRecord` itself. `ShellView` is near the 500-line limit, so it gains one line.
+- The Subtitles row's explanation is the Preferences section's footer, so it sits right under the row. On Apple TV the row is a pushed list (`.navigationLink` picker style) as the board draws it; on iPhone, iPad and Mac it is the menu picker the other rows use.
+- The scripted UI-test engines now start with an empty track list and apply `TrackChoice.initial` on load, and their language picks live in their own emptied defaults suite. Before, the first track list differed from the chosen one and was kept as a pick, and picks leaked from one test to the next through `UserDefaults.standard`.
