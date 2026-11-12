@@ -193,3 +193,17 @@ Mapping examples:
 - Open question: Channels DVR's own remote-access sign-in key, deferred until the owner has a remote server to test.
 - [Local network permission refused on iPhone, iPad or Mac] → the first request to a home address fails, often looking like "offline", so onboarding adds a hint to allow local network access whenever the address is a home one. Apple TV asks no such permission.
 - [The proxy password never syncs to Apple TV] → onboarding's Apple TV sign-in step must accept Channels DVR sources, or the source waits for its credential forever.
+
+## Implementation decisions
+
+- Code lives in `Packages/AntennaCore/Sources/AntennaCore/ChannelsDVR/`. `ChannelsDVRClient` is a struct, not an actor: it holds no session state, and every call is one GET.
+- Requests go through `URLSessionConfiguration.channelsDVR` (ephemeral, no cache, no cookies). The 10 s and 30 s timeouts are set per request, so a test can read them off the request.
+- `serverURL(from:)` parses the address by hand instead of with `URLComponents`. Without a scheme, `URLComponents` reads `nas.local:8090` as scheme `nas.local`, and it drops IPv6 brackets when the host is set again. Ports outside 1 to 65 535, a colon with no port and a host with characters other than letters, digits, `-`, `.` and `_` are turned down too.
+- A status answer in the 2xx range counts as 200. Redirects follow `URLSession`'s default, so a remote-access login page ends as `.notAChannelsServer`, the HTML row.
+- The not-an-`HTTPURLResponse` row has no test. The stub can only answer `http` requests with an HTTP response, and `URLSession` never hands back anything else for them.
+- The `channelsdvr#no#` id writes the parsed number back, so `tvg-chno="06.10"` gives `channelsdvr#no#6.10`. Only a server that pads its numbers would notice.
+- `M3UParser.channelNumber` accepts ASCII digits with at most one dot. A sign, a comma or a trailing dot gives no number, where `Int("-3")` used to give -3; the catalogue already treated numbers below 1 as missing.
+- The mapping benchmark times `channels(mapping:)` only, not the parse, which `m3u-playlists` benchmarks on its own.
+- `Catalogue.number(for:)` keeps returning the major number as `Int`, and the new `channelNumber(for:)` returns `ChannelNumber`. Changing the return type would touch about twenty call sites in screens other changes are editing now. Task 6.4 moves the screens that show a number onto `channelNumber(for:)`.
+- A minor number counts only when the catalogue used the provider's number. A channel numbered 200 000.1 gets a fallback number and no minor part.
+- Runs of one major number are sorted by minor number after the counting sort, and only when a minor number exists, so catalogues without one cost nothing extra.
