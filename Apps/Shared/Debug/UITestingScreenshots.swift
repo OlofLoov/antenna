@@ -52,7 +52,11 @@
 
         static let homeID = UUID(uuidString: "00000000-0000-0000-0000-0000000000C1") ?? UUID()
         static let providerID = UUID(uuidString: "00000000-0000-0000-0000-0000000000C2") ?? UUID()
-        static let favoriteIDs = ["news-one", "sport-one", "sport-two", "movies-one"]
+        /// The ids Home's playlist gives News One, Sport One, Sport Two and Movies One.
+        static var favoriteIDs: [String] {
+            let parsed = M3UParser().parse(playlist).channels
+            return ["news-one", "sport-one", "sport-two", "movies-one"].compactMap { guide in parsed.first { $0.epgID == guide }?.id }
+        }
 
         /// The two sources, after writing Home's playlist to a temporary file.
         static func sources() throws -> [SourceDescriptor] {

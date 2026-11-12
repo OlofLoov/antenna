@@ -24,7 +24,8 @@ import Testing
     }
 
     @Test func favoritesNameChannelsInHome() {
-        let ids = Set(UITestingScreenshots.channels.map(\.id))
+        let ids = Set(M3UParser().parse(UITestingScreenshots.playlist).channels.map(\.id))
+        #expect(UITestingScreenshots.favoriteIDs.count == 4)
         #expect(UITestingScreenshots.favoriteIDs.allSatisfy(ids.contains))
     }
 
