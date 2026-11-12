@@ -60,13 +60,18 @@ The system SHALL move the Apple TV on to loading channels when a playlist source
 - **WHEN** a playlist source arrives from the iPhone
 - **THEN** loading replaces the form and the typed text is discarded
 
-### Requirement: An Xtream source sent from the iPhone needs only the login on the TV
-The system SHALL fill in and lock Name and Server for an arrived Xtream source, say its login has not reached the TV, and save the login the user types for that source without adding a second one.
+### Requirement: A login source sent from the iPhone needs only its login on the TV
+The system SHALL fill in and lock Name and the server or portal for an arrived Xtream source or Stalker portal, say what has not reached the TV, and save what the user types for that source without adding a second one.
 
 #### Scenario: Sign in to an arrived Xtream source
 - **GIVEN** the QR card on screen and possibly some text in the TV's username and password fields
 - **WHEN** a new Xtream source arrives through iCloud and the user signs in on the TV
 - **THEN** the TV says the source arrived and the login has not reached it, fills in and locks Name and Server, keeps what the user had typed in the login fields, and on Connect saves the login for the arrived source without adding a second one
+
+#### Scenario: Sign in to an arrived Stalker portal
+- **GIVEN** the QR card on screen
+- **WHEN** a new Stalker portal arrives through iCloud and the user enters its MAC address on the TV
+- **THEN** the TV says the portal arrived and its MAC address has not reached it, fills in and locks Name and Portal, and on Connect saves the MAC address and any login for the arrived portal without adding a second source
 
 ### Requirement: Nothing arrives, and the TV says why that might be
 The system SHALL show a hint on the Apple TV after two minutes without a usable source, naming the usual causes.

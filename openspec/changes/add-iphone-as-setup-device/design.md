@@ -6,16 +6,16 @@ Boards: `openspec/specs/design-system/boards/TV-Onboard-3-QR.dc.html`, `TV-Onboa
 
 Design-system requirements that apply: "Focus is the lifted white card", "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled", "Text meets contrast minimums", "Nothing shows before the paywall", "Loading shows real progress per step".
 
-Not drawn yet: the Apple TV hint for a source this card cannot set up, the not-signed-in version of the "Not sent yet" row, the update line for a link from a newer Antenna, and the web page for an iPhone without Antenna, which is not an app screen.
+Not drawn yet: the Apple TV hint for a source this card cannot set up, the Apple TV sign-in for an arrived Stalker portal, the not-signed-in version of the "Not sent yet" row, the update line for a link from a newer Antenna, and the web page for an iPhone without Antenna, which is not an app screen.
 
 ## Goals / Non-Goals
 
 **Goals:**
 - No login, source detail or device detail travels in the link, the Handoff data or the logs.
-- The TV makes exactly one change to an arrived source, and only on Xtream sign-in.
+- The TV makes exactly one change to an arrived source, and only on Xtream or Stalker sign-in.
 
 **Non-Goals:**
-- Sending the login to the TV. Secrets live only in the synchronizable iCloud Keychain, which Apple TV does not offer, so no login reaches tvOS. An Xtream source arriving with its login, a login arriving later, and a "Keep waiting" button after 60 seconds belong to a later credential change, with `TV-Onboard-3-QR-Received.dc.html` as its board.
+- Sending the login to the TV. Secrets live only in the synchronizable iCloud Keychain, which Apple TV does not offer, so no login or Stalker MAC address reaches tvOS. An Xtream source arriving with its login, a login arriving later, and a "Keep waiting" button after 60 seconds belong to a later credential change, with `TV-Onboard-3-QR-Received.dc.html` as its board.
 - Matching an arrived source to the exact code. Any new source in the time window counts.
 
 ## Decisions
@@ -25,7 +25,7 @@ Not drawn yet: the Apple TV hint for a source this card cannot set up, the not-s
 - Device checks before the change is implemented: whether tvOS offers Handoff to a nearby iPhone at all (if not, Handoff leaves the scanning requirement and the footer loses the App Switcher sentence); whether SwiftData's container posts CloudKit export events (if not, the hand-off confirmation requirement is dropped and "Not sent yet" is the only end state); whether the TV target needs the associated domain.
 - First-run onboarding changes first: its keyboard card gets an identifier, the root view does not switch while the QR card or the "Set up Apple TV" form is open, and its form removes spaces pasted around the server, playlist and guide addresses and the username, leaving the password alone unless onboarding decides otherwise. Live TV on iPhone, iPad and Mac loads a source added while the shell is open, or a source sent from the shell does not appear until relaunch.
 - The token, link and Handoff data are never logged or stored, and the link types take no source, credential, device name or iCloud id.
-- When Xtream sign-in on the TV succeeds for a source without a credential key, the key is set to the source id first. That is the only change the TV makes to an arrived source.
+- When Xtream or Stalker sign-in on the TV succeeds for a source without a credential key, the key is set to the source id first. That is the only change the TV makes to an arrived source.
 - On the iPhone: a code already used in this launch opens nothing; another code while any add-source sheet is open is dropped; Cancel before Connect saves nothing and forgets the code; Connect errors show as in onboarding and keep the banner.
 - The form notes how many sources the iPhone already has, since they reach the TV on their own.
 
@@ -39,14 +39,15 @@ Apple TV:
 - The QR tile is white because a scanner needs a light quiet zone. It is not focusable. The pattern on the board is a placeholder; the app renders the setup link.
 - `onboarding.qr.code` has the accessibility label "QR code. Scan it with your iPhone to set up this Apple TV from there."
 - Nothing arrived after 120 s (`TV-Onboard-3-QR-Timeout`): `onboarding.qr.hint` at 22 pt muted under the status, reading "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV." The code and status stay.
-- A source arrived that the card cannot use (Stalker, or a kind this build does not know), after the same 120 s: the hint reads "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here." Not drawn.
+- A source arrived that the card cannot use (a kind this build does not know, or a source without an address), after the same 120 s: the hint reads "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here." Not drawn.
 - Xtream source arrived (`TV-Onboard-3-QR-SignIn`): the tile at 40% opacity. Status rows "<name> arrived from your iPhone" with a 28 pt accent check, and "The login hasn't reached this Apple TV." in the error style with a 28 pt `#FF5F57` glyph. Name and Server hold the arrived record's `name` and `url.absoluteString`, read-only and not focusable. Form title "Sign in on this Apple TV", subtitle "Server and name came from your iPhone.". `onboarding.qr.signInHere` is the 64 pt white button. Username and Password keep any text typed before the arrival. Focus stays in a field if it was in one, and a right press from any field moves to `onboarding.qr.signInHere`; otherwise the button takes focus. Selecting it moves focus to Username and removes the button.
 - Menu while the card is shown goes back to the type step with the entered values kept, drops the link and the Handoff offer, and stops the store check. Entering the details step again starts with a new code and a new snapshot. After an Xtream arrival, Name and Server go back to what the user had typed (empty if nothing) and are focusable again.
+- Stalker portal arrived, not drawn: as the Xtream arrival, with the form title "Sign in on this Apple TV", the subtitle "Portal and name came from your iPhone.", Name and Portal read-only, the second status row "The MAC address hasn't reached this Apple TV.", and the MAC address, Login and Password fields of onboarding's portal form. Any MAC address, login or password typed before the arrival stays.
 - `TV-Onboard-3-QR-Received` ("Waiting for the login…" with a 28 pt ring, Username focused and empty) belongs to the later credential change.
 
 iPhone, iPad and Mac (iPad and Mac center the same sheet at 390 pt wide, as onboarding does):
 
-- Form from TV (`iPhone-Onboard-2-FromTV`): nav "Cancel" and title "Set up Apple TV". `onboarding.fromTV.banner` reads "Opened from your Apple TV" at 15 pt with the 13 pt muted second line "Fill this in here. The source syncs to the Apple TV through iCloud.". Then onboarding's type picker with Xtream selected, the clipboard banner (its second line reads "Spaces around it are removed when you connect"), the fields, the lock note and Connect. No Guide toggle.
+- Form from TV (`iPhone-Onboard-2-FromTV`): nav "Cancel" and title "Set up Apple TV". `onboarding.fromTV.banner` reads "Opened from your Apple TV" at 15 pt with the 13 pt muted second line "Fill this in here. The source syncs to the Apple TV through iCloud.". Then onboarding's type picker with Xtream selected and all three types enabled, the clipboard banner (its second line reads "Spaces around it are removed when you connect"), the fields, the lock note and Connect. No Guide toggle.
 - `onboarding.fromTV.existing`, one 13 pt muted line under the banner, not drawn: "This <device> already has 1 source. It appears on the Apple TV on its own when both use the same iCloud account." for one source, "This <device> already has <n> sources. They appear on the Apple TV on their own when both use the same iCloud account." for more, absent for none. Only sources with an address count.
 - A link that does not parse opens onboarding's plain "Add a source" sheet with no banner and no error. For a link from a newer version, `onboarding.fromTV.update` sits above the form in 13 pt muted, not drawn: "This code is from a newer Antenna. Update Antenna on this <device> to set up your Apple TV from here."
 - Sending (`iPhone-Onboard-2-FromTV-Waiting`): the form is replaced in the same sheet by `onboarding.sending`, title "Sending to your Apple TV" at 22 pt. `onboarding.sending.row.saved` done, reading "Saved on this <device>" with the source name beneath. `onboarding.sending.row.tv` in progress with a 26 pt ring, reading "Sending to your Apple TV…" with "Usually a few seconds" beneath. Lock note. `onboarding.sending.continue` as a surface button reading "Continue on <device>". No Cancel. Swipe-down on iPhone and iPad, and Escape and Command-period on Mac, do nothing. Channel and guide loading for the record starts as onboarding's Connect does.
@@ -101,3 +102,8 @@ New: `onboarding.qr`, `onboarding.qr.code`, `onboarding.qr.status`, `onboarding.
 - Open question: load channels and guide on the iPhone right after Connect, or only on "Continue on iPhone"? Can be settled during implementation.
 - [The 120-second hint and the 30-second upload timeout are guesses] → measure on devices.
 - [An offline TV cannot be told apart from a wrong account] → the hint names both causes.
+
+## Implementation decisions
+
+- Stalker portals are set up from the iPhone like Xtream (2026-11-12). When this change was written, Stalker was shown disabled and the TV treated an arrived portal as a source it could not set up. Onboarding now connects portals with an address and a MAC address, and the Apple TV sign-in asks a synced portal for its MAC. The MAC address lives in the Keychain as the portal's credential, so it does not reach the TV either, and an arrived portal goes to the same sign-in as an Xtream source with the portal's MAC address, Login and Password fields. The board `iPhone-Onboard-2-FromTV.dc.html` still draws the Stalker segment disabled; the app enables it, and the board needs redrawing.
+- Jellyfin and Channels DVR are not on main yet. Until a change adds them here, a source of either kind that arrives on the TV counts as a kind the card cannot set up.
