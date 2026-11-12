@@ -9,6 +9,8 @@
         /// Right of the last chip; taking it moves focus to Watch.
         case pastLastDay
         case watch
+        /// Remind me, right of Watch (programme-reminders capability).
+        case remind
     }
 
     /// The Guide tab on Apple TV (tv-guide-grid capability; `TV-Guide` and its
@@ -30,6 +32,7 @@
         @FocusState private var local: GuideFocus?
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
+        @Environment(\.reminders) private var reminders
 
         var body: some View {
             TimelineView(.everyMinute) { context in
@@ -106,6 +109,7 @@
                         .disabled(model.area == .grid)
                         .onExitCommand { backFromWatch() }
                         .accessibilityIdentifier("guide.watch")
+                    remindButton(target, now: now)
                 }
             } else {
                 GuidePanel.ClockOnly(date: now)
@@ -154,6 +158,22 @@
             .accessibilityIdentifier("guide.grid")
         }
 
+        /// Remind me right of Watch for a programme that has not started
+        /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+        /// Setting it leaves focus where it is.
+        @ViewBuilder
+        private func remindButton(_ target: HighlightedCell, now: Date) -> some View {
+            if let reminders, let programme = target.cell.programme, reminders.offers(programme, on: target.channel, now: now) {
+                GuidePanel.RemindButton(isSet: reminders.isSet(programme, on: target.channel)) {
+                    reminders.toggle(programme, on: target.channel)
+                }
+                .focused($local, equals: .remind)
+                .disabled(model.area == .grid)
+                .onExitCommand { backFromWatch() }
+                .accessibilityIdentifier("guide.remind")
+            }
+        }
+
         // MARK: Input
 
         private func move(_ direction: MoveCommandDirection, _ data: GuideData) {
@@ -174,7 +194,7 @@
             switch new {
             case .pastLastDay:
                 local = .watch
-            case .watch:
+            case .watch, .remind:
                 model.toWatch()
             case .day:
                 model.focusedDays()

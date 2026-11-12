@@ -247,6 +247,7 @@
     /// The details as a sheet at the medium detent on iPhone.
     struct GuideDetailsSheet: View {
         let target: GuideTarget
+        @Environment(\.reminders) private var reminders
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
         @Environment(\.guideBoardOpenLive) private var openLive
@@ -256,7 +257,7 @@
                 let reading = GuideBoardReading(live: live, model: model)
                 let data = reading.data(at: context.date, filtered: false)
                 if let details = reading.details(target, data, now: context.date) {
-                    GuideBoard.Details.Sheet(details: details) {
+                    GuideBoard.Details.Sheet(details: details, reminder: reading.reminder(target, data, reminders, now: context.date)) {
                         reading.watch(target, data: data, now: context.date)
                         openLive()
                     }

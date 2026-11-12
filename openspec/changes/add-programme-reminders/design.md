@@ -58,3 +58,10 @@ Calls made while building, recorded here instead of asked.
 - The notification center sits behind a `ReminderNotifying` protocol. UI tests cannot answer the system permission prompt reliably, so a Debug build launched with `-ui-testing-notifications <notDetermined|allowed|denied>` uses a scripted center that answers the prompt as told and records what it scheduled. The system center is never touched under that argument.
 - The Apple TV banner does not wait while the user types a channel number. It shows at once and takes focus to Watch; Menu closes it and the number entry carries on.
 
+- Right from a channel in the overlay still lands on Watch, as before. Up from Watch reaches the programmes that follow, and left from one of them goes back to its channel.
+- Reminders page rows are named `reminders.row.<position>`, not by the reminder's id as the board says, because ids are random per device and tests need a stable name.
+- Removing from the list: a swipe on iPhone and iPad removes at once; on Mac a swipe or the context menu asks first; on Apple TV select on a row asks first. Every copy goes, so nothing is delivered for it on any device.
+- The Reminders row sits in its own section under Sources in Settings and shows no count at zero.
+- A device that has never been asked shows "Allow notifications" in the notice. Only a tap on it asks; opening Settings or the page asks nothing.
+- "Starts now" carries the channel too: "Starts now on Sport One".
+- Copies of one reminder are deleted down to the winner when the app tidies on each return to the front, along with reminders ten minutes past their end.

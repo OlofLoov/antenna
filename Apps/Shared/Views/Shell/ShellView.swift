@@ -320,15 +320,16 @@
                 } else {
                     overlay.highlight(key)
                 }
-            case (.overlay(.watch), .overlay(.channel(let key))), (.overlay(.favorite), .overlay(.channel(let key))):
+            case (.overlay(.watch), .overlay(.channel(let key))), (.overlay(.favorite), .overlay(.channel(let key))),
+                (.overlay(.next), .overlay(.channel(let key))):
                 // Left from the panel comes back to the channel it describes.
                 if let highlighted = overlay.highlighted, highlighted != key {
                     focus = .overlay(.channel(highlighted))
                 }
             case (_, .overlay(.channel(let key))):
                 overlay.highlight(key)
-            case (.overlay(.channel), .overlay(.favorite)):
-                // Right from a channel reaches Watch first.
+            case (.overlay(.channel), .overlay(.favorite)), (.overlay(.channel), .overlay(.next)):
+                // Right from a channel reaches Watch first; up from Watch reaches the programmes that follow.
                 focus = .overlay(.watch)
             case (.content, .tab(let target)) where target != model.tab && model.tab.isContent:
                 focus = .tab(model.tab)

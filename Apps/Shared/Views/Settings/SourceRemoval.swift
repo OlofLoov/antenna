@@ -5,7 +5,8 @@ import SwiftData
 /// Deleting a source and everything that came with it
 /// (sources-and-settings/delete-a-source-and-everything-that-came-with-it):
 /// the record, its login, its favorites in every profile, its watch
-/// history, its guide and its last load time. The channels go when the
+/// history, its reminders (programme-reminders/remove-a-reminder-anywhere),
+/// its guide and its last load time. The channels go when the
 /// screens see the record gone.
 @MainActor
 struct SourceRemoval {
@@ -43,6 +44,7 @@ struct SourceRemoval {
             context.delete(favorite)
         }
         GroupStore.removeSource(id, in: context)
+        ReminderStore.removeSource(id, in: context)
         SourceRecord.delete(record, from: context, credentials: credentials)
         try? context.save()
         refresher?.forget(id)

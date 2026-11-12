@@ -1,10 +1,13 @@
+import AntennaCore
 import SwiftUI
 
 /// The guide's top row beside the small picture
 /// (tv-guide-grid/the-panel-describes-the-highlighted-programme): when the
 /// highlighted programme is on and on which channel, the clock, the title,
 /// times and length with category and quality, progress when on now, the
-/// description, and Watch. Start over and Remind me stay hidden.
+/// description, Watch, and Remind me for a programme that has not started
+/// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+/// Start over stays hidden.
 enum GuidePanel {
     /// The eyebrow is accent for "Now" only (design.md deviation).
     enum EyebrowLook: Equatable, Sendable {
@@ -128,6 +131,21 @@ enum GuidePanel {
         }
     }
 
+    /// Remind me, or Reminder set with a filled bell, in Watch's look
+    /// (programme-reminders/set-a-reminder-in-one-tap).
+    struct RemindButton: View {
+        let isSet: Bool
+        let toggle: () -> Void
+
+        var body: some View {
+            Button(action: toggle) {
+                Label(isSet ? ReminderText.reminderSet : ReminderText.remindMe, systemImage: isSet ? "bell.fill" : "bell")
+            }
+            .buttonStyle(WatchStyle())
+            .accessibilityValue(isSet ? "On" : "Off")
+        }
+    }
+
     private struct WatchStyle: ButtonStyle {
         func makeBody(configuration: Configuration) -> some View {
             WatchLabel(label: configuration.label)
@@ -202,6 +220,20 @@ enum GuidePanel {
             summary: "Reaction from the Emirates, with the managers and the goals again.")
     ) {
         GuidePanel.WatchButton {}
+        GuidePanel.RemindButton(isSet: false) {}
+    }
+    .padding(40)
+    .background(Palette.ground)
+    .foregroundStyle(Palette.text)
+}
+
+#Preview("Guide panel, a reminder set", traits: .fixedLayout(width: 1300, height: 400)) {
+    GuidePanel.Panel(
+        date: Date(timeIntervalSince1970: 77_640),
+        details: .init(eyebrow: "Today 22:00 · Sport One", look: .other, title: "Premier League: Post-match", meta: "22:00 – 23:00 · 1 h")
+    ) {
+        GuidePanel.WatchButton {}
+        GuidePanel.RemindButton(isSet: true) {}
     }
     .padding(40)
     .background(Palette.ground)

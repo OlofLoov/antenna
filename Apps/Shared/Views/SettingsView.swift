@@ -27,6 +27,9 @@ struct SettingsView: View {
                     ProfileSettingsRow()
                 }
                 sourcesSection
+                Section {
+                    RemindersSettingsRow()
+                }
                 PreferencesSection(preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies) { changed in
                     PreferencesStore.save(changed, in: context)
                 }

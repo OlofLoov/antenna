@@ -102,8 +102,35 @@ struct SearchProgrammeResult: View {
     let hit: SearchResults.ProgrammeHit
     let index: Int
     @Environment(\.searchFeed) private var feed
+    @Environment(\.reminders) private var reminders
 
     var body: some View {
+        HStack(spacing: 0) {
+            row
+            #if !os(tvOS)
+                bell
+            #endif
+        }
+    }
+
+    /// The bell on a later programme on iPhone, iPad and Mac
+    /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+    @ViewBuilder private var bell: some View {
+        if let reminders, let channel = offered(reminders) {
+            SearchRow.Bell(isSet: reminders.isSet(hit.programme, on: channel)) {
+                reminders.toggle(hit.programme, on: channel)
+            }
+            .accessibilityIdentifier("search.result.programme.\(index).remind")
+        }
+    }
+
+    /// The programme's channel when it offers Remind me.
+    private func offered(_ reminders: ReminderCenter) -> Channel? {
+        guard let feed, let channel = feed.channel(hit.channel.key) else { return nil }
+        return reminders.offers(hit.programme, on: channel, now: feed.model.searchedAt) ? channel : nil
+    }
+
+    @ViewBuilder private var row: some View {
         if let feed {
             let title = SearchText.programmeTitle(hit.programme)
             SearchRow.Programme(
