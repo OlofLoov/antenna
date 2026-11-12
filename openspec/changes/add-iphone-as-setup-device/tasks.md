@@ -7,7 +7,7 @@
 
 ## 2. Setup link
 
-- [ ] 2.1 Add the setup link and Handoff data holding only a version and a random code, and verify a core test that a new code is made each time and nothing else is carried
+- [x] 2.1 Add the setup link and Handoff data holding only a version and a random code, and verify a core test that a new code is made each time and nothing else is carried
 
 ## 3. Apple TV QR card
 
