@@ -30,6 +30,13 @@ public struct ImportText: Sendable {
         public var guideHost: String?
         /// "3 entries skipped", nil when none were.
         public var skipped: String?
+
+        public init(channels: String, groups: String? = nil, guideHost: String? = nil, skipped: String? = nil) {
+            self.channels = channels
+            self.groups = groups
+            self.guideHost = guideHost
+            self.skipped = skipped
+        }
     }
 
     /// "41.7 MB".

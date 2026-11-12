@@ -167,6 +167,7 @@
             }
 
             func hasLogin(_ source: SourceDescriptor) -> Bool {
+                if source.kind == .m3uFile { return SourceLoader(credentials: FileImport.appCredentials).hasLogin(source) }
                 guard source.id == cabinID else { return true }
                 switch scenario {
                 case .error, .empty: return false
@@ -176,6 +177,8 @@
             }
 
             func load(_ source: SourceDescriptor) async throws -> Playlist {
+                // Imported file sources load from the store, as in the app.
+                if source.kind == .m3uFile { return try await SourceLoader(credentials: FileImport.appCredentials).load(source) }
                 let isHome = source.id == homeID
                 if !isHome { cabinLoads += 1 }
                 switch scenario {

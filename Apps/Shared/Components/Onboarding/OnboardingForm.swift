@@ -11,6 +11,8 @@ enum OnboardingForm {
         var choose: (SourceKind) -> Void
         var connect: () -> Void
         var fillIn: () -> Void
+        /// "Import a file instead" under the playlist link; nil hides it.
+        var importFile: (() -> Void)?
     }
 
     /// The values the form shows besides the fields.
@@ -124,6 +126,15 @@ enum OnboardingForm {
                     }
                 }
                 .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                if fields.kind == .m3u, let importFile = actions.importFile {
+                    Button("Import a file instead", action: importFile)
+                        .font(.system(size: 15))
+                        .foregroundStyle(Palette.accent)
+                        .frame(minHeight: 44)
+                        .padding(.horizontal, 4)
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("import.pickFile")
+                }
                 if fields.kind != .m3u {
                     Label("Saved in your iCloud Keychain only. Antenna has no servers and never sees your login.", systemImage: "lock")
                         .font(.system(size: 13))

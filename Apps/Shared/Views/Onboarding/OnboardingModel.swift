@@ -84,6 +84,21 @@ final class OnboardingModel {
         attempt = nil
     }
 
+    /// A file imported from the playlist form: it counts as connected and
+    /// its checklist starts with the channels the sheet read, so nothing
+    /// is fetched (local-m3u-file-import/import-during-onboarding).
+    func imported(_ record: SourceRecord, playlist: Playlist) {
+        guard let descriptor = record.descriptor else { return }
+        let connection = SourceConnector.Connection(
+            descriptor: descriptor, reply: .playlist(playlist), login: nil, inserted: true, createdCredential: nil,
+            fileName: record.fileName)
+        self.connection = connection
+        error = nil
+        addingAnother = false
+        returnedToForm = false
+        begin(connection)
+    }
+
     /// Back or Menu while Connect runs: the request stops and the fields stay.
     func cancel() {
         attempt?.cancel()

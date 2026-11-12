@@ -16,6 +16,9 @@ struct SettingsView: View {
     @State private var path: [UUID] = []
     @State private var deleting: SourceRecord?
     @State private var signedInToICloud = false
+    #if !os(tvOS)
+        @State private var fileImport: FileImportAsk?
+    #endif
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -46,6 +49,9 @@ struct SettingsView: View {
             }
             .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud) { record in delete(record) }
             .task { signedInToICloud = ICloudAccount.isSignedIn() }
+            #if !os(tvOS)
+                .modifier(SettingsFileImport(ask: $fileImport))
+            #endif
         }
     }
 
@@ -71,6 +77,11 @@ struct SettingsView: View {
             .onMove(perform: move)
             Button("Add a source") { showingAdd = true }
                 .accessibilityIdentifier("settings.addSource")
+            #if !os(tvOS)
+                // local-m3u-file-import/bring-a-file-in
+                Button("Import a file") { fileImport = FileImportAsk() }
+                    .accessibilityIdentifier("import.pickFile")
+            #endif
             Button(refreshAllTitle) { refresher?.refresh(sources.map(\.id)) }
                 .disabled(sources.isEmpty)
                 .accessibilityIdentifier("settings.refreshAll")

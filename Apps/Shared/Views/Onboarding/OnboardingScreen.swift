@@ -133,11 +133,35 @@ struct OnboardingScreen: View {
 struct OnboardingFormScreen: View {
     @Bindable var model: OnboardingModel
     @Environment(\.modelContext) private var context
+    #if !os(tvOS)
+        @State private var pickingFile = false
+        @State private var importing: ImportRequest?
+    #endif
 
     var body: some View {
         form
             .task { await model.lookForLink() }
+            #if !os(tvOS)
+                .playlistPicker(isPresented: $pickingFile) { importing = ImportRequest(url: $0) }
+                .sheet(item: $importing) { request in
+                    ImportSheet(
+                        request,
+                        actions: .init(
+                            finish: imported,
+                            addLink: { link in
+                                importing = nil
+                                model.fields = SourceFields(kind: .m3u, url: link.absoluteString)
+                            }))
+                }
+            #endif
     }
+
+    #if !os(tvOS)
+        private func imported(_ saved: ImportModel.Saved?) {
+            importing = nil
+            if let saved { model.imported(saved.record, playlist: saved.playlist) }
+        }
+    #endif
 
     private var status: OnboardingForm.Status {
         OnboardingForm.Status(error: model.error, connecting: model.connecting, clipboard: model.clipboardOffer)
@@ -147,7 +171,16 @@ struct OnboardingFormScreen: View {
         OnboardingForm.Actions(
             choose: { model.choose($0) },
             connect: { Task { await model.connect(into: context) } },
-            fillIn: { model.fillIn() })
+            fillIn: { model.fillIn() },
+            importFile: importFile)
+    }
+
+    private var importFile: (() -> Void)? {
+        #if os(tvOS)
+            nil
+        #else
+            { pickingFile = true }
+        #endif
     }
 
     @ViewBuilder private var form: some View {

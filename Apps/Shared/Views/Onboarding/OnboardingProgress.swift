@@ -37,6 +37,9 @@ struct OnboardingProgress {
                 .init(
                     id: "login", state: .done, title: "Signed in",
                     detail: text.account(expiry: info.expDate, connections: info.maxConnections)))
+        case .playlist where setup.connection.descriptor.kind == .m3uFile:
+            // local-m3u-file-import/import-during-onboarding
+            lines.append(.init(id: "playlist", state: .done, title: "Playlist imported", detail: setup.connection.fileName))
         case .playlist:
             lines.append(.init(id: "playlist", state: .done, title: "Playlist downloaded", detail: setup.connection.descriptor.url.host()))
         }

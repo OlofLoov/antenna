@@ -48,6 +48,12 @@ targets:
           # IPTV sources are overwhelmingly plain http. Tighten per-domain later if you can.
           NSAllowsArbitraryLoads: true
         LSApplicationCategoryType: public.app-category.entertainment
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Playlist
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [public.m3u-playlist]
+        LSSupportsOpeningDocumentsInPlace: false
         AntennaTermsURL: https://codecrave.se/antenna/terms
         AntennaPrivacyURL: https://codecrave.se/antenna/privacy
     settings:
