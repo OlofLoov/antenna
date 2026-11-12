@@ -38,30 +38,33 @@ struct SourceConnector: Sendable {
     func connect(_ fields: SourceFields, into context: ModelContext) async throws -> Connection {
         if let problem = fields.check() { throw problem }
         guard let link = fields.link else { throw ConnectFailure.invalidURL }
-        let reply: Connection.Reply
-        let login: CredentialStore.Credential?
+        let reply = try await probe(fields.kind, link: link, username: fields.username, password: fields.password, host: fields.host)
+        let login = fields.kind == .m3u ? nil : CredentialStore.Credential(username: fields.username, password: fields.password)
+        try Task.checkCancellation()
+        return try save(fields, link: link, reply: reply, login: login, into: context)
+    }
+
+    /// Asks the server once, saving nothing: downloads the playlist, or
+    /// signs in to the Xtream account and checks it is active. Throws a
+    /// `ConnectFailure`, or `CancellationError` when cancelled
+    /// (sources-and-settings/fix-a-source-s-link-or-login).
+    func probe(_ kind: SourceKind, link: URL, username: String, password: String, host: String) async throws -> Connection.Reply {
         do {
-            switch fields.kind {
+            switch kind {
             case .m3u:
-                reply = .playlist(try await download(link))
-                login = nil
+                return .playlist(try await download(link))
             case .xtream, .stalker:
-                let credential = CredentialStore.Credential(username: fields.username, password: fields.password)
-                let client = XtreamClient(
-                    credentials: .init(server: link, username: credential.username, password: credential.password), session: session)
+                let client = XtreamClient(credentials: .init(server: link, username: username, password: password), session: session)
                 let info = try await client.accountInfo().userInfo
                 if let inactive = ConnectFailure.accountStatus(info.status) { throw inactive }
-                reply = .account(info)
-                login = credential
+                return .account(info)
             }
         } catch is CancellationError {
             throw CancellationError()
         } catch {
             if Task.isCancelled { throw CancellationError() }
-            throw ConnectFailure(error, host: fields.host)
+            throw ConnectFailure(error, host: host)
         }
-        try Task.checkCancellation()
-        return try save(fields, link: link, reply: reply, login: login, into: context)
     }
 
     /// Removes what `connection` saved: the source when Connect inserted

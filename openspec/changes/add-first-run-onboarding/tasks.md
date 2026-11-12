@@ -16,20 +16,20 @@
 
 ## 3. Loading checklist and summary
 
-- [ ] 3.1 Drive checklist lines from the Connect response, the catalogue build and the guide download, with real counts, the 20 second movies cutoff and no guide line when there is no guide, and verify with an integration test citing `first-run-onboarding/the-checklist-shows-real-progress`
-- [ ] 3.2 Build the summary that leaves out empty and failed parts and plays the first channel behind it on tvOS, and verify with an integration test citing `first-run-onboarding/a-summary-when-everything-has-loaded`
-- [ ] 3.3 Offer Browse movies, or only Back for a provider with nothing, removing what the attempt saved, and verify with an integration test citing `first-run-onboarding/a-provider-with-no-live-channels`
+- [x] 3.1 Drive checklist lines from the Connect response, the catalogue build and the guide download, with real counts, the 20 second movies cutoff and no guide line when there is no guide, and verify with an integration test citing `first-run-onboarding/the-checklist-shows-real-progress`
+- [x] 3.2 Build the summary that leaves out empty and failed parts and plays the first channel behind it on tvOS, and verify with an integration test citing `first-run-onboarding/a-summary-when-everything-has-loaded`
+- [x] 3.3 Offer Browse movies, or only Back for a provider with nothing, removing what the attempt saved, and verify with an integration test citing `first-run-onboarding/a-provider-with-no-live-channels`
 
 ## 4. Start watching and a second provider
 
-- [ ] 4.1 Close onboarding on Start watching and play the first channel while the guide keeps loading, and verify with a UI test citing `first-run-onboarding/start-watching-without-waiting-for-the-guide`
-- [ ] 4.2 Add another source from the summary, add up both providers' numbers and keep the first guide download running, and verify with an integration test citing `first-run-onboarding/add-a-second-provider`
+- [x] 4.1 Close onboarding on Start watching and play the first channel while the guide keeps loading, and verify with a UI test citing `first-run-onboarding/start-watching-without-waiting-for-the-guide`
+- [x] 4.2 Add another source from the summary, add up both providers' numbers and keep the first guide download running, and verify with an integration test citing `first-run-onboarding/add-a-second-provider`
 
 ## 5. Apple TV sign-in
 
-- [ ] 5.1 Ask for each Xtream provider's username and password on Apple TV with the server filled in, store each under the record's credential key, skip Stalker, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
+- [x] 5.1 Ask for each Xtream provider's username and password on Apple TV with the server filled in, store each under the record's credential key, skip Stalker, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
+- [ ] 6.2 `/opsx:verify` passes. Open until 1.3 can be done.
