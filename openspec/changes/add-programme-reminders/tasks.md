@@ -21,8 +21,8 @@
 
 - [x] 4.1 Schedule notifications on iPhone, iPad and Mac and ask permission after the first reminder is saved, and verify integration tests for the prompt timing and the delivered text
 - [x] 4.2 Add the in-app banner on every device, the missed-reminder banner on return, and the 20-second timeout, and verify UI tests including Menu on Apple TV
-- [ ] 4.3 Make Watch and a notification tap open Live and play the channel, and verify UI tests for a channel outside the current group, one already playing, a missing channel and the locked paywall
-  - Open: the locked case is unit-tested on `ReminderCenter.locked`, but nothing sets it until the paywall root from `add-paywall-and-entitlement` (#238) is on main; wire it and add the UI test then.
+- [x] 4.3 Make Watch and a notification tap open Live and play the channel, and verify UI tests for a channel outside the current group, one already playing, a missing channel and the locked paywall
+  - The app sets `ReminderCenter.locked` from the paywall root's unlock state; `ReminderBannerUITests` checks the locked paywall.
 
 ## 5. Reminders page
 
@@ -35,4 +35,4 @@
 
 - [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
 - [ ] 6.2 `/opsx:verify` passes
-  - Open: verify reports 4.3 and 5.3 as incomplete; every requirement has code and a citing test.
+  - Open: verify reports 5.3 as incomplete; every requirement has code and a citing test.

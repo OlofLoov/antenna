@@ -99,6 +99,11 @@ struct AntennaApp: App {
             .environment(locks)
             .modifier(GroupLockTimers(locks: locks))
             .modifier(ReminderRuntime(center: reminders))
+            // Behind the paywall no banner shows and Watch plays nothing
+            // (programme-reminders/watch-plays-the-channel, the paid unlock has lapsed).
+            .onChange(of: unlock.gate.applied.isUnlocked, initial: true) { _, unlocked in
+                reminders.locked = !unlocked
+            }
             #if !os(tvOS)
                 .receivingFiles(into: inbox)
             #endif

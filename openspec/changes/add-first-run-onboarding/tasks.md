@@ -4,7 +4,7 @@
 
 - [x] 1.1 Show the welcome screen when the user has paid and has no provider, with no network call, and verify with a UI test citing `first-run-onboarding/a-new-user-is-asked-for-a-provider`
 - [x] 1.2 Route a user with a usable provider straight to channels, and a user on iPhone, iPad or Mac waiting for a synced password to Live, and verify with an integration test citing `first-run-onboarding/a-returning-user-goes-straight-to-their-channels`
-- [ ] 1.3 Replace onboarding with the purchase screen when the purchase lapses, keep a saved provider, and verify in the same UI test as 1.1. Open: no purchase screen or entitlement exists until change `add-paywall-and-entitlement` is built.
+- [x] 1.3 Replace onboarding with the purchase screen when the purchase lapses, keep a saved provider, and verify in the same UI test as 1.1. The paywall root from `add-paywall-and-entitlement` sits above onboarding; `OnboardingUITests` checks both cases.
 
 ## 2. Add-source form and connect
 
