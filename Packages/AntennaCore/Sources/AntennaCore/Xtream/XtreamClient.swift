@@ -64,6 +64,19 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
         return try Self.decode(XtreamAccountInfo.self, from: data)
     }
 
+    /// Every live channel with its category name, and the panel's time zone name from the account
+    /// information, asked for once (xtream-live-source/server-time-zone). A failed account call
+    /// leaves the zone nil and the channels load anyway.
+    public func liveLoad() async throws -> (channels: [Channel], timeZoneName: String?) {
+        async let categories = liveCategories()
+        async let streams = liveStreams()
+        async let account = try? accountInfo()
+        // Providers sometimes repeat a category id; the first name wins.
+        let names = Dictionary(try await categories.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
+        let channels = try await streams.map { channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] }) }
+        return (channels, await account?.serverInfo?.timezone)
+    }
+
     // MARK: VOD and series endpoints
 
     public func vodCategories() async throws -> [XtreamCategory] {
@@ -123,8 +136,17 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
             epgID: stream.epgChannelID?.isEmpty == false ? stream.epgChannelID : nil,
             number: stream.num,
             hasCatchup: (stream.tvArchive ?? 0) > 0,
-            catchupDays: stream.tvArchiveDuration
+            catchupDays: stream.tvArchiveDuration,
+            catchupMode: (stream.tvArchive ?? 0) > 0 ? .xc : nil
         )
+    }
+
+    /// `<server>/timeshift/<user>/<password>/<minutes>/<yyyy-MM-dd:HH-mm>/<streamID>.ts`, the start
+    /// written in `timeZone`, or in UTC when it is nil. The address holds the login: never log it.
+    public func timeshiftURL(streamID: Int, start: Date, durationMinutes: Int, timeZone: TimeZone?) -> URL {
+        let date = CatchupDateText.xtream(start, in: timeZone ?? .gmt)
+        return url(
+            path: ["timeshift", credentials.username, credentials.password, String(durationMinutes)], verbatim: [date, "\(streamID).ts"])
     }
 
     // MARK: Internals
@@ -142,13 +164,14 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
     }
 
     /// The server URL with its own path kept, then each segment percent-encoded, then the query.
-    private func url(path segments: [String], query: [(String, String)] = []) -> URL {
+    /// `verbatim` segments follow the encoded ones as written; they must hold only path-safe characters.
+    private func url(path segments: [String], verbatim: [String] = [], query: [(String, String)] = []) -> URL {
         guard var components = URLComponents(url: credentials.server, resolvingAgainstBaseURL: false) else {
             return credentials.server
         }
         var base = components.percentEncodedPath
         while base.hasSuffix("/") { base.removeLast() }
-        components.percentEncodedPath = base + segments.map { "/" + Self.percentEncode($0) }.joined()
+        components.percentEncodedPath = base + (segments.map(Self.percentEncode) + verbatim).map { "/" + $0 }.joined()
         components.percentEncodedQuery = query.isEmpty ? nil : query.map { "\($0)=\(Self.percentEncode($1))" }.joined(separator: "&")
         components.fragment = nil
         return components.url ?? credentials.server
@@ -266,8 +289,27 @@ public struct XtreamAccountInfo: Decodable, Sendable {
             auth = c.looseInt(.auth)
         }
     }
+    /// `server_info`, nil when the panel sends none or it is not an object.
+    public struct ServerInfo: Decodable, Sendable {
+        /// The panel's time zone name, such as "Europe/Stockholm", as sent.
+        public var timezone: String?
+        enum CodingKeys: String, CodingKey { case timezone }
+        public init(from decoder: any Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            timezone = try? c.decodeIfPresent(String.self, forKey: .timezone)
+        }
+    }
     public var userInfo: UserInfo
-    enum CodingKeys: String, CodingKey { case userInfo = "user_info" }
+    public var serverInfo: ServerInfo?
+    enum CodingKeys: String, CodingKey {
+        case userInfo = "user_info"
+        case serverInfo = "server_info"
+    }
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        userInfo = try c.decode(UserInfo.self, forKey: .userInfo)
+        serverInfo = try? c.decodeIfPresent(ServerInfo.self, forKey: .serverInfo)
+    }
 }
 
 /// Decodes a JSON number or numeric string into `Int` when its value is a whole number in range,

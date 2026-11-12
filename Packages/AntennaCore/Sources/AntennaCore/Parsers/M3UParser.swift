@@ -83,9 +83,18 @@ public struct M3UParser: Sendable {
                 epgID: epgID,
                 number: attributes["tvg-chno"].flatMap(Int.init),
                 hasCatchup: catchup != nil && catchup != "0",
-                catchupDays: catchupDays
+                catchupDays: catchupDays,
+                catchupMode: attributes["catchup"].flatMap(CatchupMode.init(attribute:)),
+                catchupSource: attributes["catchup-source"].flatMap { $0.isEmpty ? nil : $0 },
+                catchupCorrectionHours: attributes["catchup-correction"].flatMap(M3UParser.hours)
             )
         }
+    }
+
+    /// A finite number of hours such as "-1.5", nil for anything else.
+    static func hours(_ text: String) -> Double? {
+        guard let value = Double(text.trimmingCharacters(in: .whitespaces)), value.isFinite else { return nil }
+        return value
     }
 
     static func parseExtInf(_ body: Substring) -> PendingEntry {

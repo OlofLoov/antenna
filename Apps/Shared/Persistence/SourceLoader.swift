@@ -12,6 +12,11 @@ extension EnvironmentValues {
 struct SourceLoader: Sendable {
     var session: URLSession = .shared
     var credentials: any CredentialStoring = CredentialStore()
+    /// Where each load leaves its Xtream panel's time zone, for catch-up.
+    var timeZones: XtreamTimeZones = SourceLoader.sharedTimeZones
+
+    /// The time zones every loader in the app records into.
+    static let sharedTimeZones = XtreamTimeZones()
 
     enum LoadError: LocalizedError, Equatable {
         /// The playlist URL answered with a status outside 200 to 299.
@@ -54,15 +59,9 @@ struct SourceLoader: Sendable {
             let client = XtreamClient(
                 credentials: .init(server: source.url, username: cred.username, password: cred.password),
                 session: session)
-            async let categories = client.liveCategories()
-            async let streams = client.liveStreams()
-            // Providers sometimes repeat a category id; the first name wins.
-            let names = Dictionary(
-                try await categories.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
-            return Playlist(
-                channels: try await streams.map {
-                    client.channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] })
-                })
+            let live = try await client.liveLoad()
+            await timeZones.loaded(source.id, timeZoneName: live.timeZoneName)
+            return Playlist(channels: live.channels, serverTimeZone: live.timeZoneName)
         case .stalker:
             // TODO: Stalker/MAG portal handshake (handshake → get_profile → get_all_channels).
             return Playlist(channels: [])

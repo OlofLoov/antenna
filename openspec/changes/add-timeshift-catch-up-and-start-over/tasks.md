@@ -2,9 +2,9 @@
 
 ## 1. Catch-up details and addresses
 
-- [ ] 1.1 Parse `catchup`, `catchup-source` and `catchup-correction` in the M3U parser, and verify with a core test citing `m3u-playlists/catch-up-style-source-and-correction`
-- [ ] 1.2 Map `tv_archive` to the Xtream style, read the server time zone once per load and again on first need, and verify with core and integration tests citing `xtream-live-source/archive-channels-use-xtream-catch-up` and `xtream-live-source/server-time-zone`
-- [ ] 1.3 Build catch-up addresses for every style with the refusal rows and a DST fixture, and verify with a core test citing `timeshift-catch-up-and-start-over/catch-up-asks-the-provider-the-way-it-expects`
+- [x] 1.1 Parse `catchup`, `catchup-source` and `catchup-correction` in the M3U parser, and verify with a core test citing `m3u-playlists/catch-up-style-source-and-correction`
+- [x] 1.2 Map `tv_archive` to the Xtream style, read the server time zone once per load and again on first need, and verify with core and integration tests citing `xtream-live-source/archive-channels-use-xtream-catch-up` and `xtream-live-source/server-time-zone`
+- [x] 1.3 Build catch-up addresses for every style with the refusal rows and a DST fixture, and verify with a core test citing `timeshift-catch-up-and-start-over/catch-up-asks-the-provider-the-way-it-expects`
 
 ## 2. Buffer
 
