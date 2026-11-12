@@ -6,7 +6,8 @@ public enum GuideURLResolver {
     /// `.m3u` the first of `playlistEPGURLs`, for `.xtream` the provider's
     /// `xmltv.php` link built from `url` and `credential`. Nil when none
     /// applies: a playlist that names no guide, an Xtream source without a
-    /// credential, a Stalker portal without `epgURL`.
+    /// credential, a Stalker portal without `epgURL`, which uses the
+    /// portal's own guide instead (see `usesPortalGuide`).
     public static func resolve(
         kind: SourceKind,
         url: URL,
@@ -25,5 +26,11 @@ public enum GuideURLResolver {
         case .stalker:
             return nil
         }
+    }
+
+    /// True for a Stalker portal with no guide link entered. Its guide is
+    /// then the portal's own, asked for with a signed request when it loads.
+    public static func usesPortalGuide(kind: SourceKind, epgURL: URL?) -> Bool {
+        kind == .stalker && epgURL == nil
     }
 }
