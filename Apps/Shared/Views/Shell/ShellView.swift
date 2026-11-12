@@ -27,6 +27,7 @@
         /// (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
         @State private var shownRecents: [LastChannelKey] = []
         @State private var groupRules = GroupRules()
+        @Environment(GroupLocks.self) private var locks: GroupLocks?
         @Environment(ShelfLibrary.self) private var shelves
         /// Search keeps its query while the app runs.
         @State private var search = SearchModel()
@@ -159,6 +160,7 @@
                 focus = model.liveFocus
             }
             .onChange(of: focus) { old, new in
+                locks?.touched()
                 focusMoved(from: old, to: new)
             }
         }

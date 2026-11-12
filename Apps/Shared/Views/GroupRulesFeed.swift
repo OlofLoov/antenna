@@ -8,7 +8,7 @@ import SwiftUI
 struct GroupRulesFeed: ViewModifier {
     /// Told the rules once at first and again after every change.
     let changed: (GroupRules) -> Void
-    var locksOpen = false
+    @Environment(GroupLocks.self) private var locks: GroupLocks?
     @Query private var groups: [GroupRecord]
     @Query private var members: [GroupMemberRecord]
     @Query private var hidden: [HiddenGroupRecord]
@@ -19,7 +19,7 @@ struct GroupRulesFeed: ViewModifier {
     }
 
     private var rules: GroupRules {
-        GroupStore.rules(groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: locksOpen)
+        GroupStore.rules(groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: locks?.isOpen ?? false)
     }
 }
 
@@ -36,4 +36,31 @@ extension Catalogue {
 enum GroupDefaults {
     /// True when search on this device includes hidden groups.
     static let searchHidden = "groups.searchHidden"
+}
+
+/// Closes the group locks on their own (group-management/locks-close-again-on-their-own):
+/// after the app spent `GroupLocks.idleLimit` in the background, and on
+/// Apple TV after that long without remote input.
+struct GroupLockTimers: ViewModifier {
+    let locks: GroupLocks
+    @Environment(\.scenePhase) private var scenePhase
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: scenePhase) { _, phase in
+                switch phase {
+                case .background: locks.wentToBackground()
+                case .active: locks.becameActive()
+                default: break
+                }
+            }
+            #if os(tvOS)
+                .task {
+                    while !Task.isCancelled {
+                        try? await Task.sleep(for: .seconds(30))
+                        locks.checkIdle()
+                    }
+                }
+            #endif
+    }
 }
