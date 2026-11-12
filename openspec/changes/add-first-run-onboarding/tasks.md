@@ -8,7 +8,7 @@
 
 ## 2. Add-source form and connect
 
-- [x] 2.1 Build the provider type picker and fields on tvOS and the shared sheet, with Stalker shown but disabled, and verify against the onboarding boards
+- [x] 2.1 Build the provider type picker and fields on tvOS and the shared sheet, with Stalker shown but disabled until 6.1, and verify against the onboarding boards
 - [x] 2.2 Validate through the `source-management` rules before any network call and verify with an integration test citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting`
 - [x] 2.3 Map rejected login, inactive account, server error, unreadable reply, unreachable and offline to their messages, keep the fields, save nothing, and verify with an integration test citing `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
 - [x] 2.4 Save or reuse the provider and store its password in the Keychain, and verify with an integration test citing `first-run-onboarding/a-working-provider-is-saved-once`
@@ -27,9 +27,15 @@
 
 ## 5. Apple TV sign-in
 
-- [x] 5.1 Ask for each Xtream provider's username and password on Apple TV with the server filled in, store each under the record's credential key, skip Stalker, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
+- [x] 5.1 Ask for each Xtream provider's username and password on Apple TV with the server filled in, store each under the record's credential key, skip Stalker until 6.3, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
 
-## 6. Verify
+## 6. Stalker portals
 
-- [x] 6.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes. Open until 1.3 can be done.
+- [ ] 6.1 Enable the Stalker card and segment with the Portal, MAC address, Login and Password fields on every platform, connect with only the portal and MAC, and verify with an integration test citing `first-run-onboarding/add-a-stalker-portal`
+- [ ] 6.2 Check the portal and MAC address before any request, give each portal failure its sentence, and verify with tests citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting` and `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
+- [ ] 6.3 Ask each Stalker portal for its MAC address in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
+
+## 7. Verify
+
+- [x] 7.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
+- [ ] 7.2 `/opsx:verify` passes. Open until 1.3 can be done.

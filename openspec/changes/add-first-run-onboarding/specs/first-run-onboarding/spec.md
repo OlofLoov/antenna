@@ -64,6 +64,12 @@ The system SHALL check the form when the user chooses Connect, using the same ru
 - **THEN** a message under the form says what to fix
 - **AND** nothing is sent to the server
 
+#### Scenario: A Stalker portal with a mistyped MAC address
+- **GIVEN** the user picked a Stalker portal and left the portal or MAC address empty, typed a MAC address that is not six pairs of letters and digits, or typed a portal address without `http` or `https`
+- **WHEN** they choose Connect
+- **THEN** a message under the form says what to fix
+- **AND** nothing is sent to the server
+
 #### Scenario: Largest accessibility text size
 - **GIVEN** the user has the largest accessibility text size
 - **WHEN** the form shows
@@ -85,14 +91,20 @@ The system SHALL tell the user under the form which failure happened when a conn
 - **THEN** a message under the form says which of these happened
 - **AND** nothing is saved
 
+#### Scenario: The portal turns the device down
+- **GIVEN** a Stalker portal that does not accept the MAC address or login, refuses the device with a message of its own, or is not a Stalker portal at all
+- **WHEN** the user chooses Connect
+- **THEN** a message under the form says which of these happened, quoting the portal's own message when it sent one, with the MAC address left out
+- **AND** nothing is saved
+
 ### Requirement: A working provider is saved once
-The system SHALL save a provider whose login is accepted or whose playlist downloads, reusing an existing provider of the same type and address, SHALL keep its password in the secure password store, and SHALL then show the loading checklist.
+The system SHALL save a provider whose login is accepted, whose portal signs in or whose playlist downloads, reusing an existing provider of the same type and address, SHALL keep its password in the secure password store, and SHALL then show the loading checklist.
 
 #### Scenario: Connect succeeds
-- **GIVEN** the Xtream login is accepted or the M3U playlist downloads
+- **GIVEN** the Xtream login is accepted, the Stalker portal signs in, or the M3U playlist downloads
 - **WHEN** the user chooses Connect
 - **THEN** the provider is saved as when adding a source in Settings
-- **AND** its password goes to the secure password store
+- **AND** its password, or the portal's MAC address and login, go to the secure password store
 - **AND** the loading checklist appears
 
 #### Scenario: The same provider was added on another device
@@ -194,7 +206,7 @@ The system SHALL offer, on iPhone and iPad, to fill the add-source form from a c
 - **THEN** no fill-in banner appears
 
 ### Requirement: Sign in again on an Apple TV
-The system SHALL ask on Apple TV for the username and password of each Xtream provider whose password is not on this device, with the server filled in, SHALL keep each password on this Apple TV without adding a provider, and SHALL then show the loading checklist.
+The system SHALL ask on Apple TV for the username and password of each Xtream provider, and the MAC address of each Stalker portal, whose login is not on this device, with the server or portal filled in, SHALL keep each login on this Apple TV without adding a provider, and SHALL then show the loading checklist.
 
 #### Scenario: Providers synced without passwords
 - **GIVEN** every provider is an Xtream login and none of their passwords is on this Apple TV
@@ -202,6 +214,12 @@ The system SHALL ask on Apple TV for the username and password of each Xtream pr
 - **THEN** they are asked for the username and password of each provider in turn with the server already filled in
 - **AND** each password is kept on this Apple TV without adding a new provider
 - **AND** after the last one the loading checklist appears
+
+#### Scenario: A Stalker portal synced without its MAC address
+- **GIVEN** the providers are Xtream logins and Stalker portals and none of their logins is on this Apple TV
+- **WHEN** the user opens Antenna on Apple TV
+- **THEN** each portal asks for its MAC address, and a login and password only if the provider gave one, with the portal address already filled in
+- **AND** the portal is checked the way Connect checks it before the MAC address is kept on this Apple TV
 
 ### Requirement: A provider with no live channels
 The system SHALL offer Browse movies in place of Start watching when a provider has movies or series but no live channels, and SHALL offer only a way back to the form when it has nothing, removing what that attempt saved.
@@ -216,3 +234,22 @@ The system SHALL offer Browse movies in place of Start watching when a provider 
 - **WHEN** the checklist finishes
 - **THEN** the only way on is back to the form
 - **AND** going back removes what this attempt saved
+
+### Requirement: Add a Stalker portal
+The system SHALL offer a Stalker portal as a third kind of provider on every platform, SHALL connect with only the portal address and the MAC address the provider registered, and SHALL send a login and password only when the user typed one.
+
+#### Scenario: A portal with only a MAC address
+- **GIVEN** a provider that gave the user a portal address and a MAC address and nothing else
+- **WHEN** the user picks Stalker portal, fills in those two and chooses Connect
+- **THEN** Antenna signs in to the portal and shows the loading checklist with the portal's channels
+- **AND** the user was never asked to fill in a login or password
+
+#### Scenario: A portal that also has a login
+- **GIVEN** a provider that gave the user a login and password for the portal as well
+- **WHEN** the user fills in the optional login and password and chooses Connect
+- **THEN** Antenna signs in with them
+
+#### Scenario: Picking the portal on Apple TV
+- **GIVEN** the "What kind of source?" step on Apple TV
+- **WHEN** the user selects the Stalker portal card with the remote
+- **THEN** the portal form opens, like the M3U and Xtream cards do

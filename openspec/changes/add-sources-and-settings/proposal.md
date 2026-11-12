@@ -16,8 +16,8 @@ Not reviewed yet.
 
 - A Sources and Settings screen on every platform: the Settings tab on iPhone, the sidebar on iPad and Mac, the gear on Apple TV.
 - A list of sources in the user's order, each with its channel count, guide days, when it last loaded on this device, and any problem.
-- A source's details: what it holds, and an editable name, link, guide link and Xtream login, checked against the server before saving.
-- Sign in on this Apple TV, for an Xtream source whose login has not reached the device.
+- A source's details: what it holds, and an editable name, link, guide link, Xtream login, or Stalker MAC address and login, checked against the server before saving.
+- Sign in on this Apple TV, for an Xtream source or Stalker portal whose login has not reached the device.
 - Delete with confirmation on every platform, removing the source, its login, its favorites, its guide and its channels.
 - Reorder sources by dragging, or with Move up and Move down on Apple TV.
 - Every source loads at launch, when another device changes one, when a login arrives, by hand, and on a schedule.
@@ -30,7 +30,6 @@ Out of scope:
 - Group management, guide sources per playlist and importing a playlist file. Each adds its own row to this screen when accepted.
 - Keeping channel lists between launches. Every launch loads every source again.
 - Changing a source's type.
-- Stalker portals, beyond listing and deleting them.
 - The crash on a repeated Xtream category id, which is a bug fix in the Xtream client.
 - The paywall, restoring the purchase and managing it.
 - Zap bar timing, guide zoom and other screens' fine-tuning.

@@ -12,17 +12,16 @@ User stories served:
 ## What Changes
 
 - A welcome screen when the user has paid and has no provider yet, with a short "What is a source?" explanation.
-- Two kinds of provider: an M3U playlist (a link to a channel list) or an Xtream login (server, username and password). Stalker portals appear but cannot be picked.
+- Three kinds of provider: an M3U playlist (a link to a channel list), an Xtream login (server, username and password), or a Stalker portal (portal address and MAC address, plus a login and password only when the provider gave one).
 - The details are checked before anything is saved, with clear messages when the check fails.
 - A checklist fills in as channels, movies and the programme guide load, with real numbers.
 - The user can start watching before the guide has finished loading.
 - On iPhone and iPad, Antenna offers to fill the form from a link the user has copied.
 - A second provider can be added from the last step.
-- On Apple TV, the user signs in again when providers synced from another device arrive without their passwords.
+- On Apple TV, the user signs in again when providers synced from another device arrive without their passwords, or for a Stalker portal without its MAC address.
 
 Out of scope:
 - Buying Antenna. Onboarding assumes the user has paid.
-- Stalker portals.
 - Importing a playlist file from the device.
 - Editing or deleting a provider.
 - Turning off the programme guide for an Xtream provider.
@@ -42,5 +41,5 @@ None.
 
 - Shared onboarding views on every platform, and tvOS screens under the shell.
 - Reuses source validation and saving from `source-management`, the Xtream client from `xtream-vod-client`, channel order from `channel-catalogue` and guide loading from `guide-data`.
-- Depends on: `source-management`, `channel-catalogue`, `guide-data`, `tvos-shell`, `xtream-vod-client`, change `add-live-tv-on-iphone-ipad-mac`.
+- Depends on: `source-management`, `channel-catalogue`, `guide-data`, `tvos-shell`, `xtream-vod-client`, `stalker-portal-source`, change `add-live-tv-on-iphone-ipad-mac`.
 - Blocked on: a decision on where a password typed on an Apple TV is kept. The project rule is that secrets sync through iCloud Keychain, which Apple TV does not offer. Until that is decided, a password typed on an Apple TV stays on that Apple TV. If the decision picks another store, the Apple TV sign-in requirement follows it.

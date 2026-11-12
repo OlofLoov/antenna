@@ -10,7 +10,7 @@ Lets anyone who has added an IPTV source look after it on every device: see whet
 The system SHALL list every source in the user's order with its name, its type and one plain status line, and SHALL never show a source's link in the list.
 
 #### Scenario: Sources in every state
-- **GIVEN** sources that are loaded, loading, failed, waiting for their login, waiting for iCloud, or a Stalker portal
+- **GIVEN** sources of every type, Stalker portals included, that are loaded, loading, failed, waiting for their login, or waiting for iCloud
 - **WHEN** the user opens Sources and Settings
 - **THEN** each source is listed in the user's order with its name, its type, and one status line: the channel count, guide days and when it last loaded, or what it is waiting for, or why it failed
 - **AND** no row shows a source's link
@@ -27,7 +27,7 @@ The system SHALL list every source in the user's order with its name, its type a
 - **THEN** the list footer says sources stay on this device
 
 ### Requirement: Your password stays hidden
-The system SHALL never show a saved Xtream password in any field, label or log, and SHALL keep the saved password when the user leaves the password field empty.
+The system SHALL never show a saved Xtream or Stalker portal password in any field, label or log, and SHALL keep the saved password when the user leaves the password field empty.
 
 #### Scenario: Open an Xtream source's details
 - **GIVEN** an Xtream source with a saved login
@@ -35,6 +35,12 @@ The system SHALL never show a saved Xtream password in any field, label or log, 
 - **THEN** the username is filled in and the password field is empty
 - **AND** leaving it empty keeps the saved password
 - **AND** the saved password appears in no field, label or log
+
+#### Scenario: Open a Stalker portal's details
+- **GIVEN** a Stalker portal with a saved MAC address, login and password
+- **WHEN** the user opens its details
+- **THEN** the portal address, MAC address and login are filled in and the password field is empty
+- **AND** leaving it empty keeps the saved password
 
 ### Requirement: Fix a source's link or login
 The system SHALL check a changed link or login against the server before saving it, and SHALL save it and reload the source only when the check works.
@@ -48,6 +54,12 @@ The system SHALL check a changed link or login against the server before saving 
 - **GIVEN** a source's details with a changed link or login
 - **WHEN** the user saves and the check fails
 - **THEN** the reason is shown and nothing changes
+
+#### Scenario: Change a portal's MAC address
+- **GIVEN** a Stalker portal's details with a changed MAC address or login
+- **WHEN** the user saves
+- **THEN** Antenna signs in to the portal with them first, and saves and reloads only when the portal accepts them
+- **AND** a MAC address that is not six pairs of letters and digits is refused before the portal is asked
 
 #### Scenario: Change only the name
 - **WHEN** the user changes a source's name and saves
@@ -68,7 +80,7 @@ The system SHALL check a changed link or login against the server before saving 
 - **THEN** the deletion wins and the details close
 
 ### Requirement: Sign in on this Apple TV
-The system SHALL let the user enter an Xtream login on an Apple TV that has not received it, and load the source once the login works.
+The system SHALL let the user enter an Xtream login, or a Stalker portal's MAC address and login, on an Apple TV that has not received it, and load the source once the login works.
 
 #### Scenario: Sign in with a login that works
 - **GIVEN** an Xtream source whose login has not reached this Apple TV
@@ -80,10 +92,10 @@ The system SHALL let the user enter an Xtream login on an Apple TV that has not 
 - **WHEN** the login arrives through iCloud
 - **THEN** the source loads by itself
 
-#### Scenario: A source that cannot sign in here
-- **GIVEN** a source of another type whose login cannot reach the Apple TV
-- **WHEN** the user opens its details
-- **THEN** it offers no Sign in on this Apple TV and says the login cannot reach this device
+#### Scenario: Sign in to a Stalker portal
+- **GIVEN** a Stalker portal whose MAC address has not reached this Apple TV
+- **WHEN** the user opens its details, chooses Sign in on this Apple TV and enters a MAC address the portal accepts
+- **THEN** the source loads and its row stops saying it is waiting
 
 ### Requirement: Delete a source and everything that came with it
 The system SHALL delete a source only after a confirmation that says what will go, and SHALL then remove the source, its login, its favorites, its guide and its channels from this device and the user's other devices.
