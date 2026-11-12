@@ -31,7 +31,13 @@
 - [x] 5.1 Add the preferences record with defaults and duplicate handling, and verify a test that showing preferences inserts nothing
 - [ ] 5.2 Build the Preferences and About rows on every platform and apply each change on this device, and verify an integration test for each preference Open: every row is built and stored; Guide window is not applied yet because the guide grid's two-hour window is fixed in `GuideTimeline`.
 
-## 6. Verify
+## 6. Stalker portals
 
-- [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes Open until 3.3, 4.1 and 5.2 are done.
+- [ ] 6.1 Show a Stalker portal's load status in its row and details and offer Refresh now, and verify with a status test citing `sources-and-settings/see-how-each-source-is-doing`
+- [ ] 6.2 Edit a portal's address, MAC address, login and password in its details with the saved password hidden, check a change with the portal before saving, and verify with integration tests citing `sources-and-settings/your-password-stays-hidden` and `sources-and-settings/fix-a-source-s-link-or-login`
+- [ ] 6.3 Offer Sign in on this Apple TV for a portal, and verify with an integration test citing `sources-and-settings/sign-in-on-this-apple-tv`
+
+## 7. Verify
+
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [ ] 7.2 `/opsx:verify` passes Open until 3.3, 4.1 and 5.2 are done.

@@ -6,7 +6,7 @@ Boards: `openspec/specs/design-system/boards/TV-Settings.dc.html`, `TV-Settings-
 
 Design-system requirements that apply: "Live video keeps playing under overlays", "Focus is the lifted white card", "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled", "Text meets contrast minimums", "Nothing shows before the paywall", "Loading shows real progress per step".
 
-Not drawn yet: the details while Save runs; the error line under the form; a source row while loading; the Stalker row and the waiting-for-iCloud row; the signed-out iCloud footer; the "not loaded yet" status block and its failed variant; the M3U details form; the Preferences and About panes on iPad and Mac; the iPhone preference option screen; the Apple TV preference option list; the Sign in on this Apple TV form; iPhone edit mode with drag handles.
+Not drawn yet: the details while Save runs; the error line under the form; a source row while loading; the waiting-for-iCloud row; the Stalker portal details form; the signed-out iCloud footer; the "not loaded yet" status block and its failed variant; the M3U details form; the Preferences and About panes on iPad and Mac; the iPhone preference option screen; the Apple TV preference option list; the Sign in on this Apple TV form; iPhone edit mode with drag handles.
 
 ## Goals / Non-Goals
 
@@ -47,7 +47,8 @@ Source row status line:
 | Failed after a load | the loaded line with the time of the last success, and below it "Could not refresh: <sentence>" in the error style, for example "Could not refresh: You're offline. Connect to the internet and try again." |
 | Xtream login not on this device | "Waiting for login from iCloud"; on Apple TV "Not signed in on this Apple TV"; muted |
 | Record arrived without its link | "Waiting for iCloud…"; details offer Delete source only |
-| Stalker portal | "Stalker portals are coming later"; details offer Name and Delete source only |
+
+A Stalker portal shows the same states as an Xtream source, with its MAC address standing in for the login.
 
 Guide part of the loaded line:
 
@@ -60,7 +61,7 @@ Guide part of the loaded line:
 | Failed, never loaded on this device | "Guide failed" |
 | Failed after a load on this device | "Guide <n> days" from the last load |
 
-Each row also shows the source name and a type badge, "M3U" or "XTREAM".
+Each row also shows the source name and a type badge, "M3U", "XTREAM" or "STALKER".
 
 Details status block, one line each:
 - "412 channels in 18 groups"
@@ -71,8 +72,9 @@ Details status block, one line each:
 
 Details form:
 - The Xtream password field is empty, secure, with the placeholder "••••••••". Leaving it empty keeps the saved password.
-- Apple TV, login not on this device: a "Sign in on this Apple TV" button above empty username and password fields. Other platforms show the empty fields without the button.
-- Errors under the form: "Enter a valid URL." for text without a scheme; "This source is already added." for a duplicate; "Enter your username and password." when no login exists on this device and either field is empty; otherwise the `add-first-run-onboarding` sentence for the failure, or the Keychain write message from `source-management`.
+- A Stalker portal shows Portal, then a section headed "Login" with MAC address, Login (placeholder "Optional") and Password (placeholder "••••••••" when a password is saved, otherwise "Optional"). The MAC and login are filled from the Keychain item; the password field starts empty and leaving it empty keeps the saved one.
+- Apple TV, login not on this device: a "Sign in on this Apple TV" button above empty username and password fields, or empty MAC address, login and password fields for a portal. Other platforms show the empty fields without the button.
+- Errors under the form: "Enter a valid URL." for text without a scheme; "This source is already added." for a duplicate; "Enter your username and password." when no login exists on this device and either field is empty; "Enter the MAC address." for a portal with the MAC field empty, and "Enter a valid MAC address, like 00:1A:79:12:34:56." when it does not parse; otherwise the `add-first-run-onboarding` sentence for the failure, or the Keychain write message from `source-management`.
 - A duplicate is another source of the same type with the same link, compared after trimming whitespace and one trailing slash and lower-casing scheme and host. For Xtream it must also have the same username in its Keychain item on this device; a different username, or an unreadable or missing item, is not a duplicate.
 - An emptied name is replaced by the link's host.
 
@@ -126,3 +128,6 @@ About: "Version <CFBundleShortVersionString> (<CFBundleVersion>)".
 - Add a source in Settings opens onboarding's form and checklist in a sheet; Start watching closes the sheet.
 - Settings UI tests run on the scripted Live sources, which now load through the app's refresher so the rows show real states.
 - Open on launch and the session restore from `add-session-restore-and-recently-watched` both pick the first tab. The restored tab comes first, and a preference other than Live then replaces it, so Live as the default keeps the restore. The two specs disagree on this; the order here is a stopgap until one of them settles it.
+- Stalker portals load like the other sources now that `add-stalker-portal-source` is archived, so their rows show the refresher's states and the "Stalker portals are coming later" line and its status case are gone. Their details edit the portal address, the MAC address and the optional login and password, and a change to any of them signs in to the portal through `SourceConnector.probe` before it saves, as a changed Xtream login does. The Keychain item keeps the MAC in `username` and the login in `login`.
+- Sign in on this Apple TV covers portals too. Every source with a login now has one, so the "Its login cannot reach this Apple TV." line is gone.
+- A portal duplicate is another portal at the same address with the same MAC address in its Keychain item on this device, the rule Xtream uses for its username.

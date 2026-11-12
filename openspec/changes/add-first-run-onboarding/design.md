@@ -8,11 +8,11 @@ Boards, under `openspec/specs/design-system/boards/`:
 - tvOS: `TV-Onboard-1.dc.html`, `TV-Onboard-2.dc.html`, `TV-Onboard-3.dc.html`, `TV-Onboard-3-M3U.dc.html`, `TV-Onboard-3-Connecting.dc.html`, `TV-Onboard-SignIn.dc.html`, `TV-Onboard-Help.dc.html`, `TV-Onboard-4.dc.html`, `TV-Onboard-4-NoLive.dc.html`, `TV-Onboard-4-Empty.dc.html`, `TV-Onboard-5.dc.html`, `TV-Onboard-5-Two.dc.html`.
 - iOS: `iPhone-Onboard-1.dc.html`, `iPhone-Onboard-Help.dc.html`, `iPhone-Onboard-2.dc.html`, `iPhone-Onboard-2-M3U.dc.html`, `iPhone-Onboard-2-Connecting.dc.html`, `iPhone-Onboard-2-NoLink.dc.html`, `iPhone-Onboard-3.dc.html`, `iPhone-Onboard-3-NoLive.dc.html`, `iPhone-Onboard-3-Empty.dc.html`, `iPhone-Onboard-3-Two.dc.html`. iPad and Mac show the same sheet centered.
 
-Not drawn: the guide line done and failed, the movies line after it stops waiting for counts, account lines without an expiry date or screen count, and the tvOS "Reading the guide…" line.
+Not drawn: the Stalker portal form and the Apple TV sign-in for a portal, which follow the Xtream boards with the fields under Copy; the guide line done and failed, the movies line after it stops waiting for counts, account lines without an expiry date or screen count, and the tvOS "Reading the guide…" line.
 
 Design-system requirements that apply: “Focus is the lifted white card”, “One accent color”, “Text stays above the platform caption floor”, “Targets are large enough to hit”, “Accessibility identifiers follow the board”, “Nothing fake and nothing bundled”, “Nothing shows before the paywall”, “Loading shows real progress per step”.
 
-On Apple TV the user sees the welcome screen, picks M3U or Xtream and fills in the details, chooses Connect, and watches the checklist fill in. Start watching becomes available once channels are in. The last screen sums up what was added while the first channel plays behind it, with Start watching and Add another source.
+On Apple TV the user sees the welcome screen, picks M3U, Xtream or Stalker and fills in the details, chooses Connect, and watches the checklist fill in. Start watching becomes available once channels are in. The last screen sums up what was added while the first channel plays behind it, with Start watching and Add another source.
 
 On iPhone, iPad and Mac the user sees a welcome sheet, then one sheet with the provider type, the fields and the clipboard banner. Connect moves to the checklist sheet, and Start watching opens Live with the first channel playing.
 
@@ -23,7 +23,7 @@ On iPhone, iPad and Mac the user sees a welcome sheet, then one sheet with the p
 - Validation and save go through the same code path as adding a source in Settings.
 
 **Non-Goals:**
-- The purchase flow, Stalker portals, file import, editing or deleting providers, per-provider guide toggles, several guides per playlist and background refresh. See proposal.md.
+- The purchase flow, file import, editing or deleting providers, per-provider guide toggles, several guides per playlist and background refresh. See proposal.md.
 
 ## Decisions
 
@@ -33,7 +33,7 @@ On iPhone, iPad and Mac the user sees a welcome sheet, then one sheet with the p
 - The movies line stops waiting 20 seconds after login and reads "Movies and series available" without counts.
 - The first channel is the lowest-numbered channel of the first source group in `channel-catalogue` order, skipping Favorites and All channels. The tvOS summary and Start watching use the same channel.
 - Clipboard detection uses pattern detection for a probable web URL, which does not read the pasteboard. macOS shows no banner.
-- tvOS sign-in writes under the record's `credentialKey` (its id when nil), skips Stalker records, names the sources still to sign in, and Menu on it suspends the app. Passwords never go in SwiftData or logs.
+- tvOS sign-in writes under the record's `credentialKey` (its id when nil), asks a Stalker record for its MAC address, names the sources still to sign in, and Menu on it suspends the app. Passwords never go in SwiftData or logs.
 - Apple TV keeps passwords in its own Keychain and the sign-in screen is the way in, until the decision on where an Apple TV password is kept chooses otherwise.
 - Back from Add another source returns to the summary.
 - Design deviations: “One accent color” accent on done markers, the clipboard banner and the tvOS ready eyebrow; “Targets are large enough to hit” show-password control with a 44 pt hit area; “Nothing fake and nothing bundled” the tvOS keyboard card describes the continuity keyboard generically.
@@ -45,7 +45,8 @@ Exact strings. `<...>` is a value filled in at runtime. Counts use the locale's 
 ### Welcome, type step and form
 
 - Welcome title "Welcome to Antenna". Help headings "M3U playlist" and "Xtream login".
-- The Stalker card has the accessibility label "Stalker portal, coming later" and the not-enabled trait. On tvOS it takes focus and select does nothing. On iOS the segment reads "Stalker" and the caption under the picker reads "Stalker portals are coming later".
+- The Stalker card reads "Stalker portal" with "A portal address and a MAC address, the way a MAG box signs in." and the footnote "Also called Ministra". On iOS the segment reads "Stalker" and has no caption under the picker. Both open the portal form like the other two kinds.
+- Stalker fields: Name (optional), Portal, MAC address, Login (optional), Password (optional). On iPhone, iPad and Mac the group is headed "Portal", the row labels are "Portal", "MAC", "Login" and "Password", Portal has the placeholder "http://", MAC "00:1A:79:12:34:56", and Login and Password "Optional". On Apple TV the title is "Stalker portal" and the line under it reads "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one." The Keychain line is the Xtream one.
 - M3U fields: Name (optional), Playlist URL, Guide URL (optional). On iPhone, iPad and Mac the row labels are "Playlist" and "Guide", and Guide has the placeholder "Optional XMLTV link".
 - Xtream fields: Name (optional), Server, Username, Password, with a control that shows or hides the password.
 - The add-source sheet title is "Add a source".
@@ -53,12 +54,18 @@ Exact strings. `<...>` is a value filled in at runtime. Counts use the locale's 
 
 ### Errors under the form
 
+Portal failures that are not in this list (offline, unreachable, a server error, an unreadable answer) use the rows below as they are.
+
 Shown as `onboarding.error` in the error style (15 pt on iOS, 22 pt on tvOS, `#FF5F57`). Nothing is saved and the fields keep their values.
 
 | Case | Message |
 |------|---------|
-| A required field is empty (the first one in form order; no request is made) | "Enter the <field name>." with "server address", "username", "password" or "playlist URL" |
-| The URL or server is not valid | The `source-management` validation message |
+| A required field is empty (the first one in form order; no request is made) | "Enter the <field name>." with "server address", "username", "password", "playlist URL", "portal address" or "MAC address" |
+| The URL or server is not valid, or the portal address has no `http` or `https` | The `source-management` validation message |
+| The MAC address is not six pairs of hex digits (no request is made) | "Enter a valid MAC address, like 00:1A:79:12:34:56." |
+| The portal does not accept the MAC address or login | "Could not sign in. Check the MAC address, and the login if you have one." |
+| The portal refuses the device with a message | "The portal refused this device with the message “<message>”." with the MAC replaced by "…" |
+| No address the portal could be under answers as a portal | "No Stalker portal answered at <host>. Check the address and try again." |
 | The Xtream client throws its unauthorized error | "Could not sign in. Check the username and password." |
 | `user_info.status` is present, not empty and not "Active" (case-insensitive) | "This account is <status in lowercase>." |
 | `URLError` `.notConnectedToInternet`, `.networkConnectionLost` or `.dataNotAllowed`, also inside the Xtream client's transport error | "You're offline. Connect to the internet and try again." |
@@ -72,6 +79,7 @@ While Connect runs it is disabled and shows an indeterminate indicator, a second
 
 The loading step is titled "Setting up <source name>".
 
+- Stalker portal: "Signed in" with the portal's host beneath, in place of the playlist line. A portal has no movies line.
 - Login: "Signed in", with "Account active until <date in the locale's long style>" and " · 1 connection" or " · <n> connections" beneath. `exp_date` is Unix seconds as a number or a numeric string; absent, null, non-numeric or 0 leaves the date out. `max_connections` absent, non-numeric or 0 leaves out the connections. The line beneath shows only the parts that exist, joined by " · ": with no date it reads "1 connection" or "<n> connections" with no separator, and with neither part there is no line beneath "Signed in".
 - Playlist (M3U only): "Playlist downloaded" with the host beneath. An M3U source has no login or movies line.
 - Channels: "412 live channels in 18 groups", with the first eight group names and "and <n> more" beneath. Groups are the `channel-catalogue` groups without Favorites and All channels.
@@ -93,7 +101,7 @@ Each line is one VoiceOver element that reads state, title and detail. The summa
 
 ### Apple TV sign-in
 
-The title is "Sign in on this Apple TV". Server is filled from the record with the lowest `sortOrder`, Username and Password are empty. A muted line reads "<n> more source(s) to sign in after this one: <names in sortOrder>" and is absent for the last record. Connect runs the same checks and messages as the form.
+The title is "Sign in on this Apple TV". Server is filled from the record with the lowest `sortOrder`, Username and Password are empty. For a Stalker portal the filled row is labeled "Portal" and the fields are MAC address, Login (optional) and Password (optional), all empty. A muted line reads "<n> more source(s) to sign in after this one: <names in sortOrder>" and is absent for the last record. Connect runs the same checks and messages as the form.
 
 ## Risks / Trade-offs
 
@@ -131,5 +139,9 @@ The title is "Sign in on this Apple TV". Server is filled from the record with t
 - Start watching hands the first channel to the app through `OnboardingHandoff`, an `@Entry` value the gate sets. On iPhone, iPad and Mac Live plays it in place; on Apple TV the shell tunes it full screen. Browse movies opens the Movies tab or section.
 - The Apple TV summary footnote reads "Not signed in to iCloud, so it stays on this Apple TV." when signed out, and leaves out the login sentence for a playlist.
 - `-ui-testing-onboarding connect` answers Connect in the app with two fixture playlists, and `-ui-testing-playlist <link>` fills the Apple TV form, since typing with the remote from a UI test is unreliable.
-- The Apple TV sign-in shows when every source is an Xtream login and none has its login on this Apple TV. Each login is checked with the server, the way Connect checks one, and kept in this device's Keychain under the record's credential key; a record that synced without a key gets one, its id. The sources start loading together after the last sign-in, and the summary's eyebrow reads "<name> signed in". The server shows as text, not a field. A Stalker source is skipped.
+- The Apple TV sign-in shows when every source is an Xtream login or a Stalker portal and none has its login on this Apple TV. Each login is checked with the server, the way Connect checks one, and kept in this device's Keychain under the record's credential key; a record that synced without a key gets one, its id. The sources start loading together after the last sign-in, and the summary's eyebrow reads "<name> signed in". The server shows as text, not a field. A Stalker source is signed in with its MAC address, checked the way Connect checks a portal.
 - A source that already loaded on Apple TV but later lost its login is handled by Sign in on the playback error and in Settings, not by onboarding.
+- Stalker portals are enabled now that `add-stalker-portal-source` is archived. The form keeps the MAC address in its own field of `SourceFields`; the Login and Password fields carry the optional portal login, so `check()` asks only for the portal and the MAC. A portal address that `stalker-portal-source` would turn down and a MAC that does not parse fail in `check()`, before any request. The Keychain item keeps the MAC in `username` and the login in `login`, as that change decided.
+- The portal's "not authorized" answer gets its own sentence about the MAC address and login, since the Xtream one names a username the portal form does not have.
+- The Stalker checklist has no guide line. Connect hands the portal's channels to the checklist, and the portal's own guide loads through the app's guide store once onboarding closes, the way it does for a portal added before. Account expiry from the portal is not shown, since the account call is not on the Connect path.
+- The Stalker form and sign-in have no boards. They reuse the Xtream layout, rows and Keychain line, with the fields and copy above.
