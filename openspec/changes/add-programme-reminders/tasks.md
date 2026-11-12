@@ -22,14 +22,17 @@
 - [x] 4.1 Schedule notifications on iPhone, iPad and Mac and ask permission after the first reminder is saved, and verify integration tests for the prompt timing and the delivered text
 - [x] 4.2 Add the in-app banner on every device, the missed-reminder banner on return, and the 20-second timeout, and verify UI tests including Menu on Apple TV
 - [ ] 4.3 Make Watch and a notification tap open Live and play the channel, and verify UI tests for a channel outside the current group, one already playing, a missing channel and the locked paywall
+  - Open: the locked case is unit-tested on `ReminderCenter.locked`, but nothing sets it until the paywall root from `add-paywall-and-entitlement` (#238) is on main; wire it and add the UI test then.
 
 ## 5. Reminders page
 
 - [x] 5.1 Add the Reminders page with the list, header count, empty state and moved or dropped notes, and verify UI tests
 - [x] 5.2 Add the per-device lead-time picker and the notice when the device cannot notify, and verify UI tests on iPhone and Apple TV
 - [ ] 5.3 Set a reminder on a second device and confirm it appears in the list on the first, on hardware
+  - Open: needs two devices signed in to one iCloud account; simulators do not sync CloudKit.
 
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
 - [ ] 6.2 `/opsx:verify` passes
+  - Open: verify reports 4.3 and 5.3 as incomplete; every requirement has code and a citing test.
