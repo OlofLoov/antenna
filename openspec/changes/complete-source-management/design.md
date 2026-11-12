@@ -1,39 +1,26 @@
 ## Context
 
-No board. The shipped UI predates the design boards; the boarded Settings is `add-sources-and-settings`, the add flow `add-first-run-onboarding`, and Live `add-live-tv-on-iphone-ipad-mac`. No design-system requirement applies.
+No board. The check looks at the boarded Sources and Settings list from `add-sources-and-settings`; this change adds no screen and follows no further design-system requirement.
 
-Accessibility identifiers the UI tests use: `settings.addSource`, `settings.source.<id>`, `addSource.save`, `addSource.error`, `channels.emptyState`, `player.view`.
-
-On tvOS the add form is the same, driven by the remote and on-screen keyboard, with Save and Cancel as toolbar items. Deleting a source has no affordance on tvOS or macOS. Source rows are not focusable on tvOS; only the Add source button is, so a long list cannot be scrolled.
+The first version of this change targeted screens that no longer exist: `AddSourceView`, `ChannelsView`, the pushed `PlayerView` and a Settings list whose rows showed each source's URL. Onboarding's form, the Sources and Settings list and Live replaced them. The rewrite keeps only what those changes cannot test.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- A test for every on-screen source-management behavior.
+- Check once, on real devices, that a source saved on one device reaches another and loads there.
 
 **Non-Goals:**
-- Redesigning Settings or the channel list; the boarded versions belong to other changes.
+- New tests for behavior other changes already test (tasks.md group 1).
+- A delete across devices, which `add-sources-and-settings` task 4.1 covers.
 
 ## Decisions
 
-- The sheet and empty-state checks are UI tests against the identifiers above. The save path and the zero-request check already pass as integration tests under `source-management`.
-- Sync between devices is a manual two-device check; CloudKit cannot run in CI.
-- The player check is a UI test that the player view is pushed, plus a manual check of the current item's URL until `PlayerView` exposes its player.
-- The player uses `AVPlayer` for every URL as a stopgap. The project rule is two playback paths: HLS and containers the system can demux play through `AVPlayer`, and raw MPEG-TS plays through FFmpeg demux, VideoToolbox decode and `AVSampleBufferVideoRenderer`, so HDR, Dolby Vision, Atmos and frame-rate matching keep working. A playback change replaces the stopgap.
+- The Settings list requirement is dropped. It wanted each row to show the source's URL, which contradicts `add-sources-and-settings`: its rows show name, type and one status line, no source link or host appears in a row, and `SettingsUITests.testEachSourceShowsItsStatusAndNoLink` checks that. The options were keeping the URL, rewriting the requirement without it, or dropping it. `sources-and-settings/see-how-each-source-is-doing` already says the rewritten version, so it is dropped, and the sync requirement says rows show no link.
+- The other first-version requirements (the add sheet, the empty channel list, the pushed player) are dropped for the same reason: each is now a requirement of another change, with tests citing it.
+- Sync stays a manual two-device check. CloudKit does not sync on a simulator, and CI has no iCloud account. `SourceRefresherTests.syncChanges` covers this device's side by feeding the store change a sync makes, and cites this requirement as well as its own.
+- To run the check, add an M3U source and an Xtream source on device A. On device B, open Sources and Settings and wait for both rows. Confirm the order, names, types and status lines, that no row shows a link, that the M3U source loads, and that the Xtream source loads or says it is waiting for its login and then loads once iCloud Keychain delivers it.
 
 ## Risks / Trade-offs
 
-- Equal sort orders, from two devices adding at once, render in undefined order.
-- Open question: delete affordance on tvOS and macOS.
-- Open question: on the tvOS add sheet, where does initial focus land, and does Menu dismiss without saving? Not checked against a build.
-
-## Implementation decisions
-
-The screens these tasks test have been replaced, so the tasks are left open and no test is written against the old screens. The behavior each one covered is proven where the newer change shows it.
-
-- 1.1 Invalid URL keeps the sheet open: the add-source sheet is now onboarding's form (`add-first-run-onboarding`). A link without a scheme shows "Enter a valid URL." under the form, saves nothing and keeps the form open: `OnboardingConnectTests.formMistakes` (first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting) and `OnboardingUITests.testConnectWithAnEmptyFieldSaysWhatToFix`. The `addSource.save` and `addSource.error` identifiers no longer exist.
-- 1.2 No sources shows the empty state: with no source the app opens on onboarding's welcome screen instead (first-run-onboarding/a-new-user-is-asked-for-a-provider), and deleting the last source returns there (`SettingsUITests.testDeletingEverySourceReturnsToOnboarding`, sources-and-settings/delete-a-source-and-everything-that-came-with-it). `channels.emptyState` is no longer reached without a source.
-- 1.3 Settings lists sources in order: the order is proven by `SourcesSettingsTests.reorder` (sources-and-settings/put-sources-in-your-order). The requirement's "each row showing the source's name and URL" contradicts `add-sources-and-settings`, whose rows never show a link (sources-and-settings/see-how-each-source-is-doing, `SettingsUITests.testEachSourceShowsItsStatusAndNoLink`). The newer change wins; this requirement should drop the URL or be removed when the change is next revised.
-- 1.4 Tapping a channel starts playback: `ChannelsView` and the pushed `PlayerView` are gone. Live plays the channel in place on iPhone, iPad and Mac and full screen on Apple TV (live-tv-on-iphone-ipad-mac capability, `LiveUITests`; tvos-shell capability). The player no longer uses `AVPlayer` for every URL.
-- 2.1 Sources sync between devices stays open: it needs two devices signed in to one iCloud account, and CloudKit does not sync on a simulator.
-
+- Equal sort orders, from two devices adding at once, list in an undefined order (`source-management/m3u-source-is-saved`).
+- [The check needs a person with two devices] → task 2.1 stays open until someone runs it, and the change is not archived before then.

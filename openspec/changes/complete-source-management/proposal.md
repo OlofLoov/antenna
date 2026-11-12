@@ -1,29 +1,34 @@
 ## Why
 
-Source management has shipped, and its save, delete and loading rules have passing tests. The parts a user sees on screen do not: the add sheet staying open on a bad URL, the empty channel list, the Settings list order, sync to a second device, and the player opening on a tap. They wait for a UI test target and a manual two-device check. This change holds them until they are tested. It serves the household setter-upper who wants "sources I add on one device to appear on my other devices, so I never type a URL or password twice", and the user who wants "to edit, refresh or remove a source, and change how the app behaves, so my setup stays right as my subscription changes".
+The household setter-upper wants "sources I add on one device to appear on my other devices, so I never type a URL or password twice". The app does this through iCloud, and every part one device can show is tested. Nobody has yet checked that a source saved on one device shows up on a second device signed in to the same iCloud account. CloudKit does not sync on a simulator or in CI, so that check needs two devices and a person.
+
+This change used to hold five on-screen checks for screens that are gone: the old add-source sheet, the empty channel list, a Settings list that showed each source's link, the pushed player, and sync. Newer changes replaced those screens and test what they do:
+
+- The add-source form keeps its error on a link without a scheme (`add-first-run-onboarding`).
+- With no source the app opens on onboarding, and deleting the last source returns there (`add-first-run-onboarding`, `add-sources-and-settings`).
+- Sources and Settings lists sources in the user's order and shows no link (`add-sources-and-settings`).
+- Picking a channel plays it, in place in Live on iPhone, iPad and Mac and full screen on Apple TV (`add-live-tv-on-iphone-ipad-mac`, `add-tv-channel-overlay`).
+- Sources added, edited or reordered on another device show up on this one by themselves (`add-sources-and-settings`), tested by feeding the store change on one device.
+
+What is left is sync across two real devices, which no automated test can prove, so the change is reduced to that one requirement.
 
 ## What Changes
 
-- The add-source sheet stays open with its error after an invalid URL.
-- The channel list shows its empty state with no sources.
-- Settings lists sources in sort order with name and URL.
-- Sources reach a second device through iCloud.
-- Selecting a channel pushes the player (stopgap).
+- A source saved on one device appears in Sources and Settings on the user's other devices, with its name, type and status and never its link, and its channels load there.
 
 Out of scope:
-- Editing or reordering a source.
-- A delete affordance on tvOS and macOS.
-- Rendering load errors.
+- Anything one device can show. The changes above own it.
+- A delete reaching other devices, which `add-sources-and-settings` task 4.1 checks.
 
 ## Capabilities
 
 ### New Capabilities
 
 ### Modified Capabilities
-- `source-management`: adds the on-screen and two-device requirements that have no test yet.
+- `source-management`: adds the two-device sync requirement.
 
 ## Impact
 
-- App: `AddSourceView`, the Settings source list, `ChannelsView`, `PlayerView`, and the UI test target.
-- Depends on the UI test target that the favorites UI tests added.
-- Superseded in part, once those changes are implemented: the empty state and the channel tap by `add-live-tv-on-iphone-ipad-mac` on iOS, iPadOS and macOS (where the Channels tab becomes Live); the Settings list by `add-sources-and-settings`.
+- No code. One manual check on two devices.
+- Depends on `add-sources-and-settings` for the Sources and Settings list and the refresher that loads a synced source.
+- Blocked on two devices signed in to one iCloud account with iCloud Keychain on.
