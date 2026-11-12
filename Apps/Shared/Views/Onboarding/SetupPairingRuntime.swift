@@ -17,7 +17,14 @@ struct SetupPairingRuntime: ViewModifier {
             .task {
                 let pairing = SetupPairingModel(.app)
                 pairing.onArrival = { source in
-                    Task { await model.received(source) }
+                    Task {
+                        await model.received(source)
+                        // A login that came before its source is used now.
+                        if pairing.login == .checking, let login = pairing.heldLogin { await keep(login, pairing: pairing) }
+                    }
+                }
+                pairing.onLogin = { login in
+                    Task { await keep(login, pairing: pairing) }
                 }
                 model.pairing = pairing
                 #if DEBUG
@@ -34,6 +41,13 @@ struct SetupPairingRuntime: ViewModifier {
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { model.pairing?.wake() }
             }
+    }
+
+    /// Checks the login sent with an arrived source; when it does not work,
+    /// the TV offers to sign in here (iphone-as-setup-device/a-login-source-sent-from-the-iphone-needs-only-its-login-on-the-tv).
+    private func keep(_ login: LoginPayload, pairing: SetupPairingModel) async {
+        await model.receive(login, into: context)
+        if model.arrival != nil { pairing.loginDidNotWork() }
     }
 }
 

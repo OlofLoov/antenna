@@ -186,10 +186,21 @@ struct OnboardingFormScreen: View {
         #endif
     }
 
+    #if os(tvOS)
+        /// Where the login sent with an arrived source stands.
+        private var arrivalLogin: SetupSignIn.Login {
+            switch model.pairing?.login {
+            case .waiting: .waiting
+            case .checking: .checking
+            case .missing, nil: .missing
+            }
+        }
+    #endif
+
     @ViewBuilder private var form: some View {
         #if os(tvOS)
             if let arrival = model.arrival, case .code(let link) = model.pairing?.card {
-                SetupSignIn.Television(fields: $model.fields, link: link.url, status: status) {
+                SetupSignIn.Television(fields: $model.fields, link: link.url, status: status, login: arrivalLogin) {
                     Task { await model.signIn(into: context) }
                 }
                 .id(arrival.id)
@@ -220,7 +231,8 @@ struct OnboardingFormScreen: View {
 }
 
 #if os(tvOS)
-    /// The sign-in screen with its model.
+    /// The sign-in screen with its model, and the QR card that asks the
+    /// iPhone for the logins (apple-tv-login-from-iphone/the-apple-tv-sign-in-offers-a-qr-code).
     private struct OnboardingSignInScreen: View {
         @Bindable var model: OnboardingModel
         @Environment(\.modelContext) private var context
@@ -228,11 +240,18 @@ struct OnboardingFormScreen: View {
         var body: some View {
             OnboardingSignIn.Television(
                 fields: $model.fields,
-                remaining: OnboardingSignIn.Television.remaining(model.signInsAfterThis),
+                remaining: OnboardingSignIn.remaining(model.signInsAfterThis),
                 status: .init(error: model.error, connecting: model.connecting)
             ) {
                 Task { await model.signIn(into: context) }
+            } card: {
+                if let receiver = model.receiver, let link = receiver.link {
+                    LoginQRCard.Television(link: link.url, status: LoginQRCard.status(of: receiver, names: model.signIns))
+                } else {
+                    OnboardingForm.TypeOnPhoneCard()
+                }
             }
+            .modifier(LoginReceiverRuntime(model: model))
         }
     }
 #endif

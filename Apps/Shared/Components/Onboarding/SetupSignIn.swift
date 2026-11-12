@@ -5,13 +5,22 @@
     /// "Sign in on this Apple TV" for a login source sent from the iPhone
     /// (`TV-Onboard-3-QR-SignIn`): Name and the server or portal locked,
     /// the login fields kept as typed, and the QR card dimmed with the
-    /// arrival. "Sign in on this Apple TV" on the card moves focus to the
-    /// first login field and goes away.
+    /// arrival. While the login is on its way from the iPhone the card says
+    /// so (`TV-Onboard-3-QR-Received`); once it is missing, "Sign in on this
+    /// Apple TV" on the card moves focus to the first login field and goes away.
     enum SetupSignIn {
+        /// Where the login sent with the source stands.
+        enum Login: Equatable {
+            case waiting
+            case checking
+            case missing
+        }
+
         struct Television: View {
             @Binding var fields: SourceFields
             let link: URL
             let status: OnboardingForm.Status
+            var login = Login.missing
             let connect: () -> Void
             @State private var chosen = false
             @FocusState private var focus: Focus?
@@ -55,8 +64,8 @@
                         .padding(.top, 6)
                     }
                     .frame(width: 820)
-                    SetupCard.Television(link: link, status: .arrived(name: fields.name, missing: SetupCard.missing(fields.kind))) {
-                        if !chosen {
+                    SetupCard.Television(link: link, status: cardStatus) {
+                        if !chosen, login == .missing {
                             SetupCard.SignInHere(action: signInHere).focused($focus, equals: .signInHere)
                         }
                     }
@@ -67,6 +76,18 @@
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("onboarding.signIn")
                 .defaultFocus($focus, .signInHere)
+                .onChange(of: login) { _, login in
+                    // The login did not come: the button appears and takes focus, as on arrival.
+                    if login == .missing, !chosen { focus = .signInHere }
+                }
+            }
+
+            private var cardStatus: SetupCard.Status {
+                switch login {
+                case .waiting: .awaitingLogin(name: fields.name, progress: SetupCard.waitingForLogin)
+                case .checking: .awaitingLogin(name: fields.name, progress: SetupCard.checkingLogin)
+                case .missing: .arrived(name: fields.name, missing: SetupCard.missing(fields.kind))
+                }
             }
 
             private func signInHere() {
@@ -128,6 +149,11 @@
     #Preview("Sign in after an Xtream source arrived", traits: .fixedLayout(width: 1920, height: 1080)) {
         @Previewable @State var fields = SourceFields(kind: .xtream, name: "Home provider", url: "http://tv.example-provider.net:8080")
         SetupSignIn.Television(fields: $fields, link: previewLink, status: .init(), connect: {})
+    }
+
+    #Preview("Waiting for the login after an Xtream source arrived", traits: .fixedLayout(width: 1920, height: 1080)) {
+        @Previewable @State var fields = SourceFields(kind: .xtream, name: "Home provider", url: "http://tv.example-provider.net:8080")
+        SetupSignIn.Television(fields: $fields, link: previewLink, status: .init(), login: .waiting, connect: {})
     }
 
     #Preview("Sign in after a Stalker portal arrived", traits: .fixedLayout(width: 1920, height: 1080)) {

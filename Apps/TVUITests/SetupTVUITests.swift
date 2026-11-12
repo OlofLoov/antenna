@@ -14,6 +14,8 @@ final class SetupTVUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-onboarding", scenario]
         if let kind { app.launchArguments += ["-ui-testing-setup-send", kind] }
         if let hintSeconds { app.launchEnvironment["UITESTING_SETUP_HINT_SECONDS"] = "\(hintSeconds)" }
+        // The login sent with a source gets two seconds instead of a minute.
+        app.launchEnvironment["UITESTING_LOGIN_WAIT_SECONDS"] = "2"
         app.launch()
         return app
     }
@@ -67,7 +69,7 @@ final class SetupTVUITests: XCTestCase {
         XCTAssertEqual(element(app, "onboarding.field.name").value as? String, "Home provider")
         XCTAssertTrue(element(app, "onboarding.qr.status").label.contains("Home provider arrived from your iPhone"))
         let signInHere = element(app, "onboarding.qr.signInHere")
-        XCTAssertTrue(signInHere.waitForExistence(timeout: 5))
+        XCTAssertTrue(signInHere.waitForExistence(timeout: 10))
         XCTAssertTrue(signInHere.hasFocus)
         XCUIRemote.shared.press(.select)
         XCTAssertTrue(signInHere.waitForNonExistence(timeout: 5))

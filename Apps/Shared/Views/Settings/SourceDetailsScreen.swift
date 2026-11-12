@@ -27,7 +27,14 @@ struct SourceDetailsScreen: View {
     var body: some View {
         Group {
             if let record {
-                form(record)
+                #if os(tvOS)
+                    HStack(alignment: .top, spacing: 48) {
+                        form(record)
+                        loginCard(record)
+                    }
+                #else
+                    form(record)
+                #endif
             } else {
                 Color.clear
             }
@@ -99,6 +106,19 @@ struct SourceDetailsScreen: View {
             }
         }
     }
+
+    #if os(tvOS)
+        /// The QR card for a source whose login has not reached this Apple TV
+        /// (apple-tv-login-from-iphone/the-apple-tv-sign-in-offers-a-qr-code).
+        @ViewBuilder private func loginCard(_ record: SourceRecord) -> some View {
+            if let editor, let source = record.descriptor, source.signsInOnAppleTV, source.kind != .channelsDVR, !editor.hasLogin {
+                SourceLoginCard(source: source) {
+                    self.editor = SourceEditor(source, connector: SourceConnector())
+                }
+                .id(source.id)
+            }
+        }
+    #endif
 
     private func statusLines(_ record: SourceRecord, now: Date) -> [SourceStatusText.Line] {
         #if os(tvOS)

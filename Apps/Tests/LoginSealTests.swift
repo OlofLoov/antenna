@@ -85,14 +85,18 @@ import Testing
         let drops = drops
         try await drops.save(sealed, token: token)
         await #expect(throws: LoginDropError.alreadyUsed) { try await drops.save(sealed, token: token) }
-        #expect(try await drops.fetch(token: token) == sealed)
+        #expect(try await drops.fetch(token: token) == .waiting(sealed))
         #expect(try await drops.fetch(token: PairingToken()) == nil)
     }
 
-    @Test("apple-tv-login-from-iphone/only-the-apple-tv-that-showed-the-code-can-read-the-login: delete on pickup")
+    @Test("apple-tv-login-from-iphone/only-the-apple-tv-that-showed-the-code-can-read-the-login: pickup deletes the box")
     func deleteOnPickup() async throws {
         let drops = drops
         try await drops.save(sealed, token: token)
+        try await drops.pickUp(token: token)
+        #expect(try await drops.fetch(token: token) == .pickedUp)
+        // A second sender after pickup still hears the code was used.
+        await #expect(throws: LoginDropError.alreadyUsed) { try await drops.save(sealed, token: token) }
         try await drops.delete(token: token)
         try await drops.delete(token: token)
         #expect(try await drops.fetch(token: token) == nil)
@@ -109,7 +113,7 @@ import Testing
         clock.now += 301
         await LoginDrops.sweep(drops, now: clock.now)
         #expect(try await drops.fetch(token: token) == nil)
-        #expect(try await drops.fetch(token: later) == sealed)
+        #expect(try await drops.fetch(token: later) == .waiting(sealed))
         clock.now += 300
         await LoginDrops.sweep(drops, now: clock.now)
         #expect(await drops.isEmpty)

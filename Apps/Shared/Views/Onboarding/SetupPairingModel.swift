@@ -8,7 +8,10 @@ import SwiftData
 /// capability). While the details step shows and the TV is signed in to
 /// iCloud it holds a setup link with a fresh code, offers it through
 /// Handoff, checks the store every 2 seconds for a source sent from the
-/// iPhone, and after two minutes without one shows a hint.
+/// iPhone, and after two minutes without one shows a hint. The link carries
+/// a key the TV made for it, so the iPhone can send the login of a source it
+/// sets up; the TV waits a minute for it and keeps listening until the code's
+/// ten minutes end (apple-tv-login-from-iphone capability).
 @MainActor @Observable
 final class SetupPairingModel {
     /// What the details step shows beside the form.
@@ -27,10 +30,23 @@ final class SetupPairingModel {
         case unusable
     }
 
+    /// The login of an arrived source that has a login.
+    enum Login: Equatable {
+        /// "Waiting for the login…" during the first minute.
+        case waiting
+        /// The login arrived and the TV is checking it.
+        case checking
+        /// Not arrived within a minute, or it did not work: the TV offers to sign in here.
+        case missing
+    }
+
     /// What the model needs from outside, so tests can script it.
     struct Dependencies {
         var identity: any ICloudIdentity
         var activity: any SetupActivityRecording
+        var drops: any LoginDropping = InMemoryLoginDrops()
+        var key: @MainActor () -> LoginReceiverKey = { LoginReceiverKey() }
+        var loginWait: TimeInterval = 60
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
         var now: @MainActor () -> Date = { Date.now }
         var token: @MainActor () -> PairingToken = { PairingToken() }
@@ -44,6 +60,14 @@ final class SetupPairingModel {
     private(set) var arrived: SourceDescriptor?
     /// Called once with the source the card took.
     @ObservationIgnored var onArrival: (SourceDescriptor) -> Void = { _ in }
+    /// Where the arrived source's login stands; nil for a source without one.
+    private(set) var login: Login?
+    /// A delivered login, kept in memory until its source arrives or the code ends.
+    private(set) var heldLogin: LoginPayload?
+    /// Called when the login for an already arrived source is delivered.
+    @ObservationIgnored var onLogin: (LoginPayload) -> Void = { _ in }
+    @ObservationIgnored private var key: LoginReceiverKey?
+    @ObservationIgnored private var arrivedAt: Date?
 
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var arrivals: SetupArrivals?
@@ -83,13 +107,14 @@ final class SetupPairingModel {
             follow.cancel()
             end()
         }
-        while !Task.isCancelled, !stopped, arrived == nil {
+        while !Task.isCancelled, !stopped, arrived == nil || login != nil {
             do {
                 try await dependencies.sleep(dependencies.pollInterval)
             } catch {
                 return
             }
             check()
+            await listen()
         }
     }
 
@@ -111,7 +136,8 @@ final class SetupPairingModel {
         guard !stopped, arrived == nil, case .code = card, var arrivals, let context else { return }
         let records = (try? context.fetch(FetchDescriptor<SourceRecord>())) ?? []
         let candidates = records.map {
-            SetupArrivals.Candidate(id: $0.id, kind: $0.kindRaw, hasAddress: $0.url != nil, createdAt: $0.createdAt)
+            SetupArrivals.Candidate(
+                id: $0.id, kind: $0.kindRaw, hasAddress: $0.url != nil, createdAt: $0.createdAt, hasCredentialKey: $0.credentialKey != nil)
         }
         let arrival = arrivals.check(candidates)
         self.arrivals = arrivals
@@ -123,6 +149,10 @@ final class SetupPairingModel {
             guard let descriptor = records.first(where: { $0.id == id })?.descriptor else { return }
             arrived = descriptor
             hint = nil
+            if case .login = arrival {
+                arrivedAt = dependencies.now()
+                login = heldLogin?.logins.contains { $0.source == id } == true ? .checking : .waiting
+            }
             dependencies.activity.end()
             onArrival(descriptor)
             return
@@ -152,9 +182,39 @@ final class SetupPairingModel {
         }
     }
 
+    /// One look for the login of a source sent from the iPhone, until
+    /// the code's ten minutes end. Moves the wait to `.missing` after a
+    /// minute without it.
+    func listen() async {
+        guard !stopped, case .code(let link) = card, let shownAt else { return }
+        let now = dependencies.now()
+        if let arrivedAt, login == .waiting, now.timeIntervalSince(arrivedAt) >= dependencies.loginWait { login = .missing }
+        guard let key, heldLogin == nil else { return }
+        guard now.timeIntervalSince(shownAt) < LoginDrops.lifetime else {
+            self.key = nil
+            if login == .waiting { login = .missing }
+            return
+        }
+        guard case .waiting(let sealed)? = try? await dependencies.drops.fetch(token: link.token), !stopped else { return }
+        try? await dependencies.drops.pickUp(token: link.token)
+        self.key = nil
+        guard let payload = try? LoginSeal.open(sealed, with: key, token: link.token) else { return }
+        heldLogin = payload
+        guard let arrived, payload.logins.contains(where: { $0.source == arrived.id }) else { return }
+        login = .checking
+        onLogin(payload)
+    }
+
+    /// The delivered login did not work: the TV offers to sign in here.
+    func loginDidNotWork() {
+        if login != nil { login = .missing }
+    }
+
     /// A new code and a new snapshot of the sources already stored.
     private func show() {
-        let link = SetupLink(token: dependencies.token())
+        let key = dependencies.key()
+        self.key = key
+        let link = SetupLink(token: dependencies.token(), key: key.publicKey)
         let now = dependencies.now()
         let present = Set(((try? context?.fetch(FetchDescriptor<SourceRecord>())) ?? []).map(\.id))
         arrivals = SetupArrivals(present: present, shownAt: now)
@@ -166,6 +226,7 @@ final class SetupPairingModel {
 
     private func end() {
         dependencies.activity.end()
+        key = nil
         guard arrived == nil else { return }
         card = .keyboard
         arrivals = nil
@@ -284,6 +345,6 @@ extension SetupPairingModel.Dependencies {
         #if DEBUG
             if let scripted = UITestingSetup.pairingDependencies() { return scripted }
         #endif
-        return .init(identity: CloudKitIdentity(), activity: HandoffSetupActivity())
+        return .init(identity: CloudKitIdentity(), activity: HandoffSetupActivity(), drops: CloudKitLoginDrops())
     }
 }

@@ -14,7 +14,13 @@ enum SetupCard {
         case waiting(hint: String?)
         /// A login source arrived: its name and what has not reached the TV.
         case arrived(name: String, missing: String)
+        /// A login source arrived and its login is on the way or being
+        /// checked: "Waiting for the login…" or "Checking the login…" (`TV-Onboard-3-QR-Received`).
+        case awaitingLogin(name: String, progress: String)
     }
+
+    static let waitingForLogin = "Waiting for the login…"
+    static let checkingLogin = "Checking the login…"
 
     static let title = "Set up from your iPhone"
     static let body =
@@ -67,8 +73,10 @@ enum SetupCard {
         }
 
         private var isArrived: Bool {
-            if case .arrived = status { return true }
-            return false
+            switch status {
+            case .arrived, .awaitingLogin: true
+            case .waiting: false
+            }
         }
 
         @ViewBuilder private var statusRows: some View {
@@ -97,6 +105,13 @@ enum SetupCard {
                         .accessibilityIdentifier("onboarding.qr.status")
                     Row(symbol: "exclamationmark.circle.fill", color: OnboardingForm.errorColor, text: missing, state: "Missing")
                         .foregroundStyle(OnboardingForm.errorColor)
+                }
+            case .awaitingLogin(let name, let progress):
+                VStack(alignment: .leading, spacing: 12) {
+                    Row(symbol: "checkmark.circle.fill", color: SetupCard.accent, text: "\(name) arrived from your iPhone", state: "Done")
+                        .accessibilityIdentifier("onboarding.qr.status")
+                    ProgressLine(text: progress)
+                        .accessibilityIdentifier("onboarding.qr.login")
                 }
             }
         }
@@ -139,6 +154,8 @@ enum SetupCard {
     /// a light quiet zone; not focusable.
     struct QRTile: View {
         let link: URL
+        var label = SetupCard.codeLabel
+        var identifier = "onboarding.qr.code"
 
         var body: some View {
             Group {
@@ -153,9 +170,9 @@ enum SetupCard {
             .frame(width: 300, height: 300)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
             .accessibilityElement()
-            .accessibilityLabel(SetupCard.codeLabel)
+            .accessibilityLabel(label)
             .accessibilityAddTraits(.isImage)
-            .accessibilityIdentifier("onboarding.qr.code")
+            .accessibilityIdentifier(identifier)
         }
     }
 }

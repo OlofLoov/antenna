@@ -33,7 +33,9 @@
             let schema = Schema(AntennaSchema.models)
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
             do {
-                return try ModelContainer(for: schema, configurations: [config])
+                let container = try ModelContainer(for: schema, configurations: [config])
+                UITestingLoginDrops.seed(container)
+                return container
             } catch {
                 fatalError("Could not create the onboarding UI testing store: \(error)")
             }
@@ -112,6 +114,7 @@
                 http://onboarding.test/news-two.ts
                 """,
                 "empty.test": "#EXTM3U\n",
+                "xtream.test": #"{"user_info":{"username":"anna","status":"Active","max_connections":"1","auth":1}}"#,
             ]
 
             override static func canInit(with request: URLRequest) -> Bool { true }

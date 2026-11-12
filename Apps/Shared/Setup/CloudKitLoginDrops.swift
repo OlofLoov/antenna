@@ -47,14 +47,31 @@ struct CloudKitLoginDrops: LoginDropping {
         if case .failure(let error) = saved[record.recordID] { throw error }
     }
 
-    func fetch(token: PairingToken) async throws(LoginDropError) -> SealedLogin? {
+    func fetch(token: PairingToken) async throws(LoginDropError) -> LoginDrop? {
         do {
             let record = try await database.record(for: recordID(token))
-            return SealedLogin(
-                enc: record.encryptedValues["enc"] as? Data ?? Data(), box: record.encryptedValues["box"] as? Data ?? Data(),
-                version: (record.encryptedValues["v"] as? Int64).map(Int.init) ?? 0)
+            guard let box = record.encryptedValues["box"] as? Data else { return .pickedUp }
+            return .waiting(
+                SealedLogin(
+                    enc: record.encryptedValues["enc"] as? Data ?? Data(), box: box,
+                    version: (record.encryptedValues["v"] as? Int64).map(Int.init) ?? 0))
         } catch let error as CKError where Self.isGone(error) {
             return nil
+        } catch {
+            throw Self.map(error, for: recordID(token))
+        }
+    }
+
+    /// Removes the key and the box from the record and keeps the empty
+    /// record, so a second save for the code still fails.
+    func pickUp(token: PairingToken) async throws(LoginDropError) {
+        do {
+            let record = try await database.record(for: recordID(token))
+            record.encryptedValues["enc"] = nil
+            record.encryptedValues["box"] = nil
+            _ = try await database.modifyRecords(saving: [record], deleting: [], savePolicy: .changedKeys, atomically: true)
+        } catch let error as CKError where Self.isGone(error) {
+            return
         } catch {
             throw Self.map(error, for: recordID(token))
         }

@@ -19,10 +19,10 @@
 
 ## 4. Apple TV
 
-- [ ] 4.1 Show the QR card on onboarding's sign-in step when signed in to iCloud, and the keyboard card otherwise, and verify a UI test for both and that focus never lands on the code
-- [ ] 4.2 Pick up a delivery, check each login and keep the ones that work, ask for the rest with the failure message, and verify integration tests against the fake store for success, one failure, an unreadable delivery, two senders and the ten-minute replacement
-- [ ] 4.3 Show the card in a source's details in Settings for that source, and verify a UI test that the source loads after a delivery
-- [ ] 4.4 Wait for the login after a source arrives on the setup card, fall back to Sign in here after a minute, and verify an integration test that a login arriving before its source is used
+- [x] 4.1 Show the QR card on onboarding's sign-in step when signed in to iCloud, and the keyboard card otherwise, and verify a UI test for both and that focus never lands on the code
+- [x] 4.2 Pick up a delivery, check each login and keep the ones that work, ask for the rest with the failure message, and verify integration tests against the fake store for success, one failure, an unreadable delivery, two senders and the ten-minute replacement
+- [ ] 4.3 Show the card in a source's details in Settings for that source, and verify a UI test that the source loads after a delivery (card built and its model covered by `LoginReceiverTests`; the Settings UI test is not written yet: the shell scenarios have no scripted connector for a delivered login)
+- [x] 4.4 Wait for the login after a source arrives on the setup card, fall back to Sign in here after a minute, and verify an integration test that a login arriving before its source is used
 
 ## 5. iPhone, iPad and Mac
 
