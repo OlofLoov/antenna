@@ -139,7 +139,7 @@ private struct SourceFieldsSection: View {
                     .accessibilityIdentifier("settings.details.guide")
             }
         }
-        if editor.kind == .xtream || editor.kind == .stalker {
+        if editor.kind == .xtream || editor.kind == .stalker || editor.kind == .jellyfin {
             Section {
                 #if os(tvOS)
                     if !editor.hasLogin {
@@ -186,7 +186,7 @@ private struct SourceFieldsSection: View {
     private var linkLabel: String {
         switch editor.kind {
         case .m3u, .m3uFile: "Playlist"
-        case .xtream: "Server"
+        case .xtream, .jellyfin: "Server"
         case .stalker: "Portal"
         }
     }

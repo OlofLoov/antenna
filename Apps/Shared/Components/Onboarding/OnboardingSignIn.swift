@@ -98,3 +98,8 @@ enum OnboardingSignIn {
     @Previewable @State var fields = SourceFields(kind: .stalker, url: "http://portal.example-provider.net")
     OnboardingSignIn.Television(fields: $fields, remaining: nil, status: .init(), connect: {})
 }
+
+#Preview("Sign in on this Apple TV, Jellyfin server", traits: .fixedLayout(width: 1920, height: 1080)) {
+    @Previewable @State var fields = SourceFields(kind: .jellyfin, url: "http://jellyfin.local:8096")
+    OnboardingSignIn.Television(fields: $fields, remaining: nil, status: .init(), connect: {})
+}

@@ -2,6 +2,7 @@ import Foundation
 
 /// Answers requests from a canned table keyed by host and the `action` query
 /// item, so one Xtream host can serve categories and streams differently.
+/// An entry registered with `action: "path:<path>"` answers that path first.
 /// A host with no entry fails with `URLError(.cannotFindHost)`. Every request
 /// is recorded per host and per session tag, answered or not. Give each test
 /// its own host and tag.
@@ -76,7 +77,7 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
                 Self.tagged[tag, default: 0] += 1
                 Self.order[tag, default: []].append(host)
             }
-            return (Self.responses[Self.key(host, action)], Self.failures[host])
+            return (Self.responses[Self.key(host, "path:" + url.path())] ?? Self.responses[Self.key(host, action)], Self.failures[host])
         }
         if let failure {
             client?.urlProtocol(self, didFailWithError: URLError(failure))

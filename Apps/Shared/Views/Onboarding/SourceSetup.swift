@@ -171,6 +171,8 @@ final class SourceSetup {
             switch event {
             case .downloading(_, let received, let expected):
                 guide = expected.map { received >= $0 && $0 > 0 } == true ? .reading : .downloading(bytes: received)
+            case .fetching:
+                guide = .reading
             case .loaded(_, let matched, let total, let days, _):
                 guide = .loaded(days: days, matched: matched, total: total)
                 return

@@ -55,18 +55,26 @@ extension SourceConnector {
 
 extension OnboardingGate {
     /// On Apple TV, the sources to sign in when every source is an Xtream
-    /// login or a Stalker portal and none of their logins is on this device
-    /// (first-run-onboarding/sign-in-again-on-an-apple-tv). Empty elsewhere.
+    /// login, a Stalker portal or a Jellyfin server and none of their logins
+    /// is on this device (first-run-onboarding/sign-in-again-on-an-apple-tv).
+    /// Empty elsewhere.
     static func needingSignIn(_ records: [SourceRecord], loader: SourceLoader = .app) -> [SourceDescriptor] {
         #if os(tvOS)
             let sources = records.sorted { $0.sortOrder < $1.sortOrder }.compactMap(\.descriptor)
-            guard !sources.isEmpty, sources.count == records.count, sources.allSatisfy({ $0.kind == .xtream || $0.kind == .stalker }),
+            guard !sources.isEmpty, sources.count == records.count, sources.allSatisfy(\.kind.signsInOnAppleTV),
                 !sources.contains(where: loader.hasLogin)
             else { return [] }
             return sources
         #else
             return []
         #endif
+    }
+}
+
+extension SourceKind {
+    /// The kinds whose login the Apple TV sign-in asks for.
+    var signsInOnAppleTV: Bool {
+        self == .xtream || self == .stalker || self == .jellyfin
     }
 }
 

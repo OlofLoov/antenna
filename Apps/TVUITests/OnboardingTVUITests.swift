@@ -94,6 +94,23 @@ final class OnboardingTVUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.kind.stalker").waitForExistence(timeout: 5))
     }
 
+    // first-run-onboarding/add-a-jellyfin-server
+    func testPickAJellyfinServer() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        while !element(app, "onboarding.kind.jellyfin").hasFocus {
+            XCUIRemote.shared.press(.right)
+        }
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.field.username").exists)
+        XCTAssertFalse(element(app, "onboarding.field.mac").exists)
+        XCUIRemote.shared.press(.menu)
+        XCTAssertTrue(element(app, "onboarding.kind.jellyfin").waitForExistence(timeout: 5))
+    }
+
     // first-run-onboarding/a-summary-when-everything-has-loaded
     // first-run-onboarding/start-watching-without-waiting-for-the-guide
     func testConnectShowsTheSummaryAndStartWatchingOpensLive() {

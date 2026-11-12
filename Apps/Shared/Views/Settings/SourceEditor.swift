@@ -63,7 +63,7 @@ final class SourceEditor {
         let linkChanged = trimmedLink != original.url.absoluteString || !password.isEmpty
         switch kind {
         case .m3u, .m3uFile: return linkChanged
-        case .xtream: return linkChanged || username != (saved?.username ?? "")
+        case .xtream, .jellyfin: return linkChanged || username != (saved?.username ?? "")
         case .stalker: return linkChanged || mac != (saved?.username ?? "") || username != (saved?.login ?? "")
         }
     }
@@ -95,13 +95,17 @@ final class SourceEditor {
                 return false
             }
         }
+        if kind == .jellyfin, SourceFields(kind: .jellyfin, url: trimmedLink, username: "-", password: "-").check() != nil {
+            error = ConnectFailure.invalidURL.message
+            return false
+        }
         if isDuplicate(url, in: context) {
             error = "This source is already added."
             return false
         }
         let saved = savedLogin
         // source-management/an-xtream-source-needs-a-username-and-password
-        if kind == .xtream, username.isBlank || (saved == nil && password.isBlank) {
+        if kind == .xtream || kind == .jellyfin, username.isBlank || (saved == nil && password.isBlank) {
             error = "Enter your username and password."
             return false
         }
@@ -117,7 +121,7 @@ final class SourceEditor {
             self.error = ConnectFailure(error, host: url.host() ?? trimmedLink).message
             return false
         }
-        if kind == .xtream || kind == .stalker {
+        if kind == .xtream || kind == .stalker || kind == .jellyfin {
             let key = record.credentialKey ?? record.id.uuidString
             do {
                 try connector.credentials.save(login, for: key)
@@ -129,6 +133,8 @@ final class SourceEditor {
             hasLogin = true
             hasPassword = !login.password.isEmpty
             if kind == .stalker { mac = login.username }
+            // A changed Jellyfin login signs in afresh on the next load.
+            if kind == .jellyfin { connector.jellyfinClients.forget(sourceID: record.id, storeKey: key) }
         }
         password = ""
         apply(to: record, url: url, in: context)
@@ -168,7 +174,7 @@ final class SourceEditor {
         let account: String
         switch kind {
         case .m3u, .m3uFile: return !others.isEmpty
-        case .xtream: account = username
+        case .xtream, .jellyfin: account = username
         case .stalker: account = MACAddress(mac)?.text ?? mac
         }
         return others.contains { other in

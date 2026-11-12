@@ -37,9 +37,9 @@
 
 ## 7. Jellyfin servers
 
-- [ ] 7.1 Add the Jellyfin card and segment with the Server, Username and Password fields on every platform, check the server before signing in, and verify with an integration test citing `first-run-onboarding/add-a-jellyfin-server`
-- [ ] 7.2 Give the not-a-Jellyfin-server, forbidden and untrusted-certificate failures their sentences, and verify with tests citing `first-run-onboarding/add-a-jellyfin-server`
-- [ ] 7.3 Ask each Jellyfin server for its username and password in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/add-a-jellyfin-server`
+- [x] 7.1 Add the Jellyfin card and segment with the Server, Username and Password fields on every platform, check the server before signing in, and verify with an integration test citing `first-run-onboarding/add-a-jellyfin-server`
+- [x] 7.2 Give the not-a-Jellyfin-server, forbidden and untrusted-certificate failures their sentences, and verify with tests citing `first-run-onboarding/add-a-jellyfin-server`
+- [x] 7.3 Ask each Jellyfin server for its username and password in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/add-a-jellyfin-server`
 
 ## 8. Verify
 
