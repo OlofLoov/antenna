@@ -28,13 +28,15 @@ struct NewSource: Equatable {
         }
     }
 
-    /// Inserts one `SourceRecord` and, for Xtream and Stalker, one Keychain item
-    /// keyed by the record id. Throws before inserting anything when the URL
-    /// has no scheme or the Keychain write fails.
+    /// Inserts one `SourceRecord` and, for Xtream, Stalker and a Channels DVR
+    /// server with a proxy login, one Keychain item keyed by the record id.
+    /// Throws before inserting anything when the URL has no scheme, a
+    /// Channels DVR address does not tidy, or the Keychain write fails.
     @MainActor
     @discardableResult
     func save(into context: ModelContext, credentials: any CredentialStoring) throws(SaveError) -> SourceRecord {
-        guard var serverURL = URL(string: url.trimmingCharacters(in: .whitespaces)), serverURL.scheme != nil else {
+        let typed = kind == .channelsDVR ? ChannelsDVRClient.serverURL(from: url) : URL(string: url.trimmingCharacters(in: .whitespaces))
+        guard var serverURL = typed, serverURL.scheme != nil else {
             throw .invalidURL
         }
         if kind == .stalker, let portal = StalkerPortal(url) { serverURL = portal.url }
@@ -44,7 +46,8 @@ struct NewSource: Equatable {
             url: serverURL,
             epgURL: URL(string: epgURL)
         )
-        if kind != .m3u {
+        let needsLogin = kind == .channelsDVR ? !username.isEmpty : kind != .m3u
+        if needsLogin {
             let key = descriptor.id.uuidString
             do {
                 let mac = kind == .stalker ? MACAddress(username)?.text ?? username : username

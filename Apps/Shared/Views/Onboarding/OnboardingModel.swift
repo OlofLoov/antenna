@@ -74,13 +74,25 @@ final class OnboardingModel {
             } catch is CancellationError {
                 return
             } catch {
-                self.error = ConnectFailure(error, host: fields.host).message
+                self.error = Self.sentence(ConnectFailure(error, host: fields.host), fields: fields)
             }
         }
         attempt = task
         await task.value
         connecting = false
         attempt = nil
+    }
+
+    /// The failure's sentence. On iPhone, iPad and Mac a Channels DVR server
+    /// at home that cannot be reached also asks for local network access
+    /// (first-run-onboarding/add-a-channels-dvr-server).
+    static func sentence(_ failure: ConnectFailure, fields: SourceFields) -> String {
+        #if os(tvOS)
+            return failure.message
+        #else
+            guard fields.kind == .channelsDVR, failure.wantsLocalNetworkHint(host: fields.host) else { return failure.message }
+            return failure.message + " " + ConnectFailure.localNetworkHint
+        #endif
     }
 
     /// A file imported from the playlist form: it counts as connected and

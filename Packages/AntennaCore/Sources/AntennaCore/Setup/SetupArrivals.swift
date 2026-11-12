@@ -23,7 +23,8 @@ public struct SetupArrivals: Sendable {
 
     /// A source the card can use.
     public enum Arrival: Sendable, Equatable {
-        /// A playlist link: the TV goes on to loading it.
+        /// A playlist link, or a Channels DVR server, which has no login to
+        /// ask for: the TV goes on to loading it.
         case playlist(UUID)
         /// An Xtream source, Stalker portal or Jellyfin server: the TV asks for
         /// the login or MAC address, which did not sync.
@@ -56,7 +57,7 @@ public struct SetupArrivals: Sendable {
                 continue
             }
             switch kind {
-            case .m3u: return .playlist(candidate.id)
+            case .m3u, .channelsDVR: return .playlist(candidate.id)
             case .xtream, .stalker, .jellyfin: return .login(candidate.id, kind)
             case .m3uFile: sawUnusable = true
             }

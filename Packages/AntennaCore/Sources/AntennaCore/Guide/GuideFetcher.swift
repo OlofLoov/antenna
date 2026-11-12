@@ -58,9 +58,13 @@ struct GuideFetcher: Sendable {
     /// 250 ms of `uptime`, then with the final count before the outcome when
     /// it differs from the last one sent. A body that crosses a limit stops
     /// within one chunk. 401 and 403 are `.unauthorized` only when `loginURL`.
+    /// `headers` go on the request, such as a source's proxy login.
     @concurrent
-    func fetch(_ url: URL, sourceID: UUID, loginURL: Bool, progress: @Sendable (GuideProgress) -> Void) async -> Outcome {
-        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
+    func fetch(
+        _ url: URL, sourceID: UUID, loginURL: Bool, headers: [String: String] = [:], progress: @Sendable (GuideProgress) -> Void
+    ) async -> Outcome {
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
+        for (name, value) in headers { request.setValue(value, forHTTPHeaderField: name) }
         var task: URLSessionDataTask?
         var decoder: GuideDecoder?
         var expected: Int64?

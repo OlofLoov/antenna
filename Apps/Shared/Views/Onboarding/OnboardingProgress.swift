@@ -40,6 +40,10 @@ struct OnboardingProgress {
         case .playlist where setup.connection.descriptor.kind == .m3uFile:
             // local-m3u-file-import/import-during-onboarding
             lines.append(.init(id: "playlist", state: .done, title: "Playlist imported", detail: setup.connection.fileName))
+        case .playlist where setup.connection.descriptor.kind == .channelsDVR:
+            // first-run-onboarding/add-a-channels-dvr-server
+            let version = setup.connection.serverVersion.map { "Channels DVR \($0)" } ?? "Channels DVR"
+            lines.append(.init(id: "server", state: .done, title: "Server", detail: version))
         case .playlist where setup.connection.descriptor.kind == .stalker || setup.connection.descriptor.kind == .jellyfin:
             // first-run-onboarding/add-a-stalker-portal, first-run-onboarding/add-a-jellyfin-server
             lines.append(.init(id: "login", state: .done, title: "Signed in", detail: setup.connection.descriptor.url.host()))

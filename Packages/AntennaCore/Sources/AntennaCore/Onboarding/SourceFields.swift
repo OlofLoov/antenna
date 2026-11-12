@@ -6,11 +6,12 @@ import Foundation
 public struct SourceFields: Equatable, Sendable {
     public var kind: SourceKind
     public var name: String
-    /// The playlist URL for M3U, the server for Xtream and Jellyfin, the
-    /// portal for Stalker.
+    /// The playlist URL for M3U, the server for Xtream, Jellyfin and
+    /// Channels DVR, the portal for Stalker.
     public var url: String
     public var epgURL: String
-    /// The Xtream or Jellyfin username, or the optional Stalker portal login.
+    /// The Xtream or Jellyfin username, the optional Stalker portal login,
+    /// or the optional Channels DVR proxy username.
     public var username: String
     /// The Xtream or Jellyfin password, or the optional Stalker portal password.
     public var password: String
@@ -40,10 +41,12 @@ public struct SourceFields: Equatable, Sendable {
             case .m3u, .m3uFile: [(.playlist, url)]
             case .xtream, .jellyfin: [(.server, url), (.username, username), (.password, password)]
             case .stalker: [(.portal, url), (.mac, mac)]
+            case .channelsDVR: [(.server, url)]
             }
         if let empty = required.first(where: { $0.1.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) {
             return .missingField(empty.0)
         }
+        if kind == .channelsDVR { return checkChannelsDVR() }
         guard let link else { return .invalidURL }
         if kind == .jellyfin {
             // first-run-onboarding/add-a-jellyfin-server
@@ -55,8 +58,25 @@ public struct SourceFields: Equatable, Sendable {
         return MACAddress(mac) == nil ? .invalidMAC : nil
     }
 
+    /// A Channels DVR address `ChannelsDVRClient.serverURL(from:)` turns
+    /// down, then one Remote access field filled without the other
+    /// (first-run-onboarding/add-a-channels-dvr-server).
+    private func checkChannelsDVR() -> ConnectFailure? {
+        guard ChannelsDVRClient.serverURL(from: url) != nil else {
+            let typed = url.trimmingCharacters(in: .whitespacesAndNewlines)
+            let authority = typed.components(separatedBy: "://").last?.split(separator: "/").first ?? ""
+            return authority.contains("@") ? .addressHasLogin : .invalidServer
+        }
+        let hasUsername = !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        if hasUsername != !password.isEmpty { return .missingField(hasUsername ? .password : .username) }
+        if hasUsername, HTTPBasicCredential(username: username, password: password) == nil { return .invalidUsername }
+        return nil
+    }
+
     /// The link with surrounding spaces trimmed, nil when it has no scheme.
+    /// For a Channels DVR server, the tidy server address.
     public var link: URL? {
+        if kind == .channelsDVR { return ChannelsDVRClient.serverURL(from: url) }
         guard let url = URL(string: url.trimmingCharacters(in: .whitespacesAndNewlines)), url.scheme != nil else { return nil }
         return url
     }

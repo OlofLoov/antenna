@@ -275,28 +275,29 @@ public actor GuideEngine {
         defer { finish() }
         let id = source.sourceID
         var credential: (username: String, password: String)?
+        var headers: [String: String] = [:]
         if source.epgURL == nil {
             switch source.kind {
             case .m3u, .m3uFile:
                 guard playlistLinks[id] != nil else { return }
             case .xtream:
-                let lookup = source.credentialKey.map(configuration.credential) ?? .missing
-                switch lookup {
-                case .found(let username, let password):
-                    credential = (username, password)
-                case .missing:
-                    failBeforeRequest(source, .credentialMissing, state: .unavailable)
-                    return
-                case .unreadable:
-                    failBeforeRequest(source, .credentialUnreadable, state: .failed(.credentialUnreadable))
-                    return
-                }
+                guard let found = readCredential(source, key: source.credentialKey) else { return }
+                credential = found
             case .stalker:
                 await loadPortalGuide(source, generation: generation)
                 return
             case .jellyfin:
                 await loadJellyfinGuide(source, generation: generation)
                 return
+            case .channelsDVR:
+                if let key = source.credentialKey {
+                    guard let found = readCredential(source, key: key) else { return }
+                    guard let basic = HTTPBasicCredential(username: found.username, password: found.password) else {
+                        failBeforeRequest(source, .credentialUnreadable, state: .failed(.credentialUnreadable))
+                        return
+                    }
+                    headers["Authorization"] = basic.headerValue
+                }
             }
         }
         guard
@@ -319,7 +320,7 @@ public actor GuideEngine {
         let hub = hub
         let order = source.sortOrder
         let outcome = await fetcher.fetch(
-            url, sourceID: id, loginURL: source.epgURL == nil && source.kind == .xtream,
+            url, sourceID: id, loginURL: source.epgURL == nil && (source.kind == .xtream || source.kind == .channelsDVR), headers: headers,
             progress: { hub.emit($0, order: order, generation: generation) })
         await complete(source, outcome: outcome, generation: generation, from: redacted(url))
     }
@@ -370,7 +371,7 @@ public actor GuideEngine {
     }
 
     /// Reports a failure found before any request. Sent once while it lasts.
-    private func failBeforeRequest(_ source: GuideSourceDescriptor, _ error: GuideError, state: GuideLoadingState) {
+    fileprivate func failBeforeRequest(_ source: GuideSourceDescriptor, _ error: GuideError, state: GuideLoadingState) {
         let id = source.sourceID
         configuration.log("guide failed \(id.uuidString) \(error)")
         hub.emit(.failed(sourceID: id, error), order: source.sortOrder, unlessRepeated: true)
@@ -435,5 +436,20 @@ extension GuideEngine {
         }
         if read.skipped > 0 { configuration.log("guide \(id.uuidString) skipped \(read.skipped) jellyfin rows") }
         await complete(source, outcome: read.outcome, generation: generation, from: "jellyfin \(client)")
+    }
+
+    /// The login under `key`, or nil after reporting it missing or unreadable.
+    /// No request is made in either case.
+    fileprivate func readCredential(_ source: GuideSourceDescriptor, key: String?) -> (username: String, password: String)? {
+        switch key.map(configuration.credential) ?? .missing {
+        case .found(let username, let password):
+            return (username, password)
+        case .missing:
+            failBeforeRequest(source, .credentialMissing, state: .unavailable)
+            return nil
+        case .unreadable:
+            failBeforeRequest(source, .credentialUnreadable, state: .failed(.credentialUnreadable))
+            return nil
+        }
     }
 }

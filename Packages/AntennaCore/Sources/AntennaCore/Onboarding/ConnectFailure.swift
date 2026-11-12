@@ -36,6 +36,18 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     case forbidden
     /// The server's certificate is self-signed, unknown, expired or not yet valid.
     case untrustedCertificate
+    /// `ChannelsDVRClient.serverURL(from:)` turned the address down.
+    case invalidServer
+    /// The Channels DVR address had a username or password in it.
+    case addressHasLogin
+    /// The proxy username has a colon, which Basic authentication cannot carry.
+    case invalidUsername
+    /// The address answered, but not as a Channels DVR server.
+    case notAChannelsServer(host: String)
+    /// The Channels DVR server has not finished starting.
+    case starting
+    /// The server asked for a username and password and none was sent.
+    case needsPassword
 
     /// The sentence shown under the form.
     public var message: String {
@@ -56,6 +68,12 @@ public enum ConnectFailure: Error, Equatable, Sendable {
         case .noJellyfin(let host): "No Jellyfin server answered at \(host). Check the address and try again."
         case .forbidden: "This account is not allowed to sign in from this device."
         case .untrustedCertificate: "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate."
+        case .invalidServer: "Enter a valid server address."
+        case .addressHasLogin: "Remove the username and password from the address."
+        case .invalidUsername: "Enter a username without a colon."
+        case .notAChannelsServer(let host): "No Channels DVR server at \(host)."
+        case .starting: "Channels DVR is starting. Try again in a moment."
+        case .needsPassword: "This server asks for a username and password, which Antenna cannot send yet."
         }
     }
 
@@ -85,6 +103,8 @@ public enum ConnectFailure: Error, Equatable, Sendable {
             }
         case let jellyfin as JellyfinClient.JellyfinError:
             self = Self(jellyfin: jellyfin, host: host)
+        case let dvr as ChannelsDVRError:
+            self = Self(dvr, host: host)
         case let urlError as URLError:
             self = Self(code: urlError.code, host: host)
         case is DecodingError:
@@ -103,6 +123,43 @@ public enum ConnectFailure: Error, Equatable, Sendable {
         case .decoding: self = .unreadable
         case .transport(let code): self = Self(code: code, host: host)
         }
+    }
+
+    /// A Channels DVR failure. `.unauthorized` reads as a missing password;
+    /// Connect maps it to `.rejected` itself when it sent one.
+    private init(_ error: ChannelsDVRError, host: String) {
+        switch error {
+        case .offline: self = .offline
+        case .unreachable, .transport: self = .unreachable(host: host)
+        case .notAChannelsServer: self = .notAChannelsServer(host: host)
+        case .starting: self = .starting
+        case .unauthorized: self = .needsPassword
+        case .httpStatus(let status): self = .serverError(status: status)
+        case .malformed, .credentialUnreadable: self = .unreadable
+        }
+    }
+
+    /// The line iPhone, iPad and Mac add when a Channels DVR server at home
+    /// cannot be reached, since a refused local network permission often
+    /// looks like being offline.
+    public static let localNetworkHint = "Allow local network access for Antenna in Settings."
+
+    /// True for an offline or unreachable failure when `host` is a private
+    /// IPv4 address, an IPv6 link-local address or a `.local` name.
+    public func wantsLocalNetworkHint(host: String) -> Bool {
+        switch self {
+        case .offline, .unreachable: Self.isHomeNetwork(host)
+        default: false
+        }
+    }
+
+    static func isHomeNetwork(_ host: String) -> Bool {
+        let name = host.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "[]"))
+        if name.hasSuffix(".local") { return true }
+        if name.hasPrefix("fe8") || name.hasPrefix("fe9") || name.hasPrefix("fea") || name.hasPrefix("feb") { return name.contains(":") }
+        let parts = name.split(separator: ".", omittingEmptySubsequences: false).compactMap { Int($0) }
+        guard parts.count == 4, parts.allSatisfy({ (0...255).contains($0) }) else { return false }
+        return parts[0] == 10 || (parts[0] == 172 && (16...31).contains(parts[1])) || (parts[0] == 192 && parts[1] == 168)
     }
 
     private init(code: URLError.Code, host: String) {

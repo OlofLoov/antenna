@@ -25,6 +25,11 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
         lock.withLock { responses[key(host, action)] = Response(status: status, body: Data(body.utf8)) }
     }
 
+    /// Answers requests to `path` on `host`, ahead of any `action` entry.
+    static func register(host: String, path: String, status: Int = 200, body: String) {
+        lock.withLock { responses["\(host)|path:\(path)"] = Response(status: status, body: Data(body.utf8)) }
+    }
+
     /// Makes every request to `host` fail with `code`, as when offline.
     static func fail(host: String, with code: URLError.Code) {
         lock.withLock { failures[host] = code }
