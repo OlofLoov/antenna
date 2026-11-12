@@ -50,8 +50,8 @@ public struct GuideBlock: Sendable, Equatable {
 public enum GuideRowLayout {
     /// The space between two blocks.
     public static let gap = 4.0
-    /// No block is drawn narrower than this.
-    public static let minimumWidth = 40.0
+    /// No block is drawn narrower than this on Apple TV.
+    public static let minimumWidth = GuideScale.television.minimumBlockWidth
     public static let rowHeight = 84.0
 
     /// The row from `floor` to `ceiling` with no holes: every programme, in
@@ -76,20 +76,23 @@ public enum GuideRowLayout {
         return segments
     }
 
-    /// The segments that overlap `window`, laid out at 370 pt per half hour
-    /// with a 4 pt gap after each. A block cut by the left edge starts at 0
-    /// and is marked as started earlier. One narrower than 40 pt widens to
-    /// 40 and pushes the next block's leading edge right while keeping that
-    /// block's trailing edge, so blocks never overlap.
-    public static func blocks(_ segments: [GuideSegment], in window: DateInterval, now: Date) -> [GuideBlock] {
-        let width = GuideTimeline.offset(of: window.end, from: window.start)
+    /// The segments that overlap `window`, laid out at `scale`'s column
+    /// width, 370 pt per half hour on Apple TV, with a 4 pt gap after each.
+    /// A block cut by the left edge starts at 0 and is marked as started
+    /// earlier. One narrower than the scale's minimum, 40 pt on Apple TV,
+    /// widens to it and pushes the next block's leading edge right while
+    /// keeping that block's trailing edge, so blocks never overlap.
+    public static func blocks(
+        _ segments: [GuideSegment], in window: DateInterval, now: Date, scale: GuideScale = .television
+    ) -> [GuideBlock] {
+        let width = scale.offset(of: window.end, from: window.start)
         var previousTrailing = -Double.infinity
         var blocks: [GuideBlock] = []
         for segment in segments where segment.stop > window.start && segment.start < window.end {
-            let naturalLeading = max(0, GuideTimeline.offset(of: segment.start, from: window.start))
-            let naturalTrailing = min(width, GuideTimeline.offset(of: segment.stop, from: window.start)) - gap
+            let naturalLeading = max(0, scale.offset(of: segment.start, from: window.start))
+            let naturalTrailing = min(width, scale.offset(of: segment.stop, from: window.start)) - gap
             let leading = max(naturalLeading, previousTrailing + gap)
-            let trailing = max(naturalTrailing, leading + minimumWidth)
+            let trailing = max(naturalTrailing, leading + scale.minimumBlockWidth)
             previousTrailing = trailing
             blocks.append(
                 GuideBlock(

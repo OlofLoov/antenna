@@ -7,7 +7,7 @@ import Foundation
 public struct GuideTimeline: Sendable {
     /// One column covers half an hour.
     public static let column: TimeInterval = 30 * 60
-    public static let columnWidth = 370.0
+    public static let columnWidth = GuideScale.television.columnWidth
     public static let visibleColumns = 4
     /// What the window shows: two hours.
     public static let windowLength = column * Double(visibleColumns)
@@ -89,7 +89,7 @@ public struct GuideTimeline: Sendable {
 
     /// Points from the window's left edge to `date`, at 370 pt per half hour.
     public static func offset(of date: Date, from start: Date) -> Double {
-        date.timeIntervalSince(start) / column * columnWidth
+        GuideScale.television.offset(of: date, from: start)
     }
 
     /// Where the now line goes, in points from the window's left edge, or
