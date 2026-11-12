@@ -73,6 +73,7 @@ final class LiveModel {
     private(set) var sources: [LiveSource] = []
     private(set) var channels: [Channel] = []
     var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+    var groupRules = GroupRules()
     /// The group whose channels the list shows.
     var group: CatalogueGroup = .all
     /// What the user typed into the filter field on iPad and Mac.
@@ -123,7 +124,7 @@ final class LiveModel {
     @ObservationIgnored var restore = LiveRestore()
     @ObservationIgnored private var tuning: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
-    @ObservationIgnored private var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
+    @ObservationIgnored var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
     @ObservationIgnored private var hiding: Task<Void, Never>?
     @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
     @ObservationIgnored private var suspended = false
@@ -277,7 +278,7 @@ final class LiveModel {
         guard all != channels else { return }
         if multiView != nil { Task { await multiViewChannelsChanged() } }
         channels = all
-        catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents)
+        catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents, rules: groupRules)
         names = ChannelNameIndex(catalogue)
         restoreGroup()
     }

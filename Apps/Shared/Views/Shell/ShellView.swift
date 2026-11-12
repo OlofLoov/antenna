@@ -26,6 +26,7 @@
         /// The recents the catalogue lists; Recents open in the overlay keeps its order
         /// (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
         @State private var shownRecents: [LastChannelKey] = []
+        @State private var groupRules = GroupRules()
         @Environment(ShelfLibrary.self) private var shelves
         /// Search keeps its query while the app runs.
         @State private var search = SearchModel()
@@ -108,7 +109,8 @@
                 zapBar.playPause()
             }
             .onChange(of: catalogueInputs, initial: true) {
-                catalogue = .shell(channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents)
+                catalogue = .shell(
+                    channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents, rules: groupRules)
                 overlayCatalogueChanged()
             }
             .onChange(of: model.recents) { _, _ in showLatestRecents() }
@@ -143,6 +145,7 @@
             .task { await model.player.run() }
             .task { await model.trackSession() }
             .modifier(SourceDeletions(removed: model.sourceDeleted, defaults: model.session.store.defaults))
+            .modifier(GroupRulesFeed { groupRules = $0 })
             .modifier(multiViewHost)
             .onChange(of: scenePhase) { _, phase in
                 // Leaving the app stops the ten-second count.
@@ -241,7 +244,8 @@
         }
 
         private var catalogueInputs: ShellCatalogueInputs {
-            ShellCatalogueInputs(channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile)
+            ShellCatalogueInputs(
+                channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile, rules: groupRules)
         }
 
         private var overlayGuide: OverlayGuide {

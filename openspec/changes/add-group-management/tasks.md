@@ -3,13 +3,13 @@
 ## 1. Records and policy
 
 - [ ] 1.1 Add the group, member and passcode records with additive migration, ignoring malformed records
-- [ ] 1.2 Add the group policy and locks-open flag to the catalogue with no-rules defaults, and verify with a core test citing `channel-catalogue/group-list-and-order`
+- [x] 1.2 Add the group policy and locks-open flag to the catalogue with no-rules defaults, and verify with a core test citing `channel-catalogue/group-list-and-order`
 
 ## 2. Hide, order, rename
 
-- [ ] 2.1 Leave hidden groups out of lists and search unless enabled, without renumbering, and verify with a core test citing `group-management/hide-groups-you-never-watch`
-- [ ] 2.2 Apply the user's group order below Favorites and All channels, and verify with a core test citing `group-management/put-groups-in-your-order`
-- [ ] 2.3 Apply custom names across screens with the empty-name rules, and verify with an integration test citing `group-management/give-a-group-your-own-name`
+- [x] 2.1 Leave hidden groups out of lists and search unless enabled, without renumbering, and verify with a core test citing `group-management/hide-groups-you-never-watch`
+- [x] 2.2 Apply the user's group order below Favorites and All channels, and verify with a core test citing `group-management/put-groups-in-your-order`
+- [x] 2.3 Apply custom names across screens with the empty-name rules, and verify with an integration test citing `group-management/give-a-group-your-own-name`
 - [ ] 2.4 List settings for groups that are gone with Remove, skipping unloaded playlists, and verify with a core test citing `group-management/settings-for-groups-that-are-gone`
 
 ## 3. Own groups
@@ -18,7 +18,7 @@
 
 ## 4. Passcode and locks
 
-- [ ] 4.1 Hide locked channels, counts and numbers while locks are closed, and verify with a core test citing `group-management/locked-channels-stay-out-of-reach`
+- [x] 4.1 Hide locked channels, counts and numbers while locks are closed, and verify with a core test citing `group-management/locked-channels-stay-out-of-reach`
 - [ ] 4.2 Set the first passcode and store only a salted verifier, and verify with an integration test citing `group-management/lock-a-group-with-a-passcode`
 - [ ] 4.3 Show the prompt on locked groups and open the locks on the right passcode, and verify with a UI test citing `group-management/unlock-with-the-passcode`
 - [ ] 4.4 Add the per-device lockout that survives relaunch, and verify with an integration test citing `group-management/guessing-the-passcode-is-slow`

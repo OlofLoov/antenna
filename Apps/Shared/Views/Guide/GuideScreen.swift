@@ -78,7 +78,7 @@
                     days(data, now: now)
                 } rows: {
                     if data.rows.isEmpty {
-                        GuideGrid.Empty(text: "No channels in \(group.label)")
+                        GuideGrid.Empty(text: "No channels in \(catalogue.label(of: group))")
                     } else {
                         ZStack(alignment: .topLeading) {
                             holder(data, now: now)

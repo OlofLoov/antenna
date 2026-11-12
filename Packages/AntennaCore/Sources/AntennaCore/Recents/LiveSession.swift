@@ -12,7 +12,7 @@ public struct LiveSession: Codable, Hashable, Sendable {
     /// A Live group in a form that survives a relaunch.
     public struct Group: Codable, Hashable, Sendable {
         public enum Kind: String, Codable, Sendable {
-            case favorites, recents, all, named, ungrouped
+            case favorites, recents, all, named, ungrouped, own
         }
 
         public var kind: Kind
@@ -31,10 +31,14 @@ public struct LiveSession: Codable, Hashable, Sendable {
             case .ungrouped(let source):
                 kind = .ungrouped
                 sourceID = source
+            case .own(let id):
+                kind = .own
+                sourceID = id
             }
         }
 
-        /// Nil when a named or ungrouped group lost its source or name.
+        /// Nil when a named, ungrouped or own group lost its source, name or id.
+        /// An own group keeps its id in `sourceID`.
         public var group: CatalogueGroup? {
             switch kind {
             case .favorites: .favorites
@@ -42,6 +46,7 @@ public struct LiveSession: Codable, Hashable, Sendable {
             case .all: .all
             case .named: sourceID.flatMap { id in name.map { .named(id, $0) } }
             case .ungrouped: sourceID.map(CatalogueGroup.ungrouped)
+            case .own: sourceID.map(CatalogueGroup.own)
             }
         }
     }

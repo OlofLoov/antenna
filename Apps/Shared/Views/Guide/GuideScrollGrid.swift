@@ -54,9 +54,10 @@
         var body: some View {
             VStack(alignment: .leading, spacing: GuideBoard.rowGap) {
                 GuideGridHeader(
-                    scroll: scroll, timeline: data.timeline, scale: scale, now: now, title: live.group.label, count: data.rows.count)
+                    scroll: scroll, timeline: data.timeline, scale: scale, now: now, title: live.catalogue.label(of: live.group),
+                    count: data.rows.count)
                 if data.rows.isEmpty {
-                    GuideBoard.Empty(text: "No channels in \(live.group.label)")
+                    GuideBoard.Empty(text: "No channels in \(live.catalogue.label(of: live.group))")
                         .accessibilityIdentifier("guide.empty")
                 } else {
                     grid

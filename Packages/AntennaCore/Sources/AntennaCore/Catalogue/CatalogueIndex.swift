@@ -212,7 +212,7 @@ struct CatalogueIndex: Sendable {
             case let .ungrouped(id):
                 source = id
                 ungrouped.insert(id)
-            case .favorites, .recents, .all:
+            case .favorites, .recents, .all, .own:
                 continue
             }
             if seenSources.insert(source).inserted { sources.append(source) }
@@ -236,6 +236,12 @@ struct CatalogueIndex: Sendable {
     /// The lowest assigned number whose decimal form starts with `digits`
     /// after leading zeros are stripped.
     func match(digits: String) -> RowKey? {
+        Self.match(digits: digits, sortedNumbers: sortedNumbers, rows: allRows)
+    }
+
+    /// The row in `rows` whose number in `sortedNumbers`, ascending and
+    /// parallel to `rows`, is the lowest that starts with `digits`.
+    static func match(digits: String, sortedNumbers: [Int], rows: [RowKey]) -> RowKey? {
         guard !digits.isEmpty, digits.unicodeScalars.allSatisfy({ ("0"..."9").contains($0) }) else { return nil }
         let stripped = digits.drop { $0 == "0" }
         guard let highest = sortedNumbers.last, !stripped.isEmpty,
@@ -243,9 +249,9 @@ struct CatalogueIndex: Sendable {
         else { return nil }
         var span = 1
         while low <= highest {
-            let first = firstIndex(atLeast: low)
+            let first = firstIndex(atLeast: low, in: sortedNumbers)
             if first < sortedNumbers.count, sortedNumbers[first] < low + span {
-                return allRows[first]
+                return rows[first]
             }
             low *= 10
             span *= 10
@@ -253,7 +259,7 @@ struct CatalogueIndex: Sendable {
         return nil
     }
 
-    private func firstIndex(atLeast value: Int) -> Int {
+    private static func firstIndex(atLeast value: Int, in sortedNumbers: [Int]) -> Int {
         var low = 0
         var high = sortedNumbers.count
         while low < high {

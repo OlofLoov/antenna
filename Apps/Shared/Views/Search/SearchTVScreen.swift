@@ -14,6 +14,7 @@
         /// Runs once a picked channel plays, so the shell can focus the picture.
         let watching: @MainActor () -> Void
         @Environment(SearchModel.self) private var model
+        @AppStorage(GroupDefaults.searchHidden) private var searchHidden = false
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
@@ -117,7 +118,7 @@
             let finished = shell.sources.map { $0.state != .loading } + shelfSources.map { $0.state != .loading }
             return SearchCorpus(
                 catalogue: catalogue, sourceOrder: order, guide: guide, titles: library.movies.titles + library.series.titles,
-                hasTitles: library.hasXtream, sources: SearchSources(finished: finished))
+                hasTitles: library.hasXtream, sources: SearchSources(finished: finished), includeHidden: searchHidden)
         }
 
         private var guide: GuideIndex {

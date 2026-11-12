@@ -8,6 +8,7 @@
     struct SearchSupply: ViewModifier {
         let picks: SearchPicks
         @Environment(SearchModel.self) private var model
+        @AppStorage(GroupDefaults.searchHidden) private var searchHidden = false
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
         @Environment(ShelfActivity.self) private var activity
@@ -48,7 +49,7 @@
             let finished = live.sources.map { $0.state != .loading } + shelfSources.map { $0.state != .loading }
             return SearchCorpus(
                 catalogue: live.catalogue, sourceOrder: order, guide: guide, titles: shelves.movies.titles + shelves.series.titles,
-                hasTitles: shelves.hasXtream, sources: SearchSources(finished: finished))
+                hasTitles: shelves.hasXtream, sources: SearchSources(finished: finished), includeHidden: searchHidden)
         }
 
         private var guide: GuideIndex {
@@ -70,6 +71,7 @@
         /// Cancel: back to the tab the user came from.
         let cancel: () -> Void
         @Environment(SearchModel.self) private var model
+        @AppStorage(GroupDefaults.searchHidden) private var searchHidden = false
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfActivity.self) private var activity
         @FocusState private var focused: Bool
