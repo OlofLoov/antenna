@@ -7,6 +7,8 @@
     struct FileImportAsk: Equatable {
         /// The file source Re-import was chosen on; nil adds a source.
         var replacing: ImportRequest.Target?
+        /// A file dropped on the window, which skips the picker.
+        var dropped: URL?
     }
 
     /// "Import a file" and Re-import in Sources and Settings: the picker,
@@ -20,7 +22,15 @@
 
         func body(content: Content) -> some View {
             content
-                .onChange(of: ask) { _, new in if new != nil { picking = true } }
+                .onChange(of: ask) { _, new in
+                    guard let new else { return }
+                    if let url = new.dropped {
+                        importing = ImportRequest(url: url, replacing: new.replacing)
+                        ask = nil
+                    } else {
+                        picking = true
+                    }
+                }
                 .playlistPicker(isPresented: $picking) { url in
                     importing = ImportRequest(url: url, replacing: ask?.replacing)
                     ask = nil

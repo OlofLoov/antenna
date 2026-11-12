@@ -32,7 +32,7 @@
             }
             let waiting = sources.filter { $0.state == .waitingForLogin }
             guard sources.contains(where: \.state.isLoadedWithChannels) else {
-                let lines = waiting.map { "\($0.name): waiting for its login to sync from iCloud" }
+                let lines = waiting.map(\.waitingLine)
                 let failures = sources.filter { $0.state == .failed || $0.state == .offline }
                 if !failures.isEmpty, failures.allSatisfy({ $0.state == .offline }) {
                     self = .offline

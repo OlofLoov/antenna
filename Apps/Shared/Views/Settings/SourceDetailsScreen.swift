@@ -18,6 +18,9 @@ struct SourceDetailsScreen: View {
     @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
     @State private var editor: SourceEditor?
     @State private var deleting: SourceRecord?
+    #if !os(tvOS)
+        @State private var reimport: FileImportAsk?
+    #endif
 
     private var record: SourceRecord? { sources.first { $0.id == id } }
 
@@ -31,6 +34,9 @@ struct SourceDetailsScreen: View {
         }
         .navigationTitle(record?.name ?? "")
         .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud, delete: delete)
+        #if !os(tvOS)
+            .modifier(SettingsFileImport(ask: $reimport))
+        #endif
         .onChange(of: record == nil) { _, gone in
             if gone { dismiss() }
         }
@@ -64,6 +70,13 @@ struct SourceDetailsScreen: View {
                     Button("Refresh now") { refresher?.refresh([record.id]) }
                         .accessibilityIdentifier("settings.details.refresh")
                 }
+                #if !os(tvOS)
+                    if record.kind == .m3uFile {
+                        // local-m3u-file-import/re-import-onto-the-same-source
+                        Button("Re-import…") { reimport = FileImportAsk(replacing: .init(id: record.id, name: record.name)) }
+                            .accessibilityIdentifier("import.reimport")
+                    }
+                #endif
                 #if os(tvOS)
                     Button("Move up") { SourceOrder.move(record, by: -1, among: sources, in: context) }
                         .disabled(sources.first?.id == record.id)
@@ -93,7 +106,8 @@ struct SourceDetailsScreen: View {
         #else
             let text = SourceStatusText()
         #endif
-        return text.detailLines(SettingsView.status(of: record, refresher: refresher), account: nil, now: now)
+        return SettingsView.fileLines(record)
+            + text.detailLines(SettingsView.status(of: record, refresher: refresher), account: nil, now: now)
     }
 
     private func save(_ editor: SourceEditor) {

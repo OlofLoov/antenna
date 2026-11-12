@@ -127,6 +127,7 @@ import Testing
         let first = try importFile(name: "Home")
         first.sortOrder = 3
         let firstIDs = try await loader(tag: "").load(try #require(first.descriptor)).channels.map(\.id)
+        context.insert(FavoriteRecord(channelID: firstIDs[1], sourceID: first.id))
         let newer = Self.withLogins.replacingOccurrences(of: "p1", with: "p9") + "#EXTINF:-1,Four\nhttp://example.com/4.ts\n"
         let replaced = try importFile(newer, replacing: first.id)
         #expect(replaced.id == first.id)
@@ -137,6 +138,8 @@ import Testing
         #expect(Array(playlist.channels.map(\.id).prefix(3)) == firstIDs)
         #expect(playlist.channels[0].streamURL.absoluteString == "http://panel.example.com/live/u1/p9/1.ts")
         #expect(playlist.channels.count == 4)
+        let favorite = try #require(try context.fetch(FetchDescriptor<FavoriteRecord>()).first)
+        #expect(playlist.channels.contains { $0.id == favorite.channelID } && favorite.sourceID == replaced.id)
     }
 
     @Test("local-m3u-file-import/re-import-onto-the-same-source: a file without logins removes the old login")

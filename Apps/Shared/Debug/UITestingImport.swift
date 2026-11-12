@@ -114,10 +114,35 @@
             fixtures(after: openArgument, in: ProcessInfo.processInfo.arguments)?.first?.write()
         }
 
+        static let dropArgument = "-ui-testing-drop"
+
+        /// `-ui-testing-drop good`, `image` or `text`: the item a drag over
+        /// the window carries. The drop target shows for it as during a drag,
+        /// and tapping the target drops it. Nil without the argument.
+        @MainActor static func draggedItem() -> NSItemProvider? {
+            let arguments = ProcessInfo.processInfo.arguments
+            guard let index = arguments.firstIndex(of: dropArgument), arguments.index(after: index) < arguments.endIndex else { return nil }
+            switch arguments[arguments.index(after: index)] {
+            case "image":
+                let provider = NSItemProvider(item: Data([0x89, 0x50, 0x4E, 0x47]) as NSData, typeIdentifier: "public.png")
+                provider.suggestedName = "photo.png"
+                return provider
+            case "text":
+                return NSItemProvider(object: "News, Sport" as NSString)
+            default:
+                let url = Fixture.good.write()
+                let provider = NSItemProvider(contentsOf: url)
+                provider?.suggestedName = url.lastPathComponent
+                return provider
+            }
+        }
+
         /// In-memory logins while either argument is present.
         static let credentials: (any CredentialStoring)? = {
             let arguments = ProcessInfo.processInfo.arguments
-            guard arguments.contains(pickArgument) || arguments.contains(openArgument) else { return nil }
+            guard arguments.contains(pickArgument) || arguments.contains(openArgument) || arguments.contains(dropArgument) else {
+                return nil
+            }
             return UITestingOnboarding.Credentials()
         }()
     }
