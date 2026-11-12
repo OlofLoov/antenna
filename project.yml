@@ -53,7 +53,6 @@ targets:
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
             LSItemContentTypes: [public.m3u-playlist]
-        LSSupportsOpeningDocumentsInPlace: false
         AntennaTermsURL: https://codecrave.se/antenna/terms
         AntennaPrivacyURL: https://codecrave.se/antenna/privacy
     settings:
