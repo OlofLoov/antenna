@@ -14,6 +14,13 @@ import Testing
         #expect(SourceFields(kind: .xtream).check()?.message == "Enter the server address.")
     }
 
+    @Test("source-management/an-xtream-source-needs-a-username-and-password: blank fields stop Xtream, M3U needs neither")
+    func xtreamNeedsALogin() {
+        #expect(SourceFields(kind: .xtream, url: "http://a.test", username: " ", password: "p").check() == .missingField(.username))
+        #expect(SourceFields(kind: .xtream, url: "http://a.test", username: "u", password: "\t").check() == .missingField(.password))
+        #expect(SourceFields(kind: .m3u, url: "http://a.test/list.m3u").check() == nil)
+    }
+
     @Test("first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting: a link without a scheme")
     func invalidLink() {
         let fields = SourceFields(kind: .m3u, url: "example.com/list.m3u")

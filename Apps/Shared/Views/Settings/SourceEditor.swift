@@ -100,7 +100,8 @@ final class SourceEditor {
             return false
         }
         let saved = savedLogin
-        if kind == .xtream, saved == nil, username.isEmpty || password.isEmpty {
+        // source-management/an-xtream-source-needs-a-username-and-password
+        if kind == .xtream, username.isBlank || (saved == nil && password.isBlank) {
             error = "Enter your username and password."
             return false
         }
@@ -150,7 +151,7 @@ final class SourceEditor {
     /// The login Save checks and keeps: the typed password, or the saved
     /// one when the field is empty. A portal's MAC goes in colon form.
     private func credential(saved: CredentialStore.Credential?) -> CredentialStore.Credential {
-        let password = password.isEmpty ? (saved?.password ?? "") : password
+        let password = password.isBlank ? (saved?.password ?? "") : password
         guard kind == .stalker else { return .init(username: username, password: password) }
         let fields = SourceFields(kind: .stalker, username: username, password: password, mac: mac)
         return SourceConnector.credential(for: fields) ?? .init(username: mac, password: password)
@@ -180,4 +181,8 @@ final class SourceEditor {
         let id = id
         return try? context.fetch(FetchDescriptor<SourceRecord>(predicate: #Predicate { $0.id == id })).first
     }
+}
+
+extension String {
+    fileprivate var isBlank: Bool { trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 }
