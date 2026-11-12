@@ -18,7 +18,7 @@ final class SendLoginsUITests: XCTestCase {
     }
 
     private static func link(_ sources: [String]) -> String {
-        "https://antenna.codecrave.se/setup?v=2&t=AAAAAAAAAAAAAAAAAAAAAA&k=\(key)&s=\(sources.joined(separator: ","))"
+        "https://antenna.code-crave.se/setup?v=2&t=AAAAAAAAAAAAAAAAAAAAAA&k=\(key)&s=\(sources.joined(separator: ","))"
     }
 
     private func launch(
@@ -73,7 +73,7 @@ final class SendLoginsUITests: XCTestCase {
 
     // apple-tv-login-from-iphone/the-iphone-asks-before-it-sends
     func testADamagedSignInLinkSendsNothing() {
-        let app = launch([], link: "https://antenna.codecrave.se/setup?v=2&t=AAAAAAAAAAAAAAAAAAAAAA&k=short&s=\(Self.home)")
+        let app = launch([], link: "https://antenna.code-crave.se/setup?v=2&t=AAAAAAAAAAAAAAAAAAAAAA&k=short&s=\(Self.home)")
         XCTAssertTrue(app.navigationBars["Add a source"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.element("sendLogins").exists)
     }

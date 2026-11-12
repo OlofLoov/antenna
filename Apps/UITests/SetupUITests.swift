@@ -6,7 +6,7 @@ import XCTest
 /// onboarding stub, where `http://onboarding.test/tv.m3u` holds two channels.
 @MainActor
 final class SetupUITests: XCTestCase {
-    static let link = "https://antenna.codecrave.se/setup?v=1&t=AAAAAAAAAAAAAAAAAAAAAA"
+    static let link = "https://antenna.code-crave.se/setup?v=1&t=AAAAAAAAAAAAAAAAAAAAAA"
 
     override func setUp() {
         continueAfterFailure = false
@@ -48,7 +48,7 @@ final class SetupUITests: XCTestCase {
 
     // iphone-as-setup-device/scanning-opens-the-setup-form-on-the-iphone
     func testADamagedLinkOpensThePlainForm() {
-        let app = launch(link: "https://antenna.codecrave.se/setup?v=1&t=broken")
+        let app = launch(link: "https://antenna.code-crave.se/setup?v=1&t=broken")
         XCTAssertTrue(app.navigationBars["Add a source"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.element("onboarding.fromTV.banner").exists)
         XCTAssertFalse(app.element("onboarding.fromTV.update").exists)
@@ -57,7 +57,7 @@ final class SetupUITests: XCTestCase {
 
     // iphone-as-setup-device/scanning-opens-the-setup-form-on-the-iphone
     func testANewerLinkAsksToUpdate() {
-        let app = launch(link: "https://antenna.codecrave.se/setup?v=3&t=AAAAAAAAAAAAAAAAAAAAAA")
+        let app = launch(link: "https://antenna.code-crave.se/setup?v=3&t=AAAAAAAAAAAAAAAAAAAAAA")
         XCTAssertTrue(app.element("onboarding.fromTV.update").waitForExistence(timeout: 10))
         let update = app.element("onboarding.fromTV.update").label
         XCTAssertTrue(update.hasPrefix("This code is from a newer Antenna. Update Antenna on this iPhone"))

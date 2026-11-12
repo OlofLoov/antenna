@@ -32,7 +32,7 @@ import Testing
     @Test("iphone-as-setup-device/the-code-carries-nothing-but-a-random-one-time-code: the setup card's link adds the key only")
     func setupCardLink() throws {
         let link = SetupLink(token: token, key: key)
-        #expect(link.url.absoluteString == "https://antenna.codecrave.se/setup?v=2&t=\(token.text)&k=\(key.text)")
+        #expect(link.url.absoluteString == "https://antenna.code-crave.se/setup?v=2&t=\(token.text)&k=\(key.text)")
         #expect(!link.asksForLogins)
         #expect(try SetupLink(url: link.url) == link)
     }
@@ -44,13 +44,13 @@ import Testing
         let nine = ids.map { SetupLink(token: token, key: key, sources: [$0]).url }
             .compactMap { URLComponents(url: $0, resolvingAgainstBaseURL: false)?.queryItems?.last?.value }
             .joined(separator: ",")
-        let url = try #require(URL(string: "https://antenna.codecrave.se/setup?v=2&t=\(token.text)&k=\(key.text)&s=\(nine)"))
+        let url = try #require(URL(string: "https://antenna.code-crave.se/setup?v=2&t=\(token.text)&k=\(key.text)&s=\(nine)"))
         #expect(throws: SetupLink.Error.malformedSources) { try SetupLink(url: url) }
     }
 
     @Test("apple-tv-login-from-iphone/the-iphone-asks-before-it-sends: a damaged sign-in link says why")
     func damagedSignInLinks() throws {
-        let base = "https://antenna.codecrave.se/setup?v=2&t=\(token.text)"
+        let base = "https://antenna.code-crave.se/setup?v=2&t=\(token.text)"
         let one = try #require(
             URLComponents(url: SetupLink(token: token, key: key, sources: [ids[0]]).url, resolvingAgainstBaseURL: false)?
                 .queryItems?.last?.value)
@@ -64,8 +64,8 @@ import Testing
             ("\(base)&k=\(key.text)&s=\(one),\(one)", .malformedSources),
             ("\(base)&k=\(key.text)&s=abc", .malformedSources),
             ("\(base)&k=\(key.text)&s=\(one)&s=\(one)", .notASetupLink),
-            ("https://antenna.codecrave.se/setup?v=2&t=abc&k=short", .malformedToken),
-            ("https://antenna.codecrave.se/setup?v=3&t=\(token.text)&k=\(key.text)", .unsupportedVersion("3")),
+            ("https://antenna.code-crave.se/setup?v=2&t=abc&k=short", .malformedToken),
+            ("https://antenna.code-crave.se/setup?v=3&t=\(token.text)&k=\(key.text)", .unsupportedVersion("3")),
         ]
         for (text, expected) in cases {
             let url = try #require(URL(string: text))
@@ -75,7 +75,7 @@ import Testing
 
     @Test("iphone-as-setup-device/scanning-opens-the-setup-form-on-the-iphone: a version 1 link still reads")
     func versionOneStillReads() throws {
-        let url = try #require(URL(string: "https://antenna.codecrave.se/setup?v=1&t=\(token.text)&k=ignored&s=ignored"))
+        let url = try #require(URL(string: "https://antenna.code-crave.se/setup?v=1&t=\(token.text)&k=ignored&s=ignored"))
         let link = try SetupLink(url: url)
         #expect(link == SetupLink(token: token))
         #expect(link.key == nil && link.sources.isEmpty)

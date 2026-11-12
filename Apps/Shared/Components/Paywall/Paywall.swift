@@ -125,7 +125,7 @@ struct PaywallLinks: Equatable {
     var privacy: URL?
 
     static let fixture = PaywallLinks(
-        terms: URL(string: "https://codecrave.se/antenna/terms"), privacy: URL(string: "https://codecrave.se/antenna/privacy"))
+        terms: URL(string: "https://antenna.code-crave.se/terms"), privacy: URL(string: "https://antenna.code-crave.se/privacy"))
 
     /// A missing or bad value stops a debug build and reads as nil in release,
     /// where the legal line then shows the words without a link.
