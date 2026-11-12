@@ -71,6 +71,7 @@
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
         @Environment(SearchModel.self) private var search
+        @Environment(GuideBoardModel.self) private var guide
         @State private var section: LiveSection = .live
         /// Movies' or Series' rows or grid; picking a section resets it.
         @State private var browse = ShelfBrowse()
@@ -154,6 +155,7 @@
             .background(Palette.ground)
             .environment(\.browseMetrics, .regular)
             .environment(\.playerFailureMetrics, .regular)
+            .environment(\.shellNavigator, navigator)
             .overlay {
                 #if DEBUG
                     UITestingLive.Probe(engine: live.engine)
@@ -223,10 +225,10 @@
             ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
                 Browse.GroupRow(
                     title: group.label, systemImage: group.systemImage, count: live.catalogue.count(of: group),
-                    isSelected: section == .live && group == live.group
+                    isSelected: (section == .live || section == .guide) && group == live.group
                 ) {
                     live.show(group)
-                    section = .live
+                    if section != .guide { section = .live }
                     shown = columns == .picture ? .list : nil
                 }
                 .groupSpokenLabel(group, count: live.catalogue.count(of: group))
@@ -263,7 +265,8 @@
                         .onDisappear { live.restore.liveShown = false }
                 }
             case .guide:
-                folded(columns) { GuideView() }
+                GuideRegularScreen { sidebarButton(columns) }
+                    .environment(\.guideBoardOpenLive) { section = .live }
             case .movies:
                 ShelfRegularScreen(kind: .movie, browse: $browse) { sidebarButton(columns) }
                     .environment(\.openSearch, searchOpener)
@@ -285,9 +288,7 @@
             SearchPicks(
                 channel: { watch($0) },
                 programme: { hit, channel in
-                    guard !hit.isOnNow else { return watch(channel) }
-                    watch(channel)
-                    live.pick(channel, later: hit.programme)
+                    guard !hit.isOnNow, navigator.showLater(hit.programme, on: channel) else { return watch(channel) }
                 },
                 title: { title in
                     switch title.kind {
@@ -296,6 +297,9 @@
                     }
                 })
         }
+
+        /// Opens Search, the Guide at a programme, or Live, and sets the shared group.
+        private var navigator: ShellNavigator { .window(live: live, guide: guide) { section = LiveSection($0) } }
 
         /// Typing in the Movies or Series toolbar field opens Search set to
         /// that kind with the text carried over.

@@ -99,8 +99,9 @@ final class SearchRegularUITests: XCTestCase {
         XCTAssertFalse(app.element("search.empty").exists)
     }
 
-    // search/pick-a-programme
-    func testPickingALaterProgrammeShowsItAsLaterUnderUpNext() throws {
+    // guide-on-iphone-ipad-and-mac/open-at-a-programme, from Search
+    // guide-on-iphone-ipad-and-mac/start-watching-from-the-guide, a later programme
+    func testPickingALaterProgrammeOpensTheGuideAtIt() throws {
         let app = try launch()
         let field = openSearch(app)
         field.typeText("late film")
@@ -108,6 +109,18 @@ final class SearchRegularUITests: XCTestCase {
         XCTAssertTrue(result.waitForExistence(timeout: 5))
         result.tap()
 
+        expect(app.element("guide.panel.title"), "label == 'Late Film'")
+        app.element("guide.panel.close").tap()
+        XCTAssertTrue(app.element("browse.section.guide").isSelected)
+        XCTAssertTrue(app.element("guide.day.0").isSelected)
+        let block = app.descendants(matching: .any).matching(
+            NSPredicate(format: "identifier BEGINSWITH 'guide.block.' AND label CONTAINS 'Late Film'")
+        )
+        .firstMatch
+        XCTAssertTrue(block.isSelected, "the programme is scrolled to and selected")
+
+        block.tap()
+        app.element("guide.watch").tap()
         expect(app.element("browse.panel.now"), "label CONTAINS 'News One'")
         let later = app.element("browse.later")
         XCTAssertTrue(later.waitForExistence(timeout: 5))

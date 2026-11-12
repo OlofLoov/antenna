@@ -17,6 +17,8 @@
         @State private var lifecycle: PlaybackLifecycle?
         /// Search keeps its query across tabs and layouts.
         @State private var search = SearchModel()
+        /// The Guide keeps its day, zoom and details across layouts.
+        @State private var guide = GuideBoardModel(store: .app)
         #if os(iOS)
             @Environment(\.horizontalSizeClass) private var sizeClass
         #endif
@@ -27,10 +29,12 @@
                 if let live, let shelves, let playback {
                     layout
                         .environment(search)
+                        .environment(guide)
                         // Playback stops before "Who's watching?" (profiles/switching-profile).
                         .environment(\.switchProfile, stopping(live))
                         .modifier(LiveSync(live: live))
                         .modifier(ShelfSync(library: shelves, playback: playback))
+                        .onChange(of: compact, initial: true) { _, compact in guide.compact = compact }
                 }
             }
             .preferredColorScheme(.dark)
@@ -53,14 +57,18 @@
         /// The tab bar on iPhone and in a narrow iPad window, the columns on
         /// a wider iPad window and on Mac. Both read the same model.
         @ViewBuilder private var layout: some View {
-            #if os(iOS)
-                if sizeClass == .compact || forcedCompact {
-                    CompactTabs()
-                } else {
-                    LiveRegularView()
-                }
-            #else
+            if compact {
+                CompactTabs()
+            } else {
                 LiveRegularView()
+            }
+        }
+
+        private var compact: Bool {
+            #if os(iOS)
+                sizeClass == .compact || forcedCompact
+            #else
+                false
             #endif
         }
 
@@ -108,6 +116,7 @@
         @Query private var records: [SourceRecord]
         /// The last session's tab was opened once, at the first appearance.
         @State private var restored = false
+        @Environment(GuideBoardModel.self) private var guide
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -118,7 +127,8 @@
                     LiveCompactView()
                 }
                 SwiftUI.Tab("Guide", systemImage: "list.bullet.rectangle", value: .guide) {
-                    GuideView()
+                    GuideCompactScreen()
+                        .environment(\.guideBoardOpenLive) { selection = .live }
                 }
                 if shelves.hasXtream {
                     SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
@@ -148,6 +158,7 @@
                 restored = true
                 selection = Tab(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
             }
+            .environment(\.shellNavigator, navigator)
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with
                 // the picture; turning it back returns to the list
@@ -189,9 +200,7 @@
             SearchPicks(
                 channel: { watch($0) },
                 programme: { hit, channel in
-                    guard !hit.isOnNow else { return watch(channel) }
-                    watch(channel)
-                    live.pick(channel, later: hit.programme)
+                    guard !hit.isOnNow, navigator.showLater(hit.programme, on: channel) else { return watch(channel) }
                 },
                 title: { title in
                     switch title.kind {
@@ -199,6 +208,14 @@
                     case .series: shelves.openPage(title, from: .search, in: title.kind)
                     }
                 })
+        }
+
+        /// Opens Search, the Guide at a programme, or Live, and sets the
+        /// group Live and the Guide share.
+        private var navigator: ShellNavigator {
+            .window(live: live, guide: guide) { place in
+                selection = place == .live ? .live : place == .guide ? .guide : .search
+            }
         }
 
         /// The Movies tab's search button opens Search set to movies or series.
