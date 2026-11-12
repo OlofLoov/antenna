@@ -35,7 +35,7 @@
             .onDisappear { live.restore.liveShown = false }
             .overlay {
                 #if DEBUG
-                    UITestingLive.Probe(engine: live.engine)
+                    UITestingLive.Probe(engine: live.engine, player: live.player)
                 #endif
             }
         }

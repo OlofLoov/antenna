@@ -43,9 +43,14 @@ final class PlayerStatusUITests: XCTestCase {
         XCTAssertTrue(playPause.waitForExistence(timeout: 3))
         playPause.tap()
 
-        app.waitForEngine("paused loads=1")
-        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.element("player.buffering"))
-        XCTAssertEqual(XCTWaiter().wait(for: [gone], timeout: 3), .completed, "paused, the spinner stayed")
+        // The probe reads the engine and the player in one value, so this
+        // waits for the paused engine and the cleared spinner together. A
+        // timed wait on the spinner alone failed on CI when one accessibility
+        // query took longer than the time left.
+        let probe = app.element("browse.debug.player")
+        let settled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'paused loads=1 waiting=none'"), object: probe)
+        XCTAssertEqual(XCTWaiter().wait(for: [settled], timeout: 15), .completed, "player is \(probe.value as? String ?? "missing")")
+        XCTAssertFalse(app.element("player.buffering").exists, "paused, the spinner stayed")
     }
 
     // player-controls-and-playback-errors/a-dropped-stream-shows-that-it-is-reconnecting
