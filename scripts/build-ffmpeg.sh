@@ -4,7 +4,8 @@
 #
 # LGPL 2.1 only: no --enable-gpl, no --enable-nonfree. FFmpeg demuxes; the
 # only decoders are MPEG-2 video and MP2 sound, which no Apple device decodes
-# in hardware. No network protocols: the app feeds bytes through its own AVIO
+# in hardware, and DVB subtitles, whose pictures the app draws over the video
+# (add-subtitle-preferences). No network protocols: the app feeds bytes through its own AVIO
 # callback. The static libraries of each platform are linked into one dynamic
 # FFmpeg.framework, so the app links FFmpeg dynamically as the LGPL asks.
 #
@@ -86,7 +87,7 @@ build() {
             --enable-avformat --enable-avcodec --enable-avutil --enable-swresample \
             --enable-demuxer=mpegts,matroska,avi,mov,flv \
             --enable-parser=h264,hevc,mpegvideo,aac,ac3,mpegaudio \
-            --enable-decoder=mpeg2video,mp2 \
+            --enable-decoder=mpeg2video,mp2,dvbsub \
             --enable-bsf=extract_extradata \
             >configure.log
         grep -q "License: LGPL version 2.1 or later" configure.log ||
