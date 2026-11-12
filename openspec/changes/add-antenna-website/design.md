@@ -27,7 +27,7 @@ The legal pages describe the app as built. What the code shows:
 
 ### Hosting: GitHub Pages from `Web/`
 
-`.github/workflows/pages.yml` runs on pushes to main that touch `Web/**`, `scripts/publish-web.sh` or the workflow itself, and on manual dispatch. It runs the publish script into a temporary folder, uploads that with `actions/upload-pages-artifact` and deploys with `actions/deploy-pages`. `Web/CNAME` holds `antenna.code-crave.se`. `Web/.nojekyll` stops Jekyll, which would drop `.well-known` for starting with a dot.
+`.github/workflows/pages.yml` runs on pushes to main that touch `Web/**`, `scripts/publish-web.sh` or the workflow itself, and on manual dispatch. It runs the publish script into a temporary folder, uploads that with `actions/upload-pages-artifact` and deploys with `actions/deploy-pages`. `Web/CNAME` holds `antenna.code-crave.se`. `Web/.nojekyll` stops Jekyll, which would drop `.well-known` for starting with a dot. `actions/upload-pages-artifact` also leaves out dot folders unless `include-hidden-files: true` is set, so the workflow sets it.
 
 Considered: Cloudflare Pages or Netlify, which can set `Content-Type` through a `_headers` file. Both add an account and a dependency outside GitHub. GitHub Pages is free with the repo and enough unless Apple refuses the association file (see Risks).
 
