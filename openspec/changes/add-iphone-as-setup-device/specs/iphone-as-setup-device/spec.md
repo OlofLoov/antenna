@@ -61,7 +61,7 @@ The system SHALL move the Apple TV on to loading channels when a playlist source
 - **THEN** loading replaces the form and the typed text is discarded
 
 ### Requirement: A login source sent from the iPhone needs only its login on the TV
-The system SHALL fill in and lock Name and the server or portal for an arrived Xtream source or Stalker portal, say what has not reached the TV, and save what the user types for that source without adding a second one.
+The system SHALL fill in and lock Name and the server or portal for an arrived Xtream source, Stalker portal or Jellyfin server, say what has not reached the TV, and save what the user types for that source without adding a second one.
 
 #### Scenario: Sign in to an arrived Xtream source
 - **GIVEN** the QR card on screen and possibly some text in the TV's username and password fields
