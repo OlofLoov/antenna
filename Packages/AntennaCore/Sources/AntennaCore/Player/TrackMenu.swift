@@ -55,8 +55,9 @@ public enum TrackMenu {
         tracks.audio.count > 1 || !tracks.subtitles.isEmpty
     }
 
+    /// Marked forced by the stream, or named so by the provider.
     static func isForced(_ track: MediaTrack) -> Bool {
-        track.name?.localizedCaseInsensitiveContains("forced") == true
+        track.isForced || track.name?.localizedCaseInsensitiveContains("forced") == true
     }
 }
 

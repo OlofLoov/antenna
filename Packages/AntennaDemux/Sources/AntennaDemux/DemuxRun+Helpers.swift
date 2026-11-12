@@ -9,7 +9,8 @@ extension DemuxRun {
         return DemuxedStream(
             index: stream.index, kind: stream.kind, codec: builder.codecName, extradata: stream.extradata, width: stream.width,
             height: stream.height, sampleRate: stream.sampleRate, channels: stream.channels, interlaced: stream.interlaced,
-            language: stream.language, frameRate: stream.frameRate, isDefault: stream.isDefault, title: stream.title)
+            language: stream.language, frameRate: stream.frameRate, isDefault: stream.isDefault, title: stream.title,
+            isForced: stream.isForced)
     }
 
     /// Channel count from the sound buffers built so far.

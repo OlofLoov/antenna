@@ -90,7 +90,24 @@ import Testing
                     }
                 },
                 willPlay: { liveStopped.value += 1 },
-                clock: { [clock] in clock.now }))
+                clock: { [clock] in clock.now },
+                languages: { ["en", "sv"] }))
+    }
+
+    @Test("playback-engine/subtitles-start-by-the-subtitle-setting a movie starts by the device's languages and the setting")
+    func movieSubtitles() async {
+        let library = await library()
+        var follow: Task<Void, Never>?
+        defer { follow?.cancel() }
+        let activity = await activity(&follow)
+        let playback = playback()
+        playback.subtitles = .always
+        playback.play(movie, library: library, activity: activity)
+        #expect(await eventually { engine.loads.count == 1 })
+        let options = engine.loads.first?.options
+        #expect(options?.preferredAudioLanguages == ["en", "sv"])
+        #expect(options?.preferredSubtitleLanguages == ["en", "sv"])
+        #expect(options?.subtitleMode == .always)
     }
 
     // MARK: Resume

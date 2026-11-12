@@ -5,9 +5,9 @@
 
 ## 2. The starting rule
 
-- [ ] 2.1 Add `SubtitleMode` and `PlaybackOptions.subtitleMode`, and the Auto, Always and Off rule with forced tracks in `TrackChoice`, with core tests citing `playback-engine/subtitles-start-by-the-subtitle-setting` and `playback-engine/forced-subtitles-in-your-language-show`
-- [ ] 2.2 Add `MediaTrack.isForced`, report forced tracks from AVPlayer and FFmpeg, name them "English (Forced)", and store a forced selection as off, with tests citing `playback-engine/forced-subtitles-in-your-language-show`
-- [ ] 2.3 Pass the device's languages and the mode from `ChannelLanguages` and `ShelfPlayback`, with app tests citing `playback-engine/subtitles-start-by-the-subtitle-setting`
+- [x] 2.1 Add `SubtitleMode` and `PlaybackOptions.subtitleMode`, and the Auto, Always and Off rule with forced tracks in `TrackChoice`, with core tests citing `playback-engine/subtitles-start-by-the-subtitle-setting` and `playback-engine/forced-subtitles-in-your-language-show`
+- [x] 2.2 Add `MediaTrack.isForced`, report forced tracks from AVPlayer and FFmpeg, name them "English (Forced)", and store a forced selection as off, with tests citing `playback-engine/forced-subtitles-in-your-language-show`
+- [x] 2.3 Pass the device's languages and the mode from `ChannelLanguages` and `ShelfPlayback`, with app tests citing `playback-engine/subtitles-start-by-the-subtitle-setting`
 
 ## 3. The Subtitles preference
 

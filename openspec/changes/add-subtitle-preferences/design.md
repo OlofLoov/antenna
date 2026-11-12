@@ -101,3 +101,7 @@ The switch calls the same `selectSubtitle` as the list, so `ChannelLanguages` ke
 None.
 
 ## Implementation decisions
+
+- `TrackChoice.switched` and `fullSubtitlesOn` landed with the starting rule in slice 2, since they share its helpers; the buttons that call them come in slice 4.
+- AntennaDemux tests do not load on this Mac (macOS 15.6, the package targets macOS 26), so `DemuxForcedTests` runs in PR CI only.
+- `ChannelLanguages` and `ShelfPlayback` take the device's languages as an injected closure, `Locale.preferredLanguages` by default, so tests do not depend on the simulator's language.

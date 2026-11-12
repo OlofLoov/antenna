@@ -94,7 +94,7 @@ extension DemuxStart {
                 TrackStream(
                     track: MediaTrack(
                         id: "\(prefix)-\(number)", kind: kind, languageCode: stream.language, name: stream.title,
-                        isDefault: stream.isDefault),
+                        isDefault: stream.isDefault, isForced: stream.isForced),
                     stream: stream)
             }
         }

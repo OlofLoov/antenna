@@ -64,7 +64,10 @@ public struct PlaybackOptions: Sendable, Equatable {
     public var isLive: Bool?
     /// Language codes in the user's order, for example `["sv", "en"]`.
     public var preferredAudioLanguages: [String]
+    /// The user's languages for subtitles, the device's languages in the app.
     public var preferredSubtitleLanguages: [String]
+    /// When subtitles start (playback-engine/subtitles-start-by-the-subtitle-setting).
+    public var subtitleMode: SubtitleMode
     /// The languages last picked on this channel on this device. They win
     /// over the preferences while the stream still has those tracks.
     public var remembered: LanguagePick?
@@ -74,12 +77,14 @@ public struct PlaybackOptions: Sendable, Equatable {
 
     public init(
         startPosition: Duration? = nil, isLive: Bool? = nil, preferredAudioLanguages: [String] = [],
-        preferredSubtitleLanguages: [String] = [], remembered: LanguagePick? = nil, timeshift: TimeshiftRequest? = nil
+        preferredSubtitleLanguages: [String] = [], subtitleMode: SubtitleMode = .auto, remembered: LanguagePick? = nil,
+        timeshift: TimeshiftRequest? = nil
     ) {
         self.startPosition = startPosition
         self.isLive = isLive
         self.preferredAudioLanguages = preferredAudioLanguages
         self.preferredSubtitleLanguages = preferredSubtitleLanguages
+        self.subtitleMode = subtitleMode
         self.remembered = remembered
         self.timeshift = timeshift
     }
@@ -160,13 +165,17 @@ public struct MediaTrack: Sendable, Equatable, Identifiable {
     public var name: String?
     /// True for the track the stream marks as its default.
     public var isDefault: Bool
+    /// True for subtitles that translate only foreign speech or signs
+    /// (playback-engine/forced-subtitles-in-your-language-show).
+    public var isForced: Bool
 
-    public init(id: String, kind: Kind, languageCode: String?, name: String?, isDefault: Bool) {
+    public init(id: String, kind: Kind, languageCode: String?, name: String?, isDefault: Bool, isForced: Bool = false) {
         self.id = id
         self.kind = kind
         self.languageCode = languageCode
         self.name = name
         self.isDefault = isDefault
+        self.isForced = isForced
     }
 }
 
