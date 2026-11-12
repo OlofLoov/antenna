@@ -376,7 +376,7 @@
             pauseTimer = nil
             guard pausedByShell else { return }
             pausedByShell = false
-            player.timeshift.interruptionEnded()
+            await player.timeshift.interruptionEnded()
         }
 
     }

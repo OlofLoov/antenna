@@ -169,21 +169,35 @@ final class TimeshiftModel {
     }
 
     func userPause() {
+        markPaused()
+        Task { await engine.pause() }
+    }
+
+    /// The user's pause, returning once the engine was told.
+    func pause() async {
+        markPaused()
+        await engine.pause()
+    }
+
+    private func markPaused() {
         userPaused = true
         if status.recording == .storageShort, !saidStorageShort {
             saidStorageShort = true
             say(TimeshiftText.storageShort)
         }
-        Task { await engine.pause() }
     }
 
     func userPlay() {
         userPaused = false
+        Task { await play() }
+    }
+
+    /// The user's play, returning once the engine was told.
+    func play() async {
+        userPaused = false
         if catchup != nil, let playhead { return loadCatchup(at: playhead, coalesced: false) }
-        Task {
-            if !canRewind { await engine.seekToLive() }
-            await engine.play()
-        }
+        if !canRewind { await engine.seekToLive() }
+        await engine.play()
     }
 
     // MARK: Moving
@@ -300,14 +314,14 @@ final class TimeshiftModel {
     /// live comes back at live with a new buffer; one behind live by choice
     /// goes on from where it was
     /// (timeshift-catch-up-and-start-over/leaving-the-app-calls-and-other-interruptions).
-    func interruptionEnded() {
+    func interruptionEnded() async {
         let atLive = interruptedAtLive
         interruptedAtLive = nil
         guard !userPaused else { return }
         if atLive == true, canRewind {
             restartChannel()
         } else {
-            Task { await engine.play() }
+            await engine.play()
         }
     }
 
@@ -365,6 +379,6 @@ extension PlaybackLifecycle {
     /// playback comes back after them.
     func follow(_ timeshift: TimeshiftModel) {
         willPause = { [weak timeshift] in timeshift?.interrupted() }
-        resume = { [weak timeshift] in timeshift?.interruptionEnded() }
+        resume = { [weak timeshift] in await timeshift?.interruptionEnded() }
     }
 }
