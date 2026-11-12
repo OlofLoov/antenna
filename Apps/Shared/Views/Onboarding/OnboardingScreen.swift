@@ -3,12 +3,16 @@ import SwiftData
 import SwiftUI
 
 /// Onboarding for a user with no source: the welcome screen, "What is a
-/// source?" and the add-source form. Menu on the Apple TV welcome screen is
-/// left to the system, which sends the app to the background; on the later
-/// steps it goes back one step.
+/// source?", the add-source form, the loading checklist and the summary.
+/// Menu on the Apple TV welcome screen is left to the system, which sends
+/// the app to the background; on the later steps it goes back one step.
 struct OnboardingScreen: View {
-    @Environment(\.modelContext) private var context
-    @State private var model = OnboardingModel(connector: SourceConnector(), clipboard: .system)
+    let model: OnboardingModel
+    /// Apple TV sources that synced without their login, to sign in first.
+    var signIn: [SourceDescriptor] = []
+    /// Closes onboarding, asking the app to open on a channel or on Movies.
+    let finish: (OnboardingHandoff.Request?) -> Void
+    @Environment(\.guideStore) private var guideStore
     @State private var signedInToICloud = false
     @State private var showingHelp = false
     #if os(tvOS)
@@ -25,7 +29,14 @@ struct OnboardingScreen: View {
     var body: some View {
         content
             .preferredColorScheme(.dark)
-            .task { signedInToICloud = ICloudAccount.isSignedIn() }
+            .task {
+                signedInToICloud = ICloudAccount.isSignedIn()
+                if model.setupDependencies == nil { model.setupDependencies = setupDependencies() }
+                if !signIn.isEmpty { model.startSignIn(signIn) }
+                #if DEBUG
+                    if let fields = UITestingOnboarding.prefilledFields(), model.fields == SourceFields() { model.fields = fields }
+                #endif
+            }
             #if os(tvOS)
                 .fullScreenCover(isPresented: $showingHelp) {
                     OnboardingHelp.Television { showingHelp = false }
@@ -37,6 +48,13 @@ struct OnboardingScreen: View {
             #endif
     }
 
+    private func setupDependencies() -> SourceSetup.Dependencies {
+        #if DEBUG
+            if let scripted = UITestingOnboarding.setupDependencies() { return scripted }
+        #endif
+        return .live(guide: guideStore)
+    }
+
     private var actions: OnboardingWelcome.Actions {
         #if os(tvOS)
             OnboardingWelcome.Actions(addSource: { path = [.kinds] }, help: { showingHelp = true })
@@ -46,41 +64,66 @@ struct OnboardingScreen: View {
     }
 
     #if os(tvOS)
-        private var content: some View {
-            NavigationStack(path: $path) {
-                OnboardingWelcome.Television(signedInToICloud: signedInToICloud, actions: actions)
-                    .navigationDestination(for: Step.self) { step in
-                        switch step {
-                        case .kinds:
-                            OnboardingKinds.Television { kind in
-                                model.choose(kind)
-                                path.append(.form)
+        @ViewBuilder private var content: some View {
+            if let source = model.signIns.first {
+                OnboardingSignInScreen(model: model, server: source.url.absoluteString)
+            } else if model.showsChecklist {
+                OnboardingProgressScreen(model: model, signedInToICloud: signedInToICloud, finish: finish) {
+                    path = [.kinds]
+                }
+            } else {
+                NavigationStack(path: $path) {
+                    OnboardingWelcome.Television(signedInToICloud: signedInToICloud, actions: actions)
+                        .navigationDestination(for: Step.self) { step in
+                            switch step {
+                            case .kinds:
+                                OnboardingKinds.Television { kind in
+                                    model.choose(kind)
+                                    path.append(.form)
+                                }
+                            case .form:
+                                OnboardingFormScreen(model: model)
                             }
-                        case .form:
-                            OnboardingFormScreen(model: model)
                         }
-                    }
-            }
-            .onChange(of: path) { _, steps in
-                // Menu from the form while Connect runs stops the request.
-                if !steps.contains(.form) { model.cancel() }
+                }
+                .onChange(of: path) { _, steps in
+                    // Menu from the form stops a running Connect; Menu all the
+                    // way back from Add another source returns to the summary.
+                    if !steps.contains(.form) { model.cancel() }
+                    if steps.isEmpty { _ = model.leaveForm() }
+                }
             }
         }
     #else
         private var content: some View {
             OnboardingWelcome.Phone(signedInToICloud: signedInToICloud, actions: actions)
-                .sheet(isPresented: $showingAdd, onDismiss: model.cancel) {
+                .sheet(isPresented: $showingAdd, onDismiss: { _ = model.leaveForm() }) {
                     NavigationStack {
-                        OnboardingFormScreen(model: model)
-                            .toolbar {
-                                ToolbarItem(placement: .cancellationAction) {
-                                    Button("Back") { showingAdd = false }
-                                        .accessibilityIdentifier("onboarding.back")
-                                }
-                            }
+                        sheetContent
                     }
                     .preferredColorScheme(.dark)
+                    .interactiveDismissDisabled(model.holdsApp)
                 }
+                .onChange(of: model.holdsApp) { _, holds in
+                    if holds { showingAdd = true }
+                }
+        }
+
+        @ViewBuilder private var sheetContent: some View {
+            if model.showsChecklist {
+                OnboardingProgressScreen(model: model, signedInToICloud: signedInToICloud, finish: finish) {}
+            } else {
+                OnboardingFormScreen(model: model)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Back") {
+                                // Back from Add another source returns to the summary.
+                                if model.leaveForm() { showingAdd = false }
+                            }
+                            .accessibilityIdentifier("onboarding.back")
+                        }
+                    }
+            }
         }
     #endif
 }
@@ -126,3 +169,22 @@ struct OnboardingFormScreen: View {
     }
     .modelContainer(for: AntennaSchema.models, inMemory: true)
 }
+
+#if os(tvOS)
+    /// The sign-in screen with its model.
+    private struct OnboardingSignInScreen: View {
+        @Bindable var model: OnboardingModel
+        let server: String
+        @Environment(\.modelContext) private var context
+
+        var body: some View {
+            OnboardingSignIn.Television(
+                server: server, username: $model.fields.username, password: $model.fields.password,
+                remaining: OnboardingSignIn.Television.remaining(model.signInsAfterThis),
+                status: .init(error: model.error, connecting: model.connecting)
+            ) {
+                Task { await model.signIn(into: context) }
+            }
+        }
+    }
+#endif
