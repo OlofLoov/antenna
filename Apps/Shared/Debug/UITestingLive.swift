@@ -350,33 +350,6 @@
             /// True shows the narrow layout whatever the window's size.
             var compact = false
         }
-
-        /// A tiny text the UI tests read through `browse.debug.engine`, and
-        /// a button, `browse.debug.switchLayout`, that flips `Layout.compact`.
-        /// Draws nothing outside UI tests.
-        struct Probe: View {
-            let engine: any PlaybackEngine
-
-            var body: some View {
-                if let engine = engine as? Engine {
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(engine.summary)
-                            .font(.system(size: 8))
-                            .foregroundStyle(Palette.textMuted)
-                            .accessibilityIdentifier("browse.debug.engine")
-                            .accessibilityValue(engine.summary)
-                            .allowsHitTesting(false)
-                        Button("Switch layout") { Layout.shared.compact.toggle() }
-                            .font(.system(size: 8))
-                            .foregroundStyle(Palette.textMuted)
-                            .frame(minWidth: 44, minHeight: 24)
-                            .contentShape(Rectangle())
-                            .accessibilityIdentifier("browse.debug.switchLayout")
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                }
-            }
-        }
     }
 
     extension UITestingLive.Engine {

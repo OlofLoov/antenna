@@ -162,7 +162,7 @@
             .reminderBanner(live: live, watch: { watch($0) }, showLive: { section = .live })
             .overlay {
                 #if DEBUG
-                    UITestingLive.Probe(engine: live.engine)
+                    UITestingLive.Probe(engine: live.engine, player: live.player)
                 #endif
             }
         }
