@@ -54,7 +54,7 @@ On Apple TV the user opens Groups from Settings, after the passcode prompt if an
 - Hiding a provider group takes its channels out of All channels and out of the number match, as well as out of the group list. Its favorites stay in Favorites and Recents. Hiding an own group hides only the group, since its channels belong to their provider groups.
 - Locking an own group locks its channels everywhere while locks are closed, as locking a provider group does.
 - A channel is "in" an own group when its source and id match a loaded channel; the earliest such channel in All channels order wins, as favorites resolve. Own groups list even when empty.
-- Own groups refuse channels whose id holds `://`, which is every M3U channel today, until the `m3u-playlists` follow-up takes the link out of M3U ids. The rule is on the id, not the source kind, so it lifts by itself when that ships.
+- Own groups refuse channels whose id holds `://`. That used to be every M3U channel; change `fix-m3u-channel-ids` took the link out of M3U ids, so M3U channels join own groups now. The rule is on the id, not the source kind, and stays as a guard.
 - Duplicate `GroupRecord`s for one group: the earliest `createdAt` wins and the others are listed with the groups that are gone, each with Remove.
 - Rules for a source with no loaded channels (loading, failed, waiting for its login, or loaded empty) are neither applied nor listed as gone.
 - Deleting a playlist deletes its group records, hidden flags and own-group members. Deleting a profile deletes its hidden flags.

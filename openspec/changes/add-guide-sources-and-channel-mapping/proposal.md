@@ -47,5 +47,5 @@ Out of scope:
 - A `guide-data` revision lands first: the guide list per source replaces the single-link resolver, progress and failures are per guide, and every lookup of a channel's guide goes through one function that applies matches.
 - Amends Sources and Settings (a Guide row in each playlist's details).
 - Depends on: `source-management`, `channel-catalogue`, `guide-data`, `tvos-shell`, change `add-first-run-onboarding`, change `add-tv-channel-overlay`, change `add-tv-guide-grid`, change `add-live-tv-on-iphone-ipad-mac`, change `add-search` (folding and token rules), change `add-sources-and-settings`.
-- Depends on: the `m3u-playlists` follow-up that takes the stream link out of M3U channel ids. Until it ships, a hand-picked match for an M3U channel cannot be saved, because the saved id would carry the provider login.
+- Depends on: change `fix-m3u-channel-ids`, which took the stream link out of M3U channel ids, so a hand-picked match for an M3U channel can be saved without the provider login.
 - Blocked on: a decision in this change's design.md on how a source's guide settings are stored and synced. One record per source is assumed; a different shape reopens this change.

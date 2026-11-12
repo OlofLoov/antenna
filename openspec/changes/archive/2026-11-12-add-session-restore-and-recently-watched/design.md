@@ -24,7 +24,7 @@ Not drawn yet: the Recents row in the iPad and Mac sidebar, the Recents group ro
 - With profiles (change `add-profiles`), each key is per profile: the keys above for the first profile, the same key with `.<profile id>` appended for the others.
 - Every live tune on every device goes through one session tracker, which writes the last channel before the engine loads it and keeps it if the load fails. No other app code calls the engine's load. Playing a movie or episode is not a tune and cancels the ten-second count. Leaving the app, a new tune, or the engine leaving playing also cancel it.
 - A source observer watches local saves and remote changes on the app container, diffs source ids, and for each removed id clears the store, stops the count if the playing channel was in it, then asks for a catalogue rebuild. Only an observed deletion counts, not a missing record.
-- The store refuses any channel id containing `://`. The `m3u-playlists` follow-up that hashes the stream URL out of `Channel.id` removes the filter and drops the requirement on links with passwords. Ids are never logged or put in an identifier, label or error.
+- The store refuses any channel id containing `://`. Change `fix-m3u-channel-ids` later took the link out of M3U ids, so M3U channels pass; the filter stays as a guard and the requirement on links with passwords now says M3U channels are kept. Ids are never logged or put in an identifier, label or error.
 - Only a group the user picks is written to the session. Groups the app selects as a fallback are shown but not written.
 - Live sources start loading when the app's root appears, not when Live is first shown, so a session restored to another tab has channels ready.
 - `channel-catalogue` gains a Recents group kind and a way to replace it without rebuilding the catalogue, within the favorites time bound. A channel id matching two channels does not resolve.
@@ -40,7 +40,7 @@ Not drawn yet: the Recents row in the iPad and Mac sidebar, the Recents group ro
 - Open question: swipe left toggles between two channels and swipe right opens Recents. A long press, or stepping back through all of Recents, would change those requirements.
 - Open question: storing a hash of the identity now would lift the M3U restore block, and change the value `tvos-shell` stores.
 - Open question: Apple TV still forgets the current group at launch. Restoring it needs a change to `add-tv-zap-bar-and-number-entry`.
-- [No M3U channel appears in Recents or is restored until the `m3u-playlists` follow-up] → the filter is silent, and the follow-up removes it.
+- [No M3U channel appeared in Recents or was restored until the `m3u-playlists` follow-up] → the filter was silent. Change `fix-m3u-channel-ids` was that follow-up.
 
 ## Implementation decisions
 

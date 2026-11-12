@@ -80,3 +80,11 @@ Options considered for the rewrite: a pass at launch (it cannot run without the 
 - [Backup streams swap order in the playlist] → their ordinals swap and a favorite moves to the other stream of the same channel, with the same name and group.
 
 ## Implementation decisions
+
+- When a rewritten record duplicates one already saved with the new id, the one already saved stays, with its sort order. In an own group that can leave a gap in the sort orders, which the group list ignores.
+- Only loads through `SourceRefresher` rewrite. The scripted loader of the `-ui-testing-live` launches and unit tests that build a Live model without a refresher do not.
+- The screenshot seed (`UITestingScreenshots.favoriteIDs`) named favorites by `tvg-id`, which never matched an M3U id, so its Favorites row was always empty. It now takes the ids from the parsed playlist.
+- `RowKey`'s doc comment no longer says the id can hold a link. `FavoriteSnapshot`'s still does, because a favorite not rewritten yet can.
+- Spec conflict: change `add-profiles` modifies the same `tvos-shell` requirement, "Back to the last channel on launch", and keeps the scenario that an M3U channel is not remembered. Whichever change archives second has to merge the two blocks: the profile wording from `add-profiles`, the M3U scenarios from this change.
+- The 50 000-entry benchmark went from 1.3 s to about 2 s in a debug build on this Mac. A first version that built the hash input as a string took 5.6 s under load, so the hash now reads the three fields' bytes directly and keeps repeat counts by hash value.
+- Groups 1 and 2 ship in one pull request, as separate commits. The id change alone would leave every M3U favorite unmatched on main until the rewrite landed.
