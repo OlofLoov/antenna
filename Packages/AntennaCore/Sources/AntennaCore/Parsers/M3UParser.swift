@@ -35,6 +35,7 @@ public struct M3UParser: Sendable {
         var pending: PendingEntry?
         var groupOverride: String?
         var index = 0
+        var ids = M3UChannelIDs(capacity: text.utf8.count / 120)
 
         for rawLine in text.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) {
             let line = rawLine.trimmingCharacters(in: .whitespaces)
@@ -68,12 +69,14 @@ public struct M3UParser: Sendable {
             }
             if entry.group == nil { entry.group = groupOverride }
             index += 1
-            channels.append(entry.channel(url: url, fallbackIndex: index, nameSource: nameSource))
+            var channel = entry.channel(url: url, nameSource: nameSource)
+            channel.id = ids.next(for: channel, formerID: Self.formerID(channel, position: index))
+            channels.append(channel)
             pending = nil
             groupOverride = nil
         }
 
-        return Playlist(channels: channels, epgURLs: epgURLs)
+        return Playlist(channels: channels, epgURLs: epgURLs, formerIDs: ids.formerIDs)
     }
 
     // MARK: - Internals
@@ -83,7 +86,8 @@ public struct M3UParser: Sendable {
         var attributes: [String: String]
         var group: String?
 
-        func channel(url: URL, fallbackIndex: Int, nameSource: NameSource = .tvgName) -> Channel {
+        /// The channel with an empty id; `parse` gives it one.
+        func channel(url: URL, nameSource: NameSource = .tvgName) -> Channel {
             let tvgName = attributes["tvg-name"].flatMap { $0.isEmpty ? nil : $0 }
             let name =
                 switch nameSource {
@@ -95,7 +99,7 @@ public struct M3UParser: Sendable {
             let catchup = attributes["catchup"] ?? attributes["tvg-rec"]
             let catchupDays = (attributes["catchup-days"] ?? attributes["tvg-rec"]).flatMap(Int.init)
             return Channel(
-                id: epgID.map { "\($0)#\(url.absoluteString)" } ?? "m3u#\(url.absoluteString)#\(fallbackIndex)",
+                id: "",
                 name: name,
                 streamURL: url,
                 group: group,
@@ -123,6 +127,13 @@ public struct M3UParser: Sendable {
         case 2: return Int(parts[1]).map { (major, $0) }
         default: return nil
         }
+    }
+
+    /// The id earlier versions gave the entry: `<tvg-id>#<link>`, or
+    /// `m3u#<link>#<position>` counting from 1. It can hold a login, so it
+    /// is only ever a key in `Playlist.formerIDs`.
+    static func formerID(_ channel: Channel, position: Int) -> String {
+        channel.epgID.map { "\($0)#\(channel.streamURL.absoluteString)" } ?? "m3u#\(channel.streamURL.absoluteString)#\(position)"
     }
 
     /// A finite number of hours such as "-1.5", nil for anything else.

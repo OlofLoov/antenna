@@ -129,7 +129,7 @@ import Testing
         #expect(Set(first).count == 3)
         #expect(first == second)
         // A per-process hash would pass the equality above; the literal id would not.
-        #expect(first.first == "same.uk#http://s/one.ts")
+        #expect(first.first == "m3u.cb3c88e760956f48")
     }
 
     @Test("m3u-playlists/unknown-directives-are-ignored unknown directives are ignored")

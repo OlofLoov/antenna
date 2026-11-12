@@ -11,7 +11,7 @@ public struct LastChannelKey: Codable, Hashable, Sendable {
 
     /// Nil when the channel has no source, or when its id still contains a
     /// stream link (session-restore-and-recently-watched/links-with-passwords-are-never-stored).
-    /// M3U ids embed the link, which can carry a username and password.
+    /// No current source puts a link in an id; ids from earlier versions did.
     public init?(_ channel: Channel) {
         guard let sourceID = channel.sourceID, Self.canStore(channel.id) else { return nil }
         self.sourceID = sourceID
