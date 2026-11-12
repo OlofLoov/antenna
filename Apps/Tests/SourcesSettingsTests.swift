@@ -115,6 +115,17 @@ import Testing
         #expect(try held.load(for: try #require(record.credentialKey))?.username == "anna")
     }
 
+    @Test("source-management/an-xtream-source-needs-a-username-and-password: an emptied username is refused")
+    func xtreamNeedsALogin() async throws {
+        let record = try insert("Home", kind: .xtream, url: "http://needs-login.test", login: .init(username: "anna", password: "pw"))
+        let editor = try editor(record, tag: "needs-login")
+        editor.username = "  "
+        #expect(await !editor.save(in: context))
+        #expect(editor.error == "Enter your username and password.")
+        #expect(StubURLProtocol.requestCount(tag: "needs-login") == 0)
+        #expect(try held.load(for: try #require(record.credentialKey)) == .init(username: "anna", password: "pw"))
+    }
+
     @Test("sources-and-settings/put-sources-in-your-order: the last source moves to the top and nothing reloads")
     func reorder() async throws {
         let tag = "order-\(UUID().uuidString)"

@@ -68,11 +68,12 @@ final class SourceEditor {
             return false
         }
         let saved = original.credentialKey.flatMap { try? connector.credentials.load(for: $0) }
-        if kind == .xtream, saved == nil, username.isEmpty || password.isEmpty {
+        // source-management/an-xtream-source-needs-a-username-and-password
+        if kind == .xtream, username.isBlank || (saved == nil && password.isBlank) {
             error = "Enter your username and password."
             return false
         }
-        let login = CredentialStore.Credential(username: username, password: password.isEmpty ? (saved?.password ?? "") : password)
+        let login = CredentialStore.Credential(username: username, password: password.isBlank ? (saved?.password ?? "") : password)
         saving = true
         defer { saving = false }
         do {
@@ -131,4 +132,8 @@ final class SourceEditor {
         let id = id
         return try? context.fetch(FetchDescriptor<SourceRecord>(predicate: #Predicate { $0.id == id })).first
     }
+}
+
+extension String {
+    fileprivate var isBlank: Bool { trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 }
