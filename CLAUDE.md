@@ -97,7 +97,10 @@ from `Config/Local.xcconfig.example` for device builds.
 
 - CloudKit-backed SwiftData: every stored property optional or defaulted, no
   `@Attribute(.unique)`, relationships optional. Duplicates are resolved in code.
-- Secrets never go in SwiftData or logs. Keychain only, synchronizable.
+- Secrets never go in SwiftData or logs. Keychain only, synchronizable. One
+  exception: an HPKE-sealed login drop for an Apple TV may sit in the private
+  CloudKit database, in encrypted values, for at most 10 minutes, and is
+  deleted on pickup.
 - AntennaCore imports Foundation only. Apps depend on it, never the reverse.
 - Two playback paths: `AVPlayer` for HLS and system-demuxable containers,
   FFmpeg demux with VideoToolbox decode and `AVSampleBufferVideoRenderer` for

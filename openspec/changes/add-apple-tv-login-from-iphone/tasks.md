@@ -2,15 +2,15 @@
 
 ## 1. Decisions and boards
 
-- [ ] 1.1 Get the owner's answer on the rule change in design.md, and record it there with the date
-- [ ] 1.2 Draw the states design.md lists as not drawn yet, and redraw `TV-Onboard-3-QR-Received.dc.html` if its copy changed
-- [ ] 1.3 Check `docs/architecture/` and add the sealed delivery to the iCloud edge of the container diagram if it names what crosses it
+- [x] 1.1 Get the owner's answer on the rule change in design.md, and record it there with the date
+- [x] 1.2 Draw the states design.md lists as not drawn yet, and redraw `TV-Onboard-3-QR-Received.dc.html` if its copy changed
+- [x] 1.3 Check `docs/architecture/` and add the sealed delivery to the iCloud edge of the container diagram if it names what crosses it
 
 ## 2. Rule and formats
 
-- [ ] 2.1 Update the secrets rule in `openspec/config.yaml` and CLAUDE.md to the confirmed wording
-- [ ] 2.2 Add setup link version 2 with the key and source ids, keeping version 1 readable, and verify core tests for every parse error and a v1 link
-- [ ] 2.3 Add the payload format with a redacted description and the rule for which sources a code asks for, and verify core tests per source kind, the eight-source cap and Channels DVR without a password
+- [x] 2.1 Update the secrets rule in `openspec/config.yaml` and CLAUDE.md to the confirmed wording
+- [x] 2.2 Add setup link version 2 with the key and source ids, keeping version 1 readable, and verify core tests for every parse error and a v1 link
+- [x] 2.3 Add the payload format with a redacted description and the rule for which sources a code asks for, and verify core tests per source kind, the eight-source cap and Channels DVR without a password
 
 ## 3. Sealing and delivery
 
