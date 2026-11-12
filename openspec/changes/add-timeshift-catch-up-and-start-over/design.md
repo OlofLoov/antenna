@@ -99,3 +99,14 @@ Refusals. Each of these gives nil and requests nothing:
 - Open question: should a long absence behind a content tab (say ten minutes) still return to live after a user pause? This changes the interruptions requirement.
 - Open question: should the CATCH-UP badge be filled so it is not mistaken for live? Can be decided during implementation.
 - Open question: does Apple's player path record in the first slice, or report that it cannot record until later? Can be decided during implementation.
+
+## Implementation decisions
+
+Calls made while building, recorded here instead of asked.
+
+- `CatchupMode` is an enum (`default`, `append`, `shift`, `flussonic`, `xc`, `unsupported(String)`). `catchup="fs"` reads as `flussonic`; `vod` and any other value is `unsupported` and builds no address. `catchup="0"` or empty gives no mode, as it already gave no catch-up.
+- `Channel.CodingKeys` leaves out `catchupMode`, `catchupSource` and `catchupCorrectionHours`, so a channel that is ever encoded drops them and decodes with nil. Nothing encodes channels today; this keeps it so.
+- `XtreamClient.liveLoad()` asks for the categories, the streams and the account information at once, and returns the channels with the time zone name. A failed account call leaves the zone nil. `SourceLoader` records the name in `XtreamTimeZones`, an actor shared by the app and kept in memory only. `Playlist` gains `serverTimeZone` so the screens can see it without the actor.
+- `XtreamTimeZones.timeZone(for:fetch:)` asks the panel again only once after each load when no zone is known. Start over re-evaluates every few seconds; without this a panel with no zone would get an account call each time.
+- The `xc` path writes the date part `yyyy-MM-dd:HH-mm` unencoded. Percent-encoding the colon, as the other path segments are, gave `%3A`, which the design's examples do not have.
+- An M3U `xc` stream address must be exactly `/live/<user>/<pass>/<id>.<ext>` with no prefix path; the query is dropped.
