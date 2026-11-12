@@ -116,6 +116,13 @@ import Testing
         #expect(later.check([server]) == .login(server.id, .jellyfin))
     }
 
+    @Test("iphone-as-setup-device/a-playlist-source-sent-from-the-iphone-starts-loading-on-the-tv: a Channels DVR server loads at once")
+    func channelsDVRServer() {
+        var arrivals = SetupArrivals(present: [], shownAt: shown)
+        let server = candidate("channelsdvr", after: 5)
+        #expect(arrivals.check([server]) == .playlist(server.id))
+    }
+
     @Test("iphone-as-setup-device/nothing-arrives-and-the-tv-says-why-that-might-be: an unknown kind is noted, not used")
     func unknownKind() {
         var arrivals = SetupArrivals(present: [], shownAt: shown)

@@ -7,7 +7,9 @@ public enum GuideURLResolver {
     /// `xmltv.php` link built from `url` and `credential`. Nil when none
     /// applies: a playlist that names no guide, an Xtream source without a
     /// credential, a Stalker portal without `epgURL`, which uses the
-    /// portal's own guide instead (see `usesPortalGuide`).
+    /// portal's own guide instead (see `usesPortalGuide`). A Channels DVR
+    /// server's guide is its own seven-day export
+    /// (guide-data/guide-address-worked-out-from-the-source).
     public static func resolve(
         kind: SourceKind,
         url: URL,
@@ -25,6 +27,8 @@ public enum GuideURLResolver {
             return XtreamClient(credentials: login).xmltvURL()
         case .stalker, .jellyfin:
             return nil
+        case .channelsDVR:
+            return ChannelsDVRClient(server: url).guideURL()
         }
     }
 

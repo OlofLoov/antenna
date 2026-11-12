@@ -124,6 +124,10 @@ enum OnboardingForm {
                         Row(label: "Password", last: true) {
                             PasswordField(text: $fields.password, reveals: $revealsPassword, revealSize: 44, placeholder: "Optional")
                         }
+                    case .channelsDVR:
+                        Row(label: "Server", last: true) {
+                            LinkField(placeholder: "192.168.1.20 or nas.local", text: $fields.url, identifier: "onboarding.field.server")
+                        }
                     case .xtream, .jellyfin:
                         Row(label: "Server") {
                             LinkField(
@@ -150,7 +154,7 @@ enum OnboardingForm {
                         .buttonStyle(.plain)
                         .accessibilityIdentifier("import.pickFile")
                 }
-                if fields.kind != .m3u {
+                if [.xtream, .stalker, .jellyfin].contains(fields.kind) {
                     Label("Saved in your iCloud Keychain only. Antenna has no servers and never sees your login.", systemImage: "lock")
                         .font(.system(size: 13))
                         .foregroundStyle(Palette.textMuted)
@@ -165,6 +169,7 @@ enum OnboardingForm {
             case .xtream: "Login"
             case .stalker: "Portal"
             case .jellyfin: "Server"
+            case .channelsDVR: "Server"
             }
         }
     }
@@ -204,6 +209,12 @@ enum OnboardingForm {
                                 TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.portal")
                             }
                             PortalLoginFields(fields: $fields)
+                        case .channelsDVR:
+                            Stacked(label: "Server") {
+                                TextField("", text: $fields.url)
+                                    .keyboardType(.URL)
+                                    .accessibilityIdentifier("onboarding.field.server")
+                            }
                         case .xtream, .jellyfin:
                             Stacked(label: "Server") {
                                 TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.server")
@@ -230,7 +241,7 @@ enum OnboardingForm {
                             .disabled(status.connecting)
                             .accessibilityIdentifier("onboarding.connect")
                         if status.connecting { ProgressView() }
-                        if fields.kind != .m3u {
+                        if [.xtream, .stalker, .jellyfin].contains(fields.kind) {
                             Label("Saved in the Keychain on this Apple TV. Antenna has no servers.", systemImage: "lock")
                                 .font(.system(size: 20))
                                 .foregroundStyle(Palette.textMuted)
@@ -252,6 +263,7 @@ enum OnboardingForm {
             case .xtream: "Xtream login"
             case .stalker: "Stalker portal"
             case .jellyfin: "Jellyfin server"
+            case .channelsDVR: "Channels DVR"
             }
         }
 
@@ -262,6 +274,7 @@ enum OnboardingForm {
             case .stalker:
                 "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one."
             case .jellyfin: "The address you open Jellyfin at in a browser, with the username and password you sign in with."
+            case .channelsDVR: "Type the address your Channels DVR server shows, such as 192.168.1.20 or nas.local."
             }
         }
     }
@@ -293,6 +306,16 @@ enum OnboardingForm {
     @Previewable @State var reveals = false
     OnboardingForm.Phone(
         fields: $fields, revealsPassword: $reveals, status: .init(clipboard: .link),
+        actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+#Preview("Form, iPhone, Channels DVR") {
+    @Previewable @State var fields = SourceFields(kind: .channelsDVR, url: "192.168.1.20")
+    @Previewable @State var reveals = false
+    OnboardingForm.Phone(
+        fields: $fields, revealsPassword: $reveals,
+        status: .init(
+            error: "Could not reach 192.168.1.20. Check the address and try again. Allow local network access for Antenna in Settings."),
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
 }
 

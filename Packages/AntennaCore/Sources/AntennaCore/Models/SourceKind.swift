@@ -9,6 +9,9 @@ public enum SourceKind: String, Codable, Sendable, CaseIterable {
     /// A Jellyfin server's Live TV, signed in with a username and password
     /// (jellyfin-live-tv-source capability).
     case jellyfin
+    /// A Channels DVR server on the user's network or behind a proxy
+    /// (channels-dvr-source capability). `url` is its tidy server address.
+    case channelsDVR = "channelsdvr"
     /// A playlist file imported once, whose text syncs with the record
     /// (local-m3u-file-import capability). It has no link of its own.
     case m3uFile
@@ -18,7 +21,7 @@ public struct SourceDescriptor: Identifiable, Hashable, Sendable, Codable {
     public var id: UUID
     public var name: String
     public var kind: SourceKind
-    /// For `.m3u` the playlist URL, for `.xtream`/`.stalker`/`.jellyfin`
+    /// For `.m3u` the playlist URL, for `.xtream`/`.stalker`/`.jellyfin`/`.channelsDVR`
     /// the server base URL. For `.m3uFile` an `antenna-file:` stand-in that changes with
     /// each import, so a re-import loads again.
     public var url: URL

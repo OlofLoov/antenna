@@ -1,9 +1,10 @@
 import AntennaCore
 import SwiftUI
 
-/// "What kind of source?" on Apple TV (`TV-Onboard-2`): four cards, each
+/// "What kind of source?" on Apple TV (`TV-Onboard-2`): five cards, each
 /// opening its form (first-run-onboarding/add-a-stalker-portal,
-/// first-run-onboarding/add-a-jellyfin-server).
+/// first-run-onboarding/add-a-jellyfin-server,
+/// first-run-onboarding/add-a-channels-dvr-server).
 enum OnboardingKinds {
     struct Television: View {
         let choose: (SourceKind) -> Void
@@ -19,7 +20,7 @@ enum OnboardingKinds {
                         .foregroundStyle(Palette.textMuted)
                 }
                 .multilineTextAlignment(.center)
-                HStack(spacing: 32) {
+                HStack(spacing: 28) {
                     Button {
                         choose(.m3u)
                     } label: {
@@ -55,6 +56,15 @@ enum OnboardingKinds {
                             footnote: "Live TV and guide from your server")
                     }
                     .accessibilityIdentifier("onboarding.kind.jellyfin")
+                    Button {
+                        choose(.channelsDVR)
+                    } label: {
+                        Card(
+                            systemImage: "externaldrive.connected.to.line.below", title: "Channels DVR",
+                            detail: "The address of your Channels DVR server at home. Its channel numbers and guide come with it.",
+                            footnote: "A server on your home network")
+                    }
+                    .accessibilityIdentifier("onboarding.kind.channelsdvr")
                 }
                 .buttonStyle(CardStyle())
             }
@@ -92,7 +102,7 @@ enum OnboardingKinds {
             }
             .foregroundStyle(isFocused ? Palette.ground : Palette.text)
             .padding(40)
-            .frame(width: 400, height: 420, alignment: .topLeading)
+            .frame(width: 340, height: 460, alignment: .topLeading)
             .background(
                 isFocused ? Palette.focus : Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20)
             )

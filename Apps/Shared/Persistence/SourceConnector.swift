@@ -15,6 +15,8 @@ struct SourceConnector: Sendable {
     static let portalSession = URLSession(configuration: .stalker)
     /// Jellyfin servers are asked through these clients.
     var jellyfinClients: JellyfinClients = .shared
+    /// Channels DVR servers are asked with no cookies and no cache.
+    var channelsDVRSession: URLSession = SourceLoader.channelsDVRSession
 
     /// What one successful Connect saved and what the server said.
     struct Connection: Sendable {
@@ -36,6 +38,8 @@ struct SourceConnector: Sendable {
         var createdCredential: String?
         /// The imported file's name, for a file source added from onboarding.
         var fileName: String?
+        /// A Channels DVR server's version as it wrote it, for the checklist.
+        var serverVersion: String?
     }
 
     /// Checks `fields`, contacts the server and saves the source. Throws
@@ -48,6 +52,13 @@ struct SourceConnector: Sendable {
         guard var link = fields.link else { throw ConnectFailure.invalidURL }
         if fields.kind == .stalker, let portal = StalkerPortal(link.absoluteString) { link = portal.url }
         let login = Self.credential(for: fields)
+        if fields.kind == .channelsDVR {
+            let (status, playlist) = try await probeChannelsDVR(link, login: login, host: fields.host)
+            try Task.checkCancellation()
+            var connection = try save(fields, link: link, reply: .playlist(playlist), login: login, into: context)
+            connection.serverVersion = status.versionText
+            return connection
+        }
         let reply = try await probe(
             fields.kind, link: link, username: login?.username ?? "", password: fields.password, login: login?.login, host: fields.host)
         try Task.checkCancellation()
@@ -55,7 +66,8 @@ struct SourceConnector: Sendable {
     }
 
     /// The Keychain item a form saves: the username and password for Xtream,
-    /// the MAC in colon form with the optional login for a portal, nil for a playlist.
+    /// the MAC in colon form with the optional login for a portal, the
+    /// optional proxy login for Channels DVR, nil for a playlist.
     static func credential(for fields: SourceFields) -> CredentialStore.Credential? {
         switch fields.kind {
         case .m3u, .m3uFile:
@@ -66,6 +78,29 @@ struct SourceConnector: Sendable {
             let login = fields.username.trimmingCharacters(in: .whitespacesAndNewlines)
             return .init(
                 username: MACAddress(fields.mac)?.text ?? fields.mac, password: fields.password, login: login.isEmpty ? nil : login)
+        case .channelsDVR:
+            let username = fields.username.trimmingCharacters(in: .whitespacesAndNewlines)
+            return username.isEmpty ? nil : .init(username: username, password: fields.password)
+        }
+    }
+
+    /// Checks a Channels DVR server's status, then downloads its lineup,
+    /// saving nothing (channels-dvr-source/connect-says-what-it-found).
+    /// A password demand reads as a wrong login when one was sent.
+    func probeChannelsDVR(_ server: URL, login: CredentialStore.Credential?, host: String) async throws -> (ChannelsDVRStatus, Playlist) {
+        let credential = login.flatMap { HTTPBasicCredential(username: $0.username, password: $0.password) }
+        if login != nil, credential == nil { throw ConnectFailure.invalidUsername }
+        let client = ChannelsDVRClient(server: server, credential: credential, session: channelsDVRSession)
+        do {
+            let status = try await client.status()
+            return (status, Playlist(channels: try await client.channels()))
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch ChannelsDVRError.unauthorized where credential != nil {
+            throw ConnectFailure.rejected
+        } catch {
+            if Task.isCancelled { throw CancellationError() }
+            throw ConnectFailure(error, host: host)
         }
     }
 
@@ -92,6 +127,9 @@ struct SourceConnector: Sendable {
                 return .playlist(Playlist(channels: try await client.liveLoad(guide: .portal).channels))
             case .jellyfin:
                 return .playlist(try await probeJellyfin(link, username: username, password: password, host: host))
+            case .channelsDVR:
+                let login = username.isEmpty ? nil : CredentialStore.Credential(username: username, password: password)
+                return .playlist(try await probeChannelsDVR(link, login: login, host: host).1)
             case .xtream:
                 let client = XtreamClient(credentials: .init(server: link, username: username, password: password), session: session)
                 let info = try await client.accountInfo().userInfo
