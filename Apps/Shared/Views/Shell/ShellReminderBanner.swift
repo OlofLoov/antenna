@@ -62,7 +62,7 @@
             guard let reminders, let key = reminders.watchRequest else { return }
             reminders.watchRequest = nil
             let rows = catalogue.rows(in: .all)
-            guard let row = rows.first(where: { catalogue.channel(for: $0).flatMap(GuideKey.init(channel:)) == key }),
+            guard let row = rows.first(where: { catalogue.channel(for: $0).flatMap(GuideLookup.key(for:)) == key }),
                 let channel = catalogue.channel(for: row)
             else {
                 Task {

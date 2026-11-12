@@ -7,11 +7,35 @@ import Foundation
 /// programmes are sorted by start and never overlap: where two overlapped,
 /// the later start won and the earlier one ends where it begins.
 public struct GuideIndex: Sendable {
+    /// One loaded, turned-on guide of a source.
+    struct Layer: Sendable {
+        var reference: GuideReference
+        var guide: SourceGuide
+    }
+
     struct SourceEntry: Sendable {
-        /// Set once a load has completed.
-        var guide: SourceGuide?
-        /// The answer for every channel of the source while `guide` is nil.
+        /// The turned-on guides that have loaded, top of the user's list
+        /// first. Per id, the first with programmes wins
+        /// (guide-sources-and-channel-mapping/choose-which-guide-wins).
+        var layers: [Layer]
+        /// The answer for every channel of the source while `layers` is empty.
         var state: GuideLoadingState
+        /// Hand-picked entries and matches by name, per channel id.
+        var matches: [String: GuideMatch]
+
+        init(layers: [Layer] = [], state: GuideLoadingState, matches: [String: GuideMatch] = [:]) {
+            self.layers = layers
+            self.state = state
+            self.matches = matches
+        }
+
+        /// An entry with one guide, as a source with a single guide had.
+        init(guide: SourceGuide?, state: GuideLoadingState) {
+            self.init(layers: guide.map { [Layer(reference: .saved, guide: $0)] } ?? [], state: state)
+        }
+
+        /// True once any guide of the source has loaded.
+        var hasGuide: Bool { !layers.isEmpty }
     }
 
     var sources: [UUID: SourceEntry]
@@ -36,7 +60,7 @@ public struct GuideIndex: Sendable {
     /// source, including programmes no channel uses. Nil when no source holds
     /// a programme.
     public var horizon: DateInterval? {
-        let spans = sources.values.compactMap { $0.guide?.span }
+        let spans = sources.values.flatMap { $0.layers.compactMap(\.guide.span) }
         guard let start = spans.map(\.start).min(), let end = spans.map(\.end).max() else { return nil }
         return DateInterval(start: start, end: end)
     }
@@ -44,12 +68,12 @@ public struct GuideIndex: Sendable {
     /// How many programmes the completed sources hold, used ones or not.
     /// Changes when a source's guide loads, refreshes or goes.
     public var programmeCount: Int {
-        sources.values.reduce(0) { $0 + ($1.guide?.count ?? 0) }
+        sources.values.reduce(0) { total, entry in entry.layers.reduce(total) { $0 + $1.guide.count } }
     }
 
     /// How many sources are past loading: completed, failed or without a guide.
     public var settledSourceCount: Int {
-        sources.values.count { $0.guide != nil || $0.state != .loading }
+        sources.values.count { $0.hasGuide || $0.state != .loading }
     }
 
     /// The programme on at `date`, or nil when nothing is.
@@ -87,23 +111,58 @@ public struct GuideIndex: Sendable {
     /// is `.loading`.
     public func loadingState(for key: GuideKey) -> GuideLoadingState {
         guard let entry = sources[key.sourceID] else { return .loading }
-        guard let guide = entry.guide else { return entry.state }
-        return guide.schedules[key.epgID]?.isEmpty == false ? .loaded : .noData
+        guard entry.hasGuide else { return entry.state }
+        return schedule(for: key) != nil ? .loaded : .noData
     }
 
-    /// As `loadingState(for:)` with the channel's key. A channel without a
-    /// guide id reports its source's state, then `.noData` once the source has
-    /// completed. A channel without `sourceID` is `.unavailable`.
+    /// As `loadingState(for:)` with the channel's key from `key(for:)`. A
+    /// channel without one reports its source's state, then `.noData` once
+    /// the source has completed. A channel without `sourceID` is `.unavailable`.
     public func loadingState(for channel: Channel) -> GuideLoadingState {
-        if let key = GuideKey(channel: channel) { return loadingState(for: key) }
+        if let key = key(for: channel) { return loadingState(for: key) }
         guard let sourceID = channel.sourceID else { return .unavailable }
         guard let entry = sources[sourceID] else { return .loading }
-        return entry.guide == nil ? entry.state : .noData
+        return entry.hasGuide ? .noData : entry.state
     }
 
-    private func schedule(for key: GuideKey) -> (SourceGuide, [SourceGuide.Slot])? {
-        guard let guide = sources[key.sourceID]?.guide, let slots = guide.schedules[key.epgID] else { return nil }
-        return (guide, slots)
+    /// The guide id a channel's programmes come from: the entry picked by
+    /// hand, else the entry matched by name, else the playlist's own id
+    /// (guide-data/programmes-land-on-the-right-channels). Every lookup of a
+    /// channel's guide goes through here.
+    public func key(for channel: Channel) -> GuideKey? {
+        if let sourceID = channel.sourceID, let match = sources[sourceID]?.matches[channel.id] {
+            return GuideKey(sourceID: sourceID, epgID: match.entryID)
+        }
+        return GuideKey(channel: channel)
+    }
+
+    /// How the channel's guide id was chosen; nil when it is the playlist's own.
+    public func match(for channel: Channel) -> GuideMatch? {
+        channel.sourceID.flatMap { sources[$0]?.matches[channel.id] }
+    }
+
+    /// The winning guide's schedule for the key and that guide's position
+    /// among the source's loaded guides: the first with a programme for it.
+    func schedule(for key: GuideKey) -> (SourceGuide, [SourceGuide.Slot])? {
+        located(key).map { ($0.guide, $0.slots) }
+    }
+
+    /// Where a key's programmes come from: the guide, its schedule and its
+    /// position among the source's loaded guides.
+    struct Located {
+        var guide: SourceGuide
+        var slots: [SourceGuide.Slot]
+        var layer: Int
+    }
+
+    func located(_ key: GuideKey) -> Located? {
+        guard let layers = sources[key.sourceID]?.layers else { return nil }
+        for (position, layer) in layers.enumerated() {
+            if let slots = layer.guide.schedules[key.epgID], !slots.isEmpty {
+                return Located(guide: layer.guide, slots: slots, layer: position)
+            }
+        }
+        return nil
     }
 
     /// The first index whose element satisfies `predicate`, which must be

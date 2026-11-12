@@ -62,7 +62,7 @@ import SwiftUI
         private func resolve() {
             guard let reminders, let key = reminders.watchRequest else { return }
             let channels = live.catalogue.rows(in: .all).compactMap(live.catalogue.channel(for:))
-            if let channel = channels.first(where: { GuideKey(channel: $0) == key }) {
+            if let channel = channels.first(where: { GuideLookup.key(for: $0) == key }) {
                 reminders.watchRequest = nil
                 watch(channel)
                 return
@@ -87,7 +87,7 @@ enum ReminderBannerText {
     @MainActor
     static func content<Token: Hashable & Sendable>(_ reminder: Reminder, catalogue: Catalogue<Token>) -> ReminderBanner.Content {
         let text = ReminderText()
-        let row = catalogue.rows(in: .all).first { catalogue.channel(for: $0).flatMap(GuideKey.init(channel:)) == reminder.guideKey }
+        let row = catalogue.rows(in: .all).first { catalogue.channel(for: $0).flatMap(GuideLookup.key(for:)) == reminder.guideKey }
         let number = row.flatMap { catalogue.channelNumber(for: $0) ?? catalogue.channel(for: $0)?.channelNumber }
         return ReminderBanner.Content(
             eyebrow: text.bannerEyebrow(reminder, now: .now), title: reminder.title, body: text.bannerBody(reminder, number: number))

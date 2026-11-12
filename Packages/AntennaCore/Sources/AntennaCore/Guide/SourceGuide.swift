@@ -29,6 +29,9 @@ struct SourceGuide: Sendable {
     }
 
     let schedules: [String: [Slot]]
+    /// Each `<channel>` element's first display name, by trimmed id. An id
+    /// with programmes and no channel element is missing here.
+    let names: [String: String]
     private let text: [UInt8]
     /// Earliest start to latest stop over every programme; nil when there are none.
     let span: DateInterval?
@@ -38,13 +41,14 @@ struct SourceGuide: Sendable {
     /// start; of equal starts keeps the last in input order; then cuts each
     /// programme's stop to the next one's start, so the later start wins and
     /// nothing is split.
-    init(_ input: [Programme]) {
+    init(_ input: [Programme], names: [String: String] = [:]) {
         var builder = Builder()
         for programme in input { builder.add(programme) }
+        builder.names = names
         self = builder.build()
     }
 
-    fileprivate init(schedules: [String: [Slot]], text: [UInt8]) {
+    fileprivate init(schedules: [String: [Slot]], names: [String: String], text: [UInt8]) {
         var count = 0
         var earliest: Date?
         var latest: Date?
@@ -54,6 +58,12 @@ struct SourceGuide: Sendable {
             if let stop = slots.last?.stop { latest = max(latest ?? stop, stop) }
         }
         self.schedules = schedules
+        var trimmed: [String: String] = [:]
+        for (id, name) in names {
+            let key = id.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed[key] == nil, !key.isEmpty { trimmed[key] = name }
+        }
+        self.names = trimmed
         self.text = text
         self.count = count
         if let earliest, let latest { span = DateInterval(start: earliest, end: latest) } else { span = nil }
@@ -88,6 +98,8 @@ struct SourceGuide: Sendable {
         /// entries, so the table stays small for guides with little repetition.
         private static let internLimit = 65_536
 
+        /// Display names by channel id, set before `build()`.
+        var names: [String: String] = [:]
         private var grouped: [String: [Slot]] = [:]
         private var text: [UInt8] = []
         private var interned: [Int: TextRef] = [:]
@@ -126,7 +138,7 @@ struct SourceGuide: Sendable {
             // keeps no unused capacity.
             let packed = Array(text)
             text = []
-            return SourceGuide(schedules: grouped, text: packed)
+            return SourceGuide(schedules: grouped, names: names, text: packed)
         }
     }
 

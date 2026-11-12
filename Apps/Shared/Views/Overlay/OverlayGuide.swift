@@ -42,12 +42,12 @@ struct OverlayGuide {
     static func store(_ store: AppGuideStore?) -> OverlayGuide {
         OverlayGuide(
             state: { store?.loadingState(for: $0) ?? .unavailable },
-            current: { channel, date in GuideKey(channel: channel).flatMap { store?.current(for: $0, at: date) } },
+            current: { channel, date in store?.key(for: channel).flatMap { store?.current(for: $0, at: date) } },
             next: { channel, date, count in
-                GuideKey(channel: channel).map { store?.next(for: $0, after: date, count: count) ?? [] } ?? []
+                store?.key(for: channel).map { store?.next(for: $0, after: date, count: count) ?? [] } ?? []
             },
             programmes: { channel, interval in
-                guard let key = GuideKey(channel: channel) else { return [] }
+                guard let key = store?.key(for: channel) else { return [] }
                 return store?.programmes(for: [key], in: interval)[key] ?? []
             },
             horizon: { store?.horizon },

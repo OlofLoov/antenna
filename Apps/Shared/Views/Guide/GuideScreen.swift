@@ -210,7 +210,7 @@
         /// (tv-guide-grid/open-at-a-programme-found-in-search). False when no
         /// channel has that guide.
         private func open(at request: ProgrammeKey) -> Bool {
-            let matches = { (key: RowKey) in catalogue.channel(for: key).flatMap(GuideKey.init(channel:)) == request.guideKey }
+            let matches = { (key: RowKey) in catalogue.channel(for: key).flatMap(GuideLookup.key(for:)) == request.guideKey }
             if !catalogue.rows(in: group).contains(where: matches) {
                 guard catalogue.rows(in: .all).contains(where: matches) else { return false }
                 overlay.tuned(from: .all)

@@ -183,13 +183,15 @@ final class ProgrammeStore: Sendable {
         var owners: [SearchChannel] = []
         var texts: [String] = []
         var textIDs: [UInt64: Int32] = [:]
-        var sourceNumbers: [UUID: UInt64] = [:]
+        var sourceNumbers: [GuideLayerID: UInt64] = [:]
         var unsorted: [Entry] = []
         var longest: TimeInterval = 0
         for (key, channel) in ranked {
-            guard let guide = guide.sources[key.sourceID]?.guide, let slots = guide.schedules[key.epgID] else { continue }
-            let sourceNumber = sourceNumbers[key.sourceID] ?? UInt64(sourceNumbers.count)
-            sourceNumbers[key.sourceID] = sourceNumber
+            guard let found = guide.located(key) else { continue }
+            let (guide, slots) = (found.guide, found.slots)
+            let layerID = GuideLayerID(sourceID: key.sourceID, layer: found.layer)
+            let sourceNumber = sourceNumbers[layerID] ?? UInt64(sourceNumbers.count)
+            sourceNumbers[layerID] = sourceNumber
             // A repeated text is stored once per source, so its offset names it.
             func textID(_ ref: SourceGuide.TextRef) -> Int32 {
                 guard ref.length != SourceGuide.TextRef.none.length, ref.length > 0 else { return -1 }
@@ -292,4 +294,10 @@ final class ProgrammeStore: Sendable {
             programme: programme, channel: owners[Int(entry.key)], isOnNow: entry.start <= now && now < entry.stop,
             id: .init(guideKey: key, start: entry.start))
     }
+}
+
+/// One loaded guide of a source, by its position among the source's guides.
+private struct GuideLayerID: Hashable {
+    var sourceID: UUID
+    var layer: Int
 }

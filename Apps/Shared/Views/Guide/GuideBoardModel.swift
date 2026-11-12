@@ -188,7 +188,7 @@
         static func target(
             for request: ProgrammeKey, rows: [RowKey], channel: (RowKey) -> Channel?, cells: (RowKey, DateInterval) -> [GuideCell]
         ) -> GuideTarget? {
-            guard let key = rows.first(where: { channel($0).flatMap(GuideKey.init(channel:)) == request.guideKey }) else {
+            guard let key = rows.first(where: { channel($0).flatMap(GuideLookup.key(for:)) == request.guideKey }) else {
                 return nil
             }
             let around = DateInterval(start: request.start, duration: GuideTimeline.column)

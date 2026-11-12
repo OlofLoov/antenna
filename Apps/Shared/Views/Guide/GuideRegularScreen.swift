@@ -255,7 +255,7 @@
                 model.request = nil
                 let reading = GuideBoardReading(live: live, model: model)
                 let now = Date.now
-                let matches = { (key: RowKey) in reading.channel(key).flatMap(GuideKey.init(channel:)) == request.guideKey }
+                let matches = { (key: RowKey) in reading.channel(key).flatMap(GuideLookup.key(for:)) == request.guideKey }
                 if !live.catalogue.rows(in: live.group).contains(where: matches), live.catalogue.rows(in: .all).contains(where: matches) {
                     live.show(.all)
                 }

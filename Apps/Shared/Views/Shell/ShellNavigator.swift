@@ -60,7 +60,7 @@ struct ShellNavigator {
         /// channel with no guide id, which has no place in the guide.
         @MainActor
         func showLater(_ programme: Programme, on channel: Channel) -> Bool {
-            guard let key = GuideKey(channel: channel) else { return false }
+            guard let key = GuideLookup.key(for: channel) else { return false }
             show(.guide(programmeKey: ProgrammeKey(guideKey: key, start: programme.start)))
             return true
         }
