@@ -12,22 +12,27 @@ public struct SetupArrivals: Sendable {
         public var kind: String
         public var hasAddress: Bool
         public var createdAt: Date
+        /// True when the record names a Keychain item, as a Channels DVR
+        /// server with a proxy login does.
+        public var hasCredentialKey: Bool
 
-        public init(id: UUID, kind: String, hasAddress: Bool, createdAt: Date) {
+        public init(id: UUID, kind: String, hasAddress: Bool, createdAt: Date, hasCredentialKey: Bool = false) {
             self.id = id
             self.kind = kind
             self.hasAddress = hasAddress
             self.createdAt = createdAt
+            self.hasCredentialKey = hasCredentialKey
         }
     }
 
     /// A source the card can use.
     public enum Arrival: Sendable, Equatable {
-        /// A playlist link, or a Channels DVR server, which has no login to
-        /// ask for: the TV goes on to loading it.
+        /// A playlist link, or a Channels DVR server without a proxy login,
+        /// which has no login to ask for: the TV goes on to loading it.
         case playlist(UUID)
-        /// An Xtream source, Stalker portal or Jellyfin server: the TV asks for
-        /// the login or MAC address, which did not sync.
+        /// An Xtream source, Stalker portal, Jellyfin server or Channels DVR
+        /// server with a proxy login: the TV waits for the login or MAC
+        /// address, which does not sync with the source.
         case login(UUID, SourceKind)
     }
 
@@ -57,6 +62,7 @@ public struct SetupArrivals: Sendable {
                 continue
             }
             switch kind {
+            case .channelsDVR where candidate.hasCredentialKey: return .login(candidate.id, kind)
             case .m3u, .channelsDVR: return .playlist(candidate.id)
             case .xtream, .stalker, .jellyfin: return .login(candidate.id, kind)
             case .m3uFile: sawUnusable = true

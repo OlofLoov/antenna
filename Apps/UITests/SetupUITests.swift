@@ -57,7 +57,7 @@ final class SetupUITests: XCTestCase {
 
     // iphone-as-setup-device/scanning-opens-the-setup-form-on-the-iphone
     func testANewerLinkAsksToUpdate() {
-        let app = launch(link: "https://antenna.codecrave.se/setup?v=2&t=AAAAAAAAAAAAAAAAAAAAAA")
+        let app = launch(link: "https://antenna.codecrave.se/setup?v=3&t=AAAAAAAAAAAAAAAAAAAAAA")
         XCTAssertTrue(app.element("onboarding.fromTV.update").waitForExistence(timeout: 10))
         let update = app.element("onboarding.fromTV.update").label
         XCTAssertTrue(update.hasPrefix("This code is from a newer Antenna. Update Antenna on this iPhone"))
