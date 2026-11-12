@@ -55,6 +55,9 @@ public actor GuideEngine {
         /// The shared client of a Stalker source, for its portal guide. Nil
         /// when the source's login is not on this device.
         public var stalkerClient: @Sendable (UUID) async -> StalkerClient?
+        /// The client of a Jellyfin source, for its guide. Nil when the
+        /// source's login is not on this device.
+        public var jellyfinClient: @Sendable (UUID) async -> JellyfinClient?
 
         private static let processStart = ContinuousClock.now
 
@@ -73,7 +76,8 @@ public actor GuideEngine {
             now: @escaping @Sendable () -> Date = { .now },
             uptime: @escaping @Sendable () -> Duration = Configuration.processUptime,
             chunkSize: Int = 65_536,
-            stalkerClient: @escaping @Sendable (UUID) async -> StalkerClient? = { _ in nil }
+            stalkerClient: @escaping @Sendable (UUID) async -> StalkerClient? = { _ in nil },
+            jellyfinClient: @escaping @Sendable (UUID) async -> JellyfinClient? = { _ in nil }
         ) {
             self.session = session
             self.directory = directory
@@ -85,6 +89,7 @@ public actor GuideEngine {
             self.uptime = uptime
             self.chunkSize = chunkSize
             self.stalkerClient = stalkerClient
+            self.jellyfinClient = jellyfinClient
         }
     }
 
@@ -195,6 +200,10 @@ public actor GuideEngine {
             channels[id] = list
             if entries[id]?.guide != nil {
                 await reportLoaded(id)
+            } else if let source = descriptors[id], source.kind == .jellyfin, source.epgURL == nil, !list.isEmpty {
+                // A Jellyfin guide waits for the channel list it asks for.
+                enqueue(id)
+                pump()
             }
         }
     }
@@ -284,6 +293,9 @@ public actor GuideEngine {
                 }
             case .stalker:
                 await loadPortalGuide(source, generation: generation)
+                return
+            case .jellyfin:
+                await loadJellyfinGuide(source, generation: generation)
                 return
             }
         }
@@ -393,5 +405,35 @@ public actor GuideEngine {
     private func publish() {
         index = GuideIndex(sources: entries)
         indexContinuation.yield(index)
+    }
+}
+
+extension GuideEngine {
+    /// A Jellyfin source's guide, asked for by its channels' server ids
+    /// (guide-data/guide-from-a-source-that-serves-programmes-directly).
+    /// Before its channels arrive the source stays loading, and the channel
+    /// list queues it again. A failure after a load keeps the guide.
+    private func loadJellyfinGuide(_ source: GuideSourceDescriptor, generation: Int) async {
+        let id = source.sourceID
+        guard let client = await configuration.jellyfinClient(id) else {
+            failBeforeRequest(source, .credentialMissing, state: .unavailable)
+            return
+        }
+        guard hub.generation(of: id) == generation, !removed.contains(id) else { return }
+        if entries[id]?.guide == nil {
+            entries[id] = GuideIndex.SourceEntry(guide: nil, state: .loading)
+            publish()
+        }
+        guard let list = channels[id] else { return }
+        var seen = Set<String>()
+        let ids = list.compactMap(\.epgID).filter { seen.insert($0).inserted }
+        configuration.log("guide load \(id.uuidString) jellyfin \(client) \(ids.count) channels")
+        let hub = hub
+        let order = source.sortOrder
+        let read = await JellyfinGuideFetcher.fetch(client, channelIDs: ids, from: configuration.now()) { done, total in
+            hub.emit(.fetching(sourceID: id, batchesDone: done, batchesTotal: total), order: order, generation: generation)
+        }
+        if read.skipped > 0 { configuration.log("guide \(id.uuidString) skipped \(read.skipped) jellyfin rows") }
+        await complete(source, outcome: read.outcome, generation: generation, from: "jellyfin \(client)")
     }
 }

@@ -11,10 +11,13 @@ public enum GuideProgress: Sendable, Equatable {
     /// programmes no channel of the source uses.
     case loaded(sourceID: UUID, channelsWithGuide: Int, channelsTotal: Int, days: Int, unmatched: Int)
     case failed(sourceID: UUID, GuideError)
+    /// A source that serves programmes in batches, such as a Jellyfin
+    /// server, finished `done` of `total` batches.
+    case fetching(sourceID: UUID, batchesDone: Int, batchesTotal: Int)
 
     public var sourceID: UUID {
         switch self {
-        case .downloading(let id, _, _), .loaded(let id, _, _, _, _), .failed(let id, _): id
+        case .downloading(let id, _, _), .loaded(let id, _, _, _, _), .failed(let id, _), .fetching(let id, _, _): id
         }
     }
 }
