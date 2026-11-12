@@ -62,7 +62,7 @@ The system SHALL accept one delivery per code, replace the code with a new one a
 - **THEN** the code stops working, and coming back shows a new one
 
 ### Requirement: Only the Apple TV that showed the code can read the login
-The system SHALL send logins encrypted to the key in the code, only through the user's own private iCloud, and SHALL delete each delivery when the TV picks it up or ten minutes after it was sent.
+The system SHALL send logins encrypted to the key in the code, only through the user's own private iCloud, SHALL remove the sealed logins from a delivery when the TV picks it up, keeping only an empty marker so a second send to the same code is refused, and SHALL delete every delivery ten minutes after it was sent.
 
 #### Scenario: A delivery waiting in iCloud
 - **GIVEN** an iPhone sent logins and the TV has not picked them up yet
