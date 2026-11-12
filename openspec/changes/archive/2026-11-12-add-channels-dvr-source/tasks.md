@@ -37,5 +37,5 @@
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.2 `/opsx:verify` passes

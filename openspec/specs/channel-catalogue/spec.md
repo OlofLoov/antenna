@@ -320,3 +320,11 @@ The system SHALL replace the Recents group of a built catalogue without changing
 - **GIVEN** a recents entry whose id matches two channels in one source
 - **WHEN** the recents are replaced
 - **THEN** that entry does not resolve and Recents does not list it
+
+### Requirement: Numbers with a part after the dot
+The system SHALL order channels by major then minor number and show a minor number after a dot.
+
+#### Scenario: Ordering over-the-air numbers
+- **GIVEN** channels numbered 6.2, 6.1, 7 and 6
+- **WHEN** the catalogue lists them
+- **THEN** they appear as 6, 6.1, 6.2, 7
