@@ -29,7 +29,7 @@ The system SHALL show a tab bar holding, from left to right, the Antenna mark, L
 - **THEN** it is read as a group of tabs, and the clock and the mark as plain text
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the channel last watched on this Apple TV full screen at launch once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept on this Apple TV only, never synced.
+The system SHALL play the channel last watched on this Apple TV full screen at launch once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept on this Apple TV only, never synced. A channel whose internal id still contains its stream link SHALL not be remembered as the last channel.
 
 #### Scenario: Last channel available
 - **GIVEN** the user watched a channel on this Apple TV before
@@ -61,15 +61,15 @@ The system SHALL play the channel last watched on this Apple TV full screen at l
 - **WHEN** its stream loads
 - **THEN** it becomes the last channel; a stream that fails to load leaves the last channel as it was
 
-#### Scenario: Last watched an M3U channel with a stream link in its id
-- **GIVEN** the last channel watched on this Apple TV came from an M3U playlist, whose ids hold the stream link
-- **WHEN** the user opens Antenna
-- **THEN** that channel was not remembered, and the first channel of the first source to finish with channels plays instead
-
 #### Scenario: Unreadable last channel
 - **GIVEN** the stored last channel cannot be read
 - **WHEN** the user opens Antenna
 - **THEN** it counts as nothing remembered
+
+#### Scenario: Last watched an M3U channel with a stream link in its id
+- **GIVEN** the last channel watched on this Apple TV came from an M3U playlist whose ids still contain the stream link
+- **WHEN** the user opens Antenna
+- **THEN** that channel is not remembered, the first channel of the first source to load plays instead, and no error is shown
 
 ### Requirement: Menu shows the tab bar over the picture
 The system SHALL dim the picture and show the tab bar with Live highlighted when the user presses Menu over a full-screen channel with nothing else on screen, keeping the video playing, or failed.

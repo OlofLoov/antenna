@@ -14,7 +14,7 @@ The system SHALL tag each channel parsed from a source with that source's id and
 - **THEN** every channel carries source S and a position equal to its 0-based index in playlist or stream list order, and nothing else changes
 
 ### Requirement: Group list and order
-The system SHALL list Favorites, then All channels, then for each source in input order its named groups and finally its Ungrouped group. A source's named groups SHALL follow the provider's category order when there is one, else first appearance.
+The system SHALL list Favorites, then Recents when it has channels, then All channels, then for each source in input order its named groups and finally its Ungrouped group. A source's named groups SHALL follow the provider's category order when there is one, else first appearance.
 
 #### Scenario: Two sources, one with a category order
 - **GIVEN** source A first with groups "Sport", "News" and two channels with no group, and source B second with channels in "Kids", "Sport", "Docs" and one whose group is "  ", and B's category order "Sport", " ", "Kids", "Sport", "Radio"
@@ -40,6 +40,12 @@ The system SHALL list Favorites, then All channels, then for each source in inpu
 - **GIVEN** input whose channels from sources A and B are mixed, with A's first channel ahead of B's
 - **WHEN** the catalogue is built
 - **THEN** A counts as the first source and B as the second, and each source's channels are taken in position order
+
+#### Scenario: Recents in the group list
+- **GIVEN** the two-source catalogue and a recents list naming two channels that resolve
+- **WHEN** the catalogue is built
+- **THEN** the groups are Favorites, Recents, All channels, then the source groups as before
+- **AND** with no recents that resolve, Recents is absent
 
 ### Requirement: Group counts
 The system SHALL count the channels in each group, with every count equal to the number of rows that group lists.
@@ -301,3 +307,16 @@ The system SHALL derive the source group of a channel from a source that is not 
 - **GIVEN** a built catalogue and a tagged channel whose source is not in the input
 - **WHEN** its source group is asked for
 - **THEN** it is the group derived from its own source and group, which is not listed and counts 0
+
+### Requirement: Recents replaced without rebuild
+The system SHALL replace the Recents group of a built catalogue without changing any other group, row or number, within the same time bound as replacing favorites.
+
+#### Scenario: New recents list
+- **GIVEN** the 50,000-channel catalogue and a changed recents list
+- **WHEN** the recents are replaced
+- **THEN** every other group, its rows and every number are identical to before, Recents follows the new list newest first, and the call takes under 20 ms with benchmarks enabled
+
+#### Scenario: An id matching two channels
+- **GIVEN** a recents entry whose id matches two channels in one source
+- **WHEN** the recents are replaced
+- **THEN** that entry does not resolve and Recents does not list it
