@@ -41,6 +41,7 @@
                     }
                 }
                 .modifier(SourceDeletions(removed: live.sourceDeleted, defaults: live.session.store.defaults))
+                .modifier(GroupRulesFeed(changed: live.rulesChanged))
                 .task { await live.observeEngine() }
                 .task { await live.player.observeDetails() }
                 .task { await live.player.observeAirPlay() }

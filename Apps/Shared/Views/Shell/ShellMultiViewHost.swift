@@ -48,5 +48,6 @@
         let channels: [Channel]
         let favorites: [PersistentIdentifier]
         let profile: UUID
+        let rules: GroupRules
     }
 #endif

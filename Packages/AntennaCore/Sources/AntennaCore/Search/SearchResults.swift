@@ -29,9 +29,13 @@ public struct SearchChannel: Sendable, Hashable {
 
     /// Every channel of `catalogue` in All channels order, numbered as the
     /// catalogue numbers them. `sourceOrder` gives each source's place;
-    /// a source missing from it sorts last.
-    public static func all<Token>(in catalogue: Catalogue<Token>, sourceOrder: [UUID: Int] = [:]) -> [SearchChannel] {
-        catalogue.rows(in: .all).compactMap { key in
+    /// a source missing from it sorts last. Channels of hidden groups are
+    /// included only with `includingHidden`, and locked channels never while
+    /// the locks are closed (group-management/hide-groups-you-never-watch).
+    public static func all<Token>(
+        in catalogue: Catalogue<Token>, sourceOrder: [UUID: Int] = [:], includingHidden: Bool = false
+    ) -> [SearchChannel] {
+        catalogue.searchRows(includingHidden: includingHidden).compactMap { key in
             guard let channel = catalogue.channel(for: key) else { return nil }
             return SearchChannel(
                 key: key, name: channel.name, group: channel.group, number: catalogue.number(for: key),

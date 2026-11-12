@@ -139,15 +139,16 @@
             switch group {
             case .favorites: return "No favorites yet. Press the star on a channel to add it."
             case .all, .named, .ungrouped, .recents: return "No channels yet. Add a source in Settings."
+            case .own: return "No channels in this group yet. Add some from Groups in Settings."
             }
         }
 
         /// The channels or favorites changed while the overlay is open
         /// (tv-channel-overlay/every-group-with-its-size). A group that is gone
-        /// shows All channels; the highlight stays on `focused` while it
+        /// shows the catalogue's fallback group, All channels unless hidden; the highlight stays on `focused` while it
         /// exists, else moves to the group's first channel.
         func catalogueChanged<Token>(_ catalogue: Catalogue<Token>, focused: OverlayFocus?) -> OverlayFocus? {
-            if !catalogue.groups.contains(group) { group = .all }
+            if !catalogue.groups.contains(group) { group = catalogue.fallbackGroup }
             if let lastTuned, !catalogue.groups.contains(lastTuned) { self.lastTuned = nil }
             switch focused {
             case .channel(let key):

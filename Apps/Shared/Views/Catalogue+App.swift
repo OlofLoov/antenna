@@ -12,6 +12,7 @@ extension CatalogueGroup {
         case .all: "All channels"
         case .named(_, let name): name
         case .ungrouped: "Ungrouped"
+        case .own: "Group"
         }
     }
 
@@ -21,6 +22,7 @@ extension CatalogueGroup {
         case .favorites: "Your order"
         case .recents: "Newest first"
         case .all, .named, .ungrouped: "Sorted by number"
+        case .own: "Your order"
         }
     }
 
@@ -28,7 +30,7 @@ extension CatalogueGroup {
         switch self {
         case .favorites: "star"
         case .recents: "clock.arrow.circlepath"
-        case .all, .named, .ungrouped: nil
+        case .all, .named, .ungrouped, .own: nil
         }
     }
 
@@ -70,11 +72,13 @@ extension RowKey {
 extension Catalogue where Token == PersistentIdentifier {
     /// The app's catalogue: its channels in source order, groups in
     /// first-appearance order, and `profile`'s stored favorites (profiles capability).
+    /// `rules` are the group rules from `GroupRulesFeed` (group-management capability).
     static func shell(
-        channels: [Channel], favorites: [FavoriteRecord], profile: UUID = Profile.mainID, recents: [LastChannelKey] = []
+        channels: [Channel], favorites: [FavoriteRecord], profile: UUID = Profile.mainID, recents: [LastChannelKey] = [],
+        rules: GroupRules = GroupRules()
     ) -> Self {
         let owned = favorites.filter { ProfileList.owns(profile, recordProfile: $0.profileID) }
-        return Catalogue(channels: channels, groupOrder: [:], favorites: owned.map(\.snapshot), recents: recents)
+        return Catalogue(channels: channels, groupOrder: [:], favorites: owned.map(\.snapshot), recents: recents, rules: rules)
     }
 }
 

@@ -227,7 +227,7 @@
         @ViewBuilder private func liveGroups(_ columns: LiveColumns) -> some View {
             ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
                 Browse.GroupRow(
-                    title: group.label, systemImage: group.systemImage, count: live.catalogue.count(of: group),
+                    title: live.catalogue.label(of: group), systemImage: group.systemImage, count: live.catalogue.count(of: group),
                     isSelected: (section == .live || section == .guide) && group == live.group
                 ) {
                     live.show(group)
@@ -378,7 +378,7 @@
                         Browse.FailureBanner(text: banner, retry: live.retry, dismiss: live.dismissBanner)
                             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
                     }
-                    Browse.ListHeader(title: live.group.label, count: count == 1 ? "1 channel" : "\(count) channels") {
+                    Browse.ListHeader(title: live.catalogue.label(of: live.group), count: count == 1 ? "1 channel" : "\(count) channels") {
                         leading
                     } filter: {
                         Browse.FilterField(text: $live.filter)

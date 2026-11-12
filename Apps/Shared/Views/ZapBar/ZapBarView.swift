@@ -57,7 +57,7 @@
         /// "Sport · 4 of 42", or nil when the channel is in no list yet.
         private var position: String? {
             guard let key, let (index, count) = catalogue.position(of: key, in: list) else { return nil }
-            return ZapBarText.position(list: list.label, index: index, count: count)
+            return ZapBarText.position(list: catalogue.label(of: list), index: index, count: count)
         }
 
         private func content(_ line: GuideLine, now: Programme?, next: Programme?) -> ZapBar.NowPlaying.Content {

@@ -76,7 +76,7 @@
             ScrollViewReader { proxy in
                 Browse.Chips {
                     ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                        Browse.Chip(title: group.label, isSelected: group == live.group) {
+                        Browse.Chip(title: live.catalogue.label(of: group), isSelected: group == live.group) {
                             live.show(group)
                         }
                         .id(group)

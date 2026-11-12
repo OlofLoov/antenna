@@ -36,6 +36,9 @@ struct SearchCorpus: Sendable {
     /// True when the Movies and Series sections exist, so their chips show.
     var hasTitles: Bool
     var sources: SearchSources
+    /// True when this device searches hidden groups too
+    /// (group-management/hide-groups-you-never-watch).
+    var includeHidden = false
 
     /// Changes whenever what the index holds would: a source loading, a
     /// guide arriving or titles loading.
@@ -50,6 +53,8 @@ struct SearchCorpus: Sendable {
         var sources: SearchSources
         /// The day the index was built, so a long-open screen builds again daily.
         var day: Int
+        var rules: GroupRules
+        var includeHidden: Bool
     }
 
     func signature(now: Date) -> Signature {
@@ -58,7 +63,7 @@ struct SearchCorpus: Sendable {
             channels: all.count, rows: [all.first, all.last].compactMap(\.self), programmes: guide.programmeCount,
             settledGuides: guide.settledSourceCount,
             horizon: guide.horizon, titles: titles.count, hasTitles: hasTitles, sources: sources,
-            day: Int(now.timeIntervalSinceReferenceDate / 86_400))
+            day: Int(now.timeIntervalSinceReferenceDate / 86_400), rules: catalogue.rules, includeHidden: includeHidden)
     }
 }
 
@@ -224,7 +229,8 @@ final class SearchModel {
     func load(_ corpus: SearchCorpus) async {
         let now = dependencies.now()
         let built = await Task.detached(priority: .userInitiated) {
-            let channels = SearchChannel.all(in: corpus.catalogue, sourceOrder: corpus.sourceOrder)
+            let channels = SearchChannel.all(
+                in: corpus.catalogue, sourceOrder: corpus.sourceOrder, includingHidden: corpus.includeHidden)
             let index = SearchIndex(channels: channels, guide: corpus.guide, titles: corpus.titles, now: now)
             let guideLoading = channels.contains { channel in
                 channel.guideKey.map { corpus.guide.loadingState(for: $0) == .loading } ?? false

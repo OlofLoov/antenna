@@ -51,15 +51,16 @@ extension LiveModel {
     }
 
     /// Selects the restored group once the catalogue has it, unless the
-    /// user picked one first. A group that disappears falls back to All
-    /// channels while the channel plays on
-    /// (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
+    /// user picked one first. A group that disappears falls back to the
+    /// first group the user may open, All channels unless hidden, while the
+    /// channel plays on (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group,
+    /// group-management/a-channel-that-gets-locked-stops-playing).
     func restoreGroup() {
         if let wanted = restore.group, catalogue.groups.contains(wanted) {
             group = wanted
             restore.group = nil
         } else if !catalogue.groups.contains(group) {
-            group = .all
+            group = catalogue.fallbackGroup
         }
     }
 

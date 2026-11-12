@@ -50,6 +50,7 @@ enum ProfileStore {
         let favorites = (try? context.fetch(FetchDescriptor<FavoriteRecord>())) ?? []
         favorites.filter { ProfileList.owns(id, recordProfile: $0.profileID) }.forEach(context.delete)
         ActivityStore.removeProfile(id, in: context)
+        GroupStore.removeProfile(id, in: context)
         save(context, resolving: records.filter { $0.id != id })
         return true
     }

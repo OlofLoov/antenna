@@ -42,6 +42,7 @@ struct SourceRemoval {
         for favorite in (try? context.fetch(FetchDescriptor<FavoriteRecord>(predicate: #Predicate { $0.sourceID == source }))) ?? [] {
             context.delete(favorite)
         }
+        GroupStore.removeSource(id, in: context)
         SourceRecord.delete(record, from: context, credentials: credentials)
         try? context.save()
         refresher?.forget(id)

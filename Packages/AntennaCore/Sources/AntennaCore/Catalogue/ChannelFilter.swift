@@ -57,7 +57,7 @@ public struct ChannelNameIndex: Sendable {
 
     public init<Token>(_ catalogue: Catalogue<Token>) {
         var entries: [RowKey: Entry] = [:]
-        let rows = catalogue.rows(in: .all)
+        let rows = catalogue.searchRows(includingHidden: true)
         entries.reserveCapacity(rows.count)
         for key in rows {
             guard let channel = catalogue.channel(for: key) else { continue }

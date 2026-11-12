@@ -25,7 +25,7 @@
                 ChannelOverlay.GroupColumn {
                     ForEach(Array(catalogue.groups.enumerated()), id: \.element) { index, group in
                         ChannelOverlay.GroupRow(
-                            title: group.label, systemImage: group.systemImage, count: catalogue.count(of: group),
+                            title: catalogue.label(of: group), systemImage: group.systemImage, count: catalogue.count(of: group),
                             look: group == model.group ? .selected : .plain
                         ) {
                             model.show(group)
@@ -45,7 +45,7 @@
                 }
                 .focusSection()
             } channels: {
-                ChannelOverlay.ChannelColumn(title: model.group.label, order: model.group.order) {
+                ChannelOverlay.ChannelColumn(title: catalogue.label(of: model.group), order: model.group.order) {
                     if let empty = model.emptyText(catalogue) {
                         ChannelOverlay.EmptyGroup(text: empty)
                     } else {

@@ -54,7 +54,7 @@
                     GuideBannerList(banners: reading.banners())
                         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
                     if data.rows.isEmpty {
-                        GuideBoard.Empty(text: "No channels in \(live.group.label)")
+                        GuideBoard.Empty(text: "No channels in \(live.catalogue.label(of: live.group))")
                             .accessibilityIdentifier("guide.empty")
                     } else {
                         GuideCompactList(data: data, now: now, anchor: model.time ?? now)
@@ -69,7 +69,7 @@
             ScrollViewReader { proxy in
                 Browse.Chips {
                     ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                        Browse.Chip(title: group.label, isSelected: group == live.group) {
+                        Browse.Chip(title: live.catalogue.label(of: group), isSelected: group == live.group) {
                             live.show(group)
                         }
                         .id(group)

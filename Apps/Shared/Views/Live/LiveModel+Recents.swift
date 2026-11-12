@@ -11,7 +11,7 @@ extension LiveModel {
         latestRecents.removeAll { $0.sourceID == id }
         shownRecents.removeAll { $0.sourceID == id }
         catalogue = catalogue.replacingRecents(shownRecents)
-        if !catalogue.groups.contains(group) { group = .all }
+        if !catalogue.groups.contains(group) { group = catalogue.fallbackGroup }
     }
 
     /// Shows `group`'s channels and clears the filter. The playing channel
@@ -23,7 +23,7 @@ extension LiveModel {
             shownRecents = latestRecents
             catalogue = catalogue.replacingRecents(shownRecents)
         }
-        self.group = catalogue.groups.contains(group) ? group : .all
+        self.group = catalogue.groups.contains(group) ? group : catalogue.fallbackGroup
         filter = ""
         if picked { restore.picked(group) }
     }
