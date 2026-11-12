@@ -47,9 +47,9 @@ extension PlayerModel {
     }
 
     /// The path that plays the stream on screen: the routed engine's active
-    /// one, or the router's pick for the address when the engine is not routed.
+    /// one, or the router's pick for the address when one engine takes both routes.
     func currentRoute() async -> EngineRouter.Route {
-        if let routed = engine as? RoutedEngine, let active = await routed.activeEngine {
+        if let routed = engine as? RoutedEngine, routed.system !== routed.demuxer, let active = await routed.activeEngine {
             return active === routed.system ? .system : .demuxer
         }
         return subject.map { EngineRouter.route(for: $0.channel.streamURL) } ?? .demuxer

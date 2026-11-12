@@ -29,11 +29,20 @@ extension ChannelOverlay {
         let now: PanelNow?
         let nothingOn: String
         let next: [PanelNext]
+        /// "Changing tile 2 of 3" above the logo while a multi-view tile picks a channel.
+        var eyebrow: String?
         @ViewBuilder var logo: Logo
         @ViewBuilder var buttons: Buttons
 
         var body: some View {
             VStack(alignment: .leading, spacing: 28) {
+                if let eyebrow {
+                    Text(eyebrow.uppercased())
+                        .font(.system(size: 20, weight: .semibold))
+                        .tracking(1.5)
+                        .foregroundStyle(Palette.textMuted)
+                        .accessibilityIdentifier("overlay.pickTarget")
+                }
                 header
                 nowSection
                 if !next.isEmpty {
@@ -153,13 +162,29 @@ extension ChannelOverlay {
         }
     }
 
-    /// Watch: tunes the highlighted channel.
+    /// Watch: tunes the highlighted channel. Multi-view's picker names the
+    /// tile instead, "Show in tile 2".
     struct WatchButton: View {
+        var title = "Watch"
         let watch: () -> Void
 
         var body: some View {
-            Button("Watch", action: watch)
+            Button(title, action: watch)
                 .buttonStyle(PanelButtonStyle(width: nil))
+        }
+    }
+
+    /// "Add to multi-view" over full-screen live, "Add as new tile" in the picker.
+    struct MultiViewButton: View {
+        let title: String
+        let add: () -> Void
+
+        var body: some View {
+            Button(action: add) {
+                Label(title, systemImage: "square.grid.2x2")
+                    .labelStyle(.titleAndIcon)
+            }
+            .buttonStyle(PanelButtonStyle(width: nil))
         }
     }
 
@@ -220,6 +245,20 @@ extension ChannelOverlay {
     } buttons: {
         ChannelOverlay.WatchButton {}
         ChannelOverlay.FavoriteButton(isFavorite: false) {}
+        ChannelOverlay.MultiViewButton(title: "Add to multi-view") {}
+    }
+    .background(Palette.scrimTint)
+}
+
+#Preview("Channel overlay panel, picking for a multi-view tile", traits: .fixedLayout(width: 860, height: 1080)) {
+    ChannelOverlay.Panel(
+        name: "Arena HD", badges: ["106"], now: nil, nothingOn: "No programme information", next: [], eyebrow: "Changing tile 2 of 3"
+    ) {
+        ChannelOverlay.Initials(text: "ARN")
+    } buttons: {
+        ChannelOverlay.WatchButton(title: "Show in tile 2") {}
+        ChannelOverlay.FavoriteButton(isFavorite: false) {}
+        ChannelOverlay.MultiViewButton(title: "Add as new tile") {}
     }
     .background(Palette.scrimTint)
 }
@@ -232,6 +271,41 @@ extension ChannelOverlay {
         ChannelOverlay.FavoriteButton(isFavorite: true) {}
     }
     .background(Palette.scrimTint)
+}
+
+extension ChannelOverlay {
+    /// The muted 26 pt line centered in the channel column when the group
+    /// has no channels; it takes no focus.
+    struct EmptyGroup: View {
+        let text: String
+
+        var body: some View {
+            Text(text)
+                .font(.system(size: 26))
+                .foregroundStyle(Palette.textMuted)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityIdentifier("overlay.emptyGroup")
+        }
+    }
+
+    /// The outlined badge on a channel already in a multi-view tile.
+    struct TileBadge: View {
+        let text: String
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            let color = isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted
+            Text(text)
+                .font(.system(size: 18, weight: .semibold))
+                .tracking(1)
+                .foregroundStyle(color)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(color, lineWidth: 1.5))
+        }
+    }
 }
 
 extension View {

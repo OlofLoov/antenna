@@ -164,7 +164,9 @@
             @MainActor
             static func dependencies() -> ShellModel.Dependencies? {
                 guard let scenario = scenario() else { return nil }
-                let engine = Engine(failing: scenario == .failing)
+                let scripted = Engine(failing: scenario == .failing)
+                // Routed like the app's engine, so multi-view can trade it with a tile's.
+                let engine = RoutedEngine(system: scripted, demuxer: scripted)
                 let script = Script(scenario: scenario)
                 let store = UITestingRecents.store { $0.hasPrefix("b") ? xtreamID : playlistID }
                 // `UITESTING_LAST_CHANNEL=b1` makes Cabin's channel the one the launch tunes.
@@ -194,7 +196,8 @@
                     credentials: credentials,
                     network: UITestingPlayback.network,
                     slowDelay: UITestingPlayback.slowDelay,
-                    watchSleep: UITestingRecents.sleep)
+                    watchSleep: UITestingRecents.sleep,
+                    multiView: multiView)
             }
 
             /// Logins the sign-in step stores, kept in memory, never in the Keychain.
@@ -251,10 +254,16 @@
                 @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
                 private(set) var loads = 0
                 private(set) var lastFile = ""
+                /// Set by multi-view, which mutes every tile but the highlighted one.
+                var muted = false
                 private let failing: Bool
 
-                init(failing: Bool) {
+                /// True for a multi-view tile's engine.
+                let isTile: Bool
+
+                init(failing: Bool, isTile: Bool = false) {
                     self.failing = failing
+                    self.isTile = isTile
                 }
 
                 var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
@@ -263,6 +272,10 @@
                     loads += 1
                     lastFile = url.lastPathComponent
                     trackList.reset()
+                    if let reason = UITestingShell.tileFailure(lastFile, tile: isTile) {
+                        state = .failed(reason)
+                        throw reason
+                    }
                     if failing {
                         state = .failed(.unreadable)
                         throw PlaybackFailure.unreadable
@@ -321,7 +334,7 @@
                         case .ended: "ended"
                         case .failed: "failed"
                         }
-                    return "\(name) loads=\(loads) file=\(lastFile)"
+                    return "\(name) loads=\(loads) file=\(lastFile)" + (muted ? " muted" : "")
                 }
             }
 
@@ -331,7 +344,7 @@
                 let engine: any PlaybackEngine
 
                 var body: some View {
-                    if let engine = engine as? Engine {
+                    if let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
                         Text(engine.summary)
                             .font(.system(size: 18))
                             .foregroundStyle(Palette.textMuted)

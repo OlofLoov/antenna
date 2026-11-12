@@ -93,6 +93,8 @@
             var slowDelay = Duration.seconds(10)
             /// How the ten-second count waits, when not as `sleep`.
             var watchSleep: (@MainActor (Duration) async throws -> Void)?
+            /// The tiles' engines and limit when multi-view starts.
+            var multiView = MultiViewModel.Dependencies()
         }
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
@@ -113,6 +115,10 @@
         var settingsOpen = false
         /// The source Sign in on the error asks a login for, nil while closed.
         var signInRequest: SignInRequest?
+        /// Multi-view over Live, nil while one channel plays.
+        var multiView: MultiViewModel?
+        /// Counts multi-view handing a channel back, which shows the info bar.
+        private(set) var multiViewEnds = 0
 
         @ObservationIgnored let engine: any PlaybackEngine
         /// The spinner, the reconnect count and the error for the tuned channel.
@@ -451,6 +457,10 @@
             await engine.play()
         }
 
+    }
+
+    // The setters these need are private to this file.
+    extension ShellModel {
         // MARK: Channel picker (stand-in for the channel overlay)
 
         func openPicker() {
@@ -459,6 +469,22 @@
 
         func closePicker() {
             pickerOpen = false
+        }
+
+        /// Multi-view ended with `channel`'s player now playing here with no
+        /// reload, or with every tile stopped when nil (multi-view/leave-multi-view).
+        /// It counts as one channel change, and the channel is the last one.
+        func multiViewEnded(keeping channel: Channel?) async {
+            multiView = nil
+            tuned = channel
+            player.tuned(channel.map(subject(for:)))
+            session.tuned(channel)
+            multiViewEnds += 1
+            guard let channel else { return }
+            if let key = LastChannelKey(channel) { session.store.write(key) }
+            let state = await engine.state
+            player.stateChanged(state)
+            session.stateChanged(state)
         }
     }
 #endif

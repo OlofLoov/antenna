@@ -9,6 +9,8 @@
         case channel(RowKey)
         case watch
         case favorite
+        /// "Add to multi-view", or "Add as new tile" in a tile's picker.
+        case multiView
         case search
     }
 
@@ -154,7 +156,7 @@
                 return target
             case .group(let shown) where !catalogue.groups.contains(shown):
                 return .group(group)
-            case .group, .watch, .favorite, .search, nil:
+            case .group, .watch, .favorite, .multiView, .search, nil:
                 return focused
             }
         }
