@@ -44,3 +44,28 @@ These were decided without an interview. The owner answers each one that changes
 - Open question: the filter is on iPad and Mac only. Changes "Filter channels by typing".
 - Open question: the iPhone row header's tap area is under the 44 pt floor. Can be decided during implementation.
 - Open question: should the guide remember its scroll position and open details when the user comes back from Live? Would add a requirement.
+
+## Implementation decisions
+
+Calls made while building, recorded here instead of asked.
+
+- `GuideRowLayout.blocks` takes a `GuideScale` (column width, minimum block, channel column). `GuideScale.television` is 370, 40 and 300 and is the default, so the Apple TV grid and its tests did not change. `GuideZoom` holds the four steps and the 28 pt minimum and 200 pt channel column.
+- Row identifiers use the existing `RowKey.identifier`, `<sourceID>.<position>`. It never holds `Channel.id` or a stream link, and the Apple TV guide's tests already read it, so no separate `identifierToken` was added. UI tests on iPad check that no `guide.*` identifier holds `file:`, `fixture` or `?` from the fixture stream links.
+- `ShellNavigator` and `ProgrammeKey` compile on every platform, and the navigator gained `setGroup`. On iPhone, iPad and Mac the tab bar and the sidebar each provide one; Search uses it to open the Guide. Apple TV's `setGroup` goes through the channel overlay's `tuned(from:)`.
+- The window root owns one `GuideBoardModel`: the time in view, zoom, filter, open details, keyboard cursor and a pending programme from another screen. The layout that takes over on a size change opens on the tab the session store last recorded (`add-session-restore-and-recently-watched`), so it opens on the Guide. A popover that goes because the grid gave way to the rows leaves the details open for the sheet.
+- The grid is one scroll view in both axes whose content spans the guide's bounds at the zoom's width. `GuideViewport` picks the rows and half hours on screen plus one each way, rounded so the rows rebuild only when a row or a column comes into view. The header, the pinned channel column and the now line follow the scroll offset every frame. A programme whose start is scrolled off keeps its title at the grid's left edge.
+- The scroll view appears once its size is known, already at the opening point: SwiftUI ignored a scroll asked for during the first layout pass.
+- A guide that loads or refreshes while open can move the bounds' start; the grid moves its offset by the same amount, so the same time stays in view.
+- Zoom keys are Command-= (Command-+ on a keyboard that has it) and Command-−. A pinch on iPad snaps to the nearest step when it ends; there is no live scaling while the fingers move. The step is in `UserDefaults` under `guide.zoom`. UI tests start from the default with `-ui-testing-reset-guide-zoom`.
+- The filter uses the catalogue's `rows(in:matching:)` with a `ChannelFilter`, so a name matches word by word and digits match the start of the number, as in Live's list and Search. It folds the group's names on each change of the filter text; an empty filter skips that. Its count is the group title's count, and picking another group clears it.
+- Keyboard: the arrows move a ring between blocks and Return opens the details; the details' Escape and dismiss gestures are the system popover's. Watch has no Return shortcut, because the details component also compiles for tvOS, where key shortcuts do not exist.
+- Gaps and placeholders open nothing in the grid, and gap cards open nothing on iPhone; only programmes have details.
+- On iPhone, Today returns the rows to now; another day starts each row at the programme on at the same time of day. Each row reads 24 hours of programmes from there. The row header keeps the board's 34 pt tap area.
+- The failed-guide banner is per source, from the guide state of that source's first channel; Retry asks the guide store to refresh that source. A dismissed banner stays hidden until that source stops failing, so a later failure shows it again.
+- Later programmes from Search: on iPhone, iPad and Mac the Guide opens at the programme with its details, as this change's open question proposed. Watch there plays the channel now with the Later line Search used to show. See the spec conflict below.
+- On Mac the Guide asks for a 640 pt wide window, which leaves the grid at least 440 pt.
+- The UI test script gives Live's scripted guide its programmes and a horizon. `-ui-testing-narrow-on-details` turns the window narrow a second after the details open, because a tap on the layout switch would close the popover first. `-ui-testing-guide days` adds a programme tomorrow and two days of guide; `-ui-testing-guide failed` fails Cabin's guide until Retry.
+
+### Spec conflict
+
+`add-search`'s "Pick a programme" requirement says a later programme picked on iPhone, iPad or Mac plays its channel and shows it as Later. This change's "Open at a programme" says Search opens this guide at it, and this change's proposal says `add-search` needs revising. The app now follows this change. `add-search`'s spec text is left as it is for the owner to reconcile; its UI tests for that scenario now cite this change's requirements.
