@@ -176,12 +176,17 @@ The system SHALL keep loading the remaining sources when one source fails.
 - **THEN** that source fails like a transport error and the others still load
 
 ### Requirement: Stalker type is stored
-The system SHALL store a Stalker portal source with its MAC address as the Keychain username and its password beside it.
+The system SHALL store a Stalker portal source with its MAC address as the Keychain username, its password beside it, and an optional login.
 
 #### Scenario: Stalker save
 - **GIVEN** type Stalker portal with a MAC address and password
 - **WHEN** the source is saved
 - **THEN** a source of kind Stalker exists, and the Keychain item under its id holds the MAC address as username and the password
+
+#### Scenario: Stalker save with a login
+- **GIVEN** type Stalker portal with a MAC address, password and login
+- **WHEN** the source is saved
+- **THEN** the Keychain item under its id also holds the login, and the synced source holds none of the three
 
 ### Requirement: Load failure is recorded
 The system SHALL record the description of the latest failure of each load, and SHALL clear it when a load has no failure.
@@ -212,14 +217,6 @@ The system SHALL treat a Keychain item that cannot be read or decoded as a failu
 - **WHEN** the channel list loads
 - **THEN** the source adds no channels, the other sources still load, and the failure is recorded
 
-### Requirement: Stalker contributes no channels
-The system SHALL load no channels from a Stalker portal source and make no request to the portal.
-
-#### Scenario: Stalker beside M3U
-- **GIVEN** a Stalker source first in order with a stored credential, and an M3U source second with 2 channels
-- **WHEN** the channel list loads
-- **THEN** it holds exactly the 2 M3U channels and no request reaches the portal
-
 ### Requirement: Loading until the first channel
 On iPhone, iPad and Mac, the system SHALL show "Loading channels…" in the channel list while at least one source exists and no channel is loaded, and SHALL list the channels in load order once there are any. The recorded load failure is not shown on screen.
 
@@ -245,3 +242,11 @@ The system SHALL offer the types M3U playlist, Xtream Codes and Stalker portal. 
 - **GIVEN** the add form
 - **WHEN** the user picks Stalker portal
 - **THEN** the fields are Name, Server URL, MAC address and a hidden Password
+
+### Requirement: Stalker channels are combined with other sources
+The system SHALL load a Stalker portal source's channels into the combined channel list alongside every other source, and SHALL record a portal failure like any other source's.
+
+#### Scenario: Stalker beside M3U
+- **GIVEN** a Stalker source first in order with a stored credential and 3 channels, and an M3U source second with 2 channels
+- **WHEN** the channel list loads
+- **THEN** it holds the 3 Stalker channels followed by the 2 M3U channels
