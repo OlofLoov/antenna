@@ -43,12 +43,6 @@
         case bar
     }
 
-    /// A programme another screen asks the Guide to show.
-    struct ProgrammeKey: Hashable, Sendable {
-        var guideKey: GuideKey
-        var start: Date
-    }
-
     /// One source as the loading and empty screens list it.
     struct ShellSource: Identifiable, Equatable, Sendable {
         enum State: Equatable, Sendable {

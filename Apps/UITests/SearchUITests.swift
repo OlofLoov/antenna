@@ -208,14 +208,19 @@ final class SearchUITests: XCTestCase {
         app.element("browse.row.00000000-0000-0000-0000-0000000000E1.\(position)")
     }
 
-    // search/pick-a-programme
-    func testPickingALaterProgrammePlaysItsChannelAndShowsItAsLater() throws {
+    // guide-on-iphone-ipad-and-mac/open-at-a-programme, from Search
+    // guide-on-iphone-ipad-and-mac/start-watching-from-the-guide, a later programme
+    func testPickingALaterProgrammeOpensTheGuideAtIt() throws {
         let app = try launch()
         search(app, "late film")
         let result = app.element("search.result.programme.0")
         XCTAssertTrue(result.waitForExistence(timeout: 5))
         XCTAssertFalse(result.label.contains(", Now "), "Late Film starts later")
         result.tap()
+
+        XCTAssertTrue(app.tabBars.buttons["Guide"].isSelected)
+        expect(app.element("guide.panel.title"), "label == 'Late Film'")
+        app.element("guide.watch").tap()
 
         XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
         expect(app.element("browse.nowPlaying"), "label CONTAINS 'News One'")

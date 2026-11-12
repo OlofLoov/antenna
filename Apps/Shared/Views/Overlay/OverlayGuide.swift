@@ -14,6 +14,8 @@ struct OverlayGuide {
     var programmes: @MainActor (Channel, DateInterval) -> [Programme] = { _, _ in [] }
     /// From the earliest start to the latest stop the guide holds, nil with no guide.
     var horizon: @MainActor () -> DateInterval? = { nil }
+    /// Loads a source's guide again, as the guide's Retry asks.
+    var refresh: @MainActor (UUID) -> Void = { _ in }
 
     /// What `channel`'s row says at `date`.
     @MainActor func line(for channel: Channel, at date: Date) -> GuideLine {
@@ -48,6 +50,7 @@ struct OverlayGuide {
                 guard let key = GuideKey(channel: channel) else { return [] }
                 return store?.programmes(for: [key], in: interval)[key] ?? []
             },
-            horizon: { store?.horizon })
+            horizon: { store?.horizon },
+            refresh: { id in Task { await store?.refresh(sourceID: id) } })
     }
 }

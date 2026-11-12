@@ -188,9 +188,22 @@
         /// News Two's guide is still loading, the rest have none.
         @MainActor static var guide: OverlayGuide {
             OverlayGuide(
-                state: { channel in channel.id == "fixture/news-two" ? .loading : .loaded },
+                state: { channel in
+                    if channel.id == "fixture/news-two" { return .loading }
+                    if guideMode == .failed, channel.id == "fixture/cabin-film", !guideRetried { return .failed(.offline) }
+                    return .loaded
+                },
                 current: { channel, date in programmes(for: channel).first { $0.start <= date && date < $0.stop } },
-                next: { channel, date, count in Array(programmes(for: channel).filter { $0.start >= date }.prefix(count)) })
+                next: { channel, date, count in Array(programmes(for: channel).filter { $0.start >= date }.prefix(count)) },
+                programmes: { channel, interval in
+                    programmes(for: channel).filter { $0.stop > interval.start && $0.start < interval.end }
+                },
+                horizon: {
+                    DateInterval(
+                        start: launched.addingTimeInterval(-3600),
+                        end: launched.addingTimeInterval(guideMode == .days ? 2 * 86_400 : 3 * 3600))
+                },
+                refresh: { _ in guideRetried = true })
         }
 
         @MainActor private static func programmes(for channel: Channel) -> [Programme] {
@@ -207,10 +220,17 @@
                     }
             case "fixture/sport-one":
                 let change = launched.addingTimeInterval(15)
+                let tomorrow = launched.addingTimeInterval(86_400 - 1800)
                 return [
                     Programme(channelID: channel.id, start: launched.addingTimeInterval(-600), stop: change, title: "First Half"),
                     Programme(channelID: channel.id, start: change, stop: change.addingTimeInterval(3600), title: "Second Half"),
                 ]
+                    + (guideMode == .days
+                        ? [
+                            Programme(
+                                channelID: channel.id, start: tomorrow, stop: tomorrow.addingTimeInterval(3600), title: "Tomorrow Match")
+                        ]
+                        : [])
             case let id where id.hasPrefix("fixture/harbour-"):
                 // Harbour 1 to 6 each have Harbour Talk, ten minutes apart.
                 guard let number = Int(id.dropFirst("fixture/harbour-".count)), number <= 6 else { return [] }
