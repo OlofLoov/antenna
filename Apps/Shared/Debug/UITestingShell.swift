@@ -49,6 +49,7 @@
                     context.insert(SourceRecord(descriptor: descriptor, sortOrder: order))
                 }
                 UITestingProfiles.seed(context)
+                UITestingSubtitles.seed(context)
                 UITestingGroups.seed(context, locking: .ungrouped(xtreamID))
                 try context.save()
                 return container
@@ -206,6 +207,7 @@
                     slowDelay: UITestingPlayback.slowDelay,
                     watchSleep: UITestingRecents.sleep,
                     multiView: multiView)
+                dependencies.languages = UITestingPlayback.languageStore()
                 dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
                 return dependencies
             }
@@ -282,7 +284,7 @@
                 func load(_ url: URL, options: PlaybackOptions) async throws {
                     loads += 1
                     lastFile = url.lastPathComponent
-                    trackList.reset()
+                    trackList.reset(options)
                     buffer.played = { [weak self] in self?.state = .playing }
                     if UITestingTimeshift.catchupFails(url) {
                         state = .failed(.notFound)
@@ -338,7 +340,7 @@
                 func presentation() async -> AsyncStream<PresentationInfo?> { trackList.format.stream() }
                 func tracks() async -> AsyncStream<TrackList> { trackList.cast.stream() }
                 func position() async -> AsyncStream<PlaybackPosition> { Broadcast(PlaybackPosition.zero).stream() }
-                func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
+                func subtitleCues() async -> AsyncStream<[SubtitleCue]> { trackList.cues.stream() }
 
                 /// `"<state> loads=<n> file=<last file name>"`.
                 var summary: String {

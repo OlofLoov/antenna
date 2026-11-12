@@ -33,6 +33,7 @@ struct ShelfSync: ViewModifier {
                     Button("OK", role: .cancel) {}
                 }
             }
+            .followsSubtitlePreference { playback.subtitles = $0 }
             .environment(library)
             .environment(playback)
             .environment(activity)

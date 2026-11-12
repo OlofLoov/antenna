@@ -192,14 +192,14 @@ enum SourceOrder {
     }
 }
 
-/// Open on launch, Guide window, Refresh sources and, on Apple TV, the swipe.
+/// Open on launch, Guide window, Refresh sources, on Apple TV the swipe, and Subtitles.
 private struct PreferencesSection: View {
     let preferences: AppPreferences
     let offersMovies: Bool
     let change: (AppPreferences) -> Void
 
     var body: some View {
-        Section("Preferences") {
+        Section {
             // A stored Movies reads as Live where Movies is not offered, without a write.
             Picker("Open on launch", selection: launchBinding) {
                 ForEach(AppPreferences.LaunchScreen.allCases.filter { $0 != .movies || offersMovies }, id: \.self) { screen in
@@ -227,7 +227,27 @@ private struct PreferencesSection: View {
                 }
                 .accessibilityIdentifier("settings.swipe")
             #endif
+            subtitlesPicker
+        } header: {
+            Text("Preferences")
+        } footer: {
+            // sources-and-settings/choose-when-subtitles-show
+            Text(preferences.subtitles.explanation)
+                .accessibilityIdentifier("settings.subtitles.footer")
         }
+    }
+
+    /// Off, Auto and Always; on Apple TV a list pushed with the current one ticked.
+    private var subtitlesPicker: some View {
+        Picker("Subtitles", selection: binding(\.subtitles)) {
+            ForEach(SubtitleMode.allCases, id: \.self) { mode in
+                Text(mode.title).tag(mode)
+            }
+        }
+        #if os(tvOS)
+            .pickerStyle(.navigationLink)
+        #endif
+        .accessibilityIdentifier("settings.subtitles")
     }
 
     private var launchBinding: Binding<AppPreferences.LaunchScreen> {
