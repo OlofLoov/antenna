@@ -67,7 +67,9 @@
         /// The channel to tune at launch, read once.
         @ObservationIgnored var stored: LastChannelKey?
         private var launched = false
-        @ObservationIgnored private var deadlinePassed = false
+        @ObservationIgnored private(set) var deadlinePassed = false
+        /// A Top Shelf item waiting for its source; the launch tune waits while set.
+        @ObservationIgnored var shelfItem: UUID?
         @ObservationIgnored private var deadline: Task<Void, Never>?
         @ObservationIgnored private var pauseTimer: Task<Void, Never>?
         @ObservationIgnored private(set) var pausedByShell = false
@@ -242,8 +244,8 @@
         /// Tunes once: the stored channel when its source loads before the
         /// deadline, otherwise the first channel of the first source that
         /// finished with channels. Nothing changes once a channel is tuned.
-        private func considerTune() {
-            guard tuned == nil, launched else { return }
+        func considerTune() {
+            guard tuned == nil, launched, shelfItem == nil else { return }
             if let stored, !deadlinePassed {
                 let state = sources.first { $0.id == stored.sourceID }?.state
                 if state == .loading { return }

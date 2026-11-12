@@ -23,11 +23,16 @@ struct AppRootView<Content: View>: View {
             case .splash:
                 LaunchSplash()
             case .paywall:
-                if let paywall {
-                    PaywallScreen(model: paywall)
-                } else {
-                    Palette.ground.ignoresSafeArea()
+                Group {
+                    if let paywall {
+                        PaywallScreen(model: paywall)
+                    } else {
+                        Palette.ground.ignoresSafeArea()
+                    }
                 }
+                #if os(tvOS)
+                    .dropsShelfLinks()
+                #endif
             case .app:
                 content
             }

@@ -14,6 +14,7 @@
         @Environment(\.onboardingHandoff) private var handoff
         @Environment(\.sourceRefresher) private var refresher
         @Environment(\.modelContext) private var launchContext
+        @Environment(TopShelfInbox.self) private var shelfLinks: TopShelfInbox?
         @State private var model: ShellModel?
         @State private var shelves: ShelfLibrary?
         @State private var playback: ShelfPlayback?
@@ -24,6 +25,7 @@
                 Palette.ground.ignoresSafeArea()
                 if let model, let shelves, let playback {
                     ShellScreen(model: model)
+                        .modifier(TopShelfLinks(model: model, library: shelves, playback: playback))
                         .modifier(ShelfSync(library: shelves, playback: playback))
                 }
             }
@@ -33,6 +35,8 @@
             .task {
                 guard model == nil else { return }
                 let model = ShellModel(dependencies())
+                // A shelf link at launch holds the last-channel tune (tvos-shell/play-or-resume-from-a-shelf-link).
+                if let id = shelfLinks?.take() { model.holdShelfItem(id) }
                 let engine = model.engine
                 let lifecycle = PlaybackLifecycle(engine: engine) {
                     engine.continuesInPictureInPicture
@@ -41,6 +45,7 @@
                 lifecycle.start()
                 #if DEBUG
                     UITestingShell.requestGuide(from: model)
+                    UITestingShell.openURLWhenRunning(into: shelfLinks, model: model)
                 #endif
                 self.model = model
                 if handoff?.request != nil {

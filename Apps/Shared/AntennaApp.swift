@@ -18,6 +18,10 @@ struct AntennaApp: App {
     @State private var locks = GroupLocks()
     /// Reminders on this device (programme-reminders capability).
     @State private var reminders: ReminderCenter
+    #if os(tvOS)
+        /// Top Shelf links wait here, outside every gate, until the shell takes them (top-shelf capability).
+        @State private var shelfLinks = TopShelfInbox.launching()
+    #endif
     #if !os(tvOS)
         /// Files shared to Antenna wait here, outside every gate, until a
         /// screen can show the import sheet (local-m3u-file-import/bring-a-file-in).
@@ -109,6 +113,9 @@ struct AntennaApp: App {
             #if !os(tvOS)
                 .receivingFiles(into: inbox)
                 .receivingSetupLinks(into: setupInbox)
+            #else
+                .environment(shelfLinks)
+                .onOpenURL { shelfLinks.receive($0) }
             #endif
         }
         .modelContainer(container)
