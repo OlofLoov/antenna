@@ -18,6 +18,23 @@ final class OnboardingModel {
     private(set) var clipboardOffer = ClipboardOffer.hidden
     /// The last successful Connect.
     private(set) var connection: SourceConnector.Connection?
+    /// Each source connected in this onboarding, in the order connected,
+    /// as its checklist loads (first-run-onboarding/the-checklist-shows-real-progress).
+    private(set) var setups: [SourceSetup] = []
+    /// True while the form is open again for another source.
+    var addingAnother = false
+    /// True on the form after Back from a provider with nothing to watch.
+    private(set) var returnedToForm = false
+    /// Xtream sources still to sign in on this Apple TV, in sort order
+    /// (first-run-onboarding/sign-in-again-on-an-apple-tv).
+    private(set) var signIns: [SourceDescriptor] = []
+    /// How a connected source loads. Set by the screen before Connect;
+    /// without it a connected source starts no checklist.
+    @ObservationIgnored var setupDependencies: SourceSetup.Dependencies?
+    /// Sources signed in so far, which start loading after the last one.
+    @ObservationIgnored private var pendingSignedIn: [SourceConnector.Connection] = []
+    /// True when the sources were signed in rather than added, which the summary's eyebrow says.
+    private(set) var signedIn = false
 
     @ObservationIgnored let connector: SourceConnector
     @ObservationIgnored private let clipboard: Clipboard?
@@ -52,6 +69,9 @@ final class OnboardingModel {
             do {
                 let connection = try await connector.connect(fields, into: context)
                 self.connection = connection
+                self.addingAnother = false
+                self.returnedToForm = false
+                self.begin(connection)
             } catch is CancellationError {
                 return
             } catch {
@@ -69,9 +89,135 @@ final class OnboardingModel {
         attempt?.cancel()
     }
 
-    /// Forgets the last connection, as Back from the checklist does.
-    func clearConnection() {
+    /// Onboarding stays up while a connected source is in it, even though
+    /// the store now holds a source, and on the form after Back from a
+    /// provider with nothing, while the store catches up with the delete.
+    var holdsApp: Bool { !setups.isEmpty || returnedToForm || !signIns.isEmpty }
+
+    /// The checklist or summary shows in place of the form.
+    var showsChecklist: Bool { !setups.isEmpty && !addingAnother && signIns.isEmpty }
+
+    /// Asks for the login of each Xtream source in `sources`, in order,
+    /// with the server filled in. Stalker and playlists are skipped.
+    func startSignIn(_ sources: [SourceDescriptor]) {
+        guard signIns.isEmpty, setups.isEmpty else { return }
+        signIns = sources.filter { $0.kind == .xtream }
+        prepareSignIn()
+    }
+
+    private func prepareSignIn() {
+        guard let next = signIns.first else { return }
+        fields = SourceFields(kind: .xtream, name: next.name, url: next.url.absoluteString)
+        error = nil
+    }
+
+    /// Connect on the sign-in screen: checks the login with the server and
+    /// keeps it in this device's Keychain under the source's credential key,
+    /// adding no source. After the last one the checklist shows.
+    func signIn(into context: ModelContext) async {
+        guard !connecting, let source = signIns.first else { return }
+        if fields.username.isEmpty || fields.password.isEmpty {
+            error = (fields.username.isEmpty ? ConnectFailure.missingField(.username) : .missingField(.password)).message
+            return
+        }
+        error = nil
+        connecting = true
+        defer { connecting = false }
+        let host = source.url.host() ?? source.url.absoluteString
+        let reply: SourceConnector.Connection.Reply
+        do {
+            reply = try await connector.probe(.xtream, link: source.url, username: fields.username, password: fields.password, host: host)
+        } catch is CancellationError {
+            return
+        } catch {
+            self.error = ConnectFailure(error, host: host).message
+            return
+        }
+        let key = source.credentialKey ?? source.id.uuidString
+        let login = CredentialStore.Credential(username: fields.username, password: fields.password)
+        do {
+            try connector.credentials.save(login, for: key)
+        } catch {
+            self.error = ConnectFailure.credentials("\(error)").message
+            return
+        }
+        if source.credentialKey == nil {
+            let id = source.id
+            try? context.fetch(FetchDescriptor<SourceRecord>(predicate: #Predicate { $0.id == id })).first?.credentialKey = key
+            try? context.save()
+        }
+        var signed = source
+        signed.credentialKey = key
+        let connection = SourceConnector.Connection(descriptor: signed, reply: reply, login: login, inserted: false, createdCredential: nil)
+        pendingSignedIn.append(connection)
+        signIns.removeFirst()
+        if signIns.isEmpty {
+            signedIn = true
+            pendingSignedIn.forEach(begin)
+            pendingSignedIn = []
+        } else {
+            prepareSignIn()
+        }
+    }
+
+    /// The names still to sign in after the one on screen.
+    var signInsAfterThis: [String] { signIns.dropFirst().map(\.name) }
+
+    /// Every connected source's lines are done or failed.
+    var allFinished: Bool { !setups.isEmpty && setups.allSatisfy(\.isFinished) }
+
+    private func begin(_ connection: SourceConnector.Connection) {
+        guard let setupDependencies else { return }
+        setups.removeAll { $0.id == connection.descriptor.id }
+        let setup = SourceSetup(connection, dependencies: setupDependencies)
+        setups.append(setup)
+        setup.start()
+    }
+
+    /// Back from a provider with nothing to watch: stops its loading,
+    /// removes what its Connect saved and returns to the form with the
+    /// fields as typed (first-run-onboarding/a-provider-with-no-live-channels).
+    func discard(_ setup: SourceSetup, in context: ModelContext) {
+        setup.stop()
+        connector.undo(setup.connection, in: context)
+        setups.removeAll { $0.id == setup.id }
+        if connection?.descriptor.id == setup.id { connection = nil }
+        if setups.isEmpty { returnedToForm = true }
+    }
+
+    /// Back from the form: to the summary when sources are connected,
+    /// otherwise out of the form. Stops a running Connect. Returns true when
+    /// the form closes.
+    func leaveForm() -> Bool {
+        cancel()
+        if !setups.isEmpty {
+            addingAnother = false
+            return false
+        }
+        returnedToForm = false
+        return true
+    }
+
+    /// Add another source: an empty form of the same type. The sources
+    /// already connected keep loading.
+    func addAnother() {
+        fields = SourceFields(kind: fields.kind)
+        error = nil
         connection = nil
+        revealsPassword = false
+        addingAnother = true
+    }
+
+    /// Start watching or Browse movies: onboarding lets the app show. The
+    /// guide downloads carry on in the guide store.
+    func finish() {
+        setups.forEach { $0.stop() }
+        setups = []
+        connection = nil
+        addingAnother = false
+        returnedToForm = false
+        signedIn = false
+        fields = SourceFields()
     }
 
     /// Asks the system whether the clipboard holds a probable link, which

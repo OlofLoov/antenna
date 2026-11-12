@@ -10,6 +10,7 @@
         @Environment(\.sourceLoader) private var loader
         @Environment(\.guideStore) private var guideStore
         @Environment(\.currentProfile) private var profile
+        @Environment(\.onboardingHandoff) private var handoff
         @Environment(\.switchProfile) private var switchProfile
         @State private var live: LiveModel?
         @State private var shelves: ShelfLibrary?
@@ -44,6 +45,8 @@
                 let lifecycle = PlaybackLifecycle(engine: engine) { true }
                 lifecycle.start()
                 self.live = live
+                // Start watching in onboarding plays its first channel here.
+                if let channel = handoff?.takeChannel() { live.pick(channel) }
                 self.shelves = .app(loader)
                 self.playback = .app(loader) { await live.suspend() }
                 self.lifecycle = lifecycle
@@ -87,6 +90,12 @@
             #if DEBUG
                 if let scripted = UITestingLive.dependencies() { return scripted }
                 if let scripted = UITestingShelf.liveDependencies() { return scripted }
+                if let scripted = UITestingOnboarding.loader() {
+                    var dependencies = LiveModel.Dependencies.live(loader: scripted, guide: nil, profile: profile)
+                    let log = ProcessInfo.processInfo.environment[UITestingLive.logVariable].map { URL(fileURLWithPath: $0) }
+                    dependencies.engine = UITestingLive.Engine(log: log)
+                    return dependencies
+                }
             #endif
             return .live(loader: loader, guide: guideStore, profile: profile)
         }
@@ -108,6 +117,7 @@
         @Query private var records: [SourceRecord]
         /// The last session's tab was opened once, at the first appearance.
         @State private var restored = false
+        @Environment(\.onboardingHandoff) private var handoff
         #if os(iOS)
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
@@ -147,6 +157,8 @@
                 guard !restored else { return }
                 restored = true
                 selection = Tab(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
+                // Browse movies in onboarding opens Movies.
+                if handoff?.takeMovies() == true { selection = .movies }
             }
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with
