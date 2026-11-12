@@ -96,6 +96,17 @@ import Testing
         #expect(ProductKind(productID: "se.codecrave.antenna.other") == nil)
     }
 
+    @Test("paywall-and-entitlement/family-members-unlock-without-buying a shared purchase unlocks like an own one")
+    func familyShared() {
+        let lifetime = EntitlementResolver.resolve([PurchaseEvidence(kind: .lifetime, familyShared: true)], now: now)
+        #expect(lifetime == .entitled(Grant(kind: .lifetime, familyShared: true, verifiedAt: now)))
+        let end = now.addingTimeInterval(30 * day)
+        let yearly = EntitlementResolver.resolve([PurchaseEvidence(kind: .yearly, expiresAt: end, familyShared: true)], now: now)
+        #expect(yearly.grant?.familyShared == true)
+        let unshared = EntitlementResolver.resolve([PurchaseEvidence(kind: .lifetime, revokedAt: now, familyShared: true)], now: now)
+        #expect(unshared == .notEntitled(.revoked), "sharing stopped")
+    }
+
     @Test("the stand-in provider answers its verdict and streams only later changes")
     func fixedProvider() async {
         let provider = FixedEntitlementProvider(.notEntitled(.neverPurchased))

@@ -23,6 +23,8 @@ struct AntennaApp: App {
         /// screen can show the import sheet (local-m3u-file-import/bring-a-file-in).
         @State private var inbox = ImportInbox()
     #endif
+    /// Whether the app is unlocked, read before anything else (paywall-and-entitlement capability).
+    @State private var unlock: Unlock
 
     init() {
         let container = Self.makeContainer()
@@ -39,6 +41,7 @@ struct AntennaApp: App {
         _guideStore = State(initialValue: guideStore)
         _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore)))
         _reminders = State(initialValue: Self.reminderCenter(container: container))
+        _unlock = State(initialValue: Unlock.app())
     }
 
     private static func reminderCenter(container: ModelContainer) -> ReminderCenter {
@@ -88,15 +91,17 @@ struct AntennaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PlatformRoot()
-                .environment(\.guideStore, guideStore)
-                .environment(\.sourceRefresher, refresher)
-                .environment(locks)
-                .modifier(GroupLockTimers(locks: locks))
-                .modifier(ReminderRuntime(center: reminders))
-                #if !os(tvOS)
-                    .receivingFiles(into: inbox)
-                #endif
+            AppRootView(unlock: unlock) {
+                PlatformRoot()
+            }
+            .environment(\.guideStore, guideStore)
+            .environment(\.sourceRefresher, refresher)
+            .environment(locks)
+            .modifier(GroupLockTimers(locks: locks))
+            .modifier(ReminderRuntime(center: reminders))
+            #if !os(tvOS)
+                .receivingFiles(into: inbox)
+            #endif
         }
         .modelContainer(container)
     }
