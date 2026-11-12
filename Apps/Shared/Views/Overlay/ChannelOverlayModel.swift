@@ -42,6 +42,24 @@
             return target
         }
 
+        /// Opens on Recents with its first row highlighted, leaving the
+        /// group the user tuned from as it is
+        /// (session-restore-and-recently-watched/swipe-right-opens-the-channel-list-on-recents).
+        /// Nil when Recents is not listed.
+        func openRecents<Token>(_ catalogue: Catalogue<Token>) -> OverlayFocus? {
+            guard let first = catalogue.rows(in: .recents).first else { return nil }
+            group = .recents
+            highlighted = first
+            return .channel(first)
+        }
+
+        /// The most recent channel in Recents other than `channel`
+        /// (session-restore-and-recently-watched/swipe-left-for-the-previous-channel).
+        func previous<Token>(_ catalogue: Catalogue<Token>, from channel: Channel) -> Channel? {
+            let playing = RowKey(channel)
+            return catalogue.rows(in: .recents).first { $0 != playing }.flatMap(catalogue.channel(for:))
+        }
+
         /// Focus moved onto a channel row.
         func highlight(_ key: RowKey) {
             highlighted = key

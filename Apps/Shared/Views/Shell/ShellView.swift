@@ -3,58 +3,8 @@
     import SwiftData
     import SwiftUI
 
-    /// The Apple TV window root (tvos-shell capability): the picture full screen, the tab
-    /// bar on Menu, the tabs and Settings. Builds its model once from the
-    /// environment's loader and guide store, or from `UITestingShell` in a
-    /// Debug build launched for UI tests.
-    struct ShellView: View {
-        @Environment(\.sourceLoader) private var loader
-        @Environment(\.guideStore) private var guideStore
-        @Environment(\.currentProfile) private var profile
-        @State private var model: ShellModel?
-        @State private var shelves: ShelfLibrary?
-        @State private var playback: ShelfPlayback?
-        @State private var lifecycle: PlaybackLifecycle?
-
-        var body: some View {
-            ZStack {
-                Palette.ground.ignoresSafeArea()
-                if let model, let shelves, let playback {
-                    ShellScreen(model: model)
-                        .modifier(ShelfSync(library: shelves, playback: playback))
-                }
-            }
-            .guideRefreshTriggers()
-            // Leaving the shell, as when the profile changes, stops what plays.
-            .onDisappear { Task { [engine = model?.engine] in await engine?.stop() } }
-            .task {
-                guard model == nil else { return }
-                let model = ShellModel(dependencies())
-                let engine = model.engine
-                let lifecycle = PlaybackLifecycle(engine: engine) {
-                    engine.continuesInPictureInPicture
-                }
-                lifecycle.start()
-                #if DEBUG
-                    UITestingShell.requestGuide(from: model)
-                #endif
-                self.model = model
-                self.shelves = .app(loader)
-                self.playback = .app(loader) { await engine.stop() }
-                self.lifecycle = lifecycle
-            }
-        }
-
-        private func dependencies() -> ShellModel.Dependencies {
-            #if DEBUG
-                if let scripted = UITestingShell.dependencies() { return scripted }
-                if let seeded = UITestingScreenshots.dependencies() { return seeded }
-            #endif
-            return .live(loader: loader, guide: guideStore, profile: profile)
-        }
-    }
-
-    private struct ShellScreen: View {
+    /// The shell's layers, inputs and focus over one `ShellModel`.
+    struct ShellScreen: View {
         @Bindable var model: ShellModel
         @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
         @Query(sort: \FavoriteRecord.sortOrder) private var favorites: [FavoriteRecord]
@@ -397,6 +347,8 @@
             switch direction {
             case .up: steps = 1
             case .down: steps = -1
+            case .left: return previousChannel()
+            case .right: return openRecents()
             default: return
             }
             guard let tuned = model.tuned, let next = overlay.step(catalogue, from: tuned, by: steps) else { return }
@@ -407,6 +359,24 @@
 
     /// Favorites and recents in the overlay's catalogue.
     extension ShellScreen {
+        /// Swipe left on the full-screen picture plays the most recent
+        /// other channel in Recents; with none, nothing happens.
+        private func previousChannel() {
+            guard focus == .picture, let tuned = model.tuned, let previous = overlay.previous(catalogue, from: tuned) else { return }
+            Task { await model.pick(previous) }
+        }
+
+        /// Swipe right on the full-screen picture opens the overlay on
+        /// Recents, or as usual when Recents is not listed. Playback carries on.
+        private func openRecents() {
+            guard focus == .picture else { return }
+            showLatestRecents()
+            let target = overlay.openRecents(catalogue) ?? overlay.open(catalogue, playing: model.tuned)
+            zapBar.dismiss()
+            model.openPicker()
+            focus = .overlay(target)
+        }
+
         /// The favorite button in the overlay's panel. Removing the shown
         /// channel from Favorites while Favorites is shown moves to a neighbor.
         private func toggleFavorite(_ channel: Channel, _ key: RowKey) {
@@ -488,12 +458,5 @@
             default: break
             }
         }
-    }
-
-    /// What the overlay's catalogue is built from; it is rebuilt when either changes.
-    private struct CatalogueInputs: Equatable {
-        let channels: [Channel]
-        let favorites: [PersistentIdentifier]
-        let profile: UUID
     }
 #endif

@@ -55,4 +55,72 @@ extension ShellUITests {
         press(.up)
         expectEngine("playing loads=3 file=a1.ts")
     }
+
+    // session-restore-and-recently-watched/swipe-left-for-the-previous-channel
+    func testSwipeLeftPlaysThePreviousChannelAndSwipesBack() {
+        launchPlaying(recents: "a2,a1")
+        press(.left)
+        expectEngine("playing loads=2 file=a2.ts")
+        expect(element("zapBar.bar"), "exists == true")
+        expectGone("zapBar.bar", timeout: 10)
+        press(.left)
+        expectEngine("playing loads=3 file=a1.ts")
+    }
+
+    // session-restore-and-recently-watched/swipe-left-for-the-previous-channel, no other channel
+    func testSwipeLeftWithNoOtherChannelDoesNothing() {
+        launchPlaying(recents: "a1")
+        press(.left)
+        XCTAssertFalse(element("overlay.root").waitForExistence(timeout: 2))
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+
+    // session-restore-and-recently-watched/swipe-right-opens-the-channel-list-on-recents
+    func testSwipeRightOpensTheOverlayOnRecents() {
+        launchPlaying(recents: "b1,a2")
+        press(.right)
+        XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 10))
+        expect(element("overlay.channelsHeader"), "label CONTAINS 'RECENTS'")
+        expectFocusedRow("Channel b1")
+        expectEngine("playing loads=1 file=a1.ts")
+
+        // The current group is still Home's Ungrouped: up steps from a1 to a2.
+        press(.menu)
+        expectGone("overlay.root")
+        expectFocus("shell.picture")
+        press(.up)
+        expectEngine("playing loads=2 file=a2.ts")
+    }
+
+    // session-restore-and-recently-watched/swipe-right-opens-the-channel-list-on-recents, no Recents
+    func testSwipeRightWithoutRecentsOpensTheOverlayAsUsual() {
+        launchPlaying(recents: "")
+        press(.right)
+        XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 10))
+        expect(element("overlay.channelsHeader"), "label CONTAINS 'UNGROUPED'")
+        expectFocusedRow("Channel a1")
+    }
+
+    // tvos-shell/back-to-the-last-channel-on-launch, from the shared on-device store
+    func testTheLastChannelComesBackFromTheSharedStore() {
+        let mirror = FileManager.default.temporaryDirectory.appending(path: "tv-last-\(UUID().uuidString).txt")
+        defer { try? FileManager.default.removeItem(at: mirror) }
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launchEnvironment["UITESTING_LAST_CHANNEL_FILE"] = mirror.path
+        app.launch()
+        expectEngine("playing loads=1 file=a1.ts")
+        expectFocus("shell.picture")
+        expectGone("zapBar.bar", timeout: 10)
+        press(.up)
+        expectEngine("playing loads=2 file=a2.ts")
+        let stored = XCTNSPredicateExpectation(
+            predicate: NSPredicate { _, _ in (try? String(contentsOf: mirror, encoding: .utf8)) == "fixture/a2" }, object: nil)
+        XCTAssertEqual(XCTWaiter().wait(for: [stored], timeout: 10), .completed, "a2 never became the last channel")
+        app.terminate()
+
+        app.launchArguments.append("-ui-testing-keep-session")
+        app.launch()
+        expectEngine("playing loads=1 file=a2.ts")
+    }
 }

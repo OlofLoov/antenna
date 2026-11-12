@@ -57,4 +57,7 @@ Not drawn yet: the Recents row in the iPad and Mac sidebar, the Recents group ro
 - The session's tab is written whenever the tab bar or the iPad and Mac sidebar changes section, and read once when that view first appears. Movies and Series count as present when a stored source is Xtream, read from the source records rather than the shelves, which fill in a moment later.
 - The restored group is the last one the user tapped. Search showing All channels to reach a channel, and the fallback to All channels when a group goes, are not written.
 - The restore UI tests run on iPhone. The iPad and Mac sidebar uses the same model code, covered by `LiveRestoreTests`; there is no Mac UI test target.
+- The Apple TV swipes act only while the full-screen picture has focus, the same place up and down change channel. On the error screen left and right do nothing. Swipe left picks the newest Recents row that is not the playing channel, so two channels watched long enough toggle back and forth. Swipe right brings Recents up to date before the overlay opens, then holds it still while it is open.
+- With Reduce Motion nothing slides because the swipes add no animation of their own; the zap bar and the overlay keep the transitions they already had.
+- `ShellView` moved to `ShellViewParts.swift` so `ShellView.swift`, which holds `ShellScreen`, stays under the 500-line limit.
 - Not drawn: Recents uses the `clock.arrow.circlepath` symbol where Favorites has the star, and the Apple TV channel column says "Newest first" under its heading.
