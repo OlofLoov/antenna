@@ -7,4 +7,11 @@ extension DemuxEngine {
         audioRenderer.volume = min(1, max(0, volume))
         audioRenderer.isMuted = muted
     }
+
+    /// Mutes or unmutes the sound, leaving its level as it is.
+    public func setMuted(_ muted: Bool) {
+        audioRenderer.isMuted = muted
+    }
+
+    public var isMuted: Bool { audioRenderer.isMuted }
 }

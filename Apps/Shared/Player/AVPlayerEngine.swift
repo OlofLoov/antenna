@@ -43,6 +43,16 @@ final class AVPlayerEngine: PlaybackEngine {
     /// Play starts the stream again instead of resuming it.
     var reopensOnPlay = false
     var budget = ReconnectBudget()
+    /// A busy server and server errors fail at once instead of being tried
+    /// again, while another multi-view tile plays from the same source.
+    var refusalsAreFinal = false {
+        didSet { budget.refusalsAreFinal = refusalsAreFinal }
+    }
+    /// The tallest picture an HLS stream may pick, nil for no limit.
+    /// Multi-view tiles hold it at 1080.
+    var maximumVideoHeight: Int? {
+        didSet { player.currentItem.map(applyMaximumVideoHeight) }
+    }
     var reconnect: Task<Void, Never>?
     var opening: Task<Stream, any Error>?
     var stallWatch: Task<Void, Never>?
@@ -173,7 +183,7 @@ final class AVPlayerEngine: PlaybackEngine {
         wantsPlay = false
         hasPlayed = false
         reopensOnPlay = false
-        budget = ReconnectBudget()
+        budget = ReconnectBudget(refusalsAreFinal: refusalsAreFinal)
         set(.loading)
         log("load \(redacted(url))")
         do {
@@ -183,9 +193,10 @@ final class AVPlayerEngine: PlaybackEngine {
             set(.failed(.unreadable))
             throw PlaybackFailure.unreadable
         }
+        let refusals = refusalsAreFinal
         let task = Task { [weak self, sleep] in
             if hadItem { try await Task.sleep(for: Self.releaseGrace) }
-            return try await RetryPolicy.tune.run(sleep: sleep) { [weak self] in
+            return try await RetryPolicy.tune.refusals(final: refusals).run(sleep: sleep) { [weak self] in
                 guard let self else { throw CancellationError() }
                 return try await self.open(url, options: options, startAt: options.startPosition, generation: mine)
             }

@@ -35,6 +35,18 @@ public struct RetryPolicy: Sendable {
         }
     }
 
+    /// This policy, with a busy server and server errors no longer retried
+    /// when `final` is true. Multi-view sets it while another tile plays
+    /// from the same source: a 503 or 509 there is the provider's stream
+    /// limit, and trying again would loop (multi-view/a-tile-that-fails-says-why).
+    public func refusals(final: Bool) -> RetryPolicy {
+        guard final else { return self }
+        let retries = self.retries
+        return RetryPolicy(delays: delays) { failure in
+            failure != .serverBusy && failure != .serverError && retries(failure)
+        }
+    }
+
     /// Steady play that resets the reconnect count.
     public static let steadyPlay = Duration.seconds(60)
 
@@ -68,10 +80,15 @@ public struct ReconnectBudget: Sendable {
     public let policy: RetryPolicy
     /// Reconnects so far, 0 before the first.
     public private(set) var attempts = 0
+    /// A busy server and server errors fail the stream at once, as
+    /// `RetryPolicy.refusals(final:)` describes. It can change while the
+    /// stream plays.
+    public var refusalsAreFinal: Bool
     private var playingSince: ContinuousClock.Instant?
 
-    public init(policy: RetryPolicy = .drop) {
+    public init(policy: RetryPolicy = .drop, refusalsAreFinal: Bool = false) {
         self.policy = policy
+        self.refusalsAreFinal = refusalsAreFinal
     }
 
     public var maxAttempts: Int { policy.delays.count }
@@ -87,7 +104,7 @@ public struct ReconnectBudget: Sendable {
     public mutating func dropped(_ failure: PlaybackFailure, at now: ContinuousClock.Instant) -> (attempt: Int, delay: Duration)? {
         if let since = playingSince, now - since >= RetryPolicy.steadyPlay { attempts = 0 }
         playingSince = nil
-        guard policy.retries(failure), attempts < policy.delays.count else { return nil }
+        guard policy.refusals(final: refusalsAreFinal).retries(failure), attempts < policy.delays.count else { return nil }
         attempts += 1
         return (attempts, policy.delays[attempts - 1])
     }

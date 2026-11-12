@@ -28,6 +28,7 @@ extension AVPlayerEngine {
         }
         let item = AVPlayerItem(asset: AVURLAsset(url: url, options: assetOptions))
         item.preferredForwardBufferDuration = 8
+        applyMaximumVideoHeight(to: item)
         let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
         ])
