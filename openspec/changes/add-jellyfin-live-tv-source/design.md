@@ -118,3 +118,15 @@ public struct JellyfinClient: Sendable {
 - Open question: which guide window suits servers with tens of thousands of channels. Decided in `guide-data`.
 - [Sign-in revoked while channels are loaded] → stream addresses still hold the old key, so playback fails until the channels reload, which today means relaunching the app.
 - [Until the key-store decision exists] → the key lives in memory and the app signs in once per launch.
+
+## Implementation decisions
+
+- Groups 1 to 3, task 4.1 and group 5 ship as one AntennaCore PR. The sign-in, renewal and redaction tests need a signed-in call to run, and the channel and guide calls are those calls.
+- A call may renew the key once, even when it started by signing in because the store was empty. A server older than 10.8 turns down the first key, gets one more sign-in, turns that key down too, and the call fails as not authorized with the key cleared. The other option, counting a fresh sign-in as the renewal, failed the revoked-mid-load scenario for a device that had no saved key when the load began.
+- A 403 on any request is forbidden. That covers an account blocked on this device and an account the server accepted but keeps out of Live TV; the spec gives both the same error.
+- An empty body is an empty page. A JSON object without an `Items` list, a top-level list, a web page and `null` are reading errors whose path names the missing part (`Items` or `$`) and nothing from the answer.
+- Programmes repeated by `Id` within one call are skipped and counted. A programme date without a zone reads as UTC. Dates are read by a small byte parser, since `ISO8601DateFormatter` and a slice-based parser took most of the 2 s budget for 100 000 rows in a debug build.
+- `programmes(channelIDs:in:progress:)` gains a `progress` closure that hears batches done and the batch count, for the guide's batch progress.
+- `DecodedList` moved to the top level of AntennaCore. `XtreamClient.DecodedList` stays as a typealias so the Xtream call sites and tests are unchanged.
+- AntennaCore ships `JellyfinMemorySessionStore`, the in-memory store the app uses until the per-device key decision exists.
+- Channel ids lower-case the host, so `JF.local` and `jf.local` are one server.
