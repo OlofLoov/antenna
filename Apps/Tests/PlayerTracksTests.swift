@@ -49,6 +49,29 @@ import Testing
         task.cancel()
     }
 
+    @Test("player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step the switch turns subtitles on and off")
+    func switchSubtitles() async {
+        tune()
+        let task = Task { await player.observeDetails() }
+        engine.send(Self.tracks)
+        #expect(await eventually { player.canSwitchSubtitles })
+        #expect(!player.subtitlesOn)
+
+        player.switchSubtitles(languages: ["sv", "en"])
+        #expect(await eventually { player.subtitlesOn })
+        player.switchSubtitles(languages: ["sv", "en"])
+        #expect(await eventually { !player.subtitlesOn })
+        #expect(engine.subtitlePicks == ["subtitle-0", nil])
+
+        var none = Self.tracks
+        none.subtitles = []
+        engine.send(none)
+        #expect(await eventually { !player.canSwitchSubtitles })
+        player.switchSubtitles()
+        #expect(engine.subtitlePicks.count == 2, "with no subtitles the switch does nothing")
+        task.cancel()
+    }
+
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles tracks changing while the list is open update it")
     func tracksChange() async {
         tune()

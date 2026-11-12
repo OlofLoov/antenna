@@ -17,6 +17,7 @@ struct ShelfPlayerView: View {
         ZStack(alignment: .topLeading) {
             Color.black.ignoresSafeArea()
             PlayerSurfaceView(engine: playback.engine)
+                .overlay { PlayerSubtitles(engine: playback.engine) }
                 .ignoresSafeArea()
                 .accessibilityElement()
                 .accessibilityLabel(title)

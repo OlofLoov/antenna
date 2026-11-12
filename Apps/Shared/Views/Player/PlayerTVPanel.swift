@@ -8,6 +8,8 @@
         case segment(PanelTab)
         /// A track row by its id, or `TrackMenu.offID`.
         case track(String)
+        /// The Subtitles On/Off switch after the tabs.
+        case subtitles
     }
 
     /// The info panel over the playing picture, opened by holding select
@@ -27,6 +29,11 @@
                     InfoPanel.Segment(title: item.title, isSelected: item == tab) { player.panel = item }
                         .focused(focus, equals: .panel(.segment(item)))
                         .accessibilityIdentifier("player.panel.segment.\(item.identifier)")
+                }
+            } accessory: {
+                if player.canSwitchSubtitles {
+                    InfoPanel.SubtitlesSwitch(isOn: player.subtitlesOn) { player.switchSubtitles() }
+                        .focused(focus, equals: .panel(.subtitles))
                 }
             } content: {
                 switch tab {

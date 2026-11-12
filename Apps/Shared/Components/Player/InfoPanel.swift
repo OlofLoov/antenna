@@ -7,18 +7,21 @@ import SwiftUI
 enum InfoPanel {
     /// The 0.88 scrim across the top: the segments and "Menu closes", then
     /// the open tab's content.
-    struct Frame<Segments: View, Content: View>: View {
+    struct Frame<Segments: View, Accessory: View, Content: View>: View {
         @ViewBuilder var segments: Segments
+        /// What sits after the segments, such as the subtitles switch.
+        @ViewBuilder var accessory: Accessory
         @ViewBuilder var content: Content
 
         var body: some View {
             VStack(alignment: .leading, spacing: 30) {
-                HStack {
+                HStack(spacing: 24) {
                     HStack(spacing: 6) { segments }
                         .padding(6)
                         .background(Palette.surface(0.08), in: Capsule())
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("player.panel.segments")
+                    accessory
                     Spacer()
                     Text("Menu closes")
                         .font(.system(size: 22))
@@ -49,7 +52,7 @@ enum InfoPanel {
         }
     }
 
-    private struct SegmentStyle: ButtonStyle {
+    struct SegmentStyle: ButtonStyle {
         let isSelected: Bool
 
         func makeBody(configuration: Configuration) -> some View {
