@@ -39,6 +39,7 @@ Out of scope:
 ### Modified Capabilities
 - `m3u-playlists`: reads the catch-up style, source template and hour correction from each entry.
 - `xtream-live-source`: marks archive channels as Xtream catch-up and reads the server's time zone.
+- `tv-zap-bar-and-number-entry`: play/pause in full-screen live TV pauses and plays as well as showing the bar.
 
 ## Impact
 
