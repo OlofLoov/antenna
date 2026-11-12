@@ -110,3 +110,12 @@ The request items `sn`, `device_id`, `device_id2` and `hw_version_2` carry `sn`,
 - Open question: does the StbEmu derivation (MD5 and SHA-256 of the MAC, `device_id2` equal to `device_id`, `hw_version_2` equal to the serial) match a real portal that locks device ids? It changes the device-identity requirement. Check before the change is accepted.
 - [Two devices on one MAC cancel each other's session] → each renews on its next request at the cost of one round trip. The portal may still refuse a second stream at the same time, which shows up in playback.
 - [The first tune after launch signs in first] → it takes a few more round trips, and a tune after the session expired takes one more round of those.
+
+## Implementation decisions
+
+- CryptoKit: not used. MD5 and SHA-256 are written out in AntennaCore (`Stalker/Digest.swift`, about 130 lines), so the package still imports Foundation only and the device identity matches StbEmu. Options were CryptoKit in AntennaCore (breaks the import rule), the app passing a hashing closure in (every caller and test has to supply one), or plain Swift. Plain Swift is checked against the RFC 1321 and FIPS 180-4 test vectors and the values for `00:1A:79:12:34:56` above. Nothing relies on these digests for security.
+- `StalkerClient` is an actor. A sign-in in flight is one shared task; callers that find no key wait on it. Each completed sign-in bumps a generation number, and a rejection only drops the key when it was turned down with the current generation, so several rejections at once cost one new sign-in.
+- Calls made during sign-in (`do_auth`, `get_profile`) do not renew on rejection: renewing would start the same sign-in again. A rejection there is not authorized.
+- `do_auth` counts as accepted only when `js` is `true`, `1` or `"true"`. `get_profile` refuses the device with the portal's message when it sends `block_msg`, or a non-zero `status` with `msg`; a non-zero `status` with no message is not authorized. Any other profile answer, `false` and `[]` included, lets the sign-in go on.
+- During discovery a 2xx body of `Authorization failed.` counts as "not authorized", like 2xx JSON without a token.
+- Redirects are checked against the request's original scheme, host and port, with 80 and 443 filled in when the port is absent.
