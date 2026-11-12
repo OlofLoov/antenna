@@ -208,6 +208,7 @@ final class SearchUITests: XCTestCase {
         app.element("browse.row.00000000-0000-0000-0000-0000000000E1.\(position)")
     }
 
+    // search/pick-a-programme, a later programme
     // guide-on-iphone-ipad-and-mac/open-at-a-programme, from Search
     // guide-on-iphone-ipad-and-mac/start-watching-from-the-guide, a later programme
     func testPickingALaterProgrammeOpensTheGuideAtIt() throws {

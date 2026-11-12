@@ -21,7 +21,7 @@
 ## 3. Picking results
 
 - [x] 3.1 Play a picked channel or title, switching to All channels when needed and keeping the query, and verify with a UI test citing `search/pick-a-channel-or-title-to-watch`
-- [x] 3.2 Open the guide at a later programme on Apple TV and show the "Later" line in Live elsewhere, and verify with a UI test citing `search/pick-a-programme`
+- [x] 3.2 Open the guide at a later programme on every device and show the "Later" line in Live after Watch on iPhone, iPad and Mac, and verify with a UI test citing `search/pick-a-programme`
 
 ## 4. Recent searches
 
