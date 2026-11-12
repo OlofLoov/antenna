@@ -123,12 +123,21 @@ enum GroupStore {
 
     /// Stores `channels` as own group `id`'s members in this order. A
     /// channel whose id holds a link is left out (`GroupRules.canSave`).
-    static func setMembers(of id: UUID, to channels: [Channel], in context: ModelContext) {
-        members(of: id, in: context).forEach(context.delete)
+    /// Members from sources outside `loaded` stay, after the rest, so a
+    /// playlist still loading keeps its channels in the group.
+    static func setMembers(of id: UUID, to channels: [Channel], loaded: Set<UUID>? = nil, in context: ModelContext) {
+        let existing = members(of: id, in: context).sorted { $0.sortOrder < $1.sortOrder }
+        let kept = existing.filter { member in loaded.map { !$0.contains(member.sourceID ?? UUID()) } ?? false }
+        existing.forEach(context.delete)
         var order = 0
         for channel in channels {
             guard let source = channel.sourceID, GroupRules.canSave(channelID: channel.id) else { continue }
             context.insert(GroupMemberRecord(groupID: id, channelID: channel.id, sourceID: source, sortOrder: order))
+            order += 1
+        }
+        for member in kept {
+            guard let source = member.sourceID else { continue }
+            context.insert(GroupMemberRecord(groupID: id, channelID: member.channelID, sourceID: source, sortOrder: order))
             order += 1
         }
         try? context.save()

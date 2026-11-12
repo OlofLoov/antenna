@@ -5,7 +5,7 @@ import SwiftUI
 /// Sources and Settings on every platform (sources-and-settings capability;
 /// `iPhone-Settings`, `iPad-Settings`, `TV-Settings`): the sources in the
 /// user's order with their status, Add a source, Refresh all, the iCloud
-/// note, Profiles, Preferences and About.
+/// note, Profiles, Groups, Preferences and About.
 struct SettingsView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.sourceRefresher) private var refresher
@@ -22,6 +22,7 @@ struct SettingsView: View {
             List {
                 Section {
                     ProfileSettingsRow()
+                    GroupsSettingsRow()
                 }
                 sourcesSection
                 PreferencesSection(preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies) { changed in
