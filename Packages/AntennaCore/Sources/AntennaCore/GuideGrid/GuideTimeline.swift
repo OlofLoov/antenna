@@ -1,16 +1,15 @@
 import Foundation
 
 /// The time axis of the Apple TV guide grid (tv-guide-grid capability):
-/// half-hour columns 370 pt wide, four of them on screen, between bounds set
-/// by the guide's horizon. Every answer is in `calendar`'s time zone, so a
-/// test fixes both the clock and the zone.
+/// half-hour columns across a 1480 pt window that shows the Guide window
+/// preference's hours, between bounds set by the guide's horizon. Every
+/// answer is in `calendar`'s time zone, so a test fixes both the clock and
+/// the zone.
 public struct GuideTimeline: Sendable {
     /// One column covers half an hour.
     public static let column: TimeInterval = 30 * 60
-    public static let columnWidth = GuideScale.television.columnWidth
-    public static let visibleColumns = 4
-    /// What the window shows: two hours.
-    public static let windowLength = column * Double(visibleColumns)
+    /// The window's width on Apple TV: four 370 pt columns at two hours.
+    public static let windowWidth = GuideScale.television.columnWidth * 4
     /// The grid opens with this much of the past in view.
     public static let lookBack: TimeInterval = 90 * 60
 
@@ -18,11 +17,16 @@ public struct GuideTimeline: Sendable {
     /// The first column's start can be no earlier than `bounds.start`.
     /// The last column on screen starts strictly before `bounds.end`.
     public let bounds: DateInterval
+    /// How many hours the window shows, from the Guide window preference
+    /// (sources-and-settings/choose-how-the-app-behaves).
+    public let hours: Int
 
     /// Bounds from the half hour at or before the horizon's start to its
-    /// end. With no horizon, today from 00:00 to the next midnight.
-    public init(horizon: DateInterval?, now: Date, calendar: Calendar) {
+    /// end. With no horizon, today from 00:00 to the next midnight. The
+    /// window shows `hours`, at least one.
+    public init(horizon: DateInterval?, now: Date, calendar: Calendar, hours: Int = 2) {
         self.calendar = calendar
+        self.hours = max(1, hours)
         if let horizon {
             let start = Self.halfHour(atOrBefore: horizon.start, in: calendar)
             bounds = DateInterval(start: start, end: max(horizon.end, start.addingTimeInterval(Self.column)))
@@ -31,6 +35,20 @@ public struct GuideTimeline: Sendable {
             let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today.addingTimeInterval(86_400)
             bounds = DateInterval(start: today, end: tomorrow)
         }
+    }
+
+    /// Half-hour columns on screen: four at two hours, eight at four.
+    public var visibleColumns: Int { hours * 2 }
+
+    /// How long the window is.
+    public var windowLength: TimeInterval { Self.column * Double(visibleColumns) }
+
+    /// The Apple TV sizes with the columns narrowed so the window keeps its
+    /// width: 370 pt per half hour at two hours, 185 at four.
+    public var scale: GuideScale {
+        var scale = GuideScale.television
+        scale.columnWidth = Self.windowWidth / Double(visibleColumns)
+        return scale
     }
 
     /// The start of the local half hour holding `date`: 21:34 gives 21:30.
@@ -45,11 +63,11 @@ public struct GuideTimeline: Sendable {
         return date.addingTimeInterval(-(minutes + seconds))
     }
 
-    /// The latest first column the bounds allow: four columns back from the
-    /// last one that starts before the end, or the bounds' start.
+    /// The latest first column the bounds allow: a window of columns back
+    /// from the last one that starts before the end, or the bounds' start.
     public var latestStart: Date {
         let last = halfHour(atOrBefore: bounds.end.addingTimeInterval(-1))
-        let latest = last.addingTimeInterval(-Self.column * Double(Self.visibleColumns - 1))
+        let latest = last.addingTimeInterval(-Self.column * Double(visibleColumns - 1))
         return max(bounds.start, latest)
     }
 
@@ -76,26 +94,26 @@ public struct GuideTimeline: Sendable {
         clamp(start.addingTimeInterval(Self.column * Double(columns)))
     }
 
-    /// The two hours on screen from `start`.
+    /// The hours on screen from `start`.
     public func window(from start: Date) -> DateInterval {
-        DateInterval(start: start, duration: Self.windowLength)
+        DateInterval(start: start, duration: windowLength)
     }
 
-    /// The four column starts from `start`. Across a daylight saving change
-    /// their local times repeat or skip an hour.
+    /// The column starts on screen from `start`. Across a daylight saving
+    /// change their local times repeat or skip an hour.
     public func columns(from start: Date) -> [Date] {
-        (0..<Self.visibleColumns).map { start.addingTimeInterval(Self.column * Double($0)) }
+        (0..<visibleColumns).map { start.addingTimeInterval(Self.column * Double($0)) }
     }
 
-    /// Points from the window's left edge to `date`, at 370 pt per half hour.
-    public static func offset(of date: Date, from start: Date) -> Double {
-        GuideScale.television.offset(of: date, from: start)
+    /// Points from the window's left edge to `date`, at `scale`'s column width.
+    public func offset(of date: Date, from start: Date) -> Double {
+        scale.offset(of: date, from: start)
     }
 
     /// Where the now line goes, in points from the window's left edge, or
     /// nil when now is out of view.
     public func nowLine(at now: Date, windowStart start: Date) -> Double? {
-        guard now >= start, now < start.addingTimeInterval(Self.windowLength) else { return nil }
-        return Self.offset(of: now, from: start)
+        guard now >= start, now < start.addingTimeInterval(windowLength) else { return nil }
+        return offset(of: now, from: start)
     }
 }

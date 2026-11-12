@@ -51,10 +51,13 @@ struct GuideData {
         rows.indices.contains(row) ? cells(rows[row], window) : []
     }
 
-    /// The app's data: `rows` with `guide`'s programmes, in the user's time zone.
+    /// The app's data: `rows` with `guide`'s programmes, in the user's time
+    /// zone, with a window of `hours`. Only the Apple TV grid draws that window.
     @MainActor
-    static func live(rows: [RowKey], channel: @escaping (RowKey) -> Channel?, guide: OverlayGuide, now: Date) -> GuideData {
-        let timeline = GuideTimeline(horizon: guide.horizon(), now: now, calendar: .autoupdatingCurrent)
+    static func live(
+        rows: [RowKey], channel: @escaping (RowKey) -> Channel?, guide: OverlayGuide, now: Date, hours: Int = 2
+    ) -> GuideData {
+        let timeline = GuideTimeline(horizon: guide.horizon(), now: now, calendar: .autoupdatingCurrent, hours: hours)
         return GuideData(timeline: timeline, rows: rows) { key, window in
             guard let channel = channel(key) else { return [] }
             let reach = DateInterval(

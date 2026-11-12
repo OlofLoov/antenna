@@ -30,7 +30,7 @@
 ## 5. Preferences
 
 - [x] 5.1 Add the preferences record with defaults and duplicate handling, and verify a test that showing preferences inserts nothing
-- [ ] 5.2 Build the Preferences and About rows on every platform and apply each change on this device, and verify an integration test for each preference Open: every row is built and stored; Guide window is not applied yet because the guide grid's two-hour window is fixed in `GuideTimeline`.
+- [x] 5.2 Build the Preferences and About rows on every platform and apply each change on this device, and verify an integration test for each preference
 
 ## 6. Stalker portals
 
@@ -45,4 +45,4 @@
 ## 8. Verify
 
 - [x] 8.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 8.2 `/opsx:verify` passes Open until 3.3, 4.1 and 5.2 are done.
+- [ ] 8.2 `/opsx:verify` passes Open until 3.3 and 4.1 are done.

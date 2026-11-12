@@ -9,8 +9,8 @@ import SwiftUI
 enum GuideGrid {
     /// The channel column; with the 4 pt gap it is the board's 300 pt.
     static let channelColumn = 296.0
-    /// Four half-hour columns.
-    static let window = GuideTimeline.columnWidth * Double(GuideTimeline.visibleColumns)
+    /// The width the half-hour columns share, whatever the Guide window.
+    static let window = GuideTimeline.windowWidth
     static let rowSpacing = 6.0
     /// Muted text on the white focus card.
     static let mutedOnFocus = ChannelOverlay.mutedOnFocus
@@ -51,7 +51,8 @@ enum GuideGrid {
 
     /// The day chips and time header over the rows, with the now line on top.
     struct Grid<Days: View, Rows: View>: View {
-        /// The four column labels, "20:00" to "21:30".
+        /// The column labels, "20:00" to "21:30" at two hours. They share
+        /// the window's width, so more hours make each column narrower.
         let columns: [String]
         let now: NowMark?
         @ViewBuilder var days: Days
@@ -63,7 +64,7 @@ enum GuideGrid {
                     days
                         .frame(width: channelColumn + GuideRowLayout.gap, alignment: .leading)
                     ForEach(Array(zip(columns.indices, columns)), id: \.0) { _, label in
-                        ColumnLabel(text: label)
+                        ColumnLabel(text: label, width: window / Double(max(1, columns.count)))
                     }
                 }
                 .frame(height: 52)
@@ -82,14 +83,16 @@ enum GuideGrid {
 
     private struct ColumnLabel: View {
         let text: String
+        let width: Double
 
         var body: some View {
             Text(text)
                 .font(.system(size: 22))
                 .monospacedDigit()
                 .foregroundStyle(Palette.textMuted)
+                .lineLimit(1)
                 .padding(.leading, 12)
-                .frame(width: GuideTimeline.columnWidth, height: 52, alignment: .leading)
+                .frame(width: width, height: 52, alignment: .leading)
                 .overlay(alignment: .leading) {
                     Rectangle().fill(Palette.surface(0.12)).frame(width: 1)
                 }

@@ -1,5 +1,6 @@
 import AntennaCore
 import Foundation
+import SwiftData
 import Testing
 
 @testable import AntennaTV
@@ -43,8 +44,9 @@ import Testing
         }
     }
 
-    func data(rows: [RowKey]? = nil) -> GuideData {
-        let timeline = GuideTimeline(horizon: DateInterval(start: at(6), end: at(6, day: 30)), now: now, calendar: calendar)
+    func data(rows: [RowKey]? = nil, hours: Int = 2) -> GuideData {
+        let timeline = GuideTimeline(
+            horizon: DateInterval(start: at(6), end: at(6, day: 30)), now: now, calendar: calendar, hours: hours)
         let rows = rows ?? keys
         return GuideData(timeline: timeline, rows: rows) { key, window in
             let row = key.position
@@ -225,5 +227,70 @@ import Testing
         #expect(title(data) == "Loading guide…")
         #expect(model.select(data, now: now) == .watch)
         #expect(model.watch(data) == .tune(keys[2]))
+    }
+}
+
+/// The Guide window preference on the grid's model, read from an in-memory store.
+@MainActor
+@Suite struct GuideWindowTests {
+    let base = GuideModelTests()
+    let container: ModelContainer
+
+    init() throws {
+        let schema = Schema(AntennaSchema.models)
+        container = try ModelContainer(
+            for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+    }
+
+    var storedHours: Int { PreferencesStore.current(in: container.mainContext).guideHours }
+
+    @Test("sources-and-settings/choose-how-the-app-behaves the grid shows the stored Guide window")
+    func storedWindow() {
+        let model = base.model
+        #expect(storedHours == 2)
+        model.open(base.data(hours: storedHours), playing: base.keys[0], now: base.now)
+        #expect(model.window(base.data(hours: storedHours)) == DateInterval(start: base.at(20), end: base.at(22)))
+
+        PreferencesStore.save(AppPreferences(guideHours: 4), in: container.mainContext)
+        let data = base.data(hours: storedHours)
+        model.fit(data)
+        #expect(model.window(data) == DateInterval(start: base.at(20), end: base.at(0, day: 23)))
+        #expect(data.timeline.columns(from: model.windowStart).count == 8)
+        #expect(model.highlightedCell(data)?.programme?.title == "Film")
+    }
+
+    @Test("sources-and-settings/choose-how-the-app-behaves a longer window at the guide's end moves back inside it")
+    func longerWindowAtTheEnd() {
+        let model = base.model
+        let two = base.data()
+        model.open(two, row: 3, start: base.at(5, 30, day: 30))
+        #expect(model.windowStart == base.at(4, day: 30))
+
+        let four = base.data(hours: 4)
+        model.fit(four)
+        #expect(model.windowStart == base.at(2, day: 30))
+        #expect(model.window(four).end == base.at(6, day: 30))
+        #expect(model.highlight == GuideModel.Highlight(row: 3, at: base.at(5, 30, day: 30)))
+
+        // Three hours from 02:00 would end at 05:00, before the highlight.
+        model.fit(base.data(hours: 3))
+        #expect(model.windowStart == base.at(3, day: 30))
+        #expect(model.highlight?.at == base.at(5, 30, day: 30))
+    }
+
+    @Test("sources-and-settings/choose-how-the-app-behaves a shorter window keeps the highlight in view")
+    func shorterWindowKeepsTheHighlight() {
+        let model = base.model
+        let four = base.data(hours: 4)
+        model.open(four, playing: base.keys[1], now: base.now)
+        model.move(.right, four)
+        #expect(model.highlightedCell(four)?.programme?.title == "Late Show")
+        #expect(model.windowStart == base.at(20))
+
+        let two = base.data()
+        model.fit(two)
+        #expect(model.windowStart == base.at(21))
+        #expect(model.window(two) == DateInterval(start: base.at(21), end: base.at(23)))
+        #expect(model.highlightedCell(two)?.programme?.title == "Late Show")
     }
 }
