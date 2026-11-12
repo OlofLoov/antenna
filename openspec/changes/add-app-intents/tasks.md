@@ -28,5 +28,5 @@
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [ ] 5.2 `/opsx:verify` passes (open: verify finds every requirement implemented and cited, and reports only tasks 3.6 and 4.2, which need an iPhone and a Mac)
