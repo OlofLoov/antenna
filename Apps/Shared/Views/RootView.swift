@@ -40,6 +40,8 @@
             }
             .preferredColorScheme(.dark)
             .guideRefreshTriggers()
+            // Leaving the app's screens, as when it locks, stops what plays.
+            .onDisappear { Task { [engine = live?.engine] in await engine?.stop() } }
             .task {
                 guard live == nil else { return }
                 let live = LiveModel(dependencies())

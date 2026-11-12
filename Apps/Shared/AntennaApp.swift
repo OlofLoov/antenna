@@ -12,6 +12,8 @@ struct AntennaApp: App {
     private let container: ModelContainer
     /// Downloads and answers guide data for every screen (guide-data capability).
     @State private var guideStore: AppGuideStore
+    /// Whether the app is unlocked, read before anything else (paywall-and-entitlement capability).
+    @State private var unlock: Unlock
 
     init() {
         let container = Self.makeContainer()
@@ -24,6 +26,7 @@ struct AntennaApp: App {
         // (timeshift-catch-up-and-start-over/changing-channel-starts-fresh).
         TimeshiftStore.standard.clearLeftovers()
         _guideStore = State(initialValue: AppGuideStore.live(container: container))
+        _unlock = State(initialValue: Unlock.app())
     }
 
     private static func makeContainer() -> ModelContainer {
@@ -46,8 +49,10 @@ struct AntennaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PlatformRoot()
-                .environment(\.guideStore, guideStore)
+            AppRootView(unlock: unlock) {
+                PlatformRoot()
+            }
+            .environment(\.guideStore, guideStore)
         }
         .modelContainer(container)
     }
