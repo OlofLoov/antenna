@@ -6,7 +6,8 @@ import XCTest
 /// and iCloud scripted with `-ui-testing-login-drops`.
 @MainActor
 final class SendLoginsUITests: XCTestCase {
-    static let key = "E75P6uryBMf9M1j8nAByGIHRdCeBKCJ-xnTzf3_pe20"
+    /// The public half of a fixed test key, safe to publish.
+    static let key = "E75P6uryBMf9M1j8nAByGIHRdCeBKCJ-xnTzf3_pe20"  // gitleaks:allow
     static let home = "AAAAAAAAAAAAAAAAAAAAoQ"
     static let flat = "AAAAAAAAAAAAAAAAAAAAog"
     static let cabin = "AAAAAAAAAAAAAAAAAAAAow"
