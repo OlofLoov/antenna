@@ -45,7 +45,7 @@ import Testing
     @Test("guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac the Apple TV sizes stay 370, 40 and 300")
     func televisionSizes() {
         #expect(GuideScale.television == GuideScale(columnWidth: 370, minimumBlockWidth: 40, channelColumn: 300))
-        #expect(GuideTimeline.columnWidth == 370)
+        #expect(GuideTimeline(horizon: nil, now: now, calendar: calendar).scale == .television)
         #expect(GuideRowLayout.minimumWidth == 40)
         #expect(GuideZoom.channelColumn == 200)
     }

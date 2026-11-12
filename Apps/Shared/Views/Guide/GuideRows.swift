@@ -33,7 +33,7 @@
         private func row(_ key: RowKey, _ channel: Channel, cells: [GuideCell], in window: DateInterval, focus: GuideCell?) -> some View {
             let look: GuideGrid.ChannelLook = key == playing ? .playing : .plain
             let visible = cells.filter { $0.stop > window.start && $0.start < window.end }
-            let blocks = GuideRowLayout.blocks(visible.map(\.segment), in: window, now: now)
+            let blocks = GuideRowLayout.blocks(visible.map(\.segment), in: window, now: now, scale: data.timeline.scale)
             return GuideGrid.Row {
                 GuideGrid.ChannelCell(number: catalogue.number(for: key) ?? channel.number, name: channel.name, look: look) {
                     GuideLogo(channel: channel, look: look)

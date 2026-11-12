@@ -70,6 +70,22 @@
             area = .grid
         }
 
+        /// Keeps the window inside the guide after the Guide window
+        /// preference changed its length. A shorter window that would lose
+        /// the highlight moves right until the highlighted half hour is its
+        /// last column.
+        func fit(_ data: GuideData) {
+            guard windowStart != .distantPast else { return }
+            let timeline = data.timeline
+            windowStart = timeline.clamp(windowStart)
+            guard let highlight else { return }
+            if highlight.at >= window(data).end {
+                let last = timeline.halfHour(atOrBefore: highlight.at)
+                windowStart = timeline.clamp(last.addingTimeInterval(GuideTimeline.column - timeline.windowLength))
+            }
+            self.highlight = Highlight(row: highlight.row, at: clamped(highlight.at, data))
+        }
+
         // MARK: Reading
 
         func window(_ data: GuideData) -> DateInterval {

@@ -99,6 +99,26 @@ func clockText(_ date: Date, in calendar: Calendar = gridCalendar()) -> String {
         #expect(timeline.columns(from: first).map { clockText($0) } == ["02:00", "02:30", "02:00", "02:30"])
     }
 
+    @Test("sources-and-settings/choose-how-the-app-behaves the Guide window sets the hours the grid shows")
+    func guideWindowHours() throws {
+        let start = march(22, 20)
+        for hours in [2, 3, 4] {
+            let timeline = GuideTimeline(horizon: horizon, now: march(22, 21, 34), calendar: calendar, hours: hours)
+            #expect(timeline.opening(at: march(22, 21, 34)) == start)
+            #expect(timeline.columns(from: start).count == hours * 2)
+            #expect(timeline.window(from: start) == DateInterval(start: start, duration: Double(hours) * 3600))
+            // The window keeps its 1480 pt width; the columns narrow.
+            #expect(timeline.scale.columnWidth * Double(hours * 2) == 1480)
+            #expect(timeline.scale.minimumBlockWidth == 40)
+            let line = try #require(timeline.nowLine(at: march(22, 21, 34), windowStart: start))
+            #expect(abs(line - 94 * 1480 / Double(hours * 60)) < 0.001)
+            #expect(timeline.latestStart == march(30, 6).addingTimeInterval(-Double(hours) * 3600))
+        }
+        let four = GuideTimeline(horizon: horizon, now: march(22, 21, 34), calendar: calendar, hours: 4)
+        #expect(four.columns(from: start).map { clockText($0) }.last == "23:30")
+        #expect(four.nowLine(at: march(22, 23, 50), windowStart: start) != nil)
+    }
+
     @Test("tv-guide-grid/open-at-a-programme-found-in-search the window starts at the programme's half hour")
     func showing() {
         let timeline = GuideTimeline(horizon: horizon, now: march(22, 9), calendar: calendar)

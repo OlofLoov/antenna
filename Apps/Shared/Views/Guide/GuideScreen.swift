@@ -33,6 +33,7 @@
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.reminders) private var reminders
+        @Query private var preferences: [PreferencesRecord]
 
         var body: some View {
             TimelineView(.everyMinute) { context in
@@ -56,6 +57,7 @@
             .task {
                 for await value in await shell.engine.presentation() { presentation = value }
             }
+            .onChange(of: hours) { _, _ in model.fit(data(at: .now)) }
             .onChange(of: local) { _, new in localFocusMoved(to: new) }
             .onChange(of: focus.wrappedValue) { _, new in
                 guard new == .content, model.area != .grid else { return }
@@ -252,8 +254,12 @@
 
         private var playingKey: RowKey? { shell.tuned.flatMap(RowKey.init) }
 
+        /// The Guide window preference, read again whenever it changes here or
+        /// on another device (sources-and-settings/choose-how-the-app-behaves).
+        private var hours: Int { PreferencesStore.current(preferences).guideHours }
+
         private func data(at now: Date) -> GuideData {
-            .live(rows: catalogue.rows(in: group), channel: catalogue.channel(for:), guide: guide, now: now)
+            .live(rows: catalogue.rows(in: group), channel: catalogue.channel(for:), guide: guide, now: now, hours: hours)
         }
 
         private func nowMark(_ data: GuideData, _ now: Date) -> GuideGrid.NowMark? {
