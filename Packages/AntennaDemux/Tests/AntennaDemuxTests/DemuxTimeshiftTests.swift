@@ -66,12 +66,15 @@ import Testing
         #expect(await eventually { harness.status.window != nil })
         let first = try #require(harness.folders().first)
 
-        await harness.server.always("/mpeg2.ts", .paced(bytesPerSecond: Self.rate))
-        try await harness.engine.load(harness.url("mpeg2.ts"), options: harness.options)
+        // The same six-second stream at another address, sent faster than it
+        // plays, so the new channel does not stall before the test ends. The
+        // state stream keeps every change, so a `.playing` between polls counts.
+        try await harness.loadPaced("live/channel.ts")
+        let states = await harness.engine.states()
         await harness.engine.play()
-        #expect(await eventually { harness.engine.state == .playing })
+        #expect(await states.contains(.playing))
         #expect(await eventually { harness.folders().count == 1 && harness.folders().first != first })
-        #expect(harness.status.recording == .recording)
+        #expect(await eventually { harness.status.recording == .recording })
         await harness.engine.stop()
         #expect(await eventually { harness.folders().isEmpty })
         await harness.stop()
