@@ -2,7 +2,7 @@
 
 ## 1. References and matching in AntennaCore
 
-- [ ] 1.1 Take the stream link out of M3U channel ids, and verify a parser test with a login in the link
+- [x] 1.1 Take the stream link out of M3U channel ids, and verify a parser test with a login in the link (done in change `fix-m3u-channel-ids`)
 - [ ] 1.2 Add channel and title references that parse every shipped format and never hold a link or login, and verify round-trip and redaction tests
 - [ ] 1.3 Add channel lookup by reference and matching by folded name or number prefix, and verify tests for case, accents, numbers, ties and the 50 000 channel benchmark
 - [ ] 1.4 Add the reply text for every failure, and verify tests that no reply holds a URL, port, status or code

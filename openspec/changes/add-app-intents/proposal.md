@@ -38,7 +38,7 @@ Out of scope:
 - `app-intents`: Siri and Shortcuts actions to tune a channel, play a title, open Search and change a favorite, on iPhone, iPad and Mac.
 
 ### Modified Capabilities
-- `m3u-playlists`: channel ids no longer contain the stream link, because Shortcuts stores them and syncs them through iCloud.
+None. Shortcuts stores channel ids and syncs them through iCloud; change `fix-m3u-channel-ids` already took the stream link out of M3U ids.
 
 ## Impact
 
