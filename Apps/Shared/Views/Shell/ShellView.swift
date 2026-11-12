@@ -17,7 +17,7 @@
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
         @Environment(\.switchProfile) private var switchProfile
-        @State var zapBar = ZapBarModel()
+        @State var zapBar = ZapBarModel(hideAfter: ZapBarModel.hideAfterAtLaunch)
         @State var numbers = NumberEntryModel()
         /// When the tab bar last went down; the press that lowered it does not also change channel.
         @State private var barLowered = ContinuousClock.now - .seconds(10)

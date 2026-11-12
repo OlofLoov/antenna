@@ -13,9 +13,10 @@ final class ShellUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch(_ scenario: String) {
+    func launch(_ scenario: String, environment: [String: String] = [:]) {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", scenario]
+        app.launchEnvironment.merge(environment) { $1 }
         app.launch()
     }
 

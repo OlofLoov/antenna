@@ -147,12 +147,10 @@ extension ShellUITests {
 
     // tv-zap-bar-and-number-entry/picture-and-sound-quality
     func testNoBadgesAfterAFailure() {
-        launch("failing")
+        // The bar stays a minute, so a slow runner reads it before it hides.
+        launch("failing", environment: ["UITESTING_ZAP_BAR_SECONDS": "60"])
         expectEngine("failed loads=1 file=a1.ts")
         XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 10))
-        freshBar()
-        // The programme is read before the badges: the bar hides five seconds
-        // after the press, and each query takes a while on a busy runner.
         expect(element("zapBar.name"), "label == 'Channel a1'")
         expect(element("zapBar.programme"), "label == 'Morning News'")
         XCTAssertFalse(element("zapBar.live").exists)
