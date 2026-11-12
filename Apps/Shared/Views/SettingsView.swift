@@ -117,7 +117,7 @@ struct SettingsView: View {
     /// A record's status: waiting for iCloud without a link, the Stalker
     /// line for a portal, otherwise what the refresher knows.
     static func status(of source: SourceRecord, refresher: SourceRefresher?) -> SourceStatus {
-        if source.url == nil { return SourceStatus(load: .waitingForICloud) }
+        if source.descriptor == nil { return SourceStatus(load: .waitingForICloud) }
         if source.kind == .stalker { return SourceStatus(load: .unsupported) }
         return refresher?.status(of: source.id) ?? SourceStatus()
     }

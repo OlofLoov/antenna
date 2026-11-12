@@ -1,0 +1,831 @@
+#EXTM3U url-tvg="http://guide.example.com/epg.xml.gz"
+#EXTINF:-1 tvg-id="ch1.example" tvg-name="Channel 1" group-title="News",Channel 1
+http://stream.example.com/get.php?username=u1&password=p1&stream=1
+#EXTINF:-1 tvg-id="ch2.example" tvg-name="Channel 2" group-title="Sport",Channel 2
+http://u2:p2@other.example.com:8080/play/2.m3u8
+#EXTINF:-1 tvg-id="ch3.example" tvg-name="Channel 3" group-title="Movies",Channel 3
+http://stream.example.com/live/u1/p1/3.ts
+#EXTINF:-1 tvg-id="ch4.example" tvg-name="Channel 4" group-title="Kids",Channel 4
+http://stream.example.com/get.php?username=u1&password=p1&stream=4
+#EXTINF:-1 tvg-id="ch5.example" tvg-name="Channel 5" group-title="Music",Channel 5
+http://u2:p2@other.example.com:8080/play/5.m3u8
+#EXTINF:-1 tvg-id="ch6.example" tvg-name="Channel 6" group-title="Documentary",Channel 6
+http://stream.example.com/live/u1/p1/6.ts
+#EXTINF:-1 tvg-id="ch7.example" tvg-name="Channel 7" group-title="Entertainment",Channel 7
+http://stream.example.com/get.php?username=u1&password=p1&stream=7
+#EXTINF:-1 tvg-id="ch8.example" tvg-name="Channel 8" group-title="Series",Channel 8
+http://u2:p2@other.example.com:8080/play/8.m3u8
+#EXTINF:-1 tvg-id="ch9.example" tvg-name="Channel 9" group-title="Nordic",Channel 9
+http://stream.example.com/live/u1/p1/9.ts
+#EXTINF:-1 tvg-id="ch10.example" tvg-name="Channel 10" group-title="UK",Channel 10
+http://stream.example.com/get.php?username=u1&password=p1&stream=10
+#EXTINF:-1 tvg-id="ch11.example" tvg-name="Channel 11" group-title="US",Channel 11
+http://u2:p2@other.example.com:8080/play/11.m3u8
+#EXTINF:-1 tvg-id="ch12.example" tvg-name="Channel 12" group-title="Germany",Channel 12
+http://stream.example.com/live/u1/p1/12.ts
+#EXTINF:-1 tvg-id="ch13.example" tvg-name="Channel 13" group-title="France",Channel 13
+http://stream.example.com/get.php?username=u1&password=p1&stream=13
+#EXTINF:-1 tvg-id="ch14.example" tvg-name="Channel 14" group-title="Spain",Channel 14
+http://u2:p2@other.example.com:8080/play/14.m3u8
+#EXTINF:-1 tvg-id="ch15.example" tvg-name="Channel 15" group-title="Italy",Channel 15
+http://stream.example.com/live/u1/p1/15.ts
+#EXTINF:-1 tvg-id="ch16.example" tvg-name="Channel 16" group-title="Radio",Channel 16
+http://stream.example.com/get.php?username=u1&password=p1&stream=16
+#EXTINF:-1 tvg-id="ch17.example" tvg-name="Channel 17" group-title="Weather",Channel 17
+http://u2:p2@other.example.com:8080/play/17.m3u8
+#EXTINF:-1 tvg-id="ch18.example" tvg-name="Channel 18" group-title="Local",Channel 18
+http://stream.example.com/live/u1/p1/18.ts
+#EXTINF:-1 tvg-id="ch19.example" tvg-name="Channel 19" group-title="News",Channel 19
+http://stream.example.com/get.php?username=u1&password=p1&stream=19
+#EXTINF:-1 tvg-id="ch20.example" tvg-name="Channel 20" group-title="Sport",Channel 20
+http://u2:p2@other.example.com:8080/play/20.m3u8
+#EXTINF:-1 tvg-id="ch21.example" tvg-name="Channel 21" group-title="Movies",Channel 21
+http://stream.example.com/live/u1/p1/21.ts
+#EXTINF:-1 tvg-id="ch22.example" tvg-name="Channel 22" group-title="Kids",Channel 22
+http://stream.example.com/get.php?username=u1&password=p1&stream=22
+#EXTINF:-1 tvg-id="ch23.example" tvg-name="Channel 23" group-title="Music",Channel 23
+http://u2:p2@other.example.com:8080/play/23.m3u8
+#EXTINF:-1 tvg-id="ch24.example" tvg-name="Channel 24" group-title="Documentary",Channel 24
+http://stream.example.com/live/u1/p1/24.ts
+#EXTINF:-1 tvg-id="ch25.example" tvg-name="Channel 25" group-title="Entertainment",Channel 25
+http://stream.example.com/get.php?username=u1&password=p1&stream=25
+#EXTINF:-1 tvg-id="ch26.example" tvg-name="Channel 26" group-title="Series",Channel 26
+http://u2:p2@other.example.com:8080/play/26.m3u8
+#EXTINF:-1 tvg-id="ch27.example" tvg-name="Channel 27" group-title="Nordic",Channel 27
+http://stream.example.com/live/u1/p1/27.ts
+#EXTINF:-1 tvg-id="ch28.example" tvg-name="Channel 28" group-title="UK",Channel 28
+http://stream.example.com/get.php?username=u1&password=p1&stream=28
+#EXTINF:-1 tvg-id="ch29.example" tvg-name="Channel 29" group-title="US",Channel 29
+http://u2:p2@other.example.com:8080/play/29.m3u8
+#EXTINF:-1 tvg-id="ch30.example" tvg-name="Channel 30" group-title="Germany",Channel 30
+http://stream.example.com/live/u1/p1/30.ts
+#EXTINF:-1 tvg-id="ch31.example" tvg-name="Channel 31" group-title="France",Channel 31
+http://stream.example.com/get.php?username=u1&password=p1&stream=31
+#EXTINF:-1 tvg-id="ch32.example" tvg-name="Channel 32" group-title="Spain",Channel 32
+http://u2:p2@other.example.com:8080/play/32.m3u8
+#EXTINF:-1 tvg-id="ch33.example" tvg-name="Channel 33" group-title="Italy",Channel 33
+http://stream.example.com/live/u1/p1/33.ts
+#EXTINF:-1 tvg-id="ch34.example" tvg-name="Channel 34" group-title="Radio",Channel 34
+http://stream.example.com/get.php?username=u1&password=p1&stream=34
+#EXTINF:-1 tvg-id="ch35.example" tvg-name="Channel 35" group-title="Weather",Channel 35
+http://u2:p2@other.example.com:8080/play/35.m3u8
+#EXTINF:-1 tvg-id="ch36.example" tvg-name="Channel 36" group-title="Local",Channel 36
+http://stream.example.com/live/u1/p1/36.ts
+#EXTINF:-1 tvg-id="ch37.example" tvg-name="Channel 37" group-title="News",Channel 37
+http://stream.example.com/get.php?username=u1&password=p1&stream=37
+#EXTINF:-1 tvg-id="ch38.example" tvg-name="Channel 38" group-title="Sport",Channel 38
+http://u2:p2@other.example.com:8080/play/38.m3u8
+#EXTINF:-1 tvg-id="ch39.example" tvg-name="Channel 39" group-title="Movies",Channel 39
+http://stream.example.com/live/u1/p1/39.ts
+#EXTINF:-1 tvg-id="ch40.example" tvg-name="Channel 40" group-title="Kids",Channel 40
+http://stream.example.com/get.php?username=u1&password=p1&stream=40
+#EXTINF:-1 tvg-id="ch41.example" tvg-name="Channel 41" group-title="Music",Channel 41
+http://u2:p2@other.example.com:8080/play/41.m3u8
+#EXTINF:-1 tvg-id="ch42.example" tvg-name="Channel 42" group-title="Documentary",Channel 42
+http://stream.example.com/live/u1/p1/42.ts
+#EXTINF:-1 tvg-id="ch43.example" tvg-name="Channel 43" group-title="Entertainment",Channel 43
+http://stream.example.com/get.php?username=u1&password=p1&stream=43
+#EXTINF:-1 tvg-id="ch44.example" tvg-name="Channel 44" group-title="Series",Channel 44
+http://u2:p2@other.example.com:8080/play/44.m3u8
+#EXTINF:-1 tvg-id="ch45.example" tvg-name="Channel 45" group-title="Nordic",Channel 45
+http://stream.example.com/live/u1/p1/45.ts
+#EXTINF:-1 tvg-id="ch46.example" tvg-name="Channel 46" group-title="UK",Channel 46
+http://stream.example.com/get.php?username=u1&password=p1&stream=46
+#EXTINF:-1 tvg-id="ch47.example" tvg-name="Channel 47" group-title="US",Channel 47
+http://u2:p2@other.example.com:8080/play/47.m3u8
+#EXTINF:-1 tvg-id="ch48.example" tvg-name="Channel 48" group-title="Germany",Channel 48
+http://stream.example.com/live/u1/p1/48.ts
+#EXTINF:-1 tvg-id="ch49.example" tvg-name="Channel 49" group-title="France",Channel 49
+http://stream.example.com/get.php?username=u1&password=p1&stream=49
+#EXTINF:-1 tvg-id="ch50.example" tvg-name="Channel 50" group-title="Spain",Channel 50
+http://u2:p2@other.example.com:8080/play/50.m3u8
+#EXTINF:-1 tvg-id="ch51.example" tvg-name="Channel 51" group-title="Italy",Channel 51
+http://stream.example.com/live/u1/p1/51.ts
+#EXTINF:-1 tvg-id="ch52.example" tvg-name="Channel 52" group-title="Radio",Channel 52
+http://stream.example.com/get.php?username=u1&password=p1&stream=52
+#EXTINF:-1 tvg-id="ch53.example" tvg-name="Channel 53" group-title="Weather",Channel 53
+http://u2:p2@other.example.com:8080/play/53.m3u8
+#EXTINF:-1 tvg-id="ch54.example" tvg-name="Channel 54" group-title="Local",Channel 54
+http://stream.example.com/live/u1/p1/54.ts
+#EXTINF:-1 tvg-id="ch55.example" tvg-name="Channel 55" group-title="News",Channel 55
+http://stream.example.com/get.php?username=u1&password=p1&stream=55
+#EXTINF:-1 tvg-id="ch56.example" tvg-name="Channel 56" group-title="Sport",Channel 56
+http://u2:p2@other.example.com:8080/play/56.m3u8
+#EXTINF:-1 tvg-id="ch57.example" tvg-name="Channel 57" group-title="Movies",Channel 57
+http://stream.example.com/live/u1/p1/57.ts
+#EXTINF:-1 tvg-id="ch58.example" tvg-name="Channel 58" group-title="Kids",Channel 58
+http://stream.example.com/get.php?username=u1&password=p1&stream=58
+#EXTINF:-1 tvg-id="ch59.example" tvg-name="Channel 59" group-title="Music",Channel 59
+http://u2:p2@other.example.com:8080/play/59.m3u8
+#EXTINF:-1 tvg-id="ch60.example" tvg-name="Channel 60" group-title="Documentary",Channel 60
+http://stream.example.com/live/u1/p1/60.ts
+#EXTINF:-1 tvg-id="ch61.example" tvg-name="Channel 61" group-title="Entertainment",Channel 61
+http://stream.example.com/get.php?username=u1&password=p1&stream=61
+#EXTINF:-1 tvg-id="ch62.example" tvg-name="Channel 62" group-title="Series",Channel 62
+http://u2:p2@other.example.com:8080/play/62.m3u8
+#EXTINF:-1 tvg-id="ch63.example" tvg-name="Channel 63" group-title="Nordic",Channel 63
+http://stream.example.com/live/u1/p1/63.ts
+#EXTINF:-1 tvg-id="ch64.example" tvg-name="Channel 64" group-title="UK",Channel 64
+http://stream.example.com/get.php?username=u1&password=p1&stream=64
+#EXTINF:-1 tvg-id="ch65.example" tvg-name="Channel 65" group-title="US",Channel 65
+http://u2:p2@other.example.com:8080/play/65.m3u8
+#EXTINF:-1 tvg-id="ch66.example" tvg-name="Channel 66" group-title="Germany",Channel 66
+http://stream.example.com/live/u1/p1/66.ts
+#EXTINF:-1 tvg-id="ch67.example" tvg-name="Channel 67" group-title="France",Channel 67
+http://stream.example.com/get.php?username=u1&password=p1&stream=67
+#EXTINF:-1 tvg-id="ch68.example" tvg-name="Channel 68" group-title="Spain",Channel 68
+http://u2:p2@other.example.com:8080/play/68.m3u8
+#EXTINF:-1 tvg-id="ch69.example" tvg-name="Channel 69" group-title="Italy",Channel 69
+http://stream.example.com/live/u1/p1/69.ts
+#EXTINF:-1 tvg-id="ch70.example" tvg-name="Channel 70" group-title="Radio",Channel 70
+http://stream.example.com/get.php?username=u1&password=p1&stream=70
+#EXTINF:-1 tvg-id="ch71.example" tvg-name="Channel 71" group-title="Weather",Channel 71
+http://u2:p2@other.example.com:8080/play/71.m3u8
+#EXTINF:-1 tvg-id="ch72.example" tvg-name="Channel 72" group-title="Local",Channel 72
+http://stream.example.com/live/u1/p1/72.ts
+#EXTINF:-1 tvg-id="ch73.example" tvg-name="Channel 73" group-title="News",Channel 73
+http://stream.example.com/get.php?username=u1&password=p1&stream=73
+#EXTINF:-1 tvg-id="ch74.example" tvg-name="Channel 74" group-title="Sport",Channel 74
+http://u2:p2@other.example.com:8080/play/74.m3u8
+#EXTINF:-1 tvg-id="ch75.example" tvg-name="Channel 75" group-title="Movies",Channel 75
+http://stream.example.com/live/u1/p1/75.ts
+#EXTINF:-1 tvg-id="ch76.example" tvg-name="Channel 76" group-title="Kids",Channel 76
+http://stream.example.com/get.php?username=u1&password=p1&stream=76
+#EXTINF:-1 tvg-id="ch77.example" tvg-name="Channel 77" group-title="Music",Channel 77
+http://u2:p2@other.example.com:8080/play/77.m3u8
+#EXTINF:-1 tvg-id="ch78.example" tvg-name="Channel 78" group-title="Documentary",Channel 78
+http://stream.example.com/live/u1/p1/78.ts
+#EXTINF:-1 tvg-id="ch79.example" tvg-name="Channel 79" group-title="Entertainment",Channel 79
+http://stream.example.com/get.php?username=u1&password=p1&stream=79
+#EXTINF:-1 tvg-id="ch80.example" tvg-name="Channel 80" group-title="Series",Channel 80
+http://u2:p2@other.example.com:8080/play/80.m3u8
+#EXTINF:-1 tvg-id="ch81.example" tvg-name="Channel 81" group-title="Nordic",Channel 81
+http://stream.example.com/live/u1/p1/81.ts
+#EXTINF:-1 tvg-id="ch82.example" tvg-name="Channel 82" group-title="UK",Channel 82
+http://stream.example.com/get.php?username=u1&password=p1&stream=82
+#EXTINF:-1 tvg-id="ch83.example" tvg-name="Channel 83" group-title="US",Channel 83
+http://u2:p2@other.example.com:8080/play/83.m3u8
+#EXTINF:-1 tvg-id="ch84.example" tvg-name="Channel 84" group-title="Germany",Channel 84
+http://stream.example.com/live/u1/p1/84.ts
+#EXTINF:-1 tvg-id="ch85.example" tvg-name="Channel 85" group-title="France",Channel 85
+http://stream.example.com/get.php?username=u1&password=p1&stream=85
+#EXTINF:-1 tvg-id="ch86.example" tvg-name="Channel 86" group-title="Spain",Channel 86
+http://u2:p2@other.example.com:8080/play/86.m3u8
+#EXTINF:-1 tvg-id="ch87.example" tvg-name="Channel 87" group-title="Italy",Channel 87
+http://stream.example.com/live/u1/p1/87.ts
+#EXTINF:-1 tvg-id="ch88.example" tvg-name="Channel 88" group-title="Radio",Channel 88
+http://stream.example.com/get.php?username=u1&password=p1&stream=88
+#EXTINF:-1 tvg-id="ch89.example" tvg-name="Channel 89" group-title="Weather",Channel 89
+http://u2:p2@other.example.com:8080/play/89.m3u8
+#EXTINF:-1 tvg-id="ch90.example" tvg-name="Channel 90" group-title="Local",Channel 90
+http://stream.example.com/live/u1/p1/90.ts
+#EXTINF:-1 tvg-id="ch91.example" tvg-name="Channel 91" group-title="News",Channel 91
+http://stream.example.com/get.php?username=u1&password=p1&stream=91
+#EXTINF:-1 tvg-id="ch92.example" tvg-name="Channel 92" group-title="Sport",Channel 92
+http://u2:p2@other.example.com:8080/play/92.m3u8
+#EXTINF:-1 tvg-id="ch93.example" tvg-name="Channel 93" group-title="Movies",Channel 93
+http://stream.example.com/live/u1/p1/93.ts
+#EXTINF:-1 tvg-id="ch94.example" tvg-name="Channel 94" group-title="Kids",Channel 94
+http://stream.example.com/get.php?username=u1&password=p1&stream=94
+#EXTINF:-1 tvg-id="ch95.example" tvg-name="Channel 95" group-title="Music",Channel 95
+http://u2:p2@other.example.com:8080/play/95.m3u8
+#EXTINF:-1 tvg-id="ch96.example" tvg-name="Channel 96" group-title="Documentary",Channel 96
+http://stream.example.com/live/u1/p1/96.ts
+#EXTINF:-1 tvg-id="ch97.example" tvg-name="Channel 97" group-title="Entertainment",Channel 97
+http://stream.example.com/get.php?username=u1&password=p1&stream=97
+#EXTINF:-1 tvg-id="ch98.example" tvg-name="Channel 98" group-title="Series",Channel 98
+http://u2:p2@other.example.com:8080/play/98.m3u8
+#EXTINF:-1 tvg-id="ch99.example" tvg-name="Channel 99" group-title="Nordic",Channel 99
+http://stream.example.com/live/u1/p1/99.ts
+#EXTINF:-1 tvg-id="ch100.example" tvg-name="Channel 100" group-title="UK",Channel 100
+http://stream.example.com/get.php?username=u1&password=p1&stream=100
+#EXTINF:-1 tvg-id="ch101.example" tvg-name="Channel 101" group-title="US",Channel 101
+http://u2:p2@other.example.com:8080/play/101.m3u8
+#EXTINF:-1 group-title="Broken",Broken 100
+not a link 100
+#EXTINF:-1 tvg-id="ch102.example" tvg-name="Channel 102" group-title="Germany",Channel 102
+http://stream.example.com/live/u1/p1/102.ts
+#EXTINF:-1 tvg-id="ch103.example" tvg-name="Channel 103" group-title="France",Channel 103
+http://stream.example.com/get.php?username=u1&password=p1&stream=103
+#EXTINF:-1 tvg-id="ch104.example" tvg-name="Channel 104" group-title="Spain",Channel 104
+http://u2:p2@other.example.com:8080/play/104.m3u8
+#EXTINF:-1 tvg-id="ch105.example" tvg-name="Channel 105" group-title="Italy",Channel 105
+http://stream.example.com/live/u1/p1/105.ts
+#EXTINF:-1 tvg-id="ch106.example" tvg-name="Channel 106" group-title="Radio",Channel 106
+http://stream.example.com/get.php?username=u1&password=p1&stream=106
+#EXTINF:-1 tvg-id="ch107.example" tvg-name="Channel 107" group-title="Weather",Channel 107
+http://u2:p2@other.example.com:8080/play/107.m3u8
+#EXTINF:-1 tvg-id="ch108.example" tvg-name="Channel 108" group-title="Local",Channel 108
+http://stream.example.com/live/u1/p1/108.ts
+#EXTINF:-1 tvg-id="ch109.example" tvg-name="Channel 109" group-title="News",Channel 109
+http://stream.example.com/get.php?username=u1&password=p1&stream=109
+#EXTINF:-1 tvg-id="ch110.example" tvg-name="Channel 110" group-title="Sport",Channel 110
+http://u2:p2@other.example.com:8080/play/110.m3u8
+#EXTINF:-1 tvg-id="ch111.example" tvg-name="Channel 111" group-title="Movies",Channel 111
+http://stream.example.com/live/u1/p1/111.ts
+#EXTINF:-1 tvg-id="ch112.example" tvg-name="Channel 112" group-title="Kids",Channel 112
+http://stream.example.com/get.php?username=u1&password=p1&stream=112
+#EXTINF:-1 tvg-id="ch113.example" tvg-name="Channel 113" group-title="Music",Channel 113
+http://u2:p2@other.example.com:8080/play/113.m3u8
+#EXTINF:-1 tvg-id="ch114.example" tvg-name="Channel 114" group-title="Documentary",Channel 114
+http://stream.example.com/live/u1/p1/114.ts
+#EXTINF:-1 tvg-id="ch115.example" tvg-name="Channel 115" group-title="Entertainment",Channel 115
+http://stream.example.com/get.php?username=u1&password=p1&stream=115
+#EXTINF:-1 tvg-id="ch116.example" tvg-name="Channel 116" group-title="Series",Channel 116
+http://u2:p2@other.example.com:8080/play/116.m3u8
+#EXTINF:-1 tvg-id="ch117.example" tvg-name="Channel 117" group-title="Nordic",Channel 117
+http://stream.example.com/live/u1/p1/117.ts
+#EXTINF:-1 tvg-id="ch118.example" tvg-name="Channel 118" group-title="UK",Channel 118
+http://stream.example.com/get.php?username=u1&password=p1&stream=118
+#EXTINF:-1 tvg-id="ch119.example" tvg-name="Channel 119" group-title="US",Channel 119
+http://u2:p2@other.example.com:8080/play/119.m3u8
+#EXTINF:-1 tvg-id="ch120.example" tvg-name="Channel 120" group-title="Germany",Channel 120
+http://stream.example.com/live/u1/p1/120.ts
+#EXTINF:-1 tvg-id="ch121.example" tvg-name="Channel 121" group-title="France",Channel 121
+http://stream.example.com/get.php?username=u1&password=p1&stream=121
+#EXTINF:-1 tvg-id="ch122.example" tvg-name="Channel 122" group-title="Spain",Channel 122
+http://u2:p2@other.example.com:8080/play/122.m3u8
+#EXTINF:-1 tvg-id="ch123.example" tvg-name="Channel 123" group-title="Italy",Channel 123
+http://stream.example.com/live/u1/p1/123.ts
+#EXTINF:-1 tvg-id="ch124.example" tvg-name="Channel 124" group-title="Radio",Channel 124
+http://stream.example.com/get.php?username=u1&password=p1&stream=124
+#EXTINF:-1 tvg-id="ch125.example" tvg-name="Channel 125" group-title="Weather",Channel 125
+http://u2:p2@other.example.com:8080/play/125.m3u8
+#EXTINF:-1 tvg-id="ch126.example" tvg-name="Channel 126" group-title="Local",Channel 126
+http://stream.example.com/live/u1/p1/126.ts
+#EXTINF:-1 tvg-id="ch127.example" tvg-name="Channel 127" group-title="News",Channel 127
+http://stream.example.com/get.php?username=u1&password=p1&stream=127
+#EXTINF:-1 tvg-id="ch128.example" tvg-name="Channel 128" group-title="Sport",Channel 128
+http://u2:p2@other.example.com:8080/play/128.m3u8
+#EXTINF:-1 tvg-id="ch129.example" tvg-name="Channel 129" group-title="Movies",Channel 129
+http://stream.example.com/live/u1/p1/129.ts
+#EXTINF:-1 tvg-id="ch130.example" tvg-name="Channel 130" group-title="Kids",Channel 130
+http://stream.example.com/get.php?username=u1&password=p1&stream=130
+#EXTINF:-1 tvg-id="ch131.example" tvg-name="Channel 131" group-title="Music",Channel 131
+http://u2:p2@other.example.com:8080/play/131.m3u8
+#EXTINF:-1 tvg-id="ch132.example" tvg-name="Channel 132" group-title="Documentary",Channel 132
+http://stream.example.com/live/u1/p1/132.ts
+#EXTINF:-1 tvg-id="ch133.example" tvg-name="Channel 133" group-title="Entertainment",Channel 133
+http://stream.example.com/get.php?username=u1&password=p1&stream=133
+#EXTINF:-1 tvg-id="ch134.example" tvg-name="Channel 134" group-title="Series",Channel 134
+http://u2:p2@other.example.com:8080/play/134.m3u8
+#EXTINF:-1 tvg-id="ch135.example" tvg-name="Channel 135" group-title="Nordic",Channel 135
+http://stream.example.com/live/u1/p1/135.ts
+#EXTINF:-1 tvg-id="ch136.example" tvg-name="Channel 136" group-title="UK",Channel 136
+http://stream.example.com/get.php?username=u1&password=p1&stream=136
+#EXTINF:-1 tvg-id="ch137.example" tvg-name="Channel 137" group-title="US",Channel 137
+http://u2:p2@other.example.com:8080/play/137.m3u8
+#EXTINF:-1 tvg-id="ch138.example" tvg-name="Channel 138" group-title="Germany",Channel 138
+http://stream.example.com/live/u1/p1/138.ts
+#EXTINF:-1 tvg-id="ch139.example" tvg-name="Channel 139" group-title="France",Channel 139
+http://stream.example.com/get.php?username=u1&password=p1&stream=139
+#EXTINF:-1 tvg-id="ch140.example" tvg-name="Channel 140" group-title="Spain",Channel 140
+http://u2:p2@other.example.com:8080/play/140.m3u8
+#EXTINF:-1 tvg-id="ch141.example" tvg-name="Channel 141" group-title="Italy",Channel 141
+http://stream.example.com/live/u1/p1/141.ts
+#EXTINF:-1 tvg-id="ch142.example" tvg-name="Channel 142" group-title="Radio",Channel 142
+http://stream.example.com/get.php?username=u1&password=p1&stream=142
+#EXTINF:-1 tvg-id="ch143.example" tvg-name="Channel 143" group-title="Weather",Channel 143
+http://u2:p2@other.example.com:8080/play/143.m3u8
+#EXTINF:-1 tvg-id="ch144.example" tvg-name="Channel 144" group-title="Local",Channel 144
+http://stream.example.com/live/u1/p1/144.ts
+#EXTINF:-1 tvg-id="ch145.example" tvg-name="Channel 145" group-title="News",Channel 145
+http://stream.example.com/get.php?username=u1&password=p1&stream=145
+#EXTINF:-1 tvg-id="ch146.example" tvg-name="Channel 146" group-title="Sport",Channel 146
+http://u2:p2@other.example.com:8080/play/146.m3u8
+#EXTINF:-1 tvg-id="ch147.example" tvg-name="Channel 147" group-title="Movies",Channel 147
+http://stream.example.com/live/u1/p1/147.ts
+#EXTINF:-1 tvg-id="ch148.example" tvg-name="Channel 148" group-title="Kids",Channel 148
+http://stream.example.com/get.php?username=u1&password=p1&stream=148
+#EXTINF:-1 tvg-id="ch149.example" tvg-name="Channel 149" group-title="Music",Channel 149
+http://u2:p2@other.example.com:8080/play/149.m3u8
+#EXTINF:-1 tvg-id="ch150.example" tvg-name="Channel 150" group-title="Documentary",Channel 150
+http://stream.example.com/live/u1/p1/150.ts
+#EXTINF:-1 tvg-id="ch151.example" tvg-name="Channel 151" group-title="Entertainment",Channel 151
+http://stream.example.com/get.php?username=u1&password=p1&stream=151
+#EXTINF:-1 tvg-id="ch152.example" tvg-name="Channel 152" group-title="Series",Channel 152
+http://u2:p2@other.example.com:8080/play/152.m3u8
+#EXTINF:-1 tvg-id="ch153.example" tvg-name="Channel 153" group-title="Nordic",Channel 153
+http://stream.example.com/live/u1/p1/153.ts
+#EXTINF:-1 tvg-id="ch154.example" tvg-name="Channel 154" group-title="UK",Channel 154
+http://stream.example.com/get.php?username=u1&password=p1&stream=154
+#EXTINF:-1 tvg-id="ch155.example" tvg-name="Channel 155" group-title="US",Channel 155
+http://u2:p2@other.example.com:8080/play/155.m3u8
+#EXTINF:-1 tvg-id="ch156.example" tvg-name="Channel 156" group-title="Germany",Channel 156
+http://stream.example.com/live/u1/p1/156.ts
+#EXTINF:-1 tvg-id="ch157.example" tvg-name="Channel 157" group-title="France",Channel 157
+http://stream.example.com/get.php?username=u1&password=p1&stream=157
+#EXTINF:-1 tvg-id="ch158.example" tvg-name="Channel 158" group-title="Spain",Channel 158
+http://u2:p2@other.example.com:8080/play/158.m3u8
+#EXTINF:-1 tvg-id="ch159.example" tvg-name="Channel 159" group-title="Italy",Channel 159
+http://stream.example.com/live/u1/p1/159.ts
+#EXTINF:-1 tvg-id="ch160.example" tvg-name="Channel 160" group-title="Radio",Channel 160
+http://stream.example.com/get.php?username=u1&password=p1&stream=160
+#EXTINF:-1 tvg-id="ch161.example" tvg-name="Channel 161" group-title="Weather",Channel 161
+http://u2:p2@other.example.com:8080/play/161.m3u8
+#EXTINF:-1 tvg-id="ch162.example" tvg-name="Channel 162" group-title="Local",Channel 162
+http://stream.example.com/live/u1/p1/162.ts
+#EXTINF:-1 tvg-id="ch163.example" tvg-name="Channel 163" group-title="News",Channel 163
+http://stream.example.com/get.php?username=u1&password=p1&stream=163
+#EXTINF:-1 tvg-id="ch164.example" tvg-name="Channel 164" group-title="Sport",Channel 164
+http://u2:p2@other.example.com:8080/play/164.m3u8
+#EXTINF:-1 tvg-id="ch165.example" tvg-name="Channel 165" group-title="Movies",Channel 165
+http://stream.example.com/live/u1/p1/165.ts
+#EXTINF:-1 tvg-id="ch166.example" tvg-name="Channel 166" group-title="Kids",Channel 166
+http://stream.example.com/get.php?username=u1&password=p1&stream=166
+#EXTINF:-1 tvg-id="ch167.example" tvg-name="Channel 167" group-title="Music",Channel 167
+http://u2:p2@other.example.com:8080/play/167.m3u8
+#EXTINF:-1 tvg-id="ch168.example" tvg-name="Channel 168" group-title="Documentary",Channel 168
+http://stream.example.com/live/u1/p1/168.ts
+#EXTINF:-1 tvg-id="ch169.example" tvg-name="Channel 169" group-title="Entertainment",Channel 169
+http://stream.example.com/get.php?username=u1&password=p1&stream=169
+#EXTINF:-1 tvg-id="ch170.example" tvg-name="Channel 170" group-title="Series",Channel 170
+http://u2:p2@other.example.com:8080/play/170.m3u8
+#EXTINF:-1 tvg-id="ch171.example" tvg-name="Channel 171" group-title="Nordic",Channel 171
+http://stream.example.com/live/u1/p1/171.ts
+#EXTINF:-1 tvg-id="ch172.example" tvg-name="Channel 172" group-title="UK",Channel 172
+http://stream.example.com/get.php?username=u1&password=p1&stream=172
+#EXTINF:-1 tvg-id="ch173.example" tvg-name="Channel 173" group-title="US",Channel 173
+http://u2:p2@other.example.com:8080/play/173.m3u8
+#EXTINF:-1 tvg-id="ch174.example" tvg-name="Channel 174" group-title="Germany",Channel 174
+http://stream.example.com/live/u1/p1/174.ts
+#EXTINF:-1 tvg-id="ch175.example" tvg-name="Channel 175" group-title="France",Channel 175
+http://stream.example.com/get.php?username=u1&password=p1&stream=175
+#EXTINF:-1 tvg-id="ch176.example" tvg-name="Channel 176" group-title="Spain",Channel 176
+http://u2:p2@other.example.com:8080/play/176.m3u8
+#EXTINF:-1 tvg-id="ch177.example" tvg-name="Channel 177" group-title="Italy",Channel 177
+http://stream.example.com/live/u1/p1/177.ts
+#EXTINF:-1 tvg-id="ch178.example" tvg-name="Channel 178" group-title="Radio",Channel 178
+http://stream.example.com/get.php?username=u1&password=p1&stream=178
+#EXTINF:-1 tvg-id="ch179.example" tvg-name="Channel 179" group-title="Weather",Channel 179
+http://u2:p2@other.example.com:8080/play/179.m3u8
+#EXTINF:-1 tvg-id="ch180.example" tvg-name="Channel 180" group-title="Local",Channel 180
+http://stream.example.com/live/u1/p1/180.ts
+#EXTINF:-1 tvg-id="ch181.example" tvg-name="Channel 181" group-title="News",Channel 181
+http://stream.example.com/get.php?username=u1&password=p1&stream=181
+#EXTINF:-1 tvg-id="ch182.example" tvg-name="Channel 182" group-title="Sport",Channel 182
+http://u2:p2@other.example.com:8080/play/182.m3u8
+#EXTINF:-1 tvg-id="ch183.example" tvg-name="Channel 183" group-title="Movies",Channel 183
+http://stream.example.com/live/u1/p1/183.ts
+#EXTINF:-1 tvg-id="ch184.example" tvg-name="Channel 184" group-title="Kids",Channel 184
+http://stream.example.com/get.php?username=u1&password=p1&stream=184
+#EXTINF:-1 tvg-id="ch185.example" tvg-name="Channel 185" group-title="Music",Channel 185
+http://u2:p2@other.example.com:8080/play/185.m3u8
+#EXTINF:-1 tvg-id="ch186.example" tvg-name="Channel 186" group-title="Documentary",Channel 186
+http://stream.example.com/live/u1/p1/186.ts
+#EXTINF:-1 tvg-id="ch187.example" tvg-name="Channel 187" group-title="Entertainment",Channel 187
+http://stream.example.com/get.php?username=u1&password=p1&stream=187
+#EXTINF:-1 tvg-id="ch188.example" tvg-name="Channel 188" group-title="Series",Channel 188
+http://u2:p2@other.example.com:8080/play/188.m3u8
+#EXTINF:-1 tvg-id="ch189.example" tvg-name="Channel 189" group-title="Nordic",Channel 189
+http://stream.example.com/live/u1/p1/189.ts
+#EXTINF:-1 tvg-id="ch190.example" tvg-name="Channel 190" group-title="UK",Channel 190
+http://stream.example.com/get.php?username=u1&password=p1&stream=190
+#EXTINF:-1 tvg-id="ch191.example" tvg-name="Channel 191" group-title="US",Channel 191
+http://u2:p2@other.example.com:8080/play/191.m3u8
+#EXTINF:-1 tvg-id="ch192.example" tvg-name="Channel 192" group-title="Germany",Channel 192
+http://stream.example.com/live/u1/p1/192.ts
+#EXTINF:-1 tvg-id="ch193.example" tvg-name="Channel 193" group-title="France",Channel 193
+http://stream.example.com/get.php?username=u1&password=p1&stream=193
+#EXTINF:-1 tvg-id="ch194.example" tvg-name="Channel 194" group-title="Spain",Channel 194
+http://u2:p2@other.example.com:8080/play/194.m3u8
+#EXTINF:-1 tvg-id="ch195.example" tvg-name="Channel 195" group-title="Italy",Channel 195
+http://stream.example.com/live/u1/p1/195.ts
+#EXTINF:-1 tvg-id="ch196.example" tvg-name="Channel 196" group-title="Radio",Channel 196
+http://stream.example.com/get.php?username=u1&password=p1&stream=196
+#EXTINF:-1 tvg-id="ch197.example" tvg-name="Channel 197" group-title="Weather",Channel 197
+http://u2:p2@other.example.com:8080/play/197.m3u8
+#EXTINF:-1 tvg-id="ch198.example" tvg-name="Channel 198" group-title="Local",Channel 198
+http://stream.example.com/live/u1/p1/198.ts
+#EXTINF:-1 tvg-id="ch199.example" tvg-name="Channel 199" group-title="News",Channel 199
+http://stream.example.com/get.php?username=u1&password=p1&stream=199
+#EXTINF:-1 tvg-id="ch200.example" tvg-name="Channel 200" group-title="Sport",Channel 200
+http://u2:p2@other.example.com:8080/play/200.m3u8
+#EXTINF:-1 tvg-id="ch201.example" tvg-name="Channel 201" group-title="Movies",Channel 201
+http://stream.example.com/live/u1/p1/201.ts
+#EXTINF:-1 group-title="Broken",Broken 200
+not a link 200
+#EXTINF:-1 tvg-id="ch202.example" tvg-name="Channel 202" group-title="Kids",Channel 202
+http://stream.example.com/get.php?username=u1&password=p1&stream=202
+#EXTINF:-1 tvg-id="ch203.example" tvg-name="Channel 203" group-title="Music",Channel 203
+http://u2:p2@other.example.com:8080/play/203.m3u8
+#EXTINF:-1 tvg-id="ch204.example" tvg-name="Channel 204" group-title="Documentary",Channel 204
+http://stream.example.com/live/u1/p1/204.ts
+#EXTINF:-1 tvg-id="ch205.example" tvg-name="Channel 205" group-title="Entertainment",Channel 205
+http://stream.example.com/get.php?username=u1&password=p1&stream=205
+#EXTINF:-1 tvg-id="ch206.example" tvg-name="Channel 206" group-title="Series",Channel 206
+http://u2:p2@other.example.com:8080/play/206.m3u8
+#EXTINF:-1 tvg-id="ch207.example" tvg-name="Channel 207" group-title="Nordic",Channel 207
+http://stream.example.com/live/u1/p1/207.ts
+#EXTINF:-1 tvg-id="ch208.example" tvg-name="Channel 208" group-title="UK",Channel 208
+http://stream.example.com/get.php?username=u1&password=p1&stream=208
+#EXTINF:-1 tvg-id="ch209.example" tvg-name="Channel 209" group-title="US",Channel 209
+http://u2:p2@other.example.com:8080/play/209.m3u8
+#EXTINF:-1 tvg-id="ch210.example" tvg-name="Channel 210" group-title="Germany",Channel 210
+http://stream.example.com/live/u1/p1/210.ts
+#EXTINF:-1 tvg-id="ch211.example" tvg-name="Channel 211" group-title="France",Channel 211
+http://stream.example.com/get.php?username=u1&password=p1&stream=211
+#EXTINF:-1 tvg-id="ch212.example" tvg-name="Channel 212" group-title="Spain",Channel 212
+http://u2:p2@other.example.com:8080/play/212.m3u8
+#EXTINF:-1 tvg-id="ch213.example" tvg-name="Channel 213" group-title="Italy",Channel 213
+http://stream.example.com/live/u1/p1/213.ts
+#EXTINF:-1 tvg-id="ch214.example" tvg-name="Channel 214" group-title="Radio",Channel 214
+http://stream.example.com/get.php?username=u1&password=p1&stream=214
+#EXTINF:-1 tvg-id="ch215.example" tvg-name="Channel 215" group-title="Weather",Channel 215
+http://u2:p2@other.example.com:8080/play/215.m3u8
+#EXTINF:-1 tvg-id="ch216.example" tvg-name="Channel 216" group-title="Local",Channel 216
+http://stream.example.com/live/u1/p1/216.ts
+#EXTINF:-1 tvg-id="ch217.example" tvg-name="Channel 217" group-title="News",Channel 217
+http://stream.example.com/get.php?username=u1&password=p1&stream=217
+#EXTINF:-1 tvg-id="ch218.example" tvg-name="Channel 218" group-title="Sport",Channel 218
+http://u2:p2@other.example.com:8080/play/218.m3u8
+#EXTINF:-1 tvg-id="ch219.example" tvg-name="Channel 219" group-title="Movies",Channel 219
+http://stream.example.com/live/u1/p1/219.ts
+#EXTINF:-1 tvg-id="ch220.example" tvg-name="Channel 220" group-title="Kids",Channel 220
+http://stream.example.com/get.php?username=u1&password=p1&stream=220
+#EXTINF:-1 tvg-id="ch221.example" tvg-name="Channel 221" group-title="Music",Channel 221
+http://u2:p2@other.example.com:8080/play/221.m3u8
+#EXTINF:-1 tvg-id="ch222.example" tvg-name="Channel 222" group-title="Documentary",Channel 222
+http://stream.example.com/live/u1/p1/222.ts
+#EXTINF:-1 tvg-id="ch223.example" tvg-name="Channel 223" group-title="Entertainment",Channel 223
+http://stream.example.com/get.php?username=u1&password=p1&stream=223
+#EXTINF:-1 tvg-id="ch224.example" tvg-name="Channel 224" group-title="Series",Channel 224
+http://u2:p2@other.example.com:8080/play/224.m3u8
+#EXTINF:-1 tvg-id="ch225.example" tvg-name="Channel 225" group-title="Nordic",Channel 225
+http://stream.example.com/live/u1/p1/225.ts
+#EXTINF:-1 tvg-id="ch226.example" tvg-name="Channel 226" group-title="UK",Channel 226
+http://stream.example.com/get.php?username=u1&password=p1&stream=226
+#EXTINF:-1 tvg-id="ch227.example" tvg-name="Channel 227" group-title="US",Channel 227
+http://u2:p2@other.example.com:8080/play/227.m3u8
+#EXTINF:-1 tvg-id="ch228.example" tvg-name="Channel 228" group-title="Germany",Channel 228
+http://stream.example.com/live/u1/p1/228.ts
+#EXTINF:-1 tvg-id="ch229.example" tvg-name="Channel 229" group-title="France",Channel 229
+http://stream.example.com/get.php?username=u1&password=p1&stream=229
+#EXTINF:-1 tvg-id="ch230.example" tvg-name="Channel 230" group-title="Spain",Channel 230
+http://u2:p2@other.example.com:8080/play/230.m3u8
+#EXTINF:-1 tvg-id="ch231.example" tvg-name="Channel 231" group-title="Italy",Channel 231
+http://stream.example.com/live/u1/p1/231.ts
+#EXTINF:-1 tvg-id="ch232.example" tvg-name="Channel 232" group-title="Radio",Channel 232
+http://stream.example.com/get.php?username=u1&password=p1&stream=232
+#EXTINF:-1 tvg-id="ch233.example" tvg-name="Channel 233" group-title="Weather",Channel 233
+http://u2:p2@other.example.com:8080/play/233.m3u8
+#EXTINF:-1 tvg-id="ch234.example" tvg-name="Channel 234" group-title="Local",Channel 234
+http://stream.example.com/live/u1/p1/234.ts
+#EXTINF:-1 tvg-id="ch235.example" tvg-name="Channel 235" group-title="News",Channel 235
+http://stream.example.com/get.php?username=u1&password=p1&stream=235
+#EXTINF:-1 tvg-id="ch236.example" tvg-name="Channel 236" group-title="Sport",Channel 236
+http://u2:p2@other.example.com:8080/play/236.m3u8
+#EXTINF:-1 tvg-id="ch237.example" tvg-name="Channel 237" group-title="Movies",Channel 237
+http://stream.example.com/live/u1/p1/237.ts
+#EXTINF:-1 tvg-id="ch238.example" tvg-name="Channel 238" group-title="Kids",Channel 238
+http://stream.example.com/get.php?username=u1&password=p1&stream=238
+#EXTINF:-1 tvg-id="ch239.example" tvg-name="Channel 239" group-title="Music",Channel 239
+http://u2:p2@other.example.com:8080/play/239.m3u8
+#EXTINF:-1 tvg-id="ch240.example" tvg-name="Channel 240" group-title="Documentary",Channel 240
+http://stream.example.com/live/u1/p1/240.ts
+#EXTINF:-1 tvg-id="ch241.example" tvg-name="Channel 241" group-title="Entertainment",Channel 241
+http://stream.example.com/get.php?username=u1&password=p1&stream=241
+#EXTINF:-1 tvg-id="ch242.example" tvg-name="Channel 242" group-title="Series",Channel 242
+http://u2:p2@other.example.com:8080/play/242.m3u8
+#EXTINF:-1 tvg-id="ch243.example" tvg-name="Channel 243" group-title="Nordic",Channel 243
+http://stream.example.com/live/u1/p1/243.ts
+#EXTINF:-1 tvg-id="ch244.example" tvg-name="Channel 244" group-title="UK",Channel 244
+http://stream.example.com/get.php?username=u1&password=p1&stream=244
+#EXTINF:-1 tvg-id="ch245.example" tvg-name="Channel 245" group-title="US",Channel 245
+http://u2:p2@other.example.com:8080/play/245.m3u8
+#EXTINF:-1 tvg-id="ch246.example" tvg-name="Channel 246" group-title="Germany",Channel 246
+http://stream.example.com/live/u1/p1/246.ts
+#EXTINF:-1 tvg-id="ch247.example" tvg-name="Channel 247" group-title="France",Channel 247
+http://stream.example.com/get.php?username=u1&password=p1&stream=247
+#EXTINF:-1 tvg-id="ch248.example" tvg-name="Channel 248" group-title="Spain",Channel 248
+http://u2:p2@other.example.com:8080/play/248.m3u8
+#EXTINF:-1 tvg-id="ch249.example" tvg-name="Channel 249" group-title="Italy",Channel 249
+http://stream.example.com/live/u1/p1/249.ts
+#EXTINF:-1 tvg-id="ch250.example" tvg-name="Channel 250" group-title="Radio",Channel 250
+http://stream.example.com/get.php?username=u1&password=p1&stream=250
+#EXTINF:-1 tvg-id="ch251.example" tvg-name="Channel 251" group-title="Weather",Channel 251
+http://u2:p2@other.example.com:8080/play/251.m3u8
+#EXTINF:-1 tvg-id="ch252.example" tvg-name="Channel 252" group-title="Local",Channel 252
+http://stream.example.com/live/u1/p1/252.ts
+#EXTINF:-1 tvg-id="ch253.example" tvg-name="Channel 253" group-title="News",Channel 253
+http://stream.example.com/get.php?username=u1&password=p1&stream=253
+#EXTINF:-1 tvg-id="ch254.example" tvg-name="Channel 254" group-title="Sport",Channel 254
+http://u2:p2@other.example.com:8080/play/254.m3u8
+#EXTINF:-1 tvg-id="ch255.example" tvg-name="Channel 255" group-title="Movies",Channel 255
+http://stream.example.com/live/u1/p1/255.ts
+#EXTINF:-1 tvg-id="ch256.example" tvg-name="Channel 256" group-title="Kids",Channel 256
+http://stream.example.com/get.php?username=u1&password=p1&stream=256
+#EXTINF:-1 tvg-id="ch257.example" tvg-name="Channel 257" group-title="Music",Channel 257
+http://u2:p2@other.example.com:8080/play/257.m3u8
+#EXTINF:-1 tvg-id="ch258.example" tvg-name="Channel 258" group-title="Documentary",Channel 258
+http://stream.example.com/live/u1/p1/258.ts
+#EXTINF:-1 tvg-id="ch259.example" tvg-name="Channel 259" group-title="Entertainment",Channel 259
+http://stream.example.com/get.php?username=u1&password=p1&stream=259
+#EXTINF:-1 tvg-id="ch260.example" tvg-name="Channel 260" group-title="Series",Channel 260
+http://u2:p2@other.example.com:8080/play/260.m3u8
+#EXTINF:-1 tvg-id="ch261.example" tvg-name="Channel 261" group-title="Nordic",Channel 261
+http://stream.example.com/live/u1/p1/261.ts
+#EXTINF:-1 tvg-id="ch262.example" tvg-name="Channel 262" group-title="UK",Channel 262
+http://stream.example.com/get.php?username=u1&password=p1&stream=262
+#EXTINF:-1 tvg-id="ch263.example" tvg-name="Channel 263" group-title="US",Channel 263
+http://u2:p2@other.example.com:8080/play/263.m3u8
+#EXTINF:-1 tvg-id="ch264.example" tvg-name="Channel 264" group-title="Germany",Channel 264
+http://stream.example.com/live/u1/p1/264.ts
+#EXTINF:-1 tvg-id="ch265.example" tvg-name="Channel 265" group-title="France",Channel 265
+http://stream.example.com/get.php?username=u1&password=p1&stream=265
+#EXTINF:-1 tvg-id="ch266.example" tvg-name="Channel 266" group-title="Spain",Channel 266
+http://u2:p2@other.example.com:8080/play/266.m3u8
+#EXTINF:-1 tvg-id="ch267.example" tvg-name="Channel 267" group-title="Italy",Channel 267
+http://stream.example.com/live/u1/p1/267.ts
+#EXTINF:-1 tvg-id="ch268.example" tvg-name="Channel 268" group-title="Radio",Channel 268
+http://stream.example.com/get.php?username=u1&password=p1&stream=268
+#EXTINF:-1 tvg-id="ch269.example" tvg-name="Channel 269" group-title="Weather",Channel 269
+http://u2:p2@other.example.com:8080/play/269.m3u8
+#EXTINF:-1 tvg-id="ch270.example" tvg-name="Channel 270" group-title="Local",Channel 270
+http://stream.example.com/live/u1/p1/270.ts
+#EXTINF:-1 tvg-id="ch271.example" tvg-name="Channel 271" group-title="News",Channel 271
+http://stream.example.com/get.php?username=u1&password=p1&stream=271
+#EXTINF:-1 tvg-id="ch272.example" tvg-name="Channel 272" group-title="Sport",Channel 272
+http://u2:p2@other.example.com:8080/play/272.m3u8
+#EXTINF:-1 tvg-id="ch273.example" tvg-name="Channel 273" group-title="Movies",Channel 273
+http://stream.example.com/live/u1/p1/273.ts
+#EXTINF:-1 tvg-id="ch274.example" tvg-name="Channel 274" group-title="Kids",Channel 274
+http://stream.example.com/get.php?username=u1&password=p1&stream=274
+#EXTINF:-1 tvg-id="ch275.example" tvg-name="Channel 275" group-title="Music",Channel 275
+http://u2:p2@other.example.com:8080/play/275.m3u8
+#EXTINF:-1 tvg-id="ch276.example" tvg-name="Channel 276" group-title="Documentary",Channel 276
+http://stream.example.com/live/u1/p1/276.ts
+#EXTINF:-1 tvg-id="ch277.example" tvg-name="Channel 277" group-title="Entertainment",Channel 277
+http://stream.example.com/get.php?username=u1&password=p1&stream=277
+#EXTINF:-1 tvg-id="ch278.example" tvg-name="Channel 278" group-title="Series",Channel 278
+http://u2:p2@other.example.com:8080/play/278.m3u8
+#EXTINF:-1 tvg-id="ch279.example" tvg-name="Channel 279" group-title="Nordic",Channel 279
+http://stream.example.com/live/u1/p1/279.ts
+#EXTINF:-1 tvg-id="ch280.example" tvg-name="Channel 280" group-title="UK",Channel 280
+http://stream.example.com/get.php?username=u1&password=p1&stream=280
+#EXTINF:-1 tvg-id="ch281.example" tvg-name="Channel 281" group-title="US",Channel 281
+http://u2:p2@other.example.com:8080/play/281.m3u8
+#EXTINF:-1 tvg-id="ch282.example" tvg-name="Channel 282" group-title="Germany",Channel 282
+http://stream.example.com/live/u1/p1/282.ts
+#EXTINF:-1 tvg-id="ch283.example" tvg-name="Channel 283" group-title="France",Channel 283
+http://stream.example.com/get.php?username=u1&password=p1&stream=283
+#EXTINF:-1 tvg-id="ch284.example" tvg-name="Channel 284" group-title="Spain",Channel 284
+http://u2:p2@other.example.com:8080/play/284.m3u8
+#EXTINF:-1 tvg-id="ch285.example" tvg-name="Channel 285" group-title="Italy",Channel 285
+http://stream.example.com/live/u1/p1/285.ts
+#EXTINF:-1 tvg-id="ch286.example" tvg-name="Channel 286" group-title="Radio",Channel 286
+http://stream.example.com/get.php?username=u1&password=p1&stream=286
+#EXTINF:-1 tvg-id="ch287.example" tvg-name="Channel 287" group-title="Weather",Channel 287
+http://u2:p2@other.example.com:8080/play/287.m3u8
+#EXTINF:-1 tvg-id="ch288.example" tvg-name="Channel 288" group-title="Local",Channel 288
+http://stream.example.com/live/u1/p1/288.ts
+#EXTINF:-1 tvg-id="ch289.example" tvg-name="Channel 289" group-title="News",Channel 289
+http://stream.example.com/get.php?username=u1&password=p1&stream=289
+#EXTINF:-1 tvg-id="ch290.example" tvg-name="Channel 290" group-title="Sport",Channel 290
+http://u2:p2@other.example.com:8080/play/290.m3u8
+#EXTINF:-1 tvg-id="ch291.example" tvg-name="Channel 291" group-title="Movies",Channel 291
+http://stream.example.com/live/u1/p1/291.ts
+#EXTINF:-1 tvg-id="ch292.example" tvg-name="Channel 292" group-title="Kids",Channel 292
+http://stream.example.com/get.php?username=u1&password=p1&stream=292
+#EXTINF:-1 tvg-id="ch293.example" tvg-name="Channel 293" group-title="Music",Channel 293
+http://u2:p2@other.example.com:8080/play/293.m3u8
+#EXTINF:-1 tvg-id="ch294.example" tvg-name="Channel 294" group-title="Documentary",Channel 294
+http://stream.example.com/live/u1/p1/294.ts
+#EXTINF:-1 tvg-id="ch295.example" tvg-name="Channel 295" group-title="Entertainment",Channel 295
+http://stream.example.com/get.php?username=u1&password=p1&stream=295
+#EXTINF:-1 tvg-id="ch296.example" tvg-name="Channel 296" group-title="Series",Channel 296
+http://u2:p2@other.example.com:8080/play/296.m3u8
+#EXTINF:-1 tvg-id="ch297.example" tvg-name="Channel 297" group-title="Nordic",Channel 297
+http://stream.example.com/live/u1/p1/297.ts
+#EXTINF:-1 tvg-id="ch298.example" tvg-name="Channel 298" group-title="UK",Channel 298
+http://stream.example.com/get.php?username=u1&password=p1&stream=298
+#EXTINF:-1 tvg-id="ch299.example" tvg-name="Channel 299" group-title="US",Channel 299
+http://u2:p2@other.example.com:8080/play/299.m3u8
+#EXTINF:-1 tvg-id="ch300.example" tvg-name="Channel 300" group-title="Germany",Channel 300
+http://stream.example.com/live/u1/p1/300.ts
+#EXTINF:-1 tvg-id="ch301.example" tvg-name="Channel 301" group-title="France",Channel 301
+http://stream.example.com/get.php?username=u1&password=p1&stream=301
+#EXTINF:-1 group-title="Broken",Broken 300
+not a link 300
+#EXTINF:-1 tvg-id="ch302.example" tvg-name="Channel 302" group-title="Spain",Channel 302
+http://u2:p2@other.example.com:8080/play/302.m3u8
+#EXTINF:-1 tvg-id="ch303.example" tvg-name="Channel 303" group-title="Italy",Channel 303
+http://stream.example.com/live/u1/p1/303.ts
+#EXTINF:-1 tvg-id="ch304.example" tvg-name="Channel 304" group-title="Radio",Channel 304
+http://stream.example.com/get.php?username=u1&password=p1&stream=304
+#EXTINF:-1 tvg-id="ch305.example" tvg-name="Channel 305" group-title="Weather",Channel 305
+http://u2:p2@other.example.com:8080/play/305.m3u8
+#EXTINF:-1 tvg-id="ch306.example" tvg-name="Channel 306" group-title="Local",Channel 306
+http://stream.example.com/live/u1/p1/306.ts
+#EXTINF:-1 tvg-id="ch307.example" tvg-name="Channel 307" group-title="News",Channel 307
+http://stream.example.com/get.php?username=u1&password=p1&stream=307
+#EXTINF:-1 tvg-id="ch308.example" tvg-name="Channel 308" group-title="Sport",Channel 308
+http://u2:p2@other.example.com:8080/play/308.m3u8
+#EXTINF:-1 tvg-id="ch309.example" tvg-name="Channel 309" group-title="Movies",Channel 309
+http://stream.example.com/live/u1/p1/309.ts
+#EXTINF:-1 tvg-id="ch310.example" tvg-name="Channel 310" group-title="Kids",Channel 310
+http://stream.example.com/get.php?username=u1&password=p1&stream=310
+#EXTINF:-1 tvg-id="ch311.example" tvg-name="Channel 311" group-title="Music",Channel 311
+http://u2:p2@other.example.com:8080/play/311.m3u8
+#EXTINF:-1 tvg-id="ch312.example" tvg-name="Channel 312" group-title="Documentary",Channel 312
+http://stream.example.com/live/u1/p1/312.ts
+#EXTINF:-1 tvg-id="ch313.example" tvg-name="Channel 313" group-title="Entertainment",Channel 313
+http://stream.example.com/get.php?username=u1&password=p1&stream=313
+#EXTINF:-1 tvg-id="ch314.example" tvg-name="Channel 314" group-title="Series",Channel 314
+http://u2:p2@other.example.com:8080/play/314.m3u8
+#EXTINF:-1 tvg-id="ch315.example" tvg-name="Channel 315" group-title="Nordic",Channel 315
+http://stream.example.com/live/u1/p1/315.ts
+#EXTINF:-1 tvg-id="ch316.example" tvg-name="Channel 316" group-title="UK",Channel 316
+http://stream.example.com/get.php?username=u1&password=p1&stream=316
+#EXTINF:-1 tvg-id="ch317.example" tvg-name="Channel 317" group-title="US",Channel 317
+http://u2:p2@other.example.com:8080/play/317.m3u8
+#EXTINF:-1 tvg-id="ch318.example" tvg-name="Channel 318" group-title="Germany",Channel 318
+http://stream.example.com/live/u1/p1/318.ts
+#EXTINF:-1 tvg-id="ch319.example" tvg-name="Channel 319" group-title="France",Channel 319
+http://stream.example.com/get.php?username=u1&password=p1&stream=319
+#EXTINF:-1 tvg-id="ch320.example" tvg-name="Channel 320" group-title="Spain",Channel 320
+http://u2:p2@other.example.com:8080/play/320.m3u8
+#EXTINF:-1 tvg-id="ch321.example" tvg-name="Channel 321" group-title="Italy",Channel 321
+http://stream.example.com/live/u1/p1/321.ts
+#EXTINF:-1 tvg-id="ch322.example" tvg-name="Channel 322" group-title="Radio",Channel 322
+http://stream.example.com/get.php?username=u1&password=p1&stream=322
+#EXTINF:-1 tvg-id="ch323.example" tvg-name="Channel 323" group-title="Weather",Channel 323
+http://u2:p2@other.example.com:8080/play/323.m3u8
+#EXTINF:-1 tvg-id="ch324.example" tvg-name="Channel 324" group-title="Local",Channel 324
+http://stream.example.com/live/u1/p1/324.ts
+#EXTINF:-1 tvg-id="ch325.example" tvg-name="Channel 325" group-title="News",Channel 325
+http://stream.example.com/get.php?username=u1&password=p1&stream=325
+#EXTINF:-1 tvg-id="ch326.example" tvg-name="Channel 326" group-title="Sport",Channel 326
+http://u2:p2@other.example.com:8080/play/326.m3u8
+#EXTINF:-1 tvg-id="ch327.example" tvg-name="Channel 327" group-title="Movies",Channel 327
+http://stream.example.com/live/u1/p1/327.ts
+#EXTINF:-1 tvg-id="ch328.example" tvg-name="Channel 328" group-title="Kids",Channel 328
+http://stream.example.com/get.php?username=u1&password=p1&stream=328
+#EXTINF:-1 tvg-id="ch329.example" tvg-name="Channel 329" group-title="Music",Channel 329
+http://u2:p2@other.example.com:8080/play/329.m3u8
+#EXTINF:-1 tvg-id="ch330.example" tvg-name="Channel 330" group-title="Documentary",Channel 330
+http://stream.example.com/live/u1/p1/330.ts
+#EXTINF:-1 tvg-id="ch331.example" tvg-name="Channel 331" group-title="Entertainment",Channel 331
+http://stream.example.com/get.php?username=u1&password=p1&stream=331
+#EXTINF:-1 tvg-id="ch332.example" tvg-name="Channel 332" group-title="Series",Channel 332
+http://u2:p2@other.example.com:8080/play/332.m3u8
+#EXTINF:-1 tvg-id="ch333.example" tvg-name="Channel 333" group-title="Nordic",Channel 333
+http://stream.example.com/live/u1/p1/333.ts
+#EXTINF:-1 tvg-id="ch334.example" tvg-name="Channel 334" group-title="UK",Channel 334
+http://stream.example.com/get.php?username=u1&password=p1&stream=334
+#EXTINF:-1 tvg-id="ch335.example" tvg-name="Channel 335" group-title="US",Channel 335
+http://u2:p2@other.example.com:8080/play/335.m3u8
+#EXTINF:-1 tvg-id="ch336.example" tvg-name="Channel 336" group-title="Germany",Channel 336
+http://stream.example.com/live/u1/p1/336.ts
+#EXTINF:-1 tvg-id="ch337.example" tvg-name="Channel 337" group-title="France",Channel 337
+http://stream.example.com/get.php?username=u1&password=p1&stream=337
+#EXTINF:-1 tvg-id="ch338.example" tvg-name="Channel 338" group-title="Spain",Channel 338
+http://u2:p2@other.example.com:8080/play/338.m3u8
+#EXTINF:-1 tvg-id="ch339.example" tvg-name="Channel 339" group-title="Italy",Channel 339
+http://stream.example.com/live/u1/p1/339.ts
+#EXTINF:-1 tvg-id="ch340.example" tvg-name="Channel 340" group-title="Radio",Channel 340
+http://stream.example.com/get.php?username=u1&password=p1&stream=340
+#EXTINF:-1 tvg-id="ch341.example" tvg-name="Channel 341" group-title="Weather",Channel 341
+http://u2:p2@other.example.com:8080/play/341.m3u8
+#EXTINF:-1 tvg-id="ch342.example" tvg-name="Channel 342" group-title="Local",Channel 342
+http://stream.example.com/live/u1/p1/342.ts
+#EXTINF:-1 tvg-id="ch343.example" tvg-name="Channel 343" group-title="News",Channel 343
+http://stream.example.com/get.php?username=u1&password=p1&stream=343
+#EXTINF:-1 tvg-id="ch344.example" tvg-name="Channel 344" group-title="Sport",Channel 344
+http://u2:p2@other.example.com:8080/play/344.m3u8
+#EXTINF:-1 tvg-id="ch345.example" tvg-name="Channel 345" group-title="Movies",Channel 345
+http://stream.example.com/live/u1/p1/345.ts
+#EXTINF:-1 tvg-id="ch346.example" tvg-name="Channel 346" group-title="Kids",Channel 346
+http://stream.example.com/get.php?username=u1&password=p1&stream=346
+#EXTINF:-1 tvg-id="ch347.example" tvg-name="Channel 347" group-title="Music",Channel 347
+http://u2:p2@other.example.com:8080/play/347.m3u8
+#EXTINF:-1 tvg-id="ch348.example" tvg-name="Channel 348" group-title="Documentary",Channel 348
+http://stream.example.com/live/u1/p1/348.ts
+#EXTINF:-1 tvg-id="ch349.example" tvg-name="Channel 349" group-title="Entertainment",Channel 349
+http://stream.example.com/get.php?username=u1&password=p1&stream=349
+#EXTINF:-1 tvg-id="ch350.example" tvg-name="Channel 350" group-title="Series",Channel 350
+http://u2:p2@other.example.com:8080/play/350.m3u8
+#EXTINF:-1 tvg-id="ch351.example" tvg-name="Channel 351" group-title="Nordic",Channel 351
+http://stream.example.com/live/u1/p1/351.ts
+#EXTINF:-1 tvg-id="ch352.example" tvg-name="Channel 352" group-title="UK",Channel 352
+http://stream.example.com/get.php?username=u1&password=p1&stream=352
+#EXTINF:-1 tvg-id="ch353.example" tvg-name="Channel 353" group-title="US",Channel 353
+http://u2:p2@other.example.com:8080/play/353.m3u8
+#EXTINF:-1 tvg-id="ch354.example" tvg-name="Channel 354" group-title="Germany",Channel 354
+http://stream.example.com/live/u1/p1/354.ts
+#EXTINF:-1 tvg-id="ch355.example" tvg-name="Channel 355" group-title="France",Channel 355
+http://stream.example.com/get.php?username=u1&password=p1&stream=355
+#EXTINF:-1 tvg-id="ch356.example" tvg-name="Channel 356" group-title="Spain",Channel 356
+http://u2:p2@other.example.com:8080/play/356.m3u8
+#EXTINF:-1 tvg-id="ch357.example" tvg-name="Channel 357" group-title="Italy",Channel 357
+http://stream.example.com/live/u1/p1/357.ts
+#EXTINF:-1 tvg-id="ch358.example" tvg-name="Channel 358" group-title="Radio",Channel 358
+http://stream.example.com/get.php?username=u1&password=p1&stream=358
+#EXTINF:-1 tvg-id="ch359.example" tvg-name="Channel 359" group-title="Weather",Channel 359
+http://u2:p2@other.example.com:8080/play/359.m3u8
+#EXTINF:-1 tvg-id="ch360.example" tvg-name="Channel 360" group-title="Local",Channel 360
+http://stream.example.com/live/u1/p1/360.ts
+#EXTINF:-1 tvg-id="ch361.example" tvg-name="Channel 361" group-title="News",Channel 361
+http://stream.example.com/get.php?username=u1&password=p1&stream=361
+#EXTINF:-1 tvg-id="ch362.example" tvg-name="Channel 362" group-title="Sport",Channel 362
+http://u2:p2@other.example.com:8080/play/362.m3u8
+#EXTINF:-1 tvg-id="ch363.example" tvg-name="Channel 363" group-title="Movies",Channel 363
+http://stream.example.com/live/u1/p1/363.ts
+#EXTINF:-1 tvg-id="ch364.example" tvg-name="Channel 364" group-title="Kids",Channel 364
+http://stream.example.com/get.php?username=u1&password=p1&stream=364
+#EXTINF:-1 tvg-id="ch365.example" tvg-name="Channel 365" group-title="Music",Channel 365
+http://u2:p2@other.example.com:8080/play/365.m3u8
+#EXTINF:-1 tvg-id="ch366.example" tvg-name="Channel 366" group-title="Documentary",Channel 366
+http://stream.example.com/live/u1/p1/366.ts
+#EXTINF:-1 tvg-id="ch367.example" tvg-name="Channel 367" group-title="Entertainment",Channel 367
+http://stream.example.com/get.php?username=u1&password=p1&stream=367
+#EXTINF:-1 tvg-id="ch368.example" tvg-name="Channel 368" group-title="Series",Channel 368
+http://u2:p2@other.example.com:8080/play/368.m3u8
+#EXTINF:-1 tvg-id="ch369.example" tvg-name="Channel 369" group-title="Nordic",Channel 369
+http://stream.example.com/live/u1/p1/369.ts
+#EXTINF:-1 tvg-id="ch370.example" tvg-name="Channel 370" group-title="UK",Channel 370
+http://stream.example.com/get.php?username=u1&password=p1&stream=370
+#EXTINF:-1 tvg-id="ch371.example" tvg-name="Channel 371" group-title="US",Channel 371
+http://u2:p2@other.example.com:8080/play/371.m3u8
+#EXTINF:-1 tvg-id="ch372.example" tvg-name="Channel 372" group-title="Germany",Channel 372
+http://stream.example.com/live/u1/p1/372.ts
+#EXTINF:-1 tvg-id="ch373.example" tvg-name="Channel 373" group-title="France",Channel 373
+http://stream.example.com/get.php?username=u1&password=p1&stream=373
+#EXTINF:-1 tvg-id="ch374.example" tvg-name="Channel 374" group-title="Spain",Channel 374
+http://u2:p2@other.example.com:8080/play/374.m3u8
+#EXTINF:-1 tvg-id="ch375.example" tvg-name="Channel 375" group-title="Italy",Channel 375
+http://stream.example.com/live/u1/p1/375.ts
+#EXTINF:-1 tvg-id="ch376.example" tvg-name="Channel 376" group-title="Radio",Channel 376
+http://stream.example.com/get.php?username=u1&password=p1&stream=376
+#EXTINF:-1 tvg-id="ch377.example" tvg-name="Channel 377" group-title="Weather",Channel 377
+http://u2:p2@other.example.com:8080/play/377.m3u8
+#EXTINF:-1 tvg-id="ch378.example" tvg-name="Channel 378" group-title="Local",Channel 378
+http://stream.example.com/live/u1/p1/378.ts
+#EXTINF:-1 tvg-id="ch379.example" tvg-name="Channel 379" group-title="News",Channel 379
+http://stream.example.com/get.php?username=u1&password=p1&stream=379
+#EXTINF:-1 tvg-id="ch380.example" tvg-name="Channel 380" group-title="Sport",Channel 380
+http://u2:p2@other.example.com:8080/play/380.m3u8
+#EXTINF:-1 tvg-id="ch381.example" tvg-name="Channel 381" group-title="Movies",Channel 381
+http://stream.example.com/live/u1/p1/381.ts
+#EXTINF:-1 tvg-id="ch382.example" tvg-name="Channel 382" group-title="Kids",Channel 382
+http://stream.example.com/get.php?username=u1&password=p1&stream=382
+#EXTINF:-1 tvg-id="ch383.example" tvg-name="Channel 383" group-title="Music",Channel 383
+http://u2:p2@other.example.com:8080/play/383.m3u8
+#EXTINF:-1 tvg-id="ch384.example" tvg-name="Channel 384" group-title="Documentary",Channel 384
+http://stream.example.com/live/u1/p1/384.ts
+#EXTINF:-1 tvg-id="ch385.example" tvg-name="Channel 385" group-title="Entertainment",Channel 385
+http://stream.example.com/get.php?username=u1&password=p1&stream=385
+#EXTINF:-1 tvg-id="ch386.example" tvg-name="Channel 386" group-title="Series",Channel 386
+http://u2:p2@other.example.com:8080/play/386.m3u8
+#EXTINF:-1 tvg-id="ch387.example" tvg-name="Channel 387" group-title="Nordic",Channel 387
+http://stream.example.com/live/u1/p1/387.ts
+#EXTINF:-1 tvg-id="ch388.example" tvg-name="Channel 388" group-title="UK",Channel 388
+http://stream.example.com/get.php?username=u1&password=p1&stream=388
+#EXTINF:-1 tvg-id="ch389.example" tvg-name="Channel 389" group-title="US",Channel 389
+http://u2:p2@other.example.com:8080/play/389.m3u8
+#EXTINF:-1 tvg-id="ch390.example" tvg-name="Channel 390" group-title="Germany",Channel 390
+http://stream.example.com/live/u1/p1/390.ts
+#EXTINF:-1 tvg-id="ch391.example" tvg-name="Channel 391" group-title="France",Channel 391
+http://stream.example.com/get.php?username=u1&password=p1&stream=391
+#EXTINF:-1 tvg-id="ch392.example" tvg-name="Channel 392" group-title="Spain",Channel 392
+http://u2:p2@other.example.com:8080/play/392.m3u8
+#EXTINF:-1 tvg-id="ch393.example" tvg-name="Channel 393" group-title="Italy",Channel 393
+http://stream.example.com/live/u1/p1/393.ts
+#EXTINF:-1 tvg-id="ch394.example" tvg-name="Channel 394" group-title="Radio",Channel 394
+http://stream.example.com/get.php?username=u1&password=p1&stream=394
+#EXTINF:-1 tvg-id="ch395.example" tvg-name="Channel 395" group-title="Weather",Channel 395
+http://u2:p2@other.example.com:8080/play/395.m3u8
+#EXTINF:-1 tvg-id="ch396.example" tvg-name="Channel 396" group-title="Local",Channel 396
+http://stream.example.com/live/u1/p1/396.ts
+#EXTINF:-1 tvg-id="ch397.example" tvg-name="Channel 397" group-title="News",Channel 397
+http://stream.example.com/get.php?username=u1&password=p1&stream=397
+#EXTINF:-1 tvg-id="ch398.example" tvg-name="Channel 398" group-title="Sport",Channel 398
+http://u2:p2@other.example.com:8080/play/398.m3u8
+#EXTINF:-1 tvg-id="ch399.example" tvg-name="Channel 399" group-title="Movies",Channel 399
+http://stream.example.com/live/u1/p1/399.ts
+#EXTINF:-1 tvg-id="ch400.example" tvg-name="Channel 400" group-title="Kids",Channel 400
+http://stream.example.com/get.php?username=u1&password=p1&stream=400
+#EXTINF:-1 tvg-id="ch401.example" tvg-name="Channel 401" group-title="Music",Channel 401
+http://u2:p2@other.example.com:8080/play/401.m3u8
+#EXTINF:-1 tvg-id="ch402.example" tvg-name="Channel 402" group-title="Documentary",Channel 402
+http://stream.example.com/live/u1/p1/402.ts
+#EXTINF:-1 tvg-id="ch403.example" tvg-name="Channel 403" group-title="Entertainment",Channel 403
+http://stream.example.com/get.php?username=u1&password=p1&stream=403
+#EXTINF:-1 tvg-id="ch404.example" tvg-name="Channel 404" group-title="Series",Channel 404
+http://u2:p2@other.example.com:8080/play/404.m3u8
+#EXTINF:-1 tvg-id="ch405.example" tvg-name="Channel 405" group-title="Nordic",Channel 405
+http://stream.example.com/live/u1/p1/405.ts
+#EXTINF:-1 tvg-id="ch406.example" tvg-name="Channel 406" group-title="UK",Channel 406
+http://stream.example.com/get.php?username=u1&password=p1&stream=406
+#EXTINF:-1 tvg-id="ch407.example" tvg-name="Channel 407" group-title="US",Channel 407
+http://u2:p2@other.example.com:8080/play/407.m3u8
+#EXTINF:-1 tvg-id="ch408.example" tvg-name="Channel 408" group-title="Germany",Channel 408
+http://stream.example.com/live/u1/p1/408.ts
+#EXTINF:-1 tvg-id="ch409.example" tvg-name="Channel 409" group-title="France",Channel 409
+http://stream.example.com/get.php?username=u1&password=p1&stream=409
+#EXTINF:-1 tvg-id="ch410.example" tvg-name="Channel 410" group-title="Spain",Channel 410
+http://u2:p2@other.example.com:8080/play/410.m3u8
+#EXTINF:-1 tvg-id="ch411.example" tvg-name="Channel 411" group-title="Italy",Channel 411
+http://stream.example.com/live/u1/p1/411.ts
+#EXTINF:-1 tvg-id="ch412.example" tvg-name="Channel 412" group-title="Radio",Channel 412
+http://stream.example.com/get.php?username=u1&password=p1&stream=412
