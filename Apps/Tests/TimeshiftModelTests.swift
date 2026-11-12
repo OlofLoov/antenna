@@ -132,13 +132,13 @@ final class TimeshiftTestEngine: PlaybackEngine {
         // At live: back at live with a new buffer.
         model.statusChanged(Self.status(behind: 0))
         model.interrupted()
-        model.interruptionEnded()
+        await model.interruptionEnded()
         #expect(restarts == 1)
 
         // Behind by choice: goes on from where it was.
         model.statusChanged(Self.status(behind: 600))
         model.interrupted()
-        model.interruptionEnded()
+        await model.interruptionEnded()
         await settle()
         #expect(restarts == 1)
         #expect(engine.calls.last == "play")
@@ -148,7 +148,7 @@ final class TimeshiftTestEngine: PlaybackEngine {
         await settle()
         let before = engine.calls.count
         model.interrupted()
-        model.interruptionEnded()
+        await model.interruptionEnded()
         await settle()
         #expect(engine.calls.count == before)
         #expect(model.userPaused)
