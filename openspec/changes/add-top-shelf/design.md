@@ -42,3 +42,11 @@ The extension cannot open the app's database or guide cache. The shared App Grou
 - Open question: the 30-second batching of writes trades freshness against disk writes. Can be decided at implementation.
 - [M3U channels with no guide id get a new identity when the playlist is reordered] → old tiles stop matching until the next write, as favorites themselves do.
 - [Names and titles on the shelf] → they come only from the user's own sources, never shipped content (App Review 5.2.3).
+
+## Implementation decisions
+
+- SHA-256 already existed in AntennaCore for the Stalker device identity (`Stalker/Digest.swift`). SHA-1 joins it there, since a version 5 UUID is defined over SHA-1. Item ids are `UUIDv5(namespace, "<source uuid>/<sha-256 hex of the id>")` under a fixed namespace in `TopShelfItemID`.
+- The snapshot builder lives in AntennaCore next to the format (`TopShelfSnapshot(favorites:titles:unresolvedFavorites:now:)`), so the caps, the 12-hour window and the "no link or identity" rule are proved by core tests and the app only gathers inputs.
+- Continue watching on the shelf takes titles in progress only. A series offered as "Next episode" in the app is left out: its bar would read as finished, and the requirement names titles in progress.
+- A snapshot over 256 KB halves the programmes kept per favorite until it fits, so the programme on now always survives.
+- `unresolvedFavorites` above zero with nothing else to show gives a blank shelf, not the add-favorites tile. A cleared snapshot (unlock lapsed) has zero and gives the tile.

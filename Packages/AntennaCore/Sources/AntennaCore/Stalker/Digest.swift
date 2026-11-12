@@ -1,8 +1,8 @@
 import Foundation
 
-/// MD5 and SHA-256 over bytes, written out so AntennaCore keeps to
-/// Foundation. Only the Stalker device identity uses them; neither protects
-/// anything.
+/// MD5, SHA-1 and SHA-256 over bytes, written out so AntennaCore keeps to
+/// Foundation. The Stalker device identity uses MD5 and SHA-256, Top Shelf
+/// item ids SHA-256 and SHA-1. None of them protects anything.
 enum Digest {
     /// The uppercase hex form of `bytes`.
     static func hex(_ bytes: [UInt8]) -> String {
@@ -111,6 +111,37 @@ enum Digest {
                 work = [first &+ sum0 &+ majority, va, vb, vc, vd &+ first, ve, vf, vg]
             }
             for index in 0..<8 { state[index] = state[index] &+ work[index] }
+        }
+        return state.flatMap { value in (0..<4).reversed().map { UInt8(truncatingIfNeeded: value >> (8 * UInt32($0))) } }
+    }
+
+    /// The SHA-1 of `message` (FIPS 180-4), the hash a version 5 UUID is
+    /// defined over.
+    static func sha1(_ message: [UInt8]) -> [UInt8] {
+        var state: [UInt32] = [0x6745_2301, 0xefcd_ab89, 0x98ba_dcfe, 0x1032_5476, 0xc3d2_e1f0]
+        var words = [UInt32](repeating: 0, count: 80)
+        for chunk in blocks(message, bigEndianLength: true) {
+            for index in 0..<16 {
+                let base = index * 4
+                words[index] =
+                    UInt32(chunk[base]) << 24 | UInt32(chunk[base + 1]) << 16 | UInt32(chunk[base + 2]) << 8 | UInt32(chunk[base + 3])
+            }
+            for index in 16..<80 {
+                words[index] = rotateLeft(words[index - 3] ^ words[index - 8] ^ words[index - 14] ^ words[index - 16], 1)
+            }
+            var work = state
+            for round in 0..<80 {
+                let (mix, constant): (UInt32, UInt32) =
+                    switch round {
+                    case 0..<20: ((work[1] & work[2]) | (~work[1] & work[3]), 0x5a82_7999)
+                    case 20..<40: (work[1] ^ work[2] ^ work[3], 0x6ed9_eba1)
+                    case 40..<60: ((work[1] & work[2]) | (work[1] & work[3]) | (work[2] & work[3]), 0x8f1b_bcdc)
+                    default: (work[1] ^ work[2] ^ work[3], 0xca62_c1d6)
+                    }
+                let next = rotateLeft(work[0], 5) &+ mix &+ work[4] &+ constant &+ words[round]
+                work = [next, work[0], rotateLeft(work[1], 30), work[2], work[3]]
+            }
+            for index in 0..<5 { state[index] = state[index] &+ work[index] }
         }
         return state.flatMap { value in (0..<4).reversed().map { UInt8(truncatingIfNeeded: value >> (8 * UInt32($0))) } }
     }
