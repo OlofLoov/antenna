@@ -81,6 +81,7 @@
         /// The last session's section was opened once, at the first appearance.
         @State private var restored = false
         @Environment(\.onboardingHandoff) private var handoff
+        @Query private var preferences: [PreferencesRecord]
 
         enum Folded { case sidebar, list }
 
@@ -151,8 +152,7 @@
                     guard !restored else { return }
                     restored = true
                     section = LiveSection(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
-                    // Browse movies in onboarding opens Movies.
-                    if handoff?.takeMovies() == true { section = .movies }
+                    section = handoff?.takeMovies() == true ? .movies : .launch(preferences, hasXtream: shelves.hasXtream) ?? section
                 }
             }
             .background(Palette.ground)

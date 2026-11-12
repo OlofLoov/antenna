@@ -122,11 +122,15 @@
     extension ShellModel.Dependencies {
         /// The engine, loader, Keychain check and clock the app runs on.
         /// The last channel and language picks are `profile`'s on this Apple TV.
-        @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID) -> Self {
+        /// With `refresher`, sources load through it one at a time and report their status.
+        @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID, refresher: SourceRefresher? = nil) -> Self {
             .init(
                 engine: RoutedEngine.app(),
-                load: { try await loader.load($0) },
-                hasLogin: { loader.hasLogin($0) },
+                load: { source in
+                    if let refresher { return try await refresher.load(source) }
+                    return try await loader.load(source)
+                },
+                hasLogin: { refresher?.hasLogin($0) ?? loader.hasLogin($0) },
                 recents: RecentsStore(profile: profile),
                 sleep: { try await Task.sleep(for: $0) },
                 guide: guide,

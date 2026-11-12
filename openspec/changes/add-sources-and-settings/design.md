@@ -105,3 +105,24 @@ About: "Version <CFBundleShortVersionString> (<CFBundleVersion>)".
 - Open question: leaving edited details discards changes without asking. A "Discard changes?" prompt can be decided during implementation.
 - Open question: the link field shows an M3U link in full, including any password in it, so VoiceOver reads it aloud. Masking it until edited can be decided during implementation.
 - [One change covers screens, loader and preferences, so the work may be large] → split into several PRs before implementation if needed.
+
+## Implementation decisions
+
+- `SourceRefresher` is one app-wide object in the environment. It does not build channels itself: Live on iPhone, iPad and Mac and the Apple TV shell keep assembling their catalogue, and load each source through the refresher, which runs one load at a time in the order asked, gives up after 30 seconds and records each source's status. Moving the catalogue out of both screen models was larger than this change needed, and the models already handle sync changes, reordering and late logins.
+- Refresh now, Refresh all and the schedule ask the screen that holds the channels to load sources again, through a closure that screen registers with the refresher. A source being refreshed keeps its channels and its loaded state while it loads and when the load fails. Coming back to the front also loads again every source that added nothing, which covers a launch while offline.
+- A rename no longer loads a source again: only its kind, link, guide link or credential key does. This narrows the `source-management` rule that a name change reloads, as the modified requirement here says.
+- The last successful load time is kept in `UserDefaults` under `settings.lastLoad.<sourceId>` as a JSON date. The schedule looks only at sources loaded in this run of the app.
+- The guide part of a row follows the guide store's progress events.
+- The Xtream account line is left out of the details. The loader asks for categories and streams only, and adding the account call to every load is left for a later change; Connect in onboarding still checks the account.
+- A failed load shows the onboarding sentence for its error. A playlist's bad status maps to the server error sentence.
+- Saving details with a changed link or login asks the server once through `SourceConnector.probe`, the check onboarding's Connect makes, and saves nothing when it fails. The name and guide link save without a check. A duplicate is checked before the server is asked.
+- Delete removes the record, its Keychain item, its favorites in every profile, its watch history, its guide and its last load time. A deleted source's playing channel stops in Live and in the shell. A source deleted on another device is removed by the screens as before; its Keychain item on this device is not deleted yet.
+- The confirmation is an alert with Delete and Cancel. It is shared by the swipe on iPhone and iPad and by Delete source in the details on every platform.
+- Every platform shows Sources and Settings as one list with the details pushed on a navigation stack. The two-column layouts on iPad, Mac and Apple TV in the boards are not built yet; the rows, details, buttons and copy follow the boards.
+- Reordering is drag in edit mode on iPhone and iPad and Move up and Move down in the details on Apple TV. Each move rewrites every source's sort order, so two devices converge on one order.
+- Preferences live in a new synced `PreferencesRecord`, every field defaulted, as the change assumes. Several records resolve to the newest, and at equal times the smaller id, and the others are deleted when read. Showing preferences inserts nothing; the first change inserts the record.
+- Open on launch applies when the tabs, the sidebar or the shell first appear, after onboarding's own request if there is one. A stored Movies falls back to Live where Movies is not offered. Refresh sources sets the schedule. The Apple TV swipe preference makes a swipe up or down on the picture show the info bar instead of changing channel.
+- Guide window is stored and shown but not applied: the Apple TV guide grid's two-hour window is fixed in `GuideTimeline` and the iPhone guide follows it. Task 5.2 stays open for that part.
+- Add a source in Settings opens onboarding's form and checklist in a sheet; Start watching closes the sheet.
+- Settings UI tests run on the scripted Live sources, which now load through the app's refresher so the rows show real states.
+- Open on launch and the session restore from `add-session-restore-and-recently-watched` both pick the first tab. The restored tab comes first, and a preference other than Live then replaces it, so Live as the default keeps the restore. The two specs disagree on this; the order here is a stopgap until one of them settles it.

@@ -169,9 +169,10 @@ final class LiveModel {
             failures[id] = nil
         }
         var changed: [SourceDescriptor] = []
+        // A rename loads nothing again (sources-and-settings/changes-from-other-devices-show-up-by-themselves).
         for source in list where descriptors[source.id] != source {
+            if descriptors[source.id]?.loadsLike(source) != true { changed.append(source) }
             descriptors[source.id] = source
-            changed.append(source)
         }
         let previous = Dictionary(uniqueKeysWithValues: sources.map { ($0.id, $0) })
         sources = list.map { source in
@@ -179,7 +180,9 @@ final class LiveModel {
             row.name = source.name
             return row
         }
-        if list.isEmpty, playing != nil { stop() }
+        // A deleted source's channel stops (sources-and-settings/delete-a-source-and-everything-that-came-with-it).
+        let gone = playing?.sourceID.map { !ids.contains($0) } ?? false
+        if playing != nil, list.isEmpty || gone { stop() }
         rebuild()
         changed.forEach(startLoad)
     }
@@ -212,12 +215,16 @@ final class LiveModel {
         }
     }
 
+    /// A source with channels keeps them while it loads again and when that
+    /// load fails (sources-and-settings/a-failed-refresh-keeps-your-channels).
     private func startLoad(_ source: SourceDescriptor) {
         loads[source.id]?.cancel()
-        channelsBySource[source.id] = nil
         failures[source.id] = nil
         dismissed.remove(source.id)
-        setState(.loading, for: source.id)
+        if channelsBySource[source.id]?.isEmpty ?? true {
+            channelsBySource[source.id] = nil
+            setState(.loading, for: source.id)
+        }
         rebuild()
         loads[source.id] = Task { [weak self] in
             guard let self else { return }
@@ -234,28 +241,6 @@ final class LiveModel {
             guard !Task.isCancelled else { return }
             loads[source.id] = nil
             await finish(source, with: result)
-        }
-    }
-
-    private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
-        switch result {
-        case .success(let playlist):
-            let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
-            channelsBySource[source.id] = tagged
-            setState(.loaded(channels: tagged.count), for: source.id)
-            rebuild()
-            replay()
-            if let guide = dependencies.guide {
-                await guide.register(epgURLs: playlist.epgURLs, for: source.id)
-                await guide.update(channels: tagged)
-                await guide.refreshIfStale(now: .now)
-            }
-        case .failure(let failure):
-            let state = Self.state(for: failure)
-            if state != .waitingForLogin { failures[source.id] = failure.localizedDescription }
-            setState(state, for: source.id)
-            rebuild()
-            if state == .waitingForLogin { watchLogins() }
         }
     }
 
@@ -472,5 +457,40 @@ extension LiveModel {
         player.stateChanged(state)
         session.stateChanged(state)
         player.restoreVolume()
+    }
+}
+
+extension LiveModel {
+    private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
+        switch result {
+        case .success(let playlist):
+            let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
+            channelsBySource[source.id] = tagged
+            setState(.loaded(channels: tagged.count), for: source.id)
+            rebuild()
+            replay()
+            if let guide = dependencies.guide {
+                await guide.register(epgURLs: playlist.epgURLs, for: source.id)
+                await guide.update(channels: tagged)
+                await guide.refreshIfStale(now: .now)
+            }
+        case .failure(let failure):
+            let state = Self.state(for: failure)
+            if state != .waitingForLogin { failures[source.id] = failure.localizedDescription }
+            if let kept = channelsBySource[source.id], !kept.isEmpty, state != .waitingForLogin {
+                setState(.loaded(channels: kept.count), for: source.id)
+                rebuild()
+                return
+            }
+            channelsBySource[source.id] = nil
+            setState(state, for: source.id)
+            rebuild()
+            if state == .waitingForLogin { watchLogins() }
+        }
+    }
+
+    /// Loads `ids` again in order; their channels stay meanwhile (sources-and-settings/refresh-by-hand).
+    func reload(_ ids: [UUID]) {
+        for source in ids.compactMap({ descriptors[$0] }) { startLoad(source) }
     }
 }
