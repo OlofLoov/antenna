@@ -14,6 +14,13 @@ extension GuideEngine {
             addedLinks: added)
     }
 
+    /// The links of the source's guides this device knows, for the add
+    /// form's duplicate check. Holds logins: never log or show them.
+    public func guideLinks(sourceID: UUID) -> [URL] {
+        guard let source = descriptors[sourceID] else { return [] }
+        return guideList(source).compactMap(\.url)
+    }
+
     /// True for a playlist whose header links have not arrived yet.
     private func waitsForPlaylist(_ source: GuideSourceDescriptor) -> Bool {
         (source.kind == .m3u || source.kind == .m3uFile) && playlistLinks[source.sourceID] == nil

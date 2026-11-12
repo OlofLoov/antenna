@@ -5,6 +5,11 @@ extension GuideSourcesText {
     public struct Card: Sendable, Equatable {
         public var title: Line
         public var body: [String]
+
+        public init(title: Line, body: [String]) {
+            self.title = title
+            self.body = body
+        }
     }
 
     /// What a card needs to know besides the reason.
