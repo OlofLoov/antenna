@@ -12,7 +12,8 @@ struct PortalGuideFetcher: Sendable {
     var limits: GuideLimits
 
     /// The outcome, and the rows skipped as broken or with impossible times.
-    func fetch(_ client: StalkerClient) async -> (outcome: GuideFetcher.Outcome, skipped: Int) {
+    /// `names` are the channels' names by guide id, since the portal sends none.
+    func fetch(_ client: StalkerClient, names: [String: String] = [:]) async -> (outcome: GuideFetcher.Outcome, skipped: Int) {
         for attempt in 0..<2 {
             do {
                 let request = try await client.epgRequest(period: Self.hours)
@@ -29,7 +30,7 @@ struct PortalGuideFetcher: Sendable {
                     return (.failed(.unauthorized), 0)
                 case .guide(let programmes, let skipped):
                     guard !programmes.isEmpty else { return (.failed(.empty), skipped) }
-                    let guide = await Task.detached { SourceGuide(programmes) }.value
+                    let guide = await Task.detached { SourceGuide(programmes, names: names) }.value
                     return (.loaded(guide), skipped)
                 }
             } catch {

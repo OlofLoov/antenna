@@ -10,19 +10,45 @@ import os
 @MainActor @Observable
 final class AppGuideStore {
     private(set) var index = GuideIndex()
+    /// Each source's guide rows and their statuses, for the Guide sources
+    /// screen. Kept apart from `index` because download progress changes it
+    /// several times a second.
+    private(set) var statuses: [UUID: GuideSourceStatus] = [:]
     @ObservationIgnored private let engine: GuideEngine
     @ObservationIgnored private var knownSources: Set<UUID> = []
-    @ObservationIgnored private var listener: Task<Void, Never>?
+    @ObservationIgnored private var listeners: [Task<Void, Never>] = []
 
-    /// The listener runs as long as the engine does. The app keeps one store
+    /// The listeners run as long as the engine does. The app keeps one store
     /// for its whole life; a test's store and engine end with the process.
     init(engine: GuideEngine) {
         self.engine = engine
-        listener = Task { [weak self, engine] in
-            for await index in engine.indexes {
-                self?.index = index
-            }
-        }
+        listeners = [
+            Task { [weak self, engine] in
+                for await index in engine.indexes {
+                    self?.index = index
+                }
+            },
+            Task { [weak self, engine] in
+                for await statuses in engine.statuses {
+                    self?.statuses = statuses
+                }
+            },
+        ]
+    }
+
+    /// The channel's guide key with its match applied.
+    func key(for channel: Channel) -> GuideKey? {
+        index.key(for: channel)
+    }
+
+    /// Applies changed guide settings at once, without a download.
+    func settingsChanged() async {
+        await engine.settingsChanged()
+    }
+
+    /// Downloads one guide of a source again, as Retry now does.
+    func refresh(sourceID: UUID, guide: GuideReference) async {
+        await engine.refresh(sourceID: sourceID, guide: guide)
     }
 
     /// The store the app runs on. Tests pass a stub session, their own
@@ -62,7 +88,9 @@ final class AppGuideStore {
                 return jellyfinClients.client(for: source, credential: credential)
             }
         )
-        return AppGuideStore(engine: GuideEngine(configuration))
+        let store = AppGuideStore(engine: GuideEngine(configuration))
+        GuideLookup.store = store
+        return store
     }
 
     /// Every stored source with a URL, in display order. A failed fetch is

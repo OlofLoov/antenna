@@ -230,7 +230,8 @@ final class SearchModel {
         let now = dependencies.now()
         let built = await Task.detached(priority: .userInitiated) {
             let channels = SearchChannel.all(
-                in: corpus.catalogue, sourceOrder: corpus.sourceOrder, includingHidden: corpus.includeHidden)
+                in: corpus.catalogue, sourceOrder: corpus.sourceOrder, includingHidden: corpus.includeHidden,
+                guideKeyOf: corpus.guide.key(for:))
             let index = SearchIndex(channels: channels, guide: corpus.guide, titles: corpus.titles, now: now)
             let guideLoading = channels.contains { channel in
                 channel.guideKey.map { corpus.guide.loadingState(for: $0) == .loading } ?? false

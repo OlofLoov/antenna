@@ -1,42 +1,16 @@
 import Foundation
 
-/// What the guide needs to know about a source, mapped by the app from its
-/// stored record. `url` may hold a login (an M3U link with a password in its
-/// query), so it is never logged, persisted or used in a file name.
-public struct GuideSourceDescriptor: Sendable, Equatable {
-    public var sourceID: UUID
-    public var kind: SourceKind
-    public var url: URL
-    public var epgURL: URL?
-    public var credentialKey: String?
-    public var sortOrder: Int
-
-    public init(sourceID: UUID, kind: SourceKind, url: URL, epgURL: URL? = nil, credentialKey: String? = nil, sortOrder: Int = 0) {
-        self.sourceID = sourceID
-        self.kind = kind
-        self.url = url
-        self.epgURL = epgURL
-        self.credentialKey = credentialKey
-        self.sortOrder = sortOrder
-    }
-}
-
-/// The result of reading a source's login, so a login that has not synced yet
-/// can be told apart from one the Keychain cannot read.
-public enum GuideCredentialLookup: Sendable {
-    case found(username: String, password: String)
-    case missing
-    case unreadable
-}
-
-/// Downloads, joins and keeps every source's guide, one source at a time in
-/// `sortOrder`. All work runs off the main actor. Each change publishes a
-/// new `GuideIndex` on `indexes`.
+/// Downloads, joins and keeps every source's guides, one source at a time in
+/// `sortOrder` and each source's guides in the user's order. All work runs
+/// off the main actor. Each change publishes a new `GuideIndex` on
+/// `indexes`, and each change of a guide's status the rows on `statuses`.
 ///
 /// Before a source's first completed load its channels report `.loading`,
 /// `.unavailable` or `.failed`. After one they report `.loaded` or `.noData`
 /// and keep doing so through failed refreshes, which are reported only on
-/// `progressStream()`. Guides live in memory only.
+/// `progressStream()` and in the statuses. Guides live in memory only. A
+/// guide's parse is kept while the process runs, so a reorder or a guide
+/// turned back on needs no download.
 public actor GuideEngine {
     public struct Configuration: Sendable {
         public var session: URLSession
@@ -47,6 +21,9 @@ public actor GuideEngine {
         public var sources: @Sendable () async -> [GuideSourceDescriptor]
         /// Reads a login by its Keychain key.
         public var credential: @Sendable (String) -> GuideCredentialLookup
+        /// The whole link of a guide the user added, from the Keychain, by
+        /// source id and link id. Nil when this device does not have it.
+        public var addedLink: @Sendable (UUID, String) -> URL?
         /// Receives only redacted links, source ids and error cases.
         public var log: @Sendable (String) -> Void
         public var now: @Sendable () -> Date
@@ -72,6 +49,7 @@ public actor GuideEngine {
             limits: GuideLimits = .platform,
             sources: @escaping @Sendable () async -> [GuideSourceDescriptor],
             credential: @escaping @Sendable (String) -> GuideCredentialLookup,
+            addedLink: @escaping @Sendable (UUID, String) -> URL? = { _, _ in nil },
             log: @escaping @Sendable (String) -> Void,
             now: @escaping @Sendable () -> Date = { .now },
             uptime: @escaping @Sendable () -> Duration = Configuration.processUptime,
@@ -84,6 +62,7 @@ public actor GuideEngine {
             self.limits = limits
             self.sources = sources
             self.credential = credential
+            self.addedLink = addedLink
             self.log = log
             self.now = now
             self.uptime = uptime
@@ -93,30 +72,70 @@ public actor GuideEngine {
         }
     }
 
+    /// Which guides a pass loads whatever their age.
+    enum Force: Sendable, Equatable {
+        case none
+        case all
+        case only(Set<GuideReference>)
+
+        func adding(_ other: Force) -> Force {
+            switch (self, other) {
+            case (.all, _), (_, .all): .all
+            case (.none, let other), (let other, .none): other
+            case (.only(let left), .only(let right)): .only(left.union(right))
+            }
+        }
+
+        func includes(_ reference: GuideReference) -> Bool {
+            switch self {
+            case .none: false
+            case .all: true
+            case .only(let set): set.contains(reference)
+            }
+        }
+    }
+
     /// A guide older than this is downloaded again.
     public static let freshness: TimeInterval = 12 * 3600
 
-    private let configuration: Configuration
-    private let fetcher: GuideFetcher
-    private let hub = GuideProgressHub()
+    /// A parse kept for one guide of a source. `fingerprint` hashes the link
+    /// it came from, so a changed link loads again.
+    struct LoadedGuide: Sendable {
+        var guide: SourceGuide
+        var fingerprint: UInt64
+        var completedAt: Date
+    }
+
+    let configuration: Configuration
+    let fetcher: GuideFetcher
+    let hub = GuideProgressHub()
     private let indexContinuation: AsyncStream<GuideIndex>.Continuation
+    private let statusContinuation: AsyncStream<[UUID: GuideSourceStatus]>.Continuation
     /// Channel lists from `update(channels:)`, applied in the order they came.
     private let channelInbox: AsyncStream<[Channel]>.Continuation
 
     /// Every published index, newest only, for one consumer.
     public nonisolated let indexes: AsyncStream<GuideIndex>
+    /// Every source's guide rows, newest only, for one consumer.
+    public nonisolated let statuses: AsyncStream<[UUID: GuideSourceStatus]>
     public private(set) var index = GuideIndex()
+    public internal(set) var sourceStatuses: [UUID: GuideSourceStatus] = [:]
 
-    private var entries: [UUID: GuideIndex.SourceEntry] = [:]
-    private var descriptors: [UUID: GuideSourceDescriptor] = [:]
-    private var playlistLinks: [UUID: [URL]] = [:]
-    private var channels: [UUID: [Channel]] = [:]
-    private var completedAt: [UUID: Date] = [:]
-    private var removed: Set<UUID> = []
+    var entries: [UUID: GuideIndex.SourceEntry] = [:]
+    var descriptors: [UUID: GuideSourceDescriptor] = [:]
+    var playlistLinks: [UUID: [URL]] = [:]
+    var channels: [UUID: [Channel]] = [:]
+    var loaded: [UUID: [GuideReference: LoadedGuide]] = [:]
+    var guideStatuses: [UUID: [GuideReference: GuideStatus]] = [:]
+    /// Matches by name per source and channel id, worked out from the loaded guides.
+    var nameMatches: [UUID: [String: String]] = [:]
+    var removed: Set<UUID> = []
     /// Sources an explicit refresh restarted; they stay ahead of the queue.
     private var restarted: Set<UUID> = []
+    /// What the next pass of a queued source loads whatever its age.
+    private var forced: [UUID: Force] = [:]
     /// Bumped each time counts are computed, so only the newest are sent.
-    private var summaryTokens: [UUID: Int] = [:]
+    var summaryTokens: [UUID: Int] = [:]
     private var queue: [UUID] = []
     private var running: (sourceID: UUID, task: Task<Void, Never>)?
 
@@ -126,6 +145,8 @@ public actor GuideEngine {
             session: configuration.session, limits: configuration.limits, directory: configuration.directory,
             uptime: configuration.uptime, chunkSize: configuration.chunkSize)
         (indexes, indexContinuation) = AsyncStream.makeStream(of: GuideIndex.self, bufferingPolicy: .bufferingNewest(1))
+        (statuses, statusContinuation) = AsyncStream.makeStream(
+            of: [UUID: GuideSourceStatus].self, bufferingPolicy: .bufferingNewest(1))
         do {
             if FileManager.default.fileExists(atPath: configuration.directory.path()) {
                 try FileManager.default.removeItem(at: configuration.directory)
@@ -149,24 +170,52 @@ public actor GuideEngine {
         hub.stream()
     }
 
-    /// Queues every source whose guide is missing, or completed more than 12
-    /// hours before `now`. A source already queued or loading is left alone.
+    /// Queues every source with a turned-on guide that is missing, whose
+    /// link changed, or that completed more than 12 hours before `now`. A
+    /// source already queued or loading is left alone.
     public func refreshIfStale(now: Date) async {
         let list = await configuration.sources()
         apply(list)
         for source in list.sorted(by: { $0.sortOrder < $1.sortOrder }) where !removed.contains(source.sourceID) {
-            let id = source.sourceID
-            let fresh = entries[id]?.guide != nil && (completedAt[id].map { now.timeIntervalSince($0) <= Self.freshness } ?? false)
-            if !fresh { enqueue(id) }
+            if needsLoad(source, now: now, onlyMissing: false) { enqueue(source.sourceID) }
         }
         pump()
     }
 
-    /// Downloads the source's guide whatever its age. A load already running
-    /// for it is cancelled, quietly, and starts again.
+    /// Downloads every turned-on guide of the source whatever its age. A
+    /// load already running for it is cancelled, quietly, and starts again.
     public func refresh(sourceID: UUID) async {
+        await restart(sourceID, force: .all)
+    }
+
+    /// Downloads one guide of the source whatever its age, as Retry now does
+    /// (guide-sources-and-channel-mapping/one-broken-guide-does-not-break-the-others).
+    public func refresh(sourceID: UUID, guide: GuideReference) async {
+        await restart(sourceID, force: .only([guide]))
+    }
+
+    /// Reads the sources again after a source's guide settings changed, here
+    /// or on another device. Applies the order, flags and matches to the
+    /// index at once, without downloading, then queues turned-on guides that
+    /// have not loaded (guide-sources-and-channel-mapping/choose-which-guide-wins).
+    public func settingsChanged() async {
+        let list = await configuration.sources()
+        apply(list)
+        for source in list where !removed.contains(source.sourceID) {
+            _ = updateNameMatches(source.sourceID)
+            rebuild(source.sourceID)
+        }
+        publish()
+        for source in list.sorted(by: { $0.sortOrder < $1.sortOrder }) where !removed.contains(source.sourceID) {
+            if needsLoad(source, now: configuration.now(), onlyMissing: true) { enqueue(source.sourceID) }
+        }
+        pump()
+    }
+
+    private func restart(_ sourceID: UUID, force: Force) async {
         apply(await configuration.sources())
         guard descriptors[sourceID] != nil, !removed.contains(sourceID) else { return }
+        forced[sourceID] = (forced[sourceID] ?? .none).adding(force)
         if let running, running.sourceID == sourceID {
             _ = hub.bump(sourceID)
             running.task.cancel()
@@ -198,9 +247,18 @@ public actor GuideEngine {
         }
         for (id, list) in groups where !removed.contains(id) {
             channels[id] = list
-            if entries[id]?.guide != nil {
+            if updateNameMatches(id) {
+                rebuild(id)
+                publish()
+            }
+            if entries[id]?.hasGuide == true {
                 await reportLoaded(id)
-            } else if let source = descriptors[id], source.kind == .jellyfin, source.epgURL == nil, !list.isEmpty {
+            }
+            let waitingProvider = descriptors[id].map { source in
+                source.kind == .jellyfin && loaded[id]?[.provider] == nil
+                    && guideList(source).contains { $0.reference == .provider && $0.enabled }
+            }
+            if waitingProvider == true, !list.isEmpty {
                 // A Jellyfin guide waits for the channel list it asks for.
                 enqueue(id)
                 pump()
@@ -214,19 +272,23 @@ public actor GuideEngine {
         playlistLinks[sourceID] = epgURLs
     }
 
-    /// Stops any load for the source and forgets its guide. Its channels
+    /// Stops any load for the source and forgets its guides. Its channels
     /// report `.unavailable` and no event about it is sent again.
     public func remove(sourceID: UUID) {
         removed.insert(sourceID)
         hub.forget(sourceID)
         queue.removeAll { $0 == sourceID }
         restarted.remove(sourceID)
+        forced[sourceID] = nil
         if let running, running.sourceID == sourceID { running.task.cancel() }
         descriptors[sourceID] = nil
         playlistLinks[sourceID] = nil
         channels[sourceID] = nil
-        completedAt[sourceID] = nil
-        entries[sourceID] = GuideIndex.SourceEntry(guide: nil, state: .unavailable)
+        loaded[sourceID] = nil
+        guideStatuses[sourceID] = nil
+        nameMatches[sourceID] = nil
+        sourceStatuses[sourceID] = nil
+        entries[sourceID] = GuideIndex.SourceEntry(state: .unavailable)
         publish()
     }
 
@@ -235,7 +297,7 @@ public actor GuideEngine {
         while let running { await running.task.value }
     }
 
-    // MARK: Loading
+    // MARK: Queue
 
     /// Takes the app's current sources. A removed id that is listed again
     /// counts as a new source.
@@ -258,198 +320,28 @@ public actor GuideEngine {
         guard running == nil, !queue.isEmpty else { return }
         let id = queue.removeFirst()
         restarted.remove(id)
+        let force = forced.removeValue(forKey: id) ?? .none
         guard let source = descriptors[id], !removed.contains(id) else {
             pump()
             return
         }
         let generation = hub.bump(id)
-        running = (id, Task { await self.load(source, generation: generation) })
+        running = (id, Task { await self.load(source, generation: generation, force: force) })
     }
 
-    private func finish() {
+    func finish() {
         running = nil
         pump()
     }
 
-    private func load(_ source: GuideSourceDescriptor, generation: Int) async {
-        defer { finish() }
-        let id = source.sourceID
-        var credential: (username: String, password: String)?
-        var headers: [String: String] = [:]
-        if source.epgURL == nil {
-            switch source.kind {
-            case .m3u, .m3uFile:
-                guard playlistLinks[id] != nil else { return }
-            case .xtream:
-                guard let found = readCredential(source, key: source.credentialKey) else { return }
-                credential = found
-            case .stalker:
-                await loadPortalGuide(source, generation: generation)
-                return
-            case .jellyfin:
-                await loadJellyfinGuide(source, generation: generation)
-                return
-            case .channelsDVR:
-                if let key = source.credentialKey {
-                    guard let found = readCredential(source, key: key) else { return }
-                    guard let basic = HTTPBasicCredential(username: found.username, password: found.password) else {
-                        failBeforeRequest(source, .credentialUnreadable, state: .failed(.credentialUnreadable))
-                        return
-                    }
-                    headers["Authorization"] = basic.headerValue
-                }
-            }
-        }
-        guard
-            let url = GuideURLResolver.resolve(
-                kind: source.kind, url: source.url, epgURL: source.epgURL, playlistEPGURLs: playlistLinks[id] ?? [],
-                credential: credential)
-        else {
-            if entries[id]?.guide != nil { hub.forget(id) }
-            completedAt[id] = nil
-            entries[id] = GuideIndex.SourceEntry(guide: nil, state: .unavailable)
-            publish()
-            return
-        }
-        if entries[id]?.guide == nil {
-            entries[id] = GuideIndex.SourceEntry(guide: nil, state: .loading)
-            publish()
-        }
-
-        configuration.log("guide load \(id.uuidString) \(redacted(url))")
-        let hub = hub
-        let order = source.sortOrder
-        let outcome = await fetcher.fetch(
-            url, sourceID: id, loginURL: source.epgURL == nil && (source.kind == .xtream || source.kind == .channelsDVR), headers: headers,
-            progress: { hub.emit($0, order: order, generation: generation) })
-        await complete(source, outcome: outcome, generation: generation, from: redacted(url))
-    }
-
-    /// The portal's own guide for a Stalker source without a guide link
-    /// (guide-data/find-the-guide-for-each-source). A source whose login is
-    /// not on this device reports a missing credential.
-    private func loadPortalGuide(_ source: GuideSourceDescriptor, generation: Int) async {
-        let id = source.sourceID
-        guard let client = await configuration.stalkerClient(id) else {
-            failBeforeRequest(source, .credentialMissing, state: .unavailable)
-            return
-        }
-        guard hub.generation(of: id) == generation, !removed.contains(id) else { return }
-        if entries[id]?.guide == nil {
-            entries[id] = GuideIndex.SourceEntry(guide: nil, state: .loading)
-            publish()
-        }
-        configuration.log("guide load \(id.uuidString) portal \(client)")
-        let read = await PortalGuideFetcher(session: configuration.session, limits: configuration.limits).fetch(client)
-        if read.skipped > 0 { configuration.log("guide \(id.uuidString) skipped \(read.skipped) portal rows") }
-        await complete(source, outcome: read.outcome, generation: generation, from: "portal \(client)")
-    }
-
-    /// Applies a finished download. `place` names where it came from, as a
-    /// log line may show it.
-    private func complete(_ source: GuideSourceDescriptor, outcome: GuideFetcher.Outcome, generation: Int, from place: String) async {
-        let id = source.sourceID
-        let order = source.sortOrder
-        guard hub.generation(of: id) == generation, !removed.contains(id) else { return }
-
-        switch outcome {
-        case .loaded(let guide):
-            entries[id] = GuideIndex.SourceEntry(guide: guide, state: .loading)
-            completedAt[id] = configuration.now()
-            publish()
-            await reportLoaded(id)
-        case .failed(let error):
-            configuration.log("guide failed \(id.uuidString) \(place) \(error)")
-            hub.emit(.failed(sourceID: id, error), order: order, generation: generation)
-            if entries[id]?.guide == nil {
-                entries[id] = GuideIndex.SourceEntry(guide: nil, state: .failed(error))
-                publish()
-            }
-        case .cancelled:
-            break
-        }
-    }
-
-    /// Reports a failure found before any request. Sent once while it lasts.
-    fileprivate func failBeforeRequest(_ source: GuideSourceDescriptor, _ error: GuideError, state: GuideLoadingState) {
-        let id = source.sourceID
-        configuration.log("guide failed \(id.uuidString) \(error)")
-        hub.emit(.failed(sourceID: id, error), order: source.sortOrder, unlessRepeated: true)
-        if entries[id]?.guide == nil {
-            entries[id] = GuideIndex.SourceEntry(guide: nil, state: state)
-            publish()
-        }
-    }
-
-    /// Sends `.loaded` with counts from the source's channels. The counting
-    /// runs off the actor.
-    private func reportLoaded(_ id: UUID) async {
-        guard let guide = entries[id]?.guide else { return }
-        let list = channels[id] ?? []
-        let token = (summaryTokens[id] ?? 0) + 1
-        summaryTokens[id] = token
-        let summary = await Self.summarize(guide, channels: list, now: configuration.now())
-        guard !removed.contains(id), summaryTokens[id] == token else { return }
-        let order = descriptors[id]?.sortOrder ?? 0
-        hub.emit(
-            .loaded(
-                sourceID: id, channelsWithGuide: summary.channelsWithGuide, channelsTotal: summary.channelsTotal,
-                days: summary.days, unmatched: summary.unmatched),
-            order: order)
-    }
-
-    @concurrent
-    private static func summarize(_ guide: SourceGuide, channels: [Channel], now: Date) async -> SourceGuide.Summary {
-        guide.summary(channels: channels, now: now)
-    }
-
-    private func publish() {
+    func publish() {
         index = GuideIndex(sources: entries)
         indexContinuation.yield(index)
-    }
-}
-
-extension GuideEngine {
-    /// A Jellyfin source's guide, asked for by its channels' server ids
-    /// (guide-data/guide-from-a-source-that-serves-programmes-directly).
-    /// Before its channels arrive the source stays loading, and the channel
-    /// list queues it again. A failure after a load keeps the guide.
-    private func loadJellyfinGuide(_ source: GuideSourceDescriptor, generation: Int) async {
-        let id = source.sourceID
-        guard let client = await configuration.jellyfinClient(id) else {
-            failBeforeRequest(source, .credentialMissing, state: .unavailable)
-            return
-        }
-        guard hub.generation(of: id) == generation, !removed.contains(id) else { return }
-        if entries[id]?.guide == nil {
-            entries[id] = GuideIndex.SourceEntry(guide: nil, state: .loading)
-            publish()
-        }
-        guard let list = channels[id] else { return }
-        var seen = Set<String>()
-        let ids = list.compactMap(\.epgID).filter { seen.insert($0).inserted }
-        configuration.log("guide load \(id.uuidString) jellyfin \(client) \(ids.count) channels")
-        let hub = hub
-        let order = source.sortOrder
-        let read = await JellyfinGuideFetcher.fetch(client, channelIDs: ids, from: configuration.now()) { done, total in
-            hub.emit(.fetching(sourceID: id, batchesDone: done, batchesTotal: total), order: order, generation: generation)
-        }
-        if read.skipped > 0 { configuration.log("guide \(id.uuidString) skipped \(read.skipped) jellyfin rows") }
-        await complete(source, outcome: read.outcome, generation: generation, from: "jellyfin \(client)")
+        statusContinuation.yield(sourceStatuses)
     }
 
-    /// The login under `key`, or nil after reporting it missing or unreadable.
-    /// No request is made in either case.
-    fileprivate func readCredential(_ source: GuideSourceDescriptor, key: String?) -> (username: String, password: String)? {
-        switch key.map(configuration.credential) ?? .missing {
-        case .found(let username, let password):
-            return (username, password)
-        case .missing:
-            failBeforeRequest(source, .credentialMissing, state: .unavailable)
-            return nil
-        case .unreadable:
-            failBeforeRequest(source, .credentialUnreadable, state: .failed(.credentialUnreadable))
-            return nil
-        }
+    /// Publishes the statuses alone, for progress that leaves the index as it is.
+    func publishStatuses() {
+        statusContinuation.yield(sourceStatuses)
     }
 }

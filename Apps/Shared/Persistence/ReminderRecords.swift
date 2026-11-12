@@ -57,7 +57,9 @@ enum ReminderStore {
     /// channel has no guide id or the programme already has one.
     @discardableResult
     static func set(_ programme: Programme, on channel: Channel, in context: ModelContext, now: Date = .now) -> Bool {
-        guard let reminder = Reminder(programme: programme, channel: channel, now: now) else { return false }
+        guard let reminder = Reminder(programme: programme, channel: channel, key: GuideLookup.key(for: channel), now: now) else {
+            return false
+        }
         let all = records(in: context)
         guard !all.contains(where: { $0.reminder?.key == reminder.key }) else { return false }
         context.insert(ReminderRecord(reminder))

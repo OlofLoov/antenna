@@ -161,3 +161,10 @@ Example: guide entries "Sport One HD" (`sport1.se`), "Sport One" (`sportone`), "
 - [One record per playlist can lose a change when two devices edit at once] → per-entry merge with tombstones; the storage decision may pick a finer shape.
 - [A provider renames an M3U channel] → its hand-picked match no longer applies, as its favorite does not. The channel shows in the list again and can be picked once more.
 - [Matching by name picks the wrong channel when two guides name different channels the same] → only a unique name across every turned-on guide is applied; the user sees each match under "Matched by name" and can undo it.
+
+## Implementation decisions
+
+- `GuideLookup.key(for:)` is the one app-side lookup. It reads the store the app runs on through a weak static reference set when the store is made, because reminders, the Search index and the Guide's open-at-a-programme code have no view environment to read it from. With no store, as in previews and scripted UI test launches, a channel's key is its own guide id. Search builds its index off the main actor, so it takes `GuideIndex.key(for:)` from the index it already holds.
+- A source's guides load in one pass, top first. A failed guide shows on its row at once, but `GuideProgress.failed` for the source is sent only when the pass ends with nothing loaded, and then for the highest failed guide. Onboarding and the source status lines read that event, so one broken guide among working ones never reads as a failed source there.
+- Programmes from a portal or Jellyfin guide carry no channel names, so their entries are named after the source's channel with that guide id.
+- Matches by name are worked out again on each guide load, each channel list and each settings change, and published with the index. They need a programme in the matched entry, since an entry without one gives the channel nothing.

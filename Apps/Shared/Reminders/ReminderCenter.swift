@@ -58,13 +58,13 @@ final class ReminderCenter {
     // MARK: Reading
 
     func isSet(_ programme: Programme, on channel: Channel) -> Bool {
-        ReminderKey(programme: programme, channel: channel).map(keys.contains) ?? false
+        ReminderKey(programme: programme, key: GuideLookup.key(for: channel)).map(keys.contains) ?? false
     }
 
     /// Remind me shows for a programme that has not started on a channel with a guide id
     /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
     func offers(_ programme: Programme, on channel: Channel, now: Date) -> Bool {
-        programme.start > now && GuideKey(channel: channel) != nil
+        programme.start > now && GuideLookup.key(for: channel) != nil
     }
 
     // MARK: Changing
@@ -74,7 +74,7 @@ final class ReminderCenter {
     /// one asks for notification permission, after it is saved
     /// (programme-reminders/permission-is-asked-only-when-it-is-needed).
     func toggle(_ programme: Programme, on channel: Channel) {
-        guard let key = ReminderKey(programme: programme, channel: channel) else { return }
+        guard let key = ReminderKey(programme: programme, key: GuideLookup.key(for: channel)) else { return }
         if keys.contains(key) {
             ReminderStore.remove(key, in: context)
             reload()

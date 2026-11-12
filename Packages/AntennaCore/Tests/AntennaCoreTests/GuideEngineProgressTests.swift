@@ -140,7 +140,7 @@ import Testing
         #expect(lines.count == 3)
         #expect(
             lines.contains(
-                "guide failed \(source.sourceID.uuidString) http://ac15.epg/….xml?username=…&password=…&token=… httpStatus(500)"))
+                "guide failed \(source.sourceID.uuidString) saved http://ac15.epg/….xml?username=…&password=…&token=… httpStatus(500)"))
         for line in lines {
             for secret in ["alice7", "s3cr3t", "abc123", link, "channel-id-9f2", secretChannel.streamURL.absoluteString] {
                 #expect(!line.contains(secret))

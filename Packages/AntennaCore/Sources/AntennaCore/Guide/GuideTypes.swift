@@ -63,3 +63,23 @@ public enum GuideLoadingState: Sendable, Equatable {
     /// The first load failed. Later failures are reported only as progress.
     case failed(GuideError)
 }
+
+/// A guide entry chosen for a channel in place of its own guide id.
+public struct GuideMatch: Sendable, Equatable {
+    public enum Origin: Sendable, Equatable {
+        /// Picked by the user (guide-sources-and-channel-mapping/pick-the-right-guide-entry-by-hand).
+        case user
+        /// The one entry with the channel's name
+        /// (guide-sources-and-channel-mapping/channels-matched-by-name).
+        case name
+    }
+
+    /// The guide id of the chosen entry, trimmed.
+    public var entryID: String
+    public var origin: Origin
+
+    public init(entryID: String, origin: Origin) {
+        self.entryID = entryID.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.origin = origin
+    }
+}

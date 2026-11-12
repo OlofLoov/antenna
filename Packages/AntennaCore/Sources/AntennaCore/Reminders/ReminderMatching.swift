@@ -68,7 +68,7 @@ extension GuideIndex {
     /// channel's schedule; nil before its source has loaded or when the
     /// channel has no programmes.
     public func span(for key: GuideKey) -> DateInterval? {
-        guard let list = sources[key.sourceID]?.guide?.schedules[key.epgID], let first = list.first, let last = list.last else {
+        guard let list = schedule(for: key)?.1, let first = list.first, let last = list.last else {
             return nil
         }
         return DateInterval(start: first.start, end: max(first.start, last.stop))

@@ -115,7 +115,8 @@ final class GuideDecoder {
             file = xmlFile
         }
         var builder = SourceGuide.Builder()
-        try parse(file, verifyXML: kind == .gzip) { builder.add($0) }
+        let names = try parse(file, verifyXML: kind == .gzip) { builder.add($0) }
+        builder.names = names
         let guide = builder.build()
         guard !guide.schedules.isEmpty else { throw .empty }
         return guide
@@ -124,7 +125,8 @@ final class GuideDecoder {
     /// Streams the XML in `file` through the parser. The file is mapped, not
     /// read, and the entity rewrite goes to `<sourceID>.parse.xml` in pieces,
     /// so no copy of the document sits in memory.
-    private func parse(_ file: URL, verifyXML: Bool, each: (Programme) -> Void) throws(GuideError) {
+    /// Returns the channels' display names by id.
+    private func parse(_ file: URL, verifyXML: Bool, each: (Programme) -> Void) throws(GuideError) -> [String: String] {
         let input: URL
         do {
             input = try prepare(file, verifyXML: verifyXML)
@@ -138,7 +140,7 @@ final class GuideDecoder {
         if input != file { try? FileManager.default.removeItem(at: file) }
         guard let stream = InputStream(url: input) else { throw .network(.cannotOpenFile) }
         do {
-            try XMLTVParser().parseSanitized(stream, each: each)
+            return try XMLTVParser().parseSanitized(stream, each: each)
         } catch {
             throw .malformed
         }

@@ -8,15 +8,17 @@ struct JellyfinGuideFetcher: Sendable {
     static let hours = 168
 
     /// The outcome, and the rows skipped as broken or repeated. `progress`
-    /// hears the batches done and the batch count.
+    /// hears the batches done and the batch count. `names` are the
+    /// channels' names by server id.
     static func fetch(
-        _ client: JellyfinClient, channelIDs: [String], from now: Date, progress: @escaping @Sendable (Int, Int) -> Void
+        _ client: JellyfinClient, channelIDs: [String], names: [String: String] = [:], from now: Date,
+        progress: @escaping @Sendable (Int, Int) -> Void
     ) async -> (outcome: GuideFetcher.Outcome, skipped: Int) {
         do {
             let window = DateInterval(start: now, duration: TimeInterval(hours) * 3600)
             let list = try await client.programmes(channelIDs: channelIDs, in: window, progress: progress)
             guard !list.items.isEmpty else { return (.failed(.empty), list.skipped) }
-            let guide = await Task.detached { SourceGuide(list.items) }.value
+            let guide = await Task.detached { SourceGuide(list.items, names: names) }.value
             return (.loaded(guide), list.skipped)
         } catch {
             return (outcome(for: error), 0)

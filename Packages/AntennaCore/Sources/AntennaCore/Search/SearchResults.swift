@@ -34,14 +34,17 @@ public struct SearchChannel: Sendable, Hashable {
     /// a source missing from it sorts last. Channels of hidden groups are
     /// included only with `includingHidden`, and locked channels never while
     /// the locks are closed (group-management/hide-groups-you-never-watch).
+    /// `guideKeyOf` gives each channel's guide key, `GuideIndex.key(for:)`
+    /// in the app.
     public static func all<Token>(
-        in catalogue: Catalogue<Token>, sourceOrder: [UUID: Int] = [:], includingHidden: Bool = false
+        in catalogue: Catalogue<Token>, sourceOrder: [UUID: Int] = [:], includingHidden: Bool = false,
+        guideKeyOf: (Channel) -> GuideKey? = { GuideKey(channel: $0) }
     ) -> [SearchChannel] {
-        catalogue.searchRows(includingHidden: includingHidden).compactMap { key in
+        catalogue.searchRows(includingHidden: includingHidden).compactMap { key -> SearchChannel? in
             guard let channel = catalogue.channel(for: key) else { return nil }
             var found = SearchChannel(
                 key: key, name: channel.name, group: channel.group, number: catalogue.number(for: key),
-                sourceOrder: sourceOrder[key.sourceID] ?? .max, guideKey: GuideKey(channel: channel), hasCatchup: channel.hasCatchup)
+                sourceOrder: sourceOrder[key.sourceID] ?? .max, guideKey: guideKeyOf(channel), hasCatchup: channel.hasCatchup)
             found.minorNumber = catalogue.channelNumber(for: key)?.minor
             return found
         }

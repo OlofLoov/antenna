@@ -195,7 +195,7 @@
                 now: { .now },
                 programmes: { channels, interval in
                     guard let guide else { return channels.map { _ in [] } }
-                    let keys = channels.map(GuideKey.init(channel:))
+                    let keys = channels.map(guide.key(for:))
                     let found = guide.programmes(for: keys.compactMap(\.self), in: interval)
                     return keys.map { key in key.flatMap { found[$0] } ?? [] }
                 },

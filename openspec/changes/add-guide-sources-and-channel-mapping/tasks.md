@@ -2,9 +2,9 @@
 
 ## 1. Guide list per source
 
-- [ ] 1.1 Replace the single-link resolver in `guide-data` with a guide list per source, with per-guide progress and failures, and verify with core tests citing `guide-data/find-the-guide-for-each-source` and `guide-sources-and-channel-mapping/every-guide-a-playlist-names-is-used`
-- [ ] 1.2 Route every channel lookup through one function that applies the winning order and hand-picked matches, and verify with core tests citing `guide-data/programmes-land-on-the-right-channels` and `guide-sources-and-channel-mapping/choose-which-guide-wins`
-- [ ] 1.3 Keep a failing guide from affecting the others and show its status, and verify with an integration test citing `guide-sources-and-channel-mapping/one-broken-guide-does-not-break-the-others`
+- [x] 1.1 Replace the single-link resolver in `guide-data` with a guide list per source, with per-guide progress and failures, and verify with core tests citing `guide-data/find-the-guide-for-each-source` and `guide-sources-and-channel-mapping/every-guide-a-playlist-names-is-used`
+- [x] 1.2 Route every channel lookup through one function that applies the winning order and hand-picked matches, and verify with core tests citing `guide-data/programmes-land-on-the-right-channels` and `guide-sources-and-channel-mapping/choose-which-guide-wins`
+- [x] 1.3 Keep a failing guide from affecting the others and show its status, and verify with an integration test citing `guide-sources-and-channel-mapping/one-broken-guide-does-not-break-the-others`
 
 ## 2. Settings record and privacy
 

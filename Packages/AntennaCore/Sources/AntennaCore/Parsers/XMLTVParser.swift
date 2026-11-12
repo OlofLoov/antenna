@@ -33,11 +33,13 @@ public struct XMLTVParser: Sendable {
     /// `each` as its element ends, keeping none, so memory does not grow with
     /// the document. Entities are not rewritten: callers pass a document that
     /// `XMLEntitySanitizer` has already seen. Throws as `parse(_:)` does.
-    func parseSanitized(_ stream: InputStream, each: (Programme) -> Void) throws(XMLTVError) {
+    /// Returns the channels' display names by id.
+    @discardableResult
+    func parseSanitized(_ stream: InputStream, each: (Programme) -> Void) throws(XMLTVError) -> [String: String] {
         let parser = XMLParser(stream: stream)
         parser.shouldProcessNamespaces = false
+        let delegate = Delegate()
         let succeeded = withoutActuallyEscaping(each) { each -> Bool in
-            let delegate = Delegate()
             delegate.each = each
             parser.delegate = delegate
             defer {
@@ -49,6 +51,7 @@ public struct XMLTVParser: Sendable {
         guard succeeded else {
             throw .malformed(line: parser.lineNumber, column: parser.columnNumber)
         }
+        return delegate.channelNames
     }
 
     /// The only error `parse` throws. No Foundation error reaches the caller.

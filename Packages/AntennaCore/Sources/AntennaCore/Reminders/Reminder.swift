@@ -38,7 +38,13 @@ public struct Reminder: Identifiable, Hashable, Sendable {
 
     /// A reminder for `programme` on `channel`; nil when the channel has no guide key.
     public init?(programme: Programme, channel: Channel, now: Date, id: UUID = UUID()) {
-        guard let key = GuideKey(channel: channel) else { return nil }
+        self.init(programme: programme, channel: channel, key: GuideKey(channel: channel), now: now, id: id)
+    }
+
+    /// A reminder for `programme` on `channel` under `key`, the channel's
+    /// key from `GuideIndex.key(for:)`; nil when it has none.
+    public init?(programme: Programme, channel: Channel, key: GuideKey?, now: Date, id: UUID = UUID()) {
+        guard let key else { return nil }
         self.init(
             id: id, sourceID: key.sourceID, guideID: key.epgID, start: programme.start, stop: programme.stop,
             title: GuidePanelText.title(programme), channelName: channel.name, createdAt: now)
@@ -65,8 +71,9 @@ public struct Reminder: Identifiable, Hashable, Sendable {
 
     /// The channel Watch plays: the first in `channels`, given in All
     /// channels order, with this reminder's source and guide id.
-    public func channel(in channels: [Channel]) -> Channel? {
-        channels.first { GuideKey(channel: $0) == guideKey }
+    /// `key` gives each channel's guide key, by default its own guide id.
+    public func channel(in channels: [Channel], key: (Channel) -> GuideKey? = { GuideKey(channel: $0) }) -> Channel? {
+        channels.first { key($0) == guideKey }
     }
 }
 
@@ -84,7 +91,12 @@ public struct ReminderKey: Hashable, Sendable, Codable {
 
     /// The programme `programme` on `channel` would be reminded under; nil without a guide key.
     public init?(programme: Programme, channel: Channel) {
-        guard let key = GuideKey(channel: channel) else { return nil }
+        self.init(programme: programme, key: GuideKey(channel: channel))
+    }
+
+    /// The key for `programme` on a channel whose guide key is `key`; nil without one.
+    public init?(programme: Programme, key: GuideKey?) {
+        guard let key else { return nil }
         self.init(sourceID: key.sourceID, guideID: key.epgID, start: programme.start)
     }
 
