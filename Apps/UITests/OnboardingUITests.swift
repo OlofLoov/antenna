@@ -75,4 +75,51 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertEqual(element(app, "onboarding.field.username").value as? String, "anna")
         XCTAssertFalse(element(app, "onboarding.clipboard").exists)
     }
+
+    private func connect(_ app: XCUIApplication, playlist: String) {
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        element(app, "onboarding.addSource").tap()
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        element(app, "onboarding.kind.m3u").tap()
+        let field = element(app, "onboarding.field.playlist")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap()
+        field.typeText(playlist)
+        element(app, "onboarding.connect").tap()
+    }
+
+    // first-run-onboarding/start-watching-without-waiting-for-the-guide
+    func testStartWatchingClosesOnboardingAndPlaysTheFirstChannel() throws {
+        let log = FileManager.default.temporaryDirectory.appending(path: "onboarding-\(UUID().uuidString).log")
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-onboarding", "connect"]
+        app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
+        app.launch()
+        connect(app, playlist: "http://onboarding.test/tv.m3u")
+        XCTAssertTrue(element(app, "onboarding.checklist").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "onboarding.line.channels").waitForExistence(timeout: 10))
+        let start = app.buttons["onboarding.primary"]
+        XCTAssertTrue(start.waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "onboarding.addAnother").exists)
+        start.tap()
+        XCTAssertTrue(element(app, "onboarding.checklist").waitForNonExistence(timeout: 10), "onboarding stayed open")
+        XCTAssertTrue(element(app, "browse.debug.engine").waitForExistence(timeout: 10))
+        let played = { ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n").map(String.init) }
+        let deadline = Date.now.addingTimeInterval(10)
+        while played().isEmpty, Date.now < deadline { _ = element(app, "browse.debug.engine").waitForExistence(timeout: 0.5) }
+        XCTAssertEqual(played().first, "news-one.ts")
+    }
+
+    // first-run-onboarding/a-provider-with-no-live-channels
+    func testNothingToWatchGoesBackToTheForm() {
+        let app = launch("connect")
+        connect(app, playlist: "http://empty.test/tv.m3u")
+        XCTAssertTrue(element(app, "onboarding.headline").waitForExistence(timeout: 10))
+        XCTAssertEqual(element(app, "onboarding.headline").label, "Nothing to watch yet")
+        XCTAssertFalse(app.buttons["onboarding.primary"].isEnabled)
+        XCTAssertFalse(element(app, "onboarding.addAnother").exists)
+        element(app, "onboarding.back").tap()
+        XCTAssertTrue(element(app, "onboarding.field.playlist").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "onboarding.field.playlist").value as? String, "http://empty.test/tv.m3u")
+    }
 }

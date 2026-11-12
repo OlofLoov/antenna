@@ -1,23 +1,28 @@
 #if DEBUG
+    import AntennaCore
     import Foundation
     import SwiftData
 
     /// `-ui-testing-onboarding signedIn` or `signedOut` starts the app on an
     /// empty in-memory store, so it opens on onboarding, with iCloud reported
-    /// as signed in or out. Nothing reaches iCloud or the Keychain.
+    /// as signed in or out. `connect` is `signedIn` with Connect answered
+    /// in the app: `http://onboarding.test/tv.m3u` holds News One and News
+    /// Two, `http://empty.test/tv.m3u` holds nothing, and every other host
+    /// cannot be found. Nothing reaches the network, iCloud or the Keychain.
     enum UITestingOnboarding {
         static let argument = "-ui-testing-onboarding"
 
         enum Scenario: String {
             case signedIn
             case signedOut
+            case connect
         }
 
         static func scenario(arguments: [String] = ProcessInfo.processInfo.arguments) -> Scenario? {
             guard let index = arguments.firstIndex(of: argument) else { return nil }
             let next = arguments.index(after: index)
             guard next < arguments.endIndex, let scenario = Scenario(rawValue: arguments[next]) else {
-                fatalError("\(argument) takes signedIn or signedOut")
+                fatalError("\(argument) takes signedIn, signedOut or connect")
             }
             return scenario
         }
@@ -46,9 +51,85 @@
             return Clipboard(hasLink: { !text.isEmpty }, read: { text })
         }
 
+        static let playlistArgument = "-ui-testing-playlist"
+
+        /// `-ui-testing-playlist <link>` starts the form on M3U with the
+        /// playlist field filled in, since typing on the Apple TV keyboard
+        /// from a UI test is slow and unreliable. Nil without the argument.
+        static func prefilledFields(arguments: [String] = ProcessInfo.processInfo.arguments) -> SourceFields? {
+            guard let index = arguments.firstIndex(of: playlistArgument), arguments.index(after: index) < arguments.endIndex else {
+                return nil
+            }
+            return SourceFields(kind: .m3u, url: arguments[arguments.index(after: index)])
+        }
+
         /// The scripted iCloud state, or nil outside these tests.
         static func signedInToICloud() -> Bool? {
-            scenario().map { $0 == .signedIn }
+            scenario().map { $0 != .signedOut }
+        }
+
+        /// A session answered by `Stub`, for the `connect` scenario only.
+        static func session() -> URLSession? {
+            guard scenario() == .connect else { return nil }
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.protocolClasses = [Stub.self]
+            return URLSession(configuration: configuration)
+        }
+
+        /// The connector Connect uses in the `connect` scenario, or nil.
+        static func connector() -> SourceConnector? {
+            session().map { SourceConnector(session: $0, credentials: Credentials()) }
+        }
+
+        /// How a connected source loads in the `connect` scenario, or nil.
+        @MainActor static func setupDependencies() -> SourceSetup.Dependencies? {
+            session().map { .live(session: $0, guide: nil) }
+        }
+
+        /// The loader Live and the shell use in the `connect` scenario, or nil.
+        static func loader() -> SourceLoader? {
+            session().map { SourceLoader(session: $0, credentials: Credentials()) }
+        }
+
+        /// Logins kept in memory for the test run.
+        final class Credentials: CredentialStoring, @unchecked Sendable {
+            private let lock = NSLock()
+            private var items: [String: CredentialStore.Credential] = [:]
+
+            func save(_ credential: CredentialStore.Credential, for key: String) throws { lock.withLock { items[key] = credential } }
+            func load(for key: String) throws -> CredentialStore.Credential? { lock.withLock { items[key] } }
+            func delete(for key: String) throws { _ = lock.withLock { items.removeValue(forKey: key) } }
+        }
+
+        /// Answers the `connect` scenario's playlists.
+        final class Stub: URLProtocol, @unchecked Sendable {
+            static let playlists = [
+                "onboarding.test": """
+                #EXTM3U
+                #EXTINF:-1 tvg-chno="101" group-title="News",News One
+                http://onboarding.test/news-one.ts
+                #EXTINF:-1 tvg-chno="102" group-title="News",News Two
+                http://onboarding.test/news-two.ts
+                """,
+                "empty.test": "#EXTM3U\n",
+            ]
+
+            override static func canInit(with request: URLRequest) -> Bool { true }
+            override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+            override func startLoading() {
+                guard let url = request.url, let body = url.host().flatMap({ Self.playlists[$0] }),
+                    let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: nil)
+                else {
+                    client?.urlProtocol(self, didFailWithError: URLError(.cannotFindHost))
+                    return
+                }
+                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+                client?.urlProtocol(self, didLoad: Data(body.utf8))
+                client?.urlProtocolDidFinishLoading(self)
+            }
+
+            override func stopLoading() {}
         }
     }
 #endif

@@ -76,4 +76,30 @@ final class OnboardingTVUITests: XCTestCase {
         XCUIRemote.shared.press(.menu)
         XCTAssertTrue(element(app, "onboarding.kind.xtream").waitForExistence(timeout: 5))
     }
+
+    // first-run-onboarding/a-summary-when-everything-has-loaded
+    // first-run-onboarding/start-watching-without-waiting-for-the-guide
+    func testConnectShowsTheSummaryAndStartWatchingOpensLive() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-onboarding", "connect", "-ui-testing-playlist", "http://onboarding.test/tv.m3u"]
+        app.launch()
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").hasFocus)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.connect").waitForExistence(timeout: 5))
+        while !element(app, "onboarding.connect").hasFocus {
+            XCUIRemote.shared.press(.down)
+        }
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.summary").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "onboarding.tile.channels").exists)
+        XCTAssertFalse(element(app, "onboarding.tile.guide").exists, "a playlist without a guide has no guide tile")
+        XCTAssertTrue(element(app, "onboarding.liveCaption").exists)
+        XCTAssertTrue(element(app, "onboarding.primary").hasFocus)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.summary").waitForNonExistence(timeout: 10))
+        XCTAssertTrue(element(app, "shell.player").waitForExistence(timeout: 10))
+    }
 }

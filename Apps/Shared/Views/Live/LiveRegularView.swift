@@ -75,10 +75,19 @@
         @State private var browse = ShelfBrowse()
         /// A folded column the user opened over the others.
         @State private var shown: Folded?
+        @Environment(\.onboardingHandoff) private var handoff
 
         enum Folded { case sidebar, list }
 
         var body: some View {
+            window
+                // Browse movies in onboarding opens Movies.
+                .onAppear {
+                    if handoff?.takeMovies() == true { section = .movies }
+                }
+        }
+
+        @ViewBuilder private var window: some View {
             if live.fullScreen {
                 // The picture fills the window (live-tv-on-iphone-ipad-mac/full-screen);
                 // Escape leaves (live-tv-on-iphone-ipad-mac/keyboard-shortcuts).
