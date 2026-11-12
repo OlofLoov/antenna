@@ -2,9 +2,9 @@
 
 ## 1. Snapshot and sections in AntennaCore
 
-- [ ] 1.1 Add the versioned snapshot, item ids from SHA-256 and version 5 UUIDs, and the link format, and verify core tests including FIPS 180-4 vectors
-- [ ] 1.2 Map a snapshot to sections for favorites with programme on now, favorites with no guide left, Continue watching, one empty row and the empty shelf, and verify a core test per case
-- [ ] 1.3 Reject damaged or outdated snapshots, and verify a core test that they give no content
+- [x] 1.1 Add the versioned snapshot, item ids from SHA-256 and version 5 UUIDs, and the link format, and verify core tests including FIPS 180-4 vectors
+- [x] 1.2 Map a snapshot to sections for favorites with programme on now, favorites with no guide left, Continue watching, one empty row and the empty shelf, and verify a core test per case
+- [x] 1.3 Reject damaged or outdated snapshots, and verify a core test that they give no content
 
 ## 2. Writer in the app
 
