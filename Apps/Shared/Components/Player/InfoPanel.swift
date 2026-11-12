@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The Apple TV info panel over the top of the playing picture
@@ -76,7 +77,7 @@ enum InfoPanel {
     /// time left, progress and summary, the badges and the stream line.
     struct Info<Logo: View>: View {
         /// The channel's number, name and source, as in "104", "Sport One", "Acme TV".
-        let number: Int?
+        let number: ChannelNumber?
         let channel: String
         let source: String
         let programme: Programme?
@@ -104,7 +105,7 @@ enum InfoPanel {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(alignment: .firstTextBaseline, spacing: 18) {
                         if let number {
-                            Text(String(number))
+                            Text(number.description)
                                 .font(.system(size: 26))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)

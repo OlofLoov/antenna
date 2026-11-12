@@ -39,8 +39,8 @@ public struct ReminderText: Sendable {
     }
 
     /// The banner's body: "22:00 · 104 Sport One", with the number when the channel has one.
-    public func bannerBody(_ reminder: Reminder, number: Int?) -> String {
-        let channel = [number.map(String.init), reminder.channelName].compactMap(\.self).joined(separator: " ")
+    public func bannerBody(_ reminder: Reminder, number: ChannelNumber?) -> String {
+        let channel = [number.map(\.description), reminder.channelName].compactMap(\.self).joined(separator: " ")
         return "\(time(reminder.start)) · \(channel)"
     }
 

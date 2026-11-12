@@ -185,6 +185,6 @@ struct OnboardingProgress {
         guard let tally = setups.lazy.compactMap({ $0.channels.value }).first(where: { $0.firstChannel != nil }),
             let channel = tally.firstChannel
         else { return nil }
-        return ["Live ·", tally.firstNumber.map(String.init), channel.name].compactMap(\.self).joined(separator: " ")
+        return ["Live ·", tally.firstNumber.map(\.description), channel.name].compactMap(\.self).joined(separator: " ")
     }
 }

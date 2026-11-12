@@ -88,7 +88,7 @@ enum ReminderBannerText {
     static func content<Token: Hashable & Sendable>(_ reminder: Reminder, catalogue: Catalogue<Token>) -> ReminderBanner.Content {
         let text = ReminderText()
         let row = catalogue.rows(in: .all).first { catalogue.channel(for: $0).flatMap(GuideKey.init(channel:)) == reminder.guideKey }
-        let number = row.flatMap { catalogue.number(for: $0) ?? catalogue.channel(for: $0)?.number }
+        let number = row.flatMap { catalogue.channelNumber(for: $0) ?? catalogue.channel(for: $0)?.channelNumber }
         return ReminderBanner.Content(
             eyebrow: text.bannerEyebrow(reminder, now: .now), title: reminder.title, body: text.bannerBody(reminder, number: number))
     }

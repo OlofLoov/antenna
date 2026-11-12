@@ -62,7 +62,7 @@ struct GroupPicker: View {
             Image(systemName: picked.contains(key) ? "checkmark.circle.fill" : "circle")
                 .foregroundStyle(picked.contains(key) ? Palette.accent : Palette.textMuted)
                 .accessibilityHidden(true)
-            Text(catalogue.number(for: key).map(String.init) ?? "").monospacedDigit().foregroundStyle(Palette.textMuted)
+            Text(catalogue.channelNumber(for: key).map(\.description) ?? "").monospacedDigit().foregroundStyle(Palette.textMuted)
             Text(catalogue.channel(for: key)?.name ?? "").foregroundStyle(Palette.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(sourceNames[key.sourceID] ?? "").foregroundStyle(Palette.textMuted)

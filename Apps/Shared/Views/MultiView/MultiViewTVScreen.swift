@@ -123,7 +123,7 @@
                         EmptyView()
                     }
                     MultiViewParts.Label(
-                        number: shown?.number, name: shown?.name ?? "", audible: model.session.audible == tile.id,
+                        number: shown?.channelNumber, name: shown?.name ?? "", audible: model.session.audible == tile.id,
                         highlighted: highlighted, identifier: identifier)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: model.session.enlarged == tile.id ? 0 : 14))

@@ -101,7 +101,7 @@ final class MultiViewModel {
 
     func spokenLabel(_ id: Int) -> String {
         let shown = channel(of: id)
-        return MultiViewText.spokenLabel(number: shown?.number, name: shown?.name ?? "", audible: session.audible == id)
+        return MultiViewText.spokenLabel(number: shown?.channelNumber, name: shown?.name ?? "", audible: session.audible == id)
     }
 
     // MARK: Actions

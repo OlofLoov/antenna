@@ -8,7 +8,7 @@ extension GuideBoard {
     enum Compact {
         /// Tile, number and name on one line. A tap plays the channel.
         struct RowHeader<Logo: View>: View {
-            let number: Int?
+            let number: ChannelNumber?
             let name: String
             let look: ChannelLook
             let watch: () -> Void
@@ -23,7 +23,7 @@ extension GuideBoard {
                             .frame(width: 30, height: 20)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                         if let number {
-                            Text(String(number))
+                            Text(number.description)
                                 .font(.system(size: numberSize))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)

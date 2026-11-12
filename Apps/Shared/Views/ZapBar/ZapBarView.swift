@@ -77,7 +77,7 @@
 
         private var key: RowKey? { RowKey(channel) }
 
-        private var number: Int? { key.flatMap(catalogue.number(for:)) ?? channel.number }
+        private var number: ChannelNumber? { key.flatMap(catalogue.channelNumber(for:)) ?? channel.channelNumber }
 
         /// "Sport · 4 of 42", or nil when the channel is in no list yet.
         private var position: String? {

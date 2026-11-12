@@ -144,7 +144,8 @@ private struct GridPreview: View {
                 }
             } rows: {
                 ForEach(Array(zip(previewTitles.indices, previewTitles)), id: \.0) { index, blocks in
-                    previewRow(number: 101 + index, name: ["Eurosport 1", "Eurosport 2", "Sport Two"][index], blocks: blocks)
+                    previewRow(
+                        number: ChannelNumber(major: 101 + index), name: ["Eurosport 1", "Eurosport 2", "Sport Two"][index], blocks: blocks)
                 }
                 GuideGrid.Row {
                     GuideGrid.ChannelCell(number: 104, name: "Sport One", look: .playing) {
@@ -160,7 +161,7 @@ private struct GridPreview: View {
         .background(Palette.ground)
     }
 
-    private func previewRow(number: Int, name: String, blocks: [PreviewBlock]) -> some View {
+    private func previewRow(number: ChannelNumber, name: String, blocks: [PreviewBlock]) -> some View {
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: number, name: name, look: .plain) {
                 GuideGrid.Initials(text: Channel.initials(for: name), look: .plain)

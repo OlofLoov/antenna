@@ -6,7 +6,7 @@ extension LiveModel {
     func nowText(for channel: Channel, at date: Date) -> LiveNowText {
         let panel = programmes.panel(for: channel, at: date)
         return LiveNowText(
-            channel: channel.name, number: RowKey(channel).flatMap(catalogue.number(for:)), state: programmes.state(channel),
+            channel: channel.name, number: RowKey(channel).flatMap(catalogue.channelNumber(for:)), state: programmes.state(channel),
             current: panel.now, next: panel.next, now: date, time: Self.time)
     }
 

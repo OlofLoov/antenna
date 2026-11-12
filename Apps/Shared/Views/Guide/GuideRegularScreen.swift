@@ -197,7 +197,7 @@
     extension GuideNowPlaying {
         @MainActor static func text(for channel: Channel, live: LiveModel, at date: Date) -> GuideNowPlaying {
             GuideNowPlaying(
-                channel: channel.name, number: RowKey(channel).flatMap(live.catalogue.number(for:)) ?? channel.number,
+                channel: channel.name, number: RowKey(channel).flatMap(live.catalogue.channelNumber(for:)) ?? channel.channelNumber,
                 state: live.programmes.state(channel), current: live.programmes.current(channel, date), now: date)
         }
     }

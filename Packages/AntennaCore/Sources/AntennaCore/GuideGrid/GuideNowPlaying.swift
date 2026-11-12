@@ -14,8 +14,8 @@ public struct GuideNowPlaying: Sendable, Equatable {
     /// How far into the programme, 0 to 1; nil with no programme on now.
     public let progress: Double?
 
-    public init(channel name: String, number: Int?, state: GuideLoadingState, current: Programme?, now: Date) {
-        channel = [number.map(String.init), name].compactMap(\.self).joined(separator: " ")
+    public init(channel name: String, number: ChannelNumber?, state: GuideLoadingState, current: Programme?, now: Date) {
+        channel = [number.map(\.description), name].compactMap(\.self).joined(separator: " ")
         let line = GuideLine(state: state, current: current, now: now)
         title = line.text
         if case .programme(_, let fraction, let remaining) = line {

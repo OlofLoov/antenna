@@ -76,8 +76,8 @@ public enum MultiViewText {
     }
 
     /// A tile's spoken label, "104, Sport One, sound on".
-    public static func spokenLabel(number: Int?, name: String, audible: Bool) -> String {
-        ([number.map(String.init), name].compactMap(\.self) + [audible ? "sound on" : "muted"]).joined(separator: ", ")
+    public static func spokenLabel(number: ChannelNumber?, name: String, audible: Bool) -> String {
+        ([number.map(\.description), name].compactMap(\.self) + [audible ? "sound on" : "muted"]).joined(separator: ", ")
     }
 
     /// The Apple TV hint after entering, as key and what it does.

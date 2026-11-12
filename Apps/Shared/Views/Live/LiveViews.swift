@@ -131,7 +131,7 @@
 
         private func row(_ key: RowKey, _ channel: Channel, at date: Date) -> some View {
             let line = live.programmes.line(for: channel, at: date)
-            let number = live.catalogue.number(for: key)
+            let number = live.catalogue.channelNumber(for: key)
             let isPlaying = channel == live.listedChannel
             var progress: Double?
             var remaining: String?

@@ -102,7 +102,7 @@ import SwiftUI
                     EmptyView()
                 }
                 MultiViewParts.Label(
-                    number: shown?.number, name: shown?.name ?? "", audible: model.session.audible == tile.id, highlighted: false,
+                    number: shown?.channelNumber, name: shown?.name ?? "", audible: model.session.audible == tile.id, highlighted: false,
                     identifier: identifier)
             }
             .clipShape(RoundedRectangle(cornerRadius: model.session.enlarged == tile.id ? 0 : 12))

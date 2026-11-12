@@ -21,7 +21,7 @@ enum GuideBoard {
     /// Number, logo and name in the 196 pt column. The number is muted and
     /// tabular; the name of the playing channel is semibold.
     struct ChannelCell<Logo: View>: View {
-        let number: Int?
+        let number: ChannelNumber?
         let name: String
         let look: ChannelLook
         @ViewBuilder var logo: Logo
@@ -30,7 +30,7 @@ enum GuideBoard {
 
         var body: some View {
             HStack(spacing: 10) {
-                Text(number.map(String.init) ?? "")
+                Text(number.map(\.description) ?? "")
                     .font(.system(size: numberSize))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)

@@ -36,7 +36,7 @@
 
         func channel(_ key: RowKey) -> Channel? { live.catalogue.channel(for: key) }
 
-        func number(_ key: RowKey) -> Int? { live.catalogue.number(for: key) ?? channel(key)?.number }
+        func number(_ key: RowKey) -> ChannelNumber? { live.catalogue.channelNumber(for: key) ?? channel(key)?.channelNumber }
 
         /// The cell `target` names, read again around its start.
         func cell(_ target: GuideTarget, _ data: GuideData) -> GuideCell? {

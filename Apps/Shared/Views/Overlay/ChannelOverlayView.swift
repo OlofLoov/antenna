@@ -114,7 +114,7 @@
         }
 
         private func row(_ key: RowKey, _ channel: Channel, line: GuideLine) -> some View {
-            let number = catalogue.number(for: key)
+            let number = catalogue.channelNumber(for: key)
             let progress: Double?
             let remaining: String?
             switch line {
@@ -163,7 +163,8 @@
                 return .init(title: programme.title, times: times, progress: progress, summary: programme.summary)
             }
             return ChannelOverlay.Panel(
-                name: channel.name, badges: [catalogue.number(for: key).map(String.init), channel.catchUpBadge].compactMap(\.self),
+                name: channel.name,
+                badges: [catalogue.channelNumber(for: key).map(\.description), channel.catchUpBadge].compactMap(\.self),
                 now: now, nothingOn: guideNow.line.text,
                 next: guideNow.next.map { .init(time: Self.time($0.start), title: $0.title) }, eyebrow: multiView?.pickTarget
             ) {
