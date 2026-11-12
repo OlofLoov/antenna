@@ -16,6 +16,8 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) private static var recorded: [String: [URLRequest]] = [:]
     nonisolated(unsafe) private static var failures: [String: URLError.Code] = [:]
     nonisolated(unsafe) private static var tagged: [String: Int] = [:]
+    nonisolated(unsafe) private static var order: [String: [String]] = [:]
+
     private static let tagHeader = "X-Stub-Tag"
 
     static func register(host: String, action: String? = nil, status: Int = 200, body: String) {
@@ -29,6 +31,16 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
 
     static func requests(host: String) -> [URLRequest] {
         lock.withLock { recorded[host] ?? [] }
+    }
+
+    /// The hosts a session made with `session(tag:)` asked, in the order asked.
+    static func hosts(tag: String) -> [String] {
+        lock.withLock { order[tag] ?? [] }
+    }
+
+    /// Stops failing `host`.
+    static func recover(host: String) {
+        lock.withLock { failures[host] = nil }
     }
 
     /// How many requests a session made with `session(tag:)` has sent.
@@ -60,7 +72,10 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
             .queryItems?.first { $0.name == "action" }?.value
         let (response, failure): (Response?, URLError.Code?) = Self.lock.withLock {
             Self.recorded[host, default: []].append(request)
-            if let tag = request.value(forHTTPHeaderField: Self.tagHeader) { Self.tagged[tag, default: 0] += 1 }
+            if let tag = request.value(forHTTPHeaderField: Self.tagHeader) {
+                Self.tagged[tag, default: 0] += 1
+                Self.order[tag, default: []].append(host)
+            }
             return (Self.responses[Self.key(host, action)], Self.failures[host])
         }
         if let failure {

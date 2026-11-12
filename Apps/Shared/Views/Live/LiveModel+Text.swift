@@ -19,11 +19,17 @@ extension LiveModel {
 extension LiveModel.Dependencies {
     /// The engine, loader, Keychain check and guide the app runs on.
     /// The language picks are `profile`'s on this device.
-    @MainActor static func live(loader: SourceLoader, guide: AppGuideStore?, profile: UUID = Profile.mainID) -> Self {
+    /// With `refresher`, sources load through it one at a time and report their status.
+    @MainActor static func live(
+        loader: SourceLoader, guide: AppGuideStore?, profile: UUID = Profile.mainID, refresher: SourceRefresher? = nil
+    ) -> Self {
         .init(
             engine: RoutedEngine.app(),
-            load: { try await loader.load($0) },
-            hasLogin: { loader.hasLogin($0) },
+            load: { source in
+                if let refresher { return try await refresher.load(source) }
+                return try await loader.load(source)
+            },
+            hasLogin: { refresher?.hasLogin($0) ?? loader.hasLogin($0) },
             guide: guide,
             programmes: .store(guide),
             languages: ChannelLanguageStore(profile: profile),

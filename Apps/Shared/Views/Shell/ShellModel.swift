@@ -4,74 +4,6 @@
     import Observation
     import os
 
-    /// The tabs of the Apple TV shell, in bar order.
-    enum ShellTab: Hashable, CaseIterable, Sendable {
-        case live, guide, movies, series, search
-
-        /// Movies, Series and Search: the bar always shows and the video
-        /// pauses after a while behind them.
-        var isContent: Bool { self == .movies || self == .series || self == .search }
-    }
-
-    /// Where focus goes after the shell handles an input.
-    enum ShellFocus: Hashable {
-        /// Full-screen Live with a channel tuned.
-        case picture
-        /// Try again on the error in place of the full-screen picture.
-        case retry
-        /// Sign in on the error, for a source whose login is missing or refused.
-        case signIn
-        /// A tab or track in the info panel over the picture.
-        case panel(PanelFocus)
-        /// The loading screen's holder or the empty screen's Retry.
-        case liveScreen
-        case tab(ShellTab)
-        case settings
-        /// The profile button, with two or more profiles.
-        case profile
-        case content
-        /// A group, channel or the Search entry in the channel overlay.
-        case overlay(OverlayFocus)
-    }
-
-    /// Where Menu was pressed.
-    enum MenuOrigin: Equatable {
-        /// Full-screen Live, or its loading or empty screen.
-        case picture
-        /// The top level of an open tab.
-        case content
-        case bar
-    }
-
-    /// One source as the loading and empty screens list it.
-    struct ShellSource: Identifiable, Equatable, Sendable {
-        enum State: Equatable, Sendable {
-            case loading
-            case loaded(channels: Int)
-            case offline
-            case failed
-            case waitingForLogin
-
-            /// True once the source finished and added nothing: loaded empty,
-            /// offline, failed or waiting for its login.
-            var addedNothing: Bool { self != .loading && !isLoadedWithChannels }
-
-            var isLoadedWithChannels: Bool {
-                if case .loaded(let count) = self { return count > 0 }
-                return false
-            }
-        }
-
-        var id: UUID
-        var name: String
-        var state: State
-    }
-
-    /// What Live shows when nothing has been tuned yet, or the picture.
-    enum LiveScreen: Equatable {
-        case playing, loading, empty
-    }
-
     /// State and rules of the Apple TV shell (tvos-shell capability): the open tab, the
     /// bar, the sources as they load, the channel tuned at launch and the
     /// pause behind Movies, Series and Search.
@@ -176,8 +108,9 @@
             var seen: Set<UUID> = []
             let list = all.filter { seen.insert($0.id).inserted }
             offersMovies = list.contains { $0.kind == .xtream }
-            if list.isEmpty, tuned != nil {
-                // With every source gone nothing keeps playing (stand-in behavior).
+            let gone = tuned?.sourceID.map { id in !list.contains { $0.id == id } } ?? false
+            if tuned != nil, list.isEmpty || gone {
+                // A deleted source's channel stops (sources-and-settings/delete-a-source-and-everything-that-came-with-it).
                 tuned = nil
                 player.tuned(nil)
                 session.tuned(nil)
@@ -197,9 +130,10 @@
                 finishOrder.removeAll { $0 == id }
             }
             var changed: [SourceDescriptor] = []
+            // A rename loads nothing again (sources-and-settings/changes-from-other-devices-show-up-by-themselves).
             for source in list where descriptors[source.id] != source {
+                if descriptors[source.id]?.loadsLike(source) != true { changed.append(source) }
                 descriptors[source.id] = source
-                changed.append(source)
             }
             let previous = Dictionary(uniqueKeysWithValues: sources.map { ($0.id, $0) })
             sources = list.map { source in
@@ -239,11 +173,15 @@
             }
         }
 
+        /// A source that has channels keeps them while it loads again and when
+        /// that load fails (sources-and-settings/a-failed-refresh-keeps-your-channels).
         private func startLoad(_ source: SourceDescriptor) {
             loads[source.id]?.cancel()
-            channelsBySource[source.id] = nil
-            finishOrder.removeAll { $0 == source.id }
-            setState(.loading, for: source.id)
+            if channelsBySource[source.id]?.isEmpty ?? true {
+                channelsBySource[source.id] = nil
+                finishOrder.removeAll { $0 == source.id }
+                setState(.loading, for: source.id)
+            }
             rebuildChannels()
             loads[source.id] = Task { [weak self] in
                 guard let self else { return }
@@ -259,27 +197,6 @@
                 }
                 guard !Task.isCancelled else { return }
                 await finish(source, with: result)
-            }
-        }
-
-        private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
-            loads[source.id] = nil
-            switch result {
-            case .success(let playlist):
-                let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
-                channelsBySource[source.id] = tagged
-                setState(.loaded(channels: tagged.count), for: source.id)
-                if !tagged.isEmpty { finishOrder.append(source.id) }
-                rebuildChannels()
-                considerTune()
-                if let guide = dependencies.guide {
-                    await guide.register(epgURLs: playlist.epgURLs, for: source.id)
-                    await guide.update(channels: tagged)
-                    await guide.refreshIfStale(now: .now)
-                }
-            case .failure(let error):
-                setState(Self.state(for: error), for: source.id)
-                considerTune()
             }
         }
 
@@ -485,6 +402,45 @@
             let state = await engine.state
             player.stateChanged(state)
             session.stateChanged(state)
+        }
+    }
+
+    extension ShellModel {
+        private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
+            loads[source.id] = nil
+            switch result {
+            case .success(let playlist):
+                let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
+                channelsBySource[source.id] = tagged
+                setState(.loaded(channels: tagged.count), for: source.id)
+                if !tagged.isEmpty { finishOrder.append(source.id) }
+                rebuildChannels()
+                considerTune()
+                if let guide = dependencies.guide {
+                    await guide.register(epgURLs: playlist.epgURLs, for: source.id)
+                    await guide.update(channels: tagged)
+                    await guide.refreshIfStale(now: .now)
+                }
+            case .failure(let error):
+                let state = Self.state(for: error)
+                if let kept = channelsBySource[source.id], !kept.isEmpty, state != .waitingForLogin {
+                    setState(.loaded(channels: kept.count), for: source.id)
+                    return
+                }
+                channelsBySource[source.id] = nil
+                finishOrder.removeAll { $0 == source.id }
+                rebuildChannels()
+                setState(state, for: source.id)
+                considerTune()
+            }
+        }
+
+        /// Loads the sources in `ids` again, in the order given. Their channels
+        /// stay while they load (sources-and-settings/refresh-by-hand).
+        func reload(_ ids: [UUID]) {
+            for id in ids {
+                if let source = descriptors[id] { startLoad(source) }
+            }
         }
     }
 #endif

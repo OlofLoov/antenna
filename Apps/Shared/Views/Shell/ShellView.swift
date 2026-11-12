@@ -12,6 +12,8 @@
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.guideStore) private var guideStore
+        @Environment(\.sourceRefresher) private var refresher
+        @Query private var preferences: [PreferencesRecord]
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
         @Environment(\.switchProfile) private var switchProfile
@@ -146,6 +148,8 @@
                 // Leaving the app stops the ten-second count.
                 guard phase == .active else { return model.session.interrupt() }
                 Task { await model.becameActive() }
+                // Sources past their refresh interval load again (sources-and-settings/sources-refresh-on-a-schedule).
+                refresher?.refreshDue(interval: PreferencesStore.current(preferences).refresh.duration)
             }
             .onChange(of: model.liveScreen, initial: true) { _, _ in
                 guard model.tab == .live, !model.barVisible, !model.pickerOpen else { return }
@@ -333,6 +337,8 @@
         private func move(_ direction: MoveCommandDirection) {
             if focus == .picture || focus == .retry || focus == .signIn, model.tab == .live, !model.barVisible, !model.pickerOpen {
                 guard ContinuousClock.now - barLowered > .milliseconds(500) else { return }
+                // The swipe preference (sources-and-settings/choose-how-the-app-behaves).
+                guard PreferencesStore.current(preferences).swipe == .changesChannel else { return zapBar.playPause() }
                 return zap(direction)
             }
             guard direction == .down, barHasFocus, let target = model.swipeDown() else { return }
@@ -340,9 +346,12 @@
             barLowered = .now
         }
 
+    }
+
+    extension ShellScreen {
         /// Up and down on the full-screen picture change channel within the
         /// current list; a list of one shows the bar again for the same channel.
-        private func zap(_ direction: MoveCommandDirection) {
+        fileprivate func zap(_ direction: MoveCommandDirection) {
             numbers.cancel()
             let steps: Int
             switch direction {

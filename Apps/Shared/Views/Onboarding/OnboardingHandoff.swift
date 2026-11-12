@@ -1,4 +1,5 @@
 import AntennaCore
+import SwiftData
 import SwiftUI
 
 /// What onboarding asks the app to open with when it closes: the first
@@ -39,6 +40,20 @@ extension EnvironmentValues {
 }
 
 #if os(tvOS)
+    extension ShellModel {
+        /// Opens Guide or Movies at launch when the preference says so; the
+        /// launch tune picks the channel as before.
+        func openOnLaunch(in context: ModelContext) {
+            let sources = (try? context.fetch(FetchDescriptor<SourceRecord>())) ?? []
+            let preferences = PreferencesStore.current(in: context)
+            switch preferences.launchScreen(offersMovies: sources.contains { $0.kind == .xtream }) {
+            case .live: break
+            case .guide: Task { _ = await select(.guide) }
+            case .movies: Task { _ = await select(.movies) }
+            }
+        }
+    }
+
     extension OnboardingHandoff {
         /// Start watching tunes the shell to onboarding's first channel;
         /// Browse movies opens Movies.

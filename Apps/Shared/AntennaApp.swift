@@ -12,6 +12,8 @@ struct AntennaApp: App {
     private let container: ModelContainer
     /// Downloads and answers guide data for every screen (guide-data capability).
     @State private var guideStore: AppGuideStore
+    /// Loads sources one at a time and keeps their status (sources-and-settings capability).
+    @State private var refresher: SourceRefresher
 
     init() {
         let container = Self.makeContainer()
@@ -23,7 +25,16 @@ struct AntennaApp: App {
         // Buffers from an earlier run are deleted unread
         // (timeshift-catch-up-and-start-over/changing-channel-starts-fresh).
         TimeshiftStore.standard.clearLeftovers()
-        _guideStore = State(initialValue: AppGuideStore.live(container: container))
+        let guideStore = AppGuideStore.live(container: container)
+        _guideStore = State(initialValue: guideStore)
+        _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore)))
+    }
+
+    private static func refresherDependencies(guide: AppGuideStore) -> SourceRefresher.Dependencies {
+        #if DEBUG
+            if let scripted = UITestingLive.refresherDependencies() { return scripted }
+        #endif
+        return .app(loader: SourceLoader(), guide: guide)
     }
 
     private static func makeContainer() -> ModelContainer {
@@ -48,6 +59,7 @@ struct AntennaApp: App {
         WindowGroup {
             PlatformRoot()
                 .environment(\.guideStore, guideStore)
+                .environment(\.sourceRefresher, refresher)
         }
         .modelContainer(container)
     }

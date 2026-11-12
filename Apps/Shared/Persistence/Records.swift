@@ -11,6 +11,7 @@ import AntennaCore
 enum AntennaSchema {
     static let models: [any PersistentModel.Type] = [
         SourceRecord.self, FavoriteRecord.self, ProfileRecord.self, ProgressRecord.self, ListEntryRecord.self, RecentSearchRecord.self,
+        PreferencesRecord.self,
     ]
 }
 
