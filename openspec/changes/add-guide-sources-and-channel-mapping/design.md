@@ -18,19 +18,31 @@ On iPad and Mac: Sources & Settings, a playlist, then Guide. The middle column s
 - Reorder and turn-on need no download.
 
 **Non-Goals:**
-- Automatic name matching, cross-playlist matches, merging programmes by time, and sweeping orphaned settings (it could delete a record whose source is still syncing).
+- Matching by name a channel that has a guide id, fuzzy name matching, cross-playlist matches, merging programmes by time, and sweeping orphaned settings (it could delete a record whose source is still syncing).
 
 ## Decisions
 
 - The agreed texts and the search ranking bands are under Copy and Search ranking below. Use them rather than writing new ones.
-- Record (pending the storage decision): a new kind of synced record, so every stored property is optional or defaulted, nothing is unique and duplicates are resolved in code. One guide-settings record per source holding the encoded guide order and on/off flags, added links, matches, and removal tombstones so a merge can tell a removal from an edit the other device never saw. Duplicate records merge per entry by the later timestamp, then are written back as one. Nothing is written until the user changes something. A record that does not decode is treated as empty and left alone.
-- Settings per playlist have a size cap; past it, matches for channels no longer in the playlist go first.
-- Added links: the username, password, path and query go to the synchronizable iCloud Keychain under service `se.codecrave.antenna.sources` with account `<sourceID>.<credentialKey>`, never to the synced record, except a plain link with no password or query and a one-segment `.xml`, `.xml.gz` or `.gz` path, which is stored whole. Every link is shown through the guide store's `redacted(_:)`; no secret part reaches an identifier, label or log line.
+- Record: a new kind of synced record, `GuideSettingsRecord` with `sourceID: UUID?`, `payload: Data?` and `modifiedAt: Date`, every property optional or defaulted, nothing unique. The payload is a JSON `GuideSettings` from AntennaCore: the guide order, per guide an on/off flag, per added link its stored parts, per channel id a match, each entry with its own `modifiedAt`, and removals kept as tombstones so a merge can tell a removal from an edit the other device never saw. Duplicate records for one source merge per entry by the later timestamp, then are written back as one. Nothing is written until the user changes something. A record that does not decode is treated as empty and left alone.
+
+  Options considered for the storage:
+  1. One record per source holding everything (chosen). One fetch per screen, one CloudKit record per playlist, and the per-entry merge keeps both sides of two devices editing different channels at once.
+  2. One record per match and per added link. CloudKit merges each row on its own, but a 2,000-channel playlist can mean 2,000 records, every one a duplicate risk resolved in code, and the order of guides still needs a record of its own.
+  3. `NSUbiquitousKeyValueStore`. Ruled out by the hard constraints, and its 1 MB total is shared by every source.
+- Matches are keyed by channel id. Since change `fix-m3u-channel-ids`, an M3U id is a hash of the guide id, name and group with an ordinal for repeats, so it holds no link and survives a reorder, a new password and a server move. It changes when the provider renames the channel or moves it to another group; the match then sits on the old id like a channel that left, as favorites do. Xtream, Stalker, Jellyfin and Channels DVR ids are the provider's own and survive a rename.
+- One lookup: `GuideIndex.key(for: Channel) -> GuideKey?` returns the hand-picked entry, else the entry matched by name, else the playlist's own id. Every screen, Search, reminders and Top Shelf call it, through the store, instead of `GuideKey(channel:)`, which stays as the playlist's own id for the diagnosis. The index carries each source's matches, so a new match publishes a new index and every screen follows within one frame.
+- Settings per playlist have a size cap of 2,000 matches and 50 added links, which keeps the payload far under CloudKit's 1 MB record limit; past it, matches for channels no longer in the playlist go first.
+- Added links: the whole link goes to the synchronizable iCloud Keychain under service `se.codecrave.antenna.sources` with account `<sourceID>.guide.<linkID>`, never to the synced record, which keeps only the scheme, host and port for the row and the Re-enter form. A plain link with no user, password or query and a one-segment `.xml`, `.xml.gz` or `.gz` path is stored whole in the record instead. Storing the whole link rather than its secret parts means one Keychain item per link and no reassembly rules. Every link is shown through the guide store's `redacted(_:)`; no secret part reaches an identifier, label or log line.
 - A channel id is never shown or logged. Since change `fix-m3u-channel-ids`, M3U ids come from the guide id, name and group, hold no link, and survive a reorder, so matches for M3U channels without `tvg-id` survive one too.
-- The `guide-data` revision lands first as its own slice: the guide list per source replaces the single-link resolver; progress and failures are per guide; every lookup of a channel's guide goes through one store function that applies matches; caches are keyed by a hash of the guide reference, never the link text.
+- The `guide-data` revision lands first as its own slice: the guide list per source replaces the single-link resolver; progress and failures are per guide; every lookup of a channel's guide goes through one store function that applies matches; caches are keyed by the source id and the guide reference (`provider`, `playlist(n)`, `saved`, `added(id)`) with a 64-bit FNV-1a hash of the resolved link to notice a changed link, never the link text.
+- Per-guide status lives beside the index, not in it: download progress changes four times a second and would otherwise re-render every screen that reads the guide. Only the Guide sources screen reads it. `GuideProgress` events stay per source, so onboarding and the source status lines keep working; a failure is sent per source only while no guide of the source has loaded.
+- Header links are tracked by position (`playlist(n)`), as the spec's "The header reorders its links" scenario asks, which settles the open question below.
+- Sources that bring their own guide. The Xtream provider guide, the Stalker portal guide, and the Jellyfin and Channels DVR server guides are all the one "Provider guide" row of their source, first in the default order when no guide link was saved. It can be turned off but not removed. Every kind takes added links and hand-picked matches. A Jellyfin guide is asked for by channel ids, so its picker entries are only the channels the server has, named by their id when the server sends no name. A Stalker source with a saved guide link keeps the portal guide turned off, as Xtream does.
 - Winning rule: per guide id, the highest enabled guide with at least one programme for it supplies all of that channel's programmes. A guide that lists an id with no programmes does not win it.
 - Parse results of every enabled guide are kept for the life of the process so reorder and turn-on need no download. The storage decision may change this.
-- The search reuses the search change's folding and token rules, runs on each keystroke, and offers only entries of the same playlist's guides.
+- The search reuses the search change's folding and token rules (`ChannelFilter.fold` and its tokens), runs on each keystroke, and offers only entries of the same playlist's guides.
+- Matching by name. A channel qualifies only when it has no guide id (missing or blank) and no hand-picked match or undo. Its name and every entry's display name are folded with the search change's rules, split into tokens, and stripped of quality marks: `hd`, `fhd`, `uhd`, `sd`, `4k`, `hevc`, `h265`, `1080p`, `720p`, `50fps`, `60fps`, and a trailing `+1` is kept. The confidence is the share of tokens that agree after stripping. A match is applied only at full confidence, both token lists equal, and only when exactly one distinct entry id across the source's turned-on, loaded guides has those tokens. Anything less is neither applied nor suggested; the picker's ranking already puts an equal name first, so the user sees it on the top row. Name matches are worked out off the main actor after each guide load and each channel list, and published with the index; they are never synced, since every device works out the same answer from the same guides.
+- Undoing a match by name stores a match with no entry for that channel, which syncs, so the channel stays unmatched after refreshes and on other devices. Picking an entry by hand replaces it. Removing that hand-picked match goes back to the playlist's id, and since the channel has none, to matching by name again.
 - Deleting a source deletes its guide settings and their Keychain items in the same save. A settings record whose source is missing is ignored, never deleted, because the source may still be syncing.
 - The provider's own guide stays off when the user saved their own guide link, to keep traffic as it is today. The owner can reverse it.
 - Multiple guides and hand-matching stay in one change because the reasons need per-guide status and the search needs every guide's channel list. The owner can still split it.
@@ -81,11 +93,11 @@ Reasons, checked in this order; the first that holds applies. Once any enabled g
 | Offline | every enabled guide failed offline and none has finished | "Offline" | "You're offline" (muted) | "The guide downloads when you're back online." |
 | Every guide failed | every enabled guide failed and none has finished | "Guide failed" | "The guide could not be downloaded" (error style) | one line per guide, "<guide> · <status line>" |
 | Match not found | a hand-picked match exists and no enabled guide has any programme for its id, past or future | "Mapping not found" | "The mapped entry “<id>” has no programmes" | "Pick another entry below, or remove the mapping to go back to the playlist's id." |
-| No guide id | no match and the channel's guide id is missing or blank | "No guide id" | "The source gives this channel no guide id" | "The playlist has no tvg-id for <channel>, so nothing can be matched automatically. Pick an entry below." |
+| No guide id | no match and the channel's guide id is missing or blank | "No guide id" | "The source gives this channel no guide id" | "The playlist has no tvg-id for <channel>, and no guide entry has exactly its name. Pick an entry below." |
 | Id not found | the id is in no finished guide's channel list and has no programmes | "Id not found" | "Guide id “<id>” is not in the guide"; with more than one finished guide "Guide id “<id>” is not in any of the <c> guides" | "“<guide>” does not list “<id>”." or "None of the <c> guides for <source> lists “<id>”.", then "Pick an entry below." |
 | No programmes | a guide lists the id and no guide has a programme for it | "No programmes" | "The guide lists “<id>” but has no programmes for it" | "<guide> knows the channel but carries no programmes for it. Pick another entry below, or wait for the provider to fill it." |
 | Guide ended | the id has programmes but none ending after now | "Guide ended" | "The guide for “<id>” has run out" | "<guide> lists programmes for this channel but none after now. Wait for the next guide refresh or pick another entry below." |
-| Has a guide | the id has a programme ending after now | not listed | "Guide from <guide>" | "“<display name>” (<id>) · <days> days · Mapped by you", or "· Matched by tvg-id" in place of the last part |
+| Has a guide | the id has a programme ending after now | not listed | "Guide from <guide>" | "“<display name>” (<id>) · <days> days · Mapped by you", or "· Matched by name" or "· Matched by tvg-id" in place of the last part |
 
 Variants:
 - Waiting for login on Apple TV: title "Sign in on this Apple TV", body "The provider guide needs this source's login. Sign in from Sources & Settings."
@@ -107,6 +119,8 @@ Channel column, the first state that holds wins:
 | No channel lacks a guide | "Channels without guide · 0" | "Every channel in <source> has a guide" |
 | Otherwise | "Channels without guide · <n>" | the rows in All channels order, each with logo or initials, name, number and row label |
 
+Below the channel column, when any channel was matched by name: a "Matched by name · <n>" header and its rows, each with logo or initials, name, number and the matched entry's display name. Selecting one shows its "Guide from" card. The card of a channel mapped by you or matched by name has a "Remove match" button.
+
 The filter (iPhone, iPad and Mac only) is hidden in every state but the last. It narrows the rows by name and number on each keystroke, and the header count keeps the unfiltered total.
 
 Picker:
@@ -116,6 +130,16 @@ Picker:
 - No match: "No guide entry matches “<query>”" with the caption "Try a shorter name or the channel's tvg-id."
 - No guide of the playlist has finished: "The guide has not been downloaded yet." with no caption.
 - Over the size cap with nothing left to drop: "Too many mappings for this source. Remove some to add more." in the error style.
+
+## Identifiers
+
+`guideSources.row.<n>` for the n-th guide row (0-based, in list order), with `.status` and `.actions` children; `guideSources.add`; `guideSources.addForm.field`, `guideSources.addForm.save`, `guideSources.addForm.error`; `guideSources.channels.header`, `guideSources.channels.row.<n>`, `guideSources.channels.filter`, `guideSources.channels.showAll`, `guideSources.channels.empty`; `guideSources.named.header`, `guideSources.named.row.<n>`; `guideSources.reason.title`, `guideSources.reason.body`; `guideSources.picker.field`, `guideSources.picker.row.<n>`, `guideSources.picker.empty`; `guideSources.removeMatch`; and `settings.details.guide.sources` for the Guide row in a source's details. Rows are numbered by position, never by link, id or name, so nothing secret or provider-specific reaches an identifier.
+
+## Layout
+
+- iPhone: Settings, a source, then the Guide row pushes Guide sources: the guides, Add guide URL, Channels without guide with the filter, then Matched by name, in one scrolling list. A channel row pushes its detail: the reason or Guide from card, Remove match where it applies, and the picker.
+- iPad and Mac: the same push from the source's details. The screen splits in two: the guides and channel lists on the left, the selected channel's detail and picker on the right, which is empty until a channel is selected.
+- Apple TV: the same push inside the settings sheet over the live picture, two columns as on iPad. Guide actions are a confirmation dialog on select; a channel opens its detail in the right column, and its search field opens the system keyboard.
 
 ## Search ranking
 
@@ -135,5 +159,5 @@ Example: guide entries "Sport One HD" (`sport1.se`), "Sport One" (`sportone`), "
 ## Risks / Trade-offs
 
 - [One record per playlist can lose a change when two devices edit at once] → per-entry merge with tombstones; the storage decision may pick a finer shape.
-- Open question: one synced record per playlist (assumed) or one per match and per added link? The storage decision settles it.
-- Open question: should guide links from the playlist header be tracked by link rather than by position, so a reordered header does not shuffle them? Can be decided during implementation.
+- [A provider renames an M3U channel] → its hand-picked match no longer applies, as its favorite does not. The channel shows in the list again and can be picked once more.
+- [Matching by name picks the wrong channel when two guides name different channels the same] → only a unique name across every turned-on guide is applied; the user sees each match under "Matched by name" and can undo it.
