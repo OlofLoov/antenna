@@ -26,17 +26,17 @@
 
 ## 5. iPhone, iPad and Mac
 
-- [ ] 5.1 Open the "Sign in your Apple TV" sheet from a v2 link or Handoff, listing ready, missing and absent sources, and verify UI tests for the list, none of the sources, a damaged link and the paywall
-- [ ] 5.2 Enter a missing login, checked with the server and kept in the Keychain, and verify a UI test for an accepted and a refused login
-- [ ] 5.3 Send, then show picked up, not picked up, offline, not signed in, storage full and already used, and verify integration tests against the fake store
-- [ ] 5.4 Send the login from the setup sending screen when the link had a key, and verify an integration test that a playlist source sends nothing
+- [x] 5.1 Open the "Sign in your Apple TV" sheet from a v2 link or Handoff, listing ready, missing and absent sources, and verify UI tests for the list, none of the sources, a damaged link and the paywall
+- [x] 5.2 Enter a missing login, checked with the server and kept in the Keychain, and verify a UI test for an accepted and a refused login
+- [x] 5.3 Send, then show picked up, not picked up, offline, not signed in, storage full and already used, and verify integration tests against the fake store
+- [x] 5.4 Send the login from the setup sending screen when the link had a key, and verify an integration test that a playlist source sends nothing
 
 ## 6. Accessibility
 
-- [ ] 6.1 Label the code, announce a delivered login on the TV, read rows as one element and show "In progress" with Reduce Motion, and verify UI tests on iOS and tvOS
+- [ ] 6.1 Label the code, announce a delivered login on the TV, read rows as one element and show "In progress" with Reduce Motion, and verify UI tests on iOS and tvOS (labels, the announcement, rows read as one element and the "In progress" text are built, and the labels and rows have UI tests on iOS and tvOS; Reduce Motion cannot be switched on from XCUITest, so that part is unverified on screen)
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 Run the device checklist in design.md's Testing section on an iPhone and an Apple TV on one iCloud account, and record the times and results in design.md
-- [ ] 7.3 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [ ] 7.2 Run the device checklist in design.md's Testing section on an iPhone and an Apple TV on one iCloud account, and record the times and results in design.md (needs two real devices on one iCloud account; none were available)
+- [ ] 7.3 `/opsx:verify` passes (open while 4.3, 6.1 and 7.2 are open; archive also waits for `add-iphone-as-setup-device`, whose tasks 1.1 and 1.2 need devices and a hosting decision)

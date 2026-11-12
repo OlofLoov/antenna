@@ -83,6 +83,8 @@ enum SetupFromTV {
         let device: Device
         let sourceName: String
         let delivery: Delivery
+        /// The login sent with a login source; nil for a playlist.
+        var login: LoginRow?
         let continueHere: () -> Void
 
         var body: some View {
@@ -100,6 +102,10 @@ enum SetupFromTV {
                         .accessibilityIdentifier("onboarding.sending.row.saved")
                     StatusRow(state: tvState, title: tvTitle, detail: tvDetail)
                         .accessibilityIdentifier("onboarding.sending.row.tv")
+                    if let login {
+                        StatusRow(state: login.state, title: login.title, detail: login.detail)
+                            .accessibilityIdentifier("onboarding.sending.row.login")
+                    }
                 }
                 .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
                 Label("The login stays in your iCloud Keychain. If the Apple TV asks for it, enter it once there.", systemImage: "lock")
@@ -157,6 +163,38 @@ enum SetupFromTV {
         }
     }
 
+    /// Where the login sent with a login source stands (`iPhone-Onboard-2-FromTV-Login`).
+    enum LoginRow: Equatable {
+        case sending
+        case pickedUp
+        case notPickedUp
+        case notSent
+
+        var state: StatusRow.State {
+            switch self {
+            case .sending: .running
+            case .pickedUp: .done
+            case .notPickedUp, .notSent: .failed
+            }
+        }
+
+        var title: String {
+            switch self {
+            case .sending: "Sending the login…"
+            case .pickedUp: "Your Apple TV picked up the login."
+            case .notPickedUp: "Login not picked up yet"
+            case .notSent: "Login not sent"
+            }
+        }
+
+        var detail: String? {
+            switch self {
+            case .sending, .pickedUp: nil
+            case .notPickedUp, .notSent: "You can also sign in on the Apple TV."
+            }
+        }
+    }
+
     /// One row: a done check, a ring or "In progress" with Reduce Motion,
     /// or the error glyph; read by VoiceOver as state, title and detail.
     struct StatusRow: View {
@@ -207,6 +245,10 @@ enum SetupFromTV {
             }
         }
     }
+}
+
+#Preview("From Apple TV, sending a login source") {
+    SetupFromTV.Sending(device: "iPhone", sourceName: "Home provider", delivery: .sent, login: .sending) {}
 }
 
 #Preview("From Apple TV, sending") {
