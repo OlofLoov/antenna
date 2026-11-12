@@ -135,11 +135,16 @@ The system SHALL return a channel to the playlist's own guide id when the user r
 - **AND** it returns to the list of channels without a guide if that id still finds nothing
 
 ### Requirement: Matches survive a playlist refresh
-The system SHALL keep applying a hand-picked match when the playlist refreshes and the channel is renamed or renumbered, and SHALL keep a match whose channel left the playlist while applying it to nothing.
+The system SHALL keep applying a hand-picked match when the playlist refreshes and the channel is renumbered or moved, or renamed in an Xtream, Stalker, Jellyfin or Channels DVR source, and SHALL keep a match whose channel left the playlist while applying it to nothing. A channel an M3U playlist renames counts as a channel that left and a new one, as its favorites do.
 
-#### Scenario: Renamed or renumbered
+#### Scenario: Renumbered or moved
 - **GIVEN** channels the user matched by hand
-- **WHEN** the playlist refreshes and a channel is renamed or renumbered
+- **WHEN** the playlist refreshes and a channel is renumbered or moved within the list
+- **THEN** the match still applies
+
+#### Scenario: Renamed by the provider
+- **GIVEN** a channel of an Xtream source the user matched by hand
+- **WHEN** the provider renames it and the source refreshes
 - **THEN** the match still applies
 
 #### Scenario: A channel that left
@@ -151,6 +156,35 @@ The system SHALL keep applying a hand-picked match when the playlist refreshes a
 - **GIVEN** a playlist's settings reach their size cap
 - **WHEN** the user adds another match
 - **THEN** matches for channels that left the playlist are dropped first, then the user is asked to remove some
+
+### Requirement: Channels matched by name
+The system SHALL give a channel without a guide id the programmes of the one guide entry with the same name, ignoring case, accents and quality marks such as "HD", and only when no other entry has that name. The user SHALL see these matches and can undo each one or replace it by hand.
+
+#### Scenario: One entry with the same name
+- **GIVEN** a channel "Sport One HD" with no guide id, and one guide entry named "Sport One" across the playlist's guides
+- **WHEN** the guide and the channel list have both loaded
+- **THEN** the channel shows that entry's programmes everywhere in the app
+- **AND** the Guide sources screen lists it under "Matched by name" and its detail reads "Matched by name"
+
+#### Scenario: More than one candidate, or a near match
+- **GIVEN** a channel with no guide id whose name equals two guide entries with different ids, or only resembles one, such as "Sport 1" against "Sport One"
+- **WHEN** the guide loads
+- **THEN** the channel is not matched and stays in the list of channels without a guide
+
+#### Scenario: A channel with a guide id
+- **GIVEN** a channel whose guide id is not in any guide, and a guide entry with its exact name
+- **WHEN** the guide loads
+- **THEN** the channel is not matched by name and its reason is that the id is not in the guide
+
+#### Scenario: Undoing a match by name
+- **GIVEN** a channel matched by name
+- **WHEN** the user removes the match
+- **THEN** the channel returns to the list of channels without a guide, stays unmatched after the next refresh and on the user's other devices, and can still be matched by hand
+
+#### Scenario: A hand-picked entry wins
+- **GIVEN** a channel matched by name
+- **WHEN** the user picks another entry by hand
+- **THEN** the channel shows the picked entry's programmes and reads "Mapped by you"
 
 ### Requirement: Settings follow you to every device
 The system SHALL show the same guides in the same order and the same matched programmes on every device on the user's iCloud account within seconds of a change.

@@ -27,7 +27,8 @@
 - [ ] 5.1 Search guide entries with the search change's folding and pick one, and verify with a UI test citing `guide-sources-and-channel-mapping/pick-the-right-guide-entry-by-hand`
 - [ ] 5.2 Remove a match, and verify with an integration test citing `guide-sources-and-channel-mapping/undo-a-hand-picked-match`
 - [ ] 5.3 Keep matches across refreshes and the size cap, and verify with a core test citing `guide-sources-and-channel-mapping/matches-survive-a-playlist-refresh`
-- [ ] 5.4 Check on two devices that guides, order and matches sync, citing `guide-sources-and-channel-mapping/settings-follow-you-to-every-device`
+- [ ] 5.4 Match channels without a guide id by name at full confidence only, show them under "Matched by name", and undo a match, and verify with core tests citing `guide-sources-and-channel-mapping/channels-matched-by-name`
+- [ ] 5.5 Check on two devices that guides, order and matches sync, citing `guide-sources-and-channel-mapping/settings-follow-you-to-every-device`
 
 ## 6. Verify
 

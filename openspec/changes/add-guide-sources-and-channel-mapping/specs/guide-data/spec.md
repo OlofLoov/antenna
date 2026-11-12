@@ -3,12 +3,12 @@
 ## MODIFIED Requirements
 
 ### Requirement: Find the guide for each source
-The system SHALL use every guide link a playlist names, the guide link saved with the source, the provider's guide for an Xtream login, and links the user added, each once, in the user's order, skipping turned-off guides. The provider's guide SHALL start turned off when the user saved a guide link of their own. Working this out SHALL send nothing over the network.
+The system SHALL use every guide link a playlist names, the guide link saved with the source, the source's own guide (the provider's guide for an Xtream login, the portal's guide for a Stalker portal, the server's guide for Jellyfin and Channels DVR), and links the user added, each once, in the user's order, skipping turned-off guides. The source's own guide SHALL start turned off when the user saved a guide link of their own. Working this out SHALL send nothing over the network.
 
 #### Scenario: Order of preference
 - **GIVEN** a source
 - **WHEN** the app works out where its guides live
-- **THEN** it lists the links the playlist names, the saved link, the Xtream provider's link and the user's added links in the user's order, and nothing goes over the network
+- **THEN** it lists the links the playlist names, the saved link, the source's own guide and the user's added links in the user's order, and nothing goes over the network
 
 #### Scenario: A link named twice
 - **GIVEN** a playlist that names the same guide link twice
@@ -30,6 +30,11 @@ The system SHALL use every guide link a playlist names, the guide link saved wit
 - **WHEN** the app works out where its guide lives
 - **THEN** the source uses the portal's own guide
 
+#### Scenario: A server that brings its own guide
+- **GIVEN** a Jellyfin or Channels DVR source with no guide link entered
+- **WHEN** the app works out where its guides live
+- **THEN** the server's own guide is listed first and turned on
+
 #### Scenario: Stalker session turned down while loading the guide
 - **GIVEN** a Stalker portal guide download that the portal turns down
 - **WHEN** the guide loads
@@ -41,7 +46,7 @@ The system SHALL use every guide link a playlist names, the guide link saved wit
 - **THEN** the new link is used
 
 ### Requirement: Programmes land on the right channels
-The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids and otherwise matching exactly, case included, whichever of the guide and the channel list loads first. A guide entry the user picked by hand for a channel SHALL take the place of the channel's own guide id.
+The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids and otherwise matching exactly, case included, whichever of the guide and the channel list loads first. A guide entry the user picked by hand for a channel SHALL take the place of the channel's own guide id, and a channel with no guide id SHALL use the entry matched by its name when there is one.
 
 #### Scenario: Ids with spaces, a channel without an id, two sources
 - **GIVEN** a channel and a programme whose guide ids differ only by spaces around them, a channel with no guide id, and two sources whose guides both use the id "one"
@@ -55,5 +60,10 @@ The system SHALL match programmes to channels within each source by guide id, ig
 
 #### Scenario: A hand-picked entry
 - **GIVEN** a channel with no guide id that the user matched by hand to a guide entry
+- **WHEN** the guide and the channel list have both loaded
+- **THEN** the channel gets that entry's programmes
+
+#### Scenario: Matched by name
+- **GIVEN** a channel with no guide id whose name is the name of exactly one guide entry
 - **WHEN** the guide and the channel list have both loaded
 - **THEN** the channel gets that entry's programmes
