@@ -31,7 +31,7 @@ extension DemuxRun {
 
     /// FFmpeg's seek callback over `bytes`: SEEK_SET, SEEK_CUR and SEEK_END
     /// move, and AVSEEK_SIZE asks for the length.
-    static func seeker(_ bytes: SeekableSource) -> Demuxer.Seek {
+    static func seeker(_ bytes: any DemuxBytes) -> Demuxer.Seek {
         { offset, whence in
             if whence & 0x10000 != 0 { return Int64(bytes.length ?? -1) }  // AVSEEK_SIZE
             let base: Int

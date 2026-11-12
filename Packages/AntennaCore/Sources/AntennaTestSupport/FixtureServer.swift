@@ -28,6 +28,9 @@ public actor FixtureServer {
         case cut(afterBytes: Int)
         /// These bytes with this content type, in place of any file.
         case body(Data, contentType: String)
+        /// The file at about this many bytes a second, as a live channel
+        /// sends it, then nothing more while the connection stays open.
+        case paced(bytesPerSecond: Int)
     }
 
     /// One request as the server received it.
@@ -213,7 +216,7 @@ public actor FixtureServer {
             try await Self.send(connection, head: head(status: 200, type: type, length: data.count), body: data)
             connection.cancel()
             return
-        case .serve, .ignoreRanges, .stall, .cut:
+        case .serve, .ignoreRanges, .stall, .cut, .paced:
             break
         }
         guard let file = content(for: request.path) else {
@@ -243,6 +246,18 @@ public actor FixtureServer {
             connection.cancel()
         case .cut(let bytes):
             try await Self.send(connection, head: header, body: slice.prefix(bytes))
+            connection.cancel()
+        case .paced(let rate):
+            try await Self.send(connection, head: header, body: Data())
+            let step = max(188, rate / 10)
+            var offset = 0
+            while offset < slice.count {
+                let end = min(slice.count, offset + step)
+                try await Self.send(connection, head: "", body: slice.subdata(in: offset..<end))
+                offset = end
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            while try await Self.receive(connection) != nil {}
             connection.cancel()
         default:
             try await Self.send(connection, head: header, body: request.method == "HEAD" ? Data() : slice)

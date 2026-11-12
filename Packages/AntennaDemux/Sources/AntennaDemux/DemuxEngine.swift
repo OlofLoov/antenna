@@ -31,7 +31,7 @@ public final class DemuxEngine: PlaybackEngine {
     let synchronizer = AVSampleBufferRenderSynchronizer()
 
     let session: URLSession
-    private let sleep: @Sendable (Duration) async throws -> Void
+    let sleep: @Sendable (Duration) async throws -> Void
     let log: @Sendable (String) -> Void
     private let firstFrameTimeout: Duration
 
@@ -69,6 +69,9 @@ public final class DemuxEngine: PlaybackEngine {
 
     var request: (url: URL, options: PlaybackOptions)?
     var current: Current?
+    /// The buffer of the live channel playing, when its load asked for one.
+    var timeshift: TimeshiftSession?
+    let timeshiftCast = Broadcast(TimeshiftStatus.off)
     /// A frame rate the run found before `open` stored its start.
     var earlyFrameRate: Double?
 
@@ -76,12 +79,12 @@ public final class DemuxEngine: PlaybackEngine {
     public internal(set) var isScanning = false
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
-    private var reconnect: Task<Void, Never>?
+    var reconnect: Task<Void, Never>?
     /// Streams kept open ahead of a zap, by address.
     var standby: [URL: Task<HTTPByteStream, any Error>] = [:]
     var generation = 0
     var wantsPlay = false
-    private var hasPlayed = false
+    var hasPlayed = false
     /// Play opens the stream again instead of resuming it.
     var reopensOnPlay = false
     var isLive = true
@@ -169,6 +172,7 @@ public final class DemuxEngine: PlaybackEngine {
         hasPlayed = false
         reopensOnPlay = false
         budget = ReconnectBudget(refusalsAreFinal: refusalsAreFinal)
+        keepOrRetireTimeshift(for: url, options: options)
         set(.loading)
         do {
             try StreamAddress.check(url)
@@ -222,9 +226,14 @@ public final class DemuxEngine: PlaybackEngine {
             bytes.cancel()
             throw CancellationError()
         }
+        let source = try await timeshiftSource(bytes, url: url, options: options, generation: mine)
+        try await startRun(source, url: url, options: options, origin: origin, generation: mine)
+    }
+
+    /// Starts a run on `source` and returns once its first frame is queued.
+    func startRun(_ source: any DemuxBytes, url: URL, options: PlaybackOptions, origin: CMTime?, generation mine: Int) async throws {
         let videoFeed = SampleFeed(renderer: videoLayer.sampleBufferRenderer, label: "video", limit: Self.videoLimit)
         let audioFeed = SampleFeed(renderer: audioRenderer, label: "audio", limit: Self.audioLimit)
-        let source = SeekableSource(bytes, url: url, session: session)
         let run = DemuxRun(bytes: source, videoFeed: videoFeed, audioFeed: audioFeed)
         listen(to: run, url: url, generation: mine)
         current = Current(run: run, videoFeed: videoFeed, audioFeed: audioFeed)
@@ -259,6 +268,7 @@ public final class DemuxEngine: PlaybackEngine {
         if start.frameRate == nil, let rate = earlyFrameRate { start.frameRate = rate }
         earlyFrameRate = nil
         current?.start = start
+        timeshiftRunStarted(source, at: start.startTime)
         isLive = options.isLive ?? (start.duration == nil)
         videoLayer.isHidden = start.video == nil
         restoreAudioClock()
@@ -293,6 +303,8 @@ public final class DemuxEngine: PlaybackEngine {
     /// Releases the stream and clears what was reported about it.
     func close() {
         release()
+        timeshift?.recorder?.cancel()
+        timeshift?.recorder = nil
         presentationCast.send(nil)
         tracksCast.send(.empty)
         positionCast.send(.zero)
@@ -307,7 +319,12 @@ public final class DemuxEngine: PlaybackEngine {
             await startAgain()
         case .ended:
             await startAgain(fromStart: true)
-        case .loading, .paused, .buffering:
+        case .paused:
+            guard current?.start != nil else { return }
+            wantsPlay = true
+            synchronizer.rate = 1
+            set(.playing)
+        case .loading, .buffering:
             guard current?.start != nil else { return }
             wantsPlay = true
             synchronizer.rate = 1
@@ -329,7 +346,7 @@ public final class DemuxEngine: PlaybackEngine {
             wantsPlay = false
             synchronizer.rate = 0
             publishPosition()
-            if isLive || current?.start?.canSeek == false {
+            if !isTimeshifting, isLive || current?.start?.canSeek == false {
                 // Live TV lets the provider's connections go; play opens
                 // what is on air then. A film that cannot skip starts again.
                 generation += 1
@@ -377,51 +394,6 @@ public final class DemuxEngine: PlaybackEngine {
 }
 
 extension DemuxEngine {
-    // MARK: Drops and reconnects
-
-    /// The bytes ran out. What was queued plays out first; `tick` then ends
-    /// the film or treats the live stream as dropped.
-    private func bytesEnded(_ failure: PlaybackFailure?, generation mine: Int) {
-        guard generation == mine, current != nil else { return }
-        current?.bytesEnded = .some(failure)
-    }
-
-    /// A stream that played lost its data: reconnect after the budget's
-    /// wait, or fail with `failure` once the budget says so.
-    private func dropped(_ failure: PlaybackFailure) {
-        guard hasPlayed, let request, let next = budget.dropped(failure, at: .now) else {
-            close()
-            set(.failed(failure))
-            return
-        }
-        log("demux reconnect \(next.attempt)/\(budget.maxAttempts) \(redacted(request.url)) \(failure)")
-        generation += 1
-        let mine = generation
-        release()
-        set(.reconnecting(attempt: next.attempt, of: budget.maxAttempts))
-        let sleep = self.sleep
-        reconnect = Task { [weak self] in
-            do {
-                try await sleep(next.delay)
-            } catch {
-                return
-            }
-            await self?.reopen(generation: mine)
-        }
-    }
-
-    private func reopen(generation mine: Int) async {
-        guard generation == mine, let request else { return }
-        do {
-            try await open(request.url, options: request.options, generation: mine)
-        } catch let failure as PlaybackFailure {
-            guard generation == mine else { return }
-            dropped(failure)
-        } catch {
-            return
-        }
-    }
-
     // MARK: Reporting
 
     /// Reports where playback is: at `time` on the stream's clock, or now.
@@ -449,6 +421,7 @@ extension DemuxEngine {
     /// a film ends once its last frame has played, and a live stream whose
     /// data stopped counts as dropped.
     private func tick() {
+        publishTimeshift()
         guard var current, let start = current.start else { return }
         watchClock(synchronizer.currentTime())
         let now = synchronizer.currentTime()
@@ -470,6 +443,7 @@ extension DemuxEngine {
             publishPosition()
             applyPictureChanges(at: now)
             guard starved else { break }
+            if current.bytesEnded != nil, timeshiftRunEnded() { return }
             if let ending = current.bytesEnded {
                 if !isLive, ending == nil {
                     synchronizer.rate = 0

@@ -33,6 +33,7 @@ public actor RoutedEngine: PlaybackEngine {
     private let tracksCast = Broadcast(TrackList.empty)
     private let positionCast = Broadcast(PlaybackPosition.zero)
     private let cuesCast = Broadcast([SubtitleCue]())
+    private let timeshiftCast = Broadcast(TimeshiftStatus.off)
 
     public init(system: any PlaybackEngine, demuxer: any PlaybackEngine) {
         pair = Mutex(Pair(system: system, demuxer: demuxer))
@@ -80,6 +81,13 @@ public actor RoutedEngine: PlaybackEngine {
         try await active.seek(to: time)
     }
 
+    public func seek(to date: Date) async throws {
+        guard let active else { throw SeekRefusal.live }
+        try await active.seek(to: date)
+    }
+
+    public func seekToLive() async { await active?.seekToLive() }
+
     public func selectAudio(_ id: MediaTrack.ID) async { await active?.selectAudio(id) }
     public func selectSubtitle(_ id: MediaTrack.ID?) async { await active?.selectSubtitle(id) }
 
@@ -88,6 +96,7 @@ public actor RoutedEngine: PlaybackEngine {
     public func tracks() async -> AsyncStream<TrackList> { tracksCast.stream() }
     public func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
     public func subtitleCues() async -> AsyncStream<[SubtitleCue]> { cuesCast.stream() }
+    public func timeshift() async -> AsyncStream<TimeshiftStatus> { timeshiftCast.stream() }
 
     /// Trades engines with `other`: whatever plays in one carries on in the
     /// other, with no reload, and each forwards its new engines' reports
@@ -122,6 +131,7 @@ public actor RoutedEngine: PlaybackEngine {
             tracksCast.send(.empty)
             positionCast.send(.zero)
             cuesCast.send([])
+            timeshiftCast.send(.off)
         }
     }
 
@@ -144,6 +154,7 @@ public actor RoutedEngine: PlaybackEngine {
             Self.pump(await engine.tracks(), into: tracksCast),
             Self.pump(await engine.position(), into: positionCast),
             Self.pump(await engine.subtitleCues(), into: cuesCast),
+            Self.pump(await engine.timeshift(), into: timeshiftCast),
         ]
     }
 
