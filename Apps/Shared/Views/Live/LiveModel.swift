@@ -409,7 +409,7 @@ final class LiveModel {
         controlsShown = false
     }
 
-    private func stop() {
+    func stop() {
         later = nil
         playing = nil
         player.tuned(nil)

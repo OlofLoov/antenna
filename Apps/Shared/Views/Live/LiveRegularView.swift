@@ -238,6 +238,7 @@
                 .groupSpokenLabel(group, count: live.catalogue.count(of: group))
                 .accessibilityIdentifier("browse.group.\(index)")
             }
+            LockedGroupRows()
             ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in
                 Text("\(source.name) · waiting for login")
                     .font(.callout)
