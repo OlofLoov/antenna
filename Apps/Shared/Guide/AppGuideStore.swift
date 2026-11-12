@@ -32,7 +32,8 @@ final class AppGuideStore {
         session: URLSession = URLSession(configuration: .guide),
         credentials: any CredentialStoring = CredentialStore(),
         directory: URL = .cachesDirectory.appending(path: "Guide"),
-        stalkerClients: StalkerClients = .shared
+        stalkerClients: StalkerClients = .shared,
+        jellyfinClients: JellyfinClients = .shared
     ) -> AppGuideStore {
         let logger = Logger(subsystem: "se.codecrave.antenna", category: "guide")
         let configuration = GuideEngine.Configuration(
@@ -53,6 +54,12 @@ final class AppGuideStore {
                 let source = await MainActor.run { AppGuideStore.source(id, in: container.mainContext) }
                 guard let source, let key = source.credentialKey, let credential = try? credentials.load(for: key) else { return nil }
                 return stalkerClients.client(for: source, credential: credential)
+            },
+            jellyfinClient: { id in
+                if let client = jellyfinClients.client(sourceID: id) { return client }
+                let source = await MainActor.run { AppGuideStore.source(id, in: container.mainContext) }
+                guard let source, let key = source.credentialKey, let credential = try? credentials.load(for: key) else { return nil }
+                return jellyfinClients.client(for: source, credential: credential)
             }
         )
         return AppGuideStore(engine: GuideEngine(configuration))

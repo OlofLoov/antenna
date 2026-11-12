@@ -40,7 +40,7 @@
 
 ## 7. Jellyfin servers
 
-- [ ] 7.1 Show a Jellyfin server's status and type badge, edit its address, username and password with the saved password hidden, check a change with the server before saving, offer Sign in on this Apple TV, and verify with integration tests citing `sources-and-settings/look-after-a-jellyfin-server`
+- [x] 7.1 Show a Jellyfin server's status and type badge, edit its address, username and password with the saved password hidden, check a change with the server before saving, offer Sign in on this Apple TV, and verify with integration tests citing `sources-and-settings/look-after-a-jellyfin-server`
 
 ## 8. Verify
 

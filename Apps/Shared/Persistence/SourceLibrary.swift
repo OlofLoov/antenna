@@ -66,9 +66,15 @@ extension SourceRecord {
     /// progress and My list entries (source-management/deleting-a-source-removes-its-watch-history).
     /// A Keychain failure is ignored: the record goes regardless and the item is left behind.
     @MainActor
-    static func delete(_ record: SourceRecord, from context: ModelContext, credentials: any CredentialStoring) {
+    static func delete(
+        _ record: SourceRecord, from context: ModelContext, credentials: any CredentialStoring, jellyfinClients: JellyfinClients = .shared
+    ) {
         if let key = record.credentialKey { try? credentials.delete(for: key) }
         let id = record.id
+        if record.kind == .jellyfin {
+            // jellyfin-live-tv-source/signing-in-remembers-this-device
+            jellyfinClients.forget(sourceID: id, storeKey: record.credentialKey ?? id.uuidString)
+        }
         context.delete(record)
         ActivityStore.removeSource(id, in: context)
     }

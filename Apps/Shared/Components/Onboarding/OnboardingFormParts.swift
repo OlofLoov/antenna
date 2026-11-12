@@ -3,7 +3,7 @@ import SwiftUI
 
 /// The pieces the add-source form is built from.
 extension OnboardingForm {
-    /// M3U playlist, Xtream login and Stalker portal.
+    /// M3U playlist, Xtream login, Stalker portal and Jellyfin server.
     struct KindPicker: View {
         let kind: SourceKind
         let choose: (SourceKind) -> Void
@@ -14,6 +14,8 @@ extension OnboardingForm {
                 segment("Xtream login", .xtream)
                 segment("Stalker", .stalker)
                     .accessibilityLabel("Stalker portal")
+                segment("Jellyfin", .jellyfin)
+                    .accessibilityLabel("Jellyfin server")
             }
             .padding(4)
             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 12))
@@ -26,6 +28,8 @@ extension OnboardingForm {
             } label: {
                 Text(title)
                     .font(.system(size: 14, weight: selected ? .semibold : .regular))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
                     .frame(maxWidth: .infinity, minHeight: 36)
                     .foregroundStyle(selected ? Palette.ground : Palette.text)
                     .background(selected ? Palette.text : .clear, in: RoundedRectangle(cornerRadius: 9))

@@ -166,7 +166,7 @@ final class SourceRefresher {
     private func guideChanged(_ event: GuideProgress) {
         update(event.sourceID) { status in
             switch event {
-            case .downloading:
+            case .downloading, .fetching:
                 status.guide = .downloading
             case .loaded(_, let matched, let total, let days, _):
                 status.guide = .loaded(days: days, matched: matched, total: total)

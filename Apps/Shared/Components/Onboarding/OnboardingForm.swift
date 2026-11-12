@@ -124,9 +124,11 @@ enum OnboardingForm {
                         Row(label: "Password", last: true) {
                             PasswordField(text: $fields.password, reveals: $revealsPassword, revealSize: 44, placeholder: "Optional")
                         }
-                    case .xtream:
+                    case .xtream, .jellyfin:
                         Row(label: "Server") {
-                            LinkField(placeholder: "http://", text: $fields.url, identifier: "onboarding.field.server")
+                            LinkField(
+                                placeholder: fields.kind == .jellyfin ? "http://jellyfin.local:8096" : "http://", text: $fields.url,
+                                identifier: "onboarding.field.server")
                         }
                         Row(label: "Username") {
                             TextField("", text: $fields.username)
@@ -162,6 +164,7 @@ enum OnboardingForm {
             case .m3u, .m3uFile: "Playlist"
             case .xtream: "Login"
             case .stalker: "Portal"
+            case .jellyfin: "Server"
             }
         }
     }
@@ -201,7 +204,7 @@ enum OnboardingForm {
                                 TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.portal")
                             }
                             PortalLoginFields(fields: $fields)
-                        case .xtream:
+                        case .xtream, .jellyfin:
                             Stacked(label: "Server") {
                                 TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.server")
                             }
@@ -248,6 +251,7 @@ enum OnboardingForm {
             case .m3u, .m3uFile: "M3U playlist"
             case .xtream: "Xtream login"
             case .stalker: "Stalker portal"
+            case .jellyfin: "Jellyfin server"
             }
         }
 
@@ -257,6 +261,7 @@ enum OnboardingForm {
             case .xtream: "Copy these from the email or page your provider sent you."
             case .stalker:
                 "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one."
+            case .jellyfin: "The address you open Jellyfin at in a browser, with the username and password you sign in with."
             }
         }
     }
@@ -331,5 +336,20 @@ enum OnboardingForm {
     @Previewable @State var fields = SourceFields(kind: .m3u, url: "http://tv.example-provider.net/get.m3u")
     OnboardingForm.Television(
         fields: $fields, status: .init(error: "Could not reach tv.example-provider.net. Check the address and try again."),
+        actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+#Preview("Form, iPhone, Jellyfin server") {
+    @Previewable @State var fields = SourceFields(kind: .jellyfin, url: "http://jellyfin.local:8096", username: "anna")
+    @Previewable @State var reveals = false
+    OnboardingForm.Phone(
+        fields: $fields, revealsPassword: $reveals, status: .init(), actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+#Preview("Form, Apple TV, Jellyfin server", traits: .fixedLayout(width: 1920, height: 1080)) {
+    @Previewable @State var fields = SourceFields(kind: .jellyfin, url: "https://jellyfin.example.net", username: "anna")
+    OnboardingForm.Television(
+        fields: $fields,
+        status: .init(error: "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate."),
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
 }

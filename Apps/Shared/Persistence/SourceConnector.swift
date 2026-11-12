@@ -13,6 +13,8 @@ struct SourceConnector: Sendable {
     var portalSession: URLSession = SourceConnector.portalSession
 
     static let portalSession = URLSession(configuration: .stalker)
+    /// Jellyfin servers are asked through these clients.
+    var jellyfinClients: JellyfinClients = .shared
 
     /// What one successful Connect saved and what the server said.
     struct Connection: Sendable {
@@ -58,7 +60,7 @@ struct SourceConnector: Sendable {
         switch fields.kind {
         case .m3u, .m3uFile:
             return nil
-        case .xtream:
+        case .xtream, .jellyfin:
             return .init(username: fields.username, password: fields.password)
         case .stalker:
             let login = fields.username.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -88,6 +90,8 @@ struct SourceConnector: Sendable {
                 let client = StalkerClient(
                     credentials: .init(portal: portal, mac: mac, password: password, login: login), session: portalSession)
                 return .playlist(Playlist(channels: try await client.liveLoad(guide: .portal).channels))
+            case .jellyfin:
+                return .playlist(try await probeJellyfin(link, username: username, password: password, host: host))
             case .xtream:
                 let client = XtreamClient(credentials: .init(server: link, username: username, password: password), session: session)
                 let info = try await client.accountInfo().userInfo
@@ -100,6 +104,21 @@ struct SourceConnector: Sendable {
             if Task.isCancelled { throw CancellationError() }
             throw ConnectFailure(error, host: host)
         }
+    }
+
+    /// Checks the address is a Jellyfin server, which sends no password,
+    /// then signs in and loads the Live TV channels. An answer that is not
+    /// Jellyfin's, or a 404, is `.noJellyfin`
+    /// (first-run-onboarding/add-a-jellyfin-server). The probe keeps its key
+    /// to itself, so a check that fails leaves no key behind.
+    private func probeJellyfin(_ link: URL, username: String, password: String, host: String) async throws -> Playlist {
+        let client = jellyfinClients.client(server: link, username: username, password: password, storeKey: "probe-\(UUID().uuidString)")
+        do {
+            _ = try await client.serverInfo()
+        } catch JellyfinClient.JellyfinError.decoding, JellyfinClient.JellyfinError.badStatus(404) {
+            throw ConnectFailure.noJellyfin(host: host)
+        }
+        return Playlist(channels: try await client.liveChannels().items)
     }
 
     /// Removes what `connection` saved: the source when Connect inserted

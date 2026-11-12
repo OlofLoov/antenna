@@ -82,6 +82,23 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertEqual(element(app, "onboarding.error").label, "Enter the MAC address.")
     }
 
+    // first-run-onboarding/add-a-jellyfin-server
+    func testPickAJellyfinServerAndConnectWithoutAUsername() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        element(app, "onboarding.addSource").tap()
+        XCTAssertTrue(element(app, "onboarding.kind.jellyfin").waitForExistence(timeout: 5))
+        element(app, "onboarding.kind.jellyfin").tap()
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.field.username").exists)
+        XCTAssertFalse(element(app, "onboarding.field.mac").exists)
+        element(app, "onboarding.field.server").tap()
+        element(app, "onboarding.field.server").typeText("http://jellyfin.example.test:8096")
+        element(app, "onboarding.connect").tap()
+        XCTAssertTrue(element(app, "onboarding.error").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "onboarding.error").label, "Enter the username.")
+    }
+
     // first-run-onboarding/fill-the-form-from-a-copied-link
     func testFillInFromACopiedLink() {
         let app = launch("signedIn", ["-ui-testing-clipboard", "http://tv.example.test:8080/get.php?username=anna&password=pw"])

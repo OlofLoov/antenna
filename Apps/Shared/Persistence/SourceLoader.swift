@@ -18,6 +18,8 @@ struct SourceLoader: Sendable {
     var files: PlaylistFileStore = .shared
     /// The per-source portal clients, shared with the guide and playback.
     var stalkerClients: StalkerClients = .shared
+    /// The per-source Jellyfin sign-in keys, shared with the guide.
+    var jellyfinClients: JellyfinClients = .shared
 
     /// The time zones every loader in the app records into.
     static let sharedTimeZones = XtreamTimeZones()
@@ -34,6 +36,8 @@ struct SourceLoader: Sendable {
         /// A Stalker portal call failed for a reason other than the
         /// connection, which arrives as a `URLError` instead.
         case portal(StalkerError)
+        /// A Jellyfin call failed for a reason other than the connection.
+        case jellyfin(JellyfinClient.JellyfinError)
 
         var errorDescription: String? {
             switch self {
@@ -41,6 +45,17 @@ struct SourceLoader: Sendable {
             case .waitingForICloud: "Waiting for its playlist to sync from iCloud."
             case .loginUnreadable: "Its saved login is unreadable. Re-import the file."
             case .portal(let error): Self.message(error)
+            case .jellyfin(let error): Self.message(error)
+            }
+        }
+
+        private static func message(_ error: JellyfinClient.JellyfinError) -> String {
+            switch error {
+            case .unauthorized: "The server turned down the username and password. Sign in again."
+            case .forbidden: ConnectFailure.forbidden.message
+            case .untrustedCertificate: ConnectFailure.untrustedCertificate.message
+            case .badStatus(let status): "The server answered with status \(status)."
+            case .transport, .decoding: "The server replied with something Antenna could not read."
             }
         }
 
@@ -102,6 +117,8 @@ struct SourceLoader: Sendable {
             return Playlist(channels: live.channels, serverTimeZone: live.timeZoneName)
         case .m3uFile:
             return try loadFile(source)
+        case .jellyfin:
+            return try await loadJellyfin(source)
         case .stalker:
             guard let key = source.credentialKey, let cred = try credentials.load(for: key),
                 let client = stalkerClients.client(for: source, credential: cred)
@@ -113,6 +130,22 @@ struct SourceLoader: Sendable {
             } catch let error as StalkerError {
                 throw LoadError.portal(error)
             }
+        }
+    }
+
+    /// A Jellyfin server's Live TV channels. A source whose login is not on
+    /// this device shows no channels and makes no request
+    /// (jellyfin-live-tv-source/signing-in-remembers-this-device).
+    private func loadJellyfin(_ source: SourceDescriptor) async throws -> Playlist {
+        guard let key = source.credentialKey, let cred = try credentials.load(for: key),
+            let client = jellyfinClients.client(for: source, credential: cred)
+        else { return Playlist(channels: []) }
+        do {
+            return Playlist(channels: try await client.liveChannels().items)
+        } catch JellyfinClient.JellyfinError.transport(let code) {
+            throw URLError(code)
+        } catch let error as JellyfinClient.JellyfinError {
+            throw LoadError.jellyfin(error)
         }
     }
 

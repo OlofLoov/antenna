@@ -111,12 +111,12 @@ final class OnboardingModel {
     /// The checklist or summary shows in place of the form.
     var showsChecklist: Bool { !setups.isEmpty && !addingAnother && signIns.isEmpty }
 
-    /// Asks for the login of each Xtream source and the MAC of each
-    /// Stalker portal in `sources`, in order, with the server or portal
-    /// filled in. Playlists are skipped.
+    /// Asks for the login of each Xtream source and Jellyfin server and the
+    /// MAC of each Stalker portal in `sources`, in order, with the server or
+    /// portal filled in. Playlists are skipped.
     func startSignIn(_ sources: [SourceDescriptor]) {
         guard signIns.isEmpty, setups.isEmpty else { return }
-        signIns = sources.filter { $0.kind == .xtream || $0.kind == .stalker }
+        signIns = sources.filter(\.kind.signsInOnAppleTV)
         prepareSignIn()
     }
 

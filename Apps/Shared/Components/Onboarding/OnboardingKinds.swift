@@ -1,8 +1,9 @@
 import AntennaCore
 import SwiftUI
 
-/// "What kind of source?" on Apple TV (`TV-Onboard-2`): three cards, each
-/// opening its form (first-run-onboarding/add-a-stalker-portal).
+/// "What kind of source?" on Apple TV (`TV-Onboard-2`): four cards, each
+/// opening its form (first-run-onboarding/add-a-stalker-portal,
+/// first-run-onboarding/add-a-jellyfin-server).
 enum OnboardingKinds {
     struct Television: View {
         let choose: (SourceKind) -> Void
@@ -45,6 +46,15 @@ enum OnboardingKinds {
                             detail: "A portal address and a MAC address, the way a MAG box signs in.", footnote: "Also called Ministra")
                     }
                     .accessibilityIdentifier("onboarding.kind.stalker")
+                    Button {
+                        choose(.jellyfin)
+                    } label: {
+                        Card(
+                            systemImage: "play.tv", title: "Jellyfin",
+                            detail: "Your own Jellyfin server's Live TV, signed in with your Jellyfin username and password.",
+                            footnote: "Live TV and guide from your server")
+                    }
+                    .accessibilityIdentifier("onboarding.kind.jellyfin")
                 }
                 .buttonStyle(CardStyle())
             }
@@ -82,7 +92,7 @@ enum OnboardingKinds {
             }
             .foregroundStyle(isFocused ? Palette.ground : Palette.text)
             .padding(40)
-            .frame(width: 480, height: 420, alignment: .topLeading)
+            .frame(width: 400, height: 420, alignment: .topLeading)
             .background(
                 isFocused ? Palette.focus : Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20)
             )
