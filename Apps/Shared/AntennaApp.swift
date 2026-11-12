@@ -14,6 +14,8 @@ struct AntennaApp: App {
     @State private var guideStore: AppGuideStore
     /// Loads sources one at a time and keeps their status (sources-and-settings capability).
     @State private var refresher: SourceRefresher
+    /// Whether the app is unlocked, read before anything else (paywall-and-entitlement capability).
+    @State private var unlock: Unlock
 
     init() {
         let container = Self.makeContainer()
@@ -29,6 +31,7 @@ struct AntennaApp: App {
         let guideStore = AppGuideStore.live(container: container)
         _guideStore = State(initialValue: guideStore)
         _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore)))
+        _unlock = State(initialValue: Unlock.app())
     }
 
     private static func refresherDependencies(guide: AppGuideStore) -> SourceRefresher.Dependencies {
@@ -58,9 +61,11 @@ struct AntennaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PlatformRoot()
-                .environment(\.guideStore, guideStore)
-                .environment(\.sourceRefresher, refresher)
+            AppRootView(unlock: unlock) {
+                PlatformRoot()
+            }
+            .environment(\.guideStore, guideStore)
+            .environment(\.sourceRefresher, refresher)
         }
         .modelContainer(container)
     }

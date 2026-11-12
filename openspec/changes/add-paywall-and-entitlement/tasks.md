@@ -18,20 +18,20 @@
 - [x] 3.2 Handle purchase success, cancel, failure, Ask to Buy and purchases turned off, and verify an integration test for each outcome
 - [x] 3.3 Add Restore purchase with "Welcome back", nothing found and an ended subscription, and verify integration tests
 - [x] 3.4 Add the unreachable and not-sold panels, and verify a test that a late answer replaces the panel
-- [ ] 3.5 Add offer code redemption on iPhone, iPad and Mac, and verify it is absent on Apple TV
+- [x] 3.5 Add offer code redemption on iPhone, iPad and Mac, and verify it is absent on Apple TV
 
 ## 4. App root and locking
 
-- [ ] 4.1 Replace the window root with one that decides splash, paywall, onboarding and shell on each activation, and verify a UI test that no source is contacted before unlock
-- [ ] 4.2 Lock at the next activation after access ends, keeping sources, favorites and logins, and verify an integration test that restoring brings them back
-- [ ] 4.3 Gate the Apple TV shell on the unlock, and verify a UI test with the stand-in provider
+- [x] 4.1 Replace the window root with one that decides splash, paywall, onboarding and shell on each activation, and verify a UI test that no source is contacted before unlock
+- [x] 4.2 Lock at the next activation after access ends, keeping sources, favorites and logins, and verify an integration test that restoring brings them back
+- [x] 4.3 Gate the Apple TV shell on the unlock, and verify a UI test with the stand-in provider
 
 ## 5. Devices and family
 
-- [ ] 5.1 Check on real devices that one purchase opens Antenna on iPad, Mac and Apple TV on the same Apple Account, once the shared App Store record exists
-- [ ] 5.2 Check on real devices that a Family Sharing member opens Antenna without buying
+- [ ] 5.1 Check on real devices that one purchase opens Antenna on iPad, Mac and Apple TV on the same Apple Account, once the shared App Store record exists. Open: needs real devices and the shared App Store record, which does not exist yet.
+- [ ] 5.2 Check on real devices that a Family Sharing member opens Antenna without buying. Open: needs real devices in a Family Sharing group.
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`. Open: `one-purchase-on-every-device` has no automated test; it needs the shared App Store record and real devices (task 5.1).
+- [ ] 6.2 `/opsx:verify` passes. Open: it reports tasks 2.1, 5.1, 5.2 and 6.1 as open; the code checks pass.

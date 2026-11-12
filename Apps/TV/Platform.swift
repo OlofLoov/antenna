@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-/// The Apple TV window root: onboarding while there is no source
+/// What shows on Apple TV once the app is unlocked (`AppRootView`): onboarding while there is no source
 /// (first-run-onboarding capability), then "Who's watching?" when there are
 /// two or more profiles (profiles capability), then the shell (tvos-shell capability).
 struct PlatformRoot: View {
