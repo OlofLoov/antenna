@@ -64,7 +64,7 @@ import Testing
             ("https://antenna.codecrave.se/setup?v=1&v=1&t=\(token)", .notASetupLink),
             ("https://antenna.codecrave.se/setup?v=1&t=\(token)&t=\(token)", .notASetupLink),
             ("https://antenna.codecrave.se/setup?t=\(token)", .missingVersion),
-            ("https://antenna.codecrave.se/setup?v=2&t=\(token)", .unsupportedVersion("2")),
+            ("https://antenna.codecrave.se/setup?v=3&t=\(token)", .unsupportedVersion("3")),
             ("https://antenna.codecrave.se/setup?v=1", .missingToken),
             ("https://antenna.codecrave.se/setup?v=1&t=abc", .malformedToken),
             ("https://antenna.codecrave.se/setup?v=1&t=\(token.dropLast())B", .malformedToken),
