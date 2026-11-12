@@ -1,0 +1,154 @@
+# Design
+
+## Context
+
+Boards: `openspec/specs/design-system/boards/TV-Onboard-SignIn-QR.dc.html` (waiting), `TV-Onboard-SignIn-QR-Failed.dc.html` (a delivered login did not work), `iPhone-SignIn-FromTV.dc.html` (the sheet before Send), `iPhone-SignIn-FromTV-Sent.dc.html` (picked up), all new in this change, and `TV-Onboard-3-QR-Received.dc.html`, drawn by `add-iphone-as-setup-device` for this change. `TV-Onboard-SignIn.dc.html` stays as the version for a TV not signed in to iCloud.
+
+Design-system requirements that apply: "Focus is the lifted white card", "One accent color", "Text stays above the platform caption floor", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled", "Text meets contrast minimums", "Nothing shows before the paywall", "Loading shows real progress per step", "Undrawn states are listed and drawn before implementation".
+
+Not drawn yet: the TV card while it checks a delivered login, the TV card for a delivery it cannot read, the QR card in a source's details in Settings, the iPhone sheet while entering a missing login, while sending, not picked up, offline, not signed in to iCloud, code already used, and none of the sources on this device, and the third row on the setup sending screen. Task 1.2 draws them before the screens are built.
+
+Today a login reaches an Apple TV only by typing it there. `CredentialStore` writes generic password items with `kSecAttrSynchronizable` true under service `se.codecrave.antenna.sources`; on tvOS such an item stays on the device because tvOS has no iCloud Keychain. Sign-in on the TV, in onboarding and in Settings, checks the login with `SourceConnector.probe` and writes it under the record's `credentialKey`, setting the key to the record id when it is nil. This change keeps all of that and adds a second way for the login to get to the place where the TV writes it.
+
+## Goals / Non-Goals
+
+**Goals:**
+- A login reaches the TV readable only by the TV that showed the code, and only for ten minutes.
+- No new path for a secret to land in SwiftData, logs, UserDefaults, identifiers or the link.
+- The user confirms on the sending device what leaves it.
+
+**Non-Goals:**
+- A permanent copy of logins for Apple TV in iCloud.
+- Pairing devices on different iCloud accounts.
+- Changing how the TV checks and stores a login once it has one.
+
+## Decision: how the login reaches the TV
+
+Options considered:
+
+1. **Sealed delivery through the user's private CloudKit database (chosen).** The TV makes a one-time key pair for each code and puts the public key in the QR code. The sending device seals the logins to that key with HPKE and saves the sealed box as one record in a zone of the user's private CloudKit database. The TV fetches the record by name, opens it with the private key it holds in memory, deletes it and forgets the key.
+   - The public key travels only in the QR code and in Handoff, which runs only between the user's own devices, so the receiver is the TV the user is looking at, and only the TV holding the private key can open the box. Apple, CloudKit and the user's other devices see ciphertext.
+   - The record lives in the scanning device's own iCloud account. A code shown by a TV on another account, including a hostile one, can never collect a delivery, because that TV cannot read the scanner's private database.
+   - The key never leaves the TV's memory and is dropped after ten minutes, so a copy of the record kept somewhere is useless after that.
+   - It works when the iPhone is on cellular or a guest Wi-Fi with client isolation, and needs no Local Network permission prompt.
+   - It costs a CloudKit round trip and polling, a few seconds, and needs both devices signed in to the same iCloud account, which the source sync already needs.
+   - It breaks the rule that a secret never travels outside the Keychain. See "Rule change" below.
+2. **Local network with Network framework and Bonjour.** The TV advertises a service; the iPhone finds it from the code and sends the logins sealed to the same one-time key. Fast and no iCloud. Rejected: the iPhone shows the Local Network permission prompt in the middle of setup, client-isolated and guest networks block it, and a hostile TV on the same network that shows a code would receive whatever the user sends, since nothing ties the receiver to the user's account. It would also need the "never over the local network" rule relaxed.
+3. **DeviceDiscoveryUI.** tvOS's own picker connects a tvOS app to its iOS app with an Apple-managed encrypted connection. Rejected for now: no QR code, the TV starts the pairing rather than the phone, Mac is not supported, it needs an app extension on iOS, and it is still the local network. Worth another look if the QR flow proves slow.
+4. **Keep logins in SwiftData with CloudKit encryption.** Every device, the TV included, would read them from the synced store. Rejected here: it stores every login for good outside the Keychain and is the broader decision first-run onboarding names. This change does not need it.
+5. **Sign in with Apple.** Cannot work. The logins belong to IPTV providers and media servers, not to the user's Apple ID.
+6. **A web page served by the TV.** Rejected: it needs a local HTTP server in the TV app, which risks App Review, the login would pass through a browser on the phone, and it is the local network again.
+
+### Rule change
+
+The hard constraint today: "Secrets live only in the synchronizable iCloud Keychain, never in SwiftData, logs, identifiers or labels." `add-iphone-as-setup-device` adds "No password travels in the link, in iCloud records or over the local network."
+
+Proposed wording, for the owner to confirm before this change is accepted: "Secrets live only in the synchronizable iCloud Keychain, never in SwiftData, logs, identifiers or labels. The one exception is a login sent to an Apple TV: it may sit in the user's private CloudKit database for at most ten minutes, sealed to a key that exists only in that Apple TV's memory, and is deleted when picked up." The local-network part stays as it is. On confirmation, task 2.1 updates `openspec/config.yaml` and CLAUDE.md.
+
+## Decision: a new kind of synced record
+
+The delivery is a CloudKit record written with the CloudKit API, not SwiftData, so no model and no schema migration.
+
+- Container `iCloud.se.codecrave.antenna`, private database, zone `LoginDrops`, record type `LoginDrop`. SwiftData's mirroring zone is not touched.
+- Record name `drop-<token>`, where `<token>` is the 22-character code from the link.
+- Fields, all in `encryptedValues`: `enc` (the HPKE encapsulated key, `Data`), `box` (the sealed payload, `Data`), `v` (`Int64`, 1). No other fields. `creationDate` is the server's.
+- The sender creates the zone if it is missing and saves with `CKModifyRecordsOperation` and `savePolicy = .ifServerRecordUnchanged` on a new record, so a second save for the same token fails with `serverRecordChanged`, which the sheet shows as "already used".
+- Every device sweeps the zone on launch and on returning to the foreground: it fetches the zone and deletes `LoginDrop` records whose `creationDate` is more than 600 seconds ago. The sending sheet deletes its own record when it reaches 600 seconds with the sheet still open.
+- The TV fetches `drop-<token>` by id every 3 seconds while the card shows, backing off by the `retryAfterSeconds` CloudKit returns on `requestRateLimited` or `zoneBusy`. A missing zone or record is "nothing yet". No subscription and no push.
+
+## Cryptography
+
+AntennaCore imports Foundation only, so sealing lives in the app and AntennaCore holds the formats.
+
+- `Apps/Shared/Setup/LoginSeal.swift`: HPKE base mode, ciphersuite `HPKE.Ciphersuite.Curve25519_SHA256_ChachaPoly` from CryptoKit. `info` is the UTF-8 bytes of `se.codecrave.antenna.login.v1`. The authenticated data is the token's 22 ASCII bytes, so a box cannot be moved to another record name.
+- `LoginReceiverKey` wraps `Curve25519.KeyAgreement.PrivateKey`. It is created when a code is shown, held only by the TV's model, never written to the Keychain, disk or logs, and released when the code is replaced or the card goes away.
+- The public key travels as its 32-byte raw representation in base64url without padding, 43 characters.
+- `Packages/AntennaCore/Sources/AntennaCore/Setup/LoginPayload.swift`: the sealed JSON, `{"v":1,"logins":[{"source":"<uuid>","username":"…","password":"…","login":"…"}]}`, with `login` present only for a Stalker portal that has one. `description` and `debugDescription` print counts only. Decoding rejects an unknown `v`, which the TV shows as a delivery it cannot read.
+- Per kind: Xtream sends username and password; Stalker sends the MAC address in `username`, and the portal login and password when present, matching the Keychain item; Jellyfin sends username and password, never the device's access token; Channels DVR sends its proxy username and password, and a server without a `credentialKey` is never asked for.
+
+## Link format
+
+`SetupLink` from `add-iphone-as-setup-device` gains version 2.
+
+- Setup card: `https://<host>/setup?v=2&t=<token>&k=<key>`.
+- Sign-in card: `https://<host>/setup?v=2&t=<token>&k=<key>&s=<id>,<id>,…`, one to eight source ids, each the record UUID's 16 bytes in base64url without padding, 22 characters, in the TV's sign-in order.
+- Parsing keeps the v1 checks and order and adds: for `v=2`, `k` missing is `.missingKey` and not 43 canonical base64url characters is `.malformedKey`; `s` with an empty, malformed or repeated id, or more than eight, is `.malformedSources`. `v=1` stays readable so a TV running the earlier build still works with a newer iPhone. An older iPhone reading `v=2` already shows "This code is from a newer Antenna", which is the right message.
+- The URL is at most about 300 characters with eight ids, which is QR version 13 at error correction M, about 3.8 points per module in the 260-point area of the 300-point tile.
+- Handoff keeps activity type `se.codecrave.antenna.setup` and sets `webpageURL` to the link; `userInfo` for a v2 offer is exactly `["link": <the link as a string>]`. The receiving device parses the link from there.
+- No new path on the web host and no change to the association file or the fallback page.
+
+## Board states and copy
+
+`<device>` is "iPhone", "iPad" or "Mac". `<name>` is the source's name.
+
+Apple TV, sign-in step and source details (signed in to iCloud):
+
+- Waiting (`TV-Onboard-SignIn-QR`): the sign-in form on the left as `TV-Onboard-SignIn`. On the right `signIn.qr`, title "Send the login from your iPhone" at 30 pt, the white 300 pt tile `signIn.qr.code`, body at 22 pt `#D7DEE8` "Scan the code with your iPhone camera. Antenna there sends the login to this Apple TV, encrypted, through iCloud.", `signIn.qr.status` "Waiting for your iPhone" at 20 pt with a 12 pt accent dot, and a 20 pt muted footer "Prefer the remote? Type here; your iPhone offers its keyboard too."
+- In onboarding with more than one source to sign in, the status reads "Waiting for your iPhone · <n> logins" and the form's muted line "<n> more source(s) to sign in after this one" stays. The code asks for the first eight in `sortOrder`; a new code asks for the rest once those are done.
+- Checking, not drawn: the tile at 40% opacity, status "Login received. Checking with <name>…" with a 28 pt ring, one row per source in a multi-source delivery.
+- A login that did not work (`TV-Onboard-SignIn-QR-Failed`): the form shows that source with empty fields and `onboarding.error` reading "The login from your iPhone didn't work here. <sentence>", where `<sentence>` is the sign-in's message for the failure, for example "Could not sign in. Check the username and password.". A new code shows in the card, status "Waiting for your iPhone".
+- A delivery it cannot read, not drawn: `signIn.qr.status` in the error style "Something arrived from your iPhone that this Apple TV can't read." and `signIn.qr.hint` "Update Antenna on both, or type the login here." A new code shows.
+- Nothing after 120 s: `signIn.qr.hint` "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV."
+- After ten minutes the code and key are replaced silently; the status and hint stay.
+- `signIn.qr.code` accessibility label: "QR code. Scan it with your iPhone to send the login to this Apple TV." Not focusable. When a delivery arrives, VoiceOver announces "Login received from your iPhone".
+- Settings details: the same card to the right of the details' sign-in fields, asking for that one source. Not drawn.
+
+Apple TV, setup card from `add-iphone-as-setup-device`:
+
+- `TV-Onboard-3-QR-Received`: after a login source arrives, the second status row reads "Waiting for the login…" with a 28 pt ring. When the login arrives, "Checking the login…", then loading as onboarding's Connect. After 60 s without it the row turns into `TV-Onboard-3-QR-SignIn`'s "The login hasn't reached this Apple TV." and `onboarding.qr.signInHere` appears, while the TV keeps listening until the code's ten minutes end.
+- A login that arrives before its source is held in memory until the source arrives or the code ends.
+
+iPhone, iPad and Mac (iPad and Mac center the sheet at 390 pt):
+
+- Sheet (`iPhone-SignIn-FromTV`): nav "Cancel", title "Sign in Apple TV". Heading "Sign in your Apple TV" at 22 pt, body at 15 pt "Your Apple TV asked for these logins. They're encrypted for that Apple TV only and go through your iCloud." Then `sendLogins.list`, one `sendLogins.row` per requested source this device has: name at 16 pt, type beneath at 13 pt muted, and on the right "Ready to send" with an accent check, or "Not on this <device>" with an `sendLogins.enter` button "Enter". Below, `sendLogins.missing` at 13 pt muted when some requested sources are absent: "1 source the Apple TV asked for isn't on this <device> yet. New sources can take a minute to arrive through iCloud." or "<n> sources …". Lock note "Logins stay in your iCloud Keychain on this <device>." `sendLogins.send` "Send to Apple TV" as the white primary button, disabled while no row is ready.
+- Enter, not drawn: a sheet titled with the source name and the fields of the source's details for its kind, Cancel and Check. Check runs `SourceConnector.probe`, then writes the Keychain item as Settings does, and the row becomes "Ready to send". A failure shows the details' message under the fields.
+- Sending, not drawn: `sendLogins.status` "Sending to your Apple TV…" with a 26 pt ring, rows read-only, Send hidden, no Cancel.
+- Picked up (`iPhone-SignIn-FromTV-Sent`): status with an accent check "Your Apple TV picked up the logins." with "It checks them with the provider and signs in." beneath, and `sendLogins.done` "Done" as the primary button.
+- Not picked up after 60 s, not drawn: status in the error style "Not picked up yet" with "Keep the sign-in open on the Apple TV. If the code there changed, scan the new one." A later pickup still turns it into Picked up. Done closes the sheet and leaves the delivery for the TV until its ten minutes end.
+- Offline, not drawn: "Couldn't send. Check that this <device> is online, then try again." with `sendLogins.retry` "Try again".
+- Not signed in to iCloud, not drawn: "This <device> isn't signed in to iCloud, so it can't send logins to your Apple TV. Sign in to iCloud in Settings, then scan the code again." Send disabled.
+- iCloud storage full (`quotaExceeded`), not drawn: "Couldn't send because your iCloud storage is full."
+- Already used, not drawn: "This code was already used. If the Apple TV still needs a login, it shows a new code."
+- None of the sources here, not drawn: the list is replaced by "None of the sources this Apple TV asked for are on this <device>. Both need the same iCloud account, and new sources can take a minute to arrive." and only Done.
+- Setup sending screen from `add-iphone-as-setup-device`, not drawn: a third row `onboarding.sending.row.login` for a login source, "Sending the login…", then "Your Apple TV picked up the login." or after 60 s "Login not picked up yet" with "You can also sign in on the Apple TV." Playlist sources have no third row. The login goes without asking, since the user typed it on this screen for that TV.
+- Error style 15 pt on iOS and 22 pt on tvOS in `#FF5F57`. Done markers use the accent.
+
+Both platforms: with Reduce Motion a status in progress reads "In progress" in place of the ring. With VoiceOver each row is one element read as state, name, detail, for example "Ready to send. Home provider. Xtream".
+
+## Identifiers
+
+New: `signIn.qr`, `signIn.qr.code`, `signIn.qr.status`, `signIn.qr.hint`, `sendLogins`, `sendLogins.cancel`, `sendLogins.list`, `sendLogins.row`, `sendLogins.enter`, `sendLogins.missing`, `sendLogins.send`, `sendLogins.status`, `sendLogins.retry`, `sendLogins.done`, `onboarding.sending.row.login`. Rows are told apart by their position in UI tests.
+
+## Code layout
+
+- AntennaCore `Setup/`: `SetupLink` v2 parsing and building, `LoginPayload`, and `LoginRequestPlan` (which sources a code asks for: no credential on this device, a kind with a login, Channels DVR only with a `credentialKey`, first eight in `sortOrder`).
+- `Apps/Shared/Setup/`: `LoginSeal`, `LoginReceiverKey`, `LoginDropping` (protocol: `save(_:token:)`, `fetch(token:)`, `delete(token:)`, `sweep(olderThan:)`) with `CloudKitLoginDrops` and an in-memory fake for tests and previews.
+- TV: `LoginReceiverModel`, `@MainActor`, owned by onboarding's sign-in model and by the source details model, taking the drop store, `CredentialStore`, the connector, the identity provider and a clock. It replaces the key and token every 600 s, polls every 3 s, and stops on leaving, on iCloud sign-out and once every requested source is signed in.
+- iPhone, iPad and Mac: `SendLoginsModel` and `SendLoginsScreen` under `Apps/Shared/Views/Setup/`, opened by `SetupLinkRouter` for a v2 link with `s`. The setup sending screen gains a step that seals and saves the new source's login when the link had `k`.
+- Nothing logs the token, key, link, payload or record name. `LoginPayload`, `LoginReceiverKey` and the drop types print redacted descriptions.
+
+## Testing
+
+On a simulator or in `swift test`:
+- Link v1 and v2 parsing and every error, the payload encoding and its redacted description, and which sources a code asks for: AntennaCore tests.
+- Seal and open round trip, a box opened with the wrong key or the wrong token failing, and a box for an unknown payload version: app unit tests on the iOS and tvOS simulators, since CryptoKit HPKE runs there.
+- The TV's model against the fake drop store: pickup, a failed login, ten-minute replacement, two senders, sign-out, a login before its source.
+- UI tests open the sheet with `xcrun simctl openurl` or a launch argument holding a v2 link, and the TV's sign-in with a fake drop store that delivers on a timer. They cover Send, Enter, the missing-source line, Picked up, Not picked up, offline and focus on the TV.
+- Previews use the fake drop store and fixed keys.
+
+Only on devices:
+- Scanning the code with the iPhone camera and the universal link opening Antenna.
+- CloudKit between two real devices on one account: save, fetch by id, delete, the sweep, rate limits, and the time from Send to pickup.
+- The QR code's legibility from a couch at version 13.
+- Handoff from the TV to an iPad or Mac.
+Task 7.2 is a manual checklist for these, recorded in this file.
+
+## Risks / Trade-offs
+
+- [Ciphertext of a login sits in iCloud for up to ten minutes] → sealed to a key only one TV has in memory, deleted on pickup, swept after ten minutes. Needs the owner's confirmation of the rule change.
+- [Polling CloudKit every 3 seconds for up to ten minutes is about 200 requests] → only while the card is on screen, with backoff on rate limits. Measure on devices.
+- [The sending device cannot tell a wrong-account TV from a slow one] → the sheet compares the requested ids with its own sources and says when it has none.
+- [The 60-second "not picked up" and the 120-second TV hint are guesses] → measure on devices.
+- Open question: should the TV ask for confirmation before keeping a delivered login? Today it checks with the server and keeps what works, since only the user's own devices can write to their private database. Changes the "checks a login before keeping it" requirement.
+- Open question: should the iPhone require Face ID before Send? Keychain items here are readable after first unlock without it. Can be settled during implementation.
+- The `iphone-as-setup-device` delta modifies requirements that exist only in that change. `openspec validate` passes, and archive works only after `add-iphone-as-setup-device` is archived.
