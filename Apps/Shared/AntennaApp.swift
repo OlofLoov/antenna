@@ -16,6 +16,11 @@ struct AntennaApp: App {
     @State private var refresher: SourceRefresher
     /// Whether the group locks are open on this device (group-management capability).
     @State private var locks = GroupLocks()
+    #if !os(tvOS)
+        /// Files shared to Antenna wait here, outside every gate, until a
+        /// screen can show the import sheet (local-m3u-file-import/bring-a-file-in).
+        @State private var inbox = ImportInbox()
+    #endif
 
     init() {
         let container = Self.makeContainer()
@@ -65,6 +70,9 @@ struct AntennaApp: App {
                 .environment(\.sourceRefresher, refresher)
                 .environment(locks)
                 .modifier(GroupLockTimers(locks: locks))
+                #if !os(tvOS)
+                    .receivingFiles(into: inbox)
+                #endif
         }
         .modelContainer(container)
     }

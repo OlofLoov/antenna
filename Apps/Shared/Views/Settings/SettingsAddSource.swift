@@ -9,7 +9,15 @@ struct SettingsAddSource: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.guideStore) private var guideStore
     @Environment(\.onboardingHandoff) private var handoff
-    @State private var model = OnboardingModel(connector: .app, clipboard: .system)
+    @State private var model: OnboardingModel
+
+    /// `fields` opens the form filled in, as from a one-link file's
+    /// "Add the link as a source".
+    init(fields: SourceFields? = nil) {
+        let model = OnboardingModel(connector: .app, clipboard: .system)
+        if let fields { model.fields = fields }
+        _model = State(initialValue: model)
+    }
 
     var body: some View {
         NavigationStack {

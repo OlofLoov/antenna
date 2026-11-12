@@ -14,6 +14,14 @@ struct FileImport {
 
     static let logger = Logger(subsystem: "se.codecrave.antenna", category: "import")
 
+    /// The Keychain, or the in-memory logins of a Debug build launched for import UI tests.
+    nonisolated static var appCredentials: any CredentialStoring {
+        #if DEBUG && !os(tvOS)
+            if let scripted = UITestingImport.credentials { return scripted }
+        #endif
+        return CredentialStore()
+    }
+
     /// What the sheet hands over when the user taps Import or Replace.
     struct Request {
         var inspected: PlaylistImport.Inspected

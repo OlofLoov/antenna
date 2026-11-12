@@ -12,9 +12,9 @@
 
 ## 3. Import sheet and ways in
 
-- [ ] 3.1 Add the import sheet with reading state, summary, name, guide link and Import, and verify UI tests for a good file, a too-large file and each refused kind
-- [ ] 3.2 Add "Import a file" in Sources and Settings, share and Open With handling, and the onboarding link, and verify UI tests for each way in
-- [ ] 3.3 Save the source and load its channels without a relaunch or a playlist request, and verify an integration test that counts match the summary
+- [x] 3.1 Add the import sheet with reading state, summary, name, guide link and Import, and verify UI tests for a good file, a too-large file and each refused kind
+- [x] 3.2 Add "Import a file" in Sources and Settings, share and Open With handling, and the onboarding link, and verify UI tests for each way in
+- [x] 3.3 Save the source and load its channels without a relaunch or a playlist request, and verify an integration test that counts match the summary
 
 ## 4. Re-import and delete
 

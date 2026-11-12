@@ -28,6 +28,8 @@ struct SourceConnector: Sendable {
         /// The Keychain item this Connect created, nil when it updated one
         /// that existed or the source has no login.
         var createdCredential: String?
+        /// The imported file's name, for a file source added from onboarding.
+        var fileName: String?
     }
 
     /// Checks `fields`, contacts the server and saves the source. Throws
