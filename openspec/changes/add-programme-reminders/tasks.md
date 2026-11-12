@@ -6,10 +6,10 @@
 
 ## 2. Reminder record and logic in AntennaCore
 
-- [ ] 2.1 Add the synced reminder record with its identity and the duplicate merge, and verify tests that duplicates show and deliver once and removal deletes every copy
-- [ ] 2.2 Add the schedule with lead time, the 64-notification window and the "Starts at" and "Starts now" text, and verify tests for each lead time and a reminder set inside the lead time
-- [ ] 2.3 Add guide matching for moved, dropped and returning programmes, and verify tests for each rule including the 6-hour limit and a guide that does not reach the start
-- [ ] 2.4 Add the hide-then-delete cleanup for ended programmes and the removal on source deletion, and verify tests with a fast clock
+- [x] 2.1 Add the synced reminder record with its identity and the duplicate merge, and verify tests that duplicates show and deliver once and removal deletes every copy
+- [x] 2.2 Add the schedule with lead time, the 64-notification window and the "Starts at" and "Starts now" text, and verify tests for each lead time and a reminder set inside the lead time
+- [x] 2.3 Add guide matching for moved, dropped and returning programmes, and verify tests for each rule including the 6-hour limit and a guide that does not reach the start
+- [x] 2.4 Add the hide-then-delete cleanup for ended programmes and the removal on source deletion, and verify tests with a fast clock
 
 ## 3. Setting and removing reminders
 
