@@ -15,7 +15,7 @@ struct AntennaApp: App {
     /// Loads sources one at a time and keeps their status (sources-and-settings capability).
     @State private var refresher: SourceRefresher
     /// Whether the group locks are open on this device (group-management capability).
-    @State private var locks = GroupLocks()
+    @State private var locks: GroupLocks
     /// Reminders on this device (programme-reminders capability).
     @State private var reminders: ReminderCenter
     #if os(tvOS)
@@ -28,6 +28,8 @@ struct AntennaApp: App {
         @State private var inbox = ImportInbox()
         /// Setup links from an Apple TV wait here the same way (iphone-as-setup-device capability).
         @State private var setupInbox = SetupInbox()
+        /// Siri and Shortcuts actions read and act through this (app-intents capability).
+        @State private var intents: AppIntentHost
     #endif
     /// Whether the app is unlocked, read before anything else (paywall-and-entitlement capability).
     @State private var unlock: Unlock
@@ -47,7 +49,18 @@ struct AntennaApp: App {
         _guideStore = State(initialValue: guideStore)
         _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore, container: container)))
         _reminders = State(initialValue: Self.reminderCenter(container: container))
-        _unlock = State(initialValue: Unlock.app())
+        let unlock = Unlock.app()
+        _unlock = State(initialValue: unlock)
+        let locks = GroupLocks()
+        _locks = State(initialValue: locks)
+        #if !os(tvOS)
+            let intents = AppIntentHost(.app(container: container, unlock: unlock, locks: locks))
+            IntentContext.provider = intents
+            #if DEBUG
+                if let request = UITestingIntents.request() { intents.open(request) }
+            #endif
+            _intents = State(initialValue: intents)
+        #endif
     }
 
     private static func reminderCenter(container: ModelContainer) -> ReminderCenter {
@@ -114,6 +127,7 @@ struct AntennaApp: App {
             #if !os(tvOS)
                 .receivingFiles(into: inbox)
                 .receivingSetupLinks(into: setupInbox)
+                .environment(\.intentHost, intents)
             #else
                 .environment(shelfLinks)
                 .onOpenURL { shelfLinks.receive($0) }

@@ -61,4 +61,9 @@ check_except "conventions: AVPlayerLayer only in the engine and the player surfa
   'Apps/Shared/Player/(AVPlayerEngine(\+[A-Za-z]+)?|PlayerSurfaceView)\.swift' \
   Apps
 
+check_except "app-intents: Siri and Shortcuts types only in Apps/Shared/Intents, never on Apple TV" \
+  "${word}(AppIntent|AppEntity|AppEnum|AppShortcutsProvider)${end}" \
+  'Apps/Shared/Intents/[A-Za-z]+\.swift' \
+  Apps/Shared Apps/TV Apps/TopShelf
+
 exit "$status"

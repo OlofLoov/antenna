@@ -159,6 +159,7 @@
             .environment(\.browseMetrics, .regular)
             .environment(\.playerFailureMetrics, .regular)
             .environment(\.shellNavigator, navigator)
+            .modifier(IntentRequests(navigator: navigator))
             .reminderBanner(live: live, watch: { watch($0) }, showLive: { section = .live })
             .overlay {
                 #if DEBUG

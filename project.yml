@@ -106,7 +106,8 @@ targets:
     type: application
     platform: tvOS
     sources:
-      - Apps/Shared
+      - path: Apps/Shared
+        excludes: ["Intents/**"]
       - Apps/TV
     dependencies:
       - package: AntennaCore

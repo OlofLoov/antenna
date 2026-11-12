@@ -13,6 +13,7 @@
         @Environment(\.switchProfile) private var switchProfile
         @Environment(\.onboardingHandoff) private var handoff
         @Environment(\.sourceRefresher) private var refresher
+        @Environment(\.intentHost) private var intentHost
         @State private var live: LiveModel?
         @State private var shelves: ShelfLibrary?
         @State private var playback: ShelfPlayback?
@@ -56,8 +57,10 @@
                 refresher?.attach { [weak live] in live?.reload($0) }
                 // Start watching in onboarding plays its first channel here.
                 if let channel = handoff?.takeChannel() { live.pick(channel) }
-                self.shelves = .app(loader)
+                let shelves = ShelfLibrary.app(loader)
+                self.shelves = shelves
                 self.playback = .app(loader) { await live.suspend() }
+                intentHost?.attach(live: live, shelves: shelves, profile: profile)
                 self.lifecycle = lifecycle
             }
         }
@@ -191,6 +194,7 @@
                 }
             }
             .environment(\.shellNavigator, navigator)
+            .modifier(IntentRequests(navigator: navigator))
             .reminderBanner(live: live, watch: { watch($0) }, showLive: { selection = .live })
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with
