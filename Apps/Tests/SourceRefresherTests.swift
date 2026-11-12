@@ -142,6 +142,7 @@ import Testing
             refresher.status(of: source.id).load == .failed("The server answered with an error (500). Check the address and try again."))
     }
 
+    // source-management/sources-sync-between-devices, this device's side
     @Test("sources-and-settings/changes-from-other-devices-show-up-by-themselves: unchanged sources keep their channels")
     func syncChanges() async throws {
         let tag = "sync-\(UUID().uuidString)"

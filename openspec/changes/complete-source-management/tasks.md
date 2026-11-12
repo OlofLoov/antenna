@@ -1,10 +1,16 @@
-## 1. UI tests
+## 1. Covered by other changes
 
-- [ ] 1.1 Invalid URL keeps the sheet open. Open: superseded by onboarding's form; see design.md.
-- [ ] 1.2 No sources shows the empty state. Open: superseded by onboarding's welcome screen; see design.md.
-- [ ] 1.3 Settings lists sources in order. Open: conflicts with add-sources-and-settings, whose rows show no link; see design.md.
-- [ ] 1.4 Tapping a channel starts playback. Open: superseded by Live playing in place; see design.md.
+- [x] 1.1 A link without a scheme keeps the add-source form open with its error: `OnboardingConnectTests.formMistakes` and `OnboardingUITests.testConnectWithAnEmptyFieldSaysWhatToFix` (first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting)
+- [x] 1.2 No source opens onboarding, and deleting the last source returns there: `OnboardingRoutingTests.noSourceOpensOnboarding` and `OnboardingUITests.testNoSourceOpensOnTheWelcomeScreen` (first-run-onboarding/a-new-user-is-asked-for-a-provider), `SettingsUITests.testDeletingEverySourceReturnsToOnboarding` (sources-and-settings/delete-a-source-and-everything-that-came-with-it)
+- [x] 1.3 Sources are listed in the user's order with no link: `SettingsUITests.testEachSourceShowsItsStatusAndNoLink` (sources-and-settings/see-how-each-source-is-doing), `SourcesSettingsTests.reorder` (sources-and-settings/put-sources-in-your-order)
+- [x] 1.4 Picking a channel plays it: `LiveUITests.testPickingAChannelPlaysItInPlace` (live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list), and on Apple TV `ChannelOverlayUITests.testSelectChangesChannel` (tv-channel-overlay/select-changes-channel)
+- [x] 1.5 A change from another device shows up and unchanged sources do not reload: `SourceRefresherTests.syncChanges` (sources-and-settings/changes-from-other-devices-show-up-by-themselves, source-management/sources-sync-between-devices)
 
 ## 2. Device check
 
-- [ ] 2.1 Sources sync between devices, checked by hand on two devices. Open: needs two devices on one iCloud account.
+- [ ] 2.1 Run the two-device check in design.md. Open: needs two devices on one iCloud account, since CloudKit does not sync on a simulator.
+
+## 3. Verify
+
+- [x] 3.1 Each requirement has a test citing `source-management/<requirement-slug>`: `SourceRefresherTests.syncChanges` cites `source-management/sources-sync-between-devices` for this device's side
+- [x] 3.2 `openspec validate --all --strict` and `scripts/check-spec-refs.sh` pass, and the change stays unarchived until 2.1 is done
