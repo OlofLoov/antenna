@@ -189,6 +189,7 @@
                 }
             }
             .environment(\.shellNavigator, navigator)
+            .reminderBanner(live: live, watch: { watch($0) }, showLive: { selection = .live })
             #if os(iOS)
                 // Turning an iPhone sideways on Live fills the screen with
                 // the picture; turning it back returns to the list

@@ -12,7 +12,9 @@
     ///   allow, or deny with `-ui-testing-notifications-answer deny`. With
     ///   `UITESTING_REMINDER_LOG` naming a file, it appends "ask" for each
     ///   prompt and "schedule <title> | <body>" for each notification it
-    ///   adds, so a test can read what would have been delivered.
+    ///   adds, so a test can read what would have been delivered. With
+    ///   `UITESTING_REMINDER_OPEN=<seconds>` it taps each notification that
+    ///   long after it is due.
     /// - `-ui-testing-reminders <seed>` stores reminders at launch.
     /// - `UITESTING_REMINDER_BANNER_SECONDS` shortens the banner's 20 seconds.
     /// - Lead time and delivery state live in their own cleared defaults.
@@ -22,6 +24,7 @@
         static let seedArgument = "-ui-testing-reminders"
         static let logVariable = "UITESTING_REMINDER_LOG"
         static let bannerVariable = "UITESTING_REMINDER_BANNER_SECONDS"
+        static let openVariable = "UITESTING_REMINDER_OPEN"
 
         enum Seed: String {
             /// Three upcoming reminders on Live's Home channels: Weather on
@@ -29,11 +32,13 @@
             /// One, no longer in the guide; Late Film on News One tomorrow;
             /// and one that ended an hour ago.
             case list
-            /// Kick-off on News One (iPhone, iPad, Mac) or Channel a1 (Apple
+            /// Kick-off on News One (iPhone, iPad, Mac) or Channel a2 (Apple
             /// TV), two minutes after launch, so it is due at once.
             case due
             /// As `due`, on a channel that no source has.
             case missing
+            /// As `due`, due eight seconds after launch with the five-minute lead time.
+            case soon
         }
 
         @MainActor static let launched = Date.now
@@ -60,7 +65,8 @@
                     default: .notDetermined
                     }
                 let log = ProcessInfo.processInfo.environment[logVariable].map { URL(fileURLWithPath: $0) }
-                return ScriptedNotifications(state: state, allows: value(after: answerArgument) != "deny", log: log)
+                let opens = ProcessInfo.processInfo.environment[openVariable].flatMap(Double.init)
+                return ScriptedNotifications(state: state, allows: value(after: answerArgument) != "deny", log: log, opens: opens)
             #endif
         }
 
@@ -84,7 +90,7 @@
             let context = container.mainContext
             #if os(tvOS)
                 let source = UITestingShell.playlistID
-                let channel = ("a1", "Channel a1")
+                let channel = ("a2", "Channel a2")
             #else
                 let source = UITestingLive.homeID
                 let channel = ("news-one", "News One")
@@ -111,6 +117,8 @@
                 add("Kick-off", channel.0, channel.1, start: 120)
             case .missing:
                 add("Kick-off", "gone", "Gone TV", start: 120)
+            case .soon:
+                add("Kick-off", channel.0, channel.1, start: 308)
             }
             try? context.save()
         }
@@ -122,12 +130,16 @@
         private var state: ReminderAuthorization
         private let allows: Bool
         private let log: URL?
+        /// Seconds after a notification is due that it is tapped; nil never taps.
+        private let opens: Double?
         private var pending: [String: ReminderNotificationRequest] = [:]
+        private var opened: (@MainActor (String) -> Void)?
 
-        init(state: ReminderAuthorization, allows: Bool, log: URL?) {
+        init(state: ReminderAuthorization, allows: Bool, log: URL?, opens: Double? = nil) {
             self.state = state
             self.allows = allows
             self.log = log
+            self.opens = opens
         }
 
         func authorization() async -> ReminderAuthorization { state }
@@ -146,11 +158,24 @@
             }
             for request in requests where pending[request.id] == nil {
                 append("schedule \(request.title) | \(request.body)")
+                if let opens { tap(request, after: opens) }
             }
             pending = wanted
         }
 
-        func listen(opened: @escaping @MainActor (String) -> Void, presented: @escaping @MainActor (String) -> Void) {}
+        func listen(opened: @escaping @MainActor (String) -> Void, presented: @escaping @MainActor (String) -> Void) {
+            self.opened = opened
+        }
+
+        /// Taps the notification `delay` seconds after it is due, as a user would.
+        private func tap(_ request: ReminderNotificationRequest, after delay: Double) {
+            Task {
+                try? await Task.sleep(for: .seconds(max(0, request.fireAt.timeIntervalSinceNow) + delay))
+                guard let key = ReminderNotificationRequest.key(fromID: request.id) else { return }
+                append("open \(request.title)")
+                opened?(key)
+            }
+        }
 
         private func append(_ line: String) {
             guard let log else { return }

@@ -20,7 +20,7 @@
 ## 4. Delivery
 
 - [x] 4.1 Schedule notifications on iPhone, iPad and Mac and ask permission after the first reminder is saved, and verify integration tests for the prompt timing and the delivered text
-- [ ] 4.2 Add the in-app banner on every device, the missed-reminder banner on return, and the 20-second timeout, and verify UI tests including Menu on Apple TV
+- [x] 4.2 Add the in-app banner on every device, the missed-reminder banner on return, and the 20-second timeout, and verify UI tests including Menu on Apple TV
 - [ ] 4.3 Make Watch and a notification tap open Live and play the channel, and verify UI tests for a channel outside the current group, one already playing, a missing channel and the locked paywall
 
 ## 5. Reminders page
@@ -31,5 +31,5 @@
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
 - [ ] 6.2 `/opsx:verify` passes

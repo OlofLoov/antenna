@@ -65,3 +65,7 @@ Calls made while building, recorded here instead of asked.
 - A device that has never been asked shows "Allow notifications" in the notice. Only a tap on it asks; opening Settings or the page asks nothing.
 - "Starts now" carries the channel too: "Starts now on Sport One".
 - Copies of one reminder are deleted down to the winner when the app tidies on each return to the front, along with reminders ten minutes past their end.
+- On iPhone, iPad and Mac the banner sits over the tab bar layout or the columns, so it shows over Live, the Guide, Movies, Search and Settings; a sheet such as the guide's details covers it. A swipe up closes it too.
+- Watch from a notification tapped while Antenna was closed opens Live at once and plays the channel when its source loads. When every source has settled without the channel, nothing plays.
+- On Apple TV the banner remembers where focus was and puts it back when it closes. Watch plays the channel full screen with the overlay's group set to All channels when the current group lacks it.
+- `ReminderCenter.locked` hides the banner and drops Watch requests, as "the paid unlock has lapsed" asks. The app sets it from the unlock state that `add-paywall-and-entitlement` adds; until that lands, nothing sets it.
