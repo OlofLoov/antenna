@@ -2,14 +2,14 @@
 
 ## 1. Input parsing
 
-- [ ] 1.1 Add MAC normalization and portal address checks, and verify core tests for each accepted and rejected form
+- [x] 1.1 Add MAC normalization and portal address checks, and verify core tests for each accepted and rejected form
 
 ## 2. Sign-in and session
 
-- [ ] 2.1 Add endpoint discovery and sign-in with the optional login, and verify core tests against the request stub for each address form
-- [ ] 2.2 Map each Connect failure to its own error, and verify core tests that an outage never reads as a wrong address
-- [ ] 2.3 Derive the serial number, device ids and signature from the MAC, once the CryptoKit decision lands, and verify a core test against the expected values for `00:1A:79:12:34:56`
-- [ ] 2.4 Share one sign-in between concurrent callers and renew a rejected session once, and verify core tests with two simultaneous requests and a repeat that is also rejected
+- [x] 2.1 Add endpoint discovery and sign-in with the optional login, and verify core tests against the request stub for each address form
+- [x] 2.2 Map each Connect failure to its own error, and verify core tests that an outage never reads as a wrong address
+- [x] 2.3 Derive the serial number, device ids and signature from the MAC, once the CryptoKit decision lands, and verify a core test against the expected values for `00:1A:79:12:34:56`
+- [x] 2.4 Share one sign-in between concurrent callers and renew a rejected session once, and verify core tests with two simultaneous requests and a repeat that is also rejected
 
 ## 3. Channels
 
