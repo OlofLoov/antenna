@@ -2,6 +2,19 @@
 
 ## MODIFIED Requirements
 
+### Requirement: Xtream credentials go to the Keychain only
+The system SHALL store an Xtream username and password as one synchronizable Keychain item keyed by the source's id, and the synced source record SHALL hold only that key.
+
+#### Scenario: Xtream save
+- **GIVEN** type Xtream Codes with a username and password
+- **WHEN** the source is saved
+- **THEN** the Keychain holds a synchronizable item under service `se.codecrave.antenna.sources` whose account is the source's id, and the source record holds the key but neither the username nor the password
+
+#### Scenario: Blank username or password
+- **GIVEN** type Xtream Codes with an empty username or password
+- **WHEN** the user taps Connect
+- **THEN** nothing is saved and no Keychain item is written, because an Xtream source needs a username and password
+
 ### Requirement: Deleting a source removes its credential
 The system SHALL remove a source's Keychain item when the user deletes the source on any platform, after the user confirms the delete.
 
@@ -68,3 +81,24 @@ The system SHALL load every source in sort order into one channel list at every 
 ### Requirement: Load failure is recorded
 **Reason**: One recorded error for the whole list is replaced by a status per source, shown on each source's row and kept on this device only.
 **Migration**: See `sources-and-settings` requirements "See how each source is doing" and "A failed refresh keeps your channels".
+
+## ADDED Requirements
+
+### Requirement: An Xtream source needs a username and password
+The system SHALL refuse to save an Xtream source whose username or password is empty or only spaces, because the provider issues both, and SHALL save an M3U playlist link with neither.
+
+#### Scenario: Adding an Xtream source without a login
+- **GIVEN** the add-source form, in onboarding or in Settings, with type Xtream and an empty username or password
+- **WHEN** the user taps Connect
+- **THEN** nothing is sent or saved and the form names the empty field
+
+#### Scenario: Adding an M3U playlist link
+- **GIVEN** the add-source form with type M3U and a playlist link
+- **WHEN** the user taps Connect
+- **THEN** the playlist is fetched and saved without asking for a username or password
+
+#### Scenario: Emptying the username in a source's details
+- **GIVEN** a saved Xtream source's details
+- **WHEN** the user empties the username and saves, or saves an empty password on a device without the source's login
+- **THEN** the save is refused with "Enter your username and password." and nothing changes
+- **AND** with the login on this device, an empty password field keeps the saved password

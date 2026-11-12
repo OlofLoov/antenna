@@ -72,7 +72,7 @@ Details status block, one line each:
 Details form:
 - The Xtream password field is empty, secure, with the placeholder "••••••••". Leaving it empty keeps the saved password.
 - Apple TV, login not on this device: a "Sign in on this Apple TV" button above empty username and password fields. Other platforms show the empty fields without the button.
-- Errors under the form: "Enter a valid URL." for text without a scheme; "This source is already added." for a duplicate; "Enter your username and password." when no login exists on this device and either field is empty; otherwise the `add-first-run-onboarding` sentence for the failure, or the Keychain write message from `source-management`.
+- Errors under the form: "Enter a valid URL." for text without a scheme; "This source is already added." for a duplicate; "Enter your username and password." when the username is empty, or when no login exists on this device and the password is empty; otherwise the `add-first-run-onboarding` sentence for the failure, or the Keychain write message from `source-management`.
 - A duplicate is another source of the same type with the same link, compared after trimming whitespace and one trailing slash and lower-casing scheme and host. For Xtream it must also have the same username in its Keychain item on this device; a different username, or an unreadable or missing item, is not a duplicate.
 - An emptied name is replaced by the link's host.
 
@@ -126,3 +126,4 @@ About: "Version <CFBundleShortVersionString> (<CFBundleVersion>)".
 - Add a source in Settings opens onboarding's form and checklist in a sheet; Start watching closes the sheet.
 - Settings UI tests run on the scripted Live sources, which now load through the app's refresher so the rows show real states.
 - Open on launch and the session restore from `add-session-restore-and-recently-watched` both pick the first tab. The restored tab comes first, and a preference other than Live then replaces it, so Live as the default keeps the restore. The two specs disagree on this; the order here is a stopgap until one of them settles it.
+- An Xtream source always needs a username and a password, since the provider issues both; M3U links need neither. The `source-management` spec said blank fields were saved as typed, which no form allowed by then. Onboarding and the Settings add-source form share one field check. The details form now refuses an emptied username too, and a password of only spaces counts as empty. Sign in with Apple cannot stand in for this login, because it is the provider's account, not the user's Apple ID.

@@ -20,6 +20,7 @@
 - [x] 3.1 Build the details form with the hidden password, and verify a UI test that the saved password appears in no field or log
 - [x] 3.2 Check a changed link or login against the server before saving, and verify integration tests for a change that works, one that fails, a bad link and a duplicate
 - [ ] 3.3 Add Sign in on this Apple TV for Xtream sources, and verify a UI test that the source loads and stops waiting Open: built and covered by an integration test; no UI test, since typing a login with the Siri Remote keyboard from a UI test is unreliable.
+- [x] 3.4 Refuse an Xtream source without a username or password in the details form, as onboarding and the add-source form do, and verify core and integration tests citing `source-management/an-xtream-source-needs-a-username-and-password`
 
 ## 4. Delete
 
