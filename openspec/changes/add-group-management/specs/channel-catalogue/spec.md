@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Group list and order
-The system SHALL list Favorites, then All channels, then for each source in input order its named groups and finally its Ungrouped group. A source's named groups SHALL follow the provider's category order when there is one, else first appearance. When the user has set group rules, the list SHALL follow the user's order after Favorites and All channels and leave out hidden groups and, while locks are closed, locked ones.
+The system SHALL list Favorites, then Recents when it has channels, then All channels, then for each source in input order its named groups and finally its Ungrouped group. A source's named groups SHALL follow the provider's category order when there is one, else first appearance. When the user has set group rules, the list SHALL follow the user's order after Favorites, Recents and All channels and leave out hidden groups and, while locks are closed, locked ones.
 
 #### Scenario: Two sources, one with a category order
 - **GIVEN** source A first with groups "Sport", "News" and two channels with no group, and source B second with channels in "Kids", "Sport", "Docs" and one whose group is "  ", and B's category order "Sport", " ", "Kids", "Sport", "Radio"
@@ -29,6 +29,12 @@ The system SHALL list Favorites, then All channels, then for each source in inpu
 - **GIVEN** input whose channels from sources A and B are mixed, with A's first channel ahead of B's
 - **WHEN** the catalogue is built
 - **THEN** A counts as the first source and B as the second, and each source's channels are taken in position order
+
+#### Scenario: Recents in the group list
+- **GIVEN** the two-source catalogue and a recents list naming two channels that resolve
+- **WHEN** the catalogue is built
+- **THEN** the groups are Favorites, Recents, All channels, then the source groups as before
+- **AND** with no recents that resolve, Recents is absent
 
 #### Scenario: No group rules
 - **GIVEN** the user has set no group rules
