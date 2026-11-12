@@ -28,6 +28,30 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertFalse(element(app, "channels.emptyState").exists)
     }
 
+    // first-run-onboarding/a-new-user-is-asked-for-a-provider, after a lapse
+    // design-system/nothing-shows-before-the-paywall
+    func testALapsedPurchaseShowsThePaywallInPlaceOfOnboarding() {
+        let app = launch("signedIn", ["-antenna.entitlement", "expired"])
+        XCTAssertTrue(element(app, "paywall.root").waitForExistence(timeout: 10))
+        XCTAssertFalse(element(app, "onboarding.welcome").exists, "onboarding shows behind the paywall")
+        element(app, "paywall.product.lifetime").tap()
+        XCTAssertTrue(element(app, "onboarding.welcome").waitForExistence(timeout: 10))
+    }
+
+    // first-run-onboarding/a-returning-user-goes-straight-to-their-channels, after a lapse
+    func testALapsedPurchaseKeepsTheSavedProvider() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-live", "channels", "-antenna.entitlement", "revoked", "-antenna.store", "restoreShared"]
+        app.launch()
+        XCTAssertTrue(element(app, "paywall.root").waitForExistence(timeout: 10))
+        XCTAssertFalse(element(app, "onboarding.welcome").exists)
+        element(app, "paywall.restore").tap()
+        XCTAssertTrue(element(app, "paywall.continue").waitForExistence(timeout: 5))
+        element(app, "paywall.continue").tap()
+        XCTAssertTrue(app.tabBars.buttons["Live"].waitForExistence(timeout: 10), "the saved provider opens the app")
+        XCTAssertFalse(element(app, "onboarding.welcome").exists)
+    }
+
     // first-run-onboarding/a-new-user-is-asked-for-a-provider
     func testNotSignedInToICloudHidesTheSyncNote() {
         let app = launch("signedOut")

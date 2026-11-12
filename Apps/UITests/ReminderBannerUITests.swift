@@ -121,6 +121,26 @@ final class ReminderBannerUITests: XCTestCase {
     }
 
     // programme-reminders/a-banner-while-antenna-is-open, on iPad
+    // programme-reminders/watch-plays-the-channel, the paid unlock has lapsed
+    // paywall-and-entitlement/when-access-ends-the-app-locks-and-keeps-your-data
+    func testBehindThePaywallNoBannerShowsAndANotificationTapPlaysNothing() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
+        for notifications in ["denied", "allowed"] {
+            let app = XCUIApplication()
+            app.launchArguments = [
+                "-ui-testing-live", "channels", "-ui-testing-notifications", notifications, "-ui-testing-reminders", "due",
+                "-antenna.entitlement", "expired",
+            ]
+            app.launchEnvironment["UITESTING_ENGINE_LOG"] = engine.path
+            app.launchEnvironment["UITESTING_REMINDER_OPEN"] = "2"
+            app.launch()
+            XCTAssertTrue(app.element("paywall.root").waitForExistence(timeout: 10))
+            XCTAssertFalse(app.element("reminders.banner").waitForExistence(timeout: 6), "a banner over the paywall")
+            XCTAssertTrue(app.element("paywall.root").exists, "a notification tap opened the app")
+            XCTAssertEqual((try? String(contentsOf: engine, encoding: .utf8)) ?? "", "", "something played")
+        }
+    }
+
     func testOnIPadTheBannerSitsTopTrailingAndWatchPlays() throws {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "the columns run on an iPad")
         let app = XCUIApplication()
