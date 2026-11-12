@@ -117,7 +117,7 @@
         private func row(_ key: RowKey, _ channel: Channel, at date: Date) -> some View {
             let line = live.programmes.line(for: channel, at: date)
             let number = live.catalogue.number(for: key)
-            let isPlaying = channel == live.playing
+            let isPlaying = channel == live.listedChannel
             var progress: Double?
             var remaining: String?
             if case .programme(_, let fraction, let left) = line {
@@ -133,6 +133,7 @@
             } logo: {
                 Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: isPlaying)
             }
+            .liveMultiViewMenu(channel)
             .browseFocusRing(key == cursor)
             .accessibilityValue(key == cursor ? "Keyboard focus" : "")
             .id(key)
@@ -158,6 +159,31 @@
                 description: Text("Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud.")
             )
             .accessibilityIdentifier("channels.emptyState")
+        }
+    }
+
+    /// The details panel for the playing channel, with up to three
+    /// programmes after the current one.
+    struct LiveDetails: View {
+        let channel: Channel
+        @Environment(LiveModel.self) private var live
+
+        var body: some View {
+            TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                let text = live.nowText(for: channel, at: context.date)
+                Browse.Panel(
+                    channel: channel.name,
+                    now: .init(
+                        title: text.title, times: text.times, meta: text.meta, summary: text.summary,
+                        progress: text.progress),
+                    next: text.next.map { .init(time: LiveModel.time($0.start), title: $0.title) }
+                ) {
+                    Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
+                } trailing: {
+                    LiveFavoriteButton(channel: channel)
+                        .environment(\.browseMetrics, .regular)
+                }
+            }
         }
     }
 #endif

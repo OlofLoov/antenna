@@ -13,11 +13,13 @@ extension LiveModel {
     /// with nothing playing
     /// (player-controls-and-playback-errors/the-channel-shows-on-the-lock-screen).
     func nowPlayingInfo(at date: Date) -> NowPlayingInfo? {
-        guard let channel = playing else { return nil }
+        // In multi-view the selected tile's channel shows (multi-view/sound-follows-the-highlighted-tile).
+        guard let channel = listedChannel else { return nil }
         let text = nowText(for: channel, at: date)
+        let isPlaying = multiView.map { $0.status($0.session.selected) == .playing } ?? (!isPaused && player.failure == nil)
         return NowPlayingInfo(
             title: text.times == nil ? channel.name : text.title, channelLine: subject(for: channel).line,
-            isPlaying: !isPaused && player.failure == nil, artwork: NowPlayingArtwork.cached(channel.logoURL))
+            isPlaying: isPlaying, artwork: NowPlayingArtwork.cached(channel.logoURL))
     }
 
     /// Turns on play and pause from the lock screen, then keeps the lock
