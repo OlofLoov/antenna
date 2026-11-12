@@ -202,3 +202,22 @@ The system SHALL list a Reminders row in Settings that opens the Reminders page 
 - **GIVEN** Settings on any device
 - **WHEN** the user looks at the list
 - **THEN** a Reminders row shows the number of upcoming reminders, or no number at zero, and opens the Reminders page
+
+### Requirement: Look after a Jellyfin server
+The system SHALL show a Jellyfin server's status like any other source, SHALL let the user change its address, username and password after the server accepts them, SHALL never show its saved password, and SHALL offer Sign in on this Apple TV when its login has not reached the Apple TV.
+
+#### Scenario: A Jellyfin server in the list
+- **GIVEN** a Jellyfin server that loaded, failed, or is waiting for its login
+- **WHEN** the user opens Sources and Settings
+- **THEN** its row shows the Jellyfin type and the same status line an Xtream source would show
+
+#### Scenario: Change a Jellyfin server's login
+- **GIVEN** a Jellyfin server's details, with the username filled in and the password field empty
+- **WHEN** the user changes the address, username or password and saves
+- **THEN** Antenna checks the server and signs in with them first, and saves and reloads only when the server accepts them
+- **AND** leaving the password empty keeps the saved one
+
+#### Scenario: Sign in to a Jellyfin server on Apple TV
+- **GIVEN** a Jellyfin server whose login has not reached this Apple TV
+- **WHEN** the user opens its details, chooses Sign in on this Apple TV and enters a login the server accepts
+- **THEN** the source loads and its row stops saying it is waiting

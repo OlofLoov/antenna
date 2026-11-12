@@ -61,7 +61,9 @@ Guide part of the loaded line:
 | Failed, never loaded on this device | "Guide failed" |
 | Failed after a load on this device | "Guide <n> days" from the last load |
 
-Each row also shows the source name and a type badge, "M3U", "XTREAM" or "STALKER".
+Each row also shows the source name and a type badge, "M3U", "XTREAM", "STALKER" or "JELLYFIN".
+
+A Jellyfin server shows the same states as an Xtream source.
 
 Details status block, one line each:
 - "412 channels in 18 groups"
@@ -73,6 +75,7 @@ Details status block, one line each:
 Details form:
 - The Xtream password field is empty, secure, with the placeholder "••••••••". Leaving it empty keeps the saved password.
 - A Stalker portal shows Portal, then a section headed "Login" with MAC address, Login (placeholder "Optional") and Password (placeholder "••••••••" when a password is saved, otherwise "Optional"). The MAC and login are filled from the Keychain item; the password field starts empty and leaving it empty keeps the saved one.
+- A Jellyfin server shows Server, then Username and Password as for Xtream, the password empty with the placeholder "••••••••".
 - Apple TV, login not on this device: a "Sign in on this Apple TV" button above empty username and password fields, or empty MAC address, login and password fields for a portal. Other platforms show the empty fields without the button.
 - Errors under the form: "Enter a valid URL." for text without a scheme; "This source is already added." for a duplicate; "Enter your username and password." when no login exists on this device and either field is empty; "Enter the MAC address." for a portal with the MAC field empty, and "Enter a valid MAC address, like 00:1A:79:12:34:56." when it does not parse; otherwise the `add-first-run-onboarding` sentence for the failure, or the Keychain write message from `source-management`.
 - A duplicate is another source of the same type with the same link, compared after trimming whitespace and one trailing slash and lower-casing scheme and host. For Xtream it must also have the same username in its Keychain item on this device; a different username, or an unreadable or missing item, is not a duplicate.
@@ -131,3 +134,5 @@ About: "Version <CFBundleShortVersionString> (<CFBundleVersion>)".
 - Stalker portals load like the other sources now that `add-stalker-portal-source` is archived, so their rows show the refresher's states and the "Stalker portals are coming later" line and its status case are gone. Their details edit the portal address, the MAC address and the optional login and password, and a change to any of them signs in to the portal through `SourceConnector.probe` before it saves, as a changed Xtream login does. The Keychain item keeps the MAC in `username` and the login in `login`.
 - Sign in on this Apple TV covers portals too. Every source with a login now has one, so the "Its login cannot reach this Apple TV." line is gone.
 - A portal duplicate is another portal at the same address with the same MAC address in its Keychain item on this device, the rule Xtream uses for its username.
+- Jellyfin servers load like the other sources. Their details edit the address, username and password, and a change to any of them goes through `SourceConnector.probe`, which checks the server and signs in before it saves. Sign in on this Apple TV asks a Jellyfin server for a username and password. A Jellyfin duplicate is another Jellyfin server at the same address with the same username in its Keychain item on this device, the Xtream rule.
+- Deleting a Jellyfin server also clears this device's sign-in key for it.

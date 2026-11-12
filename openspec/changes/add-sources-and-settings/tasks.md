@@ -37,7 +37,11 @@
 - [x] 6.2 Edit a portal's address, MAC address, login and password in its details with the saved password hidden, check a change with the portal before saving, and verify with integration tests citing `sources-and-settings/your-password-stays-hidden` and `sources-and-settings/fix-a-source-s-link-or-login`
 - [x] 6.3 Offer Sign in on this Apple TV for a portal, and verify with an integration test citing `sources-and-settings/sign-in-on-this-apple-tv`
 
-## 7. Verify
+## 7. Jellyfin servers
 
-- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes Open until 3.3, 4.1 and 5.2 are done.
+- [ ] 7.1 Show a Jellyfin server's status and type badge, edit its address, username and password with the saved password hidden, check a change with the server before saving, offer Sign in on this Apple TV, and verify with integration tests citing `sources-and-settings/look-after-a-jellyfin-server`
+
+## 8. Verify
+
+- [x] 8.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [ ] 8.2 `/opsx:verify` passes Open until 3.3, 4.1 and 5.2 are done.
