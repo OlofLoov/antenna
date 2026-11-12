@@ -1,8 +1,8 @@
 import AntennaCore
 import SwiftUI
 
-/// "What kind of source?" on Apple TV (`TV-Onboard-2`): three cards, the
-/// Stalker card focusable but doing nothing on select.
+/// "What kind of source?" on Apple TV (`TV-Onboard-2`): three cards, each
+/// opening its form (first-run-onboarding/add-a-stalker-portal).
 enum OnboardingKinds {
     struct Television: View {
         let choose: (SourceKind) -> Void
@@ -38,14 +38,12 @@ enum OnboardingKinds {
                     }
                     .accessibilityIdentifier("onboarding.kind.xtream")
                     Button {
+                        choose(.stalker)
                     } label: {
                         Card(
                             systemImage: "server.rack", title: "Stalker portal",
-                            detail: "A portal address and a MAC address, the way a MAG box signs in.", footnote: "COMING LATER", later: true
-                        )
+                            detail: "A portal address and a MAC address, the way a MAG box signs in.", footnote: "Also called Ministra")
                     }
-                    .accessibilityLabel("Stalker portal, coming later")
-                    .accessibilityAddTraits(.isStaticText)
                     .accessibilityIdentifier("onboarding.kind.stalker")
                 }
                 .buttonStyle(CardStyle())
@@ -61,7 +59,6 @@ enum OnboardingKinds {
         let title: String
         let detail: String
         let footnote: String
-        var later = false
         @Environment(\.isFocused) private var isFocused
 
         var body: some View {
@@ -70,24 +67,24 @@ enum OnboardingKinds {
                     .font(.system(size: 34))
                     .frame(width: 80, height: 80)
                     .background(
-                        (isFocused ? Palette.ground.opacity(0.08) : Palette.surface(later ? 0.06 : 0.1)),
+                        (isFocused ? Palette.ground.opacity(0.08) : Palette.surface(0.1)),
                         in: RoundedRectangle(cornerRadius: 20)
                     )
                     .accessibilityHidden(true)
                 Text(title).font(.system(size: 34, weight: .bold))
                 Text(detail)
                     .font(.system(size: 23))
-                    .foregroundStyle(isFocused ? Color(white: 0.3) : later ? Palette.textMuted : OnboardingStyle.body)
+                    .foregroundStyle(isFocused ? Color(white: 0.3) : OnboardingStyle.body)
                 Spacer(minLength: 0)
                 Text(footnote)
-                    .font(.system(size: 20, weight: later ? .semibold : .regular))
+                    .font(.system(size: 20))
                     .foregroundStyle(isFocused ? Color(white: 0.3) : Palette.textMuted)
             }
-            .foregroundStyle(isFocused ? Palette.ground : later ? Palette.textMuted : Palette.text)
+            .foregroundStyle(isFocused ? Palette.ground : Palette.text)
             .padding(40)
             .frame(width: 480, height: 420, alignment: .topLeading)
             .background(
-                isFocused ? Palette.focus : Palette.surface(later ? 0.04 : 0.08), in: RoundedRectangle(cornerRadius: 20)
+                isFocused ? Palette.focus : Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20)
             )
             .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 22, y: 16)
             .scaleEffect(isFocused ? 1.04 : 1)

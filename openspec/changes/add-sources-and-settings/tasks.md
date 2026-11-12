@@ -33,9 +33,9 @@
 
 ## 6. Stalker portals
 
-- [ ] 6.1 Show a Stalker portal's load status in its row and details and offer Refresh now, and verify with a status test citing `sources-and-settings/see-how-each-source-is-doing`
-- [ ] 6.2 Edit a portal's address, MAC address, login and password in its details with the saved password hidden, check a change with the portal before saving, and verify with integration tests citing `sources-and-settings/your-password-stays-hidden` and `sources-and-settings/fix-a-source-s-link-or-login`
-- [ ] 6.3 Offer Sign in on this Apple TV for a portal, and verify with an integration test citing `sources-and-settings/sign-in-on-this-apple-tv`
+- [x] 6.1 Show a Stalker portal's load status in its row and details and offer Refresh now, and verify with a status test citing `sources-and-settings/see-how-each-source-is-doing`
+- [x] 6.2 Edit a portal's address, MAC address, login and password in its details with the saved password hidden, check a change with the portal before saving, and verify with integration tests citing `sources-and-settings/your-password-stays-hidden` and `sources-and-settings/fix-a-source-s-link-or-login`
+- [x] 6.3 Offer Sign in on this Apple TV for a portal, and verify with an integration test citing `sources-and-settings/sign-in-on-this-apple-tv`
 
 ## 7. Verify
 

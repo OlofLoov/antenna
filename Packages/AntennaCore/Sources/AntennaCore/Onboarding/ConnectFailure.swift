@@ -23,6 +23,8 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     case credentials(String)
     /// The MAC address is not six pairs of hex digits.
     case invalidMAC
+    /// The Stalker portal did not accept the MAC address or login.
+    case portalRejected
     /// No Stalker portal answered at any address the portal could be under.
     case noPortal(host: String)
     /// The Stalker portal refused the device with this message, the MAC
@@ -41,9 +43,10 @@ public enum ConnectFailure: Error, Equatable, Sendable {
         case .serverError(let status): "The server answered with an error (\(status)). Check the address and try again."
         case .unreadable: "The server replied with something Antenna could not read."
         case .credentials(let reason): "Could not store credentials: \(reason)"
-        case .invalidMAC: "Enter the MAC address as six pairs of letters and digits, like 00:1A:79:12:34:56."
-        case .noPortal(let host): "No Stalker portal answered at \(host). Check the portal address."
-        case .deviceRefused(let message): "The portal turned this device down. It said “\(message)”."
+        case .invalidMAC: "Enter a valid MAC address, like 00:1A:79:12:34:56."
+        case .portalRejected: "Could not sign in. Check the MAC address, and the login if you have one."
+        case .noPortal(let host): "No Stalker portal answered at \(host). Check the address and try again."
+        case .deviceRefused(let message): "The portal refused this device with the message “\(message)”."
         }
     }
 
@@ -66,7 +69,7 @@ public enum ConnectFailure: Error, Equatable, Sendable {
             switch stalker {
             case .transport(let code): self = Self(code: code, host: host)
             case .serverError(let status): self = .serverError(status: status)
-            case .notAuthorized: self = .rejected
+            case .notAuthorized: self = .portalRejected
             case .deviceRefused(let message): self = .deviceRefused(message: message)
             case .noPortal: self = .noPortal(host: host)
             case .unreadable, .notStalkerChannel, .noLink: self = .unreadable
@@ -96,7 +99,7 @@ public enum ConnectFailure: Error, Equatable, Sendable {
 
 /// A required field of the add-source form.
 public enum SourceField: String, Sendable, CaseIterable {
-    case server, username, password, playlist
+    case server, username, password, playlist, portal, mac
 
     /// How the "Enter the …" message names it.
     public var spokenName: String {
@@ -105,6 +108,8 @@ public enum SourceField: String, Sendable, CaseIterable {
         case .username: "username"
         case .password: "password"
         case .playlist: "playlist URL"
+        case .portal: "portal address"
+        case .mac: "MAC address"
         }
     }
 }

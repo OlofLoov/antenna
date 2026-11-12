@@ -31,9 +31,9 @@
 
 ## 6. Stalker portals
 
-- [ ] 6.1 Enable the Stalker card and segment with the Portal, MAC address, Login and Password fields on every platform, connect with only the portal and MAC, and verify with an integration test citing `first-run-onboarding/add-a-stalker-portal`
-- [ ] 6.2 Check the portal and MAC address before any request, give each portal failure its sentence, and verify with tests citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting` and `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
-- [ ] 6.3 Ask each Stalker portal for its MAC address in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
+- [x] 6.1 Enable the Stalker card and segment with the Portal, MAC address, Login and Password fields on every platform, connect with only the portal and MAC, and verify with an integration test citing `first-run-onboarding/add-a-stalker-portal`
+- [x] 6.2 Check the portal and MAC address before any request, give each portal failure its sentence, and verify with tests citing `first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting` and `first-run-onboarding/a-failed-connection-says-why-and-saves-nothing`
+- [x] 6.3 Ask each Stalker portal for its MAC address in the Apple TV sign-in, and verify with an integration test citing `first-run-onboarding/sign-in-again-on-an-apple-tv`
 
 ## 7. Verify
 

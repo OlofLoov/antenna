@@ -47,11 +47,6 @@ enum OnboardingForm {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
                         KindPicker(kind: fields.kind, choose: actions.choose)
-                        Text("Stalker portals are coming later")
-                            .font(.system(size: 13))
-                            .foregroundStyle(Palette.textMuted)
-                            .padding(.horizontal, 4)
-                            .padding(.top, -14)
                         if status.clipboard != .hidden {
                             ClipboardBanner(offer: status.clipboard, fillIn: actions.fillIn)
                         }
@@ -93,7 +88,7 @@ enum OnboardingForm {
 
         @ViewBuilder private var fieldGroup: some View {
             VStack(alignment: .leading, spacing: 8) {
-                Text(fields.kind == .m3u ? "Playlist" : "Login")
+                Text(groupTitle)
                     .font(.system(size: 13, weight: .semibold))
                     .tracking(1)
                     .textCase(.uppercase)
@@ -104,14 +99,32 @@ enum OnboardingForm {
                         TextField("Optional", text: $fields.name)
                             .accessibilityIdentifier("onboarding.field.name")
                     }
-                    if fields.kind == .m3u {
+                    switch fields.kind {
+                    case .m3u, .m3uFile:
                         Row(label: "Playlist") {
                             LinkField(placeholder: "https://", text: $fields.url, identifier: "onboarding.field.playlist")
                         }
                         Row(label: "Guide", last: true) {
                             LinkField(placeholder: "Optional XMLTV link", text: $fields.epgURL, identifier: "onboarding.field.guide")
                         }
-                    } else {
+                    case .stalker:
+                        Row(label: "Portal") {
+                            LinkField(placeholder: "http://", text: $fields.url, identifier: "onboarding.field.portal")
+                        }
+                        Row(label: "MAC") {
+                            TextField("00:1A:79:12:34:56", text: $fields.mac)
+                                .plainEntry()
+                                .accessibilityIdentifier("onboarding.field.mac")
+                        }
+                        Row(label: "Login") {
+                            TextField("Optional", text: $fields.username)
+                                .plainEntry()
+                                .accessibilityIdentifier("onboarding.field.username")
+                        }
+                        Row(label: "Password", last: true) {
+                            PasswordField(text: $fields.password, reveals: $revealsPassword, revealSize: 44, placeholder: "Optional")
+                        }
+                    case .xtream:
                         Row(label: "Server") {
                             LinkField(placeholder: "http://", text: $fields.url, identifier: "onboarding.field.server")
                         }
@@ -143,6 +156,14 @@ enum OnboardingForm {
                 }
             }
         }
+
+        private var groupTitle: String {
+            switch fields.kind {
+            case .m3u, .m3uFile: "Playlist"
+            case .xtream: "Login"
+            case .stalker: "Portal"
+            }
+        }
     }
 
     /// Apple TV: the title, the stacked fields, Connect with the Keychain
@@ -156,29 +177,31 @@ enum OnboardingForm {
             HStack(alignment: .center, spacing: 80) {
                 VStack(alignment: .leading, spacing: 28) {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(fields.kind == .m3u ? "M3U playlist" : "Xtream login")
+                        Text(title)
                             .font(.system(size: 52, weight: .heavy))
                             .accessibilityAddTraits(.isHeader)
-                        Text(
-                            fields.kind == .m3u
-                                ? "Paste the link your provider gave you. The guide link is optional."
-                                : "Copy these from the email or page your provider sent you."
-                        )
-                        .font(.system(size: 24))
-                        .foregroundStyle(Palette.textMuted)
+                        Text(subtitle)
+                            .font(.system(size: 24))
+                            .foregroundStyle(Palette.textMuted)
                     }
                     VStack(alignment: .leading, spacing: 14) {
                         Stacked(label: "Name", optional: true) {
                             TextField("", text: $fields.name).accessibilityIdentifier("onboarding.field.name")
                         }
-                        if fields.kind == .m3u {
+                        switch fields.kind {
+                        case .m3u, .m3uFile:
                             Stacked(label: "Playlist URL") {
                                 TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.playlist")
                             }
                             Stacked(label: "Guide URL", optional: true) {
                                 TextField("", text: $fields.epgURL).accessibilityIdentifier("onboarding.field.guide")
                             }
-                        } else {
+                        case .stalker:
+                            Stacked(label: "Portal") {
+                                TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.portal")
+                            }
+                            PortalLoginFields(fields: $fields)
+                        case .xtream:
                             Stacked(label: "Server") {
                                 TextField("", text: $fields.url).accessibilityIdentifier("onboarding.field.server")
                             }
@@ -219,6 +242,43 @@ enum OnboardingForm {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Palette.ground)
         }
+
+        private var title: String {
+            switch fields.kind {
+            case .m3u, .m3uFile: "M3U playlist"
+            case .xtream: "Xtream login"
+            case .stalker: "Stalker portal"
+            }
+        }
+
+        private var subtitle: String {
+            switch fields.kind {
+            case .m3u, .m3uFile: "Paste the link your provider gave you. The guide link is optional."
+            case .xtream: "Copy these from the email or page your provider sent you."
+            case .stalker:
+                "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one."
+            }
+        }
+    }
+
+    /// Apple TV: a portal's MAC address with the optional login and password
+    /// beside it, shared by the form and the sign-in.
+    struct PortalLoginFields: View {
+        @Binding var fields: SourceFields
+
+        var body: some View {
+            Stacked(label: "MAC address") {
+                TextField("", text: $fields.mac).accessibilityIdentifier("onboarding.field.mac")
+            }
+            HStack(spacing: 14) {
+                Stacked(label: "Login", optional: true) {
+                    TextField("", text: $fields.username).accessibilityIdentifier("onboarding.field.username")
+                }
+                Stacked(label: "Password", optional: true) {
+                    SecureField("", text: $fields.password).accessibilityIdentifier("onboarding.field.password")
+                }
+            }
+        }
     }
 }
 
@@ -245,6 +305,20 @@ enum OnboardingForm {
     @Previewable @State var reveals = false
     OnboardingForm.Phone(
         fields: $fields, revealsPassword: $reveals, status: .init(connecting: true, clipboard: .noLink),
+        actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+#Preview("Form, iPhone, Stalker portal") {
+    @Previewable @State var fields = SourceFields(kind: .stalker, url: "http://portal.example-provider.net/c/", mac: "00:1A:79:12:34:56")
+    @Previewable @State var reveals = false
+    OnboardingForm.Phone(
+        fields: $fields, revealsPassword: $reveals, status: .init(), actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+#Preview("Form, Apple TV, Stalker portal", traits: .fixedLayout(width: 1920, height: 1080)) {
+    @Previewable @State var fields = SourceFields(kind: .stalker, url: "http://portal.example-provider.net/c/", mac: "00:1A:79:12:34:56")
+    OnboardingForm.Television(
+        fields: $fields, status: .init(error: "Could not sign in. Check the MAC address, and the login if you have one."),
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
 }
 

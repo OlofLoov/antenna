@@ -52,7 +52,6 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()
         XCTAssertTrue(element(app, "onboarding.connect").waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["onboarding.kind.stalker"].isEnabled, "Stalker cannot be picked")
         XCTAssertFalse(element(app, "onboarding.clipboard").exists, "no banner without a link")
         element(app, "onboarding.connect").tap()
         XCTAssertTrue(element(app, "onboarding.error").waitForExistence(timeout: 5))
@@ -62,6 +61,25 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.field.guide").exists)
         element(app, "onboarding.back").tap()
         XCTAssertTrue(element(app, "onboarding.welcome").waitForExistence(timeout: 5))
+    }
+
+    // first-run-onboarding/add-a-stalker-portal
+    // first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting
+    func testPickAStalkerPortalAndConnectWithoutAMAC() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        element(app, "onboarding.addSource").tap()
+        XCTAssertTrue(element(app, "onboarding.kind.stalker").waitForExistence(timeout: 5))
+        element(app, "onboarding.kind.stalker").tap()
+        XCTAssertTrue(element(app, "onboarding.field.portal").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.field.mac").exists)
+        XCTAssertTrue(element(app, "onboarding.field.username").exists)
+        XCTAssertFalse(element(app, "onboarding.field.server").exists)
+        element(app, "onboarding.field.portal").tap()
+        element(app, "onboarding.field.portal").typeText("http://portal.example.test/c/")
+        element(app, "onboarding.connect").tap()
+        XCTAssertTrue(element(app, "onboarding.error").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "onboarding.error").label, "Enter the MAC address.")
     }
 
     // first-run-onboarding/fill-the-form-from-a-copied-link

@@ -6,14 +6,19 @@ import Foundation
 public struct SourceFields: Equatable, Sendable {
     public var kind: SourceKind
     public var name: String
-    /// The playlist URL for M3U, the server for Xtream.
+    /// The playlist URL for M3U, the server for Xtream, the portal for Stalker.
     public var url: String
     public var epgURL: String
+    /// The Xtream username, or the optional Stalker portal login.
     public var username: String
+    /// The Xtream password, or the optional Stalker portal password.
     public var password: String
+    /// The MAC address a Stalker portal knows the device by. Other kinds ignore it.
+    public var mac: String
 
     public init(
-        kind: SourceKind = .xtream, name: String = "", url: String = "", epgURL: String = "", username: String = "", password: String = ""
+        kind: SourceKind = .xtream, name: String = "", url: String = "", epgURL: String = "", username: String = "", password: String = "",
+        mac: String = ""
     ) {
         self.kind = kind
         self.name = name
@@ -21,20 +26,27 @@ public struct SourceFields: Equatable, Sendable {
         self.epgURL = epgURL
         self.username = username
         self.password = password
+        self.mac = mac
     }
 
     /// The first problem in form order, or nil when Connect may go ahead.
     /// An empty required field comes first, then a link without a scheme.
+    /// A portal also needs `http` or `https` and a MAC that parses; its
+    /// login and password are optional (first-run-onboarding/add-a-stalker-portal).
     public func check() -> ConnectFailure? {
         let required: [(SourceField, String)] =
             switch kind {
             case .m3u, .m3uFile: [(.playlist, url)]
-            case .xtream, .stalker: [(.server, url), (.username, username), (.password, password)]
+            case .xtream: [(.server, url), (.username, username), (.password, password)]
+            case .stalker: [(.portal, url), (.mac, mac)]
             }
         if let empty = required.first(where: { $0.1.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) {
             return .missingField(empty.0)
         }
-        return link == nil ? .invalidURL : nil
+        guard link != nil else { return .invalidURL }
+        guard kind == .stalker else { return nil }
+        guard StalkerPortal(url) != nil else { return .invalidURL }
+        return MACAddress(mac) == nil ? .invalidMAC : nil
     }
 
     /// The link with surrounding spaces trimmed, nil when it has no scheme.

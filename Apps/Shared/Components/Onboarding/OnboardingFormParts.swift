@@ -3,7 +3,7 @@ import SwiftUI
 
 /// The pieces the add-source form is built from.
 extension OnboardingForm {
-    /// M3U playlist, Xtream login and the disabled Stalker segment.
+    /// M3U playlist, Xtream login and Stalker portal.
     struct KindPicker: View {
         let kind: SourceKind
         let choose: (SourceKind) -> Void
@@ -12,17 +12,8 @@ extension OnboardingForm {
             HStack(spacing: 4) {
                 segment("M3U playlist", .m3u)
                 segment("Xtream login", .xtream)
-                Button {
-                } label: {
-                    Text("Stalker")
-                        .font(.system(size: 14))
-                        .foregroundStyle(Palette.textMuted)
-                        .frame(maxWidth: .infinity, minHeight: 36)
-                }
-                .buttonStyle(.plain)
-                .disabled(true)
-                .accessibilityLabel("Stalker portal, coming later")
-                .accessibilityIdentifier("onboarding.kind.stalker")
+                segment("Stalker", .stalker)
+                    .accessibilityLabel("Stalker portal")
             }
             .padding(4)
             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 12))
@@ -129,14 +120,15 @@ extension OnboardingForm {
         @Binding var text: String
         @Binding var reveals: Bool
         let revealSize: CGFloat
+        var placeholder = ""
 
         var body: some View {
             HStack(spacing: 4) {
                 Group {
                     if reveals {
-                        TextField("", text: $text).plainEntry()
+                        TextField(placeholder, text: $text).plainEntry()
                     } else {
-                        SecureField("", text: $text)
+                        SecureField(placeholder, text: $text)
                     }
                 }
                 .accessibilityIdentifier("onboarding.field.password")

@@ -60,7 +60,7 @@ struct SourceDetailsScreen: View {
                 SourceFieldsSection(editor: editor)
             }
             Section {
-                if record.url != nil, record.kind != .stalker {
+                if record.url != nil {
                     Button("Refresh now") { refresher?.refresh([record.id]) }
                         .accessibilityIdentifier("settings.details.refresh")
                 }
@@ -93,11 +93,7 @@ struct SourceDetailsScreen: View {
         #else
             let text = SourceStatusText()
         #endif
-        var lines = text.detailLines(SettingsView.status(of: record, refresher: refresher), account: nil, now: now)
-        #if os(tvOS)
-            if record.kind == .stalker { lines.append(.init("Its login cannot reach this Apple TV.", style: .muted)) }
-        #endif
-        return lines
+        return text.detailLines(SettingsView.status(of: record, refresher: refresher), account: nil, now: now)
     }
 
     private func save(_ editor: SourceEditor) {
@@ -108,8 +104,9 @@ struct SourceDetailsScreen: View {
     }
 }
 
-/// The editable fields: Name, the link, the guide link for a playlist, and
-/// the login for Xtream with the password field empty.
+/// The editable fields: Name, the link, the guide link for a playlist, the
+/// login for Xtream, and the MAC address and optional login for a portal,
+/// with the password field empty.
 private struct SourceFieldsSection: View {
     @Bindable var editor: SourceEditor
     @Environment(\.modelContext) private var context
@@ -119,18 +116,16 @@ private struct SourceFieldsSection: View {
         Section("Source") {
             TextField("Name", text: $editor.name)
                 .accessibilityIdentifier("settings.details.name")
-            if editor.kind != .stalker {
-                TextField(editor.kind == .m3u ? "Playlist" : "Server", text: $editor.link)
-                    .autocorrectionDisabled()
-                    .accessibilityIdentifier("settings.details.link")
-            }
+            TextField(linkLabel, text: $editor.link)
+                .autocorrectionDisabled()
+                .accessibilityIdentifier("settings.details.link")
             if editor.kind == .m3u {
                 TextField("Guide", text: $editor.guideLink, prompt: Text("Optional XMLTV link"))
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("settings.details.guide")
             }
         }
-        if editor.kind == .xtream {
+        if editor.kind == .xtream || editor.kind == .stalker {
             Section {
                 #if os(tvOS)
                     if !editor.hasLogin {
@@ -143,10 +138,19 @@ private struct SourceFieldsSection: View {
                         .accessibilityIdentifier("settings.details.signIn")
                     }
                 #endif
-                TextField("Username", text: $editor.username)
-                    .autocorrectionDisabled()
-                    .accessibilityIdentifier("settings.details.username")
-                SecureField("Password", text: $editor.password, prompt: Text("••••••••"))
+                if editor.kind == .stalker {
+                    TextField("MAC address", text: $editor.mac)
+                        .autocorrectionDisabled()
+                        .accessibilityIdentifier("settings.details.mac")
+                    TextField("Login", text: $editor.username, prompt: Text("Optional"))
+                        .autocorrectionDisabled()
+                        .accessibilityIdentifier("settings.details.username")
+                } else {
+                    TextField("Username", text: $editor.username)
+                        .autocorrectionDisabled()
+                        .accessibilityIdentifier("settings.details.username")
+                }
+                SecureField("Password", text: $editor.password, prompt: Text(passwordPrompt))
                     .accessibilityIdentifier("settings.details.password")
             } header: {
                 Text("Login")
@@ -163,5 +167,18 @@ private struct SourceFieldsSection: View {
                 .foregroundStyle(OnboardingForm.errorColor)
                 .accessibilityIdentifier("settings.details.error")
         }
+    }
+
+    private var linkLabel: String {
+        switch editor.kind {
+        case .m3u, .m3uFile: "Playlist"
+        case .xtream: "Server"
+        case .stalker: "Portal"
+        }
+    }
+
+    /// The dots stand for a saved password; a portal without one shows that the field is optional.
+    private var passwordPrompt: String {
+        editor.kind == .stalker && !editor.hasPassword ? "Optional" : "••••••••"
     }
 }

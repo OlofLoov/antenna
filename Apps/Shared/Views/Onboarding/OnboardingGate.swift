@@ -55,12 +55,12 @@ extension SourceConnector {
 
 extension OnboardingGate {
     /// On Apple TV, the sources to sign in when every source is an Xtream
-    /// login and none of their passwords is on this device
+    /// login or a Stalker portal and none of their logins is on this device
     /// (first-run-onboarding/sign-in-again-on-an-apple-tv). Empty elsewhere.
     static func needingSignIn(_ records: [SourceRecord], loader: SourceLoader = .app) -> [SourceDescriptor] {
         #if os(tvOS)
             let sources = records.sorted { $0.sortOrder < $1.sortOrder }.compactMap(\.descriptor)
-            guard !sources.isEmpty, sources.count == records.count, sources.allSatisfy({ $0.kind == .xtream }),
+            guard !sources.isEmpty, sources.count == records.count, sources.allSatisfy({ $0.kind == .xtream || $0.kind == .stalker }),
                 !sources.contains(where: loader.hasLogin)
             else { return [] }
             return sources

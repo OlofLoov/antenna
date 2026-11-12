@@ -79,7 +79,7 @@ struct OnboardingProgressScreen: View {
         }
 
         private var footnote: String {
-            let hasLogin = model.setups.contains { $0.connection.descriptor.kind == .xtream }
+            let hasLogin = model.setups.contains { $0.connection.login != nil }
             let base = model.setups.count > 1 ? "The sources sync" : "The source syncs"
             let sync =
                 signedInToICloud

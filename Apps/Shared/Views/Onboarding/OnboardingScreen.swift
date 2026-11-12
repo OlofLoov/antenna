@@ -65,8 +65,8 @@ struct OnboardingScreen: View {
 
     #if os(tvOS)
         @ViewBuilder private var content: some View {
-            if let source = model.signIns.first {
-                OnboardingSignInScreen(model: model, server: source.url.absoluteString)
+            if !model.signIns.isEmpty {
+                OnboardingSignInScreen(model: model)
             } else if model.showsChecklist {
                 OnboardingProgressScreen(model: model, signedInToICloud: signedInToICloud, finish: finish) {
                     path = [.kinds]
@@ -207,12 +207,11 @@ struct OnboardingFormScreen: View {
     /// The sign-in screen with its model.
     private struct OnboardingSignInScreen: View {
         @Bindable var model: OnboardingModel
-        let server: String
         @Environment(\.modelContext) private var context
 
         var body: some View {
             OnboardingSignIn.Television(
-                server: server, username: $model.fields.username, password: $model.fields.password,
+                fields: $model.fields,
                 remaining: OnboardingSignIn.Television.remaining(model.signInsAfterThis),
                 status: .init(error: model.error, connecting: model.connecting)
             ) {

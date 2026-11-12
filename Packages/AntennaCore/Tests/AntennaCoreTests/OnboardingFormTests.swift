@@ -88,4 +88,44 @@ import Testing
         let other = try #require(URL(string: "http://tv.example.test/list.m3u"))
         #expect(SourceLink.key(path) != SourceLink.key(other))
     }
+
+    @Test("first-run-onboarding/add-a-stalker-portal: a portal needs only its address and MAC")
+    func portalNeedsOnlyAddressAndMAC() {
+        let portal = SourceFields(kind: .stalker, url: "http://portal.example.test/c/", mac: "00-1a-79-12-34-56")
+        #expect(portal.check() == nil)
+        var withLogin = portal
+        withLogin.username = "anna"
+        withLogin.password = "s3cret"
+        #expect(withLogin.check() == nil)
+    }
+
+    @Test("first-run-onboarding/mistakes-in-the-form-are-caught-before-connecting: a portal with a mistyped MAC address")
+    func portalMistakes() {
+        #expect(SourceFields(kind: .stalker, mac: "00:1A:79:12:34:56").check() == .missingField(.portal))
+        #expect(SourceFields(kind: .stalker, url: "http://portal.example.test").check() == .missingField(.mac))
+        #expect(SourceFields(kind: .stalker).check()?.message == "Enter the portal address.")
+        #expect(SourceFields(kind: .stalker, url: "http://portal.example.test", mac: " ").check()?.message == "Enter the MAC address.")
+        #expect(SourceFields(kind: .stalker, url: "portal.example.test/c/", mac: "00:1A:79:12:34:56").check() == .invalidURL)
+        #expect(SourceFields(kind: .stalker, url: "ftp://portal.example.test/c/", mac: "00:1A:79:12:34:56").check() == .invalidURL)
+        let short = SourceFields(kind: .stalker, url: "http://portal.example.test", mac: "00:1A:79")
+        #expect(short.check() == .invalidMAC)
+        #expect(short.check()?.message == "Enter a valid MAC address, like 00:1A:79:12:34:56.")
+        #expect(SourceFields(kind: .stalker, url: "http://portal.example.test", mac: "00:1A:79:12:34:5G").check() == .invalidMAC)
+    }
+
+    @Test("first-run-onboarding/a-failed-connection-says-why-and-saves-nothing: each portal failure has its sentence")
+    func portalFailureMessages() {
+        let host = "portal.example.test"
+        #expect(
+            ConnectFailure(StalkerError.notAuthorized, host: host).message
+                == "Could not sign in. Check the MAC address, and the login if you have one.")
+        #expect(
+            ConnectFailure(StalkerError.noPortal, host: host).message
+                == "No Stalker portal answered at portal.example.test. Check the address and try again.")
+        #expect(
+            ConnectFailure(StalkerError.deviceRefused(message: "MAC … is not registered"), host: host).message
+                == "The portal refused this device with the message “MAC … is not registered”.")
+        #expect(ConnectFailure(StalkerError.transport(.notConnectedToInternet), host: host) == .offline)
+        #expect(ConnectFailure(StalkerError.serverError(status: 503), host: host) == .serverError(status: 503))
+    }
 }

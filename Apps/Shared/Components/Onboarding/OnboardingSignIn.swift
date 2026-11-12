@@ -2,13 +2,13 @@ import AntennaCore
 import SwiftUI
 
 /// "Sign in on this Apple TV" (`TV-Onboard-SignIn`): a source that synced
-/// without its login, the server filled in, empty username and password,
-/// and the sources still to sign in after this one.
+/// without its login, the server or portal filled in, empty login fields,
+/// and the sources still to sign in after this one. A portal asks for its
+/// MAC address, with the login and password optional.
 enum OnboardingSignIn {
     struct Television: View {
-        let server: String
-        @Binding var username: String
-        @Binding var password: String
+        /// The source's kind and address, and what the user types.
+        @Binding var fields: SourceFields
         /// "1 more source to sign in after this one: Holiday flat"; nil for the last.
         let remaining: String?
         let status: OnboardingForm.Status
@@ -33,19 +33,23 @@ enum OnboardingSignIn {
                             .foregroundStyle(Palette.textMuted)
                     }
                     VStack(alignment: .leading, spacing: 14) {
-                        OnboardingForm.Stacked(label: "Server") {
-                            Text(server)
+                        OnboardingForm.Stacked(label: fields.kind == .stalker ? "Portal" : "Server") {
+                            Text(fields.url)
                                 .padding(.horizontal, 24)
                                 .frame(maxWidth: .infinity, minHeight: 76, alignment: .leading)
                                 .background(Palette.surface(0.05), in: RoundedRectangle(cornerRadius: 14))
                                 .accessibilityIdentifier("onboarding.signIn.server")
                         }
-                        HStack(spacing: 14) {
-                            OnboardingForm.Stacked(label: "Username") {
-                                TextField("", text: $username).accessibilityIdentifier("onboarding.field.username")
-                            }
-                            OnboardingForm.Stacked(label: "Password") {
-                                SecureField("", text: $password).accessibilityIdentifier("onboarding.field.password")
+                        if fields.kind == .stalker {
+                            OnboardingForm.PortalLoginFields(fields: $fields)
+                        } else {
+                            HStack(spacing: 14) {
+                                OnboardingForm.Stacked(label: "Username") {
+                                    TextField("", text: $fields.username).accessibilityIdentifier("onboarding.field.username")
+                                }
+                                OnboardingForm.Stacked(label: "Password") {
+                                    SecureField("", text: $fields.password).accessibilityIdentifier("onboarding.field.password")
+                                }
                             }
                         }
                         if let remaining {
@@ -85,9 +89,12 @@ enum OnboardingSignIn {
 }
 
 #Preview("Sign in on this Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
-    @Previewable @State var username = ""
-    @Previewable @State var password = ""
+    @Previewable @State var fields = SourceFields(kind: .xtream, url: "http://tv.example-provider.net:8080")
     OnboardingSignIn.Television(
-        server: "http://tv.example-provider.net:8080", username: $username, password: $password,
-        remaining: OnboardingSignIn.Television.remaining(["Holiday flat"]), status: .init(), connect: {})
+        fields: $fields, remaining: OnboardingSignIn.Television.remaining(["Holiday flat"]), status: .init(), connect: {})
+}
+
+#Preview("Sign in on this Apple TV, Stalker portal", traits: .fixedLayout(width: 1920, height: 1080)) {
+    @Previewable @State var fields = SourceFields(kind: .stalker, url: "http://portal.example-provider.net")
+    OnboardingSignIn.Television(fields: $fields, remaining: nil, status: .init(), connect: {})
 }
