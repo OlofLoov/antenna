@@ -44,6 +44,9 @@ struct AppRootView<Content: View>: View {
         .onChange(of: unlock.gate.applied) { _, applied in
             if let lapse = applied.lapse { paywall?.show(lapse) }
         }
+        #if os(tvOS)
+            .modifier(TopShelfLock(entitlement: unlock.gate.applied))
+        #endif
         // A lock found while the app is open applies when the user comes
         // back to it, never mid-programme
         // (paywall-and-entitlement/when-access-ends-the-app-locks-and-keeps-your-data).

@@ -8,9 +8,9 @@
 
 ## 2. Writer in the app
 
-- [ ] 2.1 Write the snapshot and tile images to the shared area with an atomic rename and no fetching, and verify an integration test that the files hold no link, identity, username or password
-- [ ] 2.2 Batch writes after favorites, playback, source deletion, guide refresh, a source finishing loading and six hours, flush on background, and wait while a source loads, and verify integration tests with a simulated clock
-- [ ] 2.3 Clear the summary when the unlock lapses and keep the previous shelf on a failed write, and verify integration tests
+- [x] 2.1 Write the snapshot and tile images to the shared area with an atomic rename and no fetching, and verify an integration test that the files hold no link, identity, username or password
+- [x] 2.2 Batch writes after favorites, playback, source deletion, guide refresh, a source finishing loading and six hours, flush on background, and wait while a source loads, and verify integration tests with a simulated clock
+- [x] 2.3 Clear the summary when the unlock lapses and keep the previous shelf on a failed write, and verify integration tests
 
 ## 3. Extension
 
@@ -25,7 +25,7 @@
 
 ## 5. The current profile's shelf
 
-- [ ] 5.1 Write the snapshot for the current profile only, and rewrite it on a profile switch, and verify with a test citing `top-shelf/the-shelf-shows-the-current-profile`
+- [x] 5.1 Write the snapshot for the current profile only, and rewrite it on a profile switch, and verify with a test citing `top-shelf/the-shelf-shows-the-current-profile`
 
 ## 6. Verify
 
