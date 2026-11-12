@@ -64,3 +64,4 @@ Made while building the change, with the user's go-ahead to proceed without ques
 - "Before the first unlock" is read from `UIApplication.isProtectedDataAvailable`, false until the device is unlocked once after a restart. The Mac always reads true.
 - A UI test cannot drive Siri, so `-ui-testing-intent <request>` (Debug only) hands the app the request an action leaves, and the UI tests check Live and Search from there. The actions themselves are tested by calling `perform()`.
 - Shortcut parameters refresh with `updateAppShortcutParameters()` when the channel count or the favorites change, and after an action changes a favorite.
+- The change no longer carries an `m3u-playlists` delta. Its copy of "Stable and unique ids" predated `fix-m3u-channel-ids` and contradicted that change's name-based ids, and the proposal lists no modified capability. `fix-m3u-channel-ids` owns that requirement.
