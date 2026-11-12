@@ -16,7 +16,7 @@ import Testing
             http://s/itv.ts
             """
         let favorite = try #require(M3UParser().parse(text).channels.first).id
-        #expect(favorite == "bbc1.uk#http://s/bbc1.ts")
+        #expect(favorite.hasPrefix("m3u.") && !favorite.contains("://"))
         let reloaded = M3UParser().parse(text).channels
         #expect(reloaded.filter { $0.id == favorite }.map(\.name) == ["BBC One"])
     }

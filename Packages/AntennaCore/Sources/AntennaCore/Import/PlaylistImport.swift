@@ -110,8 +110,9 @@ public enum PlaylistImport {
 
     /// The channels of a stored file: links, logos and guide links from
     /// `restored`, the text with its logins put back, and each channel's id
-    /// from `stored`, the text as synced. Ids therefore never hold a login,
-    /// and survive a re-import that keeps the placeholder token.
+    /// and earlier id from `stored`, the text as synced, which is the text
+    /// earlier versions built file ids from
+    /// (m3u-playlists/earlier-ids-map-to-the-new-ones).
     public static func playlist(stored: String, restored: String) -> Playlist {
         let real = channels(from: restored).playlist
         guard stored != restored else { return real }
@@ -121,6 +122,7 @@ public enum PlaylistImport {
         for index in result.channels.indices {
             result.channels[index].id = synced.channels[index].id
         }
+        result.formerIDs = synced.formerIDs
         return result
     }
 }

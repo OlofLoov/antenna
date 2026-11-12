@@ -74,8 +74,8 @@ public struct GroupRules: Hashable, Sendable {
     }
 
     /// Whether `channelID` may be saved into an own group. An id that holds
-    /// a link (an M3U channel today) may carry the provider login, so it is
-    /// refused until M3U ids stop carrying the stream link.
+    /// a link may carry the provider login, so it is refused. M3U ids hold
+    /// none since m3u-playlists/stable-and-unique-ids.
     public static func canSave(channelID: String) -> Bool {
         !channelID.contains("://")
     }
