@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac movie player, transport controls</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- series.player: an episode full screen over the section, paused. Same controls as iPhone-Title-Player-Transport. On iPad a tap shows and hides them and a double tap on either half skips 10 seconds. On a Mac they show when the pointer moves over the picture, hide 3 seconds after it stops or a second after it leaves the window; Left and Right skip 10 seconds, Space plays and pauses and Escape closes, with the controls shown or not. -->
+  <div style="position: absolute; left: 0; right: 0; top: 81px; height: 672px; background: #1A2535"></div>
+
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.35)"></div>
+
+  <!-- series.player.close -->
+  <div style="position: absolute; left: 16px; top: 40px; width: 44px; height: 44px; border-radius: 22px; background: rgba(8,10,14,0.6); display: flex; align-items: center; justify-content: center">
+    <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </div>
+
+  <!-- player.tracks, player.subtitles -->
+  <div style="position: absolute; right: 16px; top: 40px; height: 44px; padding: 0 4px; border-radius: 22px; background: rgba(8,10,14,0.6); display: flex; align-items: center">
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h3M13 10h3M8 13h5"/></svg></span>
+  </div>
+
+  <!-- title.transport middle row: skipBack, playPause (play.fill while paused), skipForward, glass circles -->
+  <div style="position: absolute; left: 0; right: 0; top: 379px; display: flex; justify-content: center; align-items: center; gap: 36px">
+    <div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="-apple-system, system-ui">10</text></svg>
+    </div>
+    <div style="width: 76px; height: 76px; border-radius: 38px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"/></svg>
+    </div>
+    <div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4h-4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="-apple-system, system-ui">10</text></svg>
+    </div>
+  </div>
+
+  <!-- Bottom row: title.transport.elapsed, title.transport.scrubber, title.transport.remaining, footnote with monospaced digits, 20 pt side margins -->
+  <div style="position: absolute; left: 20px; right: 20px; bottom: 24px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-variant-numeric: tabular-nums">
+    <span>21:40</span>
+    <div style="position: relative; flex: 1 1 auto; height: 28px">
+      <div style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.3)"></div>
+      <div style="position: absolute; left: 0; width: 49%; top: 12px; height: 4px; border-radius: 2px; background: {{accent}}"></div>
+      <div style="position: absolute; left: calc(49% - 14px); top: 0; width: 28px; height: 28px; border-radius: 14px; background: #F2F4F8; box-shadow: 0 2px 6px rgba(0,0,0,.35)"></div>
+    </div>
+    <span>-22:20</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
