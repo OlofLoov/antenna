@@ -19,7 +19,7 @@ The system SHALL list Movies and Series in the sidebar or tab bar whenever the u
 - **THEN** neither Movies nor Series appears
 
 ### Requirement: New titles up front
-The system SHALL show the newest title in the banner with its name, category, year, length and description, move through the four newest by itself while the user is not interacting with it, and let the user page it by hand. The banner's art SHALL fill the banner and stay inside it, whatever the shape of the picture.
+The system SHALL show the newest title in the banner with its name, category, year, length and description, move through the four newest by itself while the user is not interacting with it, and let the user page it by hand. The banner SHALL fade from one title to the next, and its art SHALL stay inside it.
 
 #### Scenario: Titles with dates added
 - **GIVEN** the provider's movies have dates they were added
@@ -39,11 +39,24 @@ The system SHALL show the newest title in the banner with its name, category, ye
 - **WHEN** the banner fills
 - **THEN** it picks titles from both
 
+#### Scenario: Moving to the next title
+- **GIVEN** the banner shows a title
+- **WHEN** it moves to the next title, by itself or by hand
+- **THEN** the picture and the words fade across to the next title
+- **AND** the banner never shows the empty placeholder between two titles that have pictures
+
+#### Scenario: A title with a backdrop
+- **GIVEN** the provider's info call for a title answers with a backdrop within 1.5 seconds
+- **WHEN** the banner shows the title
+- **THEN** the backdrop shows, without the poster showing first
+
 #### Scenario: A title with only a poster
 - **GIVEN** a title in the banner has a poster and no backdrop
 - **WHEN** the banner shows it, or pages to or from it
-- **THEN** the poster fills the banner and nothing of it shows above, below or beside the banner
+- **THEN** nothing of the poster shows above, below or beside the banner
 - **AND** the banner's name, details and buttons stay where the board puts them
+- **AND** on iPad, Mac and Apple TV the whole poster shows at the right of the banner over a blurred copy of itself
+- **AND** on iPhone the poster fills the banner
 
 ### Requirement: Keep a list for later
 The system SHALL add a title to My list from the banner button or the poster's menu, offer removal in both places once added, show it in the My list row latest first, and undo both on removal.
