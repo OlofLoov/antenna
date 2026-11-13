@@ -54,6 +54,7 @@
         }
 
         /// Records what the Movies and Series sections ask of the player.
+        /// Every title has the scripted streams' sound and subtitle tracks.
         @MainActor @Observable
         final class Engine: PlaybackEngine {
             private(set) var state: PlaybackState = .idle {
@@ -61,6 +62,7 @@
             }
             @ObservationIgnored private let stateCast = Broadcast(PlaybackState.idle)
             @ObservationIgnored private let positionCast = Broadcast(PlaybackPosition.zero)
+            @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
             private(set) var loaded = ""
             private(set) var start = 0
 
@@ -69,6 +71,7 @@
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loaded = url.lastPathComponent
                 start = Int(options.startPosition.map { ShelfPlayback.seconds($0) } ?? 0)
+                trackList.reset(options)
                 state = .loading
             }
 
@@ -80,13 +83,13 @@
             func pause() async { state = .paused }
             func stop() async { state = .idle }
             func seek(to time: Duration) async throws {}
-            func selectAudio(_ id: MediaTrack.ID) async {}
-            func selectSubtitle(_ id: MediaTrack.ID?) async {}
+            func selectAudio(_ id: MediaTrack.ID) async { trackList.selectAudio(id) }
+            func selectSubtitle(_ id: MediaTrack.ID?) async { trackList.selectSubtitle(id) }
             func states() async -> AsyncStream<PlaybackState> { stateCast.stream() }
-            func presentation() async -> AsyncStream<PresentationInfo?> { Broadcast(PresentationInfo?.none).stream() }
-            func tracks() async -> AsyncStream<TrackList> { Broadcast(TrackList.empty).stream() }
+            func presentation() async -> AsyncStream<PresentationInfo?> { trackList.format.stream() }
+            func tracks() async -> AsyncStream<TrackList> { trackList.cast.stream() }
             func position() async -> AsyncStream<PlaybackPosition> { positionCast.stream() }
-            func subtitleCues() async -> AsyncStream<[SubtitleCue]> { Broadcast([SubtitleCue]()).stream() }
+            func subtitleCues() async -> AsyncStream<[SubtitleCue]> { trackList.cues.stream() }
 
             /// `"<state> <file> from <seconds>"`.
             var summary: String {

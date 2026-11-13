@@ -1,11 +1,11 @@
 ## 1. Proposal and movie player tracks
 
-- [ ] 1.1 Write the proposal, delta specs, design and tasks, and validate with `openspec validate close-platform-parity-gaps --strict`
-- [ ] 1.2 Add `iPhone-Title-Player-Tracks`, `iPad-Title-Player-Tracks` and `TV-Title-Player-Tracks`
-- [ ] 1.3 Add `TitleTracks` and make `ShelfPlayback` follow a title's tracks, with app tests citing `player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode`
-- [ ] 1.4 Add the tracks and subtitles buttons with the sheet and popover to `ShelfPlayerView` on iPhone, iPad and Mac
-- [ ] 1.5 Add the Audio and Subtitles panel to the Apple TV movie player, opened by holding select, closed by Menu
-- [ ] 1.6 UI tests on iPhone and Apple TV: open the list in a movie, pick a track
+- [x] 1.1 Write the proposal, delta specs, design and tasks, and validate with `openspec validate close-platform-parity-gaps --strict`
+- [x] 1.2 Add `iPhone-Title-Player-Tracks`, `iPad-Title-Player-Tracks` and `TV-Title-Player-Tracks`
+- [x] 1.3 Add `TitleTracks` and make `ShelfPlayback` follow a title's tracks, with app tests citing `player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode`
+- [x] 1.4 Add the tracks and subtitles buttons with the sheet and popover to `ShelfPlayerView` on iPhone, iPad and Mac
+- [x] 1.5 Add the Audio and Subtitles panel to the Apple TV movie player, opened by holding select, closed by Menu
+- [x] 1.6 UI tests on iPhone and Apple TV: open the list in a movie, pick a track
 
 ## 2. Multi-view on iPad
 

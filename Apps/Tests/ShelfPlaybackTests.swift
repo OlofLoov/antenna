@@ -110,6 +110,24 @@ import Testing
         #expect(options?.subtitleMode == .always)
     }
 
+    @Test("player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode fresh lists per title")
+    func titleTracks() async {
+        let library = await library()
+        var follow: Task<Void, Never>?
+        defer { follow?.cancel() }
+        let activity = await activity(&follow)
+        let playback = playback()
+        playback.play(movie, library: library, activity: activity)
+        let first = playback.tracks
+        #expect(first != nil)
+        first?.pickerOpen = true
+        playback.play(episode(1, 2), of: series(1), from: 0, library: library, activity: activity)
+        #expect(playback.tracks !== first, "the next title starts with its own lists")
+        #expect(playback.tracks?.pickerOpen == false)
+        await playback.close()
+        #expect(playback.tracks == nil)
+    }
+
     // MARK: Resume
 
     @Test("movies-and-series-browsing/resume-where-you-left-off a movie stopped part-way starts where it stopped, before the first frame")
