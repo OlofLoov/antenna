@@ -1,15 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Movies and episodes in a playlist are recognized
-The system SHALL sort each playlist entry by the first rule that applies, in this order:
-1. A link with a `series` folder is an episode.
-2. A link with a `movie` or `movies` folder is a movie.
-3. A name with a season and episode marker such as "S01E02" is an episode.
-4. A group whose first word is VOD, Movie, Movies, Film or Films is a movie.
-5. An entry with a live sign is a live channel. Live signs are: catch-up attributes, a guide id, a group with the word Live, News, Sport or Sports or the text "24/7", and an `#EXTINF` duration of -1 or 0.
-6. A link ending in `.mp4`, `.mkv`, `.avi`, `.mov` or `.m4v` is a movie.
-
-Every other entry SHALL be a live channel.
+The system SHALL sort each playlist entry by the first rule that applies: a `series` folder in the link makes it an episode; a `movie` or `movies` folder a movie; a season and episode marker in the name, such as "S01E02", an episode; a group whose first word is VOD, Movie, Movies, Film or Films a movie; a live sign a live channel; a link ending in `.mp4`, `.mkv`, `.avi`, `.mov` or `.m4v` a movie. Every other entry SHALL be a live channel.
 
 #### Scenario: A panel's movie link
 - **GIVEN** an entry linking to `http://tv.example.net/movie/u/p/9.mkv`
@@ -45,3 +37,13 @@ Every other entry SHALL be a live channel.
 - **GIVEN** an entry with a guide id and catch-up attributes linking to `http://tv.example.net/movie/u/p/9.mp4`
 - **WHEN** the playlist loads
 - **THEN** the entry is a movie
+
+## ADDED Requirements
+
+### Requirement: Live signs keep an entry live
+The system SHALL count as live signs: catch-up attributes, a guide id, a group with the word Live, News, Sport or Sports or the text "24/7", and an `#EXTINF` duration of -1 or 0.
+
+#### Scenario: Each live sign
+- **GIVEN** an entry linking to an `.mp4` file with no movie folder, episode marker or movie group
+- **WHEN** it has catch-up, a guide id, the group "UK | News", or the duration -1
+- **THEN** the entry is a live channel

@@ -318,7 +318,7 @@ The system SHALL read a channel number with a part after the dot, such as 6.1, a
 - **THEN** the channel has number 104 and no minor number
 
 ### Requirement: Movies and episodes in a playlist are recognized
-The system SHALL sort each playlist entry, in this order: a link with a `series` folder is an episode; a link with a `movie` or `movies` folder is a movie; a name with a season and episode marker such as "S01E02" is an episode; a link ending in `.mp4`, `.mkv`, `.avi`, `.mov` or `.m4v` is a movie; a group whose first word is VOD, Movie, Movies, Film or Films is a movie. Every other entry SHALL be a live channel.
+The system SHALL sort each playlist entry by the first rule that applies: a `series` folder in the link makes it an episode; a `movie` or `movies` folder a movie; a season and episode marker in the name, such as "S01E02", an episode; a group whose first word is VOD, Movie, Movies, Film or Films a movie; a live sign a live channel; a link ending in `.mp4`, `.mkv`, `.avi`, `.mov` or `.m4v` a movie. Every other entry SHALL be a live channel.
 
 #### Scenario: A panel's movie link
 - **GIVEN** an entry linking to `http://tv.example.net/movie/u/p/9.mkv`
@@ -338,6 +338,29 @@ The system SHALL sort each playlist entry, in this order: a link with a `series`
 #### Scenario: A live channel
 - **GIVEN** an entry in the group "Vodafone TV" linking to a `.ts` stream
 - **WHEN** the playlist loads
+- **THEN** the entry is a live channel
+
+#### Scenario: A news channel served as an mp4 file
+- **GIVEN** an entry `#EXTINF:-1 tvg-id="news24.example" group-title="News"` linking to `http://cdn.example/news24/live.mp4`
+- **WHEN** the playlist loads
+- **THEN** the entry is a live channel and shows in Live, not in Movies
+
+#### Scenario: A movie file with a length
+- **GIVEN** an entry `#EXTINF:5400,The Film` with no guide id, no group and no catch-up, linking to `http://cdn.example/the-film.mp4`
+- **WHEN** the playlist loads
+- **THEN** the entry is a movie
+
+#### Scenario: A movie link beats live signs
+- **GIVEN** an entry with a guide id and catch-up attributes linking to `http://tv.example.net/movie/u/p/9.mp4`
+- **WHEN** the playlist loads
+- **THEN** the entry is a movie
+
+### Requirement: Live signs keep an entry live
+The system SHALL count as live signs: catch-up attributes, a guide id, a group with the word Live, News, Sport or Sports or the text "24/7", and an `#EXTINF` duration of -1 or 0.
+
+#### Scenario: Each live sign
+- **GIVEN** an entry linking to an `.mp4` file with no movie folder, episode marker or movie group
+- **WHEN** it has catch-up, a guide id, the group "UK | News", or the duration -1
 - **THEN** the entry is a live channel
 
 ### Requirement: Playlist movies stay out of live channels
