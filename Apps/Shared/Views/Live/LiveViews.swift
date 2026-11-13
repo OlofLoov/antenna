@@ -84,6 +84,94 @@
         }
     }
 
+    /// The star among the full-screen player controls (favorites/favorite-from-full-screen).
+    struct LivePlayerFavoriteButton: View {
+        let channel: Channel
+        @Environment(LiveModel.self) private var live
+        @Environment(\.modelContext) private var context
+        @Environment(\.currentProfile) private var profile
+
+        var body: some View {
+            let toggle = LiveFavoriteToggle(live: live, context: context, profile: profile)
+            Browse.PlayerFavoriteButton(isFavorite: live.catalogue.isFavorite(channel)) {
+                toggle(channel)
+                live.showControls(after: .touch)
+            }
+        }
+    }
+
+    /// Adds or removes a channel for the current profile, as the star does.
+    @MainActor private struct LiveFavoriteToggle {
+        let live: LiveModel
+        let context: ModelContext
+        let profile: UUID
+
+        func callAsFunction(_ channel: Channel) {
+            FavoriteRecord.toggle(channel, in: live.catalogue, profile: profile, context: context)
+        }
+    }
+
+    /// A channel's touch-and-hold or right-click menu: the favorite item,
+    /// then `extras` (favorites/favorite-from-a-channel-s-menu).
+    struct LiveFavoriteMenu<Extras: View>: ViewModifier {
+        let channel: Channel
+        /// The favorite item's identifier, `<screen>.menu.favorite`.
+        let identifier: String
+        @ViewBuilder var extras: Extras
+        @Environment(LiveModel.self) private var live
+        @Environment(\.modelContext) private var context
+        @Environment(\.currentProfile) private var profile
+
+        func body(content: Content) -> some View {
+            let toggle = LiveFavoriteToggle(live: live, context: context, profile: profile)
+            content.contextMenu {
+                Browse.FavoriteMenuButton(isFavorite: live.catalogue.isFavorite(channel)) { toggle(channel) }
+                    .accessibilityIdentifier(identifier)
+                extras
+            }
+        }
+    }
+
+    /// The favorite action as a leading swipe on iPhone and iPad
+    /// (favorites/swipe-a-channel-into-favorites), which VoiceOver offers as
+    /// an action. A Mac list has no swipe, so there the row gets a named
+    /// VoiceOver action instead.
+    struct LiveFavoriteSwipe: ViewModifier {
+        let channel: Channel
+        @Environment(LiveModel.self) private var live
+        @Environment(\.modelContext) private var context
+        @Environment(\.currentProfile) private var profile
+
+        func body(content: Content) -> some View {
+            #if os(iOS)
+                let toggle = LiveFavoriteToggle(live: live, context: context, profile: profile)
+                content.swipeActions(edge: .leading, allowsFullSwipe: true) {
+                    Browse.FavoriteMenuButton(isFavorite: live.catalogue.isFavorite(channel)) { toggle(channel) }
+                        .tint(Palette.accent)
+                        .accessibilityIdentifier("browse.swipe.favorite")
+                }
+            #else
+                content.modifier(LiveFavoriteAction(channel: channel))
+            #endif
+        }
+    }
+
+    /// The favorite action as a named VoiceOver action, for channel cells
+    /// that have a menu but no swipe (favorites/favorite-from-a-channel-s-menu).
+    struct LiveFavoriteAction: ViewModifier {
+        let channel: Channel
+        @Environment(LiveModel.self) private var live
+        @Environment(\.modelContext) private var context
+        @Environment(\.currentProfile) private var profile
+
+        func body(content: Content) -> some View {
+            let toggle = LiveFavoriteToggle(live: live, context: context, profile: profile)
+            content.accessibilityAction(named: Browse.FavoriteMenuButton.title(isFavorite: live.catalogue.isFavorite(channel))) {
+                toggle(channel)
+            }
+        }
+    }
+
     /// The open group's channels in catalogue order, the playing one
     /// highlighted (live-tv-on-iphone-ipad-mac/pick-a-group). Each row says
     /// what is on now.
@@ -121,6 +209,7 @@
                     .listRowInsets(EdgeInsets(top: 1, leading: 8, bottom: 1, trailing: 8))
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                    .modifier(LiveFavoriteSwipe(channel: channel))
                 }
             }
             .listStyle(.plain)
@@ -149,7 +238,7 @@
             } logo: {
                 Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: isPlaying)
             }
-            .liveMultiViewMenu(channel)
+            .modifier(LiveFavoriteMenu(channel: channel, identifier: "browse.menu.favorite") { LiveMultiViewMenuExtra(channel: channel) })
             .browseFocusRing(key == cursor)
             .accessibilityValue(key == cursor ? "Keyboard focus" : "")
             .id(key)

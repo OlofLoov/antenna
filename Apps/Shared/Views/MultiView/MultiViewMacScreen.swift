@@ -218,13 +218,14 @@ struct LiveMultiViewKey: View {
     }
 }
 
-extension View {
-    /// The channel row's right-click item for multi-view on a Mac.
-    @ViewBuilder func liveMultiViewMenu(_ channel: Channel) -> some View {
+/// The channel row's menu item for multi-view on a Mac, after the favorite
+/// item; nothing on iPhone and iPad.
+struct LiveMultiViewMenuExtra: View {
+    let channel: Channel
+
+    var body: some View {
         #if os(macOS)
-            contextMenu { LiveMultiViewMenuItem(channel: channel) }
-        #else
-            self
+            LiveMultiViewMenuItem(channel: channel)
         #endif
     }
 }

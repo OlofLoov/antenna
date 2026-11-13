@@ -2,6 +2,24 @@ import AntennaCore
 import SwiftUI
 
 extension Browse {
+    /// The menu item and swipe button that add a channel to Favorites or
+    /// remove it (favorites/favorite-from-a-channel-s-menu).
+    struct FavoriteMenuButton: View {
+        let isFavorite: Bool
+        let toggle: () -> Void
+
+        var body: some View {
+            Button(action: toggle) {
+                Label(Self.title(isFavorite: isFavorite), systemImage: isFavorite ? "star.slash" : "star")
+            }
+        }
+
+        /// "Add to Favorites" or "Remove from Favorites", also the name of the VoiceOver action.
+        static func title(isFavorite: Bool) -> String {
+            isFavorite ? "Remove from Favorites" : "Add to Favorites"
+        }
+    }
+
     /// One channel row: logo tile, the name with the number trailing it,
     /// the programme line and its progress bar, and the catch-up mark at
     /// the trailing edge (design-system/channel-rows-share-one-anatomy, with
@@ -111,4 +129,14 @@ private struct RowsPreview: View {
     RowsPreview()
         .environment(\.browseMetrics, .regular)
         .frame(width: 352)
+}
+
+#Preview("Favorite menu items") {
+    VStack(alignment: .leading, spacing: 12) {
+        Browse.FavoriteMenuButton(isFavorite: false) {}
+        Browse.FavoriteMenuButton(isFavorite: true) {}
+    }
+    .padding()
+    .foregroundStyle(Palette.text)
+    .background(Palette.ground)
 }

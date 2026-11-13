@@ -166,6 +166,8 @@
                         GuideCompactLogo(channel: channel, look: look)
                     }
                     .accessibilityValue(look == .playing ? "playing" : "")
+                    .modifier(LiveFavoriteMenu(channel: channel, identifier: "guide.menu.favorite") { EmptyView() })
+                    .modifier(LiveFavoriteAction(channel: channel))
                     .accessibilityIdentifier("guide.channel.\(key.identifier)")
                     strip(channel, look: look)
                 }
