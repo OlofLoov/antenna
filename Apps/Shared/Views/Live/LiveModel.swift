@@ -269,8 +269,10 @@ final class LiveModel {
         guard all != channels else { return }
         if multiView != nil { Task { await multiViewChannelsChanged() } }
         channels = all
+        let interval = BrowseSignposts.signposter.beginInterval("catalogue")
         let built = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents, rules: groupRules)
         catalogue = NewChannels.group(built, seen: seen, now: .now)
+        BrowseSignposts.signposter.endInterval("catalogue", interval)
         names = ChannelNameIndex(catalogue)
         restoreGroup()
     }

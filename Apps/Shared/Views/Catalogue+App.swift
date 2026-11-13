@@ -2,6 +2,13 @@ import Foundation
 import AntennaCore
 import SwiftData
 import SwiftUI
+import os
+
+/// Intervals for the work behind the channel lists, under the "browse"
+/// category in Instruments, so a stall on a device can be timed.
+enum BrowseSignposts {
+    static let signposter = OSSignposter(subsystem: "se.codecrave.antenna", category: "browse")
+}
 
 extension CatalogueGroup {
     /// The name the group column, the chips and the list heading show.
@@ -80,12 +87,20 @@ extension Catalogue where Token == PersistentIdentifier {
         channels: [Channel], favorites: [FavoriteRecord], profile: UUID = Profile.mainID, recents: [LastChannelKey] = [],
         rules: GroupRules = GroupRules()
     ) -> Self {
-        let owned = favorites.filter { ProfileList.owns(profile, recordProfile: $0.profileID) }
-        return Catalogue(channels: channels, groupOrder: [:], favorites: owned.map(\.snapshot), recents: recents, rules: rules)
+        let built = BrowseSignposts.signposter.beginInterval("catalogue")
+        defer { BrowseSignposts.signposter.endInterval("catalogue", built) }
+        return Catalogue(
+            channels: channels, groupOrder: [:], favorites: FavoriteRecord.snapshots(favorites, profile: profile), recents: recents,
+            rules: rules)
     }
 }
 
 extension FavoriteRecord {
+    /// `profile`'s favorites among `records`, as the catalogue reads them (profiles capability).
+    static func snapshots(_ records: [FavoriteRecord], profile: UUID) -> [FavoriteSnapshot<PersistentIdentifier>] {
+        records.filter { ProfileList.owns(profile, recordProfile: $0.profileID) }.map(\.snapshot)
+    }
+
     /// The record as the catalogue reads it.
     var snapshot: FavoriteSnapshot<PersistentIdentifier> {
         FavoriteSnapshot(channelID: channelID, sourceID: sourceID, sortOrder: sortOrder, recordToken: persistentModelID)

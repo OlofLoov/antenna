@@ -52,18 +52,7 @@ enum Browse {
         let isSelected: Bool
 
         var body: some View {
-            let tile = Initials(text: initials, isSelected: isSelected)
-            if let url {
-                AsyncImage(url: url) { phase in
-                    if let image = phase.image {
-                        image.resizable().scaledToFit()
-                    } else {
-                        tile
-                    }
-                }
-            } else {
-                tile
-            }
+            LogoImage(url: url) { Initials(text: initials, isSelected: isSelected) }
         }
     }
 
