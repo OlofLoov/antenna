@@ -34,6 +34,7 @@ import SwiftUI
                     }
                     .padding(EdgeInsets(top: 18, leading: 16, bottom: 4, trailing: 16))
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .animation(ShelfBanner.crossfade, value: banner?.state.text)
                     .background(Palette.ground.opacity(0.78))
                 }
                 .frame(height: 520)
@@ -72,6 +73,7 @@ import SwiftUI
                     }
                     .frame(width: 480, alignment: .leading)
                     .padding(EdgeInsets(top: 34, leading: 28, bottom: 20, trailing: 0))
+                    .animation(ShelfBanner.crossfade, value: banner?.state.text)
                 }
                 .frame(height: 330)
                 .frame(maxWidth: .infinity)
@@ -111,6 +113,7 @@ extension ShelfBanner {
     /// The screen passes the buttons so it can track their focus.
     struct Television<Buttons: View>: View {
         @ViewBuilder var buttons: Buttons
+        @Environment(\.shelfBanner) private var banner
         @Environment(\.shelfPrefix) private var prefix
 
         var body: some View {
@@ -133,6 +136,7 @@ extension ShelfBanner {
                 .frame(width: 880, alignment: .leading)
                 .padding(.leading, 64)
                 .padding(.top, 180)
+                .animation(ShelfBanner.crossfade, value: banner?.state.text)
             }
             .frame(height: 640, alignment: .top)
             .overlay(alignment: .bottomTrailing) {
@@ -146,7 +150,7 @@ extension ShelfBanner {
 
 extension BannerContext {
     /// The Long Harbor, first of four, for previews.
-    static func preview(onMyList: Bool = false, kind: ShelfTitle.Kind = .movie, artURL: URL? = nil) -> BannerContext {
+    static func preview(onMyList: Bool = false, kind: ShelfTitle.Kind = .movie, art: BannerArt? = nil) -> BannerContext {
         let title = kind == .movie ? ShelfFixtures.movie(0) : ShelfFixtures.series(0)
         let details =
             kind == .movie
@@ -156,7 +160,7 @@ extension BannerContext {
                 ageRating: "15")
             : ShelfDetails(year: 2021, seasons: 3, plot: "Three sisters run a ferry line through a long winter.")
         return BannerContext(
-            state: .init(text: BannerText(title, details: details), artURL: artURL, isOnMyList: onMyList, index: 0, count: 4),
+            state: .init(text: BannerText(title, details: details), art: art, isOnMyList: onMyList, index: 0, count: 4),
             actions: .init(play: {}, moreInfo: {}, toggleMyList: {}, page: { _ in }, show: { _ in }, interacting: { _ in }))
     }
 }
@@ -182,7 +186,7 @@ extension BannerContext {
             ShelfBanner.Phone { EmptyView() }
             Palette.ground.frame(height: 200)
         }
-        .environment(\.shelfBanner, .preview(artURL: PreviewArt.address))
+        .environment(\.shelfBanner, .preview(art: .poster(PreviewArt.address)))
         .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallPoster))
         .background(Palette.ground)
     }
@@ -193,7 +197,7 @@ extension BannerContext {
             ShelfBanner.Pad()
             Palette.ground.frame(height: 100)
         }
-        .environment(\.shelfBanner, .preview(artURL: PreviewArt.address))
+        .environment(\.shelfBanner, .preview(art: .poster(PreviewArt.address)))
         .environment(\.shelfMetrics, .pad)
         .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallPoster))
         .background(Palette.ground)
@@ -228,8 +232,20 @@ extension BannerContext {
         }
         Palette.ground.frame(height: 400)
     }
-    .environment(\.shelfBanner, .preview(artURL: PreviewArt.address))
+    .environment(\.shelfBanner, .preview(art: .poster(PreviewArt.address)))
     .environment(\.shelfMetrics, .tv)
     .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallPoster))
+    .background(Palette.ground)
+}
+
+#Preview("Banner, Apple TV, backdrop", traits: .fixedLayout(width: 1920, height: 640)) {
+    ShelfBanner.Television {
+        ShelfBanner.PlayButton(type: .tv).fixedSize()
+        ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
+        ShelfBanner.MyListButton(type: .tv)
+    }
+    .environment(\.shelfBanner, .preview(art: .backdrop(PreviewArt.address)))
+    .environment(\.shelfMetrics, .tv)
+    .environment(\.posterLoader, PreviewArt.loader(PreviewArt.backdrop))
     .background(Palette.ground)
 }

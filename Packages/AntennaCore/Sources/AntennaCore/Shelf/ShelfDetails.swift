@@ -103,3 +103,33 @@ public struct BannerPager: Sendable, Hashable {
         count > 1 && !interacting && !reduceMotion
     }
 }
+
+/// The picture behind a banner title
+/// (movies-and-series-browsing/new-titles-up-front).
+public enum BannerArt: Sendable, Hashable {
+    /// A wide picture that fills the banner.
+    case backdrop(URL)
+    /// The 2:3 poster. A wide banner shows it sharp beside the copy, over a
+    /// blurred copy of itself.
+    case poster(URL)
+
+    /// How long the banner waits for a title's info call before it settles
+    /// for the poster.
+    public static let patience: Duration = .seconds(1.5)
+
+    /// The title's backdrop once its info call has answered with one, its
+    /// poster once the call has answered without one or the banner has
+    /// waited `patience`, and nil before that. While it is nil the banner
+    /// keeps the picture it already shows.
+    public static func choose(details: ShelfDetails?, answered: Bool, waited: Bool, poster: URL?) -> BannerArt? {
+        if let backdrop = details?.backdropURL { return .backdrop(backdrop) }
+        guard answered || waited else { return nil }
+        return poster.map(BannerArt.poster)
+    }
+
+    public var url: URL {
+        switch self {
+        case .backdrop(let url), .poster(let url): url
+        }
+    }
+}

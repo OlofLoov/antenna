@@ -7,8 +7,9 @@ import SwiftUI
 struct BannerContext {
     struct State {
         var text: BannerText
-        /// The backdrop, else the poster.
-        var artURL: URL?
+        /// The backdrop, else the poster, or nil while the banner waits for
+        /// the title's info call and keeps the picture it shows.
+        var art: BannerArt?
         var isOnMyList: Bool
         var index: Int
         var count: Int
@@ -56,21 +57,75 @@ enum ShelfBanner {
         static let tv = Sizes(eyebrow: 20, title: 76, facts: 24, badge: 17, description: 26, button: 26, buttonHeight: 70, spacing: 22)
     }
 
-    /// The artwork, scaled to fill and cut to the banner's frame, on the
-    /// board's placeholder color.
+    /// How the banner moves from one title to the next: the picture and the
+    /// words fade across. A fade is allowed with Reduce Motion on.
+    static let crossfade = Animation.easeInOut(duration: 0.6)
+
+    /// The artwork, cut to the banner's frame, on the board's placeholder
+    /// color. It keeps the picture it shows until the next one has loaded,
+    /// then fades across. A backdrop fills the banner. A poster fills a tall
+    /// banner; a wide one shows it sharp at the right over a blurred copy
+    /// of itself.
     struct Art: View {
         @Environment(\.shelfBanner) private var banner
         @Environment(\.posterLoader) private var loader
-        @State private var poster: Poster?
+        @State private var shown: Shown?
+
+        struct Shown: Equatable {
+            var art: BannerArt
+            var image: CGImage?
+        }
 
         var body: some View {
-            FilledArt(image: poster?.image, background: TitlePage.placeholder)
-                .accessibilityHidden(true)
-                .task(id: banner?.state.artURL) {
-                    poster = nil
-                    guard let url = banner?.state.artURL, let loader else { return }
-                    poster = await loader.load(url)
+            TitlePage.placeholder
+                .overlay {
+                    if let shown {
+                        Picture(shown: shown)
+                            .id(shown.art)
+                            .transition(.opacity)
+                    }
                 }
+                .clipped()
+                .accessibilityHidden(true)
+                .task(id: banner?.state.art) {
+                    guard let art = banner?.state.art, art != shown?.art else { return }
+                    let image = await loader?.load(art.url)?.image
+                    guard !Task.isCancelled else { return }
+                    withAnimation(ShelfBanner.crossfade) { shown = Shown(art: art, image: image) }
+                }
+        }
+    }
+
+    /// One title's picture, sized by the banner.
+    struct Picture: View {
+        let shown: Art.Shown
+
+        var body: some View {
+            switch shown.art {
+            case .backdrop:
+                FilledArt(image: shown.image, background: TitlePage.placeholder)
+            case .poster:
+                GeometryReader { proxy in
+                    let size = proxy.size
+                    if size.width > size.height * 1.2, let image = shown.image {
+                        ZStack(alignment: .bottomTrailing) {
+                            FilledArt(image: image, background: TitlePage.placeholder)
+                                .blur(radius: size.height / 12, opaque: true)
+                                .overlay(Palette.ground.opacity(0.35))
+                            FilledArt(image: image, background: TitlePage.placeholder)
+                                .aspectRatio(2 / 3, contentMode: .fit)
+                                .frame(height: size.height * 0.7)
+                                .clipShape(RoundedRectangle(cornerRadius: size.height * 0.03, style: .continuous))
+                                .shadow(color: .black.opacity(0.5), radius: size.height / 20, y: size.height / 60)
+                                .padding(.trailing, size.height * 0.12)
+                                .padding(.bottom, size.height * 0.1)
+                        }
+                        .frame(width: size.width, height: size.height)
+                    } else {
+                        FilledArt(image: shown.image, background: TitlePage.placeholder)
+                    }
+                }
+            }
         }
     }
 

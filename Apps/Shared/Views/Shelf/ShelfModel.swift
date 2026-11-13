@@ -33,6 +33,8 @@ final class ShelfModel {
     private(set) var banner: [ShelfTitle] = []
     /// The banner's details by title id, once loaded.
     private(set) var details: [String: ShelfDetails] = [:]
+    /// Banner titles whose info call has answered or failed.
+    private(set) var answered: Set<String> = []
     /// False until the section first opens; nothing loads before.
     private(set) var opened = false
     /// Failed sources whose banner the user dismissed.
@@ -219,6 +221,7 @@ final class ShelfModel {
     func loadDetails(_ title: ShelfTitle) async {
         guard !asked.contains(title.id), let source = descriptors[title.sourceID] else { return }
         asked.insert(title.id)
+        defer { answered.insert(title.id) }
         guard let found = try? await dependencies.details(source, title) else { return }
         details[title.id] = found
     }
