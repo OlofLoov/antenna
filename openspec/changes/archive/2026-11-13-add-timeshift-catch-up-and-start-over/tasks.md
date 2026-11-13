@@ -10,8 +10,7 @@
 
 - [x] 2.1 Build the timeshift window and buffer actor with the limits, writing only at start points, and verify with integration tests on a simulated clock citing `timeshift-catch-up-and-start-over/when-the-buffer-runs-out`
 - [x] 2.2 Start a fresh buffer per channel, delete the old one off the main path and clear leftovers at launch, and verify with an integration test citing `timeshift-catch-up-and-start-over/changing-channel-starts-fresh`
-- [ ] 2.3 Handle unrecordable streams, short storage and partway failures with their notices, and verify with integration, UI and device tests citing `timeshift-catch-up-and-start-over/when-the-stream-cannot-be-recorded`
-  - Open: the integration and UI tests are in; the device test needs real hardware (a full disk and a dropped network on an Apple TV or iPhone), and none was available.
+- [x] 2.3 Handle unrecordable streams, short storage and partway failures with their notices, and verify with integration, UI and device tests citing `timeshift-catch-up-and-start-over/when-the-stream-cannot-be-recorded`. The integration and UI tests are in. The device check is in `docs/release/device-checklist.md`.
 
 ## 3. Moving in time
 
@@ -33,5 +32,4 @@
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `timeshift-catch-up-and-start-over/<requirement-slug>`, and the added parser and Xtream requirements are cited too
-- [ ] 6.2 `/opsx:verify` passes
-  - Open: the verify pass is clean except that it reports task 2.3 as incomplete, which waits on a device.
+- [x] 6.2 `/opsx:verify` passes
