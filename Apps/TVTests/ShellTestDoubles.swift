@@ -69,6 +69,10 @@ final class ScriptedLoader {
         resume(id) { $0.resume(returning: Playlist(channels: channels)) }
     }
 
+    func finish(_ id: UUID, with playlist: Playlist) {
+        resume(id) { $0.resume(returning: playlist) }
+    }
+
     func fail(_ id: UUID, with error: any Error) {
         resume(id) { $0.resume(throwing: error) }
     }

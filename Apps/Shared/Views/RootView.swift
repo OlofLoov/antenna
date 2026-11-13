@@ -128,8 +128,8 @@
     }
 
     /// The tab bar on iPhone and in a narrow iPad window: Live, Guide, Movies, Search and Settings. Series
-    /// sits inside Movies, and Movies shows only with an Xtream source
-    /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
+    /// sits inside Movies, and Movies shows only when a source offers titles
+    /// (m3u-playlists/playlist-titles-show-on-every-platform).
     private struct CompactTabs: View {
         enum Tab: Hashable { case live, guide, movies, search, settings }
         @State private var selection: Tab = .live
@@ -151,15 +151,13 @@
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
 
-        /// An Xtream source, or a playlist whose last load had movies or episodes
-        /// (m3u-playlists/playlist-movies-show-in-movies).
-        private var showsMovies: Bool {
-            shelves.hasXtream
-                || records.contains { record in
-                    let status = refresher?.status(of: record.id)
-                    return (status?.movies ?? 0) + (status?.episodes ?? 0) > 0
-                }
-        }
+        /// Movies, with Series inside, shows when the sources offer either
+        /// (m3u-playlists/playlist-titles-show-on-every-platform).
+        private var showsMovies: Bool { shelves.offer.any }
+
+        /// The offer read straight from the store and the remembered counts,
+        /// for the first appearance before `ShelfSync` has run.
+        private var storedOffer: TitleOffer { TitleOffer(records: records, refresher: refresher) }
 
         var body: some View {
             TabView(selection: $selection) {
@@ -184,7 +182,7 @@
                     SettingsView()
                 }
             }
-            // The Movies tab goes with the last Xtream source or playlist with movies.
+            // The Movies tab goes when no source offers titles.
             .onChange(of: showsMovies) { _, has in
                 if !has, selection == .movies { selection = .live }
             }
@@ -196,12 +194,12 @@
             .onAppear {
                 guard !restored else { return }
                 restored = true
-                selection = Tab(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
+                selection = Tab(live.restoredTab, offer: storedOffer)
                 // Browse movies in onboarding opens Movies; otherwise the launch
                 // preference, when not Live, wins over the restored tab
                 // (sources-and-settings/choose-how-the-app-behaves).
                 if handoff?.takeMovies() == true { return selection = .movies }
-                switch PreferencesStore.current(preferences).launchScreen(offersMovies: records.contains { $0.kind == .xtream }) {
+                switch PreferencesStore.current(preferences).launchScreen(offersMovies: storedOffer.any) {
                 case .live: break
                 case .guide: selection = .guide
                 case .movies: selection = .movies
@@ -264,11 +262,11 @@
     }
 
     extension CompactTabs.Tab {
-        /// Series sits inside Movies; Movies without an Xtream source opens Live.
-        init(_ tab: LiveSession.Tab, hasXtream: Bool) {
+        /// Series sits inside Movies; Movies with nothing offered opens Live.
+        init(_ tab: LiveSession.Tab, offer: TitleOffer) {
             switch tab {
             case .guide: self = .guide
-            case .movies, .series: self = hasXtream ? .movies : .live
+            case .movies, .series: self = offer.any ? .movies : .live
             case .live, .search, .settings: self = .live
             }
         }

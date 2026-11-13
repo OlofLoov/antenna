@@ -44,6 +44,30 @@ final class ShelfRegularUITests: XCTestCase {
         XCTAssertFalse(app.element("browse.section.series").exists)
     }
 
+    // m3u-playlists/movies-and-series-show-by-what-the-sources-offer
+    // m3u-playlists/what-a-playlist-offered-is-remembered
+    func testAPlaylistOfEpisodesShowsSeriesWithoutMovies() throws {
+        let app = try launch("playlistSeries")
+        let series = app.element("browse.section.series")
+        XCTAssertTrue(series.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.element("browse.section.movies").exists)
+        series.tap()
+        XCTAssertTrue(app.element("series.hero").waitForExistence(timeout: 10))
+    }
+
+    // m3u-playlists/playlist-titles-show-on-every-platform, Search on iPad
+    func testAPlaylistWithTitlesShowsTheSearchChips() throws {
+        let app = try launch("playlistSeries")
+        let section = app.element("browse.section.search")
+        XCTAssertTrue(section.waitForExistence(timeout: 10))
+        section.tap()
+        let field = app.element("search.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("pier")
+        XCTAssertTrue(app.element("search.chip.series").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.element("search.result.title.0").waitForExistence(timeout: 10))
+    }
+
     // movies-and-series-browsing/new-titles-up-front, paging by hand
     func testASwipePagesTheBanner() throws {
         let app = try launch(arguments: ["-ui-testing-reduce-motion"])

@@ -20,9 +20,17 @@
         /// The picture or guide is dimmed under the raised bar.
         var dimmed: Bool { barRaised && !tab.isContent }
 
-        /// The tabs the bar lists: Movies and Series only with an Xtream source (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
+        /// The tabs the bar lists: Movies and Series each only when a source
+        /// offers it (m3u-playlists/movies-and-series-show-by-what-the-sources-offer).
         var tabs: [ShellTab] {
-            ShellTab.allCases.filter { offersMovies || ($0 != .movies && $0 != .series) }
+            let offer = titleOffer
+            return ShellTab.allCases.filter { tab in
+                switch tab {
+                case .movies: offer.movies
+                case .series: offer.series
+                default: true
+                }
+            }
         }
 
         /// The navigator other screens use; `ShellView` provides it.
@@ -97,6 +105,12 @@
     }
 
     extension ShellTab {
+        /// The tab Movies at launch and Browse movies open: Movies, or Series
+        /// when only series are offered.
+        static func titles(_ offer: TitleOffer) -> ShellTab {
+            !offer.movies && offer.series ? .series : .movies
+        }
+
         var title: String {
             switch self {
             case .live: "Live"
@@ -136,6 +150,7 @@
                 guide: guide,
                 languages: ChannelLanguageStore(profile: profile))
             dependencies.waitsForICloud = { loader.waitsForICloud($0) }
+            dependencies.storedTitles = { refresher?.status(of: $0).titleCounts ?? LastLoadStore().readTitles($0) }
             return dependencies
         }
     }

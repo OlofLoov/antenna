@@ -56,7 +56,11 @@ import SwiftData
                 hasLogin: { weakSelf?.logins.contains($0.id) ?? false },
                 loadTitles: { source, kind in
                     try await weakSelf?.load(source.id)
-                    guard let titles = weakSelf?.titles[source.id] else { throw URLError(.badServerResponse) }
+                    // A playlist without on-demand entries answers no titles, as the shelf loader does.
+                    guard let titles = weakSelf?.titles[source.id] else {
+                        if source.isPlaylist { return [] }
+                        throw URLError(.badServerResponse)
+                    }
                     return titles.filter { $0.kind == kind }
                 })
             dependencies.protectedDataAvailable = { protectedData }

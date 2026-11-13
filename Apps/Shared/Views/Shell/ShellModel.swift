@@ -31,6 +31,8 @@
             var catchup = CatchupAddresses()
             /// True for a file source whose playlist has not synced yet.
             var waitsForICloud: @MainActor (SourceDescriptor) -> Bool = { _ in false }
+            /// The movies and episodes a source's last load had on this device, nil when unknown.
+            var storedTitles: @MainActor (UUID) -> TitleCounts? = { _ in nil }
         }
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
@@ -47,11 +49,15 @@
         /// The programme Search asked the Guide to show; the Guide clears it once shown.
         var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
-        /// True with an Xtream source, or a playlist whose last load had movies
-        /// or episodes (m3u-playlists/playlist-movies-show-in-movies).
-        var offersMovies: Bool { hasXtream || !playlistsWithMovies.isEmpty }
-        private var hasXtream = false
-        private var playlistsWithMovies: Set<UUID> = []
+        /// The sections the sources offer: an Xtream source, or a playlist by
+        /// what its last load had (m3u-playlists/movies-and-series-show-by-what-the-sources-offer).
+        var titleOffer: TitleOffer {
+            TitleOffer(sourceKinds.map { ($0.id, $0.kind) }) { titleCounts[$0] }
+        }
+        private var sourceKinds: [(id: UUID, kind: SourceKind)] = []
+        /// Each playlist's movies and episodes from its last load, seeded from
+        /// what this device remembers (m3u-playlists/what-a-playlist-offered-is-remembered).
+        private var titleCounts: [UUID: TitleCounts] = [:]
         var settingsOpen = false
         /// The source Sign in on the error asks a login for, nil while closed.
         var signInRequest: SignInRequest?
@@ -118,8 +124,11 @@
         func sourcesChanged(_ all: [SourceDescriptor]) {
             var seen: Set<UUID> = []
             let list = all.filter { seen.insert($0.id).inserted }
-            hasXtream = list.contains { $0.kind == .xtream }
-            playlistsWithMovies.formIntersection(list.map(\.id))
+            sourceKinds = list.map { ($0.id, $0.kind) }
+            titleCounts = titleCounts.filter { id, _ in list.contains { $0.id == id } }
+            for source in list where titleCounts[source.id] == nil {
+                titleCounts[source.id] = dependencies.storedTitles(source.id)
+            }
             let gone = tuned?.sourceID.map { id in !list.contains { $0.id == id } } ?? false
             if tuned != nil, list.isEmpty || gone {
                 // A deleted source's channel stops (sources-and-settings/delete-a-source-and-everything-that-came-with-it).
@@ -134,6 +143,7 @@
                 startDeadline()
             }
             let ids = Set(list.map(\.id))
+            if descriptors.keys.contains(where: { !ids.contains($0) }) { leaveUnofferedTab() }
             for id in descriptors.keys where !ids.contains(id) {
                 loads[id]?.cancel()
                 loads[id] = nil
@@ -421,16 +431,20 @@
     }
 
     extension ShellModel {
+        /// Movies or Series open after its last source stopped offering it
+        /// shows Live (m3u-playlists/movies-and-series-show-by-what-the-sources-offer).
+        private func leaveUnofferedTab() {
+            guard !tabs.contains(tab) else { return }
+            Task { await showLive() }
+        }
+
         private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
             loads[source.id] = nil
             switch result {
             case .success(let playlist):
                 let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
-                if playlist.movies.isEmpty && playlist.episodes.isEmpty {
-                    playlistsWithMovies.remove(source.id)
-                } else {
-                    playlistsWithMovies.insert(source.id)
-                }
+                titleCounts[source.id] = TitleCounts(movies: playlist.movies.count, episodes: playlist.episodes.count)
+                leaveUnofferedTab()
                 channelsBySource[source.id] = tagged
                 setState(.loaded(channels: tagged.count), for: source.id)
                 if !tagged.isEmpty { finishOrder.append(source.id) }

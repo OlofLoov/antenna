@@ -186,6 +186,15 @@ import Testing
             await #expect(throws: IntentFailure.titleGone(title: nil, source: "Attic")) { try await PlayTitleIntent(title: gone).perform() }
         }
 
+        @Test("m3u-playlists/playlist-titles-show-on-every-platform: Siri finds a playlist movie with the app not running")
+        func playlistTitle() async throws {
+            let harness = try harness(sources: [cabin])
+            harness.titles[cabin.id] = [ShelfTitle(id: "m3u.0123456789abcdef", kind: .movie, sourceID: cabin.id, name: "Film A")]
+            let movie = try #require(await IntentQueries.titles(matching: "film").first)
+            _ = try await PlayTitleIntent(title: movie).perform()
+            #expect(harness.host.inbox.pending == .play(TitleReference(sourceID: cabin.id, titleID: "m3u.0123456789abcdef")))
+        }
+
         @Test("app-intents/open-search with a query, without one, and with only spaces")
         func search() async throws {
             let harness = try harness()
