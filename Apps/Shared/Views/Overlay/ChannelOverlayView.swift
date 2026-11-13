@@ -143,9 +143,9 @@
             .id(key)
             .accessibilityIdentifier(identifier)
             .accessibilityLabel([number.map(String.init), channel.name, line.text, remaining].compactMap(\.self).joined(separator: ", "))
-            .accessibilityAction(named: Browse.FavoriteMenuButton.title(isFavorite: catalogue.isFavorite(channel))) {
-                toggleFavorite(channel, key)
-            }
+            .accessibilityActions([
+                Browse.FavoriteMenuButton.action(isFavorite: catalogue.isFavorite(channel)) { toggleFavorite(channel, key) }
+            ])
         }
 
         @ViewBuilder private func logo(_ channel: Channel) -> some View {
