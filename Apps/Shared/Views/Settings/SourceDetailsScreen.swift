@@ -3,8 +3,10 @@ import SwiftData
 import SwiftUI
 
 /// A source's details (`iPhone-Settings-Detail`, `iPhone-Settings-Detail-XtreamLink`, `iPad-Settings`,
-/// `TV-Settings`): what it holds, its editable name, link, guide link and
+/// `TV-Settings-Details`): what it holds, its editable name, link, guide link and
 /// login, Refresh now, Move up and Move down on Apple TV, and Delete source.
+/// On Apple TV the settings split page: the name, type, status and QR card
+/// on the left, the field rows and Save on the right.
 /// Closes when another device deletes the source
 /// (sources-and-settings/fix-a-source-s-link-or-login).
 struct SourceDetailsScreen: View {
@@ -28,9 +30,14 @@ struct SourceDetailsScreen: View {
         Group {
             if let record {
                 #if os(tvOS)
-                    HStack(alignment: .top, spacing: 48) {
+                    SettingsPage.Split {
+                        TimelineView(.periodic(from: .now, by: 60)) { timeline in
+                            SettingsPage.SourceLead(name: record.name, kind: record.kind, lines: statusLines(record, now: timeline.date)) {
+                                loginCard(record)
+                            }
+                        }
+                    } content: {
                         form(record)
-                        loginCard(record)
                     }
                 #else
                     form(record)
@@ -39,7 +46,9 @@ struct SourceDetailsScreen: View {
                 Color.clear
             }
         }
-        .navigationTitle(record?.name ?? "")
+        #if !os(tvOS)
+            .navigationTitle(record?.name ?? "")
+        #endif
         .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud, delete: delete)
         #if !os(tvOS)
             .modifier(SettingsFileImport(ask: $reimport))
@@ -55,22 +64,21 @@ struct SourceDetailsScreen: View {
 
     @ViewBuilder private func form(_ record: SourceRecord) -> some View {
         Form {
-            Section {
-                TimelineView(.periodic(from: .now, by: 60)) { timeline in
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(Array(statusLines(record, now: timeline.date).enumerated()), id: \.offset) { _, line in
-                            Text(line.text)
-                                .foregroundStyle(line.style == .error ? OnboardingForm.errorColor : Palette.textMuted)
-                        }
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityIdentifier("settings.details.status")
-                }
-            } header: {
-                Text(SourceRowLabel.badge(record.kind))
-            }
+            #if !os(tvOS)
+                statusSection(record)
+            #endif
             if let editor, record.url != nil {
                 SourceFieldsSection(editor: editor, switched: switched)
+                #if os(tvOS)
+                    // The primary action under the fields, as Connect is on the add-source page.
+                    Section {
+                        Button("Save") { save(editor) }
+                            .buttonStyle(.glassProminent)
+                            .disabled(editor.saving)
+                            .accessibilityIdentifier("settings.details.save")
+                    }
+                    .listRowBackground(Color.clear)
+                #endif
             }
             GuideRowSection(id: record.id)
             Section {
@@ -97,14 +105,34 @@ struct SourceDetailsScreen: View {
                     .accessibilityIdentifier("settings.details.delete")
             }
         }
-        .toolbar {
-            if let editor, record.url != nil {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save(editor) }
+        #if !os(tvOS)
+            .toolbar {
+                if let editor, record.url != nil {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") { save(editor) }
                         .disabled(editor.saving)
                         .accessibilityIdentifier("settings.details.save")
+                    }
                 }
             }
+        #endif
+    }
+
+    /// What the source holds and when it last loaded, under its type.
+    private func statusSection(_ record: SourceRecord) -> some View {
+        Section {
+            TimelineView(.periodic(from: .now, by: 60)) { timeline in
+                VStack(alignment: .leading, spacing: Metrics.Spacing.xxSmall) {
+                    ForEach(Array(statusLines(record, now: timeline.date).enumerated()), id: \.offset) { _, line in
+                        Text(line.text)
+                            .foregroundStyle(line.style == .error ? AnyShapeStyle(OnboardingForm.errorColor) : AnyShapeStyle(.secondary))
+                    }
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("settings.details.status")
+            }
+        } header: {
+            Text(SourceRowLabel.badge(record.kind))
         }
     }
 
@@ -145,6 +173,57 @@ struct SourceDetailsScreen: View {
     }
 }
 
+/// What a source field takes: the keyboard it offers and how it shows the value.
+private enum SourceEntry {
+    /// Words, such as a name.
+    case text
+    /// A link or server address: no capitals, no autocorrection.
+    case link
+    /// A username or MAC address: no capitals, no autocorrection.
+    case login
+    /// A password.
+    case secure
+}
+
+/// One editable field: on Apple TV the add-source field row, with its label
+/// beside the system text field (design-system/forms-use-the-platform-form-style),
+/// a text field elsewhere.
+private struct SourceField: View {
+    let label: String
+    @Binding var text: String
+    var prompt: String?
+    var entry = SourceEntry.text
+    let identifier: String
+
+    var body: some View {
+        #if os(tvOS)
+            switch entry {
+            case .secure:
+                FieldRow.Secret(label: label, text: $text, prompt: prompt ?? "", identifier: identifier)
+            case .text:
+                FieldRow.Text(label: label, text: $text, prompt: prompt ?? "", identifier: identifier)
+            case .link:
+                FieldRow.Text(label: label, text: $text, prompt: prompt ?? "", entry: .link, identifier: identifier)
+            case .login:
+                FieldRow.Text(label: label, text: $text, prompt: prompt ?? "", entry: .plain, identifier: identifier)
+            }
+        #else
+            Group {
+                switch entry {
+                case .secure:
+                    SecureField(label, text: $text, prompt: prompt.map { Text($0) })
+                case .text:
+                    TextField(label, text: $text, prompt: prompt.map { Text($0) })
+                case .link, .login:
+                    TextField(label, text: $text, prompt: prompt.map { Text($0) })
+                        .autocorrectionDisabled()
+                }
+            }
+            .accessibilityIdentifier(identifier)
+        #endif
+    }
+}
+
 /// The editable fields: Name, the link, the guide link for a playlist, the
 /// login for Xtream, and the MAC address and optional login for a portal,
 /// with the password field empty.
@@ -158,15 +237,12 @@ private struct SourceFieldsSection: View {
 
     var body: some View {
         Section("Source") {
-            TextField("Name", text: $editor.name)
-                .accessibilityIdentifier("settings.details.name")
-            TextField(linkLabel, text: $editor.link)
-                .autocorrectionDisabled()
-                .accessibilityIdentifier("settings.details.link")
+            SourceField(label: "Name", text: $editor.name, identifier: "settings.details.name")
+            SourceField(label: linkLabel, text: $editor.link, entry: .link, identifier: "settings.details.link")
             if editor.kind == .m3u {
-                TextField("Guide", text: $editor.guideLink, prompt: Text("Optional XMLTV link"))
-                    .autocorrectionDisabled()
-                    .accessibilityIdentifier("settings.details.guide")
+                SourceField(
+                    label: "Guide", text: $editor.guideLink, prompt: "Optional XMLTV link", entry: .link,
+                    identifier: "settings.details.guide")
             }
         }
         if editor.xtreamPanel != nil {
@@ -198,19 +274,16 @@ private struct SourceFieldsSection: View {
                     }
                 #endif
                 if editor.kind == .stalker {
-                    TextField("MAC address", text: $editor.mac)
-                        .autocorrectionDisabled()
-                        .accessibilityIdentifier("settings.details.mac")
-                    TextField("Login", text: $editor.username, prompt: Text("Optional"))
-                        .autocorrectionDisabled()
-                        .accessibilityIdentifier("settings.details.username")
+                    SourceField(label: "MAC address", text: $editor.mac, entry: .login, identifier: "settings.details.mac")
+                    SourceField(
+                        label: "Login", text: $editor.username, prompt: "Optional", entry: .login,
+                        identifier: "settings.details.username")
                 } else {
-                    TextField("Username", text: $editor.username)
-                        .autocorrectionDisabled()
-                        .accessibilityIdentifier("settings.details.username")
+                    SourceField(label: "Username", text: $editor.username, entry: .login, identifier: "settings.details.username")
                 }
-                SecureField("Password", text: $editor.password, prompt: Text(passwordPrompt))
-                    .accessibilityIdentifier("settings.details.password")
+                SourceField(
+                    label: "Password", text: $editor.password, prompt: passwordPrompt, entry: .secure,
+                    identifier: "settings.details.password")
             } header: {
                 Text("Login")
             } footer: {

@@ -76,11 +76,11 @@
             HStack(spacing: 14) {
                 ProfileBadge(tile: tile, size: 36)
                 Text(tile.name)
-                    .foregroundStyle(Palette.text)
+                    .foregroundStyle(Color.primary)
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Palette.textMuted)
+                    .foregroundStyle(Color.secondary)
                     .accessibilityHidden(true)
             }
             .frame(minHeight: 44)

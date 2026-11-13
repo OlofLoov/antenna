@@ -34,8 +34,8 @@ struct ProfileSettingsRow: View {
                     Text("Add a profile")
                 }
             }
-            .foregroundStyle(Palette.text)
         }
+        .rowLabelColors()
         .accessibilityLabel("Profiles")
         .accessibilityValue(shown?.name ?? "Add a profile")
         .accessibilityIdentifier("settings.profile")
