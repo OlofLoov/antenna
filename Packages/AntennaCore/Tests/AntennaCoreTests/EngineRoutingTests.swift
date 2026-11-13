@@ -32,6 +32,18 @@ import Testing
         #expect(StreamSniff(try Data(contentsOf: root.appending(path: "film.mp4"))) == .other)
         #expect(StreamSniff(Data()) == .other)
     }
+
+    @Test("playback-engine/every-common-stream-type-plays the first bytes tell Matroska and AVI, which only the demuxer reads")
+    func sniffingFilesForTheDemuxer() throws {
+        let root = try FixtureServer.fixtures()
+        let matroska = StreamSniff(try Data(contentsOf: root.appending(path: "film.mkv")))
+        let avi = StreamSniff(try Data(contentsOf: root.appending(path: "channel.avi")))
+        #expect(matroska == .matroska)
+        #expect(avi == .avi)
+        #expect(matroska.needsDemuxer && avi.needsDemuxer && StreamSniff.mpegTS.needsDemuxer)
+        #expect(!StreamSniff.hls.needsDemuxer && !StreamSniff.other.needsDemuxer && !StreamSniff.html.needsDemuxer)
+        #expect(!StreamSniff(try Data(contentsOf: root.appending(path: "film.mp4"))).needsDemuxer)
+    }
 }
 
 @Suite(.timeLimit(.minutes(1))) struct RoutedEngineTests {
@@ -63,6 +75,22 @@ import Testing
         await routed.play()
         #expect(await log.entries == ["demuxer.load 1", "demuxer.stop", "system.load 1", "system.play"])
         #expect(await routed.activeEngine === system)
+        var seen: [PlaybackState] = []
+        while let state = await states.next() {
+            seen.append(state)
+            if state == .playing { break }
+        }
+        #expect(!seen.contains { if case .failed = $0 { true } else { false } })
+    }
+
+    @Test("playback-engine/every-common-stream-type-plays a file address whose bytes are Matroska plays on the demuxer with no error")
+    func handsOffToTheDemuxer() async throws {
+        await system.script(.failure(EngineHandoff.toDemuxer))
+        var states = await routed.states().makeAsyncIterator()
+        try await routed.load(.test("http://x/series/u/p/9.mp4"))
+        await routed.play()
+        #expect(await log.entries == ["system.load 9.mp4", "system.stop", "demuxer.load 9.mp4", "demuxer.play"])
+        #expect(await routed.activeEngine === demuxer)
         var seen: [PlaybackState] = []
         while let state = await states.next() {
             seen.append(state)

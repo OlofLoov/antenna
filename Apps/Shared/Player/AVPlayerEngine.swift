@@ -214,6 +214,12 @@ final class AVPlayerEngine: PlaybackEngine {
             closeStream()
             set(.failed(failure))
             throw failure
+        } catch EngineHandoff.toDemuxer {
+            guard generation == mine else { throw CancellationError() }
+            log("handoff \(redacted(url)) to the demuxer")
+            closeStream()
+            set(.idle)
+            throw EngineHandoff.toDemuxer
         } catch {
             guard generation == mine else { throw CancellationError() }
             throw error

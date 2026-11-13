@@ -109,8 +109,14 @@ struct ShelfLoader: Sendable {
         return store.series(in: source.id) ?? PlaylistSeries(episodes: [], sourceID: source.id)
     }
 
+    /// A series the kept load does not have, such as one shown from an
+    /// earlier load, asks the playlist once more before it fails.
     private func playlistSeriesInfo(_ source: SourceDescriptor, series: ShelfTitle) async throws -> SeriesInfo {
-        guard let info = try await playlistSeries(source).info(for: series.id) else { throw LoadError.unknownTitle }
+        if let info = try await playlistSeries(source).info(for: series.id) { return info }
+        guard let playlists else { throw LoadError.unknownTitle }
+        _ = try await playlists.load(source)
+        let store = playlists.playlistMovies
+        guard let info = store.series(in: source.id)?.info(for: series.id) else { throw LoadError.unknownTitle }
         return info
     }
 

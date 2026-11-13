@@ -1,0 +1,25 @@
+{
+ "info": {
+  "plot": "P"
+ },
+ "episodes": {
+  "1": {
+   "2": {
+    "id": 11,
+    "episode_num": 2,
+    "title": "One two"
+   },
+   "1": {
+    "id": 10,
+    "episode_num": 1,
+    "title": "One one"
+   },
+   "3": "broken"
+  },
+  "2": {
+   "id": 20,
+   "episode_num": 1,
+   "title": "Two one"
+  }
+ }
+}

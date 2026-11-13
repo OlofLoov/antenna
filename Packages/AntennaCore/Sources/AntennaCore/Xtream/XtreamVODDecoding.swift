@@ -28,6 +28,7 @@ extension XtreamClient {
     /// Decodes a `get_vod_info` body. `[]`, `{}`, `false` and `null` give a value with every field empty;
     /// any other body that is not an object throws `XtreamError.decoding(path:)`.
     public static func decodeVODInfo(_ data: Data, host: String) throws -> VODInfo {
+        let data = XtreamBody.readable(data)
         try probeAuth(data)
         guard try isObjectBody(data) else { return VODInfo() }
         let wire = try decode(VODInfoWire.self, from: data)
@@ -40,7 +41,9 @@ extension XtreamClient {
 
     /// Decodes a `get_series_info` body. Episodes come out flat and sorted by season then number, nil
     /// first, ties in server order. Broken and duplicate episodes are counted in `skippedEpisodes`.
+    /// Like every decoder here it reads the body through `XtreamBody.readable(_:)` first.
     public static func decodeSeriesInfo(_ data: Data, host: String) throws -> SeriesInfo {
+        let data = XtreamBody.readable(data)
         try probeAuth(data)
         guard try isObjectBody(data) else { return SeriesInfo() }
         let wire = try decode(SeriesInfoWire.self, from: data)
@@ -59,6 +62,7 @@ extension XtreamClient {
     static func decodeList<Row: Decodable & ListRow, Item: Sendable & Hashable>(
         _ data: Data, row: Row.Type, map: (Row) -> Item
     ) throws -> DecodedList<Item> {
+        let data = XtreamBody.readable(data)
         try probeAuth(data)
         guard firstByte(of: data) == UInt8(ascii: "[") else {
             try requireEmptyShape(data)
@@ -82,6 +86,7 @@ extension XtreamClient {
     /// Decodes a list that fails whole on any broken row, as categories and live streams do.
     /// `[]`, `{}`, `false` and `null` give an empty list.
     static func decodeWholeList<Row: Decodable>(_ data: Data) throws -> [Row] {
+        let data = XtreamBody.readable(data)
         try probeAuth(data)
         guard firstByte(of: data) == UInt8(ascii: "[") else {
             try requireEmptyShape(data)
@@ -202,6 +207,7 @@ struct AnyCodingKey: CodingKey {
 /// Decodes `T` or records that the element was unusable, so one bad row does not fail its list.
 struct Lossy<T: Decodable>: Decodable {
     var value: T?
+    init(value: T?) { self.value = value }
     init(from decoder: any Decoder) throws { value = try? T(from: decoder) }
 }
 

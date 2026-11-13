@@ -128,7 +128,8 @@ struct VODInfoWire: Decodable {
 }
 
 struct SeriesInfoWire: Decodable {
-    /// Episodes as the server grouped them: one group per season key, or one keyless group for an array.
+    /// Episodes as the server grouped them: one group per season key or season array, and one keyless
+    /// group for episodes listed straight in an array.
     struct Group {
         var seasonKey: Int?
         var rows: [Lossy<EpisodeRow>]
@@ -142,21 +143,68 @@ struct SeriesInfoWire: Decodable {
     init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         info = try? c.decodeIfPresent(InfoFields.self, forKey: .info)
-        if let rows = try? c.decodeIfPresent([Lossy<EpisodeRow>].self, forKey: .episodes) {
-            episodes = [Group(seasonKey: nil, rows: rows)]
+        if let entries = try? c.decodeIfPresent([EpisodesEntry].self, forKey: .episodes) {
+            // PHP writes an array keyed 0, 1, 2 as a JSON array, so an array of arrays is seasons by index.
+            var loose: [Lossy<EpisodeRow>] = []
+            var seasons: [Group] = []
+            for (index, entry) in entries.enumerated() {
+                switch entry {
+                case .episode(let row): loose.append(row)
+                case .season(let rows): seasons.append(Group(seasonKey: index, rows: rows))
+                }
+            }
+            episodes = (loose.isEmpty ? [] : [Group(seasonKey: nil, rows: loose)]) + seasons
         } else if let seasons = try? c.nestedContainer(keyedBy: AnyCodingKey.self, forKey: .episodes) {
             // JSON object key order is not preserved by the decoder, so seasons are visited by number,
             // then non-numeric keys by name. That order decides ties and which duplicate wins.
-            let keys = seasons.allKeys.sorted { lhs, rhs in
-                switch (Int(lhs.stringValue), Int(rhs.stringValue)) {
-                case (let left?, let right?): left < right
-                case (.some, nil): true
-                case (nil, .some): false
-                case (nil, nil): lhs.stringValue < rhs.stringValue
-                }
+            episodes = Self.ordered(seasons.allKeys).map { key in
+                Group(seasonKey: Int(key.stringValue), rows: (try? seasons.decode(SeasonRows.self, forKey: key))?.rows ?? [])
             }
-            episodes = keys.map { key in
-                Group(seasonKey: Int(key.stringValue), rows: (try? seasons.decode([Lossy<EpisodeRow>].self, forKey: key)) ?? [])
+        }
+    }
+
+    /// Numeric keys by number, then the others by name.
+    static func ordered(_ keys: [AnyCodingKey]) -> [AnyCodingKey] {
+        keys.sorted { lhs, rhs in
+            switch (Int(lhs.stringValue), Int(rhs.stringValue)) {
+            case (let left?, let right?): left < right
+            case (.some, nil): true
+            case (nil, .some): false
+            case (nil, nil): lhs.stringValue < rhs.stringValue
+            }
+        }
+    }
+}
+
+/// One element of an `episodes` array: an episode, or a whole season's episodes.
+enum EpisodesEntry: Decodable {
+    case episode(Lossy<EpisodeRow>)
+    case season([Lossy<EpisodeRow>])
+
+    init(from decoder: any Decoder) throws {
+        if let rows = try? [Lossy<EpisodeRow>](from: decoder) {
+            self = .season(rows)
+        } else {
+            self = .episode(try Lossy(from: decoder))
+        }
+    }
+}
+
+/// The episodes under one season key: an array of episodes, an object of episodes keyed by
+/// number and visited in key order, or one episode object. Any other value gives none.
+struct SeasonRows: Decodable {
+    var rows: [Lossy<EpisodeRow>] = []
+
+    init(from decoder: any Decoder) throws {
+        if let list = try? [Lossy<EpisodeRow>](from: decoder) {
+            rows = list
+        } else if let keyed = try? decoder.container(keyedBy: AnyCodingKey.self) {
+            if keyed.contains(AnyCodingKey(stringValue: "id")) {
+                rows = [try Lossy(from: decoder)]
+            } else {
+                rows = SeriesInfoWire.ordered(keyed.allKeys).map {
+                    (try? keyed.decode(Lossy<EpisodeRow>.self, forKey: $0)) ?? Lossy(value: nil)
+                }
             }
         }
     }

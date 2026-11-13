@@ -181,7 +181,7 @@ final class DemuxRun: @unchecked Sendable {
         switch StreamSniff(bytes.peek(512)) {
         case .hls: return .failure(EngineHandoff.toSystemPlayer)
         case .html: return .failure(PlaybackFailure.unreadable)
-        case .mpegTS, .other: break
+        case .mpegTS, .matroska, .avi, .other: break
         }
         let demuxer: Demuxer
         do {
