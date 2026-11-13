@@ -2,7 +2,7 @@
 
 ## 1. Rewrites in AntennaCore
 
-- [ ] 1.1 Add the id rewrites to `RecentChannels`, `LastChannelKey`, `LanguageMemory` and `GuideSettings`, and verify core tests citing `source-management/switching-to-xtream-keeps-what-was-remembered-per-channel`
+- [x] 1.1 Add the id rewrites to `RecentChannels`, `LastChannelKey`, `LanguageMemory` and `GuideSettings`, and verify core tests citing `source-management/switching-to-xtream-keeps-what-was-remembered-per-channel`
 
 ## 2. The switch
 

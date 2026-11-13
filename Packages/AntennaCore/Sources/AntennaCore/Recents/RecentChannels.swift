@@ -30,6 +30,14 @@ public struct RecentChannels: Hashable, Sendable {
         entries.removeAll { $0.sourceID == source }
     }
 
+    /// Gives each channel of `source` whose id `ids` names its new id,
+    /// keeping the order and dropping a later duplicate. A new id holding a
+    /// stream link is not taken
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel).
+    public mutating func renameChannels(_ ids: [String: String], source: UUID) {
+        self = RecentChannels(entries.map { $0.renamingChannel(ids, source: source) })
+    }
+
     /// The list stored as `data`; empty when `data` is nil or cannot be read.
     public init(data: Data?) {
         guard let data, let decoded = try? JSONDecoder().decode([LastChannelKey].self, from: data) else {
