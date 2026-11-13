@@ -27,6 +27,7 @@ struct TitleScreen<Page: View>: View {
                 if !exists { library.closePage() }
             }
             #if os(tvOS)
+                .controlHints(.titlePage)
                 .onExitCommand { library.closePage() }
                 .sheet(isPresented: $expanded) {
                     PlotSheet(name: model.metadata.name, text: model.metadata.description ?? "")

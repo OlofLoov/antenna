@@ -49,6 +49,7 @@
                 // Left from the channels lands on the group they belong to.
                 .defaultFocus(focus, .overlay(.group(model.group)), priority: .userInitiated)
                 .focusSection()
+                .controlHints(.overlayGroups)
             } channels: {
                 ChannelOverlay.ChannelColumn(title: catalogue.label(of: model.group), order: model.group.order) {
                     if let empty = model.emptyText(catalogue) {
@@ -65,11 +66,13 @@
                 // Right from a group, or left from the panel, lands on the row the panel describes, else the entry row.
                 .defaultFocus(focus, channelTarget, priority: .userInitiated)
                 .focusSection()
+                .controlHints(.overlayChannels)
             } panel: {
                 if let key = model.panelRow(catalogue), let channel = catalogue.channel(for: key) {
                     TimelineView(.everyMinute) { context in
                         panel(key, channel, at: context.date)
                     }
+                    .controlHints(.overlayChannels)
                 }
             } clock: {
                 TimelineView(.everyMinute) { context in

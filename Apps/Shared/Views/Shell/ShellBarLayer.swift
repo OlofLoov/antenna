@@ -49,6 +49,7 @@
                 }
             }
             .focusSection()
+            .controlHints(.tabBar)
         }
 
         private func look(for tab: ShellTab) -> ShellTabBar.Look {

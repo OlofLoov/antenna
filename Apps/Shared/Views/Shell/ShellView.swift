@@ -218,6 +218,7 @@
                     .accessibilityLabel("Live picture")
                     .accessibilityIdentifier("shell.picture")
                     .focused($focus, equals: .picture)
+                    .controlHints(.live(swipe: PreferencesStore.current(preferences).swipe, infoBar: zapBarShows))
                 }
             }
         }
