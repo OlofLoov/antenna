@@ -62,6 +62,9 @@ final class LiveModel {
     var typing = false
     /// The channel playing in place, nil until the user picks one.
     private(set) var playing: Channel?
+    /// The channel that played before the last change of channel, what
+    /// Previous channel goes back to.
+    private(set) var lastChannel: Channel?
     /// A later programme picked in Search, shown under what is on next
     /// until the channel changes (search/pick-a-programme).
     private(set) var later: Programme?
@@ -314,7 +317,10 @@ final class LiveModel {
     }
 
     func tune(_ channel: Channel) {
-        if channel != playing { later = nil }
+        if channel != playing {
+            later = nil
+            if let playing { lastChannel = playing }
+        }
         playing = channel
         player.tuned(subject(for: channel))
         load(channel)

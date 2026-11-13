@@ -7,6 +7,8 @@
     /// every layout, so moving it never restarts the channel.
     struct LivePicture: View {
         @Environment(LiveModel.self) private var live
+        /// Which half of the picture a double-tap lands on.
+        @State private var surfaceWidth: CGFloat = 0
         #if os(iOS)
             @Environment(\.horizontalSizeClass) private var sizeClass
         #endif
@@ -19,7 +21,16 @@
                         PlayerSurfaceView(engine: live.engine)
                             .overlay { PlayerSubtitles(engine: live.engine, raised: live.controlsShown ? 52 : 0) }
                             .contentShape(Rectangle())
+                            .onGeometryChange(for: CGFloat.self) {
+                                $0.size.width
+                            } action: {
+                                surfaceWidth = $0
+                            }
+                            .onTapGesture(count: 2) { location in
+                                live.player.timeshift.doubleTapSkip(forward: location.x > surfaceWidth / 2)
+                            }
                             .onTapGesture { live.controlsShown ? live.hideControls() : live.showControls(after: .touch) }
+                            .gesture(swipe)
                             .onContinuousHover { phase in
                                 switch phase {
                                 case .active: live.showControls(after: .pointerInside)
@@ -31,6 +42,7 @@
                             .accessibilityHint("Shows the player controls")
                             .accessibilityAddTraits(.isButton)
                             .accessibilityAction { live.showControls(after: .touch) }
+                            .accessibilityActions { gestureActions }
                             .accessibilityIdentifier("browse.player.surface")
                         if live.player.airPlayActive {
                             PlayerStatus.Elsewhere(text: "Playing on AirPlay", systemImage: "airplayvideo")
@@ -69,6 +81,26 @@
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("browse.player")
+        }
+
+        /// A mostly vertical swipe of 60 pt or more changes channel, up for
+        /// the next one (live-tv-on-iphone-ipad-mac/swipe-on-the-picture-to-change-channel).
+        private var swipe: some Gesture {
+            DragGesture(minimumDistance: 24).onEnded { value in
+                let rise = value.translation.height
+                guard abs(rise) >= 60, abs(rise) > abs(value.translation.width) else { return }
+                live.zap(by: rise < 0 ? 1 : -1)
+            }
+        }
+
+        /// The swipes and double-taps for VoiceOver, on the picture.
+        @ViewBuilder private var gestureActions: some View {
+            Button("Channel up") { live.zap(by: 1) }
+            Button("Channel down") { live.zap(by: -1) }
+            if live.player.timeshift.canRewind {
+                Button("Back 15 seconds") { live.player.timeshift.doubleTapSkip(forward: false) }
+                Button("Forward 15 seconds") { live.player.timeshift.doubleTapSkip(forward: true) }
+            }
         }
 
         /// The channel and its programme over the top of the full-screen
@@ -191,6 +223,10 @@
             // Outside full screen the now-playing line or the details panel has the star.
             if live.fullScreen, let channel = live.playing {
                 LivePlayerFavoriteButton(channel: channel)
+            }
+            Browse.PreviousChannelButton(isAvailable: live.previousChannel != nil) {
+                live.playPreviousChannel()
+                live.showControls(after: .touch)
             }
             tracksButton
             // The subtitles switch shows where AirPlay can: full screen, regular width and Mac.
