@@ -65,19 +65,22 @@
             }
         }
 
-        /// The tab bar on iPhone and in a narrow iPad window, the columns on
-        /// a wider iPad window and on Mac. Both read the same model.
+        /// The tab bar on every iPhone and in a narrow iPad window, the
+        /// columns on a wider iPad window and on Mac. Both read the same model.
         @ViewBuilder private var layout: some View {
             if compact {
                 CompactTabs()
+                    .modifier(PhoneSizeClass())
             } else {
                 LiveRegularView()
             }
         }
 
+        /// A Plus or Pro Max iPhone held sideways reports a regular width
+        /// and still gets the tab bar (live-tv-on-iphone-ipad-mac/every-iphone-keeps-the-phone-layout).
         private var compact: Bool {
             #if os(iOS)
-                sizeClass == .compact || forcedCompact
+                sizeClass == .compact || UIDevice.current.userInterfaceIdiom == .phone || forcedCompact
             #else
                 false
             #endif
@@ -204,15 +207,56 @@
             .modifier(IntentRequests(navigator: navigator))
             .reminderBanner(live: live, watch: { watch($0) }, showLive: { selection = .live })
             #if os(iOS)
-                // Turning an iPhone sideways on Live fills the screen with
-                // the picture; turning it back returns to the list
-                // (live-tv-on-iphone-ipad-mac/full-screen).
-                .onChange(of: verticalSizeClass) { _, size in
-                    guard selection == .live, UIDevice.current.userInterfaceIdiom == .phone else { return }
-                    live.setFullScreen(size == .compact)
+                // An iPhone held sideways on Live with a channel playing fills
+                // the screen however it got there; turning it upright returns
+                // to the list (live-tv-on-iphone-ipad-mac/sideways-on-iphone-fills-the-screen).
+                .onChange(of: sidewaysLive, initial: true) { old, new in
+                    if new.sideways, new.channel != nil {
+                        live.setFullScreen(true)
+                    } else if old.sideways, !new.sideways {
+                        live.setFullScreen(false)
+                    }
                 }
             #endif
         }
+
+        #if os(iOS)
+            /// What sideways full screen depends on. A new channel while
+            /// sideways fills the screen again after Exit full screen.
+            private var sidewaysLive: SidewaysLive {
+                SidewaysLive(
+                    sideways: selection == .live && verticalSizeClass == .compact && UIDevice.current.userInterfaceIdiom == .phone,
+                    channel: live.playing)
+            }
+        #endif
+    }
+
+    private struct SidewaysLive: Equatable {
+        let sideways: Bool
+        let channel: Channel?
+    }
+
+    /// Every iPhone reads as compact width in either orientation, so the
+    /// tab bar, the track picker, Guide sources and the reminder banner keep
+    /// their phone layout on a Plus or Pro Max held sideways. The override
+    /// sits on the window scene, so UIKit's tab bar and SwiftUI agree.
+    private struct PhoneSizeClass: ViewModifier {
+        func body(content: Content) -> some View {
+            #if os(iOS)
+                content.task { Self.overrideScenes() }
+            #else
+                content
+            #endif
+        }
+
+        #if os(iOS)
+            @MainActor private static func overrideScenes() {
+                guard UIDevice.current.userInterfaceIdiom == .phone else { return }
+                for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+                    scene.traitOverrides.horizontalSizeClass = .compact
+                }
+            }
+        #endif
     }
 
     extension CompactTabs.Tab {

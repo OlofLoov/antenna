@@ -15,6 +15,14 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 844px; height: 390px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
   <!-- browse.player fills the screen; the controls (live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them) sit on the bottom edge; browse.player.fullscreen now exits -->
+  <!-- browse.player.title: the channel line on the top edge, shown and hidden with the controls (live-tv-on-iphone-ipad-mac/the-full-screen-channel-line-fades-with-the-controls) -->
+    <div style="position: absolute; left: 0; right: 0; top: 0; padding: 10px 48px; display: flex; align-items: center; gap: 12px; background: rgba(8,10,14,0.72)">
+      <div style="width: 48px; height: 30px; border-radius: 5px; background: rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">NO</div>
+      <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+        <span style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">News One</span>
+        <span style="font-size: 13px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Now: Evening News</span>
+      </div>
+    </div>
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 48px 14px; display: flex; align-items: center; gap: 12px; background: rgba(8,10,14,0.72)">
       <button type="button" aria-label="Pause" style="font: inherit; width: 32px; height: 32px; border-radius: 16px; border: 0; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; justify-content: center; cursor: pointer">
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
