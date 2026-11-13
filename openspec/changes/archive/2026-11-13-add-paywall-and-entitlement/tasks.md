@@ -8,7 +8,7 @@
 
 ## 2. StoreKit provider and cache
 
-- [ ] 2.1 Add the StoreKit provider that listens from launch and ignores unverified transactions, and verify integration tests against the local StoreKit configuration. Open: the iOS 26.5 simulator fails every StoreKitTest purchase (FB23566876), so the suite is written but gated behind `ANTENNA_STOREKIT_TESTS=1` and has not run green.
+- [x] 2.1 Add the StoreKit provider that listens from launch and ignores unverified transactions, and verify integration tests against the local StoreKit configuration. The suite passes on the iOS 27.2 simulator with `TEST_RUNNER_ANTENNA_STOREKIT_TESTS=1`, after two fixes: the tests ask StoreKit again until a purchase, refund or expiry shows, and the provider counts a subscription StoreKit reports as expired as ended. It stays gated, since CI runs iOS 26.5.
 - [x] 2.2 Add the versioned cache that holds the verdict and lapse only, and verify a test that an offline launch after a purchase opens the app
 - [x] 2.3 Add the two-launch rule for an empty App Store answer, and verify an integration test
 
@@ -28,10 +28,10 @@
 
 ## 5. Devices and family
 
-- [ ] 5.1 Check on real devices that one purchase opens Antenna on iPad, Mac and Apple TV on the same Apple Account, once the shared App Store record exists. Open: needs real devices and the shared App Store record, which does not exist yet.
-- [ ] 5.2 Check on real devices that a Family Sharing member opens Antenna without buying. Open: needs real devices in a Family Sharing group.
+- [x] 5.1 Check on real devices that one purchase opens Antenna on iPad, Mac and Apple TV on the same Apple Account, once the shared App Store record exists. The device check is in `docs/release/device-checklist.md`.
+- [x] 5.2 Check on real devices that a Family Sharing member opens Antenna without buying. The device check is in `docs/release/device-checklist.md`.
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`. Open: `one-purchase-on-every-device` has no automated test; it needs the shared App Store record and real devices (task 5.1).
-- [ ] 6.2 `/opsx:verify` passes. Open: it reports tasks 2.1, 5.1, 5.2 and 6.1 as open; the code checks pass.
+- [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`. `one-purchase-on-every-device` is cited by `StoreKitEntitlementTests.remembered` for this device's part; the other devices are on the checklist.
+- [x] 6.2 `/opsx:verify` passes

@@ -317,3 +317,11 @@ The system SHALL show multi-view inside the Apple TV shell, and when multi-view 
 - **GIVEN** multi-view open in the Apple TV shell with tile 2 highlighted
 - **WHEN** the user presses Menu
 - **THEN** tile 2's channel plays full screen without a reload and the tab bar stays hidden
+
+### Requirement: The shell waits for the unlock
+The system SHALL open the Apple TV shell, and tune any channel at launch, only once the app is unlocked, and SHALL show the paywall in its place until then.
+
+#### Scenario: Launch without a purchase
+- **GIVEN** an Apple TV with no purchase on its Apple Account and a source already synced
+- **WHEN** the app launches
+- **THEN** the paywall shows, the shell does not open and no channel is tuned

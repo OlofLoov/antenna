@@ -69,8 +69,8 @@ The system SHALL store an Xtream username and password as one synchronizable Key
 
 #### Scenario: Blank username or password
 - **GIVEN** type Xtream Codes with an empty username or password
-- **WHEN** the user taps Save
-- **THEN** the source is saved and the Keychain item holds the empty values as typed, because neither field is checked
+- **WHEN** the user taps Connect
+- **THEN** nothing is saved and no Keychain item is written, because an Xtream source needs a username and password
 
 ### Requirement: Keychain failure blocks the save
 The system SHALL refuse to save a source whose credential cannot be written to the Keychain, with a message beginning "Could not store credentials".
@@ -81,17 +81,17 @@ The system SHALL refuse to save a source whose credential cannot be written to t
 - **THEN** the save fails with a message beginning "Could not store credentials", the raw status appended, and no source is stored
 
 ### Requirement: Deleting a source removes its credential
-The system SHALL remove a source's Keychain item when the user deletes the source on iOS or iPadOS.
+The system SHALL remove a source's Keychain item when the user deletes the source on any platform, after the user confirms the delete.
 
 #### Scenario: Swipe to delete
 - **GIVEN** a saved Xtream source on iOS or iPadOS
-- **WHEN** the user swipes to delete it in the Settings list
+- **WHEN** the user swipes to delete it in the Settings list and confirms
 - **THEN** the source is gone and the Keychain item for its key is gone
 
 #### Scenario: Delete on Apple TV or Mac
-- **GIVEN** a saved source on Apple TV or Mac
-- **WHEN** the user opens Settings
-- **THEN** the source is listed but there is no way to delete it there
+- **GIVEN** a saved Xtream source on Apple TV or Mac
+- **WHEN** the user chooses Delete source in its details and confirms
+- **THEN** the source is gone and the Keychain item for its key is gone
 
 #### Scenario: Keychain delete fails
 - **GIVEN** the Keychain delete fails
@@ -117,11 +117,11 @@ The system SHALL make no network request when the user has no sources.
 - **THEN** the channels and the recorded error are cleared
 
 ### Requirement: Channels from all sources are combined
-The system SHALL load every source in sort order into one channel list, and SHALL load again when a source is added, removed, reordered or changed by sync, without downloading unchanged sources that already produced channels.
+The system SHALL load every source in sort order into one channel list at every launch, and SHALL load a source again when it is added or changed by sync, by hand or on schedule. Reordering SHALL change the order without downloading, and unchanged sources SHALL not download again on another source's change.
 
 #### Scenario: M3U and Xtream together
 - **GIVEN** an M3U source with 2 channels and an Xtream source with 3 streams
-- **WHEN** the channel list loads for the first time
+- **WHEN** the channel list loads at launch
 - **THEN** 5 channels are listed, the M3U ones first, in source sort order
 
 #### Scenario: Repeated Xtream category id
@@ -131,18 +131,23 @@ The system SHALL load every source in sort order into one channel list, and SHAL
 
 #### Scenario: Unchanged sources
 - **GIVEN** a loaded channel list
-- **WHEN** it loads again with the same sources unchanged
-- **THEN** nothing is downloaded again
+- **WHEN** another source is added or changed
+- **THEN** sources that did not change are not downloaded again
 
 #### Scenario: A changed source
 - **GIVEN** a loaded channel list
-- **WHEN** a source's name, type, URL, guide link or credential key changes, on this device or through sync
-- **THEN** the list loads again
+- **WHEN** a source's URL or credential key changes, on this device or through sync
+- **THEN** that source loads again
+
+#### Scenario: Reordered sources
+- **GIVEN** a loaded channel list
+- **WHEN** the sources are reordered, on this device or through sync
+- **THEN** the channels follow the new order and nothing is downloaded
 
 #### Scenario: Previous load gave no channels
-- **GIVEN** a load whose sources produced no channels at all
-- **WHEN** the list loads again with the same sources
-- **THEN** every source is downloaded again
+- **GIVEN** a source whose last load produced no channels
+- **WHEN** the channel list loads again
+- **THEN** that source is downloaded again
 
 #### Scenario: Source record without a URL
 - **GIVEN** a source record that has no URL, such as one that synced only in part
@@ -187,19 +192,6 @@ The system SHALL store a Stalker portal source with its MAC address as the Keych
 - **GIVEN** type Stalker portal with a MAC address, password and login
 - **WHEN** the source is saved
 - **THEN** the Keychain item under its id also holds the login, and the synced source holds none of the three
-
-### Requirement: Load failure is recorded
-The system SHALL record the description of the latest failure of each load, and SHALL clear it when a load has no failure.
-
-#### Scenario: One failing source
-- **GIVEN** a source whose request fails and a second source that loads
-- **WHEN** the channel list loads
-- **THEN** the recorded error is the failure's description
-
-#### Scenario: Two failing sources
-- **GIVEN** two failing sources and a later source that loads
-- **WHEN** the channel list loads
-- **THEN** the recorded error is the later failure, and the successful source does not clear it
 
 ### Requirement: Source without a credential key yields no channels
 The system SHALL load no channels for an Xtream source that has no credential key, and make no request to its server.
@@ -345,3 +337,22 @@ The system SHALL remove a source's watch progress and My list entries when the u
 - **GIVEN** a source with watch progress and My list entries, and some recent searches
 - **WHEN** the user deletes the source
 - **THEN** its credential, its record, its progress and its My list entries are gone, and recent searches stay
+
+### Requirement: An Xtream source needs a username and password
+The system SHALL refuse to save an Xtream source whose username or password is empty or only spaces, because the provider issues both, and SHALL save an M3U playlist link with neither.
+
+#### Scenario: Adding an Xtream source without a login
+- **GIVEN** the add-source form, in onboarding or in Settings, with type Xtream and an empty username or password
+- **WHEN** the user taps Connect
+- **THEN** nothing is sent or saved and the form names the empty field
+
+#### Scenario: Adding an M3U playlist link
+- **GIVEN** the add-source form with type M3U and a playlist link
+- **WHEN** the user taps Connect
+- **THEN** the playlist is fetched and saved without asking for a username or password
+
+#### Scenario: Emptying the username in a source's details
+- **GIVEN** a saved Xtream source's details
+- **WHEN** the user empties the username and saves, or saves an empty password on a device without the source's login
+- **THEN** the save is refused with "Enter your username and password." and nothing changes
+- **AND** with the login on this device, an empty password field keeps the saved password

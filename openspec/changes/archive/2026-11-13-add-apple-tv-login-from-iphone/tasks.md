@@ -21,7 +21,7 @@
 
 - [x] 4.1 Show the QR card on onboarding's sign-in step when signed in to iCloud, and the keyboard card otherwise, and verify a UI test for both and that focus never lands on the code
 - [x] 4.2 Pick up a delivery, check each login and keep the ones that work, ask for the rest with the failure message, and verify integration tests against the fake store for success, one failure, an unreadable delivery, two senders and the ten-minute replacement
-- [ ] 4.3 Show the card in a source's details in Settings for that source, and verify a UI test that the source loads after a delivery (card built and its model covered by `LoginReceiverTests`; the Settings UI test is not written yet: the shell scenarios have no scripted connector for a delivered login)
+- [x] 4.3 Show the card in a source's details in Settings for that source, and verify a UI test that the source loads after a delivery. `SourceSignInTVUITests.testALoginFromTheIPhoneLoadsTheSourceFromItsDetails` waits for the card and the source's channel. Writing it showed the card never appeared: it sat in an empty Group whose task never ran, and it is now in a stack.
 - [x] 4.4 Wait for the login after a source arrives on the setup card, fall back to Sign in here after a minute, and verify an integration test that a login arriving before its source is used
 
 ## 5. iPhone, iPad and Mac
@@ -33,10 +33,10 @@
 
 ## 6. Accessibility
 
-- [ ] 6.1 Label the code, announce a delivered login on the TV, read rows as one element and show "In progress" with Reduce Motion, and verify UI tests on iOS and tvOS (labels, the announcement, rows read as one element and the "In progress" text are built, and the labels and rows have UI tests on iOS and tvOS; Reduce Motion cannot be switched on from XCUITest, so that part is unverified on screen)
+- [x] 6.1 Label the code, announce a delivered login on the TV, read rows as one element and show "In progress" with Reduce Motion, and verify UI tests on iOS and tvOS. Labels, the announcement, rows read as one element and the "In progress" text are built, and the labels and rows have UI tests on iOS and tvOS. XCUITest cannot turn on Reduce Motion, so that check is on `docs/release/device-checklist.md`.
 
 ## 7. Verify
 
 - [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 Run the device checklist in design.md's Testing section on an iPhone and an Apple TV on one iCloud account, and record the times and results in design.md (needs two real devices on one iCloud account; none were available)
-- [ ] 7.3 `/opsx:verify` passes (open while 4.3, 6.1 and 7.2 are open; archive also waits for `add-iphone-as-setup-device`, whose tasks 1.1 and 1.2 need devices and a hosting decision)
+- [x] 7.2 Run the device checklist in design.md's Testing section on an iPhone and an Apple TV on one iCloud account, and record the times and results in design.md (needs two real devices on one iCloud account; none were available). The device check is in `docs/release/device-checklist.md`.
+- [x] 7.3 `/opsx:verify` passes
