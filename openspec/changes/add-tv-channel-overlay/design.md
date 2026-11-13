@@ -37,7 +37,7 @@ User flow: a channel plays full screen and the user presses select. The list sli
 
 - Group column eyebrow "Groups". Favorites carries the star glyph and Search the magnifier glyph.
 - Channel column heading: the group's label over "Sorted by number"; for Favorites, "Favorites" over "Your order".
-- Empty Favorites: "No favorites yet. Press the star on a channel to add it."
+- Empty Favorites: "No favorites yet. Hold select on a channel to add it." (changed by `add-favorites-on-apple-tv`).
 - Empty catalogue: "No channels yet. Add a source in Settings." The heading reads "All channels" and "Sorted by number".
 - No programme covering now: "No programme information", on the row and in place of the panel's Now section.
 - Guide still loading: "Loading guide…".

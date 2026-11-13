@@ -35,9 +35,9 @@ Out of scope:
 
 ### Modified Capabilities
 - `tvos-shell`: the list over the picture becomes the channel overlay and opens on the playing channel instead of the first row.
-- `favorites`: Apple TV lists favorites and changes them from the overlay; the read-only rule stays for iPhone, iPad and Mac.
 
 ## Impact
 
 - tvOS player screen gains the overlay.
 - Depends on: `channel-catalogue`, `guide-data`, `favorites`, `tvos-shell`, change `add-tv-zap-bar-and-number-entry` (info bar and remaining-time text), change `add-search` (the Search tab).
+- The removal of the favorites requirement "Apple TV shows no favorites" moved to change `add-favorites-on-apple-tv`.
