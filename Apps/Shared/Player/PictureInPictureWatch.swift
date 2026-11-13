@@ -3,7 +3,8 @@ import AntennaCore
 import AntennaDemux
 
 /// What the player model needs from Picture in Picture
-/// (player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad).
+/// (player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad,
+/// player-controls-and-playback-errors/picture-in-picture-on-a-mac).
 @MainActor
 struct PictureInPictureHooks {
     /// Yields true while the picture plays in the small window.
@@ -15,7 +16,7 @@ struct PictureInPictureHooks {
     static let none = PictureInPictureHooks(activity: { AsyncStream { $0.yield(false) } }, stop: {})
 }
 
-#if os(iOS)
+#if os(iOS) || os(macOS)
     /// Watches the Picture in Picture window of both engines: when it opens,
     /// when the user restores the app from it, and when the user closes it,
     /// which pauses the channel.
@@ -79,9 +80,9 @@ struct PictureInPictureHooks {
 #endif
 
 extension PictureInPictureHooks {
-    /// The window of `engine`'s players on iPhone and iPad; nothing elsewhere.
+    /// The window of `engine`'s players on iPhone, iPad and Mac; nothing on Apple TV.
     static func app(_ engine: any PlaybackEngine) -> PictureInPictureHooks {
-        #if os(iOS)
+        #if os(iOS) || os(macOS)
             let watch = PictureInPictureWatch(engine: engine)
             return PictureInPictureHooks(activity: { watch.hooks.activity() }, stop: { watch.hooks.stop() })
         #else

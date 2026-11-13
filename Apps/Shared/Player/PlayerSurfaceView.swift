@@ -26,6 +26,7 @@ import SwiftUI
             AVPlayerEngine.resolve(engine)?.attach(to: view.playerLayer)
             let demuxer = DemuxEngine.resolve(engine)
             view.host(demuxer?.videoLayer, hold: demuxer?.hold.layer)
+            demuxer?.enablePictureInPicture()
         }
 
         final class PlayerLayerView: NSView {

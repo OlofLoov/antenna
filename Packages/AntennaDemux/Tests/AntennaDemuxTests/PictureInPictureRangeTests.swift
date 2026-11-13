@@ -1,3 +1,4 @@
+import AVKit
 import CoreMedia
 import Testing
 
@@ -17,5 +18,22 @@ import Testing
         let length = CMTime(value: 5400, timescale: 1)
         let range = DemuxEngine.pictureInPictureRange(start: start, duration: length, isLive: false)
         #expect(range == CMTimeRange(start: start, duration: length))
+    }
+}
+
+/// The Picture in Picture window on the FFmpeg path, which these tests
+/// run on a Mac.
+@MainActor
+@Suite struct PictureInPictureWindowTests {
+    @Test("player-controls-and-playback-errors/picture-in-picture-on-a-mac the FFmpeg path offers the window where the system has it")
+    func offersTheWindow() async {
+        let engine = DemuxEngine(sleep: { _ in }, log: { _ in })
+        let supported = AVPictureInPictureController.isPictureInPictureSupported()
+        #expect(await engine.capabilities.supportsPictureInPicture == supported)
+        engine.enablePictureInPicture()
+        let window = engine.pictureInPicture
+        #expect((window != nil) == supported)
+        engine.enablePictureInPicture()
+        #expect(engine.pictureInPicture === window, "a second call keeps the same window")
     }
 }

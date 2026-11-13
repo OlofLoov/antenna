@@ -187,10 +187,17 @@ import Testing
         #expect(second.fields == SourceFields())
     }
 
-    @Test("first-run-onboarding/fill-the-form-from-a-copied-link: no banner without a clipboard, as on Mac")
-    func noBannerOnMac() async {
-        let model = model(tag: "mac")
+    @Test("first-run-onboarding/fill-the-form-from-a-copied-link: no banner without a clipboard, as on Apple TV")
+    func noBannerWithoutClipboard() async {
+        let model = model(tag: "no-clipboard")
         await model.lookForLink()
         #expect(model.clipboardOffer == .hidden)
+    }
+
+    @Test("first-run-onboarding/fill-the-form-from-a-copied-link: iPhone, iPad and Mac read the system clipboard")
+    func systemClipboardOnPhoneAndMac() {
+        #if os(iOS) || os(macOS)
+            #expect(Clipboard.system != nil)
+        #endif
     }
 }
