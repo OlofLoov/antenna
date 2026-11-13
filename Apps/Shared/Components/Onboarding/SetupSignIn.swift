@@ -22,57 +22,36 @@
             let status: OnboardingForm.Status
             var login = Login.missing
             let connect: () -> Void
+            /// Cancel beside Connect; nil leaves it out.
+            var cancel: (() -> Void)?
             @State private var chosen = false
             @FocusState private var focus: Focus?
 
             enum Focus: Hashable { case login, signInHere }
 
             var body: some View {
-                HStack(alignment: .center, spacing: 80) {
-                    VStack(alignment: .leading, spacing: 28) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Sign in on this Apple TV")
-                                .font(.system(size: 52, weight: .heavy))
-                                .accessibilityAddTraits(.isHeader)
-                            Text("\(fields.kind == .stalker ? "Portal" : "Server") and name came from your iPhone.")
-                                .font(.system(size: 24))
-                                .foregroundStyle(Palette.textMuted)
-                        }
-                        VStack(alignment: .leading, spacing: 14) {
-                            Locked(label: "Name", value: fields.name, identifier: "onboarding.field.name")
-                            Locked(
-                                label: fields.kind == .stalker ? "Portal" : "Server", value: fields.url,
-                                identifier: fields.kind == .stalker ? "onboarding.field.portal" : "onboarding.field.server")
-                            loginFields
-                        }
-                        if let error = status.error {
-                            Text(error)
-                                .font(.system(size: 22))
-                                .foregroundStyle(OnboardingForm.errorColor)
-                                .accessibilityIdentifier("onboarding.error")
-                        }
-                        HStack(spacing: 16) {
-                            Button(status.connecting ? "Connecting…" : "Connect", action: connect)
-                                .buttonStyle(OnboardingStyle.PrimaryTV())
-                                .disabled(status.connecting)
-                                .accessibilityIdentifier("onboarding.connect")
-                            if status.connecting { ProgressView() }
-                            Label("Saved in the Keychain on this Apple TV. Antenna has no servers.", systemImage: "lock")
-                                .font(.system(size: 20))
-                                .foregroundStyle(Palette.textMuted)
-                        }
-                        .padding(.top, 6)
-                    }
-                    .frame(width: 820)
+                FormPage.Television(
+                    title: "Sign in on this Apple TV",
+                    line: "\(fields.kind == .stalker ? "Portal" : "Server") and name came from your iPhone.",
+                    footer: OnboardingForm.keychainLine(fields.kind), error: status.error
+                ) {
                     SetupCard.Television(link: link, status: cardStatus) {
                         if !chosen, login == .missing {
                             SetupCard.SignInHere(action: signInHere).focused($focus, equals: .signInHere)
                         }
                     }
+                } rows: {
+                    Section {
+                        FieldRow.Value(label: "Name", value: fields.name, identifier: "onboarding.field.name")
+                        FieldRow.Value(
+                            label: fields.kind == .stalker ? "Portal" : "Server", value: fields.url,
+                            identifier: fields.kind == .stalker ? "onboarding.field.portal" : "onboarding.field.server")
+                        loginFields
+                    }
+                    .disabled(status.connecting)
+                } buttons: {
+                    OnboardingForm.Buttons(connecting: status.connecting, connect: connect, cancel: cancel)
                 }
-                .foregroundStyle(Palette.text)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Palette.ground)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("onboarding.signIn")
                 .defaultFocus($focus, .signInHere)
@@ -95,50 +74,24 @@
                 focus = .login
             }
 
+            /// The login rows; the first takes focus after "Sign in on this Apple TV".
             @ViewBuilder private var loginFields: some View {
                 if fields.kind == .stalker {
-                    OnboardingForm.Stacked(label: "MAC address") {
-                        TextField("", text: $fields.mac)
-                            .focused($focus, equals: .login)
-                            .accessibilityIdentifier("onboarding.field.mac")
-                    }
-                    HStack(spacing: 14) {
-                        OnboardingForm.Stacked(label: "Login", optional: true) {
-                            TextField("", text: $fields.username).accessibilityIdentifier("onboarding.field.username")
-                        }
-                        OnboardingForm.Stacked(label: "Password", optional: true) {
-                            SecureField("", text: $fields.password).accessibilityIdentifier("onboarding.field.password")
-                        }
-                    }
+                    FieldRow.Text(
+                        label: "MAC address", text: $fields.mac, prompt: "00:1A:79:12:34:56", entry: .plain,
+                        identifier: "onboarding.field.mac"
+                    )
+                    .focused($focus, equals: .login)
+                    FieldRow.Text(
+                        label: "Login", text: $fields.username, prompt: "Optional", entry: .plain, identifier: "onboarding.field.username")
+                    FieldRow.Secret(label: "Password", text: $fields.password, prompt: "Optional")
                 } else {
-                    HStack(spacing: 14) {
-                        OnboardingForm.Stacked(label: "Username") {
-                            TextField("", text: $fields.username)
-                                .focused($focus, equals: .login)
-                                .accessibilityIdentifier("onboarding.field.username")
-                        }
-                        OnboardingForm.Stacked(label: "Password") {
-                            SecureField("", text: $fields.password).accessibilityIdentifier("onboarding.field.password")
-                        }
-                    }
-                }
-            }
-        }
-
-        /// A value that came from the iPhone: shown, not focusable.
-        private struct Locked: View {
-            let label: String
-            let value: String
-            let identifier: String
-
-            var body: some View {
-                OnboardingForm.Stacked(label: label) {
-                    Text(value)
-                        .padding(.horizontal, 24)
-                        .frame(maxWidth: .infinity, minHeight: 76, alignment: .leading)
-                        .background(Palette.surface(0.05), in: RoundedRectangle(cornerRadius: 14))
-                        .accessibilityValue(value)
-                        .accessibilityIdentifier(identifier)
+                    FieldRow.Text(
+                        label: "Username", text: $fields.username, prompt: "Required", entry: .plain,
+                        identifier: "onboarding.field.username"
+                    )
+                    .focused($focus, equals: .login)
+                    FieldRow.Secret(label: "Password", text: $fields.password, prompt: "Required")
                 }
             }
         }

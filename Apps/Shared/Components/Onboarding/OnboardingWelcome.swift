@@ -20,23 +20,22 @@ enum OnboardingWelcome {
         let actions: Actions
 
         var body: some View {
-            VStack(spacing: 10) {
+            VStack(spacing: Metrics.Spacing.small) {
                 ScrollView {
-                    VStack(spacing: 28) {
-                        Mark(size: 112, corner: 28, glyph: 64)
-                        VStack(spacing: 12) {
+                    VStack(spacing: Metrics.Spacing.xLarge) {
+                        AntennaMark(size: 112)
+                        VStack(spacing: Metrics.Spacing.small) {
                             Text(OnboardingWelcome.title)
-                                .font(.system(size: 34, weight: .heavy))
+                                .font(.largeTitle.bold())
                                 .accessibilityAddTraits(.isHeader)
                             Text(
                                 "Antenna plays the TV sources you already have. "
                                     + "It comes with no channels, so start by adding a playlist or a login from your provider."
                             )
-                            .font(.system(size: 17))
-                            .foregroundStyle(OnboardingStyle.body)
+                            .foregroundStyle(.secondary)
                         }
                         .multilineTextAlignment(.center)
-                        VStack(spacing: 10) {
+                        VStack(spacing: Metrics.Spacing.xSmall) {
                             Feature(systemImage: "tv", title: "Live TV with a guide", detail: "Groups, favorites, catch-up")
                             Feature(systemImage: "film", title: "Movies and series", detail: "When your provider includes them")
                             if signedInToICloud {
@@ -44,31 +43,29 @@ enum OnboardingWelcome {
                                     .accessibilityIdentifier("onboarding.iCloudNote")
                             }
                         }
-                        .padding(.top, 8)
+                        .padding(.top, Metrics.Spacing.xSmall)
                     }
-                    .padding(.top, 54)
+                    .padding(.top, Metrics.Spacing.xxLarge)
                     .frame(maxWidth: .infinity)
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 Button(action: actions.addSource) {
                     Label("Add a source", systemImage: "plus")
-                        .font(.system(size: 17, weight: .bold))
-                        .frame(maxWidth: .infinity, minHeight: 52)
-                        .foregroundStyle(Palette.ground)
-                        .background(Palette.text, in: RoundedRectangle(cornerRadius: 14))
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.plain)
+                .primaryActionStyle()
+                .controlSize(.large)
                 .accessibilityIdentifier("onboarding.addSource")
                 Button("What is a source?", action: actions.help)
-                    .font(.system(size: 15))
-                    .foregroundStyle(Palette.textMuted)
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.secondary)
                     .frame(minHeight: 44)
-                    .buttonStyle(.plain)
                     .accessibilityIdentifier("onboarding.help")
             }
             .foregroundStyle(Palette.text)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 34)
+            .padding(.horizontal, Metrics.Spacing.large)
+            .padding(.bottom, Metrics.Spacing.xLarge)
             .frame(maxWidth: 520)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Palette.ground)
@@ -78,67 +75,48 @@ enum OnboardingWelcome {
     }
 
     /// Apple TV: the mark, the title, Add a source with focus, What is a
-    /// source? under it and the iCloud line at the bottom.
+    /// source? under it and the iCloud line at the bottom. It paints no
+    /// background, so the kinds and the form it pushes share the system's.
     struct Television: View {
         let signedInToICloud: Bool
         let actions: Actions
 
         var body: some View {
-            VStack(spacing: 36) {
-                Mark(size: 160, corner: 40, glyph: 92)
-                VStack(spacing: 18) {
+            VStack(spacing: Metrics.Spacing.xLarge) {
+                AntennaMark(size: 160)
+                VStack(spacing: Metrics.Spacing.medium) {
                     Text(OnboardingWelcome.title)
-                        .font(.system(size: 64, weight: .heavy))
+                        .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text(
                         "Antenna plays the TV sources you already have. It does not come with any channels, "
                             + "so the first step is to add a playlist or a login from your provider."
                     )
-                    .font(.system(size: 30))
-                    .foregroundStyle(OnboardingStyle.body)
+                    .foregroundStyle(.secondary)
                 }
                 .multilineTextAlignment(.center)
-                .frame(maxWidth: 900)
-                VStack(spacing: 16) {
+                .frame(maxWidth: 1000)
+                VStack(spacing: Metrics.Spacing.medium) {
                     Button("Add a source", action: actions.addSource)
-                        .buttonStyle(OnboardingStyle.PrimaryTV())
+                        .primaryActionStyle()
                         .accessibilityIdentifier("onboarding.addSource")
                     Button("What is a source?", action: actions.help)
-                        .buttonStyle(OnboardingStyle.QuietTV())
+                        .buttonStyle(.glass)
                         .accessibilityIdentifier("onboarding.help")
                 }
-                .padding(.top, 12)
+                .padding(.top, Metrics.Spacing.small)
             }
-            .foregroundStyle(Palette.text)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .bottom) {
                 if signedInToICloud {
                     Text("Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own.")
-                        .font(.system(size: 22))
-                        .foregroundStyle(Palette.textMuted)
-                        .padding(.bottom, 56)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                         .accessibilityIdentifier("onboarding.iCloudNote")
                 }
             }
-            .background(Palette.ground)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("onboarding.welcome")
-        }
-    }
-
-    /// The antenna mark on its blue tile.
-    private struct Mark: View {
-        let size: CGFloat
-        let corner: CGFloat
-        let glyph: CGFloat
-
-        var body: some View {
-            Image(systemName: "antenna.radiowaves.left.and.right")
-                .font(.system(size: glyph * 0.7, weight: .regular))
-                .foregroundStyle(Palette.text)
-                .frame(width: size, height: size)
-                .background(OnboardingStyle.markTile, in: RoundedRectangle(cornerRadius: corner))
-                .accessibilityHidden(true)
         }
     }
 
@@ -149,32 +127,31 @@ enum OnboardingWelcome {
         let detail: String
 
         var body: some View {
-            HStack(spacing: 14) {
+            HStack(spacing: Metrics.Spacing.medium) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 18))
+                    .font(.body)
                     .frame(width: 40, height: 40)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .background(Palette.surface(0.1), in: Metrics.Corner.small.shape())
                     .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.system(size: 15, weight: .semibold))
-                    Text(detail).font(.system(size: 13)).foregroundStyle(Palette.textMuted)
+                VStack(alignment: .leading, spacing: Metrics.Spacing.xxSmall) {
+                    Text(title).font(.subheadline.weight(.semibold))
+                    Text(detail).font(.footnote).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
             }
-            .padding(.vertical, 14)
-            .padding(.horizontal, 16)
-            .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .padding(.vertical, Metrics.Spacing.small)
+            .padding(.horizontal, Metrics.Spacing.medium)
+            .background(Palette.surface(0.06), in: Metrics.Corner.medium.shape())
             .accessibilityElement(children: .combine)
         }
     }
 }
 
-/// Colors and button styles the onboarding boards share.
+/// The body color and the two Apple TV button styles the paywall still
+/// uses until refresh-visual-design moves it to system styles.
 enum OnboardingStyle {
     /// Body copy under a title, `#D7DEE8` on the boards.
     static let body = Color(red: 0xD7 / 255, green: 0xDE / 255, blue: 0xE8 / 255)
-    /// The tile behind the antenna mark, `#1E3A5F`.
-    static let markTile = Color(red: 0x1E / 255, green: 0x3A / 255, blue: 0x5F / 255)
 
     /// The lifted white card while focused, the 0.12 surface otherwise
     /// (design-system/focus-is-the-lifted-white-card). 28 pt bold.

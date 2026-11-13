@@ -1,124 +1,110 @@
 import AntennaCore
 import SwiftUI
 
-/// "What kind of source?" on Apple TV (`TV-Onboard-2`): five cards, each
-/// opening its form (first-run-onboarding/add-a-stalker-portal,
+/// "What kind of source?" on Apple TV (`TV-Onboard-2`): five card buttons
+/// inside the safe area, each opening its form, and Cancel
+/// (first-run-onboarding/add-a-stalker-portal,
 /// first-run-onboarding/add-a-jellyfin-server,
-/// first-run-onboarding/add-a-channels-dvr-server).
+/// first-run-onboarding/add-a-channels-dvr-server,
+/// design-system/apple-tv-content-stays-in-the-safe-area). The cards use
+/// the system card style, which lifts and tilts the focused one
+/// (design-system/controls-use-system-styles). It paints no background.
 enum OnboardingKinds {
+    /// One card: its symbol, name and one line about what the provider gives.
+    struct Kind: Identifiable {
+        var kind: SourceKind
+        var systemImage: String
+        var title: String
+        var detail: String
+        var id: String { kind.rawValue }
+    }
+
+    static let all = [
+        Kind(
+            kind: .m3u, systemImage: "list.bullet", title: "M3U playlist",
+            detail: "A link ending in .m3u or .m3u8, with an optional guide link."),
+        Kind(
+            kind: .xtream, systemImage: "person.badge.key", title: "Xtream login",
+            detail: "A server address with a username and password."),
+        Kind(kind: .stalker, systemImage: "server.rack", title: "Stalker portal", detail: "A portal address and a MAC address."),
+        Kind(kind: .jellyfin, systemImage: "play.tv", title: "Jellyfin", detail: "Live TV from your own Jellyfin server."),
+        Kind(
+            kind: .channelsDVR, systemImage: "externaldrive.connected.to.line.below", title: "Channels DVR",
+            detail: "A Channels DVR server on your home network."),
+    ]
+
     struct Television: View {
         let choose: (SourceKind) -> Void
+        let cancel: () -> Void
 
         var body: some View {
-            VStack(spacing: 56) {
-                VStack(spacing: 14) {
+            VStack(spacing: Metrics.Spacing.xxLarge) {
+                VStack(spacing: Metrics.Spacing.medium) {
                     Text("What kind of source?")
-                        .font(.system(size: 56, weight: .heavy))
+                        .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text("Your provider gave you one of these. You can add more later.")
-                        .font(.system(size: 26))
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                 }
                 .multilineTextAlignment(.center)
-                HStack(spacing: 28) {
-                    Button {
-                        choose(.m3u)
-                    } label: {
-                        Card(
-                            systemImage: "list.bullet", title: "M3U playlist",
-                            detail: "A link ending in .m3u or .m3u8. Add an XMLTV link for the guide if you have one.",
-                            footnote: "Most common")
+                HStack(spacing: Metrics.Spacing.xLarge) {
+                    ForEach(OnboardingKinds.all) { kind in
+                        Button {
+                            choose(kind.kind)
+                        } label: {
+                            Card(kind: kind)
+                        }
+                        .cardButtonStyle()
+                        .accessibilityIdentifier("onboarding.kind.\(kind.id)")
                     }
-                    .accessibilityIdentifier("onboarding.kind.m3u")
-                    Button {
-                        choose(.xtream)
-                    } label: {
-                        Card(
-                            systemImage: "person.badge.key", title: "Xtream login",
-                            detail: "A server address with a username and password. Channels, guide, movies and series all come with it.",
-                            footnote: "Also called Xtream Codes")
-                    }
-                    .accessibilityIdentifier("onboarding.kind.xtream")
-                    Button {
-                        choose(.stalker)
-                    } label: {
-                        Card(
-                            systemImage: "server.rack", title: "Stalker portal",
-                            detail: "A portal address and a MAC address, the way a MAG box signs in.", footnote: "Also called Ministra")
-                    }
-                    .accessibilityIdentifier("onboarding.kind.stalker")
-                    Button {
-                        choose(.jellyfin)
-                    } label: {
-                        Card(
-                            systemImage: "play.tv", title: "Jellyfin",
-                            detail: "Your own Jellyfin server's Live TV, signed in with your Jellyfin username and password.",
-                            footnote: "Live TV and guide from your server")
-                    }
-                    .accessibilityIdentifier("onboarding.kind.jellyfin")
-                    Button {
-                        choose(.channelsDVR)
-                    } label: {
-                        Card(
-                            systemImage: "externaldrive.connected.to.line.below", title: "Channels DVR",
-                            detail: "The address of your Channels DVR server at home. Its channel numbers and guide come with it.",
-                            footnote: "A server on your home network")
-                    }
-                    .accessibilityIdentifier("onboarding.kind.channelsdvr")
                 }
-                .buttonStyle(CardStyle())
+                Button("Cancel", action: cancel)
+                    .buttonStyle(.glass)
+                    .accessibilityIdentifier("onboarding.back")
             }
-            .foregroundStyle(Palette.text)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Palette.ground)
         }
     }
 
+    /// The card's content. The card style draws the platter and the focus.
     private struct Card: View {
-        let systemImage: String
-        let title: String
-        let detail: String
-        let footnote: String
-        @Environment(\.isFocused) private var isFocused
+        let kind: Kind
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 20) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 34))
-                    .frame(width: 80, height: 80)
-                    .background(
-                        (isFocused ? Palette.ground.opacity(0.08) : Palette.surface(0.1)),
-                        in: RoundedRectangle(cornerRadius: 20)
-                    )
+            VStack(alignment: .leading, spacing: Metrics.Spacing.medium) {
+                Image(systemName: kind.systemImage)
+                    .font(.callout)
+                    .frame(width: 72, height: 72)
+                    .background(.quaternary, in: Metrics.Corner.medium.shape())
                     .accessibilityHidden(true)
-                Text(title).font(.system(size: 34, weight: .bold))
-                Text(detail)
-                    .font(.system(size: 23))
-                    .foregroundStyle(isFocused ? Color(white: 0.3) : OnboardingStyle.body)
+                Text(kind.title)
+                    .font(.callout.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Text(kind.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
-                Text(footnote)
-                    .font(.system(size: 20))
-                    .foregroundStyle(isFocused ? Color(white: 0.3) : Palette.textMuted)
             }
-            .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-            .padding(40)
-            .frame(width: 340, height: 460, alignment: .topLeading)
-            .background(
-                isFocused ? Palette.focus : Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20)
-            )
-            .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 22, y: 16)
-            .scaleEffect(isFocused ? 1.04 : 1)
-        }
-    }
-
-    /// Draws the card itself; the card reads focus.
-    private struct CardStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
+            .padding(Metrics.Spacing.xLarge)
+            .frame(width: 300, height: 380, alignment: .topLeading)
         }
     }
 }
 
+extension View {
+    /// The card style on Apple TV; bordered where the snapshot job renders
+    /// the preview, since the card style exists only on tvOS.
+    @ViewBuilder fileprivate func cardButtonStyle() -> some View {
+        #if os(tvOS)
+            buttonStyle(.card)
+        #else
+            buttonStyle(.bordered)
+        #endif
+    }
+}
+
 #Preview("Source type, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
-    OnboardingKinds.Television { _ in }
+    OnboardingKinds.Television(choose: { _ in }, cancel: {})
 }

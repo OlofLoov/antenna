@@ -48,9 +48,7 @@ struct SettingsView: View {
             .navigationDestination(for: UUID.self) { id in
                 SourceDetailsScreen(id: id, signedInToICloud: signedInToICloud) { record in delete(record) }
             }
-            .sheet(isPresented: $showingAdd) {
-                SettingsAddSource()
-            }
+            .addSourcePresentation(isPresented: $showingAdd)
             .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud) { record in delete(record) }
             .task { signedInToICloud = ICloudAccount.isSignedIn() }
             #if !os(tvOS)

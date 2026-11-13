@@ -70,75 +70,70 @@ enum OnboardingChecklist {
         let actions: Actions
 
         var body: some View {
-            VStack(spacing: 10) {
+            VStack(spacing: Metrics.Spacing.small) {
                 ScrollView {
-                    VStack(spacing: 22) {
-                        VStack(spacing: 8) {
+                    VStack(spacing: Metrics.Spacing.large) {
+                        VStack(spacing: Metrics.Spacing.xSmall) {
                             Text(headline)
-                                .font(.system(size: 30, weight: .heavy))
+                                .font(.title.bold())
                                 .accessibilityAddTraits(.isHeader)
                                 .accessibilityIdentifier("onboarding.headline")
                             Text(subtitle)
-                                .font(.system(size: 15))
-                                .foregroundStyle(OnboardingStyle.body)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
                         }
                         .multilineTextAlignment(.center)
-                        .padding(.top, 8)
+                        .padding(.top, Metrics.Spacing.xSmall)
                         ForEach(sections) { section in
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: Metrics.Spacing.xSmall) {
                                 if let title = section.title {
                                     Text(title)
-                                        .font(.system(size: 13, weight: .semibold))
-                                        .tracking(1)
-                                        .textCase(.uppercase)
-                                        .foregroundStyle(Palette.textMuted)
-                                        .padding(.horizontal, 4)
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.horizontal, Metrics.Spacing.medium)
                                 }
                                 VStack(spacing: 0) {
                                     ForEach(section.lines) { line in
                                         LineRow(line: line, metrics: .phone, last: line.id == section.lines.last?.id)
                                     }
                                 }
-                                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                                .background(Palette.surface(0.06), in: Metrics.Corner.medium.shape())
                             }
                         }
                         if let footnote {
                             Text(footnote)
-                                .font(.system(size: 14))
-                                .foregroundStyle(OnboardingStyle.body)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 14)
-                                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                                .padding(.horizontal, Metrics.Spacing.medium)
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, Metrics.Spacing.medium)
                 }
                 .scrollBounceBehavior(.basedOnSize)
-                VStack(spacing: 10) {
+                VStack(spacing: Metrics.Spacing.small) {
                     Button(action: actions.primary) {
                         Text(primary.title)
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(maxWidth: .infinity, minHeight: 52)
-                            .foregroundStyle(Palette.ground)
-                            .background(Palette.text.opacity(primary.isEnabled ? 1 : 0.4), in: RoundedRectangle(cornerRadius: 14))
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.plain)
+                    .primaryActionStyle()
+                    .controlSize(.large)
                     .disabled(!primary.isEnabled)
                     .accessibilityIdentifier("onboarding.primary")
                     if let addAnother = actions.addAnother {
                         Button(action: addAnother) {
                             Text("Add another source")
-                                .font(.system(size: 17, weight: .semibold))
-                                .frame(maxWidth: .infinity, minHeight: 52)
-                                .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 14))
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.glass)
+                        .controlSize(.large)
                         .accessibilityIdentifier("onboarding.addAnother")
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 20)
+                .padding(.horizontal, Metrics.Spacing.medium)
+                .padding(.bottom, Metrics.Spacing.large)
             }
             .foregroundStyle(Palette.text)
             .frame(maxWidth: 520)
@@ -160,14 +155,13 @@ enum OnboardingChecklist {
         let start: () -> Void
 
         var body: some View {
-            VStack(spacing: 44) {
-                VStack(spacing: 12) {
+            VStack(spacing: Metrics.Spacing.xxLarge) {
+                VStack(spacing: Metrics.Spacing.small) {
                     Text(title)
-                        .font(.system(size: 52, weight: .heavy))
+                        .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text("This runs once.")
-                        .font(.system(size: 24))
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                 }
                 .multilineTextAlignment(.center)
                 VStack(spacing: 0) {
@@ -175,19 +169,19 @@ enum OnboardingChecklist {
                         LineRow(line: line, metrics: .television, last: line.id == lines.last?.id)
                     }
                 }
-                .padding(.vertical, 16)
-                .padding(.horizontal, 32)
+                .padding(.vertical, Metrics.Spacing.medium)
+                .padding(.horizontal, Metrics.Spacing.xLarge)
                 .frame(width: 1000)
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 20))
-                HStack(spacing: 16) {
+                .background(Palette.surface(0.06), in: Metrics.Corner.large.shape())
+                HStack(spacing: Metrics.Spacing.large) {
                     Button(primary == .browseMovies ? primary.title : "Start watching now", action: start)
-                        .buttonStyle(OnboardingStyle.PrimaryTV())
+                        .primaryActionStyle()
                         .disabled(!primary.isEnabled)
                         .accessibilityIdentifier("onboarding.primary")
                     if let caption {
                         Text(caption)
-                            .font(.system(size: 22))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -199,36 +193,37 @@ enum OnboardingChecklist {
         }
     }
 
-    /// Font sizes and heights for one platform.
-    struct Metrics {
-        var title: CGFloat
-        var detail: CGFloat
+    /// Text styles and sizes for one platform: callout over footnote on
+    /// iPhone, body over caption on Apple TV.
+    struct LineMetrics {
+        var title: Font
+        var detail: Font
         var height: CGFloat
         var marker: CGFloat
         var bar: CGFloat
         var padding: CGFloat
 
-        static let phone = Metrics(title: 16, detail: 13, height: 60, marker: 26, bar: 4, padding: 14)
-        static let television = Metrics(title: 27, detail: 20, height: 96, marker: 44, bar: 6, padding: 0)
+        static let phone = LineMetrics(title: .callout, detail: .footnote, height: 60, marker: 26, bar: 4, padding: 16)
+        static let television = LineMetrics(title: .body, detail: .caption, height: 96, marker: 44, bar: 6, padding: 0)
     }
 
     /// The marker, the title over the detail, and the guide's bar.
     struct LineRow: View {
         let line: Line
-        let metrics: Metrics
+        let metrics: LineMetrics
         var last = false
 
         var body: some View {
-            HStack(spacing: metrics.padding == 0 ? 24 : 12) {
+            HStack(spacing: metrics.padding == 0 ? Metrics.Spacing.large : Metrics.Spacing.small) {
                 marker
-                VStack(alignment: .leading, spacing: line.bar == nil ? 2 : 8) {
+                VStack(alignment: .leading, spacing: line.bar == nil ? Metrics.Spacing.xxSmall : Metrics.Spacing.xSmall) {
                     Text(line.title)
-                        .font(.system(size: metrics.title))
+                        .font(metrics.title)
                         .foregroundStyle(titleColor)
                     if let detail = line.detail {
                         Text(detail)
-                            .font(.system(size: metrics.detail))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(metrics.detail)
+                            .foregroundStyle(.secondary)
                     }
                     if let bar = line.bar {
                         GuideBar(bar: bar, height: metrics.bar)
@@ -266,7 +261,9 @@ enum OnboardingChecklist {
             switch line.state {
             case .done:
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: metrics.marker * 0.9))
+                    .resizable()
+                    .scaledToFit()
+                    .padding(metrics.marker * 0.05)
                     .foregroundStyle(Palette.accent)
                     .frame(width: metrics.marker, height: metrics.marker)
             case .running:
@@ -274,12 +271,16 @@ enum OnboardingChecklist {
                     .frame(width: metrics.marker, height: metrics.marker)
             case .failed:
                 Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: metrics.marker * 0.9))
+                    .resizable()
+                    .scaledToFit()
+                    .padding(metrics.marker * 0.05)
                     .foregroundStyle(OnboardingForm.errorColor)
                     .frame(width: metrics.marker, height: metrics.marker)
             case .muted:
                 Image(systemName: "minus.circle")
-                    .font(.system(size: metrics.marker * 0.9))
+                    .resizable()
+                    .scaledToFit()
+                    .padding(metrics.marker * 0.05)
                     .foregroundStyle(Palette.textMuted)
                     .frame(width: metrics.marker, height: metrics.marker)
             }

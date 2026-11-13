@@ -24,66 +24,31 @@ enum OnboardingSignIn {
         @ViewBuilder var card: Card
 
         var body: some View {
-            HStack(alignment: .center, spacing: 80) {
-                VStack(alignment: .leading, spacing: 28) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Sign in on this Apple TV")
-                            .font(.system(size: 52, weight: .heavy))
-                            .accessibilityAddTraits(.isHeader)
-                        Text("This source arrived through iCloud without its login. Enter it once here.")
-                            .font(.system(size: 24))
-                            .foregroundStyle(Palette.textMuted)
-                    }
-                    VStack(alignment: .leading, spacing: 14) {
-                        OnboardingForm.Stacked(label: fields.kind == .stalker ? "Portal" : "Server") {
-                            Text(fields.url)
-                                .padding(.horizontal, 24)
-                                .frame(maxWidth: .infinity, minHeight: 76, alignment: .leading)
-                                .background(Palette.surface(0.05), in: RoundedRectangle(cornerRadius: 14))
-                                .accessibilityIdentifier("onboarding.signIn.server")
-                        }
-                        if fields.kind == .stalker {
-                            OnboardingForm.PortalLoginFields(fields: $fields)
-                        } else {
-                            HStack(spacing: 14) {
-                                OnboardingForm.Stacked(label: "Username") {
-                                    TextField("", text: $fields.username).accessibilityIdentifier("onboarding.field.username")
-                                }
-                                OnboardingForm.Stacked(label: "Password") {
-                                    SecureField("", text: $fields.password).accessibilityIdentifier("onboarding.field.password")
-                                }
-                            }
-                        }
-                        if let remaining {
-                            Text(remaining)
-                                .font(.system(size: 22))
-                                .foregroundStyle(Palette.textMuted)
-                                .accessibilityIdentifier("onboarding.signIn.remaining")
-                        }
-                    }
-                    if let error = status.error {
-                        Text(error)
-                            .font(.system(size: 22))
-                            .foregroundStyle(OnboardingForm.errorColor)
-                            .accessibilityIdentifier("onboarding.error")
-                    }
-                    HStack(spacing: 16) {
-                        Button(status.connecting ? "Connecting…" : "Connect", action: connect)
-                            .buttonStyle(OnboardingStyle.PrimaryTV())
-                            .disabled(status.connecting)
-                            .accessibilityIdentifier("onboarding.connect")
-                        Label("Saved in the Keychain on this Apple TV. Antenna has no servers.", systemImage: "lock")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Palette.textMuted)
-                    }
-                    .padding(.top, 6)
-                }
-                .frame(width: 820)
+            FormPage.Television(
+                title: "Sign in on this Apple TV", line: "This source arrived through iCloud without its login. Enter it once here.",
+                footer: OnboardingForm.keychainLine(fields.kind), error: status.error
+            ) {
                 card
+            } rows: {
+                Section {
+                    FieldRow.Value(
+                        label: fields.kind == .stalker ? "Portal" : "Server", value: fields.url, identifier: "onboarding.signIn.server")
+                    if fields.kind == .stalker {
+                        OnboardingForm.PortalLogin(fields: $fields, reveals: nil)
+                    } else {
+                        OnboardingForm.Login(fields: $fields, reveals: nil)
+                    }
+                } footer: {
+                    if let remaining {
+                        Text(remaining)
+                            .font(.caption)
+                            .accessibilityIdentifier("onboarding.signIn.remaining")
+                    }
+                }
+                .disabled(status.connecting)
+            } buttons: {
+                OnboardingForm.Buttons(connecting: status.connecting, connect: connect)
             }
-            .foregroundStyle(Palette.text)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Palette.ground)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("onboarding.signIn")
         }

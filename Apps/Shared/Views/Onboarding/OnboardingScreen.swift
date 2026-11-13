@@ -41,6 +41,7 @@ struct OnboardingScreen: View {
             #if os(tvOS)
                 .fullScreenCover(isPresented: $showingHelp) {
                     OnboardingHelp.Television { showingHelp = false }
+                    .presentationBackground { CoverBackdrop() }
                 }
             #else
                 .sheet(isPresented: $showingHelp) {
@@ -78,12 +79,15 @@ struct OnboardingScreen: View {
                         .navigationDestination(for: Step.self) { step in
                             switch step {
                             case .kinds:
-                                OnboardingKinds.Television { kind in
-                                    model.choose(kind)
-                                    path.append(.form)
-                                }
+                                OnboardingKinds.Television(
+                                    choose: { kind in
+                                        model.choose(kind)
+                                        path.append(.form)
+                                    },
+                                    cancel: { path = [] })
                             case .form:
-                                OnboardingFormScreen(model: model).modifier(SetupPairingRuntime(model: model))
+                                OnboardingFormScreen(model: model, cancel: { path = [] }, changeKind: { path.removeLast() })
+                                    .modifier(SetupPairingRuntime(model: model))
                             }
                         }
                 }
@@ -114,25 +118,23 @@ struct OnboardingScreen: View {
             if model.showsChecklist {
                 OnboardingProgressScreen(model: model, signedInToICloud: signedInToICloud, finish: finish) {}
             } else {
-                OnboardingFormScreen(model: model)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Back") {
-                                // Back from Add another source returns to the summary.
-                                if model.leaveForm() { showingAdd = false }
-                            }
-                            .accessibilityIdentifier("onboarding.back")
-                        }
-                    }
+                // Cancel from Add another source returns to the summary.
+                OnboardingFormScreen(model: model) {
+                    if model.leaveForm() { showingAdd = false }
+                }
             }
         }
     #endif
 }
 
-/// The form with its model: the fields, Connect, and the clipboard check
-/// when it appears.
+/// The form with its model: the fields, Connect, Cancel, and the clipboard
+/// check when it appears.
 struct OnboardingFormScreen: View {
     @Bindable var model: OnboardingModel
+    /// Cancel: closes the form, or goes back to the summary from Add another source.
+    let cancel: () -> Void
+    /// The Type row on Apple TV, which goes back to the kinds.
+    var changeKind: (() -> Void)?
     @Environment(\.modelContext) private var context
     #if !os(tvOS)
         @State private var pickingFile = false
@@ -176,7 +178,9 @@ struct OnboardingFormScreen: View {
             connect: { Task { await model.connect(into: context) } },
             fillIn: { model.fillIn() },
             importFile: importFile,
-            useXtream: { model.useXtream() })
+            useXtream: { model.useXtream() },
+            cancel: cancel,
+            changeKind: changeKind)
     }
 
     private var importFile: (() -> Void)? {
@@ -201,9 +205,10 @@ struct OnboardingFormScreen: View {
     @ViewBuilder private var form: some View {
         #if os(tvOS)
             if let arrival = model.arrival, case .code(let link) = model.pairing?.card {
-                SetupSignIn.Television(fields: $model.fields, link: link.url, status: status, login: arrivalLogin) {
-                    Task { await model.signIn(into: context) }
-                }
+                SetupSignIn.Television(
+                    fields: $model.fields, link: link.url, status: status, login: arrivalLogin,
+                    connect: { Task { await model.signIn(into: context) } }, cancel: cancel
+                )
                 .id(arrival.id)
             } else {
                 OnboardingForm.Television(fields: $model.fields, status: status, actions: actions) {

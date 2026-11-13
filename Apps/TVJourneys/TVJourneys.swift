@@ -69,13 +69,19 @@ final class TVJourneys: XCTestCase {
         waitUntilStill(journey.element("settings.addSource"))
     }
 
-    /// Add a source from Settings, which opens on the form
-    /// (refresh-visual-design, `TV-Refresh-AddSource`).
+    /// Add a source from Settings: the kinds, then the Xtream form, in a
+    /// full-screen cover over Settings (refresh-visual-design, `TV-Onboard-2`, `TV-Onboard-3`).
     func testSettingsAddSource() {
         let journey = Journey(self, arguments: ["-ui-testing-shell", "channels"])
         openSettings(in: journey)
         moveDown(toLabel: "Add a source", in: journey)
         remote.press(.select)
+        expectFocus("onboarding.kind.m3u", in: journey)
+        waitUntilStill(journey.element("onboarding.kind.m3u"))
+        journey.snap("settings-add-source-kinds", anchor: "onboarding.kind.m3u")
+        moveRight(to: "onboarding.kind.xtream", in: journey)
+        remote.press(.select)
+        waitUntilStill(journey.element("onboarding.connect"))
         journey.snap("settings-add-source", anchor: "onboarding.connect")
     }
 
@@ -115,7 +121,7 @@ final class TVJourneys: XCTestCase {
     }
 
     /// What a new user sees before adding a source, then the kinds and the
-    /// Xtream form (refresh-visual-design, `TV-Refresh-AddSource-Kinds`, `TV-Refresh-AddSource`).
+    /// Xtream form (refresh-visual-design, `TV-Onboard-2`, `TV-Onboard-3`).
     func testFirstRun() {
         let journey = Journey(self, scenario: "empty")
         journey.snap("welcome", anchor: "onboarding.welcome")

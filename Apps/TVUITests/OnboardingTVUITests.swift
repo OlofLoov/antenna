@@ -18,6 +18,24 @@ final class OnboardingTVUITests: XCTestCase {
         app.descendants(matching: .any)[identifier].firstMatch
     }
 
+    /// The element with focus whose label contains `label`. A row in a
+    /// `Form` reports focus on its cell, so the label finds it where its
+    /// identifier cannot.
+    private func focused(_ app: XCUIApplication, _ label: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true AND label CONTAINS %@", label)).firstMatch
+    }
+
+    /// Presses `button` until the element whose label contains `label` has focus.
+    private func press(
+        _ button: XCUIRemote.Button, untilFocused label: String, in app: XCUIApplication, limit: Int = 10, file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        for _ in 0..<limit where !focused(app, label).waitForExistence(timeout: 1) {
+            XCUIRemote.shared.press(button)
+        }
+        XCTAssertTrue(focused(app, label).exists, "\(label) never took focus", file: file, line: line)
+    }
+
     // first-run-onboarding/a-new-user-is-asked-for-a-provider
     func testNoSourceOpensOnTheWelcomeScreenWithAddASourceFocused() {
         let app = launch("signedIn")
@@ -75,6 +93,74 @@ final class OnboardingTVUITests: XCTestCase {
         XCTAssertEqual(element(app, "onboarding.error").label, "Enter the server address.")
         XCUIRemote.shared.press(.menu)
         XCTAssertTrue(element(app, "onboarding.kind.xtream").waitForExistence(timeout: 5))
+    }
+
+    // design-system/forms-use-the-platform-form-style
+    // design-system/modals-are-system-presentations
+    func testTypeGoesBackToTheKindsAndCancelToTheWelcome() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.field.playlist").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.kind").label.contains("M3U playlist"))
+        press(.up, untilFocused: "Type", in: app)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.field.playlist").waitForNonExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").hasFocus)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.connect").waitForExistence(timeout: 5))
+        press(.down, untilFocused: "Connect", in: app)
+        XCUIRemote.shared.press(.right)
+        XCTAssertTrue(element(app, "onboarding.back").hasFocus)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.welcome").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.addSource").hasFocus)
+    }
+
+    // design-system/modals-are-system-presentations
+    // design-system/pages-cover-what-is-behind-them
+    // design-system/apple-tv-content-stays-in-the-safe-area
+    func testAddASourceFromSettingsOpensTheKindsThenTheFormInOneCover() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launch()
+        let picture = element(app, "shell.picture")
+        XCTAssertTrue(picture.waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "zapBar.bar").waitForNonExistence(timeout: 15))
+        XCUIRemote.shared.press(.menu)
+        let settings = element(app, "shell.settings")
+        XCTAssertTrue(settings.waitForExistence(timeout: 5))
+        for _ in 0..<8 where !settings.hasFocus {
+            XCUIRemote.shared.press(.right)
+        }
+        XCUIRemote.shared.press(.select)
+        press(.down, untilFocused: "Add a source", in: app)
+        XCUIRemote.shared.press(.select)
+
+        let m3u = element(app, "onboarding.kind.m3u")
+        XCTAssertTrue(m3u.waitForExistence(timeout: 5))
+        XCTAssertTrue(m3u.hasFocus)
+        XCTAssertGreaterThanOrEqual(m3u.frame.minX, 80, "the first kind starts inside the safe area")
+        XCTAssertTrue(element(app, "onboarding.back").exists, "no Cancel on the kinds")
+        let behind = element(app, "settings.addSource")
+        XCTAssertFalse(behind.exists && behind.isHittable, "Settings is still reachable behind the cover")
+
+        XCUIRemote.shared.press(.right)
+        XCTAssertTrue(element(app, "onboarding.kind.xtream").hasFocus)
+        XCUIRemote.shared.press(.select)
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.kind").label.contains("Xtream login"))
+        XCTAssertTrue(element(app, "onboarding.back").exists, "no Cancel on the form")
+
+        // Menu goes back a page, then closes the cover onto Add a source.
+        XCUIRemote.shared.press(.menu)
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForNonExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.kind.xtream").waitForExistence(timeout: 5))
+        XCUIRemote.shared.press(.menu)
+        XCTAssertTrue(element(app, "onboarding.kind.xtream").waitForNonExistence(timeout: 5))
+        XCTAssertTrue(focused(app, "Add a source").waitForExistence(timeout: 5), "focus did not return to Add a source")
     }
 
     // first-run-onboarding/add-a-stalker-portal

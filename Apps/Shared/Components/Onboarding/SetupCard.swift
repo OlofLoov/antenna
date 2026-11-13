@@ -48,26 +48,30 @@ enum SetupCard {
         @ViewBuilder var action: Action
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 24) {
-                Text(SetupCard.title)
-                    .font(.system(size: 30, weight: .bold))
-                    .accessibilityAddTraits(.isHeader)
-                QRTile(link: link)
-                    .opacity(isArrived ? 0.4 : 1)
-                Text(SetupCard.body)
-                    .font(.system(size: 22))
-                    .foregroundStyle(OnboardingStyle.body)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: Metrics.Spacing.large) {
+                HStack(alignment: .top, spacing: Metrics.Spacing.xLarge) {
+                    QRTile(link: link, size: 220)
+                        .opacity(isArrived ? 0.4 : 1)
+                    VStack(alignment: .leading, spacing: Metrics.Spacing.small) {
+                        Text(SetupCard.title)
+                            .font(.callout.weight(.semibold))
+                            .accessibilityAddTraits(.isHeader)
+                        Text(SetupCard.body)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
                 statusRows
                 action
                 Text(SetupCard.footer)
-                    .font(.system(size: 20))
-                    .foregroundStyle(Palette.textMuted)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(36)
-            .frame(width: 520, alignment: .leading)
-            .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 20))
+            .padding(Metrics.Spacing.xLarge)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.regularMaterial, in: Metrics.Corner.large.shape())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("onboarding.qr")
         }
@@ -83,18 +87,18 @@ enum SetupCard {
             switch status {
             case .waiting(let hint):
                 VStack(alignment: .leading, spacing: 12) {
-                    HStack(spacing: 12) {
+                    HStack(spacing: Metrics.Spacing.small) {
                         Circle().fill(SetupCard.accent).frame(width: 12, height: 12).accessibilityHidden(true)
                         Text("Waiting for your iPhone")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityIdentifier("onboarding.qr.status")
                     if let hint {
                         Text(hint)
-                            .font(.system(size: 22))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier("onboarding.qr.hint")
                     }
@@ -123,12 +127,12 @@ enum SetupCard {
 
         var body: some View {
             Button("Sign in on this Apple TV", action: action)
-                .buttonStyle(OnboardingStyle.PrimaryTV())
+                .buttonStyle(.bordered)
                 .accessibilityIdentifier("onboarding.qr.signInHere")
         }
     }
 
-    /// One status line with its 28 pt glyph, read as one element.
+    /// One status line with its glyph, at caption size, read as one element.
     private struct Row: View {
         let symbol: String
         let color: Color
@@ -136,24 +140,24 @@ enum SetupCard {
         let state: String
 
         var body: some View {
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: Metrics.Spacing.small) {
                 Image(systemName: symbol)
-                    .font(.system(size: 28))
                     .foregroundStyle(color)
                     .accessibilityHidden(true)
                 Text(text)
-                    .font(.system(size: 22))
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .font(.caption)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(state). \(text)")
         }
     }
 
-    /// The white 300 pt tile with the code. White, because a scanner needs
-    /// a light quiet zone; not focusable.
+    /// The white tile with the code, 300 pt unless `size` says otherwise.
+    /// White, because a scanner needs a light quiet zone; not focusable.
     struct QRTile: View {
         let link: URL
+        var size: CGFloat = 300
         var label = SetupCard.codeLabel
         var identifier = "onboarding.qr.code"
 
@@ -166,9 +170,9 @@ enum SetupCard {
                         .scaledToFit()
                 }
             }
-            .padding(20)
-            .frame(width: 300, height: 300)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .padding(size / 15)
+            .frame(width: size, height: size)
+            .background(Color.white, in: Metrics.Corner.medium.shape())
             .accessibilityElement()
             .accessibilityLabel(label)
             .accessibilityAddTraits(.isImage)
