@@ -6,6 +6,7 @@ on:
     paths:
       - "Web/**"
       - scripts/publish-web.sh
+      - scripts/make-review-guide.py
       - .github/workflows/pages.yml
   workflow_dispatch:
 

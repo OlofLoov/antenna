@@ -2,7 +2,9 @@
 # Copies Web/ to the folder given as $1 for GitHub Pages, and fills the Apple
 # team id into the association file from $APPLE_TEAM_ID while the committed
 # file still holds the placeholder. Exits non-zero when the id is missing or
-# malformed, so the placeholder never reaches the site.
+# malformed, so the placeholder never reaches the site. Also writes the App
+# Review guide for the review playlist, from yesterday (UTC) for 36 days, or
+# from $REVIEW_GUIDE_START (YYYY-MM-DD) when set.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -31,3 +33,7 @@ if ! python3 -c 'import json, sys; json.load(open(sys.argv[1]))' "$out/$aasa"; t
   echo "$aasa is not valid JSON" >&2
   exit 1
 fi
+
+yesterday='import datetime; print(datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(days=1))'
+start=${REVIEW_GUIDE_START:-$(python3 -c "$yesterday")}
+python3 scripts/make-review-guide.py Web/review/antenna-review.m3u "$start" 36 >"$out/review/guide.xml"
