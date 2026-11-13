@@ -3,20 +3,12 @@ import SwiftUI
 
 /// One source in the Sources list (`iPhone-Settings`, `iPad-Settings`,
 /// `TV-Settings`): the name, the type badge and the status lines. Never a link.
+/// Text and badge take their colors from the row, so a focused row on Apple
+/// TV draws them dark on its light platter (design-system/focus-is-the-lifted-white-card).
 struct SourceRowLabel: View {
     let name: String
     let kind: SourceKind
     let lines: [SourceStatusText.Line]
-    var metrics = Metrics.phone
-
-    struct Metrics {
-        var name: CGFloat
-        var line: CGFloat
-        var badge: CGFloat
-
-        static let phone = Metrics(name: 17, line: 13, badge: 11)
-        static let television = Metrics(name: 29, line: 22, badge: 18)
-    }
 
     static func badge(_ kind: SourceKind) -> String {
         switch kind {
@@ -29,40 +21,61 @@ struct SourceRowLabel: View {
         }
     }
 
+    /// The type as the add-source kinds name it, for a lead column.
+    static func kindName(_ kind: SourceKind) -> String {
+        switch kind {
+        case .m3u: "M3U playlist"
+        case .xtream: "Xtream login"
+        case .stalker: "Stalker portal"
+        case .jellyfin: "Jellyfin"
+        case .channelsDVR: "Channels DVR"
+        case .m3uFile: "Playlist file"
+        }
+    }
+
+    /// The status lines: footnote on iPhone, iPad and Mac, caption 1 (25 pt) on Apple TV.
+    private static var lineFont: Font {
+        #if os(tvOS)
+            .caption
+        #else
+            .footnote
+        #endif
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 8) {
-                Text(name).font(.system(size: metrics.name, weight: .semibold))
+        VStack(alignment: .leading, spacing: Metrics.Spacing.xxSmall) {
+            HStack(spacing: Metrics.Spacing.xSmall) {
+                Text(name).font(.body.weight(.semibold))
                 Text(Self.badge(kind))
-                    .font(.system(size: metrics.badge, weight: .bold))
+                    .font(.caption2.weight(.bold))
                     .tracking(0.5)
-                    .padding(.horizontal, 6)
+                    .padding(.horizontal, Metrics.Spacing.xSmall)
                     .padding(.vertical, 2)
-                    .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 5))
+                    .background(.quaternary, in: Metrics.Corner.small.shape())
             }
             ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
-                HStack(spacing: 6) {
+                HStack(spacing: Metrics.Spacing.xSmall) {
                     if line.busy { ProgressView().controlSize(.mini) }
                     Text(line.text)
-                        .font(.system(size: metrics.line))
-                        .foregroundStyle(color(line.style))
+                        .font(Self.lineFont)
+                        .foregroundStyle(style(line.style))
                 }
             }
         }
         .accessibilityElement(children: .combine)
     }
 
-    private func color(_ style: SourceStatusText.Line.Style) -> Color {
+    private func style(_ style: SourceStatusText.Line.Style) -> AnyShapeStyle {
         switch style {
-        case .normal: Palette.textMuted
-        case .muted: Palette.textMuted.opacity(0.8)
-        case .error: OnboardingForm.errorColor
+        case .normal: AnyShapeStyle(.secondary)
+        case .muted: AnyShapeStyle(.tertiary)
+        case .error: AnyShapeStyle(OnboardingForm.errorColor)
         }
     }
 }
 
 #Preview("Source rows") {
-    VStack(alignment: .leading, spacing: 20) {
+    List {
         SourceRowLabel(name: "Home provider", kind: .xtream, lines: [.init("412 channels · Guide 7 days · 12 minutes ago")])
         SourceRowLabel(name: "Family login", kind: .xtream, lines: [.init("Waiting for login from iCloud", style: .muted)])
         SourceRowLabel(
@@ -73,19 +86,14 @@ struct SourceRowLabel: View {
             ])
         SourceRowLabel(name: "Cabin", kind: .m3u, lines: [.init("Loading…", busy: true)])
     }
-    .padding()
-    .background(Palette.ground)
     .preferredColorScheme(.dark)
 }
 
 #Preview("Source rows, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
-    VStack(alignment: .leading, spacing: 30) {
-        SourceRowLabel(
-            name: "Home provider", kind: .xtream, lines: [.init("412 channels · Guide 7 days · 12 minutes ago")], metrics: .television)
-        SourceRowLabel(
-            name: "Family login", kind: .xtream, lines: [.init("Not signed in on this Apple TV", style: .muted)], metrics: .television)
+    List {
+        SourceRowLabel(name: "Home provider", kind: .xtream, lines: [.init("412 channels · Guide 7 days · 12 minutes ago")])
+        SourceRowLabel(name: "Family login", kind: .xtream, lines: [.init("Not signed in on this Apple TV", style: .muted)])
     }
-    .padding(80)
-    .background(Palette.ground)
+    .padding(Metrics.televisionSafeArea)
     .preferredColorScheme(.dark)
 }

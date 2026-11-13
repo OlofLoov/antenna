@@ -96,7 +96,7 @@ struct GuideSourcesList: View {
         case .noChannels:
             Section(model.text.header(nil)) {
                 Text(model.text.noChannels(source: model.source))
-                    .foregroundStyle(Palette.textMuted)
+                    .foregroundStyle(.secondary)
                     .accessibilityIdentifier("guideSources.channels.empty")
             }
         case .sharedReason(let reason, let count):
@@ -126,7 +126,7 @@ struct GuideSourcesList: View {
         case .everyChannel:
             Section {
                 Text(model.text.everyChannel(source: model.source))
-                    .foregroundStyle(Palette.textMuted)
+                    .foregroundStyle(.secondary)
                     .accessibilityIdentifier("guideSources.channels.empty")
             } header: {
                 header(model.text.header(0))
