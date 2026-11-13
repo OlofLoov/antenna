@@ -248,3 +248,24 @@ iPhone.
 #### Scenario: Small metadata on iPhone
 - **WHEN** a screen on iPhone shows a caption
 - **THEN** it is at least 12 pt
+
+### Requirement: Live video keeps playing under overlays
+On Apple TV, showing the channel overlay, the zap bar or the guide while a
+channel plays MUST keep the same picture playing without a pause or
+restart. Search is a tab, not an overlay: opening it MUST pause the channel,
+as Movies and Series do.
+
+#### Scenario: Opening the channel overlay
+- **GIVEN** a channel is playing on Apple TV
+- **WHEN** the viewer opens the channel overlay
+- **THEN** the picture keeps playing behind the overlay without a pause, black frame or rebuffer
+
+#### Scenario: Opening the guide from live TV
+- **GIVEN** a channel is playing on Apple TV
+- **WHEN** the viewer opens the guide
+- **THEN** the same stream continues in the guide's picture-in-picture without restarting
+
+#### Scenario: Opening Search from live TV
+- **GIVEN** a channel is playing on Apple TV
+- **WHEN** the viewer opens Search
+- **THEN** the channel pauses behind it, and Live plays on from there when the viewer returns, or tunes it again once it has stopped after 30 seconds
