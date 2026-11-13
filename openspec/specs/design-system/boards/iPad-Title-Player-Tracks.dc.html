@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac movie player, track picker</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- series.player: an episode full screen over the section, still playing under the popover. A tap or click pauses and plays; Escape closes on Mac. -->
+  <div style="position: absolute; left: 0; right: 0; top: 81px; height: 672px; background: #1A2535"></div>
+
+  <!-- series.player.close, top left, 44 pt circle on the 0.6 scrim -->
+  <div style="position: absolute; left: 16px; top: 40px; width: 44px; height: 44px; border-radius: 22px; background: rgba(8,10,14,0.6); display: flex; align-items: center; justify-content: center">
+    <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </div>
+
+  <!-- Top right capsule on the 0.6 scrim: player.tracks, then player.subtitles, as on iPhone-Title-Player-Tracks -->
+  <div style="position: absolute; right: 16px; top: 40px; height: 44px; padding: 0 4px; border-radius: 22px; background: rgba(8,10,14,0.6); display: flex; align-items: center">
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h3M13 10h3M8 13h5"/></svg></span>
+  </div>
+
+      <!-- player.trackPicker: popover below player.tracks at regular width and on Mac, the same lists as Live. Rows 44 pt, radius 10. "AirPlay not available for this stream" follows the stream line on the Antenna player path. -->
+      <div style="position: absolute; right: 64px; top: 120px; width: 320px; border-radius: 12px; background: #11151C; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 16px 40px rgba(0,0,0,.55); padding: 10px 8px 8px; display: flex; flex-direction: column; gap: 2px">
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 6px 10px 6px">Audio</div>
+        <!-- player.trackPicker.audio.0, selected -->
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: 10px; background: rgba(255,255,255,0.12); font-size: 16px; font-weight: 600"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span style="flex: 1 1 auto">English</span><span style="font-size: 13px; font-weight: 400; color: #A7B0BF">AAC 5.1</span></div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: 10px; font-size: 16px"><span style="width: 18px; height: 18px; display: inline-block"></span><span style="flex: 1 1 auto">English (audio description)</span><span style="font-size: 13px; color: #A7B0BF">AAC Stereo</span></div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: 10px; font-size: 16px"><span style="width: 18px; height: 18px; display: inline-block"></span><span style="flex: 1 1 auto">Español</span><span style="font-size: 13px; color: #A7B0BF">AAC Stereo</span></div>
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 14px 10px 6px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px">Subtitles</div>
+        <!-- player.trackPicker.subtitles.off, selected -->
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: 10px; background: rgba(255,255,255,0.12); font-size: 16px; font-weight: 600"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span style="flex: 1 1 auto">Off</span></div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: 10px; font-size: 16px"><span style="width: 18px; height: 18px; display: inline-block"></span><span style="flex: 1 1 auto">English</span><span style="font-size: 13px; color: #A7B0BF">Forced</span></div>
+        <!-- player.trackPicker.stream -->
+        <div style="font-size: 13px; color: #A7B0BF; padding: 12px 10px 4px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px">MKV · HEVC 2160p · E-AC-3 5.1 · Antenna player</div>
+      </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
