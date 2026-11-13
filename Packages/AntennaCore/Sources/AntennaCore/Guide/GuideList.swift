@@ -78,9 +78,13 @@ public enum GuideList {
     /// once. `settings.order` moves the guides it names to the top in its
     /// order. The provider guide starts turned off when a link was saved.
     /// `addedLinks` gives the whole link of an added guide whose link is in
-    /// the Keychain, when this device has it.
+    /// the Keychain, when this device has it. `panelGuide` is the Xtream
+    /// panel's guide of a playlist added from a panel link: it is the
+    /// playlist's provider guide, turned on only when there is no saved link
+    /// and no header link (guide-data/a-panel-playlist-falls-back-to-the-panel-s-guide).
     public static func resolve(
-        kind: SourceKind, savedURL: URL?, playlistLinks: [URL], settings: GuideSettings, addedLinks: [String: URL] = [:]
+        kind: SourceKind, savedURL: URL?, playlistLinks: [URL], settings: GuideSettings, addedLinks: [String: URL] = [:],
+        panelGuide: URL? = nil
     ) -> [GuideListEntry] {
         var seen = Set<String>()
         var defaults: [GuideListEntry] = []
@@ -94,7 +98,11 @@ public enum GuideList {
             add(.playlist(position), url: link)
         }
         if let savedURL { add(.saved, url: savedURL) }
-        if hasProviderGuide(kind) { add(.provider, url: nil, enabled: savedURL == nil) }
+        if hasProviderGuide(kind) {
+            add(.provider, url: nil, enabled: savedURL == nil)
+        } else if kind == .m3u, let panelGuide {
+            add(.provider, url: panelGuide, enabled: savedURL == nil && playlistLinks.isEmpty)
+        }
         for (id, link) in settings.activeLinks {
             add(.added(id), url: link.plain ?? addedLinks[id])
         }

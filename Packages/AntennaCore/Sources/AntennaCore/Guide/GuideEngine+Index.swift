@@ -11,7 +11,7 @@ extension GuideEngine {
         }
         return GuideList.resolve(
             kind: source.kind, savedURL: source.epgURL, playlistLinks: playlistLinks[id] ?? [], settings: source.settings,
-            addedLinks: added)
+            addedLinks: added, panelGuide: GuideURLResolver.panelGuide(kind: source.kind, url: source.url))
     }
 
     /// The links of the source's guides this device knows, for the add
