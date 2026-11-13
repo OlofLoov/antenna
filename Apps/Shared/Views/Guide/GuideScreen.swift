@@ -24,6 +24,9 @@
         let overlay: ChannelOverlayModel
         let guide: OverlayGuide
         let focus: FocusState<ShellFocus?>.Binding
+        /// Adds or removes a channel from the current profile's favorites
+        /// without moving focus (favorites/hold-select-to-favorite-on-apple-tv).
+        let toggleFavorite: (Channel) -> Void
 
         @State private var model = GuideModel()
         @State private var opened = false
@@ -63,6 +66,12 @@
                 guard new == .content, model.area != .grid else { return }
                 let data = data(at: .now)
                 if model.area == .days { model.leaveDays(data) } else { model.leaveWatch(data) }
+            }
+            .onChange(of: catalogue.rows(in: group).isEmpty) { _, empty in
+                // The last row left the group, as when it leaves Favorites: focus goes where an empty group opens.
+                guard empty, model.area == .grid else { return }
+                model.focusedDays()
+                local = .day(model.selectedDay(data(at: .now), now: .now))
             }
             .onChange(of: model.highlight) { _, _ in
                 // Focus stays on the holder, so VoiceOver hears each new block read out.
@@ -156,8 +165,23 @@
             .buttonStyle(GuideHolderStyle())
             .focused(focus, equals: .content)
             .onMoveCommand { direction in move(direction, data) }
+            .contextMenu {
+                // Held select acts on the highlighted programme's channel
+                // (favorites/hold-select-to-favorite-on-apple-tv).
+                if let target = highlighted(data) {
+                    Browse.FavoriteMenuButton(isFavorite: catalogue.isFavorite(target.channel)) { toggleFavorite(target.channel) }
+                        .accessibilityIdentifier("guide.menu.favorite")
+                }
+            }
             .accessibilityLabel(spokenHighlight(data, now: now))
             .accessibilityIdentifier("guide.grid")
+            .accessibilityActions {
+                if let target = highlighted(data) {
+                    Button(Browse.FavoriteMenuButton.title(isFavorite: catalogue.isFavorite(target.channel))) {
+                        toggleFavorite(target.channel)
+                    }
+                }
+            }
         }
 
         /// Remind me right of Watch for a programme that has not started

@@ -115,7 +115,7 @@ import Testing
     func emptyText() {
         let all = catalogue()
         model.show(.favorites)
-        #expect(model.emptyText(all) == "No favorites yet. Press the star on a channel to add it.")
+        #expect(model.emptyText(all) == "No favorites yet. Hold select on a channel to add it.")
         model.show(.all)
         #expect(model.emptyText(all) == nil)
         let empty = Catalogue<Int>(channels: [], groupOrder: [:], favorites: [])

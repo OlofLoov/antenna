@@ -141,7 +141,7 @@
         func emptyText<Token>(_ catalogue: Catalogue<Token>) -> String? {
             guard catalogue.rows(in: group).isEmpty else { return nil }
             switch group {
-            case .favorites: return "No favorites yet. Press the star on a channel to add it."
+            case .favorites: return "No favorites yet. Hold select on a channel to add it."
             case .all, .named, .ungrouped, .recents: return "No channels yet. Add a source in Settings."
             case .own: return "No channels in this group yet. Add some from Groups in Settings."
             }

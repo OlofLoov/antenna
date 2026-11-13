@@ -7,19 +7,19 @@
 
 ## 2. Overlay
 
-- [ ] 2.1 Add the held-select menu and the VoiceOver action to overlay channel rows, calling the shell's favorite toggle
-- [ ] 2.2 Change the empty Favorites line to "No favorites yet. Hold select on a channel to add it." in the model, preview and tests
+- [x] 2.1 Add the held-select menu and the VoiceOver action to overlay channel rows, calling the shell's favorite toggle
+- [x] 2.2 Change the empty Favorites line to "No favorites yet. Hold select on a channel to add it." in the model, preview and tests
 
 ## 3. Guide
 
-- [ ] 3.1 Give the Apple TV Guide a favorite toggle from the shell, add the menu and the VoiceOver action to the grid holder, and move focus to the day chips when the shown group empties
+- [x] 3.1 Give the Apple TV Guide a favorite toggle from the shell, add the menu and the VoiceOver action to the grid holder, and move focus to the day chips when the shown group empties
 
 ## 4. Tests
 
-- [ ] 4.1 tvOS unit tests for Favorites order, profile and locked channels in the overlay catalogue, citing `favorites/favorites-on-apple-tv`
-- [ ] 4.2 tvOS UI tests for the held-select menu in the overlay and the Guide, citing `favorites/hold-select-to-favorite-on-apple-tv`, run on a local Apple TV simulator
+- [x] 4.1 tvOS unit tests for Favorites order, profile and locked channels in the overlay catalogue, citing `favorites/favorites-on-apple-tv`
+- [x] 4.2 tvOS UI tests for the held-select menu in the overlay and the Guide, citing `favorites/hold-select-to-favorite-on-apple-tv`, run on a local Apple TV simulator
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 5.2 `/opsx:verify` passes

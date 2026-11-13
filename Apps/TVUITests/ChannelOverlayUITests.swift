@@ -131,7 +131,7 @@ extension ShellUITests {
         press(.left, toFocus: element("overlay.group.2"), from: row(named: "Channel a1"))
         press(.up, toFocus: element("overlay.group.1"), from: element("overlay.group.2"))
         press(.up, toFocus: element("overlay.group.0"), from: element("overlay.group.1"))
-        expect(element("overlay.emptyGroup"), "label == 'No favorites yet. Press the star on a channel to add it.'")
+        expect(element("overlay.emptyGroup"), "label == 'No favorites yet. Hold select on a channel to add it.'")
         XCTAssertEqual(overlayRows().count, 0)
         press(.right)
         expectFocus("overlay.group.0")
