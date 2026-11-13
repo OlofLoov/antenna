@@ -11,7 +11,8 @@ public enum PlaylistEntryKind: Sendable, Hashable {
 
     /// Sorts one entry by the first rule that applies: a `/series/` path is
     /// an episode, a `/movie/` or `/movies/` path a movie, a name with a
-    /// season and episode such as "S01E02" an episode, a group starting with
+    /// season and episode such as "S01E02", "1x02" or "Season 1 Episode 2"
+    /// an episode, a group starting with
     /// "VOD" a movie, a group starting with "Movies" or "Films" a movie when
     /// the link is a video file, an entry with a live sign live, and a link
     /// ending in a video file extension a movie. Anything else is live, so a
@@ -53,9 +54,10 @@ public enum PlaylistEntryKind: Sendable, Hashable {
         return lowered.split { !$0.isLetter }.contains { liveGroupWords.contains(String($0)) }
     }
 
-    /// True for a name holding a season and episode marker like "S01E02" or "s1 e12".
+    /// True for a name holding a season and episode marker like "S01E02",
+    /// "1x02" or "Season 1 Episode 2", the markers `EpisodeName` reads.
     static func namesAnEpisode(_ name: String) -> Bool {
-        name.range(of: #"(?i)(?<![A-Za-z0-9])S\d{1,2}\s?E\d{1,3}(?![0-9])"#, options: .regularExpression) != nil
+        EpisodeName(name) != nil
     }
 
     /// True for a group whose first word is Movie(s) or Film(s), as in "Movies: Comedy".

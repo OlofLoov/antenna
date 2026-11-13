@@ -38,6 +38,47 @@ import Testing
         #expect(EpisodeName("BS01E02X") == nil)
     }
 
+    @Test(
+        "m3u-playlists/season-and-episode-markers crossed numbers and spelled-out seasons read like S01E02",
+        arguments: [
+            ("Show 1x02", "Show", 1, 2, nil as String?),
+            ("Show - 01x02 - The Visit", "Show", 1, 2, "The Visit"),
+            ("The.Show.10X101.720p", "The Show", 10, 101, "720p"),
+            ("Show 2×05", "Show", 2, 5, nil),
+            ("Show Season 1 Episode 2 - The Visit", "Show", 1, 2, "The Visit"),
+            ("Show - season 3, ep. 4", "Show", 3, 4, nil),
+            ("Show Season 12 Ep 7: Finale", "Show", 12, 7, "Finale"),
+        ])
+    func otherMarkers(name: String, show: String, season: Int, number: Int, title: String?) throws {
+        let parsed = try #require(EpisodeName(name))
+        #expect(parsed.show == show)
+        #expect(parsed.season == season)
+        #expect(parsed.number == number)
+        #expect(parsed.title == title)
+    }
+
+    @Test(
+        "m3u-playlists/season-and-episode-markers sizes, counts and a lone episode number are not markers",
+        arguments: [
+            "4x4 Off-Road", "Comedy 24x7", "Test 1920x1080", "Show 1x2", "Show 1x02b", "Show 101x02", "Ep 2", "Episode 4",
+            "Season 2",
+        ])
+    func notMarkers(name: String) {
+        #expect(EpisodeName(name) == nil)
+    }
+
+    @Test("m3u-playlists/season-and-episode-markers one show written with different markers is one series")
+    func mixedMarkers() throws {
+        let series = PlaylistSeries(
+            episodes: [
+                try entry("m3u.a", "Show 1x02"), try entry("m3u.b", "Show S01E01"), try entry("m3u.c", "Show Season 2 Episode 1"),
+            ], sourceID: source)
+        #expect(series.catalogue.titles.map(\.name) == ["Show"])
+        let show = try #require(series.catalogue.titles.first)
+        let info = try #require(series.info(for: show.id))
+        #expect(info.episodes.map(\.id) == ["m3u.b", "m3u.a", "m3u.c"])
+    }
+
     @Test("m3u-playlists/playlist-episodes-group-into-series two seasons of one show, different shows, ordered episodes")
     func grouping() throws {
         let series = PlaylistSeries(
