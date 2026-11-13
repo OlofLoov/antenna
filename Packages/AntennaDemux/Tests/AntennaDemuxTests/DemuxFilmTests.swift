@@ -84,6 +84,24 @@ import Testing
         await harness.stop()
     }
 
+    /// MPEG-TS gives no length in its header; the engine measures it from
+    /// the file's two ends, so a .ts movie resumes and skips too.
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end an MPEG-TS film resumes and skips like any other")
+    func skipInTransportStream() async throws {
+        let harness = try await FilmHarness()
+        let position = Recorded(await harness.engine.position())
+        try await harness.engine.load(harness.url("channel.ts"), options: PlaybackOptions(startPosition: .seconds(2), isLive: false))
+        await harness.engine.play()
+        #expect(await eventually { harness.engine.state == .playing })
+        #expect(await eventually { position.values.contains { $0.duration != nil } })
+        let first = position.values.first { $0.duration != nil }
+        #expect(abs((first?.time.inSeconds ?? 0) - 2) < 1.2)
+        #expect(abs((first?.duration?.inSeconds ?? 0) - 6) < 0.5)
+        try await expectSkipLands(harness, position)
+        position.cancel()
+        await harness.stop()
+    }
+
     @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film whose server cannot skip refuses, live TV too")
     func refusesWithoutRanges() async throws {
         let harness = try await FilmHarness()

@@ -59,4 +59,16 @@ import Testing
         #expect(saving.leaving(at: at(1)) == nil)
         #expect(saving.state(.buffering, at: at(2)) == nil)
     }
+
+    @Test("movies-and-series-browsing/your-place-is-saved-as-you-watch a skip saves the new point at once, and closing keeps it")
+    func skipSaves() {
+        var saving = PositionSaving()
+        #expect(saving.moved(to: .seconds(90), at: at(0)) == nil, "nothing reported yet")
+        _ = saving.state(.playing, at: at(0))
+        _ = saving.position(film(100), at: at(5))
+        #expect(saving.moved(to: .seconds(700), at: at(6)) == film(700))
+        #expect(saving.position(film(701), at: at(20)) == nil, "the 30 seconds count from the skip")
+        #expect(saving.moved(to: .seconds(400), at: at(21)) == film(400))
+        #expect(saving.leaving(at: at(22)) == film(400), "closing before the engine reports the new point")
+    }
 }

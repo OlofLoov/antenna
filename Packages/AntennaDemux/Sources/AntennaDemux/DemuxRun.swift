@@ -185,7 +185,7 @@ final class DemuxRun: @unchecked Sendable {
         }
         let demuxer: Demuxer
         do {
-            demuxer = try Demuxer(read: { bytes.read(into: $0, count: $1) }, seek: bytes.canSeek ? Self.seeker(bytes) : nil)
+            demuxer = try Self.demuxer(over: bytes, options: options)
         } catch {
             return .failure(bytes.failureReason ?? PlaybackFailure.unreadable)
         }

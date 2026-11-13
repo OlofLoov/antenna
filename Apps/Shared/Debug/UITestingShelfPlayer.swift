@@ -23,7 +23,9 @@
                         if case .trailer(let url, _) = target { return url }
                         return URL(fileURLWithPath: "/fixture/\(raw ?? 0).mp4")
                     },
-                    willPlay: willPlay))
+                    willPlay: willPlay,
+                    // The controls stay up for the tests that tap them.
+                    controlsHold: .seconds(60)))
         }
 
         /// The links the title page opened, instead of leaving the app.
@@ -67,24 +69,40 @@
             @ObservationIgnored private let trackList = UITestingPlayback.Tracks()
             private(set) var loaded = ""
             private(set) var start = 0
+            /// Seconds into the title, moved by play and seeks.
+            private(set) var at = 0
 
             var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
 
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loaded = url.lastPathComponent
                 start = Int(options.startPosition.map { ShelfPlayback.seconds($0) } ?? 0)
+                at = start
                 trackList.reset(options)
                 state = .loading
             }
 
             func play() async {
                 state = .playing
-                positionCast.send(PlaybackPosition(time: .seconds(start), duration: .seconds(5400), isLive: false))
+                report()
             }
 
-            func pause() async { state = .paused }
+            func pause() async {
+                state = .paused
+                report()
+            }
+
             func stop() async { state = .idle }
-            func seek(to time: Duration) async throws {}
+
+            /// Every title is 90 minutes long; a seek lands where asked.
+            func seek(to time: Duration) async throws {
+                at = Int(ShelfPlayback.seconds(time))
+                report()
+            }
+
+            private func report() {
+                positionCast.send(PlaybackPosition(time: .seconds(at), duration: .seconds(5400), isLive: false))
+            }
             func selectAudio(_ id: MediaTrack.ID) async { trackList.selectAudio(id) }
             func selectSubtitle(_ id: MediaTrack.ID?) async { trackList.selectSubtitle(id) }
             func states() async -> AsyncStream<PlaybackState> { stateCast.stream() }
@@ -108,6 +126,9 @@
                     }
                 return "\(name) \(loaded) from \(start)"
             }
+
+            /// `"at <seconds>"`, where the title is.
+            var place: String { "at \(at)" }
         }
 
         /// A tiny text the UI tests read through `shelf.debug.engine`. Draws
@@ -124,6 +145,13 @@
                         .accessibilityValue(engine.summary)
                         .allowsHitTesting(false)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    Text(engine.place)
+                        .font(.system(size: 8))
+                        .foregroundStyle(Palette.textMuted)
+                        .accessibilityIdentifier("shelf.debug.position")
+                        .accessibilityValue(engine.place)
+                        .allowsHitTesting(false)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 }
             }
         }

@@ -54,6 +54,17 @@ public struct PositionSaving: Sendable {
         }
     }
 
+    /// The user skipped or scrubbed to `time`. Returns the new position to
+    /// save now, so closing before the engine reports it still resumes there
+    /// (movies-and-series-browsing/your-place-is-saved-as-you-watch).
+    /// Nil before the engine reported anything, and for live TV.
+    public mutating func moved(to time: Duration, at now: ContinuousClock.Instant) -> PlaybackPosition? {
+        guard var position = latest, !position.isLive else { return nil }
+        position.time = time
+        latest = position
+        return saved(at: now)
+    }
+
     /// The user stopped or the app went to the background: save where it is.
     public mutating func leaving(at now: ContinuousClock.Instant) -> PlaybackPosition? {
         isPlaying = false

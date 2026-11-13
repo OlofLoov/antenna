@@ -19,6 +19,8 @@ final class ShelfPlayback {
         var clock: @MainActor () -> ContinuousClock.Instant = { .now }
         /// The device's languages in the user's order.
         var languages: @MainActor () -> [String] = { Locale.preferredLanguages }
+        /// How long the movie controls stay after an input while playing.
+        var controlsHold = TitleTransport.hold
     }
 
     /// What plays: a movie, one episode of a series, or a title's trailer.
@@ -76,6 +78,11 @@ final class ShelfPlayback {
     private(set) var playing: Target?
     /// The audio and subtitle lists of the title on screen, nil while nothing plays.
     private(set) var tracks: TitleTracks?
+    /// The time, skips and scrubbing of the title on screen, nil while nothing plays.
+    private(set) var transport: TitleTransport?
+    /// Why the title on screen cannot play, shown in place of the picture
+    /// (player-controls-and-playback-errors/a-movie-or-episode-that-cannot-play-says-why).
+    private(set) var failure: FailureMessage?
     /// The series whose episode list is loading; its poster shows it is working.
     private(set) var working: String?
     /// The series that could not start, shown as an alert.
@@ -92,6 +99,10 @@ final class ShelfPlayback {
         willSet { listeners.forEach { $0.cancel() } }
     }
     @ObservationIgnored private var activity: ShelfActivity?
+    /// The address and options the title on screen loaded with.
+    @ObservationIgnored private var request: (url: URL, options: PlaybackOptions)?
+    /// The source the title on screen plays from, for Try again and the error's wording.
+    @ObservationIgnored private var source: SourceDescriptor?
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -170,26 +181,35 @@ final class ShelfPlayback {
         watching?.cancel()
         listeners = []
         saving = PositionSaving()
+        failure = nil
+        self.source = source
         playing = target
         let tracks = TitleTracks(engine: engine, address: url)
         self.tracks = tracks
         let engine = engine
+        let transport = TitleTransport(
+            .init(engine: engine, seek: { [weak self] in await self?.seek(to: $0) ?? false }, hold: dependencies.controlsHold))
+        self.transport = transport
         let willPlay = dependencies.willPlay
         let languages = dependencies.languages()
         let start: Duration? = position > 0 ? .milliseconds(Int64(position * 1000)) : nil
         let options = PlaybackOptions(
             startPosition: start, isLive: false, preferredAudioLanguages: languages, preferredSubtitleLanguages: languages,
             subtitleMode: subtitles)
+        request = (url, options)
         watching = Task { [weak self] in
             await willPlay()
             do {
                 try await engine.load(url, options: options)
+            } catch let reason as PlaybackFailure {
+                self?.failed(reason, target)
+                return
             } catch {
                 return
             }
             guard !Task.isCancelled else { return }
             await engine.play()
-            await self?.follow(target, tracks: tracks)
+            await self?.follow(target, tracks: tracks, transport: transport)
         }
     }
 
@@ -197,15 +217,17 @@ final class ShelfPlayback {
 
     /// Feeds the engine's states and positions to `PositionSaving` and saves
     /// what it returns, and keeps `tracks` current, until the title closes.
-    private func follow(_ target: Target, tracks: TitleTracks) async {
+    private func follow(_ target: Target, tracks: TitleTracks, transport: TitleTransport) async {
         let states = await engine.states()
         let positions = await engine.position()
         listeners = [
             Task { await tracks.follow() },
+            Task { await transport.follow() },
             Task { [weak self] in
                 for await state in states {
                     guard let self, playing == target else { return }
                     if let saved = saving.state(state, at: dependencies.clock()) { save(saved, target) }
+                    if case .failed(let reason) = state { failed(reason, target) }
                     // A trailer that ends goes back to its title page.
                     if case .trailer = target, case .ended = state { return await close() }
                 }
@@ -232,10 +254,28 @@ final class ShelfPlayback {
         if let saved = saving.leaving(at: dependencies.clock()) { save(saved, playing) }
         self.playing = nil
         tracks = nil
+        transport = nil
+        failure = nil
+        request = nil
+        source = nil
         watching?.cancel()
         watching = nil
         listeners = []
         await engine.stop()
+    }
+
+    /// Says why `target` cannot play, if it is still the title on screen.
+    private func failed(_ reason: PlaybackFailure, _ target: Target) {
+        guard playing == target else { return }
+        failure = FailureMessage(reason, source: source?.name ?? PlayerModel.unnamedSource, device: .current)
+    }
+
+    /// Try again on the error: loads the title once more from where it was.
+    func retry() {
+        guard let playing else { return }
+        let at = transport.map { Self.seconds($0.position.time) } ?? 0
+        let from = at > 0 ? at : request?.options.startPosition.map(Self.seconds) ?? 0
+        start(playing, from: from, source: source)
     }
 
     /// Pauses a playing title, plays a paused one; pausing saves.
@@ -245,6 +285,34 @@ final class ShelfPlayback {
         } else {
             await engine.pause()
         }
+    }
+
+    /// Moves the title on screen to `time` and saves it as the place to
+    /// resume. A title that already ended opens again from `time` and
+    /// plays. Returns false when its server cannot skip
+    /// (player-controls-and-playback-errors/move-around-in-a-movie-or-episode).
+    func seek(to time: Duration) async -> Bool {
+        guard let playing, let request else { return false }
+        if case .ended = await engine.state {
+            var options = request.options
+            options.startPosition = time
+            do {
+                try await engine.load(request.url, options: options)
+            } catch {
+                return true
+            }
+            guard self.playing == playing else { return true }
+            await engine.play()
+        } else {
+            do {
+                try await engine.seek(to: time)
+            } catch {
+                return false
+            }
+        }
+        guard self.playing == playing else { return true }
+        if let saved = saving.moved(to: time, at: dependencies.clock()) { save(saved, playing) }
+        return true
     }
 
     private func save(_ position: PlaybackPosition, _ target: Target) {
