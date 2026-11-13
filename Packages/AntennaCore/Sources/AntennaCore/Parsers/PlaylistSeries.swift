@@ -13,12 +13,23 @@ public struct EpisodeName: Sendable, Hashable {
 
     static let separators = CharacterSet(charactersIn: " -–|:._(").union(.whitespaces)
 
-    /// Nil for a name without a season and episode marker like "S01E02" or
-    /// "s1 e12", the marker `PlaylistEntryKind` sorts episodes by.
+    /// The season and episode markers, in the order they are tried: "S01E02"
+    /// or "s1 e12", "1x02" or "01x102", and "Season 1 Episode 2" or
+    /// "Season 1, Ep 2". A crossed number needs a two- or three-digit
+    /// episode and nothing alphanumeric on either side, so "4x4", "24x7" and
+    /// "1920x1080" are not markers.
+    static let markers: [NSRegularExpression] = [
+        #"(?i)(?<![A-Za-z0-9])S(\d{1,2})\s?E(\d{1,3})(?![0-9])"#,
+        #"(?i)(?<![A-Za-z0-9])(\d{1,2})[x×](\d{2,3})(?![A-Za-z0-9])"#,
+        #"(?i)(?<![A-Za-z0-9])Season\s*(\d{1,2})[\s,.:|\-–]*(?:Episode|Ep\.?)\s*(\d{1,3})(?![0-9])"#,
+    ].compactMap { try? NSRegularExpression(pattern: $0) }
+
+    /// Nil for a name without a season and episode marker, the marker
+    /// `PlaylistEntryKind` sorts episodes by. The first kind of marker in
+    /// `markers` that the name holds wins.
     public init?(_ name: String) {
-        let pattern = #"(?i)(?<![A-Za-z0-9])S(\d{1,2})\s?E(\d{1,3})(?![0-9])"#
-        guard let regex = try? NSRegularExpression(pattern: pattern),
-            let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)),
+        let range = NSRange(name.startIndex..., in: name)
+        guard let match = Self.markers.lazy.compactMap({ $0.firstMatch(in: name, range: range) }).first,
             let whole = Range(match.range, in: name), let seasonRange = Range(match.range(at: 1), in: name),
             let numberRange = Range(match.range(at: 2), in: name), let season = Int(name[seasonRange]),
             let number = Int(name[numberRange])

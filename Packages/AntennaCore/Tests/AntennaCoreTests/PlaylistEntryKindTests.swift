@@ -34,6 +34,21 @@ import Testing
     }
 
     @Test(
+        "m3u-playlists/season-and-episode-markers a crossed or spelled-out marker makes an episode, a size or count does not",
+        arguments: [
+            ("Show 1x02", "http://cdn.example/show/102.mp4", nil, PlaylistEntryKind.episode),
+            ("Show 01x02", "http://tv.example/u/p/3", "Shows", .episode),
+            ("Show Season 1 Episode 2", "http://cdn.example/show/s1e2.mkv", nil, .episode),
+            ("4x4 Off-Road", "http://cdn.example/films/4x4.mp4", nil, .movie),
+            ("Comedy 24x7", "http://tv.example/live/u/p/8.ts", nil, .live),
+            ("Nature 1920x1080", "http://tv.example/live/u/p/9.ts", nil, .live),
+            ("Show Ep 2", "http://cdn.example/show/ep2.mp4", nil, .movie),
+        ])
+    func otherMarkers(name: String, link: String, group: String?, expected: PlaylistEntryKind) throws {
+        #expect(PlaylistEntryKind(try entry(name, link, group: group)) == expected)
+    }
+
+    @Test(
         "m3u-playlists/live-signs-keep-an-entry-live live signs beat the file extension, folders and groups beat live signs",
         arguments: [
             (Channel.liveSigned(epgID: "news24.example"), PlaylistEntryKind.live),
