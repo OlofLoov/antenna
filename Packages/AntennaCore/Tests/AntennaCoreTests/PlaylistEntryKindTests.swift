@@ -66,12 +66,12 @@ import Testing
             """
         let parsed = M3UParser().parse(text)
         #expect(parsed.channels.map(\.duration) == [-1, 5400, -1])
-        let separated = parsed.separatingMovies()
+        let separated = parsed.separatingOnDemand()
         #expect(separated.channels.map(\.name) == ["News 24"])
         #expect(separated.movies.map(\.name) == ["The Film", "Panel Film"])
     }
 
-    @Test("m3u-playlists/playlist-movies-stay-out-of-live-channels movies move out, episodes and live stay, order kept")
+    @Test("m3u-playlists/playlist-movies-stay-out-of-live-channels movies and episodes move out, order kept")
     func separating() throws {
         let playlist = Playlist(channels: [
             try entry("One", "http://tv.example/live/u/p/1.ts"),
@@ -79,11 +79,13 @@ import Testing
             try entry("Show S01E01", "http://tv.example/series/u/p/7.mp4"),
             try entry("Two", "http://tv.example/live/u/p/2.ts"),
             try entry("Film B", "http://cdn.example/b.mp4"),
+            try entry("Show S01E02", "http://cdn.example/show/2.mkv"),
         ])
-        let separated = playlist.separatingMovies()
-        #expect(separated.channels.map(\.name) == ["One", "Show S01E01", "Two"])
+        let separated = playlist.separatingOnDemand()
+        #expect(separated.channels.map(\.name) == ["One", "Two"])
+        #expect(separated.episodes.map(\.name) == ["Show S01E01", "Show S01E02"])
         #expect(separated.movies.map(\.name) == ["Film A", "Film B"])
-        #expect(separated.separatingMovies() == separated)
+        #expect(separated.separatingOnDemand() == separated)
     }
 
     @Test("m3u-playlists/playlist-movies-show-in-movies titles from entries, groups as categories, no link in the id")

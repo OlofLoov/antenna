@@ -2,7 +2,7 @@
 
 ## 1. Series in AntennaCore
 
-- [ ] 1.1 Add `EpisodeName`, `PlaylistSeries` and `Playlist.separatingOnDemand()`, count episodes in `SourceStatus`, and verify core tests citing `m3u-playlists/playlist-episodes-group-into-series` and `m3u-playlists/playlist-movies-stay-out-of-live-channels`
+- [x] 1.1 Add `EpisodeName`, `PlaylistSeries` and `Playlist.separatingOnDemand()`, count episodes in `SourceStatus`, and verify core tests citing `m3u-playlists/playlist-episodes-group-into-series` and `m3u-playlists/playlist-movies-stay-out-of-live-channels`
 
 ## 2. Series in the app
 

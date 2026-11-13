@@ -63,21 +63,23 @@ public enum PlaylistEntryKind: Sendable, Hashable {
 
 extension Playlist {
     /// The playlist with its movie entries moved from `channels` to
-    /// `movies`, each list in playlist order. Episodes and live channels stay
-    /// in `channels` (m3u-playlists/playlist-movies-stay-out-of-live-channels).
-    public func separatingMovies() -> Playlist {
+    /// `movies` and its episodes to `episodes`, each list in playlist order
+    /// (m3u-playlists/playlist-movies-stay-out-of-live-channels).
+    public func separatingOnDemand() -> Playlist {
         var copy = self
         var live: [Channel] = []
         var movies: [Channel] = []
+        var episodes: [Channel] = []
         for channel in channels {
-            if PlaylistEntryKind(channel) == .movie {
-                movies.append(channel)
-            } else {
-                live.append(channel)
+            switch PlaylistEntryKind(channel) {
+            case .live: live.append(channel)
+            case .movie: movies.append(channel)
+            case .episode: episodes.append(channel)
             }
         }
         copy.channels = live
         copy.movies = self.movies + movies
+        copy.episodes = self.episodes + episodes
         return copy
     }
 }
