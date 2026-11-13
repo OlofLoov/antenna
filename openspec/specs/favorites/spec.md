@@ -1,7 +1,7 @@
 # favorites Specification
 
 ## Purpose
-Keeps the user's short list of favorite channels in their own iCloud account and shows it in a Favorites tab on iPhone, iPad and Mac, so it survives source reloads. The list can be read but not yet changed in the app, and Apple TV does not show it. It serves the viewer who wants "my favorite channels together in one list, across all my subscriptions and devices".
+Keeps the user's short list of favorite channels in their own iCloud account and shows it in a Favorites tab on iPhone, iPad and Mac, so it survives source reloads. On those devices the user adds and removes favorites from a channel's menu, a swipe on the channel list or the player's star. Apple TV does not show the list. It serves the viewer who wants "my favorite channels together in one list, across all my subscriptions and devices".
 
 ## Requirements
 
@@ -52,19 +52,6 @@ The system SHALL sync favorites through the user's private iCloud account to eve
 - **WHEN** device B, an iPhone, iPad or Mac signed into the same iCloud account, is online
 - **THEN** the favorite appears in device B's Favorites tab
 
-### Requirement: Favorites list is read-only
-The system SHALL offer no way to add, remove, reorder or play a favorite. Rows in the Favorites tab do nothing when selected, and no channel list has a control that makes a channel a favorite.
-
-#### Scenario: Selecting a row
-- **GIVEN** a favorite in the Favorites tab
-- **WHEN** the user taps it
-- **THEN** nothing opens and nothing plays
-
-#### Scenario: Channel list
-- **GIVEN** a loaded channel list
-- **WHEN** the user looks for a way to mark a channel as a favorite
-- **THEN** there is none
-
 ### Requirement: Apple TV shows no favorites
 The system SHALL show no Favorites screen on Apple TV. Favorites synced from other devices stay stored there and are not changed.
 
@@ -72,3 +59,57 @@ The system SHALL show no Favorites screen on Apple TV. Favorites synced from oth
 - **GIVEN** favorites saved on an iPhone signed into the same iCloud account
 - **WHEN** the user opens Antenna on Apple TV
 - **THEN** no tab or screen lists them, and they are still listed on the iPhone
+
+### Requirement: Favorite from a channel's menu
+The system SHALL offer "Add to Favorites" for a channel that is not a favorite, and "Remove from Favorites" for one that is, in the menu that opens when the user touches and holds a channel, or right-clicks it on a Mac, in the Live channel list and in the Guide's channel column on iPhone, iPad and Mac. Choosing it SHALL add or remove the channel for the current profile without playing it.
+
+#### Scenario: Adding from the Live list
+- **GIVEN** a channel that is not a favorite and does not play
+- **WHEN** the user touches and holds its row in Live and chooses "Add to Favorites"
+- **THEN** the channel is listed in the Favorites group, the Favorites count goes up by one, and the channel that was playing keeps playing
+
+#### Scenario: Removing from the menu
+- **GIVEN** a channel that is a favorite
+- **WHEN** the user opens its menu
+- **THEN** the menu says "Remove from Favorites", and choosing it takes the channel out of Favorites
+
+#### Scenario: The Guide's channel column
+- **GIVEN** the Guide on iPhone, iPad or Mac
+- **WHEN** the user touches and holds a channel's name, or right-clicks it on a Mac, and chooses "Add to Favorites"
+- **THEN** the channel is a favorite and the Guide stays where it was
+
+#### Scenario: Multi-view on a Mac
+- **GIVEN** a Mac
+- **WHEN** the user right-clicks a channel in the Live list
+- **THEN** the menu lists the favorite item and, when multi-view can take the channel, its multi-view item
+
+#### Scenario: VoiceOver
+- **GIVEN** VoiceOver is on
+- **WHEN** the user focuses a channel in the Live list or the Guide's channel column
+- **THEN** the actions offered include "Add to Favorites" or "Remove from Favorites", whichever the channel's state calls for
+
+### Requirement: Swipe a channel into Favorites
+The system SHALL show the favorite action when the user swipes a channel row in the Live list to the right on iPhone and iPad, and a full swipe SHALL run it.
+
+#### Scenario: Full swipe
+- **GIVEN** a channel that is not a favorite
+- **WHEN** the user swipes its row all the way to the right
+- **THEN** the channel is added to Favorites and the row slides back
+
+#### Scenario: Swiping in Favorites
+- **GIVEN** the Favorites group is open
+- **WHEN** the user swipes a row to the right and taps "Remove from Favorites"
+- **THEN** the row leaves the list and the Favorites count goes down by one
+
+### Requirement: Favorite from full screen
+The system SHALL show a star among the player controls while the picture fills the screen, filled when the playing channel is a favorite, and a tap SHALL add or remove that channel.
+
+#### Scenario: iPhone turned sideways
+- **GIVEN** a channel that is not a favorite plays full screen on an iPhone held sideways
+- **WHEN** the user taps the picture and then the star
+- **THEN** the star fills and the channel is in Favorites when full screen ends
+
+#### Scenario: Not full screen
+- **GIVEN** the picture sits above the list
+- **WHEN** the controls show
+- **THEN** they have no star, because the now-playing line or the details panel already has one
