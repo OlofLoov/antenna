@@ -18,10 +18,10 @@
 
 ## 3. Sources and Settings (PR 3)
 
-- [ ] 3.1 Draw Apple TV source details and the Preferences choice list, and rename `TV-Refresh-Settings` over `TV-Settings`
-- [ ] 3.2 Give Settings on Apple TV an opaque page with the split view, hide the tab bar while it is open, and start content below the safe area (design-system/pages-cover-what-is-behind-them, design-system/content-clears-the-tab-bar)
-- [ ] 3.3 Remove fixed foreground colors from rows inside system lists so focused rows take the platter's colors (design-system/focus-is-the-lifted-white-card)
-- [ ] 3.4 Replace the unlabeled segmented preferences with labeled value rows on Apple TV, and source details' nested fields with field rows (design-system/forms-use-the-platform-form-style)
+- [x] 3.1 Draw Apple TV source details and the Preferences choice list, and rename `TV-Refresh-Settings` over `TV-Settings`
+- [x] 3.2 Give Settings on Apple TV an opaque page with the split view, hide the tab bar while it is open, and start content below the safe area (design-system/pages-cover-what-is-behind-them, design-system/content-clears-the-tab-bar)
+- [x] 3.3 Remove fixed foreground colors from rows inside system lists so focused rows take the platter's colors (design-system/focus-is-the-lifted-white-card)
+- [x] 3.4 Replace the unlabeled segmented preferences with labeled value rows on Apple TV, and source details' nested fields with field rows (design-system/forms-use-the-platform-form-style)
 - [ ] 3.5 Run `ShellUITests`, `FileImportTVUITests`, `SettingsUITests`, `GuideSourcesUITests` and `ProfileUITests` on simulators
 
 ## 4. Empty and error states (PR 4)
