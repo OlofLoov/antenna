@@ -104,7 +104,7 @@ extension ShellUITests {
     // tv-guide-grid/an-empty-group
     func testAnEmptyGroup() {
         launch("empty")
-        expectFocus("shell.retry")
+        expectFocus("shell.empty.settings")
         press(.menu)
         expectFocus("shell.tab.live")
         press(.right, toFocus: element("shell.tab.guide"), from: element("shell.tab.live"))

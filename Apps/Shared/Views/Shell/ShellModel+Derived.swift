@@ -36,6 +36,12 @@
         /// The navigator other screens use; `ShellView` provides it.
         var navigator: ShellNavigator { .forwarding(to: self) }
 
+        /// Sources and Settings over whatever shows, with the picker closed.
+        func openSettings() {
+            closePicker()
+            settingsOpen = true
+        }
+
         /// The names the player's messages use for `channel`.
         func subject(for channel: Channel) -> PlayerSubject {
             PlayerSubject(

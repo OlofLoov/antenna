@@ -17191,46 +17191,6 @@
         }
       }
     },
-    "Retry" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إعادة المحاولة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erneut versuchen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reintentar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réessayer"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tentar de novo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Försök igen"
-          }
-        }
-      }
-    },
     "SERIES" : {
       "localizations" : {
         "ar" : {
@@ -24869,9 +24829,6 @@
           }
         }
       }
-    },
-    "◂" : {
-      "shouldTranslate" : false
     }
   },
   "version" : "1.0"

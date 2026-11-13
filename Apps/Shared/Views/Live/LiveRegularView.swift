@@ -76,7 +76,6 @@
                     .background(Color.black)
                     .ignoresSafeArea()
                     .environment(\.browseMetrics, .regular)
-                    .environment(\.playerFailureMetrics, .regular)
                     .background {
                         #if os(iOS)
                             LiveEscapeKey { live.setFullScreen(false) }
@@ -151,7 +150,6 @@
             }
             .background(Palette.ground)
             .environment(\.browseMetrics, .regular)
-            .environment(\.playerFailureMetrics, .regular)
             .environment(\.shellNavigator, navigator)
             .modifier(IntentRequests(navigator: navigator))
             .reminderBanner(live: live, watch: { watch($0) }, showLive: { section = .live })

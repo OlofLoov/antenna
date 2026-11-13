@@ -224,29 +224,4 @@ enum SearchParts {
                 .accessibilityElement(children: .combine)
         }
     }
-
-    /// A centered message: no results with its hint, or sources still loading
-    /// (search/nothing-found).
-    struct Message: View {
-        let title: String
-        let lines: [String]
-        @Environment(\.searchMetrics) private var metrics
-
-        var body: some View {
-            VStack(spacing: 8) {
-                Text(title)
-                    .font(.system(size: metrics.header + 2, weight: .semibold))
-                    .foregroundStyle(Palette.text)
-                ForEach(lines, id: \.self) { line in
-                    Text(line)
-                        .font(.system(size: metrics.title))
-                        .foregroundStyle(Palette.textMuted)
-                }
-            }
-            .multilineTextAlignment(.center)
-            .padding(24)
-            .frame(maxWidth: .infinity)
-            .accessibilityElement(children: .combine)
-        }
-    }
 }

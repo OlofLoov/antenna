@@ -19,13 +19,13 @@
                 title: message.title, explanation: message.explanation, detail: detail,
                 hint: .verbatim(PlayerStatusText.changeChannelHint(locale))
             ) {
-                PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.tryAgain(locale))) { player.retry() }
+                Button(PlayerStatusText.tryAgain(locale)) { player.retry() }
                     // Holding select on the error is Try again too.
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in player.retry() })
                     .focused(focus, equals: .retry)
                     .accessibilityIdentifier("player.retry")
                 if let signIn {
-                    PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.signIn(locale)), action: signIn)
+                    Button(PlayerStatusText.signIn(locale), action: signIn)
                         .focused(focus, equals: .signIn)
                         .accessibilityIdentifier("player.signIn")
                 }

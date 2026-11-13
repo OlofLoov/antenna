@@ -390,35 +390,32 @@
         }
     }
 
-    /// Loading, the failure message with Retry, or "Nothing here yet".
-    /// Something on it always takes focus when the tab opens.
+    /// Loading, the failure message with Try again, or "Nothing here yet"
+    /// with Open Settings. Something on it always takes focus when the tab
+    /// opens.
     private struct ShelfTVStatus: View {
         let model: ShelfModel
         let status: ShelfStatus
         let focus: FocusState<ShellFocus?>.Binding
-        @Environment(\.shelfPrefix) private var prefix
 
         var body: some View {
             switch status {
-            case .offline(let waiting):
-                failure(ShelfStatus.offlineTitle(), [ShelfStatus.offlineLine()] + waiting)
-            case .failed(let waiting):
-                failure(ShelfStatus.failedTitle(model.kind), waiting)
-            case .loading, .empty, .titles:
+            case .offline, .failed:
+                ShelfMessage(kind: model.kind, status: status) {
+                    ShelfTryAgain(model: model)
+                        .focused(focus, equals: .content)
+                }
+            case .empty:
+                ShelfMessage(kind: model.kind, status: status) {
+                    ShelfOpenSettings()
+                        .focused(focus, equals: .content)
+                }
+            case .loading, .titles:
                 ShelfStatusContent(model: model, status: status)
                     .focusable()
                     .focusEffectDisabled()
                     .focused(focus, equals: .content)
             }
-        }
-
-        private func failure(_ title: String, _ lines: [String]) -> some View {
-            ShelfView.Message(title: title, lines: lines) {
-                ShelfView.RetryButton(retry: model.retry)
-                    .focused(focus, equals: .content)
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("\(prefix).error")
         }
     }
 

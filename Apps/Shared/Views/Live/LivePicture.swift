@@ -60,6 +60,10 @@
                         if let message = live.player.message {
                             failure(message)
                         }
+                    } else if live.status.isMessage {
+                        // The list's message is the one state on screen
+                        // (design-system/empty-and-error-states-share-one-layout).
+                        Palette.ground
                     } else {
                         Browse.NothingSelected()
                     }
@@ -113,7 +117,8 @@
                 channel: live.fullScreen ? live.playing.map { live.subject(for: $0).line } : nil, title: message.title,
                 explanation: message.explanation
             ) {
-                PlayerStatus.RetryButton { live.player.retry() }
+                Button(PlayerStatusText.tryAgain(locale)) { live.player.retry() }
+                    .accessibilityIdentifier("player.retry")
             }
             .overlay(alignment: .topTrailing) {
                 if live.fullScreen {

@@ -55,7 +55,7 @@ struct GuideSourcesList: View {
         }
     }
 
-    /// Retry now on a failed or offline row; Re-enter link on an added link
+    /// Try again on a failed or offline row; Re-enter link on an added link
     /// whose login is not on this device.
     private func retry(_ row: GuideRow) -> (() -> Void)? {
         guard case .failed(let error) = row.status else { return nil }

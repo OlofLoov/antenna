@@ -52,45 +52,8 @@ extension Browse {
         }
     }
 
-    /// A centered message in place of the list: a 17 pt title, 15 pt lines
-    /// under it and a Retry button (`iPhone-Error`, `iPad-Error`, `iPad-Empty`).
-    struct Message: View {
-        let title: LocalizedStringResource
-        let lines: [LocalizedStringResource]
-        /// The Retry button's identifier; Movies and Series use their own prefix.
-        var retryIdentifier = "browse.retry"
-        let retry: () -> Void
-
-        var body: some View {
-            VStack(spacing: 10) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(Palette.text)
-                ForEach(lines.indices, id: \.self) { index in
-                    Text(lines[index])
-                        .font(.subheadline)
-                        .foregroundStyle(Browse.textSecondary)
-                }
-                Button(action: retry) {
-                    Text("Retry")
-                        .font(.callout.weight(.semibold))
-                        .foregroundStyle(Palette.text)
-                        .padding(.horizontal, 20)
-                        .frame(minHeight: 44)
-                        .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 10))
-                }
-                .buttonStyle(.plain)
-                .padding(.top, 8)
-                .accessibilityIdentifier(retryIdentifier)
-            }
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-    }
-
     /// The banner over the channels naming the sources that failed, with
-    /// Retry and a dismiss button (`iPhone-Banner`, `iPad-Banner`).
+    /// Try again and a dismiss button (`iPhone-Banner`, `iPad-Banner`).
     struct FailureBanner: View {
         let text: LocalizedStringResource
         /// The banner's identifier, and the start of its parts' identifiers.
@@ -104,7 +67,7 @@ extension Browse {
                     .font(.subheadline)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityIdentifier("\(identifier).text")
-                Button("Retry", action: retry)
+                Button("Try again", action: retry)
                     .font(.subheadline.weight(.semibold))
                     .buttonStyle(.plain)
                     .frame(minWidth: 44, minHeight: 44)
@@ -128,7 +91,7 @@ extension Browse {
         }
     }
 
-    /// "Office · waiting for login": text only, no Retry and no dismiss.
+    /// "Office · waiting for login": text only, no Try again and no dismiss.
     struct WaitingNote: View {
         let text: LocalizedStringResource
 
@@ -155,16 +118,6 @@ private let previewIDs = [
         .init(id: previewIDs[1], name: "Cabin M3U", status: .loading),
     ])
     .background(Palette.ground)
-}
-
-#Preview("Offline", traits: .fixedLayout(width: 390, height: 300)) {
-    Browse.Message(title: "You're offline.", lines: ["Connect to the internet and try again."]) {}
-        .background(Palette.ground)
-}
-
-#Preview("Nothing loaded", traits: .fixedLayout(width: 352, height: 300)) {
-    Browse.Message(title: "Could not load channels", lines: ["Cabin M3U: waiting for its login to sync from iCloud"]) {}
-        .background(Palette.ground)
 }
 
 #Preview("Banners", traits: .fixedLayout(width: 390, height: 140)) {

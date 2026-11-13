@@ -49,7 +49,7 @@ final class AppGuideStore {
         await engine.settingsChanged()
     }
 
-    /// Downloads one guide of a source again, as Retry now does.
+    /// Downloads one guide of a source again, as Try again does.
     func refresh(sourceID: UUID, guide: GuideReference) async {
         await engine.refresh(sourceID: sourceID, guide: guide)
     }

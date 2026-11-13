@@ -406,35 +406,79 @@ struct ShelfNotices: View {
     }
 }
 
-/// The section's place while no title can show: each source loading, or a
-/// message with Retry for the failed sources.
+/// The section's place while no title can show: each source loading, or
+/// `ShelfMessage` with Try again for the failed sources, or Open Settings
+/// when every source answered with nothing.
 struct ShelfStatusContent: View {
     let model: ShelfModel
     let status: ShelfStatus
-    @Environment(\.shelfPrefix) private var prefix
 
     var body: some View {
         switch status {
         case .loading(let sources):
             ShelfView.Loading(sources: sources)
-        case .offline(let waiting):
-            ShelfView.Message(title: ShelfStatus.offlineTitle(), lines: [ShelfStatus.offlineLine()] + waiting) {
-                ShelfView.RetryButton(retry: model.retry)
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("\(prefix).error")
-        case .failed(let waiting):
-            ShelfView.Message(title: ShelfStatus.failedTitle(model.kind), lines: waiting) {
-                ShelfView.RetryButton(retry: model.retry)
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("\(prefix).error")
-        case .empty(let lines):
-            ShelfView.Message(title: ShelfStatus.emptyTitle(), lines: lines) { EmptyView() }
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("\(prefix).empty")
+        case .offline, .failed:
+            ShelfMessage(kind: model.kind, status: status) { ShelfTryAgain(model: model) }
+        case .empty:
+            ShelfMessage(kind: model.kind, status: status) { ShelfOpenSettings() }
         case .titles:
             EmptyView()
+        }
+    }
+}
+
+/// "You're offline.", "Could not load movies" or "Nothing here yet" on the
+/// shared status layout (design-system/empty-and-error-states-share-one-layout),
+/// with a line per source and the actions the screen passes.
+struct ShelfMessage<Actions: View>: View {
+    let kind: ShelfTitle.Kind
+    let status: ShelfStatus
+    @ViewBuilder var actions: Actions
+    @Environment(\.shelfPrefix) private var prefix
+
+    var body: some View {
+        switch status {
+        case .offline(let waiting):
+            StatusView(
+                symbol: "wifi.slash", verbatimTitle: ShelfStatus.offlineTitle(), verbatimLines: [ShelfStatus.offlineLine()] + waiting,
+                identifier: "\(prefix).error"
+            ) { actions }
+        case .failed(let waiting):
+            StatusView(
+                symbol: "exclamationmark.circle", verbatimTitle: ShelfStatus.failedTitle(kind), verbatimLines: waiting,
+                identifier: "\(prefix).error"
+            ) { actions }
+        case .empty(let lines):
+            StatusView(
+                symbol: kind == .movie ? "film" : "tv", verbatimTitle: ShelfStatus.emptyTitle(), verbatimLines: lines,
+                identifier: "\(prefix).empty"
+            ) { actions }
+        case .loading, .titles:
+            EmptyView()
+        }
+    }
+}
+
+/// Try again for the sources that failed, `<prefix>.retry`.
+struct ShelfTryAgain: View {
+    let model: ShelfModel
+    @Environment(\.shelfPrefix) private var prefix
+
+    var body: some View {
+        Button("Try again", action: model.retry)
+            .accessibilityIdentifier("\(prefix).retry")
+    }
+}
+
+/// Open Settings, `<prefix>.settings`, through the window's or the shell's navigator.
+struct ShelfOpenSettings: View {
+    @Environment(\.shellNavigator) private var navigator
+    @Environment(\.shelfPrefix) private var prefix
+
+    var body: some View {
+        if let navigator {
+            Button("Open Settings") { navigator.show(.settings) }
+                .accessibilityIdentifier("\(prefix).settings")
         }
     }
 }

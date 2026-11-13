@@ -28,12 +28,13 @@ final class LiveStatesUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login, offline
-    func testOfflineSaysSoWithRetry() {
+    func testOfflineSaysSoWithTryAgain() {
         let app = launch("offline")
         let error = app.element("browse.error")
         XCTAssertTrue(error.waitForExistence(timeout: 10))
         XCTAssertTrue(error.staticTexts["You're offline."].exists)
-        XCTAssertTrue(app.element("browse.retry").exists)
+        XCTAssertEqual(app.element("browse.retry").label, "Try again")
+        XCTAssertFalse(app.element("browse.settings").exists, "offline has nothing to change in Settings")
     }
 
     // live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login, nothing loaded
@@ -48,12 +49,18 @@ final class LiveStatesUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login, empty
-    func testNoChannelsYetOffersRetry() {
+    // design-system/empty-and-error-states-share-one-layout
+    func testNoChannelsYetOffersOpenSettingsAndTryAgain() {
         let app = launch("empty")
         let empty = app.element("browse.empty")
         XCTAssertTrue(empty.waitForExistence(timeout: 10))
         XCTAssertTrue(empty.staticTexts["No channels yet"].exists)
         XCTAssertTrue(app.element("browse.retry").exists)
+        XCTAssertFalse(app.element("browse.nothingSelected").exists, "one state on screen")
+
+        app.element("browse.settings").tap()
+
+        XCTAssertTrue(app.element("settings.addSource").waitForExistence(timeout: 5))
     }
 
     // live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login, some sources failed

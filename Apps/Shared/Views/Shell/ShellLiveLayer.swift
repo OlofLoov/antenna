@@ -3,7 +3,8 @@
 
     /// The Live tab's loading and empty screens under the tab bar
     /// (tvos-shell/a-loading-screen-at-launch, tvos-shell/an-empty-screen-with-retry).
-    /// Nothing once a channel plays.
+    /// Nothing once a channel plays. Open Settings on the empty screen takes
+    /// focus first (design-system/empty-and-error-states-share-one-layout).
     struct ShellLiveLayer: View {
         let model: ShellModel
         let focus: FocusState<ShellFocus?>.Binding
@@ -22,11 +23,13 @@
                         .accessibilityIdentifier("shell.loading")
                 case .empty:
                     ShellEmpty.Screen(lines: model.sources.filter(\.state.addedNothing).map(\.emptyLine)) {
-                        ShellEmpty.RetryButton {
+                        Button("Open Settings") { model.settingsOpen = true }
+                            .focused(focus, equals: .liveScreen)
+                            .accessibilityIdentifier("shell.empty.settings")
+                        Button("Try again") {
                             model.retry()
                             focus.wrappedValue = .liveScreen
                         }
-                        .focused(focus, equals: .liveScreen)
                         .accessibilityIdentifier("shell.retry")
                     }
                 }

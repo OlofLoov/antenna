@@ -22,6 +22,16 @@
         static let offlineLine: LocalizedStringResource = "Connect to the internet and try again."
         static let failedTitle: LocalizedStringResource = "Could not load channels"
         static let emptyTitle: LocalizedStringResource = "No channels yet"
+        static let emptySymbol = "antenna.radiowaves.left.and.right.slash"
+
+        /// True for the states that take the whole Live screen's message:
+        /// offline, failed and empty.
+        var isMessage: Bool {
+            switch self {
+            case .offline, .failed, .empty: true
+            case .loading, .channels: false
+            }
+        }
 
         /// `dismissed` is the set of sources whose banner the user closed;
         /// the banner comes back when another source fails.
@@ -92,13 +102,18 @@
 #endif
 
 #if os(iOS) || os(macOS)
+    import AntennaCore
     import SwiftUI
 
     /// The list's place while no channel can show: each source loading, or
-    /// a message with Retry when no source loaded channels.
+    /// the shared status layout when no source loaded channels
+    /// (design-system/empty-and-error-states-share-one-layout). Open
+    /// Settings comes first when the sources answered and something in them
+    /// needs changing; offline has Try again alone.
     struct LiveStatusMessage: View {
         let status: LiveStatus
         @Environment(LiveModel.self) private var live
+        @Environment(\.shellNavigator) private var navigator
 
         var body: some View {
             switch status {
@@ -110,20 +125,36 @@
                             status: LiveStatus.detail(source.state).map(Browse.LoadingRow.Status.done) ?? .loading)
                     })
             case .offline:
-                message(LiveStatus.offlineTitle, [LiveStatus.offlineLine], identifier: "browse.error")
+                StatusView(
+                    symbol: "wifi.slash", title: LiveStatus.offlineTitle, lines: [LiveStatus.offlineLine], identifier: "browse.error"
+                ) {
+                    tryAgain
+                }
             case .failed(let waiting):
-                message(LiveStatus.failedTitle, waiting, identifier: "browse.error")
+                StatusView(symbol: "exclamationmark.circle", title: LiveStatus.failedTitle, lines: waiting, identifier: "browse.error") {
+                    openSettings
+                    tryAgain
+                }
             case .empty(let waiting):
-                message(LiveStatus.emptyTitle, waiting, identifier: "browse.empty")
+                StatusView(symbol: LiveStatus.emptySymbol, title: LiveStatus.emptyTitle, lines: waiting, identifier: "browse.empty") {
+                    openSettings
+                    tryAgain
+                }
             case .channels:
                 EmptyView()
             }
         }
 
-        private func message(_ title: LocalizedStringResource, _ lines: [LocalizedStringResource], identifier: String) -> some View {
-            Browse.Message(title: title, lines: lines, retry: live.retry)
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier(identifier)
+        @ViewBuilder private var openSettings: some View {
+            if let navigator {
+                Button("Open Settings") { navigator.show(.settings) }
+                    .accessibilityIdentifier("browse.settings")
+            }
+        }
+
+        private var tryAgain: some View {
+            Button("Try again", action: live.retry)
+                .accessibilityIdentifier("browse.retry")
         }
     }
 

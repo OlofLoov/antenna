@@ -13,6 +13,10 @@
             Group {
                 if live.launched, live.sources.isEmpty {
                     LiveNoSources()
+                } else if live.playing == nil, live.status.isMessage {
+                    // One state on screen, with no picture placeholder over it
+                    // (design-system/empty-and-error-states-share-one-layout).
+                    LiveStatusMessage(status: live.status)
                 } else {
                     VStack(spacing: 0) {
                         LivePicture()

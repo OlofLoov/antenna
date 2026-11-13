@@ -106,9 +106,6 @@
             }
             SearchParts.LaterRow(text: "Tomorrow 20:00 · Northern Soul Night")
             SearchParts.LaterLine(text: "Tomorrow 20:00 · Northern Soul Night")
-            SearchParts.Message(
-                title: "No results for “norhtern”",
-                lines: ["Check the spelling or try a channel number.", "Some sources are still loading."])
         }
         .padding(24)
         .frame(maxHeight: .infinity, alignment: .top)

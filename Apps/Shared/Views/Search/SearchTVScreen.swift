@@ -77,10 +77,12 @@
             if model.query.isEmpty {
                 recents
             } else if let message = searchMessage(model) {
-                SearchParts.Message(title: message.title, lines: message.lines)
-                    .padding(.top, 60)
-                    .focusable()
-                    .accessibilityIdentifier(model.sources == .loading ? "search.loading" : "search.empty")
+                StatusView(
+                    symbol: message.symbol, verbatimTitle: message.title, verbatimLines: message.lines,
+                    identifier: model.sources == .loading ? "search.loading" : "search.empty"
+                )
+                .padding(.top, 60)
+                .focusable()
             } else {
                 SearchLayout.Television()
             }

@@ -14,7 +14,7 @@ enum GuideSourcesRows {
     }
 
     /// A guide: its name, its redacted link, and its status line, with
-    /// Retry now beside a failed one.
+    /// Try again beside a failed one.
     struct Guide: View {
         let name: String
         let address: String?

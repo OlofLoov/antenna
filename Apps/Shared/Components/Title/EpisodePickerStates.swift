@@ -38,7 +38,7 @@ extension EpisodePicker {
         }
     }
 
-    /// What failed and Retry, in place of the list.
+    /// What failed and Try again, in place of the list.
     struct Failure: View {
         let type: Sizes
         let message: LocalizedStringResource
@@ -53,7 +53,7 @@ extension EpisodePicker {
                 Button {
                     episodes?.actions.retry()
                 } label: {
-                    Text("Retry")
+                    Text("Try again")
                         .font(.system(size: type.title, weight: .semibold))
                         .padding(.horizontal, type.title * 1.2)
                         .frame(minHeight: max(44, type.chip))

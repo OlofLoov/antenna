@@ -394,7 +394,7 @@ enum TitlePage {
         }
     }
 
-    /// What failed and Retry, under the buttons.
+    /// What failed and Try again, under the buttons.
     struct Problem: View {
         let type: Sizes
         @Environment(\.titlePage) private var page
@@ -407,7 +407,7 @@ enum TitlePage {
                         .foregroundStyle(Browse.textSecondary)
                         .accessibilityIdentifier("title.error")
                     Button(action: page.actions.retry) {
-                        Text("Retry")
+                        Text("Try again")
                             .font(.system(size: type.button, weight: .semibold))
                             .padding(.horizontal, type.button * 1.2)
                             .frame(minHeight: type.buttonHeight)

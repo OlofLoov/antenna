@@ -84,10 +84,10 @@ private struct TitleFailure: View {
             PlayerStatus.TelevisionFailure(
                 title: failure.title, explanation: failure.explanation, detail: title, hint: "Press Menu to go back"
             ) {
-                PlayerStatus.TelevisionButton(title: "Try again", action: retry)
+                Button("Try again", action: retry)
                     .focused($retryFocused)
                     .accessibilityIdentifier("player.retry")
-                PlayerStatus.TelevisionButton(title: "Back", action: close)
+                Button("Back", action: close)
                     .accessibilityIdentifier("player.error.back")
             }
             .onExitCommand(perform: close)
@@ -95,7 +95,8 @@ private struct TitleFailure: View {
             .ignoresSafeArea()
         #else
             PlayerStatus.Failure(channel: title, title: failure.title, explanation: failure.explanation) {
-                PlayerStatus.RetryButton(retry: retry)
+                Button("Try again", action: retry)
+                    .accessibilityIdentifier("player.retry")
                 Button("Back", action: close)
                     .buttonStyle(.bordered)
                     .keyboardShortcut(.cancelAction)
