@@ -107,7 +107,9 @@ struct AntennaApp: App {
             if let empty = UITestingOnboarding.container() { return empty }
         #endif
         let schema = Schema(AntennaSchema.models)
-        let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
+        // source-management/sources-stay-on-the-device-without-icloud
+        let cloud: ModelConfiguration.CloudKitDatabase = CloudSync.container.map { .private($0) } ?? .none
+        let config = ModelConfiguration(schema: schema, cloudKitDatabase: cloud)
         do {
             return try ModelContainer(for: schema, configurations: [config])
         } catch {

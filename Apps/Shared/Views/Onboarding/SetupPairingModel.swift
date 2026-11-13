@@ -251,12 +251,16 @@ protocol SetupActivityRecording {
 }
 
 /// iCloud as CloudKit reports it: only `.available` counts as signed in,
-/// so an Apple ID without iCloud Drive does not.
+/// so an Apple ID without iCloud Drive does not. A build that cannot use
+/// CloudKit is never signed in
+/// (source-management/sources-stay-on-the-device-without-icloud).
 struct CloudKitIdentity: ICloudIdentity {
-    static let containerIdentifier = "iCloud.se.codecrave.antenna"
+    /// The CloudKit container, or nil when this build cannot use CloudKit.
+    var container: String? = CloudSync.container
 
     func isSignedIn() async -> Bool {
-        let status = try? await CKContainer(identifier: Self.containerIdentifier).accountStatus()
+        guard let container else { return false }
+        let status = try? await CKContainer(identifier: container).accountStatus()
         return status == .available
     }
 

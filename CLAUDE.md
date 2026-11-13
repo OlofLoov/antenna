@@ -27,7 +27,9 @@ Run `scripts/setup.sh` once per clone. It points git at `scripts/githooks`
 and checks for xcodegen and gh.
 
 `Config/Local.xcconfig` holds `DEVELOPMENT_TEAM` and is git-ignored. Copy it
-from `Config/Local.xcconfig.example` for device builds.
+from `Config/Local.xcconfig.example` for device builds. With a personal (free)
+team set `ANTENNA_PAID_TEAM = NO` there: it signs without iCloud, push and
+associated domains, and the app runs without sync.
 
 ## Layout
 
