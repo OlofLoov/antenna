@@ -3,7 +3,7 @@ import Foundation
 /// The result of loading one source: channels plus whatever EPG hint it carried.
 public struct Playlist: Sendable, Equatable {
     public var channels: [Channel]
-    /// `url-tvg` / `x-tvg-url` from the `#EXTM3U` header, if present.
+    /// `url-tvg` / `x-tvg-url` / `tvg-url` from the `#EXTM3U` header, if present.
     public var epgURLs: [URL]
     /// An Xtream panel's time zone name from its account information, nil
     /// for playlists and when the panel named none. Kept in memory only.

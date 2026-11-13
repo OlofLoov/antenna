@@ -6,7 +6,7 @@ Turns an M3U playlist into a stable list of channels and guide links, quickly en
 ## Requirements
 
 ### Requirement: Header EPG URLs
-The system SHALL read the guide links named by the `url-tvg` and `x-tvg-url` attributes of every `#EXTM3U` line, split on commas, with spaces around each entry trimmed and empty entries skipped. Per header line the `url-tvg` links SHALL come first, then the `x-tvg-url` links, each in the order written. Links from later header lines SHALL follow, and repeats SHALL be kept.
+The system SHALL read the guide links named by the `url-tvg`, `x-tvg-url` and `tvg-url` attributes of every `#EXTM3U` line, split on commas, with spaces around each entry trimmed and empty entries skipped. Per header line the `url-tvg` links SHALL come first, then the `x-tvg-url` links, then the `tvg-url` links, each in the order written. Links from later header lines SHALL follow, and repeats SHALL be kept.
 
 #### Scenario: Two guide links in the header
 - **GIVEN** a header `#EXTM3U url-tvg="http://a/epg.xml,http://b/epg.xml.gz"`
@@ -27,6 +27,16 @@ The system SHALL read the guide links named by the `url-tvg` and `x-tvg-url` att
 - **GIVEN** a `url-tvg` entry that is not a well-formed URL, such as `b c`
 - **WHEN** the playlist is parsed
 - **THEN** the entry is kept as a relative link with its invalid characters percent-encoded (`b%20c`), and is dropped only when no link can be formed at all
+
+#### Scenario: The tvg-url spelling
+- **GIVEN** a header `#EXTM3U tvg-url="http://t/epg.xml.gz"`
+- **WHEN** the playlist is parsed
+- **THEN** the guide link is `http://t/epg.xml.gz`
+
+#### Scenario: All three spellings on one line
+- **GIVEN** `#EXTM3U tvg-url="http://t" x-tvg-url="http://x" url-tvg="http://u"`
+- **WHEN** the playlist is parsed
+- **THEN** the guide links are `http://u`, `http://x` and `http://t`, in that order
 
 ### Requirement: Standard attributes map to the channel
 The system SHALL map the `#EXTINF` attributes `tvg-id`, `tvg-name`, `tvg-logo`, `group-title` and `tvg-chno` to the channel's guide id, name, logo, group and number. Attribute names SHALL be matched without regard to case, quoted and unquoted values SHALL both be read, values SHALL be kept as written without trimming, and the last duplicate attribute SHALL win. An unquoted value SHALL end at the first space.
