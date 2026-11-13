@@ -6,16 +6,18 @@ public enum PlaylistEntryKind: Sendable, Hashable {
     case live, movie, episode
 
     static let movieExtensions: Set<String> = ["mp4", "mkv", "avi", "mov", "m4v"]
-    static let movieGroupWords = ["vod", "movies", "movie", "films", "film"]
+    static let movieGroupWords = ["movies", "movie", "films", "film"]
     static let liveGroupWords: Set<String> = ["live", "news", "sport", "sports"]
 
     /// Sorts one entry by the first rule that applies: a `/series/` path is
     /// an episode, a `/movie/` or `/movies/` path a movie, a name with a
     /// season and episode such as "S01E02" an episode, a group starting with
-    /// "VOD", "Movies" or "Films" a movie, an entry with a live sign live, and
-    /// a link ending in a video file extension a movie. Anything else is
-    /// live. Live signs are catch-up, a guide id, a live group such as
-    /// "News" or "24/7", and a duration of -1 or 0.
+    /// "VOD" a movie, a group starting with "Movies" or "Films" a movie when
+    /// the link is a video file, an entry with a live sign live, and a link
+    /// ending in a video file extension a movie. Anything else is live, so a
+    /// "Movies" group of live channels stays in Live. Live signs are
+    /// catch-up, a guide id, a live group such as "News" or "24/7", and a
+    /// duration of -1 or 0.
     public init(_ channel: Channel) {
         let folders = channel.streamURL.pathComponents.dropLast().map { $0.lowercased() }
         if folders.contains("series") {
@@ -24,11 +26,13 @@ public enum PlaylistEntryKind: Sendable, Hashable {
             self = .movie
         } else if Self.namesAnEpisode(channel.name) {
             self = .episode
-        } else if let group = channel.group, Self.isMovieGroup(group) {
+        } else if let group = channel.group, Self.groupFirstWord(group) == "vod" {
+            self = .movie
+        } else if let group = channel.group, Self.isMovieGroup(group), Self.isVideoFile(channel.streamURL) {
             self = .movie
         } else if Self.looksLive(channel) {
             self = .live
-        } else if Self.movieExtensions.contains(channel.streamURL.pathExtension.lowercased()) {
+        } else if Self.isVideoFile(channel.streamURL) {
             self = .movie
         } else {
             self = .live
@@ -54,10 +58,19 @@ public enum PlaylistEntryKind: Sendable, Hashable {
         name.range(of: #"(?i)(?<![A-Za-z0-9])S\d{1,2}\s?E\d{1,3}(?![0-9])"#, options: .regularExpression) != nil
     }
 
-    /// True for a group whose first word is VOD, Movie(s) or Film(s), as in "VOD | Action" or "Movies: Comedy".
+    /// True for a group whose first word is Movie(s) or Film(s), as in "Movies: Comedy".
     static func isMovieGroup(_ group: String) -> Bool {
-        let first = group.trimmingCharacters(in: .whitespaces).lowercased().prefix { $0.isLetter }
-        return movieGroupWords.contains(String(first))
+        movieGroupWords.contains(groupFirstWord(group))
+    }
+
+    /// The group's first word in lower case, letters only.
+    static func groupFirstWord(_ group: String) -> String {
+        String(group.trimmingCharacters(in: .whitespaces).lowercased().prefix { $0.isLetter })
+    }
+
+    /// True for a link ending in a video file extension such as `.mp4`.
+    static func isVideoFile(_ url: URL) -> Bool {
+        movieExtensions.contains(url.pathExtension.lowercased())
     }
 }
 
