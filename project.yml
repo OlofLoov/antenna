@@ -1,4 +1,6 @@
 name: Antenna
+include:
+  - Config/version.yml
 options:
   bundleIdPrefix: se.codecrave
   xcodeVersion: "26.0"
@@ -39,6 +41,8 @@ targets:
       path: Apps/Mobile/Info.plist
       properties:
         CFBundleDisplayName: Antenna
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
@@ -121,6 +125,8 @@ targets:
       path: Apps/TV/Info.plist
       properties:
         CFBundleDisplayName: Antenna
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UIUserInterfaceStyle: Automatic
         CFBundleURLTypes:
           - CFBundleURLName: se.codecrave.antenna.tv
@@ -151,6 +157,8 @@ targets:
       path: Apps/TopShelf/Info.plist
       properties:
         CFBundleDisplayName: Antenna
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.tv-top-shelf
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ContentProvider
