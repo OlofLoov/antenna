@@ -81,7 +81,7 @@ extension ShelfLibrary {
         #if DEBUG
             if let scripted = UITestingShelf.library() { return scripted }
         #endif
-        return .live(ShelfLoader(session: loader.session, credentials: loader.credentials))
+        return .live(ShelfLoader(session: loader.session, credentials: loader.credentials, playlists: loader))
     }
 }
 
@@ -93,7 +93,7 @@ extension ShelfPlayback {
         #if DEBUG
             if let scripted = UITestingShelf.playback(willPlay: willPlay) { return scripted }
         #endif
-        let shelf = ShelfLoader(session: loader.session, credentials: loader.credentials)
+        let shelf = ShelfLoader(session: loader.session, credentials: loader.credentials, playlists: loader)
         return ShelfPlayback(
             .init(
                 engine: RoutedEngine.app(),

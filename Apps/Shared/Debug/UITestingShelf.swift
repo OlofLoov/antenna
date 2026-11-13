@@ -163,6 +163,8 @@
             }
 
             func load(_ source: SourceDescriptor, kind: ShelfTitle.Kind) async throws -> ShelfCatalogue {
+                // The scripted playlist has no movies.
+                guard source.kind == .xtream else { return ShelfCatalogue(titles: [], categories: []) }
                 let isCabin = source.id == cabinID
                 if !isCabin { officeLoads += 1 }
                 switch scenario {

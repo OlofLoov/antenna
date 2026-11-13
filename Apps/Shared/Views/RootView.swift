@@ -134,6 +134,7 @@
         @State private var beforeSearch: Tab = .live
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
+        @Environment(\.sourceRefresher) private var refresher
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
         @Environment(SearchModel.self) private var search
@@ -147,6 +148,12 @@
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
 
+        /// An Xtream source, or a playlist whose last load had movies
+        /// (m3u-playlists/playlist-movies-show-in-movies).
+        private var showsMovies: Bool {
+            shelves.hasXtream || records.contains { (refresher?.status(of: $0.id).movies ?? 0) > 0 }
+        }
+
         var body: some View {
             TabView(selection: $selection) {
                 SwiftUI.Tab("Live", systemImage: "tv", value: .live) {
@@ -156,7 +163,7 @@
                     GuideCompactScreen()
                         .environment(\.guideBoardOpenLive) { selection = .live }
                 }
-                if shelves.hasXtream {
+                if showsMovies {
                     SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
                         ShelfCompactScreen()
                             .environment(\.openSearch, opener)
@@ -170,8 +177,8 @@
                     SettingsView()
                 }
             }
-            // The Movies tab goes with the last Xtream source.
-            .onChange(of: shelves.hasXtream) { _, has in
+            // The Movies tab goes with the last Xtream source or playlist with movies.
+            .onChange(of: showsMovies) { _, has in
                 if !has, selection == .movies { selection = .live }
             }
             .onChange(of: selection) { old, new in

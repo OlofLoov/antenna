@@ -20,6 +20,8 @@ struct SourceLoader: Sendable {
     var stalkerClients: StalkerClients = .shared
     /// The per-source Jellyfin sign-in keys, shared with the guide.
     var jellyfinClients: JellyfinClients = .shared
+    /// Where each playlist load leaves its movies, for the Movies section.
+    var playlistMovies: PlaylistMovies = .shared
 
     /// Channels DVR requests keep no cookies and no cache.
     var channelsDVRSession: URLSession = SourceLoader.channelsDVRSession
@@ -115,7 +117,7 @@ struct SourceLoader: Sendable {
                 throw LoadError.badStatus(http.statusCode)
             }
             let text = String(decoding: data, as: UTF8.self)
-            return M3UParser().parse(text)
+            return keepMovies(M3UParser().parse(text), of: source)
         case .xtream:
             guard let key = source.credentialKey,
                 let cred = try credentials.load(for: key)
@@ -127,7 +129,7 @@ struct SourceLoader: Sendable {
             await timeZones.loaded(source.id, timeZoneName: live.timeZoneName)
             return Playlist(channels: live.channels, serverTimeZone: live.timeZoneName)
         case .m3uFile:
-            return try loadFile(source)
+            return keepMovies(try loadFile(source), of: source)
         case .jellyfin:
             return try await loadJellyfin(source)
         case .stalker:
@@ -144,6 +146,14 @@ struct SourceLoader: Sendable {
         case .channelsDVR:
             return try await loadChannelsDVR(source)
         }
+    }
+
+    /// The playlist with its movies moved out of the channels and kept for
+    /// the Movies section (m3u-playlists/playlist-movies-stay-out-of-live-channels).
+    private func keepMovies(_ playlist: Playlist, of source: SourceDescriptor) -> Playlist {
+        let separated = playlist.separatingMovies()
+        playlistMovies.loaded(source.id, movies: separated.movies)
+        return separated
     }
 
     /// A Channels DVR server's lineup after its status check

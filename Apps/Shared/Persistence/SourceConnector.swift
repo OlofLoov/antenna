@@ -178,7 +178,7 @@ struct SourceConnector: Sendable {
             throw ConnectFailure.serverError(status: http.statusCode)
         }
         let text = String(decoding: data, as: UTF8.self)
-        return await Task.detached { M3UParser().parse(text) }.value
+        return await Task.detached { M3UParser().parse(text).separatingMovies() }.value
     }
 
     @MainActor
