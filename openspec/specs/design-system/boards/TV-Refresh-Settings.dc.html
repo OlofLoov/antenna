@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV sources and settings, refreshed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- settings.root: an opaque page on Ground. Nothing from the tab it opened over shows through. The tab bar is hidden while it is open; Menu closes it. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- safe area 80 / 60. Split view: one third lead, two thirds list, as in the system Settings app -->
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+
+    <!-- settings.lead: title and the selected row's summary -->
+    <div style="width: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center">
+      <div style="width: 240px; height: 240px; border-radius: 48px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 96px; color: #A7B0BF">⚙</div>
+      <!-- text style: title3 (48) -->
+      <div style="font-size: 48px; font-weight: 600">Sources &amp; Settings</div>
+      <!-- text style: caption1 (25), muted. The focused row's footer moves here. -->
+      <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">Sources sync to your other devices through iCloud. Logins sync through iCloud Keychain when it is on, and never to Apple TV.</div>
+    </div>
+
+    <!-- settings.list: a system List in the grouped style. Rows are 88 tall with label left and value right. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; padding-top: 8px">
+      <!-- section header, text style: caption1 (25), semibold, muted -->
+      <div style="font-size: 25px; font-weight: 600; color: #A7B0BF; padding: 0 32px">Sources</div>
+      <div style="border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; flex-direction: column">
+        <!-- settings.source.<id>: focused. System focus platter. Text inside follows the platter: dark on light. -->
+        <div style="height: 104px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; background: #F2F4F8; color: #0B0E13; border-radius: 20px; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45)">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 29px; font-weight: 600">Home</span>
+            <span style="font-size: 25px; color: #4B5563">M3U · 412 channels · Guide 7 days</span>
+          </div>
+          <span style="font-size: 29px; color: #4B5563">›</span>
+        </div>
+        <!-- settings.source.<id> -->
+        <div style="height: 104px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 29px">Provider</span>
+            <span style="font-size: 25px; color: #A7B0BF">Xtream · Not signed in on this Apple TV</span>
+          </div>
+          <span style="font-size: 29px; color: #A7B0BF">›</span>
+        </div>
+        <!-- settings.addSource -->
+        <div style="height: 88px; display: flex; align-items: center; padding: 0 32px; font-size: 29px; border-bottom: 1px solid rgba(255,255,255,0.08)">Add a source</div>
+        <!-- settings.refreshAll -->
+        <div style="height: 88px; display: flex; align-items: center; padding: 0 32px; font-size: 29px">Refresh all sources</div>
+      </div>
+
+      <div style="font-size: 25px; font-weight: 600; color: #A7B0BF; padding: 16px 32px 0">Preferences</div>
+      <!-- Each preference is a row with its value; selecting it pushes a list of choices with a checkmark. No unlabeled segmented controls. -->
+      <div style="border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; flex-direction: column">
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span>Open at launch</span><span style="color: #A7B0BF">Live ›</span></div>
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span>Guide window</span><span style="color: #A7B0BF">3 hours ›</span></div>
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span>Refresh sources</span><span style="color: #A7B0BF">Every 12 hours ›</span></div>
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px"><span>Swipe up or down</span><span style="color: #A7B0BF">Changes channel ›</span></div>
+      </div>
+      <!-- Profiles, Groups, Reminders, Subtitles and About follow below the fold in the same style. -->
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
