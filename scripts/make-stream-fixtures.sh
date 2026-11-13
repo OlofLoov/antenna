@@ -167,6 +167,43 @@ ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
     -c:a eac3 -b:a 384k -ac 6 -f mpegts "$out/surround-eac3.ts"
 
+# Sound that changes format partway, as a channel does between programmes:
+# AAC and AC-3 from stereo to 5.1, MP2 from stereo to mono. Two 2 second
+# streams on the same PIDs, the second timed after the first.
+for codec in aac ac3 mp2; do
+    case "$codec" in
+    mp2) first=(-ac 2 -b:a 128k) second=(-ac 1 -b:a 64k) ;;
+    *) first=(-ac 2 -b:a 128k) second=(-ac 6 -b:a 384k) ;;
+    esac
+    ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+        -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+        -c:a "$codec" "${first[@]}" -f mpegts "$work/before.ts"
+    ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+        -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+        -c:a "$codec" "${second[@]}" -output_ts_offset 2 -f mpegts "$work/after.ts"
+    cat "$work/before.ts" "$work/after.ts" >"$out/sound-change-$codec.ts"
+done
+
+# HE-AAC in a raw broadcast stream, a 15 kHz tone that only the SBR layer
+# carries. Needs ffmpeg's AudioToolbox encoder, so it is made on a Mac.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "sine=frequency=15000:sample_rate=48000:duration=2" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac_at -profile:a 4 -b:a 48k -ac 2 -f mpegts "$out/he-aac.ts"
+
+# A film with 7.1 AAC, written with channel configuration 12.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 256k -ac 8 "$out/aac-7.1.mkv"
+
+# A film whose default sound is DTS, which no Apple device decodes, with a
+# second Dolby Digital track in another language.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" -f lavfi -i "$(tone 660 2)" \
+    -map 0:v -map 1:a -map 2:a \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a:0 dca -strict -2 -ac:a:0 2 -b:a:0 320k -c:a:1 ac3 -b:a:1 128k -ac:a:1 2 \
+    -metadata:s:a:0 language=eng -metadata:s:a:1 language=ger \
+    -disposition:a:0 default -disposition:a:1 0 "$out/dts-and-ac3.mkv"
+
 # Interlaced broadcasts, top field first: 1080i H.264 and 576i MPEG-2. The
 # pattern moves at 50 frames a second, so each field shows a different moment.
 ff -f lavfi -i "$(video 1920x1080 50 1)" -f lavfi -i "$(tone 440 1)" \

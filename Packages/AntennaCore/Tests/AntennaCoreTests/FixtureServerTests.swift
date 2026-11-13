@@ -9,7 +9,8 @@ import Testing
             "film.mp4", "hls/index.m3u8", "hls/segment0.ts", "hls/segment1.ts", "hls/segment2.ts", "channel.ts", "channel.mkv",
             "channel.avi", "mpeg2.ts", "hdr10.mp4", "hlg.mp4", "hdr10.ts", "hlg.ts", "surround-ac3.ts", "surround-eac3.ts",
             "interlaced-1080i.ts", "interlaced-576i.ts", "film.mkv", "film-no-index.mkv", "undecodable-sound.ts", "resize.ts",
-            "radio.aac", "radio.mp3", "page.html", "garbage.bin", "dvb-subtitles.ts",
+            "radio.aac", "radio.mp3", "page.html", "garbage.bin", "dvb-subtitles.ts", "sound-change-aac.ts", "sound-change-ac3.ts",
+            "sound-change-mp2.ts", "he-aac.ts", "aac-7.1.mkv", "dts-and-ac3.mkv",
             "hls-tracks/index.m3u8", "hls-tracks/video.m3u8", "hls-tracks/audio-en.m3u8", "hls-tracks/audio-de.m3u8",
             "hls-tracks/subs-en.m3u8", "hls-tracks/subs-sv.m3u8", "hls-tracks/subs-en.vtt", "hls-tracks/subs-sv.vtt",
         ] + (0..<3).map { "hls-tracks/video\($0).ts" }

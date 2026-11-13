@@ -182,8 +182,10 @@ final class SoftwareDecoder: @unchecked Sendable {
         default:
             return nil
         }
-        let formatRate = soundFormat.flatMap { CMAudioFormatDescriptionGetStreamBasicDescription($0)?.pointee.mSampleRate }
-        if formatRate != Float64(rate) {
+        // A new format when the rate or the channel count changes, as when a
+        // broadcast goes from stereo to mono between programmes.
+        let current = soundFormat.flatMap { CMAudioFormatDescriptionGetStreamBasicDescription($0)?.pointee }
+        if current?.mSampleRate != Float64(rate) || current?.mChannelsPerFrame != UInt32(channels) {
             soundFormat = try Self.pcmFormat(rate: rate, channels: channels)
         }
         guard let format = soundFormat else { throw DecodeError.failed }

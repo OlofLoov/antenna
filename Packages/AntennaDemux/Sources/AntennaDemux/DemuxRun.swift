@@ -21,8 +21,9 @@ final class DemuxRun: @unchecked Sendable {
     private var rateFound: (@Sendable (Double) -> Void)?
     private var waitsForSound = true
     private var options = PlaybackOptions()
-    /// A sound switch `selectAudio` asked for and the run has not made yet.
-    private var requestedSound: (stream: Int, from: CMTime)?
+    /// A sound switch `selectAudio` or `resendSound` asked for and the run
+    /// has not made yet. A nil stream means the sound that plays.
+    private var requestedSound: (stream: Int?, from: CMTime)?
 
     /// Called when a film's saved time or skip target could not be reached
     /// and it starts from the beginning instead.
@@ -32,7 +33,8 @@ final class DemuxRun: @unchecked Sendable {
     var cueFound: (@Sendable (TimedCue) -> Void)?
     /// Called when the picture changes size or dynamic range after the start.
     var pictureChanged: (@Sendable (PictureChange) -> Void)?
-    /// Called once a sound switch is made, with the new sound's format.
+    /// Called once a sound switch is made, with the new sound's format, and
+    /// when the sound that plays changes its channel count.
     var soundSwitched: (@Sendable (PresentationInfo.Audio) -> Void)?
 
     /// Where a film starts, counted from its beginning; nil from the start.
@@ -78,7 +80,13 @@ final class DemuxRun: @unchecked Sendable {
         lock.withLock { requestedSound = (stream, time) }
     }
 
-    private func takeSoundRequest() -> (stream: Int, from: CMTime)? {
+    /// Queues the sound that plays again from `time`, out of its ring, as
+    /// when the audio renderer dropped what it held.
+    func resendSound(from time: CMTime) {
+        lock.withLock { requestedSound = (nil, time) }
+    }
+
+    private func takeSoundRequest() -> (stream: Int?, from: CMTime)? {
         lock.withLock {
             defer { requestedSound = nil }
             return requestedSound
@@ -195,12 +203,13 @@ final class DemuxRun: @unchecked Sendable {
             demuxer.close()
             return .failure(tracks.audio.first.map { PlaybackFailure.cannotDecode(codec: $0.stream.codec) } ?? PlaybackFailure.unreadable)
         }
-        let chosen = TrackChoice.initial(audio: tracks.audio.map(\.track), subtitles: tracks.subtitles.map(\.track), options: options)
-        var audio = tracks.audio.first { $0.track.id == chosen.audio }
-        if videoBuilder == nil, let picked = audio, sounds[picked.stream.index] == nil {
-            // Radio plays the first sound it can decode.
-            audio = tracks.audio.first { sounds[$0.stream.index] != nil }
-        }
+        // Sound the device can play comes first, so a DTS default with a
+        // Dolby Digital second track starts on the Dolby one
+        // (playback-engine/streams-start-with-sound-the-device-can-play).
+        let playable = Set(tracks.audio.filter { sounds[$0.stream.index] != nil }.map(\.track.id))
+        let chosen = TrackChoice.initial(
+            audio: tracks.audio.map(\.track), subtitles: tracks.subtitles.map(\.track), options: options, playable: playable)
+        let audio = tracks.audio.first { $0.track.id == chosen.audio }
         return .success(
             Prepared(
                 demuxer: demuxer, video: videoBuilder, sounds: sounds, audioTracks: tracks.audio, subtitleTracks: tracks.subtitles,
@@ -225,6 +234,8 @@ final class DemuxRun: @unchecked Sendable {
         var sound: Int?
         /// The newest packets of each sound stream with a builder.
         var rings: [Int: [DemuxedPacket]] = [:]
+        /// The channel count of the sound last reported.
+        var soundChannels: Int?
         /// The picture size and dynamic range last reported.
         var picture: (size: CMVideoDimensions, range: PresentationInfo.DynamicRange)?
     }
@@ -260,6 +271,7 @@ final class DemuxRun: @unchecked Sendable {
                 for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
                     guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { break reading }
                 }
+                noteSoundFormat(builder, &state)
             } else if let decoder = prepared.pictureSubtitles[packet.streamIndex] {
                 pictureCues(from: packet, decoder: decoder)
             } else if let codec = subtitleCodecs[packet.streamIndex] {
@@ -275,43 +287,11 @@ final class DemuxRun: @unchecked Sendable {
                 let start = describe(prepared, startTime: startTime, frameTimes: state.frameTimes, interlaced: interlaced)
                 state.rateKnown = state.rateKnown || start.frameRate != nil || prepared.video == nil
                 if let size = start.pictureSize { state.picture = (size, start.dynamicRange) }
+                state.soundChannels = start.soundChannels
                 ready(.success(start))
             }
         }
         return state.announced
-    }
-
-    /// Keeps `packet` in its sound stream's ring, dropping what is older than `soundRing`.
-    private func keep(_ packet: DemuxedPacket, in state: inout PumpState) {
-        guard packet.presentationTime.isNumeric else { return }
-        var ring = state.rings[packet.streamIndex, default: []]
-        ring.append(packet)
-        let oldest = CMTimeSubtract(packet.presentationTime, Self.soundRing)
-        if let drop = ring.firstIndex(where: { $0.presentationTime >= oldest }), drop > 0 { ring.removeFirst(drop) }
-        state.rings[packet.streamIndex] = ring
-    }
-
-    /// Makes a sound switch: drops what is queued of the old sound and
-    /// queues the new one from the requested time out of its ring. Returns
-    /// false once the feed is closed.
-    private func switchSound(to request: (stream: Int, from: CMTime), _ prepared: Prepared, _ state: inout PumpState) -> Bool {
-        guard request.stream != state.sound, let track = prepared.audioTracks.first(where: { $0.stream.index == request.stream })
-        else { return true }
-        state.sound = request.stream
-        state.heldSound = []
-        audioFeed.flush()
-        guard let builder = prepared.sounds[request.stream] else {
-            soundSwitched?(PresentationInfo.Audio(codec: track.stream.codec, channels: track.stream.channels, isDecodable: false))
-            return true
-        }
-        for packet in state.rings[request.stream] ?? [] where packet.presentationTime >= request.from {
-            for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
-                guard audioFeed.push(buffer) else { return false }
-            }
-        }
-        soundSwitched?(
-            PresentationInfo.Audio(codec: builder.codecName, channels: Self.channels(builder) ?? track.stream.channels, isDecodable: true))
-        return true
     }
 
     /// Reports the picture's new size or dynamic range when a keyframe changes them.
@@ -396,6 +376,56 @@ final class DemuxRun: @unchecked Sendable {
 
     private func sampleTime(_ buffer: CMSampleBuffer) -> CMTime {
         CMSampleBufferGetPresentationTimeStamp(buffer)
+    }
+}
+
+// MARK: Sound rings and switches
+
+extension DemuxRun {
+    /// Keeps `packet` in its sound stream's ring, dropping what is older than `soundRing`.
+    private func keep(_ packet: DemuxedPacket, in state: inout PumpState) {
+        guard packet.presentationTime.isNumeric else { return }
+        var ring = state.rings[packet.streamIndex, default: []]
+        ring.append(packet)
+        let oldest = CMTimeSubtract(packet.presentationTime, Self.soundRing)
+        if let drop = ring.firstIndex(where: { $0.presentationTime >= oldest }), drop > 0 { ring.removeFirst(drop) }
+        state.rings[packet.streamIndex] = ring
+    }
+
+    /// Makes a sound switch: drops what is queued of the old sound and
+    /// queues the new one from the requested time out of its ring. Returns
+    /// false once the feed is closed.
+    private func switchSound(to request: (stream: Int?, from: CMTime), _ prepared: Prepared, _ state: inout PumpState) -> Bool {
+        let resend = request.stream == nil
+        guard let stream = request.stream ?? state.sound, resend || stream != state.sound,
+            let track = prepared.audioTracks.first(where: { $0.stream.index == stream })
+        else { return true }
+        state.sound = stream
+        audioFeed.flush()
+        // Before the first picture the sound is still held back for it.
+        if resend, state.startTime == nil { return true }
+        state.heldSound = []
+        guard let builder = prepared.sounds[stream] else {
+            soundSwitched?(PresentationInfo.Audio(codec: track.stream.codec, channels: track.stream.channels, isDecodable: false))
+            return true
+        }
+        for packet in state.rings[stream] ?? [] where packet.presentationTime >= request.from {
+            for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
+                guard audioFeed.push(buffer) else { return false }
+            }
+        }
+        let channels = Self.channels(builder) ?? track.stream.channels
+        state.soundChannels = channels
+        soundSwitched?(PresentationInfo.Audio(codec: builder.codecName, channels: channels, isDecodable: true))
+        return true
+    }
+
+    /// Reports a new channel count of the sound that plays, as when a
+    /// channel goes from stereo to 5.1 for a film.
+    private func noteSoundFormat(_ builder: SampleBuilder, _ state: inout PumpState) {
+        guard state.announced, let channels = Self.channels(builder), channels != state.soundChannels else { return }
+        state.soundChannels = channels
+        soundSwitched?(PresentationInfo.Audio(codec: builder.codecName, channels: channels, isDecodable: true))
     }
 }
 

@@ -44,12 +44,19 @@ public enum SubtitleMode: String, Sendable, CaseIterable, Codable {
 /// Always starts them whatever the sound, Off leaves them off. With no full
 /// subtitles on, a forced track in the first preferred language that has
 /// one shows.
+///
+/// With `playable` given, sound the device cannot decode is passed over
+/// while the stream has sound it can: the same rules pick among the
+/// playable tracks (playback-engine/streams-start-with-sound-the-device-can-play).
 public enum TrackChoice {
-    /// The audio and subtitle track ids to start with.
+    /// The audio and subtitle track ids to start with. `playable` holds the
+    /// audio tracks the device can decode, nil when all of them.
     public static func initial(
-        audio: [MediaTrack], subtitles: [MediaTrack], options: PlaybackOptions
+        audio: [MediaTrack], subtitles: [MediaTrack], options: PlaybackOptions, playable: Set<MediaTrack.ID>? = nil
     ) -> (audio: MediaTrack.ID?, subtitle: MediaTrack.ID?) {
-        let sound = self.audio(audio, preferred: options.preferredAudioLanguages, remembered: options.remembered)
+        let decodable = playable.map { ids in audio.filter { ids.contains($0.id) } } ?? audio
+        let candidates = decodable.isEmpty ? audio : decodable
+        let sound = self.audio(candidates, preferred: options.preferredAudioLanguages, remembered: options.remembered)
         let spoken = audio.first { $0.id == sound }?.languageCode
         let subtitle = subtitle(
             subtitles, preferred: options.preferredSubtitleLanguages, mode: options.subtitleMode, sound: spoken,

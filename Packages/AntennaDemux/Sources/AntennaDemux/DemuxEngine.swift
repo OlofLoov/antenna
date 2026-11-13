@@ -49,6 +49,8 @@ public final class DemuxEngine: PlaybackEngine {
     var audioOnClock = true
     /// The clock's last reading and since when it has stood there.
     var clockCheck: (time: CMTime, since: ContinuousClock.Instant)?
+    /// Hears the audio renderer flush itself; set once in `init`.
+    private var soundFlushWatch: SoundFlushWatch?
 
     struct Current {
         let run: DemuxRun
@@ -63,6 +65,8 @@ public final class DemuxEngine: PlaybackEngine {
         var cues: [TimedCue] = []
         /// Picture changes demuxed ahead of the clock.
         var pictureChanges: [PictureChange] = []
+        /// Times the audio renderer failed on this stream.
+        var soundFailures = 0
     }
 
     var request: (url: URL, options: PlaybackOptions)?
@@ -143,6 +147,7 @@ public final class DemuxEngine: PlaybackEngine {
         synchronizer.addRenderer(audioRenderer)
         videoLayer.videoGravity = .resizeAspect
         videoLayer.isHidden = true
+        soundFlushWatch = watchSoundFlushes()
     }
 
     /// The demuxing engine behind `engine`: the engine itself, or the
@@ -422,6 +427,8 @@ extension DemuxEngine {
     /// data stopped counts as dropped.
     private func tick() {
         publishTimeshift()
+        guard current?.start != nil else { return }
+        checkSound()
         guard var current, let start = current.start else { return }
         watchClock(synchronizer.currentTime())
         let now = synchronizer.currentTime()

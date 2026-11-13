@@ -29,7 +29,7 @@ public enum TrackMenu {
     /// Engines report the sound format of the playing track only, so only
     /// that row has a detail.
     public static func audio(_ tracks: TrackList, presentation: PresentationInfo?) -> [TrackRow] {
-        let format = presentation?.audio.map { SoundFormat.display(codec: $0.codec, channels: $0.channels) }
+        let format = presentation?.audio.map(SoundFormat.display)
         return zip(tracks.audio.indices, tracks.audio).map { index, track in
             let selected = track.id == tracks.selectedAudio
             return TrackRow(
