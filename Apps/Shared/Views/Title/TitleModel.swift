@@ -1,6 +1,7 @@
 import AntennaCore
 import Foundation
 import Observation
+import os
 
 /// One open title page (title-detail-and-episode-picker): what is known at
 /// once, the info call's answer, and for a series its season groups. A page
@@ -54,8 +55,19 @@ final class TitleModel {
             phase = .loaded
         } catch {
             guard !Task.isCancelled else { return }
+            let kind = title.kind == .movie ? "movie" : "series"
+            Self.logger.error("\(kind, privacy: .public) info failed: \(Self.reason(error), privacy: .public)")
             phase = .failed(problem(for: error))
         }
+    }
+
+    static let logger = Logger(subsystem: "se.codecrave.antenna", category: "titles")
+
+    /// Why a load failed, with no address, login or body in it, for the log.
+    static func reason(_ error: any Error) -> String {
+        if let load = error as? ShelfLoader.LoadError { return "\(load)" }
+        if let failure = error as? ShelfModel.LoadFailure { return "\(failure)" }
+        return LoadFailureReason.text(for: error)
     }
 
     /// Shows the waiting line when the login is not on this device, so Play
@@ -101,8 +113,7 @@ final class TitleModel {
     private func problem(for error: any Error) -> TitleProblem {
         if case ShelfModel.LoadFailure.waitingForLogin? = error as? ShelfModel.LoadFailure { return .waitingForLogin(sourceName) }
         if case ShelfLoader.LoadError.noLogin? = error as? ShelfLoader.LoadError { return .waitingForLogin(sourceName) }
-        let offline: Set<URLError.Code> = [.notConnectedToInternet, .networkConnectionLost, .dataNotAllowed]
-        if let urlError = error as? URLError, offline.contains(urlError.code) { return .offline }
+        if LoadFailureReason.isOffline(error) { return .offline }
         return .failed
     }
 }

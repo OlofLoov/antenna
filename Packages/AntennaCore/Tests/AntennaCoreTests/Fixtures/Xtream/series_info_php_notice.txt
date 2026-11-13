@@ -1,0 +1,6 @@
+<br />
+<b>Notice</b>:  Undefined index: cover in <b>/home/xtreamcodes/iptv_xtream_codes/wwwdir/player_api.php</b> on line <b>412</b><br />
+{"info":{"plot":"Café owner’s story	line one
+line two","genre":"Drama"},"episodes":{"1":[{"id":"41","episode_num":"1","title":"År ett","container_extension":"mkv"}]}}
+<br />
+<b>Warning</b>: trailing text

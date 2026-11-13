@@ -5,7 +5,8 @@ import Synchronization
 /// engine by `EngineRouter`, stops the other engine before switching, and
 /// forwards everything the active engine reports. When the demuxer throws
 /// `EngineHandoff.toSystemPlayer` the same address loads on the system
-/// engine with no failure in between.
+/// engine with no failure in between, and when the system engine throws
+/// `EngineHandoff.toDemuxer` it loads on the demuxer.
 ///
 /// Passing the same instance for both routes is allowed; that engine then
 /// handles every address and replaces its own streams.
@@ -64,6 +65,12 @@ public actor RoutedEngine: PlaybackEngine {
             await activate(system)
             guard generation == mine else { throw CancellationError() }
             try await system.load(url, options: options)
+        } catch EngineHandoff.toDemuxer where target === system && demuxer !== system {
+            guard generation == mine else { throw CancellationError() }
+            let demuxer = self.demuxer
+            await activate(demuxer)
+            guard generation == mine else { throw CancellationError() }
+            try await demuxer.load(url, options: options)
         }
         guard generation == mine else { throw CancellationError() }
     }

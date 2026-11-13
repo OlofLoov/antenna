@@ -1,6 +1,7 @@
 import AntennaCore
 import Foundation
 import Observation
+import os
 
 /// Plays movies and episodes from the Movies and Series sections on their
 /// own engine (movies-and-series-browsing/resume-where-you-left-off,
@@ -138,6 +139,7 @@ final class ShelfPlayback {
         do {
             episodes = try await library.series.loadEpisodes(series)
         } catch {
+            TitleModel.logger.error("episodes failed: \(TitleModel.reason(error), privacy: .public)")
             problem = .episodesFailed(series)
             return
         }
@@ -153,12 +155,17 @@ final class ShelfPlayback {
 
     /// Loads the title with the start position set before the first frame.
     private func start(_ target: Target, from position: Double, source: SourceDescriptor?) {
-        let address: URL? =
-            if case .trailer(let url, _) = target {
-                url
-            } else {
-                source.flatMap { try? dependencies.address($0, target) }
+        let address: URL?
+        if case .trailer(let url, _) = target {
+            address = url
+        } else {
+            do {
+                address = try source.map { try dependencies.address($0, target) }
+            } catch {
+                TitleModel.logger.error("no address to play: \(TitleModel.reason(error), privacy: .public)")
+                address = nil
             }
+        }
         guard let url = address else { return }
         watching?.cancel()
         listeners = []

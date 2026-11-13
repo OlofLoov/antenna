@@ -17,6 +17,9 @@ extension AVPlayerEngine {
         // A web page, or raw video at an HLS address, is not a stream Apple's player can read.
         if probe.sniff == .html { throw PlaybackFailure.unreadable }
         if probe.sniff == .mpegTS, isHLSAddress { throw PlaybackFailure.unreadable }
+        // Raw video, Matroska or AVI at a file address, such as an episode
+        // the panel lists as mp4: the demuxer reads it.
+        if probe.sniff.needsDemuxer { throw EngineHandoff.toDemuxer }
         // A file of known length whose server cannot skip: Apple's player
         // cannot read it. Endless radio has no length and plays.
         if probe.sniff != .hls, !probe.acceptsRanges, probe.length != nil, options.isLive != true {

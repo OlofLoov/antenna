@@ -59,7 +59,7 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
     }
 
     public func accountInfo() async throws -> XtreamAccountInfo {
-        let data = try await fetch(action: nil)
+        let data = XtreamBody.readable(try await fetch(action: nil))
         try Self.probeAuth(data)
         return try Self.decode(XtreamAccountInfo.self, from: data)
     }

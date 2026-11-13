@@ -75,4 +75,23 @@ import Testing
         #expect(try shelf.episodeURL(source, episode: visit).absoluteString == "http://movies-playlist.test/series/u/p/8.mkv")
         #expect(StubURLProtocol.requestCount(tag: "series-shelf") == 1)
     }
+
+    @Test("m3u-playlists/playlist-series-show-in-series: a series the kept load lacks loads the playlist once more")
+    func staleSeriesReloads() async throws {
+        let source = SourceDescriptor(
+            id: UUID(), name: "Home", kind: .m3u, url: try #require(URL(string: "http://stale-playlist.test/list.m3u")))
+        StubURLProtocol.register(host: "stale-playlist.test", body: "#EXTM3U\n#EXTINF:-1,News One\nhttp://stale-playlist.test/1.ts\n")
+        let (_, shelf) = loaders("stale-series")
+        #expect(try await shelf.load(source, kind: .series).titles.isEmpty)
+        let episodes = M3UParser().parse(Self.playlist).separatingOnDemand().episodes
+        let show = try #require(PlaylistSeries(episodes: episodes, sourceID: source.id).catalogue.titles.first)
+
+        StubURLProtocol.register(host: "stale-playlist.test", body: Self.playlist)
+        guard case .series(let info) = try await shelf.info(source, title: show) else {
+            Issue.record("the reloaded playlist answers series info")
+            return
+        }
+        #expect(info.episodes.map(\.title) == ["Episode 1", "The Visit"])
+        #expect(StubURLProtocol.requestCount(tag: "stale-series") == 2)
+    }
 }
