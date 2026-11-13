@@ -116,9 +116,13 @@ extension PurchaseEvidence {
         if status?.state == .inGracePeriod, case .verified(let renewal)? = status?.renewalInfo {
             graceUntil = renewal.gracePeriodExpirationDate
         }
+        // StoreKit can report a subscription as expired before the
+        // transaction's own end date passes, as when it is cancelled at once.
+        var expiresAt = transaction.expirationDate
+        if status?.state == .expired, let end = expiresAt { expiresAt = min(end, .now) }
         self.init(
             kind: ProductKind(productID: transaction.productID) ?? .lifetime,
-            expiresAt: transaction.expirationDate,
+            expiresAt: expiresAt,
             graceUntil: graceUntil,
             revokedAt: transaction.revocationDate,
             familyShared: transaction.ownershipType == .familyShared)
