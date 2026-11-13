@@ -124,6 +124,10 @@ final class Poster: @unchecked Sendable {
         self.image = image
     }
 
+    init(image: CGImage) {
+        self.image = image
+    }
+
     /// The decoded size in bytes, what it costs the memory limit.
     var cost: Int { image.bytesPerRow * image.height }
 }

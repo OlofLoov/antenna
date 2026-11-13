@@ -347,18 +347,14 @@ enum EpisodePicker {
         @State private var poster: Poster?
 
         var body: some View {
-            ZStack {
-                TitlePage.placeholder
-                if let image = poster?.image {
-                    Image(decorative: image, scale: 1).resizable().scaledToFill()
-                } else if let number {
+            FilledArt(image: poster?.image, background: TitlePage.placeholder) {
+                if let number {
                     Text("\(number)")
                         .font(.system(size: type.number, weight: .bold))
                         .foregroundStyle(Palette.textMuted)
                 }
             }
             .frame(width: type.thumbnail.width, height: type.thumbnail.height)
-            .clipped()
             .accessibilityHidden(true)
             .task(id: url) {
                 poster = nil
