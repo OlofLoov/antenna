@@ -58,6 +58,7 @@ struct AntennaApp: App {
             IntentContext.provider = intents
             #if DEBUG
                 if let request = UITestingIntents.request() { intents.open(request) }
+                UITestingIntents.deliverOnReturn(to: intents)
             #endif
             _intents = State(initialValue: intents)
         #endif

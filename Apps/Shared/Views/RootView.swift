@@ -208,6 +208,12 @@
             .environment(\.shellNavigator, navigator)
             .modifier(IntentRequests(navigator: navigator))
             .reminderBanner(live: live, watch: { watch($0) }, showLive: { selection = .live })
+            // A movie that ends over Live, as one Siri started, brings Live
+            // back as if it had just opened: the channel plays again
+            // (live-tv-on-iphone-ipad-mac/sideways-on-iphone-fills-the-screen).
+            .onChange(of: playback.playing == nil) { _, ended in
+                if ended, selection == .live { live.appeared() }
+            }
             #if os(iOS)
                 // An iPhone held sideways on Live with a channel playing fills
                 // the screen however it got there; turning it upright returns
@@ -224,10 +230,13 @@
 
         #if os(iOS)
             /// What sideways full screen depends on. A new channel while
-            /// sideways fills the screen again after Exit full screen.
+            /// sideways fills the screen again after Exit full screen. A movie
+            /// or episode playing over Live counts as leaving it, so closing
+            /// one fills the screen again.
             private var sidewaysLive: SidewaysLive {
                 SidewaysLive(
-                    sideways: selection == .live && verticalSizeClass == .compact && UIDevice.current.userInterfaceIdiom == .phone,
+                    sideways: selection == .live && verticalSizeClass == .compact && UIDevice.current.userInterfaceIdiom == .phone
+                        && playback.playing == nil,
                     channel: live.playing)
             }
         #endif
