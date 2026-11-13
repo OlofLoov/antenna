@@ -39,8 +39,13 @@ struct AppRootView<Content: View>: View {
         }
         // Dark on every platform, sheets and covers included, and the accent
         // as the tint system controls draw with (design-system/one-accent-color).
+        // Not on Apple TV: a tinted list button there keeps the accent on its
+        // focused platter, where the system draws dark text
+        // (design-system/focus-is-the-lifted-white-card).
         .preferredColorScheme(.dark)
-        .tint(Palette.accent)
+        #if !os(tvOS)
+            .tint(Palette.accent)
+        #endif
         .task { await unlock.run() }
         .task { await unlock.runSplash() }
         .onChange(of: route, initial: true) { _, route in

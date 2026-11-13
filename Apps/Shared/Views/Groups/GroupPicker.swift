@@ -29,6 +29,7 @@ struct GroupPicker: View {
                     } label: {
                         row(key)
                     }
+                    .rowLabelColors()
                     .accessibilityIdentifier("groups.picker.row.\(key.identifier)")
                     .accessibilityAddTraits(picked.contains(key) ? .isSelected : [])
                 }
@@ -60,12 +61,12 @@ struct GroupPicker: View {
     private func row(_ key: RowKey) -> some View {
         HStack(spacing: 12) {
             Image(systemName: picked.contains(key) ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(picked.contains(key) ? Palette.accent : Palette.textMuted)
+                .foregroundStyle(picked.contains(key) ? AnyShapeStyle(Palette.accent) : AnyShapeStyle(.secondary))
                 .accessibilityHidden(true)
-            Text(catalogue.channelNumber(for: key).map(\.description) ?? "").monospacedDigit().foregroundStyle(Palette.textMuted)
-            Text(catalogue.channel(for: key)?.name ?? "").foregroundStyle(Palette.text)
+            Text(catalogue.channelNumber(for: key).map(\.description) ?? "").monospacedDigit().foregroundStyle(.secondary)
+            Text(catalogue.channel(for: key)?.name ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text(sourceNames[key.sourceID] ?? "").foregroundStyle(Palette.textMuted)
+            Text(sourceNames[key.sourceID] ?? "").foregroundStyle(.secondary)
         }
     }
 

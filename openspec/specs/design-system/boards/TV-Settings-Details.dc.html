@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV source details</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- A source's details, pushed from TV-Settings on the same opaque page. Same split as Settings: the source on the left, its rows on the right. No navigation title and no toolbar: nothing sits under the clock. Menu goes back to Settings. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+
+    <!-- settings.details.lead: name, type and status, centered. Not focusable. -->
+    <div style="width: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <!-- text style: title3 (48), semibold -->
+        <div style="font-size: 48px; font-weight: 600">Home</div>
+        <!-- text style: callout (31), secondary: the type as the add-source kinds name it -->
+        <div style="font-size: 31px; color: #A7B0BF">M3U playlist</div>
+      </div>
+      <!-- settings.details.status: text style caption1 (25), secondary; an error line in the live-dot red -->
+      <div style="display: flex; flex-direction: column; gap: 4px; font-size: 25px; line-height: 32px; color: #A7B0BF">
+        <span>412 channels in 18 groups</span>
+        <span>Guide for 7 days · 388 of 412 channels</span>
+        <span>Refreshed 12 minutes ago</span>
+      </div>
+    </div>
+
+    <!-- settings.details.form: a system Form. Field rows are the ones on TV-Refresh-AddSource: label left, value right, one platter per row, no field drawn inside the row. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+      <!-- section header, text style: headline, secondary, uppercase as the system draws it -->
+      <div style="font-size: 25px; font-weight: 600; color: #6B7280; padding: 0 20px; letter-spacing: 0.5px">SOURCE</div>
+      <!-- settings.details.name: focused. Selecting a field row opens the system keyboard full screen under the label; the row shows the typed value after it closes. -->
+      <div style="height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; background: #F2F4F8; color: #0B0E13; border-radius: 20px; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45)">
+        <span style="font-weight: 600">Name</span><span style="color: #4B5563">Home</span>
+      </div>
+      <!-- settings.details.link: long links cut in the middle -->
+      <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08)">
+        <span>Playlist</span><span style="color: #A7B0BF">http://tv.example-provider.net…/home.m3u</span>
+      </div>
+      <!-- settings.details.guide: empty shows the prompt -->
+      <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08)">
+        <span>Guide</span><span style="color: #A7B0BF">Optional XMLTV link</span>
+      </div>
+
+      <!-- settings.details.save: glass prominent capsule under the fields, as Connect sits on TV-Refresh-AddSource. Body (29) semibold. -->
+      <div style="display: flex; padding: 8px 0">
+        <div style="height: 66px; padding: 0 48px; border-radius: 999px; background: rgba(255,255,255,0.18); display: flex; align-items: center; font-size: 29px; font-weight: 600">Save</div>
+      </div>
+
+      <!-- settings.details.guide.sources -->
+      <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08)">
+        <span>Guide</span><span style="color: #A7B0BF">24 channels without guide ›</span>
+      </div>
+
+      <!-- settings.details.refresh, .moveUp (dimmed while first), .moveDown, .delete (system destructive red) -->
+      <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 12px; font-size: 29px">
+        <div style="height: 66px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.08)">Refresh now</div>
+        <div style="height: 66px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.05); color: #6B7280">Move up</div>
+        <div style="height: 66px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.08)">Move down</div>
+        <div style="height: 66px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.08); color: #FF5F57">Delete source</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -84,7 +84,7 @@ struct RemindersScreen: View {
             if reminders.upcoming.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(ReminderText.empty).font(.headline)
-                    Text(ReminderText.emptyHint).foregroundStyle(Palette.textMuted)
+                    Text(ReminderText.emptyHint).foregroundStyle(.secondary)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("reminders.empty")
@@ -167,7 +167,7 @@ private struct RemindersNotice<Action: View>: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: "bell.slash")
-                .foregroundStyle(Palette.textMuted)
+                .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 6) {
                 Text(text)

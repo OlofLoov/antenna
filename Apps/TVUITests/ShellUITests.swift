@@ -182,6 +182,7 @@ extension ShellUITests {
     }
 
     // tvos-shell/open-settings
+    // design-system/content-clears-the-tab-bar, Settings' title clears the bar and the clock
     func testSettingsOpensOverPicture() {
         launchPlaying()
         press(.menu)
@@ -190,6 +191,15 @@ extension ShellUITests {
         expectFocus("shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
+        let title = element("settings.title")
+        XCTAssertTrue(title.exists, "no Settings title")
+        for bar in ["shell.tab.live", "shell.settings", "shell.clock"] where element(bar).exists {
+            XCTAssertFalse(title.frame.intersects(element(bar).frame), "the title overlaps \(bar)")
+        }
+        // The lead column shows the focused Sources row's footer.
+        let footer = element("settings.iCloudFooter")
+        for _ in 0..<8 where !footer.exists { press(.down) }
+        XCTAssertTrue(footer.waitForExistence(timeout: 2), "no iCloud note beside the Sources rows")
         press(.menu)
         expectFocus("shell.settings")
         expectEngine("playing loads=1 file=a1.ts")

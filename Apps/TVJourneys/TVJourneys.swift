@@ -79,7 +79,7 @@ final class TVJourneys: XCTestCase {
         journey.snap("settings-add-source", anchor: "onboarding.connect")
     }
 
-    /// A source's details from Settings (refresh-visual-design, `TV-Refresh-Settings`).
+    /// A source's details from Settings (refresh-visual-design, `TV-Settings`, `TV-Settings-Details`).
     func testSourceDetails() {
         let journey = Journey(self, arguments: ["-ui-testing-shell", "channels"])
         openSettings(in: journey)
@@ -91,6 +91,20 @@ final class TVJourneys: XCTestCase {
         moveDown(toLabel: name, in: journey)
         remote.press(.select)
         journey.snap("source-details", anchor: "settings.details.status")
+    }
+
+    /// The Guide window row in Settings and its list of choices
+    /// (refresh-visual-design, `TV-Settings-Preferences`, `TV-Settings-Preferences-Choices`).
+    func testSettingsPreferences() {
+        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels"])
+        openSettings(in: journey)
+        moveDown(toLabel: "Guide window", in: journey, limit: 20)
+        journey.snap("settings-preferences", anchor: "settings.guideWindow")
+        remote.press(.select)
+        let choice = journey.app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true AND label == '2 hours'"))
+            .firstMatch
+        XCTAssertTrue(choice.waitForExistence(timeout: 10), "the choices never opened")
+        journey.snap("guide-window-choices", anchor: "settings.choices")
     }
 
     /// Movies with focus on a poster in the first row (refresh-visual-design, `TV-Movies`).

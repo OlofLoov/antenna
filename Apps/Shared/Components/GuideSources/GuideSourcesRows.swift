@@ -5,11 +5,11 @@ import SwiftUI
 /// `iPhone-GuideSources-Diagnosis`, `iPad-GuideSources`, `TV-GuideSources`).
 /// Each takes values and closures; the screen decides what a tap does.
 enum GuideSourcesRows {
-    static func color(_ style: GuideSourcesText.Style) -> Color {
+    static func color(_ style: GuideSourcesText.Style) -> AnyShapeStyle {
         switch style {
-        case .normal: Palette.text
-        case .muted: Palette.textMuted
-        case .error: OnboardingForm.errorColor
+        case .normal: AnyShapeStyle(.primary)
+        case .muted: AnyShapeStyle(.secondary)
+        case .error: AnyShapeStyle(OnboardingForm.errorColor)
         }
     }
 
@@ -33,7 +33,7 @@ enum GuideSourcesRows {
                         if let address {
                             Text(address)
                                 .font(.subheadline)
-                                .foregroundStyle(Palette.textMuted)
+                                .foregroundStyle(.secondary)
                                 .lineLimit(1)
                                 .truncationMode(.middle)
                         }
@@ -77,13 +77,13 @@ enum GuideSourcesRows {
                         if let number {
                             Text(number)
                                 .font(.footnote)
-                                .foregroundStyle(Palette.textMuted)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     Spacer(minLength: 8)
                     Text(label)
                         .font(.footnote)
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
                 .contentShape(Rectangle())
@@ -121,7 +121,7 @@ enum GuideSourcesRows {
         private var initials: some View {
             Text(AntennaCore.Channel.initials(for: name))
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(Palette.textMuted)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -139,7 +139,7 @@ enum GuideSourcesRows {
                     ForEach(Array(card.body.enumerated()), id: \.offset) { _, line in
                         Text(line)
                             .font(.subheadline)
-                            .foregroundStyle(Palette.textMuted)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .accessibilityElement(children: .combine)
@@ -167,7 +167,7 @@ enum GuideSourcesRows {
                         .lineLimit(1)
                     SearchRow.Highlighted(text: detail, ranges: detailRanges)
                         .font(.footnote)
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

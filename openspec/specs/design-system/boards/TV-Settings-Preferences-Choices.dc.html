@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV preference choices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- A preference's choices, pushed from its row on TV-Settings-Preferences. Every preference uses this page: Open on launch, Guide window, Refresh sources, Swipe up or down while watching, Subtitles. Selecting a choice saves it and goes back to the row, which shows the new value. Menu goes back without a change. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+
+    <!-- lead: the Settings symbol and the preference's label. Not focusable. -->
+    <div style="width: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center">
+      <div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 150px; line-height: 1; color: #A7B0BF">⚙</div>
+      <!-- text style: title3 (48), semibold -->
+      <div style="font-size: 48px; font-weight: 600">Guide window</div>
+    </div>
+
+    <!-- settings.choices: a system List in the grouped style, one list button per value. The current value carries a checkmark and the selected trait; focus starts on the first row. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; font-size: 29px">
+      <!-- focused, current: checkmark dark on the platter -->
+      <div style="height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #F2F4F8; color: #0B0E13; border-radius: 20px; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45)">
+        <span>2 hours</span><span style="font-weight: 600">✓</span>
+      </div>
+      <div style="height: 66px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.08)">3 hours</div>
+      <div style="height: 66px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.08)">4 hours</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
