@@ -30,6 +30,10 @@ check "no availability checks below 26" \
   '(@available|#available|#unavailable)\([^)]*\b(iOS|tvOS|macOS|macCatalyst|visionOS)[[:space:]]+([0-9]|1[0-9]|2[0-5])(\.[0-9]+)?\b' \
   Apps Packages/AntennaCore/Sources
 
+check "app-release: the app never names the App Review playlist or guide" \
+  '(antenna-review|code-crave\.se/review)' \
+  Apps
+
 check "no password or token in print/log calls" \
   '\b(print|debugPrint|NSLog|os_log|Logger\(\)\.[a-z]+|logger\.[a-z]+)\(.*(password|token|secret)' \
   Apps Packages/AntennaCore/Sources
