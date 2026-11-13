@@ -43,8 +43,9 @@ final class AppJourneys: XCTestCase {
         journey.snap("search", anchor: "search.field")
     }
 
-    /// Add a source from Settings, first as M3U and then as Xtream, and a
-    /// source's details (refresh-visual-design, `iPhone-Refresh-AddSource`).
+    /// Add a source from Settings: the Xtream form, the Type menu, the M3U
+    /// form, then a source's details (refresh-visual-design, `iPhone-Onboard-2`,
+    /// `iPhone-Onboard-2-M3U`, `iPad-Onboard-2`).
     func testSettingsAddSource() {
         let journey = Journey(self, scenario: "full")
         open("settings", label: "Settings", in: journey)
@@ -52,8 +53,12 @@ final class AppJourneys: XCTestCase {
         XCTAssertTrue(addSource.waitForExistence(timeout: 10), "no Add a source")
         addSource.tap()
         journey.snap("settings-add-source", anchor: "onboarding.connect")
-        journey.element("onboarding.kind.xtream").tap()
-        journey.snap("settings-add-source-xtream", anchor: "onboarding.field.password")
+        journey.element("onboarding.kind").tap()
+        let playlist = journey.app.buttons["M3U playlist"].firstMatch
+        XCTAssertTrue(playlist.waitForExistence(timeout: 5), "the Type menu never opened")
+        journey.snap("settings-add-source-kinds", anchor: "onboarding.connect")
+        playlist.tap()
+        journey.snap("settings-add-source-m3u", anchor: "onboarding.field.playlist")
         journey.element("onboarding.back").tap()
         let home = journey.element("settings.source.00000000-0000-0000-0000-0000000000C1")
         XCTAssertTrue(home.waitForExistence(timeout: 10), "the sheet never closed")

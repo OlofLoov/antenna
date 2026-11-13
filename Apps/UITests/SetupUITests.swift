@@ -25,7 +25,7 @@ final class SetupUITests: XCTestCase {
 
     /// Fills in the playlist and taps Connect.
     private func connectPlaylist(_ app: XCUIApplication) {
-        app.element("onboarding.kind.m3u").tap()
+        app.chooseKind("M3U playlist")
         let field = app.element("onboarding.field.playlist")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         field.tap()
@@ -38,7 +38,7 @@ final class SetupUITests: XCTestCase {
         let app = launch()
         XCTAssertTrue(app.element("onboarding.fromTV.banner").waitForExistence(timeout: 10))
         XCTAssertTrue(app.navigationBars["Set up Apple TV"].exists)
-        XCTAssertTrue(app.element("onboarding.kind.xtream").isSelected)
+        XCTAssertEqual(app.element("onboarding.kind").label, "Type, Xtream login")
         XCTAssertFalse(app.element("onboarding.fromTV.existing").exists)
         XCTAssertFalse(app.element("import.pickFile").exists)
         app.element("onboarding.fromTV.cancel").tap()

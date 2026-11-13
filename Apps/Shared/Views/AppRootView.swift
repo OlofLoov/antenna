@@ -40,7 +40,7 @@ struct AppRootView<Content: View>: View {
         // Dark on every platform, sheets and covers included, and the accent
         // as the tint system controls draw with (design-system/one-accent-color).
         .preferredColorScheme(.dark)
-        .tint(Palette.accent)
+        .accentTint()
         .task { await unlock.run() }
         .task { await unlock.runSplash() }
         .onChange(of: route, initial: true) { _, route in
@@ -75,5 +75,19 @@ struct AppRootView<Content: View>: View {
         return PaywallModel(
             store: unlock.makeStore(), lapse: unlock.gate.applied.lapse ?? .neverPurchased, links: .load(),
             unlock: { evidence in Task { await unlock.purchased(evidence) } })
+    }
+}
+
+extension View {
+    /// The accent as the tint on iPhone, iPad and Mac. Apple TV keeps the
+    /// system tint: tinted, bordered buttons draw accent text on an accent
+    /// fill and focused rows tint their titles, while the focused platter
+    /// stays light either way (design-system/focus-is-the-lifted-white-card).
+    @ViewBuilder fileprivate func accentTint() -> some View {
+        #if os(tvOS)
+            self
+        #else
+            tint(Palette.accent)
+        #endif
     }
 }

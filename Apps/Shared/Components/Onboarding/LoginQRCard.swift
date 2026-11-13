@@ -40,26 +40,26 @@
             let status: Status
 
             var body: some View {
-                VStack(alignment: .leading, spacing: 22) {
+                VStack(alignment: .leading, spacing: Metrics.Spacing.large) {
                     Text(LoginQRCard.title)
-                        .font(.system(size: 30, weight: .bold))
+                        .font(.callout.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
-                    SetupCard.QRTile(link: link, label: LoginQRCard.codeLabel, identifier: "signIn.qr.code")
+                    SetupCard.QRTile(link: link, size: 260, label: LoginQRCard.codeLabel, identifier: "signIn.qr.code")
                         .opacity(isChecking ? 0.4 : 1)
                         .frame(maxWidth: .infinity)
                     Text(LoginQRCard.body)
-                        .font(.system(size: 22))
-                        .foregroundStyle(OnboardingStyle.body)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     statusRows
                     Text(LoginQRCard.footer)
-                        .font(.system(size: 20))
-                        .foregroundStyle(Palette.textMuted)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(36)
+                .padding(Metrics.Spacing.xLarge)
                 .frame(width: 480, alignment: .leading)
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 20))
+                .background(.regularMaterial, in: Metrics.Corner.large.shape())
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("signIn.qr")
             }
@@ -70,18 +70,18 @@
             }
 
             @ViewBuilder private var statusRows: some View {
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: Metrics.Spacing.small) {
                     switch status {
                     case .waiting(let count, let hint):
-                        HStack(spacing: 12) {
+                        HStack(spacing: Metrics.Spacing.small) {
                             Circle().fill(Palette.accent).frame(width: 12, height: 12).accessibilityHidden(true)
-                            Text(LoginQRCard.waiting(count)).font(.system(size: 20))
+                            Text(LoginQRCard.waiting(count)).font(.caption)
                         }
                         .accessibilityElement(children: .combine)
                         .accessibilityIdentifier("signIn.qr.status")
-                        if hint { line(SetupCard.nothingYet, color: Palette.textMuted) }
+                        if hint { line(SetupCard.nothingYet, color: .secondary) }
                     case .checking(let names):
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Metrics.Spacing.small) {
                             ForEach(names.isEmpty ? [""] : names, id: \.self) { name in
                                 ProgressLine(text: name.isEmpty ? "Login received. Checking…" : "Login received. Checking with \(name)…")
                             }
@@ -90,7 +90,7 @@
                         .accessibilityIdentifier("signIn.qr.status")
                     case .unreadable:
                         problem(LoginQRCard.unreadable)
-                        line(LoginQRCard.unreadableHint, color: Palette.textMuted)
+                        line(LoginQRCard.unreadableHint, color: .secondary)
                     case .failed(let message):
                         problem(message)
                     }
@@ -98,18 +98,18 @@
             }
 
             private func problem(_ text: String) -> some View {
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                HStack(alignment: .firstTextBaseline, spacing: Metrics.Spacing.small) {
                     Circle().fill(OnboardingForm.errorColor).frame(width: 12, height: 12).accessibilityHidden(true)
-                    Text(text).font(.system(size: 22)).fixedSize(horizontal: false, vertical: true)
+                    Text(text).font(.caption).fixedSize(horizontal: false, vertical: true)
                 }
                 .foregroundStyle(OnboardingForm.errorColor)
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("signIn.qr.status")
             }
 
-            private func line(_ text: String, color: Color) -> some View {
+            private func line(_ text: String, color: HierarchicalShapeStyle) -> some View {
                 Text(text)
-                    .font(.system(size: 22))
+                    .font(.caption)
                     .foregroundStyle(color)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("signIn.qr.hint")

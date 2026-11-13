@@ -80,10 +80,29 @@ final class OnboardingUITests: XCTestCase {
         element(app, "onboarding.connect").tap()
         XCTAssertTrue(element(app, "onboarding.error").waitForExistence(timeout: 5))
         XCTAssertEqual(element(app, "onboarding.error").label, "Enter the server address.")
-        element(app, "onboarding.kind.m3u").tap()
+        app.chooseKind("M3U playlist")
         XCTAssertTrue(element(app, "onboarding.field.playlist").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "onboarding.field.guide").exists)
         element(app, "onboarding.back").tap()
+        XCTAssertTrue(element(app, "onboarding.welcome").waitForExistence(timeout: 5))
+    }
+
+    // design-system/forms-use-the-platform-form-style
+    // design-system/modals-are-system-presentations
+    func testTheFormHasTypeAsAMenuAndCancelAndConnectInTheBar() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        element(app, "onboarding.addSource").tap()
+        let bar = app.navigationBars["Add a source"]
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        XCTAssertTrue(bar.buttons["onboarding.back"].exists, "Cancel is not in the bar")
+        XCTAssertTrue(bar.buttons["onboarding.connect"].exists, "Connect is not in the bar")
+        XCTAssertEqual(element(app, "onboarding.kind").label, "Type, Xtream login")
+        app.chooseKind("Channels DVR")
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
+        XCTAssertFalse(element(app, "onboarding.field.username").exists)
+        XCTAssertEqual(element(app, "onboarding.kind").label, "Type, Channels DVR")
+        bar.buttons["onboarding.back"].tap()
         XCTAssertTrue(element(app, "onboarding.welcome").waitForExistence(timeout: 5))
     }
 
@@ -93,8 +112,7 @@ final class OnboardingUITests: XCTestCase {
         let app = launch("signedIn")
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()
-        XCTAssertTrue(element(app, "onboarding.kind.stalker").waitForExistence(timeout: 5))
-        element(app, "onboarding.kind.stalker").tap()
+        app.chooseKind("Stalker portal")
         XCTAssertTrue(element(app, "onboarding.field.portal").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "onboarding.field.mac").exists)
         XCTAssertTrue(element(app, "onboarding.field.username").exists)
@@ -111,8 +129,7 @@ final class OnboardingUITests: XCTestCase {
         let app = launch("signedIn")
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()
-        XCTAssertTrue(element(app, "onboarding.kind.jellyfin").waitForExistence(timeout: 5))
-        element(app, "onboarding.kind.jellyfin").tap()
+        app.chooseKind("Jellyfin server")
         XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "onboarding.field.username").exists)
         XCTAssertFalse(element(app, "onboarding.field.mac").exists)
@@ -140,8 +157,7 @@ final class OnboardingUITests: XCTestCase {
         let app = launch("signedIn")
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()
-        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
-        element(app, "onboarding.kind.m3u").tap()
+        app.chooseKind("M3U playlist")
         let field = element(app, "onboarding.field.playlist")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         XCTAssertFalse(element(app, "onboarding.xtreamOffer").exists, "no offer without a panel link")
@@ -158,8 +174,7 @@ final class OnboardingUITests: XCTestCase {
     private func connect(_ app: XCUIApplication, playlist: String) {
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()
-        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
-        element(app, "onboarding.kind.m3u").tap()
+        app.chooseKind("M3U playlist")
         let field = element(app, "onboarding.field.playlist")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         field.tap()
@@ -200,5 +215,17 @@ final class OnboardingUITests: XCTestCase {
         element(app, "onboarding.back").tap()
         XCTAssertTrue(element(app, "onboarding.field.playlist").waitForExistence(timeout: 5))
         XCTAssertEqual(element(app, "onboarding.field.playlist").value as? String, "http://empty.test/tv.m3u")
+    }
+}
+
+extension XCUIApplication {
+    /// Picks `title` from the add-source form's Type menu.
+    func chooseKind(_ title: String, file: StaticString = #filePath, line: UInt = #line) {
+        let picker = element("onboarding.kind")
+        XCTAssertTrue(picker.waitForExistence(timeout: 5), "no Type row", file: file, line: line)
+        picker.tap()
+        let item = buttons[title].firstMatch
+        XCTAssertTrue(item.waitForExistence(timeout: 5), "no \(title) in the Type menu", file: file, line: line)
+        item.tap()
     }
 }

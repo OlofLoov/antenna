@@ -186,7 +186,7 @@ final class FileImportUITests: XCTestCase {
         let app = launch(["-ui-testing-onboarding", "connect", "-ui-testing-import-file", "good"])
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()
-        element(app, "onboarding.kind.m3u").tap()
+        app.chooseKind("M3U playlist")
         let pick = element(app, "import.pickFile")
         XCTAssertTrue(pick.waitForExistence(timeout: 5))
         pick.tap()

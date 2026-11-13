@@ -15,45 +15,37 @@ enum OnboardingHelp {
     static let intro = "Antenna includes no channels. A source is the playlist or login a TV provider gives you."
     static let noServers = " Antenna has no servers of its own; everything you add stays between you and your provider."
 
-    /// The sheet on iPhone, iPad and Mac, with Done at the top right.
+    /// The sheet on iPhone, iPad and Mac, with the title in the bar and
+    /// Done as its confirming action.
     struct Phone: View {
         let done: () -> Void
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Text(OnboardingHelp.title)
-                        .font(.system(size: 17, weight: .semibold))
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer()
-                    Button("Done", action: done)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Palette.accent)
-                        .frame(minWidth: 44, minHeight: 44)
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("onboarding.helpDone")
-                }
-                .padding(.bottom, 12)
+            NavigationStack {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 22) {
-                        Text(
-                            OnboardingHelp.intro + OnboardingHelp.noServers
-                        )
-                        .font(.system(size: 17))
-                        .foregroundStyle(OnboardingStyle.body)
-                        Kind(heading: OnboardingHelp.m3uHeading, text: OnboardingHelp.m3uText, headingSize: 17, textSize: 15)
+                    VStack(alignment: .leading, spacing: Metrics.Spacing.large) {
+                        Text(OnboardingHelp.intro + OnboardingHelp.noServers)
+                            .foregroundStyle(.secondary)
+                        Kind(heading: OnboardingHelp.m3uHeading, text: OnboardingHelp.m3uText)
                         Kind(
                             heading: OnboardingHelp.xtreamHeading,
-                            text: OnboardingHelp.xtreamText + " The login is saved in your iCloud Keychain.", headingSize: 17, textSize: 15)
+                            text: OnboardingHelp.xtreamText + " The login is saved in your iCloud Keychain.")
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, Metrics.Spacing.large)
+                    .padding(.vertical, Metrics.Spacing.medium)
+                }
+                .navigationTitle(OnboardingHelp.title)
+                #if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
+                #endif
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done", action: done)
+                            .accessibilityIdentifier("onboarding.helpDone")
+                    }
                 }
             }
-            .foregroundStyle(Palette.text)
-            .padding(.horizontal, 24)
-            .padding(.top, 20)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Palette.ground)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("onboarding.helpSheet")
         }
@@ -64,46 +56,41 @@ enum OnboardingHelp {
         let done: () -> Void
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 36) {
-                VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: Metrics.Spacing.xLarge) {
+                VStack(alignment: .leading, spacing: Metrics.Spacing.medium) {
                     Text(OnboardingHelp.title)
-                        .font(.system(size: 52, weight: .heavy))
+                        .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text(OnboardingHelp.intro)
-                        .font(.system(size: 28))
-                        .foregroundStyle(OnboardingStyle.body)
+                        .foregroundStyle(.secondary)
                 }
-                Kind(heading: OnboardingHelp.m3uHeading, text: OnboardingHelp.m3uText, headingSize: 30, textSize: 24)
+                Kind(heading: OnboardingHelp.m3uHeading, text: OnboardingHelp.m3uText)
                 Kind(
                     heading: OnboardingHelp.xtreamHeading,
-                    text: OnboardingHelp.xtreamText + " The login is saved in the Keychain on this Apple TV.",
-                    headingSize: 30, textSize: 24)
+                    text: OnboardingHelp.xtreamText + " The login is saved in the Keychain on this Apple TV.")
                 Button("Done", action: done)
-                    .buttonStyle(OnboardingStyle.PrimaryTV())
+                    .primaryActionStyle()
                     .accessibilityIdentifier("onboarding.helpDone")
                     .frame(maxWidth: .infinity)
-                    .padding(.top, 12)
+                    .padding(.top, Metrics.Spacing.small)
             }
-            .foregroundStyle(Palette.text)
             .frame(maxWidth: 1100)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Palette.ground)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("onboarding.helpSheet")
         }
     }
 
-    /// A heading over its explanation.
+    /// A heading over its explanation: headline over body in secondary.
     private struct Kind: View {
         let heading: String
         let text: String
-        let headingSize: CGFloat
-        let textSize: CGFloat
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(heading).font(.system(size: headingSize, weight: .bold))
-                Text(text).font(.system(size: textSize)).foregroundStyle(OnboardingStyle.body)
+            VStack(alignment: .leading, spacing: Metrics.Spacing.xSmall) {
+                Text(heading).font(.headline)
+                Text(text)
+                    .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)

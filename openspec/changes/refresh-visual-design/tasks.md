@@ -9,12 +9,12 @@
 
 ## 2. Add a source and onboarding (PR 2)
 
-- [ ] 2.1 Draw the not-drawn add-source states (error, connecting, iPad and Mac sheet) and rename `TV-Refresh-AddSource`, `TV-Refresh-AddSource-Kinds` and `iPhone-Refresh-AddSource` over `TV-Onboard-3`, `TV-Onboard-2` and `iPhone-Onboard-2`, redrawing their other states
-- [ ] 2.2 On Apple TV present add a source from Settings as a full-screen cover with no app background, kinds then form in one `NavigationStack`, Cancel in the content and Menu going back a page (design-system/modals-are-system-presentations, design-system/pages-cover-what-is-behind-them)
-- [ ] 2.3 Rebuild `OnboardingForm.Television` as the two-column page with `Form` field rows, footer, glass prominent Connect and Cancel; rebuild `OnboardingKinds.Television` as card buttons inside the safe area (design-system/forms-use-the-platform-form-style, design-system/apple-tv-content-stays-in-the-safe-area)
-- [ ] 2.4 Rebuild `OnboardingForm.Phone` as a grouped `Form` with Type as a menu picker, Cancel and Connect in the toolbar, and the clipboard offer as a button row (design-system/forms-use-the-platform-form-style)
-- [ ] 2.5 Move welcome, help, progress and summary to text styles and system buttons, and drop the accent eyebrow on the summary
-- [ ] 2.6 Run `OnboardingTVUITests`, `OnboardingUITests`, `SetupTVUITests`, `LoginFromPhoneTVUITests` and `SourceSignInTVUITests` on simulators and cite the requirements in the tests that prove them
+- [x] 2.1 Draw the not-drawn add-source states (error, connecting, iPad and Mac sheet) and rename `TV-Refresh-AddSource`, `TV-Refresh-AddSource-Kinds` and `iPhone-Refresh-AddSource` over `TV-Onboard-3`, `TV-Onboard-2` and `iPhone-Onboard-2`, redrawing their other states
+- [x] 2.2 On Apple TV present add a source from Settings as a full-screen cover with no app background, kinds then form in one `NavigationStack`, Cancel in the content and Menu going back a page (design-system/modals-are-system-presentations, design-system/pages-cover-what-is-behind-them)
+- [x] 2.3 Rebuild `OnboardingForm.Television` as the two-column page with `Form` field rows, footer, glass prominent Connect and Cancel; rebuild `OnboardingKinds.Television` as card buttons inside the safe area (design-system/forms-use-the-platform-form-style, design-system/apple-tv-content-stays-in-the-safe-area)
+- [x] 2.4 Rebuild `OnboardingForm.Phone` as a grouped `Form` with Type as a menu picker, Cancel and Connect in the toolbar, and the clipboard offer as a button row (design-system/forms-use-the-platform-form-style)
+- [x] 2.5 Move welcome, help, progress and summary to text styles and system buttons, and drop the accent eyebrow on the summary
+- [x] 2.6 Run `OnboardingTVUITests`, `OnboardingUITests`, `SetupTVUITests`, `LoginFromPhoneTVUITests` and `SourceSignInTVUITests` on simulators and cite the requirements in the tests that prove them
 
 ## 3. Sources and Settings (PR 3)
 
