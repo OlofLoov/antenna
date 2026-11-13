@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV add a source, Xtream, refreshed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- onboarding.form: a full-screen cover. tvOS draws the blurred, dimmed screen behind it; the app paints no background of its own. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(135deg, #1A2230 0%, #0B0E13 60%); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- the system backdrop -->
+  <div style="position: absolute; inset: 0; background: rgba(20,24,32,0.72); backdrop-filter: blur(60px)"></div>
+
+  <!-- safe area: 80 at the sides, 60 at top and bottom -->
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+
+    <!-- onboarding.form.lead: title, one line, the iPhone card -->
+    <div style="width: 680px; display: flex; flex-direction: column; gap: 24px; padding-top: 40px">
+      <!-- text style: title3 (48) -->
+      <div style="font-size: 48px; font-weight: 600">Xtream login</div>
+      <!-- text style: body (29), secondary -->
+      <div style="font-size: 29px; color: #D7DEE8; line-height: 36px">Copy these from the email or page your provider sent you.</div>
+
+      <!-- onboarding.qr: content-layer card, regular material, radius 20 -->
+      <div style="margin-top: 24px; padding: 32px; border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; gap: 32px; align-items: center">
+        <div style="width: 200px; height: 200px; border-radius: 12px; background: #F2F4F8; flex: none; display: flex; align-items: center; justify-content: center; color: #0B0E13; font-size: 23px">QR</div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <!-- text style: callout (31), semibold -->
+          <div style="font-size: 31px; font-weight: 600">Type on iPhone instead</div>
+          <!-- text style: caption1 (25), muted -->
+          <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">Point the iPhone camera at the code. What you enter there arrives here through iCloud.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- onboarding.fields: grouped list, the tvOS form style. Each row opens the system keyboard. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding-top: 40px">
+
+      <!-- onboarding.kind: row with value, selecting it goes back to the kinds -->
+      <div style="height: 88px; border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px">
+        <span>Type</span><span style="color: #A7B0BF">Xtream login ›</span>
+      </div>
+
+      <div style="border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; flex-direction: column">
+        <!-- onboarding.field.name -->
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span>Name</span><span style="color: #A7B0BF">Optional</span>
+        </div>
+        <!-- onboarding.field.server: focused. System focus: light platter, dark text, lifted 1.05 with shadow and motion -->
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px; background: #F2F4F8; color: #0B0E13; border-radius: 20px; transform: scale(1.04); box-shadow: 0 12px 32px rgba(0,0,0,.45)">
+          <span style="font-weight: 600">Server</span><span style="color: #4B5563">http://tv.example-provider.net:8080</span>
+        </div>
+        <!-- onboarding.field.username -->
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+          <span>Username</span><span style="color: #A7B0BF">Required</span>
+        </div>
+        <!-- onboarding.field.password -->
+        <div style="height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px">
+          <span>Password</span><span style="color: #A7B0BF">Required</span>
+        </div>
+      </div>
+
+      <!-- section footer, text style: caption1 (25), muted -->
+      <div style="font-size: 25px; color: #A7B0BF; padding: 0 32px; line-height: 32px">Saved in the Keychain on this Apple TV. Antenna has no servers.</div>
+
+      <!-- actions: system buttons. Connect is glassProminent, Cancel is glass. Capsules, body (29) semibold. -->
+      <div style="display: flex; gap: 24px; margin-top: 24px">
+        <!-- onboarding.connect -->
+        <div style="height: 86px; padding: 0 64px; border-radius: 999px; background: rgba(255,255,255,0.22); display: flex; align-items: center; font-size: 29px; font-weight: 600">Connect</div>
+        <!-- onboarding.back -->
+        <div style="height: 86px; padding: 0 48px; border-radius: 999px; background: rgba(255,255,255,0.10); display: flex; align-items: center; font-size: 29px; font-weight: 600">Cancel</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

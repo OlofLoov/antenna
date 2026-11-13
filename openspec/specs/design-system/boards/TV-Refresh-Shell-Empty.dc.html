@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV no channels yet, refreshed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- shell.empty: the shared empty and error layout (symbol, title, message, actions), the same as the player error. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; align-items: center; justify-content: center">
+  <div style="width: 1200px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center">
+    <!-- SF Symbol antenna.radiowaves.left.and.right.slash, 96, muted -->
+    <div style="font-size: 96px; color: #A7B0BF; line-height: 1">((·))</div>
+    <!-- text style: title3 (48) -->
+    <div style="font-size: 48px; font-weight: 600; margin-top: 12px">No channels yet</div>
+    <!-- shell.empty.source.<id>, text style: body (29), secondary -->
+    <div style="font-size: 29px; color: #D7DEE8; line-height: 36px">Home playlist has no channels.<br>Cabin is waiting for its login to sync from iCloud.</div>
+    <div style="display: flex; gap: 24px; margin-top: 32px">
+      <!-- shell.empty.addSource: focused, system bordered button focus platter -->
+      <div style="height: 86px; padding: 0 56px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; font-size: 29px; font-weight: 600; transform: scale(1.06); box-shadow: 0 12px 32px rgba(0,0,0,.45)">Open Settings</div>
+      <!-- shell.empty.retry -->
+      <div style="height: 86px; padding: 0 56px; border-radius: 999px; background: rgba(255,255,255,0.12); display: flex; align-items: center; font-size: 29px; font-weight: 600">Try again</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
