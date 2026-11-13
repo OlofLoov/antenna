@@ -42,6 +42,7 @@
             TimelineView(.everyMinute) { context in
                 screen(data(at: context.date), now: context.date)
             }
+            .controlHints(.guide)
             .task(id: shell.guideRequest) {
                 if let request = shell.guideRequest {
                     shell.guideRequest = nil

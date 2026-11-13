@@ -57,6 +57,7 @@
             .background(Palette.ground)
             .environment(\.shelfMetrics, .tv)
             .environment(\.shelfPrefix, kind.prefix)
+            .controlHints(.titleRows(kind))
             .task(id: kind) {
                 list = nil
                 library.open()

@@ -27,6 +27,7 @@
                     ShellScreen(model: model)
                         .modifier(TopShelfLinks(model: model, library: shelves, playback: playback))
                         .modifier(ShelfSync(library: shelves, playback: playback))
+                        .controlHintsLegend()
                 }
             }
             .guideRefreshTriggers()

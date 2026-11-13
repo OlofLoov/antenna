@@ -34,6 +34,9 @@ struct SettingsView: View {
                 PreferencesSection(preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies) { changed in
                     PreferencesStore.save(changed, in: context)
                 }
+                #if os(tvOS)
+                    Section { RemoteHintsRow() }
+                #endif
                 Section("About") {
                     LabeledContent("Version", value: Self.version)
                         .accessibilityIdentifier("settings.version")
@@ -56,6 +59,10 @@ struct SettingsView: View {
                 .modifier(SettingsFileImport(ask: $fileImport))
             #endif
         }
+        #if os(tvOS)
+            .controlHints(.settings)
+            .controlHintsLegend()
+        #endif
     }
 
     // MARK: Sources

@@ -141,6 +141,7 @@ extension TitleTransport {
                 .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
                 .disabled(panel != nil)
                 .focused($focus, equals: .picture)
+                .controlHints(.titlePlayer(scrubbing: transport.isScrubbing))
                 .task { focus = .picture }
                 .onExitCommand { menu() }
                 .onPlayPauseCommand { transport.select() }
