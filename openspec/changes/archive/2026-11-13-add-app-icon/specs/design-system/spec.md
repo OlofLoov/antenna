@@ -16,4 +16,4 @@ tinted.
 
 #### Scenario: The app icon
 - **WHEN** a reviewer checks the app icon
-- **THEN** its mark is in the accent blue on the ground color, and no other color appears in it
+- **THEN** its mark is in the accent blue on the dark ground, and the mark uses no other color

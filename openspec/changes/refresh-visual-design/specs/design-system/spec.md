@@ -212,17 +212,21 @@ and nothing other than the focused element is filled white.
 The accent blue from the reference MUST be the only accent color and MUST be
 the app's tint, so system controls draw with it. It SHALL appear only on
 progress fills, the guide's now line, the NOW and UP NEXT badges, links, the
-selected iPhone tab, and system controls that tint by default (the
-prominent button on iPhone, iPad and Mac, switches, and selected picker
-values). Eyebrows, titles, icons and decoration are not tinted.
+selected iPhone tab, the app icon, and system controls that tint by
+default (the prominent button on iPhone, iPad and Mac, switches, and
+selected picker values). Eyebrows, titles, icons and decoration are not tinted.
 
 #### Scenario: A tinted icon
 - **WHEN** a reviewer finds an icon or label tinted in a color other than the accent
 - **THEN** it fails this requirement
 
 #### Scenario: Accent on a decorative element
-- **WHEN** the accent appears on something that is not progress, the now line, a NOW or UP NEXT badge, a link, the selected iPhone tab or a system control's tint
+- **WHEN** the accent appears on something that is not progress, the now line, a NOW or UP NEXT badge, a link, the selected iPhone tab, the app icon or a system control's tint
 - **THEN** it fails this requirement
+
+#### Scenario: The app icon
+- **WHEN** a reviewer checks the app icon
+- **THEN** its mark is in the accent blue on the dark ground, and the mark uses no other color
 
 #### Scenario: An eyebrow over a title
 - **WHEN** a reviewer finds an eyebrow such as "RECENTLY ADDED" or "SERIES" in the accent

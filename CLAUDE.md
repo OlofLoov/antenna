@@ -17,6 +17,7 @@ swift test --disable-keychain --package-path Packages/FFmpeg   # the published F
 swift test --disable-keychain --package-path Packages/AntennaDemux   # the FFmpeg playback path, decoded by VideoToolbox
 scripts/make-review-guide.py Web/review/antenna-review.m3u 2026-01-01 36   # the App Review guide for a start day and length
 actionlint                                               # workflow files, including release.yml; brew install actionlint
+scripts/render-icons.sh                                  # app icons and Apple TV brand assets from design/icon/*.svg
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO
@@ -51,6 +52,9 @@ from `Config/Local.xcconfig.example` for device builds.
   the app never names them. `WebsiteTests`, `SetupPageTests` and
   `ReleaseTests` in AntennaCore check it.
 - `docs/release/` the App Review notes and the App Store Connect privacy answers.
+- `design/icon/` the SVG sources of the app icons. `scripts/render-icons.sh`
+  copies them into `Apps/Mobile/AppIcon.icon` (Icon Composer, iPhone, iPad
+  and Mac) and renders `Apps/TV/Assets.xcassets` (Apple TV layers and Top Shelf).
 - `project.yml` is the source of truth for the Xcode project. Edit it, not the pbxproj.
 
 ## How we work
