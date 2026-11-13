@@ -86,6 +86,11 @@ struct AntennaApp: App {
     private static func refresherDependencies(guide: AppGuideStore, container: ModelContainer) -> SourceRefresher.Dependencies {
         #if DEBUG
             if let scripted = UITestingLive.refresherDependencies() { return scripted }
+            if let lastLoads = UITestingShelf.lastLoads() {
+                var dependencies = SourceRefresher.Dependencies.app(loader: SourceLoader(), guide: guide, container: container)
+                dependencies.lastLoads = lastLoads
+                return dependencies
+            }
         #endif
         return .app(loader: SourceLoader(), guide: guide, container: container)
     }

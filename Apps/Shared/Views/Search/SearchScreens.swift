@@ -49,7 +49,7 @@
             let finished = live.sources.map { $0.state != .loading } + shelfSources.map { $0.state != .loading }
             return SearchCorpus(
                 catalogue: live.catalogue, sourceOrder: order, guide: guide, titles: shelves.movies.titles + shelves.series.titles,
-                hasTitles: shelves.hasXtream, sources: SearchSources(finished: finished), includeHidden: searchHidden)
+                hasTitles: shelves.offer.any, sources: SearchSources(finished: finished), includeHidden: searchHidden)
         }
 
         private var guide: GuideIndex {

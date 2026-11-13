@@ -273,9 +273,9 @@ final class ShelfLibrary {
     /// The page just closed, until the poster or button that opened it
     /// takes focus back (title-detail-and-episode-picker/back-to-where-you-were).
     private(set) var returning: TitleRoute?
-    /// True with at least one Xtream source, whether or not it has answered
-    /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
-    private(set) var hasXtream = false
+    /// Which sections the sources offer, set by `ShelfSync`
+    /// (m3u-playlists/playlist-titles-show-on-every-platform).
+    var offer = TitleOffer.none
 
     init(movies: ShelfModel, series: ShelfModel) {
         self.movies = movies
@@ -287,7 +287,6 @@ final class ShelfLibrary {
     }
 
     func sourcesChanged(_ all: [SourceDescriptor]) {
-        hasXtream = all.contains { $0.kind == .xtream }
         movies.sourcesChanged(all)
         series.sourcesChanged(all)
     }

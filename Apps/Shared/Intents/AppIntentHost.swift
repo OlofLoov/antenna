@@ -116,7 +116,8 @@
                     titles: shelves.movies.titles + shelves.series.titles, sources: Self.states(shelves), progress: store.allProgress(),
                     myList: myList)
             }
-            let all = descriptors.filter { $0.kind == .xtream }
+            // Playlists count as Xtream sources do (m3u-playlists/playlist-titles-show-on-every-platform).
+            let all = descriptors.filter { $0.kind == .xtream || $0.isPlaylist }
             let wanted = all.filter { sources?.contains($0.id) ?? true }
             await waitForDeadline(wanted.map(startCatalogueLoad))
             let titles = all.flatMap { catalogues[$0.id] ?? [] }
@@ -289,7 +290,7 @@
         /// entitlement `unlock` caches, and `locks`.
         @MainActor
         static func app(container: ModelContainer, unlock: Unlock, locks: GroupLocks, loader: SourceLoader = SourceLoader()) -> Self {
-            let shelf = ShelfLoader()
+            let shelf = ShelfLoader(session: loader.session, credentials: loader.credentials, playlists: loader)
             var dependencies = Self(
                 container: container, isUnlocked: { unlock.gate.applied.isUnlocked }, locksOpen: { locks.isOpen },
                 loadPlaylist: { try await loader.load($0) }, hasLogin: { loader.hasLogin($0) },

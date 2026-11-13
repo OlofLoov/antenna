@@ -74,9 +74,10 @@
 
         private var titles: [ShelfTitle] { library.movies.titles + library.series.titles }
 
-        /// True while a Movies or Series source can still add titles.
+        /// True while a Movies or Series source can still add titles, a
+        /// playlist's as an Xtream source's (m3u-playlists/playlist-titles-show-on-every-platform).
         private var titlesPending: Bool {
-            guard library.hasXtream else { return false }
+            guard model.titleOffer.any else { return false }
             return [library.movies, library.series].contains { shelf in
                 !shelf.opened || shelf.sources.contains { $0.state == .loading }
             }

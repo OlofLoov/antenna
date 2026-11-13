@@ -78,6 +78,44 @@ final class ShelfTVUITests: XCTestCase {
         XCTAssertFalse(element("shell.tab.series").exists)
     }
 
+    // m3u-playlists/movies-and-series-show-by-what-the-sources-offer, episodes only on Apple TV
+    // m3u-playlists/what-a-playlist-offered-is-remembered
+    func testAPlaylistOfEpisodesShowsSeriesWithoutMovies() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "playlistSeries"]
+        app.launch()
+        press(.menu)
+        XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
+        XCTAssertFalse(element("shell.tab.movies").exists)
+        expectFocus("shell.tab.live")
+        press(.right, times: 2)
+        expectFocus("shell.tab.series")
+        press(.select)
+        expectFocus("series.hero.play")
+    }
+
+    // m3u-playlists/playlist-titles-show-on-every-platform, Search on Apple TV
+    func testSearchFindsAPlaylistSeries() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "playlistSeries"]
+        app.launch()
+        press(.menu)
+        XCTAssertTrue(element("shell.tab.search").waitForExistence(timeout: 10))
+        expectFocus("shell.tab.live")
+        press(.right, times: 3)
+        expectFocus("shell.tab.search")
+        press(.select)
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
+        expectFocus("shell.tab.search")
+        press(.down)
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        field.typeText("pier")
+        let result = element("search.result.title.0")
+        XCTAssertTrue(result.waitForExistence(timeout: 10))
+        XCTAssertTrue(result.label.contains("Pier Stories"), result.label)
+    }
+
     // movies-and-series-browsing/new-titles-up-front
     func testSwipingPastTheButtonsPagesTheBanner() {
         openMovies()

@@ -56,9 +56,16 @@ final class SourceRefresher {
         self.dependencies = dependencies
     }
 
-    /// The status of `id`, with the last load time kept on this device.
+    /// The status of `id`, with the last load time and title counts kept on
+    /// this device (m3u-playlists/what-a-playlist-offered-is-remembered).
     func status(of id: UUID) -> SourceStatus {
-        statuses[id] ?? SourceStatus(lastSuccess: dependencies.lastLoads.read(id))
+        if let status = statuses[id] { return status }
+        var status = SourceStatus(lastSuccess: dependencies.lastLoads.read(id))
+        if let counts = dependencies.lastLoads.readTitles(id) {
+            status.movies = counts.movies
+            status.episodes = counts.episodes
+        }
+        return status
     }
 
     // MARK: Loading
@@ -103,6 +110,7 @@ final class SourceRefresher {
         case .success(let playlist):
             let now = dependencies.now()
             dependencies.lastLoads.write(now, for: id)
+            dependencies.lastLoads.writeTitles(TitleCounts(movies: playlist.movies.count, episodes: playlist.episodes.count), for: id)
             update(id) {
                 $0.load = .loaded
                 $0.channels = playlist.channels.count
@@ -226,9 +234,12 @@ final class SourceRefresher {
 }
 
 /// When each source last loaded on this device, in `UserDefaults` under
-/// `settings.lastLoad.<sourceId>`. Never synced; holds a date only.
+/// `settings.lastLoad.<sourceId>`, and how many movies and episodes that
+/// load had, under `settings.lastTitles.<sourceId>`. Never synced; holds a
+/// date and two counts only.
 struct LastLoadStore: @unchecked Sendable {
     static let prefix = "settings.lastLoad."
+    static let titlesPrefix = "settings.lastTitles."
     var defaults: UserDefaults = .standard
 
     func read(_ id: UUID) -> Date? {
@@ -241,8 +252,19 @@ struct LastLoadStore: @unchecked Sendable {
         defaults.set(data, forKey: Self.prefix + id.uuidString)
     }
 
+    func readTitles(_ id: UUID) -> TitleCounts? {
+        guard let data = defaults.data(forKey: Self.titlesPrefix + id.uuidString) else { return nil }
+        return try? JSONDecoder().decode(TitleCounts.self, from: data)
+    }
+
+    func writeTitles(_ counts: TitleCounts, for id: UUID) {
+        guard let data = try? JSONEncoder().encode(counts) else { return }
+        defaults.set(data, forKey: Self.titlesPrefix + id.uuidString)
+    }
+
     func remove(_ id: UUID) {
         defaults.removeObject(forKey: Self.prefix + id.uuidString)
+        defaults.removeObject(forKey: Self.titlesPrefix + id.uuidString)
     }
 }
 

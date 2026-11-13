@@ -21,6 +21,9 @@
             case titles
             /// Only Home, an M3U playlist: no Movies or Series anywhere.
             case noXtream
+            /// Only Home, a playlist whose last load had two episodes and no
+            /// movies: Series lists Pier Stories, and there is no Movies.
+            case playlistSeries
             /// Cabin loads; Office never finishes.
             case loading
             /// Cabin loads; Office's first load fails and the next succeeds.
@@ -48,7 +51,8 @@
             guard let index = arguments.firstIndex(of: argument) else { return nil }
             let next = arguments.index(after: index)
             guard next < arguments.endIndex, let scenario = Scenario(rawValue: arguments[next]) else {
-                fatalError("\(argument) takes titles, watching, waiting, noXtream, loading, failing, offline, error or empty")
+                fatalError(
+                    "\(argument) takes titles, watching, waiting, noXtream, playlistSeries, loading, failing, offline, error or empty")
             }
             return scenario
         }
@@ -75,7 +79,7 @@
                     SourceRecord(
                         descriptor: SourceDescriptor(id: homeID, name: "Home", kind: .m3u, url: URL(fileURLWithPath: "/fixture/home.m3u")),
                         sortOrder: 0))
-                if scenario != .noXtream {
+                if scenario != .noXtream, scenario != .playlistSeries {
                     for (order, (id, name)) in zip(1..., [(cabinID, "Cabin"), (officeID, "Office")]) {
                         let descriptor = SourceDescriptor(
                             id: id, name: name, kind: .xtream, url: URL(fileURLWithPath: "/fixture/\(name.lowercased())"),
@@ -112,6 +116,19 @@
             for (id, source, ago) in entries {
                 context.insert(ListEntryRecord(titleID: id, sourceID: source, addedAt: now.addingTimeInterval(-ago), profileID: nil))
             }
+        }
+
+        /// What the refresher remembers of each source's last load, on a
+        /// suite emptied at launch. Home remembers two episodes in
+        /// `playlistSeries` (m3u-playlists/what-a-playlist-offered-is-remembered).
+        static func lastLoads() -> LastLoadStore? {
+            guard let scenario = scenario() else { return nil }
+            let suite = "ui-testing-shelf"
+            let defaults = UserDefaults(suiteName: suite) ?? .standard
+            defaults.removePersistentDomain(forName: suite)
+            let store = LastLoadStore(defaults: defaults)
+            if scenario == .playlistSeries { store.writeTitles(TitleCounts(movies: 0, episodes: 2), for: homeID) }
+            return store
         }
 
         /// The scripted library for any UI testing launch, or nil.
@@ -158,17 +175,22 @@
                 switch scenario {
                 case .error, .empty: return false
                 case .waiting: return Date.now.timeIntervalSince(launched) > 6
-                case .titles, .watching, .noXtream, .loading, .failing, .offline: return true
+                case .titles, .watching, .noXtream, .playlistSeries, .loading, .failing, .offline: return true
                 }
             }
 
             func load(_ source: SourceDescriptor, kind: ShelfTitle.Kind) async throws -> ShelfCatalogue {
-                // The scripted playlist has no movies.
-                guard source.kind == .xtream else { return ShelfCatalogue(titles: [], categories: []) }
+                // The scripted playlist has one series in `playlistSeries` and nothing otherwise.
+                guard source.kind == .xtream else {
+                    guard scenario == .playlistSeries, kind == .series else { return ShelfCatalogue(titles: [], categories: []) }
+                    let series = ShelfTitle(
+                        id: "m3u.series.00000000000000a1", kind: .series, sourceID: source.id, name: "Pier Stories", category: "Shows")
+                    return ShelfCatalogue(titles: [series], categories: ["Shows"])
+                }
                 let isCabin = source.id == cabinID
                 if !isCabin { officeLoads += 1 }
                 switch scenario {
-                case .titles, .watching, .waiting, .noXtream:
+                case .titles, .watching, .waiting, .noXtream, .playlistSeries:
                     return catalogue(source.id, kind: kind)
                 case .loading:
                     if !isCabin { try await Task.sleep(for: .seconds(3600)) }

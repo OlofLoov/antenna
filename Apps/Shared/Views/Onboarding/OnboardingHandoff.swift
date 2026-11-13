@@ -42,14 +42,16 @@ extension EnvironmentValues {
 #if os(tvOS)
     extension ShellModel {
         /// Opens Guide or Movies at launch when the preference says so; the
-        /// launch tune picks the channel as before.
+        /// launch tune picks the channel as before. Movies opens Series when
+        /// only series are offered (m3u-playlists/what-a-playlist-offered-is-remembered).
         func openOnLaunch(in context: ModelContext) {
             let sources = (try? context.fetch(FetchDescriptor<SourceRecord>())) ?? []
+            let offer = TitleOffer(sources.map { ($0.id, $0.kind) }, counts: dependencies.storedTitles)
             let preferences = PreferencesStore.current(in: context)
-            switch preferences.launchScreen(offersMovies: sources.contains { $0.kind == .xtream }) {
+            switch preferences.launchScreen(offersMovies: offer.any) {
             case .live: break
             case .guide: Task { _ = await select(.guide) }
-            case .movies: Task { _ = await select(.movies) }
+            case .movies: Task { _ = await select(.titles(offer)) }
             }
         }
     }
@@ -61,7 +63,7 @@ extension EnvironmentValues {
             if let channel = takeChannel() {
                 shell.tune(channel)
             } else if takeMovies() {
-                Task { _ = await shell.select(.movies) }
+                Task { _ = await shell.select(.titles(shell.titleOffer)) }
             }
         }
     }

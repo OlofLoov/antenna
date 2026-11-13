@@ -119,7 +119,9 @@ struct SettingsView: View {
         #endif
     }
 
-    private var offersMovies: Bool { sources.contains { $0.kind == .xtream } }
+    /// Movies is a launch choice when a source offers titles
+    /// (m3u-playlists/playlist-titles-show-on-every-platform).
+    private var offersMovies: Bool { TitleOffer(records: sources, refresher: refresher).any }
 
     private func lines(for source: SourceRecord, now: Date) -> [SourceStatusText.Line] {
         #if os(tvOS)
@@ -303,16 +305,17 @@ private struct DeleteSourceConfirmation: ViewModifier {
     extension LiveSection {
         /// The section the launch preference opens over the restored one, after
         /// onboarding's Browse movies; nil for Live (sources-and-settings/choose-how-the-app-behaves).
-        @MainActor static func launch(_ records: [PreferencesRecord], hasXtream: Bool) -> LiveSection? {
-            LiveSection(PreferencesStore.current(records).launchScreen(offersMovies: hasXtream))
+        /// Movies opens Series when only series are offered.
+        @MainActor static func launch(_ records: [PreferencesRecord], offer: TitleOffer) -> LiveSection? {
+            LiveSection(PreferencesStore.current(records).launchScreen(offersMovies: offer.any), offer: offer)
         }
 
         /// The sidebar section a launch preference other than Live opens; nil for Live.
-        init?(_ screen: AppPreferences.LaunchScreen) {
+        init?(_ screen: AppPreferences.LaunchScreen, offer: TitleOffer) {
             switch screen {
             case .live: return nil
             case .guide: self = .guide
-            case .movies: self = .movies
+            case .movies: self = .titles(offer)
             }
         }
     }

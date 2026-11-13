@@ -118,7 +118,7 @@
             let finished = shell.sources.map { $0.state != .loading } + shelfSources.map { $0.state != .loading }
             return SearchCorpus(
                 catalogue: catalogue, sourceOrder: order, guide: guide, titles: library.movies.titles + library.series.titles,
-                hasTitles: library.hasXtream, sources: SearchSources(finished: finished), includeHidden: searchHidden)
+                hasTitles: shell.titleOffer.any, sources: SearchSources(finished: finished), includeHidden: searchHidden)
         }
 
         private var guide: GuideIndex {

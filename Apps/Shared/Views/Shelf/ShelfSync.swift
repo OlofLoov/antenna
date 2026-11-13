@@ -13,6 +13,7 @@ struct ShelfSync: ViewModifier {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
     @Environment(\.currentProfile) private var profile
+    @Environment(\.sourceRefresher) private var refresher
     @State private var activity = ShelfActivity()
 
     func body(content: Content) -> some View {
@@ -44,6 +45,9 @@ struct ShelfSync: ViewModifier {
             .modifier(TrailerOpener())
             .task(id: records.compactMap(\.descriptor)) {
                 library.sourcesChanged(records.compactMap(\.descriptor))
+            }
+            .onChange(of: TitleOffer(records: records, refresher: refresher), initial: true) { _, offer in
+                library.offer = offer
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { library.becameActive() }

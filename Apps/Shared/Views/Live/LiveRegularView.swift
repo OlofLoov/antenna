@@ -78,6 +78,7 @@
         /// A folded column the user opened over the others.
         @State private var shown: Folded?
         @Query private var records: [SourceRecord]
+        @Environment(\.sourceRefresher) private var refresher
         /// The last session's section was opened once, at the first appearance.
         @State private var restored = false
         @Environment(\.onboardingHandoff) private var handoff
@@ -142,17 +143,18 @@
                 }
                 .animation(.easeOut(duration: 0.2), value: shown)
                 .onChange(of: columns) { _, _ in shown = nil }
-                // Movies and Series go with the last Xtream source.
-                .onChange(of: shelves.hasXtream) { _, has in
-                    if !has, section == .movies || section == .series { section = .live }
+                // Movies or Series goes when no source offers it.
+                .onChange(of: shelves.offer) { _, offer in
+                    if !section.isOffered(by: offer) { section = .live }
                 }
                 .onChange(of: section) { _, new in live.opened(new.session) }
                 // Opens on the section the user left (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
                 .onAppear {
                     guard !restored else { return }
                     restored = true
-                    section = LiveSection(live.restoredTab, hasXtream: records.contains { $0.kind == .xtream })
-                    section = handoff?.takeMovies() == true ? .movies : .launch(preferences, hasXtream: shelves.hasXtream) ?? section
+                    let offer = TitleOffer(records: records, refresher: refresher)
+                    section = LiveSection(live.restoredTab, offer: offer)
+                    section = handoff?.takeMovies() == true ? .titles(offer) : .launch(preferences, offer: offer) ?? section
                 }
             }
             .background(Palette.ground)
@@ -198,11 +200,11 @@
             }
         }
 
-        /// Movies and Series only with an Xtream source
-        /// (movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them).
+        /// Movies and Series each only when a source offers it
+        /// (m3u-playlists/movies-and-series-show-by-what-the-sources-offer).
         private var sections: [LiveSection] {
             LiveSection.allCases.filter { item in
-                item != .settings && (shelves.hasXtream || (item != .movies && item != .series))
+                item != .settings && item.isOffered(by: shelves.offer)
             }
         }
 
