@@ -29,9 +29,9 @@
 
 ## 5. Filter on iPhone
 
-- [ ] 5.1 Add the pull-down search field to the iPhone guide, update `iPhone-Guide`, and add a UI test citing `guide-on-iphone-ipad-and-mac/filter-channels-by-typing`
+- [x] 5.1 Add the pull-down search field to the iPhone guide, update `iPhone-Guide`, and add a UI test citing `guide-on-iphone-ipad-and-mac/filter-channels-by-typing`
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [x] 6.2 `/opsx:verify` passes

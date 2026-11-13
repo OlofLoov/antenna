@@ -57,7 +57,7 @@ final class GuideUITests: XCTestCase {
         XCTAssertTrue(app.element("guide.chips").exists)
         XCTAssertTrue(app.element("guide.days").exists)
         XCTAssertTrue(app.element("guide.list").exists)
-        XCTAssertFalse(app.element("guide.filter").exists, "no filter on iPhone")
+        XCTAssertFalse(app.element("guide.filter").exists, "no iPad filter field on iPhone")
 
         let news = cards(app, row: 0)
         XCTAssertGreaterThanOrEqual(news.count, 2)
@@ -194,5 +194,23 @@ final class GuideUITests: XCTestCase {
         XCTAssertEqual(app.element("guide.banner.failed.text").label, "Could not load the guide for Cabin")
         app.element("guide.banner.failed.retry").tap()
         expect(app.element("guide.banner.failed"), "exists == false")
+    }
+
+    // guide-on-iphone-ipad-and-mac/filter-channels-by-typing, on iPhone
+    func testPullingDownShowsAFilterThatNarrowsTheRows() throws {
+        let app = try launch()
+        openGuide(app)
+        XCTAssertTrue(app.element("guide.row.\(key(0))").waitForExistence(timeout: 5))
+        let filter = app.element("browse.filter")
+        for _ in 0..<3 where !filter.isHittable { app.element("guide.list").swipeDown() }
+        XCTAssertTrue(filter.isHittable, "pulling the list down shows no filter")
+
+        filter.tap()
+        filter.typeText("kids")
+        expect(app.element("guide.row.\(key(0))"), "exists == false")
+        XCTAssertTrue(app.element("guide.row.\(key(3))").exists, "Kids One stays")
+
+        app.element("browse.filter.clear").tap()
+        expect(app.element("guide.row.\(key(0))"), "exists == true")
     }
 }

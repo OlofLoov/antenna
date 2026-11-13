@@ -7,7 +7,9 @@
     /// `iPhone-Guide`, `iPhone-Guide-Placeholders`, `iPhone-Guide-Detail`):
     /// group chips and day chips over one row per channel, each scrolling
     /// sideways through that channel's programmes from the one on now, and
-    /// the now-playing bar above the tab bar. There is no filter field.
+    /// the now-playing bar above the tab bar. A filter field waits above the
+    /// first row until the list is pulled down
+    /// (guide-on-iphone-ipad-and-mac/filter-channels-by-typing).
     struct GuideCompactScreen: View {
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
@@ -35,6 +37,8 @@
             }
             .modifier(GuideRequestTaker())
             .modifier(GuideBannerWatch())
+            // Another group brings back the whole group.
+            .onChange(of: live.group) { _, _ in model.filter = "" }
             .overlay {
                 #if DEBUG
                     UITestingLive.Probe(engine: live.engine)
@@ -47,13 +51,13 @@
         @ViewBuilder private func content(now: Date) -> some View {
             switch live.status {
             case .channels:
-                let data = reading.data(at: now, filtered: false)
+                let data = reading.data(at: now, filtered: true)
                 VStack(spacing: 0) {
                     groups
                     days(data, now: now)
                     GuideBannerList(banners: reading.banners())
                         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
-                    if data.rows.isEmpty {
+                    if data.rows.isEmpty, model.filter.isEmpty {
                         GuideBoard.Empty(text: "No channels in \(live.catalogue.label(of: live.group))")
                             .accessibilityIdentifier("guide.empty")
                     } else {
@@ -116,16 +120,27 @@
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
 
+        /// The filter field's place in the list, above the first row.
+        static let filterID = "guide.filter.row"
+
         var body: some View {
+            @Bindable var model = model
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 0) {
+                        Browse.FilterField(text: $model.filter)
+                            .padding(EdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 16))
+                            .id(Self.filterID)
                         ForEach(data.rows, id: \.self) { key in
                             GuideCompactRow(key: key, now: now, anchor: anchor)
                                 .id(key)
                         }
                     }
                     .padding(.vertical, 4)
+                }
+                // The field starts out of sight above the first row; pulling down shows it.
+                .onAppear {
+                    if model.filter.isEmpty, let first = data.rows.first { proxy.scrollTo(first, anchor: .top) }
                 }
                 .onChange(of: model.jump) { _, jump in
                     guard let jump else { return }
