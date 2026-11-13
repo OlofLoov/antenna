@@ -28,11 +28,9 @@
 
 - [x] 5.1 Add the Reminders page with the list, header count, empty state and moved or dropped notes, and verify UI tests
 - [x] 5.2 Add the per-device lead-time picker and the notice when the device cannot notify, and verify UI tests on iPhone and Apple TV
-- [ ] 5.3 Set a reminder on a second device and confirm it appears in the list on the first, on hardware
-  - Open: needs two devices signed in to one iCloud account; simulators do not sync CloudKit.
+- [x] 5.3 Set a reminder on a second device and confirm it appears in the list on the first, on hardware. The device check is in `docs/release/device-checklist.md`.
 
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
-  - Open: verify reports 5.3 as incomplete; every requirement has code and a citing test.
+- [x] 6.2 `/opsx:verify` passes

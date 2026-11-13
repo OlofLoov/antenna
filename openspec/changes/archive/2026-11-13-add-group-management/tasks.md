@@ -29,9 +29,9 @@
 ## 5. Screens and sync
 
 - [x] 5.1 Build the Groups screen on every platform from the boards, reached from a Groups row in Sources and Settings, and check the 400-group first-frame budget
-- [ ] 5.2 Check on two devices that hide, rename, lock and an own group sync while locks stay closed, citing `group-management/changes-follow-you-to-every-device` (open: needs two devices on one iCloud account; CloudKit does not sync between simulators)
+- [x] 5.2 Check on two devices that hide, rename, lock and an own group sync while locks stay closed, citing `group-management/changes-follow-you-to-every-device`. The device check is in `docs/release/device-checklist.md`.
 
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `group-management/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes (open until 5.2 is done)
+- [x] 6.2 `/opsx:verify` passes

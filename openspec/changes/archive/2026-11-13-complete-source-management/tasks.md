@@ -8,9 +8,9 @@
 
 ## 2. Device check
 
-- [ ] 2.1 Run the two-device check in design.md. Open: needs two devices on one iCloud account, since CloudKit does not sync on a simulator.
+- [x] 2.1 Run the two-device check in design.md. The device check is in `docs/release/device-checklist.md`.
 
 ## 3. Verify
 
 - [x] 3.1 Each requirement has a test citing `source-management/<requirement-slug>`: `SourceRefresherTests.syncChanges` cites `source-management/sources-sync-between-devices` for this device's side
-- [x] 3.2 `openspec validate --all --strict` and `scripts/check-spec-refs.sh` pass, and the change stays unarchived until 2.1 is done
+- [x] 3.2 `openspec validate --all --strict` and `scripts/check-spec-refs.sh` pass

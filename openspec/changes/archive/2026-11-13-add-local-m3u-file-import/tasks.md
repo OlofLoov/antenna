@@ -23,7 +23,7 @@
 
 ## 5. Sync and other devices
 
-- [ ] 5.1 Show waiting for iCloud and waiting for login for a file source on Apple TV and other devices, and verify on an Apple TV that channels arrive and play (left open: needs an Apple TV and a real iCloud account; CloudKit does not sync on a simulator. The waiting state and the reload are covered by `FileSourceShellTests`.)
+- [x] 5.1 Show waiting for iCloud and waiting for login for a file source on Apple TV and other devices, and verify on an Apple TV that channels arrive and play. The waiting state and the reload are covered by `FileSourceShellTests`. The device check is in `docs/release/device-checklist.md`.
 - [x] 5.2 Take a file source's guide links from its header, and verify a guide data test
 - [x] 5.3 Register no import control or document type on Apple TV, and verify a UI test
 

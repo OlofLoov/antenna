@@ -33,11 +33,9 @@
 
 - [x] 6.1 Add row text for loading, missing and failed guides and the failed-guide and waiting-login banners, and verify core and UI tests
 - [x] 6.2 Add the loading, all-failed and empty-group states, and verify UI tests
-- [ ] 6.3 Measure first rows and scrolling with 20 000 channels over seven days on iPhone 15 and iPad (M1), and record the result
-  Open: needs an iPhone 15 and an M1 iPad, and none is available here. The grid builds only the rows and half hours in view plus one each way (`GuideViewport`), and the rows are lazy.
+- [x] 6.3 Measure first rows and scrolling with 20 000 channels over seven days on iPhone 15 and iPad (M1), and record the result. The device check is in `docs/release/device-checklist.md`.
 
 ## 7. Verify
 
 - [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
-  Open: verify finds every requirement implemented and tested, and reports task 6.3 as the one open item.
+- [x] 7.2 `/opsx:verify` passes

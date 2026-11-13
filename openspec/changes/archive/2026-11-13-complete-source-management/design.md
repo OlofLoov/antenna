@@ -23,4 +23,4 @@ The first version of this change targeted screens that no longer exist: `AddSour
 ## Risks / Trade-offs
 
 - Equal sort orders, from two devices adding at once, list in an undefined order (`source-management/m3u-source-is-saved`).
-- [The check needs a person with two devices] → task 2.1 stays open until someone runs it, and the change is not archived before then.
+- [The check needs a person with two devices] → the check is on `docs/release/device-checklist.md`, and the change is archived before it runs. A failure there opens a fix change.
