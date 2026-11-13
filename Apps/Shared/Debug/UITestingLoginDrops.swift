@@ -69,12 +69,22 @@
             ]
             let links = ["http://xtream.test", "http://refuse.test", "http://xtream.test/cabin"]
             let context = ModelContext(container)
-            for (order, var source) in sources.prefix(count).enumerated() {
-                source.url = URL(string: links[order]) ?? source.url
-                context.insert(SourceRecord(descriptor: source, sortOrder: order))
+            let playlist = ProcessInfo.processInfo.arguments.contains(playlistArgument)
+            if playlist, let link = URL(string: "http://onboarding.test/tv.m3u") {
+                context.insert(SourceRecord(descriptor: SourceDescriptor(name: "Kitchen playlist", kind: .m3u, url: link), sortOrder: 0))
+            }
+            for (index, var source) in sources.prefix(count).enumerated() {
+                source.url = URL(string: links[index]) ?? source.url
+                context.insert(SourceRecord(descriptor: source, sortOrder: index + (playlist ? 1 : 0)))
             }
             try? context.save()
         }
+
+        /// With `-ui-testing-signin-playlist`, a playlist that loads comes
+        /// before the sources without logins, so the Apple TV opens on Live
+        /// instead of onboarding's sign-in step and the sources wait for
+        /// their logins in Settings.
+        static let playlistArgument = "-ui-testing-signin-playlist"
 
         /// The TV's card with the scripted store, or nil outside UI tests.
         /// Other UI tests get a card that reports no iCloud account, so an

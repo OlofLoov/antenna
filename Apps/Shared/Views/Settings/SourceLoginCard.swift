@@ -20,7 +20,9 @@
         @State private var failure: String?
 
         var body: some View {
-            Group {
+            // A stack, not a Group: a Group with nothing in it never appears,
+            // so its task would never start the receiver that makes the code.
+            VStack {
                 if let receiver, let link = receiver.link {
                     LoginQRCard.Television(link: link.url, status: status(receiver))
                 }

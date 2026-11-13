@@ -49,7 +49,7 @@ struct SourceDetailsScreen: View {
         }
         .task(id: record?.descriptor) {
             guard editor == nil || editor?.id != id, let descriptor = record?.descriptor else { return }
-            editor = SourceEditor(descriptor, connector: SourceConnector())
+            editor = SourceEditor(descriptor, connector: .app)
         }
     }
 
@@ -114,7 +114,7 @@ struct SourceDetailsScreen: View {
         @ViewBuilder private func loginCard(_ record: SourceRecord) -> some View {
             if let editor, let source = record.descriptor, source.signsInOnAppleTV, source.kind != .channelsDVR, !editor.hasLogin {
                 SourceLoginCard(source: source) {
-                    self.editor = SourceEditor(source, connector: SourceConnector())
+                    self.editor = SourceEditor(source, connector: .app)
                 }
                 .id(source.id)
             }
@@ -133,7 +133,7 @@ struct SourceDetailsScreen: View {
 
     /// A playlist became an Xtream login: the form follows the new type and the source loads again.
     private func switched(_ descriptor: SourceDescriptor) {
-        editor = SourceEditor(descriptor, connector: SourceConnector())
+        editor = SourceEditor(descriptor, connector: .app)
         refresher?.refresh([descriptor.id])
     }
 
