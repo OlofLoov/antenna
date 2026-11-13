@@ -15,6 +15,8 @@ scripts/check-spec-refs.sh                               # every cited requireme
 scripts/build-ffmpeg.sh macos                            # LGPL demux-only FFmpeg.framework; all platforms and the xcframework need Xcode
 swift test --disable-keychain --package-path Packages/FFmpeg   # the published FFmpeg build against the stream fixtures
 swift test --disable-keychain --package-path Packages/AntennaDemux   # the FFmpeg playback path, decoded by VideoToolbox
+scripts/make-review-guide.py Web/review/antenna-review.m3u 2026-01-01 36   # the App Review guide for a start day and length
+actionlint                                               # workflow files, including release.yml; brew install actionlint
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
 xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV -destination 'generic/platform=tvOS Simulator' CODE_SIGNING_ALLOWED=NO
@@ -43,7 +45,12 @@ from `Config/Local.xcconfig.example` for device builds.
   page, the Terms of Use and Privacy Policy the paywall links to, and the
   association file whose Apple team id the publish step fills from the
   `APPLE_TEAM_ID` repository variable. No scripts, images or third-party
-  content. `WebsiteTests` and `SetupPageTests` in AntennaCore check it.
+  content. `review/` holds the App Review playlist of Apple's sample streams,
+  and the publish step writes its guide with `scripts/make-review-guide.py`;
+  these data files are the one place the site names outside addresses, and
+  the app never names them. `WebsiteTests`, `SetupPageTests` and
+  `ReleaseTests` in AntennaCore check it.
+- `docs/release/` the App Review notes and the App Store Connect privacy answers.
 - `project.yml` is the source of truth for the Xcode project. Edit it, not the pbxproj.
 
 ## How we work
@@ -73,6 +80,12 @@ from `Config/Local.xcconfig.example` for device builds.
 - **Diagrams follow the code.** C4 context and container diagrams live in
   `docs/architecture/` as `.drawio.svg`. A change that adds a container,
   external system or dependency updates them in the same PR.
+- **Releases are a merge.** release-please (`.github/workflows/release.yml`)
+  keeps a `chore(build): release X.Y.Z` PR open with the changelog from the
+  commits on main. Merging it tags `vX.Y.Z`, publishes the GitHub release,
+  bumps `MARKETING_VERSION` in `Config/version.yml` and republishes the site.
+  Nothing is uploaded to App Store Connect yet. Only the owner merges a
+  release PR. A `feat` commit bumps the minor version, a `fix` the patch.
 - **Lint before commit.** The git pre-commit hook runs `swift format lint
   --strict` on staged Swift files, and `swiftlint` when it is installed.
 - **Simulator tests run nightly.** PR CI builds the apps, runs AntennaCore
