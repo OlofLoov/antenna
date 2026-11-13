@@ -131,6 +131,7 @@ final class RemindersUITests: XCTestCase {
     // programme-reminders/reminders-follow-a-programme-that-moves
     // programme-reminders/reminders-survive-a-programme-leaving-the-guide
     // programme-reminders/the-app-says-when-reminders-cannot-notify
+    // sources-and-settings/reach-your-reminders, the row with its count opens the page
     func testTheListShowsEachUpcomingReminderSoonestFirst() throws {
         let app = try launch("denied", extra: ["-ui-testing-reminders", "list"])
         app.tabBars.buttons["Settings"].tap()

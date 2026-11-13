@@ -80,8 +80,8 @@ final class LiveModel {
     private(set) var launched = false
     /// Sources whose failure banner the user dismissed.
     private(set) var dismissed: Set<UUID> = []
-    /// The description of the last failed source in source order
-    /// (source-management/load-failure-is-recorded). Never shown on screen.
+    /// The description of the last failed source in source order. Never
+    /// shown on screen; each source's row shows its own status.
     private(set) var error: String?
     /// Multi-view in the Mac window, nil while one channel plays.
     var multiView: MultiViewModel?

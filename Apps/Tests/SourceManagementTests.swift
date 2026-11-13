@@ -227,7 +227,7 @@ import Testing
         #expect(model.channels.map(\.name) == ["ac11-up.test one", "ac11-up.test two"])
     }
 
-    @Test("source-management/load-failure-is-recorded the last load failure is recorded")
+    @Test("the last load failure in source order is kept as the model's error")
     func lastFailureRecorded() async throws {
         let down = "http://ac15-down.test/list.m3u"
         let xtream = "ac15-xtream.test"
