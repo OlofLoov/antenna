@@ -16,8 +16,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "FFmpeg",
-            url: "https://github.com/OlofLoov/antenna/releases/download/ffmpeg-7.1.3-1/FFmpeg.xcframework.zip",
-            checksum: "cf21205f8f931df3e0aaf5d5e916b5052c8d8d191eda0677d63f848926782165"
+            url: "https://github.com/OlofLoov/antenna/releases/download/ffmpeg-7.1.3-2/FFmpeg.xcframework.zip",
+            checksum: "69a837a9b846af8e9c57cc755dd1d153949387601d573e76ce4abf51e3867aee"
         ),
         .testTarget(
             name: "FFmpegTests",
