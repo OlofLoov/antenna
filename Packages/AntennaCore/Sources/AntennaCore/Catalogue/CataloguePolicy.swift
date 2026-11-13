@@ -31,11 +31,14 @@ struct CataloguePolicy: Sendable {
     /// Own groups' resolved rows before locks apply, and their names.
     let ownRows: [UUID: [Int]]
     let ownNames: [UUID: String]
+    /// The locks that apply now, read once: every row and count query asks.
+    let locks: Set<CatalogueGroup>
 
     init(index: CatalogueIndex, rules: GroupRules) {
         self.rules = rules
         let count = index.channels.count
         let locks = rules.effectiveLocks
+        self.locks = locks
         let hiddenGroups = rules.hidden
 
         var ownRows: [UUID: [Int]] = [:]
@@ -128,7 +131,7 @@ struct CataloguePolicy: Sendable {
     }
 
     func isLocked(_ group: CatalogueGroup) -> Bool {
-        rules.effectiveLocks.contains(group)
+        locks.contains(group)
     }
 
     /// `ranked` with blocked entries left out.
