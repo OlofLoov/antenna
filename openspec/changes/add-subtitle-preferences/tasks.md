@@ -25,7 +25,7 @@
 ## 5. DVB picture subtitles
 
 - [x] 5.1 Add the `dvbsub` decoder to `scripts/build-ffmpeg.sh`, build it locally for every platform, and record the build in design.md
-- [ ] 5.2 Publish the build as `ffmpeg-7.1.3-2` and move `Packages/FFmpeg/Package.swift` to its url and checksum, with `FFmpegBuildTests` expecting the DVB subtitle decoder. Open: pushing the release tag was refused here; the owner pushes `ffmpeg-7.1.3-2` on 401e787 and then bumps the package
+- [x] 5.2 Publish the build as `ffmpeg-7.1.3-2` and move `Packages/FFmpeg/Package.swift` to its url and checksum, with `FFmpegBuildTests` expecting the DVB subtitle decoder. Published; the package points at it and `FFmpegBuildTests` expects the DVB subtitle decoder.
 - [x] 5.3 Make a TS fixture with a DVB subtitle stream and record the command that made it
 - [x] 5.4 List DVB subtitle streams as tracks, decode their pages into picture cues with place and time, and test against the fixture citing `playback-engine/picture-subtitles-in-broadcast-streams`
 - [x] 5.5 Draw picture cues in `SubtitleOverlay`, scaled to the picture, with a preview
@@ -33,4 +33,4 @@
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 6.2 `/opsx:verify` passes. Open: it reports task 5.2 incomplete until the FFmpeg release is published and the package points at it
+- [x] 6.2 `/opsx:verify` passes

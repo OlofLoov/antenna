@@ -3,8 +3,8 @@ import FFmpeg
 import Foundation
 import Testing
 
-/// The FFmpeg build the app links: LGPL, demuxers plus the MPEG-2 and MP2
-/// decoders only, and every fixture container opening through a custom read
+/// The FFmpeg build the app links: LGPL, demuxers plus the MPEG-2, MP2 and
+/// DVB subtitle decoders only, and every fixture container opening through a custom read
 /// callback, the way the demuxing engine feeds it. Tooling for the
 /// playback-engine change, so these tests cite no requirement.
 @Suite struct FFmpegBuildTests {
@@ -16,6 +16,7 @@ import Testing
     @Test func decodesOnlyWhatAppleCannot() {
         #expect(avcodec_find_decoder(AV_CODEC_ID_MPEG2VIDEO) != nil)
         #expect(avcodec_find_decoder(AV_CODEC_ID_MP2) != nil)
+        #expect(avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE) != nil)
         #expect(avcodec_find_decoder(AV_CODEC_ID_H264) == nil)
         #expect(avcodec_find_decoder(AV_CODEC_ID_AAC) == nil)
     }
