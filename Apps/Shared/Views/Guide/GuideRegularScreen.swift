@@ -170,7 +170,6 @@
                     }
                 }
             }
-            .preferredColorScheme(.dark)
         }
     }
 

@@ -58,7 +58,6 @@
                     ProfileEditSheet(profile: subject.profile, profiles: profiles)
                 }
             }
-            .preferredColorScheme(.dark)
         }
     }
 
@@ -165,7 +164,6 @@
                     Text("Its favorites, hidden groups and history go too. Sources stay.")
                 }
             }
-            .preferredColorScheme(.dark)
         }
 
         private var tile: ProfileTile {

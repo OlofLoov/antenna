@@ -103,7 +103,6 @@ struct OnboardingScreen: View {
                     NavigationStack {
                         sheetContent
                     }
-                    .preferredColorScheme(.dark)
                     .interactiveDismissDisabled(model.holdsApp)
                 }
                 .onChange(of: model.holdsApp) { _, holds in

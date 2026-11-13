@@ -49,7 +49,6 @@
                     }
                 }
             }
-            .preferredColorScheme(.dark)
             .foregroundStyle(Palette.text)
             .interactiveDismissDisabled(sending)
             .accessibilityIdentifier("sendLogins")
@@ -187,7 +186,6 @@
                     }
                 }
             }
-            .preferredColorScheme(.dark)
             .interactiveDismissDisabled(checking)
             .onAppear {
                 if fields.url.isEmpty {
