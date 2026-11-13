@@ -66,6 +66,19 @@ Under `openspec/specs/design-system/boards/`:
 - Follows without a new board: every other screen. Its PR applies the rules to the screen's existing board and updates that board's type comments to text style names.
 - Not drawn: the add-source error line (caption 1 in the live-dot color under the footer on Apple TV, footnote on iPhone), the connecting state (Connect shows a progress view and the rows dim), iPad and Mac add-source (the iPhone sheet centered at the system's form size), Apple TV source details (the `TV-Refresh-Settings` rows with the field rows from `TV-Refresh-AddSource`), the Preferences choice list (a system list with a checkmark), and the iPhone Live empty state (the `TV-Refresh-Shell-Empty` layout at iPhone text styles). Each is drawn before its PR opens.
 
+Journey steps added in PR 1, with the board each compares with:
+
+| Test | Step | Board |
+|------|------|-------|
+| `TVJourneys.testFirstRun` | `kinds`, `add-source-xtream` | `TV-Refresh-AddSource-Kinds`, `TV-Refresh-AddSource` |
+| `TVJourneys.testSettingsAddSource` | `settings-add-source` (Settings opens on the form, with no kinds page) | `TV-Refresh-AddSource` |
+| `TVJourneys.testSourceDetails` | `settings`, `source-details` | `TV-Refresh-Settings` |
+| `TVJourneys.testMoviesFocus` | `movies-row-focus` | `TV-Movies` |
+| `TVJourneys.testShellStates` (already there) | `empty` | `TV-Refresh-Shell-Empty` |
+| `AppJourneys.testSettingsAddSource` | `settings-add-source`, `settings-add-source-xtream`, `source-details` | `iPhone-Refresh-AddSource` |
+| `AppJourneys.testLiveEmpty` | `live-empty` | `TV-Refresh-Shell-Empty` at iPhone text styles |
+| `AppJourneys.testMoviesDiscover` | `movies` | `iPhone-Movies` |
+
 Design-system requirements that apply: all ten added here, the three modified here, "Text meets contrast minimums", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Live video keeps playing under overlays" and "Visual changes update the boards in the same change".
 
 ## Goals / Non-Goals
