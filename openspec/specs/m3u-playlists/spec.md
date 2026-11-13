@@ -77,7 +77,7 @@ The system SHALL use the text after the attribute block's closing comma, with sp
 #### Scenario: No comma at all
 - **GIVEN** an `#EXTINF` line without a comma, or one whose quotes never close
 - **WHEN** the playlist is parsed
-- **THEN** the channel has an empty name, no attributes and a positional id, because the attribute block ends at the first unquoted comma
+- **THEN** the channel has an empty name and no attributes, because the attribute block ends at the first unquoted comma
 
 ### Requirement: Comma inside a quoted attribute
 The system SHALL treat a comma inside a quoted attribute value as part of the value, not as the start of the title.
@@ -155,22 +155,37 @@ The system SHALL mark a channel as having catch-up when it has a `catchup` attri
 - **THEN** the channel has catch-up and no day count, because `catchup-days` is present and wins over `tvg-rec`
 
 ### Requirement: Stable and unique ids
-The system SHALL derive a channel's id from its `tvg-id` and stream link when it has a guide id, and otherwise from its stream link and its position among the emitted channels, counting from 1. The same playlist text SHALL give the same ids on every parse. Ids SHALL be unique within one parse except for entries that share both `tvg-id` and stream link.
+The system SHALL derive a channel's id from its `tvg-id`, its name and its group, and never from its stream link. Entries that share all three SHALL be told apart by their order among those entries, counting from the first. The same playlist text SHALL give the same ids on every parse, and ids SHALL be unique within one parse.
 
 #### Scenario: Same text parsed twice
 - **GIVEN** the same playlist text parsed twice
 - **WHEN** the ids are compared
-- **THEN** they are identical between runs and unique within one run, including two entries with the same `tvg-id` but different URLs, and an entry with `tvg-id="same.uk"` and link `http://s/one.ts` has the id `same.uk#http://s/one.ts`
+- **THEN** they are identical between runs and unique within one run, including two entries with the same `tvg-id` and different names
 
-#### Scenario: Identical tvg-id and URL
-- **GIVEN** two entries with the same `tvg-id` and the same URL
+#### Scenario: A login in the stream link
+- **GIVEN** an entry whose link is `http://panel:8080/live/alice/s3cr3t/42.ts`
 - **WHEN** the playlist is parsed
-- **THEN** both channels have the same id and neither is dropped
+- **THEN** the channel's id contains neither the link, the host, `alice` nor `s3cr3t`
+
+#### Scenario: New password, new server or reordered entries
+- **GIVEN** a playlist parsed once, then again after the provider changed the password in every link, moved to another server, or reordered the entries
+- **WHEN** the ids are compared
+- **THEN** every channel keeps its id
 
 #### Scenario: Entries without tvg-id are positional
-- **GIVEN** a playlist whose entries are reordered or have an entry inserted, with or without a `tvg-id`
+- **GIVEN** an entry with no `tvg-id`, named "Kids TV" in group "Family"
+- **WHEN** an entry is inserted before it and the playlist is parsed again
+- **THEN** the channel keeps its id, because ids no longer count positions and its name and group did not change
+
+#### Scenario: Identical tvg-id and URL
+- **GIVEN** two entries with the same `tvg-id`, name and group, with the same link or different ones, such as a main and a backup stream
+- **WHEN** the playlist is parsed
+- **THEN** both channels are produced with different ids, the first keeps its id when the second is removed, and neither is dropped
+
+#### Scenario: A renamed channel
+- **GIVEN** a channel whose name or group the provider changes
 - **WHEN** the playlist is parsed again
-- **THEN** every later entry without `tvg-id` gets a new id, because its position counts every emitted channel, and those ids are stable only for byte-identical input
+- **THEN** the channel gets a new id
 
 ### Requirement: Unknown directives are ignored
 The system SHALL skip lines starting with `#` that it does not understand, and blank lines, without losing the pending entry. Directive names SHALL be matched with their case as written, so `#extinf:` is an unknown directive. Spaces and tabs around every line SHALL be trimmed.
@@ -432,3 +447,26 @@ The system SHALL read an entry's `catchup` style, `catchup-source` template and 
 - **GIVEN** an entry with `catchup-correction="abc"`
 - **WHEN** it is parsed
 - **THEN** the channel is kept and has no correction
+
+### Requirement: Earlier ids map to the new ones
+The system SHALL report, for each channel in a parse, the id an earlier version of Antenna gave the same entry, so references saved with that id can move to the new one. The earlier id SHALL be used for nothing else and SHALL never be logged.
+
+#### Scenario: A channel with a guide id
+- **GIVEN** an entry with `tvg-id="same.uk"` and link `http://s/one.ts`
+- **WHEN** the playlist is parsed
+- **THEN** the id earlier versions gave it, `same.uk#http://s/one.ts`, maps to the channel's new id
+
+#### Scenario: A channel without a guide id
+- **GIVEN** the third entry of a playlist, with no `tvg-id` and link `http://s/three.ts`
+- **WHEN** the playlist is parsed
+- **THEN** the earlier id `m3u#http://s/three.ts#3` maps to the channel's new id
+
+#### Scenario: Two entries that shared an earlier id
+- **GIVEN** two entries with the same `tvg-id` and the same link, which earlier versions gave one id
+- **WHEN** the playlist is parsed
+- **THEN** that earlier id maps to the first of the two
+
+#### Scenario: An imported file with logins moved out
+- **GIVEN** an imported file whose logins were moved to the Keychain
+- **WHEN** it loads
+- **THEN** the earlier ids are the ones built from the synced text with its placeholders, as earlier versions built them, and the new ids are the same as before its logins were put back

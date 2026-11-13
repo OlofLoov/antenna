@@ -6,7 +6,7 @@ The frame every other Apple TV screen sits in. Opening the app goes straight to 
 ## Requirements
 
 ### Requirement: The tabs, in order
-The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
+The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the profile button when there are two or more profiles, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
 
 #### Scenario: Sources with movies
 - **GIVEN** the user has at least one Xtream source
@@ -18,6 +18,12 @@ The system SHALL show a tab bar holding, from left to right, the Antenna mark, L
 - **WHEN** the tab bar shows
 - **THEN** neither Movies nor Series appears
 
+#### Scenario: Two or more profiles
+- **GIVEN** the profiles Dad and Kids, with Kids current
+- **WHEN** the tab bar shows
+- **THEN** a profile button with Kids's color and initial sits between Search and the Settings button
+- **AND** with one profile there is no profile button
+
 #### Scenario: Bar over the Guide
 - **GIVEN** the Guide is open
 - **WHEN** the tab bar shows over it
@@ -26,15 +32,20 @@ The system SHALL show a tab bar holding, from left to right, the Antenna mark, L
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
 - **WHEN** the tab bar shows
-- **THEN** it is read as a group of tabs, and the clock and the mark as plain text
+- **THEN** it is read as a group of tabs, the profile button as "Profile, Kids", and the clock and the mark as plain text
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the channel last watched on this Apple TV full screen at launch once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept on this Apple TV only, never synced. A channel whose internal id still contains its stream link SHALL not be remembered as the last channel.
+The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one, once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
 
 #### Scenario: Last channel available
-- **GIVEN** the user watched a channel on this Apple TV before
+- **GIVEN** the current profile watched a channel on this Apple TV before
 - **WHEN** they open Antenna and its source has loaded
 - **THEN** that channel plays full screen
+
+#### Scenario: Another profile's last channel
+- **GIVEN** Dad last watched News 24 on this Apple TV and Kids has watched nothing here
+- **WHEN** Kids is chosen at launch
+- **THEN** the first channel of the first source to load plays, not News 24
 
 #### Scenario: Last channel gone or late
 - **GIVEN** the last channel no longer exists, or its source has not loaded within 10 seconds
@@ -59,17 +70,22 @@ The system SHALL play the channel last watched on this Apple TV full screen at l
 #### Scenario: What is remembered
 - **GIVEN** a channel the user tunes
 - **WHEN** its stream loads
-- **THEN** it becomes the last channel; a stream that fails to load leaves the last channel as it was
+- **THEN** it becomes the current profile's last channel; a stream that fails to load leaves the last channel as it was
+
+#### Scenario: Last watched an M3U channel
+- **GIVEN** the last channel watched on this Apple TV came from an M3U playlist
+- **WHEN** the user opens Antenna and the playlist has loaded
+- **THEN** that channel plays full screen, and the stored last channel holds no stream link
+
+#### Scenario: Last watched an M3U channel with a stream link in its id
+- **GIVEN** a last channel stored by an earlier version whose id contains a stream link
+- **WHEN** the user opens Antenna
+- **THEN** that channel is not remembered, the first channel of the first source to load plays instead, and no error is shown
 
 #### Scenario: Unreadable last channel
 - **GIVEN** the stored last channel cannot be read
 - **WHEN** the user opens Antenna
 - **THEN** it counts as nothing remembered
-
-#### Scenario: Last watched an M3U channel with a stream link in its id
-- **GIVEN** the last channel watched on this Apple TV came from an M3U playlist whose ids still contain the stream link
-- **WHEN** the user opens Antenna
-- **THEN** that channel is not remembered, the first channel of the first source to load plays instead, and no error is shown
 
 ### Requirement: Menu shows the tab bar over the picture
 The system SHALL dim the picture and show the tab bar with Live highlighted when the user presses Menu over a full-screen channel with nothing else on screen, keeping the video playing, or failed.
@@ -293,3 +309,11 @@ The system SHALL hide the Apple TV tab bar and clock while a movie or series pag
 - **GIVEN** the Movies tab on Apple TV
 - **WHEN** the user opens a movie's page and swipes up from its topmost button
 - **THEN** the tab bar and clock stay hidden and the page stays open
+
+### Requirement: The shell hosts multi-view
+The system SHALL show multi-view inside the Apple TV shell, and when multi-view ends it SHALL keep the surviving tile's player as the shell's playing channel rather than starting a new one.
+
+#### Scenario: Leave multi-view inside the shell
+- **GIVEN** multi-view open in the Apple TV shell with tile 2 highlighted
+- **WHEN** the user presses Menu
+- **THEN** tile 2's channel plays full screen without a reload and the tab bar stays hidden

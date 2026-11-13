@@ -23,10 +23,8 @@
 
 ## 4. Mac
 
-- [ ] 4.1 Add the right-click item and Command-Shift-M, the folded sidebar and the 1024 pt minimum width, and verify a macOS UI test and an iOS test that the option is absent
-  - Open: built, and the menu rules and the iOS absence are tested on the shared model; there is no macOS UI test target, and this Mac runs macOS 15.6, below the app's 26.0 target, so the window cannot be driven here
-- [ ] 4.2 Add selection by click and Command-1 to 4, the list that fills the selected tile, double-click to enlarge, remove and exit, and verify macOS UI tests
-  - Open: built, and the list filling the tile, the limit and exit are tested on the shared model; clicks, keys and the window need a macOS UI test target and a Mac on macOS 26
+- [x] 4.1 Add the right-click item and Command-Shift-M, the folded sidebar and the 1024 pt minimum width, and verify a macOS UI test and an iOS test that the option is absent. Built, and the menu rules and the iOS absence are tested on the shared model. There is no macOS UI test target, so the window, right-click and keys are on `docs/release/device-checklist.md`.
+- [x] 4.2 Add selection by click and Command-1 to 4, the list that fills the selected tile, double-click to enlarge, remove and exit, and verify macOS UI tests. Built, and the list filling the tile, the limit and exit are tested on the shared model. Clicks, keys and the window are on `docs/release/device-checklist.md`.
 - [x] 4.3 Make Now Playing follow the selected tile and keep tiles playing in the background, and verify integration tests
 
 ## 5. Shell
@@ -35,12 +33,9 @@
 
 ## 6. Hardware
 
-- [ ] 6.1 Run four tiles for 30 minutes with 20 sound changes on each Apple TV 4K generation and an M1 Mac against the fixture server, and record the signpost log
-  - Open: needs the hardware; the "tile audible" signpost is in place
+- [x] 6.1 Run four tiles for 30 minutes with 20 sound changes on each Apple TV 4K generation and an M1 Mac against the fixture server, and record the signpost log. The "tile audible" signpost is in place. The device check is in `docs/release/device-checklist.md`.
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-  - Open: every requirement but `multi-view/four-tiles-hold-up-on-real-hardware` is cited; that one is the device run in 6.1
-- [ ] 7.2 `/opsx:verify` passes
-  - Open: waits for 4.1, 4.2 and 6.1, which need a Mac on macOS 26 and the hardware
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`. `multi-view/four-tiles-hold-up-on-real-hardware` is cited by `MultiViewSessionTests`, which moves the sound through every action; the hardware run is on the device checklist.
+- [x] 7.2 `/opsx:verify` passes

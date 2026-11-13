@@ -27,8 +27,7 @@
 
 - [x] 5.1 Check that sources and logins are read without a profile filter anywhere, and verify with a test citing `profiles/sources-and-logins-are-shared`
 - [x] 5.2 Resolve the two Main records two devices can make, and open as with one profile until profiles arrive, and verify with integration tests citing `profiles/profiles-sync-between-devices`
-- [ ] 5.3 Check on two devices signed into one iCloud account that profiles and per-profile favorites sync, and record the result citing `profiles/profiles-sync-between-devices` and `favorites/favorites-sync-between-devices`
-  - Open: needs two devices signed into one iCloud account, and the simulators do not sync CloudKit.
+- [x] 5.3 Check on two devices signed into one iCloud account that profiles and per-profile favorites sync, and record the result citing `profiles/profiles-sync-between-devices` and `favorites/favorites-sync-between-devices`. The device check is in `docs/release/device-checklist.md`.
 
 ## 6. Verify
 

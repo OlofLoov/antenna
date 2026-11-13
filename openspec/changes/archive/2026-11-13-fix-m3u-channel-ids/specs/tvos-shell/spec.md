@@ -1,12 +1,17 @@
 ## MODIFIED Requirements
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the channel last watched on this Apple TV full screen at launch once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept on this Apple TV only, never synced. A channel whose internal id still contains its stream link SHALL not be remembered as the last channel.
+The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one, once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
 
 #### Scenario: Last channel available
-- **GIVEN** the user watched a channel on this Apple TV before
+- **GIVEN** the current profile watched a channel on this Apple TV before
 - **WHEN** they open Antenna and its source has loaded
 - **THEN** that channel plays full screen
+
+#### Scenario: Another profile's last channel
+- **GIVEN** Dad last watched News 24 on this Apple TV and Kids has watched nothing here
+- **WHEN** Kids is chosen at launch
+- **THEN** the first channel of the first source to load plays, not News 24
 
 #### Scenario: Last channel gone or late
 - **GIVEN** the last channel no longer exists, or its source has not loaded within 10 seconds
@@ -31,12 +36,7 @@ The system SHALL play the channel last watched on this Apple TV full screen at l
 #### Scenario: What is remembered
 - **GIVEN** a channel the user tunes
 - **WHEN** its stream loads
-- **THEN** it becomes the last channel; a stream that fails to load leaves the last channel as it was
-
-#### Scenario: Unreadable last channel
-- **GIVEN** the stored last channel cannot be read
-- **WHEN** the user opens Antenna
-- **THEN** it counts as nothing remembered
+- **THEN** it becomes the current profile's last channel; a stream that fails to load leaves the last channel as it was
 
 #### Scenario: Last watched an M3U channel
 - **GIVEN** the last channel watched on this Apple TV came from an M3U playlist
@@ -47,3 +47,8 @@ The system SHALL play the channel last watched on this Apple TV full screen at l
 - **GIVEN** a last channel stored by an earlier version whose id contains a stream link
 - **WHEN** the user opens Antenna
 - **THEN** that channel is not remembered, the first channel of the first source to load plays instead, and no error is shown
+
+#### Scenario: Unreadable last channel
+- **GIVEN** the stored last channel cannot be read
+- **WHEN** the user opens Antenna
+- **THEN** it counts as nothing remembered

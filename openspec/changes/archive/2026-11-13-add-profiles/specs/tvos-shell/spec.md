@@ -1,17 +1,17 @@
 ## MODIFIED Requirements
 
 ### Requirement: The tabs, in order
-The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the profile button when there are two or more profiles, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear only when the user has an Xtream source, whether or not its provider offers movies or series.
+The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the profile button when there are two or more profiles, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
 
 #### Scenario: Sources with movies
-- **GIVEN** the user has sources and at least one is an Xtream source
+- **GIVEN** the user has at least one Xtream source
 - **WHEN** the tab bar shows
 - **THEN** it holds the mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, in that order, with exactly one tab marked current
 
 #### Scenario: No Xtream source
-- **GIVEN** every source is an M3U playlist or a Stalker portal
+- **GIVEN** the user has no Xtream source and no playlist whose last load had movies or episodes
 - **WHEN** the tab bar shows
-- **THEN** it holds the mark, Live, Guide, Search, the Settings button and the clock, with no Movies or Series
+- **THEN** neither Movies nor Series appears
 
 #### Scenario: Two or more profiles
 - **GIVEN** the profiles Dad and Kids, with Kids current

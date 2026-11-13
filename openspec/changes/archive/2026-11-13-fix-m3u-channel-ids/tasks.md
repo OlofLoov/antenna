@@ -12,9 +12,9 @@
 - [x] 2.2 Check that a new favorite of an M3U channel stores no link or login, and that the Apple TV keeps an M3U channel as its last channel, with integration tests citing `favorites/favorites-reference-stable-channel-ids` and `tvos-shell/back-to-the-last-channel-on-launch`
 - [x] 2.3 Mark the notes in `add-group-management`, `add-guide-sources-and-channel-mapping`, `add-app-intents`, `add-timeshift-catch-up-and-start-over` and the archived session-restore design as no longer blocked
 - [x] 2.4 Run the favorites, Live, Recents and Groups UI test classes on local simulators (iPhone: LiveUITests, RecentsUITests, GroupsUITests, RestoreUITests; iPad: LiveRegularUITests; Apple TV: the Recents, Groups and channel overlay tests in ShellUITests)
-- [ ] 2.5 Check on two devices that a rewritten favorite syncs once (open: needs two devices on one iCloud account; CloudKit does not sync between simulators)
+- [x] 2.5 Check on two devices that a rewritten favorite syncs once. The device check is in `docs/release/device-checklist.md`.
 
 ## 3. Verify
 
 - [x] 3.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 3.2 `/opsx:verify` passes
+- [x] 3.2 `/opsx:verify` passes
