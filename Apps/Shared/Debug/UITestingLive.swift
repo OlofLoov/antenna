@@ -130,8 +130,11 @@
             let environment = ProcessInfo.processInfo.environment
             let log = environment[logVariable].map { URL(fileURLWithPath: $0) }
             let script = Script(scenario: scenario)
+            let scripted = Engine(log: log)
+            // Multi-view starts only from a routed engine; its tiles play on scripted engines too.
+            let multiView = environment[multiViewVariable] != nil
             var dependencies = LiveModel.Dependencies(
-                engine: Engine(log: log),
+                engine: multiView ? RoutedEngine(system: scripted, demuxer: scripted) : scripted,
                 load: { try await script.load($0) },
                 hasLogin: { script.hasLogin($0) },
                 guide: nil,
@@ -143,8 +146,18 @@
             dependencies.recents = UITestingRecents.store { id in cabin.contains { $0.id == "fixture/\(id)" } ? cabinID : homeID }
             dependencies.sleep = UITestingRecents.sleep
             dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
+            if multiView {
+                dependencies.multiView.tiles.make = {
+                    let tile = Engine(log: nil)
+                    return RoutedEngine(system: tile, demuxer: tile)
+                }
+            }
             return dependencies
         }
+
+        /// `UITESTING_MULTIVIEW=1` plays through a routed engine, so the
+        /// iPad and Mac grid can start (multi-view/start-multi-view-on-an-ipad).
+        static let multiViewVariable = "UITESTING_MULTIVIEW"
 
         /// The app's refresher loading the scenario's sources, so Settings
         /// shows their status (sources-and-settings capability). Nil outside these tests.

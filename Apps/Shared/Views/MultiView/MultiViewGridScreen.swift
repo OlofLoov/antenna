@@ -1,22 +1,30 @@
 import AntennaCore
 import SwiftUI
 
-#if os(macOS)
+#if os(macOS) || os(iOS)
 
-    /// Multi-view in the Mac window's detail column (multi-view capability;
-    /// boards `iPad-MultiView`, `iPad-MultiView-Failed`): the toolbar with
-    /// the count and Exit, then the tiles. A click selects a tile and moves
-    /// the sound, a double-click enlarges it, Command-1 to 4 select,
+    /// Multi-view in the detail column of the Mac window and the iPad's
+    /// side-by-side layout (multi-view capability; boards `iPad-MultiView`,
+    /// `iPad-MultiView-Failed`): the toolbar with the count and Exit, then
+    /// the tiles. A click or tap selects a tile and moves the sound, a
+    /// double-click or double-tap enlarges it, Command-1 to 4 select,
     /// Command-Delete removes the selected tile, and Escape only undoes
     /// enlarge.
-    struct MultiViewMacScreen: View {
+    struct MultiViewGridScreen: View {
         let model: MultiViewModel
         @State private var hovered: Int?
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-        /// The narrowest tile area that keeps the window at 1024 pt with the
-        /// channel list beside it.
-        static let minimumWidth: CGFloat = 1024 - 352 - 1
+        /// The narrowest tile area that keeps the Mac window at 1024 pt with
+        /// the channel list beside it. An iPad window cannot be widened by
+        /// the app, so there the tiles take what the column has.
+        static var minimumWidth: CGFloat {
+            #if os(macOS)
+                1024 - 352 - 1
+            #else
+                0
+            #endif
+        }
 
         var body: some View {
             VStack(spacing: 0) {
@@ -168,17 +176,22 @@ import SwiftUI
         }
     }
 
-    /// The channel row's right-click item (multi-view/start-multi-view-on-a-mac,
+    /// The channel row's right-click or long-press item
+    /// (multi-view/start-multi-view-on-a-mac, multi-view/start-multi-view-on-an-ipad,
     /// multi-view/add-more-tiles-up-to-the-limit): "Add to Multi-view", or a
     /// grayed "Multi-view is full" at the limit. Absent where Multi-view is not offered.
     struct LiveMultiViewMenuItem: View {
         let channel: Channel
         @Environment(LiveModel.self) private var live
+        #if os(iOS)
+            @Environment(\.horizontalSizeClass) private var sizeClass
+        #endif
 
         var body: some View {
-            switch live.multiViewMenu(for: channel) {
+            switch live.multiViewMenu(for: channel, offered: offered) {
             case .add:
-                Button(MultiViewText.addToMultiViewMenu) { Task { await live.addToMultiView(channel) } }
+                Button(MultiViewText.addToMultiViewMenu) { Task { await live.addToMultiView(channel, offered: offered) } }
+                    .accessibilityIdentifier("browse.menu.multiView")
             case .full:
                 Button(MultiViewText.full) {}
                     .disabled(true)
@@ -186,45 +199,65 @@ import SwiftUI
                 EmptyView()
             }
         }
+
+        private var offered: Bool {
+            #if os(iOS)
+                LiveModel.offersMultiView(regularWidth: sizeClass == .regular)
+            #else
+                LiveModel.offersMultiView
+            #endif
+        }
     }
 #endif
 
-/// The detail column in multi-view: the Mac grid, nothing on iPhone and
-/// iPad, which never start it.
+/// The detail column in multi-view: the grid on Mac and iPad, nothing on
+/// Apple TV, which has its own screen.
 struct MultiViewWindow: View {
     let model: MultiViewModel
 
     var body: some View {
-        #if os(macOS)
-            MultiViewMacScreen(model: model)
+        #if os(macOS) || os(iOS)
+            MultiViewGridScreen(model: model)
         #endif
     }
 }
 
 /// Command-Shift-M adds the channel under the list's keyboard ring
-/// (multi-view/start-multi-view-on-a-mac). Nothing on iPhone and iPad.
+/// (multi-view/start-multi-view-on-a-mac, multi-view/start-multi-view-on-an-ipad).
+/// Nothing on iPhone.
 struct LiveMultiViewKey: View {
     let cursor: RowKey?
     @Environment(LiveModel.self) private var live
+    #if os(iOS)
+        @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
 
     var body: some View {
-        #if os(macOS)
+        #if os(macOS) || os(iOS)
             Button(MultiViewText.addToMultiViewMenu) {
                 guard let cursor, let channel = live.catalogue.channel(for: cursor) else { return }
-                Task { await live.addToMultiView(channel) }
+                Task { await live.addToMultiView(channel, offered: offered) }
             }
             .keyboardShortcut("m", modifiers: [.command, .shift])
         #endif
     }
+
+    private var offered: Bool {
+        #if os(iOS)
+            LiveModel.offersMultiView(regularWidth: sizeClass == .regular)
+        #else
+            LiveModel.offersMultiView
+        #endif
+    }
 }
 
-/// The channel row's menu item for multi-view on a Mac, after the favorite
-/// item; nothing on iPhone and iPad.
+/// The channel row's menu item for multi-view on a Mac and an iPad, after
+/// the favorite item; nothing on iPhone.
 struct LiveMultiViewMenuExtra: View {
     let channel: Channel
 
     var body: some View {
-        #if os(macOS)
+        #if os(macOS) || os(iOS)
             LiveMultiViewMenuItem(channel: channel)
         #endif
     }

@@ -111,7 +111,18 @@
                     }
             } else {
                 columns
+                    .onDisappear(perform: leaveMultiView)
             }
+        }
+
+        /// An iPad window turning compact swaps these columns for the tab
+        /// bar, which has no grid, so multi-view ends and keeps the selected
+        /// tile (multi-view/start-multi-view-on-an-ipad).
+        private func leaveMultiView() {
+            #if os(iOS)
+                guard let multiView = live.multiView else { return }
+                Task { await multiView.leave() }
+            #endif
         }
 
         private var columns: some View {

@@ -15,7 +15,7 @@
             var player: PlayerModel?
 
             var body: some View {
-                if let engine = engine as? Engine {
+                if let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(engine.summary)
                             .font(.system(size: 8))
