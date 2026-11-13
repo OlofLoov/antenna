@@ -2,7 +2,7 @@ import Foundation
 
 /// Parses extended M3U playlists as emitted by IPTV providers.
 ///
-/// Handles `#EXTM3U` header attributes (`url-tvg`, `x-tvg-url`), `#EXTINF`
+/// Handles `#EXTM3U` header attributes (`url-tvg`, `x-tvg-url`, `tvg-url`), `#EXTINF`
 /// attributes with quoted values, `#EXTGRP`, and the common catch-up tags.
 /// Unknown directives are ignored. Parsing is line-based and allocation-light,
 /// so playlists with tens of thousands of entries stay fast.
@@ -43,7 +43,7 @@ public struct M3UParser: Sendable {
 
             if line.hasPrefix("#EXTM3U") {
                 let attrs = Self.attributes(in: line.dropFirst("#EXTM3U".count))
-                for key in ["url-tvg", "x-tvg-url"] {
+                for key in ["url-tvg", "x-tvg-url", "tvg-url"] {
                     if let value = attrs[key] {
                         epgURLs += value.split(separator: ",").compactMap { URL(string: String($0).trimmingCharacters(in: .whitespaces)) }
                     }

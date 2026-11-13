@@ -20,6 +20,18 @@ import Testing
         #expect(playlist.epgURLs == expected)
     }
 
+    @Test("m3u-playlists/header-epg-urls the tvg-url spelling is read")
+    func headerTVGURL() throws {
+        let playlist = parse(#"#EXTM3U tvg-url="http://t/epg.xml.gz""#)
+        #expect(playlist.epgURLs == [try #require(URL(string: "http://t/epg.xml.gz"))])
+    }
+
+    @Test("m3u-playlists/header-epg-urls tvg-url comes after url-tvg and x-tvg-url")
+    func headerAllThreeSpellings() {
+        let playlist = parse(#"#EXTM3U tvg-url="http://t" x-tvg-url="http://x" url-tvg="http://u""#)
+        #expect(playlist.epgURLs.map(\.absoluteString) == ["http://u", "http://x", "http://t"])
+    }
+
     @Test("m3u-playlists/standard-attributes-map-to-the-channel standard attributes map to the channel")
     func standardAttributes() throws {
         let playlist = parse(
