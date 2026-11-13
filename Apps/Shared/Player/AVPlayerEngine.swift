@@ -62,7 +62,7 @@ final class AVPlayerEngine: PlaybackEngine {
     var playerObservation: NSKeyValueObservation?
     var timeObserver: Any?
     var pictureInPicture: AVPictureInPictureController?
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(macOS)
         /// Told when the Picture in Picture window opens, closes or restores
         /// the app. The controller holds it weakly.
         weak var pictureInPictureDelegate: (any AVPictureInPictureControllerDelegate)? {
@@ -138,11 +138,11 @@ final class AVPlayerEngine: PlaybackEngine {
         (engine as? AVPlayerEngine) ?? ((engine as? RoutedEngine)?.system as? AVPlayerEngine)
     }
 
-    /// Draws this engine's picture into `layer`, and on iPhone, iPad and
-    /// Apple TV lets it continue in Picture in Picture.
+    /// Draws this engine's picture into `layer`, and lets it continue in
+    /// Picture in Picture.
     func attach(to layer: AVPlayerLayer) {
         if layer.player !== player { layer.player = player }
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(macOS)
             guard AVPictureInPictureController.isPictureInPictureSupported(), pictureInPicture?.playerLayer !== layer else { return }
             let controller = AVPictureInPictureController(playerLayer: layer)
             #if os(iOS)
@@ -164,7 +164,7 @@ final class AVPlayerEngine: PlaybackEngine {
     var state: PlaybackState { stateCast.value }
 
     var capabilities: EngineCapabilities {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(macOS)
             EngineCapabilities(supportsPictureInPicture: AVPictureInPictureController.isPictureInPictureSupported())
         #else
             EngineCapabilities(supportsPictureInPicture: false)

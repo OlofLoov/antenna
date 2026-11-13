@@ -246,11 +246,9 @@
                 }
                 PlayerVolumeControls.Slider(level: live.player.muted ? 0 : live.player.volume) { live.player.setVolume($0) }
             #endif
-            #if os(iOS)
-                Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
-                    live.engine.startPictureInPicture()
-                }
-            #endif
+            Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
+                live.engine.startPictureInPicture()
+            }
         }
     }
 #endif

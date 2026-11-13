@@ -5,7 +5,7 @@ extension PlaybackEngine {
     /// True while the picture plays, or can go on playing, in the Picture in
     /// Picture window, on Apple's player or the demuxing engine.
     @MainActor var continuesInPictureInPicture: Bool {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(macOS)
             if DemuxEngine.resolve(self)?.continuesInPictureInPicture == true { return true }
         #endif
         return AVPlayerEngine.resolve(self)?.continuesInPictureInPicture ?? false
@@ -14,9 +14,9 @@ extension PlaybackEngine {
 
 extension PlaybackEngine {
     /// Moves the picture into the Picture in Picture window on whichever
-    /// engine is playing, when the system allows it now. Does nothing on a Mac.
+    /// engine is playing, when the system allows it now. Does nothing on Apple TV.
     @MainActor func startPictureInPicture() {
-        #if os(iOS)
+        #if os(iOS) || os(macOS)
             if let demuxer = DemuxEngine.resolve(self), demuxer.continuesInPictureInPicture {
                 demuxer.startPictureInPicture()
                 return

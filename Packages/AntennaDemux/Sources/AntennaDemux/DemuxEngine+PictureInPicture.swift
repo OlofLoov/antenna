@@ -3,9 +3,7 @@ import AntennaCore
 import CoreMedia
 import Foundation
 
-#if os(iOS) || os(tvOS)
-    import AVKit
-#endif
+import AVKit
 
 extension DemuxEngine {
     /// The span the Picture in Picture window shows: unbounded for live TV,
@@ -23,10 +21,12 @@ extension DemuxEngine {
     }
 }
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(macOS)
     extension DemuxEngine {
         /// Lets the picture continue in the Picture in Picture window when
-        /// the user leaves the app (playback-engine/leaving-the-app-phone-calls-and-picture-in-picture).
+        /// the user leaves the app (playback-engine/leaving-the-app-phone-calls-and-picture-in-picture),
+        /// or on a Mac when the user asks for it
+        /// (player-controls-and-playback-errors/picture-in-picture-on-a-mac).
         /// The window's play and pause act on this engine; it shows 15-second
         /// skips on films and none on live TV.
         public func enablePictureInPicture() {

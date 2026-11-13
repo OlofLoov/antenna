@@ -16,9 +16,9 @@
 
 ## 3. Picture in Picture and the clipboard on Mac
 
-- [ ] 3.1 Create the Picture in Picture controller on macOS for both engines and watch it with `PictureInPictureWatch`
-- [ ] 3.2 Add the Picture in Picture button to the Mac controls and mark it on `iPad-Player`, citing `player-controls-and-playback-errors/picture-in-picture-on-a-mac`
-- [ ] 3.3 Add `Clipboard.system` on macOS with pattern detection, citing `first-run-onboarding/fill-the-form-from-a-copied-link`
+- [x] 3.1 Create the Picture in Picture controller on macOS for both engines and watch it with `PictureInPictureWatch`
+- [x] 3.2 Add the Picture in Picture button to the Mac controls and mark it on `iPad-Player`, citing `player-controls-and-playback-errors/picture-in-picture-on-a-mac`
+- [x] 3.3 Add `Clipboard.system` on macOS with pattern detection, citing `first-run-onboarding/fill-the-form-from-a-copied-link`
 
 ## 4. Apple TV: Search bell, Guide sources filter, Trailer
 

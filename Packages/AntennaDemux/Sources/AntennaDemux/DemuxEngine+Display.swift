@@ -40,7 +40,7 @@ extension DemuxEngine {
         default: break
         }
         stateCast.sendIfChanged(new)
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(macOS)
             pictureInPictureChanged()
         #endif
     }

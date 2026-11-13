@@ -48,7 +48,7 @@ final class OnboardingModel {
     @ObservationIgnored private let clipboard: Clipboard?
     @ObservationIgnored private var attempt: Task<Void, Never>?
 
-    /// `clipboard` is nil where no fill-in banner shows: Mac and Apple TV.
+    /// `clipboard` is nil where no fill-in banner shows: Apple TV.
     init(connector: SourceConnector, clipboard: Clipboard?) {
         self.connector = connector
         self.clipboard = clipboard
@@ -354,7 +354,7 @@ final class OnboardingModel {
 }
 
 /// The system clipboard as onboarding uses it: `hasLink` must not read the
-/// contents, so iOS shows no paste prompt until Fill in calls `read`.
+/// contents, so iOS and macOS show no paste prompt until Fill in calls `read`.
 struct Clipboard {
     var hasLink: @MainActor () async -> Bool
     var read: @MainActor () -> String?
@@ -377,9 +377,27 @@ struct Clipboard {
                 read: { UIPasteboard.general.url?.absoluteString ?? UIPasteboard.general.string })
         }
     }
+#elseif os(macOS)
+    import AppKit
+
+    extension Clipboard {
+        /// The general pasteboard, asked for a probable web link by pattern
+        /// detection (first-run-onboarding/fill-the-form-from-a-copied-link).
+        @MainActor static var system: Clipboard? {
+            #if DEBUG
+                if let scripted = UITestingOnboarding.clipboard() { return scripted }
+            #endif
+            return Clipboard(
+                hasLink: {
+                    let found = try? await NSPasteboard.general.detectedPatterns(for: [\.probableWebURL])
+                    return found?.isEmpty == false
+                },
+                read: { NSPasteboard.general.string(forType: .URL) ?? NSPasteboard.general.string(forType: .string) })
+        }
+    }
 #else
     extension Clipboard {
-        /// No banner on Mac or Apple TV.
+        /// No banner on Apple TV.
         @MainActor static var system: Clipboard? { nil }
     }
 #endif

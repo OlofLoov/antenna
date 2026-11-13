@@ -1,9 +1,7 @@
 @preconcurrency import AVFoundation
 import AntennaCore
 
-#if os(iOS) || os(tvOS)
-    import AVKit
-#endif
+import AVKit
 import CoreMedia
 import Foundation
 import os
@@ -98,7 +96,7 @@ public final class DemuxEngine: PlaybackEngine {
     }
     private var ticker: Task<Void, Never>?
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(macOS)
         var pictureInPicture: AVPictureInPictureController?
         var pictureInPicturePlayback: PictureInPicturePlayback?
         /// Told when the Picture in Picture window opens, closes or restores
@@ -156,7 +154,7 @@ public final class DemuxEngine: PlaybackEngine {
     public var state: PlaybackState { stateCast.value }
 
     public var capabilities: EngineCapabilities {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(macOS)
             EngineCapabilities(supportsPictureInPicture: AVPictureInPictureController.isPictureInPictureSupported())
         #else
             EngineCapabilities(supportsPictureInPicture: false)
