@@ -170,7 +170,7 @@ The system SHALL show on iPhone, and on iPad in a narrow Split View, the picture
 - **THEN** the rows grow and the picture keeps its shape
 
 ### Requirement: Pick a group
-The system SHALL list the picked group's channels in channel-list order, keep the playing channel playing, and clear the filter, and on iPad and Mac SHALL head the list with the group's name and channel count.
+The system SHALL list the picked group's channels in channel-list order, keep the playing channel playing, and clear the filter, and on iPad and Mac SHALL head the list with the group's name and channel count. Empty Favorites SHALL say how a channel becomes a favorite on that device.
 
 #### Scenario: Picking Sport
 - **GIVEN** a group "Sport" with 42 channels
@@ -181,8 +181,13 @@ The system SHALL list the picked group's channels in channel-list order, keep th
 
 #### Scenario: Empty Favorites
 - **GIVEN** the user has no favorites
-- **WHEN** they pick Favorites
-- **THEN** the list says "No favorites yet. Tap the star on a channel to add it."
+- **WHEN** they pick Favorites on an iPhone or iPad
+- **THEN** the list says "No favorites yet. Touch and hold a channel, or swipe it right, to add it."
+
+#### Scenario: Empty Favorites on a Mac
+- **GIVEN** the user has no favorites
+- **WHEN** they pick Favorites on a Mac
+- **THEN** the list says "No favorites yet. Right-click a channel to add it."
 
 #### Scenario: Tens of thousands of channels
 - **GIVEN** the user has tens of thousands of channels
