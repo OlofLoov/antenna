@@ -67,6 +67,8 @@ private func started(_ count: Int = 2, cap: Int = 4) throws -> MultiViewSession 
         #expect(session.select(1) == [.unmute(tile: 1)])
     }
 
+    // multi-view/four-tiles-hold-up-on-real-hardware, the sound moves on every change;
+    // the 30-minute run on Apple TV and Mac is on docs/release/device-checklist.md
     @Test("multi-view/sound-follows-the-highlighted-tile a run of actions never has two tiles heard")
     func neverTwo() throws {
         let start = try #require(MultiViewSession.start(playing: key(1), adding: key(2), cap: MultiViewCap(limit: 4)))
