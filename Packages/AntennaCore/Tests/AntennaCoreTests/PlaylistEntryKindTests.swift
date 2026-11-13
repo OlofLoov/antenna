@@ -113,6 +113,7 @@ extension Channel {
         catchup: Bool = false, duration: Double? = nil
     ) -> Channel {
         Channel(
-            id: name, name: name, streamURL: URL(string: link)!, group: group, epgID: epgID, hasCatchup: catchup, duration: duration)
+            id: name, name: name, streamURL: URL(string: link) ?? URL(filePath: link), group: group, epgID: epgID, hasCatchup: catchup,
+            duration: duration)
     }
 }
