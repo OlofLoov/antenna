@@ -27,3 +27,8 @@ The system SHALL sync favorites through the user's private iCloud account to eve
 - **GIVEN** Dad saved a favorite on device A
 - **WHEN** device B is on Kids
 - **THEN** the favorite is not in device B's Favorites tab until Dad is chosen there
+
+#### Scenario: Apple TV as the second device
+- **GIVEN** a favorite saved on an iPhone, iPad or Mac
+- **WHEN** an Apple TV signed into the same iCloud account is online
+- **THEN** the favorite appears in the Favorites group of its channel overlay, and one added on the Apple TV appears on the other device
