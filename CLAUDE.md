@@ -95,6 +95,10 @@ from `Config/Local.xcconfig.example` for device builds.
   the `ui-tests` label; to run them on any branch, `gh workflow run
   ui-tests.yml --ref <branch>`. Run the UI test classes a change touches on
   a local simulator before opening its PR (see the `sim` skill).
+- **Screenshots on demand.** The `App screenshots` workflow walks the main
+  screens on iPhone, iPad and Apple TV and uploads the PNGs as the
+  `app-screenshots` artifact. It runs every night; on a PR, add the
+  `screenshots` label. How to add a step: `docs/conventions.md`, Tests.
 - **Tests cite requirements.** A test that proves a requirement names it as
   `<capability>/<requirement-slug>` in its name or a comment, for example
   `// guide-data/programmes-in-a-time-window`. `scripts/check-spec-refs.sh`
