@@ -4,6 +4,10 @@ import Testing
 
 @testable import Antenna
 
+#if os(iOS)
+    import UIKit
+#endif
+
 #if os(iOS) || os(macOS)
     /// Multi-view in the Mac window, through the Live model the window
     /// reads. The model is shared, so these run wherever the tests do;
@@ -58,11 +62,13 @@ import Testing
             #expect(live.multiViewMenu(for: try channel(2), offered: false) == nil, "not on iPhone, iPad or a narrow screen")
         }
 
-        @Test("multi-view/start-multi-view-on-a-mac the option is absent on iPhone and iPad")
-        func absentOnPhone() throws {
+        @Test("multi-view/start-multi-view-on-an-ipad offered on an iPad at regular width, never compact or on iPhone")
+        func offeredOnIPad() throws {
             #if os(iOS)
-                #expect(!LiveModel.offersMultiView)
+                #expect(!LiveModel.offersMultiView, "the Mac's screen check stays off")
                 #expect(live.multiViewMenu(for: try channel(2)) == nil)
+                #expect(!LiveModel.offersMultiView(regularWidth: false))
+                #expect(LiveModel.offersMultiView(regularWidth: true) == (UIDevice.current.userInterfaceIdiom == .pad))
             #endif
         }
 

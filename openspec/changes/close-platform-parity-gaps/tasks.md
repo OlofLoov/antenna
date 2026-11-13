@@ -9,10 +9,10 @@
 
 ## 2. Multi-view on iPad
 
-- [ ] 2.1 Rename `MultiViewMacScreen` to `MultiViewGridScreen`, build it on iOS, and drop the minimum width on iPad
-- [ ] 2.2 Offer Add to Multi-view and Command-Shift-M on iPad in the regular size class, and leave multi-view when the window turns compact, with app tests citing `multi-view/start-multi-view-on-an-ipad`
-- [ ] 2.3 Note iPad on `iPad-MultiView`
-- [ ] 2.4 UI test on iPad: add a channel from the list's menu, tap a tile
+- [x] 2.1 Rename `MultiViewMacScreen` to `MultiViewGridScreen`, build it on iOS, and drop the minimum width on iPad
+- [x] 2.2 Offer Add to Multi-view and Command-Shift-M on iPad in the regular size class, and leave multi-view when the window turns compact, with app tests citing `multi-view/start-multi-view-on-an-ipad`
+- [x] 2.3 Note iPad on `iPad-MultiView`
+- [x] 2.4 UI test on iPad: add a channel from the list's menu, tap a tile
 
 ## 3. Picture in Picture and the clipboard on Mac
 

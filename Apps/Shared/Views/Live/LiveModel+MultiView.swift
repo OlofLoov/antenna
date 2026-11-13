@@ -3,10 +3,13 @@ import Foundation
 
 #if os(macOS)
     import AppKit
+#elseif os(iOS)
+    import UIKit
 #endif
 
-/// Multi-view in the Mac window (multi-view/start-multi-view-on-a-mac).
-/// iPhone and iPad never offer it.
+/// Multi-view in the Mac window and the iPad's side-by-side layout
+/// (multi-view/start-multi-view-on-a-mac, multi-view/start-multi-view-on-an-ipad).
+/// iPhone never offers it.
 extension LiveModel {
     /// What a channel's right-click menu offers for multi-view.
     enum MultiViewMenu: Equatable {
@@ -24,9 +27,17 @@ extension LiveModel {
         #endif
     }
 
+    #if os(iOS)
+        /// True on an iPad whose window has a regular width, where the list
+        /// and the picture sit side by side. Never on iPhone.
+        static func offersMultiView(regularWidth: Bool) -> Bool {
+            regularWidth && UIDevice.current.userInterfaceIdiom == .pad
+        }
+    #endif
+
     /// The menu item for `channel`, nil when there is none: nothing
     /// playing, the playing channel itself, a channel already in a tile,
-    /// a screen too narrow, or iPhone and iPad.
+    /// a screen or window too narrow, or iPhone.
     func multiViewMenu(for channel: Channel, offered: Bool = LiveModel.offersMultiView) -> MultiViewMenu? {
         guard offered, let key = RowKey(channel) else { return nil }
         if let multiView {
