@@ -23,24 +23,28 @@ a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
     <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
   </div>
 
-  <div style="width: 160px; height: 160px; border-radius: 40px; background: #1E3A5F; display: flex; align-items: center; justify-content: center">
-    <svg aria-hidden="true" width="92" height="92" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+  <!-- AntennaMark: the app icon's mast and waves in the accent on the ground, radius large (20), hairline edge -->
+  <div style="width: 160px; height: 160px; border-radius: 20px; background: #0B0E13; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center">
+    <svg aria-hidden="true" width="122" height="122" viewBox="0 0 24 24" fill="none" stroke="#5BB8FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
   </div>
 
   <div style="display: flex; flex-direction: column; align-items: center; gap: 18px; max-width: 900px; text-align: center">
-    <div style="font-size: 64px; font-weight: 800; letter-spacing: -1px">Welcome to Antenna</div>
-    <div style="font-size: 30px; line-height: 1.4; color: #D7DEE8">Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider.</div>
+    <!-- text style: title2 (57), semibold -->
+    <div style="font-size: 57px; font-weight: 600">Welcome to Antenna</div>
+    <!-- text style: body (29), secondary -->
+    <div style="font-size: 29px; line-height: 1.4; color: #A7B0BF">Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider.</div>
   </div>
 
   <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 12px">
-    <a href="TV-Onboard-2.dc.html" style="font-size: 28px; font-weight: 700; padding: 20px 48px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: inline-flex; align-items: center; gap: 14px">
+    <a href="TV-Onboard-2.dc.html" style="font-size: 29px; font-weight: 600; padding: 22px 48px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: inline-flex; align-items: center; gap: 14px"><!-- onboarding.addSource: bordered (primaryActionStyle), focused -->
       <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       <span>Add a source</span>
     </a>
-    <span style="font-size: 24px; color: #A7B0BF; padding: 14px 28px">What is a source?</span>
+    <!-- onboarding.help: glass -->
+    <span style="font-size: 29px; font-weight: 600; padding: 22px 48px; border-radius: 999px; background: rgba(255,255,255,0.08)">What is a source?</span>
   </div>
 
-  <div style="position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 22px; color: #A7B0BF">
+  <div style="position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 25px; color: #A7B0BF"><!-- onboarding.iCloudNote: caption1 (25), secondary -->
     <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 8.5 4 4 0 0 1 17.5 18z"/></svg>
     <span>Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own.</span>
   </div>

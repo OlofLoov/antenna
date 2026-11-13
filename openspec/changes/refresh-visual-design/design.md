@@ -66,16 +66,18 @@ Under `openspec/specs/design-system/boards/`:
 - Follows without a new board: every other screen. Its PR applies the rules to the screen's existing board and updates that board's type comments to text style names.
 - Not drawn: the add-source error line (caption 1 in the live-dot color under the footer on Apple TV, footnote on iPhone), the connecting state (Connect shows a progress view and the rows dim), iPad and Mac add-source (the iPhone sheet centered at the system's form size), Apple TV source details (the `TV-Refresh-Settings` rows with the field rows from `TV-Refresh-AddSource`), the Preferences choice list (a system list with a checkmark), and the iPhone Live empty state (the `TV-Refresh-Shell-Empty` layout at iPhone text styles). Each is drawn before its PR opens.
 
+PR 2 renamed `TV-Refresh-AddSource`, `TV-Refresh-AddSource-Kinds` and `iPhone-Refresh-AddSource` over `TV-Onboard-3`, `TV-Onboard-2` and `iPhone-Onboard-2`, redrew their states, and drew `TV-Onboard-3-Error`, `iPhone-Onboard-2-Error` and `iPad-Onboard-2` (the iPad and Mac sheet).
+
 Journey steps added in PR 1, with the board each compares with:
 
 | Test | Step | Board |
 |------|------|-------|
-| `TVJourneys.testFirstRun` | `kinds`, `add-source-xtream` | `TV-Refresh-AddSource-Kinds`, `TV-Refresh-AddSource` |
-| `TVJourneys.testSettingsAddSource` | `settings-add-source` (Settings opens on the form, with no kinds page) | `TV-Refresh-AddSource` |
+| `TVJourneys.testFirstRun` | `kinds`, `add-source-xtream` | `TV-Onboard-2`, `TV-Onboard-3` |
+| `TVJourneys.testSettingsAddSource` | `settings-add-source-kinds`, `settings-add-source` (kinds step added in PR 2) | `TV-Onboard-2`, `TV-Onboard-3` |
 | `TVJourneys.testSourceDetails` | `settings`, `source-details` | `TV-Refresh-Settings` |
 | `TVJourneys.testMoviesFocus` | `movies-row-focus` | `TV-Movies` |
 | `TVJourneys.testShellStates` (already there) | `empty` | `TV-Refresh-Shell-Empty` |
-| `AppJourneys.testSettingsAddSource` | `settings-add-source`, `settings-add-source-xtream`, `source-details` | `iPhone-Refresh-AddSource` |
+| `AppJourneys.testSettingsAddSource` | `settings-add-source`, `settings-add-source-kinds` (the Type menu), `settings-add-source-m3u`, `source-details` | `iPhone-Onboard-2`, `iPhone-Onboard-2-M3U`, `iPad-Onboard-2` |
 | `AppJourneys.testLiveEmpty` | `live-empty` | `TV-Refresh-Shell-Empty` at iPhone text styles |
 | `AppJourneys.testMoviesDiscover` | `movies` | `iPhone-Movies` |
 
@@ -150,6 +152,8 @@ Options considered:
 
 Decision: the tint. It is still one accent color; the rule now names system tint as an allowed use and bans the accent on eyebrows, which the app does today.
 
+Found in PR 2: on Apple TV the tint does reach system controls. A tinted bordered button draws accent text on an accent fill, and a focused row button tints its title. Apple TV keeps the system tint; iPhone, iPad and Mac take the accent.
+
 ### 6. Raise the Apple TV caption floor to 23 pt
 
 Apple's tvOS minimum is 23 pt. The old 18 pt floor came from the boards. Every caption on Apple TV moves to `.caption2` (23) or `.caption` (25). The citation stays `design-system/text-stays-above-the-platform-caption-floor`.
@@ -157,6 +161,13 @@ Apple's tvOS minimum is 23 pt. The old 18 pt floor came from the boards. Every c
 ### 7. Check it in CI
 
 `scripts/check-rules.sh` gains two greps: `.font(.system(size:` outside an allow list of files (glyph-only views, number entry, guide time labels), and `: ButtonStyle` outside the exception components. Both start as warnings listing the files left, and become failures in the Verify PR once the count is zero.
+
+### 8. What PR 2 found on the Apple TV simulator
+
+- **The cover draws no backdrop.** A tvOS 26 full-screen cover whose content paints nothing shows the presenting screen unblurred, which is the owner's complaint again. `CoverBackdrop` (ultra thick material with the ground at 0.55) goes in the cover's `presentationBackground`. Settings behind it cannot be read.
+- **A field in a list row is a capsule inside a capsule.** The system text field keeps its own capsule in a `Form` row. `FieldRow` puts the label in a 220 pt column and the system field beside it, with no row fill, so the field is the only capsule and takes the light platter on focus. The Type row is a system row button with its value.
+- **Glass prominent rests white on Apple TV.** Untinted it is a white capsule with white text, and tinted white it breaks "nothing other than the focused element is filled white". `primaryActionStyle()` is bordered on Apple TV, glass prominent elsewhere, which answers open question 2.
+- **Focus moves by geometry.** With Connect and Cancel left-aligned under a column of fields, Down from a field landed on Cancel; `focusSection` and `defaultFocus` did not change that. The buttons line up under the fields and Connect fills the width the fields leave, so Down lands on Connect.
 
 ## Risks / Trade-offs
 

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac add a source sheet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- onboarding.form on iPad and Mac: the iPhone sheet centered at the system's form size over the dimmed app. Mac draws the same rows in a grouped form inside its sheet. -->
+<div style="width: 1180px; height: 820px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- the app behind, dimmed by the system -->
+  <div style="position: absolute; inset: 0; padding: 40px; font-size: 34px; font-weight: 700; color: rgba(242,244,248,0.35)">Sources &amp; Settings</div>
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+  <!-- the form sheet: 580 wide, radius large (26) -->
+  <div style="position: absolute; left: 300px; top: 90px; width: 580px; height: 640px; border-radius: 26px; overflow: hidden">
+<!-- the sheet content, the same as iPhone-Onboard-2 -->
+<div style="width: 580px; height: 640px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- the sheet: system grouped background at the large detent -->
+  <div style="position: absolute; left: 0; right: 0; top: 0px; bottom: 0; background: #1C1C1E; border-radius: 38px 38px 0 0; display: flex; flex-direction: column">
+    <!-- toolbar: Cancel (cancellation action, glass), the title (headline 17), Connect (confirmation action) -->
+    <div style="height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+      <!-- onboarding.back -->
+      <div style="height: 44px; padding: 0 16px; border-radius: 999px; background: rgba(255,255,255,0.10); color: #5BB8FF; display: flex; align-items: center; font-size: 17px">Cancel</div>
+      <div style="font-size: 17px; font-weight: 600">Add a source</div>
+      <!-- onboarding.connect: glass prominent in the accent tint (primaryActionStyle) -->
+      <div style="height: 44px; padding: 0 16px; border-radius: 999px; background: #5BB8FF; color: #0B0E13; display: flex; align-items: center; font-size: 17px; font-weight: 600">Connect</div>
+    </div>
+    <div style="padding: 8px 16px; display: flex; flex-direction: column; gap: 8px">
+      <!-- onboarding.kind: a menu picker row; the menu lists M3U playlist, Xtream login, Stalker portal, Jellyfin server and Channels DVR in full -->
+      <div style="border-radius: 26px; background: #2C2C2E; height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 17px">
+        <span>Type</span><span style="color: #5BB8FF">Xtream login &#8963;&#8964;</span>
+      </div>
+      <!-- section header, text style: footnote (13), secondary, sentence case -->
+      <div style="font-size: 13px; color: #A7B0BF; padding: 16px 20px 0">Login</div>
+      <div style="border-radius: 26px; background: #2C2C2E; display: flex; flex-direction: column; opacity: 1">
+        <!-- onboarding.field.name, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.12)"><span style="width: 96px; flex: none">Name</span><span style="color: #8E8E93; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">Optional</span></div>
+        <!-- onboarding.field.server, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.12)"><span style="width: 96px; flex: none">Server</span><span style="color: #8E8E93; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">http://</span></div>
+        <!-- onboarding.field.username, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.12)"><span style="width: 96px; flex: none">Username</span><span style="color: #8E8E93; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">Required</span></div>
+        <!-- onboarding.field.password, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px"><span style="width: 96px; flex: none">Password</span><span style="color: #8E8E93; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">Required</span><span style="color: #A7B0BF">&#9673;</span></div>
+      </div>
+      <!-- section footer, text style: footnote (13) -->
+      <div style="font-size: 13px; padding: 0 20px; line-height: 18px; display: flex; flex-direction: column; gap: 6px">
+        <div style="color: #A7B0BF">Saved in your iCloud Keychain only. Antenna has no servers and never sees your login.</div>
+      </div>
+      <!-- onboarding.fillIn: a form section with one button row, no tinted card -->
+      <div style="border-radius: 26px; background: #2C2C2E; margin-top: 16px; height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; color: #5BB8FF">Fill in from the copied link</div>
+      <div style="font-size: 13px; color: #A7B0BF; padding: 0 20px; line-height: 18px">Antenna reads the clipboard only when you tap Fill in.</div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

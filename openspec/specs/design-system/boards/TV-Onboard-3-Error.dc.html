@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV add a source, M3U playlist with an error</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- onboarding.form: Connect failed. The error is a second footer line in caption 1 and the live-dot red; focus stays on Connect. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(135deg, #1A2230 0%, #0B0E13 60%); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- the backdrop: CoverBackdrop in a cover from Settings (ultra thick material, ground at 0.55), the system's own background in onboarding -->
+  <div style="position: absolute; inset: 0; background: rgba(20,24,32,0.72); backdrop-filter: blur(60px)"></div>
+
+  <!-- safe area: 80 at the sides, 60 at top and bottom; the page starts 32 below the top -->
+  <div style="position: absolute; left: 80px; right: 80px; top: 92px; bottom: 60px; display: flex; gap: 80px">
+
+    <!-- onboarding.form.lead: title, one line, the card -->
+    <div style="width: 680px; flex: none; display: flex; flex-direction: column; gap: 24px">
+      <!-- text style: title3 (48), semibold -->
+      <div style="font-size: 48px; font-weight: 600">M3U playlist</div>
+      <!-- text style: body (29), secondary -->
+      <div style="font-size: 29px; color: #A7B0BF; line-height: 36px">Paste the link your provider gave you. The guide link is optional.</div>
+      <!-- onboarding.keyboardCard: regular material, radius large (20). Icon tile radius medium (16). -->
+      <div style="margin-top: 24px; padding: 32px; border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; gap: 32px; align-items: flex-start">
+        <div style="width: 96px; height: 96px; border-radius: 16px; background: rgba(255,255,255,0.10); flex: none; display: flex; align-items: center; justify-content: center; font-size: 48px">&#9647;</div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <!-- text style: callout (31), semibold -->
+          <div style="font-size: 31px; font-weight: 600">Easier to type on iPhone</div>
+          <!-- text style: caption1 (25), secondary -->
+          <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over.</div>
+          <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">The offer comes from iOS and needs no setup.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- onboarding.fields: a system Form. Field rows are FieldRow: the label at 220 pt and the system text field beside it, with no row fill behind, so no capsule sits inside another. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding-right: 24px">
+      <!-- onboarding.kind: FieldRow.Choice, a system row with its value. Selecting it goes back to the kinds. -->
+      <div style="height: 88px; border-radius: 20px; background: rgba(255,255,255,0.10); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px">
+        <span>Type</span><span style="color: #A7B0BF">M3U playlist</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 0 20px; opacity: 1">
+        <!-- onboarding.field.name -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Name</span><span style="flex: 1; height: 72px; border-radius: 999px; background: rgba(0,0,0,0.28); color: #7C8594; display: flex; align-items: center; padding: 0 30px">Optional</span></div>
+        <!-- onboarding.field.playlist -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Playlist</span><span style="flex: 1; height: 72px; border-radius: 999px; background: rgba(0,0,0,0.28); color: #F2F4F8; display: flex; align-items: center; padding: 0 30px">http://tv.example-provider.net/get.m3u</span></div>
+        <!-- onboarding.field.guide -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Guide</span><span style="flex: 1; height: 72px; border-radius: 999px; background: rgba(0,0,0,0.28); color: #7C8594; display: flex; align-items: center; padding: 0 30px">Optional XMLTV link</span></div>
+      </div>
+      <!-- section footer, text style: caption1 (25) -->
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 0 20px; font-size: 25px; line-height: 32px">
+        <!-- onboarding.error: caption1 (25) in the live-dot red -->
+        <div style="color: #FF5F57">Could not reach tv.example-provider.net. Check the address and try again.</div>
+      </div>
+      <!-- the buttons row: FieldRow.Indented lines it up under the fields, so Down from a field lands on Connect -->
+      <div style="display: flex; gap: 60px; padding: 16px 20px 0">
+        <span style="width: 220px; flex: none"></span>
+        <div style="flex: 1; display: flex; gap: 24px">
+          <!-- onboarding.connect: bordered (primaryActionStyle), focused: light platter, dark text, lifted -->
+          <div style="flex: 1; height: 86px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; justify-content: center; font-size: 29px; font-weight: 600; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45)">Connect</div>
+          <!-- onboarding.back: glass -->
+          <div style="height: 86px; padding: 0 48px; border-radius: 999px; background: rgba(255,255,255,0.08); display: flex; align-items: center; font-size: 29px; font-weight: 600">Cancel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

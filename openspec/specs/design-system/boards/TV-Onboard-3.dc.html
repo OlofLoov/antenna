@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Apple TV onboarding, Xtream details</title>
+<title>Apple TV add a source, Xtream</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,79 +13,67 @@ body{margin:0}
 a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
 </style>
 </helmet>
-<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 80px">
+<!-- onboarding.form: the add-source form as a page. From Settings it is the second page of a full-screen cover; in onboarding it follows the kinds. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(135deg, #1A2230 0%, #0B0E13 60%); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
 
-  <div style="position: absolute; right: 64px; top: 44px; display: flex; gap: 8px; align-items: center">
-    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
-    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
-    <span style="width: 32px; height: 6px; border-radius: 3px; background: #F2F4F8; display: inline-block"></span>
-    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
-    <span style="width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.3); display: inline-block"></span>
-  </div>
-  <a href="TV-Onboard-2.dc.html" style="position: absolute; left: 64px; top: 44px; display: inline-flex; align-items: center; gap: 10px; font-size: 24px; color: #A7B0BF">
-    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
-    <span>Back</span>
-  </a>
+  <!-- the backdrop: CoverBackdrop in a cover from Settings (ultra thick material, ground at 0.55), the system's own background in onboarding -->
+  <div style="position: absolute; inset: 0; background: rgba(20,24,32,0.72); backdrop-filter: blur(60px)"></div>
 
-  <!-- Form -->
-  <div style="width: 820px; display: flex; flex-direction: column; gap: 28px">
-    <div style="display: flex; flex-direction: column; gap: 10px">
-      <div style="font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Xtream login</div>
-      <div style="font-size: 24px; color: #A7B0BF">Copy these from the email or page your provider sent you.</div>
-    </div>
+  <!-- safe area: 80 at the sides, 60 at top and bottom; the page starts 32 below the top -->
+  <div style="position: absolute; left: 80px; right: 80px; top: 92px; bottom: 60px; display: flex; gap: 80px">
 
-    <div style="display: flex; flex-direction: column; gap: 14px">
-      <label style="display: flex; flex-direction: column; gap: 8px">
-        <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Name <span style="font-weight: 400; text-transform: none; letter-spacing: 0">(optional)</span></span>
-        <input type="text" value="Home provider" style="font: inherit; font-size: 28px; height: 76px; padding: 0 24px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.08); color: #F2F4F8; outline: none; box-sizing: border-box">
-      </label>
-      <label style="display: flex; flex-direction: column; gap: 8px">
-        <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Server</span>
-        <input type="url" value="http://tv.example-provider.net:8080" style="font: inherit; font-size: 28px; height: 76px; padding: 0 24px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.08); color: #F2F4F8; outline: none; box-sizing: border-box">
-      </label>
-      <div style="display: flex; gap: 14px">
-        <label style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px">
-          <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Username</span>
-          <input type="text" value="user4821" style="font: inherit; font-size: 28px; height: 76px; padding: 0 24px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.08); color: #F2F4F8; outline: none; box-sizing: border-box">
-        </label>
-        <label style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px">
-          <span style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Password</span>
-          <span style="display: flex; align-items: center; height: 76px; padding: 0 24px; border-radius: 14px; background: #F2F4F8; box-shadow: 0 0 0 4px rgba(255,255,255,0.25), 0 12px 32px rgba(0,0,0,0.45); box-sizing: border-box">
-            <input type="password" value="pass1234" style="font: inherit; font-size: 28px; flex: 1 1 auto; min-width: 0; border: 0; background: transparent; color: #0B0E13; outline: none">
-            <button type="button" aria-label="Show password" style="font: inherit; width: 40px; height: 40px; border: 0; background: transparent; color: #4B5563; display: flex; align-items: center; justify-content: center; cursor: pointer">
-              <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
-          </span>
-        </label>
+    <!-- onboarding.form.lead: title, one line, the card -->
+    <div style="width: 680px; flex: none; display: flex; flex-direction: column; gap: 24px">
+      <!-- text style: title3 (48), semibold -->
+      <div style="font-size: 48px; font-weight: 600">Xtream login</div>
+      <!-- text style: body (29), secondary -->
+      <div style="font-size: 29px; color: #A7B0BF; line-height: 36px">Copy these from the email or page your provider sent you.</div>
+      <!-- onboarding.keyboardCard: regular material, radius large (20). Icon tile radius medium (16). -->
+      <div style="margin-top: 24px; padding: 32px; border-radius: 20px; background: rgba(255,255,255,0.08); display: flex; gap: 32px; align-items: flex-start">
+        <div style="width: 96px; height: 96px; border-radius: 16px; background: rgba(255,255,255,0.10); flex: none; display: flex; align-items: center; justify-content: center; font-size: 48px">&#9647;</div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <!-- text style: callout (31), semibold -->
+          <div style="font-size: 31px; font-weight: 600">Easier to type on iPhone</div>
+          <!-- text style: caption1 (25), secondary -->
+          <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over.</div>
+          <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">The offer comes from iOS and needs no setup.</div>
+        </div>
       </div>
     </div>
 
-    <div style="display: flex; gap: 16px; align-items: center; padding-top: 6px">
-      <a href="TV-Onboard-4.dc.html" style="font-size: 26px; font-weight: 700; padding: 18px 44px; border-radius: 14px; background: rgba(255,255,255,0.14); color: #F2F4F8; display: inline-flex">Connect</a>
-      <div style="display: flex; align-items: center; gap: 10px; font-size: 20px; color: #A7B0BF">
-        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-        <span>Saved in the Keychain on this Apple TV. Antenna has no servers.</span>
+    <!-- onboarding.fields: a system Form. Field rows are FieldRow: the label at 220 pt and the system text field beside it, with no row fill behind, so no capsule sits inside another. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding-right: 24px">
+      <!-- onboarding.kind: FieldRow.Choice, a system row with its value. Selecting it goes back to the kinds. -->
+      <div style="height: 88px; border-radius: 20px; background: rgba(255,255,255,0.10); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; font-size: 29px">
+        <span>Type</span><span style="color: #A7B0BF">Xtream login</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 0 20px; opacity: 1">
+        <!-- onboarding.field.name -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Name</span><span style="flex: 1; height: 72px; border-radius: 999px; background: rgba(0,0,0,0.28); color: #F2F4F8; display: flex; align-items: center; padding: 0 30px">Home provider</span></div>
+        <!-- onboarding.field.server: focused. The system field takes the light platter with dark text and lifts. -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Server</span><span style="flex: 1; height: 80px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; padding: 0 30px; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45)">http://tv.example-provider.net:8080</span></div>
+        <!-- onboarding.field.username -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Username</span><span style="flex: 1; height: 72px; border-radius: 999px; background: rgba(0,0,0,0.28); color: #7C8594; display: flex; align-items: center; padding: 0 30px">Required</span></div>
+        <!-- onboarding.field.password -->
+        <div style="height: 88px; display: flex; align-items: center; gap: 60px; font-size: 29px"><span style="width: 220px">Password</span><span style="flex: 1; height: 72px; border-radius: 999px; background: rgba(0,0,0,0.28); color: #7C8594; display: flex; align-items: center; padding: 0 30px">Required</span></div>
+      </div>
+      <!-- section footer, text style: caption1 (25) -->
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 0 20px; font-size: 25px; line-height: 32px">
+        <div style="color: #A7B0BF">Saved in the Keychain on this Apple TV. Antenna has no servers.</div>
+      </div>
+      <!-- the buttons row: FieldRow.Indented lines it up under the fields, so Down from a field lands on Connect -->
+      <div style="display: flex; gap: 60px; padding: 16px 20px 0">
+        <span style="width: 220px; flex: none"></span>
+        <div style="flex: 1; display: flex; gap: 24px">
+          <!-- onboarding.connect: bordered (primaryActionStyle): translucent at rest -->
+          <div style="flex: 1; height: 86px; border-radius: 999px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; font-size: 29px; font-weight: 600">Connect</div>
+          <!-- onboarding.back: glass -->
+          <div style="height: 86px; padding: 0 48px; border-radius: 999px; background: rgba(255,255,255,0.08); display: flex; align-items: center; font-size: 29px; font-weight: 600">Cancel</div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Side: type on iPhone -->
-  <div style="width: 480px; border-radius: 20px; background: rgba(255,255,255,0.06); box-sizing: border-box; padding: 36px; display: flex; flex-direction: column; gap: 22px">
-    <div style="width: 72px; height: 72px; border-radius: 18px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center">
-      <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
-    </div>
-    <div style="font-size: 30px; font-weight: 700; line-height: 1.2">Easier to type on iPhone</div>
-    <div style="font-size: 22px; line-height: 1.45; color: #D7DEE8">An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over.</div>
-    <div style="font-size: 20px; color: #A7B0BF; padding-top: 6px">The offer comes from iOS and needs no setup.</div>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
-class Component extends DCLogic {
-  renderVals() {
-    return {};
-  }
-}
-</script>
 </body>
 </html>
