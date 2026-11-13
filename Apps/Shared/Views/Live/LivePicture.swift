@@ -42,7 +42,7 @@
                             .accessibilityHint("Shows the player controls")
                             .accessibilityAddTraits(.isButton)
                             .accessibilityAction { live.showControls(after: .touch) }
-                            .accessibilityActions { gestureActions }
+                            .accessibilityActions(live.pictureActions)
                             .accessibilityIdentifier("browse.player.surface")
                         if live.player.airPlayActive {
                             PlayerStatus.Elsewhere(text: "Playing on AirPlay", systemImage: "airplayvideo")
@@ -90,16 +90,6 @@
                 let rise = value.translation.height
                 guard abs(rise) >= 60, abs(rise) > abs(value.translation.width) else { return }
                 live.zap(by: rise < 0 ? 1 : -1)
-            }
-        }
-
-        /// The swipes and double-taps for VoiceOver, on the picture.
-        @ViewBuilder private var gestureActions: some View {
-            Button("Channel up") { live.zap(by: 1) }
-            Button("Channel down") { live.zap(by: -1) }
-            if live.player.timeshift.canRewind {
-                Button("Back 15 seconds") { live.player.timeshift.doubleTapSkip(forward: false) }
-                Button("Forward 15 seconds") { live.player.timeshift.doubleTapSkip(forward: true) }
             }
         }
 

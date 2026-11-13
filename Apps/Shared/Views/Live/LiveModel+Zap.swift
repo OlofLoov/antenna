@@ -31,4 +31,22 @@ extension LiveModel {
         guard multiView == nil, let previous = previousChannel else { return }
         pick(previous)
     }
+
+    /// The swipes and double-taps VoiceOver offers on the picture: Channel
+    /// up and Channel down, then Back 15 seconds and Forward 15 seconds
+    /// while the channel can rewind
+    /// (live-tv-on-iphone-ipad-mac/swipe-on-the-picture-to-change-channel,
+    /// live-tv-on-iphone-ipad-mac/double-tap-to-skip).
+    var pictureActions: [NamedAction] {
+        var actions = [
+            NamedAction(name: "Channel up") { [weak self] in self?.zap(by: 1) },
+            NamedAction(name: "Channel down") { [weak self] in self?.zap(by: -1) },
+        ]
+        let timeshift = player.timeshift
+        if timeshift.canRewind {
+            actions.append(NamedAction(name: "Back 15 seconds") { timeshift.doubleTapSkip(forward: false) })
+            actions.append(NamedAction(name: "Forward 15 seconds") { timeshift.doubleTapSkip(forward: true) })
+        }
+        return actions
+    }
 }

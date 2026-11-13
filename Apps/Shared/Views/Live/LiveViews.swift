@@ -166,9 +166,9 @@
 
         func body(content: Content) -> some View {
             let toggle = LiveFavoriteToggle(live: live, context: context, profile: profile)
-            content.accessibilityAction(named: Browse.FavoriteMenuButton.title(isFavorite: live.catalogue.isFavorite(channel))) {
-                toggle(channel)
-            }
+            content.accessibilityActions([
+                Browse.FavoriteMenuButton.action(isFavorite: live.catalogue.isFavorite(channel)) { toggle(channel) }
+            ])
         }
     }
 

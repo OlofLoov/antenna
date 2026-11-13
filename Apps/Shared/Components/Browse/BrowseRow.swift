@@ -18,6 +18,12 @@ extension Browse {
         static func title(isFavorite: Bool) -> String {
             isFavorite ? "Remove from Favorites" : "Add to Favorites"
         }
+
+        /// The VoiceOver action a channel offers in place of this menu item
+        /// (favorites/favorite-from-a-channel-s-menu, favorites/hold-select-to-favorite-on-apple-tv).
+        static func action(isFavorite: Bool, toggle: @escaping () -> Void) -> NamedAction {
+            NamedAction(name: title(isFavorite: isFavorite), run: toggle)
+        }
     }
 
     /// One channel row: logo tile, the name with the number trailing it,
