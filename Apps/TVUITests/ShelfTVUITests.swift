@@ -166,4 +166,30 @@ final class ShelfTVUITests: XCTestCase {
         press(.select)
         expect(element("shell.debug.engine"), "value BEGINSWITH 'playing loads=2'")
     }
+
+    // player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode, on Apple TV
+    func testHoldingSelectInAMovieOpensAudioAndSubtitles() {
+        openMovies()
+        press(.select)
+        expect(element("shelf.debug.engine"), "value == 'playing 1.mp4 from 0'")
+
+        XCUIRemote.shared.press(.select, forDuration: 1)
+        XCTAssertTrue(element("player.panel").waitForExistence(timeout: 5), "holding select opened no panel")
+        expectFocus("player.panel.segment.audio")
+        XCTAssertFalse(element("player.panel.segment.info").exists, "a title has no Info tab")
+        XCTAssertEqual(element("player.panel.track.1").label, "English (Commentary)")
+
+        press(.down)
+        expectFocus("player.panel.track.0")
+        press(.down)
+        expectFocus("player.panel.track.1")
+        press(.select)
+        expect(element("player.panel.track.1"), "value == 'Selected'")
+
+        press(.menu)
+        expect(element("player.panel"), "exists == false")
+        expect(element("shelf.debug.engine"), "value == 'playing 1.mp4 from 0'")
+        press(.menu)
+        expect(element("movies.player"), "exists == false")
+    }
 }

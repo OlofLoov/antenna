@@ -122,4 +122,34 @@ final class ShelfPlayerUITests: XCTestCase {
         app.tabBars.buttons["Live"].tap()
         app.waitForEngine("playing loads=2")
     }
+
+    // player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode
+    func testAMovieOffersItsSoundAndSubtitleTracks() throws {
+        let app = try launch()
+        open(app, "movies")
+        let poster = card(app, "movies", in: "continueWatching", "xtream#cabin#vod#2")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        poster.tap()
+        expectPlayer(app, "playing 2.mp4 from 2160")
+
+        let tracks = app.element("player.tracks")
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: tracks)
+        XCTAssertEqual(XCTWaiter().wait(for: [enabled], timeout: 5), .completed, "the tracks button stays grayed out")
+        tracks.tap()
+        XCTAssertTrue(app.element("player.trackPicker").waitForExistence(timeout: 3), "no list")
+        XCTAssertEqual(app.element("player.trackPicker.audio.1").label, "English (Commentary)")
+        XCTAssertEqual(app.element("player.trackPicker.subtitles.off").value as? String, "Selected")
+
+        app.element("player.trackPicker.audio.1").tap()
+        let picked = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == 'Selected'"), object: app.element("player.trackPicker.audio.1"))
+        XCTAssertEqual(XCTWaiter().wait(for: [picked], timeout: 3), .completed)
+        XCTAssertTrue(app.element("player.trackPicker").exists, "the list stays open")
+        app.element("player.trackPicker.done").tap()
+
+        XCTAssertTrue(app.element("player.subtitles").isEnabled)
+        app.element("player.subtitles").tap()
+        let on = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'On'"), object: app.element("player.subtitles"))
+        XCTAssertEqual(XCTWaiter().wait(for: [on], timeout: 3), .completed)
+    }
 }

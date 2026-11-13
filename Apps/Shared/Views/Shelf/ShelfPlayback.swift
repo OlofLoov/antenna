@@ -69,6 +69,8 @@ final class ShelfPlayback {
 
     /// The title on screen, nil while nothing plays.
     private(set) var playing: Target?
+    /// The audio and subtitle lists of the title on screen, nil while nothing plays.
+    private(set) var tracks: TitleTracks?
     /// The series whose episode list is loading; its poster shows it is working.
     private(set) var working: String?
     /// The series that could not start, shown as an alert.
@@ -147,6 +149,8 @@ final class ShelfPlayback {
         listeners = []
         saving = PositionSaving()
         playing = target
+        let tracks = TitleTracks(engine: engine, address: url)
+        self.tracks = tracks
         let engine = engine
         let willPlay = dependencies.willPlay
         let languages = dependencies.languages()
@@ -163,18 +167,19 @@ final class ShelfPlayback {
             }
             guard !Task.isCancelled else { return }
             await engine.play()
-            await self?.follow(target)
+            await self?.follow(target, tracks: tracks)
         }
     }
 
     // MARK: Saving
 
     /// Feeds the engine's states and positions to `PositionSaving` and saves
-    /// what it returns, until the title closes.
-    private func follow(_ target: Target) async {
+    /// what it returns, and keeps `tracks` current, until the title closes.
+    private func follow(_ target: Target, tracks: TitleTracks) async {
         let states = await engine.states()
         let positions = await engine.position()
         listeners = [
+            Task { await tracks.follow() },
             Task { [weak self] in
                 for await state in states {
                     guard let self, playing == target else { return }
@@ -202,6 +207,7 @@ final class ShelfPlayback {
         guard let playing else { return }
         if let saved = saving.leaving(at: dependencies.clock()) { save(saved, playing) }
         self.playing = nil
+        tracks = nil
         watching?.cancel()
         watching = nil
         listeners = []
