@@ -13,11 +13,11 @@ struct ProfilePicker<Footer: View>: View {
     @ViewBuilder var footer: Footer
 
     var body: some View {
-        VStack(spacing: Metrics.titleGap) {
+        VStack(spacing: PickerMetrics.titleGap) {
             Spacer(minLength: 0)
             Text("Who's watching?")
-                .font(.system(size: Metrics.title, weight: .bold))
-            LazyVGrid(columns: columns, spacing: Metrics.rowGap) {
+                .font(.system(size: PickerMetrics.title, weight: .bold))
+            LazyVGrid(columns: columns, spacing: PickerMetrics.rowGap) {
                 ForEach(Array(zip(tiles.indices, tiles)), id: \.1.id) { index, tile in
                     Button {
                         choose(tile.id)
@@ -32,7 +32,7 @@ struct ProfilePicker<Footer: View>: View {
             }
             Spacer(minLength: 0)
             footer
-                .padding(.bottom, Metrics.footerBottom)
+                .padding(.bottom, PickerMetrics.footerBottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Palette.ground)
@@ -43,11 +43,12 @@ struct ProfilePicker<Footer: View>: View {
 
     /// One row on Apple TV, two columns on iPhone, iPad and Mac (`iPhone-Profiles`).
     private var columns: [GridItem] {
-        Array(repeating: GridItem(.fixed(Metrics.column), spacing: Metrics.tileGap), count: max(1, min(tiles.count, Metrics.columns)))
+        let count = max(1, min(tiles.count, PickerMetrics.columns))
+        return Array(repeating: GridItem(.fixed(PickerMetrics.column), spacing: PickerMetrics.tileGap), count: count)
     }
 }
 
-private enum Metrics {
+private enum PickerMetrics {
     #if os(tvOS)
         static let title: CGFloat = 56
         static let titleGap: CGFloat = 80
