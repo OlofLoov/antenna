@@ -1,0 +1,104 @@
+name: App screenshots
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    name: App screenshots
+    runs-on: macos-26
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'screenshots')
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/simulator
+        with:
+          platform: iOS
+      - name: Ensure tvOS simulator runtime
+        run: |
+          set -e
+          if ! xcrun simctl list runtimes available | grep -q "^tvOS "; then
+            xcodebuild -downloadPlatform tvOS
+          fi
+      - name: Pick and boot simulators
+        id: devices
+        run: |
+          set -e
+          pick() {
+            xcrun simctl list devices available | grep -E "$1" | head -1 \
+              | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}'
+          }
+          iphone=$(pick '^ +iPhone [0-9]+ Pro \(')
+          ipad=$(pick '^ +iPad Pro 13')
+          tv=$(pick '^ +Apple TV 4K')
+          for id in "$iphone" "$ipad"; do
+            xcrun simctl boot "$id"
+            xcrun simctl bootstatus "$id"
+            xcrun simctl status_bar "$id" override --time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 \
+              --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+          done
+          xcrun simctl list devices | grep -E "$iphone|$ipad|$tv"
+          {
+            echo "iphone=$iphone"
+            echo "ipad=$ipad"
+            echo "tv=$tv"
+          } >> "$GITHUB_OUTPUT"
+      - name: iPhone and iPad walk-throughs
+        env:
+          IPHONE: ${{ steps.devices.outputs.iphone }}
+          IPAD: ${{ steps.devices.outputs.ipad }}
+        run: |
+          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
+            -destination "platform=iOS Simulator,id=$IPHONE" \
+            -destination "platform=iOS Simulator,id=$IPAD" \
+            -only-testing:AntennaJourneys \
+            -retry-tests-on-failure -test-iterations 2 \
+            -resultBundlePath ios-journeys.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Apple TV walk-throughs
+        if: success() || failure()
+        env:
+          TV: ${{ steps.devices.outputs.tv }}
+        run: |
+          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
+            -destination "platform=tvOS Simulator,id=$TV" \
+            -only-testing:AntennaTVJourneys \
+            -retry-tests-on-failure -test-iterations 2 \
+            -resultBundlePath tv-journeys.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Export screenshots
+        if: always()
+        run: |
+          set -e
+          bundles=()
+          for bundle in ios-journeys.xcresult tv-journeys.xcresult; do
+            [ -d "$bundle" ] && bundles+=("$bundle")
+          done
+          [ "${#bundles[@]}" -gt 0 ] || exit 0
+          bash scripts/export-screenshots.sh app-screenshots "${bundles[@]}"
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-screenshots
+          path: app-screenshots
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Upload result bundles
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-screenshots-xcresult
+          path: "*-journeys.xcresult"
+          if-no-files-found: ignore
