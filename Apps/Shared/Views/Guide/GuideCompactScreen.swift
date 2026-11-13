@@ -248,17 +248,7 @@
 
         var body: some View {
             let initials = GuideBoard.Compact.Initials(text: Channel.initials(for: channel.name), look: look)
-            if let url = channel.logoURL {
-                AsyncImage(url: url) { phase in
-                    if let image = phase.image {
-                        image.resizable().scaledToFit()
-                    } else {
-                        initials
-                    }
-                }
-            } else {
-                initials
-            }
+            LogoImage(url: channel.logoURL) { initials }
         }
     }
 

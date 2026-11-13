@@ -69,6 +69,21 @@
             ]
         }
 
+        /// Adds 20 000 channels in 300 groups to Home playlist, so a test can
+        /// move through a provider-sized catalogue.
+        static let largeCatalogueArgument = "-ui-testing-large-catalogue"
+
+        /// Channels l0 to l19999 in groups "Group 001" to "Group 300", 67 or
+        /// 66 to a group, numbered from 101; none without the argument.
+        static func largeCatalogue(arguments: [String] = ProcessInfo.processInfo.arguments) -> [Channel] {
+            guard arguments.contains(largeCatalogueArgument) else { return [] }
+            return (0..<20_000).map { index in
+                Channel(
+                    id: "fixture/l\(index)", name: "Channel l\(index)", streamURL: URL(fileURLWithPath: "/fixture/l\(index).ts"),
+                    group: String(format: "Group %03d", index % 300 + 1), epgID: "l\(index)", number: 101 + index)
+            }
+        }
+
         /// b1 offers seven days of catch-up; the others none.
         static func channel(_ id: String) -> Channel {
             Channel(
@@ -245,7 +260,7 @@
                     switch scenario {
                     case .channels, .failing:
                         return source.id == playlistID
-                            ? Playlist(channels: ["a1", "a2", "a3"].map(channel))
+                            ? Playlist(channels: ["a1", "a2", "a3"].map(channel) + UITestingShell.largeCatalogue())
                             : Playlist(channels: [channel("b1")])
                     case .loading:
                         try await Task.sleep(for: .seconds(3600))

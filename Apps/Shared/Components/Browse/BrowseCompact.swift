@@ -8,7 +8,7 @@ extension Browse {
 
         var body: some View {
             ScrollView(.horizontal) {
-                HStack(spacing: 8) { content }
+                LazyHStack(spacing: 8) { content }
                     .padding(EdgeInsets(top: 12, leading: 16, bottom: 6, trailing: 16))
             }
             .scrollIndicators(.hidden)

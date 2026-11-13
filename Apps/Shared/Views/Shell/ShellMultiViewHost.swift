@@ -50,5 +50,18 @@
         let profile: UUID
         let rules: GroupRules
         let seen: [UUID: SeenChannels]
+
+        /// The catalogue for these inputs after `old`. When only the
+        /// favorites changed they are swapped into `current`, which keeps
+        /// the channels indexed as they are; anything else builds it again.
+        func catalogue(
+            after old: Self, current: Catalogue<PersistentIdentifier>, favorites: [FavoriteRecord], recents: [LastChannelKey]
+        ) -> Catalogue<PersistentIdentifier> {
+            if old != self, channels == old.channels, profile == old.profile, rules == old.rules, seen == old.seen {
+                return current.replacingFavorites(FavoriteRecord.snapshots(favorites, profile: profile))
+            }
+            let built = Catalogue.shell(channels: channels, favorites: favorites, profile: profile, recents: recents, rules: rules)
+            return NewChannels.group(built, seen: seen, now: .now)
+        }
     }
 #endif

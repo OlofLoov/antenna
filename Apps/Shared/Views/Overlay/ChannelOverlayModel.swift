@@ -113,9 +113,12 @@
             return catalogue.channel(for: rows[next])
         }
 
-        /// The highlight moved onto `group` in the group column.
+        /// The highlight moved onto `group` in the group column. Another
+        /// group's list opens fresh, so no row in it is highlighted yet.
         func show(_ group: CatalogueGroup) {
+            guard group != self.group else { return }
             self.group = group
+            highlighted = nil
         }
 
         /// A channel was tuned from `group`; the next open starts there.
@@ -134,6 +137,14 @@
             let rows = catalogue.rows(in: group)
             if let key = playing.flatMap(RowKey.init), rows.contains(key) { return key }
             return rows.first
+        }
+
+        /// The row focus lands on when it moves into the channel column
+        /// (tv-channel-overlay/picking-a-group-shows-its-channels): the row
+        /// last highlighted in the shown group's list, which is still on
+        /// screen, else `entry`.
+        func target<Token>(_ catalogue: Catalogue<Token>, playing: Channel?) -> RowKey? {
+            panelRow(catalogue) ?? entry(catalogue, playing: playing)
         }
 
         /// The line the channel column shows when the shown group has no

@@ -114,10 +114,8 @@
                 guard !model.player.timeshift.takeHeldPress() else { return }
                 Task { await model.togglePlayback() }
             }
-            .onChange(of: catalogueInputs, initial: true) {
-                catalogue = NewChannels.group(
-                    .shell(channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents, rules: groupRules),
-                    seen: model.seen, now: .now)
+            .onChange(of: catalogueInputs, initial: true) { old, new in
+                catalogue = new.catalogue(after: old, current: catalogue, favorites: favorites, recents: shownRecents)
                 overlayCatalogueChanged()
             }
             .onChange(of: model.recents) { _, _ in showLatestRecents() }
@@ -310,9 +308,9 @@
             case (_, .overlay(.group(let group))):
                 overlay.show(group)
             case (.overlay(.group), .overlay(.channel(let key))):
-                // Right from a group lands on the playing channel when the group holds it.
-                if let entry = overlay.entry(catalogue, playing: model.tuned), entry != key {
-                    focus = .overlay(.channel(entry))
+                // Right from a group lands on the row last highlighted in its list, else the playing channel or the first row.
+                if let target = overlay.target(catalogue, playing: model.tuned), target != key {
+                    focus = .overlay(.channel(target))
                 } else {
                     overlay.highlight(key)
                 }

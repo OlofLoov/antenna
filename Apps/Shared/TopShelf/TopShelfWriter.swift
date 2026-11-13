@@ -200,7 +200,7 @@
                     return keys.map { key in key.flatMap { found[$0] } ?? [] }
                 },
                 logo: { url in
-                    // AsyncImage loads logos through the shared URL cache; this reads it without a request.
+                    // The logo cache downloads through the shared URL cache; this reads it without a request.
                     guard let data = URLCache.shared.cachedResponse(for: URLRequest(url: url))?.data,
                         let source = CGImageSourceCreateWithData(data as CFData, nil)
                     else { return nil }

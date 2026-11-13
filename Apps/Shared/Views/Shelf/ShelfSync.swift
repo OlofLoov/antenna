@@ -42,6 +42,7 @@ struct ShelfSync: ViewModifier {
                 await activity.follow(ActivityStore(context: context, profile: profile))
             }
             .environment(\.posterLoader, ShelfView.PosterLoader { await PosterCache.shared.poster(for: $0) })
+            .environment(\.logoLoader, LogoLoader(cached: { LogoCache.shared.cached($0) }, load: { await LogoCache.shared.logo(for: $0) }))
             .modifier(TrailerOpener())
             .task(id: records.compactMap(\.descriptor)) {
                 library.sourcesChanged(records.compactMap(\.descriptor))

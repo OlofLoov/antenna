@@ -37,47 +37,33 @@
 
         private var layout: some View {
             ChannelOverlay.Layout {
-                ChannelOverlay.GroupColumn {
-                    ForEach(Array(catalogue.groups.enumerated()), id: \.element) { index, group in
-                        ChannelOverlay.GroupRow(
-                            title: catalogue.label(of: group), systemImage: group.systemImage, count: catalogue.count(of: group),
-                            look: group == model.group ? .selected : .plain
-                        ) {
-                            model.show(group)
-                            if let entry = model.entry(catalogue, playing: playing) { focus.wrappedValue = .overlay(.channel(entry)) }
+                ScrollViewReader { proxy in
+                    groups
+                        .onAppear { proxy.scrollTo(model.group, anchor: .center) }
+                        .onChange(of: model.group) { _, group in
+                            // Focus scrolls the column itself while it is there.
+                            guard !focusIsOnGroups else { return }
+                            proxy.scrollTo(group, anchor: .center)
                         }
-                        .focused(focus, equals: .overlay(.group(group)))
-                        .groupSpokenLabel(group, count: catalogue.count(of: group))
-                        .accessibilityIdentifier(group == .new ? "overlay.group.new" : "overlay.group.\(index)")
-                    }
-                    ForEach(catalogue.lockedGroups, id: \.self) { group in
-                        ChannelOverlay.GroupRow(
-                            title: catalogue.label(of: group), systemImage: "lock.fill", count: 0, look: .plain
-                        ) {
-                            asked = group
-                            unlock?(group)
-                        }
-                        .focused(focus, equals: .overlay(.group(group)))
-                        .accessibilityLabel("\(catalogue.label(of: group)), locked")
-                        .accessibilityIdentifier("overlay.locked.\(group.storageKey)")
-                    }
-                } search: {
-                    // The picker for a multi-view tile has no Search.
-                    if multiView?.pickTarget == nil {
-                        ChannelOverlay.SearchRow(open: openSearch)
-                            .focused(focus, equals: .overlay(.search))
-                            .accessibilityIdentifier("overlay.search")
-                    }
                 }
+                // Left from the channels lands on the group they belong to.
+                .defaultFocus(focus, .overlay(.group(model.group)), priority: .userInitiated)
                 .focusSection()
             } channels: {
                 ChannelOverlay.ChannelColumn(title: catalogue.label(of: model.group), order: model.group.order) {
                     if let empty = model.emptyText(catalogue) {
                         ChannelOverlay.EmptyGroup(text: empty)
                     } else {
-                        rows
+                        OverlayChannelList(
+                            catalogue: catalogue, group: model.group, entry: entry, guide: guide, focus: focus, multiView: multiView,
+                            pick: { [model] channel in pick(channel, model.group) }, toggleFavorite: toggleFavorite
+                        )
+                        .equatable()
+                        .id(model.group)
                     }
                 }
+                // Right from a group, or left from the panel, lands on the row the panel describes, else the entry row.
+                .defaultFocus(focus, channelTarget, priority: .userInitiated)
                 .focusSection()
             } panel: {
                 if let key = model.panelRow(catalogue), let channel = catalogue.channel(for: key) {
@@ -92,74 +78,58 @@
             }
         }
 
-        private var rows: some View {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    // Rows move on to the next programme at the minute it starts.
-                    TimelineView(.everyMinute) { context in
-                        LazyVStack(alignment: .leading, spacing: 4) {
-                            ForEach(catalogue.rows(in: model.group), id: \.self) { key in
-                                if let channel = catalogue.channel(for: key) {
-                                    row(key, channel, line: guide.line(for: channel, at: context.date))
-                                }
-                            }
-                        }
+        private var groups: some View {
+            ChannelOverlay.GroupColumn {
+                ForEach(Array(catalogue.groups.enumerated()), id: \.element) { index, group in
+                    let count = catalogue.count(of: group)
+                    ChannelOverlay.GroupRow(
+                        title: catalogue.label(of: group), systemImage: group.systemImage, count: count,
+                        look: group == model.group ? .selected : .plain
+                    ) {
+                        model.show(group)
+                        if let target = model.target(catalogue, playing: playing) { focus.wrappedValue = .overlay(.channel(target)) }
                     }
+                    .focused(focus, equals: .overlay(.group(group)))
+                    .groupSpokenLabel(group, count: count)
+                    .id(group)
+                    .accessibilityIdentifier(group == .new ? "overlay.group.new" : "overlay.group.\(index)")
                 }
-                .scrollClipDisabled()
-                .accessibilityIdentifier("overlay.channels")
-                .onAppear { scroll(proxy) }
-                .onChange(of: model.group) { _, _ in scroll(proxy) }
+                ForEach(catalogue.lockedGroups, id: \.self) { group in
+                    ChannelOverlay.GroupRow(
+                        title: catalogue.label(of: group), systemImage: "lock.fill", count: 0, look: .plain
+                    ) {
+                        asked = group
+                        unlock?(group)
+                    }
+                    .focused(focus, equals: .overlay(.group(group)))
+                    .id(group)
+                    .accessibilityLabel("\(catalogue.label(of: group)), locked")
+                    .accessibilityIdentifier("overlay.locked.\(group.storageKey)")
+                }
+            } search: {
+                // The picker for a multi-view tile has no Search.
+                if multiView?.pickTarget == nil {
+                    ChannelOverlay.SearchRow(open: openSearch)
+                        .focused(focus, equals: .overlay(.search))
+                        .accessibilityIdentifier("overlay.search")
+                }
             }
         }
 
-        private func row(_ key: RowKey, _ channel: Channel, line: GuideLine) -> some View {
-            let number = catalogue.channelNumber(for: key)
-            let progress: Double?
-            let remaining: String?
-            switch line {
-            case .programme(_, let fraction, let left):
-                progress = fraction
-                remaining = left
-            case .message:
-                progress = nil
-                remaining = nil
-            }
-            let identifier = "overlay.channel.\(key.identifier)"
-            return ChannelOverlay.ChannelRow(
-                number: number, name: channel.name, detail: line.text, progress: progress, hasCatchUp: channel.catchUpBadge != nil,
-                identifier: identifier, badge: multiView?.tileBadge(key).map(MultiViewText.tileBadge)
-            ) {
-                pick(channel, model.group)
-            } logo: {
-                logo(channel)
-            }
-            .focused(focus, equals: .overlay(.channel(key)))
-            .contextMenu {
-                // Held select (favorites/hold-select-to-favorite-on-apple-tv).
-                Browse.FavoriteMenuButton(isFavorite: catalogue.isFavorite(channel)) { toggleFavorite(channel, key) }
-                    .accessibilityIdentifier("overlay.menu.favorite")
-            }
-            .id(key)
-            .accessibilityIdentifier(identifier)
-            .accessibilityLabel([number.map(String.init), channel.name, line.text, remaining].compactMap(\.self).joined(separator: ", "))
-            .accessibilityActions([
-                Browse.FavoriteMenuButton.action(isFavorite: catalogue.isFavorite(channel)) { toggleFavorite(channel, key) }
-            ])
+        /// The playing channel when the shown group holds it, else its first row.
+        private var entry: RowKey? {
+            model.entry(catalogue, playing: playing)
         }
 
-        @ViewBuilder private func logo(_ channel: Channel) -> some View {
-            let initials = ChannelOverlay.Initials(text: Channel.initials(for: channel.name))
-            if let url = channel.logoURL {
-                AsyncImage(url: url) { phase in
-                    if let image = phase.image {
-                        image.resizable().scaledToFit()
-                    } else {
-                        initials
-                    }
-                }
-            } else {
-                initials
+        /// Where focus lands entering the channel column, from a group or from the panel.
+        private var channelTarget: ShellFocus? {
+            model.target(catalogue, playing: playing).map { .overlay(.channel($0)) }
+        }
+
+        private var focusIsOnGroups: Bool {
+            switch focus.wrappedValue {
+            case .overlay(.group), .overlay(.search): true
+            default: false
             }
         }
 
@@ -176,7 +146,7 @@
                 now: now, nothingOn: guideNow.line.text,
                 next: guideNow.next.map { .init(time: Self.time($0.start), title: $0.title) }, eyebrow: multiView?.pickTarget
             ) {
-                logo(channel)
+                OverlayLogo(channel: channel)
             } nextRow: { item in
                 nextRow(item, programmes: guideNow.next, channel: channel, at: date)
             } buttons: {
@@ -208,17 +178,6 @@
 
         private static func time(_ date: Date) -> String {
             date.formatted(date: .omitted, time: .shortened)
-        }
-
-        /// Brings the highlighted or playing row into view.
-        private func scroll(_ proxy: ScrollViewProxy) {
-            let target: RowKey?
-            if case .overlay(.channel(let key)) = focus.wrappedValue {
-                target = key
-            } else {
-                target = model.entry(catalogue, playing: playing)
-            }
-            if let target { proxy.scrollTo(target, anchor: .center) }
         }
     }
 

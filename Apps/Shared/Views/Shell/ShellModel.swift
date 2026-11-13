@@ -241,8 +241,11 @@
             sources[index].waitsForICloud = state == .waitingForLogin && descriptors[id].map(dependencies.waitsForICloud) == true
         }
 
+        /// Leaves `channels` alone when a reload brought the same list, so
+        /// the screens reading it do not redraw.
         private func rebuildChannels() {
-            channels = sources.flatMap { channelsBySource[$0.id] ?? [] }
+            let all = sources.flatMap { channelsBySource[$0.id] ?? [] }
+            if all != channels { channels = all }
         }
 
         // MARK: Launch tune

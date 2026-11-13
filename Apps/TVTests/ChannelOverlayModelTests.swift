@@ -111,6 +111,24 @@ import Testing
         #expect(model.entry(all, playing: playing) == nil, "an empty group leaves focus where it is")
     }
 
+    @Test("tv-channel-overlay/picking-a-group-shows-its-channels back into a list lands on the row left, a new list on its entry")
+    func target() throws {
+        let all = catalogue()
+        let playing = try tagged("c1", in: all)
+        let s1 = try #require(RowKey(try tagged("s1", in: all)))
+        let s2 = try #require(RowKey(try tagged("s2", in: all)))
+        model.show(.named(home, "Sport"))
+        #expect(model.target(all, playing: playing) == s1, "the first row when the group does not hold the playing channel")
+        model.highlight(s2)
+        model.show(.named(home, "Sport"))
+        #expect(model.target(all, playing: playing) == s2, "the same group keeps its list and the row left")
+        model.show(.named(home, "News"))
+        model.show(.named(home, "Sport"))
+        #expect(model.target(all, playing: playing) == s1, "a group shown again opens a fresh list")
+        model.show(.named(cabin, "Sport"))
+        #expect(model.target(all, playing: playing) == RowKey(playing))
+    }
+
     @Test("tv-channel-overlay/empty-groups-tell-the-user-what-to-do the empty Favorites and All channels lines")
     func emptyText() {
         let all = catalogue()

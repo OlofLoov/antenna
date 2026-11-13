@@ -93,17 +93,7 @@
 
         var body: some View {
             let initials = ZapBar.Initials(text: Channel.initials(for: channel.name))
-            if let url = channel.logoURL {
-                AsyncImage(url: url) { phase in
-                    if let image = phase.image {
-                        image.resizable().scaledToFit()
-                    } else {
-                        initials
-                    }
-                }
-            } else {
-                initials
-            }
+            LogoImage(url: channel.logoURL) { initials }
         }
     }
 #endif
