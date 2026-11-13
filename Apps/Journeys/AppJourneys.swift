@@ -86,6 +86,16 @@ final class AppJourneys: XCTestCase {
         journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
     }
 
+    /// A movie playing with its controls up (add-title-transport-controls,
+    /// `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`).
+    func testMoviePlayer() {
+        let journey = Journey(self, arguments: ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
+        open("movies", label: "Movies", in: journey)
+        let poster = journey.element("movies.card.xtream#cabin#vod#2")
+        if poster.waitForExistence(timeout: 10) { poster.tap() }
+        journey.snap("movie-player-transport", anchor: "title.transport")
+    }
+
     /// Live with a channel the source gained since the day before, in the
     /// New group (add-discover-rows, `iPhone-Live-New`, `iPad-Live-New`).
     func testLiveNew() {

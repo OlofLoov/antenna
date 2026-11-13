@@ -190,6 +190,20 @@ final class TVJourneys: XCTestCase {
         journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
     }
 
+    /// A movie playing with the bar up, then paused
+    /// (add-title-transport-controls, `TV-Title-Player-Transport`).
+    func testMoviePlayer() {
+        let journey = Journey(self, arguments: ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
+        remote.press(.menu)
+        moveRight(to: "shell.tab.movies", in: journey)
+        remote.press(.select)
+        expectFocus("movies.hero.play", in: journey)
+        remote.press(.select)
+        journey.snap("movie-player-transport", anchor: "title.transport")
+        remote.press(.select)
+        journey.snap("movie-player-paused", anchor: "title.transport.stateGlyph")
+    }
+
     /// The channel overlay with a channel the source gained since the day
     /// before, in the New group (add-discover-rows, `TV-Overlay-New`).
     func testOverlayNew() {

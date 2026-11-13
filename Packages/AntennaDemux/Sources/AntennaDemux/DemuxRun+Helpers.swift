@@ -30,6 +30,15 @@ extension DemuxRun {
         return FieldPictures(decoder: decoder, isInterlacedBySPS: true)
     }
 
+    /// FFmpeg over `bytes`, free to jump in them when the server allows it.
+    /// A film whose container gives no length (MPEG-TS) gets one measured
+    /// from its two ends, so it can skip and resume; live TV never does.
+    static func demuxer(over bytes: any DemuxBytes, options: PlaybackOptions) throws -> Demuxer {
+        try Demuxer(
+            read: { bytes.read(into: $0, count: $1) }, seek: bytes.canSeek ? seeker(bytes) : nil,
+            measuresLength: options.isLive == false)
+    }
+
     /// FFmpeg's seek callback over `bytes`: SEEK_SET, SEEK_CUR and SEEK_END
     /// move, and AVSEEK_SIZE asks for the length.
     static func seeker(_ bytes: any DemuxBytes) -> Demuxer.Seek {

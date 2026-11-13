@@ -84,8 +84,10 @@ public final class Demuxer: @unchecked Sendable {
 
     /// Opens the container and reads enough to know its streams. Blocks
     /// while `read` waits for bytes.
-    /// With `seek`, FFmpeg may jump in the bytes, as films need.
-    public init(read: @escaping Read, seek: Seek? = nil) throws {
+    /// With `seek`, FFmpeg may jump in the bytes, as films need. With
+    /// `measuresLength` as well, a container whose header gives no length,
+    /// such as MPEG-TS, gets one from the times at its start and its end.
+    public init(read: @escaping Read, seek: Seek? = nil, measuresLength: Bool = false) throws {
         av_log_set_level(AV_LOG_QUIET)
         reader = Unmanaged.passRetained(ReadBox(read, seek: seek))
         let size: Int32 = 64 * 1024
@@ -128,6 +130,9 @@ public final class Demuxer: @unchecked Sendable {
             return Self.describe(index: index, stream: stream, parameters: parameters.pointee)
         }
         packet = av_packet_alloc()
+        if duration == nil, seek != nil, measuresLength {
+            measureLength()
+        }
     }
 
     deinit {
@@ -169,6 +174,49 @@ public final class Demuxer: @unchecked Sendable {
         let origin = origin ?? seekOrigin
         let target = CMTimeConvertScale(CMTimeAdd(origin, time), timescale: CMTimeScale(AV_TIME_BASE), method: .roundTowardNegativeInfinity)
         return av_seek_frame(context, -1, target.value, AVSEEK_FLAG_BACKWARD) >= 0
+    }
+
+    /// The bytes read at each end of a container with no length in its header.
+    static let lengthProbe: Int64 = 1 << 20
+
+    /// Finds the start and the length of a film whose container does not
+    /// give them, from the earliest time in its first packets and the latest
+    /// in its last megabyte, then goes back to the first byte. Leaves both
+    /// unknown when either end has no time.
+    private func measureLength() {
+        guard let context, let packet, let io else { return }
+        let size = avio_size(io)
+        guard size > 0 else { return }
+        var first = CMTime.invalid
+        for _ in 0..<64 {
+            guard let time = readTime(context, packet) else { break }
+            if time.isValid, !first.isValid || time < first { first = time }
+        }
+        var last = CMTime.invalid
+        if av_seek_frame(context, -1, max(0, size - Self.lengthProbe), AVSEEK_FLAG_BYTE) >= 0 {
+            while let time = readTime(context, packet, end: true) {
+                if time.isValid, !last.isValid || time > last { last = time }
+            }
+        }
+        _ = av_seek_frame(context, -1, 0, AVSEEK_FLAG_BYTE)
+        let start = startTime.isNumeric ? startTime : first
+        guard start.isNumeric, last.isNumeric, last > start else { return }
+        startTime = start
+        duration = CMTimeSubtract(last, start)
+    }
+
+    /// Reads one packet and returns its presentation time, or with `end` the
+    /// time it stops showing; `.invalid` when it has none, nil at the end.
+    private func readTime(
+        _ context: UnsafeMutablePointer<AVFormatContext>, _ packet: UnsafeMutablePointer<AVPacket>, end: Bool = false
+    ) -> CMTime? {
+        guard av_read_frame(context, packet) >= 0 else { return nil }
+        defer { av_packet_unref(packet) }
+        guard let base = timeBases[Int(packet.pointee.stream_index)] else { return .invalid }
+        let pts = Self.time(packet.pointee.pts, base)
+        guard pts.isValid, end else { return pts }
+        let length = Self.time(packet.pointee.duration, base)
+        return length.isNumeric ? CMTimeAdd(pts, length) : pts
     }
 
     /// Frees FFmpeg's state. Safe to call more than once.

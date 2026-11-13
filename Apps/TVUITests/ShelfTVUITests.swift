@@ -253,6 +253,30 @@ final class ShelfTVUITests: XCTestCase {
         expect(element("shell.debug.engine"), "value BEGINSWITH 'playing loads=2'")
     }
 
+    // player-controls-and-playback-errors/move-around-in-a-movie-or-episode, on Apple TV
+    // player-controls-and-playback-errors/the-movie-controls-show-and-hide, on Apple TV
+    func testClicksSkipAndSelectPausesAMovie() {
+        openMovies()
+        press(.select)
+        expect(element("shelf.debug.engine"), "value == 'playing 1.mp4 from 0'")
+        XCTAssertTrue(element("title.transport").waitForExistence(timeout: 5), "the bar shows when the movie starts")
+
+        press(.right, times: 2)
+        expect(element("shelf.debug.position"), "value == 'at 20'")
+        press(.left)
+        expect(element("shelf.debug.position"), "value == 'at 10'")
+        expect(element("title.transport.elapsed"), "label == '0:10'")
+        expect(element("title.transport.remaining"), "label == '-1:29:50'")
+
+        press(.select)
+        expect(element("shelf.debug.engine"), "value == 'paused 1.mp4 from 0'")
+        expect(element("title.transport.stateGlyph"), "label == 'Paused'")
+        press(.playPause)
+        expect(element("shelf.debug.engine"), "value == 'playing 1.mp4 from 0'")
+        press(.menu)
+        expect(element("movies.player"), "exists == false")
+    }
+
     // player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode, on Apple TV
     func testHoldingSelectInAMovieOpensAudioAndSubtitles() {
         openMovies()

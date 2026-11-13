@@ -22,24 +22,24 @@ import Testing
             for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
     }
 
-    private var store: ActivityStore { ActivityStore(context: container.mainContext) }
+    var store: ActivityStore { ActivityStore(context: container.mainContext) }
 
-    private var movie: ShelfTitle {
+    var movie: ShelfTitle {
         ShelfTitle(id: "xtream#h#vod#7", kind: .movie, sourceID: source, name: "Salt Road", category: "Drama")
     }
 
-    private func series(_ number: Int) -> ShelfTitle {
+    func series(_ number: Int) -> ShelfTitle {
         ShelfTitle(id: "xtream#h#series#\(number)", kind: .series, sourceID: source, name: "Series \(number)", category: "Drama")
     }
 
-    private func episode(_ series: Int, _ number: Int) -> Episode {
+    func episode(_ series: Int, _ number: Int) -> Episode {
         Episode(
             id: "xtream#h#episode#\(series * 10 + number)", episodeID: series * 10 + number, season: 1, number: number, title: "E\(number)")
     }
 
     /// Series 1 has three episodes, series 2 none, and series 3's list fails
     /// once, then has one.
-    private func library() async -> ShelfLibrary {
+    func library() async -> ShelfLibrary {
         let failures = Counter()
         let titles = (movies: [movie], series: (1...3).map(series))
         let episodes: @MainActor (Int) throws -> [Episode] = { number in
@@ -67,7 +67,7 @@ import Testing
 
     /// Follows the store until `follow` is cancelled; the test cancels it
     /// before the store goes away.
-    private func activity(_ follow: inout Task<Void, Never>?) async -> ShelfActivity {
+    func activity(_ follow: inout Task<Void, Never>?) async -> ShelfActivity {
         let activity = ShelfActivity()
         let store = store
         follow = Task { [container] in
@@ -79,7 +79,7 @@ import Testing
         return activity
     }
 
-    private func playback(liveStopped: Counter = Counter()) -> ShelfPlayback {
+    func playback(liveStopped: Counter = Counter()) -> ShelfPlayback {
         ShelfPlayback(
             .init(
                 engine: engine,
@@ -244,6 +244,8 @@ import Testing
         #expect(await eventually { saved() == 135 })
 
         engine.send(position: 140)
+        // Positions and states are separate streams; let the position land first.
+        try? await Task.sleep(for: .milliseconds(50))
         await engine.pause()
         #expect(await eventually { saved() == 140 }, "pausing saves")
 
@@ -317,9 +319,16 @@ final class ScriptedEngine: PlaybackEngine {
 
     var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
 
+    /// The reason every load fails with, nil while loads work.
+    var failsLoads: PlaybackFailure?
+
     func load(_ url: URL, options: PlaybackOptions) async throws {
         loads.append(Load(url: url, options: options))
         state = .loading
+        if let failsLoads {
+            state = .failed(failsLoads)
+            throw failsLoads
+        }
     }
 
     func play() async { state = .playing }
@@ -331,7 +340,15 @@ final class ScriptedEngine: PlaybackEngine {
         positionCast.send(PlaybackPosition(time: .seconds(seconds), duration: .seconds(5400), isLive: false))
     }
 
-    func seek(to time: Duration) async throws {}
+    /// The times asked for, in order; with `refusesSeeks` each one throws.
+    private(set) var seeks: [Duration] = []
+    var refusesSeeks = false
+
+    func seek(to time: Duration) async throws {
+        if refusesSeeks { throw SeekRefusal.notSeekable }
+        seeks.append(time)
+    }
+
     func selectAudio(_ id: MediaTrack.ID) async {}
     func selectSubtitle(_ id: MediaTrack.ID?) async {}
     func states() async -> AsyncStream<PlaybackState> { stateCast.stream() }

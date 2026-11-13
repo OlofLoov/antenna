@@ -123,6 +123,74 @@ final class ShelfPlayerUITests: XCTestCase {
         app.waitForEngine("playing loads=2")
     }
 
+    func expectPlace(_ app: XCUIApplication, _ place: String, file: StaticString = #filePath, line: UInt = #line) {
+        let probe = app.element("shelf.debug.position")
+        let wait = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", place), object: probe)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [wait], timeout: 5), .completed, "the title is \(probe.value as? String ?? "nowhere")", file: file,
+            line: line)
+    }
+
+    // player-controls-and-playback-errors/move-around-in-a-movie-or-episode
+    // player-controls-and-playback-errors/the-movie-controls-show-and-hide
+    func testSkipPauseAndScrubAMovie() throws {
+        let app = try launch()
+        open(app, "movies")
+        let poster = card(app, "movies", in: "continueWatching", "xtream#cabin#vod#2")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        poster.tap()
+        expectPlayer(app, "playing 2.mp4 from 2160")
+        XCTAssertTrue(app.element("title.transport").waitForExistence(timeout: 5), "the controls show when the movie starts")
+        XCTAssertEqual(app.element("title.transport.elapsed").label, "36:00")
+        XCTAssertEqual(app.element("title.transport.remaining").label, "-54:00")
+
+        app.element("title.transport.skipForward").tap()
+        expectPlace(app, "at 2170")
+        app.element("title.transport.skipBack").tap()
+        app.element("title.transport.skipBack").tap()
+        expectPlace(app, "at 2150")
+        XCTAssertEqual(app.element("title.transport.elapsed").label, "35:50")
+
+        app.element("title.transport.playPause").tap()
+        expectPlayer(app, "paused 2.mp4 from 2160")
+        // A drag from the knob, at 2150 of 5400 seconds, to the middle of the bar.
+        let scrubber = app.element("title.transport.scrubber")
+        scrubber.coordinate(withNormalizedOffset: CGVector(dx: 2150.0 / 5400, dy: 0.5))
+            .press(forDuration: 0.2, thenDragTo: scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)))
+        let probe = app.element("shelf.debug.position")
+        let moved = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value != 'at 2150'"), object: probe)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [moved], timeout: 5), .completed,
+            "the drag moved nothing; the controls read \(app.element("title.transport.elapsed").label)")
+        let landed = Int((probe.value as? String ?? "").dropFirst(3)) ?? 0
+        XCTAssertTrue((2400...3300).contains(landed), "the drag landed at \(landed), not near the middle")
+        expectPlayer(app, "paused 2.mp4 from 2160")
+
+        let picture = app.element("movies.player")
+        picture.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
+        let hidden = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.element("title.transport"))
+        XCTAssertEqual(XCTWaiter().wait(for: [hidden], timeout: 3), .completed, "a tap hides the controls")
+        picture.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
+        XCTAssertTrue(app.element("title.transport").waitForExistence(timeout: 3), "a second tap shows them")
+        XCTAssertTrue(app.element("movies.player.close").exists)
+    }
+
+    // player-controls-and-playback-errors/move-around-in-a-movie-or-episode, double tap
+    func testDoubleTapSkips() throws {
+        let app = try launch()
+        open(app, "movies")
+        let poster = card(app, "movies", in: "continueWatching", "xtream#cabin#vod#2")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        poster.tap()
+        expectPlayer(app, "playing 2.mp4 from 2160")
+        let picture = app.element("movies.player")
+        picture.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.25)).doubleTap()
+        expectPlace(app, "at 2170")
+        picture.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.25)).doubleTap()
+        picture.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.25)).doubleTap()
+        expectPlace(app, "at 2150")
+    }
+
     // player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode
     func testAMovieOffersItsSoundAndSubtitleTracks() throws {
         let app = try launch()
