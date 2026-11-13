@@ -167,7 +167,8 @@ struct OnboardingFormScreen: View {
     #endif
 
     private var status: OnboardingForm.Status {
-        OnboardingForm.Status(error: model.error, connecting: model.connecting, clipboard: model.clipboardOffer)
+        OnboardingForm.Status(
+            error: model.error, connecting: model.connecting, clipboard: model.clipboardOffer, xtreamLink: model.fields.xtreamPanel != nil)
     }
 
     private var actions: OnboardingForm.Actions {
@@ -175,7 +176,8 @@ struct OnboardingFormScreen: View {
             choose: { model.choose($0) },
             connect: { Task { await model.connect(into: context) } },
             fillIn: { model.fillIn() },
-            importFile: importFile)
+            importFile: importFile,
+            useXtream: { model.useXtream() })
     }
 
     private var importFile: (() -> Void)? {

@@ -147,6 +147,70 @@ final class SourceEditor {
         return true
     }
 
+    /// The panel login in the link field of a playlist source, which can
+    /// switch to Xtream (source-management/a-playlist-source-switches-to-xtream-in-place).
+    var xtreamPanel: XtreamPanelLink? {
+        kind == .m3u ? XtreamPanelLink(link) : nil
+    }
+
+    /// Use Xtream on a playlist source whose link is a panel link. Checks the
+    /// login with the panel, then turns the source into an Xtream login in
+    /// place: same id, name, order and guide link, the server as its link and
+    /// the login in the Keychain. Favorites and own-group channels of
+    /// `channels` move to their Xtream ids. Changes nothing and sets `error`
+    /// when a check fails. Returns the new descriptor, after which the caller
+    /// reloads the source.
+    func switchToXtream(channels: [Channel], in context: ModelContext) async -> SourceDescriptor? {
+        guard !saving, let panel = xtreamPanel, let record = record(in: context) else { return nil }
+        error = nil
+        let login = panel.credentials
+        let host = login.server.host() ?? login.server.absoluteString
+        if isDuplicateXtream(login, in: context) {
+            error = "This source is already added."
+            return nil
+        }
+        saving = true
+        defer { saving = false }
+        do {
+            _ = try await connector.probe(.xtream, link: login.server, username: login.username, password: login.password, host: host)
+        } catch is CancellationError {
+            return nil
+        } catch {
+            self.error = ConnectFailure(error, host: host).message
+            return nil
+        }
+        let key = record.credentialKey ?? record.id.uuidString
+        do {
+            try connector.credentials.save(.init(username: login.username, password: login.password), for: key)
+        } catch {
+            self.error = ConnectFailure.credentials("\(error)").message
+            return nil
+        }
+        let ids = panel.liveChannelIDs(for: channels.filter { $0.sourceID == id })
+        record.kindRaw = SourceKind.xtream.rawValue
+        record.url = login.server
+        record.credentialKey = key
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedName.isEmpty { record.name = trimmedName }
+        let guide = guideLink.trimmingCharacters(in: .whitespacesAndNewlines)
+        record.epgURL = guide.isEmpty ? nil : URL(string: guide)
+        ChannelIDMigration.rewrite(ids, source: id, in: context)
+        try? context.save()
+        return record.descriptor
+    }
+
+    /// Another Xtream source on the same server whose login on this device has the same username.
+    private func isDuplicateXtream(_ login: XtreamCredentials, in context: ModelContext) -> Bool {
+        let key = SourceLink.key(login.server)
+        let others = ((try? context.fetch(FetchDescriptor<SourceRecord>())) ?? []).filter {
+            $0.id != id && $0.kind == .xtream && $0.url.map(SourceLink.key) == key
+        }
+        return others.contains { other in
+            guard let key = other.credentialKey, let saved = try? connector.credentials.load(for: key) else { return false }
+            return saved.username == login.username
+        }
+    }
+
     private func apply(to record: SourceRecord, url: URL, in context: ModelContext) {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         // An emptied name is replaced by the link's host.
