@@ -2,8 +2,8 @@ import AntennaCore
 import SwiftUI
 
 /// The add-source form (`iPhone-Onboard-2`, `iPhone-Onboard-2-M3U`,
-/// `iPhone-Onboard-2-Connecting`, `iPhone-Onboard-2-NoLink`, `TV-Onboard-3`,
-/// `TV-Onboard-3-M3U`, `TV-Onboard-3-Connecting`). Takes the fields as a
+/// `iPhone-Onboard-2-Connecting`, `iPhone-Onboard-2-NoLink`, `iPhone-Onboard-2-XtreamLink`, `TV-Onboard-3`,
+/// `TV-Onboard-3-M3U`, `TV-Onboard-3-Connecting`, `TV-Onboard-3-XtreamLink`). Takes the fields as a
 /// binding and reports Connect, Fill in and the type through closures.
 enum OnboardingForm {
     /// What the form's buttons do.
@@ -13,6 +13,8 @@ enum OnboardingForm {
         var fillIn: () -> Void
         /// "Import a file instead" under the playlist link; nil hides it.
         var importFile: (() -> Void)?
+        /// Use Xtream on the offer under a panel link.
+        var useXtream: () -> Void = {}
     }
 
     /// The values the form shows besides the fields.
@@ -20,6 +22,9 @@ enum OnboardingForm {
         var error: String?
         var connecting = false
         var clipboard = ClipboardOffer.hidden
+        /// The playlist link is an Xtream login, so the offer shows
+        /// (source-management/the-add-form-offers-xtream-for-a-panel-link).
+        var xtreamLink = false
     }
 
     /// What the clipboard banner says.
@@ -148,6 +153,9 @@ enum OnboardingForm {
                     }
                 }
                 .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                if status.xtreamLink {
+                    XtreamLinkOffer.Phone(useXtream: actions.useXtream)
+                }
                 if fields.kind == .m3u, let importFile = actions.importFile {
                     Button("Import a file instead", action: importFile)
                         .font(.system(size: 15))
@@ -208,6 +216,9 @@ enum OnboardingForm {
                             }
                             Stacked(label: "Guide URL", optional: true) {
                                 TextField("", text: $fields.epgURL).accessibilityIdentifier("onboarding.field.guide")
+                            }
+                            if status.xtreamLink {
+                                XtreamLinkOffer.Television(useXtream: actions.useXtream)
                             }
                         case .stalker:
                             Stacked(label: "Portal") {
@@ -316,6 +327,16 @@ enum OnboardingForm {
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
 }
 
+#Preview("Form, iPhone, M3U with an Xtream link") {
+    @Previewable @State var fields = SourceFields(
+        kind: .m3u, name: "Home provider",
+        url: "http://tv.example-provider.net:8080/get.php?username=user4821&password=pass1234&type=m3u_plus")
+    @Previewable @State var reveals = false
+    OnboardingForm.Phone(
+        fields: $fields, revealsPassword: $reveals, status: .init(xtreamLink: true),
+        actions: .init(choose: { _ in }, connect: {}, fillIn: {}, importFile: {}))
+}
+
 #Preview("Form, iPhone, Channels DVR") {
     @Previewable @State var fields = SourceFields(kind: .channelsDVR, url: "192.168.1.20")
     @Previewable @State var reveals = false
@@ -367,6 +388,12 @@ enum OnboardingForm {
     OnboardingForm.Television(
         fields: $fields, status: .init(error: "Could not reach tv.example-provider.net. Check the address and try again."),
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
+}
+
+#Preview("Form, Apple TV, M3U with an Xtream link", traits: .fixedLayout(width: 1920, height: 1080)) {
+    @Previewable @State var fields = SourceFields(
+        kind: .m3u, url: "http://tv.example-provider.net:8080/get.php?username=user4821&password=pass1234&type=m3u_plus")
+    OnboardingForm.Television(fields: $fields, status: .init(xtreamLink: true), actions: .init(choose: { _ in }, connect: {}, fillIn: {}))
 }
 
 #Preview("Form, iPhone, Jellyfin server") {

@@ -15,9 +15,24 @@ enum ChannelIDMigration {
     /// nothing.
     static func apply(_ formerIDs: [String: String], source: UUID, in context: ModelContext) {
         guard !formerIDs.isEmpty else { return }
-        let favorites = migrateFavorites(formerIDs, source: source, in: context)
-        let members = migrateMembers(formerIDs, source: source, in: context)
-        if favorites || members { try? context.save() }
+        if rewrite(formerIDs, source: source, only: isEarlier, in: context) { try? context.save() }
+    }
+
+    /// Rewrites, as `apply` does, every favorite and own-group channel of
+    /// `source` whose id `ids` names, whatever its form, and does not save.
+    /// For a playlist switched to Xtream
+    /// (source-management/a-playlist-source-switches-to-xtream-in-place).
+    /// Returns true when something changed.
+    @discardableResult
+    static func rewrite(_ ids: [String: String], source: UUID, in context: ModelContext) -> Bool {
+        guard !ids.isEmpty else { return false }
+        return rewrite(ids, source: source, only: { ids[$0] != nil }, in: context)
+    }
+
+    private static func rewrite(_ ids: [String: String], source: UUID, only: (String) -> Bool, in context: ModelContext) -> Bool {
+        let favorites = migrateFavorites(ids, source: source, only: only, in: context)
+        let members = migrateMembers(ids, source: source, only: only, in: context)
+        return favorites || members
     }
 
     /// True for an id from before m3u-playlists/stable-and-unique-ids.
@@ -49,11 +64,13 @@ enum ChannelIDMigration {
         }
     }
 
-    private static func migrateFavorites(_ formerIDs: [String: String], source: UUID, in context: ModelContext) -> Bool {
+    private static func migrateFavorites(
+        _ formerIDs: [String: String], source: UUID, only: (String) -> Bool, in context: ModelContext
+    ) -> Bool {
         let all = (try? context.fetch(FetchDescriptor<FavoriteRecord>(sortBy: [SortDescriptor(\.sortOrder)]))) ?? []
-        var saved = Set(all.filter { !isEarlier($0.channelID) }.map(FavoriteKey.init))
+        var saved = Set(all.filter { !only($0.channelID) }.map(FavoriteKey.init))
         var changed = false
-        for record in all where isEarlier(record.channelID) && (record.sourceID == nil || record.sourceID == source) {
+        for record in all where only(record.channelID) && (record.sourceID == nil || record.sourceID == source) {
             guard let id = formerIDs[record.channelID] else { continue }
             record.channelID = id
             if !saved.insert(FavoriteKey(record)).inserted { context.delete(record) }
@@ -62,11 +79,13 @@ enum ChannelIDMigration {
         return changed
     }
 
-    private static func migrateMembers(_ formerIDs: [String: String], source: UUID, in context: ModelContext) -> Bool {
+    private static func migrateMembers(
+        _ formerIDs: [String: String], source: UUID, only: (String) -> Bool, in context: ModelContext
+    ) -> Bool {
         let all = (try? context.fetch(FetchDescriptor<GroupMemberRecord>(sortBy: [SortDescriptor(\.sortOrder)]))) ?? []
-        var saved = Set(all.filter { !isEarlier($0.channelID) }.map(MemberKey.init))
+        var saved = Set(all.filter { !only($0.channelID) }.map(MemberKey.init))
         var changed = false
-        for record in all where isEarlier(record.channelID) && record.sourceID == source {
+        for record in all where only(record.channelID) && record.sourceID == source {
             guard let id = formerIDs[record.channelID] else { continue }
             record.channelID = id
             if !saved.insert(MemberKey(record)).inserted { context.delete(record) }

@@ -197,6 +197,7 @@ final class SourceRefresher {
 
     private static func hasGuide(_ source: SourceDescriptor, _ playlist: Playlist) -> Bool {
         source.kind != .m3u || source.epgURL != nil || !playlist.epgURLs.isEmpty
+            || GuideURLResolver.panelGuide(kind: source.kind, url: source.url) != nil
     }
 
     /// A playlist's bad status as the server error the copy names.

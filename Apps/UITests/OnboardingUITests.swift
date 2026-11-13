@@ -135,6 +135,26 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertFalse(element(app, "onboarding.clipboard").exists)
     }
 
+    // source-management/the-add-form-offers-xtream-for-a-panel-link
+    func testAPanelLinkOffersXtream() {
+        let app = launch("signedIn")
+        XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
+        element(app, "onboarding.addSource").tap()
+        XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
+        element(app, "onboarding.kind.m3u").tap()
+        let field = element(app, "onboarding.field.playlist")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertFalse(element(app, "onboarding.xtreamOffer").exists, "no offer without a panel link")
+        field.tap()
+        field.typeText("http://tv.example.test:8080/get.php?username=anna&password=pw&type=m3u_plus")
+        XCTAssertTrue(element(app, "onboarding.useXtream").waitForExistence(timeout: 5))
+        element(app, "onboarding.useXtream").tap()
+        XCTAssertTrue(element(app, "onboarding.field.server").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "onboarding.field.server").value as? String, "http://tv.example.test:8080")
+        XCTAssertEqual(element(app, "onboarding.field.username").value as? String, "anna")
+        XCTAssertFalse(element(app, "onboarding.xtreamOffer").exists)
+    }
+
     private func connect(_ app: XCUIApplication, playlist: String) {
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         element(app, "onboarding.addSource").tap()

@@ -60,6 +60,13 @@ final class OnboardingModel {
         error = nil
     }
 
+    /// Use Xtream on the offer under a panel link: the form becomes an Xtream
+    /// login filled in from the link (source-management/the-add-form-offers-xtream-for-a-panel-link).
+    func useXtream() {
+        fields.useXtream()
+        error = nil
+    }
+
     /// Checks the fields, then connects and saves. A second call while one
     /// runs sends nothing. Returns once the attempt ends; `connection` is
     /// set when it worked and `error` when it did not.

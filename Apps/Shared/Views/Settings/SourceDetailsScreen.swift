@@ -2,7 +2,7 @@ import AntennaCore
 import SwiftData
 import SwiftUI
 
-/// A source's details (`iPhone-Settings-Detail`, `iPad-Settings`,
+/// A source's details (`iPhone-Settings-Detail`, `iPhone-Settings-Detail-XtreamLink`, `iPad-Settings`,
 /// `TV-Settings`): what it holds, its editable name, link, guide link and
 /// login, Refresh now, Move up and Move down on Apple TV, and Delete source.
 /// Closes when another device deletes the source
@@ -70,7 +70,7 @@ struct SourceDetailsScreen: View {
                 Text(SourceRowLabel.badge(record.kind))
             }
             if let editor, record.url != nil {
-                SourceFieldsSection(editor: editor)
+                SourceFieldsSection(editor: editor, switched: switched)
             }
             GuideRowSection(id: record.id)
             Section {
@@ -131,6 +131,12 @@ struct SourceDetailsScreen: View {
             + text.detailLines(SettingsView.status(of: record, refresher: refresher), account: nil, now: now)
     }
 
+    /// A playlist became an Xtream login: the form follows the new type and the source loads again.
+    private func switched(_ descriptor: SourceDescriptor) {
+        editor = SourceEditor(descriptor, connector: SourceConnector())
+        refresher?.refresh([descriptor.id])
+    }
+
     private func save(_ editor: SourceEditor) {
         Task {
             let checked = editor.needsCheck
@@ -144,8 +150,11 @@ struct SourceDetailsScreen: View {
 /// with the password field empty.
 private struct SourceFieldsSection: View {
     @Bindable var editor: SourceEditor
+    /// After Use Xtream worked, with the source as it is now.
+    let switched: (SourceDescriptor) -> Void
     @Environment(\.modelContext) private var context
     @Environment(\.sourceRefresher) private var refresher
+    @Environment(\.loadedChannels) private var channels
 
     var body: some View {
         Section("Source") {
@@ -158,6 +167,21 @@ private struct SourceFieldsSection: View {
                 TextField("Guide", text: $editor.guideLink, prompt: Text("Optional XMLTV link"))
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("settings.details.guide")
+            }
+        }
+        if editor.xtreamPanel != nil {
+            // source-management/a-playlist-source-switches-to-xtream-in-place
+            Section {
+                Button(editor.saving ? "Checking…" : XtreamLinkOffer.button) {
+                    Task {
+                        if let descriptor = await editor.switchToXtream(channels: channels, in: context) { switched(descriptor) }
+                    }
+                }
+                .disabled(editor.saving)
+                .accessibilityIdentifier("settings.details.useXtream")
+            } footer: {
+                Text(XtreamLinkOffer.message)
+                    .accessibilityIdentifier("settings.details.xtreamOffer")
             }
         }
         if editor.kind == .xtream || editor.kind == .stalker || editor.kind == .jellyfin {
