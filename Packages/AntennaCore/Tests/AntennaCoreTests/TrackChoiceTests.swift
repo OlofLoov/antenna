@@ -15,8 +15,10 @@ import Testing
         MediaTrack(id: "subtitle-1", kind: .subtitle, languageCode: "swe", name: nil, isDefault: false),
     ]
 
-    private func choice(_ options: PlaybackOptions) -> (audio: MediaTrack.ID?, subtitle: MediaTrack.ID?) {
-        TrackChoice.initial(audio: audio, subtitles: subtitles, options: options)
+    private func choice(
+        _ options: PlaybackOptions, playable: Set<MediaTrack.ID>? = nil
+    ) -> (audio: MediaTrack.ID?, subtitle: MediaTrack.ID?) {
+        TrackChoice.initial(audio: audio, subtitles: subtitles, options: options, playable: playable)
     }
 
     @Test("playback-engine/audio-and-subtitle-languages starting by preference")
@@ -31,6 +33,21 @@ import Testing
             audio: audio.map { MediaTrack(id: $0.id, kind: .audio, languageCode: $0.languageCode, name: nil, isDefault: false) },
             subtitles: [], options: PlaybackOptions())
         #expect(noDefault.audio == "audio-0")
+    }
+
+    @Test("playback-engine/streams-start-with-sound-the-device-can-play an undecodable default gives way to playable sound")
+    func playableFirst() {
+        let english = choice(PlaybackOptions(), playable: ["audio-1"])
+        #expect(english.audio == "audio-1", "the English default cannot be decoded, so the German track plays")
+        let remembered = choice(PlaybackOptions(remembered: LanguagePick(audio: "eng", subtitle: nil)), playable: ["audio-1"])
+        #expect(remembered.audio == "audio-1")
+        let preferred = choice(PlaybackOptions(preferredAudioLanguages: ["de"]), playable: ["audio-0"])
+        #expect(preferred.audio == "audio-0")
+        let none = choice(PlaybackOptions(preferredAudioLanguages: ["de"]), playable: [])
+        #expect(none.audio == "audio-1", "with nothing playable the usual rules pick, and the stream says it plays without sound")
+        let reader = PlaybackOptions(preferredSubtitleLanguages: ["en", "sv"], subtitleMode: .auto)
+        #expect(choice(reader).subtitle == nil, "English sound is understood")
+        #expect(choice(reader, playable: ["audio-1"]).subtitle == "subtitle-0", "subtitles follow the German sound that plays")
     }
 
     @Test("playback-engine/audio-and-subtitle-languages returning to a channel")

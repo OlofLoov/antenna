@@ -44,6 +44,16 @@ public final class SampleBuilder {
     /// Where the next AAC frame starts, for frames FFmpeg gives no time:
     /// it times only the first frame of a multi-frame packet.
     private var nextSoundTime: CMTime = .invalid
+    /// What the newest sound frame header said, so a change of channels or
+    /// rate partway through gets a new format: an AudioSpecificConfig from
+    /// ADTS, a Dolby header, or an MPEG audio header.
+    private var soundHeader: SoundHeader?
+
+    private enum SoundHeader: Equatable {
+        case aac(Data)
+        case dolby(DolbyHeader)
+        case mpeg(MPEGAudioHeader)
+    }
 
     /// Throws `unsupportedCodec` for a codec with no builder yet.
     public init(stream: DemuxedStream) throws {
@@ -84,11 +94,15 @@ public final class SampleBuilder {
     /// before its first parameter sets; a software decoder gives none while it
     /// waits for a reference frame, and sometimes more than one.
     public func sampleBuffers(for packet: DemuxedPacket) throws -> [CMSampleBuffer] {
-        if case .mpegAudio = codec { try resolveMPEGAudio(packet) }
+        if case .mpegAudio = codec {
+            try resolveMPEGAudio(packet)
+            // No frame header yet: nothing to build until one arrives.
+            if case .mpegAudio = codec { return [] }
+        }
         guard case .software(let decoder) = codec else { return try sampleBuffer(for: packet).map { [$0] } ?? [] }
         let buffers = try decoder.decode(packet)
-        if let first = buffers.first, formatDescription == nil {
-            formatDescription = CMSampleBufferGetFormatDescription(first)
+        if let last = buffers.last, let format = CMSampleBufferGetFormatDescription(last) {
+            formatDescription = format
         }
         return buffers
     }
@@ -118,18 +132,26 @@ public final class SampleBuilder {
         case .aacADTS:
             let frames = try Self.adtsFrames(packet.data)
             guard let first = frames.first else { return nil }
-            if formatDescription == nil { formatDescription = try Self.aacFormat(config: first.config) }
+            if soundHeader != .aac(first.config) {
+                formatDescription = try Self.aacFormat(config: first.config)
+                soundHeader = .aac(first.config)
+            }
             return try formatDescription.flatMap { try soundBuffer(frames.map(\.payload), format: $0, packet: packet) }
         case .aacRaw(let config):
             if formatDescription == nil { formatDescription = try Self.aacFormat(config: config) }
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         case .mp3:
+            if let header = Self.mpegAudioHeader(packet.data), header.layer == 3, soundHeader != .mpeg(header) {
+                formatDescription = try Self.mp3Format(sampleRate: header.sampleRate, channels: header.channels, samples: header.samples)
+                soundHeader = .mpeg(header)
+            }
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         case .software, .mpegAudio:
             return try sampleBuffers(for: packet).first
         case .dolby:
-            if formatDescription == nil, let header = Self.dolbyHeader(packet.data) {
+            if let header = Self.dolbyHeader(packet.data), soundHeader != .dolby(header) {
                 formatDescription = try Self.dolbyFormat(header)
+                soundHeader = .dolby(header)
             }
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         }
@@ -143,7 +165,6 @@ public final class SampleBuilder {
         if header.layer == 3 {
             codec = .mp3
             codecName = "mp3"
-            formatDescription = try Self.mp3Format(sampleRate: header.sampleRate, channels: header.channels, samples: header.samples)
         } else {
             codec = .software(try SoftwareDecoder(codec: "mp2"))
             codecName = "mp2"

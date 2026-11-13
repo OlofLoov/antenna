@@ -1,5 +1,6 @@
 import AntennaCore
 import AntennaTestSupport
+import AudioToolbox
 import Foundation
 import Testing
 
@@ -47,7 +48,10 @@ import Testing
         while header == nil, let packet = demuxer.nextPacket() {
             if packet.streamIndex == audio.index { header = SampleBuilder.dolbyHeader(packet.data) }
         }
-        #expect(header == SampleBuilder.DolbyHeader(isEnhanced: enhanced, sampleRate: 48000, channels: 6, samples: 1536))
+        #expect(
+            header
+                == SampleBuilder.DolbyHeader(
+                    isEnhanced: enhanced, sampleRate: 48000, channels: 6, samples: 1536, layoutTag: kAudioChannelLayoutTag_MPEG_5_1_C))
     }
 
     @Test(

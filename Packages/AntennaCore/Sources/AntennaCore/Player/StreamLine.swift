@@ -34,6 +34,18 @@ public enum SoundFormat {
             }
         return [CodecName.display(codec), layout].compactMap(\.self).joined(separator: " ")
     }
+
+    /// Added to the format of sound the device cannot decode, which the
+    /// stream plays without
+    /// (playback-engine/streams-start-with-sound-the-device-can-play).
+    public static let notSupported = "not supported"
+
+    /// The format of the sound that plays, "DTS 5.1 (not supported)" when
+    /// the stream plays without it.
+    public static func display(_ audio: PresentationInfo.Audio) -> String {
+        let format = display(codec: audio.codec, channels: audio.channels)
+        return audio.isDecodable ? format : "\(format) (\(notSupported))"
+    }
 }
 
 /// The one-line description of what is playing, such as
@@ -54,7 +66,7 @@ public enum StreamLine {
             parts.append("\(CodecName.display(video.codec)) \(video.height)\(scan)")
         }
         if let audio = presentation.audio {
-            parts.append(SoundFormat.display(codec: audio.codec, channels: audio.channels))
+            parts.append(SoundFormat.display(audio))
         }
         parts.append(playerName(route))
         return parts.joined(separator: " · ")

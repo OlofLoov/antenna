@@ -49,6 +49,19 @@ import Testing
     func soundFormats(channels: Int, display: String) {
         #expect(SoundFormat.display(codec: "aac", channels: channels) == display)
     }
+
+    @Test("playback-engine/streams-start-with-sound-the-device-can-play sound the device cannot decode says so")
+    func undecodableSound() {
+        let dts = PresentationInfo.Audio(codec: "dts", channels: 6, isDecodable: false)
+        #expect(SoundFormat.display(dts) == "DTS 5.1 (not supported)")
+        #expect(SoundFormat.display(PresentationInfo.Audio(codec: "ac3", channels: 6, isDecodable: true)) == "AC-3 5.1")
+        let line = StreamLine.text(container: "Matroska", presentation: PresentationInfo(video: nil, audio: dts), route: .demuxer)
+        #expect(line == "Matroska · DTS 5.1 (not supported) · Antenna player")
+        let tracks = TrackList(
+            audio: [MediaTrack(id: "audio-0", kind: .audio, languageCode: "eng", name: nil, isDefault: true)], subtitles: [],
+            selectedAudio: "audio-0", selectedSubtitle: nil)
+        #expect(TrackMenu.audio(tracks, presentation: PresentationInfo(video: nil, audio: dts)).first?.detail == "DTS 5.1 (not supported)")
+    }
 }
 
 @Suite struct TrackNameTests {
