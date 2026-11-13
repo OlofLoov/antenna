@@ -47,7 +47,11 @@
         /// The programme Search asked the Guide to show; the Guide clears it once shown.
         var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
-        private(set) var offersMovies = false
+        /// True with an Xtream source, or a playlist whose last load had movies
+        /// (m3u-playlists/playlist-movies-show-in-movies).
+        var offersMovies: Bool { hasXtream || !playlistsWithMovies.isEmpty }
+        private var hasXtream = false
+        private var playlistsWithMovies: Set<UUID> = []
         var settingsOpen = false
         /// The source Sign in on the error asks a login for, nil while closed.
         var signInRequest: SignInRequest?
@@ -114,7 +118,8 @@
         func sourcesChanged(_ all: [SourceDescriptor]) {
             var seen: Set<UUID> = []
             let list = all.filter { seen.insert($0.id).inserted }
-            offersMovies = list.contains { $0.kind == .xtream }
+            hasXtream = list.contains { $0.kind == .xtream }
+            playlistsWithMovies.formIntersection(list.map(\.id))
             let gone = tuned?.sourceID.map { id in !list.contains { $0.id == id } } ?? false
             if tuned != nil, list.isEmpty || gone {
                 // A deleted source's channel stops (sources-and-settings/delete-a-source-and-everything-that-came-with-it).
@@ -421,6 +426,11 @@
             switch result {
             case .success(let playlist):
                 let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
+                if playlist.movies.isEmpty {
+                    playlistsWithMovies.remove(source.id)
+                } else {
+                    playlistsWithMovies.insert(source.id)
+                }
                 channelsBySource[source.id] = tagged
                 setState(.loaded(channels: tagged.count), for: source.id)
                 if !tagged.isEmpty { finishOrder.append(source.id) }

@@ -107,6 +107,7 @@ final class SourceRefresher {
                 $0.load = .loaded
                 $0.channels = playlist.channels.count
                 $0.groups = Set(playlist.channels.map { $0.group ?? "" }).count
+                $0.movies = playlist.movies.count
                 $0.lastSuccess = now
                 if $0.guide == .notStarted, Self.hasGuide(source, playlist) == false { $0.guide = .none }
             }
