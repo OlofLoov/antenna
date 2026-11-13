@@ -35,6 +35,18 @@ enum ChannelIDMigration {
         return favorites || members
     }
 
+    /// Moves what this device remembers per channel of `source`, for every
+    /// profile, and the source's hand-picked guide matches to the ids `ids`
+    /// names: recents, the last channel, language picks and matches
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel).
+    /// Saves the guide settings when a match moved.
+    static func moveRemembered(_ ids: [String: String], source: UUID, defaults: UserDefaults, in context: ModelContext) {
+        guard !ids.isEmpty else { return }
+        RecentsStore.renameChannels(ids, source: source, in: defaults)
+        ChannelLanguageStore.renameChannels(ids, source: source, in: defaults)
+        GuideSettingsStore.update(source, in: context) { $0.moveMatches(ids, at: .now) }
+    }
+
     /// True for an id from before m3u-playlists/stable-and-unique-ids.
     static func isEarlier(_ channelID: String) -> Bool {
         channelID.contains("://")

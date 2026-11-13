@@ -6,8 +6,8 @@
 
 ## 2. The switch
 
-- [ ] 2.1 Move recents, the last channel and language picks for every profile, and guide matches, in `switchToXtream`, and verify an app test citing `source-management/switching-to-xtream-keeps-what-was-remembered-per-channel`
-- [ ] 2.2 Run the Settings UI test classes on a local iPhone simulator
+- [x] 2.1 Move recents, the last channel and language picks for every profile, and guide matches, in `switchToXtream`, and verify an app test citing `source-management/switching-to-xtream-keeps-what-was-remembered-per-channel`
+- [x] 2.2 Run the Settings UI test classes on a local iPhone simulator
 
 ## 3. Verify
 
