@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "30e7d91d25c1079e1894b02ddca33e49561261f7",
+  "pull-request-title-pattern": "chore(build): release ${version}",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "antenna",
+      "initial-version": "0.1.0",
+      "bump-minor-pre-major": true,
+      "include-component-in-tag": false,
+      "extra-files": [
+        {
+          "type": "yaml",
+          "path": "Config/version.yml",
+          "jsonpath": "$.settings.base.MARKETING_VERSION"
+        }
+      ]
+    }
+  }
+}
