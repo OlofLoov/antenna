@@ -284,7 +284,6 @@
                     }
                 }
             }
-            .preferredColorScheme(.dark)
         }
     }
 

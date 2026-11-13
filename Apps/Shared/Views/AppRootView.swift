@@ -37,6 +37,10 @@ struct AppRootView<Content: View>: View {
                 content
             }
         }
+        // Dark on every platform, sheets and covers included, and the accent
+        // as the tint system controls draw with (design-system/one-accent-color).
+        .preferredColorScheme(.dark)
+        .tint(Palette.accent)
         .task { await unlock.run() }
         .task { await unlock.runSplash() }
         .onChange(of: route, initial: true) { _, route in

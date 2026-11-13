@@ -36,7 +36,6 @@
             NavigationStack {
                 content
             }
-            .preferredColorScheme(.dark)
             .interactiveDismissDisabled(step != .form || model.connecting)
             .task {
                 if model.setupDependencies == nil { model.setupDependencies = .live(guide: guideStore) }

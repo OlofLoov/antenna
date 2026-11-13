@@ -23,7 +23,6 @@ struct SettingsAddSource: View {
         NavigationStack {
             content
         }
-        .preferredColorScheme(.dark)
         .task {
             if model.setupDependencies == nil { model.setupDependencies = .live(guide: guideStore) }
         }

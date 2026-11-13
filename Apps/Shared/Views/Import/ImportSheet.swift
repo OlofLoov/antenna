@@ -60,7 +60,6 @@
                     }
                 }
             }
-            .preferredColorScheme(.dark)
             .accessibilityIdentifier("import.sheet")
             .playlistPicker(isPresented: $picking) { url in
                 model = ImportModel(ImportRequest(url: url, replacing: model.request.replacing))
