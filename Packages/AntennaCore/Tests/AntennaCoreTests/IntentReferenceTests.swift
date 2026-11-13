@@ -63,6 +63,19 @@ import Testing
         }
     }
 
+    @Test("m3u-playlists/playlist-titles-show-on-every-platform: a playlist movie or series reference round-trips")
+    func playlistTitleRoundTrip() throws {
+        let movie = ShelfTitle(id: "m3u.0123456789abcdef", kind: .movie, sourceID: source, name: "Film A")
+        let series = ShelfTitle(id: "m3u.series.00000000000000a1", kind: .series, sourceID: source, name: "Show")
+        for title in [movie, series] {
+            let parsed = try #require(TitleReference(parsing: TitleReference(title).string))
+            #expect(parsed.matches(title))
+            #expect(parsed.kind == title.kind)
+        }
+        #expect(TitleReference(parsing: "\(source.uuidString)/m3u.series.xyz") == nil)
+        #expect(TitleReference(parsing: "\(source.uuidString)/m3u.0123") == nil)
+    }
+
     @Test(
         "app-intents/shortcuts-never-hold-a-password live and episode ids are not titles",
         arguments: ["xtream#host.tv#7", "xtream#host.tv#episode#9", "xtream#host.tv#vod#x", "plain"])

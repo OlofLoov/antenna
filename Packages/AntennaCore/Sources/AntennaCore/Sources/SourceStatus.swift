@@ -30,7 +30,8 @@ public struct SourceStatus: Equatable, Sendable {
     /// From the last load that worked in this run, nil before one.
     public var channels: Int?
     public var groups: Int?
-    /// A playlist's movies from the last load that worked in this run, nil before one.
+    /// A playlist's movies from the last load that worked, kept across
+    /// launches by the app; nil before one.
     public var movies: Int?
     /// A playlist's episodes from the same load, nil before one.
     public var episodes: Int?
