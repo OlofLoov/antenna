@@ -5,11 +5,11 @@
 
 ## 2. Recently watched and See all (no external data)
 
-- [ ] 2.1 Add `RecentlyWatched.list` in AntennaCore with tests citing `movies-and-series-browsing/recently-watched`
-- [ ] 2.2 Add the Recently watched row to Movies and Series on every platform, in the order of `movies-and-series-browsing/rows-in-a-predictable-order`, with previews
-- [ ] 2.3 Add See all on Recently added opening the grid newest first, citing `movies-and-series-browsing/see-everything-new`
-- [ ] 2.4 UI tests on iPhone and Apple TV: Recently watched shows a finished movie; See all opens the grid and Menu closes it on Apple TV
-- [ ] 2.5 Add journey steps for the rows anchored on `movies.row.recentlyWatched`
+- [x] 2.1 Add `RecentlyWatched.list` in AntennaCore with tests citing `movies-and-series-browsing/recently-watched`
+- [x] 2.2 Add the Recently watched row to Movies and Series on every platform, in the order of `movies-and-series-browsing/rows-in-a-predictable-order`, with previews
+- [x] 2.3 Add See all on Recently added opening the grid newest first, citing `movies-and-series-browsing/see-everything-new`
+- [x] 2.4 UI tests on iPhone and Apple TV: Recently watched shows a finished movie; See all opens the grid and Menu closes it on Apple TV
+- [x] 2.5 Add journey steps for the rows anchored on `movies.row.recentlyWatched`
 
 ## 3. New channels (no external data)
 

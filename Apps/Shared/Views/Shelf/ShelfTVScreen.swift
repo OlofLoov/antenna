@@ -81,7 +81,7 @@
                         // Full bleed behind the tab bar.
                         .padding(.top, -Self.barHeight)
                         ShelfNotices(model: model, banner: banner, waiting: waiting)
-                        ShelfRowsContent(model: model, actions: actions) { list = .continueWatching }
+                        ShelfRowsContent(model: model, actions: actions) { list = $0 }
                         genres(model)
                     case let status:
                         ShelfTVStatus(model: model, status: status, focus: focus)

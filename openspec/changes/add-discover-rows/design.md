@@ -78,6 +78,10 @@ Continue watching, My list, Trending, Recently watched, Recently added, categori
 
 Additive. New cache files only.
 
+## Journey steps
+
+- `AppJourneys.testMoviesDiscover` on iPhone and iPad and `TVJourneys.testMoviesDiscover` on Apple TV: `movies-recently-watched`, anchored on `movies.row.recentlyWatched`, compared with the `*-Movies-Discover` boards.
+
 ## Open Questions
 
 Open questions for the owner, each with a recommendation:
