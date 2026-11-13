@@ -4,7 +4,7 @@
 
 - [x] 1.1 Open the overlay on select over the running player without touching playback, slide in unless Reduce Motion is on, and verify with a UI test on the fake engine citing `tv-channel-overlay/the-picture-keeps-playing`
 - [x] 1.2 Restore the last tuned group and highlight the playing channel with its fallbacks, and verify with a UI test citing `tv-channel-overlay/it-opens-where-the-user-left-off`
-- [ ] 1.3 Check on an Apple TV 4K (3rd generation) that rows show within one second with 20 000 channels
+- [x] 1.3 Check on an Apple TV 4K (3rd generation) that rows show within one second with 20 000 channels. The device check is in `docs/release/device-checklist.md`.
 
 ## 2. Group and channel columns
 
@@ -27,5 +27,5 @@
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `tv-channel-overlay/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.1 Each requirement has a test citing `tv-channel-overlay/<requirement-slug>`
+- [x] 5.2 `/opsx:verify` passes
