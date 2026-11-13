@@ -55,6 +55,39 @@ extension Browse {
         }
     }
 
+    /// The channel line at the top of the full-screen picture, shown and
+    /// hidden with the strip
+    /// (live-tv-on-iphone-ipad-mac/the-full-screen-channel-line-fades-with-the-controls).
+    struct PictureTitle<Logo: View>: View {
+        let title: String
+        let detail: String
+        @ViewBuilder var logo: Logo
+
+        var body: some View {
+            HStack(spacing: 12) {
+                logo
+                    .frame(width: 48, height: 30)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.callout.weight(.semibold))
+                        .lineLimit(1)
+                    Text(detail)
+                        .font(.footnote)
+                        .foregroundStyle(Browse.textSecondary)
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .foregroundStyle(Palette.text)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Palette.scrimTint.opacity(0.72))
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("browse.player.title")
+        }
+    }
+
     /// Full screen, or Exit full screen while the picture fills the screen.
     struct FullScreenButton: View {
         let isFullScreen: Bool
@@ -177,6 +210,12 @@ extension Browse {
         Browse.PictureInPictureButton(isAvailable: false) {}
     }
     .environment(\.browseMetrics, .regular)
+}
+
+#Preview("Picture title, full screen", traits: .fixedLayout(width: 844, height: 60)) {
+    Browse.PictureTitle(title: "News One", detail: "Now: Evening News") {
+        Browse.Logo(url: nil, initials: "NO", isSelected: true)
+    }
 }
 
 #Preview("Controls, full screen", traits: .fixedLayout(width: 844, height: 60)) {

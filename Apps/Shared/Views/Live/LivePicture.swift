@@ -50,6 +50,13 @@
                         Browse.NothingSelected()
                     }
                 }
+                .overlay(alignment: .top) {
+                    // The line under the picture names the channel outside full screen.
+                    if live.fullScreen, live.controlsShown, let channel = live.playing, live.player.failure == nil {
+                        title(channel)
+                            .transition(.opacity)
+                    }
+                }
                 .overlay(alignment: .bottom) {
                     if live.controlsShown, live.playing != nil, live.player.failure == nil {
                         controls
@@ -62,6 +69,18 @@
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("browse.player")
+        }
+
+        /// The channel and its programme over the top of the full-screen
+        /// picture, with the controls
+        /// (live-tv-on-iphone-ipad-mac/the-full-screen-channel-line-fades-with-the-controls).
+        private func title(_ channel: Channel) -> some View {
+            TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                let text = live.nowText(for: channel, at: context.date)
+                Browse.PictureTitle(title: text.title, detail: text.compact) {
+                    Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
+                }
+            }
         }
 
         /// The error in place of the picture with Try again. In full screen

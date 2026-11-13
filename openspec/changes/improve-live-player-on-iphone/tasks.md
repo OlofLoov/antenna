@@ -2,9 +2,9 @@
 
 ## 1. Sideways full screen and the phone layout (PR 1)
 
-- [ ] 1.1 Keep every iPhone on the tab bar layout with a compact size class below the root, and verify `LiveRegularUITests` still pass on an iPad simulator
-- [ ] 1.2 Derive full screen from the tab, the vertical size class, the device and the playing channel, and verify `LivePlayerUITests` for turning sideways then picking a channel, launching sideways, returning to Live sideways and exiting sideways on iPhone 17 and iPhone 17 Pro Max
-- [ ] 1.3 Draw the channel line at the top of the full-screen picture with the controls, update `iPhone-FullScreen`, add previews, and verify a UI test that the line hides with the controls and comes back on a tap
+- [x] 1.1 Keep every iPhone on the tab bar layout with a compact size class below the root, and verify `LiveRegularUITests` still pass on an iPad simulator
+- [x] 1.2 Derive full screen from the tab, the vertical size class, the device and the playing channel, and verify `LivePlayerUITests` for turning sideways then picking a channel, launching sideways, returning to Live sideways and exiting sideways on iPhone 17 and iPhone 17 Pro Max
+- [x] 1.3 Draw the channel line at the top of the full-screen picture with the controls, update `iPhone-FullScreen`, add previews, and verify a UI test that the line hides with the controls and comes back on a tap
 
 ## 2. Gestures and Previous channel (PR 2)
 
