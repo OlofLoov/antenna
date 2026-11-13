@@ -427,7 +427,7 @@ private struct OverlayPreview: View {
             }
         } channels: {
             ChannelOverlay.ChannelColumn(title: "Favorites", order: "Your order") {
-                ChannelOverlay.EmptyGroup(text: "No favorites yet. Press the star on a channel to add it.")
+                ChannelOverlay.EmptyGroup(text: "No favorites yet. Hold select on a channel to add it.")
             }
         } panel: {
             EmptyView()

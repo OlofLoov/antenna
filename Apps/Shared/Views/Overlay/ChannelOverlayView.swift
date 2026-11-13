@@ -135,9 +135,17 @@
                 logo(channel)
             }
             .focused(focus, equals: .overlay(.channel(key)))
+            .contextMenu {
+                // Held select (favorites/hold-select-to-favorite-on-apple-tv).
+                Browse.FavoriteMenuButton(isFavorite: catalogue.isFavorite(channel)) { toggleFavorite(channel, key) }
+                    .accessibilityIdentifier("overlay.menu.favorite")
+            }
             .id(key)
             .accessibilityIdentifier(identifier)
             .accessibilityLabel([number.map(String.init), channel.name, line.text, remaining].compactMap(\.self).joined(separator: ", "))
+            .accessibilityAction(named: Browse.FavoriteMenuButton.title(isFavorite: catalogue.isFavorite(channel))) {
+                toggleFavorite(channel, key)
+            }
         }
 
         @ViewBuilder private func logo(_ channel: Channel) -> some View {

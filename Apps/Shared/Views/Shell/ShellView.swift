@@ -228,7 +228,10 @@
             case .live:
                 EmptyView()
             case .guide:
-                GuideScreen(shell: model, catalogue: catalogue, overlay: overlay, guide: overlayGuide, focus: $focus)
+                GuideScreen(
+                    shell: model, catalogue: catalogue, overlay: overlay, guide: overlayGuide, focus: $focus,
+                    toggleFavorite: { _ = FavoriteRecord.toggle($0, in: catalogue, profile: profile, context: context) }
+                )
             case .movies:
                 ShelfTVScreen(kind: .movie, focus: $focus)
             case .series:
