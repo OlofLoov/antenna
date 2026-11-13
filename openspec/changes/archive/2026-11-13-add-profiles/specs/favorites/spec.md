@@ -5,7 +5,7 @@ The system SHALL keep each favorite for the profile that added it, list only the
 
 #### Scenario: Two profiles
 - **GIVEN** Dad favorited Sport One and Kids favorited Cartoon Club
-- **WHEN** Kids opens the Favorites tab
+- **WHEN** Kids opens the Favorites group
 - **THEN** only Cartoon Club is listed
 
 #### Scenario: Favorites from before profiles
@@ -21,12 +21,12 @@ The system SHALL sync favorites through the user's private iCloud account to eve
 #### Scenario: Second device
 - **GIVEN** a favorite saved on device A
 - **WHEN** device B, an iPhone, iPad or Mac signed into the same iCloud account, is online
-- **THEN** the favorite appears in device B's Favorites tab
+- **THEN** the favorite appears in device B's Favorites group in Live
 
 #### Scenario: Another profile on the second device
 - **GIVEN** Dad saved a favorite on device A
 - **WHEN** device B is on Kids
-- **THEN** the favorite is not in device B's Favorites tab until Dad is chosen there
+- **THEN** the favorite is not in device B's Favorites group until Dad is chosen there
 
 #### Scenario: Apple TV as the second device
 - **GIVEN** a favorite saved on an iPhone, iPad or Mac

@@ -217,19 +217,6 @@ The system SHALL treat a Keychain item that cannot be read or decoded as a failu
 - **WHEN** the channel list loads
 - **THEN** the source adds no channels, the other sources still load, and the failure is recorded
 
-### Requirement: Loading until the first channel
-On iPhone, iPad and Mac, the system SHALL show "Loading channels…" in the channel list while at least one source exists and no channel is loaded, and SHALL list the channels in load order once there are any. The recorded load failure is not shown on screen.
-
-#### Scenario: Sources still loading
-- **GIVEN** saved sources and no loaded channels yet
-- **WHEN** the channel list is shown
-- **THEN** "Loading channels…" is shown
-
-#### Scenario: Every source fails or adds nothing
-- **GIVEN** saved sources that all fail, wait for a credential or produce no channels
-- **WHEN** the load finishes
-- **THEN** "Loading channels…" stays on screen and no failure message is shown
-
 ### Requirement: Add form follows the type
 The system SHALL offer the types M3U playlist, Xtream Codes and Stalker portal. M3U SHALL ask for a name, a playlist URL and an optional guide link; Xtream for a name, a server URL, a username and a password; Stalker for a name, a server URL, a MAC address and a password. The password field SHALL hide what is typed, and Cancel SHALL close the form and store nothing.
 

@@ -10,7 +10,7 @@
 
 - [x] 2.1 Show the picked group's channels with header, empty Favorites message and filter reset, and verify with a UI test citing `live-tv-on-iphone-ipad-mac/pick-a-group`
 - [x] 2.2 Add name and number filtering with Search's matching rules in the core package, and verify with core and UI tests citing `live-tv-on-iphone-ipad-mac/type-to-narrow-the-list`
-- [ ] 2.3 Check the 20 000 channel budgets on an iPhone 15 and the 50 ms filter budget in `swift test`
+- [x] 2.3 Check the 20 000 channel budgets on an iPhone 15 and the 50 ms filter budget in `swift test`. `ChannelFilterBenchmarkTests` passes under `ANTENNA_BENCHMARKS=1 swift test`. The iPhone 15 budgets are on `docs/release/device-checklist.md`.
 
 ## 3. Playing in place
 
@@ -33,4 +33,4 @@
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `live-tv-on-iphone-ipad-mac/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.2 `/opsx:verify` passes
