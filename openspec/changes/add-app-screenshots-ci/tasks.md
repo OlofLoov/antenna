@@ -2,8 +2,8 @@
 
 ## 1. Seed data and test targets
 
-- [ ] 1.1 Add `Apps/Shared/Debug/UITestingScreenshots.swift` with `-ui-screenshots full|empty`, Debug only, wired into the iOS app entry and the tvOS shell. Verify: a unit test in `AntennaTests` builds the `full` data and counts 2 sources, 12 channels and 4 favorites.
-- [ ] 1.2 Add `AntennaJourneys` and `AntennaTVJourneys` to `project.yml` and the schemes, with the `snap(_:anchor:)` helper. Verify: `Build apps` passes in CI.
+- [x] 1.1 Add `Apps/Shared/Debug/UITestingScreenshots.swift` with `-ui-screenshots full|empty`, Debug only, wired into the iOS app entry and the tvOS shell. Verify: a unit test in `AntennaTests` builds the `full` data and counts 2 sources, 12 channels and 4 favorites.
+- [x] 1.2 Add `AntennaJourneys` and `AntennaTVJourneys` to `project.yml` and the schemes, with the `snap(_:anchor:)` helper. Verify: `Build apps` passes in CI.
 
 ## 2. Walk-throughs
 
