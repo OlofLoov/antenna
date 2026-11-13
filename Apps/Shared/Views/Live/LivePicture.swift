@@ -169,6 +169,10 @@
 
         /// The buttons each platform adds to the strip.
         @ViewBuilder private var extras: some View {
+            // Outside full screen the now-playing line or the details panel has the star.
+            if live.fullScreen, let channel = live.playing {
+                LivePlayerFavoriteButton(channel: channel)
+            }
             tracksButton
             // The subtitles switch shows where AirPlay can: full screen, regular width and Mac.
             if live.fullScreen || !isCompact {

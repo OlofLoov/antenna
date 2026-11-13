@@ -323,6 +323,8 @@
                         .accessibilityLabel([reading.number(key).map(String.init), channel.name].compactMap(\.self).joined(separator: " "))
                         .accessibilityValue(look == .playing ? "playing" : "")
                         .accessibilityHint("Plays the channel")
+                        .modifier(LiveFavoriteMenu(channel: channel, identifier: "guide.menu.favorite") { EmptyView() })
+                        .modifier(LiveFavoriteAction(channel: channel))
                         .accessibilityIdentifier("guide.channel.\(key.identifier)")
                         .padding(.top, Double(index) * (rowHeight + GuideBoard.rowGap))
                     }

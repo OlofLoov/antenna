@@ -123,6 +123,27 @@ extension Browse {
         }
     }
 
+    /// The star among the full-screen controls (favorites/favorite-from-full-screen),
+    /// filled in the accent while the playing channel is a favorite.
+    struct PlayerFavoriteButton: View {
+        let isFavorite: Bool
+        let toggle: () -> Void
+
+        var body: some View {
+            Button(action: toggle) {
+                Image(systemName: isFavorite ? "star.fill" : "star")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
+            .accessibilityAddTraits(isFavorite ? .isSelected : [])
+            .accessibilityIdentifier("browse.player.favorite")
+        }
+    }
+
     struct ProgressTrack: View {
         let fraction: Double
         let height: CGFloat
@@ -162,6 +183,14 @@ extension Browse {
     Browse.Controls(
         isPaused: false, progress: nil, clock: "21:34", isFullScreen: true, playPause: {}, toggleFullScreen: {}
     ) {
-        EmptyView()
+        Browse.PlayerFavoriteButton(isFavorite: false) {}
+    }
+}
+
+#Preview("Controls, full screen, a favorite", traits: .fixedLayout(width: 844, height: 60)) {
+    Browse.Controls(
+        isPaused: false, progress: 0.3, clock: "21:34", isFullScreen: true, playPause: {}, toggleFullScreen: {}
+    ) {
+        Browse.PlayerFavoriteButton(isFavorite: true) {}
     }
 }
