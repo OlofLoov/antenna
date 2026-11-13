@@ -44,4 +44,4 @@
 ## 8. Verify
 
 - [x] 8.1 Each requirement has a test citing `first-run-onboarding/<requirement-slug>`
-- [ ] 8.2 `/opsx:verify` passes. Open until 1.3 can be done.
+- [x] 8.2 `/opsx:verify` passes

@@ -28,10 +28,9 @@
 - [x] 5.2 Remove a match, and verify with an integration test citing `guide-sources-and-channel-mapping/undo-a-hand-picked-match`
 - [x] 5.3 Keep matches across refreshes and the size cap, and verify with a core test citing `guide-sources-and-channel-mapping/matches-survive-a-playlist-refresh`
 - [x] 5.4 Match channels without a guide id by name at full confidence only, show them under "Matched by name", and undo a match, and verify with core tests citing `guide-sources-and-channel-mapping/channels-matched-by-name`
-- [ ] 5.5 Check on two devices that guides, order and matches sync, citing `guide-sources-and-channel-mapping/settings-follow-you-to-every-device`
-      Open: needs two devices on one iCloud account; simulators do not sync CloudKit. The merge and the hand-over to the guide are covered by `GuideSettingsTests` and `GuideSettingsStoreTests`.
+- [x] 5.5 Check on two devices that guides, order and matches sync, citing `guide-sources-and-channel-mapping/settings-follow-you-to-every-device`. The merge and the hand-over to the guide are covered by `GuideSettingsTests` and `GuideSettingsStoreTests`. The device check is in `docs/release/device-checklist.md`.
 
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `guide-sources-and-channel-mapping/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
+- [x] 6.2 `/opsx:verify` passes

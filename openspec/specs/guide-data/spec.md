@@ -6,12 +6,22 @@ Downloads each source's TV guide, matches its programmes to the user's channels,
 ## Requirements
 
 ### Requirement: Find the guide for each source
-The system SHALL use the guide link the user entered for a source, else for a playlist the first guide link the playlist names, else for an Xtream source the provider's guide link built from the user's login, else for a Stalker portal the portal's own guide. Working this out SHALL send nothing over the network.
+The system SHALL use every guide link a playlist names, the guide link saved with the source, the source's own guide (the provider's guide for an Xtream login, the portal's guide for a Stalker portal, the server's guide for Jellyfin and Channels DVR), and links the user added, each once, in the user's order, skipping turned-off guides. The source's own guide SHALL start turned off when the user saved a guide link of their own. Working this out SHALL send nothing over the network.
 
 #### Scenario: Order of preference
 - **GIVEN** a source
-- **WHEN** the app works out where its guide lives
-- **THEN** it uses the entered link, else the playlist's first link, else the Xtream provider's link, else the Stalker portal's own guide, and nothing goes over the network
+- **WHEN** the app works out where its guides live
+- **THEN** it lists the links the playlist names, the saved link, the source's own guide and the user's added links in the user's order, and nothing goes over the network
+
+#### Scenario: A link named twice
+- **GIVEN** a playlist that names the same guide link twice
+- **WHEN** its guides load for the first time
+- **THEN** that guide is listed and downloaded once
+
+#### Scenario: The provider's guide with a link of the user's own
+- **GIVEN** an Xtream source with a guide link the user saved
+- **WHEN** its guides are listed
+- **THEN** the provider's own guide is listed turned off, and the user can turn it on
 
 #### Scenario: No guide
 - **GIVEN** a playlist with no guide link
@@ -22,6 +32,11 @@ The system SHALL use the guide link the user entered for a source, else for a pl
 - **GIVEN** a Stalker portal source with no guide link entered
 - **WHEN** the app works out where its guide lives
 - **THEN** the source uses the portal's own guide
+
+#### Scenario: A server that brings its own guide
+- **GIVEN** a Jellyfin or Channels DVR source with no guide link entered
+- **WHEN** the app works out where its guides live
+- **THEN** the server's own guide is listed first and turned on
 
 #### Scenario: Stalker session turned down while loading the guide
 - **GIVEN** a Stalker portal guide download that the portal turns down
@@ -52,7 +67,7 @@ The system SHALL download nothing for an Xtream source without its own guide lin
 - **THEN** callers hear that the login is missing, and the loaded guide keeps answering
 
 ### Requirement: Programmes land on the right channels
-The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids and otherwise matching exactly, case included, whichever of the guide and the channel list loads first.
+The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids and otherwise matching exactly, case included, whichever of the guide and the channel list loads first. A guide entry the user picked by hand for a channel SHALL take the place of the channel's own guide id, and a channel with no guide id SHALL use the entry matched by its name when there is one.
 
 #### Scenario: Ids with spaces, a channel without an id, two sources
 - **GIVEN** a channel and a programme whose guide ids differ only by spaces around them, a channel with no guide id, and two sources whose guides both use the id "one"
@@ -63,6 +78,16 @@ The system SHALL match programmes to channels within each source by guide id, ig
 - **GIVEN** a Stalker source with its own guide link
 - **WHEN** the guide loads
 - **THEN** it downloads, and every programme is unmatched until the source has channels
+
+#### Scenario: A hand-picked entry
+- **GIVEN** a channel with no guide id that the user matched by hand to a guide entry
+- **WHEN** the guide and the channel list have both loaded
+- **THEN** the channel gets that entry's programmes
+
+#### Scenario: Matched by name
+- **GIVEN** a channel with no guide id whose name is the name of exactly one guide entry
+- **WHEN** the guide and the channel list have both loaded
+- **THEN** the channel gets that entry's programmes
 
 ### Requirement: What is on now and next
 The system SHALL answer which programme is on a channel at a given time, a programme being on from its start time up to but not including its stop time, and which programmes come next: up to the number asked for, in start order, each starting at or after the time given.
@@ -317,3 +342,11 @@ The system SHALL use the Xtream panel's guide for a playlist source added from a
 - **GIVEN** a panel playlist whose header names a guide
 - **WHEN** its guide loads
 - **THEN** it uses the header's guide and the panel's guide stays turned off
+
+### Requirement: Guide links for an imported file
+The system SHALL take an imported file source's guide links from the file's header, or from the guide link the user entered when importing, and download them like any playlist's.
+
+#### Scenario: A file with a guide link in its header
+- **GIVEN** an imported file whose header names a guide link
+- **WHEN** guide data loads for that source
+- **THEN** the guide downloads from that link and its programmes show for the file's channels

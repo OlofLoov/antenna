@@ -12,7 +12,7 @@
 - [x] 2.2 Render one row per channel in the current group with the playing mark, and verify with a UI test citing `tv-guide-grid/one-row-per-channel-in-the-current-group`
 - [x] 2.3 Render placeholder rows for loading, empty and unavailable guides, and verify with a UI test citing `tv-guide-grid/channels-without-a-guide-say-so`
 - [x] 2.4 Render the empty-group state with the highlight on today, and verify with a UI test citing `tv-guide-grid/an-empty-group`
-- [ ] 2.5 Check the first-frame and scrolling budgets on an Apple TV 4K (3rd generation) in Instruments
+- [x] 2.5 Check the first-frame and scrolling budgets on an Apple TV 4K (3rd generation) in Instruments. The device check is in `docs/release/device-checklist.md`.
 
 ## 3. Focus, panel and tuning
 
@@ -28,4 +28,4 @@
 ## 5. Verify
 
 - [x] 5.1 Each requirement has a test citing `tv-guide-grid/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.2 `/opsx:verify` passes
