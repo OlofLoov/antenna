@@ -46,6 +46,16 @@
   `.enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1")`.
 - UI tests use accessibility identifiers of the form `screen.element`
   (`channels.searchField`). Never match on display text.
+- Screenshot walk-throughs live in `Apps/Journeys` (iPhone and iPad) and
+  `Apps/TVJourneys` (Apple TV). Each test launches with `Journey(self,
+  scenario: "full")` (or `"empty"`) and calls `journey.snap("<step>", anchor:
+  "<identifier>")` once the screen is up; the step becomes
+  `<nn>-<step>.png`. Add a step for a screen you build, anchored on an
+  identifier that only appears once the screen has settled, and name its
+  board in the change's `design.md`. A step fails only when its anchor never
+  appears. The `App screenshots` workflow runs them every night, by hand, and
+  on a PR with the `screenshots` label; the PNGs are in the run's
+  `app-screenshots` artifact as `<device>/<test>/<nn>-<step>.png`.
 
 ## Git
 
