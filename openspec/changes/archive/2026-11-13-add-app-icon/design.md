@@ -66,4 +66,4 @@ A test in AntennaCore, next to `ReleaseTests`, reads the repo and fails when an 
 ## Risks / Trade-offs
 
 - The `icon.json` keys come from the file format Icon Composer writes, which Apple does not document. Opening the file in Icon Composer and saving it again rewrites it in whatever form the current version uses; the test only checks that the file and its layers exist.
-- XcodeGen may treat the `.icon` folder as a plain folder and add its contents one by one. If it does, the Antenna target lists the bundle with an explicit file type in `project.yml`.
+- XcodeGen 2.46 adds the `.icon` folder as one `wrapper.icon` file reference in the Antenna target's resources, and the Xcode 27.2 build compiles it into `Assets.car` and `AppIcon.icns`, so `project.yml` needs only the build setting.

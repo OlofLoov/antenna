@@ -64,6 +64,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna
         TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
 
@@ -141,6 +142,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv
         TARGETED_DEVICE_FAMILY: "3"
+        ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image
 
   AntennaTopShelf:
     type: app-extension

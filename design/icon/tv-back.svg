@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="768" viewBox="0 0 1280 768" color="#5BB8FF">
+<defs><radialGradient id="glow" cx="640" cy="230" r="704" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1A2A44"/><stop offset="1" stop-color="#0B0E13"/></radialGradient></defs>
+<rect width="1280" height="768" fill="url(#glow)"/>
+</svg>
