@@ -32,14 +32,18 @@ struct ShelfActions {
 
 /// Shows the banner's title, moves on every eight seconds while nobody
 /// interacts with it and Reduce Motion is off, and loads the shown title's
-/// details (movies-and-series-browsing/new-titles-up-front).
+/// details and the next title's details and picture
+/// (movies-and-series-browsing/new-titles-up-front).
 struct ShelfBannerHost<Content: View>: View {
     let model: ShelfModel
     let actions: ShelfActions
     @ViewBuilder var content: Content
     @State private var index = 0
     @State private var interacting = false
+    /// Titles shown for longer than `BannerArt.patience`.
+    @State private var waited: Set<String> = []
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.posterLoader) private var loader
 
     var body: some View {
         let titles = model.banner
@@ -55,10 +59,16 @@ struct ShelfBannerHost<Content: View>: View {
             }
             .task(id: shown?.id) {
                 guard let shown else { return }
+                let patience = Task {
+                    try? await Task.sleep(for: BannerArt.patience)
+                    if !Task.isCancelled { waited.insert(shown.id) }
+                }
+                defer { patience.cancel() }
                 await model.loadDetails(shown)
-                // The next title's details are ready before it shows.
-                let next = ((titles.firstIndex(of: shown) ?? 0) + 1) % titles.count
-                if next < titles.count { await model.loadDetails(titles[next]) }
+                // The next title's details and picture are ready before it shows.
+                let next = titles[((titles.firstIndex(of: shown) ?? 0) + 1) % titles.count]
+                await model.loadDetails(next)
+                if let art = art(next), let loader { _ = await loader.load(art.url) }
             }
     }
 
@@ -78,14 +88,19 @@ struct ShelfBannerHost<Content: View>: View {
         var pager = BannerPager(count: count)
         pager.show(index)
         pager.page(steps)
-        index = pager.index
+        withAnimation(ShelfBanner.crossfade) { index = pager.index }
+    }
+
+    private func art(_ title: ShelfTitle) -> BannerArt? {
+        BannerArt.choose(
+            details: model.details[title.id], answered: model.answered.contains(title.id), waited: waited.contains(title.id),
+            poster: title.posterURL)
     }
 
     private func context(_ title: ShelfTitle, count: Int) -> BannerContext {
-        let details = model.details[title.id]
-        return BannerContext(
+        BannerContext(
             state: .init(
-                text: BannerText(title, details: details), artURL: details?.backdropURL ?? title.posterURL,
+                text: BannerText(title, details: model.details[title.id]), art: art(title),
                 isOnMyList: actions.isOnMyList(title), index: min(index, count - 1), count: count),
             actions: .init(
                 play: { actions.play(title) }, moreInfo: { actions.open(title, .banner) },
@@ -94,7 +109,7 @@ struct ShelfBannerHost<Content: View>: View {
                 show: { target in
                     var pager = BannerPager(count: count)
                     pager.show(target)
-                    index = pager.index
+                    withAnimation(ShelfBanner.crossfade) { index = pager.index }
                 },
                 interacting: { interacting = $0 }))
     }

@@ -55,6 +55,20 @@ import Testing
         #expect(!BannerPager.rotates(count: 1, interacting: false, reduceMotion: false))
     }
 
+    @Test("movies-and-series-browsing/new-titles-up-front the banner waits for the backdrop before it settles for the poster")
+    func bannerArt() throws {
+        let poster = try #require(URL(string: "http://h/poster.jpg"))
+        let backdrop = try #require(URL(string: "http://h/backdrop.jpg"))
+        #expect(BannerArt.choose(details: nil, answered: false, waited: false, poster: poster) == nil)
+        #expect(BannerArt.choose(details: nil, answered: false, waited: true, poster: poster) == .poster(poster))
+        #expect(BannerArt.choose(details: nil, answered: true, waited: false, poster: poster) == .poster(poster))
+        #expect(BannerArt.choose(details: ShelfDetails(year: 2024), answered: true, waited: false, poster: poster) == .poster(poster))
+        let wide = ShelfDetails(backdropURL: backdrop)
+        #expect(BannerArt.choose(details: wide, answered: true, waited: false, poster: poster) == .backdrop(backdrop))
+        #expect(BannerArt.choose(details: nil, answered: true, waited: true, poster: nil) == nil)
+        #expect(BannerArt.poster(poster).url == poster)
+    }
+
     // MARK: Catalogue
 
     @Test("movies-and-series-browsing/rows-in-a-predictable-order a source's titles take their category names in provider order")
