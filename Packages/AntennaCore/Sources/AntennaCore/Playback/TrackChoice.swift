@@ -167,4 +167,17 @@ public struct LanguageMemory: Sendable, Equatable, Codable {
         entries.append(Entry(channel: channel, pick: pick))
         if entries.count > Self.limit { entries.removeFirst(entries.count - Self.limit) }
     }
+
+    /// Moves each pick whose key `keys` names to its new key. When the new
+    /// key already has a pick, the newer of the two stays. A new key holding
+    /// a stream link is not taken
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel).
+    public mutating func renameChannels(_ keys: [String: String]) {
+        let renamed = entries.map { entry in
+            guard let key = keys[entry.channel], !key.contains("://") else { return entry }
+            return Entry(channel: key, pick: entry.pick)
+        }
+        var seen = Set<String>()
+        entries = renamed.reversed().filter { seen.insert($0.channel).inserted }.reversed()
+    }
 }

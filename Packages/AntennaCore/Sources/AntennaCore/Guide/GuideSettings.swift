@@ -109,6 +109,26 @@ public struct GuideSettings: Codable, Sendable, Equatable {
         return result
     }
 
+    /// Moves each active match under an old id that `ids` names to its new
+    /// id, stamped `date`, and leaves a tombstone under the old id so a merge
+    /// with an older copy does not bring it back. A new id that already has
+    /// an active match keeps it. A new id holding a stream link is not
+    /// taken. Returns true when something changed
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel).
+    @discardableResult
+    public mutating func moveMatches(_ ids: [String: String], at date: Date) -> Bool {
+        var changed = false
+        for (old, match) in matches where !match.removed {
+            guard let new = ids[old], new != old, !new.contains("://") else { continue }
+            if matches[new].map({ $0.removed }) ?? true {
+                matches[new] = Match(entryID: match.entryID, modifiedAt: date)
+            }
+            matches[old] = Match(entryID: nil, modifiedAt: date, removed: true)
+            changed = true
+        }
+        return changed
+    }
+
     /// Added links that were not removed, oldest first.
     public var activeLinks: [(id: String, link: Link)] {
         links.filter { !$0.value.removed }.map { (id: $0.key, link: $0.value) }

@@ -28,6 +28,13 @@ public struct LastChannelKey: Codable, Hashable, Sendable {
         channel.sourceID == sourceID && channel.id == channelID
     }
 
+    /// The key with the new id `ids` names when it belongs to `source`, else
+    /// unchanged. A new id holding a stream link is not taken.
+    public func renamingChannel(_ ids: [String: String], source: UUID) -> LastChannelKey {
+        guard sourceID == source, let id = ids[channelID], Self.canStore(id) else { return self }
+        return LastChannelKey(sourceID: sourceID, channelID: id)
+    }
+
     /// False for an id that holds a stream link, recognized by `://`.
     public static func canStore(_ channelID: String) -> Bool {
         !channelID.contains("://")
