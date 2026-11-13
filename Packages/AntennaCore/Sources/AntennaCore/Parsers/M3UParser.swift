@@ -85,6 +85,8 @@ public struct M3UParser: Sendable {
         var title: String
         var attributes: [String: String]
         var group: String?
+        /// The number before the attributes, nil when it is not one.
+        var duration: Double?
 
         /// The channel with an empty id; `parse` gives it one.
         func channel(url: URL, nameSource: NameSource = .tvgName) -> Channel {
@@ -111,7 +113,8 @@ public struct M3UParser: Sendable {
                 catchupDays: catchupDays,
                 catchupMode: attributes["catchup"].flatMap(CatchupMode.init(attribute:)),
                 catchupSource: attributes["catchup-source"].flatMap { $0.isEmpty ? nil : $0 },
-                catchupCorrectionHours: attributes["catchup-correction"].flatMap(M3UParser.hours)
+                catchupCorrectionHours: attributes["catchup-correction"].flatMap(M3UParser.hours),
+                duration: duration
             )
         }
     }
@@ -162,7 +165,9 @@ public struct M3UParser: Sendable {
         let attrPart = body[body.startIndex..<attrEnd]
         let title = titleStart.map { String(body[$0...]).trimmingCharacters(in: .whitespaces) } ?? ""
         let attrs = attributes(in: attrPart)
-        return PendingEntry(title: title, attributes: attrs, group: attrs["group-title"])
+        let number = attrPart.drop { $0.isWhitespace }.prefix { !$0.isWhitespace && $0 != "," }
+        let duration = Double(number).flatMap { $0.isFinite ? $0 : nil }
+        return PendingEntry(title: title, attributes: attrs, group: attrs["group-title"], duration: duration)
     }
 
     /// Parses `key="value"` and `key=value` pairs. Keys are lower-cased.
