@@ -20,6 +20,13 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     private let shownFavorites: RankedRows
     private let shownRecents: RankedRows
     private let shownNew: RankedRows
+    /// The groups listed, worked out once per catalogue because every
+    /// focus move in a channel list reads them.
+    private let listed: [CatalogueGroup]
+    /// Differs between any two catalogues built or replaced separately, and
+    /// is the same for copies of one value. Screens compare it to tell
+    /// whether a list can stay as drawn.
+    public let revision: UUID
 
     /// - Parameters:
     ///   - channels: every source's output of `Channel.tagged(_:sourceID:)`,
@@ -56,6 +63,15 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         self.shownFavorites = policy?.filter(favoriteRows, index: index) ?? favoriteRows
         self.shownRecents = policy?.filter(recentRows, index: index) ?? recentRows
         self.shownNew = policy?.filter(newRows, index: index) ?? newRows
+        let top: [CatalogueGroup] =
+            [.favorites] + (shownRecents.rows.isEmpty ? [] : [.recents]) + (shownNew.rows.isEmpty ? [] : [.new]) + [.all]
+        if let policy {
+            self.listed =
+                top.filter { !policy.isHidden($0) } + policy.ordered.filter { !policy.isHidden($0) && !policy.isLocked($0) }
+        } else {
+            self.listed = top + index.groups
+        }
+        self.revision = UUID()
     }
 
     /// `.favorites`, `.recents` when a recent channel resolves, `.new` when a
@@ -67,13 +83,7 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// With group rules, the source groups and the user's own groups follow
     /// the user's order, and hidden groups and groups locked now are left
     /// out. A hidden `.all` is left out too.
-    public var groups: [CatalogueGroup] {
-        let top: [CatalogueGroup] =
-            [.favorites] + (shownRecents.rows.isEmpty ? [] : [.recents]) + (shownNew.rows.isEmpty ? [] : [.new]) + [.all]
-        guard let policy else { return top + index.groups }
-        return top.filter { !policy.isHidden($0) }
-            + policy.ordered.filter { !policy.isHidden($0) && !policy.isLocked($0) }
-    }
+    public var groups: [CatalogueGroup] { listed }
 
     /// The number of rows `rows(in:)` returns; 0 for a group not in `groups`.
     public func count(of group: CatalogueGroup) -> Int {
