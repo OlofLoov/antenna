@@ -22,13 +22,15 @@ struct ShelfLoader: Sendable {
         SourceLoader(session: session, credentials: credentials).hasLogin(source)
     }
 
-    /// The source's movies or series with its categories. A playlist has
-    /// movies only, from its last load or a new one
-    /// (m3u-playlists/playlist-movies-show-in-movies).
+    /// The source's movies or series with its categories. A playlist's
+    /// come from its last load or a new one
+    /// (m3u-playlists/playlist-movies-show-in-movies, m3u-playlists/playlist-series-show-in-series).
     func load(_ source: SourceDescriptor, kind: ShelfTitle.Kind) async throws -> ShelfCatalogue {
         if source.isPlaylist {
-            guard kind == .movie else { return ShelfCatalogue(titles: [], categories: []) }
-            return ShelfCatalogue(playlistMovies: try await playlistMovies(source), sourceID: source.id)
+            switch kind {
+            case .movie: return ShelfCatalogue(playlistMovies: try await playlistMovies(source), sourceID: source.id)
+            case .series: return try await playlistSeries(source).catalogue
+            }
         }
         let client = try client(for: source)
         switch kind {
@@ -45,7 +47,12 @@ struct ShelfLoader: Sendable {
 
     /// The year, length or seasons, description and rating the banner shows.
     func details(_ source: SourceDescriptor, title: ShelfTitle) async throws -> ShelfDetails {
-        if source.isPlaylist { return ShelfDetails(movie: VODInfo(containerExtension: title.containerExtension)) }
+        if source.isPlaylist {
+            switch title.kind {
+            case .movie: return ShelfDetails(movie: VODInfo(containerExtension: title.containerExtension))
+            case .series: return ShelfDetails(series: try await playlistSeriesInfo(source, series: title))
+            }
+        }
         let client = try client(for: source)
         let rawID = try rawID(title.id)
         switch title.kind {
@@ -57,7 +64,12 @@ struct ShelfLoader: Sendable {
     /// Everything the title page shows: the movie's or series' info call,
     /// asked once per call (title-detail-and-episode-picker/open-a-movie-s-page).
     func info(_ source: SourceDescriptor, title: ShelfTitle) async throws -> TitleInfo {
-        if source.isPlaylist { return .movie(VODInfo(containerExtension: title.containerExtension)) }
+        if source.isPlaylist {
+            switch title.kind {
+            case .movie: return .movie(VODInfo(containerExtension: title.containerExtension))
+            case .series: return .series(try await playlistSeriesInfo(source, series: title))
+            }
+        }
         let client = try client(for: source)
         let rawID = try rawID(title.id)
         switch title.kind {
@@ -68,21 +80,38 @@ struct ShelfLoader: Sendable {
 
     /// A series' episodes in the client's order.
     func episodes(_ source: SourceDescriptor, series: ShelfTitle) async throws -> [Episode] {
-        try await client(for: source).seriesInfo(seriesID: try rawID(series.id)).episodes
+        if source.isPlaylist { return try await playlistSeriesInfo(source, series: series).episodes }
+        return try await client(for: source).seriesInfo(seriesID: try rawID(series.id)).episodes
     }
 
     /// Where a movie plays from.
     func movieURL(_ source: SourceDescriptor, movie: ShelfTitle) throws -> URL {
-        if source.isPlaylist {
-            guard let link = (playlists?.playlistMovies ?? .shared).link(of: movie.id, in: source.id) else { throw LoadError.unknownTitle }
-            return link
-        }
+        if source.isPlaylist { return try playlistLink(movie.id, in: source) }
         return try client(for: source).movieURL(streamID: try rawID(movie.id), extension: movie.containerExtension)
     }
 
     /// Where an episode plays from.
     func episodeURL(_ source: SourceDescriptor, episode: Episode) throws -> URL {
-        try client(for: source).episodeURL(episodeID: episode.episodeID, extension: episode.containerExtension)
+        if source.isPlaylist { return try playlistLink(episode.id, in: source) }
+        return try client(for: source).episodeURL(episodeID: episode.episodeID, extension: episode.containerExtension)
+    }
+
+    private func playlistLink(_ id: String, in source: SourceDescriptor) throws -> URL {
+        guard let link = (playlists?.playlistMovies ?? .shared).link(of: id, in: source.id) else { throw LoadError.unknownTitle }
+        return link
+    }
+
+    private func playlistSeries(_ source: SourceDescriptor) async throws -> PlaylistSeries {
+        let store = playlists?.playlistMovies ?? .shared
+        if let known = store.series(in: source.id) { return known }
+        guard let playlists else { return PlaylistSeries(episodes: [], sourceID: source.id) }
+        _ = try await playlists.load(source)
+        return store.series(in: source.id) ?? PlaylistSeries(episodes: [], sourceID: source.id)
+    }
+
+    private func playlistSeriesInfo(_ source: SourceDescriptor, series: ShelfTitle) async throws -> SeriesInfo {
+        guard let info = try await playlistSeries(source).info(for: series.id) else { throw LoadError.unknownTitle }
+        return info
     }
 
     private func playlistMovies(_ source: SourceDescriptor) async throws -> [Channel] {

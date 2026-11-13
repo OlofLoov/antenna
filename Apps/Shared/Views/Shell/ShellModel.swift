@@ -48,7 +48,7 @@
         var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
         /// True with an Xtream source, or a playlist whose last load had movies
-        /// (m3u-playlists/playlist-movies-show-in-movies).
+        /// or episodes (m3u-playlists/playlist-movies-show-in-movies).
         var offersMovies: Bool { hasXtream || !playlistsWithMovies.isEmpty }
         private var hasXtream = false
         private var playlistsWithMovies: Set<UUID> = []
@@ -426,7 +426,7 @@
             switch result {
             case .success(let playlist):
                 let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
-                if playlist.movies.isEmpty {
+                if playlist.movies.isEmpty && playlist.episodes.isEmpty {
                     playlistsWithMovies.remove(source.id)
                 } else {
                     playlistsWithMovies.insert(source.id)

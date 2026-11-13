@@ -4,7 +4,8 @@ import Testing
 
 @testable import Antenna
 
-/// A playlist's movies: out of Live, into Movies, playable, against a stubbed server.
+/// A playlist's movies and series: out of Live, into Movies and Series,
+/// playable, against a stubbed server.
 @MainActor
 @Suite struct PlaylistMoviesTests {
     private static let playlist = """
@@ -15,6 +16,8 @@ import Testing
         http://movies-playlist.test/movie/u/p/9.mkv
         #EXTINF:-1 group-title="Shows",Show S01E01
         http://movies-playlist.test/series/u/p/7.mp4
+        #EXTINF:-1 tvg-logo="http://img.test/s.jpg" group-title="Shows",Show - S01E02 - The Visit
+        http://movies-playlist.test/series/u/p/8.mkv
         """
 
     private func loaders(_ tag: String) -> (SourceLoader, ShelfLoader) {
@@ -28,13 +31,14 @@ import Testing
         SourceDescriptor(id: UUID(), name: "Home", kind: .m3u, url: try #require(URL(string: "http://movies-playlist.test/list.m3u")))
     }
 
-    @Test("m3u-playlists/playlist-movies-stay-out-of-live-channels: Live gets channels and episodes, not movies")
+    @Test("m3u-playlists/playlist-movies-stay-out-of-live-channels: Live gets channels, not movies or episodes")
     func liveLeavesMoviesOut() async throws {
         StubURLProtocol.register(host: "movies-playlist.test", body: Self.playlist)
         let (source, _) = loaders("movies-live")
         let loaded = try await source.load(try descriptor())
-        #expect(loaded.channels.map(\.name) == ["News One", "Show S01E01"])
+        #expect(loaded.channels.map(\.name) == ["News One"])
         #expect(loaded.movies.map(\.name) == ["Film A"])
+        #expect(loaded.episodes.map(\.name) == ["Show S01E01", "Show - S01E02 - The Visit"])
     }
 
     @Test("m3u-playlists/playlist-movies-show-in-movies: Movies lists the playlist's movies and plays them from their link")
@@ -47,8 +51,28 @@ import Testing
         #expect(catalogue.categories == ["VOD | Action"])
         let film = try #require(catalogue.titles.first)
         #expect(try shelf.movieURL(source, movie: film).absoluteString == "http://movies-playlist.test/movie/u/p/9.mkv")
-        #expect(try await shelf.load(source, kind: .series).titles.isEmpty)
         #expect(try await shelf.info(source, title: film) == .movie(VODInfo(containerExtension: "mkv")))
         #expect(StubURLProtocol.requestCount(tag: "movies-shelf") == 1)
+    }
+
+    @Test("m3u-playlists/playlist-series-show-in-series: Series lists the playlist's shows and plays episodes from their link")
+    func seriesShelf() async throws {
+        StubURLProtocol.register(host: "movies-playlist.test", body: Self.playlist)
+        let (_, shelf) = loaders("series-shelf")
+        let source = try descriptor()
+        let catalogue = try await shelf.load(source, kind: .series)
+        #expect(catalogue.titles.map(\.name) == ["Show"])
+        #expect(catalogue.categories == ["Shows"])
+        let show = try #require(catalogue.titles.first)
+        #expect(!show.id.contains("://"))
+        guard case .series(let info) = try await shelf.info(source, title: show) else {
+            Issue.record("a playlist series answers series info")
+            return
+        }
+        #expect(info.episodes.map(\.title) == ["Episode 1", "The Visit"])
+        #expect(try await shelf.details(source, title: show).seasons == 1)
+        let visit = try #require(try await shelf.episodes(source, series: show).last)
+        #expect(try shelf.episodeURL(source, episode: visit).absoluteString == "http://movies-playlist.test/series/u/p/8.mkv")
+        #expect(StubURLProtocol.requestCount(tag: "series-shelf") == 1)
     }
 }
