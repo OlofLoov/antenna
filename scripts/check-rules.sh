@@ -70,4 +70,30 @@ check_except "app-intents: Siri and Shortcuts types only in Apps/Shared/Intents,
   'Apps/Shared/Intents/[A-Za-z]+\.swift' \
   Apps/Shared Apps/TV Apps/TopShelf
 
+# Like check_except, but hits only print a warning with a count per file and
+# never fail. refresh-visual-design turns these into failures once no file is left.
+warn_except() {
+  local name="$1" pattern="$2" allowed="$3"
+  shift 3
+  local hits
+  hits=$(grep -rnE --include='*.swift' "$pattern" "$@" | grep -vE "^($allowed):" | grep -vE '^[^:]+:[0-9]+:[[:space:]]*//' || true)
+  if [[ -n "$hits" ]]; then
+    printf 'WARN %s: %s lines\n' "$name" "$(wc -l <<<"$hits" | tr -d ' ')"
+    cut -d: -f1 <<<"$hits" | sort | uniq -c | sort -rn | sed 's/^ */  /'
+    printf '\n'
+  else
+    printf 'ok   %s\n' "$name"
+  fi
+}
+
+warn_except "design-system/type-uses-text-styles: fixed font sizes only for glyphs, number entry and guide times" \
+  '\.system\(size:' \
+  'Apps/Shared/Components/ZapBar/NumberBox\.swift|Apps/Shared/Debug/[A-Za-z]+\.swift' \
+  Apps
+
+warn_except "design-system/controls-use-system-styles: ButtonStyle types only in the app-drawn parts" \
+  '(struct|class|enum)[[:space:]]+[A-Za-z]+(<[^>]*>)?[[:space:]]*:[^{]*\b(Primitive)?ButtonStyle\b' \
+  'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift' \
+  Apps
+
 exit "$status"
