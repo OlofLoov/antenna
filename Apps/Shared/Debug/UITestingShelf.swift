@@ -275,8 +275,8 @@
                         throw URLError(.badServerResponse)
                     default:
                         let details = details(title)
-                        // Night Ferry has a trailer, for the Apple TV page that shows none.
-                        let trailer = title.id == "xtream#office#vod#1" ? URL(string: "https://trailers.example/night-ferry") : nil
+                        // Night Ferry's trailer is an HLS playlist, which Apple TV plays in the app.
+                        let trailer = title.id == "xtream#office#vod#1" ? URL(string: "https://trailers.example/night-ferry.m3u8") : nil
                         return .movie(
                             VODInfo(
                                 plot: details.plot, year: details.year, duration: details.duration, genre: title.category,

@@ -107,14 +107,12 @@ struct SearchProgrammeResult: View {
     var body: some View {
         HStack(spacing: 0) {
             row
-            #if !os(tvOS)
-                bell
-            #endif
+            bell
         }
     }
 
-    /// The bell on a later programme on iPhone, iPad and Mac
-    /// (programme-reminders/remind-me-appears-only-before-a-programme-starts).
+    /// The bell on a later programme, its own focus stop after the row on
+    /// Apple TV (programme-reminders/remind-me-appears-only-before-a-programme-starts).
     @ViewBuilder private var bell: some View {
         if let reminders, let channel = offered(reminders) {
             SearchRow.Bell(isSet: reminders.isSet(hit.programme, on: channel)) {

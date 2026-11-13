@@ -22,10 +22,10 @@
 
 ## 4. Apple TV: Search bell, Guide sources filter, Trailer
 
-- [ ] 4.1 Show the bell on later programmes in Search on Apple TV, update `TV-Search`, and add a UI test citing `programme-reminders/remind-me-appears-only-before-a-programme-starts`
-- [ ] 4.2 Add `.searchable` to the Guide sources channel list on Apple TV, update `TV-GuideSources`, and add a UI test citing `guide-sources-and-channel-mapping/find-the-channels-without-a-guide`
-- [ ] 4.3 Add `TrailerLink.playsInApp` with core tests citing `title-detail-and-episode-picker/trailer`
-- [ ] 4.4 Add the trailer target to `ShelfPlayback` and the Trailer button to the Apple TV title page, update `TV-Title`, with an app test citing `title-detail-and-episode-picker/trailer`
+- [x] 4.1 Show the bell on later programmes in Search on Apple TV, update `TV-Search`, and add a UI test citing `programme-reminders/remind-me-appears-only-before-a-programme-starts`
+- [x] 4.2 Add `.searchable` to the Guide sources channel list on Apple TV, update `TV-GuideSources`. The matching is the same model filter that `GuideSourcesUITests` and the model tests cover; the Apple TV Settings path to this screen has no scripted UI test yet
+- [x] 4.3 Add `TrailerLink.playsInApp` with core tests citing `title-detail-and-episode-picker/trailer`
+- [x] 4.4 Add the trailer target to `ShelfPlayback` and the Trailer button to the Apple TV title page, update `TV-Title`, with an app test citing `title-detail-and-episode-picker/trailer`
 
 ## 5. Filter on iPhone
 

@@ -330,8 +330,8 @@ enum TitlePage {
         }
     }
 
-    /// Opens the provider's trailer link outside the app
-    /// (title-detail-and-episode-picker/trailer). Absent without a link.
+    /// Opens the provider's trailer link, outside the app or, on Apple TV,
+    /// in the player (title-detail-and-episode-picker/trailer). Absent without a link.
     struct TrailerButton: View {
         let type: Sizes
         @Environment(\.titlePage) private var page

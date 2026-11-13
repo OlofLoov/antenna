@@ -67,11 +67,16 @@ final class TitleTVUITests: XCTestCase {
         XCTAssertTrue(element("shell.tab.movies").waitForExistence(timeout: 5), "the bar comes back with the section")
     }
 
-    // title-detail-and-episode-picker/trailer, none on Apple TV
-    func testThereIsNoTrailerOnAppleTV() {
+    // title-detail-and-episode-picker/trailer, a stream plays in the app on Apple TV
+    func testATrailerThatIsAStreamPlaysInTheApp() {
         openMoviePage()
-        XCTAssertTrue(element("title.myList").exists)
-        XCTAssertFalse(element("title.trailer").exists)
+        press(.right, times: 2)
+        expectFocus("title.trailer")
+        press(.select)
+        expect(element("shelf.debug.engine"), "value == 'playing night-ferry.m3u8 from 0'")
+        press(.menu)
+        expect(element("movies.player"), "exists == false")
+        XCTAssertTrue(element("title.name").exists, "back on the page")
     }
 
     /// Series from the bar with the shelf's `titles` script, then Northern

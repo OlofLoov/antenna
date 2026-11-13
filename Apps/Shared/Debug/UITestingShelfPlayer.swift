@@ -18,7 +18,9 @@
                             switch target {
                             case .movie(let movie): XtreamTitleID(parsing: movie.id)?.rawID
                             case .episode(let episode, _): episode.episodeID
+                            case .trailer: nil
                             }
+                        if case .trailer(let url, _) = target { return url }
                         return URL(fileURLWithPath: "/fixture/\(raw ?? 0).mp4")
                     },
                     willPlay: willPlay))

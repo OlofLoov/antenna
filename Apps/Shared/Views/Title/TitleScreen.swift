@@ -50,7 +50,20 @@ struct TitleScreen<Page: View>: View {
             actions: .init(
                 back: { library.closePage() }, play: start, toggleMyList: { activity.toggleMyList(route.title) },
                 retry: { attempt += 1 }, expand: { expanded = true },
-                trailer: metadata.trailerURL.map { url in { openURL(url) } }))
+                trailer: trailer(metadata.trailerURL)))
+    }
+
+    /// Opens the trailer outside the app on iPhone, iPad and Mac. Apple TV
+    /// has no browser, so there it plays in the app, and only a link to a
+    /// video file or stream gets the button (title-detail-and-episode-picker/trailer).
+    private func trailer(_ url: URL?) -> (() -> Void)? {
+        guard let url else { return nil }
+        #if os(tvOS)
+            guard TrailerLink.playsInApp(url) else { return nil }
+            return { playback.playTrailer(url, of: route.title) }
+        #else
+            return { openURL(url) }
+        #endif
     }
 
     /// iPhone, iPad and Mac show the whole description in place; Apple TV opens a sheet.

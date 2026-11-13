@@ -20,16 +20,20 @@ final class ShelfPlayback {
         var languages: @MainActor () -> [String] = { Locale.preferredLanguages }
     }
 
-    /// What plays: a movie, or one episode of a series.
+    /// What plays: a movie, one episode of a series, or a title's trailer.
     enum Target: Equatable, Sendable {
         case movie(ShelfTitle)
         case episode(Episode, series: ShelfTitle)
+        /// A trailer that plays in the app, which saves no place
+        /// (title-detail-and-episode-picker/trailer).
+        case trailer(URL, of: ShelfTitle)
 
-        /// The movie, or the series the episode belongs to.
+        /// The movie, the series the episode belongs to, or the trailer's title.
         var title: ShelfTitle {
             switch self {
             case .movie(let movie): movie
             case .episode(_, let series): series
+            case .trailer(_, let title): title
             }
         }
     }
@@ -115,6 +119,11 @@ final class ShelfPlayback {
         start(.episode(episode, series: series), from: position, source: library.series.source(of: series))
     }
 
+    /// Plays `title`'s trailer from its start; closing it saves nothing.
+    func playTrailer(_ url: URL, of title: ShelfTitle) {
+        start(.trailer(url, of: title), from: 0, source: nil)
+    }
+
     /// Asks again for the episode list of `series` that failed.
     func retry(_ series: ShelfTitle, library: ShelfLibrary, activity: ShelfActivity) {
         problem = nil
@@ -144,7 +153,13 @@ final class ShelfPlayback {
 
     /// Loads the title with the start position set before the first frame.
     private func start(_ target: Target, from position: Double, source: SourceDescriptor?) {
-        guard let source, let url = try? dependencies.address(source, target) else { return }
+        let address: URL? =
+            if case .trailer(let url, _) = target {
+                url
+            } else {
+                source.flatMap { try? dependencies.address($0, target) }
+            }
+        guard let url = address else { return }
         watching?.cancel()
         listeners = []
         saving = PositionSaving()
@@ -184,6 +199,8 @@ final class ShelfPlayback {
                 for await state in states {
                     guard let self, playing == target else { return }
                     if let saved = saving.state(state, at: dependencies.clock()) { save(saved, target) }
+                    // A trailer that ends goes back to its title page.
+                    if case .trailer = target, case .ended = state { return await close() }
                 }
             },
             Task { [weak self] in
@@ -231,6 +248,8 @@ final class ShelfPlayback {
             activity?.saveProgress(titleID: movie.id, seriesID: nil, source: movie.sourceID, position: seconds, duration: length)
         case .episode(let episode, let series):
             activity?.saveProgress(titleID: episode.id, seriesID: series.id, source: series.sourceID, position: seconds, duration: length)
+        case .trailer:
+            break
         }
     }
 
