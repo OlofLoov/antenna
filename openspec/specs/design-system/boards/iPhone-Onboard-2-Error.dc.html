@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone add a source, M3U playlist with an error</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- onboarding.form: Connect failed; the error is the section footer in footnote and the live-dot red -->
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- the sheet: system grouped background at the large detent -->
+  <div style="position: absolute; left: 0; right: 0; top: 54px; bottom: 0; background: #1C1C1E; border-radius: 38px 38px 0 0; display: flex; flex-direction: column">
+    <!-- toolbar: Cancel (cancellation action, glass), the title (headline 17), Connect (confirmation action) -->
+    <div style="height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+      <!-- onboarding.back -->
+      <div style="height: 44px; padding: 0 16px; border-radius: 999px; background: rgba(255,255,255,0.10); color: #5BB8FF; display: flex; align-items: center; font-size: 17px">Cancel</div>
+      <div style="font-size: 17px; font-weight: 600">Add a source</div>
+      <!-- onboarding.connect: glass prominent in the accent tint (primaryActionStyle) -->
+      <div style="height: 44px; padding: 0 16px; border-radius: 999px; background: #5BB8FF; color: #0B0E13; display: flex; align-items: center; font-size: 17px; font-weight: 600">Connect</div>
+    </div>
+    <div style="padding: 8px 16px; display: flex; flex-direction: column; gap: 8px">
+      <!-- onboarding.kind: a menu picker row; the menu lists M3U playlist, Xtream login, Stalker portal, Jellyfin server and Channels DVR in full -->
+      <div style="border-radius: 26px; background: #2C2C2E; height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 17px">
+        <span>Type</span><span style="color: #5BB8FF">M3U playlist &#8963;&#8964;</span>
+      </div>
+      <!-- section header, text style: footnote (13), secondary, sentence case -->
+      <div style="font-size: 13px; color: #A7B0BF; padding: 16px 20px 0">Playlist</div>
+      <div style="border-radius: 26px; background: #2C2C2E; display: flex; flex-direction: column; opacity: 1">
+        <!-- onboarding.field.name, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.12)"><span style="width: 96px; flex: none">Name</span><span style="color: #8E8E93; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">Optional</span></div>
+        <!-- onboarding.field.playlist, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.12)"><span style="width: 96px; flex: none">Playlist</span><span style="color: #F2F4F8; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">http://tv.example-provider.net/get.m3u</span></div>
+        <!-- onboarding.field.guide, body (17) -->
+        <div style="height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; gap: 16px"><span style="width: 96px; flex: none">Guide</span><span style="color: #8E8E93; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">Optional XMLTV link</span></div>
+      </div>
+      <!-- section footer, text style: footnote (13) -->
+      <div style="font-size: 13px; padding: 0 20px; line-height: 18px; display: flex; flex-direction: column; gap: 6px">
+        <!-- onboarding.error: footnote in the live-dot red -->
+        <div style="color: #FF5F57">Could not reach tv.example-provider.net. Check the address and try again.</div>
+      </div>
+      <!-- import.pickFile: a form section with one button row, no tinted card -->
+      <div style="border-radius: 26px; background: #2C2C2E; margin-top: 16px; height: 52px; display: flex; align-items: center; padding: 0 20px; font-size: 17px; color: #5BB8FF">Import a file instead</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
