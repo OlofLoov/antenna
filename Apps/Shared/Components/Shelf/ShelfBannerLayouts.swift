@@ -146,7 +146,7 @@ extension ShelfBanner {
 
 extension BannerContext {
     /// The Long Harbor, first of four, for previews.
-    static func preview(onMyList: Bool = false, kind: ShelfTitle.Kind = .movie) -> BannerContext {
+    static func preview(onMyList: Bool = false, kind: ShelfTitle.Kind = .movie, artURL: URL? = nil) -> BannerContext {
         let title = kind == .movie ? ShelfFixtures.movie(0) : ShelfFixtures.series(0)
         let details =
             kind == .movie
@@ -156,7 +156,7 @@ extension BannerContext {
                 ageRating: "15")
             : ShelfDetails(year: 2021, seasons: 3, plot: "Three sisters run a ferry line through a long winter.")
         return BannerContext(
-            state: .init(text: BannerText(title, details: details), artURL: nil, isOnMyList: onMyList, index: 0, count: 4),
+            state: .init(text: BannerText(title, details: details), artURL: artURL, isOnMyList: onMyList, index: 0, count: 4),
             actions: .init(play: {}, moreInfo: {}, toggleMyList: {}, page: { _ in }, show: { _ in }, interacting: { _ in }))
     }
 }
@@ -173,6 +173,30 @@ extension BannerContext {
             .environment(\.shelfBanner, .preview(onMyList: true))
             .environment(\.shelfMetrics, .pad)
             .background(Palette.ground)
+    }
+
+    // A poster far taller than the banner stays inside the banner's frame,
+    // with rows of ground color above and below to show any overflow.
+    #Preview("Banner, iPhone, tall poster", traits: .fixedLayout(width: 390, height: 720)) {
+        VStack(spacing: 0) {
+            ShelfBanner.Phone { EmptyView() }
+            Palette.ground.frame(height: 200)
+        }
+        .environment(\.shelfBanner, .preview(artURL: PreviewArt.address))
+        .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallPoster))
+        .background(Palette.ground)
+    }
+
+    #Preview("Banner, iPad, tall poster", traits: .fixedLayout(width: 914, height: 530)) {
+        VStack(spacing: 0) {
+            Palette.ground.frame(height: 100)
+            ShelfBanner.Pad()
+            Palette.ground.frame(height: 100)
+        }
+        .environment(\.shelfBanner, .preview(artURL: PreviewArt.address))
+        .environment(\.shelfMetrics, .pad)
+        .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallPoster))
+        .background(Palette.ground)
     }
 
     #Preview("Banner, iPad, series", traits: .fixedLayout(width: 914, height: 330)) {
@@ -192,5 +216,20 @@ extension BannerContext {
     }
     .environment(\.shelfBanner, .preview())
     .environment(\.shelfMetrics, .tv)
+    .background(Palette.ground)
+}
+
+#Preview("Banner, Apple TV, tall poster", traits: .fixedLayout(width: 1920, height: 1040)) {
+    VStack(spacing: 0) {
+        ShelfBanner.Television {
+            ShelfBanner.PlayButton(type: .tv).fixedSize()
+            ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
+            ShelfBanner.MyListButton(type: .tv)
+        }
+        Palette.ground.frame(height: 400)
+    }
+    .environment(\.shelfBanner, .preview(artURL: PreviewArt.address))
+    .environment(\.shelfMetrics, .tv)
+    .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallPoster))
     .background(Palette.ground)
 }

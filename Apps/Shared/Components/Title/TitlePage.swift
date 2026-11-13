@@ -90,17 +90,13 @@ enum TitlePage {
 
         var body: some View {
             let backdrop = page?.state.metadata.backdropURL
-            ZStack {
-                placeholder
-                if let image = image?.image {
-                    Image(decorative: image, scale: 1).resizable().scaledToFill()
-                } else if backdrop == nil, let page {
+            FilledArt(image: image?.image, background: placeholder) {
+                if backdrop == nil, let page {
                     ShelfView.PosterArt(name: page.state.metadata.name, url: page.state.posterURL)
                         .frame(width: poster.width, height: poster.height)
                         .accessibilityIdentifier("title.poster")
                 }
             }
-            .clipped()
             .accessibilityHidden(true)
             .accessibilityIdentifier("title.backdrop")
             .task(id: backdrop) {

@@ -12,19 +12,14 @@ struct PosterTile: View {
     var nameSize: CGFloat = 15
 
     var body: some View {
-        ZStack {
-            Browse.tile
-            if let image {
-                Image(decorative: image, scale: 1).resizable().scaledToFill()
-            } else {
-                Text(name)
-                    .font(.system(size: nameSize, weight: .semibold))
-                    .foregroundStyle(Palette.text)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(4)
-                    .minimumScaleFactor(0.8)
-                    .padding(10)
-            }
+        FilledArt(image: image, background: Browse.tile) {
+            Text(name)
+                .font(.system(size: nameSize, weight: .semibold))
+                .foregroundStyle(Palette.text)
+                .multilineTextAlignment(.center)
+                .lineLimit(4)
+                .minimumScaleFactor(0.8)
+                .padding(10)
         }
         .aspectRatio(2 / 3, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))

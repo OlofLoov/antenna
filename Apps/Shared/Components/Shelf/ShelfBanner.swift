@@ -56,26 +56,21 @@ enum ShelfBanner {
         static let tv = Sizes(eyebrow: 20, title: 76, facts: 24, badge: 17, description: 26, button: 26, buttonHeight: 70, spacing: 22)
     }
 
-    /// The artwork, scaled to fill, on the board's placeholder color.
+    /// The artwork, scaled to fill and cut to the banner's frame, on the
+    /// board's placeholder color.
     struct Art: View {
         @Environment(\.shelfBanner) private var banner
         @Environment(\.posterLoader) private var loader
         @State private var poster: Poster?
 
         var body: some View {
-            ZStack {
-                Color(red: 0x22 / 255, green: 0x30 / 255, blue: 0x4A / 255)
-                if let image = poster?.image {
-                    Image(decorative: image, scale: 1).resizable().scaledToFill()
+            FilledArt(image: poster?.image, background: TitlePage.placeholder)
+                .accessibilityHidden(true)
+                .task(id: banner?.state.artURL) {
+                    poster = nil
+                    guard let url = banner?.state.artURL, let loader else { return }
+                    poster = await loader.load(url)
                 }
-            }
-            .clipped()
-            .accessibilityHidden(true)
-            .task(id: banner?.state.artURL) {
-                poster = nil
-                guard let url = banner?.state.artURL, let loader else { return }
-                poster = await loader.load(url)
-            }
         }
     }
 

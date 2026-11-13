@@ -65,20 +65,14 @@ extension ShelfView {
         @State private var poster: Poster?
 
         var body: some View {
-            ZStack {
-                Browse.tile
-                if let image = poster?.image {
-                    Image(decorative: image, scale: 1).resizable().scaledToFill()
-                } else {
-                    Text(name)
-                        .font(.system(size: metrics.caption + 2, weight: .semibold))
-                        .foregroundStyle(Palette.text)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .padding(10)
-                }
+            FilledArt(image: poster?.image, background: Browse.tile) {
+                Text(name)
+                    .font(.system(size: metrics.caption + 2, weight: .semibold))
+                    .foregroundStyle(Palette.text)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .padding(10)
             }
-            .clipped()
             .task(id: url) {
                 poster = nil
                 guard let url, let loader else { return }
