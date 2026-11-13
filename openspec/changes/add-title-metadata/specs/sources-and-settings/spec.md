@@ -1,11 +1,11 @@
 ## ADDED Requirements
 
 ### Requirement: A switch for movie database lookups
-The system SHALL show a "Movie info and scores" switch under Preferences in Settings on every device, on by default, with a line saying titles are looked up in TMDB when their page opens, and SHALL carry a change to the user's other devices like the other preferences.
+The system SHALL show a "Movie info and scores" switch under Preferences in Settings on every device, on by default, with a line saying what is looked up in TMDB, and SHALL carry a change to the user's other devices like the other preferences.
 
 #### Scenario: Reading the switch
 - **WHEN** the user opens Settings on iPhone, iPad, Mac or Apple TV
-- **THEN** Preferences has "Movie info and scores", on, and below it the line "Titles you open are looked up in TMDB by name and year. Nothing about you or your sources is sent."
+- **THEN** Preferences has "Movie info and scores", on, and below it the line "Titles and people you open, and names you search for, are looked up in TMDB. Nothing about you or your sources is sent."
 
 #### Scenario: Changing it on one device
 - **GIVEN** an iPhone and an Apple TV on one iCloud account

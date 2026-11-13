@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV title detail, cast to pick</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- title.backdrop: first backdropURL, else the poster, else this placeholder color. Full bleed. -->
+  <div style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #22304A"></div>
+  <div style="position: absolute; left: 0; top: 0; width: 1100px; height: 1080px; background: rgba(11, 14, 19, 0.72)"></div>
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 240px; background: linear-gradient(to bottom, rgba(11,14,19,0), rgba(11,14,19,0.85))"></div>
+
+  <!-- No shell tab bar and no clock on the detail (title-detail-and-episode-picker): Menu pops back to the section. -->
+
+  <!-- title.root: copy column, same left edge as the Movies hero -->
+  <div style="position: absolute; left: 64px; top: 150px; width: 880px; display: flex; flex-direction: column; gap: 22px">
+    <!-- title.eyebrow -->
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: {{accent}}">Movie · Thriller</div>
+    <!-- title.name -->
+    <div style="font-size: 76px; font-weight: 800; line-height: 1.02; letter-spacing: -1px">The Long Harbor</div>
+    <!-- title.meta: year · duration · genre, then title.badges. The provider rating leaves this line when title.scores shows (title-detail-and-episode-picker/what-the-title-is-about). Missing parts are left out, never dashed. -->
+    <div style="display: flex; gap: 14px; align-items: center; font-size: 24px; color: #D7DEE8">
+      <span>2024</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span>2 h 08 min</span>
+      <span style="width: 4px; height: 4px; border-radius: 2px; background: #A7B0BF; display: inline-block"></span>
+      <span>Thriller</span>
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF">4K</span>
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 5px; border: 1.5px solid #A7B0BF">15</span>
+    </div>
+    <!-- title.plot: clamped to 4 lines; title.more opens the full text (title.plotSheet) -->
+    <div style="font-size: 26px; line-height: 1.4; color: #D7DEE8; max-width: 760px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden">A harbour pilot uncovers a smuggling ring the night before the port is sold. One tide to decide who gets out. With the buyers arriving at dawn and her own crew split down the middle, she has until the water turns to choose a side, and every channel out of the harbour is watched.</div>
+    <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; align-self: flex-start; padding: 10px 24px; border-radius: 999px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; cursor: pointer">More</button>
+    <!-- title.cast and title.director: label muted, names secondary, at most two lines -->
+
+    <!-- title.play (focused, Focus token), title.myList, then title.trailer when the trailer link is a video file or HLS stream, which plays in the app (title-detail-and-episode-picker/trailer). Initial focus is title.play. -->
+    <div style="display: flex; gap: 16px; padding-top: 8px">
+      <button type="button" style="font: inherit; font-size: 26px; font-weight: 700; padding: 18px 36px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>
+        <span>Resume</span>
+      </button>
+      <button type="button" aria-label="Add to my list" style="font: inherit; width: 72px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button type="button" style="font: inherit; font-size: 26px; font-weight: 600; padding: 18px 30px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; gap: 12px; cursor: pointer">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5v5l4-2.5z" fill="currentColor"/></svg>
+        <span>Trailer</span>
+      </button>
+    </div>
+    <!-- title.progress and title.remaining: shown only when the button reads Resume -->
+    <div style="display: flex; align-items: center; gap: 16px; width: 520px">
+      <div style="flex: 1 1 auto; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.22); overflow: hidden"><div style="height: 6px; width: 42%; background: {{accent}}"></div></div>
+      <span style="font-size: 20px; color: #A7B0BF; flex: 0 0 auto">52 min left</span>
+    </div>
+    <!-- title.scores (title-detail-and-episode-picker/scores-from-other-sites): below the buttons and progress, not focusable, no space reserved until scores arrive. Fixed order IMDb, Rotten Tomatoes, Metacritic, TMDB; a site with no score is left out. Only TMDB ships first; the other chips wait on a licence (add-title-metadata design.md). Text only, no site logos. -->
+    <div style="display: flex; gap: 12px; flex-wrap: wrap">
+      <span style="display: flex; align-items: baseline; gap: 10px; font-size: 24px; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.08)"><span style="font-size: 20px; color: #A7B0BF">IMDb</span><span style="font-weight: 700; color: #F2F4F8">7.8</span></span>
+      <span style="display: flex; align-items: baseline; gap: 10px; font-size: 24px; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.08)"><span style="font-size: 20px; color: #A7B0BF">Rotten Tomatoes</span><span style="font-weight: 700; color: #F2F4F8">92%</span></span>
+      <span style="display: flex; align-items: baseline; gap: 10px; font-size: 24px; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.08)"><span style="font-size: 20px; color: #A7B0BF">Metacritic</span><span style="font-weight: 700; color: #F2F4F8">81</span></span>
+      <span style="display: flex; align-items: baseline; gap: 10px; font-size: 24px; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.08)"><span style="font-size: 20px; color: #A7B0BF">TMDB</span><span style="font-weight: 700; color: #F2F4F8">74%</span></span>
+    </div>
+    <!-- title.cast (browse-by-person/pick-someone-in-the-cast): for a matched title, one focusable chip per person, cast in billing order then the director, at most 15, from TMDB's credits. Down from the buttons lands on the first chip; here the first is focused. With no match or lookups off, the provider's cast and director show as text as on TV-Title, not focusable. -->
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 22px; color: #A7B0BF">Cast and crew</div>
+      <div style="display: flex; gap: 14px; overflow: hidden; white-space: nowrap">
+        <span style="font-size: 24px; height: 60px; padding: 0 26px; border-radius: 999px; display: flex; align-items: center; flex: 0 0 auto; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">Mira Holt</span><span style="font-size: 24px; height: 60px; padding: 0 26px; border-radius: 999px; display: flex; align-items: center; flex: 0 0 auto; background: rgba(255,255,255,0.08); color: #F2F4F8">Jonas Reeve</span><span style="font-size: 24px; height: 60px; padding: 0 26px; border-radius: 999px; display: flex; align-items: center; flex: 0 0 auto; background: rgba(255,255,255,0.08); color: #F2F4F8">Adaeze Okafor</span><span style="font-size: 24px; height: 60px; padding: 0 26px; border-radius: 999px; display: flex; align-items: center; flex: 0 0 auto; background: rgba(255,255,255,0.08); color: #F2F4F8">Teodor Lind</span><span style="font-size: 24px; height: 60px; padding: 0 26px; border-radius: 999px; display: flex; align-items: center; flex: 0 0 auto; background: rgba(255,255,255,0.08); color: #F2F4F8">Sanna Weiss · Director</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
