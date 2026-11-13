@@ -91,6 +91,7 @@ struct AntennaApp: App {
                 dependencies.lastLoads = lastLoads
                 return dependencies
             }
+            if let scripted = UITestingOnboarding.loader() { return .app(loader: scripted, guide: guide, container: container) }
         #endif
         return .app(loader: SourceLoader(), guide: guide, container: container)
     }

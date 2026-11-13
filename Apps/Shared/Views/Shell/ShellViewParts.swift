@@ -64,7 +64,9 @@
             #if DEBUG
                 if let scripted = UITestingShell.dependencies() { return scripted }
                 if let seeded = UITestingScreenshots.dependencies() { return seeded }
-                if let scripted = UITestingOnboarding.loader() { return .live(loader: scripted, guide: nil, profile: profile) }
+                if let scripted = UITestingOnboarding.loader() {
+                    return .live(loader: scripted, guide: nil, profile: profile, refresher: refresher)
+                }
             #endif
             return .live(loader: loader, guide: guideStore, profile: profile, refresher: refresher)
         }

@@ -7,8 +7,10 @@
     /// empty in-memory store, so it opens on onboarding, with iCloud reported
     /// as signed in or out. `connect` is `signedIn` with Connect answered
     /// in the app: `http://onboarding.test/tv.m3u` holds News One and News
-    /// Two, `http://empty.test/tv.m3u` holds nothing, and every other host
-    /// cannot be found. Nothing reaches the network, iCloud or the Keychain.
+    /// Two, `http://empty.test/tv.m3u` holds nothing, `xtream.test` is an
+    /// Xtream server with one News channel for any login, and every other
+    /// host cannot be found. Nothing reaches the network, iCloud or the
+    /// Keychain.
     enum UITestingOnboarding {
         static let argument = "-ui-testing-onboarding"
 
@@ -80,7 +82,7 @@
 
         /// The connector Connect uses in the `connect` scenario, or nil.
         static func connector() -> SourceConnector? {
-            session().map { SourceConnector(session: $0, credentials: Credentials()) }
+            session().map { SourceConnector(session: $0, credentials: credentials) }
         }
 
         /// How a connected source loads in the `connect` scenario, or nil.
@@ -90,8 +92,12 @@
 
         /// The loader Live and the shell use in the `connect` scenario, or nil.
         static func loader() -> SourceLoader? {
-            session().map { SourceLoader(session: $0, credentials: Credentials()) }
+            session().map { SourceLoader(session: $0, credentials: credentials) }
         }
+
+        /// The run's logins, shared by the connector and the loader the way
+        /// the Keychain is, so a login saved in Settings lets its source load.
+        static let credentials = Credentials()
 
         /// Logins kept in memory for the test run.
         final class Credentials: CredentialStoring, @unchecked Sendable {
@@ -120,8 +126,17 @@
             override static func canInit(with request: URLRequest) -> Bool { true }
             override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
+            /// What `xtream.test` answers for each action; the account check has none.
+            static let xtreamActions = [
+                "get_live_categories": #"[{"category_id":"1","category_name":"News"}]"#,
+                "get_live_streams": #"[{"stream_id":1,"name":"Cabin News","category_id":"1"}]"#,
+            ]
+
             override func startLoading() {
-                guard let url = request.url, let body = url.host().flatMap({ Self.playlists[$0] }),
+                let action = request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }?
+                    .queryItems?.first { $0.name == "action" }?.value
+                let xtream = request.url?.host() == "xtream.test" ? action.map { Self.xtreamActions[$0] ?? "[]" } : nil
+                guard let url = request.url, let body = xtream ?? url.host().flatMap({ Self.playlists[$0] }),
                     let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: nil)
                 else {
                     client?.urlProtocol(self, didFailWithError: URLError(.cannotFindHost))
