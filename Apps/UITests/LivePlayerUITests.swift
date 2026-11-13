@@ -205,4 +205,58 @@ final class LivePlayerUITests: XCTestCase {
         XCTAssertTrue(waitUntilGone(title, timeout: 10), "the channel line stayed after the controls went")
         XCTAssertFalse(controls.exists)
     }
+
+    /// The streams the fake engine loaded, in order.
+    private nonisolated static func loaded(_ log: URL) -> [String] {
+        ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n").map(String.init)
+    }
+
+    private var loaded: [String] { Self.loaded(log) }
+
+    private func waitForLoaded(_ expected: [String], file: StaticString = #filePath, line: UInt = #line) {
+        let log = log
+        let done = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in Self.loaded(log) == expected }, object: nil)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [done], timeout: 10), .completed, "loaded \(loaded), expected \(expected)", file: file, line: line)
+    }
+
+    // live-tv-on-iphone-ipad-mac/swipe-on-the-picture-to-change-channel
+    func testSwipingOnTheFullScreenPictureChangesChannel() throws {
+        let app = try launchPlaying()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        assertFullScreen(app)
+        let surface = app.element("browse.player.surface")
+
+        surface.swipeUp()
+        waitForLoaded(["news-one.ts", "news-two.ts"])
+        assertFullScreen(app)
+
+        surface.swipeDown()
+        waitForLoaded(["news-one.ts", "news-two.ts", "news-one.ts"])
+        app.waitForEngine("playing loads=3")
+    }
+
+    // live-tv-on-iphone-ipad-mac/go-back-to-the-previous-channel
+    func testPreviousChannelFlipsBetweenTwoChannels() throws {
+        let app = try launchPlaying()
+        XCTAssertFalse(control(app, "previous").isEnabled, "nothing to go back to yet")
+        app.row(1).tap()
+        waitForLoaded(["news-one.ts", "news-two.ts"])
+
+        control(app, "previous").tap()
+        waitForLoaded(["news-one.ts", "news-two.ts", "news-one.ts"])
+        control(app, "previous").tap()
+        waitForLoaded(["news-one.ts", "news-two.ts", "news-one.ts", "news-two.ts"])
+    }
+
+    // live-tv-on-iphone-ipad-mac/double-tap-to-skip, nothing to skip
+    func testDoubleTappingAChannelThatCannotRewindSaysSo() throws {
+        let app = try launchPlaying()
+        app.element("browse.player.surface").coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.3)).doubleTap()
+
+        let notice = app.element("timeshift.notice")
+        XCTAssertTrue(notice.waitForExistence(timeout: 3), "no note for a channel that cannot rewind")
+        XCTAssertEqual(notice.label, "Rewind isn't available on this channel")
+        XCTAssertEqual(loaded, ["news-one.ts"])
+    }
 }

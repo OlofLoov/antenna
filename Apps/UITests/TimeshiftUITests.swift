@@ -130,4 +130,19 @@ final class TimeshiftUITests: XCTestCase {
         app.waitForEngine("playing loads=1")
         label(app, "timeshift.behindLive", is: "21 min behind")
     }
+
+    // live-tv-on-iphone-ipad-mac/double-tap-to-skip
+    func testDoubleTapsOnEachHalfSkipFifteenSeconds() throws {
+        let app = try launch("buffer")
+        let surface = app.element("browse.player.surface")
+        surface.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.3)).doubleTap()
+        label(app, "timeshift.behindLive", is: "1 min behind")
+
+        surface.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.3)).doubleTap()
+        XCTAssertTrue(waitUntilGone(app.element("timeshift.behindLive")), "15 seconds forward reaches live again")
+
+        surface.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.3)).doubleTap()
+        label(app, "timeshift.notice", is: "Already live")
+        app.waitForEngine("playing loads=1")
+    }
 }

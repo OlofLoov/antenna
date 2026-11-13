@@ -204,8 +204,21 @@ final class TimeshiftModel {
 
     /// Back 15 seconds or forward 30 from what is on screen.
     func skip(forward: Bool) {
+        skip(seconds: forward ? limits.skipForward : -limits.skipBack)
+    }
+
+    /// Moves `seconds` from what is on screen, back when negative.
+    func skip(seconds: TimeInterval) {
         guard let window, let playhead = shownTime else { return }
-        move(TimeshiftMove.skip(forward ? limits.skipForward : -limits.skipBack, from: playhead, in: window, limits: limits))
+        move(TimeshiftMove.skip(seconds, from: playhead, in: window, limits: limits))
+    }
+
+    /// A double-tap on a half of the picture: 15 seconds either way, or a
+    /// note saying why nothing moved (live-tv-on-iphone-ipad-mac/double-tap-to-skip).
+    func doubleTapSkip(forward: Bool) {
+        guard canRewind else { return say(TimeshiftText.rewindUnavailable) }
+        if forward, !isBehind { return say(TimeshiftText.alreadyLive) }
+        skip(seconds: forward ? limits.skipBack : -limits.skipBack)
     }
 
     /// Starts a held scan; the shown time moves at the scan rate until `endScan`.

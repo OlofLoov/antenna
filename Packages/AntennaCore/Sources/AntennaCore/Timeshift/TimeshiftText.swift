@@ -18,6 +18,12 @@ public enum TimeshiftText {
     /// Start over through catch-up failed and the buffer does not reach the start.
     public static let startOverUnavailable = "Start over isn't available for this programme"
 
+    /// A double-tap to skip on a channel with nothing to rewind.
+    public static let rewindUnavailable = "Rewind isn't available on this channel"
+
+    /// A double-tap to skip forward while already at live.
+    public static let alreadyLive = "Already live"
+
     /// The line a notice shows.
     public static func notice(_ notice: TimeshiftNotice) -> String {
         switch notice {

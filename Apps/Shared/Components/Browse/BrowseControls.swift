@@ -136,6 +136,27 @@ extension Browse {
         }
     }
 
+    /// Previous channel, dimmed when there is no other channel to go back to
+    /// (live-tv-on-iphone-ipad-mac/go-back-to-the-previous-channel).
+    struct PreviousChannelButton: View {
+        let isAvailable: Bool
+        let goBack: () -> Void
+
+        var body: some View {
+            Button(action: goBack) {
+                Image(systemName: "arrow.uturn.backward")
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .disabled(!isAvailable)
+            .opacity(isAvailable ? 1 : 0.4)
+            .accessibilityLabel("Previous channel")
+            .accessibilityIdentifier("browse.player.previous")
+        }
+    }
+
     /// The Picture in Picture button, grayed out when the player cannot do it.
     struct PictureInPictureButton: View {
         let isAvailable: Bool
@@ -199,6 +220,7 @@ extension Browse {
     Browse.Controls(
         isPaused: false, progress: 0.78, clock: "21:34", isFullScreen: false, playPause: {}, toggleFullScreen: {}
     ) {
+        Browse.PreviousChannelButton(isAvailable: true) {}
         Browse.PictureInPictureButton(isAvailable: true) {}
     }
 }
@@ -207,6 +229,7 @@ extension Browse {
     Browse.Controls(
         isPaused: true, progress: 0.4, clock: "21:34", isFullScreen: false, playPause: {}, toggleFullScreen: {}
     ) {
+        Browse.PreviousChannelButton(isAvailable: false) {}
         Browse.PictureInPictureButton(isAvailable: false) {}
     }
     .environment(\.browseMetrics, .regular)
@@ -223,6 +246,7 @@ extension Browse {
         isPaused: false, progress: nil, clock: "21:34", isFullScreen: true, playPause: {}, toggleFullScreen: {}
     ) {
         Browse.PlayerFavoriteButton(isFavorite: false) {}
+        Browse.PreviousChannelButton(isAvailable: true) {}
     }
 }
 
