@@ -1,17 +1,32 @@
 import XCTest
 
-/// One screenshot walk-through: the app launched with `-ui-screenshots
-/// <scenario>`, and a numbered screenshot per step. CI exports the
-/// screenshots from the result bundle (add-app-screenshots-ci).
+/// One screenshot walk-through: the app launched on seeded data, and a
+/// numbered screenshot per step. CI exports the screenshots from the result
+/// bundle as `<device>/<test>/<nn>-<step>.png` (add-app-screenshots-ci).
 @MainActor
 final class Journey {
-    let app = XCUIApplication()
+    private(set) var app = XCUIApplication()
     private let test: XCTestCase
     private var steps = 0
 
-    init(_ test: XCTestCase, scenario: String) {
+    /// Launches the app with `-ui-screenshots <scenario>`.
+    convenience init(_ test: XCTestCase, scenario: String) {
+        self.init(test, arguments: ["-ui-screenshots", scenario])
+    }
+
+    /// Launches the app with `arguments`, for a scenario another UI test
+    /// target already seeds, such as `-ui-testing-shell loading`.
+    init(_ test: XCTestCase, arguments: [String]) {
         self.test = test
-        app.launchArguments = ["-ui-screenshots", scenario]
+        launch(arguments)
+    }
+
+    /// Ends the running app and starts it again with `arguments`. Step
+    /// numbers carry on.
+    func launch(_ arguments: [String]) {
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = arguments
         app.launch()
     }
 
@@ -21,9 +36,13 @@ final class Journey {
 
     /// Waits up to 10 seconds for the element with identifier `anchor`, then
     /// attaches a screenshot named `<nn>-<step>`. Fails the test when the
-    /// anchor never appears.
+    /// anchor never appears, with the accessibility tree attached.
     func snap(_ step: String, anchor: String, file: StaticString = #filePath, line: UInt = #line) {
         guard element(anchor).waitForExistence(timeout: 10) else {
+            let tree = XCTAttachment(string: app.debugDescription)
+            tree.name = "tree-\(step)"
+            tree.lifetime = .keepAlways
+            test.add(tree)
             XCTFail("step \(step): \(anchor) never appeared", file: file, line: line)
             return
         }
