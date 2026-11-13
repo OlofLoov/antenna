@@ -30,6 +30,47 @@ import Testing
         #expect(PlaylistEntryKind(try entry(name, link, group: group)) == expected)
     }
 
+    @Test(
+        "m3u-playlists/live-signs-keep-an-entry-live live signs beat the file extension, folders and groups beat live signs",
+        arguments: [
+            (Channel.liveSigned(epgID: "news24.example"), PlaylistEntryKind.live),
+            (Channel.liveSigned(catchup: true), .live),
+            (Channel.liveSigned(group: "UK | News"), .live),
+            (Channel.liveSigned(group: "Sports 4K"), .live),
+            (Channel.liveSigned(group: "24/7 Sitcoms"), .live),
+            (Channel.liveSigned(duration: -1), .live),
+            (Channel.liveSigned(duration: 0), .live),
+            (Channel.liveSigned(duration: 5400), .movie),
+            (Channel.liveSigned(), .movie),
+            (Channel.liveSigned(group: "Newsroom Films"), .movie),
+            (Channel.liveSigned(group: "Newsreels"), .movie),
+            (Channel.liveSigned(link: "http://tv.example/movie/u/p/9.mp4", epgID: "x", catchup: true, duration: -1), .movie),
+            (Channel.liveSigned(group: "VOD | Action", epgID: "x", duration: -1), .movie),
+            (Channel.liveSigned(name: "Show S01E02", epgID: "x", catchup: true), .episode),
+            (Channel.liveSigned(link: "http://tv.example/series/u/p/7.mkv", group: "News"), .episode),
+        ])
+    func liveSigns(channel: Channel, expected: PlaylistEntryKind) {
+        #expect(PlaylistEntryKind(channel) == expected)
+    }
+
+    @Test("m3u-playlists/movies-and-episodes-in-a-playlist-are-recognized a news channel served as an mp4 file stays live")
+    func newsChannelAsMP4() {
+        let text = """
+            #EXTM3U
+            #EXTINF:-1 tvg-id="news24.example" group-title="News",News 24
+            http://cdn.example/news24/live.mp4
+            #EXTINF:5400,The Film
+            http://cdn.example/the-film.mp4
+            #EXTINF:-1 tvg-id="x" catchup="default" group-title="Anything",Panel Film
+            http://tv.example/movie/u/p/9.mp4
+            """
+        let parsed = M3UParser().parse(text)
+        #expect(parsed.channels.map(\.duration) == [-1, 5400, -1])
+        let separated = parsed.separatingMovies()
+        #expect(separated.channels.map(\.name) == ["News 24"])
+        #expect(separated.movies.map(\.name) == ["The Film", "Panel Film"])
+    }
+
     @Test("m3u-playlists/playlist-movies-stay-out-of-live-channels movies move out, episodes and live stay, order kept")
     func separating() throws {
         let playlist = Playlist(channels: [
@@ -62,5 +103,16 @@ import Testing
         #expect(catalogue.titles.map(\.containerExtension) == ["mkv", nil, "mp4"])
         #expect(catalogue.titles.first?.posterURL?.absoluteString == "http://img.example/a.jpg")
         #expect(!catalogue.titles.contains { $0.id.contains("secret") || $0.id.contains("://") })
+    }
+}
+
+extension Channel {
+    /// An entry linking to an `.mp4` file with the given live signs.
+    fileprivate static func liveSigned(
+        name: String = "Entry", link: String = "http://cdn.example/files/entry.mp4", group: String? = nil, epgID: String? = nil,
+        catchup: Bool = false, duration: Double? = nil
+    ) -> Channel {
+        Channel(
+            id: name, name: name, streamURL: URL(string: link)!, group: group, epgID: epgID, hasCatchup: catchup, duration: duration)
     }
 }

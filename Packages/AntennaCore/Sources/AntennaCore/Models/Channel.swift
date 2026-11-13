@@ -25,6 +25,10 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
     /// Hours the playlist says to shift catch-up date parts by. Kept in
     /// memory only.
     public var catchupCorrectionHours: Double?
+    /// The playlist's `#EXTINF` duration in seconds, -1 for most live
+    /// entries. Nil for other sources and when the playlist gave none. Kept
+    /// in memory only.
+    public var duration: Double?
     /// The `SourceRecord.id` this channel was loaded from. Nil until
     /// `Channel.tagged(_:sourceID:)` runs; the catalogue drops untagged channels.
     public var sourceID: UUID?
@@ -45,6 +49,7 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         catchupMode: CatchupMode? = nil,
         catchupSource: String? = nil,
         catchupCorrectionHours: Double? = nil,
+        duration: Double? = nil,
         sourceID: UUID? = nil,
         position: Int? = nil
     ) {
@@ -61,11 +66,12 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         self.catchupMode = catchupMode
         self.catchupSource = catchupSource
         self.catchupCorrectionHours = catchupCorrectionHours
+        self.duration = duration
         self.sourceID = sourceID
         self.position = position
     }
 
-    /// The catch-up mode, template and correction are left out, so nothing
+    /// The catch-up mode, template and correction and the duration are left out, so nothing
     /// that encodes a channel keeps them
     /// (timeshift-catch-up-and-start-over/logins-stay-private).
     enum CodingKeys: String, CodingKey {
