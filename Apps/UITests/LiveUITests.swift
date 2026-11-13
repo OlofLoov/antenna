@@ -104,7 +104,7 @@ final class LiveUITests: XCTestCase {
         let app = try launch()
         app.element("browse.group.0").tap()
         XCTAssertTrue(app.element("browse.emptyGroup").waitForExistence(timeout: 5))
-        XCTAssertEqual(app.element("browse.emptyGroup").label, "No favorites yet. Tap the star on a channel to add it.")
+        XCTAssertEqual(app.element("browse.emptyGroup").label, "No favorites yet. Touch and hold a channel, or swipe it right, to add it.")
     }
 
     // live-tv-on-iphone-ipad-mac/pick-a-group, VoiceOver reads a row
