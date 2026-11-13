@@ -65,6 +65,7 @@ Under `openspec/specs/design-system/boards/`:
 - Replaced when their screen ships: `TV-Onboard-2`, `TV-Onboard-3` and its `-M3U`, `-Connecting`, `-XtreamLink` and `-QR*` states, `TV-Settings`, `TV-Shell-Empty`, `iPhone-Onboard-2` and its states. The PR that ships a family renames the `*-Refresh-*` board over the old one and redraws the old board's other states in the new style.
 - Follows without a new board: every other screen. Its PR applies the rules to the screen's existing board and updates that board's type comments to text style names.
 - Not drawn: the add-source error line (caption 1 in the live-dot color under the footer on Apple TV, footnote on iPhone), the connecting state (Connect shows a progress view and the rows dim), iPad and Mac add-source (the iPhone sheet centered at the system's form size), Apple TV source details (the `TV-Refresh-Settings` rows with the field rows from `TV-Refresh-AddSource`), the Preferences choice list (a system list with a checkmark), and the iPhone Live empty state (the `TV-Refresh-Shell-Empty` layout at iPhone text styles). Each is drawn before its PR opens.
+- Drawn in PR 3: `TV-Settings-Details` (Apple TV source details) and `TV-Settings-Preferences-Choices` (the choice list). `TV-Refresh-Settings` became `TV-Settings`, and `TV-Settings-Preferences`, `TV-Settings-SignIn-QR` and `TV-Settings-Delete` are redrawn on the split page. `TV-Settings-Lookups` belongs to `add-title-metadata` and follows `TV-Settings-Preferences` when that change ships.
 
 PR 2 renamed `TV-Refresh-AddSource`, `TV-Refresh-AddSource-Kinds` and `iPhone-Refresh-AddSource` over `TV-Onboard-3`, `TV-Onboard-2` and `iPhone-Onboard-2`, redrew their states, and drew `TV-Onboard-3-Error`, `iPhone-Onboard-2-Error` and `iPad-Onboard-2` (the iPad and Mac sheet).
 
@@ -74,7 +75,8 @@ Journey steps added in PR 1, with the board each compares with:
 |------|------|-------|
 | `TVJourneys.testFirstRun` | `kinds`, `add-source-xtream` | `TV-Onboard-2`, `TV-Onboard-3` |
 | `TVJourneys.testSettingsAddSource` | `settings-add-source-kinds`, `settings-add-source` (kinds step added in PR 2) | `TV-Onboard-2`, `TV-Onboard-3` |
-| `TVJourneys.testSourceDetails` | `settings`, `source-details` | `TV-Refresh-Settings` |
+| `TVJourneys.testSourceDetails` | `settings`, `source-details` | `TV-Settings`, `TV-Settings-Details` |
+| `TVJourneys.testSettingsPreferences` (PR 3) | `settings-preferences`, `guide-window-choices` | `TV-Settings-Preferences`, `TV-Settings-Preferences-Choices` |
 | `TVJourneys.testMoviesFocus` | `movies-row-focus` | `TV-Movies` |
 | `TVJourneys.testShellStates` (already there) | `empty` | `TV-Refresh-Shell-Empty` |
 | `AppJourneys.testSettingsAddSource` | `settings-add-source`, `settings-add-source-kinds` (the Type menu), `settings-add-source-m3u`, `source-details` | `iPhone-Onboard-2`, `iPhone-Onboard-2-M3U`, `iPad-Onboard-2` |
@@ -144,6 +146,12 @@ Decision: full-screen cover on Apple TV, sheet on iPhone, iPad and Mac. The cove
 
 The tvOS `TextField` inside a `Form` draws a row with its label and value and opens the full-screen keyboard on select, as in the system Settings app. The custom uppercase label over a capsule field goes. The QR card stays on the left, since typing on the remote is what the household setter-upper hates most.
 
+PR 2 shipped this as `FieldRow` in `Apps/Shared/Components/Onboarding/`: `LabeledContent` with a fixed-width label and the system `TextField` or `SecureField` beside it, and no list fill behind the row, so the field's own platter is the only one. Source details in PR 3 use the same rows. The first draft of PR 3 (#358) had a second `FieldRow`, a list button over a hidden `UITextField`, because a `TextField` in a `Form` drew a capsule inside the row's platter. It was written before PR 2 landed and was dropped when PR 3 was rebuilt on main, so there is one field row on Apple TV.
+
+A choice is `ChoiceRow` in `Apps/Shared/Components/Form/`: a navigation link with the label and value that pushes the settings split page with one list button per value and a checkmark on the current one. `Picker` with `.navigationLink` style pushed an empty list from Settings on that simulator, so the app draws the list.
+
+Autoplay next episode and Show remote hints, added on main while PR 3 was open, sit in Preferences on Apple TV after Subtitles (`TV-Settings-Preferences`, `TV-Settings-Hints`). They stay system toggles, a row with its label and On or Off, which already reads as a field row; a pushed On and Off list would add a press for a two-value setting. The autoplay footer shows in the lead column while its row has focus, as the Subtitles one does. On iPhone, iPad and Mac Autoplay keeps its own section with the footer under it (`iPhone-Settings`).
+
 ### 5. The accent becomes the tint
 
 Options considered:
@@ -153,6 +161,8 @@ Options considered:
 Decision: the tint. It is still one accent color; the rule now names system tint as an allowed use and bans the accent on eyebrows, which the app does today.
 
 Found in PR 2: on Apple TV the tint does reach system controls. A tinted bordered button draws accent text on an accent fill, and a focused row button tints its title. Apple TV keeps the system tint; iPhone, iPad and Mac take the accent.
+
+PR 3 found the same on list buttons: a tinted one draws its label in the accent at rest and keeps it on the focused light platter, so Settings rows, alert buttons and source details actions read blue on white. Rows that set `Palette.text` or `Palette.textMuted` move to hierarchical styles, which the system flips to dark on focus.
 
 ### 6. Raise the Apple TV caption floor to 23 pt
 
