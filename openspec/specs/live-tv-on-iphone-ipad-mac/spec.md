@@ -6,7 +6,7 @@ The Live TV screen for people who watch on an iPhone, iPad or Mac. They scroll a
 ## Requirements
 
 ### Requirement: Sideways on iPhone fills the screen
-The system SHALL show the playing channel full screen, with no tab bar and no channel line below the picture, whenever an iPhone is held sideways on Live with a channel playing, however it got there, and SHALL return to the list when the phone turns upright.
+The system SHALL show the playing channel full screen, with no tab bar and no channel line below the picture, whenever an iPhone is held sideways on Live with a channel playing, however it got there, and SHALL return to the list when the phone turns upright. A movie or episode that ends while Live is the open tab SHALL count as coming back to Live: the channel it stopped plays again, full screen when the phone is sideways.
 
 #### Scenario: Turn sideways, then pick a channel
 - **GIVEN** Live is open on an iPhone held sideways with no channel playing
@@ -22,6 +22,11 @@ The system SHALL show the playing channel full screen, with no tab bar and no ch
 - **GIVEN** a channel plays and the iPhone is held sideways on another tab
 - **WHEN** the user opens Live, or comes back to Live after a movie or episode
 - **THEN** the picture fills the screen
+
+#### Scenario: A movie from Siri over Live
+- **GIVEN** a channel fills the screen on an iPhone held sideways
+- **WHEN** Siri or a shortcut plays a movie and the user closes it, still holding the phone sideways
+- **THEN** the channel plays again and the picture fills the screen
 
 #### Scenario: Turn upright
 - **GIVEN** the picture fills the screen because the iPhone is sideways
