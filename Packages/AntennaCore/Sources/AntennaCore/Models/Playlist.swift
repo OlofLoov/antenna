@@ -13,15 +13,20 @@ public struct Playlist: Sendable, Equatable {
     /// ids can hold a stream link with its login, so the map stays in memory
     /// and is never logged.
     public var formerIDs: [String: String]
-    /// A playlist's movie entries, which `separatingMovies()` moves out of
+    /// A playlist's movie entries, which `separatingOnDemand()` moves out of
     /// `channels`. Their links can hold the login: never log or store them.
     public var movies: [Channel]
+    /// A playlist's episode entries, moved out of `channels` the same way.
+    /// Their links can hold the login too.
+    public var episodes: [Channel]
 
     public init(
-        channels: [Channel], epgURLs: [URL] = [], serverTimeZone: String? = nil, formerIDs: [String: String] = [:], movies: [Channel] = []
+        channels: [Channel], epgURLs: [URL] = [], serverTimeZone: String? = nil, formerIDs: [String: String] = [:], movies: [Channel] = [],
+        episodes: [Channel] = []
     ) {
         self.channels = channels
         self.movies = movies
+        self.episodes = episodes
         self.epgURLs = epgURLs
         self.serverTimeZone = serverTimeZone
         self.formerIDs = formerIDs

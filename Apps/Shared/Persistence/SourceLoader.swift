@@ -151,7 +151,7 @@ struct SourceLoader: Sendable {
     /// The playlist with its movies moved out of the channels and kept for
     /// the Movies section (m3u-playlists/playlist-movies-stay-out-of-live-channels).
     private func keepMovies(_ playlist: Playlist, of source: SourceDescriptor) -> Playlist {
-        let separated = playlist.separatingMovies()
+        let separated = playlist.separatingOnDemand()
         playlistMovies.loaded(source.id, movies: separated.movies)
         return separated
     }

@@ -32,6 +32,8 @@ public struct SourceStatus: Equatable, Sendable {
     public var groups: Int?
     /// A playlist's movies from the last load that worked in this run, nil before one.
     public var movies: Int?
+    /// A playlist's episodes from the same load, nil before one.
+    public var episodes: Int?
     /// When a load last worked on this device, kept across launches.
     public var lastSuccess: Date?
     public var guide: Guide
