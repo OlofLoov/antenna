@@ -380,11 +380,12 @@
             await open(.live)
         }
 
-        /// Opens Search or the Guide at a programme. Closes the picker first.
+        /// Opens Search, Settings or the Guide at a programme. Closes the picker first.
         func show(_ destination: ShellNavigator.Destination) async {
             switch destination {
             case .search:
                 await open(.search)
+            case .settings: openSettings()
             case .guide(let programmeKey):
                 guideRequest = programmeKey
                 await open(.guide)

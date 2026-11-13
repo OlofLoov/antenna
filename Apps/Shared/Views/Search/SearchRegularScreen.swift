@@ -82,9 +82,11 @@
 
         @ViewBuilder private var content: some View {
             if let message = searchMessage(model) {
-                SearchParts.Message(title: message.title, lines: message.lines)
-                    .padding(.top, 120)
-                    .accessibilityIdentifier(model.sources == .loading ? "search.loading" : "search.empty")
+                StatusView(
+                    symbol: message.symbol, verbatimTitle: message.title, verbatimLines: message.lines,
+                    identifier: model.sources == .loading ? "search.loading" : "search.empty"
+                )
+                .padding(.top, 120)
             } else if model.results.query.isSearchable {
                 SearchLayout.Pad()
             }

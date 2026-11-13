@@ -207,10 +207,20 @@ struct SearchPersonResult: View {
 /// letter, "Channels are still loading", or no results with the hint
 /// (search/nothing-found). Nil when there are rows to show.
 @MainActor
-func searchMessage(_ model: SearchModel) -> (title: String, lines: [String])? {
+func searchMessage(_ model: SearchModel) -> SearchMessage? {
     let results = model.results
     guard results.query.isSearchable, model.foundNothing, results.query.text == SearchQuery(model.query).text else { return nil }
-    if model.sources == .loading { return (SearchText.channelsLoading(), []) }
+    if model.sources == .loading { return SearchMessage(symbol: "hourglass", title: SearchText.channelsLoading(), lines: []) }
     let lines = [SearchText.hint()] + (model.sources == .partial ? [SearchText.someStillLoading()] : [])
-    return (SearchText.noResults(results.query), lines)
+    return SearchMessage(
+        symbol: "magnifyingglass", title: SearchText.noResults(results.query), lines: lines
+    )
+}
+
+/// The symbol, title and lines of the status Search shows in place of rows,
+/// already in the user's language.
+struct SearchMessage: Equatable {
+    var symbol: String
+    var title: String
+    var lines: [String]
 }

@@ -437,6 +437,8 @@ extension ShellUITests {
         XCTAssertEqual(lines.count, 2)
         let values = Set((0..<lines.count).compactMap { lines.element(boundBy: $0).value as? String })
         XCTAssertEqual(values, ["loaded:0", "waitingForLogin"])
+        expectFocus("shell.empty.settings")
+        press(.right)
         expectFocus("shell.retry")
         press(.select)
         XCTAssertTrue(element("shell.loading").waitForExistence(timeout: 10))
@@ -447,12 +449,21 @@ extension ShellUITests {
     }
 
     // tvos-shell/an-empty-screen-with-retry
-    func testEmptyScreenReachesSettings() {
+    // design-system/empty-and-error-states-share-one-layout
+    func testEmptyScreenOpensSettings() {
         launch("empty")
-        expectFocus("shell.retry")
+        expectFocus("shell.empty.settings")
+        press(.select)
+        XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
+    }
+
+    // tvos-shell/an-empty-screen-with-retry
+    func testEmptyScreenReachesSettingsFromTheTabBar() {
+        launch("empty")
+        expectFocus("shell.empty.settings")
         press(.menu)
         expectFocus("shell.tab.live")
-        expect(element("shell.retry"), "hasFocus == false")
+        expect(element("shell.empty.settings"), "hasFocus == false")
         press(.right, times: 5)
         expectFocus("shell.settings")
         press(.select)

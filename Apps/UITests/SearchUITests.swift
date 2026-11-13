@@ -111,9 +111,9 @@ final class SearchUITests: XCTestCase {
         search(app, "norhtern")
         let empty = app.element("search.empty")
         XCTAssertTrue(empty.waitForExistence(timeout: 5))
-        XCTAssertTrue(empty.label.contains("No results for “norhtern”"), empty.label)
-        XCTAssertTrue(empty.label.contains("Check the spelling or try a channel number."), empty.label)
-        XCTAssertFalse(empty.label.contains("still loading"), "every source has loaded")
+        XCTAssertTrue(empty.staticTexts["No results for “norhtern”"].exists)
+        XCTAssertTrue(empty.staticTexts["Check the spelling or try a channel number."].exists)
+        XCTAssertFalse(empty.staticTexts["Some sources are still loading."].exists, "every source has loaded")
     }
 
     // search/nothing-found, a source still loading
@@ -122,7 +122,7 @@ final class SearchUITests: XCTestCase {
         search(app, "norhtern")
         let empty = app.element("search.empty")
         XCTAssertTrue(empty.waitForExistence(timeout: 5))
-        XCTAssertTrue(empty.label.contains("Some sources are still loading."), empty.label)
+        XCTAssertTrue(empty.staticTexts["Some sources are still loading."].exists)
     }
 
     // search/pick-a-channel-or-title-to-watch

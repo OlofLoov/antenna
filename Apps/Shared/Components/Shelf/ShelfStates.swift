@@ -61,52 +61,6 @@ extension ShelfView {
         }
     }
 
-    /// A centered title with a line per source under it and whatever the
-    /// screen adds below, such as Retry.
-    struct Message<Below: View>: View {
-        let title: String
-        let lines: [String]
-        @ViewBuilder var below: Below
-        @Environment(\.shelfMetrics) private var metrics
-
-        var body: some View {
-            VStack(spacing: metrics.headerSpacing) {
-                Text(title)
-                    .font(.system(size: metrics.header, weight: .bold))
-                    .foregroundStyle(Palette.text)
-                ForEach(lines, id: \.self) { line in
-                    Text(line)
-                        .font(.system(size: metrics.caption))
-                        .foregroundStyle(Browse.textSecondary)
-                }
-                below
-                    .padding(.top, metrics.headerSpacing)
-            }
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, metrics.gutter)
-            .padding(.vertical, metrics.rowSpacing * 2)
-            .frame(maxWidth: .infinity)
-        }
-    }
-
-    /// Retry under a message: the 0.12 surface, the white card when focused.
-    struct RetryButton: View {
-        let retry: () -> Void
-        @Environment(\.shelfMetrics) private var metrics
-        @Environment(\.shelfPrefix) private var prefix
-
-        var body: some View {
-            Button(action: retry) {
-                Text("Retry")
-                    .font(.system(size: metrics.caption + 2, weight: .semibold))
-                    .padding(.horizontal, metrics.caption * 1.6)
-                    .frame(minHeight: max(44, metrics.caption * 2.8))
-            }
-            .buttonStyle(ShelfBanner.BannerButtonStyle(fill: .secondary))
-            .accessibilityIdentifier("\(prefix).retry")
-        }
-    }
-
     /// "Cabin · waiting for login": text only.
     struct WaitingNote: View {
         let source: ShelfSource
@@ -134,20 +88,4 @@ private let previewSources = [
 #Preview("Loading, iPhone", traits: .fixedLayout(width: 390, height: 600)) {
     ShelfView.Loading(sources: previewSources)
         .background(Palette.ground)
-}
-
-#Preview("Could not load movies, iPad", traits: .fixedLayout(width: 914, height: 400)) {
-    ShelfView.Message(title: ShelfStatus.failedTitle(.movie), lines: ["Office: waiting for its login to sync from iCloud"]) {
-        ShelfView.RetryButton {}
-    }
-    .environment(\.shelfMetrics, .pad)
-    .background(Palette.ground)
-}
-
-#Preview("Nothing here yet, Apple TV", traits: .fixedLayout(width: 1920, height: 600)) {
-    ShelfView.Message(title: ShelfStatus.emptyTitle(), lines: ["Cabin: no movies", "Office: waiting for its login to sync from iCloud"]) {
-        EmptyView()
-    }
-    .environment(\.shelfMetrics, .tv)
-    .background(Palette.ground)
 }

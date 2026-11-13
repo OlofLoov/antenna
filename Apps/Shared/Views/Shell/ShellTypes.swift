@@ -23,7 +23,7 @@
         case signIn
         /// A tab or track in the info panel over the picture.
         case panel(PanelFocus)
-        /// The loading screen's holder or the empty screen's Retry.
+        /// The loading screen's holder or the empty screen's Open Settings.
         case liveScreen
         case tab(ShellTab)
         case settings

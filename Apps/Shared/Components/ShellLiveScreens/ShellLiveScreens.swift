@@ -103,7 +103,8 @@ private struct Spinner: View {
     }
 }
 
-/// "No channels yet" with a line per source that added nothing and Retry.
+/// "No channels yet" on the shared `StatusView` layout, with a line per
+/// source that added nothing and the actions the screen passes.
 enum ShellEmpty {
     struct Line: Identifiable, Equatable, Sendable {
         var id: UUID
@@ -112,62 +113,30 @@ enum ShellEmpty {
         var value: String
     }
 
-    struct Screen<Retry: View>: View {
+    /// Each line with `shell.empty.source.<id>`.
+    struct Lines: View {
         let lines: [Line]
-        @ViewBuilder var retry: Retry
 
         var body: some View {
-            VStack(spacing: 14) {
-                Text("No channels yet")
-                    .font(.system(size: 29, weight: .bold))
-                    .foregroundStyle(Palette.text)
-                ForEach(lines) { line in
-                    Text(line.text)
-                        .font(.system(size: 24))
-                        .foregroundStyle(Palette.textMuted)
-                        .accessibilityValue(line.value)
-                        .accessibilityIdentifier("shell.empty.source.\(line.id.uuidString)")
-                }
-                retry
-                    .padding(.top, 26)
+            ForEach(lines) { line in
+                Text(line.text)
+                    .accessibilityValue(line.value)
+                    .accessibilityIdentifier("shell.empty.source.\(line.id.uuidString)")
             }
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: 1200)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("shell.empty")
         }
     }
 
-    /// 26 pt bold, radius 14. The Focus token while focused, the 0.12
-    /// surface while the tab bar has focus.
-    struct RetryButton: View {
-        let retry: () -> Void
+    /// Open Settings first, then Try again (`TV-Shell-Empty`).
+    struct Screen<Actions: View>: View {
+        let lines: [Line]
+        @ViewBuilder var actions: Actions
 
         var body: some View {
-            Button("Retry", action: retry)
-                .buttonStyle(RetryStyle())
-        }
-    }
-
-    private struct RetryStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            RetryLabel(label: configuration.label)
-        }
-    }
-
-    private struct RetryLabel<Label: View>: View {
-        let label: Label
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.system(size: 26, weight: .bold))
-                .padding(.vertical, 18)
-                .padding(.horizontal, 44)
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .background(isFocused ? Palette.focus : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 14))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+            StatusView(symbol: "antenna.radiowaves.left.and.right.slash", title: "No channels yet", identifier: "shell.empty") {
+                Lines(lines: lines)
+            } actions: {
+                actions
+            }
         }
     }
 }
@@ -193,7 +162,8 @@ enum ShellEmpty {
         .init(id: UUID(), text: "Home provider: waiting for its login to sync from iCloud", value: "waitingForLogin"),
         .init(id: UUID(), text: "Cabin: no channels", value: "loaded:0"),
     ]) {
-        ShellEmpty.RetryButton {}
+        Button("Open Settings") {}
+        Button("Try again") {}
     }
     .background(Palette.ground)
 }

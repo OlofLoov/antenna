@@ -32,7 +32,7 @@ struct EpisodesContext {
         case episodes
         /// "No episodes available".
         case empty
-        /// What failed, with Retry.
+        /// What failed, with Try again.
         case failed(LocalizedStringResource)
     }
 

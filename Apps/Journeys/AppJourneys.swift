@@ -100,7 +100,7 @@ final class AppJourneys: XCTestCase {
         journey.snap("source-details", anchor: "settings.details.status")
     }
 
-    /// Live when every source loaded without channels (refresh-visual-design, `TV-Refresh-Shell-Empty`).
+    /// Live when every source loaded without channels (`iPhone-Live-Empty`).
     func testLiveEmpty() {
         let journey = Journey(self, arguments: ["-ui-testing-live", "empty"])
         journey.snap("live-empty", anchor: "browse.empty")

@@ -13,6 +13,8 @@ struct ProgrammeKey: Hashable, Sendable {
 struct ShellNavigator {
     enum Destination: Hashable, Sendable {
         case search
+        /// Sources and Settings, as the empty and error states offer it.
+        case settings
         /// The Guide, told which programme to show.
         case guide(programmeKey: ProgrammeKey)
     }
@@ -35,7 +37,7 @@ struct ShellNavigator {
     extension ShellNavigator {
         /// Where a window on iPhone, iPad or Mac can go.
         enum Place {
-            case live, guide, search
+            case live, guide, search, settings
         }
 
         /// The window root's navigator: `select` shows a place, the Guide
@@ -46,6 +48,7 @@ struct ShellNavigator {
                 show: { destination in
                     switch destination {
                     case .search: select(.search)
+                    case .settings: select(.settings)
                     case .guide(let programmeKey):
                         guide.request = programmeKey
                         select(.guide)
@@ -75,6 +78,7 @@ struct ShellNavigator {
             case .live: self = .live
             case .guide: self = .guide
             case .search: self = .search
+            case .settings: self = .settings
             }
         }
     }

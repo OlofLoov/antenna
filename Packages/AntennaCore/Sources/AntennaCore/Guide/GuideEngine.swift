@@ -188,7 +188,7 @@ public actor GuideEngine {
         await restart(sourceID, force: .all)
     }
 
-    /// Downloads one guide of the source whatever its age, as Retry now does
+    /// Downloads one guide of the source whatever its age, as Try again does
     /// (guide-sources-and-channel-mapping/one-broken-guide-does-not-break-the-others).
     public func refresh(sourceID: UUID, guide: GuideReference) async {
         await restart(sourceID, force: .only([guide]))

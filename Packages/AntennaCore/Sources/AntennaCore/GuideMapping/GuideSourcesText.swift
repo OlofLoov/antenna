@@ -33,7 +33,7 @@ public struct GuideSourcesText: Sendable {
     public var channelsHeader: String { words("Channels without guide") }
     public var namedHeader: String { words("Matched by name") }
     public var removeMatch: String { words("Remove match") }
-    public var retry: String { words("Retry now") }
+    public var retry: String { words("Try again") }
     public var reenter: String { words("Re-enter link") }
     public var pickerTitle: String { words("Find a guide entry") }
     public var pickerPrompt: String { words("Search the guide by channel name or id") }
@@ -114,7 +114,7 @@ public struct GuideSourcesText: Sendable {
         }
     }
 
-    /// Guide actions for a row: Move up and down, Turn off or on, Retry now
+    /// Guide actions for a row: Move up and down, Turn off or on, Try again
     /// for a failed or offline row, Remove for an added link.
     public func actions(_ row: GuideRow) -> [String] {
         var result = [words("Move up"), words("Move down"), row.enabled ? words("Turn off") : words("Turn on")]

@@ -33,10 +33,10 @@ struct ShelfSync: ViewModifier {
                 }
             }
             // "No episodes available" with OK, or "Could not load episodes"
-            // with Retry (movies-and-series-browsing/play-a-series-from-the-next-episode).
+            // with Try again (movies-and-series-browsing/play-a-series-from-the-next-episode).
             .alert(Text(playback.problem?.message ?? ""), isPresented: showsProblem, presenting: playback.problem) { problem in
                 if problem.retries {
-                    Button("Retry") { playback.retry(problem.series, library: library, activity: activity) }
+                    Button("Try again") { playback.retry(problem.series, library: library, activity: activity) }
                     Button("Cancel", role: .cancel) {}
                 } else {
                     Button("OK", role: .cancel) {}

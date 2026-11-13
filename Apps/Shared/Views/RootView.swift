@@ -340,7 +340,12 @@
         /// group Live and the Guide share.
         private var navigator: ShellNavigator {
             .window(live: live, guide: guide) { place in
-                selection = place == .live ? .live : place == .guide ? .guide : .search
+                switch place {
+                case .live: selection = .live
+                case .guide: selection = .guide
+                case .search: selection = .search
+                case .settings: selection = .settings
+                }
             }
         }
 
