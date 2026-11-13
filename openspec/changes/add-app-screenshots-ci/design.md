@@ -16,14 +16,16 @@ app with launch arguments that swap in seeded state, compiled into Debug only:
 Nothing seeds the iPhone and iPad screens with sources and channels, so
 `ChannelsView`, `GuideView` and `SettingsView` can only be shown empty today.
 
-The local machine has no Xcode, so everything here is built and checked in CI.
+The walk-throughs were written and run against local iPhone, iPad and Apple TV
+simulators; CI runs them on its own simulators.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Full-screen PNGs of the running app on iPhone, iPad and Apple TV for every
-  PR, downloadable from the run, named so they sort in walk-through order.
+- Full-screen PNGs of the running app on iPhone, iPad and Apple TV, every
+  night and on any PR that asks for them, downloadable from the run, named so
+  they sort in walk-through order.
 - Use the common setup: XCUITest screenshots as attachments, exported from the
   result bundle with Apple's own tool. No new dependencies.
 - Walk-throughs that can later grow assertions and become end-to-end tests.
@@ -75,49 +77,80 @@ A walk-through is one XCTest method. A shared `snap("<step>", anchor:)`
 helper waits up to 10 seconds for an element with that accessibility
 identifier, then attaches `XCUIScreen.main.screenshot()` named `<nn>-<step>`
 with `lifetime = .keepAlways`. A missing anchor fails the test; nothing else
-does.
-
-First walk-throughs:
+does. `Journey.launch(_:)` restarts the app with other arguments and keeps the
+step numbers, so one walk-through can show several launch states.
 
 | Platform | Test | Steps | Boards |
 |---|---|---|---|
-| iPhone, iPad | `firstRun` | channels empty, settings empty | `iPhone-Onboard-3-Empty`, `iPad-Empty` |
-| iPhone, iPad | `browse` | channels list, guide, favorites, settings | `iPhone-Guide`, `iPad-Guide`, `iPhone-Settings`, `iPad-Settings` |
-| Apple TV | `shell` | live full screen, menu bar, focused tab, guide, settings | `TV-Shell-Menu`, `TV-Shell-FocusedTab`, `TV-Shell-Guide-Menu`, `TV-Guide`, `TV-Settings` |
+| iPhone, iPad | `firstRun` | welcome, add source | `iPhone-Onboard-1`, `iPhone-Onboard-2-M3U` |
+| iPhone, iPad | `browse` | live, guide, search, settings | `iPhone-Guide`, `iPad-Guide`, `iPhone-Search`, `iPad-Search`, `iPhone-Settings`, `iPad-Settings` |
+| Apple TV | `firstRun` | welcome | `TV-Onboard-1` |
+| Apple TV | `shell` | live with the zap bar, menu, focused tab, guide, guide with menu, settings | `TV-ZapBar`, `TV-Shell-Menu`, `TV-Shell-FocusedTab`, `TV-Guide`, `TV-Shell-Guide-Menu`, `TV-Settings` |
 | Apple TV | `shellStates` | loading, empty, empty with menu | `TV-Shell-Loading`, `TV-Shell-Empty`, `TV-Shell-Empty-Menu` |
 
-The boards say which picture a reviewer compares each step with. Screens that
-are drawn but not built yet (player, zap bar, movies, search) get steps in the
-PRs that build them.
+Changes from the first plan, decided while building them:
 
-### 4. One CI job
+- The iOS `-ui-screenshots empty` launch shows onboarding, so `firstRun`
+  shows the welcome and add-source screens, not an empty channel list and
+  settings. The app has had no empty channel list since onboarding landed.
+- Favorites is no longer a tab on iPhone or iPad, so `browse` shows Search
+  instead.
+- `shellStates` launches with `-ui-testing-shell loading` and `empty`. The
+  screenshot seed loads its playlist from a local file at once, so it has no
+  loading state, and seeding a second copy of those scenarios would only
+  duplicate `UITestingShell`.
+- Tab buttons on iPhone and iPad carry no identifier, so the walk-throughs
+  tap them by label, as `AntennaUITests` does. The iPad guide is the regular
+  layout, anchored on `guide.toolbar`; the iPhone one on `guide.root`.
+- On Apple TV, Settings slides in over the guide. The settings step waits
+  until focus leaves the bar and the page's frame stops moving, so the
+  picture does not catch the slide halfway.
 
-A job `App screenshots` in `.github/workflows/ci.yml`, one `macos-26` runner:
+Screens that are drawn but not walked yet (player, multi-view, movies,
+series, title pages) get steps in the PRs that touch them.
 
-1. Pin the iOS status bar with `xcrun simctl status_bar override` (9:41, full
-   battery and signal), the usual screenshot convention.
-2. `xcodebuild test -scheme Antenna -only-testing:AntennaJourneys` with two
-   `-destination` flags, an iPhone and an iPad. xcodebuild runs them side by
-   side.
-3. The same for `AntennaTV` on an Apple TV 4K.
-4. `scripts/export-screenshots.sh` runs `xcrun xcresulttool export
-   attachments` on each result bundle and renames the files from its
+### 4. Its own workflow, on demand
+
+`.github/workflows/screenshots.yml`, one job `App screenshots` on one
+`macos-26` runner:
+
+1. Pick the first iPhone Pro, iPad Pro 13-inch and Apple TV 4K simulators the
+   runner lists, so a runner image update does not break the job.
+2. Boot the iPhone and iPad and pin their status bar with `xcrun simctl
+   status_bar override` (9:41, full battery and signal), the usual
+   screenshot convention.
+3. `xcodebuild test -scheme Antenna -only-testing:AntennaJourneys` with both
+   iOS destinations. xcodebuild runs them side by side.
+4. The same for `AntennaTV` on the Apple TV, even when the iOS step failed.
+5. `scripts/export-screenshots.sh` runs `xcrun xcresulttool export
+   attachments` on each result bundle and copies each step from its
    `manifest.json` to `<device>/<test>/<nn>-<step>.png`.
-5. Upload one artifact `app-screenshots`, kept 14 days.
+6. Upload one artifact `app-screenshots`, kept 14 days, and the result
+   bundles when a walk-through failed.
 
-Device names come from the runner's simulator list, picking the newest iPhone,
-iPad Pro and Apple TV 4K, so a runner image update does not break the job.
+Triggers, as the owner decided after the first plan: every night at 04:00
+UTC, by hand (`workflow_dispatch`), and on a pull request carrying the
+`screenshots` label, again on each push while the label stays. Not on every
+pull request.
 
-Considered: a matrix of three runners. GitHub runs at most 5 macOS jobs at once
-on the Free and Pro plans and CI already has 5, so extra runners queue. One
-runner keeps the PR's total wait about the same.
+Considered:
 
-Runs on every pull request and on pushes to main. Not a required check.
+- Every pull request and push to main, as first planned. The job holds a
+  `macos-26` runner for 15 to 20 minutes, and GitHub runs at most 5 macOS
+  jobs at once on the Free and Pro plans. Most PRs change no screen, so the
+  owner chose to run it when someone wants the pictures.
+- A job inside `ci.yml` with an `if:` on the label. `ci.yml` runs on every
+  PR and push; a separate workflow keeps the schedule and the label trigger
+  out of it, the same way `ui-tests.yml` does.
+- A matrix of three runners. More runners queue behind the CI jobs; one
+  runner keeps the total about the same.
+
+Not a required check.
 
 ## Risks / Trade-offs
 
 - **Job length.** One runner does iPhone, iPad and Apple TV, about 15 to 20
-  minutes. It runs alongside the other jobs and blocks nothing.
+  minutes. It runs only on demand and at night, and blocks nothing.
 - **tvOS focus flakes.** `ShellUITests.testPickerTuneShowsLive` has timed out
   on focus. The walk-throughs run with `-retry-tests-on-failure
   -test-iterations 2` so one flake does not cost the pictures.
@@ -126,3 +159,5 @@ Runs on every pull request and on pushes to main. Not a required check.
   testing scenarios, and the real wiring keeps its own tests.
 - **Simulator differences.** Fonts and layout match a device; video and some
   materials do not.
+- **Stale pictures.** A PR without the label gets no screenshots. The nightly
+  run on main shows what merged.
