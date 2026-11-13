@@ -21,6 +21,21 @@
         static let recentsMirrorVariable = "UITESTING_RECENTS_FILE"
         static let suite = "ui-testing-recents"
 
+        /// `UITESTING_NEW_CHANNEL` names a channel id without `fixture/`
+        /// that its source gained since a load the day before, so it shows
+        /// in New (new-channels capability).
+        static let newChannelVariable = "UITESTING_NEW_CHANNEL"
+
+        /// The New group's memory for this launch, in its own folder emptied
+        /// at launch.
+        static func seenChannels() -> SeenChannelsStore {
+            var store = SeenChannelsStore(
+                directory: FileManager.default.temporaryDirectory.appending(path: "ui-testing-discover", directoryHint: .isDirectory))
+            try? FileManager.default.removeItem(at: store.directory)
+            store.gained = ProcessInfo.processInfo.environment[newChannelVariable].map { "fixture/\($0)" }
+            return store
+        }
+
         /// The store for this launch. `source` maps a seeded id to its source.
         static func store(source: (String) -> UUID) -> RecentsStore {
             let defaults = UserDefaults(suiteName: suite) ?? .standard

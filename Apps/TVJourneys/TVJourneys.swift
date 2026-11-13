@@ -106,4 +106,14 @@ final class TVJourneys: XCTestCase {
         }
         journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
     }
+
+    /// The channel overlay with a channel the source gained since the day
+    /// before, in the New group (add-discover-rows, `TV-Overlay-New`).
+    func testOverlayNew() {
+        let journey = Journey(
+            self, arguments: ["-ui-testing-shell", "channels"], environment: ["UITESTING_NEW_CHANNEL": "a3"])
+        expectFocus("shell.picture", in: journey)
+        remote.press(.select)
+        journey.snap("overlay-new", anchor: "overlay.group.new")
+    }
 }

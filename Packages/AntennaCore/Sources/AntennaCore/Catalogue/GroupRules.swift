@@ -32,11 +32,11 @@ public struct GroupRules: Hashable, Sendable {
         }
     }
 
-    /// Groups left out of the channel lists. `.favorites` and `.recents`
-    /// are ignored.
+    /// Groups left out of the channel lists. `.favorites`, `.recents` and
+    /// `.new` are ignored.
     public var hidden: Set<CatalogueGroup>
     /// Groups whose channels are out of reach while locks are closed.
-    /// `.favorites`, `.recents` and `.all` are ignored.
+    /// `.favorites`, `.recents`, `.new` and `.all` are ignored.
     public var locked: Set<CatalogueGroup>
     /// The user's names for provider groups. Empty or whitespace-only names
     /// are ignored, so the provider's name shows.
@@ -63,14 +63,14 @@ public struct GroupRules: Hashable, Sendable {
 
     /// True when these rules change no catalogue query.
     var isEmpty: Bool {
-        hidden.subtracting([.favorites, .recents]).isEmpty && effectiveLocks.isEmpty && names.isEmpty && order.isEmpty
+        hidden.subtracting([.favorites, .recents, .new]).isEmpty && effectiveLocks.isEmpty && names.isEmpty && order.isEmpty
             && ownGroups.isEmpty
     }
 
     /// The locks that apply now: none while open, and never on Favorites,
     /// Recents or All channels.
     var effectiveLocks: Set<CatalogueGroup> {
-        locksOpen ? [] : locked.subtracting([.favorites, .recents, .all])
+        locksOpen ? [] : locked.subtracting([.favorites, .recents, .new, .all])
     }
 
     /// Whether `channelID` may be saved into an own group. An id that holds

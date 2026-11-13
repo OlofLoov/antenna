@@ -145,6 +145,7 @@
             dependencies.languages = UITestingPlayback.languageStore()
             dependencies.recents = UITestingRecents.store { id in cabin.contains { $0.id == "fixture/\(id)" } ? cabinID : homeID }
             dependencies.sleep = UITestingRecents.sleep
+            dependencies.seen = UITestingRecents.seenChannels()
             dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
             if multiView {
                 dependencies.multiView.tiles.make = {

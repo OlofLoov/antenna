@@ -250,7 +250,7 @@
                     shown = columns == .picture ? .list : nil
                 }
                 .groupSpokenLabel(group, count: live.catalogue.count(of: group))
-                .accessibilityIdentifier("browse.group.\(index)")
+                .accessibilityIdentifier(group == .new ? "groups.new" : "browse.group.\(index)")
             }
             LockedGroupRows()
             ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in

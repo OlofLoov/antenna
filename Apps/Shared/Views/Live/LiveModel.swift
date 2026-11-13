@@ -31,6 +31,8 @@ final class LiveModel {
         /// The current profile's recents, session and last channel. Tests and
         /// previews keep theirs apart from the app's.
         var recents = RecentsStore.scratch
+        /// The channels each source had on this device, for the New group.
+        var seen = SeenChannelsStore.scratch
         /// How the ten-second count waits.
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
         /// The lock screen and Control Center; nil uses the system's.
@@ -98,6 +100,8 @@ final class LiveModel {
     @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
     @ObservationIgnored private var failures: [UUID: String] = [:]
+    /// Each loaded source's memory of its channels (new-channels).
+    @ObservationIgnored private var seen: [UUID: SeenChannels] = [:]
     @ObservationIgnored private var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
     /// The recents the catalogue lists. While Recents is on screen a newer
     /// list waits in `latestRecents` (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
@@ -153,6 +157,7 @@ final class LiveModel {
             descriptors[id] = nil
             channelsBySource[id] = nil
             failures[id] = nil
+            self.seen[id] = nil
         }
         var changed: [SourceDescriptor] = []
         // A rename loads nothing again (sources-and-settings/changes-from-other-devices-show-up-by-themselves).
@@ -264,7 +269,8 @@ final class LiveModel {
         guard all != channels else { return }
         if multiView != nil { Task { await multiViewChannelsChanged() } }
         channels = all
-        catalogue = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents, rules: groupRules)
+        let built = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents, rules: groupRules)
+        catalogue = NewChannels.group(built, seen: seen, now: .now)
         names = ChannelNameIndex(catalogue)
         restoreGroup()
     }
@@ -452,6 +458,7 @@ extension LiveModel {
         case .success(let playlist):
             let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
             channelsBySource[source.id] = tagged
+            seen[source.id] = dependencies.seen.record(source.id, channelIDs: tagged.map(\.id))
             setState(.loaded(channels: tagged.count), for: source.id)
             rebuild()
             replay()

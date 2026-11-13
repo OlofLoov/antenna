@@ -39,7 +39,7 @@ final class GroupRecord {
         stored.sourceID = kind == .own ? id : sourceID
         stored.name = providerName
         switch kind {
-        case .favorites, .recents: return nil
+        case .favorites, .recents, .new: return nil
         case .all, .named, .ungrouped, .own: return stored.group
         }
     }

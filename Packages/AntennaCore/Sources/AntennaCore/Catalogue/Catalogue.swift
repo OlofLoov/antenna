@@ -1,8 +1,8 @@
 import Foundation
 
 /// The loaded channels as every screen lists them: groups in display order,
-/// one number per row, the All channels order, the resolved favorites and
-/// the resolved recents.
+/// one number per row, the All channels order, the resolved favorites, the
+/// resolved recents and the New group.
 ///
 /// Build it from every source's tagged channels, concatenated in source
 /// order. Channels without a `sourceID` or `position` are left out. The same
@@ -11,12 +11,15 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     let index: CatalogueIndex
     private let favorites: CatalogueFavorites<Token>
     private let recents: CatalogueRecents
+    /// The New group, set by `NewChannels.group(_:seen:now:)`.
+    private let fresh: CatalogueRecents
     /// The group rules applied; nil when there are none, so every query
     /// reads the index as it is.
     let policy: CataloguePolicy?
     /// Favorites and Recents with locked channels left out.
     private let shownFavorites: RankedRows
     private let shownRecents: RankedRows
+    private let shownNew: RankedRows
 
     /// - Parameters:
     ///   - channels: every source's output of `Channel.tagged(_:sourceID:)`,
@@ -34,22 +37,29 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         let index = CatalogueIndex(channels: channels, groupOrder: groupOrder)
         self.init(
             index: index, favorites: CatalogueFavorites(snapshots: favorites, index: index),
-            recents: recents.isEmpty ? .empty : CatalogueRecents(entries: recents, index: index),
+            recents: recents.isEmpty ? .empty : CatalogueRecents(entries: recents, index: index), fresh: .empty,
             policy: rules.isEmpty ? nil : CataloguePolicy(index: index, rules: rules))
     }
 
-    private init(index: CatalogueIndex, favorites: CatalogueFavorites<Token>, recents: CatalogueRecents, policy: CataloguePolicy?) {
+    private init(
+        index: CatalogueIndex, favorites: CatalogueFavorites<Token>, recents: CatalogueRecents, fresh: CatalogueRecents,
+        policy: CataloguePolicy?
+    ) {
         self.index = index
         self.favorites = favorites
         self.recents = recents
+        self.fresh = fresh
         self.policy = policy
         let favoriteRows = RankedRows(rows: favorites.rows, rankByEntry: favorites.rankByEntry)
         let recentRows = RankedRows(rows: recents.rows, rankByEntry: recents.rankByEntry)
+        let newRows = RankedRows(rows: fresh.rows, rankByEntry: fresh.rankByEntry)
         self.shownFavorites = policy?.filter(favoriteRows, index: index) ?? favoriteRows
         self.shownRecents = policy?.filter(recentRows, index: index) ?? recentRows
+        self.shownNew = policy?.filter(newRows, index: index) ?? newRows
     }
 
-    /// `.favorites`, `.recents` when a recent channel resolves, `.all`, then
+    /// `.favorites`, `.recents` when a recent channel resolves, `.new` when a
+    /// channel is new, `.all`, then
     /// each source's named groups and its Ungrouped group, sources in source
     /// order. Groups with no channels are not listed, except `.favorites`
     /// and `.all`.
@@ -58,7 +68,8 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// the user's order, and hidden groups and groups locked now are left
     /// out. A hidden `.all` is left out too.
     public var groups: [CatalogueGroup] {
-        let top: [CatalogueGroup] = shownRecents.rows.isEmpty ? [.favorites, .all] : [.favorites, .recents, .all]
+        let top: [CatalogueGroup] =
+            [.favorites] + (shownRecents.rows.isEmpty ? [] : [.recents]) + (shownNew.rows.isEmpty ? [] : [.new]) + [.all]
         guard let policy else { return top + index.groups }
         return top.filter { !policy.isHidden($0) }
             + policy.ordered.filter { !policy.isHidden($0) && !policy.isLocked($0) }
@@ -75,7 +86,8 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// A source's group sorts by assigned number, then position. `.favorites`
     /// sorts by `sortOrder`, then All channels order, one row per channel.
     /// `.recents` lists the recents that match exactly one loaded channel
-    /// of their source, newest first.
+    /// of their source, newest first. `.new` lists the channels first seen
+    /// lately, newest first.
     ///
     /// With group rules, locked channels are left out of every group while
     /// locks are closed, channels of hidden groups are left out of `.all`,
@@ -86,6 +98,7 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         switch group {
         case .favorites: return shownFavorites.rows
         case .recents: return shownRecents.rows
+        case .new: return shownNew.rows
         case .all: return policy?.allRows ?? index.allRows
         case .named, .ungrouped: return (policy?.rowsByGroup ?? index.rowsByGroup)[group] ?? []
         case .own(let id): return policy?.ownRanked(id, index: index).rows ?? []
@@ -133,6 +146,7 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         switch group {
         case .favorites: rank = shownFavorites.rankByEntry[entry]
         case .recents: rank = shownRecents.rankByEntry[entry]
+        case .new: rank = shownNew.rankByEntry[entry]
         case .all:
             let ranked = policy.map { $0.allRank[entry] } ?? index.allRank[entry]
             rank = ranked < 0 ? nil : ranked
@@ -181,20 +195,30 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// Groups, rows and numbers outside `.favorites` stay as they are, and
     /// the channels are not indexed again.
     public func replacingFavorites(_ favorites: [FavoriteSnapshot<Token>]) -> Catalogue {
-        Catalogue(index: index, favorites: CatalogueFavorites(snapshots: favorites, index: index), recents: recents, policy: policy)
+        Catalogue(
+            index: index, favorites: CatalogueFavorites(snapshots: favorites, index: index), recents: recents, fresh: fresh,
+            policy: policy)
     }
 
     /// This catalogue with `recents`, newest first, in place of the current
     /// ones. Groups, rows and numbers outside `.recents` stay as they are,
     /// and the channels are not indexed again.
     public func replacingRecents(_ recents: [LastChannelKey]) -> Catalogue {
-        Catalogue(index: index, favorites: favorites, recents: CatalogueRecents(entries: recents, index: index), policy: policy)
+        Catalogue(
+            index: index, favorites: favorites, recents: CatalogueRecents(entries: recents, index: index), fresh: fresh, policy: policy)
+    }
+
+    /// This catalogue with `fresh` as its New group, built by
+    /// `NewChannels.group(_:seen:now:)`. The channels are not indexed again
+    /// (channel-catalogue/recents-replaced-without-rebuild is the model).
+    func replacingNew(_ fresh: CatalogueRecents) -> Catalogue {
+        Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: policy)
     }
 
     /// This catalogue with `rules` in place of the current group rules.
     /// The channels are not indexed again.
     public func replacingRules(_ rules: GroupRules) -> Catalogue {
         let policy = rules.isEmpty ? nil : CataloguePolicy(index: index, rules: rules)
-        return Catalogue(index: index, favorites: favorites, recents: recents, policy: policy)
+        return Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: policy)
     }
 }

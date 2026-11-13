@@ -1,13 +1,16 @@
 import AntennaCore
 import Foundation
 
-/// Recents and deleted sources on Live (session-restore-and-recently-watched capability).
+/// Recents and deleted sources on Live (session-restore-and-recently-watched
+/// capability). A deleted source's channels also leave New
+/// (new-channels/what-new-remembers-stays-on-the-device).
 extension LiveModel {
     /// A source was deleted, here or on another device, and its channels
     /// left the stored recents (session-restore-and-recently-watched/deleting-a-source-clears-its-channels).
     /// Its channel playing now stops counting as watched.
     func sourceDeleted(_ id: UUID) {
         session.remove(source: id)
+        dependencies.seen.remove(id)
         latestRecents.removeAll { $0.sourceID == id }
         shownRecents.removeAll { $0.sourceID == id }
         catalogue = catalogue.replacingRecents(shownRecents)

@@ -9,6 +9,7 @@ extension CatalogueGroup {
         switch self {
         case .favorites: "Favorites"
         case .recents: "Recents"
+        case .new: "New"
         case .all: "All channels"
         case .named(_, let name): name
         case .ungrouped: "Ungrouped"
@@ -20,7 +21,7 @@ extension CatalogueGroup {
     var order: String {
         switch self {
         case .favorites: "Your order"
-        case .recents: "Newest first"
+        case .recents, .new: "Newest first"
         case .all, .named, .ungrouped: "Sorted by number"
         case .own: "Your order"
         }
@@ -30,20 +31,22 @@ extension CatalogueGroup {
         switch self {
         case .favorites: "star"
         case .recents: "clock.arrow.circlepath"
+        case .new: "sparkles"
         case .all, .named, .ungrouped, .own: nil
         }
     }
 
     /// What VoiceOver reads for the group with `count` channels
-    /// (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels).
+    /// (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels,
+    /// new-channels/a-new-group-lists-channels-added-lately).
     func spokenLabel(count: Int) -> String {
         "\(label), \(count == 1 ? "1 channel" : "\(count) channels")"
     }
 }
 
 extension View {
-    /// VoiceOver reads Recents as "Recents, n channels"; other groups keep
-    /// the label their row gives them.
+    /// VoiceOver reads Recents as "Recents, n channels" and New as "New, n
+    /// channels"; other groups keep the label their row gives them.
     func groupSpokenLabel(_ group: CatalogueGroup, count: Int) -> some View {
         modifier(GroupSpokenLabel(group: group, count: count))
     }
@@ -54,7 +57,7 @@ private struct GroupSpokenLabel: ViewModifier {
     let count: Int
 
     func body(content: Content) -> some View {
-        if group == .recents {
+        if group == .recents || group == .new {
             content.accessibilityLabel(group.spokenLabel(count: count))
         } else {
             content

@@ -71,7 +71,7 @@ enum GroupStore {
     /// Locks or unlocks `group` on every device. All channels, Favorites
     /// and Recents are never locked.
     static func setLocked(_ group: CatalogueGroup, _ locked: Bool, in context: ModelContext) {
-        guard group != .all, group != .favorites, group != .recents else { return }
+        guard group != .all, group != .favorites, group != .recents, group != .new else { return }
         record(for: group, in: context).locked = locked
         try? context.save()
     }
@@ -83,7 +83,7 @@ enum GroupStore {
     static func rename(_ group: CatalogueGroup, to name: String, in context: ModelContext) -> Bool {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         if case .own = group, trimmed.isEmpty { return false }
-        guard group != .favorites, group != .recents else { return false }
+        guard group != .favorites, group != .recents, group != .new else { return false }
         record(for: group, in: context).customName = trimmed.isEmpty ? nil : trimmed
         try? context.save()
         return true
@@ -91,7 +91,7 @@ enum GroupStore {
 
     /// Stores `groups` as the user's order, first to last.
     static func reorder(_ groups: [CatalogueGroup], in context: ModelContext) {
-        for (place, group) in zip(groups.indices, groups) where group != .all && group != .favorites && group != .recents {
+        for (place, group) in zip(groups.indices, groups) where group != .all && group != .favorites && group != .recents && group != .new {
             let record = record(for: group, in: context)
             if record.sortOrder != place { record.sortOrder = place }
         }

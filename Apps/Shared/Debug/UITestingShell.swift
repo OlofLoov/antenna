@@ -208,6 +208,7 @@
                     watchSleep: UITestingRecents.sleep,
                     multiView: multiView)
                 dependencies.languages = UITestingPlayback.languageStore()
+                dependencies.seen = UITestingRecents.seenChannels()
                 dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
                 return dependencies
             }
