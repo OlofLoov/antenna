@@ -8,10 +8,10 @@ what the app looks like when it actually runs, with navigation, focus, the tab
 bar and real layout on an iPhone, an iPad and an Apple TV. Reviewers have to
 build and run the app locally to check a change, and locally there is no Xcode.
 
-After this change, every pull request has screenshots of the running app on
-each platform, taken by walking through the main screens in the simulator, so
-the developer and any reviewer can open the PR and see the app as a user
-would. The walk-through is also the first end-to-end test harness: the same
+After this change, CI takes screenshots of the running app on each platform
+every night and on any pull request labeled `screenshots`, by walking through
+the main screens in the simulator, so the developer and any reviewer can open
+the run and see the app as a user would. The walk-through is also the first end-to-end test harness: the same
 journeys that take screenshots can later assert behavior.
 
 ## What Changes
@@ -25,7 +25,8 @@ journeys that take screenshots can later assert behavior.
 - A new CI job runs the journeys on an iPhone, an iPad and an Apple TV
   simulator, exports the screenshots from the result bundle with Apple's
   `xcresulttool`, names them `<device>/<journey>/<nn>-<step>.png`, and uploads
-  them as one workflow artifact on each PR.
+  them as one workflow artifact. It runs nightly, by hand, and on pull
+  requests with the `screenshots` label, not on every pull request.
 - The job fails only when a journey cannot reach a step (the app crashed or a
   screen never appeared). A visual difference never fails it, the same rule
   the Preview snapshots follow.
@@ -56,8 +57,8 @@ None.
 
 ## Impact
 
-- `.github/workflows/ci.yml`: a new `App screenshots` job on one `macos-26`
-  runner, next to `UI tests`, `tvOS tests` and `Preview snapshots`.
+- `.github/workflows/screenshots.yml`: a new `App screenshots` job on one
+  `macos-26` runner, and `scripts/export-screenshots.sh`.
 - `project.yml`: new test targets `AntennaJourneys` and `AntennaTVJourneys`.
 - `Apps/Shared/Debug/`: a screenshot scenario seeded from fixtures, built like
   `UITestingShell` and `UITestingStore`.
@@ -65,5 +66,5 @@ None.
   find the artifact.
 - Depends on the tvOS shell scenarios (`tvos-shell`) and the favorites
   scenario, which already exist on main.
-- Not blocked. Adds one simulator job per PR, about 15 to 20 minutes, running
-  alongside the others.
+- Not blocked. Adds one simulator job of about 15 to 20 minutes each night
+  and on each labeled PR.
