@@ -117,6 +117,16 @@ enum Browse {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityIdentifier("browse.emptyGroup")
         }
+
+        /// What empty Favorites says, naming how a channel becomes a favorite
+        /// on this platform (live-tv-on-iphone-ipad-mac/pick-a-group).
+        static var noFavorites: String {
+            #if os(macOS)
+                "No favorites yet. Right-click a channel to add it."
+            #else
+                "No favorites yet. Touch and hold a channel, or swipe it right, to add it."
+            #endif
+        }
     }
 }
 
@@ -144,7 +154,7 @@ extension EnvironmentValues {
 }
 
 #Preview("Empty Favorites") {
-    Browse.EmptyGroup(text: "No favorites yet. Tap the star on a channel to add it.")
+    Browse.EmptyGroup(text: Browse.EmptyGroup.noFavorites)
         .frame(width: 390, height: 300)
         .background(Palette.ground)
 }

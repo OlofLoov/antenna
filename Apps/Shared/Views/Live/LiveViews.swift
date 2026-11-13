@@ -185,7 +185,7 @@
         var body: some View {
             let rows = live.rows
             if rows.isEmpty, live.group == .favorites, live.filter.isEmpty {
-                Browse.EmptyGroup(text: "No favorites yet. Tap the star on a channel to add it.")
+                Browse.EmptyGroup(text: Browse.EmptyGroup.noFavorites)
             } else if rows.isEmpty {
                 Browse.EmptyGroup(text: "No channels match.")
             } else {
