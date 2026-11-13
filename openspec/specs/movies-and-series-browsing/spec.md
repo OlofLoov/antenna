@@ -19,7 +19,7 @@ The system SHALL list Movies and Series in the sidebar or tab bar whenever the u
 - **THEN** neither Movies nor Series appears
 
 ### Requirement: New titles up front
-The system SHALL show the newest title in the banner with its name, category, year, length and description, move through the four newest by itself while the user is not interacting with it, and let the user page it by hand.
+The system SHALL show the newest title in the banner with its name, category, year, length and description, move through the four newest by itself while the user is not interacting with it, and let the user page it by hand. The banner's art SHALL fill the banner and stay inside it, whatever the shape of the picture.
 
 #### Scenario: Titles with dates added
 - **GIVEN** the provider's movies have dates they were added
@@ -38,6 +38,12 @@ The system SHALL show the newest title in the banner with its name, category, ye
 - **GIVEN** the user has two Xtream sources
 - **WHEN** the banner fills
 - **THEN** it picks titles from both
+
+#### Scenario: A title with only a poster
+- **GIVEN** a title in the banner has a poster and no backdrop
+- **WHEN** the banner shows it, or pages to or from it
+- **THEN** the poster fills the banner and nothing of it shows above, below or beside the banner
+- **AND** the banner's name, details and buttons stay where the board puts them
 
 ### Requirement: Keep a list for later
 The system SHALL add a title to My list from the banner button or the poster's menu, offer removal in both places once added, show it in the My list row latest first, and undo both on removal.
