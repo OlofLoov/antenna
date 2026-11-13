@@ -8,9 +8,9 @@ extension ShellUITests {
         app.descendants(matching: .any).matching(identifier: "guide.column")
     }
 
-    /// The Guide window segment titled `title` once it has focus.
-    func focusedSegment(_ title: String) -> XCUIElement {
-        app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true AND label == %@", title)).firstMatch
+    /// The focused element whose label starts with `title`.
+    func focusedRow(_ title: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true AND label BEGINSWITH %@", title)).firstMatch
     }
 
     // sources-and-settings/choose-how-the-app-behaves
@@ -26,13 +26,21 @@ extension ShellUITests {
         expectFocus("shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.guideWindow").waitForExistence(timeout: 10))
-        // On Apple TV the picker is a row of segments: down to "2 hours", right to "4 hours".
-        for _ in 0..<12 where !focusedSegment("2 hours").waitForExistence(timeout: 1) { press(.down) }
-        XCTAssertTrue(focusedSegment("2 hours").exists, "focused: \(focusedElements())")
-        press(.right, times: 2)
-        XCTAssertTrue(focusedSegment("4 hours").waitForExistence(timeout: 5), "focused: \(focusedElements())")
+        // On Apple TV the preference is a row with its value that pushes the choices
+        // (design-system/forms-use-the-platform-form-style): down to the row, select,
+        // down to "4 hours", select, and the row reads the new value.
+        for _ in 0..<20 where !focusedRow("Guide window").waitForExistence(timeout: 1) { press(.down) }
+        XCTAssertTrue(focusedRow("Guide window").exists, "focused: \(focusedElements())")
+        expect(element("settings.guideWindow"), "label CONTAINS '2 hours'")
         press(.select)
-        expect(element("settings.guideWindow").buttons["4 hours"], "isSelected == true")
+        XCTAssertTrue(focusedRow("2 hours").waitForExistence(timeout: 5), "the choices never opened: \(focusedElements())")
+        XCTAssertTrue(
+            app.descendants(matching: .any).matching(NSPredicate(format: "label == '2 hours' AND isSelected == true")).firstMatch.exists,
+            "2 hours is not ticked")
+        press(.down, times: 2)
+        XCTAssertTrue(focusedRow("4 hours").waitForExistence(timeout: 5), "focused: \(focusedElements())")
+        press(.select)
+        expect(element("settings.guideWindow"), "label CONTAINS '4 hours'")
 
         press(.menu)
         let guide = element("shell.tab.guide")

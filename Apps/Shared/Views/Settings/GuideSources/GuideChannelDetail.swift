@@ -57,7 +57,7 @@ struct GuideChannelDetail: View {
     @ViewBuilder private func results(_ channel: Channel) -> some View {
         if !model.hasLoadedGuide {
             Text(GuideSourcesText.notDownloadedPicker)
-                .foregroundStyle(Palette.textMuted)
+                .foregroundStyle(.secondary)
                 .accessibilityIdentifier("guideSources.picker.empty")
         } else if !query.trimmingCharacters(in: .whitespaces).isEmpty {
             let found = model.search(query)
@@ -66,7 +66,7 @@ struct GuideChannelDetail: View {
                     Text(model.text.noMatch(query.trimmingCharacters(in: .whitespaces)))
                     Text(GuideSourcesText.noMatchCaption)
                         .font(.footnote)
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("guideSources.picker.empty")
@@ -84,7 +84,7 @@ struct GuideChannelDetail: View {
                 if found.total > found.entries.count {
                     Text(model.text.showing(found.entries.count, of: found.total))
                         .font(.footnote)
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                 }
             }
         }

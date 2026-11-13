@@ -35,7 +35,7 @@ struct GroupDetailScreen: View {
                     Button("Rename") { rename() }
                         .accessibilityIdentifier("groups.rename")
                     if refused {
-                        Text("Your own group needs a name.").foregroundStyle(Palette.textMuted)
+                        Text("Your own group needs a name.").foregroundStyle(.secondary)
                     }
                 }
             }
@@ -123,7 +123,7 @@ struct GroupDetailScreen: View {
                     let channel = data.catalogue.channel(for: key)
                     HStack {
                         Text(channel?.name ?? "").frame(maxWidth: .infinity, alignment: .leading)
-                        Text(data.sourceNames[key.sourceID] ?? "").foregroundStyle(Palette.textMuted)
+                        Text(data.sourceNames[key.sourceID] ?? "").foregroundStyle(.secondary)
                     }
                     .accessibilityIdentifier("groups.member.\(key.identifier)")
                 }

@@ -149,7 +149,7 @@ struct GroupsSettingsRow: View {
         NavigationLink {
             GroupsScreen()
         } label: {
-            Text("Groups").foregroundStyle(Palette.text)
+            Text("Groups")
         }
         .accessibilityIdentifier("settings.groups")
     }

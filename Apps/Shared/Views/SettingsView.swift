@@ -5,7 +5,9 @@ import SwiftUI
 /// Sources and Settings on every platform (sources-and-settings capability;
 /// `iPhone-Settings`, `iPad-Settings`, `TV-Settings`): the sources in the
 /// user's order with their status, Add a source, Refresh all, the iCloud
-/// note, Profiles, Groups, Preferences and About.
+/// note, Profiles, Groups, Preferences and About. On Apple TV an opaque
+/// split page: the title and the focused row's footer on the left, the rows
+/// on the right, each preference a row that pushes its choices.
 struct SettingsView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.sourceRefresher) private var refresher
@@ -22,42 +24,78 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            List {
-                Section {
-                    ProfileSettingsRow()
-                    GroupsSettingsRow()
+            page
+                .navigationDestination(for: UUID.self) { id in
+                    SourceDetailsScreen(id: id, signedInToICloud: signedInToICloud) { record in delete(record) }
                 }
-                sourcesSection
-                Section {
-                    RemindersSettingsRow()
+                .sheet(isPresented: $showingAdd) {
+                    SettingsAddSource()
                 }
-                PreferencesSection(preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies) { changed in
-                    PreferencesStore.save(changed, in: context)
-                }
-                Section("About") {
-                    LabeledContent("Version", value: Self.version)
-                        .accessibilityIdentifier("settings.version")
-                    NavigationLink("FFmpeg") { FFmpegNoticeView() }
-                        .accessibilityIdentifier("settings.ffmpegNotice")
-                }
-            }
-            .navigationTitle("Sources & Settings")
-            #if os(iOS)
-                .toolbar { EditButton().accessibilityIdentifier("settings.edit") }
-            #endif
-            .navigationDestination(for: UUID.self) { id in
-                SourceDetailsScreen(id: id, signedInToICloud: signedInToICloud) { record in delete(record) }
-            }
-            .sheet(isPresented: $showingAdd) {
-                SettingsAddSource()
-            }
-            .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud) { record in delete(record) }
-            .task { signedInToICloud = ICloudAccount.isSignedIn() }
-            #if !os(tvOS)
-                .playlistDropTarget { fileImport = FileImportAsk(dropped: $0) }
-                .modifier(SettingsFileImport(ask: $fileImport))
-            #endif
+                .deleteSourceConfirmation($deleting, signedInToICloud: signedInToICloud) { record in delete(record) }
+                .task { signedInToICloud = ICloudAccount.isSignedIn() }
+                #if !os(tvOS)
+                    .playlistDropTarget { fileImport = FileImportAsk(dropped: $0) }
+                    .modifier(SettingsFileImport(ask: $fileImport))
+                #endif
         }
+        #if os(tvOS)
+            // Opaque under every page of the stack, so nothing of the tab it
+            // opened over shows through (design-system/pages-cover-what-is-behind-them).
+            .background(Palette.ground.ignoresSafeArea())
+        #endif
+    }
+
+    /// The rows, beside the lead column on Apple TV and under the title elsewhere.
+    @ViewBuilder private var page: some View {
+        #if os(tvOS)
+            SettingsPage.Split {
+                SettingsPage.Lead(symbol: "gearshape", title: "Sources & Settings") {
+                    SettingsLeadFooter(iCloud: iCloudFooter, subtitles: PreferencesStore.current(preferenceRecords).subtitles.explanation)
+                }
+            } content: {
+                list
+            }
+        #else
+            list
+                .navigationTitle("Sources & Settings")
+                #if os(iOS)
+                    .toolbar { EditButton().accessibilityIdentifier("settings.edit") }
+                #endif
+        #endif
+    }
+
+    private var list: some View {
+        List {
+            Section {
+                ProfileSettingsRow()
+                GroupsSettingsRow()
+            }
+            sourcesSection
+            Section {
+                RemindersSettingsRow()
+            }
+            PreferencesSection(
+                preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies
+            ) { changed in
+                PreferencesStore.save(changed, in: context)
+            }
+            Section("About") {
+                LabeledContent("Version", value: Self.version)
+                    .accessibilityIdentifier("settings.version")
+                NavigationLink("FFmpeg") { FFmpegNoticeView() }
+                    .accessibilityIdentifier("settings.ffmpegNotice")
+            }
+        }
+        #if os(tvOS)
+            .listStyle(.grouped)
+        #endif
+    }
+
+    private var iCloudFooter: String {
+        signedInToICloud
+            ? "Sources sync to your other devices through iCloud. "
+                + "Logins sync through iCloud Keychain when it is on, and never to Apple TV."
+            : "Not signed in to iCloud. Sources stay on this device."
     }
 
     // MARK: Sources
@@ -68,10 +106,10 @@ struct SettingsView: View {
                 NavigationLink(value: source.id) {
                     // Relative times move on each minute.
                     TimelineView(.periodic(from: .now, by: 60)) { timeline in
-                        SourceRowLabel(
-                            name: source.name, kind: source.kind, lines: lines(for: source, now: timeline.date), metrics: metrics)
+                        SourceRowLabel(name: source.name, kind: source.kind, lines: lines(for: source, now: timeline.date))
                     }
                 }
+                .settingsFooter(.iCloud)
                 .accessibilityIdentifier("settings.source.\(source.id.uuidString)")
                 #if !os(tvOS)
                     .swipeActions {
@@ -81,6 +119,7 @@ struct SettingsView: View {
             }
             .onMove(perform: move)
             Button("Add a source") { showingAdd = true }
+                .settingsFooter(.iCloud)
                 .accessibilityIdentifier("settings.addSource")
             #if !os(tvOS)
                 // local-m3u-file-import/bring-a-file-in
@@ -89,17 +128,16 @@ struct SettingsView: View {
             #endif
             Button(refreshAllTitle) { refresher?.refresh(sources.map(\.id)) }
                 .disabled(sources.isEmpty)
+                .settingsFooter(.iCloud)
                 .accessibilityIdentifier("settings.refreshAll")
         } header: {
             Text("Sources")
         } footer: {
-            Text(
-                signedInToICloud
-                    ? "Sources sync to your other devices through iCloud. "
-                        + "Logins sync through iCloud Keychain when it is on, and never to Apple TV."
-                    : "Not signed in to iCloud. Sources stay on this device."
-            )
-            .accessibilityIdentifier("settings.iCloudFooter")
+            // On Apple TV the note shows in the lead column while a Sources row has focus.
+            #if !os(tvOS)
+                Text(iCloudFooter)
+                    .accessibilityIdentifier("settings.iCloudFooter")
+            #endif
         }
     }
 
@@ -108,14 +146,6 @@ struct SettingsView: View {
             "Refresh all sources"
         #else
             "Refresh all"
-        #endif
-    }
-
-    private var metrics: SourceRowLabel.Metrics {
-        #if os(tvOS)
-            .television
-        #else
-            .phone
         #endif
     }
 
@@ -194,6 +224,76 @@ enum SourceOrder {
     }
 }
 
+/// The footer a focused Settings row shows in the Apple TV lead column.
+enum SettingsFooter: Hashable {
+    /// The iCloud note, for the Sources rows.
+    case iCloud
+    /// What the Subtitles choice does.
+    case subtitles
+}
+
+extension FocusedValues {
+    /// The footer of the focused Settings row, read by the lead column.
+    @Entry var settingsFooter: SettingsFooter?
+}
+
+/// The lead column's footer: the one the focused row names, or nothing.
+/// Reads focus here, not in the screen, so moving focus redraws only the
+/// footer and leaves the list and its navigation alone.
+private struct SettingsLeadFooter: View {
+    let iCloud: String
+    let subtitles: String
+    @FocusedValue(\.settingsFooter) private var footer
+
+    var body: some View {
+        switch footer {
+        case .iCloud:
+            Text(iCloud)
+                .accessibilityIdentifier("settings.iCloudFooter")
+        case .subtitles:
+            Text(subtitles)
+                .accessibilityIdentifier("settings.subtitles.footer")
+        case nil:
+            EmptyView()
+        }
+    }
+}
+
+extension View {
+    /// Names the footer the Apple TV lead column shows while this row has
+    /// focus; nothing elsewhere, where the footer sits under its section.
+    @ViewBuilder func settingsFooter(_ footer: SettingsFooter) -> some View {
+        #if os(tvOS)
+            focusedValue(\.settingsFooter, footer)
+        #else
+            self
+        #endif
+    }
+}
+
+/// One preference: on Apple TV a row with its label and value that pushes
+/// the choices with a checkmark on the current one
+/// (design-system/forms-use-the-platform-form-style), the platform's picker
+/// elsewhere.
+private struct PreferenceChoice<Value: Hashable>: View {
+    let label: String
+    let selection: Binding<Value>
+    let choices: [Value]
+    let title: (Value) -> String
+
+    var body: some View {
+        #if os(tvOS)
+            ChoiceRow(label: label, selection: selection, choices: choices, title: title)
+        #else
+            Picker(label, selection: selection) {
+                ForEach(choices, id: \.self) { choice in
+                    Text(title(choice)).tag(choice)
+                }
+            }
+        #endif
+    }
+}
+
 /// Open on launch, Guide window, Refresh sources, on Apple TV the swipe, and Subtitles.
 private struct PreferencesSection: View {
     let preferences: AppPreferences
@@ -203,53 +303,40 @@ private struct PreferencesSection: View {
     var body: some View {
         Section {
             // A stored Movies reads as Live where Movies is not offered, without a write.
-            Picker("Open on launch", selection: launchBinding) {
-                ForEach(AppPreferences.LaunchScreen.allCases.filter { $0 != .movies || offersMovies }, id: \.self) { screen in
-                    Text(screen.title).tag(screen)
-                }
-            }
+            PreferenceChoice(
+                label: "Open on launch", selection: launchBinding,
+                choices: AppPreferences.LaunchScreen.allCases.filter { $0 != .movies || offersMovies }, title: \.title
+            )
             .accessibilityIdentifier("settings.openOnLaunch")
-            Picker("Guide window", selection: binding(\.guideHours)) {
-                ForEach(AppPreferences.guideHours, id: \.self) { hours in
-                    Text(AppPreferences.hoursTitle(hours)).tag(hours)
-                }
-            }
+            PreferenceChoice(
+                label: "Guide window", selection: binding(\.guideHours), choices: AppPreferences.guideHours,
+                title: AppPreferences.hoursTitle
+            )
             .accessibilityIdentifier("settings.guideWindow")
-            Picker("Refresh sources", selection: binding(\.refresh)) {
-                ForEach(AppPreferences.RefreshInterval.ordered, id: \.self) { interval in
-                    Text(interval.title).tag(interval)
-                }
-            }
+            PreferenceChoice(
+                label: "Refresh sources", selection: binding(\.refresh), choices: AppPreferences.RefreshInterval.ordered, title: \.title
+            )
             .accessibilityIdentifier("settings.refreshSources")
             #if os(tvOS)
-                Picker("Swipe up or down while watching", selection: binding(\.swipe)) {
-                    ForEach(AppPreferences.Swipe.allCases, id: \.self) { swipe in
-                        Text(swipe.title).tag(swipe)
-                    }
-                }
+                PreferenceChoice(
+                    label: "Swipe up or down while watching", selection: binding(\.swipe), choices: AppPreferences.Swipe.allCases,
+                    title: \.title
+                )
                 .accessibilityIdentifier("settings.swipe")
             #endif
-            subtitlesPicker
+            // Off, Auto and Always.
+            PreferenceChoice(label: "Subtitles", selection: binding(\.subtitles), choices: SubtitleMode.allCases, title: \.title)
+                .settingsFooter(.subtitles)
+                .accessibilityIdentifier("settings.subtitles")
         } header: {
             Text("Preferences")
         } footer: {
-            // sources-and-settings/choose-when-subtitles-show
-            Text(preferences.subtitles.explanation)
-                .accessibilityIdentifier("settings.subtitles.footer")
+            // sources-and-settings/choose-when-subtitles-show; in the lead column on Apple TV.
+            #if !os(tvOS)
+                Text(preferences.subtitles.explanation)
+                    .accessibilityIdentifier("settings.subtitles.footer")
+            #endif
         }
-    }
-
-    /// Off, Auto and Always; on Apple TV a list pushed with the current one ticked.
-    private var subtitlesPicker: some View {
-        Picker("Subtitles", selection: binding(\.subtitles)) {
-            ForEach(SubtitleMode.allCases, id: \.self) { mode in
-                Text(mode.title).tag(mode)
-            }
-        }
-        #if os(tvOS)
-            .pickerStyle(.navigationLink)
-        #endif
-        .accessibilityIdentifier("settings.subtitles")
     }
 
     private var launchBinding: Binding<AppPreferences.LaunchScreen> {

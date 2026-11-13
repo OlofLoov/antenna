@@ -13,7 +13,7 @@ struct ReminderRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: dimmed ? "bell" : "bell.fill")
-                .foregroundStyle(dimmed ? Palette.textMuted : Palette.text)
+                .foregroundStyle(dimmed ? .secondary : .primary)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
@@ -21,12 +21,12 @@ struct ReminderRow: View {
                     .lineLimit(1)
                 Text(detail)
                     .font(.subheadline)
-                    .foregroundStyle(Palette.textMuted)
+                    .foregroundStyle(.secondary)
                     .lineLimit(1)
                 if let status {
                     Text(status)
                         .font(.footnote)
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .accessibilityIdentifier("\(identifier).status")
                 }
