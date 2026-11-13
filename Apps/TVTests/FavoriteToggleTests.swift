@@ -68,4 +68,25 @@ import Testing
         model.show(.favorites)
         #expect(model.removedFromFavorites(try #require(before.rows(in: .favorites).first), before: before) == .group(.favorites))
     }
+
+    /// XCUITest cannot pick a named VoiceOver action, so this runs the
+    /// action an overlay row offers, built as the row builds it.
+    @Test("favorites/hold-select-to-favorite-on-apple-tv the VoiceOver action names the channel's state and adds or removes it")
+    func voiceOverAction() throws {
+        let context = container.mainContext
+        let channel = channels[0]
+        func action() throws -> NamedAction {
+            let catalogue = try catalogue()
+            return Browse.FavoriteMenuButton.action(isFavorite: catalogue.isFavorite(channel)) {
+                _ = FavoriteRecord.toggle(channel, in: catalogue, context: context)
+            }
+        }
+
+        #expect(try action().name == "Add to Favorites")
+        try action().run()
+        #expect(try catalogue().isFavorite(channel))
+        #expect(try action().name == "Remove from Favorites")
+        try action().run()
+        #expect(try !catalogue().isFavorite(channel))
+    }
 }
