@@ -73,6 +73,24 @@ import Testing
         #expect(model.tab == .live)
     }
 
+    @Test("tvos-shell/play-or-resume-from-a-shelf-link a link checked before the shell has its sources waits for them")
+    func checkedBeforeTheSources() async throws {
+        let wanted = Channel.fixture("a2")
+        model.holdShelfItem(try item(wanted, in: sourceA))
+        #expect(model.resolveShelfItem(titles: [], titlesPending: false) == .waiting)
+        await launch(link: nil)
+        loader.finish(sourceB.id, with: [.fixture("b7")])
+        loader.finish(sourceA.id, with: [.fixture("a1"), wanted])
+        await wait { model.channels.count == 3 }
+        guard case .tuned = model.resolveShelfItem(titles: [], titlesPending: false) else {
+            Issue.record("the link's channel did not tune")
+            return
+        }
+        await wait({ engine.loaded == [wanted.streamURL] }, "the link's channel loads")
+        await settle()
+        #expect(engine.loaded == [wanted.streamURL], "the last channel never loads")
+    }
+
     @Test("tvos-shell/play-or-resume-from-a-shelf-link a link whose channel is gone is dropped and the launch goes on as usual")
     func goneAtLaunch() async throws {
         await launch(link: try item(.fixture("removed"), in: sourceA))

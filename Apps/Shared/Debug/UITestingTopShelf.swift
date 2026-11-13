@@ -13,14 +13,17 @@
             return URL(string: arguments[index + 1])
         }
 
-        /// With `-ui-testing-open-url-running`, waits for the launch tune and
-        /// then hands the link to `inbox`, as a tile selected while Antenna runs.
+        /// With `-ui-testing-open-url-running`, waits until the launch
+        /// channel plays and then hands the link to `inbox`, as a tile
+        /// selected while Antenna runs. Waiting only for the tune is too
+        /// early: the engine drops a load that a newer one overtakes, so a
+        /// link that lands while the launch channel still loads replaces it.
         @MainActor
         static func openURLWhenRunning(into inbox: TopShelfInbox?, model: ShellModel) {
             let arguments = ProcessInfo.processInfo.arguments
             guard arguments.contains(openURLRunningArgument), let url = openURL(arguments: arguments), let inbox else { return }
             Task {
-                while model.tuned == nil { try? await Task.sleep(for: .milliseconds(100)) }
+                while await model.engine.state != .playing { try? await Task.sleep(for: .milliseconds(100)) }
                 inbox.receive(url)
             }
         }
