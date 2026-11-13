@@ -45,10 +45,87 @@ final class TVJourneys: XCTestCase {
         expectFocus(identifier, in: journey)
     }
 
-    /// What a new user sees before adding a source.
+    /// Presses down until the focused element's label contains `label`, at most `limit` times. A row in a
+    /// `List` reports focus on its cell, so the label finds it where its identifier cannot.
+    private func moveDown(toLabel label: String, in journey: Journey, limit: Int = 10, file: StaticString = #filePath, line: UInt = #line) {
+        let focused = journey.app.descendants(matching: .any)
+            .matching(NSPredicate(format: "hasFocus == true AND label CONTAINS %@", label)).firstMatch
+        for _ in 0..<limit where !focused.waitForExistence(timeout: 1) {
+            remote.press(.down)
+        }
+        XCTAssertTrue(focused.exists, "\(label) never took focus", file: file, line: line)
+    }
+
+    /// From the full-screen picture, opens Sources & Settings from the tab bar and waits for it to settle.
+    private func openSettings(in journey: Journey) {
+        expectFocus("shell.picture", in: journey)
+        expectGone("zapBar.bar", in: journey)
+        remote.press(.menu)
+        expectFocus("shell.tab.live", in: journey)
+        moveRight(to: "shell.settings", in: journey)
+        remote.press(.select)
+        let bar = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == false"), object: journey.element("shell.settings"))
+        XCTAssertEqual(XCTWaiter().wait(for: [bar], timeout: 10), .completed, "the focus stayed on the bar")
+        waitUntilStill(journey.element("settings.addSource"))
+    }
+
+    /// Add a source from Settings, which opens on the form
+    /// (refresh-visual-design, `TV-Refresh-AddSource`).
+    func testSettingsAddSource() {
+        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels"])
+        openSettings(in: journey)
+        moveDown(toLabel: "Add a source", in: journey)
+        remote.press(.select)
+        journey.snap("settings-add-source", anchor: "onboarding.connect")
+    }
+
+    /// A source's details from Settings (refresh-visual-design, `TV-Refresh-Settings`).
+    func testSourceDetails() {
+        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels"])
+        openSettings(in: journey)
+        journey.snap("settings", anchor: "settings.addSource")
+        let row = journey.app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH 'settings.source.'")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10), "no source row")
+        let name = row.label.components(separatedBy: ",").first ?? row.label
+        moveDown(toLabel: name, in: journey)
+        remote.press(.select)
+        journey.snap("source-details", anchor: "settings.details.status")
+    }
+
+    /// Movies with focus on a poster in the first row (refresh-visual-design, `TV-Movies`).
+    func testMoviesFocus() {
+        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels", "-ui-testing-reduce-motion"])
+        expectFocus("shell.picture", in: journey)
+        expectGone("zapBar.bar", in: journey)
+        remote.press(.menu)
+        moveRight(to: "shell.tab.movies", in: journey)
+        remote.press(.select)
+        expectFocus("movies.hero.play", in: journey)
+        let row = journey.element("movies.row.recentlyAdded")
+        let focused = row.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch
+        for _ in 0..<4 where !focused.exists {
+            remote.press(.down)
+            RunLoop.current.run(until: Date().addingTimeInterval(1))
+        }
+        remote.press(.right)
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertTrue(focused.exists, "no poster in Recently added took focus")
+        journey.snap("movies-row-focus", anchor: "movies.row.recentlyAdded")
+    }
+
+    /// What a new user sees before adding a source, then the kinds and the
+    /// Xtream form (refresh-visual-design, `TV-Refresh-AddSource-Kinds`, `TV-Refresh-AddSource`).
     func testFirstRun() {
         let journey = Journey(self, scenario: "empty")
         journey.snap("welcome", anchor: "onboarding.welcome")
+        expectFocus("onboarding.addSource", in: journey)
+        remote.press(.select)
+        expectFocus("onboarding.kind.m3u", in: journey)
+        journey.snap("kinds", anchor: "onboarding.kind.m3u")
+        moveRight(to: "onboarding.kind.xtream", in: journey)
+        remote.press(.select)
+        journey.snap("add-source-xtream", anchor: "onboarding.connect")
     }
 
     /// Live with the zap bar, then the menu bar, the guide and settings, with two sources.

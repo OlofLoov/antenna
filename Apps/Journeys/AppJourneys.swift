@@ -43,12 +43,37 @@ final class AppJourneys: XCTestCase {
         journey.snap("search", anchor: "search.field")
     }
 
-    /// Movies scrolled to Recently watched and Recently added, with titles
-    /// played on this profile (add-discover-rows, `iPhone-Movies-Discover`,
-    /// `iPad-Movies-Discover`).
+    /// Add a source from Settings, first as M3U and then as Xtream, and a
+    /// source's details (refresh-visual-design, `iPhone-Refresh-AddSource`).
+    func testSettingsAddSource() {
+        let journey = Journey(self, scenario: "full")
+        open("settings", label: "Settings", in: journey)
+        let addSource = journey.element("settings.addSource")
+        XCTAssertTrue(addSource.waitForExistence(timeout: 10), "no Add a source")
+        addSource.tap()
+        journey.snap("settings-add-source", anchor: "onboarding.connect")
+        journey.element("onboarding.kind.xtream").tap()
+        journey.snap("settings-add-source-xtream", anchor: "onboarding.field.password")
+        journey.element("onboarding.back").tap()
+        let home = journey.element("settings.source.00000000-0000-0000-0000-0000000000C1")
+        XCTAssertTrue(home.waitForExistence(timeout: 10), "the sheet never closed")
+        home.tap()
+        journey.snap("source-details", anchor: "settings.details.status")
+    }
+
+    /// Live when every source loaded without channels (refresh-visual-design, `TV-Refresh-Shell-Empty`).
+    func testLiveEmpty() {
+        let journey = Journey(self, arguments: ["-ui-testing-live", "empty"])
+        journey.snap("live-empty", anchor: "browse.empty")
+    }
+
+    /// Movies at the top, then scrolled to Recently watched and Recently
+    /// added, with titles played on this profile (add-discover-rows,
+    /// `iPhone-Movies`, `iPhone-Movies-Discover`, `iPad-Movies-Discover`).
     func testMoviesDiscover() {
         let journey = Journey(self, arguments: ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
         open("movies", label: "Movies", in: journey)
+        journey.snap("movies", anchor: "movies.hero.title")
         let row = journey.element("movies.row.recentlyWatched")
         for _ in 0..<4 where !(row.exists && row.isHittable) {
             journey.app.swipeUp()

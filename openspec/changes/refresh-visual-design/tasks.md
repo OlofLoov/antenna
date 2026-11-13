@@ -2,10 +2,10 @@
 
 ## 1. Foundations (PR 1)
 
-- [ ] 1.1 Add `Apps/Shared/Components/Metrics.swift` with the spacing scale and the four radii per platform, and `FocusCard` (light fill, dark text, focus shadow, `.hoverEffect(.highlight)` on tvOS), with previews on Apple TV and iPhone
-- [ ] 1.2 Set the accent as the app tint on every platform, remove `preferredColorScheme` overrides inside presentations, and verify the previews still render dark
-- [ ] 1.3 Add the two warning greps to `scripts/check-rules.sh` (fixed font sizes outside the allow list, `ButtonStyle` types outside the exception components) and verify they list today's files
-- [ ] 1.4 Add a `TVJourneys` and `AppJourneys` step for each screen in the audit table that has no step yet (Settings add source, source details, kinds, Movies focus, No channels yet), anchored on its identifier
+- [x] 1.1 Add `Apps/Shared/Components/Metrics.swift` with the spacing scale and the four radii per platform, and `FocusCard` (light fill, dark text, focus shadow, `.hoverEffect(.highlight)` on tvOS), with previews on Apple TV and iPhone
+- [x] 1.2 Set the accent as the app tint on every platform, remove `preferredColorScheme` overrides inside presentations, and verify the previews still render dark
+- [x] 1.3 Add the two warning greps to `scripts/check-rules.sh` (fixed font sizes outside the allow list, `ButtonStyle` types outside the exception components) and verify they list today's files
+- [x] 1.4 Add a `TVJourneys` and `AppJourneys` step for each screen in the audit table that has no step yet (Settings add source, source details, kinds, Movies focus, No channels yet), anchored on its identifier
 
 ## 2. Add a source and onboarding (PR 2)
 
