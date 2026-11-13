@@ -78,9 +78,9 @@ Journey steps added in PR 1, with the board each compares with:
 | `TVJourneys.testSourceDetails` | `settings`, `source-details` | `TV-Settings`, `TV-Settings-Details` |
 | `TVJourneys.testSettingsPreferences` (PR 3) | `settings-preferences`, `guide-window-choices` | `TV-Settings-Preferences`, `TV-Settings-Preferences-Choices` |
 | `TVJourneys.testMoviesFocus` | `movies-row-focus` | `TV-Movies` |
-| `TVJourneys.testShellStates` (already there) | `empty` | `TV-Refresh-Shell-Empty` |
+| `TVJourneys.testShellStates` (already there) | `empty` | `TV-Shell-Empty` (renamed from `TV-Refresh-Shell-Empty` in PR 4) |
 | `AppJourneys.testSettingsAddSource` | `settings-add-source`, `settings-add-source-kinds` (the Type menu), `settings-add-source-m3u`, `source-details` | `iPhone-Onboard-2`, `iPhone-Onboard-2-M3U`, `iPad-Onboard-2` |
-| `AppJourneys.testLiveEmpty` | `live-empty` | `TV-Refresh-Shell-Empty` at iPhone text styles |
+| `AppJourneys.testLiveEmpty` | `live-empty` | `iPhone-Live-Empty` (the `TV-Shell-Empty` layout at iPhone text styles) |
 | `AppJourneys.testMoviesDiscover` | `movies` | `iPhone-Movies` |
 
 Design-system requirements that apply: all ten added here, the three modified here, "Text meets contrast minimums", "Targets are large enough to hit", "Accessibility identifiers follow the board", "Live video keeps playing under overlays" and "Visual changes update the boards in the same change".
@@ -190,9 +190,19 @@ Apple's tvOS minimum is 23 pt. The old 18 pt floor came from the boards. Every c
 
 None. No stored data changes.
 
-## Open Questions
+### 9. The owner's answers to the open questions (2026-11-19)
 
-1. **Apple TV tab bar: keep the custom bar or move to the system `TabView`?** The system bar is Liquid Glass, 68 pt, 46 pt from the top, and hides on scroll, as in the TV app. It has no slot for the Antenna mark or the clock, and the `tvos-shell` capability's Menu behavior would need rework. Recommendation: move to the system bar with Settings as its last tab and the clock drawn by the page, in a later change after PRs 1 to 6 land. Until then the custom bar gets glass and the backdrop rule.
-2. **Light platter or glass focus on Apple TV buttons?** tvOS 26 offers `.glass` buttons that stay glass when focused. Recommendation: bordered and glass prominent for primary actions, so the focused primary action keeps the light platter the app already teaches.
-3. **Settings on Apple TV: split view or a single column?** Recommendation: split view as on `TV-Refresh-Settings`, as Apple's own Settings does, with the lead column showing the focused row's footer.
-4. **The welcome mark tile's navy.** Recommendation: draw the mark on the app icon's own artwork instead, so the only blue on screen is the accent.
+The owner took each recommendation.
+
+1. **Apple TV moves to the system `TabView`.** Settings is the last tab, the page draws the clock itself, and the Antenna mark goes. The Menu behavior changes with it, so PR 7 carries a `tvos-shell` delta spec in this change rather than a separate change: the shell's rules move in the same PR as the bar, and the archive folds both at once.
+2. **Primary buttons keep the system's light platter.** Bordered on Apple TV and glass prominent elsewhere, through `primaryActionStyle()`, as PR 2 shipped.
+3. **Apple TV Settings uses the split view.** PR 3 (`fd73c96b`) shipped it: the lead column with the focused row's footer and the rows on the right, on `TV-Settings`.
+4. **The welcome mark uses the app icon artwork.** The navy tile goes; the welcome screen draws the icon's own image, so the only blue on screen is the accent.
+
+### 10. Search on Apple TV pauses live video
+
+"Live video keeps playing under overlays" listed search among the overlays that keep the picture playing. Search on Apple TV is a tab, and the shared `LiveHold` (`Apps/Shared/Player/LiveHold.swift`) pauses the channel behind it and stops it after 30 seconds, as behind Movies and Series (tvos-shell/the-video-pauses-behind-movies-series-and-search). The requirement now names the channel overlay, the zap bar and the guide, and says Search pauses.
+
+### 11. Retry becomes Try again
+
+Every button that loads something again reads Try again, the label the player error already used. Requirement names that say Retry, such as `tvos-shell/an-empty-screen-with-retry`, keep their slugs so the tests that cite them still resolve; their text and scenarios say Try again.

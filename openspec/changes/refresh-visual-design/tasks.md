@@ -26,9 +26,9 @@
 
 ## 4. Empty and error states (PR 4)
 
-- [ ] 4.1 Draw the iPhone Live empty state and rename `TV-Refresh-Shell-Empty` over `TV-Shell-Empty`
-- [ ] 4.2 Add one `StatusView` component (symbol, title, message, up to two actions) built on `ContentUnavailableView`, and move "No channels yet", the player failure, Live's load failure and the Movies and Search empty states onto it (design-system/empty-and-error-states-share-one-layout)
-- [ ] 4.3 Give "No channels yet" an Open Settings action and rename Retry to Try again everywhere
+- [x] 4.1 Draw the iPhone Live empty state and rename `TV-Refresh-Shell-Empty` over `TV-Shell-Empty`
+- [x] 4.2 Add one `StatusView` component (symbol, title, message, up to two actions) built on `ContentUnavailableView`, and move "No channels yet", the player failure, Live's load failure and the Movies and Search empty states onto it (design-system/empty-and-error-states-share-one-layout)
+- [x] 4.3 Give "No channels yet" an Open Settings action and rename Retry to Try again everywhere
 - [ ] 4.4 Run `ShellUITests`, `LiveStatesUITests`, `PlayerErrorTVUITests`, `PlayerErrorUITests` and `ShelfStatesUITests`
 
 ## 5. Movies, Series, title pages and Search (PR 5)

@@ -14,12 +14,12 @@ After this change the living-room viewer and the household setter-upper get an A
 - Modified rules: focus comes from the system focus effect (the lifted light platter with motion), the Apple TV caption floor rises from 18 to 23 pt (Apple's minimum), and the one accent color becomes the app tint that system controls pick up for their primary action.
 - Boards for the worst screens: the Apple TV add-source sheet and its kind picker, Apple TV Sources and Settings, Apple TV "No channels yet", and the iPhone add-source sheet. Each is a new `*-Refresh-*` board that replaces the old board when its screen ships.
 - The text style table per platform, the spacing and radius scale, and the materials table, in design.md, folded into the design-system reference when the change is archived.
+- The Apple TV shell moves to the system `TabView` tab bar, with Settings as its last tab (the owner's answer of 2026-11-19, design.md decision 9).
 - Implementation in seven small PRs, one per screen family, listed in tasks.md.
 
 Out of scope:
 - New features or new screens. Copy changes beyond button labels named on the new boards.
 - The layout of the channel overlay, zap bar, guide grid, multi-view and player controls. They get text styles, materials and system focus motion only.
-- Moving the Apple TV shell to the system `TabView` tab bar. Recorded as an open question in design.md; the custom bar keeps its layout here and only gains glass and a backdrop rule.
 - Light mode. The app stays dark on every platform.
 - App icon and Top Shelf artwork.
 
@@ -30,6 +30,9 @@ None.
 
 ### Modified Capabilities
 - `design-system`: adds ten rules on system styles, text styles, presentations, forms, materials, spacing and radii, safe area, backdrops, tab bar clearance and empty states; changes the focus, caption floor and accent rules.
+- `tvos-shell`: "No channels yet" gets Open Settings, focused first, next to Try again; Retry becomes Try again; the tab bar becomes the system `TabView` with Settings as its last tab.
+- `live-tv-on-iphone-ipad-mac`: the message that replaces the list gets Open Settings unless the device is offline, the picture shows no placeholder beside it, and Retry becomes Try again.
+- `movies-and-series-browsing`, `title-detail-and-episode-picker`, `guide-on-iphone-ipad-and-mac`: Retry becomes Try again; "Nothing here yet" gets Open Settings.
 
 ## Impact
 
@@ -39,4 +42,4 @@ None.
 - Tests: XCUITests keep their identifiers. Preview PNGs change on almost every screen.
 - Boards: five new, listed in design.md. The old boards they replace stay until the screen ships.
 - Depends on: main as of 2026-11-13. `add-localization` adds right-to-left rules to the same capability without touching these requirements. `add-title-metadata`, `add-discover-rows` and `add-browse-by-person` draw new screens; once this change is archived their boards follow these rules, and screens that ship before then get restyled in the PR for their family.
-- Blocked on: the owner's answers to the open questions in design.md for PR 7 (the Apple TV tab bar). PRs 1 to 6 can start now.
+- The owner answered the open questions on 2026-11-19; design.md decision 9 records the answers.

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Apple TV shell, no channels</title>
+<title>Apple TV no channels yet</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -10,31 +10,26 @@
 <helmet>
 <style>
 body{margin:0}
-a{color:#5BB8FF}a:hover{color:#8ECDFF}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
 </style>
 </helmet>
+<!-- shell.empty: the shared empty and error layout (symbol, title, message, actions), the same as the player error (design-system/empty-and-error-states-share-one-layout). Live shows it once no source is loading and no channel plays; no tab bar, Menu shows it (TV-Shell-Empty-Menu). -->
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; align-items: center; justify-content: center">
-
-  <!-- shell.player: ground color, nothing to tune. No tab bar, no clock; Menu still shows the bar. -->
-
-  <!-- shell.empty: 29 pt title, 24 pt muted line per source whose login has not synced -->
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; max-width: 1200px">
-    <div style="font-size: 29px; font-weight: 700">No channels yet</div>
-    <!-- shell.empty.source.<sourceId>: one line per source that contributed no channel, name then its state text -->
-    <div style="font-size: 24px; color: #A7B0BF">Home provider: waiting for its login to sync from iCloud</div>
-    <div style="font-size: 24px; color: #A7B0BF">Cabin: waiting for its login to sync from iCloud</div>
-
-    <!-- shell.retry: the only focusable element, so it carries the Focus token (design-system/focus-is-the-lifted-white-card) -->
-    <button type="button" style="font: inherit; font-size: 26px; font-weight: 700; margin-top: 26px; padding: 18px 44px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); cursor: pointer">Retry</button>
+  <div style="width: 1200px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center">
+    <!-- SF Symbol antenna.radiowaves.left.and.right.slash, 96, muted -->
+    <div style="font-size: 96px; color: #A7B0BF; line-height: 1">((·))</div>
+    <!-- text style: title3 (48) -->
+    <div style="font-size: 48px; font-weight: 600; margin-top: 12px">No channels yet</div>
+    <!-- shell.empty.source.<sourceId>: one line per source that added nothing, name then reason. Text style: body (29), secondary -->
+    <div style="font-size: 29px; color: #D7DEE8; line-height: 36px">Home playlist: no channels<br>Cabin: waiting for its login to sync from iCloud</div>
+    <div style="display: flex; gap: 24px; margin-top: 32px">
+      <!-- shell.empty.settings: focused when the screen appears, system bordered button focus platter; opens Sources and Settings -->
+      <div style="height: 86px; padding: 0 56px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; font-size: 29px; font-weight: 600; transform: scale(1.06); box-shadow: 0 12px 32px rgba(0,0,0,.45)">Open Settings</div>
+      <!-- shell.retry: system bordered button, unfocused; loads the sources that added nothing again behind the loading screen -->
+      <div style="height: 86px; padding: 0 56px; border-radius: 999px; background: rgba(255,255,255,0.12); display: flex; align-items: center; font-size: 29px; font-weight: 600">Try again</div>
+    </div>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
-class Component extends DCLogic {
-  renderVals() {
-    return { accent: this.props.accent ?? '#5BB8FF' };
-  }
-}
-</script>
 </body>
 </html>

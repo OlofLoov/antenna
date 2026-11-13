@@ -17,21 +17,26 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 
   <!-- shell.player: ground color, nothing to tune. No tab bar, no clock; Menu still shows the bar. -->
 
-  <!-- shell.empty: 29 pt title, 24 pt muted line per source whose login has not synced -->
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; max-width: 1200px">
-    <div style="font-size: 29px; font-weight: 700">No channels yet</div>
-    <!-- shell.empty.source.<sourceId>: one line per source that contributed no channel, name then its state text -->
-    <div style="font-size: 24px; color: #A7B0BF">Home provider: waiting for its login to sync from iCloud</div>
-    <div style="font-size: 24px; color: #A7B0BF">Cabin: waiting for its login to sync from iCloud</div>
-
-    <!-- shell.retry: focus is in the tab bar, so Retry takes the 0.12 surface fill and no shadow (design-system/focus-is-the-lifted-white-card) -->
-    <button type="button" style="font: inherit; font-size: 26px; font-weight: 700; margin-top: 26px; padding: 18px 44px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Retry</button>
+  <!-- shell.empty: the TV-Shell-Empty layout under the bar (design-system/empty-and-error-states-share-one-layout) -->
+  <div style="width: 1200px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center">
+    <!-- SF Symbol antenna.radiowaves.left.and.right.slash, 96, muted -->
+    <div style="font-size: 96px; color: #A7B0BF; line-height: 1">((·))</div>
+    <!-- text style: title3 (48) -->
+    <div style="font-size: 48px; font-weight: 600; margin-top: 12px">No channels yet</div>
+    <!-- shell.empty.source.<sourceId>, text style: body (29), secondary -->
+    <div style="font-size: 29px; color: #D7DEE8; line-height: 36px">Home provider: waiting for its login to sync from iCloud<br>Cabin: waiting for its login to sync from iCloud</div>
+    <div style="display: flex; gap: 24px; margin-top: 32px">
+      <!-- shell.empty.settings: focus is in the tab bar, so it shows the unfocused bordered fill -->
+      <div style="height: 86px; padding: 0 56px; border-radius: 999px; background: rgba(255,255,255,0.12); display: flex; align-items: center; font-size: 29px; font-weight: 600">Open Settings</div>
+      <!-- shell.retry -->
+      <div style="height: 86px; padding: 0 56px; border-radius: 999px; background: rgba(255,255,255,0.12); display: flex; align-items: center; font-size: 29px; font-weight: 600">Try again</div>
+    </div>
   </div>
 
   <!-- shell.scrim: full-frame dim over the empty screen -->
   <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.55)"></div>
 
-  <!-- shell.tabBar after Menu on the empty screen: Live is selected and focused, so Retry loses the Focus token (design-system/focus-is-the-lifted-white-card) -->
+  <!-- shell.tabBar after Menu on the empty screen: Live is selected and focused, so Open Settings loses the Focus token (design-system/focus-is-the-lifted-white-card) -->
   <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
     <!-- shell.mark: not focusable -->
     <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
