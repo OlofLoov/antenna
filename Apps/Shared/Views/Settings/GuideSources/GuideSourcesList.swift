@@ -23,6 +23,11 @@ struct GuideSourcesList: View {
             channels
             named
         }
+        #if os(tvOS)
+            // The search field at the top opens the full-screen keyboard
+            // (guide-sources-and-channel-mapping/find-the-channels-without-a-guide).
+            .searchable(text: $model.filter, prompt: GuideSourcesText.filterPrompt)
+        #endif
         .confirmationDialog(
             acting.map { model.name($0.reference) } ?? "", isPresented: Binding(get: { acting != nil }, set: { if !$0 { acting = nil } }),
             titleVisibility: .visible, presenting: acting

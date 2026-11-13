@@ -137,6 +137,21 @@ final class SearchTVUITests: XCTestCase {
         expectEngine("playing loads=1 file=a1.ts")
     }
 
+    // programme-reminders/remind-me-appears-only-before-a-programme-starts, in Search on Apple TV
+    func testTheBellAfterALaterProgrammeSetsAReminder() {
+        openSearch()
+        type("late film")
+        moveToResults("search.result.programme.0")
+        press(.right)
+        let bell = element("search.result.programme.0.remind")
+        expectFocus("search.result.programme.0.remind")
+        XCTAssertEqual(bell.label, "Remind me")
+        press(.select)
+        expect(bell, "label == 'Reminder set'")
+        XCTAssertTrue(element("search.results").exists, "the bell left Search")
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+
     // title-detail-and-episode-picker/back-to-where-you-were
     func testMenuOnASeriesPageReturnsToSearchWithTheQuery() {
         openSearch()

@@ -5,7 +5,8 @@
     extension TitlePage {
         /// `TV-Title` and `TV-Series`: the backdrop full bleed, the copy
         /// column on the Movies banner's left edge, Play and My list, then
-        /// what the screen adds below, such as the episodes. No tab bar and no
+        /// what the screen adds below, such as the episodes. Trailer follows
+        /// My list when the trailer plays in the app. No tab bar and no
         /// clock. Play takes focus when the page opens; More sits above the
         /// buttons when the description is cut.
         struct Television<Below: View>: View {
@@ -47,6 +48,8 @@
                                         .focused($focused, equals: .play)
                                     MyListButton(type: type)
                                         .focused($focused, equals: .myList)
+                                    TrailerButton(type: type)
+                                        .fixedSize()
                                 }
                                 .padding(.top, 8)
                                 Progress(type: type)

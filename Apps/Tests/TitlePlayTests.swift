@@ -72,6 +72,7 @@ import Testing
                     switch target {
                     case .movie(let movie): URL(fileURLWithPath: "/\(movie.id).mp4")
                     case .episode(let episode, _): URL(fileURLWithPath: "/\(episode.id).mp4")
+                    case .trailer(let url, _): url
                     }
                 },
                 willPlay: {}))

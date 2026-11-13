@@ -87,6 +87,7 @@ import Testing
                     switch target {
                     case .movie(let movie): URL(fileURLWithPath: "/\(movie.id).mp4")
                     case .episode(let episode, _): URL(fileURLWithPath: "/\(episode.id).mp4")
+                    case .trailer(let url, _): url
                     }
                 },
                 willPlay: { liveStopped.value += 1 },
@@ -126,6 +127,25 @@ import Testing
         #expect(playback.tracks?.pickerOpen == false)
         await playback.close()
         #expect(playback.tracks == nil)
+    }
+
+    @Test("title-detail-and-episode-picker/trailer a trailer plays its link, saves no place and closes at its end")
+    func trailer() async throws {
+        let library = await library()
+        var follow: Task<Void, Never>?
+        defer { follow?.cancel() }
+        _ = await activity(&follow)
+        let playback = playback()
+        let link = try #require(URL(string: "https://cdn.example/salt-road.m3u8"))
+        playback.playTrailer(link, of: movie)
+        #expect(await eventually { engine.state == .playing })
+        #expect(engine.loads.first?.url == link)
+        #expect(engine.loads.first?.options.startPosition == nil)
+        engine.send(position: 60)
+        engine.finish()
+        #expect(await eventually { playback.playing == nil }, "the end goes back to the page")
+        #expect(store.progress(of: movie.id, source: source) == nil, "a trailer saves no place")
+        withExtendedLifetime(library) {}
     }
 
     // MARK: Resume

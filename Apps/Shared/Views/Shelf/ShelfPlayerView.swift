@@ -103,6 +103,7 @@ struct ShelfPlayerView: View {
         switch target {
         case .movie(let movie): movie.name
         case .episode(let episode, let series): "\(series.name), \(ShelfText.episodeCode(episode) ?? episode.title)"
+        case .trailer(_, let title): "\(title.name), trailer"
         }
     }
 }

@@ -105,6 +105,7 @@ extension ShelfPlayback {
                     switch target {
                     case .movie(let movie): try shelf.movieURL(source, movie: movie)
                     case .episode(let episode, _): try shelf.episodeURL(source, episode: episode)
+                    case .trailer(let url, _): url
                     }
                 },
                 willPlay: willPlay))
