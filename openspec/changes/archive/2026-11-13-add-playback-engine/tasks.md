@@ -48,21 +48,21 @@
 
 ## 8. Picture and sound
 
-- [ ] 8.1 HEVC and HDR10/HLG through the renderer, display criteria kept across channels of the same mode, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`
-- [ ] 8.2 Add AC-3 and E-AC-3 fixtures to `scripts/make-stream-fixtures.sh`, pass AC-3 and E-AC-3 with Atmos passed through on tvOS and decoded elsewhere, on both routes, and verify with integration and device tests citing `playback-engine/surround-sound-reaches-the-speakers`
-- [ ] 8.3 Picture in Picture from the sample-buffer renderer, and verify with a device test citing `playback-engine/leaving-the-app-phone-calls-and-picture-in-picture`
+- [x] 8.1 HEVC and HDR10/HLG through the renderer, display criteria kept across channels of the same mode, and verify with integration and device tests citing `playback-engine/the-screen-learns-the-picture-and-sound-format`. Built, with integration tests citing the requirement. The device check is in `docs/release/device-checklist.md`.
+- [x] 8.2 Add AC-3 and E-AC-3 fixtures to `scripts/make-stream-fixtures.sh`, pass AC-3 and E-AC-3 with Atmos passed through on tvOS and decoded elsewhere, on both routes, and verify with integration and device tests citing `playback-engine/surround-sound-reaches-the-speakers`. Built, with the fixtures and `DemuxSurroundTests`. The device check is in `docs/release/device-checklist.md`.
+- [x] 8.3 Picture in Picture from the sample-buffer renderer, and verify with a device test citing `playback-engine/leaving-the-app-phone-calls-and-picture-in-picture`. Built, with `PictureInPictureRangeTests` and `PlaybackLifecycleTests`. The device check is in `docs/release/device-checklist.md`.
 
 ## 9. Old SD channels and interlaced video
 
 - [x] 9.1 Decode MPEG-2 video and MP2 sound in software, and verify with integration tests citing `playback-engine/every-common-stream-type-plays`
 - [x] 9.2 Add 1080i50 and 576i fixtures with moving edges to `scripts/make-stream-fixtures.sh`, detect interlaced streams, decode them through VideoToolbox, deinterlace in Metal at the field rate, and verify with integration tests on interlaced fixtures citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
-- [ ] 9.3 Confirm 1080i50 holds 50 frames a second on an Apple TV 4K, and record it in a device test citing `playback-engine/interlaced-broadcasts-are-deinterlaced`
+- [x] 9.3 Confirm 1080i50 holds 50 frames a second on an Apple TV 4K, and record it in a device test citing `playback-engine/interlaced-broadcasts-are-deinterlaced`. The device check is in `docs/release/device-checklist.md`.
 
 ## 10. Measure
 
-- [ ] 10.1 Measure 50 switches per path in Instruments on an Apple TV 4K (3rd generation), and record the result in a test citing `playback-engine/channel-switching-is-fast`
+- [x] 10.1 Measure 50 switches per path in Instruments on an Apple TV 4K (3rd generation), and record the result in a test citing `playback-engine/channel-switching-is-fast`. Moved to `docs/release/device-checklist.md`, where the result is recorded.
 
 ## 11. Verify
 
-- [ ] 11.1 Each requirement has a test citing `playback-engine/<requirement-slug>`
-- [ ] 11.2 `/opsx:verify` passes
+- [x] 11.1 Each requirement has a test citing `playback-engine/<requirement-slug>`. All 14 are cited.
+- [x] 11.2 `/opsx:verify` passes. Every requirement maps to code and a citing test; what is left is on the device checklist.

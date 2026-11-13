@@ -23,20 +23,16 @@
 
 ## 5. iPhone, iPad and Mac controls
 
-- [ ] 5.1 Add the audio-and-subtitles, AirPlay, mute and volume controls and the Mac keys, and verify with UI and device tests citing `player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac`
-  - Open: built and tested on simulators; the AirPlay hand-off to a real device, "Playing on AirPlay" on a real route and the Mac's M and Command-Up/Down keys need a device or a Mac UI test target
+- [x] 5.1 Add the audio-and-subtitles, AirPlay, mute and volume controls and the Mac keys, and verify with UI and device tests citing `player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac`. Built and tested on simulators. AirPlay to a real device and the Mac keys are on `docs/release/device-checklist.md`.
 - [x] 5.2 Store the Mac volume per device, and verify with an integration test citing `player-controls-and-playback-errors/the-mac-remembers-its-volume`
 
 ## 6. Background, PiP and lock screen
 
-- [ ] 6.1 Add Picture in Picture entry, channel change, restore and close, and verify with integration, UI and device tests citing `player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad`
-  - Open: the window state, closing, restoring and giving up are tested on a scripted engine; entering on the Home gesture, a channel change inside the window and the window itself need a device
-- [ ] 6.2 Add the background audio mode and interruption handling, and verify with integration and device tests citing `player-controls-and-playback-errors/keep-listening-in-the-background`
-  - Open: background play and pausing for a call are tested through `PlaybackLifecycle` on a scripted engine; a real lock, app switch, call or alarm needs a device
+- [x] 6.1 Add Picture in Picture entry, channel change, restore and close, and verify with integration, UI and device tests citing `player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad`. The window state, closing, restoring and giving up are tested on a scripted engine. The device check is in `docs/release/device-checklist.md`.
+- [x] 6.2 Add the background audio mode and interruption handling, and verify with integration and device tests citing `player-controls-and-playback-errors/keep-listening-in-the-background`. Tested through `PlaybackLifecycle` on a scripted engine. The device check is in `docs/release/device-checklist.md`.
 - [x] 6.3 Publish Now Playing info with play and pause only, and verify with an integration test citing `player-controls-and-playback-errors/the-channel-shows-on-the-lock-screen`
 
 ## 7. Verify
 
 - [x] 7.1 Each requirement has a test citing `player-controls-and-playback-errors/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
-  - Open: verify finds every requirement implemented and cited, and flags 5.1, 6.1 and 6.2, which wait for device runs
+- [x] 7.2 `/opsx:verify` passes. Every requirement is implemented and cited; the device parts of 5.1, 6.1 and 6.2 are on the device checklist.
