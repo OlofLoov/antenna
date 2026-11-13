@@ -14,6 +14,8 @@
             var load: @MainActor (SourceDescriptor) async throws -> Playlist
             var hasLogin: @MainActor (SourceDescriptor) -> Bool
             var recents: RecentsStore
+            /// The channels each source had on this Apple TV, for the New group.
+            var seen = SeenChannelsStore.scratch
             var sleep: @MainActor (Duration) async throws -> Void
             var guide: AppGuideStore?
             var languages = ChannelLanguageStore()
@@ -46,6 +48,8 @@
         private(set) var tuned: Channel?
         /// The channels watched lately on this Apple TV, newest first.
         var recents: [LastChannelKey] = []
+        /// Each loaded source's memory of its channels (new-channels).
+        private(set) var seen: [UUID: SeenChannels] = [:]
         /// The programme Search asked the Guide to show; the Guide clears it once shown.
         var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
@@ -150,6 +154,7 @@
                 loads[id] = nil
                 descriptors[id] = nil
                 channelsBySource[id] = nil
+                self.seen[id] = nil
                 finishOrder.removeAll { $0 == id }
             }
             var changed: [SourceDescriptor] = []
@@ -447,6 +452,7 @@
                 titleCounts[source.id] = TitleCounts(movies: playlist.movies.count, episodes: playlist.episodes.count)
                 leaveUnofferedTab()
                 channelsBySource[source.id] = tagged
+                seen[source.id] = dependencies.seen.record(source.id, channelIDs: tagged.map(\.id))
                 setState(.loaded(channels: tagged.count), for: source.id)
                 if !tagged.isEmpty { finishOrder.append(source.id) }
                 rebuildChannels()

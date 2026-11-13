@@ -49,7 +49,7 @@ struct GroupsData {
         case .named(let source, _), .ungrouped(let source):
             let name = sourceNames[source].map { " · \($0)" } ?? ""
             return group.label + name
-        case .favorites, .recents, .all, .own: return catalogue.label(of: group)
+        case .favorites, .recents, .new, .all, .own: return catalogue.label(of: group)
         }
     }
 }

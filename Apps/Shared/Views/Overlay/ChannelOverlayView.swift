@@ -48,7 +48,7 @@
                         }
                         .focused(focus, equals: .overlay(.group(group)))
                         .groupSpokenLabel(group, count: catalogue.count(of: group))
-                        .accessibilityIdentifier("overlay.group.\(index)")
+                        .accessibilityIdentifier(group == .new ? "overlay.group.new" : "overlay.group.\(index)")
                     }
                     ForEach(catalogue.lockedGroups, id: \.self) { group in
                         ChannelOverlay.GroupRow(

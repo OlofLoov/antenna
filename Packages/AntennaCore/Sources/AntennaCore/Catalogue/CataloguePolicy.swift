@@ -124,7 +124,7 @@ struct CataloguePolicy: Sendable {
     }
 
     func isHidden(_ group: CatalogueGroup) -> Bool {
-        rules.hidden.contains(group) && group != .favorites && group != .recents
+        rules.hidden.contains(group) && group != .favorites && group != .recents && group != .new
     }
 
     func isLocked(_ group: CatalogueGroup) -> Bool {

@@ -81,6 +81,15 @@ Additive. New cache files only.
 ## Journey steps
 
 - `AppJourneys.testMoviesDiscover` on iPhone and iPad and `TVJourneys.testMoviesDiscover` on Apple TV: `movies-recently-watched`, anchored on `movies.row.recentlyWatched`, compared with the `*-Movies-Discover` boards.
+- `AppJourneys.testLiveNew` on iPhone and iPad: `live-new`, anchored on `groups.new`, compared with `iPhone-Live-New` and `iPad-Live-New`. `TVJourneys.testOverlayNew`: `overlay-new`, anchored on `overlay.group.new`, compared with `TV-Overlay-New`.
+
+## Notes from building groups 2 and 3
+
+- Seen channels are keyed by a 64-bit FNV-1a hash of the channel id, not of the row key. The row key holds the position, which changes when a channel moves, and `new-channels/renamed-and-moved-channels-are-not-new` needs the id.
+- Each file also keeps the date a channel was last seen, so a channel gone for 30 days can be pruned.
+- The memory is recorded where Live (`LiveModel`) and the Apple TV shell (`ShellModel`) finish a source load. A deleted source's file goes in their `sourceDeleted`, which `SourceDeletions` calls for deletions on this device and from iCloud.
+- On iPad and Mac, Title or Year in the Recently added grid switches to All, since that grid has one order.
+- Open questions 1 to 3 are taken as recommended for these groups: no Home tab, channel Recents stay per device, seven days for New.
 
 ## Open Questions
 

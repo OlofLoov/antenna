@@ -68,6 +68,7 @@
         /// channel playing now stops counting as watched.
         func sourceDeleted(_ id: UUID) {
             session.remove(source: id)
+            dependencies.seen.remove(id)
             if stored?.sourceID == id { stored = nil }
             recents.removeAll { $0.sourceID == id }
         }
@@ -150,6 +151,7 @@
                 guide: guide,
                 languages: ChannelLanguageStore(profile: profile))
             dependencies.waitsForICloud = { loader.waitsForICloud($0) }
+            dependencies.seen = .app
             dependencies.storedTitles = { refresher?.status(of: $0).titleCounts ?? LastLoadStore().readTitles($0) }
             return dependencies
         }

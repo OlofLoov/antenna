@@ -55,4 +55,14 @@ final class AppJourneys: XCTestCase {
         }
         journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
     }
+
+    /// Live with a channel the source gained since the day before, in the
+    /// New group (add-discover-rows, `iPhone-Live-New`, `iPad-Live-New`).
+    func testLiveNew() {
+        let journey = Journey(
+            self, arguments: ["-ui-testing-live", "channels"], environment: ["UITESTING_NEW_CHANNEL": "kids-one"])
+        let new = journey.element("groups.new")
+        if new.waitForExistence(timeout: 10) { new.tap() }
+        journey.snap("live-new", anchor: "groups.new")
+    }
 }

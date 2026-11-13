@@ -119,10 +119,11 @@
         }
 
         /// A channel was tuned from `group`; the next open starts there.
-        /// Recents never becomes the current group
-        /// (session-restore-and-recently-watched/playing-from-recents-keeps-your-group-on-apple-tv).
+        /// Recents and New never become the current group
+        /// (session-restore-and-recently-watched/playing-from-recents-keeps-your-group-on-apple-tv,
+        /// new-channels/a-new-group-lists-channels-added-lately).
         func tuned(from group: CatalogueGroup) {
-            guard group != .recents else { return }
+            guard group != .recents, group != .new else { return }
             lastTuned = group
         }
 
@@ -142,7 +143,7 @@
             guard catalogue.rows(in: group).isEmpty else { return nil }
             switch group {
             case .favorites: return "No favorites yet. Hold select on a channel to add it."
-            case .all, .named, .ungrouped, .recents: return "No channels yet. Add a source in Settings."
+            case .all, .named, .ungrouped, .recents, .new: return "No channels yet. Add a source in Settings."
             case .own: return "No channels in this group yet. Add some from Groups in Settings."
             }
         }

@@ -52,7 +52,7 @@ extension Catalogue {
         case .all: index.allRows.count
         case .named, .ungrouped: index.rowsByGroup[group]?.count ?? 0
         case .own(let id): policy?.ownRows[id]?.count ?? 0
-        case .favorites, .recents: rows(in: group).count
+        case .favorites, .recents, .new: rows(in: group).count
         }
     }
 
@@ -77,7 +77,7 @@ extension Catalogue {
             switch group {
             case .named(let source, _), .ungrouped(let source):
                 sourceRank[source] != nil && !present.contains(group)
-            case .favorites, .recents, .all, .own: false
+            case .favorites, .recents, .new, .all, .own: false
             }
         }
         return orphans.sorted { lhs, rhs in
@@ -88,10 +88,10 @@ extension Catalogue {
     }
 
     /// The group to show when the one being watched is hidden, locked or
-    /// deleted: the first group listed after Favorites and Recents, else
-    /// Favorites. Never a group that needs the passcode.
+    /// deleted: the first group listed after Favorites, Recents and New,
+    /// else Favorites. Never a group that needs the passcode.
     public var fallbackGroup: CatalogueGroup {
-        groups.first { $0 != .favorites && $0 != .recents } ?? .favorites
+        groups.first { $0 != .favorites && $0 != .recents && $0 != .new } ?? .favorites
     }
 
     /// The rows search looks through: All channels, plus the channels of
@@ -114,7 +114,7 @@ extension CatalogueGroup {
     var source: UUID? {
         switch self {
         case .named(let source, _), .ungrouped(let source): source
-        case .favorites, .recents, .all, .own: nil
+        case .favorites, .recents, .new, .all, .own: nil
         }
     }
 
@@ -125,12 +125,13 @@ extension CatalogueGroup {
     }
 
     /// A string that names the group in stored records and accessibility
-    /// identifiers: `all`, `named.<source>.<name>`, `ungrouped.<source>`,
+    /// identifiers: `all`, `new`, `named.<source>.<name>`, `ungrouped.<source>`,
     /// `own.<id>`. It never holds a channel id, so never a stream link.
     public var storageKey: String {
         switch self {
         case .favorites: "favorites"
         case .recents: "recents"
+        case .new: "new"
         case .all: "all"
         case .named(let source, let name): "named.\(source.uuidString).\(name)"
         case .ungrouped(let source): "ungrouped.\(source.uuidString)"
@@ -145,6 +146,7 @@ extension CatalogueGroup {
         switch (parts[0], parts.count, id) {
         case ("favorites", 1, _): self = .favorites
         case ("recents", 1, _): self = .recents
+        case ("new", 1, _): self = .new
         case ("all", 1, _): self = .all
         case ("named", 3, .some(let id)): self = .named(id, parts[2])
         case ("ungrouped", 2, .some(let id)): self = .ungrouped(id)

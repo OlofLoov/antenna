@@ -14,6 +14,17 @@ struct CatalogueRecents: Sendable {
         self.rankByEntry = rankByEntry
     }
 
+    /// `entries` in the order given, each once.
+    init(ranked entries: [Int], index: CatalogueIndex) {
+        var rows: [RowKey] = []
+        var rankByEntry: [Int: Int] = [:]
+        for entry in entries where rankByEntry[entry] == nil {
+            rankByEntry[entry] = rows.count
+            rows.append(index.keys[entry])
+        }
+        self.init(rows: rows, rankByEntry: rankByEntry)
+    }
+
     /// Each entry resolves to the one loaded channel with its source and id.
     /// An entry that matches none, or two, is left out.
     init(entries: [LastChannelKey], index: CatalogueIndex) {

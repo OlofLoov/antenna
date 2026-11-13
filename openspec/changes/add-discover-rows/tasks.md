@@ -13,10 +13,10 @@
 
 ## 3. New channels (no external data)
 
-- [ ] 3.1 Add the seen-channels memory and `NewChannels.group` in AntennaCore, with tests citing `new-channels/a-new-group-lists-channels-added-lately`, `new-channels/a-new-source-starts-with-nothing-new`, `new-channels/what-new-remembers-stays-on-the-device` and `new-channels/renamed-and-moved-channels-are-not-new`
-- [ ] 3.2 Record seen channels on each source load, forget them on source delete, and add the New group to the iPhone chips, the iPad and Mac sidebar and the Apple TV overlay
-- [ ] 3.3 UI tests on iPhone and Apple TV with a fixture source that gains a channel between two loads
-- [ ] 3.4 Add a journey step for the New group anchored on `groups.new`
+- [x] 3.1 Add the seen-channels memory and `NewChannels.group` in AntennaCore, with tests citing `new-channels/a-new-group-lists-channels-added-lately`, `new-channels/a-new-source-starts-with-nothing-new`, `new-channels/what-new-remembers-stays-on-the-device` and `new-channels/renamed-and-moved-channels-are-not-new`
+- [x] 3.2 Record seen channels on each source load, forget them on source delete, and add the New group to the iPhone chips, the iPad and Mac sidebar and the Apple TV overlay
+- [x] 3.3 UI tests on iPhone and Apple TV with a fixture source that gains a channel between two loads
+- [x] 3.4 Add a journey step for the New group anchored on `groups.new`
 
 ## 4. Trending (needs add-title-metadata)
 

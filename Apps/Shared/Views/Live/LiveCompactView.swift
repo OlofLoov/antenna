@@ -81,7 +81,7 @@
                         }
                         .id(group)
                         .groupSpokenLabel(group, count: live.catalogue.count(of: group))
-                        .accessibilityIdentifier("browse.group.\(index)")
+                        .accessibilityIdentifier(group == .new ? "groups.new" : "browse.group.\(index)")
                     }
                     LockedGroupChips()
                 }

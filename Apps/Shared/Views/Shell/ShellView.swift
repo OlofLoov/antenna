@@ -115,8 +115,9 @@
                 Task { await model.togglePlayback() }
             }
             .onChange(of: catalogueInputs, initial: true) {
-                catalogue = .shell(
-                    channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents, rules: groupRules)
+                catalogue = NewChannels.group(
+                    .shell(channels: model.channels, favorites: favorites, profile: profile, recents: shownRecents, rules: groupRules),
+                    seen: model.seen, now: .now)
                 overlayCatalogueChanged()
             }
             .onChange(of: model.recents) { _, _ in showLatestRecents() }
@@ -251,7 +252,8 @@
 
         private var catalogueInputs: ShellCatalogueInputs {
             ShellCatalogueInputs(
-                channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile, rules: groupRules)
+                channels: model.channels, favorites: favorites.map(\.persistentModelID), profile: profile, rules: groupRules,
+                seen: model.seen)
         }
 
         private var overlayGuide: OverlayGuide {

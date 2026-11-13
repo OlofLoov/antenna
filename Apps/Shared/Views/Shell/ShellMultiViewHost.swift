@@ -49,5 +49,6 @@
         let favorites: [PersistentIdentifier]
         let profile: UUID
         let rules: GroupRules
+        let seen: [UUID: SeenChannels]
     }
 #endif

@@ -14,19 +14,20 @@ final class Journey {
         self.init(test, arguments: ["-ui-screenshots", scenario])
     }
 
-    /// Launches the app with `arguments`, for a scenario another UI test
-    /// target already seeds, such as `-ui-testing-shell loading`.
-    init(_ test: XCTestCase, arguments: [String]) {
+    /// Launches the app with `arguments` and `environment`, for a scenario
+    /// another UI test target already seeds, such as `-ui-testing-shell loading`.
+    init(_ test: XCTestCase, arguments: [String], environment: [String: String] = [:]) {
         self.test = test
-        launch(arguments)
+        launch(arguments, environment: environment)
     }
 
     /// Ends the running app and starts it again with `arguments`. Step
     /// numbers carry on.
-    func launch(_ arguments: [String]) {
+    func launch(_ arguments: [String], environment: [String: String] = [:]) {
         app.terminate()
         app = XCUIApplication()
         app.launchArguments = arguments
+        app.launchEnvironment = environment
         app.launch()
     }
 
