@@ -76,7 +76,8 @@
         @ObservationIgnored private var finishOrder: [UUID] = []
         /// The channel to tune at launch, read once.
         @ObservationIgnored var stored: LastChannelKey?
-        private var launched = false
+        /// True once the first `sourcesChanged` has run.
+        private(set) var launched = false
         @ObservationIgnored private(set) var deadlinePassed = false
         /// A Top Shelf item waiting for its source; the launch tune waits while set.
         @ObservationIgnored var shelfItem: UUID?

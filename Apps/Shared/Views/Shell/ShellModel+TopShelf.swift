@@ -36,10 +36,13 @@
         /// Matches the held item against the loaded channels, then `titles`.
         /// A channel plays as after going to Live; a title is handed back to
         /// resume. With no match, the item drops once no source is loading
-        /// and `titlesPending` is false.
+        /// and `titlesPending` is false. Before the shell has its sources,
+        /// the item waits: an empty source list then means "not read yet",
+        /// not "nothing to load".
         @discardableResult
         func resolveShelfItem(titles: [ShelfTitle], titlesPending: Bool) -> ShelfResolution {
             guard let id = shelfItem else { return .dropped }
+            guard launched else { return .waiting }
             if let channel = channels.first(where: { TopShelfItemID.channel($0) == id }) {
                 shelfItem = nil
                 settingsOpen = false
