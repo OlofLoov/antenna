@@ -10,4 +10,4 @@
 ## 2. Verify
 
 - [x] 2.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 2.2 `/opsx:verify` passes
+- [x] 2.2 `/opsx:verify` passes
