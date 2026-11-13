@@ -433,7 +433,7 @@ The system SHALL group a playlist's episodes into series by the show name, the p
 - **THEN** the first is "Episode 3" of "Show", and "Pilot" is a series of its own
 
 ### Requirement: Playlist series show in Series
-The system SHALL list a playlist's series in the Series section with the first episode's logo as the poster and its group as the category. Opening one SHALL show its title page with the seasons and the episode picker, and an episode SHALL play from its link.
+The system SHALL list a playlist's series in the Series section with the first episode's logo as the poster and its group as the category. Opening one SHALL show its title page with the seasons and the episode picker, and an episode SHALL play from its link. A series the playlist's last load in this run does not have SHALL make the playlist load once more before the page says its episodes could not load.
 
 #### Scenario: Watching a playlist episode
 - **GIVEN** a playlist with episodes of "Show" in the group "Shows"
@@ -444,6 +444,11 @@ The system SHALL list a playlist's series in the Series section with the first e
 - **GIVEN** only a playlist whose entries are episodes
 - **WHEN** it loads
 - **THEN** Live has no channels from it and Series lists its shows
+
+#### Scenario: A series from an earlier load
+- **GIVEN** Series shows "Show" from an earlier load of the playlist, and the load kept in this run does not have it
+- **WHEN** the user opens "Show"
+- **THEN** the playlist loads again, and the page lists the episodes when the new load has them, or says "Could not load episodes" when it does not
 
 ### Requirement: Catch-up style, source and correction
 The system SHALL read an entry's `catchup` style, `catchup-source` template and `catchup-correction` hours, and SHALL ignore a correction that is not a number without dropping the channel.
