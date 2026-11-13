@@ -8,14 +8,19 @@ import Foundation
 /// One `LoginDrop` record per code, named `drop-<code>`, with every field
 /// in `encryptedValues`, so CloudKit encrypts the sealed box again with
 /// the account's keys. The container is reached only when a method runs,
-/// so making the store touches nothing.
+/// so making the store touches nothing. Without a container every method
+/// fails with `notSignedIn` and CloudKit is never called
+/// (source-management/sources-stay-on-the-device-without-icloud).
 struct CloudKitLoginDrops: LoginDropping {
     static let zoneID = CKRecordZone.ID(zoneName: "LoginDrops", ownerName: CKCurrentUserDefaultName)
     static let recordType = "LoginDrop"
-    static let containerIdentifier = "iCloud.se.codecrave.antenna"
 
-    private var database: CKDatabase {
-        CKContainer(identifier: Self.containerIdentifier).privateCloudDatabase
+    /// The CloudKit container, or nil when this build cannot use CloudKit.
+    var container: String? = CloudSync.container
+
+    private func database() throws(LoginDropError) -> CKDatabase {
+        guard let container else { throw .notSignedIn }
+        return CKContainer(identifier: container).privateCloudDatabase
     }
 
     private func recordID(_ token: PairingToken) -> CKRecord.ID {
@@ -27,12 +32,13 @@ struct CloudKitLoginDrops: LoginDropping {
         record.encryptedValues["enc"] = sealed.enc
         record.encryptedValues["box"] = sealed.box
         record.encryptedValues["v"] = Int64(sealed.version)
+        let database = try database()
         do {
             do {
-                try await saveNew(record)
+                try await saveNew(record, in: database)
             } catch let error as CKError where error.code == .zoneNotFound || error.code == .userDeletedZone {
                 _ = try await database.modifyRecordZones(saving: [CKRecordZone(zoneID: Self.zoneID)], deleting: [])
-                try await saveNew(record)
+                try await saveNew(record, in: database)
             }
         } catch {
             throw Self.map(error, for: record.recordID)
@@ -41,13 +47,14 @@ struct CloudKitLoginDrops: LoginDropping {
 
     /// Saves a record that must not exist yet: the server refuses a second
     /// one for the same code with `serverRecordChanged`.
-    private func saveNew(_ record: CKRecord) async throws {
+    private func saveNew(_ record: CKRecord, in database: CKDatabase) async throws {
         let (saved, _) = try await database.modifyRecords(
             saving: [record], deleting: [], savePolicy: .ifServerRecordUnchanged, atomically: true)
         if case .failure(let error) = saved[record.recordID] { throw error }
     }
 
     func fetch(token: PairingToken) async throws(LoginDropError) -> LoginDrop? {
+        let database = try database()
         do {
             let record = try await database.record(for: recordID(token))
             guard let box = record.encryptedValues["box"] as? Data else { return .pickedUp }
@@ -65,6 +72,7 @@ struct CloudKitLoginDrops: LoginDropping {
     /// Removes the key and the box from the record and keeps the empty
     /// record, so a second save for the code still fails.
     func pickUp(token: PairingToken) async throws(LoginDropError) {
+        let database = try database()
         do {
             let record = try await database.record(for: recordID(token))
             record.encryptedValues["enc"] = nil
@@ -78,6 +86,7 @@ struct CloudKitLoginDrops: LoginDropping {
     }
 
     func delete(token: PairingToken) async throws(LoginDropError) {
+        let database = try database()
         do {
             _ = try await database.deleteRecord(withID: recordID(token))
         } catch let error as CKError where Self.isGone(error) {
@@ -88,6 +97,7 @@ struct CloudKitLoginDrops: LoginDropping {
     }
 
     @discardableResult func sweep(olderThan cutoff: Date) async throws(LoginDropError) -> Int {
+        let database = try database()
         var old: [CKRecord.ID] = []
         var token: CKServerChangeToken?
         do {

@@ -166,6 +166,13 @@ and add the date and devices next to it.
   "Waiting for iCloud" until the file arrives, then load its channels and play
   one.
 
+- [ ] **add-signing-capabilities 5.2, logins from before the shared group.**
+  On an iPhone that has an Xtream source saved by a build from before
+  `add-signing-capabilities`, install the current build on the iPhone and the
+  Apple TV and open Live on the iPhone once. Expect the source's channels on
+  the Apple TV within a few minutes, with no login asked for there, and the
+  source still loading on the iPhone after a relaunch.
+
 ## Two devices on one iCloud account
 
 Any two of iPhone, iPad, Mac and Apple TV, unless the item names them. Each
@@ -227,3 +234,30 @@ platform exists.
   `https://antenna.code-crave.se/.well-known/apple-app-site-association` to serve
   the association file with the team id, and `/setup` to show the plain fallback
   page with no scripts, images or third-party content.
+- [ ] **add-signing-capabilities 5.2, capabilities in the Developer portal.**
+  Team `R767H5DB8H` is a personal team, which cannot sign iCloud, Push
+  Notifications or Associated Domains. Until it is in the paid Apple Developer
+  Program, put `ANTENNA_PAID_TEAM = NO` in `Config/Local.xcconfig`: device
+  builds then sign without those capabilities and run without iCloud sync. After
+  joining, set `DEVELOPMENT_TEAM` and the `APPLE_TEAM_ID` repository variable to
+  the paid team's id if it differs, remove that line, and in Certificates, Identifiers & Profiles, under Identifiers, create the iCloud
+  container `iCloud.se.codecrave.antenna`. Open the App IDs
+  `se.codecrave.antenna` and `se.codecrave.antenna.tv` and turn on iCloud
+  (CloudKit, with that container assigned), Push Notifications and, for
+  `se.codecrave.antenna`, Associated Domains; Keychain Sharing needs no portal
+  switch. Leave `se.codecrave.antenna.tv.topshelf` with App Groups only. Then
+  in Xcode, with the team in `Config/Local.xcconfig`, build each scheme for a
+  device once so automatic signing makes new profiles. Expect
+  `codesign -d --entitlements - Antenna.app` to list the iCloud container,
+  `aps-environment`, `keychain-access-groups` with
+  `<team id>.se.codecrave.antenna.shared` and, on the iPhone app, the
+  associated domain.
+- [ ] **add-signing-capabilities 5.2, CloudKit schema in production.** After a
+  development build has synced every kind of record (a source, a favorite, a
+  group change, a guide, a profile, a reminder, watch progress, an item in My
+  list, a recent search, and a login sent to an Apple TV), open CloudKit
+  Console, pick `iCloud.se.codecrave.antenna`, check the Development schema
+  lists the `CD_` record types and `LoginDrop`, and choose Deploy Schema
+  Changes to Production. Do this before each TestFlight or App Store build that
+  adds a synced record type. Expect the Production schema to match, and a
+  TestFlight build to sync between two devices.

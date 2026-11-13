@@ -35,8 +35,6 @@ targets:
     dependencies:
       - package: AntennaCore
       - package: AntennaDemux
-    entitlements:
-      path: Config/Antenna.entitlements
     info:
       path: Apps/Mobile/Info.plist
       properties:
@@ -46,7 +44,7 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
-        UIBackgroundModes: [audio]
+        UIBackgroundModes: [audio, remote-notification]
         NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
           # IPTV sources are overwhelmingly plain http. Tighten per-domain later if you can.
@@ -60,9 +58,13 @@ targets:
         AntennaTermsURL: https://antenna.code-crave.se/terms
         AntennaPrivacyURL: https://antenna.code-crave.se/privacy
         NSUserActivityTypes: [se.codecrave.antenna.setup]
+        AntennaCloudKitContainer: $(ANTENNA_CLOUDKIT_CONTAINER)
+        AntennaKeychainGroup: $(ANTENNA_KEYCHAIN_GROUP)
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna
+        CODE_SIGN_ENTITLEMENTS: Config/Antenna$(ANTENNA_ENTITLEMENTS_SUFFIX).entitlements
+        CODE_SIGN_ENTITLEMENTS[sdk=macosx*]: Config/AntennaMac$(ANTENNA_ENTITLEMENTS_SUFFIX).entitlements
         TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO
@@ -118,10 +120,6 @@ targets:
       - package: AntennaCore
       - package: AntennaDemux
       - target: AntennaTopShelf
-    entitlements:
-      path: Config/AntennaTV.entitlements
-      properties:
-        com.apple.security.application-groups: [group.se.codecrave.antenna]
     info:
       path: Apps/TV/Info.plist
       properties:
@@ -134,13 +132,16 @@ targets:
             CFBundleURLSchemes: [antenna]
         AntennaTermsURL: https://antenna.code-crave.se/terms
         AntennaPrivacyURL: https://antenna.code-crave.se/privacy
-        UIBackgroundModes: [audio]
+        UIBackgroundModes: [audio, remote-notification]
         NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
+        AntennaCloudKitContainer: $(ANTENNA_CLOUDKIT_CONTAINER)
+        AntennaKeychainGroup: $(ANTENNA_KEYCHAIN_GROUP)
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv
+        CODE_SIGN_ENTITLEMENTS: Config/AntennaTV$(ANTENNA_ENTITLEMENTS_SUFFIX).entitlements
         TARGETED_DEVICE_FAMILY: "3"
         ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image
 

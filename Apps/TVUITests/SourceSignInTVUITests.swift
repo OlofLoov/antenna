@@ -14,12 +14,13 @@ final class SourceSignInTVUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    private func launch(drops mode: String) {
+    /// With `mode` nil the QR card asks the real iCloud check, which a build
+    /// without the iCloud capability answers with not signed in.
+    private func launch(drops mode: String?) {
         app = XCUIApplication()
-        app.launchArguments = [
-            "-ui-testing-onboarding", "connect", "-ui-testing-login-drops", mode, "-ui-testing-signin-sources", "1",
-            "-ui-testing-signin-playlist",
-        ]
+        app.launchArguments =
+            ["-ui-testing-onboarding", "connect"] + (mode.map { ["-ui-testing-login-drops", $0] } ?? [])
+            + ["-ui-testing-signin-sources", "1", "-ui-testing-signin-playlist"]
         app.launch()
     }
 
@@ -99,6 +100,16 @@ final class SourceSignInTVUITests: XCTestCase {
 
         expect(element("settings.details.status"), "label CONTAINS '1 channel'", timeout: 20)
         XCTAssertFalse(element("settings.details.signIn").exists)
+    }
+
+    // source-management/sources-stay-on-the-device-without-icloud
+    // apple-tv-login-from-iphone/the-apple-tv-sign-in-offers-a-qr-code, not signed in to iCloud
+    func testSourceDetailsOpenWithoutICloud() {
+        launch(drops: nil)
+        openHomeProvider()
+        XCTAssertTrue(element("settings.details.username").waitForExistence(timeout: 5), "the login fields never showed")
+        XCTAssertFalse(element("signIn.qr").waitForExistence(timeout: 3), "the QR card showed without iCloud")
+        XCTAssertEqual(app.state, .runningForeground)
     }
 
     // apple-tv-login-from-iphone/the-apple-tv-sign-in-offers-a-qr-code, from a source's details

@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AntennaCloudKitContainer</key>
+	<string>$(ANTENNA_CLOUDKIT_CONTAINER)</string>
+	<key>AntennaKeychainGroup</key>
+	<string>$(ANTENNA_KEYCHAIN_GROUP)</string>
 	<key>AntennaPrivacyURL</key>
 	<string>https://antenna.code-crave.se/privacy</string>
 	<key>AntennaTermsURL</key>
@@ -55,6 +59,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
