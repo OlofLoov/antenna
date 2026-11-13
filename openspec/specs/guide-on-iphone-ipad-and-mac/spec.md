@@ -176,7 +176,7 @@ The system SHALL open the guide at a programme another screen asks for, selectin
 - **THEN** the guide opens at now with nothing selected and does not try again later
 
 ### Requirement: Filter channels by typing
-The system SHALL narrow the iPad and Mac guide to the group's channels whose name matches or whose number starts with the typed digits, after each letter typed.
+The system SHALL narrow the guide to the group's channels whose name matches or whose number starts with the typed digits, after each letter typed, on iPhone, iPad and Mac.
 
 #### Scenario: Type in the filter
 - **GIVEN** a group of 42 channels on iPad or Mac
@@ -190,7 +190,12 @@ The system SHALL narrow the iPad and Mac guide to the group's channels whose nam
 
 #### Scenario: No filter on iPhone
 - **WHEN** the user opens the Guide on iPhone
-- **THEN** there is no filter field
+- **THEN** there is no filter field until they pull the channel list down
+
+#### Scenario: Filter on iPhone
+- **GIVEN** the Guide on iPhone
+- **WHEN** the user pulls the channel list down and types in the search field that appears
+- **THEN** the rows narrow the same way after each letter, and canceling the field brings the whole group back
 
 ### Requirement: Playback carries on out of sight
 The system SHALL leave Live's playback untouched while the Guide is open, and SHALL show what is playing with a way back to Live.
