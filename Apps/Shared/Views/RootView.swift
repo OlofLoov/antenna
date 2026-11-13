@@ -151,10 +151,14 @@
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
 
-        /// An Xtream source, or a playlist whose last load had movies
+        /// An Xtream source, or a playlist whose last load had movies or episodes
         /// (m3u-playlists/playlist-movies-show-in-movies).
         private var showsMovies: Bool {
-            shelves.hasXtream || records.contains { (refresher?.status(of: $0.id).movies ?? 0) > 0 }
+            shelves.hasXtream
+                || records.contains { record in
+                    let status = refresher?.status(of: record.id)
+                    return (status?.movies ?? 0) + (status?.episodes ?? 0) > 0
+                }
         }
 
         var body: some View {

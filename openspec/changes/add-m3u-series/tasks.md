@@ -6,7 +6,7 @@
 
 ## 2. Series in the app
 
-- [ ] 2.1 Keep playlist episodes and series in memory, load and play them in Series, and show the tabs, and verify an app test citing `m3u-playlists/playlist-series-show-in-series` and `m3u-playlists/playlist-movies-show-in-movies`
+- [x] 2.1 Keep playlist episodes and series in memory, load and play them in Series, and show the tabs, and verify an app test citing `m3u-playlists/playlist-series-show-in-series` and `m3u-playlists/playlist-movies-show-in-movies`
 - [ ] 2.2 Run the Movies, Series and Title UI test classes on a local iPhone simulator
 
 ## 3. Verify

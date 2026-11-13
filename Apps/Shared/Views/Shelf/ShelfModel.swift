@@ -71,12 +71,12 @@ final class ShelfModel {
     // MARK: Sources
 
     /// Call on appearance and whenever the stored sources change. Only
-    /// Xtream sources count, and for Movies playlists too
-    /// (m3u-playlists/playlist-movies-show-in-movies). Before the section opens this only records
+    /// Xtream sources and playlists count
+    /// (m3u-playlists/playlist-movies-show-in-movies, m3u-playlists/playlist-series-show-in-series). Before the section opens this only records
     /// them; afterwards new and edited sources load and removed ones drop out.
     func sourcesChanged(_ all: [SourceDescriptor]) {
         var seen: Set<UUID> = []
-        let kinds: Set<SourceKind> = kind == .movie ? [.xtream, .m3u, .m3uFile] : [.xtream]
+        let kinds: Set<SourceKind> = [.xtream, .m3u, .m3uFile]
         let list = all.filter { kinds.contains($0.kind) && seen.insert($0.id).inserted }
         let ids = Set(list.map(\.id))
         for id in descriptors.keys where !ids.contains(id) {
