@@ -10,6 +10,11 @@ The system SHALL sync favorites through the user's private iCloud account to eve
 - **WHEN** device B, signed into the same iCloud account, is online
 - **THEN** the favorite appears in device B's Favorites group in Live
 
+#### Scenario: Apple TV as the second device
+- **GIVEN** a favorite saved on an iPhone, iPad or Mac
+- **WHEN** an Apple TV signed into the same iCloud account is online
+- **THEN** the favorite appears in the Favorites group of its channel overlay, and one added on the Apple TV appears on the other device
+
 ## REMOVED Requirements
 
 ### Requirement: Empty state
