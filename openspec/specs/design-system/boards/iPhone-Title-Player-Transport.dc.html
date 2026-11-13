@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone movie player, transport controls</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- movies.player: the movie full screen, letterboxed, playing. A tap shows the controls and a second tap hides them; they hide 3 seconds after the last touch while playing and stay while paused, while dragging, while the track list is open and while VoiceOver runs. A double tap on the left or right half skips 10 seconds. -->
+  <div style="position: absolute; left: 0; right: 0; top: 312px; height: 219px; background: #1A2535"></div>
+
+  <!-- A 0.35 scrim over the whole screen while the controls show; taps pass through it to the picture -->
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.35)"></div>
+
+  <!-- movies.player.close, top left, 44 pt circle on the 0.6 scrim, as on iPhone-Title-Player-Tracks. Shows and hides with the controls. -->
+  <div style="position: absolute; left: 16px; top: 62px; width: 44px; height: 44px; border-radius: 22px; background: rgba(8,10,14,0.6); display: flex; align-items: center; justify-content: center">
+    <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </div>
+
+  <!-- player.tracks and player.subtitles, top right, as on iPhone-Title-Player-Tracks. Shows and hides with the controls. -->
+  <div style="position: absolute; right: 16px; top: 62px; height: 44px; padding: 0 4px; border-radius: 22px; background: rgba(8,10,14,0.6); display: flex; align-items: center">
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h3M13 10h3M8 13h5"/></svg></span>
+  </div>
+
+  <!-- title.transport, middle row centered on the screen, 36 pt apart: title.transport.skipBack (gobackward.10, title 2), title.transport.playPause (pause.fill or play.fill, large title), title.transport.skipForward (goforward.10, title 2). Glass button style, circle border shape, 44 pt glyph frames. -->
+  <div style="position: absolute; left: 0; right: 0; top: 386px; display: flex; justify-content: center; align-items: center; gap: 36px">
+    <div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="-apple-system, system-ui">10</text></svg>
+    </div>
+    <div style="width: 76px; height: 76px; border-radius: 38px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+    </div>
+    <div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4h-4"/><text x="12" y="15.5" font-size="7" text-anchor="middle" fill="currentColor" stroke="none" font-family="-apple-system, system-ui">10</text></svg>
+    </div>
+  </div>
+
+  <!-- Bottom row, 20 pt side margins above the home indicator: title.transport.elapsed, title.transport.scrubber (the system slider tinted with the accent), title.transport.remaining, in footnote (13) with monospaced digits. Dragging moves the elapsed time and the knob while the picture stays put; on release the movie plays from there, or stays paused there. With no length from the stream the slider and the remaining time are left out. -->
+  <div style="position: absolute; left: 20px; right: 20px; bottom: 46px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-variant-numeric: tabular-nums">
+    <span>12:04</span>
+    <div style="position: relative; flex: 1 1 auto; height: 28px">
+      <div style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.3)"></div>
+      <div style="position: absolute; left: 0; width: 13.4%; top: 12px; height: 4px; border-radius: 2px; background: {{accent}}"></div>
+      <div style="position: absolute; left: calc(13.4% - 14px); top: 0; width: 28px; height: 28px; border-radius: 14px; background: #F2F4F8; box-shadow: 0 2px 6px rgba(0,0,0,.35)"></div>
+    </div>
+    <span>-1:17:56</span>
+  </div>
+
+  <!-- title.transport.notice, under the top buttons for 3 seconds when the server cannot skip: "This stream can't skip", headline on a 0.88 scrim capsule. Not drawn. -->
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

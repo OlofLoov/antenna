@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV movie player, paused with a target time</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- movies.player, paused. The picture stays on the paused frame while the target moves; nothing loads until select. -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+
+  <!-- title.transport as on TV-Title-Player-Transport, with the pause glyph. It stays while paused. -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 120px 90px 60px; background: linear-gradient(to bottom, rgba(8,10,14,0), rgba(8,10,14,0.85)); display: flex; flex-direction: column; gap: 18px">
+
+    <div style="display: flex; align-items: center; gap: 16px">
+      <!-- title.transport.stateGlyph, paused -->
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="#A7B0BF"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+      <span style="font-size: 38px; font-weight: 600">The Long Way Home</span>
+    </div>
+
+    <div style="position: relative; height: 40px">
+      <div style="position: absolute; left: 0; right: 0; top: 15px; height: 10px; border-radius: 5px; background: rgba(255,255,255,0.25)"></div>
+      <div style="position: absolute; left: 0; width: 13.4%; top: 15px; height: 10px; border-radius: 5px; background: {{accent}}"></div>
+      <!-- The knob stays at the paused time -->
+      <div style="position: absolute; left: calc(13.4% - 12px); top: 8px; width: 24px; height: 24px; border-radius: 12px; background: #F2F4F8"></div>
+      <!-- The target: a 6 x 40 white mark on the line at the target time -->
+      <div style="position: absolute; left: calc(42% - 3px); top: 0; width: 6px; height: 40px; border-radius: 3px; background: #F2F4F8"></div>
+      <!-- title.transport.target: the target time in headline (38) with monospaced digits, ground-colored on a white capsule, centered over the mark, 64 pt above the line -->
+      <div style="position: absolute; left: 42%; top: -64px; transform: translateX(-50%); padding: 8px 18px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; font-size: 38px; font-weight: 600; font-variant-numeric: tabular-nums">37:48</div>
+    </div>
+
+    <!-- The times follow the target while it shows -->
+    <div style="display: flex; justify-content: space-between; font-size: 31px; color: #A7B0BF; font-variant-numeric: tabular-nums">
+      <span>37:48</span>
+      <span>-52:12</span>
+    </div>
+  </div>
+
+  <!-- Remote while a target shows: sliding on the touch surface moves it, one slide across the whole surface moving an eighth of the title (at least 1 minute, at most 20); clicking left or right moves it 10 seconds; select or play/pause plays from it; Menu puts it back and the movie stays paused where it was, and the next Menu closes the movie. -->
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
