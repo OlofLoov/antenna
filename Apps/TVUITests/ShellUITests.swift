@@ -220,7 +220,6 @@ extension ShellUITests {
     }
 
     // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
-    // tvos-shell/stand-in-screens
     // tvos-shell/the-tabs-in-order
     func testMenuFromGuideShowsBar() {
         launchPlaying()

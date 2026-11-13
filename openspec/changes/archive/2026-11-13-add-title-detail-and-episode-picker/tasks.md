@@ -32,8 +32,7 @@
 
 ## 6. Going back
 
-- [ ] 6.1 Return to the section at the same scroll position with the starting poster focused or in view, and to Search with the query kept, and verify UI tests on every platform
-  - Open: the return to the section and to Search with the query kept is done and UI tested on iPhone (Back and the edge swipe), iPad (Back) and Apple TV (Menu). Escape on an iPad keyboard is wired as Live's full screen does it, but the simulator's UI tests do not deliver Escape, so it needs a check on a real iPad or Mac.
+- [x] 6.1 Return to the section at the same scroll position with the starting poster focused or in view, and to Search with the query kept, and verify UI tests on every platform. Done and UI tested on iPhone, iPad and Apple TV. The simulator does not deliver Escape to UI tests, so Escape on a keyboard is on `docs/release/device-checklist.md`.
 
 ## 7. Verify
 

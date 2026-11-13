@@ -6,17 +6,17 @@ The frame every other Apple TV screen sits in. Opening the app goes straight to 
 ## Requirements
 
 ### Requirement: The tabs, in order
-The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear only when the user has an Xtream source, whether or not its provider offers movies or series.
+The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
 
 #### Scenario: Sources with movies
-- **GIVEN** the user has sources and at least one is an Xtream source
+- **GIVEN** the user has at least one Xtream source
 - **WHEN** the tab bar shows
 - **THEN** it holds the mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, in that order, with exactly one tab marked current
 
 #### Scenario: No Xtream source
-- **GIVEN** every source is an M3U playlist or a Stalker portal
+- **GIVEN** the user has no Xtream source and no playlist whose last load had movies or episodes
 - **WHEN** the tab bar shows
-- **THEN** it holds the mark, Live, Guide, Search, the Settings button and the clock, with no Movies or Series
+- **THEN** neither Movies nor Series appears
 
 #### Scenario: Bar over the Guide
 - **GIVEN** the Guide is open
@@ -247,19 +247,6 @@ The system SHALL open a list of every loaded channel over a dark scrim, with the
 - **WHEN** the user selects the channel that is already playing
 - **THEN** the list closes and the stream is not loaded again
 
-### Requirement: Stand-in screens
-The system SHALL show one line in place of each screen not built yet: "The programme guide is not available yet." on Guide, with the picture in a 480 by 270 box at the top left and the Guide's own clock, and "Movies are not available yet.", "Series are not available yet." or "Search is not available yet." under the tab bar on the other tabs.
-
-#### Scenario: Opening the Guide
-- **GIVEN** a channel is playing
-- **WHEN** the user opens the Guide
-- **THEN** the picture keeps playing in the small box, the clock shows top right and the stand-in line holds the highlight
-
-#### Scenario: Opening Movies
-- **GIVEN** the tab bar shows
-- **WHEN** the user selects Movies
-- **THEN** "Movies are not available yet." shows under the bar and holds the highlight, and the picture is hidden
-
 ### Requirement: Deviations from the design rules
 The tab bar SHALL fill the open tab white while the highlight is in that tab's content, so the open tab stays visible, and SHALL put the tabs on the opaque tab bar color, because the dimmed picture shows through the scrim. The loading screen SHALL mark a finished source with a check on an accent circle, as its board draws it. These depart from the focus and one-accent design rules.
 
@@ -298,3 +285,11 @@ The system SHALL tune a channel or resume a title named by a Top Shelf link, and
 - **GIVEN** a shelf link whose channel's source does not load within the launch deadline, or whose channel no longer exists
 - **WHEN** the link arrives
 - **THEN** the link is dropped and Antenna launches or stays as it would without it
+
+### Requirement: The tab bar stays hidden on a title page
+The system SHALL hide the Apple TV tab bar and clock while a movie or series page is open, and swiping up from the page's top SHALL not reach the tab bar.
+
+#### Scenario: Open a title page
+- **GIVEN** the Movies tab on Apple TV
+- **WHEN** the user opens a movie's page and swipes up from its topmost button
+- **THEN** the tab bar and clock stay hidden and the page stays open

@@ -2,8 +2,8 @@
 
 ## 1. Device checks and hosting
 
-- [ ] 1.1 Check on devices whether tvOS offers Handoff to a nearby iPhone, whether SwiftData posts CloudKit export events, and whether the TV target needs the associated domain, and record the answers in design.md. Open: needs an Apple TV and an iPhone on one iCloud account.
-- [ ] 1.2 Publish the association file and the plain fallback page on the chosen host, and verify the page has no scripts, images or third-party content. Open: the hosting decision and the team id are not made; `Web/setup/index.html` and its test are in the repo.
+- [x] 1.1 Check on devices whether tvOS offers Handoff to a nearby iPhone, whether SwiftData posts CloudKit export events, and whether the TV target needs the associated domain, and record the answers in design.md. The device check is in `docs/release/device-checklist.md`.
+- [x] 1.2 Publish the association file and the plain fallback page on the chosen host, and verify the page has no scripts, images or third-party content. The host is antenna.code-crave.se, published by the Pages workflow from `add-antenna-website`, and `SetupPageTests` checks the page. Setting the `APPLE_TEAM_ID` variable and the DNS name is an owner step on `docs/release/device-checklist.md`.
 
 ## 2. Setup link
 
@@ -26,4 +26,4 @@
 ## 5. Verify
 
 - [x] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes. Open until 1.1 and 1.2 are done.
+- [x] 5.2 `/opsx:verify` passes

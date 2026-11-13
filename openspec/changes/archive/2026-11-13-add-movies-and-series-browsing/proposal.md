@@ -38,7 +38,7 @@ Out of scope:
 - `movies-and-series-browsing`: the Movies and Series sections on every platform, with the banner, rows, genre grids, My list, Continue watching, resume and position saving.
 
 ### Modified Capabilities
-- `tvos-shell`: Movies and Series appear in the tab bar whenever an Xtream source exists, not only once a source has offered movies.
+- `tvos-shell`: Movies and Series appear in the tab bar whenever an Xtream source exists, not only once a source has offered movies. The stand-in screens requirement goes, since no tab shows a stand-in any more.
 
 ## Impact
 
