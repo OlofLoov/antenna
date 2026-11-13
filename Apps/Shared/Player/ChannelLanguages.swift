@@ -23,6 +23,21 @@ struct ChannelLanguageStore: Sendable {
         return "\(source.uuidString)/\(channel.id)"
     }
 
+    /// Moves the picks on each channel of `source` to the new id `ids`
+    /// names, for every profile on this device
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel).
+    static func renameChannels(_ ids: [String: String], source: UUID, in defaults: UserDefaults = .standard) {
+        let prefix = source.uuidString + "/"
+        let keys = Dictionary(ids.map { (prefix + $0.key, prefix + $0.value) }, uniquingKeysWith: { first, _ in first })
+        for profile in ProfileKeys.profiles(in: defaults, bases: [Self.key]) {
+            let store = ChannelLanguageStore(defaults: defaults, profile: profile)
+            guard defaults.data(forKey: store.storageKey) != nil else { continue }
+            var memory = store.memory
+            memory.renameChannels(keys)
+            if let data = try? JSONEncoder().encode(memory) { defaults.set(data, forKey: store.storageKey) }
+        }
+    }
+
     var memory: LanguageMemory {
         guard let data = defaults.data(forKey: storageKey) else { return LanguageMemory() }
         return (try? JSONDecoder().decode(LanguageMemory.self, from: data)) ?? LanguageMemory()

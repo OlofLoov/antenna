@@ -101,6 +101,49 @@ import Testing
         #expect(StubURLProtocol.requests(host: host).count == 1)
     }
 
+    @Test("source-management/switching-to-xtream-keeps-what-was-remembered-per-channel: recents, last channel, picks and matches move")
+    func switchMovesRemembered() async throws {
+        let host = "switch-remembers.test"
+        StubURLProtocol.register(host: host, body: Self.account)
+        let record = try insert("Home", kind: .m3u, url: panelLink(host))
+        let source = record.id
+        let channels = [
+            try channel("m3u.aaa", "http://\(host):8080/anna/s3cret/101", source: source),
+            try channel("m3u.bbb", "http://\(host):8080/movie/anna/s3cret/900.mkv", source: source),
+        ]
+        let defaults = try #require(UserDefaults(suiteName: "switch-remembers-\(UUID().uuidString)"))
+        let kid = UUID()
+        let main = RecentsStore(defaults: defaults)
+        main.record(LastChannelKey(sourceID: source, channelID: "m3u.bbb"))
+        main.record(LastChannelKey(sourceID: source, channelID: "m3u.aaa"))
+        main.write(LastChannelKey(sourceID: source, channelID: "m3u.aaa"))
+        RecentsStore(defaults: defaults, profile: kid).write(LastChannelKey(sourceID: source, channelID: "m3u.aaa"))
+        let spanish = LanguagePick(audio: "es", subtitle: nil)
+        ChannelLanguageStore(defaults: defaults, profile: kid).remember(spanish, for: channels[0])
+        GuideSettingsStore.update(source, in: context) {
+            $0.matches["m3u.aaa"] = .init(entryID: "news.uk", modifiedAt: Date(timeIntervalSince1970: 1_000))
+            return true
+        }
+
+        let editor = try editor(record, tag: host)
+        editor.defaults = defaults
+        _ = try #require(await editor.switchToXtream(channels: channels, in: context))
+
+        let newID = "xtream#\(host)#101"
+        #expect(main.recents.entries.map(\.channelID) == [newID, "m3u.bbb"])
+        #expect(main.read()?.channelID == newID)
+        #expect(RecentsStore(defaults: defaults, profile: kid).read()?.channelID == newID)
+        var moved = channels[0]
+        moved.id = newID
+        #expect(ChannelLanguageStore(defaults: defaults, profile: kid).pick(for: moved) == spanish)
+        #expect(ChannelLanguageStore(defaults: defaults, profile: kid).pick(for: channels[0]) == nil)
+        let settings = GuideSettingsStore.settings(for: source, in: context)
+        #expect(settings.activeMatches[newID] == .some("news.uk"))
+        #expect(settings.activeMatches["m3u.aaa"] == nil)
+        let stored = defaults.dictionaryRepresentation().values.compactMap { $0 as? Data }.map { String(decoding: $0, as: UTF8.self) }
+        #expect(!stored.contains { $0.contains("s3cret") || $0.contains("://") })
+    }
+
     @Test("source-management/a-playlist-source-switches-to-xtream-in-place: a login the panel turns down changes nothing")
     func switchRefused() async throws {
         let host = "switch-refused.test"

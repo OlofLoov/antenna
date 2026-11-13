@@ -95,6 +95,16 @@ enum ProfileKeys {
         profile == Profile.mainID ? base : "\(base).\(profile.uuidString)"
     }
 
+    /// Main, and every profile with a value under one of `bases`.
+    static func profiles(in defaults: UserDefaults, bases: [String]) -> Set<UUID> {
+        var found: Set<UUID> = [Profile.mainID]
+        for key in defaults.dictionaryRepresentation().keys {
+            guard let base = bases.first(where: { key.hasPrefix($0 + ".") }) else { continue }
+            if let id = UUID(uuidString: String(key.dropFirst(base.count + 1))) { found.insert(id) }
+        }
+        return found
+    }
+
     /// Removes the values of profiles that no longer exist.
     static func prune(_ defaults: UserDefaults, keeping profiles: [UUID]) {
         let kept = Set(profiles.map(\.uuidString))

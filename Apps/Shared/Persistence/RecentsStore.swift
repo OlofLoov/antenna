@@ -100,14 +100,31 @@ struct RecentsStore: Sendable {
         if read()?.sourceID == source { defaults.removeObject(forKey: key(Self.lastChannelKey)) }
     }
 
+    // MARK: Switched sources
+
+    /// Gives each channel of `source` in the recents and the last channel of
+    /// every profile on this device the new id `ids` names
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel).
+    static func renameChannels(_ ids: [String: String], source: UUID, in defaults: UserDefaults = .standard) {
+        for profile in profiles(in: defaults) {
+            RecentsStore(defaults: defaults, profile: profile).renameChannels(ids, source: source)
+        }
+    }
+
+    private func renameChannels(_ ids: [String: String], source: UUID) {
+        if defaults.data(forKey: key(Self.listKey)) != nil {
+            var list = recents
+            list.renameChannels(ids, source: source)
+            defaults.set(list.data, forKey: key(Self.listKey))
+        }
+        if let last = read(), let data = try? JSONEncoder().encode(last.renamingChannel(ids, source: source)) {
+            defaults.set(data, forKey: key(Self.lastChannelKey))
+        }
+    }
+
     /// Main, and every profile with a value under one of the keys.
     private static func profiles(in defaults: UserDefaults) -> Set<UUID> {
-        var found: Set<UUID> = [Profile.mainID]
-        for key in defaults.dictionaryRepresentation().keys {
-            guard let base = bases.first(where: { key.hasPrefix($0 + ".") }) else { continue }
-            if let id = UUID(uuidString: String(key.dropFirst(base.count + 1))) { found.insert(id) }
-        }
-        return found
+        ProfileKeys.profiles(in: defaults, bases: bases)
     }
 
     private func key(_ base: String) -> String {

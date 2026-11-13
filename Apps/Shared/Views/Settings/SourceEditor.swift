@@ -30,6 +30,8 @@ final class SourceEditor {
 
     @ObservationIgnored private var original: SourceDescriptor
     @ObservationIgnored private let connector: SourceConnector
+    /// Where this device keeps recents, the last channel and language picks.
+    @ObservationIgnored var defaults: UserDefaults = .standard
 
     init(_ descriptor: SourceDescriptor, connector: SourceConnector) {
         id = descriptor.id
@@ -157,7 +159,9 @@ final class SourceEditor {
     /// login with the panel, then turns the source into an Xtream login in
     /// place: same id, name, order and guide link, the server as its link and
     /// the login in the Keychain. Favorites and own-group channels of
-    /// `channels` move to their Xtream ids. Changes nothing and sets `error`
+    /// `channels` move to their Xtream ids, and so do this device's recents,
+    /// last channel and language picks and the source's guide matches
+    /// (source-management/switching-to-xtream-keeps-what-was-remembered-per-channel). Changes nothing and sets `error`
     /// when a check fails. Returns the new descriptor, after which the caller
     /// reloads the source.
     func switchToXtream(channels: [Channel], in context: ModelContext) async -> SourceDescriptor? {
@@ -196,6 +200,7 @@ final class SourceEditor {
         record.epgURL = guide.isEmpty ? nil : URL(string: guide)
         ChannelIDMigration.rewrite(ids, source: id, in: context)
         try? context.save()
+        ChannelIDMigration.moveRemembered(ids, source: id, defaults: defaults, in: context)
         return record.descriptor
     }
 
