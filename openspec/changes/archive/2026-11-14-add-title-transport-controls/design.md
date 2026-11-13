@@ -67,7 +67,7 @@ Holding left or right to scan at speed is out of scope. While Live is the open t
 
 A tap on the picture shows or hides the controls instead of pausing, as in Apple's player. Pausing moves to the play/pause button in the middle. On iPhone and iPad a double tap on the left or right half skips 10 seconds (SwiftUI's double tap delays the single tap a little, as in Live). On a Mac a double click is left alone; Mac users expect it to mean full screen.
 
-The scrubber is the system `Slider` (`design-system/controls-use-system-styles`), and the three middle buttons use the glass button style in a circle. VoiceOver reads the slider's value from `TitleTimeline.spokenText` and its swipes up and down skip 10 seconds.
+The three middle buttons use the glass button style in a circle (`design-system/controls-use-system-styles`). The scrubber is drawn, like Live's timeshift scrubber: a 4 pt line with an 18 pt knob in a 44 pt tall drag area that seeks once on release. The system `Slider` came first, but its end-of-editing callback never fired for a drag in the iOS 27.2 simulator, so a drag moved the time shown and never seeked; a drag gesture has a dependable end. VoiceOver reads the scrubber as adjustable, its value from `TitleTimeline.spokenText`, and its swipes up and down skip 10 seconds.
 
 The Mac and an iPad keyboard get Left, Right and Space from hidden buttons with keyboard shortcuts, as `LiveSkipKeys` does. Escape moves from the Close button to the same group, so it still closes while the controls are hidden. Left, Right and Space stand down while the track list is open.
 
@@ -85,7 +85,7 @@ iPhone, iPad, Mac and Apple TV all get the transport. Only the Mac leaves out th
 
 ## Layout
 
-Boards: `TV-Title-Player-Transport` (the bar while playing), `TV-Title-Player-Scrub` (paused with a target), `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`. The Mac follows the iPad board. Design-system requirements followed: `controls-use-system-styles` (system slider, glass buttons; the Close button keeps its drawn circle until refresh-visual-design reaches the player), `type-uses-text-styles` (all text on text styles), `live-video-keeps-playing-under-overlays`.
+Boards: `TV-Title-Player-Transport` (the bar while playing), `TV-Title-Player-Scrub` (paused with a target), `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`. The Mac follows the iPad board. Design-system requirements followed: `controls-use-system-styles` (glass buttons; the Close button keeps its drawn circle until refresh-visual-design reaches the player), `type-uses-text-styles` (all text on text styles), `live-video-keeps-playing-under-overlays`.
 
 Screenshot steps: `movie-player-transport` in `AppJourneys` (iPhone and iPad) and `TVJourneys`, and `movie-player-paused` on Apple TV, anchored on `title.transport` and its state glyph.
 
