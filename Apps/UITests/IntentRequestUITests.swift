@@ -7,6 +7,7 @@ import XCTest
 @MainActor
 final class IntentRequestUITests: XCTestCase {
     static let home = "00000000-0000-0000-0000-0000000000D1"
+    static let cabin = "00000000-0000-0000-0000-0000000000D2"
     nonisolated let log = FileManager.default.temporaryDirectory.appending(path: "intent-engine-\(UUID().uuidString).log")
 
     override func setUp() {
@@ -43,6 +44,41 @@ final class IntentRequestUITests: XCTestCase {
         XCTAssertEqual(loaded, ["news-two.ts"])
         XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
         XCTAssertTrue(element(app, "browse.nowPlaying").exists)
+    }
+
+    // live-tv-on-iphone-ipad-mac/sideways-on-iphone-fills-the-screen, a movie from Siri over Live
+    func testAMovieFromSiriOverSidewaysLiveGivesTheChannelBackFullScreen() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
+        XCUIDevice.shared.orientation = .portrait
+        addTeardownBlock { @MainActor in XCUIDevice.shared.orientation = .portrait }
+        let app = XCUIApplication()
+        // Cabin plays Office's scripted titles under the Live script; Night Ferry is its first movie.
+        app.launchArguments = [
+            "-ui-testing-live", "channels", "-ui-testing-intent-on-return", "play:\(Self.cabin)/xtream#office#vod#1",
+        ]
+        app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
+        app.launch()
+        XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
+        app.row(0).tap()
+        app.waitForEngine("playing loads=1")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(waitUntilGone(element(app, "browse.list")), "sideways did not fill the screen")
+
+        XCUIDevice.shared.press(.home)
+        app.activate()
+        XCTAssertTrue(element(app, "movies.player").waitForExistence(timeout: 15), "the movie never played")
+        element(app, "movies.player.close").tap()
+
+        XCTAssertTrue(waitUntilGone(element(app, "movies.player")), "the movie stayed")
+        app.waitForEngine("playing loads=2")
+        XCTAssertTrue(waitUntilGone(element(app, "browse.list")), "the list showed sideways after the movie")
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertFalse(tabBar.exists && tabBar.isHittable, "the tab bar showed sideways after the movie")
+    }
+
+    private func waitUntilGone(_ element: XCUIElement) -> Bool {
+        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: element)
+        return XCTWaiter().wait(for: [gone], timeout: 5) == .completed
     }
 
     // app-intents/open-search
