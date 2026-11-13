@@ -61,6 +61,12 @@ final class ShelfActivity {
         }
     }
 
+    /// The section's titles the profile played on any device, finished ones
+    /// included, most recent first (movies-and-series-browsing/recently-watched).
+    func recentlyWatched(_ model: ShelfModel) -> [ShelfTitle] {
+        RecentlyWatched.list(progress: progress, titles: model.titles, kind: model.kind)
+    }
+
     /// Movies and series in progress together, most recent first. A series
     /// whose episode list shows nothing unwatched leaves the row.
     func continueWatching(_ library: ShelfLibrary) -> [ContinueWatching.Item] {

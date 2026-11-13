@@ -87,8 +87,10 @@ extension ShelfView {
         }
     }
 
-    /// "See all" at the end of the Continue watching header.
+    /// "See all" at the end of a row's header. `identifier` defaults to
+    /// Continue watching's `<prefix>.seeAll`.
     struct SeeAllButton: View {
+        var identifier: String?
         let open: () -> Void
         @Environment(\.shelfMetrics) private var metrics
         @Environment(\.shelfPrefix) private var prefix
@@ -102,7 +104,25 @@ extension ShelfView {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityIdentifier("\(prefix).seeAll")
+            .accessibilityIdentifier(identifier ?? "\(prefix).seeAll")
+        }
+    }
+
+    /// "See all" as a poster-sized tile after a row's last poster, where
+    /// focus can reach it on Apple TV (`TV-Movies-Discover`).
+    struct SeeAllTile: View {
+        let open: () -> Void
+        @Environment(\.shelfMetrics) private var metrics
+
+        var body: some View {
+            Button(action: open) {
+                Text("See all")
+                    .font(.system(size: metrics.header, weight: .semibold))
+                    .foregroundStyle(Palette.text)
+                    .frame(width: metrics.poster.width, height: metrics.poster.height)
+                    .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
+            }
+            .buttonStyle(CardStyle())
         }
     }
 
@@ -143,6 +163,32 @@ extension ShelfView {
         ShelfView.ProgressCard(title: ShelfFixtures.movie(1), caption: "52 min left", fraction: 0.42) {}
         ShelfView.ProgressCard(title: ShelfFixtures.series(0), caption: "S2 E4", fraction: 0.78) {}
         ShelfView.ProgressCard(title: ShelfFixtures.movie(2), caption: nil, fraction: 0.15) {}
+    }
+    .background(Palette.ground)
+}
+
+#Preview("Recently added with See all, Apple TV", traits: .fixedLayout(width: 1920, height: 420)) {
+    ShelfView.Row {
+        ShelfView.RowHeader(title: "Recently added", count: "214 titles") { EmptyView() }
+    } cards: {
+        ForEach(0..<6, id: \.self) { index in
+            ShelfView.PosterCard(title: ShelfFixtures.movie(index), label: ShelfFixtures.movie(index).name) {}
+        }
+        ShelfView.SeeAllTile {}
+    }
+    .environment(\.shelfMetrics, .tv)
+    .background(Palette.ground)
+}
+
+#Preview("Recently added with See all, iPhone", traits: .fixedLayout(width: 390, height: 240)) {
+    ShelfView.Row {
+        ShelfView.RowHeader(title: "Recently added", count: "214 titles") {
+            ShelfView.SeeAllButton(identifier: "movies.row.recentlyAdded.seeAll") {}
+        }
+    } cards: {
+        ForEach(0..<4, id: \.self) { index in
+            ShelfView.PosterCard(title: ShelfFixtures.movie(index), label: ShelfFixtures.movie(index).name) {}
+        }
     }
     .background(Palette.ground)
 }

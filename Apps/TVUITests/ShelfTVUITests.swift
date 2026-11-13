@@ -173,6 +173,54 @@ final class ShelfTVUITests: XCTestCase {
         XCTAssertTrue(element("shell.tab.movies").isSelected)
     }
 
+    // movies-and-series-browsing/recently-watched, on Apple TV
+    func testRecentlyWatchedShowsAFinishedMovie() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"]
+        app.launch()
+        press(.menu)
+        let tab = element("shell.tab.movies")
+        XCTAssertTrue(tab.waitForExistence(timeout: 10))
+        for _ in 0..<4 where !tab.hasFocus {
+            press(.right)
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        expectFocus("shell.tab.movies")
+        press(.select)
+        expectFocus("movies.hero.play")
+        let row = element("movies.row.recentlyWatched")
+        let finished = row.descendants(matching: .any)["movies.card.xtream#cabin#vod#3"].firstMatch
+        for _ in 0..<5 where !(finished.exists && finished.hasFocus) {
+            press(.down)
+            Thread.sleep(forTimeInterval: 1)
+        }
+        expect(finished, "hasFocus == true")
+        XCTAssertTrue(row.staticTexts["2 titles"].exists)
+    }
+
+    // movies-and-series-browsing/see-everything-new, on Apple TV
+    func testSeeAllOpensRecentlyAddedThatMenuCloses() {
+        openMovies()
+        press(.down)
+        let row = element("movies.row.recentlyAdded")
+        expect(row.buttons.matching(NSPredicate(format: "hasFocus == true")).firstMatch, "exists == true")
+        let seeAll = element("movies.row.recentlyAdded.seeAll")
+        for _ in 0..<6 where !seeAll.hasFocus {
+            press(.right)
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        expectFocus("movies.row.recentlyAdded.seeAll")
+        press(.select)
+        let grid = element("movies.grid")
+        XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertTrue(grid.staticTexts["Recently added"].exists)
+        XCTAssertFalse(element("movies.hero").exists)
+
+        press(.menu)
+        expect(grid, "exists == false")
+        expectFocus("movies.hero.play")
+    }
+
     // movies-and-series-browsing/keep-a-list-for-later, on Apple TV
     func testTheBannerAddsToMyList() {
         openMovies()

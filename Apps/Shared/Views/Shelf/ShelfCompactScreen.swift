@@ -82,7 +82,7 @@
                             if let list {
                                 ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: actions)
                             } else {
-                                ShelfRowsContent(model: model, actions: actions) { list = .continueWatching }
+                                ShelfRowsContent(model: model, actions: actions) { list = $0 }
                             }
                         case let status:
                             topBar.padding(.top, proxy.safeAreaInsets.top)

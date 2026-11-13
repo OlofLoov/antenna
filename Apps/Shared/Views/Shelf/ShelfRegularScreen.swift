@@ -86,7 +86,7 @@
                                     .padding(.horizontal, 24)
                             }
                             ShelfNotices(model: model, banner: banner, waiting: waiting)
-                            ShelfRowsContent(model: model, actions: actions) { browse.pick(.continueWatching) }
+                            ShelfRowsContent(model: model, actions: actions) { browse.pick($0) }
                         case .titles(let banner, let waiting) where browse.list != nil:
                             ShelfNotices(model: model, banner: banner, waiting: waiting)
                             ShelfGridContent(model: model, list: browse.list ?? .all, sort: browse.sort, actions: actions)

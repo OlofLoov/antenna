@@ -59,6 +59,15 @@ import Testing
         #expect(Shelf.categoryOrder([["Action", "Drama"], ["Kids", "Drama", "Action", "Docs"]]) == ["Action", "Drama", "Kids", "Docs"])
     }
 
+    @Test("movies-and-series-browsing/see-everything-new every title newest first, undated ones after in provider order")
+    func seeAllNew() {
+        let titles = (0..<60).map { movie($0, daysAgo: $0.isMultiple(of: 3) ? nil : Double($0)) }
+        let grid = Shelf.sorted(titles, by: .recentlyAdded)
+        #expect(grid.count == 60, "every title, not Recently added's fifty")
+        #expect(grid.first?.id == "xtream#h#vod#1")
+        #expect(grid.suffix(20).map(\.id) == stride(from: 0, to: 60, by: 3).map { "xtream#h#vod#\($0)" })
+    }
+
     @Test("movies-and-series-browsing/series-work-the-same-way series order by when they last changed")
     func seriesOrder() throws {
         let body = #"[{"series_id":1,"name":"Old","last_modified":"1700000000"},{"series_id":2,"name":"New","last_modified":"1790000000"}]"#

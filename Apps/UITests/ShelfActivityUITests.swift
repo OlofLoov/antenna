@@ -56,6 +56,59 @@ final class ShelfActivityUITests: XCTestCase {
         XCTAssertTrue(grid.staticTexts["3 titles"].exists)
     }
 
+    /// Swipes up until `element` exists, for rows that build as they scroll in.
+    func scroll(to element: XCUIElement, in app: XCUIApplication) {
+        for _ in 0..<6 where !element.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(element.waitForExistence(timeout: 5))
+    }
+
+    // movies-and-series-browsing/recently-watched
+    func testRecentlyWatchedKeepsFinishedTitles() throws {
+        let app = try launch()
+        let row = app.element("movies.row.recentlyWatched")
+        scroll(to: row, in: app)
+        let salt = card(app, in: "recentlyWatched", "xtream#cabin#vod#3")
+        let second = card(app, in: "recentlyWatched", "xtream#cabin#vod#2")
+        XCTAssertTrue(salt.exists, "a finished movie stays")
+        XCTAssertLessThan(salt.frame.minX, second.frame.minX, "most recent first")
+        XCTAssertTrue(row.staticTexts["2 titles"].exists)
+
+        app.element("movies.kind.series").tap()
+        let series = app.element("series.row.recentlyWatched")
+        scroll(to: series, in: app)
+        let harbor = series.descendants(matching: .any)["series.card.xtream#cabin#series#2"].firstMatch
+        let northern = series.descendants(matching: .any)["series.card.xtream#cabin#series#1"].firstMatch
+        XCTAssertLessThan(harbor.frame.minX, northern.frame.minX)
+        XCTAssertTrue(series.staticTexts["2 titles"].exists, "each series once")
+    }
+
+    // movies-and-series-browsing/recently-watched, nothing played
+    // movies-and-series-browsing/rows-in-a-predictable-order
+    func testNothingPlayedHasNoRecentlyWatched() throws {
+        let app = try launch("titles")
+        XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 5))
+        XCTAssertFalse(app.element("movies.row.recentlyWatched").exists)
+    }
+
+    // movies-and-series-browsing/see-everything-new
+    func testSeeAllOpensEveryTitleNewestFirst() throws {
+        let app = try launch("titles")
+        let seeAll = app.element("movies.row.recentlyAdded.seeAll")
+        XCTAssertTrue(seeAll.waitForExistence(timeout: 5))
+        seeAll.tap()
+        let grid = app.element("movies.grid")
+        XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertTrue(grid.staticTexts["Recently added"].exists)
+        XCTAssertTrue(grid.staticTexts["9 titles"].exists)
+        let newest = grid.descendants(matching: .any)["movies.card.xtream#cabin#vod#1"].firstMatch
+        let next = grid.descendants(matching: .any)["movies.card.xtream#office#vod#1"].firstMatch
+        XCTAssertLessThan(newest.frame.minX, next.frame.minX)
+        app.element("movies.genres.all").tap()
+        expect(grid, "exists == false")
+    }
+
     // movies-and-series-browsing/continue-watching, nothing in progress
     func testNothingInProgressHidesTheRow() throws {
         let app = try launch("titles")

@@ -89,4 +89,21 @@ final class TVJourneys: XCTestCase {
         expectFocus("shell.tab.live", in: journey)
         journey.snap("empty-menu", anchor: "shell.tab.live")
     }
+
+    /// Movies moved down to Recently watched, with titles played on this
+    /// profile (add-discover-rows, `TV-Movies-Discover`).
+    func testMoviesDiscover() {
+        let journey = Journey(self, arguments: ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
+        remote.press(.menu)
+        moveRight(to: "shell.tab.movies", in: journey)
+        remote.press(.select)
+        expectFocus("movies.hero.play", in: journey)
+        let row = journey.element("movies.row.recentlyWatched")
+        let focused = row.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch
+        for _ in 0..<4 where !focused.exists {
+            remote.press(.down)
+            RunLoop.current.run(until: Date().addingTimeInterval(1))
+        }
+        journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
+    }
 }

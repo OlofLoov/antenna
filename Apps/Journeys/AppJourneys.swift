@@ -42,4 +42,17 @@ final class AppJourneys: XCTestCase {
         open("search", label: "Search", in: journey)
         journey.snap("search", anchor: "search.field")
     }
+
+    /// Movies scrolled to Recently watched and Recently added, with titles
+    /// played on this profile (add-discover-rows, `iPhone-Movies-Discover`,
+    /// `iPad-Movies-Discover`).
+    func testMoviesDiscover() {
+        let journey = Journey(self, arguments: ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
+        open("movies", label: "Movies", in: journey)
+        let row = journey.element("movies.row.recentlyWatched")
+        for _ in 0..<4 where !(row.exists && row.isHittable) {
+            journey.app.swipeUp()
+        }
+        journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
+    }
 }

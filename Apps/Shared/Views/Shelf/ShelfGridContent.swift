@@ -12,6 +12,9 @@ enum ShelfList: Hashable {
     case myList
     /// Continue watching's See all.
     case continueWatching
+    /// Recently added's See all: every title, newest first
+    /// (movies-and-series-browsing/see-everything-new).
+    case recentlyAdded
 
     /// The grid's heading: "All movies", "All series" or the category.
     func name(_ kind: ShelfTitle.Kind) -> String {
@@ -20,6 +23,7 @@ enum ShelfList: Hashable {
         case .genre(let name): name
         case .myList: "My list"
         case .continueWatching: "Continue watching"
+        case .recentlyAdded: "Recently added"
         }
     }
 
@@ -30,6 +34,7 @@ enum ShelfList: Hashable {
         case .genre(let name): ShelfText.slug(name)
         case .myList: "myList"
         case .continueWatching: "continueWatching"
+        case .recentlyAdded: "recentlyAdded"
         }
     }
 }
@@ -47,16 +52,17 @@ struct ShelfBrowse: Equatable {
     }
 
     /// Title or Year shows the open grid, or All, in that order;
-    /// Recently added brings the rows back.
+    /// Recently added brings the rows back. Recently added's grid has one
+    /// order, so another one shows All.
     mutating func order(_ sort: ShelfSort) {
         self.sort = sort
-        list = sort == .recentlyAdded ? nil : (list ?? .all)
+        list = sort == .recentlyAdded ? nil : (list == .recentlyAdded ? .all : list ?? .all)
     }
 }
 
 /// A list's posters in a grid, in `sort` order, with its name and count.
-/// My list keeps its own order, latest added first, and Continue watching
-/// shows its wide cards, most recent first.
+/// My list keeps its own order, latest added first, Recently added is always
+/// newest first, and Continue watching shows its wide cards, most recent first.
 struct ShelfGridContent: View {
     let model: ShelfModel
     let list: ShelfList
@@ -76,7 +82,7 @@ struct ShelfGridContent: View {
                 }
             }
             .environment(\.shelfRow, "grid")
-        case .all, .genre, .myList:
+        case .all, .genre, .myList, .recentlyAdded:
             let titles = titles(of: list)
             ShelfView.Grid(title: list.name(model.kind), count: ShelfText.titles(titles.count)) {
                 ForEach(titles) { title in
@@ -92,6 +98,7 @@ struct ShelfGridContent: View {
         case .all: Shelf.sorted(model.titles, by: sort)
         case .genre(let name): Shelf.sorted(Shelf.titles(in: name, of: model.titles), by: sort)
         case .myList: activity.myList(model)
+        case .recentlyAdded: Shelf.sorted(model.titles, by: .recentlyAdded)
         case .continueWatching: []
         }
     }

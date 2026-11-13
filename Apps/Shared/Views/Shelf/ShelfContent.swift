@@ -100,15 +100,15 @@ struct ShelfBannerHost<Content: View>: View {
     }
 }
 
-/// Continue watching and My list when they have titles, then Recently
-/// added and a row per category. Rows and their posters build as they
-/// scroll into view, so only visible posters load
+/// Continue watching, My list and Recently watched when they have titles,
+/// then Recently added and a row per category. Rows and their posters build
+/// as they scroll into view, so only visible posters load
 /// (movies-and-series-browsing/rows-in-a-predictable-order).
 struct ShelfRowsContent: View {
     let model: ShelfModel
     let actions: ShelfActions
-    /// Opens the Continue watching grid.
-    let seeAll: () -> Void
+    /// Opens the Continue watching or Recently added grid.
+    let seeAll: (ShelfList) -> Void
     @Environment(ShelfLibrary.self) private var library
     @Environment(ShelfActivity.self) private var activity
     @Environment(\.shelfPrefix) private var prefix
@@ -118,7 +118,7 @@ struct ShelfRowsContent: View {
         if !watching.isEmpty {
             ShelfView.Row {
                 ShelfView.RowHeader(title: "Continue watching", count: nil) {
-                    ShelfView.SeeAllButton(open: seeAll)
+                    ShelfView.SeeAllButton { seeAll(.continueWatching) }
                 }
             } cards: {
                 ForEach(watching) { item in
@@ -142,18 +142,60 @@ struct ShelfRowsContent: View {
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.myList")
         }
-        ForEach(model.rows) { row in
+        let watched = activity.recentlyWatched(model)
+        if !watched.isEmpty {
             ShelfView.Row {
-                ShelfView.RowHeader(title: row.name, count: ShelfText.titles(row.count)) { EmptyView() }
+                ShelfView.RowHeader(title: "Recently watched", count: ShelfText.titles(watched.count)) { EmptyView() }
             } cards: {
-                ForEach(row.titles) { title in
+                ForEach(watched) { title in
                     ShelfPoster(title: title, actions: actions)
                 }
             }
-            .environment(\.shelfRow, row.identifier)
+            .environment(\.shelfRow, "recentlyWatched")
             .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
+            .accessibilityIdentifier("\(prefix).row.recentlyWatched")
         }
+        ForEach(model.rows) { row in
+            if row.id == .recentlyAdded {
+                recentlyAdded(row)
+            } else {
+                ShelfView.Row {
+                    ShelfView.RowHeader(title: row.name, count: ShelfText.titles(row.count)) { EmptyView() }
+                } cards: {
+                    ForEach(row.titles) { title in
+                        ShelfPoster(title: title, actions: actions)
+                    }
+                }
+                .environment(\.shelfRow, row.identifier)
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
+            }
+        }
+    }
+
+    /// Recently added with See all, in the header on iPhone, iPad and Mac
+    /// and as a tile after the last poster on Apple TV
+    /// (movies-and-series-browsing/see-everything-new).
+    private func recentlyAdded(_ row: ShelfRow) -> some View {
+        let seeAllID = "\(prefix).row.\(row.identifier).seeAll"
+        return ShelfView.Row {
+            ShelfView.RowHeader(title: row.name, count: ShelfText.titles(row.count)) {
+                #if !os(tvOS)
+                    ShelfView.SeeAllButton(identifier: seeAllID) { seeAll(.recentlyAdded) }
+                #endif
+            }
+        } cards: {
+            ForEach(row.titles) { title in
+                ShelfPoster(title: title, actions: actions)
+            }
+            #if os(tvOS)
+                ShelfView.SeeAllTile { seeAll(.recentlyAdded) }
+                    .accessibilityIdentifier(seeAllID)
+            #endif
+        }
+        .environment(\.shelfRow, row.identifier)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
     }
 }
 
