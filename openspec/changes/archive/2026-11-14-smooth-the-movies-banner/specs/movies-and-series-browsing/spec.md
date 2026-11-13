@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: New titles up front
-The system SHALL show the newest title in the banner with its name, category, year, length and description, move through the four newest by itself while the user is not interacting with it, and let the user page it by hand. The banner's art SHALL fill the banner and stay inside it, whatever the shape of the picture. The banner SHALL fade from one title to the next, keep the picture it shows until the next one has loaded, and show a title's backdrop rather than its poster when the provider sends one.
+The system SHALL show the newest title in the banner with its name, category, year, length and description, move through the four newest by itself while the user is not interacting with it, and let the user page it by hand. The banner SHALL fade from one title to the next, and its art SHALL stay inside it.
 
 #### Scenario: Titles with dates added
 - **GIVEN** the provider's movies have dates they were added
