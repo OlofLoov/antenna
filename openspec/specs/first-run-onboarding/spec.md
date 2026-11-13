@@ -181,7 +181,7 @@ The system SHALL let the user add another provider from the summary, and SHALL t
 - **AND** the first provider's guide keeps downloading without starting over
 
 ### Requirement: Fill the form from a copied link
-The system SHALL offer, on iPhone and iPad, to fill the add-source form from a copied link, and SHALL read the clipboard only when the user taps Fill in.
+The system SHALL offer, on iPhone, iPad and Mac, to fill the add-source form from a copied link, and SHALL read the clipboard only when the user taps Fill in.
 
 #### Scenario: A link with a username and password
 - **GIVEN** the user has copied a link that carries a username and password and the add-source sheet offers to fill it in
@@ -200,9 +200,14 @@ The system SHALL offer, on iPhone and iPad, to fill the add-source form from a c
 - **THEN** the banner says so and nothing is filled
 
 #### Scenario: No offer on Mac
-- **GIVEN** the user is on a Mac with a link copied
+- **GIVEN** the user is on a Mac and nothing on the clipboard looks like a link
 - **WHEN** the add-source sheet shows
 - **THEN** no fill-in banner appears
+
+#### Scenario: On a Mac
+- **GIVEN** the user is on a Mac with a link copied
+- **WHEN** the add-source sheet shows
+- **THEN** the fill-in banner appears, and the clipboard is read only when they click Fill in
 
 ### Requirement: Sign in again on an Apple TV
 The system SHALL ask on Apple TV for the username and password of each Xtream provider, and the MAC address of each Stalker portal, whose login is not on this device, with the server or portal filled in, SHALL keep each login on this Apple TV without adding a provider, and SHALL then show the loading checklist.

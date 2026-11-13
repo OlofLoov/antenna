@@ -86,13 +86,18 @@ The system SHALL say in plain words why a selected channel has no current progra
 - **THEN** the screen says why: the playlist is still loading, there is no guide, the login has not synced yet, the device is offline, every guide failed, the playlist gives no guide id, the guide does not list that id, the guide lists it with no programmes, its programmes have run out, or a hand-picked entry has no programmes
 
 ### Requirement: Find the channels without a guide
-The system SHALL list a playlist's channels with no current programme in All channels order with a count and a short reason each, and SHALL let the user filter it by name or number on iPhone, iPad and Mac.
+The system SHALL list a playlist's channels with no current programme in All channels order with a count and a short reason each, and SHALL let the user filter it by name or number on every platform.
 
 #### Scenario: Opening the screen
 - **GIVEN** a playlist where some channels have no current programme
 - **WHEN** the user opens the Guide sources screen
 - **THEN** those channels are listed in All channels order with a count and a short reason each
-- **AND** on iPhone, iPad and Mac a filter narrows it by name or number
+- **AND** a filter narrows it by name or number
+
+#### Scenario: Filtering on Apple TV
+- **GIVEN** the Guide sources screen on Apple TV with channels listed
+- **WHEN** the user opens the search field at the top and types a name or number
+- **THEN** only the channels that match stay in the list
 
 #### Scenario: Every channel has a guide
 - **GIVEN** no channel lacks a guide
