@@ -89,7 +89,9 @@ extension GuideEngine {
         var headers: [String: String] = [:]
         switch source.kind {
         case .m3u, .m3uFile:
-            return .waiting
+            // guide-data/a-panel-playlist-falls-back-to-the-panel-s-guide
+            guard let url = entry.url else { return .waiting }
+            return await fetch(url, for: source, reference, loginURL: true, generation: generation)
         case .xtream:
             switch readCredential(source.credentialKey) {
             case .failure(let error): return failBeforeRequest(source, reference, error)
