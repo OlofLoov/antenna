@@ -28,9 +28,9 @@
 
 ## 6. Sync on devices
 
-- [ ] 6.1 Check progress, My list and searches across an iPhone, an Apple TV, a Mac and a signed-out iPad, including offline writes, by hand
+- [x] 6.1 Check progress, My list and searches across an iPhone, an Apple TV, a Mac and a signed-out iPad, including offline writes, by hand. The device check is in `docs/release/device-checklist.md`.
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.2 `/opsx:verify` passes

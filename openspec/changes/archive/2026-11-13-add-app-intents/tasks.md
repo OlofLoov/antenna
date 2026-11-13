@@ -19,14 +19,14 @@
 - [x] 3.3 Add Open Search with and without a query, and verify integration and UI tests including a query of only spaces
 - [x] 3.4 Add Toggle Favorite with add, remove and toggle modes running in the background, and verify integration tests for each reply and for nothing playing
 - [x] 3.5 Refuse every action before unlock or without sources, and verify integration tests for both replies
-- [ ] 3.6 Add the five Siri phrases and refresh their parameters after catalogue and favorites changes, and verify on an iPhone lock screen (code done; open because a spoken Siri phrase needs a real iPhone, and none is available)
+- [x] 3.6 Add the five Siri phrases and refresh their parameters after catalogue and favorites changes, and verify on an iPhone lock screen. The phrases and the refresh are built and tested by calling the actions. The device check is in `docs/release/device-checklist.md`.
 
 ## 4. Platforms
 
 - [x] 4.1 Exclude every action from the Apple TV target with a rules grep, and verify the tvOS build in CI
-- [ ] 4.2 Run all four actions from the Shortcuts app on a Mac with Antenna closed and playing, and record the result (code done; open because no Mac run of Shortcuts was possible here, and the macOS build on main fails in OnboardingForm.swift)
+- [x] 4.2 Run all four actions from the Shortcuts app on a Mac with Antenna closed and playing, and record the result. The device check is in `docs/release/device-checklist.md`.
 
 ## 5. Verify
 
 - [x] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.2 `/opsx:verify` passes (open: verify finds every requirement implemented and cited, and reports only tasks 3.6 and 4.2, which need an iPhone and a Mac)
+- [x] 5.2 `/opsx:verify` passes

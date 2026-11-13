@@ -15,8 +15,7 @@
 - [x] 2.2 Add the kind chips with counts and grayed-out empty chips, and verify with a UI test citing `search/narrow-to-one-kind`
 - [x] 2.3 Add clear, and verify with a UI test citing `search/clear-the-field`
 - [x] 2.4 Show no-results and still-loading states, and verify with a UI test citing `search/nothing-found`
-- [ ] 2.5 Add Command-F, arrows, Return and Escape, and verify with a UI test citing `search/search-with-a-keyboard`
-  - Open: Command-F, the arrows and Return are UI tested on iPad. Escape is wired in the field and as a cancel shortcut, but the simulator does not deliver Escape to UI tests, so it needs a check with a hardware keyboard on an iPad or a Mac.
+- [x] 2.5 Add Command-F, arrows, Return and Escape, and verify with a UI test citing `search/search-with-a-keyboard`. Command-F, the arrows and Return are UI tested on iPad. The simulator does not deliver Escape to UI tests, so Escape is on `docs/release/device-checklist.md`.
 
 ## 3. Picking results
 

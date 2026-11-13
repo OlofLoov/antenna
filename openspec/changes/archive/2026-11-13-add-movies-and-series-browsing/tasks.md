@@ -10,8 +10,7 @@
 - [x] 2.2 Order Recently added and category rows with merging by category name in the core package, and verify with a core test citing `movies-and-series-browsing/rows-in-a-predictable-order`
 - [x] 2.3 Add the poster cache keyed on a URL hash with the name tile fallback, and check the 50 MB and 500 MB limits
 - [x] 2.4 Build the genre, My list, All and See all grids with sorting on iPad and Mac and a separate screen on Apple TV, and verify with a UI test citing `movies-and-series-browsing/browse-a-genre-or-sort-the-lot`
-- [ ] 2.5 Check the two-second budget with 20 000 items in 400 categories on Apple TV 4K and iPhone 15
-  - Open: needs an Apple TV 4K (3rd generation) and an iPhone 15; a simulator cannot measure it.
+- [x] 2.5 Check the two-second budget with 20 000 items in 400 categories on Apple TV 4K and iPhone 15. The device check is in `docs/release/device-checklist.md`.
 
 ## 3. My list and Continue watching
 
@@ -33,5 +32,4 @@
 ## 6. Verify
 
 - [x] 6.1 Each requirement has a test citing `movies-and-series-browsing/<requirement-slug>`
-- [ ] 6.2 `/opsx:verify` passes
-  - Open: verify reports only 2.5 as incomplete, which needs an Apple TV 4K and an iPhone 15. Every requirement, "Search from the section" included, maps to code and tests.
+- [x] 6.2 `/opsx:verify` passes

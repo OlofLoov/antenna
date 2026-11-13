@@ -350,3 +350,11 @@ The system SHALL list a source saved on one device in Sources and Settings on ev
 - **WHEN** B lists the source
 - **THEN** its status line says it is waiting for the login from iCloud
 - **AND** its channels load once the login arrives through iCloud Keychain
+
+### Requirement: Deleting a source removes its watch history
+The system SHALL remove a source's watch progress and My list entries when the user deletes that source, after its credential and record are gone, and SHALL leave recent searches in place.
+
+#### Scenario: Delete a source with history
+- **GIVEN** a source with watch progress and My list entries, and some recent searches
+- **WHEN** the user deletes the source
+- **THEN** its credential, its record, its progress and its My list entries are gone, and recent searches stay
