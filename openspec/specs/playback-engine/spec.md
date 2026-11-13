@@ -6,7 +6,7 @@ Plays a channel or a film on every Apple device whatever stream type the provide
 ## Requirements
 
 ### Requirement: Every common stream type plays
-The system SHALL play HLS addresses and ordinary audio and video files through Apple's player, and raw broadcast streams, Matroska, AVI and addresses with no extension through the FFmpeg path, switching to Apple's player with no error when a raw-looking address turns out to be HLS.
+The system SHALL play HLS addresses and ordinary audio and video files through Apple's player, and raw broadcast streams, Matroska, AVI and addresses with no extension through the FFmpeg path, switching to Apple's player with no error when a raw-looking address turns out to be HLS, and to the FFmpeg path with no error when a file address turns out to hold a raw broadcast stream, Matroska or AVI.
 
 #### Scenario: Choosing the path
 - **GIVEN** a stream address ending in `.m3u8`, `.mp4`, `.mov`, `.m4v`, `.mp3`, `.aac` or `.m4a`, or in `.ts`, `.mkv`, `.avi` or nothing at all
@@ -17,6 +17,11 @@ The system SHALL play HLS addresses and ordinary audio and video files through A
 - **GIVEN** an address that looks like a raw stream but serves HLS
 - **WHEN** the screen asks to play it
 - **THEN** it plays through Apple's player with no error shown
+
+#### Scenario: A file address that is Matroska
+- **GIVEN** an episode the provider lists as `.mp4`, or with no extension, whose file is Matroska, AVI or a raw broadcast stream
+- **WHEN** the user plays it
+- **THEN** it plays through the FFmpeg path with no error shown
 
 #### Scenario: A radio stream
 - **GIVEN** a stream with sound and no picture
