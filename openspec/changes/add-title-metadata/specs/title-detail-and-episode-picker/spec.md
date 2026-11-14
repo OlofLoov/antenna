@@ -38,6 +38,11 @@ The system SHALL show a title's backdrop, year, length or seasons, genre, rating
 - **WHEN** the details arrive
 - **THEN** the backdrop replaces the poster and the page shows year, length, genre, rating and the age and 4K badges, the description cut to a few lines with More, and the cast and director
 
+#### Scenario: No backdrop
+- **GIVEN** a title whose provider gives a poster but no backdrop
+- **WHEN** its page shows
+- **THEN** the poster sits on black where the backdrop would be
+
 #### Scenario: Missing fields
 - **GIVEN** a title whose provider leaves fields out
 - **WHEN** the details arrive
