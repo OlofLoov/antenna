@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV movies, preview while details load</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- The highlight has just rested on a new poster whose details have not arrived. The name and category come from the row
+       and show at once; the previous picture stays; no facts or plot yet. They fade in below the name when the provider answers,
+       and nothing above them moves. -->
+
+  <!-- movies.preview picture while the new title's details load: the previous title's backdrop stays (here Glass Orchard's)
+       until the new picture is ready or 1.5 s pass (BannerArt.patience). Same scrim and fade as TV-Movies-Preview. -->
+  <div style="position: absolute; left: 0; top: 0; width: 1920px; height: 600px; overflow: hidden; background: linear-gradient(120deg, #2F4A3B, #4A6B52 50%, #22304A)">
+    <div style="position: absolute; left: 0; top: 0; width: 1100px; height: 600px; background: rgba(11, 14, 19, 0.72)"></div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(180deg, rgba(11,14,19,0), #0B0E13)"></div>
+  </div>
+
+  <!-- shell.tabBar: tvOS tab bar, owned by tvos-shell -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
+    <!-- shell.mark: not focusable -->
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; width: 260px">
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
+      <span>Antenna</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px">
+      <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search -->
+      <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.08)">
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Guide</span>
+        <span style="font-size: 26px; font-weight: 600; padding: 10px 26px; border-radius: 999px; background: rgba(255,255,255,0.12); color: #F2F4F8">Movies</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Series</span>
+        <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Search</span>
+      </div>
+      <!-- shell.settings: 30 pt gear, opens the Settings sheet, not a tab -->
+      <span aria-label="Settings" style="width: 56px; height: 56px; border-radius: 28px; color: #F2F4F8; display: flex; align-items: center; justify-content: center; flex: 0 0 auto">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </span>
+    </div>
+    <!-- shell.clock: not focusable -->
+    <div style="width: 260px; text-align: right; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+  </div>
+
+  <!-- movies.preview copy, anchored top left at x 64, y 168, 880 pt wide. No buttons; the preview never takes focus.
+       Eyebrow: the title's category only (no "Recently added"), 20 pt semibold, accent, uppercase, letter spacing 2.
+       movies.preview.title: 56 pt heavy, two lines at most. movies.preview.facts: 24 pt, the banner's facts and badges.
+       movies.preview.plot: 26 pt, line height 1.4, three lines at most. Facts and plot fade in when the info call answers. -->
+  <div style="position: absolute; left: 64px; top: 168px; width: 880px; display: flex; flex-direction: column; gap: 18px">
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: {{accent}}">Thriller</div>
+    <div style="font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: -0.5px">Salt Road</div>
+  </div>
+
+  <!-- The focused row (movies.row.<categoryName slug>) is anchored with its header at y 616 and its posters from 660 to 978.
+       Rows above it have scrolled up under the preview and are masked out over a 40 pt fade at y 600. The poster the highlight
+       rests on has the 5 pt white ring and shadow. Posters keep their positions while the preview changes. -->
+  <div style="position: absolute; left: 0; right: 0; top: 616px; display: flex; flex-direction: column; gap: 16px">
+    <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-size: 28px; font-weight: 700">Thriller</div>
+      <div style="font-size: 20px; color: #A7B0BF">187 titles</div>
+    </div>
+    <div style="display: flex; gap: 20px; padding: 0 64px; overflow: hidden">
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A3A2F; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #22304A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A2F3A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F3F4A; flex: 0 0 auto; box-shadow: 0 0 0 5px #F2F4F8, 0 16px 40px rgba(0,0,0,0.55)"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3A4A2F; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3B2F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F4A3B; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #334155; flex: 0 0 auto"></div>
+    </div>
+  </div>
+
+  <!-- The next row's header peeks at the bottom to show there is more below -->
+  <div style="position: absolute; left: 0; right: 0; top: 1022px; display: flex; flex-direction: column; gap: 16px">
+    <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-size: 28px; font-weight: 700">Drama</div>
+      <div style="font-size: 20px; color: #A7B0BF">143 titles</div>
+    </div>
+    <div style="display: flex; gap: 20px; padding: 0 64px; overflow: hidden">
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #334155; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F4A3B; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3B2F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #3A4A2F; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F3F4A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A2F3A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #22304A; flex: 0 0 auto"></div>
+      <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A3A2F; flex: 0 0 auto"></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
