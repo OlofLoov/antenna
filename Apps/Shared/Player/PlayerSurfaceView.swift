@@ -8,7 +8,8 @@ import SwiftUI
 
     /// The engine's picture, edge to edge with no controls: Apple's player,
     /// with the demuxing engine's layer above it while that engine plays.
-    /// An engine with neither shows the Ground color.
+    /// Black shows around a picture that does not fill the view, and in
+    /// place of an engine with neither.
     struct PlayerSurfaceView: NSViewRepresentable {
         let engine: any PlaybackEngine
 
@@ -37,7 +38,7 @@ import SwiftUI
                 super.init(frame: .zero)
                 wantsLayer = true
                 playerLayer.videoGravity = .resizeAspect
-                playerLayer.backgroundColor = NSColor(Palette.ground).cgColor
+                playerLayer.backgroundColor = NSColor.black.cgColor
                 layer = playerLayer
             }
 
@@ -78,14 +79,13 @@ import SwiftUI
 
     /// The engine's picture, edge to edge with no controls: Apple's player,
     /// with the demuxing engine's layer above it while that engine plays.
-    /// An engine with neither shows the Ground color.
+    /// Black shows around a picture that does not fill the view, and in
+    /// place of an engine with neither.
     struct PlayerSurfaceView: UIViewRepresentable {
         let engine: any PlaybackEngine
 
         func makeUIView(context: Context) -> PlayerLayerView {
             let view = PlayerLayerView()
-            view.backgroundColor = UIColor(Palette.ground)
-            view.playerLayer?.videoGravity = .resizeAspect
             attach(view)
             return view
         }
@@ -113,6 +113,17 @@ import SwiftUI
             private weak var demuxLayer: CALayer?
             /// Called when the view joins or leaves a window.
             var onWindow: ((UIWindow?) -> Void)?
+
+            override init(frame: CGRect) {
+                super.init(frame: frame)
+                backgroundColor = .black
+                playerLayer?.videoGravity = .resizeAspect
+            }
+
+            @available(*, unavailable)
+            required init?(coder: NSCoder) {
+                nil
+            }
 
             override func didMoveToWindow() {
                 super.didMoveToWindow()
