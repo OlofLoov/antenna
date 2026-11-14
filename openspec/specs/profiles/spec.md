@@ -24,7 +24,7 @@ The system SHALL open a "Who's watching?" screen at launch when the user has two
 - **GIVEN** the "Who's watching?" screen on Apple TV
 - **WHEN** it appears
 - **THEN** focus is on the profile last used on this Apple TV, or the first profile when none was
-- **AND** Menu on this screen does nothing, since there is nothing behind it
+- **AND** Back on this screen goes to the Apple TV Home Screen, since there is nothing behind it
 
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on

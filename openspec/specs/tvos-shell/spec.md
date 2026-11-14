@@ -1,7 +1,7 @@
 # tvos-shell Specification
 
 ## Purpose
-The frame every other Apple TV screen sits in. Opening the app goes straight to the channel last watched, full screen; Menu dims the picture and shows a tab bar along the top, and Menu again goes back to the picture. It serves the living-room viewer who wants "to flip channels quickly with the remote, by up and down or by typing a number, so it feels like cable", and the viewer who wants "the app to come back to the channel I was watching".
+The frame every other Apple TV screen sits in. Opening the app goes straight to the channel last watched, full screen; Back dims the picture and shows a tab bar along the top, a swipe down goes back to the picture, and Back again goes to the Apple TV Home Screen. It serves the living-room viewer who wants "to flip channels quickly with the remote, by up and down or by typing a number, so it feels like cable", and the viewer who wants "the app to come back to the channel I was watching".
 
 ## Requirements
 
@@ -101,12 +101,13 @@ The system SHALL dim the picture and show the tab bar with Live highlighted when
 - **THEN** the dimming and the tab bar appear without animation
 
 ### Requirement: Back to full screen from the tab bar
-The system SHALL hide the tab bar and carry on with the same stream full screen when the user presses Menu, swipes down or selects Live from the bar over the dimmed picture. Selecting Live SHALL load a failed stream again.
+The system SHALL hide the tab bar and carry on with the same stream full screen when the user swipes down or selects Live from the bar over the dimmed picture. Selecting Live SHALL load a failed stream again. Back from the bar goes to the Home Screen instead.
 
 #### Scenario: Menu, swipe down or Live
 - **GIVEN** the tab bar shows over the dimmed picture
-- **WHEN** the user presses Menu, swipes down, or selects Live
+- **WHEN** the user swipes down, or selects Live
 - **THEN** the tab bar goes away and the same stream carries on full screen
+- **AND** pressing Menu there instead opens the Apple TV Home Screen
 
 #### Scenario: Swipe down over Movies, Series or Search
 - **GIVEN** Movies, Series or Search is open with the highlight in the bar
@@ -145,22 +146,6 @@ The system SHALL pause the video after 30 seconds with Movies, Series or Search 
 - **GIVEN** the shell paused the video behind Movies, Series or Search
 - **WHEN** the app returns from the background
 - **THEN** the video stays paused until the user goes back to Live or Guide
-
-### Requirement: Menu from the top of a tab reaches the tab bar
-The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Menu at the top level of a tab or swipes up from the topmost item on Movies, Series or Search.
-
-#### Scenario: Menu at the top level
-- **GIVEN** the user is at the top level of a tab
-- **WHEN** they press Menu, or swipe up from the topmost item on Movies, Series or Search
-- **THEN** the highlight moves to that tab in the bar, the tab stays open, and on Guide the bar appears over the guide
-
-### Requirement: Menu from the tab bar goes back to Live
-The system SHALL open Live full screen when the user presses Menu with the highlight in the bar and another tab open, resuming a paused video without restarting it. Menu SHALL never leave the app from inside the shell.
-
-#### Scenario: Menu from the bar
-- **GIVEN** the highlight is in the tab bar and a tab other than Live is open
-- **WHEN** the user presses Menu
-- **THEN** Live is open full screen, and a video paused behind the tab resumes without restarting
 
 ### Requirement: A loading screen at launch
 The system SHALL show a loading screen on Live while no channel plays and at least one source is still loading, and before the sources are read at launch. It SHALL list each source by name with "Loading channels", its channel count, "Offline", "Could not load channels" or "Waiting for its login to sync from iCloud". Menu SHALL still reach the tab bar and Settings.
@@ -325,3 +310,58 @@ The system SHALL open the Apple TV shell, and tune any channel at launch, only o
 - **GIVEN** an Apple TV with no purchase on its Apple Account and a source already synced
 - **WHEN** the app launches
 - **THEN** the paywall shows, the shell does not open and no channel is tuned
+
+### Requirement: Back from a tab goes to the tab bar
+The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Back anywhere on the top level of Guide, Movies, Series or Search, or swipes up from the topmost item on Movies, Series or Search. Movies, Series and Search SHALL scroll back to their top as the highlight reaches the bar. A screen opened from a tab SHALL close on Back first.
+
+#### Scenario: Back from a lower row
+- **GIVEN** Movies is open with the highlight on a poster four rows down
+- **WHEN** the user presses Back
+- **THEN** the rows scroll back to the top with the banner showing and the highlight moves to Movies in the tab bar
+- **AND** a swipe down lands on the banner's Play button
+
+#### Scenario: Back at the banner
+- **GIVEN** Movies, Series or Search is open with the highlight on its topmost item
+- **WHEN** the user presses Back, or swipes up
+- **THEN** the highlight moves to that tab in the bar and the tab stays open
+
+#### Scenario: Back on the Guide
+- **GIVEN** the Guide is open with the highlight in the grid
+- **WHEN** the user presses Back
+- **THEN** the bar appears over the guide with the highlight on Guide, and the guide keeps the programme that was highlighted
+
+#### Scenario: Back from a genre grid
+- **GIVEN** a genre grid opened from the Movies rows
+- **WHEN** the user presses Back
+- **THEN** the grid closes and the rows show with the highlight back on the banner, and the bar does not take the highlight
+
+### Requirement: Back from the tab bar goes to the Home Screen
+The system SHALL leave Back to Apple TV when the highlight is in the tab bar, including on the profile and Settings buttons, so it opens the Apple TV Home Screen whichever tab is open. The app SHALL come back to the same tab when the user opens it again.
+
+#### Scenario: Back from the bar over Live
+- **GIVEN** a channel is playing and the tab bar shows over the dimmed picture with Live highlighted
+- **WHEN** the user presses Back
+- **THEN** the Apple TV Home Screen opens
+
+#### Scenario: Back from the bar over Movies
+- **GIVEN** Movies is open with the highlight on Movies in the bar
+- **WHEN** the user presses Back
+- **THEN** the Apple TV Home Screen opens, and reopening the app shows Movies as it was
+
+#### Scenario: Back from the bar over the Guide
+- **GIVEN** the bar shows over the Guide with the highlight in it
+- **WHEN** the user presses Back
+- **THEN** the Apple TV Home Screen opens
+
+### Requirement: Back always leads out of the app
+The system SHALL reach the Apple TV Home Screen when the user presses Back again and again from any screen in the shell: each layer or screen opened from a tab closes, then the bar takes the highlight, then the app leaves. No screen SHALL keep Back for itself, because a TV's own remote often has Back and arrows but no TV button.
+
+#### Scenario: Repeated Back from Live
+- **GIVEN** a channel is playing full screen with the channel overlay open
+- **WHEN** the user presses Back three times
+- **THEN** the first press closes the overlay, the second shows the tab bar, and the third opens the Apple TV Home Screen
+
+#### Scenario: Repeated Back from a genre grid
+- **GIVEN** a genre grid opened from the Movies rows
+- **WHEN** the user presses Back three times
+- **THEN** the grid closes, then the highlight moves to Movies in the bar, then the Apple TV Home Screen opens
