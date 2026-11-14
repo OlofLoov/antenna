@@ -14,10 +14,9 @@ final class ShelfModel {
         var details: @MainActor (SourceDescriptor, ShelfTitle) async throws -> ShelfDetails
         /// A series' episodes in the client's order.
         var episodes: @MainActor (SourceDescriptor, ShelfTitle) async throws -> [Episode]
-        /// A title page's info call.
-        var info: @MainActor (SourceDescriptor, ShelfTitle) async throws -> TitleInfo = { _, _ in
-            throw ShelfLoader.LoadError.unknownTitle
-        }
+        /// A title page's info call. No default: a library that leaves it
+        /// out fails every title page with `unknownTitle`.
+        var info: @MainActor (SourceDescriptor, ShelfTitle) async throws -> TitleInfo
         /// How often to look for a login that has not arrived yet.
         var loginCheck = Duration.seconds(5)
     }
@@ -332,7 +331,8 @@ extension ShelfLibrary {
             load: { try await loader.load($0, kind: $1) },
             hasLogin: { loader.hasLogin($0) },
             details: { try await loader.details($0, title: $1) },
-            episodes: { try await loader.episodes($0, series: $1) })
+            episodes: { try await loader.episodes($0, series: $1) },
+            info: { try await loader.info($0, title: $1) })
         return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
     }
 }
