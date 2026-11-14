@@ -80,7 +80,7 @@ enum TitlePage {
     static let placeholder = Color(red: 0x22 / 255, green: 0x30 / 255, blue: 0x4A / 255)
 
     /// The first backdrop scaled to fill. Without one the poster sits on
-    /// the placeholder, and without a poster its name tile does.
+    /// black, and without a poster its name tile does.
     struct Backdrop: View {
         /// The poster's size when there is no backdrop.
         let poster: CGSize
@@ -90,7 +90,7 @@ enum TitlePage {
 
         var body: some View {
             let backdrop = page?.state.metadata.backdropURL
-            FilledArt(image: image?.image, background: placeholder) {
+            FilledArt(image: image?.image, background: .black) {
                 if backdrop == nil, let page {
                     ShelfView.PosterArt(name: page.state.metadata.name, url: page.state.posterURL)
                         .frame(width: poster.width, height: poster.height)
