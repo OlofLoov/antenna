@@ -16,7 +16,7 @@
 - [ ] 3.1 `ShelfPreview.Television` and `PreviewContext`, with previews for a backdrop, loading and a poster only
 - [ ] 3.2 `ShelfTVScreen`: the preview layer, the row anchor at y 616, the mask above it, no ground band while the preview shows
 - [ ] 3.3 The rest task keyed on the focused title, the crossfade, and the banner's `paused`
-- [ ] 3.4 Menu from a row and Back from a page, the plot as the focused poster's hint
+- [ ] 3.4 Back from a page and the plot as the focused poster's hint; Menu from a row comes from `back-to-the-tab-bar`, so check the preview fades when it scrolls to the top
 - [ ] 3.5 `ShelfTVUITests`: rest shows the preview, a fast swipe asks nothing, up returns to the banner, Back restores the preview
 
 ## 4. Verify

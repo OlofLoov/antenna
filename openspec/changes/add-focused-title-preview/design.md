@@ -74,7 +74,7 @@ Options considered:
 
 ### Menu and Back
 
-Menu from a row keeps the `tvos-shell` rule "Menu from the top of a tab reaches the tab bar": the highlight moves to the tab bar. The scroll returns to the top at the same time, so the banner shows above the bar. Going down from the bar lands on Play.
+Menu from a row follows the `tvos-shell` rule "Back from a tab goes to the tab bar", which the change `back-to-the-tab-bar` builds: the highlight moves to the tab bar, the rows scroll back to the top so the banner shows above the bar, and going down from the bar lands on Play. This change adds nothing for it; the preview only has to fade out when the scroll returns to the top.
 
 Back from a title page opened from a poster restores focus on that poster (`title-detail-and-episode-picker/back-to-where-you-were`). The schedule treats a restored focus as rested, so the preview shows that title at once; its details are already kept.
 
