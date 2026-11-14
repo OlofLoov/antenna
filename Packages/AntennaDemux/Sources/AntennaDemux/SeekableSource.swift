@@ -55,17 +55,19 @@ final class SeekableSource: DemuxBytes, @unchecked Sendable {
         if target > position, target - position <= 256 * 1024 {
             return skip(target - position)
         }
+        // The old connection closes first: many providers allow one
+        // connection per account and refuse a second while it is open.
         let next = HTTPByteStream(url: url, session: session, offset: target)
-        guard next.openBlocking(), next.status == 206 || target == 0 else {
-            next.cancel()
-            return false
-        }
         let old = lock.withLock {
             defer { stream = next }
             return stream
         }
         old.cancel()
         if lock.withLock({ cancelled }) { next.cancel() }
+        guard next.openBlocking(), next.status == 206 || target == 0 else {
+            next.cancel()
+            return false
+        }
         position = target
         return true
     }

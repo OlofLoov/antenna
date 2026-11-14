@@ -308,7 +308,9 @@ final class AVPlayerEngine: PlaybackEngine {
     func seek(to time: Duration) async throws {
         guard let stream, let item = player.currentItem else { throw SeekRefusal.notSeekable }
         guard !stream.isLive else { throw SeekRefusal.live }
-        guard stream.canSeek, !item.seekableTimeRanges.isEmpty else { throw SeekRefusal.notSeekable }
+        // A ready item of a server that skips can move even while its
+        // seekable ranges are still empty, as during buffering after a skip.
+        guard stream.canSeek, item.status == .readyToPlay else { throw SeekRefusal.notSeekable }
         let target = CMTime(seconds: time.seconds, preferredTimescale: 600)
         if item.duration.isNumeric, target >= item.duration {
             finish()

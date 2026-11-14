@@ -102,11 +102,61 @@ import Testing
         await harness.stop()
     }
 
+    /// Many providers answer a range with 206 but never send
+    /// Accept-Ranges, and send a film with no length unless asked for a range.
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a server that skips without saying so skips")
+    func skipsOnQuietServer() async throws {
+        let harness = try await FilmHarness()
+        await harness.server.always("/channel.mkv", .quietRanges)
+        let position = Recorded(await harness.engine.position())
+        try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(isLive: false))
+        await harness.engine.play()
+        #expect(await eventually { harness.engine.state == .playing })
+        #expect(await eventually { position.values.contains { $0.duration != nil } })
+        #expect(position.values.last?.canSkip == true)
+        try await expectSkipLands(harness, position)
+        position.cancel()
+        await harness.stop()
+    }
+
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film behind a redirect skips")
+    func skipsBehindRedirect() async throws {
+        let harness = try await FilmHarness()
+        await harness.server.always("/movie/1.mkv", .redirect(to: "/channel.mkv"))
+        let position = Recorded(await harness.engine.position())
+        try await harness.engine.load(harness.url("movie/1.mkv"), options: PlaybackOptions(isLive: false))
+        await harness.engine.play()
+        #expect(await eventually { harness.engine.state == .playing })
+        try await expectSkipLands(harness, position)
+        position.cancel()
+        await harness.stop()
+    }
+
+    @Test("playback-engine/films-start-where-you-left-off-skip-and-end a second skip while the first reopens the film still skips")
+    func skipWhileSkipping() async throws {
+        let harness = try await FilmHarness()
+        let position = Recorded(await harness.engine.position())
+        try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(isLive: false))
+        await harness.engine.play()
+        #expect(await eventually { harness.engine.state == .playing })
+        await harness.server.script("/channel.mkv", .stall(afterBytes: 0))
+        let first = Task { try await harness.engine.seek(to: .seconds(2)) }
+        #expect(await eventually { harness.engine.current?.start == nil })
+        try await expectSkipLands(harness, position)
+        first.cancel()
+        position.cancel()
+        await harness.stop()
+    }
+
     @Test("playback-engine/films-start-where-you-left-off-skip-and-end a film whose server cannot skip refuses, live TV too")
     func refusesWithoutRanges() async throws {
         let harness = try await FilmHarness()
         await harness.server.always("/channel.mkv", .ignoreRanges)
-        try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(startPosition: .seconds(3)))
+        let position = Recorded(await harness.engine.position())
+        try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(startPosition: .seconds(3), isLive: false))
+        #expect(await eventually { position.values.contains { $0.duration != nil } })
+        #expect(position.values.last?.canSkip == false, "the controls know before a press")
+        position.cancel()
         await #expect(throws: SeekRefusal.notSeekable) { try await harness.engine.seek(to: .seconds(2)) }
         try await harness.engine.load(harness.url("channel.ts"))
         await #expect(throws: SeekRefusal.live) { try await harness.engine.seek(to: .seconds(2)) }

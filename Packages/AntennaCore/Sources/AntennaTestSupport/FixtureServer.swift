@@ -18,6 +18,11 @@ public actor FixtureServer {
         case serve
         /// The whole file with 200 and no `Accept-Ranges`, for a server that cannot skip.
         case ignoreRanges
+        /// A byte range with 206, but no `Accept-Ranges` and, without a
+        /// range, 200 with no length: a server that can skip without saying so.
+        case quietRanges
+        /// 302 to this path on the same server.
+        case redirect(to: String)
         /// This status code and a short body.
         case status(Int)
         /// Close the connection without answering.
@@ -216,7 +221,12 @@ public actor FixtureServer {
             try await Self.send(connection, head: head(status: 200, type: type, length: data.count), body: data)
             connection.cancel()
             return
-        case .serve, .ignoreRanges, .stall, .cut, .paced:
+        case .redirect(let path):
+            let header = head(status: 302, type: "text/plain", length: 0, extra: ["Location: \(normalized(path))"])
+            try await Self.send(connection, head: header, body: Data())
+            connection.cancel()
+            return
+        case .serve, .ignoreRanges, .quietRanges, .stall, .cut, .paced:
             break
         }
         guard let file = content(for: request.path) else {
@@ -229,7 +239,16 @@ public actor FixtureServer {
         var status = 200
         var slice = file
         var extra: [String] = []
-        if behavior != .ignoreRanges {
+        var length: Int? = file.count
+        if behavior == .quietRanges {
+            length = nil
+            if let range = request.headers["range"].flatMap({ Self.byteRange($0, length: file.count) }) {
+                status = 206
+                slice = file.subdata(in: range)
+                length = slice.count
+                extra.append("Content-Range: bytes \(range.lowerBound)-\(range.upperBound - 1)/\(file.count)")
+            }
+        } else if behavior != .ignoreRanges {
             extra.append("Accept-Ranges: bytes")
             if let range = request.headers["range"].flatMap({ Self.byteRange($0, length: file.count) }) {
                 status = 206
@@ -237,7 +256,7 @@ public actor FixtureServer {
                 extra.append("Content-Range: bytes \(range.lowerBound)-\(range.upperBound - 1)/\(file.count)")
             }
         }
-        let header = head(status: status, type: type, length: slice.count, extra: extra)
+        let header = head(status: status, type: type, length: length.map { _ in slice.count }, extra: extra)
         switch behavior {
         case .stall(let bytes):
             try await Self.send(connection, head: header, body: slice.prefix(bytes))
@@ -343,15 +362,17 @@ extension FixtureServer {
 
     // MARK: HTTP
 
-    func head(status: Int, type: String, length: Int, extra: [String] = []) -> String {
+    func head(status: Int, type: String, length: Int?, extra: [String] = []) -> String {
         Self.head(status: status, type: type, length: length, extra: extra + (cookie.map { ["Set-Cookie: \($0); Path=/"] } ?? []))
     }
 
-    static func head(status: Int, type: String, length: Int, extra: [String] = []) -> String {
+    /// A nil `length` leaves out Content-Length: the body runs until the connection closes.
+    static func head(status: Int, type: String, length: Int?, extra: [String] = []) -> String {
         let reason =
             switch status {
             case 200: "OK"
             case 206: "Partial Content"
+            case 302: "Found"
             case 401: "Unauthorized"
             case 403: "Forbidden"
             case 404: "Not Found"
@@ -361,7 +382,8 @@ extension FixtureServer {
             default: "Status"
             }
         let lines =
-            ["HTTP/1.1 \(status) \(reason)", "Content-Type: \(type)", "Content-Length: \(length)", "Connection: close"] + extra
+            ["HTTP/1.1 \(status) \(reason)", "Content-Type: \(type)"] + (length.map { ["Content-Length: \($0)"] } ?? [])
+            + ["Connection: close"] + extra
         return lines.joined(separator: "\r\n") + "\r\n\r\n"
     }
 

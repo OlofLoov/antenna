@@ -71,6 +71,9 @@ public final class DemuxEngine: PlaybackEngine {
 
     var request: (url: URL, options: PlaybackOptions)?
     var current: Current?
+    /// The last start of the address loaded, kept while a skip reopens it,
+    /// so a second skip in a row knows the film can skip and where it counts from.
+    var lastStart: DemuxStart?
     /// The buffer of the live channel playing, when its load asked for one.
     var timeshift: TimeshiftSession?
     /// The live buffer set aside while a catch-up programme plays.
@@ -173,6 +176,7 @@ public final class DemuxEngine: PlaybackEngine {
         let mine = generation
         close()
         request = (url, options)
+        lastStart = nil
         wantsPlay = false
         hasPlayed = false
         reopensOnPlay = false
@@ -215,7 +219,7 @@ public final class DemuxEngine: PlaybackEngine {
                 return bytes
             }
             return try await tune.run(sleep: sleep) {
-                let bytes = HTTPByteStream(url: url, session: session)
+                let bytes = HTTPByteStream(url: url, session: session, asksForRange: options.isLive == false)
                 try await bytes.open()
                 return bytes
             }
@@ -273,6 +277,7 @@ public final class DemuxEngine: PlaybackEngine {
         if start.frameRate == nil, let rate = earlyFrameRate { start.frameRate = rate }
         earlyFrameRate = nil
         current?.start = start
+        lastStart = start
         timeshiftRunStarted(source, at: start.startTime)
         isLive = options.isLive ?? (start.duration == nil)
         videoLayer.isHidden = start.video == nil
@@ -407,7 +412,9 @@ extension DemuxEngine {
         let elapsed = CMTimeSubtract(time ?? synchronizer.currentTime(), start.origin)
         guard elapsed.isNumeric else { return }
         let duration = start.duration.map { Duration.seconds($0.seconds) }
-        positionCast.send(PlaybackPosition(time: .seconds(max(0, elapsed.seconds)), duration: duration, isLive: isLive))
+        positionCast.send(
+            PlaybackPosition(
+                time: .seconds(max(0, elapsed.seconds)), duration: duration, isLive: isLive, canSkip: !isLive && start.canSeek))
     }
 
     /// Four times a second while a stream is open.

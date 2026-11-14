@@ -337,8 +337,8 @@ final class ScriptedEngine: PlaybackEngine {
     func stop() async { state = .idle }
     func finish() { state = .ended }
 
-    func send(position seconds: Int) {
-        positionCast.send(PlaybackPosition(time: .seconds(seconds), duration: .seconds(5400), isLive: false))
+    func send(position seconds: Int, canSkip: Bool = true) {
+        positionCast.send(PlaybackPosition(time: .seconds(seconds), duration: .seconds(5400), isLive: false, canSkip: canSkip))
     }
 
     /// The times asked for, in order; with `refusesSeeks` each one throws.

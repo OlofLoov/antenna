@@ -39,8 +39,8 @@ final class TitleTransport {
     /// The time a drag or a slide points at, nil when none.
     private(set) var target: Duration?
     private(set) var controlsShown = true
-    /// "This stream can't skip" for a few seconds, nil otherwise.
-    private(set) var notice: String?
+    /// A line said for a few seconds after a refused skip.
+    private var said: String?
     /// Keeps the controls up while a track list is open or VoiceOver runs.
     var held = false {
         didSet {
@@ -100,6 +100,19 @@ final class TitleTransport {
         target ?? timeline.time
     }
 
+    /// "This stream can't skip" whenever the controls show for a title
+    /// whose server cannot skip, and for a few seconds after a refused
+    /// skip; nil otherwise.
+    var notice: String? {
+        if let said { return said }
+        return controlsShown && !position.canSkip ? Self.cannotSkip : nil
+    }
+
+    /// False once the engine said the title's server cannot skip.
+    var canSkip: Bool {
+        position.canSkip
+    }
+
     /// True once the engine reported where the title is.
     var hasStarted: Bool {
         position.duration != nil || position.time > .zero
@@ -126,7 +139,7 @@ final class TitleTransport {
 
     /// A finger or pointer at `fraction` of the scrubber: the shown time follows it.
     func drag(to fraction: Double) {
-        guard let time = timeline.time(at: fraction) else { return }
+        guard canSkip, let time = timeline.time(at: fraction) else { return }
         target = time
     }
 
@@ -142,7 +155,7 @@ final class TitleTransport {
     /// shows the bar.
     func beginSlide() {
         show(after: .touch)
-        guard isPaused, timeline.length != nil else { return slideBase = nil }
+        guard isPaused, canSkip, timeline.length != nil else { return slideBase = nil }
         slideBase = shownTime
         target = shownTime
     }
@@ -206,6 +219,10 @@ final class TitleTransport {
     /// row count from the last one, and only the last one clears `pending`.
     private func move(to time: Duration, thenPlay: Bool = false) {
         show(after: .touch)
+        guard canSkip else {
+            if thenPlay { Task { await dependencies.engine.play() } }
+            return say(Self.cannotSkip)
+        }
         seeks += 1
         let mine = seeks
         pending = time
@@ -263,12 +280,12 @@ final class TitleTransport {
     }
 
     private func say(_ text: String) {
-        notice = text
+        said = text
         noticeTimer?.cancel()
         let sleep = dependencies.sleep
         noticeTimer = Task { [weak self] in
             do { try await sleep(.seconds(3)) } catch { return }
-            self?.notice = nil
+            self?.said = nil
         }
     }
 }

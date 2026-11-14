@@ -48,6 +48,25 @@ import Testing
         #expect(await eventually { transport.pending == nil })
     }
 
+    @Test("player-controls-and-playback-errors/move-around-in-a-movie-or-episode a server that cannot skip is named before a press")
+    func cannotSkipUpFront() async {
+        let (transport, follow) = transport(hold: .seconds(60))
+        defer { follow.cancel() }
+        try? await engine.load(URL(fileURLWithPath: "/film.mkv"), options: PlaybackOptions())
+        await engine.play()
+        engine.send(position: 600, canSkip: false)
+        #expect(await eventually { !transport.canSkip })
+        #expect(transport.notice == TitleTransport.cannotSkip, "said while the controls show, before any press")
+        transport.skip(forward: true)
+        transport.drag(to: 0.5)
+        #expect(!transport.isScrubbing)
+        try? await Task.sleep(for: .milliseconds(100))
+        #expect(engine.seeks.isEmpty, "nothing is asked of the engine")
+        #expect(transport.times.elapsed == "10:00")
+        transport.hide()
+        #expect(await eventually { transport.notice == nil }, "it goes with the controls")
+    }
+
     @Test("player-controls-and-playback-errors/move-around-in-a-movie-or-episode a drag moves the time shown and seeks once")
     func drag() async {
         let (transport, follow) = transport()
