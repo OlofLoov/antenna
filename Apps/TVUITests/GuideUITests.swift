@@ -122,7 +122,7 @@ extension ShellUITests {
 
 extension ShellUITests {
     // tv-guide-grid/it-opens-on-what-is-on-now
-    // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
     func testItOpensOnWhatIsOnNow() {
         launchPlaying()
         openGuide()

@@ -17,6 +17,7 @@
 
         @Environment(ShelfPlayback.self) private var playback
         @Environment(\.openSearch) private var openSearch
+        @Environment(\.tabTaps) private var tabTaps
 
         /// Posters and the banner play through the playback, open pages through the library, and
         /// change My list through the activity.
@@ -41,6 +42,11 @@
                 }
             }
             .background(Palette.ground)
+            // Tapping Movies again closes an open page, as a pushed page goes
+            // back to its root (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).
+            .onChange(of: tabTaps) { _, _ in
+                if library.page.map({ $0.section == kind && $0.origin != .search }) == true { library.closePage() }
+            }
         }
 
         /// A swipe in from the left edge goes back, as a pushed page does
@@ -91,6 +97,7 @@
                     }
                     .padding(.bottom, 24)
                 }
+                .scrollsToTopOnTabTap()
                 .onScrollGeometryChange(for: Bool.self) { geometry in
                     geometry.contentOffset.y + geometry.contentInsets.top > 420
                 } action: { _, past in

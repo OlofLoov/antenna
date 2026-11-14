@@ -10,6 +10,15 @@ extension ShellUITests {
     }
 
     // profiles/who-s-watching-at-launch
+    func testBackOnWhoIsWatchingGoesHome() {
+        launchWithProfiles()
+        XCTAssertTrue(element("profiles.picker").waitForExistence(timeout: 10))
+        expectFocus("profiles.tile.0")
+        press(.menu)
+        expectHomeScreen()
+    }
+
+    // profiles/who-s-watching-at-launch
     func testWhoIsWatchingAtLaunch() {
         launchWithProfiles()
         XCTAssertTrue(element("profiles.picker").waitForExistence(timeout: 10))
@@ -17,9 +26,6 @@ extension ShellUITests {
         expect(element("profiles.tile.1"), "label == 'Kids, profile'")
         expectFocus("profiles.tile.0")
         XCTAssertFalse(element("shell.debug.engine").exists, "nothing plays before someone is chosen")
-
-        press(.menu)
-        XCTAssertTrue(element("profiles.picker").exists, "Menu stays on the picker")
 
         press(.right, toFocus: element("profiles.tile.1"), from: element("profiles.tile.0"))
         press(.select)

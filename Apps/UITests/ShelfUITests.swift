@@ -124,4 +124,33 @@ final class ShelfUITests: XCTestCase {
         XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 5))
         XCTAssertFalse(grid.exists)
     }
+
+    // live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top
+    func testTappingMoviesAgainScrollsToTheTop() throws {
+        let app = try launch()
+        openMovies(app)
+        let title = app.element("movies.hero.title")
+        let top = title.frame.minY
+        for _ in 0..<4 where onScreen(title, below: 0) { app.swipeUp() }
+        XCTAssertTrue(waitUntil { !self.onScreen(title, below: 0) }, "the banner never scrolled away")
+
+        app.tabBars.buttons["Movies"].tap()
+        XCTAssertTrue(
+            waitUntil { title.exists && abs(title.frame.minY - top) < 2 }, "the rows never scrolled back to the banner")
+    }
+
+    /// True while `element` exists with its top edge at or below `y`.
+    private func onScreen(_ element: XCUIElement, below y: CGFloat) -> Bool {
+        element.exists && element.frame.minY >= y
+    }
+
+    /// Polls `condition` for up to ten seconds.
+    private func waitUntil(_ condition: @escaping () -> Bool) -> Bool {
+        let deadline = Date().addingTimeInterval(10)
+        while Date() < deadline {
+            if condition() { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.25))
+        }
+        return condition()
+    }
 }

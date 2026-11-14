@@ -92,7 +92,7 @@
                 numbers, enabled: numbersEnabled,
                 catalogue: catalogue, typing: { zapBar.dismiss() }, tune: { channel in Task { await model.pick(channel) } }
             )
-            .onExitCommand(perform: menu)
+            .modifier(ShellBack(barFocused: barHasFocus, menu: menu))
             .onPlayPauseCommand {
                 // Play/pause does nothing while the info panel is open.
                 guard model.tab == .live, !model.barVisible, model.player.panel == nil else { return }
@@ -287,11 +287,10 @@
             }
             let origin: MenuOrigin =
                 switch focus {
-                case .tab, .settings, .profile: .bar
-                case .content: .content
+                case .content, .tab, .settings, .profile: .content
                 case .picture, .retry, .signIn, .panel, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
                 }
-            Task { focus = await model.menu(from: origin) }
+            focus = model.menu(from: origin)
         }
 
         /// Swiping up from a tab's content lands on the open tab, not the

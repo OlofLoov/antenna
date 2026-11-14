@@ -57,8 +57,8 @@ import Testing
         await wait { engine.plays > 0 }
     }
 
-    @Test("tvos-shell/menu-from-the-tab-bar-goes-back-to-live Menu from the bar over a paused tab resumes Live without a reload")
-    func menuFromBarResumes() async {
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search Live from the bar over a paused tab resumes without a reload")
+    func liveFromBarResumes() async {
         await playing()
         _ = await model.select(.movies)
         await wait { clock.requested.last == .seconds(30) }
@@ -66,8 +66,8 @@ import Testing
         await wait { engine.pauses == 1 }
         let plays = engine.plays
 
-        _ = await model.menu(from: .content)
-        let focus = await model.menu(from: .bar)
+        #expect(model.menu(from: .content) == .tab(.movies))
+        let focus = await model.select(.live)
         #expect(focus == .picture)
         #expect(model.tab == .live)
         #expect(!model.barVisible)
@@ -143,7 +143,7 @@ import Testing
     @Test("tvos-shell/back-to-full-screen-from-the-tab-bar swipe down lowers the bar only over Live and Guide")
     func swipeDown() async {
         await playing()
-        _ = await model.menu(from: .picture)
+        _ = model.menu(from: .picture)
         #expect(model.dimmed)
         #expect(model.swipeDown() == .picture)
         #expect(!model.barVisible)
@@ -161,7 +161,7 @@ import Testing
         loader.finish(source.id, with: [.fixture("a1")])
         await wait { engine.loaded.count == 1 }
         _ = await model.select(.guide)
-        _ = await model.menu(from: .content)
+        _ = model.menu(from: .content)
         #expect(model.dimmed)
 
         _ = await model.select(.live)

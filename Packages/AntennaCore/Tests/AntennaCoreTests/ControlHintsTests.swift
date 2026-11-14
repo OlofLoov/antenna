@@ -47,6 +47,16 @@ import Testing
         #expect(ControlHintScreen.titlePlayer(scrubbing: true).hints.contains(ControlHint(.back, "Cancel")))
     }
 
+    @Test("control-hints/each-screen-lists-its-own-actions Back reads Tab bar where it reaches the bar, Home Screen in the bar")
+    func backToTheTabBar() {
+        // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
+        for screen in [ControlHintScreen.livePicture(swipe: .changesChannel), .guide, .titleRows(.movie), .titleRows(.series)] {
+            #expect(screen.hints.contains(ControlHint(.back, "Tab bar")), "\(screen)")
+        }
+        // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
+        #expect(ControlHintScreen.tabBar.hints.contains(ControlHint(.back, "Home Screen")))
+    }
+
     @Test("control-hints/hints-stay-out-of-the-way the legend goes top right over full-screen video and the info bar")
     func corners() {
         #expect(ControlHintScreen.infoBar(swipe: .changesChannel).corner == .topTrailing)

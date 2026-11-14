@@ -62,6 +62,7 @@
                         .padding(.horizontal, 64)
                         .padding(.bottom, 64)
                 }
+                .scrollsToTopFromTabBar()
                 .searchable(text: query, prompt: SearchText.placeholder)
                 .background(Palette.ground)
                 .accessibilityIdentifier("search.results")

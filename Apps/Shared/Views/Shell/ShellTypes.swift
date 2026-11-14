@@ -40,7 +40,6 @@
         case picture
         /// The top level of an open tab.
         case content
-        case bar
     }
 
     /// One source as the loading and empty screens list it.

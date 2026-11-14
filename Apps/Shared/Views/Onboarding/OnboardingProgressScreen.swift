@@ -42,6 +42,12 @@ struct OnboardingProgressScreen: View {
         }
     }
 
+    /// Back while nothing loaded; nil leaves the press to tvOS.
+    private var backAction: (() -> Void)? {
+        guard progress.isEmpty else { return nil }
+        return { back() }
+    }
+
     /// Back from a provider with nothing: removes what its Connect saved
     /// and shows the form again (first-run-onboarding/a-provider-with-no-live-channels).
     private func back() {
@@ -66,9 +72,9 @@ struct OnboardingProgressScreen: View {
                     title: progress.loadingTitle, lines: model.setups.flatMap { progress.lines(for: $0, .television) },
                     primary: progress.primary, caption: caption, start: start
                 )
-                .onExitCommand {
-                    if progress.isEmpty { back() }
-                }
+                // Back goes back to check the link when nothing loaded. While
+                // sources load it is left to tvOS, which goes to the Home Screen.
+                .onExitCommand(perform: backAction)
             }
         }
 

@@ -84,7 +84,7 @@ public enum ControlHintScreen: Hashable, Sendable {
                 ControlHint(.swipeUpDown, swipe == .changesChannel ? "Change channel" : "Info bar"),
                 ControlHint(.swipeLeftRight, "Last channel or Recents"),
                 ControlHint(.hold, "Info, audio and subtitles"),
-                ControlHint(.playPause, "Pause"),
+                ControlHint(.back, "Tab bar"),
             ]
         case .infoBar(let swipe):
             [
@@ -118,7 +118,7 @@ public enum ControlHintScreen: Hashable, Sendable {
             [
                 ControlHint(.swipeLeftRight, "Choose a tab"),
                 ControlHint(.click, "Open"),
-                ControlHint(.back, "Back to Live"),
+                ControlHint(.back, "Home Screen"),
             ]
         case .titleRows(.movie):
             [

@@ -294,8 +294,10 @@
         // MARK: Navigation
 
         /// Handles Menu at the shell. Content screens deeper than their root,
-        /// and the picker, consume Menu before it gets here.
-        func menu(from origin: MenuOrigin) async -> ShellFocus {
+        /// and the picker, consume Menu before it gets here. Menu with the
+        /// highlight in the bar never gets here: the system takes it to the
+        /// Home Screen (tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen).
+        func menu(from origin: MenuOrigin) -> ShellFocus {
             switch origin {
             case .picture:
                 barRaised = true
@@ -303,13 +305,6 @@
             case .content:
                 if tab == .guide { barRaised = true }
                 return .tab(tab)
-            case .bar:
-                if tab == .live {
-                    barRaised = false
-                    return liveFocus
-                }
-                await showLive()
-                return liveFocus
             }
         }
 

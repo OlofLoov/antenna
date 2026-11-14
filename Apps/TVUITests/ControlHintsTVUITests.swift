@@ -35,6 +35,16 @@ extension ShellUITests {
         expect(legend, "label CONTAINS 'Choose a group'")
     }
 
+    // control-hints/each-screen-lists-its-own-actions
+    // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
+    func testRemoteHintsNameWhereBackGoes() {
+        launchWithHints()
+        expect(legend, "label CONTAINS 'Back, Tab bar.'")
+        press(.menu)
+        expectFocus("shell.tab.live")
+        expect(legend, "label CONTAINS 'Back, Home Screen.'")
+    }
+
     // control-hints/turn-remote-hints-off
     func testRemoteHintsTurnOffInSettings() {
         launchWithHints()
