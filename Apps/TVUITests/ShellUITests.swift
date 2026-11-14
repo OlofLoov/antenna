@@ -145,7 +145,7 @@ extension ShellUITests {
     // tvos-shell/back-to-full-screen-from-the-tab-bar
     func testBackToFullScreen() {
         launchPlaying()
-        for back: XCUIRemote.Button in [.menu, .down, .select] {
+        for back: XCUIRemote.Button in [.down, .select] {
             press(.menu)
             expectFocus("shell.tab.live")
             press(back)
@@ -199,7 +199,7 @@ extension ShellUITests {
 // MARK: Tabs
 
 extension ShellUITests {
-    // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
     func testMenuFromTabReachesBar() {
         launchPlaying()
         press(.menu)
@@ -219,7 +219,7 @@ extension ShellUITests {
         XCTAssertTrue(element("movies.hero.play").exists)
     }
 
-    // tvos-shell/menu-from-the-top-of-a-tab-reaches-the-tab-bar
+    // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
     // tvos-shell/the-tabs-in-order
     func testMenuFromGuideShowsBar() {
         launchPlaying()
@@ -237,8 +237,68 @@ extension ShellUITests {
         XCTAssertTrue(element("guide.grid").exists)
     }
 
-    // tvos-shell/menu-from-the-tab-bar-goes-back-to-live
-    func testMenuFromBarGoesLive() {
+    /// Waits for the app to leave the foreground, as Back to the Home Screen does.
+    func expectHomeScreen(file: StaticString = #filePath, line: UInt = #line) {
+        let left = app.wait(for: .runningBackgroundSuspended, timeout: 10) || app.state == .runningBackground
+        XCTAssertTrue(left, "the app stayed in the foreground, state \(app.state.rawValue)", file: file, line: line)
+    }
+
+    /// Presses Back until the app leaves the foreground, at most `limit`
+    /// times, as a TV remote with only Back and arrows would. Returns the
+    /// number of presses it took.
+    @discardableResult
+    func pressBackUntilHome(limit: Int, file: StaticString = #filePath, line: UInt = #line) -> Int {
+        for count in 1...limit {
+            press(.menu)
+            if app.wait(for: .runningBackgroundSuspended, timeout: 3) || app.state == .runningBackground { return count }
+        }
+        XCTFail("still in the app after \(limit) presses of Back; focused: \(focusedElements())", file: file, line: line)
+        return limit
+    }
+
+    // tvos-shell/back-always-leads-out-of-the-app
+    func testBackAlwaysLeavesLive() {
+        launch("channels")
+        expectEngine("playing loads=1 file=a1.ts")
+        expectFocus("shell.picture")
+        // The channel overlay, then the tab bar, then the Home Screen.
+        press(.select)
+        XCTAssertTrue(overlayRows().firstMatch.waitForExistence(timeout: 10))
+        XCTAssertEqual(pressBackUntilHome(limit: 6), 3)
+    }
+
+    // tvos-shell/back-always-leads-out-of-the-app
+    // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
+    func testBackAlwaysLeavesAGenreGrid() {
+        launchPlaying()
+        press(.menu)
+        press(.right, times: 2)
+        press(.select)
+        expectFocus("movies.hero.play")
+        let chips = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH %@ AND hasFocus == true", "movies.genres."))
+        for _ in 0..<10 where !chips.firstMatch.exists { press(.down) }
+        let all = element("movies.genres.all")
+        for _ in 0..<3 where !all.hasFocus { press(.right) }
+        expectFocus("movies.genres.all")
+        press(.select)
+        XCTAssertTrue(element("movies.grid").waitForExistence(timeout: 10))
+        // The grid, then the tab bar, then the Home Screen.
+        XCTAssertEqual(pressBackUntilHome(limit: 6), 3)
+    }
+
+    // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
+    func testBackFromBarOverLiveGoesHome() {
+        launchPlaying()
+        press(.menu)
+        expectFocus("shell.tab.live")
+        press(.menu)
+        expectHomeScreen()
+    }
+
+    // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
+    // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
+    func testBackFromMoviesGoesToBarThenHome() {
         launchPlaying()
         press(.menu)
         press(.right, times: 2)
@@ -247,10 +307,27 @@ extension ShellUITests {
         press(.menu)
         expectFocus("shell.tab.movies")
         press(.menu)
-        expectGone("shell.tab.live")
-        expectGone("movies.hero.play")
-        expect(element("shell.player"), "value == 'full'")
-        expectEngine("playing loads=1 file=a1.ts")
+        expectHomeScreen()
+    }
+
+    // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
+    func testBackFromALowerRowScrollsToTheTop() {
+        launchPlaying()
+        press(.menu)
+        press(.right, times: 2)
+        press(.select)
+        expectFocus("movies.hero.play")
+        let chips = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH %@ AND hasFocus == true", "movies.genres."))
+        for _ in 0..<10 where !chips.firstMatch.exists { press(.down) }
+        XCTAssertTrue(chips.firstMatch.exists, "never reached the genres; focused: \(focusedElements())")
+        XCTAssertFalse(element("movies.hero.play").isHittable, "the banner scrolled away")
+
+        press(.menu)
+        expectFocus("shell.tab.movies")
+        expect(element("movies.hero.play"), "isHittable == true")
+        press(.down)
+        expectFocus("movies.hero.play")
     }
 
     // tvos-shell/other-screens-can-send-the-user-somewhere

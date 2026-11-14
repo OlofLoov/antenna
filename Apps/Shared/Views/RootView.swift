@@ -133,6 +133,8 @@
     private struct CompactTabs: View {
         enum Tab: Hashable { case live, guide, movies, search, settings }
         @State private var selection: Tab = .live
+        /// Taps on the tab that was already open, per tab.
+        @State private var taps: [Tab: Int] = [:]
         /// The tab Search was opened from, where Cancel goes back to.
         @State private var beforeSearch: Tab = .live
         @Environment(LiveModel.self) private var live
@@ -160,23 +162,27 @@
         private var storedOffer: TitleOffer { TitleOffer(records: records, refresher: refresher) }
 
         var body: some View {
-            TabView(selection: $selection) {
+            TabView(selection: tabSelection) {
                 SwiftUI.Tab("Live", systemImage: "tv", value: .live) {
                     LiveCompactView()
+                        .environment(\.tabTaps, taps[.live, default: 0])
                 }
                 SwiftUI.Tab("Guide", systemImage: "list.bullet.rectangle", value: .guide) {
                     GuideCompactScreen()
                         .environment(\.guideBoardOpenLive) { selection = .live }
+                        .environment(\.tabTaps, taps[.guide, default: 0])
                 }
                 if showsMovies {
                     SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
                         ShelfCompactScreen()
                             .environment(\.openSearch, opener)
+                            .environment(\.tabTaps, taps[.movies, default: 0])
                     }
                 }
                 SwiftUI.Tab("Search", systemImage: "magnifyingglass", value: .search) {
                     SearchCompactScreen { selection = beforeSearch }
                         .modifier(SearchSupply(picks: picks))
+                        .environment(\.tabTaps, taps[.search, default: 0])
                 }
                 SwiftUI.Tab("Settings", systemImage: "gearshape", value: .settings) {
                     SettingsView()
@@ -226,6 +232,17 @@
                     }
                 }
             #endif
+        }
+
+        /// The selection, counting a tap on the tab already open
+        /// (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).
+        private var tabSelection: Binding<Tab> {
+            Binding {
+                selection
+            } set: { tab in
+                if tab == selection { taps[tab, default: 0] += 1 }
+                selection = tab
+            }
         }
 
         #if os(iOS)

@@ -17,9 +17,9 @@ struct ProfileFlow: View {
             if managing {
                 ProfileManageFlow(profiles: profiles, done: done)
             } else {
+                // Nothing is behind the picker, so Back goes to the Home Screen
+                // (profiles/who-s-watching-at-launch).
                 picker
-                    // Nothing is behind the picker, so Menu stays here.
-                    .onExitCommand {}
             }
         #else
             picker

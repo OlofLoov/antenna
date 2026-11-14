@@ -119,6 +119,8 @@
         let anchor: Date
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
+        @Environment(\.tabTaps) private var tabTaps
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
         /// The filter field's place in the list, above the first row.
         static let filterID = "guide.filter.row"
@@ -141,6 +143,12 @@
                 // The field starts out of sight above the first row; pulling down shows it.
                 .onAppear {
                     if model.filter.isEmpty, let first = data.rows.first { proxy.scrollTo(first, anchor: .top) }
+                }
+                // Tapping Guide again goes back to the first channel
+                // (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).
+                .onChange(of: tabTaps) { _, _ in
+                    guard let first = data.rows.first else { return }
+                    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.3)) { proxy.scrollTo(first, anchor: .top) }
                 }
                 .onChange(of: model.jump) { _, jump in
                     guard let jump else { return }

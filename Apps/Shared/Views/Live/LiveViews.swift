@@ -181,6 +181,8 @@
         /// The row the arrow keys moved to, drawn with a focus ring.
         var cursor: RowKey?
         @Environment(LiveModel.self) private var live
+        @Environment(\.tabTaps) private var tabTaps
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
         var body: some View {
             let rows = live.rows
@@ -193,6 +195,12 @@
                     list(rows)
                         .onChange(of: cursor) { _, key in
                             if let key { proxy.scrollTo(key) }
+                        }
+                        // Tapping Live again goes back to the first channel
+                        // (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).
+                        .onChange(of: tabTaps) { _, _ in
+                            guard let first = rows.first else { return }
+                            withAnimation(reduceMotion ? nil : .easeOut(duration: 0.3)) { proxy.scrollTo(first, anchor: .top) }
                         }
                 }
             }

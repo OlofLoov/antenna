@@ -136,6 +136,7 @@
                 ScrollView {
                     content
                 }
+                .scrollsToTopOnTabTap()
                 .scrollDismissesKeyboard(.immediately)
             }
             .task { focused = true }

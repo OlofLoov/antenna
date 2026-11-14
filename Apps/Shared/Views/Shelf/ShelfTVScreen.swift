@@ -91,6 +91,11 @@
                 }
                 .padding(.bottom, 60)
             }
+            .scrollsToTopFromTabBar()
+            // Swiping down from the tab bar lands on the banner's Play button
+            // (tvos-shell/back-from-a-tab-goes-to-the-tab-bar).
+            .focusSection()
+            .defaultFocus(focus, .content, priority: .userInitiated)
             // Focus scrolls rows clear of the tab bar, which sits on a band of
             // the ground color once the banner has scrolled away.
             .safeAreaPadding(.top, Self.barHeight)
