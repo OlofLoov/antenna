@@ -421,8 +421,9 @@ The system SHALL show the elapsed and remaining time of a playing movie or episo
 
 #### Scenario: A server that cannot skip
 - **GIVEN** a movie whose server cannot jump to a point
-- **WHEN** the user skips or scrubs
-- **THEN** the movie keeps playing where it is and the player says "This stream can't skip" for a few seconds
+- **WHEN** the controls show
+- **THEN** the player says "This stream can't skip" with them, before the user presses anything
+- **AND** skipping or scrubbing leaves the movie playing where it is and says it again for a few seconds
 
 #### Scenario: Before the length is known
 - **GIVEN** a title whose length the stream does not give
