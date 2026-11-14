@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Films start where you left off, skip, and end
-The system SHALL start a film at a saved time within its length, land a skip within a second, finish a film on a skip past the end and fetch nothing more until replay, and SHALL ignore saved times and refuse skips for live TV and films whose server cannot skip. A server counts as able to skip when it answers a request for part of the film with that part, whether or not it says it accepts ranges, and also behind a redirect. The player SHALL know whether a film can skip once it starts, before any skip is asked for.
+The system SHALL start a film at a saved time within its length, land a skip within a second, finish a film on a skip past the end and fetch nothing more until replay, and SHALL ignore saved times and refuse skips for live TV and films whose server cannot skip. A server that sends part of a film when asked SHALL count as able to skip.
 
 #### Scenario: Opening at a saved time
 - **GIVEN** a film of known length and a saved time
