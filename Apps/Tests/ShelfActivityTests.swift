@@ -41,7 +41,8 @@ import Testing
             details: { _, _ in ShelfDetails() },
             episodes: { _, series in
                 (1...2).map { Episode(id: "\(series.id)-e\($0)", episodeID: $0, season: 1, number: $0, title: "E\($0)") }
-            })
+            },
+            info: { _, title in title.kind == .movie ? .movie(VODInfo()) : .series(SeriesInfo()) })
         let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
         library.sourcesChanged([SourceDescriptor(id: source, name: "Cabin", kind: .xtream, url: URL(fileURLWithPath: "/cabin"))])
         library.open()
