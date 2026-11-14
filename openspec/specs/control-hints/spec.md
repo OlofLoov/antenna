@@ -11,7 +11,7 @@ The system SHALL show a remote hints legend on Apple TV with the Siri Remote's s
 #### Scenario: Live full screen
 - **GIVEN** a channel playing full screen on Apple TV with nothing over it
 - **WHEN** the legend shows
-- **THEN** it lists Click for the channel list, swipe up or down to change channel, swipe left or right for the last channel or Recents, hold for info, audio and subtitles, and play/pause to pause
+- **THEN** it lists Click for the channel list, swipe up or down to change channel, swipe left or right for the last channel or Recents, hold for info, audio and subtitles, and Back for the tab bar
 
 #### Scenario: A screen without hints
 - **GIVEN** the viewer is on Search on Apple TV
@@ -44,6 +44,12 @@ The system SHALL list the actions of the part of the screen that has the highlig
 - **GIVEN** a movie playing with the legend showing click left or right to skip 10 seconds and swipe left or right to scrub
 - **WHEN** the viewer slides on the touch surface to a new place
 - **THEN** the legend lists swipe left or right to move the new place, click to play from here and Back to cancel
+
+#### Scenario: Where Back goes
+- **GIVEN** the legend shows on Live full screen, the Guide, or the Movies or Series rows
+- **WHEN** the viewer reads its Back line
+- **THEN** it reads "Tab bar"
+- **AND** with the highlight in the tab bar it reads "Home Screen"
 
 ### Requirement: Hints fade and come back on a new screen
 The system SHALL show the legend when the highlight reaches a new screen and fade it six seconds later. The info bar coming and going over the picture, and the highlight moving between the overlay's groups and channels, SHALL count as the same screen. A screen SHALL show its legend at most three times until the app launches again. With Reduce Motion on, the legend SHALL appear and go without animation.

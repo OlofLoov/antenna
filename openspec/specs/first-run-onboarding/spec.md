@@ -147,6 +147,11 @@ The system SHALL turn each checklist line done or failed as the login, playlist,
 - **WHEN** the user moves to a checklist line
 - **THEN** it is read as one item with its state, title and detail
 
+#### Scenario: Back while loading on Apple TV
+- **GIVEN** the loading checklist is showing on Apple TV and at least one line is still loading
+- **WHEN** the user presses Back
+- **THEN** the app goes to the Apple TV Home Screen
+
 ### Requirement: A summary when everything has loaded
 The system SHALL show a summary of what the provider added once every checklist line is done or failed, leaving out anything that came to nothing or failed.
 
