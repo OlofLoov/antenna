@@ -9,7 +9,8 @@ extension DemuxEngine {
     /// play starts it again from the beginning. Throws `SeekRefusal.live`
     /// for live TV and `.notSeekable` for a film whose server cannot skip.
     public func seek(to time: Duration) async throws {
-        guard let start = current?.start, let request else { throw SeekRefusal.notSeekable }
+        // While an earlier skip reopens the film, the start it had stands in.
+        guard let start = current?.start ?? lastStart, let request else { throw SeekRefusal.notSeekable }
         guard !isLive else { throw SeekRefusal.live }
         guard start.canSeek else { throw SeekRefusal.notSeekable }
         if let length = start.duration, time.inSeconds >= length.seconds {
@@ -21,7 +22,7 @@ extension DemuxEngine {
         generation += 1
         let mine = generation
         let playing = state == .playing || state == .buffering
-        let origin = current?.start?.origin
+        let origin = start.origin
         release()
         if playing { set(.buffering) }
         var options = request.options

@@ -203,13 +203,17 @@ public struct PlaybackPosition: Sendable, Equatable {
     /// Nil for live TV and for streams whose length is not known.
     public var duration: Duration?
     public var isLive: Bool
+    /// False for a film whose server cannot jump to a point, so the
+    /// controls can say so before the user tries; true until the engine knows.
+    public var canSkip: Bool
 
     public static let zero = PlaybackPosition(time: .zero, duration: nil, isLive: false)
 
-    public init(time: Duration, duration: Duration?, isLive: Bool) {
+    public init(time: Duration, duration: Duration?, isLive: Bool, canSkip: Bool = true) {
         self.time = time
         self.duration = duration
         self.isLive = isLive
+        self.canSkip = canSkip
     }
 }
 

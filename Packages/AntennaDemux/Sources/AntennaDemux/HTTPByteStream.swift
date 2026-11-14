@@ -36,14 +36,21 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     public private(set) var acceptsRanges = false
     /// Where in the resource the body starts.
     public let offset: Int
+    /// True when a request from the start asks for `bytes=0-`, so a server
+    /// that takes ranges answers 206 even when it never says so.
+    private let asksForRange: Bool
     /// The answer's HTTP status, once it came.
     public private(set) var status: Int?
 
-    /// `offset` asks for the resource from that byte on, with a Range header.
-    public init(url: URL, session: URLSession = PlaybackNetwork.makeSession(), offset: Int = 0) {
+    /// `offset` asks for the resource from that byte on, with a Range
+    /// header. `asksForRange` sends one from the start too, for a film:
+    /// live TV leaves it out, since some servers refuse a range on a stream
+    /// with no end.
+    public init(url: URL, session: URLSession = PlaybackNetwork.makeSession(), offset: Int = 0, asksForRange: Bool = false) {
         self.url = url
         self.session = session
         self.offset = offset
+        self.asksForRange = asksForRange
     }
 
     /// Starts the request and returns once the headers arrive. Throws the
@@ -86,10 +93,10 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     }
 
     /// The request for this stream: the address, with a Range header from
-    /// `offset` on when it is past the start.
+    /// `offset` on when it is past the start or the stream asks for one.
     private var request: URLRequest {
         var request = URLRequest(url: url)
-        if offset > 0 { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
+        if offset > 0 || asksForRange { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
         return request
     }
 
@@ -185,9 +192,11 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         self.response = http
         status = http?.statusCode
         let range = http?.value(forHTTPHeaderField: "Content-Range")
-        if http?.statusCode == 206, let total = range?.split(separator: "/").last.flatMap({ Int($0) }) {
-            expectedLength = total
+        if http?.statusCode == 206 {
+            // A 206 is proof the server skips, whatever its headers say.
             acceptsRanges = true
+            let total = range?.split(separator: "/").last.flatMap { Int($0) }
+            expectedLength = total ?? (response.expectedContentLength > 0 ? offset + Int(response.expectedContentLength) : nil)
         } else if response.expectedContentLength > 0 {
             expectedLength = Int(response.expectedContentLength)
             acceptsRanges = http?.value(forHTTPHeaderField: "Accept-Ranges")?.lowercased().contains("bytes") == true

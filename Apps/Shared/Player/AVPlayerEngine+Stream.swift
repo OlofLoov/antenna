@@ -137,7 +137,7 @@ extension AVPlayerEngine {
         stallWatch = nil
         removeItem()
         wantsPlay = false
-        positionCast.send(PlaybackPosition(time: duration ?? .zero, duration: duration, isLive: stream.isLive))
+        positionCast.send(PlaybackPosition(time: duration ?? .zero, duration: duration, isLive: stream.isLive, canSkip: stream.canSeek))
         set(.ended)
     }
 
@@ -203,7 +203,9 @@ extension AVPlayerEngine {
         let now = item.currentTime()
         guard now.isNumeric else { return }
         let duration = !stream.isLive && item.duration.isNumeric ? Duration.seconds(item.duration.seconds) : nil
-        positionCast.send(PlaybackPosition(time: .seconds(now.seconds), duration: duration, isLive: stream.isLive))
+        positionCast.send(
+            PlaybackPosition(
+                time: .seconds(now.seconds), duration: duration, isLive: stream.isLive, canSkip: !stream.isLive && stream.canSeek))
     }
 
     // MARK: Reconnecting
