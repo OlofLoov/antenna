@@ -2,7 +2,7 @@ import Foundation
 
 /// A button or gesture on the Siri Remote, as a remote hint names it.
 public enum RemoteControl: String, CaseIterable, Sendable {
-    case click, clickLeftRight, hold, swipeUpDown, swipeLeftRight, swipe, playPause, back
+    case click, clickLeftRight, hold, swipeUpDown, swipeDown, swipeLeftRight, swipe, playPause, back
 
     /// What the legend calls it: "Click", "Swipe up or down", "Back".
     public var name: String {
@@ -11,6 +11,7 @@ public enum RemoteControl: String, CaseIterable, Sendable {
         case .clickLeftRight: "Click left or right"
         case .hold: "Hold"
         case .swipeUpDown: "Swipe up or down"
+        case .swipeDown: "Swipe down"
         case .swipeLeftRight: "Swipe left or right"
         case .swipe: "Swipe"
         case .playPause: "Play/Pause"
@@ -51,8 +52,13 @@ public enum ControlHintScreen: Hashable, Sendable {
     /// A movie's or series' page.
     case titlePage
     /// A movie or episode playing full screen; while scrubbing, a slide
-    /// has set a new place that select plays from.
-    case titlePlayer(scrubbing: Bool)
+    /// has set a new place that select plays from. `nextEpisode` while the
+    /// Next episode button shows (up-next/up-next-on-the-siri-remote).
+    case titlePlayer(scrubbing: Bool, nextEpisode: Bool = false)
+    /// Focus on the Next episode button.
+    case nextEpisodeButton
+    /// The Up next card, or "Still watching?" when `asking`.
+    case upNext(asking: Bool)
     /// Settings and the pages it opens.
     case settings
 
@@ -70,7 +76,7 @@ public enum ControlHintScreen: Hashable, Sendable {
 
     public var corner: Corner {
         switch self {
-        case .livePicture, .infoBar, .titlePlayer: .topTrailing
+        case .livePicture, .infoBar, .titlePlayer, .nextEpisodeButton, .upNext: .topTrailing
         case .overlayGroups, .overlayChannels, .guide, .tabBar, .titleRows, .titlePage, .settings: .bottomTrailing
         }
     }
@@ -137,7 +143,15 @@ public enum ControlHintScreen: Hashable, Sendable {
                 ControlHint(.click, "Play or choose"),
                 ControlHint(.back, "Back"),
             ]
-        case .titlePlayer(scrubbing: false):
+        case .titlePlayer(scrubbing: false, nextEpisode: true):
+            [
+                ControlHint(.clickLeftRight, "Skip 10 seconds"),
+                ControlHint(.swipeDown, "Next episode"),
+                ControlHint(.playPause, "Pause or play"),
+                ControlHint(.hold, "Audio and subtitles"),
+                ControlHint(.back, "Stop and go back"),
+            ]
+        case .titlePlayer(scrubbing: false, nextEpisode: false):
             [
                 ControlHint(.clickLeftRight, "Skip 10 seconds"),
                 ControlHint(.swipeLeftRight, "Scrub"),
@@ -145,10 +159,27 @@ public enum ControlHintScreen: Hashable, Sendable {
                 ControlHint(.hold, "Audio and subtitles"),
                 ControlHint(.back, "Stop and go back"),
             ]
-        case .titlePlayer(scrubbing: true):
+        case .titlePlayer(scrubbing: true, _):
             [
                 ControlHint(.swipeLeftRight, "Move the new place"),
                 ControlHint(.click, "Play from here"),
+                ControlHint(.back, "Cancel"),
+            ]
+        case .nextEpisodeButton:
+            [
+                ControlHint(.click, "Play the next episode"),
+                ControlHint(.back, "Keep watching"),
+            ]
+        case .upNext(asking: false):
+            [
+                ControlHint(.click, "Play now"),
+                ControlHint(.clickLeftRight, "Skip 10 seconds"),
+                ControlHint(.playPause, "Pause or play"),
+                ControlHint(.back, "Cancel"),
+            ]
+        case .upNext(asking: true):
+            [
+                ControlHint(.click, "Keep watching"),
                 ControlHint(.back, "Cancel"),
             ]
         case .settings:
@@ -176,7 +207,8 @@ extension ControlHintScreen {
         case .livePicture, .infoBar: .livePicture(swipe: .changesChannel)
         case .overlayGroups, .overlayChannels: .overlayGroups
         case .titlePlayer: .titlePlayer(scrubbing: false)
-        case .guide, .tabBar, .titleRows, .titlePage, .settings: self
+        case .upNext: .upNext(asking: false)
+        case .guide, .tabBar, .titleRows, .titlePage, .settings, .nextEpisodeButton: self
         }
     }
 }

@@ -302,4 +302,61 @@ final class ShelfTVUITests: XCTestCase {
         press(.menu)
         expect(element("movies.player"), "exists == false")
     }
+
+    /// Series open from the bar with every title starting 25 seconds before its end.
+    func openSeriesNearTheEnd() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-near-end"]
+        app.launch()
+        press(.menu)
+        XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
+        expectFocus("shell.tab.live")
+        press(.right, times: 3)
+        expectFocus("shell.tab.series")
+        press(.select)
+        expectFocus("series.hero.play")
+    }
+
+    // up-next/up-next-on-the-siri-remote
+    // up-next/next-episode-near-the-end, on Apple TV
+    func testDownReachesTheNextEpisodeAndTheCardTakesFocus() {
+        openSeriesNearTheEnd()
+        press(.select)
+        let probe = element("shelf.debug.engine")
+        expect(probe, "value BEGINSWITH 'playing '")
+        let first = probe.value as? String ?? ""
+
+        XCTAssertTrue(element("upNext.button").waitForExistence(timeout: 5))
+        press(.down)
+        expectFocus("upNext.button")
+        press(.menu)
+        expect(element("upNext.button"), "hasFocus == false")
+        XCTAssertTrue(element("series.player").exists, "Back on the button keeps the episode")
+
+        press(.right)
+        expectFocus("upNext.playNow")
+        press(.right)
+        expect(element("shelf.debug.position"), "value == 'at 5395'")
+        press(.select)
+        expect(probe, "value BEGINSWITH 'playing ' AND value != '\(first)'")
+    }
+
+    // up-next/cancel-keeps-watching, on Apple TV
+    func testBackOnTheCardCancelsIt() {
+        openSeriesNearTheEnd()
+        press(.select)
+        let probe = element("shelf.debug.engine")
+        expect(probe, "value BEGINSWITH 'playing '")
+        let first = probe.value as? String ?? ""
+        XCTAssertTrue(element("upNext.button").waitForExistence(timeout: 5))
+        press(.right)
+        expectFocus("upNext.playNow")
+        press(.menu)
+        expect(element("upNext.card"), "exists == false")
+        XCTAssertTrue(element("series.player").exists)
+        sleep(11)
+        XCTAssertEqual(probe.value as? String, first, "nothing else plays")
+        press(.menu)
+        expect(element("series.player"), "exists == false")
+    }
 }

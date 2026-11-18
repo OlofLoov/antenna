@@ -34,6 +34,7 @@ struct SettingsView: View {
                 PreferencesSection(preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies) { changed in
                     PreferencesStore.save(changed, in: context)
                 }
+                AutoplayRow()
                 #if os(tvOS)
                     Section { RemoteHintsRow() }
                 #endif
