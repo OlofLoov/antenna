@@ -109,9 +109,9 @@ Not drawn: the button on iPhone and iPad (the card's corner, as a capsule "Next 
 | `upNext.cancel` | Cancel (iPhone, iPad, Mac) |
 | `settings.autoplayNext` | the Settings toggle |
 
-UI tests launch with `-ui-testing-near-end`, which makes the scripted engine start each title 25 seconds before the end of its 90 minutes, so the button shows at once and a skip forward 10 seconds brings the card.
+UI tests launch with `-ui-testing-near-end`, which makes the scripted engine start each title 25 seconds before the end of its 90 minutes, so the button shows at once and a skip forward 10 seconds brings the card. Both iPhone and Apple TV run them on the `watching` shelf scenario, whose Northern Lights has seasons 1 to 3.
 
 ## Types
 
 - AntennaCore (`Player/UpNext.swift`): `UpNext` (the constants `buttonLead`, `cardLead`, `countdown`, `shortEpisode`, `askAfter`, and `next(after:in:)`), `UpNextTimer` (what shows for a position, a tick, the end and Cancel), `UpNextRun` (episodes in a row without input), `UpNextText` (the title line, the countdown line and the spoken line), `AutoplaySetting`. `ControlHintScreen` gains `.titlePlayer(scrubbing:nextEpisode:)`, `.nextEpisodeButton` and `.upNext(asking:)`; `RemoteControl` gains `.swipeDown`.
-- Apps: `ShelfPlayback.upNext`, `playNext()`, `cancelUpNext()`; `TitleTransport.Dependencies.input`; `TitleModel.played(_:)`; `NextEpisode.Button` and `NextEpisode.Card` in `Apps/Shared/Components/NextEpisode/`; `AutoplayRow` in `Apps/Shared/Views/Settings/`.
+- Apps: `ShelfPlayback.upNext`, `playNext()`, `cancelUpNext()`; `TitleTransport.Dependencies.input`; `TitleModel.played(_:)`; `NextEpisode.Button` and `NextEpisode.Card` in `Apps/Shared/Components/NextEpisode/`; `AutoplayRow` in `Apps/Shared/Views/Settings/`. `TitleTVPanel` and `TitleTrackButtons` moved unchanged to `TitleTrackControls.swift` to keep `ShelfPlayerView.swift` under the file length limit.
