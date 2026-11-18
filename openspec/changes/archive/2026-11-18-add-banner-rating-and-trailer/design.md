@@ -57,7 +57,7 @@ Focus on Apple TV: the banner pages only from Play or My list, and while focus i
 
 ### How the trailer opens
 
-The banner follows `title-detail-and-episode-picker/trailer` exactly. `BannerContext.Actions` gains `trailer: (() -> Void)?`, and `ShelfBannerHost` builds it with the same rule as `TitleScreen.trailer(_:)`, moved to a shared `ShelfActions.trailer(_:of:)` so the two cannot drift:
+The banner follows `title-detail-and-episode-picker/trailer` exactly. `BannerContext.Actions` gains `trailer: (() -> Void)?`, and `ShelfBannerHost` builds it with the same rule as `TitleScreen.trailer(_:)`, moved to a shared `ShelfActions.trailer(_:of:playback:openURL:)` so the two cannot drift. It takes the player and the `openURL` action because the banner host and the title page each read them from their own environment:
 
 - iPhone, iPad and Mac: `openURL`. A YouTube link opens in the YouTube app when it is installed, else in Safari.
 - Apple TV: only for `TrailerLink.playsInApp` links, through `ShelfPlayback.playTrailer`. Closing or the trailer's end goes back to the banner. `ShelfTVBannerButtons` already puts focus back on More info after a page opened from the banner; the same `returning` path puts it on Trailer after a trailer.
@@ -87,10 +87,21 @@ Design-system requirements followed: "Focus is the lifted white card" (Trailer i
 ## Identifiers
 
 - `movies.hero.trailer`, `series.hero.trailer`: the banner's Trailer button.
-- `movies.hero.rating`: the rating fact inside the facts line, for UI tests.
+- `movies.hero.facts`, `series.hero.facts`: the facts line, for UI tests. The line is one accessibility element (VoiceOver reads it in one go), so the rating fact inside it cannot carry an identifier of its own; tests read the line's label for "rated 7.4 out of 10". This replaces the `movies.hero.rating` the proposal named, and the three boards say so.
 
-## Open questions
+## Built
 
-1. **The YouTube app on Apple TV.** Recommend checking on a device whether `openURL` with a `youtube.com/watch` link opens the tvOS YouTube app. If it does, a follow-up change shows Trailer there when the app is installed, on the banner and the title page together.
-2. **Provider star or TMDB score on the banner once `add-title-metadata` ships?** Recommend the provider star on the banner and the TMDB score on the page, as written above, and revisit if the two numbers confuse anyone.
-3. **"★ 7.4" or "7.4/10"?** Recommend keeping "★ 7.4" to match the title page. Changing it means changing both.
+- The rating formatter stays on `TitleMetadata`: `rating(_:)` gives "★ 7.4" and `spokenRating(_:)` gives "rated 7.4 out of 10", both from one private one-decimal rule. `BannerText` keeps the written form as `rating` (also the last of `facts`) and the spoken one as `spokenRating`, so the focused-poster preview (`add-focused-title-preview`) and the title-scores row (`add-title-metadata`) can use the same strings.
+- The title page's details line still reads "rating 7.4" to VoiceOver. Switching it to `spokenRating(_:)` is left to `add-title-metadata`, which is changing that line.
+- `ShelfBanner.TrailerButton` (text and glyph, Apple TV, iPad and Mac) and `ShelfBanner.TrailerGlyphButton` (glyph only, iPhone) live in `ShelfBannerTrailer.swift`, two components rather than one with a layout flag.
+- Apple TV puts focus back on Trailer when the player closes after a trailer, while no title page is open. Focus returning on its own would also work most of the time; the explicit step makes it certain.
+- The UI-testing script gives the banner The Long Harbor rated 7.4 with a web page trailer (no button on Apple TV) and Night Ferry rated 6.8 with an HLS trailer. Apple TV's banner opens on Night Ferry, so its tests now press right three times from Play to reach My list.
+- Not covered by a UI test: the trailer link arriving while the highlight is on My list. The scripted info call answers at once, so the late case cannot be staged without a slower script; My list keeps its place in the `HStack`, which is what keeps the highlight.
+
+## Decisions from the owner (2026-11-18)
+
+The owner answered the open questions with yes to each recommendation:
+
+1. **The YouTube app on Apple TV.** Left out. Only playable trailers get the button on Apple TV, as on the title page, until someone checks on a device whether `openURL` with a `youtube.com/watch` link opens the tvOS YouTube app. If it does, a follow-up change shows Trailer there when the app is installed, on the banner and the title page together.
+2. **Provider star or TMDB score on the banner.** The banner keeps the provider's star ("★ 7.4"). The TMDB score stays on the title page once `add-title-metadata` ships it.
+3. **"★ 7.4" or "7.4/10".** "★ 7.4", to match the title page.
