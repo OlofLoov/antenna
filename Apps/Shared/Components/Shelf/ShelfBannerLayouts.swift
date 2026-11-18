@@ -26,6 +26,7 @@ import SwiftUI
                             PlayButton(type: .phone)
                             InfoButton(type: .phone, title: "Info")
                                 .fixedSize()
+                            TrailerGlyphButton(type: .phone)
                             MyListButton(type: .phone)
                         }
                         .padding(.top, 6)
@@ -66,6 +67,8 @@ import SwiftUI
                             PlayButton(type: .pad)
                                 .fixedSize()
                             InfoButton(type: .pad, title: "More info")
+                                .fixedSize()
+                            TrailerButton(type: .pad)
                                 .fixedSize()
                             MyListButton(type: .pad)
                         }
@@ -149,19 +152,25 @@ extension ShelfBanner {
 }
 
 extension BannerContext {
-    /// The Long Harbor, first of four, for previews.
-    static func preview(onMyList: Bool = false, kind: ShelfTitle.Kind = .movie, art: BannerArt? = nil) -> BannerContext {
+    /// The Long Harbor, first of four, for previews. `rated` adds a 7.4
+    /// rating and a trailer.
+    static func preview(
+        onMyList: Bool = false, kind: ShelfTitle.Kind = .movie, art: BannerArt? = nil, rated: Bool = false
+    ) -> BannerContext {
         let title = kind == .movie ? ShelfFixtures.movie(0) : ShelfFixtures.series(0)
-        let details =
+        var details =
             kind == .movie
             ? ShelfDetails(
                 year: 2024, duration: 128 * 60,
                 plot: "A harbour pilot uncovers a smuggling ring the night before the port is sold. One tide to decide who gets out.",
                 ageRating: "15")
             : ShelfDetails(year: 2021, seasons: 3, plot: "Three sisters run a ferry line through a long winter.")
+        if rated { details.rating = kind == .movie ? 7.4 : 8.1 }
         return BannerContext(
             state: .init(text: BannerText(title, details: details), art: art, isOnMyList: onMyList, index: 0, count: 4),
-            actions: .init(play: {}, moreInfo: {}, toggleMyList: {}, page: { _ in }, show: { _ in }, interacting: { _ in }))
+            actions: .init(
+                play: {}, moreInfo: {}, trailer: rated ? {} : nil, toggleMyList: {}, page: { _ in }, show: { _ in },
+                interacting: { _ in }))
     }
 }
 
@@ -203,6 +212,26 @@ extension BannerContext {
         .background(Palette.ground)
     }
 
+    #Preview("Banner, iPhone, rating and trailer", traits: .fixedLayout(width: 390, height: 520)) {
+        ShelfBanner.Phone { EmptyView() }
+            .environment(\.shelfBanner, .preview(rated: true))
+            .background(Palette.ground)
+    }
+
+    #Preview("Banner, iPad, rating and trailer", traits: .fixedLayout(width: 914, height: 330)) {
+        ShelfBanner.Pad()
+            .environment(\.shelfBanner, .preview(rated: true))
+            .environment(\.shelfMetrics, .pad)
+            .background(Palette.ground)
+    }
+
+    #Preview("Banner, iPad, series, rating and trailer", traits: .fixedLayout(width: 914, height: 330)) {
+        ShelfBanner.Pad()
+            .environment(\.shelfBanner, .preview(kind: .series, rated: true))
+            .environment(\.shelfPrefix, "series")
+            .background(Palette.ground)
+    }
+
     #Preview("Banner, iPad, series", traits: .fixedLayout(width: 914, height: 330)) {
         ShelfBanner.Pad()
             .environment(\.shelfBanner, .preview(kind: .series))
@@ -219,6 +248,18 @@ extension BannerContext {
         ShelfBanner.MyListButton(type: .tv)
     }
     .environment(\.shelfBanner, .preview())
+    .environment(\.shelfMetrics, .tv)
+    .background(Palette.ground)
+}
+
+#Preview("Banner, Apple TV, rating and trailer", traits: .fixedLayout(width: 1920, height: 640)) {
+    ShelfBanner.Television {
+        ShelfBanner.PlayButton(type: .tv).fixedSize()
+        ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
+        ShelfBanner.TrailerButton(type: .tv).fixedSize()
+        ShelfBanner.MyListButton(type: .tv)
+    }
+    .environment(\.shelfBanner, .preview(rated: true))
     .environment(\.shelfMetrics, .tv)
     .background(Palette.ground)
 }

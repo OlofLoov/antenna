@@ -274,13 +274,12 @@
                     case "xtream#office#vod#3" where infoLoads[title.id] == 1:
                         throw URLError(.badServerResponse)
                     default:
+                        // Night Ferry's rating and trailer are the banner's.
                         let details = details(title)
-                        // Night Ferry's trailer is an HLS playlist, which Apple TV plays in the app.
-                        let trailer = title.id == "xtream#office#vod#1" ? URL(string: "https://trailers.example/night-ferry.m3u8") : nil
                         return .movie(
                             VODInfo(
                                 plot: details.plot, year: details.year, duration: details.duration, genre: title.category,
-                                trailerURL: trailer))
+                                rating: details.rating, trailerURL: details.trailerURL))
                     }
                 case .series:
                     // A series answers after half a second, so the page shows its name first.
@@ -293,12 +292,26 @@
                 }
             }
 
+            /// The banner's details. The Long Harbor is rated 7.4, and its trailer
+            /// is a web page, which gets no button on Apple TV; Night Ferry is rated
+            /// 6.8 and has an HLS trailer, which every platform offers.
             func details(_ title: ShelfTitle) -> ShelfDetails {
                 let number = Int(title.id.split(separator: "#").last ?? "") ?? 0
-                return title.kind == .movie
+                var details =
+                    title.kind == .movie
                     ? ShelfDetails(
                         year: 2000 + number, duration: Double(90 + number) * 60, plot: "The story of \(title.name).", ageRating: "15")
                     : ShelfDetails(year: 2010 + number, seasons: number % 3 + 1, plot: "A series about \(title.name).")
+                switch title.id {
+                case "xtream#cabin#vod#1":
+                    details.rating = 7.4
+                    details.trailerURL = URL(string: "https://trailers.example/long-harbor")
+                case "xtream#office#vod#1":
+                    details.rating = 6.8
+                    details.trailerURL = URL(string: "https://trailers.example/night-ferry.m3u8")
+                default: break
+                }
+                return details
             }
 
             private func catalogue(_ source: UUID, kind: ShelfTitle.Kind) -> ShelfCatalogue {
