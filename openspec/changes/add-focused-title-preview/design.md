@@ -93,7 +93,7 @@ No hover equivalent in this change.
 - iPad is mostly touch, which has no hover.
 - Both platforms already have a cheap path to the plot: the poster's context menu has More info, and the title page opens beside the rows without losing the scroll position.
 
-A hover card on Mac, a popover over the poster after a rest like Netflix in a browser, would answer the same wish. It is listed as an open question rather than built here.
+A hover card on Mac, a popover over the poster after a rest like Netflix in a browser, would answer the same wish. The owner chose not to build it now (see "Decided with the owner").
 
 ## Boards
 
@@ -119,8 +119,23 @@ Design-system requirements followed: "Movies and series open content first" (the
 - A panel with strict flood protection could still object to one request a second from a viewer resting on every poster. That is faster than the banner's two requests every eight seconds, though each request is one the viewer would otherwise make by opening the page. If a real panel objects, `PreviewSchedule.rest` and a minimum gap between requests are the knobs.
 - Scroll anchoring in a lazy stack on tvOS can fight the focus engine's own scrolling. The UI test checks the focused row's frame after each move; the fallback is a custom `ScrollTargetBehavior` that snaps the focused row's top to 616.
 
-## Open questions
+## Decided with the owner
 
-1. **A hover card on Mac?** Recommend not now. Revisit if Mac use grows; the preview component can be reused in a popover.
-2. **Preview in the poster grid?** Recommend no. The grid fills the screen with posters; a preview would push it down to two rows.
-3. **Keep the "Recently added" eyebrow?** Recommend the category only, since the row header already names the row.
+The owner answered the open questions on 2026-11-18 by taking each recommendation:
+
+1. **No Mac hover card for now.** Revisit if Mac use grows; the preview component can be reused in a popover.
+2. **No preview in the poster grid.** The grid fills the screen with posters; a preview would push it down to two rows.
+3. **The eyebrow is the category only.** The row header already names the row. `BannerText(preview:details:)` in AntennaCore sets it, empty when the title has no category, and the preview then leaves the eyebrow out.
+
+## Notes from building it
+
+- **One info call for everything.** `ShelfModel.Dependencies.details` and `ShelfLoader.details` are gone. The banner, the preview and the title page all go through `Dependencies.info`, and `ShelfDetails(_:)` takes the banner's part of the answer. Without that, the banner's call and the page's call were two different requests for the same title and could not share an answer.
+- **Kept answers are keyed by source and title** (`ShelfTitle.activityKey`), so the same title id on two sources keeps two answers. `details` and `answered` stay keyed by title id, as the banner reads them.
+- **A request in flight is shared.** When the page opens while the banner's or the preview's request for the title is out, the page waits on that request instead of sending a second one. The request runs outside the page's task, so leaving the page stops the page waiting but the answer is still kept. This changes `title-detail-and-episode-picker/open-a-movie-s-page`, whose "leave before the details arrive" scenario said that opening again asks again. The delta spec in this change says the kept answer shows instead.
+- **A page with a kept answer opens loaded.** `TitleModel` applies the kept answer in its initializer, so the page never flashes its loading state. Retry calls `refreshInfo(_:)`, which drops the kept answer and asks.
+- **One request at a time** is `OneAtATime` in AntennaCore beside `PreviewSchedule`, so the queue rule is tested without the app.
+- **Focus tracking uses focused values.** Posters and Continue watching cards publish `shelfFocusedTitle`, rows and the Genres row publish `shelfFocusedRow` (`ShelfPreviewFocus.swift`). `ShelfTVScreen` reads both with `@FocusedValue`. The See all tile and the genre chips publish a row and no title, so the preview keeps its title there.
+- **The preview is 520 pt tall, not 600, and the focused row's header sits at y 536.** On the simulator, with the header at 616 the next row's posters started at 1104, below the screen, and moving down to them lost focus altogether. At 536 the next row's posters show their top 56 pt and the focus engine finds them. The copy starts at y 150 and the fade covers the last 140 pt. The boards still show 600; the device check below may move it again.
+- **How the row gets there.** The focus engine scrolls first; 350 ms after the highlight enters a row, `ShelfTVScreen` calls `ScrollViewProxy.scrollTo` on the row's id with an anchor worked out from the row's measured height. The header aims at 536 and lands at about 560 on the simulator, 40 pt under the preview's foot. The scroll view keeps its 120 pt top inset. Three things were tried and dropped on the simulator: changing the top inset to 616 while the preview shows (the content jumped and focus was lost), `ScrollPosition.scrollTo(y:)` (it pinned the scroll view, so the focus engine could no longer scroll to the next row), and scrolling at once on the focus change (the two scrolls fought and focus was lost). On the way back to the banner the screen scrolls to the top edge through the `ScrollPosition` it shares with `ShellBackToTop` (`scrollsToTopFromTabBar(_:)`). The rows' bottom padding is 344 pt so the last row can come up under the preview.
+- **Back from a page.** While a page covers the rows, the screen does not scroll back to the top, so the poster that opened the page stays loaded and can take focus back.
+- **Siri Remote hints.** The preview changes no control: select still plays or opens, a long press still opens the menu, Back still goes to the tab bar. `ControlHints` `.titleRows` is unchanged.
