@@ -16,10 +16,17 @@ struct ShelfSync: ViewModifier {
     @Environment(\.currentProfile) private var profile
     @Environment(\.sourceRefresher) private var refresher
     @State private var activity = ShelfActivity()
+    #if !os(tvOS)
+        @Environment(\.publishesMenuCommands) private var publishesMenuCommands
+    #endif
 
     func body(content: Content) -> some View {
         content
             .disabled(playback.playing != nil)
+            #if !os(tvOS)
+                // The player in front publishes the menu items, the screen under it none.
+                .environment(\.publishesMenuCommands, publishesMenuCommands && playback.playing == nil)
+            #endif
             .overlay {
                 if let target = playback.playing {
                     ShelfPlayerView(playback: playback, target: target)

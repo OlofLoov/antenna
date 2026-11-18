@@ -37,6 +37,7 @@
                         .environment(\.switchProfile, stopping(live))
                         .modifier(LiveSync(live: live))
                         .modifier(ShelfSync(library: shelves, playback: playback))
+                        .environment(\.publishesMenuCommands, !compact)
                         .onChange(of: compact, initial: true) { _, compact in guide.compact = compact }
                 }
             }

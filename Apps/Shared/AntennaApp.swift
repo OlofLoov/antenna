@@ -144,5 +144,9 @@ struct AntennaApp: App {
             #endif
         }
         .modelContainer(container)
+        #if !os(tvOS)
+            // keyboard-commands/shortcuts-are-listed-in-the-menus
+            .commands { AntennaCommands() }
+        #endif
     }
 }

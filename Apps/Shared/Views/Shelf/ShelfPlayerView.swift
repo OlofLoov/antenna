@@ -300,6 +300,7 @@ extension TitleTransport {
         /// "movies" or "series", for the Close button's identifier.
         let kind: String
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
+        @Environment(\.publishesMenuCommands) private var inMenus
         @State private var width: CGFloat = 0
 
         var body: some View {
@@ -338,6 +339,7 @@ extension TitleTransport {
                 }
             }
             .background { keys(pickerOpen: pickerOpen, cardShows: playback.upNext?.card != nil) }
+            .menuCommand(\.playbackCommands, menuCommands(pickerOpen: pickerOpen))
             .animation(.easeOut(duration: 0.2), value: playback.upNext)
             .animation(.easeOut(duration: 0.2), value: transport.controlsShown)
             .onChange(of: voiceOver || pickerOpen, initial: true) { _, holds in
@@ -399,20 +401,39 @@ extension TitleTransport {
             }
         }
 
+        /// The Playback menu's first items on iPad and Mac: Space, and Left
+        /// and Right by 10 seconds, off while the track list is open
+        /// (keyboard-commands/menu-items-follow-the-screen-in-front).
+        private func menuCommands(pickerOpen: Bool) -> PlaybackCommands {
+            PlaybackCommands(
+                playPause: MenuCommand(title: KeyCommand.pauseTitle(paused: transport.isPaused), isEnabled: !pickerOpen) {
+                    transport.playPause()
+                },
+                skipBack: MenuCommand(title: KeyCommand.skipTitle(forward: false, seconds: 10), isEnabled: !pickerOpen) {
+                    transport.skip(forward: false)
+                },
+                skipForward: MenuCommand(title: KeyCommand.skipTitle(forward: true, seconds: 10), isEnabled: !pickerOpen) {
+                    transport.skip(forward: true)
+                })
+        }
+
         /// Left and right skip, Space plays and pauses, Escape closes. They
         /// work while the controls are hidden. While the Up next card shows,
-        /// Escape is the card's Cancel instead.
+        /// Escape is the card's Cancel instead. Where the menus have the
+        /// first three, only Escape is here.
         private func keys(pickerOpen: Bool, cardShows: Bool) -> some View {
             ZStack {
-                Group {
-                    Button("Back 10 seconds") { transport.skip(forward: false) }
-                        .keyboardShortcut(.leftArrow, modifiers: [])
-                    Button("Forward 10 seconds") { transport.skip(forward: true) }
-                        .keyboardShortcut(.rightArrow, modifiers: [])
-                    Button("Play or pause") { transport.playPause() }
-                        .keyboardShortcut(.space, modifiers: [])
+                if !inMenus {
+                    Group {
+                        Button("Back 10 seconds") { transport.skip(forward: false) }
+                            .keyboardShortcut(.leftArrow, modifiers: [])
+                        Button("Forward 10 seconds") { transport.skip(forward: true) }
+                            .keyboardShortcut(.rightArrow, modifiers: [])
+                        Button("Play or pause") { transport.playPause() }
+                            .keyboardShortcut(.space, modifiers: [])
+                    }
+                    .disabled(pickerOpen)
                 }
-                .disabled(pickerOpen)
                 if !cardShows {
                     Button("Close") { Task { await playback.close() } }
                         .keyboardShortcut(.cancelAction)

@@ -76,7 +76,6 @@
                     }
                 }
                 .clipped()
-                .background { keys }
                 .background { LiveSkipKeys(live: live) }
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)
                 .accessibilityElement(children: .contain)
@@ -159,27 +158,6 @@
 
         /// Antenna reads this stream itself, so it cannot go to AirPlay.
         static let noAirPlay = "AirPlay not available for this stream"
-
-        /// The Mac's M, Command-Up and Command-Down, off while the filter
-        /// field takes typing (player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac).
-        @ViewBuilder private var keys: some View {
-            #if os(macOS)
-                if live.playing != nil {
-                    ZStack {
-                        Button("Mute") { live.player.toggleMute() }
-                            .keyboardShortcut("m", modifiers: [])
-                            .disabled(live.typing)
-                        Button("Volume up") { live.player.stepVolume(up: true) }
-                            .keyboardShortcut(.upArrow, modifiers: .command)
-                        Button("Volume down") { live.player.stepVolume(up: false) }
-                            .keyboardShortcut(.downArrow, modifiers: .command)
-                    }
-                    .frame(width: 0, height: 0)
-                    .opacity(0)
-                    .accessibilityHidden(true)
-                }
-            #endif
-        }
 
         @ViewBuilder private var controls: some View {
             if live.player.timeshift.canRewind {
