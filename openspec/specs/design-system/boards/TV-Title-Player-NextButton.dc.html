@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV episode player, next episode button</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- series.player: the episode full screen, playing (design-system/live-video-keeps-playing-under-overlays). Bars around the picture are pure black. -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+
+  <!-- upNext.button: from 30 seconds before the end of an episode at least 5 minutes long with a next episode (up-next/next-episode-near-the-end). Bottom right inside the safe area. It never takes focus on its own; swiping or clicking down from the picture moves focus to it, and Back or up moves focus back. Unfocused: the 0.14 surface with text in the primary color. Focused (drawn): the system focused look, white and grown. Select plays the next episode. Clicks left and right keep skipping 10 seconds and play/pause keeps pausing while it has focus. -->
+  <div style="position: absolute; right: 80px; bottom: 60px; height: 86px; padding: 0 36px; border-radius: 43px; background: #F2F4F8; color: #0B0E13; transform: scale(1.06); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 14px; font-size: 31px; font-weight: 600">
+    <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5l9 7-9 7zM13 5l9 7-9 7z"/></svg><span>Next episode</span>
+  </div>
+
+  <!-- When the transport bar shows (TV-Title-Player-Transport), the button moves up to sit above it, 24 pt clear of the elapsed and remaining times. -->
+  <!-- hints.legend, top right over the player (control-hints/hints-stay-out-of-the-way): Click, Play the next episode; Back, Keep watching -->
+  <div style="position: absolute; right: 80px; top: 60px; padding: 24px; border-radius: 20px; background: rgba(8, 10, 14, 0.82); font-size: 25px; color: #F2F4F8; display: flex; flex-direction: column; gap: 12px">
+    <div style="font-weight: 600; color: #A7B0BF">Remote</div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Click</span><span>Play the next episode</span></div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Back</span><span>Keep watching</span></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

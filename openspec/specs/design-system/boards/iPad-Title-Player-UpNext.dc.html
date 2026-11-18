@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad episode player, up next</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- series.player: the episode full screen, controls showing (iPad-Title-Player-Transport). The Mac follows this board. -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.35)"></div>
+
+  <!-- title.transport scrubber row, as on iPad-Title-Player-Transport -->
+  <div style="position: absolute; left: 20px; right: 20px; bottom: 24px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-variant-numeric: tabular-nums">
+    <span>43:52</span>
+    <div style="position: relative; flex: 1 1 auto; height: 28px">
+      <div style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.3)"></div>
+      <div style="position: absolute; left: 0; width: 97.5%; top: 12px; height: 4px; border-radius: 2px; background: {{accent}}"></div>
+      <div style="position: absolute; left: calc(97.5% - 14px); top: 0; width: 28px; height: 28px; border-radius: 14px; background: #F2F4F8"></div>
+    </div>
+    <span>-0:08</span>
+  </div>
+  <!-- upNext.card: bottom right inside the safe area, 360 pt wide, regular material on the 0.88 scrim, corner 20, padding 16. Never hides with the controls. -->
+  <div style="position: absolute; right: 16px; bottom: 76px; width: 360px; padding: 16px; border-radius: 20px; background: rgba(8,10,14,0.88); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box">
+    <div style="display: flex; gap: 12px; align-items: center">
+      <div style="width: 120px; height: 68px; flex: 0 0 auto; border-radius: 10px; background: linear-gradient(135deg, #2B3A52, #1A2535); display: flex; align-items: flex-end; justify-content: flex-start; padding: 8px; box-sizing: border-box; color: #A7B0BF; font-weight: 700"><span style="font-size: 15px">5</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+        <!-- upNext.countdown: footnote, muted -->
+        <span style="font-size: 13px; color: #A7B0BF">Next episode in 7</span>
+        <!-- upNext.title: headline, one line, cut at the end -->
+        <span style="font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">S2 E5 · The Long Night</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px">
+      <!-- upNext.cancel: glass button style. Escape on a Mac or an iPad keyboard. -->
+      <div style="flex: 1 1 0; height: 40px; border-radius: 20px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">Cancel</div>
+      <!-- upNext.playNow: glass prominent in the accent. Return on a Mac or an iPad keyboard. -->
+      <div style="flex: 1 1 0; height: 40px; border-radius: 20px; background: {{accent}}; color: #0B0E13; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 15px; font-weight: 600"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg><span>Play now</span></div>
+    </div>
+  </div>
+
+  <!-- With the controls showing the card sits 76 pt from the bottom, above the scrubber; hidden, 24 pt. The button before it (from 30 seconds, upNext.button) takes the same corner. Mac: Return plays now and Escape cancels the card, then closes the player as before. -->
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
