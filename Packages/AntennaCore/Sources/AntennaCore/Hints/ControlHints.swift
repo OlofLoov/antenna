@@ -211,16 +211,37 @@ extension ControlHintScreen {
         case .guide, .tabBar, .titleRows, .titlePage, .settings, .nextEpisodeButton: self
         }
     }
+
+    /// Live TV, Movies or Series, the parts of the app the viewer switches
+    /// between in the tab bar. The guide is part of Live. The tab bar,
+    /// title pages, the players and Settings belong to none, so passing
+    /// through them does not count as a switch.
+    enum Section: Hashable, Sendable {
+        case live, movies, series
+    }
+
+    var section: Section? {
+        switch self {
+        case .livePicture, .infoBar, .overlayGroups, .overlayChannels, .guide: .live
+        case .titleRows(.movie): .movies
+        case .titleRows(.series): .series
+        case .tabBar, .titlePage, .titlePlayer, .nextEpisodeButton, .upNext, .settings: nil
+        }
+    }
 }
 
 /// When the legend shows (control-hints/hints-fade-and-come-back-on-a-new-screen):
 /// on arriving at a new place, for `visibleFor`, at most
 /// `showingsPerLaunch` times per place until the app launches again.
+/// Moving to another section always shows it, past that limit. The first
+/// arrival at the live picture and at the title player is the first time
+/// something plays, so it shows like every first arrival.
 public struct ControlHintSchedule: Sendable {
     public static let visibleFor: Duration = .seconds(6)
     public static let showingsPerLaunch = 3
 
     private var current: ControlHintScreen?
+    private var section: ControlHintScreen.Section?
     private var showings: [ControlHintScreen: Int] = [:]
 
     public init() {}
@@ -228,10 +249,16 @@ public struct ControlHintSchedule: Sendable {
     /// Whether the legend should show as the highlight arrives at `screen`.
     /// Nil, as while focus moves between screens, changes nothing.
     public mutating func arrive(at screen: ControlHintScreen?) -> Bool {
-        guard let place = screen?.place, place != current else { return false }
+        guard let screen, screen.place != current else { return false }
+        let place = screen.place
         current = place
+        var switched = false
+        if let section = screen.section {
+            switched = section != self.section
+            self.section = section
+        }
         let count = showings[place, default: 0]
-        guard count < Self.showingsPerLaunch else { return false }
+        guard switched || count < Self.showingsPerLaunch else { return false }
         showings[place] = count + 1
         return true
     }
