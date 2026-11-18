@@ -96,12 +96,25 @@ and add the date and devices next to it.
   Expect two tiles, the sidebar folded, and the window refusing to shrink below
   1024 points wide.
 - [ ] **add-multi-view 4.2, tiles on the Mac.** With three tiles, click each one
-  and press Command-1 to Command-3. Expect the selection and the sound to follow.
+  and press Option-Command-1 to Option-Command-3. Expect the selection and the
+  sound to follow.
   Pick a channel in the list: it fills the selected tile. Double-click a tile:
   it fills the window, and double-click again goes back. Remove a tile, then
   leave multi-view: the remaining channel keeps playing in Live.
 - [ ] **add-search 2.5 and add-title-detail-and-episode-picker 6.1, Escape.** Do
   the iPad keyboard item above on the Mac.
+- [ ] **add-keyboard-shortcut-menus 1.3, iPad menu bar.** On an iPad with a
+  hardware keyboard, hold Command on Live, then pull the menu bar down from the
+  top edge. Expect Playback and Go between View and Window, Go listing Live to
+  Search on Command-1 to Command-5, and no Mute or volume items. Write what
+  holding Command shows into the change's design.md.
+- [ ] **add-keyboard-shortcut-menus 3.7, Mac menus.** Open every item in Edit,
+  View, Playback and Go on Live, the Guide, Search, a movie and multi-view.
+  Expect titles that follow the screen (Pause or Play, Back 15 or Back 10,
+  Find Channel, Filter Channels or Search) and dimmed items where the screen
+  cannot use them. Click the video on Live, then press Space and Command-Down:
+  the channel pauses and the volume goes down. With two windows, Space in the
+  one on the Guide pauses nothing in the other.
 
 ## Apple TV
 

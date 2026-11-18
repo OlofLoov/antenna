@@ -15,9 +15,11 @@ The system SHALL list its keyboard commands, each with its key, in the Mac menu 
 #### Scenario: The iPad menu bar
 - **GIVEN** an iPad with a hardware keyboard on Live
 - **WHEN** the user holds Command or opens the menu bar from the top of the screen
-- **THEN** the same menus show, without Mute and the volume items
+- **THEN** the same Playback, Go and View items show, without Mute and the volume items
+- **AND** Edit keeps iPadOS's own Find, Command-F still puts the cursor in the screen's field, and Sources & Settings is listed without Command-Comma, which iPadOS's Settings item holds
 
 #### Scenario: Find
+- **GIVEN** a Mac
 - **WHEN** the user opens the Edit menu on Live, the Guide or Search
 - **THEN** it lists Find Channel, Filter Channels or Search with Command-F, and choosing it puts the cursor in that screen's field
 
@@ -77,7 +79,7 @@ The system SHALL dim every command whose key has no Command, Option or Control m
 - **THEN** Space pauses again
 
 ### Requirement: Go to a section
-The system SHALL offer a Go menu with Live, Guide, Movies, Series and Search on Command-1 to Command-5, in the sidebar's order, and Sources & Settings on Command-Comma. A section the sidebar does not show SHALL be dimmed.
+The system SHALL offer a Go menu with Live, Guide, Movies, Series and Search on Command-1 to Command-5, in the sidebar's order, and Sources & Settings, on Command-Comma on a Mac. A section the sidebar does not show SHALL be dimmed.
 
 #### Scenario: Jumping to the Guide
 - **GIVEN** a channel playing on Live
@@ -90,6 +92,7 @@ The system SHALL offer a Go menu with Live, Guide, Movies, Series and Search on 
 - **THEN** Movies and Series are dimmed and Command-3 and Command-4 do nothing
 
 #### Scenario: Settings
+- **GIVEN** a Mac
 - **WHEN** the user presses Command-Comma
 - **THEN** Sources & Settings opens
 
