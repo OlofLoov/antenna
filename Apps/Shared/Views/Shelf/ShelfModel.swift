@@ -25,10 +25,10 @@ final class ShelfModel {
 
     let kind: ShelfTitle.Kind
     private(set) var sources: [ShelfSource] = []
-    /// Every source's titles, in source order and each source's order.
-    private(set) var titles: [ShelfTitle] = []
-    private(set) var rows: [ShelfRow] = []
-    private(set) var banner: [ShelfTitle] = []
+    /// The rows, the banner and the lookups, built off the main actor each
+    /// time a source's titles change
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    private(set) var index = ShelfIndex.empty
     /// Details by title id, once the banner, the preview or a page has asked.
     private(set) var details: [String: ShelfDetails] = [:]
     /// Titles whose info call has answered or failed.
@@ -52,7 +52,26 @@ final class ShelfModel {
     @ObservationIgnored private var previewTitles: [String: ShelfTitle] = [:]
     @ObservationIgnored private var previewTask: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
-    @ObservationIgnored private var byKey: [ActivityKey: ShelfTitle] = [:]
+    /// Bumped whenever a catalogue arrives or goes.
+    @ObservationIgnored private var revision = 0
+    /// The sources and revision of the last index asked for.
+    @ObservationIgnored private var requested: IndexKey?
+    @ObservationIgnored private var generation = 0
+    @ObservationIgnored private var building: Task<Void, Never>?
+    /// Loaded states that show with the index holding their titles.
+    @ObservationIgnored private var pendingStates: [UUID: ShelfSourceState] = [:]
+    /// Grid lists in their order, kept until the index changes.
+    @ObservationIgnored private var sortedLists: [SortedList: [ShelfTitle]] = [:]
+
+    private struct IndexKey: Equatable {
+        var sources: [UUID]
+        var revision: Int
+    }
+
+    private struct SortedList: Hashable {
+        var genre: String?
+        var sort: ShelfSort
+    }
 
     init(kind: ShelfTitle.Kind, _ dependencies: Dependencies) {
         self.kind = kind
@@ -64,9 +83,30 @@ final class ShelfModel {
         ShelfStatus(sources: sources, kind: kind, dismissed: dismissed)
     }
 
+    /// Every source's titles, in source order and each source's order.
+    var titles: [ShelfTitle] { index.titles }
+    var rows: [ShelfRow] { index.rows }
+    var banner: [ShelfTitle] { index.banner }
+
     /// The loaded title with this key, or nil.
     func title(_ key: ActivityKey) -> ShelfTitle? {
-        byKey[key]
+        index.title(key)
+    }
+
+    /// The section's titles, or one genre's, in `sort` order. Sorted once
+    /// per index, so a grid's redraws do not sort again
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    func titles(in genre: String? = nil, sortedBy sort: ShelfSort) -> [ShelfTitle] {
+        let key = SortedList(genre: genre, sort: sort)
+        if let kept = sortedLists[key] { return kept }
+        let list: [ShelfTitle] =
+            switch (genre, sort) {
+            case (nil, .recentlyAdded): index.newest
+            case (nil, _): Shelf.sorted(index.titles, by: sort)
+            case (let genre?, _): Shelf.sorted(Shelf.titles(in: genre, of: index.titles), by: sort)
+            }
+        sortedLists[key] = list
+        return list
     }
 
     /// The source a title came from, or nil once it is gone.
@@ -89,7 +129,8 @@ final class ShelfModel {
             loads[id]?.cancel()
             loads[id] = nil
             descriptors[id] = nil
-            catalogues[id] = nil
+            setCatalogue(nil, for: id)
+            pendingStates[id] = nil
         }
         var changed: [SourceDescriptor] = []
         for source in list where descriptors[source.id] != source {
@@ -138,16 +179,23 @@ final class ShelfModel {
         }
     }
 
-    /// Waits until no source is loading. For tests.
+    /// Waits until no source is loading and the index is built. For tests.
     func settled() async {
-        while let next = loads.values.first {
-            await next.value
+        while true {
+            if let next = loads.values.first {
+                await next.value
+            } else if let building {
+                await building.value
+            } else {
+                return
+            }
         }
     }
 
     private func startLoad(_ source: SourceDescriptor) {
         loads[source.id]?.cancel()
-        catalogues[source.id] = nil
+        setCatalogue(nil, for: source.id)
+        pendingStates[source.id] = nil
         dismissed.remove(source.id)
         setState(.loading, for: source.id)
         rebuild()
@@ -173,9 +221,11 @@ final class ShelfModel {
     private func finish(_ source: SourceDescriptor, with result: Result<ShelfCatalogue, any Error>) {
         switch result {
         case .success(let catalogue):
-            catalogues[source.id] = catalogue
-            setState(.loaded(titles: catalogue.titles.count), for: source.id)
+            setCatalogue(catalogue, for: source.id)
+            // The state shows with the index holding these titles.
+            pendingStates[source.id] = .loaded(titles: catalogue.titles.count)
         case .failure(let failure):
+            pendingStates[source.id] = nil
             let state = Self.state(for: failure)
             setState(state, for: source.id)
             if state == .waitingForLogin { watchLogins() }
@@ -208,14 +258,40 @@ final class ShelfModel {
         sources[index].state = state
     }
 
+    private func setCatalogue(_ catalogue: ShelfCatalogue?, for id: UUID) {
+        guard catalogue != nil || catalogues[id] != nil else { return }
+        catalogues[id] = catalogue
+        revision += 1
+    }
+
+    /// Builds the index of the loaded catalogues off the main actor when
+    /// they changed, then shows it with the sources' loaded states. Only
+    /// the newest build is shown.
     private func rebuild() {
+        let key = IndexKey(sources: sources.compactMap { catalogues[$0.id] == nil ? nil : $0.id }, revision: revision)
+        guard key != requested else {
+            if building == nil { showPendingStates() }
+            return
+        }
+        requested = key
+        generation += 1
+        let current = generation
         let loaded = sources.compactMap { catalogues[$0.id] }
-        let all = loaded.flatMap(\.titles)
-        guard all != titles else { return }
-        titles = all
-        byKey = Dictionary(all.map { ($0.activityKey, $0) }, uniquingKeysWith: { first, _ in first })
-        rows = Shelf.rows(all, categoryOrder: Shelf.categoryOrder(loaded.map(\.categories)), now: .now)
-        banner = Shelf.banner(all)
+        building = Task { [weak self] in
+            let signpost = BrowseSignposts.signposter.beginInterval("shelf index")
+            let index = await ShelfIndex.build(loaded, now: .now)
+            BrowseSignposts.signposter.endInterval("shelf index", signpost)
+            guard let self, current == generation else { return }
+            self.index = index
+            sortedLists = [:]
+            showPendingStates()
+            building = nil
+        }
+    }
+
+    private func showPendingStates() {
+        for (id, state) in pendingStates { setState(state, for: id) }
+        pendingStates = [:]
     }
 
     // MARK: Details
@@ -408,31 +484,5 @@ extension ShelfLibrary {
             episodes: { try await loader.episodes($0, series: $1) },
             info: { try await loader.info($0, title: $1) })
         return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
-    }
-}
-
-/// An open title page and where it was opened from, so going back can put
-/// focus or the scroll position on the starting point
-/// (title-detail-and-episode-picker/back-to-where-you-were).
-struct TitleRoute: Equatable {
-    enum Origin: Equatable {
-        /// The banner's More info button.
-        case banner
-        /// A poster, or the More info item in its menu, in the row or grid
-        /// named by its identifier part.
-        case poster(row: String)
-        /// A search result; the page shows over Search, not the section.
-        case search
-    }
-
-    var title: ShelfTitle
-    /// The section the page shows over.
-    var section: ShelfTitle.Kind
-    var origin: Origin
-    /// The page's details and episodes, new each time a page opens.
-    let model: TitleModel
-
-    static func == (lhs: TitleRoute, rhs: TitleRoute) -> Bool {
-        lhs.title == rhs.title && lhs.section == rhs.section && lhs.origin == rhs.origin && lhs.model === rhs.model
     }
 }

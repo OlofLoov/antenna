@@ -60,18 +60,27 @@ actor PosterCache {
 
     private func load(_ url: URL, key: String) async -> Poster? {
         let file = directory.appending(path: key)
-        if let data = try? Data(contentsOf: file), let poster = Poster(data: data) {
+        if let data = try? Data(contentsOf: file), let poster = await Self.decode(data) {
             try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: file.path)
             remember(poster, key: key)
             return poster
         }
+        let signpost = BrowseSignposts.signposter.beginInterval("poster")
+        defer { BrowseSignposts.signposter.endInterval("poster", signpost) }
         guard let (data, response) = try? await session.data(from: url),
             (response as? HTTPURLResponse).map({ (200..<300).contains($0.statusCode) }) ?? true,
-            let poster = Poster(data: data)
+            let poster = await Self.decode(data)
         else { return nil }
         remember(poster, key: key)
         store(data, at: file)
         return poster
+    }
+
+    /// Decodes away from the cache's actor, so posters decode in parallel
+    /// instead of one at a time (movies-and-series-browsing/browsing-stays-responsive).
+    @concurrent
+    private static func decode(_ data: Data) async -> Poster? {
+        Poster(data: data)
     }
 
     private func remember(_ poster: Poster, key: String) {

@@ -17,6 +17,8 @@ final class ShelfActivity {
     private(set) var searches: [String] = []
     @ObservationIgnored private var store: ActivityStore?
     private var listed: Set<ActivityKey> = []
+    /// Saved positions by title id, in `progress` order, for posters' labels.
+    private var progressByTitle: [String: [WatchProgress]] = [:]
 
     /// Reads `store` now and after every save to its container, until the
     /// calling task ends.
@@ -32,6 +34,7 @@ final class ShelfActivity {
     func reload() {
         guard let store else { return }
         progress = store.allProgress()
+        progressByTitle = Dictionary(grouping: progress, by: \.titleID)
         movies = store.myList(.movie)
         series = store.myList(.series)
         searches = store.recentSearches().map(\.query)
@@ -64,7 +67,7 @@ final class ShelfActivity {
     /// The section's titles the profile played on any device, finished ones
     /// included, most recent first (movies-and-series-browsing/recently-watched).
     func recentlyWatched(_ model: ShelfModel) -> [ShelfTitle] {
-        RecentlyWatched.list(progress: progress, titles: model.titles, kind: model.kind)
+        RecentlyWatched.list(progress: progress, kind: model.kind, title: model.title)
     }
 
     /// Movies and series in progress together, most recent first. A series
@@ -72,7 +75,7 @@ final class ShelfActivity {
     func continueWatching(_ library: ShelfLibrary) -> [ContinueWatching.Item] {
         let finished = ContinueWatching.finishedSeries(progress: progress, episodes: library.series.episodes)
         return ContinueWatching.items(
-            progress: progress, titles: library.movies.titles + library.series.titles, finishedSeries: finished)
+            progress: progress, title: { library.movies.title($0) ?? library.series.title($0) }, finishedSeries: finished)
     }
 
     /// Remembers a search whose result the user picked.
@@ -89,6 +92,6 @@ final class ShelfActivity {
 
     /// The saved position of a movie, for its poster's label.
     func progress(of title: ShelfTitle) -> WatchProgress? {
-        progress.first { $0.titleID == title.id && $0.sourceID == title.sourceID }
+        progressByTitle[title.id]?.first { $0.sourceID == title.sourceID }
     }
 }

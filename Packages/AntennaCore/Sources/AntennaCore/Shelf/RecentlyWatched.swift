@@ -9,6 +9,16 @@ public enum RecentlyWatched {
     public static func list(progress: [WatchProgress], titles: [ShelfTitle], kind: ShelfTitle.Kind, limit: Int = 20) -> [ShelfTitle] {
         let loaded = Dictionary(
             titles.filter { $0.kind == kind }.map { ($0.activityKey, $0) }, uniquingKeysWith: { first, _ in first })
+        return list(progress: progress, kind: kind, limit: limit, title: { loaded[$0] })
+    }
+
+    /// `list(progress:titles:kind:limit:)` reading the loaded titles through
+    /// `title`, so the cost follows the saved positions, not the library
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    public static func list(
+        progress: [WatchProgress], kind: ShelfTitle.Kind, limit: Int = 20, title: (ActivityKey) -> ShelfTitle?
+    ) -> [ShelfTitle] {
+        func loaded(_ key: ActivityKey) -> ShelfTitle? { title(key).flatMap { $0.kind == kind ? $0 : nil } }
         var latest: [ActivityKey: WatchProgress] = [:]
         for value in progress where value.isUsable {
             let key: ActivityKey
@@ -17,10 +27,10 @@ public enum RecentlyWatched {
             case (.series, let seriesID?): key = ActivityKey(titleID: seriesID, sourceID: value.sourceID)
             default: continue
             }
-            guard loaded[key] != nil else { continue }
+            guard loaded(key) != nil else { continue }
             if let current = latest[key], !WatchProgress.newestFirst(value, current) { continue }
             latest[key] = value
         }
-        return latest.sorted { WatchProgress.newestFirst($0.value, $1.value) }.prefix(limit).compactMap { loaded[$0.key] }
+        return latest.sorted { WatchProgress.newestFirst($0.value, $1.value) }.prefix(limit).compactMap { loaded($0.key) }
     }
 }
