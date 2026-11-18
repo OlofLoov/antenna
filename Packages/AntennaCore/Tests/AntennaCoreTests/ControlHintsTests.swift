@@ -138,4 +138,65 @@ import Testing
         let again = nextLaunch.arrive(at: .guide)
         #expect(again, "a new launch starts again")
     }
+
+    @Test("control-hints/hints-fade-and-come-back-on-a-new-screen switching between Live, Movies and Series always shows the legend")
+    func sectionSwitch() {
+        var schedule = ControlHintSchedule()
+        var movies: [Bool] = []
+        for _ in 0..<4 {
+            movies.append(schedule.arrive(at: .titleRows(.movie)))
+            _ = schedule.arrive(at: .tabBar)
+        }
+        #expect(movies == [true, true, true, false])
+        let switches = [
+            schedule.arrive(at: .titleRows(.series)),
+            schedule.arrive(at: .tabBar),
+            schedule.arrive(at: .titleRows(.movie)),
+            schedule.arrive(at: .tabBar),
+            schedule.arrive(at: .livePicture(swipe: .changesChannel)),
+            schedule.arrive(at: .tabBar),
+            schedule.arrive(at: .titleRows(.movie)),
+        ]
+        // The tab bar is past its three by now; each section shows anyway.
+        #expect(switches == [true, false, true, false, true, false, true])
+    }
+
+    @Test("control-hints/hints-fade-and-come-back-on-a-new-screen a title page, a player, Settings or the guide is no switch")
+    func noSwitch() {
+        var schedule = ControlHintSchedule()
+        for _ in 0..<3 {
+            _ = schedule.arrive(at: .titleRows(.movie))
+            _ = schedule.arrive(at: .titlePage)
+        }
+        let back = [
+            schedule.arrive(at: .titleRows(.movie)),
+            schedule.arrive(at: .settings),
+            schedule.arrive(at: .titleRows(.movie)),
+        ]
+        #expect(back == [false, true, false])
+
+        var live = ControlHintSchedule()
+        for _ in 0..<3 {
+            _ = live.arrive(at: .livePicture(swipe: .changesChannel))
+            _ = live.arrive(at: .overlayChannels)
+        }
+        let guide = live.arrive(at: .guide)
+        let picture = live.arrive(at: .livePicture(swipe: .changesChannel))
+        #expect(guide)
+        #expect(!picture, "the guide is part of Live")
+    }
+
+    @Test("control-hints/hints-fade-and-come-back-on-a-new-screen the first channel, movie or episode played since launch shows the legend")
+    func firstPlayback() {
+        var schedule = ControlHintSchedule()
+        for _ in 0..<3 {
+            _ = schedule.arrive(at: .titleRows(.series))
+            _ = schedule.arrive(at: .titlePage)
+        }
+        let player = schedule.arrive(at: .titlePlayer(scrubbing: false))
+        _ = schedule.arrive(at: .titlePage)
+        let picture = schedule.arrive(at: .livePicture(swipe: .changesChannel))
+        #expect(player)
+        #expect(picture)
+    }
 }

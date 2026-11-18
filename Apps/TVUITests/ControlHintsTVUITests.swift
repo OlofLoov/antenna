@@ -35,6 +35,26 @@ extension ShellUITests {
         expect(legend, "label CONTAINS 'Choose a group'")
     }
 
+    // control-hints/hints-fade-and-come-back-on-a-new-screen, switching sections
+    // control-hints/each-screen-lists-its-own-actions
+    func testRemoteHintsFollowTheSection() {
+        launchWithHints()
+        press(.menu)
+        press(.right, times: 2)
+        expectFocus("shell.tab.movies")
+        press(.select)
+        expectFocus("movies.hero.play")
+        expect(legend, "label CONTAINS 'Hold, More info and My list.'")
+
+        press(.up)
+        expectFocus("shell.tab.movies")
+        press(.right)
+        expectFocus("shell.tab.series")
+        press(.select)
+        expectFocus("series.hero.play")
+        expect(legend, "label CONTAINS 'Click, Open.' AND label CONTAINS 'Hold, My list.'")
+    }
+
     // control-hints/each-screen-lists-its-own-actions
     // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
     func testRemoteHintsNameWhereBackGoes() {
