@@ -53,6 +53,7 @@
                                 }
                                 .padding(.top, 8)
                                 Progress(type: type)
+                                Scores(type: type)
                                 Problem(type: type)
                             }
                             .frame(maxWidth: 1080, alignment: .leading)
@@ -83,6 +84,18 @@
     #Preview("Movie, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
         TitlePage.Television(plotLines: 4, artHeight: 1080) { EmptyView() }
             .environment(\.titlePage, .preview(TitlePreviewFixtures.full, play: TitlePreviewFixtures.resume, trailer: false))
+            .environment(\.shelfMetrics, .tv)
+    }
+
+    #Preview("Scores, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
+        TitlePage.Television(plotLines: 4, artHeight: 1080) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.scored, play: TitlePreviewFixtures.resume, trailer: false))
+            .environment(\.shelfMetrics, .tv)
+    }
+
+    #Preview("Sample scores, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
+        TitlePage.Television(plotLines: 4, artHeight: 1080) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.sample, trailer: false))
             .environment(\.shelfMetrics, .tv)
     }
 

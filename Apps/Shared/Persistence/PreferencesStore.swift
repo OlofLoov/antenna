@@ -15,6 +15,8 @@ final class PreferencesRecord {
     var swipeRaw: String = AppPreferences.Swipe.changesChannel.rawValue
     /// Off, Auto or Always (sources-and-settings/choose-when-subtitles-show).
     var subtitlesRaw: String = SubtitleMode.auto.rawValue
+    /// Movie info and scores (sources-and-settings/a-switch-for-movie-database-lookups).
+    var lookupsEnabled: Bool = true
     var updatedAt: Date = Date.now
 
     init() {}
@@ -24,7 +26,7 @@ final class PreferencesRecord {
             openOnLaunch: AppPreferences.LaunchScreen(rawValue: openOnLaunchRaw) ?? .live, guideHours: guideHours,
             refresh: AppPreferences.RefreshInterval(rawValue: refreshHours) ?? .twelve,
             swipe: AppPreferences.Swipe(rawValue: swipeRaw) ?? .changesChannel,
-            subtitles: SubtitleMode(rawValue: subtitlesRaw) ?? .auto)
+            subtitles: SubtitleMode(rawValue: subtitlesRaw) ?? .auto, lookupsEnabled: lookupsEnabled)
     }
 
     func store(_ preferences: AppPreferences, at date: Date) {
@@ -33,6 +35,7 @@ final class PreferencesRecord {
         refreshHours = preferences.refresh.rawValue
         swipeRaw = preferences.swipe.rawValue
         subtitlesRaw = preferences.subtitles.rawValue
+        lookupsEnabled = preferences.lookupsEnabled
         updatedAt = date
     }
 }

@@ -303,7 +303,8 @@ final class ShelfLibrary {
 
     /// Opens a title's page over the section it was picked in.
     func openPage(_ title: ShelfTitle, from origin: TitleRoute.Origin, in section: ShelfTitle.Kind) {
-        page = TitleRoute(title: title, section: section, origin: origin, model: TitleModel(title: title, shelf: model(title.kind)))
+        let model = TitleModel(title: title, shelf: model(title.kind), lookup: TitleLookups.app)
+        page = TitleRoute(title: title, section: section, origin: origin, model: model)
     }
 
     /// Closes the page; the section shows as it was.

@@ -1,4 +1,5 @@
 import AntennaCore
+import SwiftData
 import SwiftUI
 
 /// A title page over its section (title-detail-and-episode-picker). Loads
@@ -12,6 +13,7 @@ struct TitleScreen<Page: View>: View {
     @Environment(ShelfActivity.self) private var activity
     @Environment(ShelfPlayback.self) private var playback
     @Environment(\.openURL) private var openURL
+    @Query private var preferences: [PreferencesRecord]
     @State private var expanded = false
     @State private var attempt = 0
 
@@ -22,6 +24,9 @@ struct TitleScreen<Page: View>: View {
             .environment(\.titlePage, context)
             .environment(\.episodes, route.title.kind == .series ? episodes : nil)
             .task(id: attempt) { await model.load() }
+            .onChange(of: PreferencesStore.current(preferences).lookupsEnabled) { _, on in
+                Task { await model.lookupsChanged(on) }
+            }
             .onChange(of: model.sourceExists) { _, exists in
                 // A deleted source closes the page (title-detail-and-episode-picker/open-a-movie-s-page).
                 if !exists { library.closePage() }

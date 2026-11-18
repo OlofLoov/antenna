@@ -10,6 +10,7 @@ struct ShelfSync: ViewModifier {
     let library: ShelfLibrary
     let playback: ShelfPlayback
     @Query(sort: SourceRecord.displayOrder) private var records: [SourceRecord]
+    @Query private var preferences: [PreferencesRecord]
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
     @Environment(\.currentProfile) private var profile
@@ -46,6 +47,12 @@ struct ShelfSync: ViewModifier {
             .modifier(TrailerOpener())
             .task(id: records.compactMap(\.descriptor)) {
                 library.sourcesChanged(records.compactMap(\.descriptor))
+                // A deleted source's matches go (title-metadata/matches-are-kept-on-the-device).
+                await TitleLookups.app?.keepSources(Set(records.compactMap(\.descriptor).map(\.id)))
+            }
+            // title-metadata/lookups-can-be-turned-off, on this device or from another
+            .task(id: PreferencesStore.current(preferences).lookupsEnabled) {
+                await TitleLookups.app?.setEnabled(PreferencesStore.current(preferences).lookupsEnabled)
             }
             .onChange(of: TitleOffer(records: records, refresher: refresher), initial: true) { _, offer in
                 library.offer = offer

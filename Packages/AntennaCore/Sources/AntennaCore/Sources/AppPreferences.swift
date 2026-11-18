@@ -59,11 +59,15 @@ public struct AppPreferences: Equatable, Sendable {
     public var swipe: Swipe
     /// When subtitles start (sources-and-settings/choose-when-subtitles-show).
     public var subtitles: SubtitleMode
+    /// Movie info and scores from the movie database, on by default
+    /// (sources-and-settings/a-switch-for-movie-database-lookups).
+    public var lookupsEnabled: Bool
 
     public init(
         openOnLaunch: LaunchScreen = .live, guideHours: Int = 2, refresh: RefreshInterval = .twelve, swipe: Swipe = .changesChannel,
-        subtitles: SubtitleMode = .auto
+        subtitles: SubtitleMode = .auto, lookupsEnabled: Bool = true
     ) {
+        self.lookupsEnabled = lookupsEnabled
         self.openOnLaunch = openOnLaunch
         self.guideHours = Self.guideHours.contains(guideHours) ? guideHours : 2
         self.refresh = refresh

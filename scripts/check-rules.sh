@@ -70,6 +70,40 @@ check_except "app-intents: Siri and Shortcuts types only in Apps/Shared/Intents,
   'Apps/Shared/Intents/[A-Za-z]+\.swift' \
   Apps/Shared Apps/TV Apps/TopShelf
 
+# Fails on a line matching $2 that sits outside every #if DEBUG block, so
+# the code it names never reaches a Release build. A comment line passes.
+debug_only() {
+  local name="$1" pattern="$2"
+  shift 2
+  local hits=""
+  local file out
+  while IFS= read -r file; do
+    out=$(awk -v pat="$pattern" -v file="$file" '
+      /^[[:space:]]*#if[[:space:]]/ { depth++; stack[depth] = ($0 ~ /#if[[:space:]]+DEBUG([[:space:]]|$)/) ? "D" : "O"; next }
+      /^[[:space:]]*#elseif/ { stack[depth] = "O"; next }
+      /^[[:space:]]*#else/ { if (stack[depth] == "D") stack[depth] = "N"; next }
+      /^[[:space:]]*#endif/ { depth--; next }
+      /^[[:space:]]*\/\// { next }
+      $0 ~ pat {
+        inside = 0
+        for (i = 1; i <= depth; i++) if (stack[i] == "D") inside = 1
+        if (!inside) printf "%s:%d:%s\n", file, NR, $0
+      }
+    ' "$file")
+    if [[ -n "$out" ]]; then hits+="$out"$'\n'; fi
+  done < <(grep -rlE --include='*.swift' "$pattern" "$@" || true)
+  if [[ -n "$hits" ]]; then
+    printf 'FAIL %s\n%s\n\n' "$name" "$hits"
+    status=1
+  else
+    printf 'ok   %s\n' "$name"
+  fi
+}
+
+debug_only "title-metadata: the mock lookup and its sample scores only inside #if DEBUG" \
+  "${word}(MockTitleLookup|DebugTitleScores)${end}" \
+  Apps/Shared Apps/Mobile Apps/TV Apps/TopShelf Packages/AntennaCore/Sources
+
 # Like check_except, but hits only print a warning with a count per file and
 # never fail. refresh-visual-design turns these into failures once no file is left.
 warn_except() {

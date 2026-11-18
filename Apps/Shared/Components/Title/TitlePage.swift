@@ -431,4 +431,14 @@ enum TitlePreviewFixtures {
         movie: ShelfTitle(id: "xtream#fixture#vod#2", kind: .movie, sourceID: ShelfFixtures.source, name: "Salt Road", category: "Action"),
         info: VODInfo(duration: 5_520))
     static let resume = TitlePageContext.PlayState(label: "Resume", enabled: true, fraction: 0.6, remaining: "52 min left")
+    /// `full` with every site's score; the provider's rating leaves the details line.
+    static let scored = full.merging(TitleMatch(tmdbID: 1, scores: ScoreRow.previewScores))
+    /// `sparse` filled the way the Debug mock fills it, with its Sample label.
+    static let sample = sparse.merging(
+        TitleMatch(
+            tmdbID: 2,
+            details: TitleDetails(
+                plot: "Sample description for Salt Road, made up by the mock lookup.", year: 2019, genre: "Drama",
+                cast: "Sample Actor One, Sample Actor Two", director: "Sample Director"),
+            scores: [Score(site: .tmdb, value: 6.8, scale: 10)], isSample: true))
 }
