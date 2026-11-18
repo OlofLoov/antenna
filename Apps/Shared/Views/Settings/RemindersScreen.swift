@@ -123,7 +123,8 @@ struct RemindersScreen: View {
             label
                 .accessibilityIdentifier("reminders.row.\(index)")
                 .contextMenu { Button("Remove") { removing = reminder } }
-                .swipeActions { Button("Remove", role: .destructive) { removing = reminder } }
+                // Red, not the destructive role, as the row stays until the confirmation.
+                .swipeActions { Button("Remove") { removing = reminder }.tint(.red) }
         #else
             label
                 .accessibilityIdentifier("reminders.row.\(index)")

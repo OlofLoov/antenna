@@ -122,7 +122,11 @@ struct SettingsView: View {
                 .accessibilityIdentifier("settings.source.\(source.id.uuidString)")
                 #if !os(tvOS)
                     .swipeActions {
-                        Button("Delete", role: .destructive) { deleting = source }
+                        // Not the destructive role: with it the list takes the
+                        // row out before the confirmation, and Cancel then
+                        // crashes the list with an invalid item count.
+                        Button("Delete") { deleting = source }
+                        .tint(.red)
                     }
                 #endif
             }
