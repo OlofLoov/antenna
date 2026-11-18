@@ -19,6 +19,15 @@ struct TitlePageContext {
         var expanded: Bool
         /// Where Back leads: "Movies" or "Series".
         var section: String
+        /// What opened the About page while it shows; when it closes,
+        /// focus goes back there.
+        var aboutOpen: AboutOpener?
+    }
+
+    /// More, or an episode's Description, by episode id.
+    enum AboutOpener: Hashable {
+        case more
+        case episode(String)
     }
 
     /// The Play button: its words, and for something part-way the bar and
@@ -79,8 +88,10 @@ enum TitlePage {
     /// The board's placeholder color behind missing artwork.
     static let placeholder = Color(red: 0x22 / 255, green: 0x30 / 255, blue: 0x4A / 255)
 
-    /// The first backdrop scaled to fill. Without one the poster sits on
-    /// black, and without a poster its name tile does.
+    /// The first backdrop, laid out by its shape: it fills the frame, or a
+    /// tall one, such as a poster sent as the backdrop, shows whole at the
+    /// bottom right over a blurred copy of itself. Without one the poster
+    /// sits on black, and without a poster its name tile does.
     struct Backdrop: View {
         /// The poster's size when there is no backdrop.
         let poster: CGSize
@@ -90,7 +101,7 @@ enum TitlePage {
 
         var body: some View {
             let backdrop = page?.state.metadata.backdropURL
-            FilledArt(image: image?.image, background: .black) {
+            FittedArt(image: image?.image, background: .black) {
                 if backdrop == nil, let page {
                     ShelfView.PosterArt(name: page.state.metadata.name, url: page.state.posterURL)
                         .frame(width: poster.width, height: poster.height)
@@ -189,11 +200,13 @@ enum TitlePage {
         }
     }
 
-    /// The description cut to `lines`, with More when it runs over. More
-    /// expands it in place; on Apple TV the screen opens it in a sheet.
+    /// The description cut to `lines`, with More when it runs over or, as
+    /// `creditsCut` says, the cast and director do. More expands them in
+    /// place; on Apple TV the screen opens the About page.
     struct Plot: View {
         let type: Sizes
         let lines: Int
+        var creditsCut = false
         @Environment(\.titlePage) private var page
         @State private var cutHeight: CGFloat = 0
         @State private var fullHeight: CGFloat = 0
@@ -223,7 +236,7 @@ enum TitlePage {
                             .hidden()
                         }
                         .accessibilityIdentifier("title.plot")
-                    if fullHeight > cutHeight + 1, !page.state.expanded {
+                    if fullHeight > cutHeight + 1 || creditsCut, !page.state.expanded {
                         More(type: type)
                     }
                 }
@@ -238,10 +251,11 @@ enum TitlePage {
         }
     }
 
-    /// Opens the whole description: in place, or a sheet on Apple TV.
+    /// Opens the whole description: in place, or the About page on Apple TV.
     struct More: View {
         let type: Sizes
         @Environment(\.titlePage) private var page
+        @FocusState private var focused: Bool
 
         var body: some View {
             Button {
@@ -256,28 +270,15 @@ enum TitlePage {
             .buttonStyle(.plain)
             .accessibilityLabel("More description")
             .accessibilityIdentifier("title.more")
-        }
-    }
-
-    /// "Cast Mira Holt, …" and "Director Sanna Weiss", each up to two lines.
-    struct Credits: View {
-        let type: Sizes
-        @Environment(\.titlePage) private var page
-
-        var body: some View {
-            if let meta = page?.state.metadata, meta.cast != nil || meta.director != nil {
-                VStack(alignment: .leading, spacing: type.spacing / 2) {
-                    if let cast = meta.cast { line("Cast", cast, identifier: "title.cast") }
-                    if let director = meta.director { line("Director", director, identifier: "title.director") }
+            .focused($focused)
+            .onChange(of: page?.state.aboutOpen) { before, now in
+                // Back from the About page, focus is on More again.
+                guard before == .more, now == nil else { return }
+                Task {
+                    await Task.yield()
+                    focused = true
                 }
             }
-        }
-
-        private func line(_ label: String, _ names: String, identifier: String) -> some View {
-            Text("\(Text(label).foregroundStyle(Palette.textMuted)) \(Text(names).foregroundStyle(Browse.textSecondary))")
-                .font(.system(size: type.plot * 0.9))
-                .lineLimit(2)
-                .accessibilityIdentifier(identifier)
         }
     }
 

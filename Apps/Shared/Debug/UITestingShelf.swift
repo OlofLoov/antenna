@@ -266,7 +266,9 @@
                             VODInfo(
                                 plot: "A harbour pilot uncovers a smuggling ring the night before the port is sold. One tide to decide "
                                     + "who gets out. With the buyers arriving at dawn and her own crew split down the middle, she has "
-                                    + "until the water turns to choose a side, and every channel out of the harbour is watched.",
+                                    + "until the water turns to choose a side, and every channel out of the harbour is watched. Her "
+                                    + "brother runs the tug the buyers hired, the harbourmaster owes them money, and the one radio she "
+                                    + "trusts is on a boat already past the breakwater.",
                                 year: 2024, duration: 7_680, genre: "Thriller", ageRating: "15", containerExtension: "mkv",
                                 cast: "Mira Holt, Jonas Reeve, Adaeze Okafor", director: "Sanna Weiss", rating: 7.4,
                                 trailerURL: URL(string: "https://trailers.example/long-harbor")))

@@ -11,6 +11,7 @@
             let plotLines: Int
             @ViewBuilder var below: Below
             @Environment(\.titlePage) private var page
+            @State private var creditsCut = false
 
             var body: some View {
                 let type = Sizes.phone
@@ -27,7 +28,7 @@
                                 Eyebrow(type: type)
                                 Name(type: type)
                                 Meta(type: type)
-                                Plot(type: type, lines: plotLines)
+                                Plot(type: type, lines: plotLines, creditsCut: creditsCut)
                                 HStack(spacing: type.spacing) {
                                     PlayButton(type: type)
                                     MyListButton(type: type)
@@ -37,7 +38,7 @@
                                 Progress(type: type)
                                 Scores(type: type)
                                 Problem(type: type)
-                                Credits(type: type)
+                                Credits(type: type) { creditsCut = $0 }
                             }
                             .padding(.horizontal, 16)
                             .padding(.top, 4)
@@ -67,6 +68,7 @@
             /// 5 for a movie, 2 for a series.
             let plotLines: Int
             @ViewBuilder var below: Below
+            @State private var creditsCut = false
 
             var body: some View {
                 let type = Sizes.pad
@@ -103,8 +105,8 @@
                             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                             VStack(alignment: .leading, spacing: type.spacing) {
                                 Problem(type: type)
-                                Plot(type: type, lines: plotLines)
-                                Credits(type: type)
+                                Plot(type: type, lines: plotLines, creditsCut: creditsCut)
+                                Credits(type: type) { creditsCut = $0 }
                             }
                             .frame(maxWidth: 720, alignment: .leading)
                         }

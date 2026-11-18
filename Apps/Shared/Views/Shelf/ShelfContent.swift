@@ -49,7 +49,8 @@ struct ShelfActions {
 }
 
 /// Shows the banner's title, moves on every eight seconds while nobody
-/// interacts with it and Reduce Motion is off, and loads the shown title's
+/// interacts with it, or on Apple TV eight seconds after the last move, with
+/// Reduce Motion off. It loads the shown title's
 /// details and the next title's details and picture
 /// (movies-and-series-browsing/new-titles-up-front).
 struct ShelfBannerHost<Content: View>: View {
@@ -63,6 +64,8 @@ struct ShelfBannerHost<Content: View>: View {
     @ViewBuilder var content: Content
     @State private var index = 0
     @State private var interacting = false
+    /// Inputs on the banner on Apple TV; each one starts the wait again.
+    @State private var inputs = 0
     /// Titles shown for longer than `BannerArt.patience`.
     @State private var waited: Set<String> = []
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
@@ -74,13 +77,14 @@ struct ShelfBannerHost<Content: View>: View {
         let titles = model.banner
         let shown = titles.isEmpty ? nil : titles[min(index, titles.count - 1)]
         let rotates =
-            !paused && BannerPager.rotates(count: titles.count, interacting: interacting, reduceMotion: reduceMotion)
+            !paused
+            && BannerPager.rotates(count: titles.count, interacting: interacting, reduceMotion: reduceMotion, hold: Self.hold)
         content
             .environment(\.shelfBanner, shown.map { context($0, count: titles.count) })
             .onChange(of: shown, initial: true) { _, title in
                 if let title { showing(title) }
             }
-            .task(id: Rotation(index: index, rotates: rotates)) {
+            .task(id: Rotation(index: index, rotates: rotates, inputs: inputs)) {
                 guard rotates else { return }
                 try? await Task.sleep(for: BannerPager.interval)
                 guard !Task.isCancelled else { return }
@@ -104,6 +108,18 @@ struct ShelfBannerHost<Content: View>: View {
     private struct Rotation: Hashable {
         var index: Int
         var rotates: Bool
+        var inputs: Int
+    }
+
+    /// Focus rests on the banner when an Apple TV section opens, so there
+    /// focus restarts the wait instead of holding the banner
+    /// (movies-and-series-browsing/new-titles-up-front).
+    private static var hold: BannerPager.Hold {
+        #if os(tvOS)
+            .restartsOnInput
+        #else
+            .whileInteracting
+        #endif
     }
 
     private struct Shown: Hashable {
@@ -147,7 +163,10 @@ struct ShelfBannerHost<Content: View>: View {
                     pager.show(target)
                     withAnimation(ShelfBanner.crossfade) { index = pager.index }
                 },
-                interacting: { interacting = $0 }))
+                interacting: { inside in
+                    interacting = inside
+                    inputs += 1
+                }))
     }
 }
 

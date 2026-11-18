@@ -326,7 +326,7 @@
     }
 
     /// Play, More info, Trailer when the title has a playable one, and My
-    /// list. Focus on any of them holds the banner; moving right past My
+    /// list. Each move between them starts the banner's wait again; moving right past My
     /// list or left past Play pages it
     /// (movies-and-series-browsing/new-titles-up-front,
     /// movies-and-series-browsing/rating-and-trailer-on-the-banner).
@@ -356,8 +356,9 @@
                     .focused($focused, equals: .myList)
                     .onMoveCommand { if $0 == .right { banner?.actions.page(1) } }
             }
-            .onChange(of: focused != nil) { _, inside in
-                banner?.actions.interacting(inside)
+            // Every move between the buttons starts the banner's wait again.
+            .onChange(of: focused) { _, part in
+                banner?.actions.interacting(part != nil)
             }
             // Back from the page More info opened, focus is on More info again
             // (title-detail-and-episode-picker/back-to-where-you-were).

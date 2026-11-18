@@ -66,9 +66,7 @@ enum ShelfBanner {
 
     /// The artwork, cut to the banner's frame, on the board's placeholder
     /// color. It keeps the picture it shows until the next one has loaded,
-    /// then fades across. A backdrop fills the banner. A poster fills a tall
-    /// banner; a wide one shows it sharp at the right over a blurred copy
-    /// of itself.
+    /// then fades across. `Picture` lays it out.
     struct Art: View {
         @Environment(\.shelfBanner) private var banner
         @Environment(\.posterLoader) private var loader
@@ -99,36 +97,14 @@ enum ShelfBanner {
         }
     }
 
-    /// One title's picture, sized by the banner.
+    /// One title's picture, laid out by its shape: a backdrop fills the
+    /// banner, and a poster, or a poster sent as the backdrop, shows whole
+    /// at the right of a wide banner over a blurred copy of itself.
     struct Picture: View {
         let shown: Art.Shown
 
         var body: some View {
-            switch shown.art {
-            case .backdrop:
-                FilledArt(image: shown.image, background: TitlePage.placeholder)
-            case .poster:
-                GeometryReader { proxy in
-                    let size = proxy.size
-                    if size.width > size.height * 1.2, let image = shown.image {
-                        ZStack(alignment: .bottomTrailing) {
-                            FilledArt(image: image, background: TitlePage.placeholder)
-                                .blur(radius: size.height / 12, opaque: true)
-                                .overlay(Palette.ground.opacity(0.35))
-                            FilledArt(image: image, background: TitlePage.placeholder)
-                                .aspectRatio(2 / 3, contentMode: .fit)
-                                .frame(height: size.height * 0.7)
-                                .clipShape(RoundedRectangle(cornerRadius: size.height * 0.03, style: .continuous))
-                                .shadow(color: .black.opacity(0.5), radius: size.height / 20, y: size.height / 60)
-                                .padding(.trailing, size.height * 0.12)
-                                .padding(.bottom, size.height * 0.1)
-                        }
-                        .frame(width: size.width, height: size.height)
-                    } else {
-                        FilledArt(image: shown.image, background: TitlePage.placeholder)
-                    }
-                }
-            }
+            FittedArt(image: shown.image, background: TitlePage.placeholder)
         }
     }
 

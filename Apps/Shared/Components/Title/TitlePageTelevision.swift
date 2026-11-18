@@ -17,6 +17,7 @@
             @ViewBuilder var below: Below
             @Environment(\.titlePage) private var page
             @FocusState private var focused: Part?
+            @State private var creditsCut = false
 
             enum Part: Hashable { case play, myList }
 
@@ -40,8 +41,8 @@
                                 Eyebrow(type: type)
                                 Name(type: type)
                                 Meta(type: type)
-                                Plot(type: type, lines: plotLines)
-                                Credits(type: type)
+                                Plot(type: type, lines: plotLines, creditsCut: creditsCut)
+                                Credits(type: type) { creditsCut = $0 }
                                 HStack(spacing: type.spacing) {
                                     PlayButton(type: type)
                                         .fixedSize()
