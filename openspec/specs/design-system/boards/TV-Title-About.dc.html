@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV title detail, the whole description</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- The title page behind, blurred by the thickest material and dimmed by the ground at 0.55 (CoverBackdrop, design-system/pages-cover-what-is-behind-them). No tab bar and no clock. -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(120deg, #1B2538, #0F141D 60%, #20304A); filter: blur(40px)"></div>
+  <div style="position: absolute; inset: 0; background: rgba(11, 14, 19, 0.55)"></div>
+
+  <!-- title.about: opened by title.more on a title page, or by Description in an episode row's menu (long press). Menu closes it and focus goes back to what opened it. -->
+  <!-- title.about.text: one focusable scroll view, no focus effect. Swiping down or up moves it 360 pt within its range; the indicator shows at the right edge while it moves. -->
+  <div style="position: absolute; left: 240px; top: 120px; width: 1440px; height: 840px; overflow: hidden">
+    <div style="display: flex; flex-direction: column; gap: 28px; width: 1200px">
+      <!-- Heading: the title's name, or for an episode "4. Low Water" -->
+      <div style="font-size: 57px; font-weight: 700; line-height: 1.1">The Long Harbor</div>
+      <!-- Details line: the page's details line, or for an episode "Season 1 · Episode 4 · 44 min". Left out when empty. -->
+      <div style="font-size: 29px; color: #D7DEE8">2024 · 2 h 08 min · Thriller</div>
+      <!-- The whole description, no line limit -->
+      <div style="font-size: 31px; line-height: 1.45; color: #F2F4F8">A harbour pilot uncovers a smuggling ring the night before the port is sold. One tide to decide who gets out. With the buyers arriving at dawn and her own crew split down the middle, she has until the water turns to choose a side, and every channel out of the harbour is watched. Her brother runs the tug that the buyers hired, the harbourmaster owes them money, and the one radio she trusts is on a boat already past the breakwater.</div>
+      <!-- Cast and Director in full: the label muted, the names primary. Each is left out when the provider gives none; an episode has neither. -->
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 29px; line-height: 1.4">
+        <div><span style="color: #A7B0BF">Cast </span><span>Mira Holt, Jonas Reeve, Adaeze Okafor, Teodor Lind, Ines Barros, Paul Achterberg, Kaito Mori</span></div>
+        <div><span style="color: #A7B0BF">Director </span><span>Sanna Weiss</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Scroll indicator, system style, only while the text is longer than the page -->
+  <div style="position: absolute; right: 200px; top: 140px; width: 6px; height: 160px; border-radius: 3px; background: rgba(255,255,255,0.35)"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
