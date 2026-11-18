@@ -3,9 +3,12 @@
 # design.md "The FFmpeg path").
 #
 # LGPL 2.1 only: no --enable-gpl, no --enable-nonfree. FFmpeg demuxes; the
-# only decoders are MPEG-2 video and MP2 sound, which no Apple device decodes
-# in hardware, and DVB subtitles, whose pictures the app draws over the video
-# (add-subtitle-preferences). No network protocols: the app feeds bytes through its own AVIO
+# only decoders are for what no Apple device decodes: MPEG-2 video and MP2
+# sound, DVB subtitles, whose pictures the app draws over the video
+# (add-subtitle-preferences), and DTS, TrueHD, MLP, LATM-framed AAC,
+# multichannel Opus and SMPTE 302M PCM (fix-remaining-sound-formats). The
+# LATM decoder brings FFmpeg's AAC decoder with it; the app sends plain AAC
+# to Apple's. No network protocols: the app feeds bytes through its own AVIO
 # callback. The static libraries of each platform are linked into one dynamic
 # FFmpeg.framework, so the app links FFmpeg dynamically as the LGPL asks.
 #
@@ -86,8 +89,8 @@ build() {
             --enable-static --disable-shared --enable-pic \
             --enable-avformat --enable-avcodec --enable-avutil --enable-swresample \
             --enable-demuxer=mpegts,matroska,avi,mov,flv \
-            --enable-parser=h264,hevc,mpegvideo,aac,ac3,mpegaudio \
-            --enable-decoder=mpeg2video,mp2,dvbsub \
+            --enable-parser=h264,hevc,mpegvideo,aac,aac_latm,ac3,mpegaudio,dca,mlp,opus,flac \
+            --enable-decoder=mpeg2video,mp2,dvbsub,dca,truehd,mlp,aac_latm,opus,s302m \
             --enable-bsf=extract_extradata \
             >configure.log
         grep -q "License: LGPL version 2.1 or later" configure.log ||

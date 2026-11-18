@@ -1,6 +1,8 @@
-// Checks a built FFmpeg.framework: the licence is LGPL 2.1, the only decoders
-// are MPEG-2 video, MP2 and DVB subtitles, and each fixture container opens through a custom
-// AVIO read callback (the way the app feeds FFmpeg) with the expected streams.
+// Checks a built FFmpeg.framework: the licence is LGPL 2.1, the decoders are
+// the ones for what Apple cannot decode (MPEG-2 video, MP2, DTS, TrueHD, MLP,
+// LATM-framed AAC, Opus, SMPTE 302M and DVB subtitles) and not H.264, and
+// each fixture container opens through a custom AVIO read callback (the way
+// the app feeds FFmpeg) with the expected streams.
 // Run by .github/workflows/ffmpeg.yml against the macOS slice:
 //   swiftc -F <frameworks/macos> -framework FFmpeg scripts/ffmpeg-smoke.swift -o smoke
 //   ./smoke Packages/AntennaCore/Sources/AntennaTestSupport/Fixtures
@@ -74,6 +76,13 @@ for library in [avformat_license(), avcodec_license(), avutil_license(), swresam
 check(avcodec_find_decoder(AV_CODEC_ID_MPEG2VIDEO) != nil, "MPEG-2 video decoder present")
 check(avcodec_find_decoder(AV_CODEC_ID_MP2) != nil, "MP2 decoder present")
 check(avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE) != nil, "DVB subtitle decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_DTS) != nil, "DTS decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_TRUEHD) != nil, "TrueHD decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_MLP) != nil, "MLP decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_AAC_LATM) != nil, "LATM AAC decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_OPUS) != nil, "Opus decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_S302M) != nil, "SMPTE 302M decoder present")
+check(avcodec_find_decoder(AV_CODEC_ID_FLAC) == nil, "no FLAC decoder, Apple's decodes it")
 check(avcodec_find_decoder(AV_CODEC_ID_DVB_TELETEXT) == nil, "no teletext decoder")
 check(avcodec_find_decoder(AV_CODEC_ID_H264) == nil, "no H.264 decoder, Apple's hardware decodes it")
 
