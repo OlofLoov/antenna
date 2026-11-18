@@ -4,7 +4,7 @@ import Foundation
 /// timing, which episode comes next, and the words on the button and card.
 public enum UpNext {
     /// How long before the end the Next episode button shows.
-    public static let buttonLead: Duration = .seconds(30)
+    public static let buttonLead: Duration = .seconds(60)
     /// How long before the end the Up next card replaces the button.
     public static let cardLead: Duration = .seconds(15)
     /// Seconds the card counts down from.
