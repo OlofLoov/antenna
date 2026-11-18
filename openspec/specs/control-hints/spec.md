@@ -51,6 +51,18 @@ The system SHALL list the actions of the part of the screen that has the highlig
 - **THEN** it reads "Tab bar"
 - **AND** with the highlight in the tab bar it reads "Home Screen"
 
+#### Scenario: The end of an episode
+- **GIVEN** an episode playing on Apple TV with the Next episode button showing
+- **WHEN** the legend shows
+- **THEN** it lists swipe down for the next episode in place of swipe left or right to scrub
+- **AND** with focus on the button it lists Click to play the next episode and Back to keep watching
+
+#### Scenario: Up next
+- **GIVEN** the Up next card showing with focus on Play now
+- **WHEN** the legend shows
+- **THEN** it lists Click to play now, click left or right to skip 10 seconds, play/pause to pause or play, and Back to cancel
+- **AND** for "Still watching?" it lists Click to keep watching and Back to cancel
+
 ### Requirement: Hints fade and come back on a new screen
 The system SHALL show the legend when the highlight reaches a new screen and fade it six seconds later. The info bar coming and going over the picture, and the highlight moving between the overlay's groups and channels, SHALL count as the same screen. A screen SHALL show its legend at most three times until the app launches again. With Reduce Motion on, the legend SHALL appear and go without animation.
 
