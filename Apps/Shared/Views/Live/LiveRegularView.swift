@@ -23,45 +23,6 @@
         }
     }
 
-    /// A section of the iPad and Mac sidebar.
-    enum LiveSection: Hashable, CaseIterable {
-        case live, guide, movies, series, search, settings
-
-        var title: String {
-            switch self {
-            case .live: "Live"
-            case .guide: "Guide"
-            case .movies: "Movies"
-            case .series: "Series"
-            case .search: "Search"
-            case .settings: "Sources & Settings"
-            }
-        }
-
-        var systemImage: String {
-            switch self {
-            case .live: "tv"
-            case .guide: "list.bullet.rectangle"
-            case .movies: "film"
-            case .series: "square.grid.2x2"
-            case .search: "magnifyingglass"
-            case .settings: "gearshape"
-            }
-        }
-
-        /// `browse.section.<identifier>`.
-        var identifier: String {
-            switch self {
-            case .live: "live"
-            case .guide: "guide"
-            case .movies: "movies"
-            case .series: "series"
-            case .search: "search"
-            case .settings: "settings"
-            }
-        }
-    }
-
     /// The iPad and Mac window (board `iPad`, `iPad-Collapsed`,
     /// `iPad-Collapsed-Narrow`): the sidebar, the channel list and the
     /// picture with its details side by side, folding as the window narrows.
@@ -87,6 +48,26 @@
         enum Folded { case sidebar, list }
 
         var body: some View {
+            Group {
+                screen
+            }
+            // keyboard-commands/menu-items-follow-the-screen-in-front
+            .menuCommand(\.playbackCommands, section == .live || live.fullScreen ? LivePlaybackCommands(live: live).commands : nil)
+            .menuCommand(\.sectionCommands, sectionCommands)
+        }
+
+        /// The Go menu: the sidebar's sections, picked as from the sidebar
+        /// (keyboard-commands/go-to-a-section).
+        private var sectionCommands: SectionCommands {
+            SectionCommands(offered: sections + [.settings]) { item in
+                live.setFullScreen(false)
+                section = item
+                browse = ShelfBrowse()
+                shown = nil
+            }
+        }
+
+        @ViewBuilder private var screen: some View {
             if live.fullScreen {
                 // The picture fills the window (live-tv-on-iphone-ipad-mac/full-screen);
                 // Escape leaves (live-tv-on-iphone-ipad-mac/keyboard-shortcuts).
@@ -413,19 +394,20 @@
                 }
             }
             .background { shortcuts }
+            .menuCommand(\.findCommand, MenuCommand(title: KeyCommand.findTitle(on: .live)) { filterFocused = true })
+            .menuCommand(\.addToMultiViewCommand, LiveMultiViewKey.command(cursor: cursor, live: live))
             .onChange(of: live.group) { _, _ in cursor = nil }
             .onChange(of: live.filter) { _, _ in cursor = nil }
             .onChange(of: filterFocused) { _, focused in live.typing = focused }
         }
 
         /// The list's keys as key commands, so they work wherever focus is.
-        /// Outside the filter field, the arrows move the ring, Return plays
-        /// its channel and Space pauses; Command-F jumps to the filter.
+        /// Outside the filter field, the arrows move the ring and Return
+        /// plays its channel. Command-F, Space and Command-Shift-M are menu
+        /// items (keyboard-commands capability).
         private var shortcuts: some View {
             ZStack {
-                Button("Find a channel") { filterFocused = true }
-                    .keyboardShortcut("f", modifiers: .command)
-                LiveMultiViewKey(cursor: cursor)
+                FindKey { filterFocused = true }
                 Group {
                     Button("Next channel") { move(1) }
                         .keyboardShortcut(.downArrow, modifiers: [])
@@ -433,8 +415,6 @@
                         .keyboardShortcut(.upArrow, modifiers: [])
                     Button("Play the channel") { playCursor() }
                         .keyboardShortcut(.return, modifiers: [])
-                    Button("Pause or play") { live.playPause() }
-                        .keyboardShortcut(.space, modifiers: [])
                 }
                 .disabled(filterFocused)
             }

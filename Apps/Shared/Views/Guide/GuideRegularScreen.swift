@@ -62,6 +62,8 @@
                 }
                 .padding(20)
                 .background { shortcuts(data, now: now) }
+                .menuCommand(\.findCommand, MenuCommand(title: KeyCommand.findTitle(on: .guide)) { filterFocused = true })
+                .menuCommand(\.zoomCommands, zoomCommands)
             case let status:
                 VStack(alignment: .leading, spacing: 0) {
                     HStack { leading }
@@ -100,20 +102,22 @@
             .accessibilityIdentifier("guide.toolbar")
         }
 
-        /// The grid's keys, as key commands so they work wherever focus is:
-        /// Command-F to the filter, Command-Plus and Command-Minus to zoom,
-        /// and outside the filter the arrows move the cursor and Return
-        /// opens its details.
+        /// The zoom items in View (keyboard-commands/shortcuts-are-listed-in-the-menus).
+        private var zoomCommands: ZoomCommands {
+            ZoomCommands(
+                zoomIn: MenuCommand(title: KeyCommand.zoomIn.title, isEnabled: model.zoom.canZoomIn) { model.zoomIn() },
+                zoomOut: MenuCommand(title: KeyCommand.zoomOut.title, isEnabled: model.zoom.canZoomOut) { model.zoomOut() })
+        }
+
+        /// The grid's keys, as key commands so they work wherever focus is.
+        /// Command-Equals zooms in as Command-Plus does, since a menu item
+        /// shows one key. Outside the filter the arrows move the cursor and
+        /// Return opens its details.
         private func shortcuts(_ data: GuideData, now: Date) -> some View {
             ZStack {
-                Button("Filter channels") { filterFocused = true }
-                    .keyboardShortcut("f", modifiers: .command)
-                Button("Zoom in") { model.zoomIn() }
-                    .keyboardShortcut("+", modifiers: .command)
+                FindKey { filterFocused = true }
                 Button("Zoom in") { model.zoomIn() }
                     .keyboardShortcut("=", modifiers: .command)
-                Button("Zoom out") { model.zoomOut() }
-                    .keyboardShortcut("-", modifiers: .command)
                 Group {
                     Button("Up") { move(.up, data, now: now) }
                         .keyboardShortcut(.upArrow, modifiers: [])

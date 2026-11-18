@@ -70,6 +70,7 @@
                 }
             }
             .background { keys }
+            .menuCommand(\.findCommand, MenuCommand(title: KeyCommand.findTitle(on: .search)) { model.focus() })
             .task { focused = true }
             .onChange(of: model.focusRequests) { _, _ in focused = true }
             .onChange(of: focused) { _, isFocused in
@@ -87,12 +88,12 @@
             }
         }
 
-        /// Command-F, the arrows, Return and Escape as key commands, so they
-        /// work wherever focus is (search/search-with-a-keyboard).
+        /// The arrows, Return and Escape as key commands, so they work
+        /// wherever focus is (search/search-with-a-keyboard). Command-F is
+        /// Search in the Edit menu.
         private var keys: some View {
             ZStack {
-                Button("Search") { model.focus() }
-                    .keyboardShortcut("f", modifiers: .command)
+                FindKey { model.focus() }
                 // Down also leaves the field for the first result.
                 Button("Next result") {
                     focused = false

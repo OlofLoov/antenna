@@ -7,11 +7,12 @@ import SwiftUI
     /// side-by-side layout (multi-view capability; boards `iPad-MultiView`,
     /// `iPad-MultiView-Failed`): the toolbar with the count and Exit, then
     /// the tiles. A click or tap selects a tile and moves the sound, a
-    /// double-click or double-tap enlarges it, Command-1 to 4 select,
-    /// Command-Delete removes the selected tile, and Escape only undoes
-    /// enlarge.
+    /// double-click or double-tap enlarges it, Option-Command-1 to 4
+    /// select, Command-Delete removes the selected tile, and Escape only
+    /// undoes enlarge.
     struct MultiViewGridScreen: View {
         let model: MultiViewModel
+        @Environment(LiveModel.self) private var live
         @State private var hovered: Int?
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -50,6 +51,7 @@ import SwiftUI
             .frame(minWidth: Self.minimumWidth, maxWidth: .infinity, maxHeight: .infinity)
             .background(Palette.ground)
             .background { shortcuts }
+            .menuCommand(\.tileCommands, tileCommands)
             .environment(\.multiViewMetrics, .mac)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("multiView.root")
@@ -156,15 +158,22 @@ import SwiftUI
             }
         }
 
-        /// Command-1 to 4, Command-Delete and Escape, wherever focus is.
+        /// Select Tile and Remove Tile in the Playback menu, Option-Command-1
+        /// to 4 and Command-Delete. Remove Tile is dimmed while the channel
+        /// filter has the keyboard (keyboard-commands/typing-is-never-taken-by-a-shortcut).
+        private var tileCommands: TileCommands {
+            TileCommands(
+                select: model.session.tiles.prefix(4).enumerated().map { index, tile in
+                    MenuCommand(title: KeyCommand.selectTile(index + 1).title) { Task { await model.select(tile.id) } }
+                },
+                remove: MenuCommand(title: KeyCommand.removeTile.title, isEnabled: !live.typing) {
+                    Task { await model.remove(model.session.selected) }
+                })
+        }
+
+        /// Escape back to the grid, wherever focus is.
         private var shortcuts: some View {
             ZStack {
-                ForEach(Array(model.session.tiles.enumerated()), id: \.element.id) { index, tile in
-                    Button("Select tile \(index + 1)") { Task { await model.select(tile.id) } }
-                        .keyboardShortcut(KeyEquivalent(Character(String(index + 1))), modifiers: .command)
-                }
-                Button(MultiViewText.remove) { Task { await model.remove(model.session.selected) } }
-                    .keyboardShortcut(.delete, modifiers: .command)
                 if model.session.enlarged != nil {
                     Button("Back to the grid") { model.shrink() }
                         .keyboardShortcut(.cancelAction)
@@ -222,33 +231,32 @@ struct MultiViewWindow: View {
     }
 }
 
-/// Command-Shift-M adds the channel under the list's keyboard ring
+/// Add to Multi-view in the Playback menu, Command-Shift-M, for the channel
+/// under the list's keyboard ring
 /// (multi-view/start-multi-view-on-a-mac, multi-view/start-multi-view-on-an-ipad).
-/// Nothing on iPhone.
-struct LiveMultiViewKey: View {
-    let cursor: RowKey?
-    @Environment(LiveModel.self) private var live
-    #if os(iOS)
-        @Environment(\.horizontalSizeClass) private var sizeClass
-    #endif
-
-    var body: some View {
-        #if os(macOS) || os(iOS)
-            Button(MultiViewText.addToMultiViewMenu) {
-                guard let cursor, let channel = live.catalogue.channel(for: cursor) else { return }
+/// Dimmed with no ring or where the channel row would offer no "Add to Multi-view".
+enum LiveMultiViewKey {
+    #if os(macOS) || os(iOS)
+        @MainActor
+        static func command(cursor: RowKey?, live: LiveModel) -> MenuCommand {
+            let channel = cursor.flatMap { live.catalogue.channel(for: $0) }
+            let offered = offered
+            let enabled = channel.map { live.multiViewMenu(for: $0, offered: offered) == .add } ?? false
+            return MenuCommand(title: KeyCommand.addToMultiView.title, isEnabled: enabled) {
+                guard let channel else { return }
                 Task { await live.addToMultiView(channel, offered: offered) }
             }
-            .keyboardShortcut("m", modifiers: [.command, .shift])
-        #endif
-    }
+        }
 
-    private var offered: Bool {
-        #if os(iOS)
-            LiveModel.offersMultiView(regularWidth: sizeClass == .regular)
-        #else
-            LiveModel.offersMultiView
-        #endif
-    }
+        /// The menus show only in the iPad's regular width and on Mac.
+        @MainActor private static var offered: Bool {
+            #if os(iOS)
+                LiveModel.offersMultiView(regularWidth: true)
+            #else
+                LiveModel.offersMultiView
+            #endif
+        }
+    #endif
 }
 
 /// The channel row's menu item for multi-view on a Mac and an iPad, after
