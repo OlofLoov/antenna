@@ -86,7 +86,8 @@ extension ShellUITests {
         expect(element("guide.panel.title"), "label == 'Loading guide…'")
         press(.select)
         expectFocus("guide.watch")
-        expectEngine("playing loads=1 file=a1.ts")
+        // The small picture follows the highlight to a2 and stays there on Watch.
+        expectEngine("playing loads=2 file=a2.ts")
     }
 
     // tv-guide-grid/channels-without-a-guide-say-so
@@ -216,6 +217,45 @@ extension ShellUITests {
     }
 }
 
+// MARK: The small picture follows the highlight
+
+extension ShellUITests {
+    // tv-guide-grid/the-small-picture-follows-the-highlight
+    func testTheSmallPictureFollowsTheHighlight() {
+        launchPlaying()
+        openGuide()
+        press(.down)
+        expectEngine("playing loads=2 file=a2.ts")
+        expect(element("guide.pip"), "label CONTAINS 'Channel a2'")
+        XCTAssertEqual(element("guide.channel.\(homeKey(1))").value as? String, "playing")
+
+        // Leaving with Back and Live goes back to the channel from before the guide.
+        press(.menu)
+        expectFocus("shell.tab.guide")
+        press(.left, toFocus: element("shell.tab.live"), from: element("shell.tab.guide"))
+        press(.select)
+        expectEngine("playing loads=3 file=a1.ts")
+        expect(element("shell.player"), "value == 'full'")
+    }
+
+    // tv-guide-grid/the-small-picture-follows-the-highlight
+    // tv-guide-grid/select-on-anything-else-goes-to-watch
+    func testWatchKeepsTheChannelInTheSmallPicture() {
+        launchPlaying()
+        openGuide()
+        press(.down)
+        expectEngine("playing loads=2 file=a2.ts")
+        press(.select)
+        expectFocus("guide.watch")
+        press(.select)
+        expectGone("guide.grid")
+        expect(element("shell.player"), "value == 'full'")
+        XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 10), "the info bar shows")
+        expect(element("zapBar.name"), "label == 'Channel a2'")
+        expectEngine("playing loads=2 file=a2.ts")
+    }
+}
+
 // MARK: Entry from Search
 
 extension ShellUITests {
@@ -232,6 +272,7 @@ extension ShellUITests {
         let cells = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'guide.channel.'"))
         expect(cells.firstMatch, "exists == true")
         XCTAssertEqual(cells.count, 4, "the group became All channels")
-        expectEngine("playing loads=1 file=a1.ts")
+        // The small picture follows the highlight to b1.
+        expectEngine("playing loads=2 file=b1.ts")
     }
 }

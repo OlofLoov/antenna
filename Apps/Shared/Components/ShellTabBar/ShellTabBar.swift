@@ -1,9 +1,13 @@
+import AntennaCore
 import SwiftUI
 
 /// The Apple TV shell's top bar (tvos-shell capability; `TV-Shell-Menu`,
 /// `TV-Shell-FocusedTab`, `TV-Movies`, `TV-Shell-Guide-Menu`). Compiles on
 /// every platform so the snapshot job renders its previews.
 enum ShellTabBar {
+    /// The band the bar takes along the top of the screen.
+    static let height = 104.0
+
     /// How a pill looks when it does not have focus. A focused pill always
     /// carries the Focus token.
     enum Look: Equatable, Sendable {
@@ -15,30 +19,36 @@ enum ShellTabBar {
     }
 
     /// Mark, pill group, settings button and the trailing clock or slot,
-    /// 104 tall with 64 at each side.
+    /// 104 tall with 64 at each side. The pill group sits on the screen's
+    /// horizontal center, as the system tab bar does; the profile and
+    /// Settings buttons hang 14 to its right without moving it.
     struct Bar<Pills: View, Settings: View, Trailing: View>: View {
         @ViewBuilder var pills: Pills
         @ViewBuilder var settings: Settings
         @ViewBuilder var trailing: Trailing
 
         var body: some View {
-            HStack(spacing: 0) {
-                Mark()
-                    .frame(width: 260, alignment: .leading)
-                Spacer(minLength: 0)
-                HStack(spacing: 14) {
-                    HStack(spacing: 6) { pills }
-                        .padding(6)
-                        .background(Palette.tabBar, in: Capsule())
-                        .accessibilityElement(children: .contain)
-                        .accessibilityLabel("Tabs")
-                    settings
+            ZStack {
+                HStack(spacing: 0) {
+                    Mark()
+                        .frame(width: 260, alignment: .leading)
+                    Spacer(minLength: 0)
+                    trailing
                 }
-                Spacer(minLength: 0)
-                trailing
+                HStack(spacing: 6) { pills }
+                    .padding(6)
+                    .background(Palette.tabBar, in: Capsule())
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel("Tabs")
+                    .accessibilityIdentifier("shell.tabs")
+                    .overlay(alignment: .trailing) {
+                        HStack(spacing: 14) { settings }
+                            .fixedSize()
+                            .alignmentGuide(.trailing) { $0[.leading] - 14 }
+                    }
             }
             .padding(.horizontal, 64)
-            .frame(height: 104)
+            .frame(height: ShellTabBar.height)
             .frame(maxWidth: .infinity)
         }
     }
@@ -232,6 +242,25 @@ enum ShellTabBar {
             ShellTabBar.Pill(title: "Series", look: .plain) {}
             ShellTabBar.Pill(title: "Search", look: .plain) {}
         } settings: {
+            ShellTabBar.SettingsButton {}
+        } trailing: {
+            ShellTabBar.Clock(date: Date(timeIntervalSince1970: 77_640))
+        }
+    }
+}
+
+#Preview("Tab bar with the profile button, tabs on the center line", traits: .fixedLayout(width: 1920, height: 1080)) {
+    ZStack(alignment: .top) {
+        Palette.ground
+        Rectangle().fill(Palette.surface(0.12)).frame(width: 2).accessibilityHidden(true)
+        ShellTabBar.Bar {
+            ShellTabBar.Pill(title: "Live", look: .currentInBar) {}
+            ShellTabBar.Pill(title: "Guide", look: .plain) {}
+            ShellTabBar.Pill(title: "Movies", look: .plain) {}
+            ShellTabBar.Pill(title: "Series", look: .plain) {}
+            ShellTabBar.Pill(title: "Search", look: .plain) {}
+        } settings: {
+            ShellTabBar.ProfileButton(tile: ProfileTile(id: Profile.mainID, name: "Kids", initial: "K", color: Profile.colors[5])) {}
             ShellTabBar.SettingsButton {}
         } trailing: {
             ShellTabBar.Clock(date: Date(timeIntervalSince1970: 77_640))

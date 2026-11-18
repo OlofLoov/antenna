@@ -44,11 +44,18 @@
         }
 
         /// Loads `channel` without telling the player or the info bar it
-        /// changed, so Try again counts as no channel change.
-        func load(_ channel: Channel) {
+        /// changed, so Try again counts as no channel change. With
+        /// `remember` false, as for the Guide's small picture following the
+        /// highlight, the channel is neither stored as the last one nor counted as watched.
+        func load(_ channel: Channel, remember: Bool = true) {
             Task {
                 do {
-                    try await session.load(channel, on: engine, options: languages.options(for: channel).recordingLive())
+                    let options = languages.options(for: channel).recordingLive()
+                    if remember {
+                        try await session.load(channel, on: engine, options: options)
+                    } else {
+                        try await engine.load(try await StreamResolver.address(for: channel), options: options)
+                    }
                 } catch is CancellationError {
                     return
                 } catch {
@@ -99,8 +106,10 @@
             player.retry()
         }
 
-        /// Tunes `channel` from the picker and shows Live full screen.
+        /// Tunes `channel` from the picker and shows Live full screen. A
+        /// channel already in the Guide's small picture plays on without a reload.
         func pick(_ channel: Channel) async {
+            await keepGuidePreview(channel)
             if channel != tuned { tune(channel) }
             await showLive()
         }

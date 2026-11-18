@@ -14,8 +14,8 @@
     }
 
     /// The Guide tab on Apple TV (tv-guide-grid capability; `TV-Guide` and its
-    /// state boards): the playing channel in the shell's small picture with
-    /// its caption, the panel for the highlighted block, the day chips and
+    /// state boards): the shell's small picture with its caption, following
+    /// the highlighted row, the panel for the highlighted block, the day chips and
     /// the grid of the current group. The grid is one focusable holder; the
     /// model moves the highlight, so focus follows the rules in design.md.
     struct GuideScreen: View {
@@ -74,6 +74,8 @@
                 model.focusedDays()
                 local = .day(model.selectedDay(data(at: .now), now: .now))
             }
+            .onChange(of: model.highlight) { _, _ in highlightMoved() }
+            .onDisappear { shell.guideHighlightMoved(to: nil) }
             .onChange(of: model.highlight) { _, _ in
                 // Focus stays on the holder, so VoiceOver hears each new block read out.
                 guard voiceOver, model.area == .grid else { return }
@@ -246,6 +248,19 @@
             opened = true
             focus.wrappedValue = .content
             return true
+        }
+
+        /// The small picture follows the highlighted row once it rests there
+        /// (tv-guide-grid/the-small-picture-follows-the-highlight). The
+        /// current group is pinned first, so the rows stay put when the
+        /// picture's channel changes.
+        private func highlightMoved() {
+            let data = data(at: .now)
+            guard opened, let row = model.highlightedRow(data), let channel = catalogue.channel(for: data.rows[row]) else {
+                return shell.guideHighlightMoved(to: nil)
+            }
+            if overlay.lastTuned == nil { overlay.tuned(from: group) }
+            shell.guideHighlightMoved(to: channel)
         }
 
         /// Menu on Watch: the highlight goes back to the grid and the guide stays.

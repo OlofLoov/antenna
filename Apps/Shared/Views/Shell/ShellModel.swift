@@ -70,6 +70,8 @@
         var multiView: MultiViewModel?
         /// Counts multi-view handing a channel back, which shows the info bar.
         private(set) var multiViewEnds = 0
+        /// Counts Guide picks of the channel already in its small picture, which shows the info bar.
+        var guidePicks = 0
 
         @ObservationIgnored let engine: any PlaybackEngine
         /// The spinner, the reconnect count and the error for the tuned channel.
@@ -91,6 +93,11 @@
         /// What the shell did to the channel behind Movies, Series or Search, nil when nothing.
         @ObservationIgnored var heldByShell: ShellHold?
         var pausedByShell: Bool { heldByShell != nil }
+        /// What played before the Guide's small picture first followed the
+        /// highlight; nil while it shows the channel the Guide opened with.
+        @ObservationIgnored var guideReturn: GuideReturn?
+        /// The channel whose row the Guide's highlight rests on, and the wait before the picture tunes it.
+        @ObservationIgnored var guideRest: (channel: Channel, wait: Task<Void, Never>)?
         @ObservationIgnored let languages: ChannelLanguages
         /// Stores the last channel and counts a channel as watched.
         @ObservationIgnored let session: SessionTracker
@@ -286,12 +293,15 @@
         }
 
         /// Plays `channel` full screen. A successful load writes the last
-        /// channel; a failed one leaves the stored channel as it was.
-        func tune(_ channel: Channel) {
+        /// channel; a failed one leaves the stored channel as it was. With
+        /// `remember` false, as for the Guide's small picture following the
+        /// highlight, the channel is neither stored nor counted as watched.
+        func tune(_ channel: Channel, remember: Bool = true) {
+            if remember { guideReturn = nil } else { session.tuned(nil) }
             tuned = channel
             player.tuned(subject(for: channel))
             deadline?.cancel()
-            load(channel)
+            load(channel, remember: remember)
         }
 
         // MARK: Navigation
@@ -347,6 +357,7 @@
         /// tunes again one it stopped. True when the channel loads again.
         @discardableResult
         private func open(_ target: ShellTab) async -> Bool {
+            if tab == .guide, target != .guide { await leaveGuide() }
             let wasContent = tab.isContent
             tab = target
             barRaised = false
