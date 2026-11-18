@@ -114,10 +114,21 @@ public struct BannerPager: Sendable, Hashable {
         index = max(0, min(index, self.count - 1))
     }
 
+    /// What the user's hands on the banner do to its timer.
+    public enum Hold: Sendable, Hashable {
+        /// The banner stays while a finger, the pointer or focus is on it:
+        /// iPhone, iPad and Mac.
+        case whileInteracting
+        /// The banner keeps moving, and each input starts the wait again:
+        /// Apple TV, where focus rests on the banner when the section opens.
+        case restartsOnInput
+    }
+
     /// True when the banner should move on by itself: more than one title,
-    /// nobody interacting with it and Reduce Motion off.
-    public static func rotates(count: Int, interacting: Bool, reduceMotion: Bool) -> Bool {
-        count > 1 && !interacting && !reduceMotion
+    /// Reduce Motion off, and with `.whileInteracting` nobody interacting with it.
+    public static func rotates(count: Int, interacting: Bool, reduceMotion: Bool, hold: Hold = .whileInteracting) -> Bool {
+        guard count > 1, !reduceMotion else { return false }
+        return hold == .restartsOnInput || !interacting
     }
 }
 

@@ -137,6 +137,56 @@ final class TitleTVUITests: XCTestCase {
         XCTAssertEqual(element("episodes.row.xtream#cabin#episode#11").label, "Episode 1, The Weir, 45 min")
     }
 
+    // title-detail-and-episode-picker/what-the-title-is-about, More on Apple TV
+    func testMoreOpensTheWholeDescriptionThatMenuCloses() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "titles"]
+        app.launch()
+        press(.menu)
+        XCTAssertTrue(element("shell.tab.movies").waitForExistence(timeout: 10))
+        press(.right, times: 2)
+        expectFocus("shell.tab.movies")
+        press(.select)
+        expectFocus("movies.hero.play")
+        XCTAssertEqual(element("movies.hero.title").label, "The Long Harbor")
+        press(.right)
+        expectFocus("movies.hero.info")
+        press(.select)
+        expectFocus("title.play")
+        XCTAssertTrue(element("title.more").waitForExistence(timeout: 5), "a long description is cut with More")
+        press(.up)
+        expectFocus("title.more")
+        press(.select)
+        XCTAssertTrue(element("title.about").waitForExistence(timeout: 5))
+        expectFocus("title.about")
+        press(.down, times: 2)
+        XCTAssertTrue(element("title.about").exists, "swiping scrolls the page and keeps it open")
+        press(.menu)
+        expect(element("title.about"), "exists == false")
+        expectFocus("title.more")
+        XCTAssertTrue(element("title.name").exists, "Menu closes only the About page")
+    }
+
+    // title-detail-and-episode-picker/what-each-episode-shows, Description from the row's menu
+    func testDescriptionOpensFromAnEpisodesMenu() {
+        openNorthernLights()
+        press(.down)
+        expectFocus("episodes.season.season-1")
+        press(.right)
+        expectFocus("episodes.season.season-2")
+        expect(element("episodes.season.season-2"), "isSelected == true", timeout: 3)
+        press(.down)
+        expectFocus("episodes.row.xtream#cabin#episode#11")
+        remote.press(.select, forDuration: 1.5)
+        let item = element("episodes.row.xtream#cabin#episode#11.description")
+        XCTAssertTrue(item.waitForExistence(timeout: 5), "the row's menu offers Description")
+        press(.select)
+        XCTAssertTrue(element("title.about").waitForExistence(timeout: 5))
+        press(.menu)
+        expect(element("title.about"), "exists == false")
+        expectFocus("episodes.row.xtream#cabin#episode#11")
+    }
+
     // title-detail-and-episode-picker/back-to-where-you-were, from the banner
     func testMenuGoesBackToMoreInfoOnTheBanner() {
         openMoviePage()

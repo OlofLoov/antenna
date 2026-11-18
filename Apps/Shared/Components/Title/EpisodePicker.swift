@@ -21,6 +21,9 @@ struct EpisodesContext {
         var dwell: Duration?
         /// The episode to bring into view, the one just played.
         var reveal: String?
+        /// What opened the About page while it shows; when an episode's
+        /// Description closes, focus goes back to its row.
+        var aboutOpen: TitlePageContext.AboutOpener?
     }
 
     /// Where the list stands.
@@ -57,6 +60,9 @@ struct EpisodesContext {
         var pick: (String) -> Void
         var play: (Episode) -> Void
         var retry: () -> Void
+        /// Shows an episode's whole description
+        /// (title-detail-and-episode-picker/what-each-episode-shows).
+        var describe: (Episode) -> Void = { _ in }
     }
 
     var state: State
@@ -249,8 +255,12 @@ enum EpisodePicker {
                 ScrollViewReader { proxy in
                     LazyVStack(alignment: .leading, spacing: type.spacing) {
                         ForEach(episodes.state.rows) { row in
-                            EpisodeRow(type: type, row: row) { episodes.actions.play(row.episode) }
-                                .id(row.id)
+                            EpisodeRow(
+                                type: type, row: row, play: { episodes.actions.play(row.episode) },
+                                describe: row.episode.plot == nil ? nil : { episodes.actions.describe(row.episode) },
+                                aboutOpen: episodes.state.aboutOpen
+                            )
+                            .id(row.id)
                         }
                     }
                     .padding(.horizontal, type.gutter)
@@ -273,6 +283,10 @@ enum EpisodePicker {
         let type: Sizes
         let row: EpisodesContext.Row
         let play: () -> Void
+        /// Opens the whole description from the row's menu; nil without one.
+        var describe: (() -> Void)?
+        var aboutOpen: TitlePageContext.AboutOpener?
+        @FocusState private var focused: Bool
 
         var body: some View {
             let episode = row.episode
@@ -331,6 +345,21 @@ enum EpisodePicker {
                 .contentShape(Rectangle())
             }
             .buttonStyle(ShelfView.CardStyle())
+            .contextMenu {
+                if let describe {
+                    Button("Description", systemImage: "text.alignleft", action: describe)
+                        .accessibilityIdentifier("episodes.row.\(episode.id).description")
+                }
+            }
+            .focused($focused)
+            .onChange(of: aboutOpen) { before, now in
+                // Back from the Description, focus is on this row again.
+                guard before == .episode(episode.id), now == nil else { return }
+                Task {
+                    await Task.yield()
+                    focused = true
+                }
+            }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(row.label)
             .accessibilityAddTraits(.isButton)

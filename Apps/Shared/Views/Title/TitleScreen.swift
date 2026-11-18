@@ -15,6 +15,11 @@ struct TitleScreen<Page: View>: View {
     @Environment(\.openURL) private var openURL
     @Query private var preferences: [PreferencesRecord]
     @State private var expanded = false
+    /// The About page over the title page: the whole description on Apple
+    /// TV, or an episode's Description anywhere.
+    @State private var about: TitleAboutText?
+    /// What opened the About page, so focus goes back to it when it closes.
+    @State private var aboutOpener: TitlePageContext.AboutOpener?
     @State private var attempt = 0
 
     private var model: TitleModel { route.model }
@@ -39,11 +44,15 @@ struct TitleScreen<Page: View>: View {
             #if os(tvOS)
                 .controlHints(.titlePage)
                 .onExitCommand { library.closePage() }
-                .sheet(isPresented: $expanded) {
-                    PlotSheet(name: model.metadata.name, text: model.metadata.description ?? "")
+                .fullScreenCover(item: $about, onDismiss: { aboutOpener = nil }) { text in
+                    TitleAbout(text: text) { about = nil }
+                    .presentationBackground { CoverBackdrop() }
                 }
             #else
                 .background { keys }
+                .sheet(item: $about, onDismiss: { aboutOpener = nil }) { text in
+                    TitleAbout(text: text) { about = nil }
+                }
             #endif
             #if os(iOS)
                 // iPadOS keeps Escape unless a key command asks for priority.
@@ -57,14 +66,24 @@ struct TitleScreen<Page: View>: View {
             state: .init(
                 metadata: metadata, posterURL: route.title.posterURL, loading: model.phase == .loading, play: play,
                 isOnMyList: activity.isOnMyList(route.title), problem: problem, expanded: expandsInPlace && expanded,
-                section: route.section.sectionTitle),
+                section: route.section.sectionTitle, aboutOpen: aboutOpener),
             actions: .init(
                 back: { library.closePage() }, play: start, toggleMyList: { activity.toggleMyList(route.title) },
-                retry: { attempt += 1 }, expand: { expanded = true },
+                retry: { attempt += 1 }, expand: expand,
                 trailer: ShelfActions.trailer(metadata.trailerURL, of: route.title, playback: playback, openURL: openURL)))
     }
 
-    /// iPhone, iPad and Mac show the whole description in place; Apple TV opens a sheet.
+    /// More: the About page on Apple TV, the whole text in place elsewhere.
+    private func expand() {
+        if expandsInPlace {
+            expanded = true
+        } else {
+            aboutOpener = .more
+            about = TitleAboutText(model.metadata)
+        }
+    }
+
+    /// iPhone, iPad and Mac show the whole description in place; Apple TV opens the About page.
     private var expandsInPlace: Bool {
         #if os(tvOS)
             false
@@ -105,8 +124,13 @@ struct TitleScreen<Page: View>: View {
             state: .init(
                 seasons: groups.map { .init(id: $0.id, title: $0.title, count: $0.countLabel) }, picked: picked, rows: rows, phase: phase,
                 skipped: model.phase == .loaded ? EpisodeText.skipped(model.skipped) : nil, dwell: dwell,
-                reveal: playback.playing == nil ? model.lastPlayed : nil),
-            actions: .init(pick: { model.pickedSeason = $0 }, play: playEpisode, retry: { attempt += 1 }))
+                reveal: playback.playing == nil ? model.lastPlayed : nil, aboutOpen: aboutOpener),
+            actions: .init(
+                pick: { model.pickedSeason = $0 }, play: playEpisode, retry: { attempt += 1 },
+                describe: { episode in
+                    aboutOpener = .episode(episode.id)
+                    about = TitleAboutText(episode)
+                }))
     }
 
     /// On Apple TV a season shows after focus rests on its chip for 300 ms.
@@ -182,31 +206,6 @@ struct TitleScreen<Page: View>: View {
         playback.play(episode, of: route.title, from: from, library: library, activity: activity)
     }
 }
-
-#if os(tvOS)
-    /// The whole description on Apple TV, which More opens.
-    private struct PlotSheet: View {
-        let name: String
-        let text: String
-
-        var body: some View {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text(name)
-                        .font(.system(size: 48, weight: .bold))
-                    Text(text)
-                        .font(.system(size: 30))
-                        .lineSpacing(8)
-                }
-                .foregroundStyle(Palette.text)
-                .frame(maxWidth: 1200, alignment: .leading)
-                .padding(80)
-            }
-            .focusable()
-            .accessibilityIdentifier("title.plotSheet")
-        }
-    }
-#endif
 
 extension TitlePageContext.PlayState {
     /// A movie's button: Resume with the bar and minutes left while it is
