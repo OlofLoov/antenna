@@ -134,7 +134,9 @@ final class SearchTVUITests: XCTestCase {
         press(.select)
         expectFocus("guide.grid")
         expect(element("guide.panel.title"), "label == 'Late Film'")
-        expectEngine("playing loads=1 file=a1.ts")
+        // The Guide plays a1 again, from the pause or, after 30 seconds in Search, tuned again
+        // (tvos-shell/the-video-pauses-behind-movies-series-and-search).
+        expect(element("shell.debug.engine"), "value BEGINSWITH 'playing loads=' AND value ENDSWITH ' file=a1.ts'")
     }
 
     // programme-reminders/remind-me-appears-only-before-a-programme-starts, in Search on Apple TV
@@ -149,7 +151,8 @@ final class SearchTVUITests: XCTestCase {
         press(.select)
         expect(bell, "label == 'Reminder set'")
         XCTAssertTrue(element("search.results").exists, "the bell left Search")
-        expectEngine("playing loads=1 file=a1.ts")
+        // Nothing plays behind Search (tvos-shell/the-video-pauses-behind-movies-series-and-search).
+        expect(element("shell.debug.engine"), "value IN {'paused loads=1 file=a1.ts', 'idle loads=1 file=a1.ts'}")
     }
 
     // title-detail-and-episode-picker/back-to-where-you-were

@@ -143,60 +143,125 @@ extension ShellModelTests {
         await playing(.fixture("a1"))
     }
 
-    /// Waits for the pause timer to ask for its sleep and checks it asks for 30 s.
-    private func pauseTimerStarted() async {
+    /// Waits for the stop timer to ask for its sleep and checks it asks for 30 s.
+    private func stopTimerStarted() async {
         await wait { clock.requested.last == .seconds(30) }
     }
 
-    // tvos-shell/the-video-pauses-behind-movies-series-and-search
-    @Test("30 seconds behind Movies pause the video and Live resumes it without a reload")
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search Movies pauses at once and Live resumes without a reload")
     func pauseBehindMovies() async {
         await playingFirstChannel()
         _ = await model.select(.movies)
-        await pauseTimerStarted()
-        await settle()
-        #expect(engine.pauses == 0, "nothing pauses when Movies opens")
-
+        #expect(engine.pauses == 1, "no sound carries on behind Movies")
+        #expect(engine.state == .paused)
+        await stopTimerStarted()
         clock.advance(by: .seconds(29))
         await settle()
-        #expect(engine.pauses == 0)
-
-        clock.advance(by: .seconds(1))
-        await wait { engine.pauses == 1 }
+        #expect(engine.stops == 0)
         let plays = engine.plays
 
         _ = await model.select(.live)
         #expect(engine.plays == plays + 1)
         #expect(engine.loaded.count == 1, "resuming does not load the channel again")
-    }
-
-    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search the timer runs on across Search and Series, and Guide resumes")
-    func pauseAcrossContentTabs() async {
-        await playingFirstChannel()
-        _ = await model.select(.search)
-        await pauseTimerStarted()
-        clock.advance(by: .seconds(20))
-        _ = await model.select(.series)
-        clock.advance(by: .seconds(10))
-        await wait { engine.pauses == 1 }
-
-        _ = await model.select(.guide)
-        #expect(engine.loaded.count == 1)
         #expect(engine.state == .playing)
     }
 
-    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search going back before 30 seconds neither pauses nor plays")
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search 30 seconds behind a tab stop the channel and Live tunes it again")
+    func stopBehindMovies() async {
+        await playingFirstChannel()
+        _ = await model.select(.movies)
+        await stopTimerStarted()
+        clock.advance(by: .seconds(30))
+        await wait { engine.stops == 1 }
+        #expect(engine.state == .idle, "the provider's connection is free")
+
+        _ = await model.select(.live)
+        await wait { engine.loaded.count == 2 }
+        #expect(engine.loaded.last == Channel.fixture("a1").streamURL)
+        await wait { engine.state == .playing }
+        #expect(model.tuned?.id == Channel.fixture("a1").id)
+    }
+
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search the timer runs on across Search and Series, and Guide tunes again")
+    func stopAcrossContentTabs() async {
+        await playingFirstChannel()
+        _ = await model.select(.search)
+        #expect(engine.pauses == 1)
+        await stopTimerStarted()
+        clock.advance(by: .seconds(20))
+        _ = await model.select(.series)
+        #expect(engine.pauses == 1, "moving between content tabs pauses nothing more")
+        clock.advance(by: .seconds(10))
+        await wait { engine.stops == 1 }
+
+        _ = await model.select(.guide)
+        await wait { engine.loaded.count == 2 }
+        await wait { engine.state == .playing }
+    }
+
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search going back before 30 seconds stops nothing")
     func backBeforeDeadline() async {
         await playingFirstChannel()
-        let plays = engine.plays
         _ = await model.select(.movies)
-        await pauseTimerStarted()
+        await stopTimerStarted()
         clock.advance(by: .seconds(10))
         _ = await model.select(.live)
         clock.advance(by: .seconds(30))
         await settle()
-        #expect(engine.pauses == 0)
+        #expect(engine.stops == 0)
+        #expect(engine.loaded.count == 1)
+        #expect(engine.state == .playing)
+    }
+
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search a movie that stopped the paused channel, then Guide, tunes it again")
+    func movieStoppedPausedChannel() async {
+        await playingFirstChannel()
+        _ = await model.select(.movies)
+        await engine.stop()
+        _ = await model.select(.guide)
+        await wait { engine.loaded.count == 2 }
+        await wait { engine.state == .playing }
+    }
+
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search a channel the user paused stays paused and is not stopped")
+    func userPauseStands() async {
+        await playingFirstChannel()
+        await engine.pause()
+        _ = await model.select(.movies)
+        #expect(engine.pauses == 1, "the shell pauses nothing more")
+        await stopTimerStarted()
+        clock.advance(by: .seconds(30))
+        await settle()
+        #expect(engine.stops == 0)
+        let plays = engine.plays
+        _ = await model.select(.live)
         #expect(engine.plays == plays)
+        #expect(engine.state == .paused)
+    }
+
+    // Search, as a playlist without movies takes Movies away when it loads.
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search a channel that finishes loading behind Search stays paused")
+    func loadLandsBehindSearch() async {
+        await launch()
+        _ = await model.select(.search)
+        loader.finish(sourceA.id, with: [.fixture("a1")])
+        await wait { engine.loaded.count == 1 }
+        await settle()
+        #expect(engine.plays == 0, "no sound starts behind Search")
+
+        _ = await model.select(.live)
+        await wait { engine.state == .playing }
+        #expect(engine.loaded.count == 1)
+    }
+
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search coming back from the background behind Movies plays nothing")
+    func foregroundBehindMovies() async {
+        await playingFirstChannel()
+        _ = await model.select(.movies)
+        let plays = engine.plays
+        await model.becameActive()
+        #expect(engine.plays == plays)
+        #expect(engine.state == .paused)
     }
 }
 

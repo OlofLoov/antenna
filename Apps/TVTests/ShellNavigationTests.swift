@@ -57,13 +57,11 @@ import Testing
         await wait { engine.plays > 0 }
     }
 
-    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search Live from the bar over a paused tab resumes without a reload")
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search Live from the bar over a tab resumes without a reload")
     func liveFromBarResumes() async {
         await playing()
         _ = await model.select(.movies)
-        await wait { clock.requested.last == .seconds(30) }
-        clock.advance(by: .seconds(30))
-        await wait { engine.pauses == 1 }
+        #expect(engine.pauses == 1)
         let plays = engine.plays
 
         #expect(model.menu(from: .content) == .tab(.movies))

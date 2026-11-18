@@ -19,6 +19,16 @@ extension ShellUITests {
         app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'overlay.group.' AND label CONTAINS %@", name)).firstMatch
     }
 
+    /// Fails unless both group rows are where they were, after the column has had time to settle.
+    func expectStill(
+        _ shown: CGRect, _ shownRow: XCUIElement, _ neighbour: CGRect, _ neighbourRow: XCUIElement,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
+        Thread.sleep(forTimeInterval: 1)
+        XCTAssertEqual(shownRow.frame.midY, shown.midY, accuracy: 1, "the shown group moved", file: file, line: line)
+        XCTAssertEqual(neighbourRow.frame.midY, neighbour.midY, accuracy: 1, "the group column scrolled", file: file, line: line)
+    }
+
     // tv-channel-overlay/picking-a-group-shows-its-channels
     func testLeftLandsOnAGroupFarDownTheList() {
         launchPlayingLarge()
@@ -47,13 +57,17 @@ extension ShellUITests {
         // Right lands on the group's first channel, l296.
         press(.right)
         expectFocusedRow("Channel l296,")
+        // tv-channel-overlay/the-group-column-keeps-its-place
+        let shown = overlayGroup("Group 297").frame
+        let neighbour = overlayGroup("Group 293").frame
 
-        // Far down the list, then back: left lands on Group 297.
+        // Far down the list, then back: left lands on Group 297 and the column stays put.
         press(.down, times: 30)
         expectFocusedRow("Channel l9296,")
         press(.left)
         expect(overlayGroup("Group 297"), "hasFocus == true")
         expect(element("overlay.channelsHeader"), "label CONTAINS 'GROUP 297'")
+        expectStill(shown, overlayGroup("Group 297"), neighbour, overlayGroup("Group 293"))
 
         // Right again comes back to the row left.
         press(.right)
@@ -62,6 +76,7 @@ extension ShellUITests {
         // Another group's list opens at its first channel.
         press(.left)
         expect(overlayGroup("Group 297"), "hasFocus == true")
+        expectStill(shown, overlayGroup("Group 297"), neighbour, overlayGroup("Group 293"))
         press(.up)
         expect(overlayGroup("Group 296"), "hasFocus == true")
         press(.right)
