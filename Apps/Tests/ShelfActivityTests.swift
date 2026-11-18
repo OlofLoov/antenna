@@ -38,7 +38,6 @@ import Testing
                 ShelfCatalogue(titles: kind == .movie ? titles.movies : titles.series, categories: ["Drama"])
             },
             hasLogin: { _ in true },
-            details: { _, _ in ShelfDetails() },
             episodes: { _, series in
                 (1...2).map { Episode(id: "\(series.id)-e\($0)", episodeID: $0, season: 1, number: $0, title: "E\($0)") }
             },

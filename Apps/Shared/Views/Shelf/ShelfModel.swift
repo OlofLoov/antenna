@@ -11,11 +11,10 @@ final class ShelfModel {
     struct Dependencies {
         var load: @MainActor (SourceDescriptor, ShelfTitle.Kind) async throws -> ShelfCatalogue
         var hasLogin: @MainActor (SourceDescriptor) -> Bool
-        var details: @MainActor (SourceDescriptor, ShelfTitle) async throws -> ShelfDetails
         /// A series' episodes in the client's order.
         var episodes: @MainActor (SourceDescriptor, ShelfTitle) async throws -> [Episode]
-        /// A title page's info call. No default: a library that leaves it
-        /// out fails every title page with `unknownTitle`.
+        /// A title's info call, for the banner, the Apple TV preview and the
+        /// title page.
         var info: @MainActor (SourceDescriptor, ShelfTitle) async throws -> TitleInfo
         /// How often to look for a login that has not arrived yet.
         var loginCheck = Duration.seconds(5)
@@ -30,9 +29,9 @@ final class ShelfModel {
     private(set) var titles: [ShelfTitle] = []
     private(set) var rows: [ShelfRow] = []
     private(set) var banner: [ShelfTitle] = []
-    /// The banner's details by title id, once loaded.
+    /// Details by title id, once the banner, the preview or a page has asked.
     private(set) var details: [String: ShelfDetails] = [:]
-    /// Banner titles whose info call has answered or failed.
+    /// Titles whose info call has answered or failed.
     private(set) var answered: Set<String> = []
     /// False until the section first opens; nothing loads before.
     private(set) var opened = false
@@ -46,6 +45,12 @@ final class ShelfModel {
     @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private var catalogues: [UUID: ShelfCatalogue] = [:]
     @ObservationIgnored private var asked: Set<String> = []
+    @ObservationIgnored private var kept: [ActivityKey: TitleInfo] = [:]
+    @ObservationIgnored private var keptOrder: [ActivityKey] = []
+    @ObservationIgnored private var inFlight: [ActivityKey: Task<TitleInfo, any Error>] = [:]
+    @ObservationIgnored private var previewQueue = OneAtATime()
+    @ObservationIgnored private var previewTitles: [String: ShelfTitle] = [:]
+    @ObservationIgnored private var previewTask: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
     @ObservationIgnored private var byKey: [ActivityKey: ShelfTitle] = [:]
 
@@ -213,16 +218,81 @@ final class ShelfModel {
         banner = Shelf.banner(all)
     }
 
-    // MARK: Banner details
+    // MARK: Details
 
-    /// Loads the year, length and description of a banner title once. A
-    /// failure leaves the banner with the name and category.
+    /// How many titles' info answers stay in memory, oldest dropped first.
+    static let keptLimit = 100
+
+    /// Loads the year, length and description of a title once per launch,
+    /// for the banner or the Apple TV preview. A failure leaves the name and
+    /// category; only a page's Retry asks again
+    /// (movies-and-series-browsing/title-details-are-asked-once-per-title).
     func loadDetails(_ title: ShelfTitle) async {
-        guard !asked.contains(title.id), let source = descriptors[title.sourceID] else { return }
+        guard !asked.contains(title.id), descriptors[title.sourceID] != nil else { return }
         asked.insert(title.id)
         defer { answered.insert(title.id) }
-        guard let found = try? await dependencies.details(source, title) else { return }
-        details[title.id] = found
+        _ = try? await fetch(title)
+    }
+
+    /// Asks about a title the Apple TV highlight rested on, one request at a
+    /// time. A title that rests while a request is out is asked about next,
+    /// replacing any title already waiting. Titles asked about before are
+    /// skipped.
+    func preview(_ title: ShelfTitle) {
+        guard !asked.contains(title.id), descriptors[title.sourceID] != nil else { return }
+        previewTitles[title.id] = title
+        let first = previewQueue.ask(title.id)
+        let live = [previewQueue.asking, previewQueue.waiting]
+        previewTitles = previewTitles.filter { live.contains($0.key) }
+        guard let first else { return }
+        previewTask = Task { [weak self] in
+            var next: String? = first
+            while let id = next, let self {
+                if let title = previewTitles[id] { await loadDetails(title) }
+                previewTitles[id] = nil
+                next = previewQueue.finished()
+            }
+        }
+    }
+
+    /// Waits until no preview request is out. For tests.
+    func previewsSettled() async {
+        await previewTask?.value
+    }
+
+    /// The info answer kept for a title, if any.
+    func keptInfo(_ title: ShelfTitle) -> TitleInfo? {
+        kept[title.activityKey]
+    }
+
+    /// The kept answer, the request already out for the title, or a new
+    /// request. Only the caller that started a request keeps its answer.
+    private func fetch(_ title: ShelfTitle) async throws -> TitleInfo {
+        let key = title.activityKey
+        if let known = kept[key] { return known }
+        if let running = inFlight[key] { return try await running.value }
+        guard let source = descriptors[title.sourceID] else { throw ShelfLoader.LoadError.unknownTitle }
+        guard dependencies.hasLogin(source) else { throw LoadFailure.waitingForLogin }
+        let info = dependencies.info
+        // Not a child task: a page that closes stops waiting, but the
+        // request runs to its end and the answer is kept for the next ask.
+        let request = Task { try await info(source, title) }
+        inFlight[key] = request
+        defer { inFlight[key] = nil }
+        let answer = try await request.value
+        keep(answer, for: title)
+        return answer
+    }
+
+    private func keep(_ answer: TitleInfo, for title: ShelfTitle) {
+        let key = title.activityKey
+        if kept.updateValue(answer, forKey: key) != nil { keptOrder.removeAll { $0 == key } }
+        keptOrder.append(key)
+        while keptOrder.count > Self.keptLimit { kept[keptOrder.removeFirst()] = nil }
+        details[title.id] = ShelfDetails(answer)
+        asked.insert(title.id)
+        answered.insert(title.id)
+        if case .series(let series) = answer { episodes[title.id] = series.episodes }
     }
 
     // MARK: Episodes
@@ -237,15 +307,19 @@ final class ShelfModel {
         return list
     }
 
-    /// The info call for a title page, asked every time. A series' episodes
-    /// are kept for Continue watching. Throws `LoadFailure.waitingForLogin`
-    /// when the source's login is not on this device.
+    /// The info call for a title page: the answer kept from the banner, the
+    /// preview or an earlier page, else one request. A series' episodes are
+    /// kept for Continue watching. Throws `LoadFailure.waitingForLogin` when
+    /// the source's login is not on this device.
     func info(_ title: ShelfTitle) async throws -> TitleInfo {
-        guard let source = descriptors[title.sourceID] else { throw ShelfLoader.LoadError.unknownTitle }
-        guard dependencies.hasLogin(source) else { throw LoadFailure.waitingForLogin }
-        let info = try await dependencies.info(source, title)
-        if case .series(let series) = info { episodes[title.id] = series.episodes }
-        return info
+        try await fetch(title)
+    }
+
+    /// Asks the provider again, for a page's Retry.
+    func refreshInfo(_ title: ShelfTitle) async throws -> TitleInfo {
+        let key = title.activityKey
+        if kept.removeValue(forKey: key) != nil { keptOrder.removeAll { $0 == key } }
+        return try await fetch(title)
     }
 
     /// True when the title's source has its login on this device.
@@ -331,7 +405,6 @@ extension ShelfLibrary {
         let dependencies = ShelfModel.Dependencies(
             load: { try await loader.load($0, kind: $1) },
             hasLogin: { loader.hasLogin($0) },
-            details: { try await loader.details($0, title: $1) },
             episodes: { try await loader.episodes($0, series: $1) },
             info: { try await loader.info($0, title: $1) })
         return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))

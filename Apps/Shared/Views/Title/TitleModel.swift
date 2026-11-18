@@ -5,8 +5,8 @@ import os
 
 /// One open title page (title-detail-and-episode-picker): what is known at
 /// once, the info call's answer, and for a series its season groups. A page
-/// asks the provider once each time it opens; leaving cancels the request
-/// and a late reply changes nothing.
+/// shows the answer the section kept, or asks the provider once; leaving
+/// stops the wait and a late reply changes nothing on the page.
 @MainActor @Observable
 final class TitleModel {
     /// Where the info call stands.
@@ -47,6 +47,13 @@ final class TitleModel {
         self.lookup = lookup
         provided = TitleMetadata(title: title)
         playable = title
+        // The banner, the preview or an earlier page asked already: the page
+        // shows the answer without loading
+        // (movies-and-series-browsing/title-details-are-asked-once-per-title).
+        if let kept = shelf.keptInfo(title) {
+            apply(kept)
+            phase = .loaded
+        }
     }
 
     /// Every episode in the picker's order.
@@ -54,25 +61,30 @@ final class TitleModel {
         groups.flatMap(\.episodes)
     }
 
-    /// Asks the provider for the details, and a series' episodes. Call from
-    /// a task tied to the page, so leaving cancels it.
+    /// The details and a series' episodes: the kept answer when there is
+    /// one, else the provider's. `refresh`, for Retry, always asks the
+    /// provider. Call from a task tied to the page, so leaving stops the
+    /// wait and a late reply changes nothing on the page.
     ///
     /// A kept database match shows at once; the lookup itself waits for the
     /// provider's year and never holds up Play or the provider's details
     /// (title-metadata/a-slow-or-failing-lookup-never-holds-up-the-page).
-    func load() async {
-        phase = .loading
+    func load(refresh: Bool = false) async {
+        let asks = refresh || phase != .loaded
+        if asks { phase = .loading }
         if match == nil, let lookup { match = await lookup.kept(KeptTitleLookup.Key(title)) }
-        do {
-            let info = try await shelf.info(title)
-            guard !Task.isCancelled else { return }
-            apply(info)
-            phase = .loaded
-        } catch {
-            guard !Task.isCancelled else { return }
-            let kind = title.kind == .movie ? "movie" : "series"
-            Self.logger.error("\(kind, privacy: .public) info failed: \(Self.reason(error), privacy: .public)")
-            phase = .failed(problem(for: error))
+        if asks {
+            do {
+                let info = try await (refresh ? shelf.refreshInfo(title) : shelf.info(title))
+                guard !Task.isCancelled else { return }
+                apply(info)
+                phase = .loaded
+            } catch {
+                guard !Task.isCancelled else { return }
+                let kind = title.kind == .movie ? "movie" : "series"
+                Self.logger.error("\(kind, privacy: .public) info failed: \(Self.reason(error), privacy: .public)")
+                phase = .failed(problem(for: error))
+            }
         }
         await lookUp()
     }

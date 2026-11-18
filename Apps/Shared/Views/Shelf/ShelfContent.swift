@@ -55,6 +55,11 @@ struct ShelfActions {
 struct ShelfBannerHost<Content: View>: View {
     let model: ShelfModel
     let actions: ShelfActions
+    /// True while the Apple TV preview shows: the banner holds its title
+    /// and asks nothing about the next one.
+    var paused = false
+    /// Told the title the banner shows whenever it changes.
+    var showing: (ShelfTitle) -> Void = { _ in }
     @ViewBuilder var content: Content
     @State private var index = 0
     @State private var interacting = false
@@ -68,17 +73,21 @@ struct ShelfBannerHost<Content: View>: View {
     var body: some View {
         let titles = model.banner
         let shown = titles.isEmpty ? nil : titles[min(index, titles.count - 1)]
-        let rotates = BannerPager.rotates(count: titles.count, interacting: interacting, reduceMotion: reduceMotion)
+        let rotates =
+            !paused && BannerPager.rotates(count: titles.count, interacting: interacting, reduceMotion: reduceMotion)
         content
             .environment(\.shelfBanner, shown.map { context($0, count: titles.count) })
+            .onChange(of: shown, initial: true) { _, title in
+                if let title { showing(title) }
+            }
             .task(id: Rotation(index: index, rotates: rotates)) {
                 guard rotates else { return }
                 try? await Task.sleep(for: BannerPager.interval)
                 guard !Task.isCancelled else { return }
                 page(1, count: titles.count)
             }
-            .task(id: shown?.id) {
-                guard let shown else { return }
+            .task(id: Shown(id: shown?.id, paused: paused)) {
+                guard let shown, !paused else { return }
                 let patience = Task {
                     try? await Task.sleep(for: BannerArt.patience)
                     if !Task.isCancelled { waited.insert(shown.id) }
@@ -95,6 +104,11 @@ struct ShelfBannerHost<Content: View>: View {
     private struct Rotation: Hashable {
         var index: Int
         var rotates: Bool
+    }
+
+    private struct Shown: Hashable {
+        var id: String?
+        var paused: Bool
     }
 
     private var reduceMotion: Bool {
@@ -163,6 +177,7 @@ struct ShelfRowsContent: View {
                 }
             }
             .environment(\.shelfRow, "continueWatching")
+            .shelfFocusRow("continueWatching")
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.continueWatching")
         }
@@ -176,6 +191,7 @@ struct ShelfRowsContent: View {
                 }
             }
             .environment(\.shelfRow, "myList")
+            .shelfFocusRow("myList")
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.myList")
         }
@@ -189,6 +205,7 @@ struct ShelfRowsContent: View {
                 }
             }
             .environment(\.shelfRow, "recentlyWatched")
+            .shelfFocusRow("recentlyWatched")
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.recentlyWatched")
         }
@@ -204,6 +221,7 @@ struct ShelfRowsContent: View {
                     }
                 }
                 .environment(\.shelfRow, row.identifier)
+                .shelfFocusRow(row.identifier)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
             }
@@ -231,6 +249,7 @@ struct ShelfRowsContent: View {
             #endif
         }
         .environment(\.shelfRow, row.identifier)
+        .shelfFocusRow(row.identifier)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("\(prefix).row.\(row.identifier)")
     }
@@ -253,6 +272,7 @@ struct ShelfPoster: View {
             actions.select(title, in: row)
         }
         .modifier(ReturnFocus(title: title, origin: .poster(row: row)))
+        .shelfPreviewFocus(title)
         // A series' poster shows it is working while its episode list loads
         // (movies-and-series-browsing/play-a-series-from-the-next-episode).
         .overlay {
@@ -299,6 +319,7 @@ struct ShelfContinueCard: View {
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(item.title)) { actions.toggleMyList(item.title) }
         }
         .modifier(ReturnFocus(title: item.title, origin: .poster(row: row)))
+        .shelfPreviewFocus(item.title)
         .task(id: item.id) {
             if item.title.kind == .series { await library.series.prefetchEpisodes(item.title) }
         }

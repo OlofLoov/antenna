@@ -71,9 +71,11 @@ final class ShelfUITests: XCTestCase {
         openMovies(app)
         waitForHero(app, "The Long Harbor", timeout: 5)
         XCTAssertTrue(app.element("movies.hero").staticTexts["RECENTLY ADDED · ACTION"].exists)
-        let facts = app.element("movies.hero").staticTexts.matching(NSPredicate(format: "label CONTAINS '2001'")).firstMatch
+        // The banner reads the same info call as the title page.
+        let facts = app.element("movies.hero").staticTexts.matching(NSPredicate(format: "label CONTAINS '2024'")).firstMatch
         XCTAssertTrue(facts.waitForExistence(timeout: 5), "the year and length never showed")
-        XCTAssertTrue(app.element("movies.hero").staticTexts["The story of The Long Harbor."].exists)
+        let plot = app.element("movies.hero").staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'A harbour pilot'"))
+        XCTAssertTrue(plot.firstMatch.exists)
         // Night Ferry comes from Office: the banner picks from both sources.
         waitForHero(app, "Night Ferry", timeout: 12)
     }

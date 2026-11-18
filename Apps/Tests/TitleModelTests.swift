@@ -25,7 +25,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? [title] : [], categories: ["Drama"]) },
             hasLogin: { _ in login },
-            details: { _, _ in ShelfDetails() },
             episodes: { _, _ in [] },
             info: { _, _ in
                 calls.value += 1
@@ -57,7 +56,7 @@ import Testing
         #expect(model.playable.containerExtension == "mkv", "the info call's extension wins")
     }
 
-    @Test("title-detail-and-episode-picker/open-a-movie-s-page leaving cancels, a late reply changes nothing, and opening asks again")
+    @Test("title-detail-and-episode-picker/open-a-movie-s-page leaving drops a late reply from the page, and opening again uses it")
     func leaveBeforeTheReply() async throws {
         let calls = Counter()
         let gate = Gate()
@@ -76,9 +75,97 @@ import Testing
         library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
         let again = try #require(library.page?.model)
         #expect(again !== model)
+        #expect(again.phase == .loaded, "the kept answer shows without loading")
         await again.load()
-        #expect(calls.value == 2)
-        #expect(again.phase == .loaded)
+        #expect(calls.value == 1)
+        #expect(again.metadata.detailsLine == "2024 · 1 h 32 min · ★ 7.4")
+    }
+
+    @Test("movies-and-series-browsing/title-details-are-asked-once-per-title the banner's answer opens the page, Retry asks again")
+    func bannerThenPage() async throws {
+        let calls = Counter()
+        let library = await library(calls: calls)
+        await library.movies.loadDetails(movie)
+        #expect(calls.value == 1)
+        #expect(library.movies.details[movie.id]?.year == 2024)
+        library.movies.preview(movie)
+        await library.movies.previewsSettled()
+        #expect(calls.value == 1, "the preview asks nothing for a title the banner asked about")
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
+        let model = try #require(library.page?.model)
+        #expect(model.phase == .loaded)
+        await model.load()
+        #expect(calls.value == 1, "the page asks nothing either")
+        await model.load(refresh: true)
+        #expect(calls.value == 2, "Retry asks the provider again")
+        #expect(model.phase == .loaded)
+    }
+
+    @Test("movies-and-series-browsing/title-details-are-asked-once-per-title a failed preview leaves the page to ask, and Retry asks again")
+    func failedPreview() async throws {
+        let calls = Counter()
+        let library = await library(calls: calls, fails: true)
+        library.movies.preview(movie)
+        await library.movies.previewsSettled()
+        #expect(calls.value == 1)
+        #expect(library.movies.answered.contains(movie.id))
+        library.movies.preview(movie)
+        await library.movies.previewsSettled()
+        #expect(calls.value == 1, "a failure is not asked again by the preview")
+        library.openPage(movie, from: .poster(row: "recentlyAdded"), in: .movie)
+        let model = try #require(library.page?.model)
+        await model.load()
+        #expect(model.phase == .failed(.failed))
+        await model.load(refresh: true)
+        #expect(calls.value == 3)
+    }
+
+    @Test("movies-and-series-browsing/title-details-are-asked-once-per-title resting on three posters asks the first, then the third")
+    func oneAtATime() async throws {
+        let calls = Counter()
+        let gate = Gate()
+        let titles = (1...3).map { ShelfTitle(id: "xtream#h#vod#\($0)", kind: .movie, sourceID: source, name: "Title \($0)") }
+        var asked: [String] = []
+        let dependencies = ShelfModel.Dependencies(
+            load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles : [], categories: []) },
+            hasLogin: { _ in true },
+            episodes: { _, _ in [] },
+            info: { _, title in
+                calls.value += 1
+                asked.append(title.id)
+                await gate.wait()
+                return .movie(VODInfo(year: 2024))
+            })
+        let shelf = ShelfModel(kind: .movie, dependencies)
+        shelf.sourcesChanged([descriptor])
+        shelf.open()
+        await shelf.settled()
+        for title in titles { shelf.preview(title) }
+        #expect(await eventually { calls.value == 1 })
+        gate.open()
+        await shelf.previewsSettled()
+        #expect(asked == ["xtream#h#vod#1", "xtream#h#vod#3"])
+        #expect(shelf.details["xtream#h#vod#2"] == nil)
+    }
+
+    @Test("movies-and-series-browsing/title-details-are-asked-once-per-title at most 100 answers are kept, oldest dropped first")
+    func keptLimit() async throws {
+        let titles = (0...ShelfModel.keptLimit).map {
+            ShelfTitle(id: "xtream#h#vod#\($0)", kind: .movie, sourceID: source, name: "Title \($0)")
+        }
+        let dependencies = ShelfModel.Dependencies(
+            load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles : [], categories: []) },
+            hasLogin: { _ in true },
+            episodes: { _, _ in [] },
+            info: { _, _ in .movie(VODInfo(year: 2024)) })
+        let shelf = ShelfModel(kind: .movie, dependencies)
+        shelf.sourcesChanged([descriptor])
+        shelf.open()
+        await shelf.settled()
+        for title in titles { _ = try await shelf.info(title) }
+        #expect(shelf.keptInfo(titles[0]) == nil)
+        #expect(shelf.keptInfo(titles[1]) != nil)
+        #expect(shelf.keptInfo(titles[ShelfModel.keptLimit]) != nil)
     }
 
     @Test("title-detail-and-episode-picker/open-a-movie-s-page the page knows when its source is deleted")
@@ -135,7 +222,7 @@ import Testing
         for (list, skipped) in [(episodes, 2), ([], 0)] {
             let dependencies = ShelfModel.Dependencies(
                 load: { _, kind in ShelfCatalogue(titles: kind == .series ? [series] : [], categories: ["Drama"]) },
-                hasLogin: { _ in true }, details: { _, _ in ShelfDetails() }, episodes: { _, _ in [] },
+                hasLogin: { _ in true }, episodes: { _, _ in [] },
                 info: { _, _ in .series(SeriesInfo(episodes: list, skippedEpisodes: skipped)) })
             let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
             library.sourcesChanged([descriptor])

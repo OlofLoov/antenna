@@ -35,6 +35,33 @@
         /// skip forward brings the Up next card (up-next capability).
         static let nearEndArgument = "-ui-testing-near-end"
 
+        /// How many info calls the scripted shelf has been asked, for the
+        /// UI tests that check a fast swipe asks nothing
+        /// (movies-and-series-browsing/title-details-are-asked-once-per-title).
+        @MainActor @Observable
+        final class InfoLoads {
+            static let shared = InfoLoads()
+            private(set) var count = 0
+
+            func add() {
+                count += 1
+            }
+        }
+
+        /// The count of info calls, read through `shelf.debug.infoLoads`.
+        struct InfoLoadsProbe: View {
+            var body: some View {
+                let count = "\(InfoLoads.shared.count)"
+                Text(count)
+                    .font(.system(size: 8))
+                    .foregroundStyle(Palette.textMuted)
+                    .accessibilityIdentifier("shelf.debug.infoLoads")
+                    .accessibilityValue(count)
+                    .allowsHitTesting(false)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+            }
+        }
+
         /// The links the title page opened, instead of leaving the app.
         @MainActor @Observable
         final class Opened {
