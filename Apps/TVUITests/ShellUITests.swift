@@ -121,6 +121,38 @@ extension ShellUITests {
         XCTAssertEqual(selected, ["shell.tab.live"])
     }
 
+    // tvos-shell/the-tab-bar-sits-in-the-same-place-on-every-tab
+    func testTheBarSitsInTheSamePlaceOnEveryTab() {
+        launchPlaying()
+        press(.menu)
+        expectFocus("shell.tab.live")
+        let screen = app.windows.firstMatch.frame
+        // The capsule around the tabs; a pill's own frame grows while it has focus.
+        func tabs() -> CGRect { element("shell.tabs").frame }
+        let overLive = tabs()
+        XCTAssertGreaterThan(overLive.width, 400, "the capsule holds the tabs")
+        XCTAssertEqual(overLive.midX, screen.midX, accuracy: 2, "the tabs sit on the screen's center")
+
+        press(.right, toFocus: element("shell.tab.guide"), from: element("shell.tab.live"))
+        press(.select)
+        expectFocus("guide.grid")
+        press(.menu)
+        expectFocus("shell.tab.guide")
+        let overGuide = tabs()
+        XCTAssertEqual(overGuide.midX, overLive.midX, accuracy: 1)
+        XCTAssertEqual(overGuide.minY, overLive.minY, accuracy: 1)
+        XCTAssertGreaterThanOrEqual(element("shell.player").frame.minY, overGuide.maxY, "the bar leaves the small picture uncovered")
+
+        press(.right, toFocus: element("shell.tab.movies"), from: element("shell.tab.guide"))
+        press(.select)
+        press(.menu)
+        expectFocus("shell.tab.movies")
+        let overMovies = tabs()
+        XCTAssertEqual(overMovies.midX, overLive.midX, accuracy: 1)
+        XCTAssertEqual(overMovies.minY, overLive.minY, accuracy: 1)
+        XCTAssertGreaterThan(element("shell.settings").frame.minX, overMovies.maxX, "Settings hangs right of the tabs")
+    }
+
     // tvos-shell/menu-shows-the-tab-bar-over-the-picture
     func testMenuShowsBarOverPicture() {
         launchPlaying()

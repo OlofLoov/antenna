@@ -122,6 +122,8 @@
             .followsSubtitlePreference { model.languages.subtitles = $0 }
             .onChange(of: model.pickerOpen) { _, _ in showLatestRecents() }
             .onChange(of: model.tuned, initial: true) { _, channel in zapBar.channelChanged(to: channel) }
+            // Watch on the channel already in the Guide's small picture shows the info bar as a tune does.
+            .onChange(of: model.guidePicks) { _, _ in zapBar.channelChanged(to: model.tuned) }
             .onChange(of: model.barVisible) { _, raised in
                 if raised { zapBar.dismiss() }
             }
@@ -194,7 +196,7 @@
                 .frame(maxWidth: model.tab == .guide ? nil : .infinity, maxHeight: model.tab == .guide ? nil : .infinity)
                 .clipShape(RoundedRectangle(cornerRadius: model.tab == .guide ? 14 : 0))
                 .padding(.leading, model.tab == .guide ? 64 : 0)
-                .padding(.top, model.tab == .guide ? 48 : 0)
+                .padding(.top, model.tab == .guide ? GuideGrid.pictureTop : 0)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .opacity(model.tab.isContent || model.tuned == nil ? 0 : 1)
                 if model.tab == .live, model.tuned != nil, model.player.failure == nil {

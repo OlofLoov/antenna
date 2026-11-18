@@ -33,7 +33,8 @@
             case nothing
         }
 
-        static let visibleRows = 7
+        /// The rows that fit under the small picture, which sits below the tab bar's band.
+        static let visibleRows = 6
 
         private(set) var windowStart = Date.distantPast
         private(set) var rowWindow = GuideRowWindow(capacity: visibleRows)

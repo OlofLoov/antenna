@@ -87,8 +87,8 @@ import Testing
     func opensScrolled() {
         let data = data()
         model.open(data, playing: keys[9], now: now)
-        #expect(model.rowWindow.first == 3)
-        #expect(model.rowWindow.drawn(of: data.rows.count) == 3..<10)
+        #expect(model.rowWindow.first == 4)
+        #expect(model.rowWindow.drawn(of: data.rows.count) == 4..<10)
     }
 
     @Test("tv-guide-grid/open-at-a-programme-found-in-search the programme's half hour and row are in view, highlighted")
