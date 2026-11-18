@@ -3,10 +3,12 @@ import FFmpeg
 import Foundation
 import Testing
 
-/// The FFmpeg build the app links: LGPL, demuxers plus the MPEG-2, MP2 and
-/// DVB subtitle decoders only, and every fixture container opening through a custom read
-/// callback, the way the demuxing engine feeds it. Tooling for the
-/// playback-engine change, so these tests cite no requirement.
+/// The FFmpeg build the app links: LGPL, demuxers plus decoders only for
+/// what Apple cannot decode (MPEG-2, MP2, DVB subtitles, DTS, TrueHD, MLP,
+/// LATM-framed AAC, Opus and SMPTE 302M), and every fixture container
+/// opening through a custom read callback, the way the demuxing engine
+/// feeds it. Tooling for the playback-engine change, so these tests cite no
+/// requirement.
 @Suite struct FFmpegBuildTests {
     @Test func everyLibraryIsLGPL() {
         let licences = [avformat_license(), avcodec_license(), avutil_license(), swresample_license()]
@@ -17,8 +19,11 @@ import Testing
         #expect(avcodec_find_decoder(AV_CODEC_ID_MPEG2VIDEO) != nil)
         #expect(avcodec_find_decoder(AV_CODEC_ID_MP2) != nil)
         #expect(avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE) != nil)
+        for codec in [AV_CODEC_ID_DTS, AV_CODEC_ID_TRUEHD, AV_CODEC_ID_MLP, AV_CODEC_ID_AAC_LATM, AV_CODEC_ID_OPUS, AV_CODEC_ID_S302M] {
+            #expect(avcodec_find_decoder(codec) != nil)
+        }
         #expect(avcodec_find_decoder(AV_CODEC_ID_H264) == nil)
-        #expect(avcodec_find_decoder(AV_CODEC_ID_AAC) == nil)
+        #expect(avcodec_find_decoder(AV_CODEC_ID_FLAC) == nil)
     }
 
     @Test(
