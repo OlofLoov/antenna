@@ -8,36 +8,39 @@ The app has one `WindowGroup` in `Apps/Shared/AntennaApp.swift`, shared by iPhon
 
 ### Inventory
 
-Every `keyboardShortcut` and `onKeyPress` in `Apps/Shared` on 2026-11-14, with what this change does to it. "Menu" moves it into a menu item; "Stays" keeps it in the screen.
+Every `keyboardShortcut` and `onKeyPress` in `Apps/Shared` on 2026-11-18, checked again against main after PRs #364 (movie transport), #377 (Up next) and #379 (title scores), with what this change does to it. "Menu" moves it into a menu item; "Stays" keeps it in the screen. The 2026-11-14 list had line numbers; they moved with those PRs, so this one names files only.
 
 | Screen | Key | Action | Where it is | This change |
 |--------|-----|--------|-------------|-------------|
-| Live list | Command-F | Find a channel | `LiveRegularView.swift:427` | Menu: Edit, Find Channel |
-| Live list | Down, Up | Move the focus ring | `LiveRegularView.swift:431-433` | Stays |
-| Live list | Return | Play the ringed channel | `LiveRegularView.swift:435` | Stays |
-| Live list | Space | Pause or play | `LiveRegularView.swift:437` | Menu: Playback, Pause / Play |
-| Live list | Command-Shift-M | Add the ringed channel to multi-view (iOS, macOS) | `MultiViewGridScreen.swift:241` (`LiveMultiViewKey`) | Menu: Playback, Add to Multi-view |
-| Live full screen | Escape | Leave full screen | `LiveRegularView.swift:106` (Mac), `LiveEscapeKey` (iPad) | Stays |
-| Live picture (Mac) | M | Mute | `LivePicture.swift:170` | Menu: Playback, Mute |
-| Live picture (Mac) | Command-Up, Command-Down | Volume | `LivePicture.swift:173-175` | Menu: Playback, Volume Up / Down |
-| Live timeshift | Left, Right | Back 15 s, forward 30 s | `LiveTimeshift.swift:60-62` | Menu: Playback, Back 15 / Forward 30 Seconds |
-| Guide | Command-F | Filter channels | `GuideRegularScreen.swift:110` | Menu: Edit, Filter Channels |
-| Guide | Command-Plus, Command-Equals | Zoom in | `GuideRegularScreen.swift:112-114` | Menu: View, Zoom In (Equals as a second key equivalent, see below) |
-| Guide | Command-Minus | Zoom out | `GuideRegularScreen.swift:116` | Menu: View, Zoom Out |
-| Guide | Arrows | Move the cursor | `GuideRegularScreen.swift:119-125` | Stays |
-| Guide | Return | Open details | `GuideRegularScreen.swift:127` | Stays |
-| Search | Command-F | Put the cursor in the field | `SearchRegularScreen.swift:95` | Menu: Edit, Search |
-| Search | Arrows, Return, Escape | Move, open, clear | `SearchRegularScreen.swift:45-113` | Stays |
-| Title page | Left, Right | Previous or next season | `TitleScreen.swift:136-138` | Stays |
-| Title page | Return | Play | `TitleScreen.swift:140` | Stays |
-| Title page | Escape | Back | `TitlePageLayouts.swift:141, 162`, `LiveEscapeKey` (iPad) | Stays |
-| Movie player | Left, Right | Skip 10 s | `ShelfPlayerView.swift:309-311` | Menu: Playback, Back / Forward 10 Seconds |
-| Movie player | Space | Play or pause | `ShelfPlayerView.swift:313` | Menu: Playback, Pause / Play |
-| Movie player | Escape | Close | `ShelfPlayerView.swift:317`; error Back at `:98` | Stays |
-| Multi-view | Command-1 to 4 | Select a tile | `MultiViewGridScreen.swift:164` | Menu: Playback, Select Tile n, moved to Option-Command-1 to 4 |
-| Multi-view | Command-Delete | Remove the selected tile | `MultiViewGridScreen.swift:167` | Menu: Playback, Remove Tile |
-| Multi-view | Escape | Back to the grid | `MultiViewGridScreen.swift:170` | Stays |
-| Number entry (Apple TV) | Digits, Return, Backspace, Escape | Tune by number | `NumberEntryInput.swift:37` | Stays, tvOS only |
+| Live list | Command-F | Find a channel | `LiveRegularView.swift`, `LiveListColumn` | Menu: Edit, Find Channel |
+| Live list | Down, Up | Move the focus ring | `LiveListColumn` | Stays |
+| Live list | Return | Play the ringed channel | `LiveListColumn` | Stays |
+| Live list | Space | Pause or play | `LiveListColumn` | Menu: Playback, Pause / Play |
+| Live list | Command-Shift-M | Add the ringed channel to multi-view (iOS, macOS) | `MultiViewGridScreen.swift`, `LiveMultiViewKey` | Menu: Playback, Add to Multi-view |
+| Live full screen | Escape | Leave full screen | `LiveRegularView.swift` (Mac), `LiveEscapeKey` (iPad) | Stays |
+| Live picture (Mac) | M | Mute | `LivePicture.swift` | Menu: Playback, Mute |
+| Live picture (Mac) | Command-Up, Command-Down | Volume | `LivePicture.swift` | Menu: Playback, Volume Up / Down |
+| Live timeshift | Left, Right | Back 15 s, forward 30 s | `LiveTimeshift.swift`, `LiveSkipKeys` | Menu: Playback, Back 15 / Forward 30 Seconds; stays as keys in the compact layout |
+| Guide | Command-F | Filter channels | `GuideRegularScreen.swift` | Menu: Edit, Filter Channels |
+| Guide | Command-Plus, Command-Equals | Zoom in | `GuideRegularScreen.swift` | Menu: View, Zoom In (Equals stays a hidden key, see below) |
+| Guide | Command-Minus | Zoom out | `GuideRegularScreen.swift` | Menu: View, Zoom Out |
+| Guide | Arrows | Move the cursor | `GuideRegularScreen.swift` | Stays |
+| Guide | Return | Open details | `GuideRegularScreen.swift` | Stays |
+| Search | Command-F | Put the cursor in the field | `SearchRegularScreen.swift` | Menu: Edit, Search |
+| Search | Arrows, Return, Escape | Move, open, clear | `SearchRegularScreen.swift` | Stays |
+| Title page | Left, Right | Previous or next season | `TitleScreen.swift` | Stays |
+| Title page | Return | Play | `TitleScreen.swift` | Stays |
+| Title page | Escape | Back | `TitlePageLayouts.swift`, `LiveEscapeKey` (iPad) | Stays |
+| Movie player | Left, Right | Skip 10 s (#364) | `ShelfPlayerView.swift`, `TitleTouchLayer` | Menu: Playback, Back / Forward 10 Seconds; stays as keys in the compact layout |
+| Movie player | Space | Play or pause (#364) | `TitleTouchLayer` | Menu: Playback, Pause / Play; stays as a key in the compact layout |
+| Movie player | Escape | Close; error Back | `TitleTouchLayer`, `TitleFailure` | Stays |
+| Up next card | Return, Escape | Play now, Cancel (#377) | `NextEpisode.swift` | Stays |
+| Multi-view | Command-1 to 4 | Select a tile | `MultiViewGridScreen.swift` | Menu: Playback, Select Tile n, moved to Option-Command-1 to 4 |
+| Multi-view | Command-Delete | Remove the selected tile | `MultiViewGridScreen.swift` | Menu: Playback, Remove Tile |
+| Multi-view | Escape | Back to the grid | `MultiViewGridScreen.swift` | Stays |
+| Number entry (Apple TV) | Digits, Return, Backspace, Escape | Tune by number | `NumberEntryInput.swift` | Stays, tvOS only |
+
+PR #379 added no keys. The in-flight `add-banner-rating-and-trailer` (a Trailer button on the banner) and `add-focused-title-preview` (Apple TV only) name none either.
 
 ## Decisions
 
@@ -94,7 +97,7 @@ Options considered for the tile keys:
 - Plain 1 to 4 in multi-view (rejected). Multi-view has no text field, but a bare digit in a menu reads as a typo, and Apple TV's number entry already gives digits a different meaning.
 - Option-Command-1 to 4 (chosen).
 
-In a narrow iPad window, the tabs replace the sidebar and Series sits inside Movies. Command-4 then opens Movies with Series picked.
+In a narrow iPad window, the tabs replace the sidebar and the Go items are dimmed (see "Decisions made while building").
 
 ### How the menus reach the screens
 
@@ -130,7 +133,7 @@ Three Command keys are also text-field keys: Command-Up and Command-Down (start 
 
 Command-H and Command-M are Hide and Minimize on Mac, which is why mute is plain M, as `player-controls-and-playback-errors` already has it, and not Command-M.
 
-Space with keyboard navigation: on Mac with Keyboard Navigation on, and on iPad with Full Keyboard Access, Space presses the focused button. A menu item's key equivalent is handled before the focused control, so Space pauses instead, as the hidden button does today. The change keeps that behavior and lists it under open questions.
+Space with keyboard navigation: on Mac with Keyboard Navigation on, and on iPad with Full Keyboard Access, Space presses the focused button. A menu item's key equivalent is handled before the focused control, so Space pauses instead, as the hidden button does today. The owner chose to keep that behavior (answer 2 below).
 
 ### iPad
 
@@ -159,9 +162,21 @@ None new on screen. Tests drive the keys with `XCUIElement.typeKey(_:modifierFla
 - `focusedSceneValue` from a view inside a `fullScreenCover` or overlay may not reach the commands on iPad. The movie player is an overlay in the same scene, so this should hold; the iPad UI test covers Space in the player.
 - iPadOS 26 menu bar behavior is new and has not been checked on a device for this app.
 
-## Open questions
+## Owner's answers (2026-11-18)
 
-1. **Go menu keys.** Recommend Command-1 to 5 and moving the tile keys to Option-Command-1 to 4. The alternative is no Go menu, which keeps this change to moving existing keys only.
-2. **Space with Full Keyboard Access or Keyboard Navigation on.** Recommend keeping today's behavior (Space pauses) and revisiting if a keyboard user reports it. The alternative is dimming Pause while a button has keyboard focus, which makes Space unreliable for everyone else.
-3. **Season keys on the title page.** Recommend leaving Left and Right as list movement. They could be listed under Go as Previous Season and Next Season if the owner prefers them visible.
-4. **iPadOS 26 Command-hold.** Check on a device that holding Command shows the menu bar with these menus, and record what it shows in this design before the code PR.
+The owner answered the four open questions with "yes" to each recommendation:
+
+1. **Go menu keys.** Command-1 to 5 and Command-Comma are in. Multi-view's tile keys move to Option-Command-1 to 4.
+2. **Space with Full Keyboard Access or Keyboard Navigation on.** Space keeps pausing. Revisit if a keyboard user reports it.
+3. **Season keys on the title page.** Left and Right stay list movement and are not in the menus.
+4. **iPadOS 26 Command-hold.** Stays a device check for the owner (task 1.3). The simulator cannot show the hold-Command overlay with a hardware keyboard, so it is not recorded here yet.
+
+## Decisions made while building
+
+- **Add to Multi-view has its own focused value.** It needs the list's keyboard ring, which is `LiveListColumn` state, while the rest of Live's Playback items come from `LiveModel`. So `\.addToMultiViewCommand` sits next to `\.playbackCommands` instead of inside it.
+- **Live publishes Playback from `LiveRegularView` on the Live section and in full screen.** Space in full screen is new: the hidden Space button lived in the list, which full screen does not show. The Guide does not publish Playback, so Space on the Guide does nothing, as before.
+- **Volume Up and Down are dimmed while typing**, as the requirement says. The hidden buttons left them on.
+- **The compact layout keeps its own keys and publishes nothing.** iPhone and a narrow iPad window show the tab bar, which has no menu bar to list items in. `RootView` sets `publishesMenuCommands` from the same `compact` test that picks the layout. Where it is off, every item is dimmed, and `LiveSkipKeys` and the movie player's Left, Right and Space stay hidden buttons, so a keyboard paired to an iPhone keeps them. The earlier line "Command-4 then opens Movies with Series picked" is dropped: in the narrow window the Go items are dimmed like the rest.
+- **A playing movie takes over the menus.** `ShelfSync` turns `publishesMenuCommands` off for the screens under the player, so Find, zoom, Go and Live's Playback items are dimmed while it shows and only the player's Pause and 10-second skips are on. This also settles the risk that two views publish the same focused value: only one publisher is ever on.
+- **Go closes full screen first**, then picks the section, as the sidebar does once the user leaves full screen.
+- **iPadOS holds Command-F and Command-Comma.** The iPadOS 26 menu bar already has Edit, Find (`find:`) on Command-F and the app menu's "Antenna Settings…" (`orderFrontPreferencesPanel:`) on Command-Comma. UIKit's menu builder logs a conflict and rejects the whole inserted group when a SwiftUI item repeats one of those keys, so the first iPad build lost Find and the entire Go menu, and with it Command-2. On iPad, `AntennaCommands` therefore adds no Find item, and Sources & Settings is in Go without a key (`KeyCommand.isHeldByIPadOS`). Command-F stays a hidden key command in Live, the Guide and Search (`FindKey`), which the responder chain reaches before the menu bar's Find. The Mac keeps both in its menus. Options considered: removing the system Find through a `UIApplicationDelegate` `buildMenu(with:)` (not taken: SwiftUI builds the menu through its own app delegate, and overriding it from an adaptor is untested ground for a key the system already offers); a different Settings key on iPad (rejected: Command-Comma already opens Settings there, through the system item).
