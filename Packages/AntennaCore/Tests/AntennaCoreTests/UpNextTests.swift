@@ -47,12 +47,14 @@ import Testing
 
     // MARK: The button and the card
 
-    @Test("up-next/next-episode-near-the-end the button from 30 seconds before the end")
+    @Test("up-next/next-episode-near-the-end the button from 60 seconds before the end")
     func button() {
         var timer = UpNextTimer()
-        timer.position(.seconds(44 * 60), length: Self.length, asks: false)
+        timer.position(.seconds(43 * 60 + 59), length: Self.length, asks: false)
         #expect(timer.offer == .none)
-        timer.position(.seconds(44 * 60 + 30), length: Self.length, asks: false)
+        timer.position(.seconds(44 * 60), length: Self.length, asks: false)
+        #expect(timer.offer == .button)
+        timer.position(.seconds(44 * 60 + 44), length: Self.length, asks: false)
         #expect(timer.offer == .button)
     }
 

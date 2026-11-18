@@ -44,7 +44,7 @@ enum NextEpisode {
         #endif
     }
 
-    /// "Next episode" with a forward glyph, in the corner from 30 seconds
+    /// "Next episode" with a forward glyph, in the corner from 60 seconds
     /// before the end (up-next/next-episode-near-the-end).
     struct Button: View {
         let action: () -> Void

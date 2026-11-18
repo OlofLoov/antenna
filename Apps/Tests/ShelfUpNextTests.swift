@@ -102,7 +102,7 @@ import Testing
         }
     }
 
-    @Test("up-next/next-episode-near-the-end the button from 30 seconds before the end plays the next episode")
+    @Test("up-next/next-episode-near-the-end the button from 60 seconds before the end plays the next episode")
     func button() async {
         let library = await library()
         var follow: Task<Void, Never>?
@@ -112,8 +112,8 @@ import Testing
         await start(playback, episode(1, 1), library: library, activity: activity)
         engine.send(position: 5300)
         try? await Task.sleep(for: .milliseconds(100))
-        #expect(playback.upNext == nil, "nothing before the last 30 seconds")
-        #expect(await reach(5372, .button, playback))
+        #expect(playback.upNext == nil, "nothing before the last 60 seconds")
+        #expect(await reach(5350, .button, playback))
         #expect(playback.upNext?.episode == episode(1, 2))
         playback.playNext()
         #expect(await eventually { engine.loads.last?.url.lastPathComponent == "\(episode(1, 2).id).mp4" })
@@ -146,7 +146,7 @@ import Testing
         let activity = await activity(&follow)
         let playback = playback()
         await start(playback, episode(1, 1), library: library, activity: activity)
-        #expect(await reach(5372, .button, playback))
+        #expect(await reach(5350, .button, playback))
         playback.playNext()
         #expect(await eventually { store.progress(of: episode(1, 1).id, source: source)?.state == .watched })
         #expect(await eventually { playback.playing == .episode(episode(1, 2), series: series) })
@@ -195,7 +195,7 @@ import Testing
         let playback = playback()
         await start(playback, episode(1, 1), library: library, activity: activity)
         for next in [episode(1, 2), episode(1, 3)] {
-            #expect(await reach(5372, .button, playback))
+            #expect(await reach(5350, .button, playback))
             playback.playNext()
             #expect(await eventually { playback.playing == .episode(next, series: series) && playback.transport?.state == .playing })
         }
