@@ -51,7 +51,7 @@ public struct ShelfTitle: Sendable, Hashable, Identifiable {
     public init(series: Series, sourceID: UUID, categories: [String: String]) {
         self.init(
             id: series.id, kind: .series, sourceID: sourceID, name: series.name, posterURL: series.posterURL, added: series.lastModified,
-            category: series.categoryID.flatMap { categories[$0] })
+            category: series.categoryID.flatMap { categories[$0] }, rating: series.rating)
     }
 
     /// The key progress and My list use for this title.

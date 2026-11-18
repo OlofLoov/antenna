@@ -21,7 +21,7 @@ extension XtreamClient {
             let id = XtreamTitleID(host: host, kind: .series, rawID: row.seriesID).description
             return Series(
                 id: id, seriesID: row.seriesID, name: row.name, posterURL: row.posterURL, lastModified: row.lastModified,
-                categoryID: row.categoryID)
+                rating: row.rating, categoryID: row.categoryID)
         }
     }
 
@@ -232,6 +232,15 @@ enum Loose {
     }
 
     static func isBlank(_ string: String) -> Bool { string.allSatisfy(\.isWhitespace) }
+
+    /// A rating out of ten: `rating` when it is above 0 and at most 10,
+    /// else `rating_5based` doubled when it is above 0 and at most 5, else
+    /// nil (xtream-vod-client/ratings-on-a-ten-point-scale).
+    static func rating(ten: Double?, five: Double?) -> Double? {
+        if let ten, ten > 0, ten <= 10 { return ten }
+        if let five, five > 0, five <= 5 { return five * 2 }
+        return nil
+    }
 
     static func double(_ string: String) -> Double? {
         Double(string).flatMap { $0.isFinite ? $0 : nil }

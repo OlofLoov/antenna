@@ -17,7 +17,7 @@ struct VODRow: Decodable, ListRow {
     var rawID: Int { streamID }
 
     enum CodingKeys: String, CodingKey {
-        case streamID = "stream_id", name, streamIcon = "stream_icon", added, rating
+        case streamID = "stream_id", name, streamIcon = "stream_icon", added, rating, rating5 = "rating_5based"
         case containerExtension = "container_extension", categoryID = "category_id"
     }
 
@@ -27,7 +27,7 @@ struct VODRow: Decodable, ListRow {
         name = try requiredName(c, .name)
         posterURL = Loose.webURL(c.nonEmptyString(.streamIcon))
         added = Loose.date(c.looseInt(.added, stringFirst: true))
-        rating = c.looseDouble(.rating).flatMap { $0 > 0 ? $0 : nil }
+        rating = Loose.rating(ten: c.looseDouble(.rating), five: c.looseDouble(.rating5))
         containerExtension = c.looseString(.containerExtension)
         categoryID = c.looseString(.categoryID)
     }
@@ -38,12 +38,14 @@ struct SeriesRow: Decodable, ListRow {
     var name: String
     var posterURL: URL?
     var lastModified: Date?
+    var rating: Double?
     var categoryID: String?
 
     var rawID: Int { seriesID }
 
     enum CodingKeys: String, CodingKey {
         case seriesID = "series_id", name, cover, lastModified = "last_modified", categoryID = "category_id"
+        case rating, rating5 = "rating_5based"
     }
 
     init(from decoder: any Decoder) throws {
@@ -52,6 +54,7 @@ struct SeriesRow: Decodable, ListRow {
         name = try requiredName(c, .name)
         posterURL = Loose.webURL(c.nonEmptyString(.cover))
         lastModified = Loose.date(c.looseInt(.lastModified, stringFirst: true))
+        rating = Loose.rating(ten: c.looseDouble(.rating), five: c.looseDouble(.rating5))
         categoryID = c.looseString(.categoryID)
     }
 }
@@ -87,7 +90,7 @@ struct InfoFields: Decodable {
     enum CodingKeys: String, CodingKey {
         case plot, releasedate, releaseDateSnake = "release_date", releaseDate, duration
         case durationSecs = "duration_secs", genre, age, backdropPath = "backdrop_path"
-        case cast, actors, director, rating, youtubeTrailer = "youtube_trailer", trailer
+        case cast, actors, director, rating, rating5 = "rating_5based", youtubeTrailer = "youtube_trailer", trailer
     }
 
     init() {}
@@ -107,7 +110,7 @@ struct InfoFields: Decodable {
         }
         cast = c.looseString(.cast) ?? c.looseString(.actors)
         director = c.looseString(.director)
-        rating = c.looseDouble(.rating).flatMap { $0 > 0 ? $0 : nil }
+        rating = Loose.rating(ten: c.looseDouble(.rating), five: c.looseDouble(.rating5))
         trailerURL = Loose.trailer(c.nonEmptyString(.youtubeTrailer) ?? c.nonEmptyString(.trailer))
     }
 }
