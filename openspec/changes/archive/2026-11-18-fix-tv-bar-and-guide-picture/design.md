@@ -60,4 +60,4 @@ Apple TV only. The iPhone, iPad and Mac guides have no small picture and no rest
 
 ## Identifiers
 
-No new accessibility identifiers. The tests read `shell.tab.live`, `shell.tab.search`, `shell.settings`, `shell.player`, `guide.pip`, `guide.channel.<row>` and `shell.debug.engine`.
+`shell.tabs` (new) names the capsule around the tab pills. The centering test measures it, because a focused pill reports its padded frame and the others report their text. The tests also read `shell.tab.live`, `shell.settings`, `shell.player`, `guide.pip`, `guide.channel.<row>` and `shell.debug.engine`.
