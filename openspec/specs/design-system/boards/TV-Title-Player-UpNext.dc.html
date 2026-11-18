@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV episode player, up next</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #000; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <!-- series.player: the episode full screen, playing (design-system/live-video-keeps-playing-under-overlays). Bars around the picture are pure black. -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+  <!-- upNext.card: bottom right inside the 60/80 safe area, 640 pt wide, scrimTint 0.88, large corner (28), padding 32. The picture keeps playing under it. -->
+  <div style="position: absolute; right: 80px; bottom: 60px; width: 640px; padding: 32px; border-radius: 28px; background: rgba(8,10,14,0.88); display: flex; flex-direction: column; gap: 24px; box-sizing: border-box">
+    <div style="display: flex; gap: 24px; align-items: center">
+      <!-- The next episode's picture, 16:9, 240 x 135, medium corner (14). Without one, the episode-list tile with its number. -->
+      <div style="width: 240px; height: 135px; flex: 0 0 auto; border-radius: 14px; background: linear-gradient(135deg, #2B3A52, #1A2535); display: flex; align-items: flex-end; justify-content: flex-start; padding: 8px; box-sizing: border-box; color: #A7B0BF; font-weight: 700"><span style="font-size: 32px">5</span></div>
+      <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <!-- upNext.countdown: callout (31), muted -->
+        <span style="font-size: 31px; color: #A7B0BF">Next episode in 7</span>
+        <!-- upNext.title: headline (38), one line, cut at the end -->
+        <span style="font-size: 38px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">S2 E5 · The Long Night</span>
+      </div>
+    </div>
+    <!-- upNext.playNow: the system button style, full width, focused when the card shows. No Cancel button on Apple TV; Back cancels. -->
+    <div style="height: 86px; border-radius: 16px; background: #F2F4F8; color: #0B0E13; transform: scale(1.06); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 31px; font-weight: 600">
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg><span>Play now</span>
+    </div>
+  </div>
+
+  <!-- From 15 seconds before the end (up-next/up-next-counts-down), replacing the button. "Next episode in 10" counts down once a second while the episode plays and stops while it is paused. At zero, or on select, the next episode plays in the same player. Back cancels: the card goes, focus returns to the picture, and the episode plays to its end. While a slide holds a target the card hides. An episode under 5 minutes or with no length shows this card over its last frame when it ends. VoiceOver: "Up next, Season 2 Episode 5, The Long Night, next episode in 7 seconds". -->
+  <!-- hints.legend, top right over the player (control-hints/hints-stay-out-of-the-way): Click, Play now; Click left or right, Skip 10 seconds; Play/Pause, Pause or play; Back, Cancel -->
+  <div style="position: absolute; right: 80px; top: 60px; padding: 24px; border-radius: 20px; background: rgba(8, 10, 14, 0.82); font-size: 25px; color: #F2F4F8; display: flex; flex-direction: column; gap: 12px">
+    <div style="font-weight: 600; color: #A7B0BF">Remote</div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Click</span><span>Play now</span></div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Click left or right</span><span>Skip 10 seconds</span></div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Play/Pause</span><span>Pause or play</span></div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Back</span><span>Cancel</span></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
