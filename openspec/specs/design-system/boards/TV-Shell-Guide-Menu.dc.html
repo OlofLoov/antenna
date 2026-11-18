@@ -15,8 +15,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
 
-  <!-- Top: PiP video + details of the focused programme -->
-  <div style="display: flex; gap: 40px; padding: 48px 64px 28px; align-items: flex-start">
+  <!-- Top: PiP video + details of the focused programme. The 120 top keeps the tab bar's 104 band clear, so the bar sits over the guide where it sits on every tab and never covers the picture (tvos-shell/the-tab-bar-sits-in-the-same-place-on-every-tab). The picture shows the highlighted row's channel once the highlight rests there (tv-guide-grid/the-small-picture-follows-the-highlight) -->
+  <div style="display: flex; gap: 40px; padding: 120px 64px 28px; align-items: flex-start">
     <div style="width: 480px; height: 270px; border-radius: 14px; background: #1A2535; flex: 0 0 auto; position: relative; overflow: hidden">
       <div style="position: absolute; left: 16px; bottom: 14px; display: flex; align-items: center; gap: 10px; font-size: 18px; color: #D7DEE8">
         <span style="width: 10px; height: 10px; border-radius: 5px; background: #FF5F57; display: inline-block"></span>
@@ -153,7 +153,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M4 7a10 10 0 0 1 16 0"/><path d="M7.5 9.5a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="10" r="1.5"/></svg>
       <span>Antenna</span>
     </div>
-    <div style="display: flex; align-items: center; gap: 14px">
+    <!-- the pill group sits on the screen's horizontal center; the profile and Settings buttons hang 14 to its right (tvos-shell/the-tab-bar-sits-in-the-same-place-on-every-tab) -->
+    <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%)">
       <!-- shell.tab.live, shell.tab.guide, shell.tab.movies, shell.tab.series, shell.tab.search. Pill group on the opaque Sidebar / tab bar token because the 0.55 scrim leaves the picture visible (design-system/text-meets-contrast-minimums deviation in tvos-shell) -->
       <div style="display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 999px; background: #11151C">
         <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Live</span>
@@ -162,10 +163,12 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Series</span>
         <span style="font-size: 26px; padding: 10px 26px; border-radius: 999px; color: #F2F4F8">Search</span>
       </div>
+      <div style="position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 14px; display: flex; align-items: center; gap: 14px">
       <!-- shell.settings: 30 pt gear, opens the Settings sheet, not a tab -->
       <span aria-label="Settings" style="width: 56px; height: 56px; border-radius: 28px; color: #F2F4F8; display: flex; align-items: center; justify-content: center; flex: 0 0 auto">
         <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
       </span>
+      </div>
     </div>
     <!-- shell.clock: hidden over the guide, slot kept -->
     <div style="width: 260px; visibility: hidden; text-align: right; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
