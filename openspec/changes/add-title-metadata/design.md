@@ -111,13 +111,32 @@ The Top Shelf extension does not read it.
 
 ### 6. On the page
 
-`TitleMetadata` gains `scores: [Score]` and merges database details under provider ones field by field. The score row is `ScoreRow` in `Apps/Shared/Components/`, a horizontal list of `site` (muted) and `value` (primary, semibold) pairs, wrapping at large text sizes. It sits below the buttons and the progress bar on every platform, so its arrival moves nothing the user can tap or focus. It reserves no space until scores arrive.
+`TitleMetadata` gains `scores: [Score]` and merges database details under provider ones field by field. The score row is `ScoreRow` in `Apps/Shared/Components/Title/`, a horizontal list of `site` (muted) and `value` (primary, semibold) pairs, wrapping at large text sizes. It sits below the buttons and the progress bar on every platform, so its arrival moves nothing the user can tap or focus. It reserves no space until scores arrive.
 
 Identifiers: `title.scores`, `title.score.<site>` (`imdb`, `rottenTomatoes`, `metacritic`, `tmdb`). Settings: `settings.lookups`, `settings.lookups.footer`, `settings.about.tmdb`.
 
 ### 7. Privacy text
 
 The Privacy Policy section on network connections names the movie info service, what it receives, that it keeps nothing, and the switch. `docs/release/app-privacy.md` adds the service to "Why the answer is no". `app-release/each-bundle-declares-its-privacy` is unchanged: still no tracking and no collected data.
+
+### 8. A sample lookup in Debug builds until the service exists
+
+The owner, 2026-11-18: "for now lets create a local mock that would show ratings tmdb like scores but as a decorator or whatever your suggestion". The service in decision 1 does not exist yet, and the score row, the merge and the switch can be built and tried without it.
+
+Options considered:
+- **Wait for the service.** Nothing on screen until AWS and the TMDB agreement are settled.
+- **Fixed scores in the scripted UI test sources only.** Covers the tests but not a developer trying the page on a device with a real playlist.
+- **A protocol, a decorator and a Debug-only mock (chosen).**
+
+What was built:
+- `TitleLookup` in AntennaCore, one call: `match(TitleLookupQuery) async throws -> TitleMatch?`. `TitleLookupQuery` carries kind, cleaned name, year and the provider's TMDB and IMDb ids, nothing else. `TitleQuery` was taken by the App Intents entity query, hence the longer name. `TitleMatch` holds the TMDB id, `TitleDetails` (plot, year, length, genre, backdrop, cast, director), `[Score]` as `{site, value, scale}` from decision 2, and `isSample`.
+- `KeptTitleLookup`, an actor wrapping any `TitleLookup` with decision 4's rules: kept per source in `Caches/metadata/<source id>.json`, shown without asking for seven days, dropped after 180, the kept match returned when the lookup fails, nothing asked or kept while off (turning off deletes the folder), and a deleted source's file removed. It is keyed by source and title id, which it never passes to the wrapped lookup. Provider fields win in `TitleMetadata.merging(_:)`, not in the decorator, since the provider's details arrive separately.
+- `MockTitleLookup` in AntennaCore, inside `#if DEBUG`. Its answer comes from a 64-bit FNV-1a hash of the folded, cleaned name, so "EN | The Long Harbor (2024) 4K" and "the long harbor" get the same TMDB score on every launch and device, between 50 and 90%. It fills the plot, cast and director with text that starts with "Sample", a year, a length and a genre, and no backdrop, so it never touches the network. Every match has `isSample` set and the score row ends with a bordered "Sample" label (`title.scores.sample`).
+- In the app, `TitleLookups.app` is the one place a title page gets its lookup. Release builds return nil: no score row, no Movie info switch, no requests. Debug builds return the mock behind `KeptTitleLookup` with no directory, so sample matches stay in memory and never land in the folder the real service will use. It turns on with the launch argument `-mock-title-scores YES` or with the Debug-only "Sample scores" switch in Settings. `-mock-title-scores-all-sites` also turns it on and adds IMDb, Rotten Tomatoes and Metacritic, to try the full row. `scripts/check-rules.sh` fails when `MockTitleLookup` or `DebugTitleScores` appears in app or AntennaCore source outside an `#if DEBUG` block.
+- The Movie info and scores switch (decision 5) is built and synced through `PreferencesRecord.lookupsEnabled`, but Settings shows it only while a lookup exists, so Release builds hide it until the service ships.
+- The live client for the service (task 4.1) is not written. When it is, `TitleLookups.app` returns it wrapped in `KeptTitleLookup` with `KeptTitleLookup.cachesDirectory`.
+
+Previews do not use the mock. They feed fixed `TitleMatch` values, since a `#Preview` compiles into Release builds too.
 
 ## Risks / Trade-offs
 
