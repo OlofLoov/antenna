@@ -271,7 +271,8 @@ extension ShellUITests {
         press(.select)
         expectGone("overlay.root")
         XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
-        expectEngine("playing loads=1 file=a1.ts")
+        // tvos-shell/the-video-pauses-behind-movies-series-and-search
+        expectEngine("paused loads=1 file=a1.ts")
         press(.menu)
         expectFocus("shell.tab.search")
         XCTAssertFalse(element("overlay.root").exists, "Menu in Search does not reopen the overlay")

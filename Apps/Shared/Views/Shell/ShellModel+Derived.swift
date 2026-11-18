@@ -57,7 +57,8 @@
                     return
                 }
                 guard tuned == channel else { return }
-                // A pause from the timer while the load ran stands.
+                // A load that lands behind Movies, Series or Search stays paused.
+                holdLoadedBehindContent()
                 if !pausedByShell { await engine.play() }
             }
         }

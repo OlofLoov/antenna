@@ -209,6 +209,24 @@ extension ShellUITests {
 // MARK: Tabs
 
 extension ShellUITests {
+    // tvos-shell/the-video-pauses-behind-movies-series-and-search
+    func testMoviesPausesLiveAndLiveResumesIt() {
+        launchPlaying()
+        press(.menu)
+        press(.right, times: 2)
+        expectFocus("shell.tab.movies")
+        press(.select)
+        expectFocus("movies.hero.play")
+        expectEngine("paused loads=1 file=a1.ts")
+
+        press(.menu)
+        expectFocus("shell.tab.movies")
+        press(.left, times: 2)
+        expectFocus("shell.tab.live")
+        press(.select)
+        expectEngine("playing loads=1 file=a1.ts")
+    }
+
     // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
     func testMenuFromTabReachesBar() {
         launchPlaying()

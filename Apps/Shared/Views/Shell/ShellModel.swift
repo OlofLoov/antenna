@@ -6,7 +6,7 @@
 
     /// State and rules of the Apple TV shell (tvos-shell capability): the open tab, the
     /// bar, the sources as they load, the channel tuned at launch and the
-    /// pause behind Movies, Series and Search.
+    /// pause, then stop, behind Movies, Series and Search.
     @MainActor @Observable
     final class ShellModel {
         struct Dependencies {
@@ -39,7 +39,8 @@
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
         static let launchDeadline = Duration.seconds(10)
-        static let pauseDelay = Duration.seconds(30)
+        /// How long the paused channel waits behind Movies, Series and Search before it stops.
+        static let stopDelay = Duration.seconds(30)
 
         private(set) var tab: ShellTab = .live
         private(set) var barRaised = false
@@ -86,8 +87,10 @@
         /// A Top Shelf item waiting for its source; the launch tune waits while set.
         @ObservationIgnored var shelfItem: UUID?
         @ObservationIgnored private var deadline: Task<Void, Never>?
-        @ObservationIgnored private var pauseTimer: Task<Void, Never>?
-        @ObservationIgnored private(set) var pausedByShell = false
+        @ObservationIgnored var stopTimer: Task<Void, Never>?
+        /// What the shell did to the channel behind Movies, Series or Search, nil when nothing.
+        @ObservationIgnored var heldByShell: ShellHold?
+        var pausedByShell: Bool { heldByShell != nil }
         @ObservationIgnored let languages: ChannelLanguages
         /// Stores the last channel and counts a channel as watched.
         @ObservationIgnored let session: SessionTracker
@@ -312,9 +315,9 @@
         func select(_ target: ShellTab) async -> ShellFocus {
             switch target {
             case .live:
-                await showLive()
+                let reloaded = await open(.live)
                 // A failed stream, or one a movie stopped, loads again.
-                if let tuned, await engine.state.hasStopped { tune(tuned) }
+                if !reloaded, let tuned, await engine.state.hasStopped { tune(tuned) }
                 return liveFocus
             case .guide, .movies, .series, .search:
                 await open(target)
@@ -339,20 +342,25 @@
         }
 
         /// Opens `target`, lowering the bar. Entering Movies, Series or Search
-        /// from Live or Guide starts the pause timer; leaving them for Live or
-        /// Guide resumes a video the shell paused.
-        private func open(_ target: ShellTab) async {
+        /// from Live or Guide pauses the video and starts the stop timer;
+        /// leaving them for Live or Guide resumes a video the shell paused and
+        /// tunes again one it stopped. True when the channel loads again.
+        @discardableResult
+        private func open(_ target: ShellTab) async -> Bool {
             let wasContent = tab.isContent
             tab = target
             barRaised = false
             pickerOpen = false
             if target.isContent {
-                if !wasContent { startPauseTimer() }
+                if !wasContent { await holdBehindContent() }
+                return false
             } else {
-                await resume()
+                let reloaded = await resume()
+                if reloaded { return true }
                 // The Guide's small picture plays on a stream the user paused (tv-guide-grid/the-channel-keeps-playing-in-a-small-picture).
                 // A pause the user made stays (timeshift-catch-up-and-start-over/leaving-the-app-calls-and-other-interruptions).
                 if target == .guide, !player.timeshift.userPaused, await engine.state == .paused { await engine.play() }
+                return false
             }
         }
 
@@ -371,38 +379,6 @@
                 await open(.guide)
             }
         }
-
-        // MARK: Pause behind content tabs
-
-        private func startPauseTimer() {
-            pauseTimer?.cancel()
-            pauseTimer = Task { [weak self] in
-                guard let self else { return }
-                do {
-                    try await dependencies.sleep(Self.pauseDelay)
-                } catch {
-                    return
-                }
-                guard !Task.isCancelled, tab.isContent else { return }
-                switch await engine.state {
-                case .playing, .loading, .buffering, .reconnecting:
-                    player.timeshift.interrupted()
-                    await engine.pause()
-                    pausedByShell = true
-                case .idle, .paused, .ended, .failed:
-                    break
-                }
-            }
-        }
-
-        private func resume() async {
-            pauseTimer?.cancel()
-            pauseTimer = nil
-            guard pausedByShell else { return }
-            pausedByShell = false
-            await player.timeshift.interruptionEnded()
-        }
-
     }
 
     // The setters these need are private to this file.

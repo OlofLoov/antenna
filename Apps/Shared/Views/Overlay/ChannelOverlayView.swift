@@ -39,11 +39,11 @@
             ChannelOverlay.Layout {
                 ScrollViewReader { proxy in
                     groups
-                        .onAppear { proxy.scrollTo(model.group, anchor: .center) }
+                        .onAppear { scroll(proxy, to: model.group) }
                         .onChange(of: model.group) { _, group in
                             // Focus scrolls the column itself while it is there.
                             guard !focusIsOnGroups else { return }
-                            proxy.scrollTo(group, anchor: .center)
+                            scroll(proxy, to: group)
                         }
                 }
                 // Left from the channels lands on the group they belong to.
@@ -92,6 +92,7 @@
                         model.show(group)
                         if let target = model.target(catalogue, playing: playing) { focus.wrappedValue = .overlay(.channel(target)) }
                     }
+                    .disabled(!reachable(group))
                     .focused(focus, equals: .overlay(.group(group)))
                     .groupSpokenLabel(group, count: count)
                     .id(group)
@@ -104,6 +105,7 @@
                         asked = group
                         unlock?(group)
                     }
+                    .disabled(!focusIsOnGroups)
                     .focused(focus, equals: .overlay(.group(group)))
                     .id(group)
                     .accessibilityLabel("\(catalogue.label(of: group)), locked")
@@ -113,6 +115,7 @@
                 // The picker for a multi-view tile has no Search.
                 if multiView?.pickTarget == nil {
                     ChannelOverlay.SearchRow(open: openSearch)
+                        .disabled(!focusIsOnGroups)
                         .focused(focus, equals: .overlay(.search))
                         .accessibilityIdentifier("overlay.search")
                 }
@@ -127,6 +130,21 @@
         /// Where focus lands entering the channel column, from a group or from the panel.
         private var channelTarget: ShellFocus? {
             model.target(catalogue, playing: playing).map { .overlay(.channel($0)) }
+        }
+
+        /// From outside the group column only the shown group takes focus, so
+        /// left from the channels lands on it straight away. Landing first on the
+        /// group level with the channel and moving on from there scrolled the
+        /// column twice (tv-channel-overlay/the-group-column-keeps-its-place).
+        private func reachable(_ group: CatalogueGroup) -> Bool {
+            focusIsOnGroups || group == model.group
+        }
+
+        /// Brings `group` to the middle of the column at once, with no animation.
+        private func scroll(_ proxy: ScrollViewProxy, to group: CatalogueGroup) {
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) { proxy.scrollTo(group, anchor: .center) }
         }
 
         private var focusIsOnGroups: Bool {
