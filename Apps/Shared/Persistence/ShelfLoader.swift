@@ -1,5 +1,6 @@
 import AntennaCore
 import Foundation
+import Synchronization
 
 /// Reads an Xtream source's movies and series, and a playlist's movies,
 /// for the Movies and Series sections (movies-and-series-browsing). Lives in the app layer because it
@@ -10,6 +11,9 @@ struct ShelfLoader: Sendable {
     var credentials: any CredentialStoring = CredentialStore()
     /// Loads a playlist whose movies are not in memory yet. Nil leaves playlists without movies.
     var playlists: SourceLoader?
+    /// How often a playlist is fetched again for a series its kept load
+    /// lacks: once per source every five minutes.
+    var playlistRetries = PlaylistRetryGate()
 
     /// Thrown for a source whose login is not on this device.
     enum LoadError: Error, Equatable {
@@ -26,6 +30,8 @@ struct ShelfLoader: Sendable {
     /// come from its last load or a new one
     /// (m3u-playlists/playlist-movies-show-in-movies, m3u-playlists/playlist-series-show-in-series).
     func load(_ source: SourceDescriptor, kind: ShelfTitle.Kind) async throws -> ShelfCatalogue {
+        let signpost = BrowseSignposts.signposter.beginInterval("shelf load")
+        defer { BrowseSignposts.signposter.endInterval("shelf load", signpost) }
         if source.isPlaylist {
             switch kind {
             case .movie: return ShelfCatalogue(playlistMovies: try await playlistMovies(source), sourceID: source.id)
@@ -98,7 +104,7 @@ struct ShelfLoader: Sendable {
     /// earlier load, asks the playlist once more before it fails.
     private func playlistSeriesInfo(_ source: SourceDescriptor, series: ShelfTitle) async throws -> SeriesInfo {
         if let info = try await playlistSeries(source).info(for: series.id) { return info }
-        guard let playlists else { throw LoadError.unknownTitle }
+        guard let playlists, playlistRetries.allows(source.id) else { throw LoadError.unknownTitle }
         _ = try await playlists.load(source)
         let store = playlists.playlistMovies
         guard let info = store.series(in: source.id)?.info(for: series.id) else { throw LoadError.unknownTitle }
@@ -137,5 +143,16 @@ extension ShelfDetails {
         case .movie(let movie): self.init(movie: movie)
         case .series(let series): self.init(series: series)
         }
+    }
+}
+
+/// Shared by the copies of one `ShelfLoader`, so the five minutes hold
+/// across the banner, the preview and the pages
+/// (movies-and-series-browsing/browsing-stays-responsive).
+final class PlaylistRetryGate: Sendable {
+    private let window = Mutex(RetryWindow<UUID>(length: 300))
+
+    func allows(_ source: UUID) -> Bool {
+        window.withLock { $0.allows(source, now: .now) }
     }
 }

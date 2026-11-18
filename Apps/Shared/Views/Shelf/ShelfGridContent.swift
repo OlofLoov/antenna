@@ -95,10 +95,10 @@ struct ShelfGridContent: View {
 
     private func titles(of list: ShelfList) -> [ShelfTitle] {
         switch list {
-        case .all: Shelf.sorted(model.titles, by: sort)
-        case .genre(let name): Shelf.sorted(Shelf.titles(in: name, of: model.titles), by: sort)
+        case .all: model.titles(sortedBy: sort)
+        case .genre(let name): model.titles(in: name, sortedBy: sort)
         case .myList: activity.myList(model)
-        case .recentlyAdded: Shelf.sorted(model.titles, by: .recentlyAdded)
+        case .recentlyAdded: model.titles(sortedBy: .recentlyAdded)
         case .continueWatching: []
         }
     }

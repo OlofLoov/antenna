@@ -23,11 +23,16 @@ public enum Shelf {
     /// `titles` are in the providers' order; titles with no category show
     /// only in Recently added.
     public static func rows(_ titles: [ShelfTitle], categoryOrder: [String], now: Date) -> [ShelfRow] {
+        rows(titles, newest: ShelfTitle.newestFirst(titles), categoryOrder: categoryOrder, now: now)
+    }
+
+    /// `rows(_:categoryOrder:now:)` with the titles' newest-first order already made.
+    static func rows(_ titles: [ShelfTitle], newest: [ShelfTitle], categoryOrder: [String], now: Date) -> [ShelfRow] {
         guard !titles.isEmpty else { return [] }
         let since = now.addingTimeInterval(-Double(recentDays) * 86_400)
         let recent = ShelfRow(
-            id: .recentlyAdded, titles: Array(ShelfTitle.newestFirst(titles).prefix(recentCount)),
-            count: titles.filter { ($0.added ?? .distantPast) >= since }.count)
+            id: .recentlyAdded, titles: Array(newest.prefix(recentCount)),
+            count: titles.reduce(0) { $0 + (($1.added ?? .distantPast) >= since ? 1 : 0) })
         var byCategory: [String: [ShelfTitle]] = [:]
         for title in titles {
             if let category = title.category { byCategory[category, default: []].append(title) }

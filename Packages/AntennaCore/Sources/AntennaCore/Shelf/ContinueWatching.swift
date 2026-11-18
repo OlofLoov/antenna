@@ -29,6 +29,15 @@ public enum ContinueWatching {
     /// is left out and kept.
     public static func items(progress: [WatchProgress], titles: [ShelfTitle], finishedSeries: Set<String> = []) -> [Item] {
         let loaded = Dictionary(titles.map { ($0.activityKey, $0) }, uniquingKeysWith: { first, _ in first })
+        return items(progress: progress, title: { loaded[$0] }, finishedSeries: finishedSeries)
+    }
+
+    /// `items(progress:titles:finishedSeries:)` reading the loaded titles
+    /// through `title`, so the cost follows the saved positions, not the
+    /// library (movies-and-series-browsing/browsing-stays-responsive).
+    public static func items(
+        progress: [WatchProgress], title loaded: (ActivityKey) -> ShelfTitle?, finishedSeries: Set<String> = []
+    ) -> [Item] {
         var latestEpisode: [ActivityKey: WatchProgress] = [:]
         var items: [Item] = []
         for value in progress {
@@ -36,12 +45,12 @@ public enum ContinueWatching {
                 let key = ActivityKey(titleID: seriesID, sourceID: value.sourceID)
                 if let current = latestEpisode[key], !WatchProgress.newestFirst(value, current) { continue }
                 latestEpisode[key] = value
-            } else if value.state == .inProgress, let movie = loaded[ActivityKey(titleID: value.titleID, sourceID: value.sourceID)] {
+            } else if value.state == .inProgress, let movie = loaded(ActivityKey(titleID: value.titleID, sourceID: value.sourceID)) {
                 items.append(Item(title: movie, progress: value, isNextEpisode: false))
             }
         }
         for (key, episode) in latestEpisode {
-            guard let series = loaded[key] else { continue }
+            guard let series = loaded(key) else { continue }
             switch episode.state {
             case .inProgress:
                 items.append(Item(title: series, progress: episode, isNextEpisode: false))
