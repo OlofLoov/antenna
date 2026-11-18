@@ -16,6 +16,9 @@ final class TitleTransport {
         /// How long the controls stay after an input while the title plays.
         var hold = TitleTransport.hold
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+        /// Called for every press, tap, click, key and pointer move, so the
+        /// run of episodes without input starts again (up-next/still-watching).
+        var input: @MainActor () -> Void = {}
     }
 
     /// How long the controls stay after an input while playing: the Live
@@ -134,11 +137,13 @@ final class TitleTransport {
 
     /// Back or forward 10 seconds from what is on screen.
     func skip(forward: Bool) {
+        dependencies.input()
         move(to: timeline.skipped(forward: forward))
     }
 
     /// A finger or pointer at `fraction` of the scrubber: the shown time follows it.
     func drag(to fraction: Double) {
+        dependencies.input()
         guard canSkip, let time = timeline.time(at: fraction) else { return }
         target = time
     }
@@ -154,6 +159,7 @@ final class TitleTransport {
     /// starts moving a target from the one on screen; while playing it only
     /// shows the bar.
     func beginSlide() {
+        dependencies.input()
         show(after: .touch)
         guard isPaused, canSkip, timeline.length != nil else { return slideBase = nil }
         slideBase = shownTime
@@ -162,6 +168,7 @@ final class TitleTransport {
 
     /// The finger moved `slide` of the surface's width since it came down.
     func slide(by slide: Double) {
+        dependencies.input()
         show(after: .touch)
         guard let slideBase, let time = timeline.slid(from: slideBase, by: slide) else { return }
         target = time
@@ -183,6 +190,7 @@ final class TitleTransport {
     /// Select or play/pause on Apple TV: plays from the target when one is
     /// set, otherwise plays or pauses.
     func select() {
+        dependencies.input()
         if isScrubbing {
             commit()
         } else {
@@ -193,6 +201,7 @@ final class TitleTransport {
     /// A click left or right on Apple TV: moves the target when one is set,
     /// otherwise skips.
     func click(forward: Bool) {
+        dependencies.input()
         if isScrubbing {
             nudge(forward: forward)
         } else {
@@ -210,6 +219,7 @@ final class TitleTransport {
 
     /// Menu with a target: it goes away and the title stays where it paused.
     func cancelScrub() {
+        dependencies.input()
         target = nil
         slideBase = nil
         show(after: .touch)
@@ -238,6 +248,7 @@ final class TitleTransport {
 
     /// Plays a paused title and pauses a playing one; the controls show.
     func playPause() {
+        dependencies.input()
         show(after: .touch)
         let engine = dependencies.engine
         let paused = isPaused
@@ -272,6 +283,7 @@ final class TitleTransport {
 
     /// Shows the controls when hidden and hides them when shown.
     func toggle() {
+        dependencies.input()
         if controlsShown {
             hide()
         } else {

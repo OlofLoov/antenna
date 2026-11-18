@@ -52,6 +52,7 @@
             case .clickLeftRight: "arrowtriangle.left.and.line.vertical.and.arrowtriangle.right"
             case .hold: "hand.tap"
             case .swipeUpDown: "arrow.up.and.down"
+            case .swipeDown: "arrow.down"
             case .swipeLeftRight: "arrow.left.and.right"
             case .swipe: "arrow.up.and.down.and.arrow.left.and.right"
             case .playPause: "playpause"

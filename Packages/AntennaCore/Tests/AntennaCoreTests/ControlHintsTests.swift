@@ -7,7 +7,8 @@ import Testing
     static let screens: [ControlHintScreen] = [
         .livePicture(swipe: .changesChannel), .livePicture(swipe: .showsZapBar), .infoBar(swipe: .changesChannel),
         .infoBar(swipe: .showsZapBar), .overlayGroups, .overlayChannels, .guide, .tabBar, .titleRows(.movie), .titleRows(.series),
-        .titlePage, .titlePlayer(scrubbing: false), .titlePlayer(scrubbing: true), .settings,
+        .titlePage, .titlePlayer(scrubbing: false), .titlePlayer(scrubbing: true), .titlePlayer(scrubbing: false, nextEpisode: true),
+        .nextEpisodeButton, .upNext(asking: false), .upNext(asking: true), .settings,
     ]
 
     @Test("control-hints/remote-hints-show-what-the-buttons-do every screen lists between two and five controls, each once")
@@ -45,6 +46,24 @@ import Testing
         #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints.contains(ControlHint(.hold, "Audio and subtitles")))
         #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints.first == ControlHint(.clickLeftRight, "Skip 10 seconds"))
         #expect(ControlHintScreen.titlePlayer(scrubbing: true).hints.contains(ControlHint(.back, "Cancel")))
+    }
+
+    @Test("control-hints/each-screen-lists-its-own-actions the end of an episode names the next one")
+    func upNext() {
+        // up-next/up-next-on-the-siri-remote
+        let near = ControlHintScreen.titlePlayer(scrubbing: false, nextEpisode: true).hints
+        #expect(near.contains(ControlHint(.swipeDown, "Next episode")))
+        #expect(!near.contains { $0.control == .swipeLeftRight })
+        #expect(
+            ControlHintScreen.nextEpisodeButton.hints == [
+                ControlHint(.click, "Play the next episode"), ControlHint(.back, "Keep watching"),
+            ])
+        let card = ControlHintScreen.upNext(asking: false).hints
+        #expect(card.first == ControlHint(.click, "Play now"))
+        #expect(card.contains(ControlHint(.clickLeftRight, "Skip 10 seconds")))
+        #expect(card.contains(ControlHint(.back, "Cancel")))
+        #expect(ControlHintScreen.upNext(asking: true).hints == [ControlHint(.click, "Keep watching"), ControlHint(.back, "Cancel")])
+        #expect(ControlHintScreen.upNext(asking: false).corner == .topTrailing)
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions Back reads Tab bar where it reaches the bar, Home Screen in the bar")

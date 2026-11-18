@@ -21,6 +21,20 @@ final class ShelfPlayback {
         var languages: @MainActor () -> [String] = { Locale.preferredLanguages }
         /// How long the movie controls stay after an input while playing.
         var controlsHold = TitleTransport.hold
+        /// True when this device plays the next episode on its own
+        /// (up-next/turn-autoplay-off), read as each episode starts.
+        var autoplays: @MainActor () -> Bool = {
+            AutoplaySetting.decode(UserDefaults.standard.data(forKey: AutoplaySetting.key)).plays
+        }
+        /// Waits between the Up next card's counts.
+        var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+    }
+
+    /// The Next episode button or the Up next card on screen
+    /// (up-next/next-episode-near-the-end, up-next/up-next-counts-down).
+    struct UpNextShown: Equatable {
+        var episode: Episode
+        var offer: UpNextTimer.Offer
     }
 
     /// What plays: a movie, one episode of a series, or a title's trailer.
@@ -87,6 +101,11 @@ final class ShelfPlayback {
     private(set) var working: String?
     /// The series that could not start, shown as an alert.
     var problem: Problem?
+    /// The episode after the one on screen, once the series' list is known
+    /// and autoplay is on; nil otherwise (up-next/which-episode-is-next).
+    private(set) var nextEpisode: Episode?
+    /// What the end of the episode on screen shows.
+    private(set) var timer = UpNextTimer()
     /// The Subtitles preference, which the screen keeps current
     /// (playback-engine/subtitles-start-by-the-subtitle-setting).
     @ObservationIgnored var subtitles = SubtitleMode.auto
@@ -103,6 +122,14 @@ final class ShelfPlayback {
     @ObservationIgnored private var request: (url: URL, options: PlaybackOptions)?
     /// The source the title on screen plays from, for Try again and the error's wording.
     @ObservationIgnored private var source: SourceDescriptor?
+    @ObservationIgnored private var library: ShelfLibrary?
+    /// Episodes started by the countdown since the viewer's last input.
+    @ObservationIgnored private(set) var run = UpNextRun()
+    @ObservationIgnored private var finding: Task<Void, Never>?
+    @ObservationIgnored private var counting: Task<Void, Never>?
+    /// The engine's last state and length, for the countdown and the save before the next episode.
+    @ObservationIgnored private var engineState = PlaybackState.idle
+    @ObservationIgnored private var length: Duration?
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -115,6 +142,8 @@ final class ShelfPlayback {
     /// episode the title page's Play would start, once its episode list loads.
     func play(_ title: ShelfTitle, library: ShelfLibrary, activity: ShelfActivity) {
         self.activity = activity
+        self.library = library
+        run = UpNextRun()
         switch title.kind {
         case .movie:
             let from = activity.progress(of: title)?.resumePosition ?? 0
@@ -128,6 +157,8 @@ final class ShelfPlayback {
     /// page asks (title-detail-and-episode-picker/play-an-episode-and-come-back).
     func play(_ episode: Episode, of series: ShelfTitle, from position: Double, library: ShelfLibrary, activity: ShelfActivity) {
         self.activity = activity
+        self.library = library
+        run = UpNextRun()
         start(.episode(episode, series: series), from: position, source: library.series.source(of: series))
     }
 
@@ -188,8 +219,14 @@ final class ShelfPlayback {
         self.tracks = tracks
         let engine = engine
         let transport = TitleTransport(
-            .init(engine: engine, seek: { [weak self] in await self?.seek(to: $0) ?? false }, hold: dependencies.controlsHold))
+            .init(
+                engine: engine, seek: { [weak self] in await self?.seek(to: $0) ?? false }, hold: dependencies.controlsHold,
+                input: { [weak self] in self?.noteInput() }))
         self.transport = transport
+        resetUpNext()
+        engineState = .loading
+        length = nil
+        findNext(after: target)
         let willPlay = dependencies.willPlay
         let languages = dependencies.languages()
         let start: Duration? = position > 0 ? .milliseconds(Int64(position * 1000)) : nil
@@ -226,16 +263,26 @@ final class ShelfPlayback {
             Task { [weak self] in
                 for await state in states {
                     guard let self, playing == target else { return }
+                    engineState = state
                     if let saved = saving.state(state, at: dependencies.clock()) { save(saved, target) }
                     if case .failed(let reason) = state { failed(reason, target) }
                     // A trailer that ends goes back to its title page.
                     if case .trailer = target, case .ended = state { return await close() }
+                    if case .episode = target {
+                        if case .playing = state { timer.playing() }
+                        if case .ended = state { await episodeEnded(target) }
+                    }
                 }
             },
             Task { [weak self] in
                 for await position in positions {
                     guard let self, playing == target else { return }
                     if let saved = saving.position(position, at: dependencies.clock()) { save(saved, target) }
+                    if position.duration != nil { length = position.duration }
+                    if case .episode = target, nextEpisode != nil {
+                        timer.position(position.time, length: position.duration, asks: run.asks)
+                        startCounting(target)
+                    }
                 }
             },
         ]
@@ -258,6 +305,7 @@ final class ShelfPlayback {
         failure = nil
         request = nil
         source = nil
+        resetUpNext()
         watching?.cancel()
         watching = nil
         listeners = []
@@ -330,5 +378,117 @@ final class ShelfPlayback {
 
     static func seconds(_ duration: Duration) -> Double {
         Double(duration.components.seconds) + Double(duration.components.attoseconds) / 1e18
+    }
+}
+
+extension ShelfPlayback {
+    // MARK: Up next
+
+    /// The button or card on screen, nil when neither shows.
+    var upNext: UpNextShown? {
+        guard let nextEpisode, timer.offer != .none else { return nil }
+        return UpNextShown(episode: nextEpisode, offer: timer.offer)
+    }
+
+    /// Play now, Keep watching or the Next episode button: the viewer asked
+    /// for the next episode.
+    func playNext() {
+        noteInput()
+        advance()
+    }
+
+    /// Cancel, or Back on the card on Apple TV: the episode plays to its end
+    /// (up-next/cancel-keeps-watching).
+    func cancelUpNext() {
+        noteInput()
+        counting?.cancel()
+        counting = nil
+        if timer.cancel() == .close { Task { await close() } }
+    }
+
+    /// A press, tap, click or key on the player: the run of episodes
+    /// without input starts again (up-next/still-watching).
+    func noteInput() {
+        run.input()
+        timer.input()
+        if let playing { startCounting(playing) }
+    }
+
+    private func resetUpNext() {
+        finding?.cancel()
+        finding = nil
+        counting?.cancel()
+        counting = nil
+        nextEpisode = nil
+        timer = UpNextTimer()
+    }
+
+    /// Looks up the episode after `target` in the series' list, from memory
+    /// or asked once (up-next/which-episode-is-next).
+    private func findNext(after target: Target) {
+        guard case .episode(let episode, let series) = target, dependencies.autoplays(), let library else { return }
+        finding = Task { [weak self] in
+            let list: [Episode]
+            do {
+                list = try await library.series.loadEpisodes(series)
+            } catch {
+                TitleModel.logger.error("no next episode: \(TitleModel.reason(error), privacy: .public)")
+                return
+            }
+            guard let self, !Task.isCancelled, playing == target else { return }
+            nextEpisode = UpNext.next(after: episode, in: list)
+        }
+    }
+
+    /// The episode ended: the next one plays, the card shows, or the page
+    /// shows again when there is nothing to play next.
+    private func episodeEnded(_ target: Target) async {
+        guard nextEpisode != nil else { return await close() }
+        switch timer.ended(asks: run.asks) {
+        case .playNext: advance(auto: true)
+        case .close: await close()
+        case .stay: startCounting(target)
+        }
+    }
+
+    /// Counts the card down once a second while the episode plays or has
+    /// ended, and plays the next episode at zero.
+    private func startCounting(_ target: Target) {
+        guard counting == nil, case .countdown = timer.offer else { return }
+        let sleep = dependencies.sleep
+        counting = Task { [weak self] in
+            while true {
+                do { try await sleep(.seconds(1)) } catch { return }
+                guard let self, !Task.isCancelled, playing == target else { return }
+                guard case .countdown = timer.offer else {
+                    counting = nil
+                    return
+                }
+                switch engineState {
+                case .playing, .ended: break
+                default: continue
+                }
+                if timer.tick() == .playNext {
+                    counting = nil
+                    return advance(auto: true)
+                }
+            }
+        }
+    }
+
+    /// Saves the episode on screen as watched and plays the next one in the
+    /// same player, from where the viewer stopped in it
+    /// (up-next/progress-follows-the-next-episode).
+    private func advance(auto: Bool = false) {
+        guard case .episode(let current, let series) = playing, let next = nextEpisode else { return }
+        if let full = length ?? current.duration.map({ .milliseconds(Int64($0 * 1000)) }) {
+            save(PlaybackPosition(time: full, duration: full, isLive: false), .episode(current, series: series))
+        } else if let saved = saving.leaving(at: dependencies.clock()) {
+            save(saved, .episode(current, series: series))
+        }
+        if auto { run.autoplayed() }
+        let progress = activity.map { ContinueWatching.episodeProgress($0.progress, seriesID: series.id, sourceID: series.sourceID) }
+        let from = progress?[next.id]?.resumePosition ?? 0
+        start(.episode(next, series: series), from: from, source: source)
     }
 }

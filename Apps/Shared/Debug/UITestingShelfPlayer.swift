@@ -25,8 +25,15 @@
                     },
                     willPlay: willPlay,
                     // The controls stay up for the tests that tap them.
-                    controlsHold: .seconds(60)))
+                    controlsHold: .seconds(60),
+                    // Autoplay is on whatever an earlier run stored.
+                    autoplays: { true }))
         }
+
+        /// `-ui-testing-near-end` starts every title 25 seconds before the end
+        /// of its 90 minutes, so the Next episode button shows at once and a
+        /// skip forward brings the Up next card (up-next capability).
+        static let nearEndArgument = "-ui-testing-near-end"
 
         /// The links the title page opened, instead of leaving the app.
         @MainActor @Observable
@@ -77,7 +84,7 @@
             func load(_ url: URL, options: PlaybackOptions) async throws {
                 loaded = url.lastPathComponent
                 start = Int(options.startPosition.map { ShelfPlayback.seconds($0) } ?? 0)
-                at = start
+                at = ProcessInfo.processInfo.arguments.contains(UITestingShelf.nearEndArgument) ? 5375 : start
                 trackList.reset(options)
                 state = .loading
             }

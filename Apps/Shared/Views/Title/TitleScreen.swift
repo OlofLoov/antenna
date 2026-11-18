@@ -26,6 +26,11 @@ struct TitleScreen<Page: View>: View {
                 // A deleted source closes the page (title-detail-and-episode-picker/open-a-movie-s-page).
                 if !exists { library.closePage() }
             }
+            .onChange(of: playback.playing) { _, playing in
+                // Episodes that Up next started come back into view
+                // (title-detail-and-episode-picker/play-an-episode-and-come-back).
+                if case .episode(let episode, let series) = playing, series.id == route.title.id { model.played(episode) }
+            }
             #if os(tvOS)
                 .controlHints(.titlePage)
                 .onExitCommand { library.closePage() }

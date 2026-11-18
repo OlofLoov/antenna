@@ -9,10 +9,10 @@ final class ShelfPlayerUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch() throws -> XCUIApplication {
+    func launch(_ extra: [String] = []) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"]
+        app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"] + extra
         app.launch()
         return app
     }
@@ -31,10 +31,12 @@ final class ShelfPlayerUITests: XCTestCase {
         app.element("\(prefix).row.\(row)").descendants(matching: .any)["\(prefix).card.\(id)"].firstMatch
     }
 
-    func expectPlayer(_ app: XCUIApplication, _ summary: String, file: StaticString = #filePath, line: UInt = #line) {
+    func expectPlayer(
+        _ app: XCUIApplication, _ summary: String, timeout: TimeInterval = 5, file: StaticString = #filePath, line: UInt = #line
+    ) {
         let probe = app.element("shelf.debug.engine")
         let wait = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", summary), object: probe)
-        let result = XCTWaiter().wait(for: [wait], timeout: 5)
+        let result = XCTWaiter().wait(for: [wait], timeout: timeout)
         XCTAssertEqual(
             result, .completed, "the player read \(probe.exists ? probe.value as? String ?? "" : "nothing")", file: file, line: line)
     }
@@ -219,5 +221,42 @@ final class ShelfPlayerUITests: XCTestCase {
         app.element("player.subtitles").tap()
         let on = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'On'"), object: app.element("player.subtitles"))
         XCTAssertEqual(XCTWaiter().wait(for: [on], timeout: 3), .completed)
+    }
+
+    // up-next/next-episode-near-the-end
+    // up-next/up-next-counts-down
+    // up-next/which-episode-is-next, from the end of a season to the next
+    func testTheNextEpisodePlaysFromTheButtonAndTheCountdown() throws {
+        let app = try launch(["-ui-testing-near-end"])
+        open(app, "series")
+        card(app, "series", in: "continueWatching", "xtream#cabin#series#1").tap()
+        expectPlayer(app, "playing 12.mp4 from 0")
+
+        let button = app.element("upNext.button")
+        XCTAssertTrue(button.waitForExistence(timeout: 5), "the button shows 25 seconds before the end")
+        button.tap()
+        expectPlayer(app, "playing 13.mp4 from 0")
+
+        app.element("title.transport.skipForward").tap()
+        XCTAssertTrue(app.element("upNext.playNow").waitForExistence(timeout: 5), "the card shows 15 seconds before the end")
+        XCTAssertTrue(app.element("upNext.card").label.contains("Season 3 Episode 1, Thaw"))
+        expectPlayer(app, "playing 301.mp4 from 0", timeout: 15)
+    }
+
+    // up-next/cancel-keeps-watching
+    func testCancelKeepsTheEpisodePlaying() throws {
+        let app = try launch(["-ui-testing-near-end"])
+        open(app, "series")
+        card(app, "series", in: "continueWatching", "xtream#cabin#series#1").tap()
+        expectPlayer(app, "playing 12.mp4 from 0")
+        XCTAssertTrue(app.element("upNext.button").waitForExistence(timeout: 5))
+        app.element("title.transport.skipForward").tap()
+        let cancel = app.element("upNext.cancel")
+        XCTAssertTrue(cancel.waitForExistence(timeout: 5))
+        cancel.tap()
+        XCTAssertFalse(app.element("upNext.card").waitForExistence(timeout: 1))
+        XCTAssertFalse(app.element("upNext.button").exists)
+        sleep(11)
+        expectPlayer(app, "playing 12.mp4 from 0")
     }
 }

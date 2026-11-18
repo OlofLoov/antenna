@@ -89,6 +89,14 @@ final class TitleModel {
         return progress[episode.id]?.resumePosition ?? 0
     }
 
+    /// An episode of this series started playing, from the page or from Up
+    /// next. Its season stays picked and it comes into view on the way back.
+    func played(_ episode: Episode) {
+        guard let group = groups.first(where: { $0.episodes.contains(episode) }) else { return }
+        pickedSeason = group.id
+        lastPlayed = episode.id
+    }
+
     /// True while the title's source is still in the library.
     var sourceExists: Bool {
         shelf.hasSource(title)

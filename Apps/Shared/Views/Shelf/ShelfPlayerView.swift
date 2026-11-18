@@ -12,6 +12,8 @@ import SwiftUI
 /// open from select on Apple TV (`iPhone-Title-Player-Tracks`,
 /// `iPad-Title-Player-Tracks`, `TV-Title-Player-Tracks`;
 /// player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode).
+/// Near the end of an episode the Next episode button and the Up next card
+/// sit bottom right (up-next capability).
 struct ShelfPlayerView: View {
     let playback: ShelfPlayback
     let target: ShelfPlayback.Target
@@ -103,6 +105,23 @@ private struct TitleFailure: View {
     }
 }
 
+extension ShelfPlayback.UpNextShown {
+    /// The card's words, nil while only the button shows.
+    var card: NextEpisode.Content? {
+        guard let heading = UpNextText.heading(offer) else { return nil }
+        return NextEpisode.Content(
+            title: UpNextText.title(episode), heading: heading, spoken: UpNextText.spoken(episode, offer: offer),
+            picture: episode.thumbnailURL, number: episode.number)
+    }
+
+    var isButton: Bool { offer == .button }
+
+    var isAsking: Bool { offer == .asking }
+
+    /// Play now, or Keep watching for "Still watching?".
+    var primary: String { isAsking ? UpNextText.keepWatching : UpNextText.playNow }
+}
+
 extension TitleTransport {
     /// The times the controls show, at the target while one is set.
     var times: Transport.Times {
@@ -131,6 +150,8 @@ extension TitleTransport {
 
         var body: some View {
             let panel = playback.tracks?.panel
+            let upNext = panel == nil ? playback.upNext : nil
+            let card = transport.isScrubbing ? nil : upNext?.card
             ZStack {
                 Button {
                     select()
@@ -139,12 +160,20 @@ extension TitleTransport {
                 }
                 .buttonStyle(TitlePictureStyle())
                 .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
-                .disabled(panel != nil)
+                .disabled(panel != nil || card != nil)
                 .focused($focus, equals: .picture)
-                .controlHints(.titlePlayer(scrubbing: transport.isScrubbing))
+                .controlHints(.titlePlayer(scrubbing: transport.isScrubbing, nextEpisode: upNext?.isButton == true))
                 .task { focus = .picture }
                 .onExitCommand { menu() }
                 .onPlayPauseCommand { transport.select() }
+                // Down reaches the Next episode button; left and right stay skips
+                // (up-next/up-next-on-the-siri-remote).
+                .onMoveCommand { direction in
+                    if direction == .down, upNext?.isButton == true {
+                        playback.noteInput()
+                        focus = .nextEpisode
+                    }
+                }
                 .accessibilityHidden(true)
                 if transport.controlsShown, panel == nil {
                     Transport.Bar(title: title, times: transport.times, isPaused: transport.isPaused, target: target)
@@ -156,6 +185,13 @@ extension TitleTransport {
                     Transport.Notice(text: notice)
                         .frame(maxHeight: .infinity, alignment: .top)
                         .padding(.top, 60)
+                }
+                if let upNext {
+                    nextEpisode(upNext, card: card)
+                        .padding(.trailing, 80)
+                        .padding(.bottom, transport.controlsShown ? 230 : 60)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                        .transition(.opacity)
                 }
                 if let tracks = playback.tracks, panel != nil {
                     TitleTVPanel(tracks: tracks, focus: $focus)
@@ -177,8 +213,47 @@ extension TitleTransport {
                 .accessibilityHidden(true)
             }
             .animation(.easeOut(duration: 0.25), value: transport.controlsShown)
+            .animation(.easeOut(duration: 0.25), value: upNext)
             .onChange(of: voiceOver, initial: true) { _, on in
                 transport.held = on
+            }
+            // The card takes focus on Play now; when it or the button goes,
+            // focus goes back to the picture.
+            .onChange(of: card != nil) { _, shows in
+                if shows {
+                    focus = .nextEpisode
+                } else if focus == .nextEpisode, upNext?.isButton != true {
+                    focus = .picture
+                }
+            }
+            .onChange(of: upNext == nil) { _, gone in
+                if gone, focus == .nextEpisode { focus = .picture }
+            }
+        }
+
+        /// The button in the last 30 seconds, the card in the last 15.
+        @ViewBuilder
+        private func nextEpisode(_ upNext: ShelfPlayback.UpNextShown, card: NextEpisode.Content?) -> some View {
+            if let card {
+                NextEpisode.Card(content: card) {
+                    NextEpisode.PlayNow(title: upNext.primary) { playback.playNext() }
+                        .focused($focus, equals: .nextEpisode)
+                }
+                .controlHints(.upNext(asking: upNext.isAsking))
+                .onExitCommand {
+                    playback.cancelUpNext()
+                    focus = .picture
+                }
+                .onPlayPauseCommand { transport.playPause() }
+            } else if upNext.isButton {
+                NextEpisode.Button { playback.playNext() }
+                    .focused($focus, equals: .nextEpisode)
+                    .controlHints(.nextEpisodeButton)
+                    .onExitCommand { focus = .picture }
+                    .onPlayPauseCommand { transport.playPause() }
+                    .onMoveCommand { direction in
+                        if direction == .up { focus = .picture }
+                    }
             }
         }
 
@@ -203,6 +278,7 @@ extension TitleTransport {
         /// Opens the panel on Audio with focus on its tab.
         private func openPanel() {
             guard let tracks = playback.tracks else { return }
+            playback.noteInput()
             panelOpenedAt = .now
             tracks.panel = .audio
             focus = .segment(.audio)
@@ -253,8 +329,16 @@ extension TitleTransport {
                         .frame(maxWidth: .infinity)
                         .padding(.top, 72)
                 }
+                if let upNext = playback.upNext {
+                    nextEpisode(upNext)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, transport.controlsShown ? 76 : 24)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                        .transition(.opacity)
+                }
             }
-            .background { keys(pickerOpen: pickerOpen) }
+            .background { keys(pickerOpen: pickerOpen, cardShows: playback.upNext?.card != nil) }
+            .animation(.easeOut(duration: 0.2), value: playback.upNext)
             .animation(.easeOut(duration: 0.2), value: transport.controlsShown)
             .onChange(of: voiceOver || pickerOpen, initial: true) { _, holds in
                 transport.held = holds
@@ -276,6 +360,7 @@ extension TitleTransport {
                 #endif
                 .onTapGesture { transport.toggle() }
                 .onContinuousHover { phase in
+                    playback.noteInput()
                     switch phase {
                     case .active: transport.show(after: .touch)
                     case .ended: transport.show(after: .pointerLeft)
@@ -300,9 +385,24 @@ extension TitleTransport {
             .accessibilityIdentifier("\(kind).player.close")
         }
 
+        /// The button in the last 30 seconds, the card with Play now and
+        /// Cancel in the last 15 (up-next/up-next-counts-down).
+        @ViewBuilder
+        private func nextEpisode(_ upNext: ShelfPlayback.UpNextShown) -> some View {
+            if let card = upNext.card {
+                NextEpisode.Card(content: card) {
+                    NextEpisode.Cancel { playback.cancelUpNext() }
+                    NextEpisode.PlayNow(title: upNext.primary) { playback.playNext() }
+                }
+            } else if upNext.isButton {
+                NextEpisode.Button { playback.playNext() }
+            }
+        }
+
         /// Left and right skip, Space plays and pauses, Escape closes. They
-        /// work while the controls are hidden.
-        private func keys(pickerOpen: Bool) -> some View {
+        /// work while the controls are hidden. While the Up next card shows,
+        /// Escape is the card's Cancel instead.
+        private func keys(pickerOpen: Bool, cardShows: Bool) -> some View {
             ZStack {
                 Group {
                     Button("Back 10 seconds") { transport.skip(forward: false) }
@@ -313,8 +413,10 @@ extension TitleTransport {
                         .keyboardShortcut(.space, modifiers: [])
                 }
                 .disabled(pickerOpen)
-                Button("Close") { Task { await playback.close() } }
-                    .keyboardShortcut(.cancelAction)
+                if !cardShows {
+                    Button("Close") { Task { await playback.close() } }
+                        .keyboardShortcut(.cancelAction)
+                }
             }
             .frame(width: 0, height: 0)
             .opacity(0)
@@ -327,6 +429,8 @@ extension TitleTransport {
     /// Where focus is in the Apple TV movie player.
     enum TitlePanelFocus: Hashable {
         case picture
+        /// The Next episode button, or Play now on the Up next card.
+        case nextEpisode
         case segment(PanelTab)
         /// A track row by its id, or `TrackMenu.offID`.
         case track(String)
@@ -341,99 +445,4 @@ extension TitleTransport {
         }
     }
 
-    /// The panel over the playing title: Audio and Subtitles, with the
-    /// Subtitles switch when the title has full subtitles. A title has no
-    /// Info tab; its page already shows the details.
-    struct TitleTVPanel: View {
-        let tracks: TitleTracks
-        let focus: FocusState<TitlePanelFocus?>.Binding
-
-        static let tabs: [PanelTab] = [.audio, .subtitles]
-
-        var body: some View {
-            let tab = tracks.panel ?? .audio
-            InfoPanel.Frame {
-                ForEach(Self.tabs, id: \.self) { item in
-                    InfoPanel.Segment(title: item.title, isSelected: item == tab) { tracks.panel = item }
-                        .focused(focus, equals: .segment(item))
-                        .accessibilityIdentifier("player.panel.segment.\(item.identifier)")
-                }
-            } accessory: {
-                if tracks.canSwitchSubtitles {
-                    InfoPanel.SubtitlesSwitch(isOn: tracks.subtitlesOn) { tracks.switchSubtitles() }
-                        .focused(focus, equals: .subtitles)
-                }
-            } content: {
-                switch tab {
-                case .subtitles:
-                    rows(tracks.subtitleRows, empty: TrackMenu.noSubtitles) { tracks.selectSubtitle($0) }
-                default:
-                    rows(tracks.audioRows, empty: nil) { tracks.selectAudio($0) }
-                }
-            }
-        }
-
-        @ViewBuilder
-        private func rows(_ rows: [TrackRow], empty: String?, pick: @escaping (String) -> Void) -> some View {
-            if rows.isEmpty, let empty {
-                InfoPanel.Empty(text: empty)
-            } else {
-                InfoPanel.Tracks {
-                    ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
-                        InfoPanel.TrackButton(name: row.name, detail: row.detail, isSelected: row.isSelected) { pick(row.id) }
-                            .focused(focus, equals: .track(row.id))
-                            .accessibilityIdentifier("player.panel.track.\(index)")
-                    }
-                }
-            }
-        }
-    }
-#else
-    /// The audio-and-subtitles button and the subtitles switch over the top
-    /// right of the playing title. The list opens as a sheet at compact
-    /// width and as a popover above the button otherwise, as in Live.
-    struct TitleTrackButtons: View {
-        let tracks: TitleTracks
-        #if os(iOS)
-            @Environment(\.horizontalSizeClass) private var sizeClass
-        #endif
-
-        var body: some View {
-            @Bindable var tracks = tracks
-            HStack(spacing: 0) {
-                TrackPicker.OpenButton(isAvailable: tracks.hasTrackChoices) { tracks.openPicker() }
-                    .popover(isPresented: $tracks.pickerOpen, arrowEdge: .bottom) {
-                        if isCompact {
-                            TrackPicker.Sheet(lists: lists) { tracks.closePicker() }
-                                .presentationDetents([.medium, .large])
-                                .presentationDragIndicator(.visible)
-                        } else {
-                            TrackPicker.Popover(lists: lists)
-                                .presentationCompactAdaptation(.popover)
-                        }
-                    }
-                TrackPicker.SubtitlesButton(isOn: tracks.subtitlesOn, isAvailable: tracks.canSwitchSubtitles) {
-                    tracks.switchSubtitles()
-                }
-            }
-            .padding(.horizontal, 4)
-            .background(Palette.scrimTint.opacity(0.6), in: Capsule())
-        }
-
-        /// True at compact width on iPhone and iPad, never on a Mac.
-        private var isCompact: Bool {
-            #if os(iOS)
-                sizeClass == .compact
-            #else
-                false
-            #endif
-        }
-
-        private var lists: TrackPicker.Lists {
-            TrackPicker.Lists(
-                audio: tracks.audioRows, subtitles: tracks.subtitleRows,
-                footer: [tracks.streamLine] + (tracks.route == .demuxer ? [LivePicture.noAirPlay] : []),
-                pickAudio: { tracks.selectAudio($0) }, pickSubtitle: { tracks.selectSubtitle($0) })
-        }
-    }
 #endif
