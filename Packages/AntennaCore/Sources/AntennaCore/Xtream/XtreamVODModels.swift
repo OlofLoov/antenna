@@ -35,7 +35,8 @@ public struct VODItem: Sendable, Hashable, Identifiable {
     public var posterURL: URL?
     /// When the panel added the movie. Nil unless `added` is a positive integer of seconds since 1970.
     public var added: Date?
-    /// Nil when the panel sends 0 or no usable number.
+    /// Out of ten: `rating` when it is above 0 and at most 10, else
+    /// `rating_5based` doubled when it is above 0 and at most 5, else nil.
     public var rating: Double?
     /// File extension for `movieURL(streamID:extension:)`, such as "mkv".
     public var containerExtension: String?
@@ -79,7 +80,7 @@ public struct VODInfo: Sendable, Hashable {
     public var cast: String?
     /// From `info.director`.
     public var director: String?
-    /// From `info.rating`. Nil when the panel sends 0 or no usable number.
+    /// From `info.rating`, else `info.rating_5based`, with the rules of `VODItem.rating`.
     public var rating: Double?
     /// From `info.youtube_trailer`, else `info.trailer`: a web address as is, an
     /// 11-character YouTube id as `https://www.youtube.com/watch?v=<id>`, anything else nil.
@@ -117,13 +118,17 @@ public struct Series: Sendable, Hashable, Identifiable {
     public var posterURL: URL?
     /// From `last_modified`, with the rules of `VODItem.added`.
     public var lastModified: Date?
+    /// Out of ten, with the rules of `VODItem.rating`.
+    public var rating: Double?
     /// Matches `XtreamCategory.categoryID`. Nil when the row has none.
     public var categoryID: String?
 
     /// Builds a row. `decodeSeriesList(_:host:)` is the usual source.
     public init(
-        id: String, seriesID: Int, name: String, posterURL: URL? = nil, lastModified: Date? = nil, categoryID: String? = nil
+        id: String, seriesID: Int, name: String, posterURL: URL? = nil, lastModified: Date? = nil, rating: Double? = nil,
+        categoryID: String? = nil
     ) {
+        self.rating = rating
         self.id = id
         self.seriesID = seriesID
         self.name = name

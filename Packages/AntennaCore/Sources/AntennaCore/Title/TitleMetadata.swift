@@ -104,11 +104,22 @@ public struct TitleMetadata: Sendable, Hashable {
         return merged
     }
 
-    /// "★ 7.4", one decimal; nil for 0 or less or not finite.
+    /// "★ 7.4", one decimal; nil for 0 or less or not finite. The banner
+    /// and the title page both write the provider's rating with it.
     public static func rating(_ value: Double) -> String? {
+        decimal(value).map { "★ \($0)" }
+    }
+
+    /// "rated 7.4 out of 10", what VoiceOver reads for `rating(_:)`.
+    public static func spokenRating(_ value: Double) -> String? {
+        decimal(value).map { "rated \($0) out of 10" }
+    }
+
+    /// "7.4": one decimal, nil for 0 or less or not finite.
+    private static func decimal(_ value: Double) -> String? {
         guard value.isFinite, value > 0 else { return nil }
         let tenths = Int((value * 10).rounded())
-        return "★ \(tenths / 10).\(tenths % 10)"
+        return "\(tenths / 10).\(tenths % 10)"
     }
 
     static func eyebrow(_ title: ShelfTitle) -> String {

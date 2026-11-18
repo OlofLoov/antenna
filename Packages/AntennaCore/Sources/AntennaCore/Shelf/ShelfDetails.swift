@@ -1,8 +1,10 @@
 import Foundation
 
 /// What the banner says about a title beyond its list row: the year, the
-/// length or number of seasons, the description and the age rating
-/// (movies-and-series-browsing/new-titles-up-front). Read from the
+/// length or number of seasons, the description, the age rating, the
+/// provider's rating and the trailer link
+/// (movies-and-series-browsing/new-titles-up-front,
+/// movies-and-series-browsing/rating-and-trailer-on-the-banner). Read from the
 /// provider's info call for the titles the banner shows.
 public struct ShelfDetails: Sendable, Hashable {
     public var year: Int?
@@ -14,11 +16,16 @@ public struct ShelfDetails: Sendable, Hashable {
     public var ageRating: String?
     /// The first backdrop the provider lists, the banner's art when present.
     public var backdropURL: URL?
+    /// The info call's rating out of ten.
+    public var rating: Double?
+    public var trailerURL: URL?
 
     public init(
         year: Int? = nil, duration: Double? = nil, seasons: Int? = nil, plot: String? = nil, ageRating: String? = nil,
-        backdropURL: URL? = nil
+        backdropURL: URL? = nil, rating: Double? = nil, trailerURL: URL? = nil
     ) {
+        self.rating = rating
+        self.trailerURL = trailerURL
         self.year = year
         self.duration = duration
         self.seasons = seasons
@@ -29,13 +36,14 @@ public struct ShelfDetails: Sendable, Hashable {
 
     public init(movie info: VODInfo) {
         self.init(
-            year: info.year, duration: info.duration, plot: info.plot, ageRating: info.ageRating, backdropURL: info.backdropURLs.first)
+            year: info.year, duration: info.duration, plot: info.plot, ageRating: info.ageRating, backdropURL: info.backdropURLs.first,
+            rating: info.rating, trailerURL: info.trailerURL)
     }
 
     public init(series info: SeriesInfo) {
         self.init(
             year: info.year, seasons: info.seasonCount, plot: info.plot, ageRating: info.ageRating,
-            backdropURL: info.backdropURLs.first)
+            backdropURL: info.backdropURLs.first, rating: info.rating, trailerURL: info.trailerURL)
     }
 }
 
@@ -44,8 +52,14 @@ public struct BannerText: Sendable, Hashable {
     /// "Recently added · Thriller", or "Recently added" without a category.
     public var eyebrow: String
     public var title: String
-    /// The year and the length, or for a series the year and the seasons.
+    /// The year and the length, or for a series the year and the seasons,
+    /// then the rating.
     public var facts: [String]
+    /// "★ 7.4", the last of `facts` when the title has a rating: the info
+    /// call's, else the list row's.
+    public var rating: String?
+    /// "rated 7.4 out of 10", what VoiceOver reads for `rating`.
+    public var spokenRating: String?
     /// "4K" and the age badge for a movie; a series shows none.
     public var badges: [String]
     public var description: String?
@@ -54,7 +68,10 @@ public struct BannerText: Sendable, Hashable {
         eyebrow = (["Recently added"] + [title.category].compactMap(\.self)).joined(separator: " · ")
         self.title = title.name
         let span = title.kind == .movie ? ShelfText.length(details?.duration) : details?.seasons.flatMap(ShelfText.seasons)
-        facts = [details?.year.map(String.init), span].compactMap(\.self)
+        let score = details?.rating ?? title.rating
+        rating = score.flatMap(TitleMetadata.rating)
+        spokenRating = score.flatMap(TitleMetadata.spokenRating)
+        facts = [details?.year.map(String.init), span, rating].compactMap(\.self)
         if title.kind == .movie {
             badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(details?.ageRating)].compactMap(\.self)
         } else {
