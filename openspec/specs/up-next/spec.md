@@ -6,16 +6,21 @@ Lets people binging a series go from one episode to the next without leaving the
 ## Requirements
 
 ### Requirement: Next episode near the end
-The system SHALL show a Next episode button over the bottom right corner of a playing episode from 30 seconds before its end, when the episode is at least 5 minutes long and has a next episode. The button SHALL not pause or cover the middle of the picture, and pressing it SHALL play the next episode in the same player.
+The system SHALL show a Next episode button over the bottom right corner of a playing episode from 60 seconds before its end, when the episode is at least 5 minutes long and has a next episode. The button SHALL not pause or cover the middle of the picture, and pressing it SHALL play the next episode in the same player.
 
-#### Scenario: The last 30 seconds
+#### Scenario: The last minute
 - **GIVEN** a 45-minute episode playing with a next episode
-- **WHEN** it reaches 44:30
+- **WHEN** it reaches 44:00
 - **THEN** a Next episode button shows in the bottom right corner while the episode keeps playing
 - **AND** pressing it plays the next episode in the same player, without going back to the series page
 
+#### Scenario: The last 30 seconds
+- **GIVEN** the Next episode button showing from a minute before the end
+- **WHEN** the episode reaches its last 30 seconds
+- **THEN** the button stays where it is until the Up next card replaces it 15 seconds before the end
+
 #### Scenario: Earlier in the episode
-- **GIVEN** an episode playing more than 30 seconds before its end
+- **GIVEN** an episode playing more than 60 seconds before its end
 - **WHEN** the viewer looks at the picture
 - **THEN** no Next episode button shows
 
@@ -61,7 +66,7 @@ The system SHALL replace the button with an Up next card from 15 seconds before 
 
 #### Scenario: Moving back
 - **GIVEN** the Next episode button or the Up next card showing
-- **WHEN** the viewer skips or scrubs back to more than 30 seconds before the end
+- **WHEN** the viewer skips or scrubs back to more than 60 seconds before the end
 - **THEN** both go away, and the count starts again from 10 if the episode reaches the last 15 seconds again
 
 #### Scenario: VoiceOver
@@ -128,7 +133,7 @@ The system SHALL mark the episode that was playing as watched when the next one 
 - **GIVEN** the viewer played Season 1 Episode 8 from the page and the countdown started Season 2 Episode 1
 - **WHEN** they leave Season 2 Episode 1 part-way
 - **THEN** the series page shows Season 2 with Episode 1 in view, its bar and "Resume S2 E1"
-- **AND** Season 1 Episode 8 shows Watched, even when the viewer pressed Next episode 30 seconds before its end
+- **AND** Season 1 Episode 8 shows Watched, even when the viewer pressed Next episode 60 seconds before its end
 - **AND** Continue watching shows Season 2 Episode 1
 
 ### Requirement: Turn autoplay off
@@ -144,7 +149,7 @@ The system SHALL offer "Autoplay next episode" in Settings on every platform, on
 The system SHALL let the viewer reach the Next episode button and the Up next card on Apple TV by swiping or clicking down, while clicks left and right keep skipping 10 seconds, play/pause keeps pausing and a slide keeps showing the bar. When the card shows, it SHALL take focus on Play now. Back with focus on the button or the card SHALL put focus back on the picture and, on the card, cancel it. Back with focus on the picture SHALL still close the episode.
 
 #### Scenario: Reaching the button
-- **GIVEN** an episode in its last 30 seconds on Apple TV with the Next episode button showing
+- **GIVEN** an episode in its last minute on Apple TV with the Next episode button showing
 - **WHEN** the viewer swipes down
 - **THEN** the button takes focus and grows, and select plays the next episode
 - **AND** Back puts focus back on the picture and the button stays

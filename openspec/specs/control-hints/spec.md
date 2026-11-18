@@ -64,7 +64,7 @@ The system SHALL list the actions of the part of the screen that has the highlig
 - **AND** for "Still watching?" it lists Click to keep watching and Back to cancel
 
 ### Requirement: Hints fade and come back on a new screen
-The system SHALL show the legend when the highlight reaches a new screen and fade it six seconds later. The info bar coming and going over the picture, and the highlight moving between the overlay's groups and channels, SHALL count as the same screen. A screen SHALL show its legend at most three times until the app launches again. With Reduce Motion on, the legend SHALL appear and go without animation.
+The system SHALL show the legend when the highlight reaches a new screen and fade it six seconds later. The info bar coming and going over the picture, and moving between the overlay's groups and channels, SHALL count as the same screen. A screen SHALL show its legend at most three times per launch, except on the first playback after a launch and on each move between Live, Movies and Series, which SHALL always show it. With Reduce Motion on, the legend SHALL appear and go without animation.
 
 #### Scenario: Opening the guide
 - **WHEN** the viewer opens the Guide
@@ -79,6 +79,26 @@ The system SHALL show the legend when the highlight reaches a new screen and fad
 - **GIVEN** the viewer picked a channel from the overlay
 - **WHEN** the picture is full screen again
 - **THEN** the Live legend shows again, until it has shown three times since launch
+
+#### Scenario: The first thing played
+- **GIVEN** the app just launched and the viewer browsed Movies and a title page
+- **WHEN** they play a movie
+- **THEN** the player's legend shows and fades six seconds later
+
+#### Scenario: Switching to another section
+- **GIVEN** the Movies legend has shown three times since launch
+- **WHEN** the viewer goes up to the tab bar and opens Series, then Movies again
+- **THEN** the Series legend shows, then the Movies legend shows again, each fading six seconds later
+
+#### Scenario: Back in the same section
+- **GIVEN** the Movies legend has shown three times since launch
+- **WHEN** the viewer opens a title page, plays the movie and goes back to the Movies rows
+- **THEN** the Movies legend does not show again
+
+#### Scenario: From the guide to Live
+- **GIVEN** the Live legend has shown three times since launch
+- **WHEN** the viewer picks a channel in the Guide
+- **THEN** the Live legend does not show again, because the guide is part of Live
 
 ### Requirement: Hints stay out of the way
 The system SHALL draw the legend inside the TV safe area, top right over full-screen video, the info bar and the movie player, and bottom right on every other screen. The legend SHALL never take focus or block a press, SHALL use the platform's caption text style, and VoiceOver SHALL read it as one sentence.
