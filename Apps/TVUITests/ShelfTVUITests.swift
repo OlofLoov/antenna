@@ -3,7 +3,8 @@ import XCTest
 /// Movies and Series on Apple TV (movies-and-series-browsing capability).
 /// Launches the shell's `channels` scenario, whose Xtream source answers with
 /// the scripted titles of `UITestingShelf`: Night Ferry, Snow Day and Copper
-/// Hills, newest first.
+/// Hills, newest first. Night Ferry is rated 6.8 and has a playable trailer,
+/// so its banner reads Play, More info, Trailer, My list.
 @MainActor
 final class ShelfTVUITests: XCTestCase {
     let remote = XCUIRemote.shared
@@ -122,10 +123,13 @@ final class ShelfTVUITests: XCTestCase {
         let pager = element("movies.hero.pager")
         expect(pager, "value == '1 of 3'")
         XCTAssertEqual(element("movies.hero.title").label, "Night Ferry")
-        press(.right, times: 2)
+        press(.right, times: 3)
         expectFocus("movies.hero.myList")
         page(.right, pager, to: "2 of 3")
         XCTAssertEqual(element("movies.hero.title").label, "Snow Day")
+        // movies-and-series-browsing/rating-and-trailer-on-the-banner, paging past a title with a trailer
+        expect(element("movies.hero.trailer"), "exists == false")
+        expectFocus("movies.hero.myList")
         press(.left, times: 2)
         expectFocus("movies.hero.play")
         page(.left, pager, to: "1 of 3")
@@ -224,7 +228,7 @@ final class ShelfTVUITests: XCTestCase {
     // movies-and-series-browsing/keep-a-list-for-later, on Apple TV
     func testTheBannerAddsToMyList() {
         openMovies()
-        press(.right, times: 2)
+        press(.right, times: 3)
         expectFocus("movies.hero.myList")
         let button = element("movies.hero.myList")
         expect(button, "value == 'Not on My list'")

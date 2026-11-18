@@ -94,6 +94,36 @@ final class ShelfUITests: XCTestCase {
         waitForHero(app, "Night Ferry", timeout: 3)
     }
 
+    // movies-and-series-browsing/rating-and-trailer-on-the-banner
+    func testTheBannerShowsTheRatingAndTrailerOpensTheLink() throws {
+        let app = try launch(arguments: ["-ui-testing-reduce-motion"])
+        openMovies(app)
+        waitForHero(app, "The Long Harbor", timeout: 5)
+        let facts = app.element("movies.hero.facts")
+        XCTAssertTrue(waitUntil { facts.exists && facts.label.contains("rated 7.4 out of 10") }, "facts read \(facts.label)")
+        let trailer = app.element("movies.hero.trailer")
+        XCTAssertTrue(trailer.waitForExistence(timeout: 5))
+        XCTAssertEqual(trailer.label, "Trailer")
+        let play = app.element("movies.hero.play")
+        let info = app.element("movies.hero.info")
+        let myList = app.element("movies.hero.myList")
+        XCTAssertLessThan(play.frame.maxX, info.frame.minX)
+        XCTAssertLessThan(info.frame.maxX, trailer.frame.minX)
+        XCTAssertLessThan(trailer.frame.maxX, myList.frame.minX)
+        XCTAssertLessThanOrEqual(myList.frame.maxX, app.windows.firstMatch.frame.maxX, "the four buttons fit the width")
+
+        trailer.tap()
+        let opened = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == 'https://trailers.example/long-harbor'"), object: app.element("shelf.debug.opened"))
+        XCTAssertEqual(XCTWaiter().wait(for: [opened], timeout: 5), .completed, "the trailer link never opened")
+
+        // Snow Day has neither.
+        app.element("movies.hero.title").swipeRight()
+        waitForHero(app, "Snow Day", timeout: 3)
+        XCTAssertTrue(waitUntil { !trailer.exists }, "Trailer stayed for a title without one")
+        XCTAssertFalse(facts.label.contains("rated"), "facts read \(facts.label)")
+    }
+
     // movies-and-series-browsing/rows-in-a-predictable-order
     func testRowsFollowTheBanner() throws {
         let app = try launch()

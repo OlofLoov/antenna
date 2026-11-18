@@ -19,6 +19,9 @@ struct BannerContext {
         var play: () -> Void
         /// Opens the title's page.
         var moreInfo: () -> Void
+        /// Opens or plays the trailer; nil gives no Trailer button
+        /// (movies-and-series-browsing/rating-and-trailer-on-the-banner).
+        var trailer: (() -> Void)?
         var toggleMyList: () -> Void
         /// Moves by a number of titles, wrapping.
         var page: (Int) -> Void
@@ -163,17 +166,25 @@ enum ShelfBanner {
         }
     }
 
-    /// The year and length or seasons between dots, then the outlined badges.
+    /// The year, the length or seasons and the rating between dots, then
+    /// the outlined badges. VoiceOver reads the line as one element and the
+    /// rating as "rated 7.4 out of 10"
+    /// (movies-and-series-browsing/rating-and-trailer-on-the-banner).
     struct Facts: View {
         let type: Sizes
         @Environment(\.shelfBanner) private var banner
+        @Environment(\.shelfPrefix) private var prefix
 
         var body: some View {
             if let text = banner?.state.text, !(text.facts.isEmpty && text.badges.isEmpty) {
                 HStack(spacing: type.facts / 2) {
                     ForEach(Array(zip(text.facts.indices, text.facts)), id: \.0) { index, fact in
                         if index > 0 { Dot(size: type.facts / 5) }
-                        Text(fact)
+                        if fact == text.rating, let spoken = text.spokenRating {
+                            Text(fact).accessibilityLabel(spoken)
+                        } else {
+                            Text(fact)
+                        }
                     }
                     ForEach(text.badges, id: \.self) { badge in
                         Badge(text: badge, size: type.badge)
@@ -182,6 +193,7 @@ enum ShelfBanner {
                 .font(.system(size: type.facts))
                 .foregroundStyle(Browse.textSecondary)
                 .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("\(prefix).hero.facts")
             }
         }
     }

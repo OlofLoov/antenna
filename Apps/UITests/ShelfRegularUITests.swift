@@ -80,6 +80,25 @@ final class ShelfRegularUITests: XCTestCase {
         XCTAssertEqual(XCTWaiter().wait(for: [moved], timeout: 5), .completed)
     }
 
+    // movies-and-series-browsing/rating-and-trailer-on-the-banner
+    func testTheBannerShowsTheRatingAndTrailerBetweenMoreInfoAndMyList() throws {
+        let app = try launch(arguments: ["-ui-testing-reduce-motion"])
+        app.element("browse.section.movies").tap()
+        let facts = app.element("movies.hero.facts")
+        let rated = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS 'rated 7.4 out of 10'"), object: facts)
+        XCTAssertEqual(XCTWaiter().wait(for: [rated], timeout: 10), .completed, "the rating never showed")
+        let trailer = app.element("movies.hero.trailer")
+        XCTAssertTrue(trailer.waitForExistence(timeout: 5))
+        XCTAssertEqual(trailer.label, "Trailer")
+        XCTAssertLessThan(app.element("movies.hero.info").frame.maxX, trailer.frame.minX)
+        XCTAssertLessThan(trailer.frame.maxX, app.element("movies.hero.myList").frame.minX)
+
+        trailer.tap()
+        let opened = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == 'https://trailers.example/long-harbor'"), object: app.element("shelf.debug.opened"))
+        XCTAssertEqual(XCTWaiter().wait(for: [opened], timeout: 5), .completed, "the trailer link never opened")
+    }
+
     // movies-and-series-browsing/browse-a-genre-or-sort-the-lot
     func testAGenreOrASortShowsAGridAndTheSectionBringsTheRowsBack() throws {
         let app = try launch()

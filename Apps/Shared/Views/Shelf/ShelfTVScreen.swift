@@ -155,16 +155,19 @@
         }
     }
 
-    /// Play, More info and My list. Focus on any of them holds the banner;
-    /// moving right past My list or left past Play pages it
-    /// (movies-and-series-browsing/new-titles-up-front).
+    /// Play, More info, Trailer when the title has a playable one, and My
+    /// list. Focus on any of them holds the banner; moving right past My
+    /// list or left past Play pages it
+    /// (movies-and-series-browsing/new-titles-up-front,
+    /// movies-and-series-browsing/rating-and-trailer-on-the-banner).
     private struct ShelfTVBannerButtons: View {
         let focus: FocusState<ShellFocus?>.Binding
         @Environment(\.shelfBanner) private var banner
         @Environment(ShelfLibrary.self) private var library
+        @Environment(ShelfPlayback.self) private var playback
         @FocusState private var focused: Part?
 
-        enum Part: Hashable { case play, info, myList }
+        enum Part: Hashable { case play, info, trailer, myList }
 
         var body: some View {
             Group {
@@ -176,6 +179,9 @@
                 ShelfBanner.InfoButton(type: .tv, title: "More info")
                     .fixedSize()
                     .focused($focused, equals: .info)
+                ShelfBanner.TrailerButton(type: .tv)
+                    .fixedSize()
+                    .focused($focused, equals: .trailer)
                 ShelfBanner.MyListButton(type: .tv)
                     .focused($focused, equals: .myList)
                     .onMoveCommand { if $0 == .right { banner?.actions.page(1) } }
@@ -190,6 +196,14 @@
                 await Task.yield()
                 focused = .info
                 library.returned()
+            }
+            // Back from the trailer, by Menu or its end, focus is on Trailer again.
+            .onChange(of: playback.playing) { before, now in
+                guard now == nil, library.page == nil, case .trailer = before else { return }
+                Task {
+                    await Task.yield()
+                    focused = .trailer
+                }
             }
         }
     }

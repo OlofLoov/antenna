@@ -28,6 +28,24 @@ struct ShelfActions {
         case .series: open(title, .poster(row: row))
         }
     }
+
+    /// What Trailer does on the title page and the banner, nil for no
+    /// button. iPhone, iPad and Mac open the link outside the app. Apple TV
+    /// has no browser, so there only a link to a video file or stream gets
+    /// the button, and it plays in the app
+    /// (title-detail-and-episode-picker/trailer,
+    /// movies-and-series-browsing/rating-and-trailer-on-the-banner).
+    @MainActor static func trailer(
+        _ url: URL?, of title: ShelfTitle, playback: ShelfPlayback, openURL: OpenURLAction
+    ) -> (() -> Void)? {
+        guard let url else { return nil }
+        #if os(tvOS)
+            guard TrailerLink.playsInApp(url) else { return nil }
+            return { playback.playTrailer(url, of: title) }
+        #else
+            return { openURL(url) }
+        #endif
+    }
 }
 
 /// Shows the banner's title, moves on every eight seconds while nobody
@@ -44,6 +62,8 @@ struct ShelfBannerHost<Content: View>: View {
     @State private var waited: Set<String> = []
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     @Environment(\.posterLoader) private var loader
+    @Environment(ShelfPlayback.self) private var playback
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         let titles = model.banner
@@ -98,12 +118,14 @@ struct ShelfBannerHost<Content: View>: View {
     }
 
     private func context(_ title: ShelfTitle, count: Int) -> BannerContext {
-        BannerContext(
+        let details = model.details[title.id]
+        return BannerContext(
             state: .init(
-                text: BannerText(title, details: model.details[title.id]), art: art(title),
+                text: BannerText(title, details: details), art: art(title),
                 isOnMyList: actions.isOnMyList(title), index: min(index, count - 1), count: count),
             actions: .init(
                 play: { actions.play(title) }, moreInfo: { actions.open(title, .banner) },
+                trailer: ShelfActions.trailer(details?.trailerURL, of: title, playback: playback, openURL: openURL),
                 toggleMyList: { actions.toggleMyList(title) },
                 page: { page($0, count: count) },
                 show: { target in
