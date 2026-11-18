@@ -91,14 +91,33 @@ extension SampleBuilder {
         let objectType = Int(bytes[0] >> 3)
         let rateIndex = Int((bytes[0] & 0x07) << 1 | bytes[1] >> 7)
         let configuration = Int((bytes[1] >> 3) & 0x0F)
-        guard rateIndex < aacSampleRates.count, let speakers = aacLayouts[configuration] else { throw BuildError.malformed }
-        let channels = Int(AudioChannelLayoutTag_GetNumberOfChannels(speakers))
+        guard rateIndex < aacSampleRates.count else { throw BuildError.malformed }
+        var layout: Data
+        var channels: Int
+        if configuration == 0, (1...4).contains(objectType) {
+            // The speakers are in the program config element after the
+            // header's 16 bits.
+            var reader = BitReader(Array(bytes.dropFirst(2)))
+            guard let element = programConfig(&reader) else { throw BuildError.malformed }
+            (layout, channels) = (Self.layout(speakers: element.speakers), element.speakers.count)
+        } else {
+            guard let speakers = aacLayouts[configuration] else { throw BuildError.malformed }
+            (layout, channels) = (tagLayout(speakers), Int(AudioChannelLayoutTag_GetNumberOfChannels(speakers)))
+        }
         var cookieConfig = config
         var formatID = kAudioFormatMPEG4AAC
         var flags = objectType
         var sampleRate = aacSampleRates[rateIndex]
         var frames = 1024
-        if objectType == 2, sampleRate <= 24000, let doubled = aacSampleRates.firstIndex(of: sampleRate * 2) {
+        if objectType == 2, configuration == 1, sampleRate <= 24000, let doubled = aacSampleRates.firstIndex(of: sampleRate * 2) {
+            // Mono at half rate is HE-AAC v2 in broadcast: parametric
+            // stereo rebuilds two channels from one. Declared, Apple's
+            // decoder gives stereo; a stream that is plain HE-AAC mono
+            // plays the same sound on both.
+            cookieConfig = explicitSBR(rateIndex: rateIndex, channels: configuration, extensionRateIndex: doubled, objectType: 29)
+            (formatID, flags, sampleRate, frames) = (kAudioFormatMPEG4AAC_HE_V2, 29, sampleRate * 2, 2048)
+            (layout, channels) = (tagLayout(kAudioChannelLayoutTag_Stereo), 2)
+        } else if objectType == 2, sampleRate <= 24000, let doubled = aacSampleRates.firstIndex(of: sampleRate * 2) {
             cookieConfig = explicitSBR(rateIndex: rateIndex, channels: configuration, extensionRateIndex: doubled)
             (formatID, flags, sampleRate, frames) = (kAudioFormatMPEG4AAC_HE, 5, sampleRate * 2, 2048)
         } else if objectType == 5 || objectType == 29, bytes.count >= 3 {
@@ -108,27 +127,27 @@ extension SampleBuilder {
             guard extensionIndex < aacSampleRates.count else { throw BuildError.malformed }
             formatID = objectType == 5 ? kAudioFormatMPEG4AAC_HE : kAudioFormatMPEG4AAC_HE_V2
             (sampleRate, frames) = (aacSampleRates[extensionIndex], 2048)
+            if objectType == 29 { (layout, channels) = (tagLayout(kAudioChannelLayoutTag_Stereo), 2) }
         }
         var description = AudioStreamBasicDescription(
             mSampleRate: Float64(sampleRate), mFormatID: formatID,
             mFormatFlags: AudioFormatFlags(flags), mBytesPerPacket: 0, mFramesPerPacket: UInt32(frames),
             mBytesPerFrame: 0, mChannelsPerFrame: UInt32(channels), mBitsPerChannel: 0, mReserved: 0)
         let cookie = esds(config: cookieConfig, objectType: 0x40, streamType: 0x15)
+        return try compressedFormat(&description, layout: layout, cookie: cookie)
+    }
+
+    /// The bytes of a layout given by its tag.
+    static func tagLayout(_ tag: AudioChannelLayoutTag) -> Data {
         var layout = AudioChannelLayout(
-            mChannelLayoutTag: speakers, mChannelBitmap: [], mNumberChannelDescriptions: 0, mChannelDescriptions: AudioChannelDescription())
-        var format: CMAudioFormatDescription?
-        let status = cookie.withUnsafeBytes { raw in
-            CMAudioFormatDescriptionCreate(
-                allocator: nil, asbd: &description, layoutSize: MemoryLayout<AudioChannelLayout>.size, layout: &layout,
-                magicCookieSize: cookie.count, magicCookie: raw.baseAddress, extensions: nil, formatDescriptionOut: &format)
-        }
-        guard status == noErr, let format else { throw BuildError.malformed }
-        return format
+            mChannelLayoutTag: tag, mChannelBitmap: [], mNumberChannelDescriptions: 0, mChannelDescriptions: AudioChannelDescription())
+        return withUnsafeBytes(of: &layout) { Data($0) }
     }
 
     /// The speakers of each AAC channel configuration, in AAC's order.
-    /// Configurations 7, 12 and 14 are 7.1, eight channels. Configuration 0 leaves the
-    /// layout to a program config element in the stream, which is not read.
+    /// Configurations 7, 12 and 14 are 7.1, eight channels. Configuration 0
+    /// leaves the layout to a program config element, read by
+    /// `programConfig`.
     static let aacLayouts: [Int: AudioChannelLayoutTag] = [
         1: kAudioChannelLayoutTag_Mono, 2: kAudioChannelLayoutTag_Stereo, 3: kAudioChannelLayoutTag_AAC_3_0,
         4: kAudioChannelLayoutTag_AAC_4_0, 5: kAudioChannelLayoutTag_AAC_5_0, 6: kAudioChannelLayoutTag_AAC_5_1,
@@ -137,9 +156,11 @@ extension SampleBuilder {
     ]
 
     /// An AudioSpecificConfig for HE-AAC with explicit SBR: object type 5,
-    /// the core rate and channels, the rate after SBR, then LC as the core.
-    static func explicitSBR(rateIndex: Int, channels: Int, extensionRateIndex: Int) -> Data {
-        let bits = UInt32(5) << 27 | UInt32(rateIndex) << 23 | UInt32(channels) << 19 | UInt32(extensionRateIndex) << 15 | UInt32(2) << 10
+    /// or 29 for parametric stereo as well, the core rate and channels, the
+    /// rate after SBR, then LC as the core.
+    static func explicitSBR(rateIndex: Int, channels: Int, extensionRateIndex: Int, objectType: Int = 5) -> Data {
+        let bits =
+            UInt32(objectType) << 27 | UInt32(rateIndex) << 23 | UInt32(channels) << 19 | UInt32(extensionRateIndex) << 15 | UInt32(2) << 10
         return Data([UInt8(bits >> 24), UInt8((bits >> 16) & 0xFF), UInt8((bits >> 8) & 0xFF), UInt8(bits & 0xFF)])
     }
 
@@ -155,13 +176,16 @@ extension SampleBuilder {
         return Data([0x03, UInt8(body.count)] + body)
     }
 
-    static func audioBuffer(_ frames: [Data], format: CMFormatDescription, time: CMTime) throws -> CMSampleBuffer {
+    /// `samples` gives each frame's length when the format's frames vary
+    /// in length, nil when the format gives it.
+    static func audioBuffer(_ frames: [Data], format: CMFormatDescription, time: CMTime, samples: [Int]? = nil) throws -> CMSampleBuffer {
         var data = Data()
         var descriptions: [AudioStreamPacketDescription] = []
-        for frame in frames {
+        for (index, frame) in frames.enumerated() {
             descriptions.append(
                 AudioStreamPacketDescription(
-                    mStartOffset: Int64(data.count), mVariableFramesInPacket: 0, mDataByteSize: UInt32(frame.count)))
+                    mStartOffset: Int64(data.count), mVariableFramesInPacket: UInt32(samples?[index] ?? 0),
+                    mDataByteSize: UInt32(frame.count)))
             data.append(frame)
         }
         let block = try blockBuffer(data)

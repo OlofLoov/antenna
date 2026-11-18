@@ -64,12 +64,12 @@ import Testing
         await server.stop()
     }
 
-    @Test("playback-engine/streams-start-with-sound-the-device-can-play a DTS default starts on the Dolby Digital track")
+    @Test("playback-engine/streams-start-with-sound-the-device-can-play a Vorbis default starts on the Dolby Digital track")
     func skipsUndecodableDefault() async throws {
         let server = try FixtureServer()
         let base = try await server.start()
         let engine = DemuxEngine(sleep: { _ in }, log: { _ in })
-        try await engine.load(base.appending(path: "dts-and-ac3.mkv"))
+        try await engine.load(base.appending(path: "vorbis-and-ac3.mkv"))
         await engine.play()
         #expect(await eventually { engine.state == .playing })
         let tracks = try #require(await current(engine.tracks()))
@@ -77,6 +77,53 @@ import Testing
         #expect(tracks.selectedAudio == "audio-1")
         let format = try #require(await current(engine.presentation()).flatMap { $0 })
         #expect(format.audio == PresentationInfo.Audio(codec: "ac3", channels: 2, isDecodable: true))
+        await engine.stop()
+        await server.stop()
+    }
+
+    @Test("playback-engine/streams-start-with-sound-the-device-can-play a DTS default plays, decoded on the device")
+    func playsDTSDefault() async throws {
+        let server = try FixtureServer()
+        let base = try await server.start()
+        let engine = DemuxEngine(sleep: { _ in }, log: { _ in })
+        let format = Recorded(await engine.presentation())
+        try await engine.load(base.appending(path: "dts-and-ac3.mkv"))
+        await engine.play()
+        #expect(await eventually { engine.state == .playing })
+        let tracks = try #require(await current(engine.tracks()))
+        #expect(tracks.selectedAudio == "audio-0")
+        #expect(await eventually { format.values.last??.audio == PresentationInfo.Audio(codec: "dts", channels: 2, isDecodable: true) })
+        // The audio renderer takes the decoded sound: a refused format would
+        // turn the sound off after a few ticks and say so.
+        try await Task.sleep(for: .seconds(1.5))
+        #expect(format.values.last??.audio?.isDecodable == true)
+        format.cancel()
+        await engine.stop()
+        await server.stop()
+    }
+
+    @Test(
+        "playback-engine/sound-in-every-common-format-plays the audio renderer plays each format",
+        arguments: [
+            ("dts-5.1.m2ts", "dts", 6), ("truehd-5.1.mkv", "truehd", 6), ("opus-5.1.mkv", "opus", 6), ("opus.ts", "opus", 2),
+            ("flac-5.1.mkv", "flac", 6), ("pcm.mov", "pcm_s16be", 2), ("aac-pce.ts", "aac", 4), ("he-aac-v2.ts", "aac", 2),
+            ("latm.ts", "aac_latm", 2),
+        ])
+    func rendererPlays(file: String, codec: String, channels: Int) async throws {
+        let server = try FixtureServer()
+        let base = try await server.start()
+        let engine = DemuxEngine(sleep: { _ in }, log: { _ in })
+        let format = Recorded(await engine.presentation())
+        try await engine.load(base.appending(path: file))
+        await engine.play()
+        #expect(await eventually { engine.state == .playing })
+        #expect(await eventually { format.values.last??.audio?.codec == codec })
+        #expect(format.values.last??.audio == PresentationInfo.Audio(codec: codec, channels: channels, isDecodable: true))
+        // A format the renderer refuses fails it, and after a few ticks the
+        // engine turns the sound off and says so.
+        try await Task.sleep(for: .seconds(1))
+        #expect(format.values.last??.audio?.isDecodable == true)
+        format.cancel()
         await engine.stop()
         await server.stop()
     }
@@ -106,6 +153,30 @@ import Testing
         bytes.open()
         #expect(await eventually { audio.timesSinceFlush.count > 1 })
         #expect(audio.timesSinceFlush.first == from, "the sound starts again at the flush time, not at \(newest.seconds)")
+        run.cancel()
+    }
+
+    @Test("playback-engine/sound-keeps-playing-when-its-format-changes sound dropped in the last seconds of a film is queued again")
+    func resendsAfterTheEnd() async throws {
+        let data = try Data(contentsOf: try Self.fixture("channel.ts"))
+        let bytes = GatedBytes(data, gate: data.count)
+        var timebase: CMTimebase?
+        CMTimebaseCreateWithSourceClock(allocator: nil, sourceClock: CMClockGetHostTimeClock(), timebaseOut: &timebase)
+        let clock = try #require(timebase)
+        let video = RecordingRenderer(timebase: clock)
+        let audio = RecordingRenderer(timebase: clock)
+        let run = DemuxRun(
+            bytes: bytes, videoFeed: SampleFeed(renderer: video, label: "test.video", limit: 1000),
+            audioFeed: SampleFeed(renderer: audio, label: "test.audio", limit: 1000))
+        let ended = Started()
+        run.start(ready: { _ in }, ended: { failure in ended.set(failure == nil) })
+        #expect(await eventually { ended.value == true })
+        try await Task.sleep(for: .milliseconds(200))
+        let queued = audio.times
+        let from = try #require(queued.dropFirst(queued.count / 2).first)
+        run.resendSound(from: from)
+        #expect(await eventually { audio.timesSinceFlush.count > 1 })
+        #expect(audio.timesSinceFlush.first.map { $0 >= from } == true)
         run.cancel()
     }
 }
