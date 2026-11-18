@@ -43,7 +43,7 @@ import Testing
         let list = episodes
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles.movies : titles.series, categories: ["Drama"]) },
-            hasLogin: { _ in true }, details: { _, _ in ShelfDetails() }, episodes: { _, _ in list },
+            hasLogin: { _ in true }, episodes: { _, _ in list },
             info: { _, title in title.kind == .movie ? .movie(VODInfo()) : .series(SeriesInfo(episodes: list)) })
         let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
         library.sourcesChanged([SourceDescriptor(id: source, name: "Cabin", kind: .xtream, url: URL(fileURLWithPath: "/cabin"))])

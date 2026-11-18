@@ -45,7 +45,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { [series] _, kind in ShelfCatalogue(titles: kind == .series ? [series] : [], categories: ["Drama"]) },
             hasLogin: { _ in true },
-            details: { _, _ in ShelfDetails() },
             episodes: { _, _ in
                 loads.value += 1
                 return list

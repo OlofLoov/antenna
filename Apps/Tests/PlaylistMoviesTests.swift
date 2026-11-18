@@ -70,7 +70,7 @@ import Testing
             return
         }
         #expect(info.episodes.map(\.title) == ["Episode 1", "The Visit"])
-        #expect(try await shelf.details(source, title: show).seasons == 1)
+        #expect(ShelfDetails(.series(info)).seasons == 1)
         let visit = try #require(try await shelf.episodes(source, series: show).last)
         #expect(try shelf.episodeURL(source, episode: visit).absoluteString == "http://movies-playlist.test/series/u/p/8.mkv")
         #expect(StubURLProtocol.requestCount(tag: "series-shelf") == 1)

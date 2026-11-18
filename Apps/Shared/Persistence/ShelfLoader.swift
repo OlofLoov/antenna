@@ -45,24 +45,9 @@ struct ShelfLoader: Sendable {
         }
     }
 
-    /// The year, length or seasons, description and rating the banner shows.
-    func details(_ source: SourceDescriptor, title: ShelfTitle) async throws -> ShelfDetails {
-        if source.isPlaylist {
-            switch title.kind {
-            case .movie: return ShelfDetails(movie: VODInfo(containerExtension: title.containerExtension))
-            case .series: return ShelfDetails(series: try await playlistSeriesInfo(source, series: title))
-            }
-        }
-        let client = try client(for: source)
-        let rawID = try rawID(title.id)
-        switch title.kind {
-        case .movie: return ShelfDetails(movie: try await client.vodInfo(streamID: rawID))
-        case .series: return ShelfDetails(series: try await client.seriesInfo(seriesID: rawID))
-        }
-    }
-
-    /// Everything the title page shows: the movie's or series' info call,
-    /// asked once per call (title-detail-and-episode-picker/open-a-movie-s-page).
+    /// Everything the banner, the Apple TV preview and the title page show:
+    /// the movie's or series' info call, asked once per call
+    /// (title-detail-and-episode-picker/open-a-movie-s-page).
     func info(_ source: SourceDescriptor, title: ShelfTitle) async throws -> TitleInfo {
         if source.isPlaylist {
             switch title.kind {
@@ -143,4 +128,14 @@ struct ShelfLoader: Sendable {
 enum TitleInfo: Sendable, Equatable {
     case movie(VODInfo)
     case series(SeriesInfo)
+}
+
+extension ShelfDetails {
+    /// The banner's and the preview's part of an info answer.
+    init(_ info: TitleInfo) {
+        switch info {
+        case .movie(let movie): self.init(movie: movie)
+        case .series(let series): self.init(series: series)
+        }
+    }
 }

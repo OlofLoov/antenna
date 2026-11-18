@@ -7,20 +7,20 @@
 
 ## 2. Asking once
 
-- [ ] 2.1 AntennaCore: `PreviewSchedule` with `rest`, focus events and the waiting title, tests citing `movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv`
-- [ ] 2.2 `ShelfModel.infos` (capped at 100), `loadDetails` filling it, `info(_:)` reading it, `refreshInfo(_:)` for Retry, and `preview(_:)` with one request in flight; app tests citing `movies-and-series-browsing/title-details-are-asked-once-per-title`
-- [ ] 2.3 `shelf.debug.infoLoads` in the UI-testing shelf
+- [x] 2.1 AntennaCore: `PreviewSchedule` with `rest`, focus events and the waiting title, tests citing `movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv`
+- [x] 2.2 `ShelfModel.infos` (capped at 100), `loadDetails` filling it, `info(_:)` reading it, `refreshInfo(_:)` for Retry, and `preview(_:)` with one request in flight; app tests citing `movies-and-series-browsing/title-details-are-asked-once-per-title`
+- [x] 2.3 `shelf.debug.infoLoads` in the UI-testing shelf
 
 ## 3. The preview on Apple TV
 
-- [ ] 3.1 `ShelfPreview.Television` and `PreviewContext`, with previews for a backdrop, loading and a poster only
-- [ ] 3.2 `ShelfTVScreen`: the preview layer, the row anchor at y 616, the mask above it, no ground band while the preview shows
-- [ ] 3.3 The rest task keyed on the focused title, the crossfade, and the banner's `paused`
-- [ ] 3.4 Back from a page and the plot as the focused poster's hint; Menu from a row comes from `back-to-the-tab-bar`, so check the preview fades when it scrolls to the top
-- [ ] 3.5 `ShelfTVUITests`: rest shows the preview, a fast swipe asks nothing, up returns to the banner, Back restores the preview
+- [x] 3.1 `ShelfPreview.Television` and `PreviewContext`, with previews for a backdrop, loading and a poster only
+- [x] 3.2 `ShelfTVScreen`: the preview layer, the row anchor at y 616, the mask above it, no ground band while the preview shows
+- [x] 3.3 The rest task keyed on the focused title, the crossfade, and the banner's `paused`
+- [x] 3.4 Back from a page and the plot as the focused poster's hint; Menu from a row comes from `back-to-the-tab-bar`, so check the preview fades when it scrolls to the top
+- [x] 3.5 `ShelfTVUITests`: rest shows the preview, a fast swipe asks nothing, up returns to the banner, Back restores the preview
 
 ## 4. Verify
 
-- [ ] 4.1 Each requirement has a test citing `movies-and-series-browsing/<requirement-slug>`
-- [ ] 4.2 The touched tvOS UI test classes pass on a local simulator
-- [ ] 4.3 `/opsx:verify` passes
+- [x] 4.1 Each requirement has a test citing `movies-and-series-browsing/<requirement-slug>`
+- [x] 4.2 The touched tvOS UI test classes pass on a local simulator
+- [x] 4.3 `/opsx:verify` passes

@@ -139,7 +139,6 @@
             let dependencies = ShelfModel.Dependencies(
                 load: { try await script.load($0, kind: $1) },
                 hasLogin: { script.hasLogin($0) },
-                details: { _, title in script.details(title) },
                 episodes: { _, series in try await script.episodes(series) },
                 info: { _, title in try await script.info(title) })
             return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
@@ -212,15 +211,16 @@
             /// Northern Lights: two episodes of season 1, three of season 2
             /// (ids 11 to 13), one of season 3, a special and one with no
             /// season or number. Harbor Watch: two of season 1. Small Rooms:
-            /// none. Long Winter (Office): the first load fails, then two
-            /// episodes.
+            /// none. Long Winter (Office): the first two loads fail, then two
+            /// episodes. The banner asks first, as the title after Harbor
+            /// Watch, so its page still opens on the failure and Retry works.
             func episodes(_ series: ShelfTitle) async throws -> [Episode] {
                 let parts = series.id.split(separator: "#")
                 let host = parts.count > 1 ? String(parts[1]) : ""
                 let number = Int(parts.last ?? "") ?? 0
                 if host == "office" {
                     officeEpisodeLoads += 1
-                    if officeEpisodeLoads == 1 { throw URLError(.badServerResponse) }
+                    if officeEpisodeLoads <= 2 { throw URLError(.badServerResponse) }
                 }
                 if host == "cabin", number == 3 { return [] }
                 if host == "cabin", number == 1 { return northernLights }
@@ -257,6 +257,7 @@
             /// after half a second.
             func info(_ title: ShelfTitle) async throws -> TitleInfo {
                 infoLoads[title.id, default: 0] += 1
+                InfoLoads.shared.add()
                 switch title.kind {
                 case .movie:
                     switch title.id {

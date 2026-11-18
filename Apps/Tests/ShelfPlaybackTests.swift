@@ -55,7 +55,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles.movies : titles.series, categories: ["Drama"]) },
             hasLogin: { _ in true },
-            details: { _, _ in ShelfDetails() },
             episodes: { _, series in try episodes(XtreamTitleID(parsing: series.id)?.rawID ?? 0) },
             info: { _, title in title.kind == .movie ? .movie(VODInfo()) : .series(SeriesInfo()) })
         let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))

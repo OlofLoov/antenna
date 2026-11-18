@@ -23,7 +23,7 @@ struct TitleScreen<Page: View>: View {
         page
             .environment(\.titlePage, context)
             .environment(\.episodes, route.title.kind == .series ? episodes : nil)
-            .task(id: attempt) { await model.load() }
+            .task(id: attempt) { await model.load(refresh: attempt > 0) }
             .onChange(of: PreferencesStore.current(preferences).lookupsEnabled) { _, on in
                 Task { await model.lookupsChanged(on) }
             }
