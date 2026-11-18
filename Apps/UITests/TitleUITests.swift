@@ -9,10 +9,12 @@ final class TitleUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch(_ scenario: String = "titles") throws -> XCUIApplication {
+    func launch(_ scenario: String = "titles", sampleScores: Bool = false) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"]
+        app.launchArguments = [
+            "-ui-testing-shelf", scenario, "-ui-testing-reduce-motion", "-mock-title-scores", sampleScores ? "YES" : "NO",
+        ]
         app.launch()
         return app
     }
@@ -53,6 +55,7 @@ final class TitleUITests: XCTestCase {
         XCTAssertTrue(app.element("title.more").exists, "a long description is cut with More")
         XCTAssertTrue(app.element("title.cast").label.contains("Mira Holt"))
         XCTAssertTrue(app.element("title.director").label.contains("Sanna Weiss"))
+        XCTAssertFalse(app.element("title.scores").exists, "no score row without a lookup")
         XCTAssertFalse(app.element("movies.hero").isHittable, "the page covers the section")
         XCTAssertTrue(app.tabBars.buttons["Movies"].exists, "the tab bar stays on iPhone")
 
@@ -85,6 +88,47 @@ final class TitleUITests: XCTestCase {
         XCTAssertFalse(app.element("title.director").exists)
         XCTAssertFalse(app.element("title.trailer").exists)
         XCTAssertFalse(app.staticTexts["Unknown"].exists)
+    }
+
+    // title-detail-and-episode-picker/scores-from-other-sites, with the Debug sample lookup
+    // title-detail-and-episode-picker/what-the-title-is-about, scores replace the provider's rating
+    // title-metadata/lookups-can-be-turned-off
+    // sources-and-settings/a-switch-for-movie-database-lookups
+    func testSampleScoresShowBelowTheButtonsAndGoWhenLookupsAreOff() throws {
+        let app = try launch(sampleScores: true)
+        openSection(app, "movies")
+        expect(app.element("movies.hero.title"), "label == 'The Long Harbor'")
+        app.element("movies.hero.info").tap()
+
+        let score = app.element("title.score.tmdb")
+        XCTAssertTrue(score.waitForExistence(timeout: 5))
+        XCTAssertTrue(score.label.hasPrefix("TMDB user score "), score.label)
+        XCTAssertTrue(score.label.hasSuffix(" percent"), score.label)
+        XCTAssertTrue(app.element("title.scores.sample").exists, "made-up scores carry the Sample label")
+        XCTAssertGreaterThan(score.frame.minY, app.element("title.play").frame.maxY, "the row sits below the buttons")
+        expect(app.element("title.meta"), "label CONTAINS '2024, 2 h 08 min, Thriller, 15'")
+        XCTAssertFalse(app.element("title.meta").label.contains("rating"), "the provider's rating leaves the details line")
+        let shown = score.label
+
+        app.element("title.back").tap()
+        app.element("movies.hero.info").tap()
+        XCTAssertTrue(score.waitForExistence(timeout: 5))
+        XCTAssertEqual(score.label, shown, "the same title gets the same sample score")
+
+        app.tabBars.buttons["Settings"].tap()
+        let lookups = app.switches["settings.lookups"]
+        for _ in 0..<6 where !lookups.exists { app.swipeUp() }
+        XCTAssertTrue(lookups.waitForExistence(timeout: 5))
+        XCTAssertEqual(lookups.value as? String, "1", "on by default")
+        XCTAssertTrue(app.element("settings.lookups.footer").exists)
+        // The row's label does not flip it; the switch at its trailing edge does.
+        lookups.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        expect(lookups, "value == '0'")
+
+        app.tabBars.buttons["Movies"].tap()
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+        expect(app.element("title.scores"), "exists == false")
+        expect(app.element("title.meta"), "label CONTAINS 'rating 7.4'")
     }
 
     // title-detail-and-episode-picker/trailer

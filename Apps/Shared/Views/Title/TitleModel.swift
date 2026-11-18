@@ -17,7 +17,13 @@ final class TitleModel {
     }
 
     let title: ShelfTitle
-    private(set) var metadata: TitleMetadata
+    /// The provider's details with what a database match adds
+    /// (title-metadata/details-the-provider-left-out-come-from-the-database).
+    var metadata: TitleMetadata { provided.merging(match) }
+    /// What the provider gave.
+    private var provided: TitleMetadata
+    /// The movie database match, nil without one or with lookups off.
+    private(set) var match: TitleMatch?
     private(set) var phase: Phase = .loading
     /// A series' episodes in season groups, empty until they load.
     private(set) var groups: [SeasonGroup] = []
@@ -31,11 +37,15 @@ final class TitleModel {
     private(set) var lastPlayed: String?
 
     @ObservationIgnored private let shelf: ShelfModel
+    @ObservationIgnored private let lookup: KeptTitleLookup?
+    /// The provider's year, sent with the name.
+    @ObservationIgnored private var year: Int?
 
-    init(title: ShelfTitle, shelf: ShelfModel) {
+    init(title: ShelfTitle, shelf: ShelfModel, lookup: KeptTitleLookup? = nil) {
         self.title = title
         self.shelf = shelf
-        metadata = TitleMetadata(title: title)
+        self.lookup = lookup
+        provided = TitleMetadata(title: title)
         playable = title
     }
 
@@ -46,8 +56,13 @@ final class TitleModel {
 
     /// Asks the provider for the details, and a series' episodes. Call from
     /// a task tied to the page, so leaving cancels it.
+    ///
+    /// A kept database match shows at once; the lookup itself waits for the
+    /// provider's year and never holds up Play or the provider's details
+    /// (title-metadata/a-slow-or-failing-lookup-never-holds-up-the-page).
     func load() async {
         phase = .loading
+        if match == nil, let lookup { match = await lookup.kept(KeptTitleLookup.Key(title)) }
         do {
             let info = try await shelf.info(title)
             guard !Task.isCancelled else { return }
@@ -59,6 +74,22 @@ final class TitleModel {
             Self.logger.error("\(kind, privacy: .public) info failed: \(Self.reason(error), privacy: .public)")
             phase = .failed(problem(for: error))
         }
+        await lookUp()
+    }
+
+    /// The Movie info and scores switch changed: off drops the match at
+    /// once, on looks the title up again (title-metadata/lookups-can-be-turned-off).
+    func lookupsChanged(_ on: Bool) async {
+        guard let lookup else { return }
+        await lookup.setEnabled(on)
+        if on { await lookUp() } else { match = nil }
+    }
+
+    private func lookUp() async {
+        guard let lookup else { return }
+        let found = await lookup.match(TitleLookupQuery(title, year: year), key: KeptTitleLookup.Key(title))
+        guard !Task.isCancelled else { return }
+        match = found
     }
 
     static let logger = Logger(subsystem: "se.codecrave.antenna", category: "titles")
@@ -109,12 +140,14 @@ final class TitleModel {
     private func apply(_ info: TitleInfo) {
         switch info {
         case .movie(let movie):
-            metadata = TitleMetadata(movie: title, info: movie)
+            provided = TitleMetadata(movie: title, info: movie)
+            year = movie.year
             if let ext = movie.containerExtension { playable.containerExtension = ext }
         case .series(let series):
             groups = SeasonGroup.group(series.episodes)
             skipped = series.skippedEpisodes
-            metadata = TitleMetadata(series: title, info: series, groups: groups)
+            provided = TitleMetadata(series: title, info: series, groups: groups)
+            year = series.year
         }
     }
 

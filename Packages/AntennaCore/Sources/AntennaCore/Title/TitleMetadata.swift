@@ -8,8 +8,26 @@ public struct TitleMetadata: Sendable, Hashable {
     /// "Movie · Thriller", or "Movie" without a category.
     public var eyebrow: String
     public var name: String
-    /// Year, length or seasons, genre and "★ 7.4", in that order.
-    public var facts: [String]
+    public var kind: ShelfTitle.Kind
+    /// "2024".
+    public var year: String?
+    /// "2 h 08 min" for a movie, "3 seasons" for a series.
+    public var length: String?
+    public var genre: String?
+    /// The provider's "★ 7.4".
+    public var rating: String?
+    /// Scores from other sites in the page's order; empty when there is no
+    /// match or lookups are off (title-detail-and-episode-picker/scores-from-other-sites).
+    public var scores: [Score] = []
+    /// True when the scores came from `MockTitleLookup`.
+    public var scoresAreSample = false
+
+    /// Year, length or seasons, genre and "★ 7.4", in that order. The
+    /// provider's rating leaves when scores from other sites show
+    /// (title-detail-and-episode-picker/what-the-title-is-about).
+    public var facts: [String] {
+        [year, length, genre, scores.isEmpty ? rating : nil].compactMap(\.self)
+    }
     /// "4K" and the age badge for a movie, the age badge for a series.
     public var badges: [String]
     public var description: String?
@@ -28,7 +46,7 @@ public struct TitleMetadata: Sendable, Hashable {
     public init(title: ShelfTitle) {
         eyebrow = Self.eyebrow(title)
         name = title.name
-        facts = []
+        kind = title.kind
         badges = []
     }
 
@@ -37,8 +55,10 @@ public struct TitleMetadata: Sendable, Hashable {
     public init(movie title: ShelfTitle, info: VODInfo) {
         self.init(title: title)
         let rating = info.rating ?? title.rating
-        facts = [info.year.map(String.init), ShelfText.length(info.duration), Self.present(info.genre), rating.flatMap(Self.rating)]
-            .compactMap(\.self)
+        year = info.year.map(String.init)
+        length = ShelfText.length(info.duration)
+        genre = Self.present(info.genre)
+        self.rating = rating.flatMap(Self.rating)
         badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
         description = Self.present(info.plot)
         cast = Self.present(info.cast)
@@ -52,17 +72,36 @@ public struct TitleMetadata: Sendable, Hashable {
     public init(series title: ShelfTitle, info: SeriesInfo, groups: [SeasonGroup]) {
         self.init(title: title)
         let rating = info.rating ?? title.rating
-        facts = [
-            info.year.map(String.init), ShelfText.seasons(SeasonGroup.seasonCount(groups)), Self.present(info.genre),
-            rating.flatMap(Self.rating),
-        ]
-        .compactMap(\.self)
+        year = info.year.map(String.init)
+        length = ShelfText.seasons(SeasonGroup.seasonCount(groups))
+        genre = Self.present(info.genre)
+        self.rating = rating.flatMap(Self.rating)
         badges = [ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
         description = Self.present(info.plot)
         cast = Self.present(info.cast)
         director = Self.present(info.director)
         backdropURL = info.backdropURLs.first
         trailerURL = info.trailerURL
+    }
+
+    /// The page with what a database match adds: every field the provider
+    /// left out filled from `match`, and its scores. Provider fields win
+    /// (title-metadata/details-the-provider-left-out-come-from-the-database).
+    /// A series keeps its own seasons count. Nil leaves the page as it is.
+    public func merging(_ match: TitleMatch?) -> TitleMetadata {
+        guard let match else { return self }
+        var merged = self
+        let details = match.details
+        merged.year = year ?? details.year.map(String.init)
+        if kind == .movie { merged.length = length ?? ShelfText.length(details.duration) }
+        merged.genre = genre ?? Self.present(details.genre)
+        merged.description = description ?? Self.present(details.plot)
+        merged.cast = cast ?? Self.present(details.cast)
+        merged.director = director ?? Self.present(details.director)
+        merged.backdropURL = backdropURL ?? details.backdropURL
+        merged.scores = Score.ordered(match.scores)
+        merged.scoresAreSample = match.isSample && !merged.scores.isEmpty
+        return merged
     }
 
     /// "★ 7.4", one decimal; nil for 0 or less or not finite.

@@ -33,9 +33,9 @@ final class TitleTVUITests: XCTestCase {
     }
 
     /// Movies open from the bar, then More info on the banner.
-    func openMoviePage() {
+    func openMoviePage(sampleScores: Bool = false) {
         app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launchArguments = ["-ui-testing-shell", "channels", "-mock-title-scores", sampleScores ? "YES" : "NO"]
         app.launch()
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")
@@ -65,6 +65,26 @@ final class TitleTVUITests: XCTestCase {
         press(.menu)
         expect(element("title.name"), "exists == false")
         XCTAssertTrue(element("shell.tab.movies").waitForExistence(timeout: 5), "the bar comes back with the section")
+    }
+
+    // title-detail-and-episode-picker/scores-from-other-sites, Apple TV focus
+    func testSampleScoresTakeNoFocus() {
+        openMoviePage(sampleScores: true)
+        let score = element("title.score.tmdb")
+        XCTAssertTrue(score.waitForExistence(timeout: 10))
+        XCTAssertTrue(score.label.hasPrefix("TMDB user score "), score.label)
+        XCTAssertTrue(element("title.scores.sample").exists)
+        XCTAssertGreaterThan(score.frame.minY, element("title.play").frame.maxY, "the row sits below the buttons")
+
+        press(.right)
+        expectFocus("title.myList")
+        press(.right)
+        expectFocus("title.trailer")
+        press(.down)
+        expectFocus("title.trailer")
+        press(.left, times: 2)
+        expectFocus("title.play")
+        XCTAssertFalse(score.hasFocus)
     }
 
     // title-detail-and-episode-picker/trailer, a stream plays in the app on Apple TV

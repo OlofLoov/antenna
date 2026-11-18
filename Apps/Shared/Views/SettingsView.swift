@@ -34,7 +34,13 @@ struct SettingsView: View {
                 PreferencesSection(preferences: PreferencesStore.current(preferenceRecords), offersMovies: offersMovies) { changed in
                     PreferencesStore.save(changed, in: context)
                 }
+                LookupsSection(preferences: PreferencesStore.current(preferenceRecords)) { changed in
+                    PreferencesStore.save(changed, in: context)
+                }
                 AutoplayRow()
+                #if DEBUG
+                    SampleScoresSection()
+                #endif
                 #if os(tvOS)
                     Section { RemoteHintsRow() }
                 #endif
@@ -199,6 +205,60 @@ enum SourceOrder {
         apply(ordered, in: context)
     }
 }
+
+/// Movie info and scores, synced like the other preferences
+/// (sources-and-settings/a-switch-for-movie-database-lookups). Shown only
+/// while the app has a lookup to switch.
+private struct LookupsSection: View {
+    let preferences: AppPreferences
+    let change: (AppPreferences) -> Void
+    #if DEBUG
+        /// Redraws when the Sample scores switch changes.
+        @AppStorage(DebugTitleScores.key) private var sampleScores = false
+    #endif
+
+    var body: some View {
+        if TitleLookups.app != nil { section }
+    }
+
+    private var section: some View {
+        Section {
+            Toggle(
+                "Movie info and scores",
+                isOn: Binding(
+                    get: { preferences.lookupsEnabled },
+                    set: { on in
+                        var changed = preferences
+                        changed.lookupsEnabled = on
+                        change(changed)
+                    })
+            )
+            .accessibilityIdentifier("settings.lookups")
+        } footer: {
+            Text("Titles and people you open, and names you search for, are looked up in TMDB. Nothing about you or your sources is sent.")
+                .accessibilityIdentifier("settings.lookups.footer")
+        }
+    }
+}
+
+#if DEBUG
+    /// Debug builds only: made-up scores on title pages, labelled Sample,
+    /// until the lookup service exists. Kept on this device.
+    private struct SampleScoresSection: View {
+        @AppStorage(DebugTitleScores.key) private var on = false
+
+        var body: some View {
+            Section {
+                Toggle("Sample scores", isOn: $on)
+                    .accessibilityIdentifier("settings.debug.sampleScores")
+            } header: {
+                Text("Debug")
+            } footer: {
+                Text("Title pages show made-up scores and fill missing details, labelled Sample. Debug builds only.")
+            }
+        }
+    }
+#endif
 
 /// Open on launch, Guide window, Refresh sources, on Apple TV the swipe, and Subtitles.
 private struct PreferencesSection: View {

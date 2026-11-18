@@ -35,6 +35,7 @@
                                 }
                                 .padding(.top, 4)
                                 Progress(type: type)
+                                Scores(type: type)
                                 Problem(type: type)
                                 Credits(type: type)
                             }
@@ -93,6 +94,7 @@
                                     }
                                     .padding(.top, 4)
                                     Progress(type: type)
+                                    Scores(type: type)
                                 }
                                 .frame(maxWidth: 520, alignment: .leading)
                                 .padding(28)
@@ -192,6 +194,22 @@
             .environment(
                 \.titlePage,
                 .preview(TitleMetadata(title: TitlePreviewFixtures.movie), problem: "Could not load details", trailer: false))
+    }
+
+    #Preview("Scores, iPhone", traits: .fixedLayout(width: 390, height: 844)) {
+        TitlePage.Phone(plotLines: 4) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.scored, trailer: false))
+    }
+
+    #Preview("Sample scores, iPhone", traits: .fixedLayout(width: 390, height: 844)) {
+        TitlePage.Phone(plotLines: 4) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.sample, trailer: false))
+    }
+
+    #Preview("Scores, iPad", traits: .fixedLayout(width: 914, height: 1000)) {
+        TitlePage.Pad(plotLines: 5) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.scored, play: TitlePreviewFixtures.resume))
+            .environment(\.shelfMetrics, .pad)
     }
 
     #Preview("Movie, iPad", traits: .fixedLayout(width: 914, height: 1000)) {
