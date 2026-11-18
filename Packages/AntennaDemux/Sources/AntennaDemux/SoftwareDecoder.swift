@@ -3,10 +3,12 @@ import CoreVideo
 import FFmpeg
 import Foundation
 
-/// FFmpeg's decoder for the two codecs no Apple device decodes in
-/// hardware: MPEG-2 video and MP2 sound, from old SD broadcast channels.
+/// FFmpeg's decoder for the codecs no Apple device decodes: MPEG-2 video
+/// and MP2 sound from old SD broadcast channels, DTS, Dolby TrueHD and MLP
+/// from films, AAC in LATM framing, multichannel Opus and SMPTE 302M PCM.
 /// Pictures come out as NV12 pixel buffers and sound as interleaved 32-bit
-/// float PCM, both as `CMSampleBuffer`s the sample-buffer renderers take.
+/// float PCM on the speakers the decoder names, both as `CMSampleBuffer`s
+/// the sample-buffer renderers take.
 ///
 /// One thread at a time, like `Demuxer`.
 final class SoftwareDecoder: @unchecked Sendable {
@@ -25,14 +27,26 @@ final class SoftwareDecoder: @unchecked Sendable {
     private let isVideo: Bool
     private var pixelFormat: CMVideoFormatDescription?
     private var soundFormat: CMAudioFormatDescription?
+    private var soundShape: SoundShape?
+    /// Where the next sound frame starts, for frames that arrive untimed.
+    private var nextSoundTime: CMTime = .invalid
+    private var heldSound: HeldSound?
 
-    /// A decoder for FFmpeg's codec `name`, "mpeg2video" or "mp2".
-    init(codec name: String) throws {
-        guard let codec = avcodec_find_decoder_by_name(name), let context = avcodec_alloc_context3(codec) else {
-            throw DecodeError.unavailable(name)
-        }
+    /// A decoder for the stream FFmpeg names `name`, such as "mpeg2video",
+    /// "mp2" or "dts", set up with the container's `extradata`.
+    init(codec name: String, extradata: Data = Data()) throws {
+        guard let descriptor = avcodec_descriptor_get_by_name(name), let codec = avcodec_find_decoder(descriptor.pointee.id),
+            let context = avcodec_alloc_context3(codec)
+        else { throw DecodeError.unavailable(name) }
         context.pointee.pkt_timebase = AVRational(num: 1, den: Self.timescale)
         context.pointee.thread_count = 2
+        if !extradata.isEmpty, let copy = av_mallocz(extradata.count + Int(AV_INPUT_BUFFER_PADDING_SIZE)) {
+            extradata.withUnsafeBytes { raw in
+                if let base = raw.baseAddress { copy.copyMemory(from: base, byteCount: extradata.count) }
+            }
+            context.pointee.extradata = copy.assumingMemoryBound(to: UInt8.self)
+            context.pointee.extradata_size = Int32(extradata.count)
+        }
         guard avcodec_open2(context, codec, nil) == 0 else {
             var context: UnsafeMutablePointer<AVCodecContext>? = context
             avcodec_free_context(&context)
@@ -70,8 +84,10 @@ final class SoftwareDecoder: @unchecked Sendable {
         while avcodec_receive_frame(context, frame) == 0 {
             defer { av_frame_unref(frame) }
             let time = CMTime(value: frame.pointee.best_effort_timestamp, timescale: Self.timescale)
-            if let buffer = try isVideo ? picture(frame, at: time) : sound(frame, at: time) {
-                buffers.append(buffer)
+            if isVideo {
+                if let buffer = try picture(frame, at: time) { buffers.append(buffer) }
+            } else {
+                buffers += try sound(frame, at: time)
             }
         }
         return buffers
@@ -152,65 +168,154 @@ final class SoftwareDecoder: @unchecked Sendable {
 
     // MARK: Sound
 
-    /// Interleaves a decoded sound frame into 32-bit float PCM.
-    private func sound(_ frame: UnsafeMutablePointer<AVFrame>, at time: CMTime) throws -> CMSampleBuffer? {
+    /// The fewest samples a sound buffer holds, about 21 ms at 48 kHz.
+    /// TrueHD frames hold 40 samples and DTS frames 512; one buffer each
+    /// would fill the audio feed's limit with a fraction of a second.
+    static let soundSamples = 1024
+
+    /// Interleaves a decoded sound frame into 32-bit float PCM, on the
+    /// speakers the decoder names, and joins short frames into buffers of at
+    /// least `soundSamples`. Returns the buffers that are complete.
+    private func sound(_ frame: UnsafeMutablePointer<AVFrame>, at time: CMTime) throws -> [CMSampleBuffer] {
         let samples = Int(frame.pointee.nb_samples)
         let channels = Int(frame.pointee.ch_layout.nb_channels)
         let rate = Int(frame.pointee.sample_rate)
-        guard samples > 0, channels > 0, rate > 0, let planes = frame.pointee.extended_data else { return nil }
-        var pcm = [Float](repeating: 0, count: samples * channels)
-        switch AVSampleFormat(rawValue: frame.pointee.format) {
-        case AV_SAMPLE_FMT_FLTP:
-            for channel in 0..<channels {
-                guard let plane = planes[channel] else { continue }
-                plane.withMemoryRebound(to: Float.self, capacity: samples) { source in
-                    for index in 0..<samples { pcm[index * channels + channel] = source[index] }
-                }
+        guard samples > 0, channels > 0, rate > 0, let planes = frame.pointee.extended_data,
+            let pcm = Self.interleaved(planes, format: AVSampleFormat(rawValue: frame.pointee.format), samples: samples, channels: channels)
+        else { return [] }
+        let layout = frame.pointee.ch_layout
+        let shape = SoundShape(rate: rate, channels: channels, mask: layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0)
+        // Sound frames the container gave no time follow the previous one,
+        // as the frames FFmpeg's parser cuts from one packet do.
+        let start = time.value == Int64.min ? nextSoundTime : time
+        guard start.isValid else { return [] }
+        nextSoundTime = CMTimeAdd(start, CMTime(value: CMTimeValue(samples), timescale: CMTimeScale(rate)))
+        var buffers: [CMSampleBuffer] = []
+        // A frame from before the end of the held sound, as when the run
+        // queues sound again from its ring, replaces it: the ring brings
+        // that sound again. A frame that changes format or comes after a gap
+        // starts a new buffer, as when a broadcast goes from stereo to mono
+        // between programmes.
+        if let held = heldSound {
+            let gap = CMTimeSubtract(start, held.end).seconds
+            if gap < -0.001 {
+                heldSound = nil
+            } else if held.shape != shape || gap > 0.001 {
+                buffers += try releaseSound()
             }
-        case AV_SAMPLE_FMT_S16P:
-            for channel in 0..<channels {
-                guard let plane = planes[channel] else { continue }
-                plane.withMemoryRebound(to: Int16.self, capacity: samples) { source in
-                    for index in 0..<samples { pcm[index * channels + channel] = Float(source[index]) / 32768 }
-                }
-            }
-        case AV_SAMPLE_FMT_S16:
-            guard let plane = planes[0] else { return nil }
-            plane.withMemoryRebound(to: Int16.self, capacity: samples * channels) { source in
-                for index in 0..<(samples * channels) { pcm[index] = Float(source[index]) / 32768 }
-            }
-        default:
-            return nil
         }
-        // A new format when the rate or the channel count changes, as when a
-        // broadcast goes from stereo to mono between programmes.
-        let current = soundFormat.flatMap { CMAudioFormatDescriptionGetStreamBasicDescription($0)?.pointee }
-        if current?.mSampleRate != Float64(rate) || current?.mChannelsPerFrame != UInt32(channels) {
-            soundFormat = try Self.pcmFormat(rate: rate, channels: channels)
+        if var held = heldSound {
+            held.pcm += pcm
+            held.samples += samples
+            heldSound = held
+        } else {
+            heldSound = HeldSound(pcm: pcm, start: start, samples: samples, shape: shape)
+        }
+        if (heldSound?.samples ?? 0) >= Self.soundSamples { buffers += try releaseSound() }
+        return buffers
+    }
+
+    /// Sound decoded but not yet in a buffer.
+    private struct HeldSound {
+        var pcm: [Float]
+        let start: CMTime
+        var samples: Int
+        let shape: SoundShape
+
+        var end: CMTime {
+            CMTimeAdd(start, CMTime(value: CMTimeValue(samples), timescale: CMTimeScale(shape.rate)))
+        }
+    }
+
+    /// The held sound as one buffer, in a new format when its shape changed.
+    private func releaseSound() throws -> [CMSampleBuffer] {
+        guard let held = heldSound else { return [] }
+        heldSound = nil
+        if soundShape != held.shape {
+            soundFormat = try Self.pcmFormat(rate: held.shape.rate, channels: held.shape.channels, mask: held.shape.mask)
+            soundShape = held.shape
         }
         guard let format = soundFormat else { throw DecodeError.failed }
+        return [try Self.pcmBuffer(held.pcm, format: format, samples: held.samples, time: held.start)]
+    }
+
+    /// The rate, channel count and speakers of the newest PCM format.
+    private struct SoundShape: Equatable {
+        let rate: Int
+        let channels: Int
+        let mask: UInt64
+    }
+
+    /// The samples of a decoded frame as interleaved floats, nil for a
+    /// sample format no decoder in this build gives.
+    private static func interleaved(
+        _ planes: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>, format: AVSampleFormat, samples: Int, channels: Int
+    ) -> [Float]? {
+        var pcm = [Float](repeating: 0, count: samples * channels)
+        func planar<Sample>(_: Sample.Type, _ convert: (Sample) -> Float) {
+            for channel in 0..<channels {
+                guard let plane = planes[channel] else { continue }
+                plane.withMemoryRebound(to: Sample.self, capacity: samples) { source in
+                    for index in 0..<samples { pcm[index * channels + channel] = convert(source[index]) }
+                }
+            }
+        }
+        func packed<Sample>(_: Sample.Type, _ convert: (Sample) -> Float) -> Bool {
+            guard let plane = planes[0] else { return false }
+            plane.withMemoryRebound(to: Sample.self, capacity: samples * channels) { source in
+                for index in 0..<(samples * channels) { pcm[index] = convert(source[index]) }
+            }
+            return true
+        }
+        switch format {
+        case AV_SAMPLE_FMT_FLTP: planar(Float.self) { $0 }
+        case AV_SAMPLE_FMT_S16P: planar(Int16.self) { Float($0) / 32768 }
+        case AV_SAMPLE_FMT_S32P: planar(Int32.self) { Float($0) / 2_147_483_648 }
+        case AV_SAMPLE_FMT_FLT: guard packed(Float.self, { $0 }) else { return nil }
+        case AV_SAMPLE_FMT_S16: guard packed(Int16.self, { Float($0) / 32768 }) else { return nil }
+        case AV_SAMPLE_FMT_S32: guard packed(Int32.self, { Float($0) / 2_147_483_648 }) else { return nil }
+        default: return nil
+        }
+        return pcm
+    }
+
+    /// A buffer of interleaved float PCM.
+    static func pcmBuffer(_ pcm: [Float], format: CMAudioFormatDescription, samples: Int, time: CMTime) throws -> CMSampleBuffer {
         let data = pcm.withUnsafeBytes { Data($0) }
         let block = try SampleBuilder.blockBuffer(data)
         var buffer: CMSampleBuffer?
         guard
             CMAudioSampleBufferCreateReadyWithPacketDescriptions(
                 allocator: nil, dataBuffer: block, formatDescription: format, sampleCount: samples,
-                presentationTimeStamp: time, packetDescriptions: nil, sampleBufferOut: &buffer) == noErr
+                presentationTimeStamp: time, packetDescriptions: nil, sampleBufferOut: &buffer) == noErr, let buffer
         else { throw DecodeError.failed }
         return buffer
     }
 
-    private static func pcmFormat(rate: Int, channels: Int) throws -> CMAudioFormatDescription {
+    /// Interleaved 32-bit float PCM. `mask` names the speakers as FFmpeg
+    /// does, one bit each in WAVE order, which is Core Audio's channel
+    /// bitmap too. With no mask, the channels are taken in WAVE order for
+    /// their count.
+    static func pcmFormat(rate: Int, channels: Int, mask: UInt64 = 0) throws -> CMAudioFormatDescription {
         var description = AudioStreamBasicDescription(
             mSampleRate: Float64(rate), mFormatID: kAudioFormatLinearPCM,
             mFormatFlags: kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked, mBytesPerPacket: UInt32(4 * channels),
             mFramesPerPacket: 1, mBytesPerFrame: UInt32(4 * channels), mChannelsPerFrame: UInt32(channels),
             mBitsPerChannel: 32, mReserved: 0)
+        let bitmap = AudioChannelBitmap(rawValue: UInt32(truncatingIfNeeded: mask & 0x3FFFF))
+        let named = mask != 0 && bitmap.rawValue.nonzeroBitCount == channels
+        let tag =
+            named
+            ? kAudioChannelLayoutTag_UseChannelBitmap
+            : SampleBuilder.waveLayouts[channels] ?? kAudioChannelLayoutTag_DiscreteInOrder | UInt32(channels)
+        var layout = AudioChannelLayout(
+            mChannelLayoutTag: tag, mChannelBitmap: named ? bitmap : [], mNumberChannelDescriptions: 0,
+            mChannelDescriptions: AudioChannelDescription())
         var format: CMAudioFormatDescription?
         guard
             CMAudioFormatDescriptionCreate(
-                allocator: nil, asbd: &description, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil,
-                extensions: nil, formatDescriptionOut: &format) == noErr, let format
+                allocator: nil, asbd: &description, layoutSize: MemoryLayout<AudioChannelLayout>.size, layout: &layout,
+                magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &format) == noErr, let format
         else { throw DecodeError.failed }
         return format
     }

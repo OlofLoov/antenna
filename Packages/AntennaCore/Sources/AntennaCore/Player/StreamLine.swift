@@ -9,11 +9,16 @@ extension CodecName {
         case "h264", "avc1", "avc3": "H.264"
         case "hevc", "hvc1", "hev1", "h265": "HEVC"
         case "mpeg2video", "mp2v": "MPEG-2"
-        case "aac", "mp4a": "AAC"
+        case "aac", "mp4a", "aac_latm": "AAC"
         case "ac3", "ac-3": "AC-3"
         case "eac3", "ec-3": "E-AC-3"
         case "mpeg4", "mp4v": "MPEG-4"
         case "dolby vision", "dvh1", "dvhe": "Dolby Vision"
+        case "truehd": "Dolby TrueHD"
+        case "opus": "Opus"
+        case "vorbis": "Vorbis"
+        case "s302m": "PCM"
+        case let name where name.hasPrefix("pcm_"): "PCM"
         default: codec.uppercased()
         }
     }
@@ -40,7 +45,7 @@ public enum SoundFormat {
     /// (playback-engine/streams-start-with-sound-the-device-can-play).
     public static let notSupported = "not supported"
 
-    /// The format of the sound that plays, "DTS 5.1 (not supported)" when
+    /// The format of the sound that plays, "Vorbis 5.1 (not supported)" when
     /// the stream plays without it.
     public static func display(_ audio: PresentationInfo.Audio) -> String {
         let format = display(codec: audio.codec, channels: audio.channels)

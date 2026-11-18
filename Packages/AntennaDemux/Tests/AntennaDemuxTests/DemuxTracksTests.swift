@@ -95,10 +95,10 @@ import Testing
 
     @Test("playback-engine/the-screen-learns-the-picture-and-sound-format undecodable sound plays without it and says so")
     func undecodableSound() async throws {
-        let (server, engine) = try await playing("undecodable-sound.ts")
+        let (server, engine) = try await playing("undecodable-sound.mkv")
         let format = try #require(await current(engine.presentation()).flatMap { $0 })
         #expect(format.video?.width == 320)
-        #expect(format.audio?.codec == "opus")
+        #expect(format.audio?.codec == "vorbis")
         #expect(format.audio?.isDecodable == false)
         await finish(server, engine)
     }

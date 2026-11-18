@@ -37,7 +37,9 @@ import Testing
         arguments: [
             ("h264", "H.264"), ("avc1", "H.264"), ("hevc", "HEVC"), ("hvc1", "HEVC"), ("hev1", "HEVC"),
             ("mpeg2video", "MPEG-2"), ("aac", "AAC"), ("mp4a", "AAC"), ("ac3", "AC-3"), ("eac3", "E-AC-3"),
-            ("ec-3", "E-AC-3"), ("vp9", "VP9"), ("opus", "OPUS"),
+            ("ec-3", "E-AC-3"), ("vp9", "VP9"), ("opus", "Opus"),
+            ("dts", "DTS"), ("truehd", "Dolby TrueHD"), ("flac", "FLAC"), ("aac_latm", "AAC"), ("pcm_s24le", "PCM"), ("s302m", "PCM"),
+            ("vorbis", "Vorbis"),
         ])
     func codecNames(codec: String, display: String) {
         #expect(CodecName.display(codec) == display)
@@ -52,15 +54,17 @@ import Testing
 
     @Test("playback-engine/streams-start-with-sound-the-device-can-play sound the device cannot decode says so")
     func undecodableSound() {
-        let dts = PresentationInfo.Audio(codec: "dts", channels: 6, isDecodable: false)
-        #expect(SoundFormat.display(dts) == "DTS 5.1 (not supported)")
-        #expect(SoundFormat.display(PresentationInfo.Audio(codec: "ac3", channels: 6, isDecodable: true)) == "AC-3 5.1")
-        let line = StreamLine.text(container: "Matroska", presentation: PresentationInfo(video: nil, audio: dts), route: .demuxer)
-        #expect(line == "Matroska · DTS 5.1 (not supported) · Antenna player")
+        let vorbis = PresentationInfo.Audio(codec: "vorbis", channels: 6, isDecodable: false)
+        #expect(SoundFormat.display(vorbis) == "Vorbis 5.1 (not supported)")
+        #expect(SoundFormat.display(PresentationInfo.Audio(codec: "dts", channels: 6, isDecodable: true)) == "DTS 5.1")
+        let line = StreamLine.text(container: "Matroska", presentation: PresentationInfo(video: nil, audio: vorbis), route: .demuxer)
+        #expect(line == "Matroska · Vorbis 5.1 (not supported) · Antenna player")
         let tracks = TrackList(
             audio: [MediaTrack(id: "audio-0", kind: .audio, languageCode: "eng", name: nil, isDefault: true)], subtitles: [],
             selectedAudio: "audio-0", selectedSubtitle: nil)
-        #expect(TrackMenu.audio(tracks, presentation: PresentationInfo(video: nil, audio: dts)).first?.detail == "DTS 5.1 (not supported)")
+        #expect(
+            TrackMenu.audio(tracks, presentation: PresentationInfo(video: nil, audio: vorbis)).first?.detail == "Vorbis 5.1 (not supported)"
+        )
     }
 }
 

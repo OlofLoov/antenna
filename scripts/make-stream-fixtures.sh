@@ -93,11 +93,6 @@ cat >"$tracks/index.m3u8" <<'M3U8'
 video.m3u8
 M3U8
 
-# Video with Opus sound, which no Apple decoder on the FFmpeg path takes.
-ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
-    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
-    -c:a libopus -b:a 48k -ac 2 -f mpegts "$out/undecodable-sound.ts"
-
 # A channel whose picture grows from 320x180 to 640x360 after 2 seconds.
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
@@ -195,14 +190,57 @@ ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
     -c:a aac -b:a 256k -ac 8 "$out/aac-7.1.mkv"
 
-# A film whose default sound is DTS, which no Apple device decodes, with a
-# second Dolby Digital track in another language.
+# A film whose default sound is DTS, which FFmpeg decodes on the device, with
+# a second Dolby Digital track in another language.
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" -f lavfi -i "$(tone 660 2)" \
     -map 0:v -map 1:a -map 2:a \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
     -c:a:0 dca -strict -2 -ac:a:0 2 -b:a:0 320k -c:a:1 ac3 -b:a:1 128k -ac:a:1 2 \
     -metadata:s:a:0 language=eng -metadata:s:a:1 language=ger \
     -disposition:a:0 default -disposition:a:1 0 "$out/dts-and-ac3.mkv"
+
+# The same choice with a default no device decodes: Vorbis, then Dolby
+# Digital in another language. And a picture with only Vorbis sound.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" -f lavfi -i "$(tone 660 2)" \
+    -map 0:v -map 1:a -map 2:a \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a:0 vorbis -strict -2 -ac:a:0 2 -c:a:1 ac3 -b:a:1 128k -ac:a:1 2 \
+    -metadata:s:a:0 language=eng -metadata:s:a:1 language=ger \
+    -disposition:a:0 default -disposition:a:1 0 "$out/vorbis-and-ac3.mkv"
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a vorbis -strict -2 -ac 2 "$out/undecodable-sound.mkv"
+
+# Sound only, 2 seconds of tone each, in the formats films and channels
+# carry beyond AAC and Dolby: 5.1 DTS in Blu-ray MPEG-TS (m2ts mode writes
+# the HDMV registration FFmpeg needs to read DTS), 5.1 TrueHD in Matroska,
+# 5.1 Opus in Matroska and stereo Opus in MPEG-TS, 24-bit 5.1 FLAC in
+# Matroska and stereo FLAC in MP4, and half a second of SMPTE 302M PCM in
+# MPEG-TS.
+ff -f lavfi -i "$(tone 440 2)" -c:a dca -strict -2 -ac 6 -b:a 768k -mpegts_m2ts_mode 1 -f mpegts "$out/dts-5.1.m2ts"
+ff -f lavfi -i "$(tone 440 2)" -c:a truehd -strict -2 -ac 6 "$out/truehd-5.1.mkv"
+ff -f lavfi -i "$(tone 440 2)" -c:a libopus -b:a 192k -ac 6 "$out/opus-5.1.mkv"
+ff -f lavfi -i "$(tone 440 2)" -c:a libopus -b:a 48k -ac 2 -f mpegts "$out/opus.ts"
+ff -f lavfi -i "$(tone 440 2)" -c:a flac -sample_fmt s32 -bits_per_raw_sample 24 -ac 6 "$out/flac-5.1.mkv"
+ff -f lavfi -i "$(tone 440 2)" -c:a flac -ac 2 -movflags +faststart "$out/flac.mp4"
+ff -f lavfi -i "$(tone 440 0.5)" -c:a s302m -strict -2 -ac 2 -f mpegts "$out/s302m.ts"
+
+# Half a second of uncompressed PCM, one track per sample format:
+# little-endian in Matroska, big-endian and one little-endian in QuickTime.
+ff -f lavfi -i "$(tone 440 0.5)" -ac 2 -map 0:a -map 0:a -map 0:a -map 0:a \
+    -c:a:0 pcm_s16le -c:a:1 pcm_s24le -c:a:2 pcm_s32le -c:a:3 pcm_f32le "$out/pcm.mkv"
+ff -f lavfi -i "$(tone 440 0.5)" -ac 2 -map 0:a -map 0:a -map 0:a -map 0:a -map 0:a \
+    -c:a:0 pcm_s16be -c:a:1 pcm_s24be -c:a:2 pcm_s32be -c:a:3 pcm_f32be -c:a:4 pcm_s16le \
+    -movflags +faststart "$out/pcm.mov"
+
+# AAC whose four speakers are named in a program config element (channel
+# configuration 0), in ADTS and in Matroska; HE-AAC v2 (parametric stereo)
+# in ADTS, which needs ffmpeg's AudioToolbox encoder; and AAC in LATM
+# framing, as some DVB channels send it.
+ff -f lavfi -i "$(tone 440 2)" -af aformat=channel_layouts=quad -c:a aac -b:a 128k -f mpegts "$out/aac-pce.ts"
+ff -f lavfi -i "$(tone 440 2)" -af aformat=channel_layouts=quad -c:a aac -b:a 128k "$out/aac-pce.mkv"
+ff -f lavfi -i "$(tone 440 2)" -c:a aac_at -profile:a 28 -b:a 32k -ac 2 -f mpegts "$out/he-aac-v2.ts"
+ff -f lavfi -i "$(tone 440 2)" -c:a aac -b:a 96k -ac 2 -mpegts_flags latm -f mpegts "$out/latm.ts"
 
 # Interlaced broadcasts, top field first: 1080i H.264 and 576i MPEG-2. The
 # pattern moves at 50 frames a second, so each field shows a different moment.

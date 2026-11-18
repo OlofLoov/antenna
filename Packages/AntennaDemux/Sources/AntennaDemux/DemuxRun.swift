@@ -24,6 +24,8 @@ final class DemuxRun: @unchecked Sendable {
     /// A sound switch `selectAudio` or `resendSound` asked for and the run
     /// has not made yet. A nil stream means the sound that plays.
     private var requestedSound: (stream: Int?, from: CMTime)?
+    /// Wakes a run that read to the end for a sound request or `cancel`.
+    private let soundRequested = DispatchSemaphore(value: 0)
 
     /// Called when a film's saved time or skip target could not be reached
     /// and it starts from the beginning instead.
@@ -69,6 +71,7 @@ final class DemuxRun: @unchecked Sendable {
     /// Stops reading. The connection closes and the thread ends quietly.
     func cancel() {
         lock.withLock { cancelled = true }
+        soundRequested.signal()
         bytes.cancel()
         videoFeed.close()
         audioFeed.close()
@@ -78,12 +81,14 @@ final class DemuxRun: @unchecked Sendable {
     /// stream's clock, the time on screen now.
     func selectAudio(stream: Int, from time: CMTime) {
         lock.withLock { requestedSound = (stream, time) }
+        soundRequested.signal()
     }
 
     /// Queues the sound that plays again from `time`, out of its ring, as
     /// when the audio renderer dropped what it held.
     func resendSound(from time: CMTime) {
         lock.withLock { requestedSound = (nil, time) }
+        soundRequested.signal()
     }
 
     private func takeSoundRequest() -> (stream: Int?, from: CMTime)? {
@@ -164,10 +169,16 @@ final class DemuxRun: @unchecked Sendable {
                 seekFailed?()
             }
         }
-        let announced = pump(prepared, ready: ready)
+        var state = PumpState(rateKnown: prepared.video?.stream.frameRate != nil)
+        let announced = pump(prepared, &state, ready: ready)
         guard !isCancelled else { return }
         if announced {
-            ended(bytes.failureReason)
+            let failure = bytes.failureReason
+            ended(failure)
+            // The last seconds of a film still play from the feeds. A sound
+            // switch or an audio output change in them is served from the
+            // ring until the engine lets the run go.
+            if failure == nil { serveSoundRequests(prepared, &state) }
         } else {
             ready(.failure(bytes.failureReason ?? PlaybackFailure.unreadable))
         }
@@ -243,8 +254,7 @@ final class DemuxRun: @unchecked Sendable {
     /// Reads packets into the feeds until the end or `cancel`, calling
     /// `ready` once the first picture (and, within half a second of stream,
     /// the first sound) is queued. Returns whether it did.
-    private func pump(_ prepared: Prepared, ready: @Sendable (Result<DemuxStart, any Error>) -> Void) -> Bool {
-        var state = PumpState(rateKnown: prepared.video?.stream.frameRate != nil)
+    private func pump(_ prepared: Prepared, _ state: inout PumpState, ready: @Sendable (Result<DemuxStart, any Error>) -> Void) -> Bool {
         state.sound = prepared.audio?.stream.index
         let subtitleCodecs = Dictionary(uniqueKeysWithValues: prepared.subtitleTracks.map { ($0.stream.index, $0.stream.codec) })
         reading: while !isCancelled, let packet = prepared.demuxer.nextPacket() {
@@ -390,6 +400,16 @@ extension DemuxRun {
         let oldest = CMTimeSubtract(packet.presentationTime, Self.soundRing)
         if let drop = ring.firstIndex(where: { $0.presentationTime >= oldest }), drop > 0 { ring.removeFirst(drop) }
         state.rings[packet.streamIndex] = ring
+    }
+
+    /// Waits for sound requests after the last packet and serves them,
+    /// until `cancel`.
+    private func serveSoundRequests(_ prepared: Prepared, _ state: inout PumpState) {
+        while !isCancelled {
+            soundRequested.wait()
+            guard !isCancelled else { return }
+            if let request = takeSoundRequest(), !switchSound(to: request, prepared, &state) { return }
+        }
     }
 
     /// Makes a sound switch: drops what is queued of the old sound and

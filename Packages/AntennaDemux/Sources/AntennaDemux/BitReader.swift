@@ -26,6 +26,11 @@ struct BitReader {
         return true
     }
 
+    /// Moves to the start of the next byte, unless already at one.
+    mutating func align() {
+        position = min((position + 7) / 8 * 8, bytes.count * 8)
+    }
+
     /// An unsigned Exp-Golomb code, ue(v).
     mutating func unsignedGolomb() -> Int? {
         var zeros = 0

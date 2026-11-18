@@ -35,6 +35,9 @@ public struct DemuxedStream: Sendable, Equatable {
     public var title: String?
     /// True for subtitles the container marks as forced.
     public var isForced = false
+    /// The speakers the container names, one bit each in WAVE order, 0
+    /// when it names none.
+    public var channelMask: UInt64 = 0
 }
 
 /// One compressed packet with its timing.
@@ -266,7 +269,8 @@ public final class Demuxer: @unchecked Sendable {
             interlaced: interlaced, language: language,
             frameRate: rate.den > 0 && rate.num > 0 ? Double(rate.num) / Double(rate.den) : nil,
             isDefault: stream.pointee.disposition & AV_DISPOSITION_DEFAULT != 0, title: title,
-            isForced: stream.pointee.disposition & AV_DISPOSITION_FORCED != 0)
+            isForced: stream.pointee.disposition & AV_DISPOSITION_FORCED != 0,
+            channelMask: parameters.ch_layout.order == AV_CHANNEL_ORDER_NATIVE ? parameters.ch_layout.u.mask : 0)
     }
 }
 

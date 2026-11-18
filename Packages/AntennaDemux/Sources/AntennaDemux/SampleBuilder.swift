@@ -7,9 +7,12 @@ import Foundation
 /// Apple's decoders and sample-buffer renderers read: H.264 (Annex B from
 /// MPEG-TS, or avcC from Matroska and MP4), HEVC (Annex B, or hvcC),
 /// MPEG-4 Part 2 video (AVI), AAC
-/// (ADTS from MPEG-TS, or raw with an AudioSpecificConfig), MP3, and Dolby
+/// (ADTS from MPEG-TS, or raw with an AudioSpecificConfig), MP3, Dolby
 /// Digital and Dolby Digital Plus (AC-3, E-AC-3), which Apple TV passes to
-/// a receiver that takes them and every device decodes otherwise.
+/// a receiver that takes them and every device decodes otherwise, mono and
+/// stereo Opus, FLAC, and uncompressed PCM, which comes out as floats.
+/// The rest of what films and channels carry, such as DTS and TrueHD, is
+/// decoded by FFmpeg in `SoftwareDecoder`.
 public final class SampleBuilder {
     public enum BuildError: Error, Equatable {
         case unsupportedCodec(String)
@@ -26,7 +29,10 @@ public final class SampleBuilder {
         case hevcAnnexB
         case hevcHVCC
         case dolby
-        /// MPEG-2 video or MP2 sound, decoded in software.
+        case opus
+        case flac
+        case pcm(PCMSample)
+        /// Decoded in software: MPEG-2 video, MP2, DTS, TrueHD and the rest.
         case software(SoftwareDecoder)
         /// MPEG audio of a layer the first frame header will tell: MPEG-TS
         /// labels MP2 and MP3 alike.
@@ -76,8 +82,23 @@ public final class SampleBuilder {
             codec = .hevcAnnexB
         case "ac3", "eac3":
             codec = .dolby
-        case "mpeg2video":
+        case "mpeg2video", "dts", "truehd", "mlp", "aac_latm", "s302m":
             codec = .software(try SoftwareDecoder(codec: stream.codec))
+        case "opus" where Self.opusMappingFamily(stream.extradata) == 0:
+            codec = .opus
+            formatDescription = try Self.opusFormat(head: stream.extradata)
+        case "opus":
+            // More than two channels: Apple's decoder gives silence.
+            codec = .software(try SoftwareDecoder(codec: stream.codec, extradata: stream.extradata))
+        case "flac":
+            codec = .flac
+            formatDescription = try Self.flacFormat(streamInfo: stream.extradata)
+        case let name where PCMSample(codec: name) != nil:
+            guard let sample = PCMSample(codec: name), stream.sampleRate > 0, stream.channels > 0 else {
+                throw BuildError.unsupportedCodec(name)
+            }
+            codec = .pcm(sample)
+            formatDescription = try SoftwareDecoder.pcmFormat(rate: stream.sampleRate, channels: stream.channels, mask: stream.channelMask)
         case "mp2", "mp3":
             codec = .mpegAudio
         case "mpeg4":
@@ -133,7 +154,15 @@ public final class SampleBuilder {
             let frames = try Self.adtsFrames(packet.data)
             guard let first = frames.first else { return nil }
             if soundHeader != .aac(first.config) {
-                formatDescription = try Self.aacFormat(config: first.config)
+                var config = first.config
+                if Int((config[1] >> 3) & 0x0F) == 0 {
+                    // Channel configuration 0: the speakers are named in a
+                    // program config element at the start of the frame,
+                    // which the decoder reads from the config.
+                    guard let element = Self.programConfig(inFrame: first.payload) else { return nil }
+                    config += element.element
+                }
+                formatDescription = try Self.aacFormat(config: config)
                 soundHeader = .aac(first.config)
             }
             return try formatDescription.flatMap { try soundBuffer(frames.map(\.payload), format: $0, packet: packet) }
@@ -148,6 +177,13 @@ public final class SampleBuilder {
             return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
         case .software, .mpegAudio:
             return try sampleBuffers(for: packet).first
+        case .opus:
+            let samples = Self.opusSamples(packet.data) ?? 960
+            return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet, samples: [samples]) }
+        case .flac:
+            return try formatDescription.flatMap { try soundBuffer([packet.data], format: $0, packet: packet) }
+        case .pcm(let sample):
+            return try pcmBuffer(packet, sample: sample)
         case .dolby:
             if let header = Self.dolbyHeader(packet.data), soundHeader != .dolby(header) {
                 formatDescription = try Self.dolbyFormat(header)
@@ -187,15 +223,32 @@ public final class SampleBuilder {
         return try Self.videoBuffer(Self.lengthPrefixed(payload), format: format, packet: packet)
     }
 
-    /// An AAC or MP3 buffer timed by the packet, or right after the previous
-    /// one when the packet has no time.
-    private func soundBuffer(_ frames: [Data], format: CMFormatDescription, packet: DemuxedPacket) throws -> CMSampleBuffer? {
+    /// A float PCM buffer from uncompressed samples, timed like
+    /// `soundBuffer`.
+    private func pcmBuffer(_ packet: DemuxedPacket, sample: PCMSample) throws -> CMSampleBuffer? {
+        guard let format = formatDescription, let description = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee
+        else { return nil }
+        let channels = Int(description.mChannelsPerFrame)
+        let pcm = sample.floats(packet.data)
+        let samples = pcm.count / channels
+        let time = packet.presentationTime.isValid ? packet.presentationTime : nextSoundTime
+        guard samples > 0, time.isValid else { return nil }
+        nextSoundTime = CMTimeAdd(time, CMTime(value: CMTimeValue(samples), timescale: CMTimeScale(description.mSampleRate)))
+        return try SoftwareDecoder.pcmBuffer(Array(pcm.prefix(samples * channels)), format: format, samples: samples, time: time)
+    }
+
+    /// A compressed sound buffer timed by the packet, or right after the
+    /// previous one when the packet has no time. `samples` gives each
+    /// frame's length for a format whose frames vary, such as Opus.
+    private func soundBuffer(
+        _ frames: [Data], format: CMFormatDescription, packet: DemuxedPacket, samples lengths: [Int]? = nil
+    ) throws -> CMSampleBuffer? {
         let time = packet.presentationTime.isValid ? packet.presentationTime : nextSoundTime
         guard time.isValid, let description = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
             description.mSampleRate > 0
         else { return nil }
-        let buffer = try Self.audioBuffer(frames, format: format, time: time)
-        let samples = frames.count * Int(description.mFramesPerPacket)
+        let buffer = try Self.audioBuffer(frames, format: format, time: time, samples: lengths)
+        let samples = lengths?.reduce(0, +) ?? frames.count * Int(description.mFramesPerPacket)
         nextSoundTime = CMTimeAdd(time, CMTime(value: CMTimeValue(samples), timescale: CMTimeScale(description.mSampleRate)))
         return buffer
     }
