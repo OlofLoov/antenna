@@ -33,6 +33,7 @@ None.
 
 ### Modified Capabilities
 - `movies-and-series-browsing`: a new requirement for the focused title's preview on Apple TV, and one for asking the provider once per title.
+- `title-detail-and-episode-picker`: "Open a movie's page" shows details the section already has, and a reply that arrives after the page closed is kept instead of asked for again.
 
 ## Impact
 
