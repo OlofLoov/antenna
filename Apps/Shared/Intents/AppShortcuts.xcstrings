@@ -30,7 +30,7 @@
         },
         "fr" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Ajouter cette chaîne aux favoris dans ${applicationName}"
             ]
@@ -86,7 +86,7 @@
         },
         "fr" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Lire ${title} dans ${applicationName}",
               "Lire un film dans ${applicationName}"
@@ -142,7 +142,7 @@
         },
         "fr" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Retirer cette chaîne des favoris dans ${applicationName}"
             ]
@@ -198,7 +198,7 @@
         },
         "fr" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Rechercher dans ${applicationName}",
               "Trouver une chaîne dans ${applicationName}"
@@ -263,7 +263,7 @@
         },
         "fr" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Mettre ${channel} dans ${applicationName}",
               "Regarder ${channel} dans ${applicationName}",

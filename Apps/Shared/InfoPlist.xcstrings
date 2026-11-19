@@ -51,7 +51,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna se connecte aux serveurs TV de votre réseau domestique quand l’une de vos sources y renvoie."
           }
         },
