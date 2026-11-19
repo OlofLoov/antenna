@@ -40,10 +40,10 @@
 
 ## 6. Live layer, guide, paywall and profiles (PR 6)
 
-- [ ] 6.1 Move the channel overlay, zap bar, guide grid and multi-view styles onto `FocusCard`, text styles and the overlay material, keeping their layout and identifiers (design-system/focus-is-the-lifted-white-card, design-system/type-uses-text-styles)
-- [ ] 6.2 Move the overlay's group column and every other Apple TV live screen inside the safe area (design-system/apple-tv-content-stays-in-the-safe-area)
-- [ ] 6.3 Put the iPhone, iPad and Mac player controls on glass (design-system/liquid-glass-stays-on-the-navigation-layer)
-- [ ] 6.4 Move the paywall, profile picker, reminder banner and Top Shelf placeholders to system buttons and text styles, and raise every Apple TV caption to 23 pt (design-system/text-stays-above-the-platform-caption-floor)
+- [x] 6.1 Move the channel overlay, zap bar, guide grid and multi-view styles onto `FocusCard`, text styles and the overlay material, keeping their layout and identifiers (design-system/focus-is-the-lifted-white-card, design-system/type-uses-text-styles)
+- [x] 6.2 Move the overlay's group column and every other Apple TV live screen inside the safe area (design-system/apple-tv-content-stays-in-the-safe-area)
+- [x] 6.3 Put the iPhone, iPad and Mac player controls on glass (design-system/liquid-glass-stays-on-the-navigation-layer)
+- [x] 6.4 Move the paywall, profile picker, reminder banner and Top Shelf placeholders to system buttons and text styles, and raise every Apple TV caption to 23 pt (design-system/text-stays-above-the-platform-caption-floor)
 - [ ] 6.5 Run `ChannelOverlayUITests`, `ZapBarUITests`, `GuideUITests`, `MultiViewTVUITests`, `PaywallTVUITests`, `ProfileUITests`, `PlayerPanelTVUITests` and their iPhone counterparts
 
 ## 7. Apple TV tab bar (PR 7, after the owner answers open question 1)
