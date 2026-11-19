@@ -70,7 +70,8 @@ enum GuideBoard {
 
     /// What a block holds.
     enum BlockContent: Equatable {
-        /// A programme's title. `startedEarlier` puts a ◂ before it.
+        /// A programme's title. `startedEarlier` puts a backward triangle
+        /// before it, which points right in a right-to-left layout.
         case programme(title: String, timing: GuideTiming, startedEarlier: Bool)
         /// Empty space between two programmes.
         case gap
@@ -95,7 +96,7 @@ enum GuideBoard {
                 case .programme(let title, _, let startedEarlier):
                     HStack(spacing: 4) {
                         if startedEarlier {
-                            Text("◂").font(.system(size: size - 3)).accessibilityHidden(true)
+                            Image(systemName: "arrowtriangle.backward.fill").font(.system(size: size - 5)).accessibilityHidden(true)
                         }
                         Text(title).lineLimit(1)
                     }

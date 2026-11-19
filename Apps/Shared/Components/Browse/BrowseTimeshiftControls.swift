@@ -69,7 +69,7 @@
                     }
                     .padding(.horizontal, 6)
                     .frame(height: 30)
-                    HStack(spacing: regular ? 10 : 4) {
+                    HStack(spacing: regular ? 10 : 0) {
                         glyph("gobackward.15", label: "Back 15 seconds", id: "timeshift.skipBack") { skip(false) }
                         Button(action: playPause) {
                             Image(systemName: isPaused ? "play.fill" : "pause.fill")
@@ -214,7 +214,8 @@
 
     #Preview("Timeshift controls, iPhone, paused 12 minutes behind, Arabic", traits: .fixedLayout(width: 390, height: 90)) {
         Browse.TimeshiftControls(
-            scrub: .init(time: "٢١:٢٢", marker: 0.8, behind: "متأخر بـ ١٢ د"), isPaused: true, progress: 0.68, clock: "٢١:٣٤",
+            scrub: .init(time: PreviewLanguage.arabic.time(21, 22), marker: 0.8, behind: "متأخر بـ ١٢ د"), isPaused: true, progress: 0.68,
+            clock: PreviewLanguage.arabic.time(21, 34),
             isFullScreen: false, playPause: {}, skip: { _ in }, drag: { _ in }, endDrag: {}, goLive: {}, toggleFullScreen: {}
         ) {
             Browse.StartOverButton {}

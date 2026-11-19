@@ -65,4 +65,28 @@ import Testing
         #expect(line.meta == "Sport One")
         #expect(line.compact == "Sport One")
     }
+
+    @Test("localization/mixed-scripts-keep-their-own-direction the iPhone line reads from the right in Arabic")
+    func arabicCompactLine() {
+        let arabic = Locale(identifier: "ar_SA")
+        let line = LiveNowText(
+            channel: "News One", number: 1, state: .loaded, current: programme("Morning News", startsIn: -10),
+            next: [programme("Weather", startsIn: 50)], now: now, time: time, locale: arabic)
+        // A right-to-left mark first, then the number, the isolated name, the times and the next title.
+        #expect(line.compact.hasPrefix("\u{200F}١ \u{2068}News One\u{2069} • -10m – 50m • التالي: \u{2068}"))
+        #expect(line.compact.withoutIsolates == "\u{200F}١ News One • -10m – 50m • التالي: Weather")
+        #expect(line.meta.hasPrefix("\u{200F}\u{2068}News One\u{2069} • ١"))
+        let english = LiveNowText(
+            channel: "News One", number: 1, state: .loaded, current: programme("Morning News", startsIn: -10),
+            next: [programme("Weather", startsIn: 50)], now: now, time: time, locale: Locale(identifier: "en_US"))
+        #expect(english.compact == "1 News One · -10m – 50m · Next: Weather")
+    }
+
+    @Test("localization/mixed-scripts-keep-their-own-direction the guide's picture caption reads from the right in Arabic")
+    func channelIdentity() {
+        let arabic = ChannelIdentityText.text(number: 1, name: "Channel a1", locale: Locale(identifier: "ar_SA"))
+        #expect(arabic == "\u{200F}١ \u{2068}Channel a1\u{2069}")
+        #expect(ChannelIdentityText.text(number: 104, name: "Sport One", locale: Locale(identifier: "en_US")) == "104 Sport One")
+        #expect(ChannelIdentityText.text(number: nil, name: "Sport One", locale: Locale(identifier: "en_US")) == "Sport One")
+    }
 }

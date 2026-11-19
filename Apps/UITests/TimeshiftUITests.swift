@@ -63,6 +63,14 @@ final class TimeshiftUITests: XCTestCase {
         XCTAssertTrue(app.element("timeshift.behindLive").exists, "play goes on from the frozen frame, behind live")
     }
 
+    // design-system/progress-runs-in-the-reading-direction
+    func testTheProgrammeBarKeepsItsWidthAtLive() throws {
+        let app = try launch("buffer")
+        let live = app.element("browse.player.live")
+        XCTAssertGreaterThan(live.frame.width, live.frame.height, "LIVE reads on one line")
+        XCTAssertGreaterThan(app.element("browse.player.progress").frame.width, 20, "the programme bar keeps its width")
+    }
+
     // timeshift-catch-up-and-start-over/skip-scan-and-drag
     func testSkipsMoveBackAndForwardAndReachingNowIsLive() throws {
         let app = try launch("buffer")

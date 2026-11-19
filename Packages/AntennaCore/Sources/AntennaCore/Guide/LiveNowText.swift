@@ -35,8 +35,9 @@ public struct LiveNowText: Sendable, Equatable {
         let upcoming = Array(next.prefix(3))
         self.next = upcoming
         title = line.text
-        let identity = [number.map { $0.text(locale) }, channel].compactMap(\.self).joined(separator: " ")
-        var metaParts = [channel] + [number.map { $0.text(locale) }].compactMap(\.self)
+        let name = words.source(channel)
+        let identity = ChannelIdentityText.parts(number: number, name: channel, locale: locale)
+        var metaParts = [name] + [number.map { $0.text(locale) }].compactMap(\.self)
         var compactParts = [identity]
         if case .programme(_, let fraction, let remaining) = line, let current {
             let span = "\(time(current.start)) – \(time(current.stop))"
@@ -51,7 +52,21 @@ public struct LiveNowText: Sendable, Equatable {
             summary = nil
         }
         if let first = upcoming.first { compactParts.append(words("Next: \(words.source(first.title))")) }
-        meta = metaParts.joinedAsDetail(locale)
-        compact = compactParts.joinedAsDetail(locale)
+        meta = words.line(metaParts)
+        compact = words.line(compactParts)
+    }
+}
+
+/// A channel's number and name on one line, "104 Sport One", as the iPhone
+/// now-playing line and the Apple TV guide's picture caption show it. The
+/// number is in the locale's digits and the name keeps its own direction
+/// (localization/mixed-scripts-keep-their-own-direction).
+public enum ChannelIdentityText {
+    public static func text(number: ChannelNumber?, name: String, locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale).line([parts(number: number, name: name, locale: locale)])
+    }
+
+    static func parts(number: ChannelNumber?, name: String, locale: Locale) -> String {
+        [number.map { $0.text(locale) }, Words(locale).source(name)].compactMap(\.self).joined(separator: " ")
     }
 }

@@ -127,6 +127,8 @@ extension Browse {
                 Text("LIVE")
                     .font(.system(size: 11, weight: .semibold))
                     .letterSpacing(1)
+                    .lineLimit(1)
+                    .fixedSize()
             }
             .padding(.vertical, 3)
             .padding(.horizontal, 7)

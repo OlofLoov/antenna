@@ -12,8 +12,9 @@ extension GuideGrid {
     }
 
     /// A block without the highlight: 0.06 surface and muted text when past,
-    /// a gap or a placeholder, 0.08 otherwise; "◂" before a programme that
-    /// started earlier. Radius 8.
+    /// a gap or a placeholder, 0.08 otherwise; a backward triangle, which
+    /// mirrors in a right-to-left layout, before a programme that started
+    /// earlier. Radius 8.
     struct Block: View {
         let content: BlockContent
         let width: Double
@@ -21,7 +22,7 @@ extension GuideGrid {
         var body: some View {
             HStack(spacing: 10) {
                 if case .programme(_, _, true) = content {
-                    Text("◂").font(.system(size: 18)).accessibilityHidden(true)
+                    Image(systemName: "arrowtriangle.backward.fill").font(.system(size: 14)).accessibilityHidden(true)
                 }
                 if let title {
                     Text(title)
@@ -119,6 +120,9 @@ private let previewTitles: [[PreviewBlock]] = [
 ]
 
 private struct GridPreview: View {
+    /// Writes a fixture time; the Arabic preview passes `PreviewLanguage.arabic.time`.
+    var time: (Int, Int) -> String = { hour, minute in String(format: "%02d:%02d", hour, minute) }
+
     var body: some View {
         GuideGrid.Screen {
             ZStack(alignment: .bottomLeading) {
@@ -130,13 +134,15 @@ private struct GridPreview: View {
                 date: Date(timeIntervalSince1970: 77_640),
                 details: .init(
                     eyebrow: "Now · Sport One", look: .now, title: "Premier League: Arsenal v Liverpool",
-                    meta: "20:00 – 22:00 · 2 h · Football · 1080p", progress: 0.783,
+                    meta: "\(time(20, 0)) – \(time(22, 0)) · 2 h · Football · 1080p", progress: 0.783,
                     summary: "Second half from the Emirates. Commentary by the studio team, with analysis at full time.")
             ) {
                 GuidePanel.WatchButton {}
             }
         } grid: {
-            GuideGrid.Grid(columns: ["20:00", "20:30", "21:00", "21:30"], now: .init(offset: 1159, time: "21:34")) {
+            GuideGrid.Grid(
+                columns: [time(20, 0), time(20, 30), time(21, 0), time(21, 30)], now: .init(offset: 1159, time: time(21, 34))
+            ) {
                 HStack(spacing: 10) {
                     GuideGrid.DayChip(title: "Today", look: .selected) {}
                     GuideGrid.DayChip(title: "Tue", look: .plain) {}
@@ -154,7 +160,7 @@ private struct GridPreview: View {
                 } blocks: {
                     GuideGrid.HighlightedBlock(
                         content: .programme(title: "Premier League: Arsenal v Liverpool", timing: .now, startedEarlier: false),
-                        times: "20:00 – 22:00", width: 1476)
+                        times: "\(time(20, 0)) – \(time(22, 0))", width: 1476)
                 }
             }
         }
@@ -184,7 +190,7 @@ private struct GridPreview: View {
 }
 
 #Preview("Guide grid, a programme on now, Arabic", traits: .fixedLayout(width: 1920, height: 1080)) {
-    GridPreview()
+    GridPreview(time: PreviewLanguage.arabic.time)
         .previewLanguage(.arabic)
 }
 
