@@ -15,16 +15,15 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column; gap: 36px; padding-top: 90px">
   <!-- person.root on Apple TV: its own screen with no tab bar, as the title page. Menu returns to the title page with the cast chip that opened it focused, or to Search with the person's row focused. Initial focus: the first poster of the first row. -->
-  <!-- person.header: not focusable -->
+  <!-- person.header: not focusable; initials only, the provider sends no photo -->
   <div style="display: flex; align-items: center; gap: 36px; padding: 0 64px">
     <div style="width: 200px; height: 200px; border-radius: 100px; background: #26344A; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 64px; font-weight: 700; color: #A7B0BF">MH</div>
     <div style="display: flex; flex-direction: column; gap: 10px">
       <div style="font-size: 76px; font-weight: 800; letter-spacing: -1px; line-height: 1.02">Mira Holt</div>
       <div style="font-size: 24px; color: #D7DEE8">Acting · 9 in your sources</div>
-      <div style="font-size: 20px; color: #A7B0BF">Filmography from TMDB</div>
     </div>
   </div>
-  <!-- person.row.movies, person.row.series, person.row.directed (browse-by-person/a-person-s-page): only titles the user's sources have, newest release first, each row hidden when empty. A poster acts as any poster: it opens the title page. -->
+  <!-- person.row.movies, person.row.series, person.row.directed (browse-by-person/a-person-s-page): only titles of the user's sources whose provider names this person, newest first, each row hidden when empty. A poster acts as any poster: it opens the title page. -->
   <!-- person.row.movies, first poster focused -->
   <div style="display: flex; flex-direction: column; gap: 16px">
     <div style="padding: 0 64px; display: flex; justify-content: space-between; align-items: baseline">
@@ -54,6 +53,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F3F4A; flex: 0 0 auto"></div>
     </div>
   </div>
+  <!-- person.note under the last row, reached by scrolling, as on iPhone-Person -->
+  <div style="padding: 0 64px; font-size: 22px; color: #A7B0BF">Only titles whose cast your provider has sent are here. More appear as you browse.</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
