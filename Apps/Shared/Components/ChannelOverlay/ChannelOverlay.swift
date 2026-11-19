@@ -402,7 +402,7 @@ private struct OverlayPreview: View {
             } panel: {
                 EmptyView()
             } clock: {
-                ShellTabBar.Clock(date: Date(timeIntervalSince1970: 1_800_000_000))
+                TVClock(date: Date(timeIntervalSince1970: 1_800_000_000))
             }
         }
     }
@@ -434,7 +434,7 @@ private struct OverlayPreview: View {
         } panel: {
             EmptyView()
         } clock: {
-            ShellTabBar.Clock(date: Date(timeIntervalSince1970: 1_800_000_000))
+            TVClock(date: Date(timeIntervalSince1970: 1_800_000_000))
         }
     }
 }

@@ -40,8 +40,7 @@ final class TitleTVUITests: XCTestCase {
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")
         press(.menu)
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         press(.right)
@@ -105,10 +104,11 @@ final class TitleTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
         app.launchInEnglish()
+        // The system bar takes Menu only once something on the page has focus.
+        _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
         press(.menu)
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
-        press(.right, times: 3)
-        expectFocus("shell.tab.series")
+        moveAlongTheBar(.right, to: "shell.tab.series")
         press(.select)
         expectFocus("series.hero.play")
         press(.down)
@@ -142,10 +142,11 @@ final class TitleTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
         app.launchInEnglish()
+        // The system bar takes Menu only once something on the page has focus.
+        _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
         press(.menu)
         XCTAssertTrue(element("shell.tab.movies").waitForExistence(timeout: 10))
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         XCTAssertEqual(element("movies.hero.title").label, "The Long Harbor")

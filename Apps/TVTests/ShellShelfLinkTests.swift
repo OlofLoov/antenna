@@ -118,15 +118,13 @@ import Testing
         loader.finish(sourceA.id, with: [.fixture("a1"), .fixture("a2")])
         loader.finish(sourceB.id, with: [.fixture("b7")])
         await wait({ engine.loaded == [Channel.fixture("b7").streamURL] }, "the last channel plays")
-        _ = await model.select(.guide)
-        model.settingsOpen = true
+        _ = await model.select(.settings)
         model.holdShelfItem(try item(.fixture("a2"), in: sourceA))
         guard case .tuned = model.resolveShelfItem(titles: [], titlesPending: false) else {
             Issue.record("the channel did not tune")
             return
         }
-        await wait({ model.tab == .live }, "Live shows")
-        #expect(!model.settingsOpen)
+        await wait({ model.tab == .live }, "Live shows in place of Settings")
         await wait({ engine.loaded.last == Channel.fixture("a2").streamURL }, "the channel plays")
     }
 

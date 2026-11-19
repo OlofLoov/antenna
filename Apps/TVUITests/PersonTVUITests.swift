@@ -38,10 +38,11 @@ final class PersonTVUITests: XCTestCase {
     func testDownFromTheButtonsPicksANameAndMenuComesBackToIt() {
         app.launchArguments = ["-ui-testing-shelf", "titles"]
         app.launchInEnglish()
+        // The system bar takes Menu only once something on the page has focus.
+        _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
         press(.menu)
         XCTAssertTrue(element("shell.tab.movies").waitForExistence(timeout: 10))
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         XCTAssertEqual(element("movies.hero.title").label, "The Long Harbor")

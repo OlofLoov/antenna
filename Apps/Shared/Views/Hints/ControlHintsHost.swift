@@ -29,7 +29,9 @@
     /// Nothing shows while "Show remote hints" is off on this device
     /// (control-hints/turn-remote-hints-off).
     private struct ControlHintsHost: ViewModifier {
-        @FocusedValue(\.controlHints) private var screen
+        @FocusedValue(\.controlHints) private var focusedScreen
+        /// The system tab bar is not a SwiftUI view, so the shell says when it has the highlight.
+        @Environment(\.shellBarFocused) private var barFocused
         @AppStorage(ControlHintsSetting.key) private var stored = Data()
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @State private var schedule = ControlHintSchedule()
@@ -37,6 +39,8 @@
         @State private var hideAt: ContinuousClock.Instant?
 
         private var shows: Bool { ControlHintsSetting.decode(stored).shows }
+
+        private var screen: ControlHintScreen? { barFocused ? .tabBar : focusedScreen }
 
         func body(content: Content) -> some View {
             content

@@ -54,12 +54,15 @@ extension ShellUITests {
 
     // profiles/switching-profile
     // tvos-shell/the-tabs-in-order
-    func testSwitchingProfileFromTheTabBar() {
+    func testSwitchingProfileFromTheTopOfSettings() {
         launchAsDad()
         press(.menu)
         expectFocus("shell.tab.live")
+        XCTAssertFalse(element("shell.profile").exists, "the bar holds the tabs alone")
+        openSettingsOnProfiles()
         expect(element("shell.profile"), "label == 'Profile, Dad'")
-        for _ in 0..<8 where !element("shell.profile").hasFocus { press(.right) }
+        for _ in 0..<4 where !element("shell.profile").hasFocus { press(.up) }
+        for _ in 0..<4 where !element("shell.profile").hasFocus { press(.left) }
         expectFocus("shell.profile")
         press(.select)
         XCTAssertTrue(element("profiles.picker").waitForExistence(timeout: 10))
@@ -68,7 +71,7 @@ extension ShellUITests {
         press(.select)
         expectEngine("playing loads=1 file=a1.ts")
         expectGone("zapBar.bar", timeout: 10)
-        press(.menu)
+        openSettingsOnProfiles()
         expect(element("shell.profile"), "label == 'Profile, Kids'")
     }
 
@@ -137,13 +140,16 @@ extension ShellUITests {
 extension ShellUITests {
     /// Opens Settings from the tab bar; its first row is Profiles.
     func openSettingsOnProfiles() {
-        press(.menu)
+        if !(element("shell.tab.live").exists && element("shell.tab.live").hasFocus) { press(.menu) }
         expectFocus("shell.tab.live")
         let settings = element("shell.settings")
         for _ in 0..<8 where !settings.hasFocus { press(.right) }
         expectFocus("shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.profile").waitForExistence(timeout: 10))
+        // With two profiles the profile button at the top of the lead column can take the first highlight.
+        let profile = element("shell.profile")
+        if profile.exists, profile.hasFocus { press(.right) }
         expectProfilesRowFocused()
     }
 

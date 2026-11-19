@@ -14,7 +14,7 @@ enum GuideGrid {
     static let rowSpacing = 6.0
     /// The small picture's top edge: below the tab bar's band, so the bar
     /// sits where it does on every other tab when it shows over the guide.
-    static let pictureTop = ShellTabBar.height + 16
+    static let pictureTop = SystemTabBar.bottom + 16
     /// Muted text on the white focus card.
     static let mutedOnFocus = ChannelOverlay.mutedOnFocus
 

@@ -5,7 +5,7 @@
     import os
 
     /// State and rules of the Apple TV shell (tvos-shell capability): the open tab, the
-    /// bar, the sources as they load, the channel tuned at launch and the
+    /// sources as they load, the channel tuned at launch and the
     /// pause, then stop, behind Movies, Series and Search.
     @MainActor @Observable
     final class ShellModel {
@@ -41,7 +41,10 @@
         static let launchDeadline = Duration.seconds(10)
 
         private(set) var tab: ShellTab = .live
-        private(set) var barRaised = false
+        /// True while the highlight is in the system tab bar; the shell's view reports it.
+        var barFocused = false
+        /// Counts select on the open tab in the bar, which sends the highlight into its page.
+        private(set) var reselects = 0
         private(set) var sources: [ShellSource] = []
         private(set) var channels: [Channel] = []
         private(set) var tuned: Channel?
@@ -61,7 +64,6 @@
         /// Each playlist's movies and episodes from its last load, seeded from
         /// what this device remembers (m3u-playlists/what-a-playlist-offered-is-remembered).
         private var titleCounts: [UUID: TitleCounts] = [:]
-        var settingsOpen = false
         /// The source Sign in on the error asks a login for, nil while closed.
         var signInRequest: SignInRequest?
         /// Multi-view over Live, nil while one channel plays.
@@ -89,6 +91,11 @@
         @ObservationIgnored private var deadline: Task<Void, Never>?
         /// The pause, then stop, behind Movies, Series and Search.
         @ObservationIgnored let hold: LiveHold
+        /// True from opening Movies, Series or Search until Live or the
+        /// Guide opens; Settings in between keeps it.
+        @ObservationIgnored var behindContent = false
+        /// The last tab change's work on the video; the next one waits for it.
+        @ObservationIgnored private(set) var tabChange: Task<Void, Never>?
         /// What the shell did to the channel behind Movies, Series or Search, nil when nothing.
         var heldByShell: LiveHold.Kind? { hold.kind }
         var pausedByShell: Bool { heldByShell != nil }
@@ -306,42 +313,24 @@
 
         // MARK: Navigation
 
-        /// Handles Menu at the shell. Content screens deeper than their root,
-        /// and the picker, consume Menu before it gets here. Menu with the
-        /// highlight in the bar never gets here: the system takes it to the
-        /// Home Screen (tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen).
-        func menu(from origin: MenuOrigin) -> ShellFocus {
-            switch origin {
-            case .picture:
-                barRaised = true
-                return .tab(.live)
-            case .content:
-                if tab == .guide { barRaised = true }
-                return .tab(tab)
+        /// The system tab bar moved to `target`, by focus or by select. The
+        /// page changes at once and the video follows in order. Picked again,
+        /// the open tab sends the highlight onto its page.
+        func choose(_ target: ShellTab) {
+            guard target != tab else {
+                reselects += 1
+                return
             }
+            switchTab(to: target, picked: true)
         }
 
-        /// Select on a tab in the bar.
-        func select(_ target: ShellTab) async -> ShellFocus {
-            switch target {
-            case .live:
-                let reloaded = await open(.live)
-                // A failed stream, or one a movie stopped, loads again.
-                if !reloaded, let tuned, await engine.state.hasStopped { tune(tuned) }
-                return liveFocus
-            case .guide, .movies, .series, .search:
-                await open(target)
-                // The system search keyboard cannot take focus from code, so on
-                // Search the highlight stays on the tab and one swipe down reaches it.
-                return target == .search ? .tab(.search) : .content
-            }
-        }
-
-        /// Swipe down while the bar has focus. Nil when the bar stays.
-        func swipeDown() -> ShellFocus? {
-            guard barRaised, !tab.isContent else { return nil }
-            barRaised = false
-            return tab == .live ? liveFocus : .content
+        /// Opens `target` from code, as Search, a reminder or a shelf link
+        /// do, and returns where focus goes: the picture or the Live screen
+        /// on Live, nil elsewhere, where the tab bar or the page takes it.
+        @discardableResult
+        func select(_ target: ShellTab) async -> ShellFocus? {
+            _ = await switchTab(to: target, picked: true).value
+            return target == .live ? liveFocus : nil
         }
 
         /// Where focus goes on Live: the picture once tuned, Try again while
@@ -351,44 +340,67 @@
             return player.failure == nil ? .picture : .retry
         }
 
-        /// Opens `target`, lowering the bar. Entering Movies, Series or Search
-        /// from Live or Guide pauses the video and starts the stop timer;
-        /// leaving them for Live or Guide resumes a video the shell paused and
-        /// tunes again one it stopped. True when the channel loads again.
+        /// Shows `target` now and queues what the video does behind it after
+        /// any earlier tab change. Movies, Series and Search hold the video;
+        /// Live and the Guide end the hold, resuming a paused video and
+        /// tuning a stopped one again; Settings leaves it as it is. Live
+        /// `picked` by the user also loads a failed stream again. True when
+        /// the channel loads again.
         @discardableResult
-        private func open(_ target: ShellTab) async -> Bool {
-            if tab == .guide, target != .guide { await leaveGuide() }
-            let wasContent = tab.isContent
+        private func switchTab(to target: ShellTab, picked: Bool = false) -> Task<Bool, Never> {
+            let from = tab
             tab = target
-            barRaised = false
             pickerOpen = false
-            if target.isContent {
-                if !wasContent { await holdBehindContent() }
+            let previous = tabChange
+            let change = Task { [weak self] in
+                await previous?.value
+                guard let self else { return false }
+                return await opened(target, from: from, picked: picked)
+            }
+            tabChange = Task { _ = await change.value }
+            return change
+        }
+
+        private func opened(_ target: ShellTab, from: ShellTab, picked: Bool) async -> Bool {
+            if from == .guide, target != .guide { await leaveGuide() }
+            switch target {
+            case .movies, .series, .search:
+                guard !behindContent else { return false }
+                behindContent = true
+                await holdBehindContent()
                 return false
-            } else {
-                let reloaded = await resume()
-                if reloaded { return true }
+            case .settings:
+                return false
+            case .live, .guide:
+                behindContent = false
+                if await resume() { return true }
                 // The Guide's small picture plays on a stream the user paused (tv-guide-grid/the-channel-keeps-playing-in-a-small-picture).
                 // A pause the user made stays (timeshift-catch-up-and-start-over/leaving-the-app-calls-and-other-interruptions).
                 if target == .guide, !player.timeshift.userPaused, await engine.state == .paused { await engine.play() }
+                // A failed stream, or one a movie stopped, loads again.
+                if target == .live, picked, let tuned, await engine.state.hasStopped {
+                    tune(tuned)
+                    return true
+                }
                 return false
             }
         }
 
-        /// Live full screen, the bar lowered and the picker closed.
+        /// Live full screen with the picker closed.
         func showLive() async {
-            await open(.live)
+            _ = await switchTab(to: .live).value
         }
 
         /// Opens Search, Settings or the Guide at a programme. Closes the picker first.
         func show(_ destination: ShellNavigator.Destination) async {
             switch destination {
             case .search:
-                await open(.search)
-            case .settings: openSettings()
+                _ = await switchTab(to: .search).value
+            case .settings:
+                _ = await switchTab(to: .settings).value
             case .guide(let programmeKey):
                 guideRequest = programmeKey
-                await open(.guide)
+                _ = await switchTab(to: .guide).value
             }
         }
     }

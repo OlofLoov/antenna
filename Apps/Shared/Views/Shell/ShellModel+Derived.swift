@@ -14,11 +14,11 @@
         /// Thrown by a loader for a source whose login is not on this device.
         enum LoadFailure: Error { case waitingForLogin }
 
-        /// The bar shows when raised by Menu and always on Movies, Series and Search.
-        var barVisible: Bool { barRaised || tab.isContent }
+        /// The picture or the guide dims while the highlight is in the tab bar over them.
+        var dimmed: Bool { barFocused && tab.showsPicture }
 
-        /// The picture or guide is dimmed under the raised bar.
-        var dimmed: Bool { barRaised && !tab.isContent }
+        /// Live full screen with the highlight on the page, not in the tab bar.
+        var liveInFront: Bool { tab == .live && !barFocused }
 
         /// The tabs the bar lists: Movies and Series each only when a source
         /// offers it (m3u-playlists/movies-and-series-show-by-what-the-sources-offer).
@@ -35,12 +35,6 @@
 
         /// The navigator other screens use; `ShellView` provides it.
         var navigator: ShellNavigator { .forwarding(to: self) }
-
-        /// Sources and Settings over whatever shows, with the picker closed.
-        func openSettings() {
-            closePicker()
-            settingsOpen = true
-        }
 
         /// The names the player's messages use for `channel`.
         func subject(for channel: Channel) -> PlayerSubject {
@@ -135,10 +129,17 @@
             case .movies: "Movies"
             case .series: "Series"
             case .search: "Search"
+            case .settings: "Settings"
             }
         }
 
-        /// The element name design-system/accessibility-identifiers-follow-the-board asks for: `shell.tab.<identifier>`.
+        /// The tab's element name (design-system/accessibility-identifiers-follow-the-board):
+        /// `shell.tab.<identifier>`, and `shell.settings` for Settings, the name its button had.
+        var elementName: String {
+            self == .settings ? "shell.settings" : "shell.tab.\(identifier)"
+        }
+
+        /// The last part of `shell.tab.<identifier>`.
         var identifier: String {
             switch self {
             case .live: "live"
@@ -146,6 +147,7 @@
             case .movies: "movies"
             case .series: "series"
             case .search: "search"
+            case .settings: "settings"
             }
         }
     }

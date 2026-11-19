@@ -40,13 +40,12 @@ extension ShellUITests {
     func testRemoteHintsFollowTheSection() {
         launchWithHints()
         press(.menu)
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         expect(legend, "label CONTAINS 'Hold, More info and My list.'")
 
-        press(.up)
+        press(.menu)
         expectFocus("shell.tab.movies")
         press(.right)
         expectFocus("shell.tab.series")
