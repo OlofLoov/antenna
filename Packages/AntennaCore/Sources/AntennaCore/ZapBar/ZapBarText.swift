@@ -85,13 +85,40 @@ public enum ZapBarText {
     /// The badges for the stream's state and format: LIVE, then the picture
     /// size and the sound, only while it plays; none while it loads, buffers
     /// or after a failure (tv-zap-bar-and-number-entry/picture-and-sound-quality).
+    /// While catch-up plays, CATCH-UP takes LIVE's place
+    /// (timeshift-catch-up-and-start-over/start-the-programme-from-the-beginning).
     public static func badges(
-        state: PlaybackState, presentation: PresentationInfo?, locale: Locale = .autoupdatingCurrent
-    ) -> [String] {
+        state: PlaybackState, presentation: PresentationInfo?, catchUp: Bool = false,
+        locale: Locale = .autoupdatingCurrent
+    ) -> [ZapBarBadge] {
         guard state == .playing else { return [] }
+        let words = Words(locale)
         let picture = presentation?.video.flatMap { QualityBadge.picture(height: $0.height) }
         let sound = presentation?.audio.flatMap { QualityBadge.sound($0, locale: locale) }
-        return [Words(locale)("LIVE")] + [picture, sound].compactMap(\.self)
+        let first = catchUp ? ZapBarBadge(kind: .catchUp, text: words("CATCH-UP")) : ZapBarBadge(kind: .live, text: words("LIVE"))
+        return [first] + [picture, sound].compactMap(\.self).map { ZapBarBadge(kind: .quality, text: $0) }
+    }
+}
+
+/// A badge on the zap bar or the Apple TV info panel. The kind decides how
+/// it is drawn and the text is what it reads in the viewer's language, so
+/// code never compares the text ("LIVE" is "EN VIVO" in Spanish).
+public struct ZapBarBadge: Hashable, Sendable {
+    public enum Kind: Hashable, Sendable {
+        /// The red dot and LIVE, or muted behind live.
+        case live
+        /// CATCH-UP, in place of LIVE while catch-up plays.
+        case catchUp
+        /// The outlined picture or sound badge, as in "1080p" and "AAC 5.1".
+        case quality
+    }
+
+    public var kind: Kind
+    public var text: String
+
+    public init(kind: Kind, text: String) {
+        self.kind = kind
+        self.text = text
     }
 }
 

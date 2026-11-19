@@ -86,7 +86,7 @@ enum InfoPanel {
         let programme: Programme?
         /// The guide's status text in place of the programme when there is none.
         let message: String
-        let badges: [String]
+        let badges: [ZapBarBadge]
         let stream: String
         @ViewBuilder var logo: Logo
 
@@ -152,15 +152,15 @@ enum InfoPanel {
                     HStack(spacing: 24) {
                         HStack(spacing: 10) {
                             ForEach(badges, id: \.self) { badge in
-                                if badge == "LIVE" {
+                                if badge.kind == .quality {
+                                    Text(badge.text).badge(filled: false)
+                                } else {
                                     HStack(spacing: 8) {
                                         Circle().fill(Color(red: 0xFF / 255, green: 0x5F / 255, blue: 0x57 / 255)).frame(
                                             width: 10, height: 10)
-                                        Text(badge)
+                                        Text(badge.text)
                                     }
                                     .badge(filled: true)
-                                } else {
-                                    Text(badge).badge(filled: false)
                                 }
                             }
                         }
@@ -286,7 +286,7 @@ enum InfoPanel {
                 programme: .init(
                     title: "Premier League: Arsenal v Liverpool", times: "20:00 – 22:00 · 26 min left", progress: 0.78,
                     summary: "Second half from the Emirates. Commentary by the studio team, with analysis at full time."),
-                message: "", badges: ["LIVE", "1080p", "AAC 5.1"], stream: "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player"
+                message: "", badges: ZapBarBadge.previewBadges(), stream: "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player"
             ) {
                 ZapBar.Initials(text: "S1")
             }

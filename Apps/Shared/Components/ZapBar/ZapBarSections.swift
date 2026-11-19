@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension ZapBar {
@@ -84,23 +85,20 @@ extension ZapBar {
     }
 
     struct Status: View {
-        /// "LIVE" first when playing, then picture and sound.
-        let badges: [String]
+        /// LIVE or CATCH-UP first when playing, then picture and sound.
+        let badges: [ZapBarBadge]
         let catchUp: String?
         let hint: String
         /// How the LIVE badge looks: red dot at live, muted and outlined behind it.
         var live = LiveStyle.live
 
-        /// Marks the badge shown in place of LIVE while catch-up plays. The
-        /// badge itself reads "CATCH-UP" in the viewer's language.
-        static let catchUp = "CATCH-UP"
-
         var body: some View {
             VStack(alignment: .trailing, spacing: 14) {
                 HStack(spacing: 10) {
                     ForEach(badges, id: \.self) { badge in
-                        if badge == Self.catchUp {
-                            Text("CATCH-UP")
+                        switch badge.kind {
+                        case .catchUp:
+                            Text(badge.text)
                                 .font(.system(size: 18, weight: .semibold))
                                 .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
@@ -108,19 +106,19 @@ extension ZapBar {
                                 .padding(.vertical, 6)
                                 .background(Palette.accent, in: RoundedRectangle(cornerRadius: 6))
                                 .accessibilityIdentifier("zapBar.catchupBadge")
-                        } else if badge == "LIVE" {
+                        case .live:
                             HStack(spacing: 8) {
                                 Circle().fill(
                                     live == .live ? Color(red: 0xFF / 255, green: 0x45 / 255, blue: 0x3A / 255) : Palette.textMuted
                                 )
                                 .frame(width: 10, height: 10)
-                                Text(badge)
+                                Text(badge.text)
                             }
                             .badge(filled: live == .live)
                             .accessibilityIdentifier("zapBar.live")
                             .accessibilityValue(live == .live ? "live" : "behind")
-                        } else {
-                            Text(badge)
+                        case .quality:
+                            Text(badge.text)
                                 .badge(filled: false)
                                 .accessibilityIdentifier("zapBar.quality")
                         }
@@ -173,7 +171,7 @@ extension View {
                     title: "Premier League: Arsenal v Liverpool", times: "20:00 – 22:00", progress: 0.78,
                     next: "22:00 · Match of the Day", remaining: "26 min left"))
         } status: {
-            ZapBar.Status(badges: ["LIVE", "1080p", "AAC 5.1"], catchUp: "Catch-up 7 days", hint: "Press to browse channels")
+            ZapBar.Status(badges: ZapBarBadge.previewBadges(), catchUp: "Catch-up 7 days", hint: "Press to browse channels")
         }
     }
 }
@@ -209,9 +207,19 @@ extension View {
                         title: "Premier League: Arsenal v Liverpool", times: "٢٠:٠٠ – ٢٢:٠٠", progress: 0.78,
                         next: "٢٢:٠٠ · Match of the Day", remaining: "تبقّى ٢٦ د"))
             } status: {
-                ZapBar.Status(badges: ["LIVE", "1080p", "AAC 5.1"], catchUp: "Catch-up 7 days", hint: "Press to browse channels")
+                ZapBar.Status(
+                    badges: ZapBarBadge.previewBadges(PreviewLanguage.arabic.locale), catchUp: "Catch-up 7 days",
+                    hint: "Press to browse channels")
             }
         }
     }
     .previewLanguage(.arabic)
+}
+
+extension ZapBarBadge {
+    /// LIVE in the preview's language, 1080p and AAC 5.1.
+    static func previewBadges(_ locale: Locale = Locale(identifier: "en_US")) -> [ZapBarBadge] {
+        ZapBarText.badges(state: .playing, presentation: nil, locale: locale)
+            + [.init(kind: .quality, text: "1080p"), .init(kind: .quality, text: "AAC 5.1")]
+    }
 }
