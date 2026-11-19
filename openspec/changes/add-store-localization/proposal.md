@@ -68,8 +68,7 @@ None.
   AntennaCore that runs the check.
 - Changed: `.github/workflows/screenshots.yml`, `.github/workflows/lint.yml`,
   `scripts/fast-checks.sh`, `Apps/Journeys` and `Apps/TVJourneys` (a store
-  walk that takes its language from the test runner), tab identifiers on the
-  iPhone tab bar, `docs/conventions.md`, `docs/release/`.
+  walk that takes its language from the test runner), `docs/conventions.md`, `docs/release/`.
 - Depends on: `add-localization` (the app languages, their terms and
   `Config/reviewed-languages`) and `add-app-screenshots-ci` (the walk-throughs
   and the workflow).
