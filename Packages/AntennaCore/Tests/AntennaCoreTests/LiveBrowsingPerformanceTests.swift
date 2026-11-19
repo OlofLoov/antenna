@@ -7,7 +7,7 @@ import Testing
 /// over a provider-sized catalogue: 50 000 channels in 400 groups, with group
 /// rules, and a seven-day guide. The budgets are for a debug build on a CI
 /// runner, with room for a slow one, and still fail a query that walks the
-/// whole catalogue.
+/// whole catalogue. Each budget is on the fastest of a few runs.
 @Suite struct LiveBrowsingPerformanceTests {
     static let source = UUID()
 
@@ -45,7 +45,7 @@ import Testing
         let groups = catalogue.groups
         #expect(groups.count > 300)
         var read = 0
-        let elapsed = ContinuousClock().measure {
+        let elapsed = FastestRun.of {
             for shown in groups {
                 // The group column: every group's label and count, and whether it is the shown one.
                 for group in catalogue.groups {
@@ -69,14 +69,13 @@ import Testing
     // tv-channel-overlay/every-group-with-its-size
     @Test("tv-channel-overlay/every-group-with-its-size changing a favorite costs under a tenth of indexing 50 000 channels")
     func favoriteWithoutIndexingAgain() {
-        let clock = ContinuousClock()
         var catalogue = Catalogue<Int>(channels: [], groupOrder: [:], favorites: [])
-        let build = clock.measure {
+        let build = FastestRun.of {
             catalogue = Catalogue<Int>(channels: Self.channels, groupOrder: [:], favorites: Self.favorites, rules: Self.rules)
         }
         let added = Self.favorites + [FavoriteSnapshot(channelID: "49999", sourceID: Self.source, sortOrder: 300)]
         var replaced = catalogue
-        let favorite = clock.measure { replaced = catalogue.replacingFavorites(added) }
+        let favorite = FastestRun.of { replaced = catalogue.replacingFavorites(added) }
         #expect(replaced.count(of: .favorites) == catalogue.count(of: .favorites) + 1)
         #expect(replaced.revision != catalogue.revision)
         #expect(favorite < build / 10, "build took \(build), a favorite took \(favorite)")
@@ -97,11 +96,10 @@ import Testing
         let index = GuideIndex(programmes: [Self.source: programmes])
         let catalogue = Catalogue<Int>(channels: Self.channels, groupOrder: [:], favorites: [])
         let now = guideTime(80, 10)
-        var moves = 0
+        let moves = min(catalogue.groups.count, 100)
         var read = 0
-        let elapsed = ContinuousClock().measure {
-            for group in catalogue.groups.prefix(100) {
-                moves += 1
+        let elapsed = FastestRun.of {
+            for group in catalogue.groups.prefix(moves) {
                 let rows = catalogue.rows(in: group).prefix(Self.visible).compactMap(catalogue.channel(for:))
                 for channel in rows {
                     let line = GuideLine(

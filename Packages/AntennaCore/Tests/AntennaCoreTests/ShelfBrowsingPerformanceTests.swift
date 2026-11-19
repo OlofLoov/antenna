@@ -6,7 +6,8 @@ import Testing
 /// What Movies and Series ask of a provider-sized library: 50 000 movies in
 /// 300 categories and 10 000 series, with 200 saved positions. The budgets
 /// are for a debug build on a loaded CI runner and still fail a return to
-/// sorting whole titles or to walking every title on each redraw.
+/// sorting whole titles or to walking every title on each redraw. Each
+/// budget is on the fastest of a few runs.
 @Suite struct ShelfBrowsingPerformanceTests {
     static let source = UUID()
     static let base = Date(timeIntervalSince1970: 1_700_000_000)
@@ -42,7 +43,7 @@ import Testing
     @Test("movies-and-series-browsing/browsing-stays-responsive the rows and banner of 50 000 movies build in under 400 ms")
     func indexBuild() {
         var index = ShelfIndex.empty
-        let elapsed = ContinuousClock().measure { index = ShelfIndex(catalogues: [Self.movies], now: Self.base) }
+        let elapsed = FastestRun.of { index = ShelfIndex(catalogues: [Self.movies], now: Self.base) }
         #expect(index.titles.count == 50_000)
         #expect(index.rows == Shelf.rows(Self.movies.titles, categoryOrder: Self.movies.categories, now: Self.base))
         #expect(index.banner == Shelf.banner(Self.movies.titles))
@@ -53,7 +54,7 @@ import Testing
     @Test("movies-and-series-browsing/browsing-stays-responsive newest first sorts 50 000 movies in under 300 ms")
     func newestFirst() {
         var sorted: [ShelfTitle] = []
-        let elapsed = ContinuousClock().measure { sorted = ShelfTitle.newestFirst(Self.movies.titles) }
+        let elapsed = FastestRun.of { sorted = ShelfTitle.newestFirst(Self.movies.titles) }
         #expect(sorted.count == 50_000)
         #expect(sorted.last?.added == nil, "undated titles go last")
         #expect(zip(sorted, sorted.dropFirst()).allSatisfy { ($0.added ?? .distantPast) >= ($1.added ?? .distantPast) })
@@ -65,11 +66,10 @@ import Testing
         let movies = ShelfIndex(catalogues: [Self.movies], now: Self.base)
         let series = ShelfIndex(catalogues: [Self.series], now: Self.base)
         let lookup: (ActivityKey) -> ShelfTitle? = { movies.title($0) ?? series.title($0) }
-        let clock = ContinuousClock()
         var watching: [ContinueWatching.Item] = []
         var watched: [ShelfTitle] = []
-        let continueTime = clock.measure { watching = ContinueWatching.items(progress: Self.progress, title: lookup) }
-        let recentTime = clock.measure { watched = RecentlyWatched.list(progress: Self.progress, kind: .movie, title: movies.title) }
+        let continueTime = FastestRun.of { watching = ContinueWatching.items(progress: Self.progress, title: lookup) }
+        let recentTime = FastestRun.of { watched = RecentlyWatched.list(progress: Self.progress, kind: .movie, title: movies.title) }
         #expect(watching == ContinueWatching.items(progress: Self.progress, titles: Self.movies.titles + Self.series.titles))
         #expect(watched == RecentlyWatched.list(progress: Self.progress, titles: Self.movies.titles, kind: .movie))
         #expect(watching.count == 200)
