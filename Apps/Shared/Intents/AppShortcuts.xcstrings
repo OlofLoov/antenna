@@ -4,6 +4,14 @@
     "Add this channel to favorites in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "أضف هذه القناة إلى المفضلة في ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -57,6 +65,15 @@
     "Play ${title} in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "شغّل ${title} في ${applicationName}",
+              "شغّل فيلمًا في ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -116,6 +133,14 @@
     "Remove this channel from favorites in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "أزل هذه القناة من المفضلة في ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -169,6 +194,15 @@
     "Search ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "ابحث في ${applicationName}",
+              "ابحث عن قناة في ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -228,6 +262,17 @@
     "Tune to ${channel} in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "انتقل إلى ${channel} في ${applicationName}",
+              "شاهد ${channel} في ${applicationName}",
+              "شغّل ${channel} في ${applicationName}",
+              "اختر قناة في ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",

@@ -59,8 +59,8 @@
 
 ## 10. Arabic text (PR 10)
 
-- [ ] 10.1 Add `ar` and translate every catalog with all six plural forms as `needs_review`
-- [ ] 10.2 Add Core tests for the Arabic zero, two, few and many forms, Arabic-Indic digits under `ar_SA`, and a Latin title isolated inside an Arabic sentence (localization/counts-use-the-language-s-plural-forms, localization/mixed-scripts-keep-their-own-direction)
+- [x] 10.1 Add `ar` and translate every catalog with all six plural forms as `needs_review`
+- [x] 10.2 Add Core tests for the Arabic zero, two, few and many forms, Arabic-Indic digits under `ar_SA`, and a Latin title isolated inside an Arabic sentence (localization/counts-use-the-language-s-plural-forms, localization/mixed-scripts-keep-their-own-direction)
 
 ## 11. Right-to-left layout (PR 11)
 
