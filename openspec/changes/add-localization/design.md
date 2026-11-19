@@ -462,11 +462,13 @@ PR 3, AntennaCore strings:
   package holding `sv` and `ar` entries: "12 500 kanaler" under `sv_SE`
   and the Arabic dual under `ar_SA`, with the English one and other forms
   under `en_US`. The `.lproj` fallback in `Words` is not needed.
-- The catalog compiles only with Xcode's toolchain. Under the Command Line
-  Tools toolchain SwiftPM copies `Localizable.xcstrings` into the bundle
-  as it is, so plural entries resolve to the bare key ("1 channels"). Plain
-  `swift test --package-path Packages/AntennaCore` with Xcode 26.6 now runs
-  on this Mac and in CI, so Core tests run that way from here on.
+- The catalog compiles only under Swift Build. SwiftPM's native build
+  system (the default of Swift 6.3 on the CI image, and of the Command
+  Line Tools) copies `Localizable.xcstrings` into the bundle as it is, so
+  plural entries resolve to the bare key ("1 channels"). Swift Build, the
+  default from Swift 6.4, compiles it. CI, `scripts/fast-checks.sh` and the
+  commands in CLAUDE.md pass `--build-system swiftbuild`. Main CI failed on
+  this for the Core PR and the fix landed right after.
 - `LocalizedStringResource.bundle` cannot be set, so `Words` takes a
   `String.LocalizationValue` and builds the resource with the locale and
   `Bundle.module`. Xcode extracts those literals from the package, and the
