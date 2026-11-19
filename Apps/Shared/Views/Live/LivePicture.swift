@@ -75,6 +75,13 @@
                             .transition(.opacity)
                     }
                 }
+                .overlay(alignment: .topTrailing) {
+                    // Picture in Picture and AirPlay sit at the top, as in the system player.
+                    if live.controlsShown, live.playing != nil, live.player.failure == nil {
+                        topControls
+                            .transition(.opacity)
+                    }
+                }
                 .overlay(alignment: .bottom) {
                     if live.controlsShown, live.playing != nil, live.player.failure == nil {
                         controls
@@ -212,19 +219,33 @@
                     live.showControls(after: .touch)
                 }
             }
-            // AirPlay at compact width is reached from full screen or Control Center.
-            if live.player.route == .system, live.fullScreen || !isCompact {
-                AirPlayPicker()
-            }
             #if os(macOS)
                 PlayerVolumeControls.MuteButton(isMuted: live.player.muted, level: live.player.volume) {
                     live.player.toggleMute()
                 }
                 PlayerVolumeControls.Slider(level: live.player.muted ? 0 : live.player.volume) { live.player.setVolume($0) }
             #endif
-            Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
-                live.engine.startPictureInPicture()
+        }
+
+        /// AirPlay and Picture in Picture at the top trailing corner of the
+        /// picture on a glass capsule, where the system player puts them, so
+        /// the strip along the bottom keeps its width for the programme bar
+        /// (design-system/liquid-glass-stays-on-the-navigation-layer).
+        private var topControls: some View {
+            HStack(spacing: 0) {
+                // AirPlay at compact width is reached from full screen or Control Center.
+                if live.player.route == .system, live.fullScreen || !isCompact {
+                    AirPlayPicker()
+                }
+                Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
+                    live.engine.startPictureInPicture()
+                }
             }
+            .foregroundStyle(Palette.text)
+            .tint(Palette.text)
+            .padding(.horizontal, 4)
+            .glassEffect(.regular, in: Capsule())
+            .padding(8)
         }
     }
 #endif

@@ -72,7 +72,7 @@ final class LocalizationRTLUITests: XCTestCase {
         XCTAssertEqual(live.label, "مباشر")
         XCTAssertGreaterThan(live.frame.width, live.frame.height, "LIVE reads on one line, not a tall capsule")
         snap("player")
-        XCTAssertGreaterThan(app.element("browse.player.progress").frame.width, 20, "the programme bar keeps its width")
+        XCTAssertGreaterThan(app.element("browse.player.progress").frame.width, 56, "the programme bar keeps its width")
         // A double tap on the right half skips back, where skip back is drawn.
         app.element("browse.player.surface").coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.3)).doubleTap()
         label(app, "timeshift.behindLive", is: "متأخر بـ ١ د")
