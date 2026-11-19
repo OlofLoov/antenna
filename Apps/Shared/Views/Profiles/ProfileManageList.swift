@@ -140,7 +140,7 @@
                 }
                 .background(Palette.ground)
                 .foregroundStyle(Palette.text)
-                .navigationTitle(profile == nil ? "Add profile" : "Edit profile")
+                .navigationTitle(profile == nil ? LocalizedStringResource("Add profile") : "Edit profile")
                 #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
                 #endif

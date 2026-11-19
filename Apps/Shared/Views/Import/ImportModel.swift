@@ -39,7 +39,7 @@
         /// The file source this file name was imported as before; never set in replace mode.
         private(set) var earlier: ImportRequest.Target?
         /// Why the last save failed.
-        private(set) var saveError: String?
+        private(set) var saveError: LocalizedStringResource?
         @ObservationIgnored let text: ImportText
         @ObservationIgnored private var reading: Task<Void, Never>?
 

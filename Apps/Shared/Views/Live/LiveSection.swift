@@ -1,9 +1,11 @@
 #if os(iOS) || os(macOS)
+    import Foundation
+
     /// A section of the iPad and Mac sidebar.
     enum LiveSection: Hashable, CaseIterable {
         case live, guide, movies, series, search, settings
 
-        var title: String {
+        var title: LocalizedStringResource {
             switch self {
             case .live: "Live"
             case .guide: "Guide"

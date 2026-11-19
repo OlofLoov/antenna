@@ -27,8 +27,12 @@ struct LiveSource: Identifiable, Equatable, Sendable {
     var waitsForICloud = false
 
     /// "Cabin: waiting for its login to sync from iCloud", or for its playlist.
-    var waitingLine: String { "\(name): waiting for its \(waitsForICloud ? "playlist" : "login") to sync from iCloud" }
+    var waitingLine: LocalizedStringResource {
+        waitsForICloud ? "\(name): waiting for its playlist to sync from iCloud" : "\(name): waiting for its login to sync from iCloud"
+    }
 
     /// "Cabin · waiting for login", or "· waiting for iCloud".
-    var waitingTag: String { "\(name) · waiting for \(waitsForICloud ? "iCloud" : "login")" }
+    var waitingTag: LocalizedStringResource {
+        waitsForICloud ? "\(name) · waiting for iCloud" : "\(name) · waiting for login"
+    }
 }

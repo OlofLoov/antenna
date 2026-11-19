@@ -8,9 +8,10 @@
     /// Selecting it pushes the list of choices with a checkmark on the current
     /// one, and picking one goes back to the row.
     struct ChoiceRow<Value: Hashable>: View {
-        let label: String
+        let label: LocalizedStringResource
         @Binding var selection: Value
         let choices: [Value]
+        /// The value's name from AntennaCore, shown as it is.
         let title: (Value) -> String
 
         var body: some View {
@@ -25,7 +26,7 @@
     /// The pushed page of a `ChoiceRow`: the settings split page with the label
     /// on the left and one row per value on the right, the current one ticked.
     private struct ChoiceList<Value: Hashable>: View {
-        let label: String
+        let label: LocalizedStringResource
         @Binding var selection: Value
         let choices: [Value]
         let title: (Value) -> String

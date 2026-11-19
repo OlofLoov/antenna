@@ -209,12 +209,12 @@ import Testing
         let playback = playback()
         playback.play(series(2), library: library, activity: activity)
         #expect(await eventually { playback.problem == .noEpisodes(series(2)) })
-        #expect(playback.problem?.message == "No episodes available")
+        #expect(playback.problem.map { String(localized: $0.message) } == "No episodes available")
 
         playback.problem = nil
         playback.play(series(3), library: library, activity: activity)
         #expect(await eventually { playback.problem == .episodesFailed(series(3)) })
-        #expect(playback.problem?.message == "Could not load episodes")
+        #expect(playback.problem.map { String(localized: $0.message) } == "Could not load episodes")
         #expect(playback.problem?.retries == true)
         playback.retry(series(3), library: library, activity: activity)
         #expect(await eventually { engine.loads.count == 1 })

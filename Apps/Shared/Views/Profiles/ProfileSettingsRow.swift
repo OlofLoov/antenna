@@ -37,7 +37,7 @@ struct ProfileSettingsRow: View {
         }
         .rowLabelColors()
         .accessibilityLabel("Profiles")
-        .accessibilityValue(shown?.name ?? "Add a profile")
+        .accessibilityValue(shown.map { Text($0.name) } ?? Text("Add a profile"))
         .accessibilityIdentifier("settings.profile")
         #if os(tvOS)
             .fullScreenCover(isPresented: $managing) { manage }

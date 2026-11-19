@@ -45,8 +45,10 @@ extension OnboardingForm {
                     Text("Easier to type on iPhone")
                         .font(.callout.weight(.semibold))
                     Text(
-                        "An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields "
-                            + "fill in here as you type. Or add the source in Antenna on iPhone and it syncs over."
+                        """
+                        An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields \
+                        fill in here as you type. Or add the source in Antenna on iPhone and it syncs over.
+                        """
                     )
                     .font(.caption)
                     .foregroundStyle(.secondary)

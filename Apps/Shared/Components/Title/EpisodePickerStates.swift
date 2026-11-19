@@ -25,7 +25,7 @@ extension EpisodePicker {
     /// A line of muted text in place of the list.
     struct Note: View {
         let type: Sizes
-        let text: String
+        let text: LocalizedStringResource
         let identifier: String
 
         var body: some View {
@@ -41,7 +41,7 @@ extension EpisodePicker {
     /// What failed and Retry, in place of the list.
     struct Failure: View {
         let type: Sizes
-        let message: String
+        let message: LocalizedStringResource
         @Environment(\.episodes) private var episodes
 
         var body: some View {

@@ -31,7 +31,7 @@ enum SettingsPage {
     /// A symbol, the page title and the focused row's footer, centered.
     struct Lead<Footer: View>: View {
         let symbol: String
-        let title: String
+        let title: LocalizedStringResource
         @ViewBuilder var footer: Footer
 
         var body: some View {

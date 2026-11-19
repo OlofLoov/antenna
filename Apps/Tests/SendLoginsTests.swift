@@ -78,7 +78,8 @@ import Testing
     func absent() {
         let one = model(link([home.id, UUID()]))
         #expect(one.rows.map(\.id) == [home.id] && one.missing == 1)
-        #expect(SendLogins.missing(1, device: "iPhone")?.hasPrefix("1 source the Apple TV asked for isn't on this iPhone yet.") == true)
+        let line = SendLogins.missing(1, device: "iPhone").map { String(localized: $0) }
+        #expect(line?.hasPrefix("1 source the Apple TV asked for isn't on this iPhone yet.") == true)
         let none = model(link([UUID(), UUID()]))
         #expect(none.hasNone && !none.canSend && none.missing == 2)
     }

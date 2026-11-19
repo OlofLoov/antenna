@@ -11,17 +11,17 @@
         /// No source loaded a channel and every failure was the connection.
         case offline
         /// No source loaded a channel and at least one failed.
-        case failed(waiting: [String])
+        case failed(waiting: [LocalizedStringResource])
         /// The sources loaded no channels, or wait for their logins.
-        case empty(waiting: [String])
+        case empty(waiting: [LocalizedStringResource])
         /// The channels, with a banner naming the sources that added nothing
         /// and a note per source waiting for its login.
-        case channels(banner: String?, waiting: [LiveSource])
+        case channels(banner: LocalizedStringResource?, waiting: [LiveSource])
 
-        static let offlineTitle = "You're offline."
-        static let offlineLine = "Connect to the internet and try again."
-        static let failedTitle = "Could not load channels"
-        static let emptyTitle = "No channels yet"
+        static let offlineTitle: LocalizedStringResource = "You're offline."
+        static let offlineLine: LocalizedStringResource = "Connect to the internet and try again."
+        static let failedTitle: LocalizedStringResource = "Could not load channels"
+        static let emptyTitle: LocalizedStringResource = "No channels yet"
 
         /// `dismissed` is the set of sources whose banner the user closed;
         /// the banner comes back when another source fails.
@@ -51,11 +51,16 @@
 
         /// "Could not load Cabin M3U", and "Home has no channels" for a
         /// source that loaded empty.
-        private static func banner(failed: [LiveSource], empty: [LiveSource]) -> String {
-            var parts: [String] = []
-            if !failed.isEmpty { parts.append("Could not load " + list(failed.map(\.name))) }
-            if !empty.isEmpty { parts.append(list(empty.map(\.name)) + (empty.count == 1 ? " has no channels" : " have no channels")) }
-            return parts.joined(separator: ". ")
+        private static func banner(failed: [LiveSource], empty: [LiveSource]) -> LocalizedStringResource {
+            let failedNames = list(failed.map(\.name))
+            let emptyNames = list(empty.map(\.name))
+            return switch (failed.isEmpty, empty.count) {
+            case (_, 0): "Could not load \(failedNames)"
+            case (true, 1): "\(emptyNames) has no channels"
+            case (true, _): "\(emptyNames) have no channels"
+            case (false, 1): "Could not load \(failedNames). \(emptyNames) has no channels"
+            case (false, _): "Could not load \(failedNames). \(emptyNames) have no channels"
+            }
         }
 
         private static func list(_ names: [String]) -> String {
@@ -64,7 +69,7 @@
         }
 
         /// What the loading list says about a source.
-        static func detail(_ state: LiveSource.State) -> String? {
+        static func detail(_ state: LiveSource.State) -> LocalizedStringResource? {
             switch state {
             case .loading: nil
             case .loaded(let count): count == 1 ? "1 channel" : "\(count) channels"
@@ -115,7 +120,7 @@
             }
         }
 
-        private func message(_ title: String, _ lines: [String], identifier: String) -> some View {
+        private func message(_ title: LocalizedStringResource, _ lines: [LocalizedStringResource], identifier: String) -> some View {
             Browse.Message(title: title, lines: lines, retry: live.retry)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier(identifier)
@@ -125,7 +130,7 @@
     /// The failure banner and a note per source waiting for its login,
     /// above the channels on iPhone (`iPhone-Banner`).
     struct LiveBanners: View {
-        let banner: String?
+        let banner: LocalizedStringResource?
         let waiting: [LiveSource]
         @Environment(LiveModel.self) private var live
 

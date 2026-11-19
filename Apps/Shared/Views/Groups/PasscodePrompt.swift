@@ -27,7 +27,7 @@ enum PasscodeFlow: Equatable {
 struct PasscodePrompt: View {
     let flow: PasscodeFlow
     /// What is locked, as "Movies is locked."
-    let message: String
+    let message: LocalizedStringResource
     let finished: (Bool) -> Void
 
     @Environment(\.modelContext) private var context
@@ -35,7 +35,7 @@ struct PasscodePrompt: View {
     @Query private var records: [PasscodeRecord]
     @State private var step: Step?
     @State private var typed = ""
-    @State private var error: String?
+    @State private var error: LocalizedStringResource?
     @State private var firstEntry: String?
     @State private var waitEnds = 0
 
@@ -73,7 +73,7 @@ struct PasscodePrompt: View {
         step ?? (flow == .unlock || flow == .change ? .current : .new)
     }
 
-    private var title: String {
+    private var title: LocalizedStringResource {
         switch currentStep {
         case .current: "Enter passcode"
         case .new: flow == .create ? "Set a passcode" : "Enter a new passcode"
@@ -88,7 +88,7 @@ struct PasscodePrompt: View {
         return currentStep == .current ? locks?.waitRemaining ?? 0 : 0
     }
 
-    private var shownError: String? {
+    private var shownError: LocalizedStringResource? {
         let wait = waitRemaining
         guard wait == 0 else { return "Try again in \(Int(wait.rounded(.up))) seconds" }
         return error
@@ -176,7 +176,9 @@ struct PasscodeForgot: View {
                 if ProcessInfo.processInfo.arguments.contains("-ui-testing-groups-owner") { return true }
             #endif
             let context = LAContext()
-            return (try? await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Reset the group passcode")) ?? false
+            return
+                (try? await context.evaluatePolicy(
+                    .deviceOwnerAuthentication, localizedReason: String(localized: "Reset the group passcode"))) ?? false
         }
     #endif
 }

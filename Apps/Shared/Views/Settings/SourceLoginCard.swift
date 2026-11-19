@@ -17,7 +17,8 @@
         @Environment(\.modelContext) private var context
         @Environment(\.sourceRefresher) private var refresher
         @State private var receiver: LoginReceiverModel?
-        @State private var failure: String?
+        @Environment(\.locale) private var locale
+        @State private var failure: LocalizedStringResource?
 
         var body: some View {
             // A stack, not a Group: a Group with nothing in it never appears,
@@ -48,7 +49,7 @@
 
         private func keep(_ payload: LoginPayload) async {
             guard let login = payload.logins.first(where: { $0.source == source.id }) else { return }
-            AccessibilityNotification.Announcement(LoginQRCard.received).post()
+            AccessibilityNotification.Announcement(Words(locale)(LoginQRCard.received)).post()
             do {
                 _ = try await LoginKeeper(connector: .app).keep(.init(login), for: source, in: context)
                 failure = nil

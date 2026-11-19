@@ -17,6 +17,7 @@ struct SourceDetailsScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.sourceRefresher) private var refresher
+    @Environment(\.locale) private var locale
     @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
     @State private var editor: SourceEditor?
     @State private var deleting: SourceRecord?
@@ -155,7 +156,7 @@ struct SourceDetailsScreen: View {
         #else
             let text = SourceStatusText()
         #endif
-        return SettingsView.fileLines(record)
+        return SettingsView.fileLines(record, words: Words(locale))
             + text.detailLines(SettingsView.status(of: record, refresher: refresher), account: nil, now: now)
     }
 
@@ -189,9 +190,9 @@ private enum SourceEntry {
 /// beside the system text field (design-system/forms-use-the-platform-form-style),
 /// a text field elsewhere.
 private struct SourceField: View {
-    let label: String
+    let label: LocalizedStringResource
     @Binding var text: String
-    var prompt: String?
+    var prompt: LocalizedStringResource?
     var entry = SourceEntry.text
     let identifier: String
 
@@ -301,7 +302,7 @@ private struct SourceFieldsSection: View {
         }
     }
 
-    private var linkLabel: String {
+    private var linkLabel: LocalizedStringResource {
         switch editor.kind {
         case .m3u, .m3uFile: "Playlist"
         case .xtream, .jellyfin, .channelsDVR: "Server"
@@ -310,8 +311,8 @@ private struct SourceFieldsSection: View {
     }
 
     /// The dots stand for a saved password; a portal without one shows that the field is optional.
-    private var passwordPrompt: String {
-        editor.kind == .stalker && !editor.hasPassword ? "Optional" : "••••••••"
+    private var passwordPrompt: LocalizedStringResource {
+        editor.kind == .stalker && !editor.hasPassword ? "Optional" : .verbatim("••••••••")
     }
 }
 
@@ -328,7 +329,7 @@ private struct GuideRowSection: View {
             } label: {
                 LabeledContent("Guide") {
                     if let count = GuideSourcesModel.missingCount(id, store: store) {
-                        Text(count == 1 ? "1 channel without guide" : "\(count) channels without guide")
+                        Text(count == 1 ? LocalizedStringResource("1 channel without guide") : "\(count) channels without guide")
                     }
                 }
             }

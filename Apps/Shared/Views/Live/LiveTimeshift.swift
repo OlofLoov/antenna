@@ -7,6 +7,7 @@
     /// skips, LIVE as a button while behind, and the programme at the
     /// picture's time.
     struct LiveTimeshiftStrip<Extras: View>: View {
+        @Environment(\.locale) private var locale
         @Environment(LiveModel.self) private var live
         @ViewBuilder var extras: Extras
 
@@ -16,12 +17,13 @@
                 let shown = timeshift.shownTime ?? context.date
                 // The programme shown is the one at the picture's time
                 // (timeshift-catch-up-and-start-over/pause-live-tv-and-pick-up-where-you-left-off).
-                let progress = live.playing.map { live.nowText(for: $0, at: shown) }?.progress
+                let progress = live.playing.map { live.nowText(for: $0, at: shown, locale: locale) }?.progress
                 Browse.TimeshiftControls(
                     scrub: .init(
-                        time: LiveModel.time(shown), marker: timeshift.markerFraction ?? 1, gaps: timeshift.gaps,
+                        time: LiveModel.time(shown, locale: locale), marker: timeshift.markerFraction ?? 1, gaps: timeshift.gaps,
                         behind: timeshift.behindText, badge: timeshift.catchup == nil ? nil : "CATCH-UP"),
-                    isPaused: live.isPaused, progress: progress, clock: LiveModel.time(context.date), isFullScreen: live.fullScreen,
+                    isPaused: live.isPaused, progress: progress, clock: LiveModel.time(context.date, locale: locale),
+                    isFullScreen: live.fullScreen,
                     playPause: { touched { live.playPause() } },
                     skip: { forward in touched { timeshift.skip(forward: forward) } },
                     drag: { fraction in

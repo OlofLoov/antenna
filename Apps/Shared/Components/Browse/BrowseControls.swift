@@ -35,7 +35,7 @@ extension Browse {
                 ProgressTrack(fraction: progress ?? 0, height: regular ? 4 : 3)
                     .accessibilityElement()
                     .accessibilityLabel("Programme progress")
-                    .accessibilityValue(progress.map { "\(Int(($0 * 100).rounded())) percent" } ?? "No programme information")
+                    .accessibilityValue(progress.map { Text("\(Int(($0 * 100).rounded())) percent") } ?? Text("No programme information"))
                     .accessibilityIdentifier("browse.player.progress")
                 Text(clock)
                     .font(.footnote)

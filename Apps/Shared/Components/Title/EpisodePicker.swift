@@ -33,7 +33,7 @@ struct EpisodesContext {
         /// "No episodes available".
         case empty
         /// What failed, with Retry.
-        case failed(String)
+        case failed(LocalizedStringResource)
     }
 
     struct Season: Equatable, Identifiable {
@@ -199,7 +199,7 @@ enum EpisodePicker {
                     .contentShape(Rectangle())
             }
             .buttonStyle(ChipStyle(isPicked: isPicked, height: type.chip))
-            .accessibilityValue(isPicked ? "Selected, \(season.count)" : season.count)
+            .accessibilityValue(isPicked ? Text("Selected, \(season.count)") : Text(season.count))
             .accessibilityAddTraits(isPicked ? .isSelected : [])
             .accessibilityIdentifier("episodes.season.\(season.id)")
             .focused($focused)

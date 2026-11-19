@@ -18,20 +18,22 @@
             /// A delivery arrived that this TV cannot read.
             case unreadable
             /// A delivered login did not work, with the sign-in's sentence.
-            case failed(String)
+            case failed(LocalizedStringResource)
         }
 
-        static let title = "Send the login from your iPhone"
-        static let body =
-            "Scan the code with your iPhone camera. Antenna there sends the login to this Apple TV, encrypted, through iCloud."
-        static let footer = "Prefer the remote? Type here; your iPhone offers its keyboard too."
-        static let codeLabel = "QR code. Scan it with your iPhone to send the login to this Apple TV."
-        static let unreadable = "Something arrived from your iPhone that this Apple TV can't read."
-        static let unreadableHint = "Update Antenna on both, or type the login here."
-        static let received = "Login received from your iPhone"
+        static let title: LocalizedStringResource = "Send the login from your iPhone"
+        static let body: LocalizedStringResource = """
+            Scan the code with your iPhone camera. \
+            Antenna there sends the login to this Apple TV, encrypted, through iCloud.
+            """
+        static let footer: LocalizedStringResource = "Prefer the remote? Type here; your iPhone offers its keyboard too."
+        static let codeLabel: LocalizedStringResource = "QR code. Scan it with your iPhone to send the login to this Apple TV."
+        static let unreadable: LocalizedStringResource = "Something arrived from your iPhone that this Apple TV can't read."
+        static let unreadableHint: LocalizedStringResource = "Update Antenna on both, or type the login here."
+        static let received: LocalizedStringResource = "Login received from your iPhone"
 
         /// "Waiting for your iPhone", and "· 2 logins" when the code asks for more than one.
-        static func waiting(_ count: Int) -> String {
+        static func waiting(_ count: Int) -> LocalizedStringResource {
             count > 1 ? "Waiting for your iPhone · \(count) logins" : "Waiting for your iPhone"
         }
 
@@ -97,7 +99,7 @@
                 }
             }
 
-            private func problem(_ text: String) -> some View {
+            private func problem(_ text: LocalizedStringResource) -> some View {
                 HStack(alignment: .firstTextBaseline, spacing: Metrics.Spacing.small) {
                     Circle().fill(OnboardingForm.errorColor).frame(width: 12, height: 12).accessibilityHidden(true)
                     Text(text).font(.caption).fixedSize(horizontal: false, vertical: true)
@@ -107,7 +109,7 @@
                 .accessibilityIdentifier("signIn.qr.status")
             }
 
-            private func line(_ text: String, color: HierarchicalShapeStyle) -> some View {
+            private func line(_ text: LocalizedStringResource, color: HierarchicalShapeStyle) -> some View {
                 Text(text)
                     .font(.caption)
                     .foregroundStyle(color)

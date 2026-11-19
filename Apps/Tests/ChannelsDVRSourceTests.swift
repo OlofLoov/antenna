@@ -128,7 +128,9 @@ import Testing
             dependencies: .init(
                 channels: { _ in Playlist(channels: []) }, library: { _ in SourceSetup.Library(movies: 0, series: 0) }, guide: nil))
         let lines = OnboardingProgress(setups: [setup]).lines(for: setup, .phone)
-        #expect(lines.first?.title == "Server" && lines.first?.detail == "Channels DVR 2025.03.01.0012")
+        let first = try #require(lines.first)
+        #expect(String(localized: first.title) == "Server")
+        #expect(first.detail.map { String(localized: $0) } == "Channels DVR 2025.03.01.0012")
     }
 
     @Test("first-run-onboarding/a-failed-connection-says-why-and-saves-nothing: Channels DVR failures save nothing")
@@ -173,7 +175,7 @@ import Testing
 
         editor.link = "ftp://\(new)"
         #expect(await editor.save(in: context) == false)
-        #expect(editor.error == "Enter a valid server address.")
+        #expect(editor.error.map { String(localized: $0) } == "Enter a valid server address.")
 
         editor.link = "\(new)/"
         #expect(await editor.save(in: context))

@@ -15,15 +15,15 @@
 
         var body: some View {
             PlayerStatus.TelevisionFailure(
-                title: message.title, explanation: message.explanation, detail: detail, hint: PlayerStatusText.changeChannelHint
+                title: message.title, explanation: message.explanation, detail: detail, hint: .verbatim(PlayerStatusText.changeChannelHint)
             ) {
-                PlayerStatus.TelevisionButton(title: PlayerStatusText.tryAgain) { player.retry() }
+                PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.tryAgain)) { player.retry() }
                     // Holding select on the error is Try again too.
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in player.retry() })
                     .focused(focus, equals: .retry)
                     .accessibilityIdentifier("player.retry")
                 if let signIn {
-                    PlayerStatus.TelevisionButton(title: PlayerStatusText.signIn, action: signIn)
+                    PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.signIn), action: signIn)
                         .focused(focus, equals: .signIn)
                         .accessibilityIdentifier("player.signIn")
                 }

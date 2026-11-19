@@ -9,16 +9,16 @@ enum OnboardingSummary {
     /// One number and what it counts, such as "412" over "live channels · 18 groups".
     struct Tile: Identifiable, Equatable {
         var id: String
-        var value: String
-        var caption: String
+        var value: LocalizedStringResource
+        var caption: LocalizedStringResource
     }
 
     struct Television<Picture: View>: View {
-        let eyebrow: String
+        let eyebrow: LocalizedStringResource
         let tiles: [Tile]
         /// "Live · 101 Eurosport 1"; nil without a live channel.
-        let liveCaption: String?
-        let footnote: String
+        let liveCaption: LocalizedStringResource?
+        let footnote: LocalizedStringResource
         let primary: OnboardingChecklist.Primary
         let actions: OnboardingChecklist.Actions
         @ViewBuilder var picture: Picture
@@ -40,8 +40,10 @@ enum OnboardingSummary {
                             .accessibilityAddTraits(.isHeader)
                         if liveCaption != nil {
                             Text(
-                                "The first channel is already playing. Press the touch surface for the channel list, "
-                                    + "press play/pause for the channel bar."
+                                """
+                                The first channel is already playing. Press the touch surface for the channel list, \
+                                press play/pause for the channel bar.
+                                """
                             )
                             .foregroundStyle(.secondary)
                         }

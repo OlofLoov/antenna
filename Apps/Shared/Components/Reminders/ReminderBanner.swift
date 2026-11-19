@@ -113,7 +113,7 @@ enum ReminderBanner {
 
     /// Watch or Dismiss on Apple TV: the white card with focus, 0.12 surface without.
     struct TelevisionButton: View {
-        let title: String
+        let title: LocalizedStringResource
         let action: () -> Void
 
         var body: some View {

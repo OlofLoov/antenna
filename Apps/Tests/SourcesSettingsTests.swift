@@ -78,7 +78,7 @@ import Testing
         editor.name = "Renamed"
         editor.password = "wrong"
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "Could not sign in. Check the username and password.")
+        #expect(editor.error.map { String(localized: $0) } == "Could not sign in. Check the username and password.")
         #expect(record.name == "Home")
         #expect(try held.load(for: try #require(record.credentialKey))?.password == "old")
     }
@@ -90,10 +90,10 @@ import Testing
         let editor = try editor(record, tag: "dup")
         editor.link = "mine.test/list.m3u"
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "Enter a valid URL.")
+        #expect(editor.error.map { String(localized: $0) } == "Enter a valid URL.")
         editor.link = "HTTP://DUP.test/list.m3u/"
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "This source is already added.")
+        #expect(editor.error.map { String(localized: $0) } == "This source is already added.")
         #expect(StubURLProtocol.requestCount(tag: "dup") == 0)
         #expect(record.url?.absoluteString == "http://mine.test/list.m3u")
     }
@@ -108,7 +108,7 @@ import Testing
         #expect(!editor.hasLogin)
         editor.username = "anna"
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "Enter your username and password.")
+        #expect(editor.error.map { String(localized: $0) } == "Enter your username and password.")
         editor.password = "pw"
         #expect(await editor.save(in: context))
         #expect(editor.hasLogin)
@@ -121,7 +121,7 @@ import Testing
         let editor = try editor(record, tag: "needs-login")
         editor.username = "  "
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "Enter your username and password.")
+        #expect(editor.error.map { String(localized: $0) } == "Enter your username and password.")
         #expect(StubURLProtocol.requestCount(tag: "needs-login") == 0)
         #expect(try held.load(for: try #require(record.credentialKey)) == .init(username: "anna", password: "pw"))
     }
@@ -160,10 +160,12 @@ import Testing
         try context.save()
         #expect(SourceRemoval.favorites(of: record.id, in: context) == 2)
         #expect(
-            SourceRemoval.message(channels: 412, favorites: 2, signedInToICloud: true)
+            String(localized: SourceRemoval.message(channels: 412, favorites: 2, signedInToICloud: true))
                 == "Removes its 412 channels, 2 favorites and guide from every device signed in to your iCloud account.")
-        #expect(SourceRemoval.message(channels: nil, favorites: 0, signedInToICloud: false) == "Removes its guide from this device.")
-        #expect(SourceRemoval.title(name: "Home") == "Delete Home?")
+        #expect(
+            String(localized: SourceRemoval.message(channels: nil, favorites: 0, signedInToICloud: false))
+                == "Removes its guide from this device.")
+        #expect(String(localized: SourceRemoval.title(name: "Home")) == "Delete Home?")
 
         await SourceRemoval(credentials: held).delete(record, in: context)
         #expect(try context.fetch(FetchDescriptor<SourceRecord>()).isEmpty)

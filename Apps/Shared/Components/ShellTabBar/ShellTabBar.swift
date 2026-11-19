@@ -70,7 +70,7 @@ enum ShellTabBar {
 
     /// One tab. Select opens it; moving focus onto it opens nothing.
     struct Pill: View {
-        let title: String
+        let title: LocalizedStringResource
         let look: Look
         let select: () -> Void
 

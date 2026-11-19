@@ -21,7 +21,28 @@
       },
       "shouldTranslate" : false
     },
+    "%@ %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ · %3$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ (locked)" : {},
+    "%@ The login stays on this Apple TV." : {},
+    "%@ added" : {},
+    "%@ arrived from your iPhone" : {},
+    "%@ channels" : {},
+    "%@ has no channels" : {},
+    "%@ have no channels" : {},
+    "%@ is locked." : {},
     "%@ scores, not from the movie database" : {},
+    "%@ signed in" : {},
+    "%@ will be locked." : {},
     "%@ will not remind you on any of your devices." : {},
     "%@ · %@" : {
       "localizations" : {
@@ -34,6 +55,8 @@
       },
       "shouldTranslate" : false
     },
+    "%@ · Live" : {},
+    "%@ · waiting for iCloud" : {},
     "%@ · waiting for login" : {},
     "%@%@" : {
       "localizations" : {
@@ -46,8 +69,52 @@
       },
       "shouldTranslate" : false
     },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@, %@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@, %3$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@, %@, %@ to %@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@, %3$@ to %4$@, %5$@"
+          }
+        }
+      }
+    },
+    "%@, %lld channels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$lld channels"
+          }
+        }
+      }
+    },
+    "%@, 1 channel" : {},
     "%@, locked" : {},
     "%@, profile" : {},
+    "%@, trailer" : {},
     "%@. %@" : {
       "localizations" : {
         "en" : {
@@ -70,10 +137,27 @@
       },
       "shouldTranslate" : false
     },
+    "%@: could not load its channels" : {},
+    "%@: loading" : {},
+    "%@: no channels" : {},
+    "%@: offline" : {},
+    "%@: waiting for its login to sync from iCloud" : {},
+    "%@: waiting for its playlist to sync from iCloud" : {},
     "%lld" : {
       "shouldTranslate" : false
     },
+    "%lld channels" : {},
     "%lld channels without guide" : {},
+    "%lld more sources to sign in after this one: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld more sources to sign in after this one: %2$@"
+          }
+        }
+      }
+    },
     "%lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -86,8 +170,33 @@
     },
     "%lld of 4 digits entered" : {},
     "%lld percent" : {},
+    "%lld sources added" : {},
+    "%lld sources the Apple TV asked for aren't on this %@ yet. New sources can take a minute to arrive through iCloud." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld sources the Apple TV asked for aren't on this %2$@ yet. New sources can take a minute to arrive through iCloud."
+          }
+        }
+      }
+    },
+    "00:1A:79:12:34:56" : {},
+    "1 channel" : {},
     "1 channel without guide" : {},
+    "1 favorite" : {},
+    "1 more source to sign in after this one: %@" : {},
+    "1 source the Apple TV asked for isn't on this %@ yet. New sources can take a minute to arrive through iCloud." : {},
+    "192.168.1.20 or nas.local" : {},
+    "A Channels DVR server on your home network." : {},
+    "A link ending in .m3u or .m3u8, with an optional guide link." : {},
+    "A link ending in .m3u or .m3u8. It lists every channel with its stream address. A second link, in XMLTV format, carries the programme guide and is optional." : {},
     "A link with a login or token is kept in your iCloud Keychain only." : {},
+    "A portal address and a MAC address." : {},
+    "A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in the Keychain on this Apple TV." : {},
+    "A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in your iCloud Keychain." : {},
+    "A server address with a username and password." : {},
+    "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here." : {},
     "About" : {},
     "Add" : {},
     "Add a profile" : {},
@@ -95,7 +204,9 @@
     "Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud." : {},
     "Add another source" : {},
     "Add channels" : {},
+    "Add here, watch on Apple TV" : {},
     "Add profile" : {},
+    "Add the link as a source" : {},
     "Add to Favorites" : {},
     "Add to My list" : {},
     "Add to favorites" : {},
@@ -103,10 +214,22 @@
     "Adds or removes the playing or named channel from Favorites." : {},
     "Adds the playing channel to Favorites." : {},
     "AirPlay" : {},
+    "AirPlay not available for this stream" : {},
+    "All" : {},
+    "All movies" : {},
+    "All series" : {},
     "Allow notifications" : {},
+    "An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over." : {},
     "Antenna" : {},
+    "Antenna also appears in the App Switcher on your iPhone. Prefer the remote? Type here; your iPhone offers its keyboard too." : {},
+    "Antenna includes no channels. A source is the playlist or login a TV provider gives you." : {},
+    "Antenna includes no channels. A source is the playlist or login a TV provider gives you. Antenna has no servers of its own; everything you add stays between you and your provider." : {},
+    "Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. Changes to the file are not picked up; re-import to update." : {},
     "Antenna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed under the GNU Lesser General Public License, version 2.1 or later. Antenna links its own build of FFmpeg as a separate library and changes none of FFmpeg's code." : {},
+    "Antenna plays the TV sources you already have. It comes with no channels, so start by adding a playlist or a login from your provider." : {},
+    "Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider." : {},
     "Antenna reads the clipboard only when you tap Fill in." : {},
+    "Audio" : {},
     "Audio & Subtitles" : {},
     "Audio and subtitles" : {},
     "Autoplay next episode" : {},
@@ -118,12 +241,21 @@
     "Back to the grid" : {},
     "Banner" : {},
     "Before start" : {},
+    "Browse movies" : {},
     "Buffering" : {},
+    "CATCH-UP" : {},
+    "CHANNELS DVR" : {},
+    "CUSTOM" : {},
     "Cancel" : {},
+    "Cast" : {},
     "Catch-up" : {},
     "Change" : {},
     "Change passcode" : {},
     "Channel" : {},
+    "Channel down" : {},
+    "Channel up" : {},
+    "Channels" : {},
+    "Channels DVR" : {},
     "Channels · %lld" : {},
     "Channels, %@, %@" : {
       "localizations" : {
@@ -136,36 +268,87 @@
       }
     },
     "Check" : {},
+    "Check that this %@ is online and signed in to iCloud. It sends on its own once it can." : {},
     "Checked with the server first, then kept in your iCloud Keychain on this %@." : {},
+    "Checking the login…" : {},
     "Checking…" : {},
+    "Choose another file" : {},
     "Clear" : {},
     "Clear the search" : {},
     "Close" : {},
     "Color %lld" : {},
     "Connect" : {},
+    "Connect to the internet and try again." : {},
     "Connecting" : {},
     "Connecting…" : {},
     "Continue" : {},
     "Continue on %@" : {},
+    "Continue watching" : {},
+    "Copy these from the email or page your provider sent you." : {},
+    "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one." : {},
+    "Could not load" : {},
+    "Could not load %@" : {},
+    "Could not load %@. %@ has no channels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Could not load %1$@. %2$@ has no channels"
+          }
+        }
+      }
+    },
+    "Could not load %@. %@ have no channels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Could not load %1$@. %2$@ have no channels"
+          }
+        }
+      }
+    },
+    "Could not load channels" : {},
+    "Could not load details" : {},
+    "Could not load episodes" : {},
+    "Could not load the guide for %@" : {},
+    "Could not store credentials: %@" : {},
+    "Could not store the logins in this file: %@" : {},
+    "Couldn't send because your iCloud storage is full." : {},
+    "Couldn't send. Check that this %@ is online, then try again." : {},
     "Create" : {},
+    "Custom" : {},
     "Delete" : {},
     "Delete %@?" : {},
     "Delete group" : {},
     "Delete profile" : {},
     "Delete source" : {},
     "Description" : {},
+    "Director" : {},
     "Dismiss" : {},
     "Done" : {},
     "Down" : {},
+    "Downloading the guide" : {},
+    "Drop to import %@" : {},
+    "Drop to import a playlist" : {},
     "Earlier" : {},
     "Easier to type on iPhone" : {},
     "Edit %@" : {},
     "Edit profile" : {},
     "Enter" : {},
+    "Enter a new passcode" : {},
+    "Enter a valid URL." : {},
+    "Enter it again" : {},
     "Enter passcode" : {},
+    "Enter the current passcode first." : {},
     "Enter the login for %@" : {},
+    "Enter your username and password." : {},
+    "Everything below is loading. The guide finishes in the background while you watch." : {},
+    "Everything has loaded." : {},
     "Exit full screen" : {},
     "FFmpeg" : {},
+    "FILE" : {},
+    "Failed" : {},
     "Fill in from the copied link" : {},
     "Fill this in here. The source syncs to the Apple TV through iCloud." : {},
     "Filter" : {},
@@ -174,51 +357,98 @@
     "Forgot it? Reset the passcode in Antenna on your iPhone, iPad or Mac." : {},
     "Forgot passcode?" : {},
     "Forward 10 seconds" : {},
+    "Forward 15 seconds" : {},
     "Forward 30 seconds" : {},
     "Full screen" : {},
     "GNU LGPL 2.1" : {},
+    "Genres" : {},
     "Go" : {},
     "Go to live" : {},
     "Groups" : {},
+    "Groups has locked groups." : {},
     "Groups · %lld" : {},
+    "Groups, favorites, catch-up" : {},
     "Guide" : {},
     "Guide URL" : {},
+    "Guide could not be loaded" : {},
+    "Guide link found" : {},
+    "Guide window" : {},
+    "HIDDEN" : {},
+    "Handed to iCloud. Open Antenna on your Apple TV." : {},
     "Hidden" : {},
     "Hide password" : {},
     "Hide, lock, rename and reorder. Changes reach every device signed into your iCloud." : {},
+    "Import" : {},
     "Import a file" : {},
     "Import a file instead" : {},
     "Import a playlist" : {},
+    "Import as new" : {},
+    "Imported %@" : {},
     "In progress" : {},
-    "In the guide, %@, %@ %@%@" : {
+    "In the Movies tab" : {},
+    "In the guide" : {},
+    "In the guide, %@, %@ %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "In the guide, %1$@, %2$@ %3$@%4$@"
+            "value" : "In the guide, %1$@, %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "In the guide, %@, %@ %@, catch-up" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In the guide, %1$@, %2$@ %3$@, catch-up"
           }
         }
       }
     },
     "Include hidden channels in search" : {},
+    "Info" : {},
+    "It checks them with the provider and signs in." : {},
     "Its favorites, hidden groups and history go too. Sources stay." : {},
+    "Its saved login is unreadable. Re-import the file." : {},
+    "JELLYFIN" : {},
+    "Jellyfin" : {},
+    "Jellyfin server" : {},
+    "Keep the sign-in open on the Apple TV. If the code there changed, scan the new one." : {},
     "Keyboard focus" : {},
     "LIVE" : {},
+    "LOCKED" : {},
     "Later" : {},
     "Later: " : {},
     "License" : {},
     "Live" : {},
+    "Live TV from your own Jellyfin server." : {},
+    "Live TV with a guide" : {},
     "Live picture" : {},
+    "Live · %@" : {},
     "Loading" : {},
+    "Loading channels" : {},
+    "Loading channels…" : {},
     "Loading details" : {},
     "Loading episodes" : {},
+    "Loading movies and series…" : {},
     "Lock now" : {},
     "Locked" : {},
     "Login" : {},
+    "Login not picked up yet" : {},
+    "Login not sent" : {},
+    "Login received from your iPhone" : {},
+    "Login received. Checking with %@…" : {},
+    "Login received. Checking…" : {},
+    "Logins stay in your iCloud Keychain on this %@." : {},
+    "M3U" : {},
+    "M3U playlist" : {},
     "M3U, M3U8 and text files, up to 16 MB" : {},
     "MAC address" : {},
     "Manage profiles" : {},
     "Menu closes" : {},
+    "Missing" : {},
     "More" : {},
     "More description" : {},
     "More info" : {},
@@ -227,51 +457,75 @@
     "Movie info and scores" : {},
     "Movie or Series" : {},
     "Movies" : {},
-    "Movies & series, %@%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Movies & series, %1$@%2$@"
-          }
-        }
-      }
-    },
+    "Movies & series" : {},
+    "Movies & series, %@" : {},
+    "Movies & series, %@, series" : {},
+    "Movies and series" : {},
+    "Movies and series available" : {},
     "Mute" : {},
+    "My list" : {},
     "NAME" : {},
     "NEXT" : {},
     "NOW" : {},
     "Name" : {},
     "New group" : {},
+    "Newest first" : {},
     "Next channel" : {},
     "Next result" : {},
     "Next result across" : {},
     "Next season" : {},
+    "No Stalker portal answered at this address." : {},
     "No channel %@" : {},
+    "No channels found" : {},
+    "No channels in %@" : {},
+    "No channels in this group yet. Add some from Groups in Settings." : {},
+    "No channels match." : {},
     "No channels yet" : {},
+    "No channels yet. Add a source in Settings." : {},
+    "No episodes available" : {},
+    "No favorites yet. Hold select on a channel to add it." : {},
+    "No favorites yet. Right-click a channel to add it." : {},
+    "No favorites yet. Touch and hold a channel, or swipe it right, to add it." : {},
     "No groups yet. Add a source in Settings and its groups appear here." : {},
     "No link on the clipboard" : {},
+    "No live channels" : {},
+    "No movies or series" : {},
     "No programme information" : {},
     "No sources yet" : {},
+    "None of the sources this Apple TV asked for are on this %@. Both need the same iCloud account, and new sources can take a minute to arrive." : {},
+    "Not done" : {},
     "Not in any source" : {},
+    "Not links" : {},
     "Not on My list" : {},
+    "Not on this %@" : {},
+    "Not picked up yet" : {},
+    "Not sent yet" : {},
+    "Not signed in to iCloud, so it stays on this Apple TV." : {},
+    "Not signed in to iCloud. Sources stay on this device." : {},
+    "Nothing to watch yet" : {},
+    "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV." : {},
     "Now" : {},
+    "Now · %@" : {},
     "Now, %@" : {},
     "OK" : {},
     "Off" : {},
+    "Offline" : {},
     "On" : {},
     "On My list" : {},
     "Open Search" : {},
     "Open Settings" : {},
     "Open details" : {},
+    "Open on launch" : {},
     "Open the result" : {},
     "Opened from your Apple TV" : {},
     "Opens Antenna and resumes the movie, or opens the series." : {},
     "Opens Antenna on Live with the channel playing." : {},
     "Opens Antenna on Search." : {},
     "Optional" : {},
+    "Optional XMLTV link" : {},
     "Passcode" : {},
     "Password" : {},
+    "Paste the link your provider gave you. The guide link is optional." : {},
     "Pause" : {},
     "Paused" : {},
     "Picture" : {},
@@ -282,9 +536,23 @@
     "Play the channel" : {},
     "Playback" : {},
     "Playing" : {},
+    "Playing %@" : {},
+    "Playing in Picture in Picture" : {},
+    "Playing on AirPlay" : {},
+    "Playlist" : {},
+    "Playlist downloaded" : {},
+    "Playlist file" : {},
+    "Playlist imported" : {},
     "Plays the channel" : {},
+    "Point your iPhone camera at the code. Antenna opens there with this form, and what you enter syncs to this Apple TV through iCloud." : {},
+    "Portal" : {},
+    "Portal and name came from your iPhone." : {},
     "Position" : {},
+    "Posters and descriptions load as you browse" : {},
+    "Prefer the remote? Type here; your iPhone offers its keyboard too." : {},
     "Preferences" : {},
+    "Press Menu to go back" : {},
+    "Press Menu to go back and check the link" : {},
     "Previous channel" : {},
     "Previous result" : {},
     "Previous result across" : {},
@@ -293,12 +561,24 @@
     "Profiles" : {},
     "Programme progress" : {},
     "Progress" : {},
+    "QR code. Scan it with your iPhone to send the login to this Apple TV." : {},
+    "QR code. Scan it with your iPhone to set up this Apple TV from there." : {},
     "RECENT" : {},
     "Re-import %@" : {},
     "Re-import…" : {},
     "Reading %@…" : {},
+    "Reading the guide…" : {},
+    "Ready to send" : {},
+    "Recent" : {},
     "Recent search, %@" : {},
+    "Recent searches" : {},
+    "Recently added" : {},
+    "Recently watched" : {},
+    "Redeem a code" : {},
+    "Refresh all" : {},
+    "Refresh all sources" : {},
     "Refresh now" : {},
+    "Refresh sources" : {},
     "Remind me" : {},
     "Reminder · %@" : {},
     "Reminders" : {},
@@ -309,91 +589,232 @@
     "Remove from favorites" : {},
     "Remove from my list" : {},
     "Remove reminder?" : {},
+    "Removes %@ and guide from every device signed in to your iCloud account." : {},
+    "Removes %@ and guide from this device." : {},
+    "Removes its %@ and guide from every device signed in to your iCloud account." : {},
+    "Removes its %@ and guide from this device." : {},
+    "Removes its %@, %@ and guide from every device signed in to your iCloud account." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Removes its %1$@, %2$@ and guide from every device signed in to your iCloud account."
+          }
+        }
+      }
+    },
+    "Removes its %@, %@ and guide from this device." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Removes its %1$@, %2$@ and guide from this device."
+          }
+        }
+      }
+    },
+    "Removes its guide from every device signed in to your iCloud account." : {},
+    "Removes its guide from this device." : {},
     "Removes the playing channel from Favorites." : {},
     "Rename" : {},
+    "Replace" : {},
+    "Replace %@" : {},
+    "Required" : {},
+    "Reset the group passcode" : {},
     "Restore purchase" : {},
     "Retry" : {},
     "SERIES" : {},
+    "STALKER" : {},
+    "Sample" : {},
     "Save" : {},
     "Saved in the Keychain on this Apple TV. Antenna has no servers." : {},
     "Saved in the Keychain on this device." : {},
     "Saved in your iCloud Keychain only. Antenna has no servers and never sees your login." : {},
+    "Saved on this %@" : {},
+    "Scan the code with your iPhone camera. Antenna there sends the login to this Apple TV, encrypted, through iCloud." : {},
     "Search" : {},
     "Search For" : {},
     "Search channels" : {},
+    "Search movies" : {},
+    "Search series" : {},
     "See all" : {},
     "See all %lld" : {},
     "Select a channel" : {},
     "Selected" : {},
+    "Selected, %@" : {},
+    "Send the login from your iPhone" : {},
+    "Send to Apple TV" : {},
+    "Sending" : {},
+    "Sending the login…" : {},
     "Sending to your Apple TV" : {},
+    "Sending to your Apple TV…" : {},
+    "Sent" : {},
+    "Series" : {},
+    "Server" : {},
+    "Server and name came from your iPhone." : {},
+    "Set a new passcode. Every locked group stays locked." : {},
+    "Set a passcode" : {},
     "Set up Apple TV" : {},
+    "Set up from your iPhone" : {},
+    "Setting up %@" : {},
     "Settings" : {},
+    "Show channel list" : {},
     "Show password" : {},
     "Show remote hints" : {},
+    "Show sidebar" : {},
     "Shows the player controls" : {},
     "Sign in" : {},
     "Sign in Apple TV" : {},
     "Sign in on this Apple TV" : {},
     "Sign in to %@" : {},
+    "Sign in your Apple TV" : {},
+    "Signed in" : {},
     "Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own." : {},
+    "Something arrived from your iPhone that this Apple TV can't read." : {},
     "Sort" : {},
+    "Sorted by number" : {},
     "Source" : {},
+    "Source: waiting for its login to sync from iCloud" : {},
     "Sources" : {},
     "Sources & Settings" : {},
+    "Sources sync to your other devices through iCloud. Logins sync through iCloud Keychain when it is on, and never to Apple TV." : {},
+    "Stalker portal" : {},
     "Start over" : {},
+    "Start watching" : {},
+    "Start watching now" : {},
     "Subtitles" : {},
     "Subtitles Off" : {},
     "Subtitles On" : {},
+    "Swipe up or down while watching" : {},
+    "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own." : {},
+    "Synced with iCloud" : {},
     "Tabs" : {},
+    "The MAC address hasn't reached this Apple TV." : {},
+    "The address you open Jellyfin at in a browser, with the username and password you sign in with." : {},
     "The build script, the build and FFmpeg's source are published with the release." : {},
+    "The first channel is already playing. Press the touch surface for the channel list, press play/pause for the channel bar." : {},
+    "The guide keeps loading behind the picture" : {},
     "The login could not be saved on this Apple TV. Try again." : {},
+    "The login from your iPhone didn't work here. %@" : {},
+    "The login hasn't reached this Apple TV." : {},
     "The login stays in your iCloud Keychain. If the Apple TV asks for it, enter it once there." : {},
     "The offer comes from iOS and needs no setup." : {},
+    "The passcode was changed on another device." : {},
+    "The passcodes did not match. Start again." : {},
+    "The playlist has no channels. Go back and check the link." : {},
+    "The playlist server answered with status %lld." : {},
+    "The portal answered with status %lld." : {},
+    "The portal replied with something Antenna could not read." : {},
+    "The portal turned down this MAC address or login." : {},
+    "The portal turned this device down. It said “%@”." : {},
+    "The provider sent no channels, movies or series. Go back and check the details." : {},
+    "The server answered with status %lld." : {},
+    "The server replied with something Antenna could not read." : {},
+    "The server turned down the username and password. Sign in again." : {},
+    "The source syncs through iCloud to iPhone, iPad and Mac." : {},
+    "The sources sync through iCloud to iPhone, iPad and Mac." : {},
+    "This %@ already has %lld sources. They appear on the Apple TV on their own when both use the same iCloud account." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This %1$@ already has %2$lld sources. They appear on the Apple TV on their own when both use the same iCloud account."
+          }
+        }
+      }
+    },
+    "This %@ already has 1 source. It appears on the Apple TV on its own when both use the same iCloud account." : {},
+    "This %@ isn't signed in to iCloud, so it can't send logins to your Apple TV. Sign in to iCloud in Settings, then scan the code again." : {},
+    "This %@ isn't signed in to iCloud, so the source can't reach your Apple TV. Sign in to iCloud in Settings and it sends on its own." : {},
+    "This channel is locked." : {},
     "This code is from a newer Antenna. Update Antenna on this %@ to set up your Apple TV from here." : {},
+    "This code was already used. If the Apple TV still needs a login, it shows a new code." : {},
+    "This link is an Xtream login. Add it as Xtream to get Movies, Series and the guide." : {},
     "This runs once." : {},
+    "This source arrived through iCloud without its login. Enter it once here." : {},
+    "This source is already added." : {},
+    "This stream can't skip" : {},
     "Through iCloud. Antenna on the Apple TV picks it up on its own." : {},
     "Titles and people you open, and names you search for, are looked up in TMDB. Nothing about you or your sources is sent." : {},
     "Toggle" : {},
     "Toggle Favorite" : {},
     "Trailer" : {},
     "Try again" : {},
+    "Try again in %lld seconds" : {},
     "Tune Channel" : {},
     "Turn off" : {},
     "Turn on" : {},
     "Type" : {},
+    "Type the address your Channels DVR server shows, such as 192.168.1.20 or nas.local." : {},
     "Type the details from your provider above." : {},
     "UP NEXT" : {},
     "Unmute" : {},
     "Up" : {},
+    "Up next on %@" : {},
     "Upcoming" : {},
+    "Update Antenna on both, or type the login here." : {},
+    "Use Xtream" : {},
     "Username" : {},
+    "Usually a few seconds" : {},
     "Version" : {},
     "Volume" : {},
+    "Waiting for its login to sync from iCloud" : {},
+    "Waiting for its playlist to sync from iCloud" : {},
+    "Waiting for its playlist to sync from iCloud." : {},
+    "Waiting for login" : {},
+    "Waiting for the login…" : {},
     "Waiting for the passcode from iCloud." : {},
     "Waiting for your iPhone" : {},
+    "Waiting for your iPhone · %lld logins" : {},
     "Watch" : {},
+    "Welcome to Antenna" : {},
     "What is a source?" : {},
     "What kind of source?" : {},
+    "When your provider includes them" : {},
     "Which channel?" : {},
     "Which movie or series?" : {},
     "Who's watching?" : {},
+    "Wrong passcode" : {},
+    "XTREAM" : {},
+    "Xtream" : {},
+    "Xtream login" : {},
+    "You can also sign in on the Apple TV." : {},
     "You can have up to eight profiles." : {},
+    "You're offline." : {},
     "You're set" : {},
+    "Your Apple TV asked for these logins. They're encrypted for that Apple TV only and go through your iCloud." : {},
+    "Your Apple TV picked up the login." : {},
+    "Your Apple TV picked up the logins." : {},
+    "Your order" : {},
     "Your own group needs a name." : {},
     "Your provider gave you one of these. You can add more later." : {},
     "Zoom in" : {},
+    "Zoom out" : {},
     "_" : {
       "shouldTranslate" : false
     },
     "behind" : {},
     "dimmed" : {},
     "full" : {},
+    "http://" : {},
+    "http://jellyfin.local:8096" : {},
     "https://" : {},
+    "later" : {},
     "live" : {},
+    "live channels · %@" : {},
+    "loading" : {},
+    "movies and series" : {},
+    "of catch-up on %@ channels" : {},
+    "of guide · %@ channels" : {},
     "off" : {},
     "on" : {},
+    "on %@ channels" : {},
+    "on now" : {},
+    "past" : {},
     "paused" : {},
     "playing" : {},
+    "rating" : {},
+    "the section" : {},
     "◂" : {
       "shouldTranslate" : false
     }

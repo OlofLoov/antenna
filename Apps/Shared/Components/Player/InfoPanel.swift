@@ -41,7 +41,7 @@ enum InfoPanel {
     /// Info, Audio or Subtitles. Focused it is the white card; selected
     /// while focus is in the list, the 0.12 surface at weight 600.
     struct Segment: View {
-        let title: String
+        let title: LocalizedStringResource
         let isSelected: Bool
         let select: () -> Void
 

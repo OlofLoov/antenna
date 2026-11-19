@@ -49,7 +49,7 @@ enum OnboardingForm {
     static let kinds: [SourceKind] = [.m3u, .xtream, .stalker, .jellyfin, .channelsDVR]
 
     /// The kind's name, as the picker and the Apple TV title show it.
-    static func title(_ kind: SourceKind) -> String {
+    static func title(_ kind: SourceKind) -> LocalizedStringResource {
         switch kind {
         case .m3u, .m3uFile: "M3U playlist"
         case .xtream: "Xtream login"
@@ -60,7 +60,7 @@ enum OnboardingForm {
     }
 
     /// Where a login is kept, under the login rows.
-    static func keychainLine(_ kind: SourceKind) -> String? {
+    static func keychainLine(_ kind: SourceKind) -> LocalizedStringResource? {
         guard [.xtream, .stalker, .jellyfin].contains(kind) else { return nil }
         #if os(tvOS)
             return "Saved in the Keychain on this Apple TV. Antenna has no servers."
@@ -144,7 +144,7 @@ enum OnboardingForm {
             Binding(get: { fields.kind == .m3uFile ? .m3u : fields.kind }, set: { actions.choose($0) })
         }
 
-        private var groupTitle: String {
+        private var groupTitle: LocalizedStringResource {
             switch fields.kind {
             case .m3u, .m3uFile: "Playlist"
             case .xtream: "Login"
@@ -189,12 +189,15 @@ enum OnboardingForm {
             }
         }
 
-        private var line: String {
+        private var line: LocalizedStringResource {
             switch fields.kind {
             case .m3u, .m3uFile: "Paste the link your provider gave you. The guide link is optional."
             case .xtream: "Copy these from the email or page your provider sent you."
             case .stalker:
-                "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one."
+                """
+                Copy these from the email or page your provider sent you. \
+                Leave the login empty unless your provider gave you one.
+                """
             case .jellyfin: "The address you open Jellyfin at in a browser, with the username and password you sign in with."
             case .channelsDVR: "Type the address your Channels DVR server shows, such as 192.168.1.20 or nas.local."
             }
@@ -292,7 +295,8 @@ enum OnboardingForm {
 
     /// The section footer: where the login is kept, then the error in the live-dot red.
     struct Footer: View {
-        let line: String?
+        let line: LocalizedStringResource?
+        /// The model's error sentence, already final, shown as it is.
         let error: String?
 
         var body: some View {

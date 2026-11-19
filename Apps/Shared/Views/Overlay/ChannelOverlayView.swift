@@ -174,7 +174,8 @@
                 nextRow(item, programmes: guideNow.next, channel: channel, at: date)
             } buttons: {
                 PanelButtons(
-                    isFavorite: catalogue.isFavorite(channel), focus: focus, watchTitle: multiView?.watchTitle ?? "Watch",
+                    isFavorite: catalogue.isFavorite(channel), focus: focus,
+                    watchTitle: multiView?.watchTitle.map { LocalizedStringResource.verbatim($0) } ?? "Watch",
                     watch: { pick(channel, model.group) }, toggle: { toggleFavorite(channel, key) },
                     startOver: channel == playing ? startOver : nil,
                     multiView: multiView.flatMap { offer in offer.offered(channel) ? (offer.title, { offer.add(channel) }) : nil })
@@ -209,7 +210,7 @@
     struct PanelButtons: View {
         let isFavorite: Bool
         let focus: FocusState<ShellFocus?>.Binding
-        var watchTitle = "Watch"
+        var watchTitle: LocalizedStringResource = "Watch"
         let watch: () -> Void
         let toggle: () -> Void
         /// Start over; nil leaves it out.

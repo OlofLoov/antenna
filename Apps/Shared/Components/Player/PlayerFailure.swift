@@ -93,7 +93,7 @@ extension PlayerStatus {
         let explanation: String
         /// "Source: Acme TV · Attempted at 21:34".
         let detail: String
-        let hint: String
+        let hint: LocalizedStringResource
         @ViewBuilder var actions: Actions
 
         var body: some View {
@@ -139,7 +139,7 @@ extension PlayerStatus {
     /// A 64 pt Apple TV button, 26 pt semibold, radius 14: the Focus token
     /// while focused, the 0.12 surface otherwise.
     struct TelevisionButton: View {
-        let title: String
+        let title: LocalizedStringResource
         let action: () -> Void
 
         var body: some View {

@@ -15,7 +15,7 @@ extension Browse {
         }
 
         /// "Add to Favorites" or "Remove from Favorites", also the name of the VoiceOver action.
-        static func title(isFavorite: Bool) -> String {
+        static func title(isFavorite: Bool) -> LocalizedStringResource {
             isFavorite ? "Remove from Favorites" : "Add to Favorites"
         }
 

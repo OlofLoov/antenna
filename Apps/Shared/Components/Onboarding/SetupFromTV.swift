@@ -44,14 +44,19 @@ enum SetupFromTV {
             }
         }
 
-        static func existing(_ count: Int, device: Device) -> String? {
+        static func existing(_ count: Int, device: Device) -> LocalizedStringResource? {
             switch count {
             case 0: nil
             case 1:
-                "This \(device) already has 1 source. It appears on the Apple TV on its own when both use the same iCloud account."
+                """
+                This \(device) already has 1 source. \
+                It appears on the Apple TV on its own when both use the same iCloud account.
+                """
             default:
-                "This \(device) already has \(count) sources. "
-                    + "They appear on the Apple TV on their own when both use the same iCloud account."
+                """
+                This \(device) already has \(count) sources. \
+                They appear on the Apple TV on their own when both use the same iCloud account.
+                """
             }
         }
     }
@@ -98,7 +103,7 @@ enum SetupFromTV {
                         .foregroundStyle(Palette.textMuted)
                 }
                 VStack(spacing: 0) {
-                    StatusRow(state: .done, title: "Saved on this \(device)", detail: sourceName)
+                    StatusRow(state: .done, title: "Saved on this \(device)", detail: .verbatim(sourceName))
                         .accessibilityIdentifier("onboarding.sending.row.saved")
                     StatusRow(state: tvState, title: tvTitle, detail: tvDetail)
                         .accessibilityIdentifier("onboarding.sending.row.tv")
@@ -143,7 +148,7 @@ enum SetupFromTV {
             }
         }
 
-        private var tvTitle: String {
+        private var tvTitle: LocalizedStringResource {
             switch delivery {
             case .sending: "Sending to your Apple TV…"
             case .sent: "Handed to iCloud. Open Antenna on your Apple TV."
@@ -151,14 +156,16 @@ enum SetupFromTV {
             }
         }
 
-        private var tvDetail: String? {
+        private var tvDetail: LocalizedStringResource? {
             switch delivery {
             case .sending: "Usually a few seconds"
             case .sent: nil
             case .notSent: "Check that this \(device) is online and signed in to iCloud. It sends on its own once it can."
             case .notSignedIn:
-                "This \(device) isn't signed in to iCloud, so the source can't reach your Apple TV. "
-                    + "Sign in to iCloud in Settings and it sends on its own."
+                """
+                This \(device) isn't signed in to iCloud, so the source can't reach your Apple TV. \
+                Sign in to iCloud in Settings and it sends on its own.
+                """
             }
         }
     }
@@ -178,7 +185,7 @@ enum SetupFromTV {
             }
         }
 
-        var title: String {
+        var title: LocalizedStringResource {
             switch self {
             case .sending: "Sending the login…"
             case .pickedUp: "Your Apple TV picked up the login."
@@ -187,7 +194,7 @@ enum SetupFromTV {
             }
         }
 
-        var detail: String? {
+        var detail: LocalizedStringResource? {
             switch self {
             case .sending, .pickedUp: nil
             case .notPickedUp, .notSent: "You can also sign in on the Apple TV."
@@ -201,8 +208,8 @@ enum SetupFromTV {
         enum State { case done, running, failed }
 
         let state: State
-        let title: String
-        let detail: String?
+        let title: LocalizedStringResource
+        let detail: LocalizedStringResource?
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
         var body: some View {
@@ -221,7 +228,12 @@ enum SetupFromTV {
             }
             .padding(14)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel([stateLabel, title, detail].compactMap(\.self).joined(separator: ". "))
+            .accessibilityLabel(spokenLabel)
+        }
+
+        private var spokenLabel: LocalizedStringResource {
+            guard let detail else { return "\(stateLabel). \(title)" }
+            return "\(stateLabel). \(title). \(detail)"
         }
 
         @ViewBuilder private var marker: some View {
@@ -237,7 +249,7 @@ enum SetupFromTV {
             }
         }
 
-        private var stateLabel: String {
+        private var stateLabel: LocalizedStringResource {
             switch state {
             case .done: "Done"
             case .running: "In progress"

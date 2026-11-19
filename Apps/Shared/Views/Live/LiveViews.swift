@@ -47,7 +47,7 @@
                 .modifier(
                     GroupLockPrompt(
                         name: live.catalogue.label(of:), opened: live.unlocked, playingIsLocked: live.playingIsLocked,
-                        playingName: live.playing?.name ?? "This channel", pause: { Task { await live.engine.pause() } },
+                        playingName: live.playing?.name, pause: { Task { await live.engine.pause() } },
                         resume: { Task { await live.engine.play() } }, leave: live.leaveLockedChannel)
                 )
                 .task { await live.observeEngine() }
@@ -278,18 +278,19 @@
     /// The details panel for the playing channel, with up to three
     /// programmes after the current one.
     struct LiveDetails: View {
+        @Environment(\.locale) private var locale
         let channel: Channel
         @Environment(LiveModel.self) private var live
 
         var body: some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                let text = live.nowText(for: channel, at: context.date)
+                let text = live.nowText(for: channel, at: context.date, locale: locale)
                 Browse.Panel(
                     channel: channel.name,
                     now: .init(
                         title: text.title, times: text.times, meta: text.meta, summary: text.summary,
                         progress: text.progress),
-                    next: text.next.map { .init(time: LiveModel.time($0.start), title: $0.title) }
+                    next: text.next.map { .init(time: LiveModel.time($0.start, locale: locale), title: $0.title) }
                 ) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 } trailing: {

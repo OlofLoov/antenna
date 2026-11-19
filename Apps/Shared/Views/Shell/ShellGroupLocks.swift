@@ -19,7 +19,7 @@
                     GroupLockPrompt(
                         name: catalogue.label(of:), opened: { _ in },
                         playingIsLocked: model.tuned.flatMap(RowKey.init).map(catalogue.isLocked) ?? false,
-                        playingName: model.tuned?.name ?? "This channel",
+                        playingName: model.tuned?.name,
                         pause: { Task { await model.engine.pause() } },
                         resume: { Task { await model.engine.play() } },
                         leave: leave))

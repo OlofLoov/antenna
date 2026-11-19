@@ -82,7 +82,7 @@ import Testing
     func invalidURL() throws {
         let form = NewSource(kind: .m3u, url: "example.com/list.m3u")
         #expect(throws: NewSource.SaveError.invalidURL) { try form.save(into: context, credentials: store) }
-        #expect(NewSource.SaveError.invalidURL.message == "Enter a valid URL.")
+        #expect(String(localized: NewSource.SaveError.invalidURL.message) == "Enter a valid URL.")
         #expect(try records().isEmpty)
     }
 
@@ -144,7 +144,7 @@ import Testing
             try form.save(into: context, credentials: FailingCredentialStore())
             Issue.record("save succeeded")
         } catch {
-            #expect(error.message.hasPrefix("Could not store credentials"))
+            #expect(String(localized: error.message).hasPrefix("Could not store credentials"))
         }
         #expect(try records().isEmpty)
     }

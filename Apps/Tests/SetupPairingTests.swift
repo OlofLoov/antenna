@@ -207,7 +207,7 @@ import Testing
         pairing.check()
         #expect(pairing.hint == .nothing)
         #expect(pairing.link != nil)
-        #expect(SetupCard.text(.nothing).hasPrefix("Nothing yet?"))
+        #expect(String(localized: SetupCard.text(.nothing)).hasPrefix("Nothing yet?"))
     }
 
     @Test("iphone-as-setup-device/nothing-arrives-and-the-tv-says-why-that-might-be: a kind the card cannot set up asks to update")
@@ -219,7 +219,7 @@ import Testing
         clock.now += 120
         pairing.check()
         #expect(pairing.hint == .unusable)
-        #expect(SetupCard.text(.unusable).contains("Update Antenna"))
+        #expect(String(localized: SetupCard.text(.unusable)).contains("Update Antenna"))
     }
 
     @Test("iphone-as-setup-device/typing-on-the-tv-still-works: Connect on the TV drops the card and ignores later arrivals")

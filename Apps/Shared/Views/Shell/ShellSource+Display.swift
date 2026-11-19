@@ -4,37 +4,36 @@
     extension ShellSource {
         /// The loading screen's row for this source (`TV-Shell-Loading`).
         var loadingRow: ShellLoading.Row {
-            let detail: String
-            let indicator: ShellLoading.Row.Indicator
-            switch state {
-            case .loading:
-                (detail, indicator) = ("Loading channels", .working)
-            case .loaded(let count):
-                detail = count == 1 ? "1 channel" : "\(count) channels"
-                indicator = .done
-            case .offline:
-                (detail, indicator) = ("Offline", .none)
-            case .failed:
-                (detail, indicator) = ("Could not load channels", .none)
-            case .waitingForLogin where waitsForICloud:
-                (detail, indicator) = ("Waiting for its playlist to sync from iCloud", .none)
-            case .waitingForLogin:
-                (detail, indicator) = ("Waiting for its login to sync from iCloud", .none)
-            }
+            let detail: LocalizedStringResource =
+                switch state {
+                case .loading: "Loading channels"
+                case .loaded(let count): count == 1 ? "1 channel" : "\(count) channels"
+                case .offline: "Offline"
+                case .failed: "Could not load channels"
+                case .waitingForLogin where waitsForICloud: "Waiting for its playlist to sync from iCloud"
+                case .waitingForLogin: "Waiting for its login to sync from iCloud"
+                }
+            let indicator: ShellLoading.Row.Indicator =
+                switch state {
+                case .loading: .working
+                case .loaded: .done
+                case .offline, .failed, .waitingForLogin: .none
+                }
             return .init(id: id, name: name, detail: detail, indicator: indicator, value: value)
         }
 
         /// The empty screen's line for this source (`TV-Shell-Empty`).
         var emptyLine: ShellEmpty.Line {
-            let reason =
+            let text: LocalizedStringResource =
                 switch state {
-                case .loading: "loading"
-                case .loaded: "no channels"
-                case .offline: "offline"
-                case .failed: "could not load its channels"
-                case .waitingForLogin: "waiting for its \(waitsForICloud ? "playlist" : "login") to sync from iCloud"
+                case .loading: "\(name): loading"
+                case .loaded: "\(name): no channels"
+                case .offline: "\(name): offline"
+                case .failed: "\(name): could not load its channels"
+                case .waitingForLogin where waitsForICloud: "\(name): waiting for its playlist to sync from iCloud"
+                case .waitingForLogin: "\(name): waiting for its login to sync from iCloud"
                 }
-            return .init(id: id, text: "\(name): \(reason)", value: value)
+            return .init(id: id, text: text, value: value)
         }
 
         /// What UI tests and VoiceOver read: `loading`, `loaded:<n>`,

@@ -23,8 +23,8 @@ enum OnboardingChecklist {
 
         var id: String
         var state: State
-        var title: String
-        var detail: String?
+        var title: LocalizedStringResource
+        var detail: LocalizedStringResource?
         var bar: Bar?
     }
 
@@ -40,7 +40,7 @@ enum OnboardingChecklist {
         case startWatching(enabled: Bool)
         case browseMovies
 
-        var title: String {
+        var title: LocalizedStringResource {
             switch self {
             case .startWatching: "Start watching"
             case .browseMovies: "Browse movies"
@@ -62,10 +62,10 @@ enum OnboardingChecklist {
     /// iPhone, and the sheet on iPad and Mac: the heading, each source's
     /// lines in a group, the iCloud note and the buttons.
     struct Phone: View {
-        let headline: String
-        let subtitle: String
+        let headline: LocalizedStringResource
+        let subtitle: LocalizedStringResource
         let sections: [Section]
-        let footnote: String?
+        let footnote: LocalizedStringResource?
         let primary: Primary
         let actions: Actions
 
@@ -147,11 +147,11 @@ enum OnboardingChecklist {
     /// Apple TV while loading: the title, the lines in one card, and Start
     /// watching now once channels are in.
     struct Television: View {
-        let title: String
+        let title: LocalizedStringResource
         let lines: [Line]
         let primary: Primary
         /// The muted words beside the button, such as "The guide keeps loading behind the picture".
-        let caption: String?
+        let caption: LocalizedStringResource?
         let start: () -> Void
 
         var body: some View {
@@ -237,8 +237,13 @@ enum OnboardingChecklist {
                 if !last { Rectangle().fill(Palette.surface(0.08)).frame(height: 1) }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel([stateWord, line.title, line.detail].compactMap(\.self).joined(separator: ", "))
+            .accessibilityLabel(spokenLabel)
             .accessibilityIdentifier("onboarding.line.\(line.id)")
+        }
+
+        private var spokenLabel: LocalizedStringResource {
+            guard let detail = line.detail else { return "\(stateWord), \(line.title)" }
+            return "\(stateWord), \(line.title), \(detail)"
         }
 
         private var titleColor: Color {
@@ -249,7 +254,7 @@ enum OnboardingChecklist {
             }
         }
 
-        private var stateWord: String {
+        private var stateWord: LocalizedStringResource {
             switch line.state {
             case .done, .muted: "Done"
             case .running: "Loading"

@@ -54,7 +54,7 @@ enum SearchParts {
         let select: () -> Void
 
         var body: some View {
-            Browse.Chip(title: title, isSelected: isSelected, select: select)
+            Browse.Chip(title: .verbatim(title), isSelected: isSelected, select: select)
                 .disabled(isEmpty)
                 .opacity(isEmpty ? 0.45 : 1)
         }
@@ -62,8 +62,8 @@ enum SearchParts {
 
     /// A section's name, its count and an optional trailing link.
     struct Header<Trailing: View>: View {
-        let title: String
-        let count: String?
+        let title: LocalizedStringResource
+        let count: LocalizedStringResource?
         @ViewBuilder var trailing: Trailing
         @Environment(\.searchMetrics) private var metrics
 
@@ -163,7 +163,7 @@ enum SearchParts {
     /// The 220 pt search field in the Movies and Series toolbar on iPad and
     /// Mac (`iPad-Movies`). Whatever is typed goes to Search.
     struct SectionField: View {
-        let prompt: String
+        let prompt: LocalizedStringResource
         @Binding var text: String
 
         var body: some View {

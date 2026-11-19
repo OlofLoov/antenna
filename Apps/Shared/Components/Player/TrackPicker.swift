@@ -57,7 +57,7 @@ enum TrackPicker {
     struct Lists: View {
         let audio: [TrackRow]
         let subtitles: [TrackRow]
-        let footer: [String]
+        let footer: [LocalizedStringResource]
         let pickAudio: (String) -> Void
         let pickSubtitle: (String) -> Void
 
@@ -86,7 +86,7 @@ enum TrackPicker {
                             )
                     }
                     VStack(alignment: .leading, spacing: 4) {
-                        ForEach(footer, id: \.self) { line in
+                        ForEach(Array(footer.enumerated()), id: \.offset) { _, line in
                             Text(line)
                         }
                     }
@@ -145,10 +145,11 @@ enum TrackPicker {
 
     /// A 13 pt uppercase muted section title.
     private struct Header: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
-            Text(text.uppercased())
+            Text(text)
+                .textCase(.uppercase)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Palette.textMuted)
                 .padding(.horizontal, 12)
@@ -204,7 +205,7 @@ extension TrackPicker {
             TrackRow(id: "subtitle-0", name: "English", detail: nil, isSelected: false),
             TrackRow(id: "subtitle-1", name: "Forced", detail: nil, isSelected: false),
         ],
-        footer: ["MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player"], pickAudio: { _ in }, pickSubtitle: { _ in })
+        footer: [.verbatim("MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player")], pickAudio: { _ in }, pickSubtitle: { _ in })
 }
 
 #Preview("Track picker, iPhone sheet", traits: .fixedLayout(width: 390, height: 560)) {

@@ -8,17 +8,18 @@ import SwiftUI
 /// fields is the QR card (`TV-Onboard-SignIn-QR`) or the keyboard card.
 enum OnboardingSignIn {
     /// The muted line naming the sources still to sign in, in order.
-    static func remaining(_ names: [String]) -> String? {
+    static func remaining(_ names: [String]) -> LocalizedStringResource? {
         guard !names.isEmpty else { return nil }
-        let count = names.count == 1 ? "1 more source" : "\(names.count) more sources"
-        return "\(count) to sign in after this one: \(names.joined(separator: ", "))"
+        let list = names.joined(separator: ", ")
+        if names.count == 1 { return "1 more source to sign in after this one: \(list)" }
+        return "\(names.count) more sources to sign in after this one: \(list)"
     }
 
     struct Television<Card: View>: View {
         /// The source's kind and address, and what the user types.
         @Binding var fields: SourceFields
         /// "1 more source to sign in after this one: Holiday flat"; nil for the last.
-        let remaining: String?
+        let remaining: LocalizedStringResource?
         let status: OnboardingForm.Status
         let connect: () -> Void
         @ViewBuilder var card: Card
@@ -56,7 +57,7 @@ enum OnboardingSignIn {
 }
 
 extension OnboardingSignIn.Television where Card == OnboardingForm.TypeOnPhoneCard {
-    init(fields: Binding<SourceFields>, remaining: String?, status: OnboardingForm.Status, connect: @escaping () -> Void) {
+    init(fields: Binding<SourceFields>, remaining: LocalizedStringResource?, status: OnboardingForm.Status, connect: @escaping () -> Void) {
         self.init(fields: fields, remaining: remaining, status: status, connect: connect) { OnboardingForm.TypeOnPhoneCard() }
     }
 }

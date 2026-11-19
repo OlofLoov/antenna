@@ -118,7 +118,9 @@ extension GuideBoard {
             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
         }
 
-        private func button(_ image: String, _ label: String, _ id: String, _ on: Bool, _ act: @escaping () -> Void) -> some View {
+        private func button(
+            _ image: String, _ label: LocalizedStringResource, _ id: String, _ on: Bool, _ act: @escaping () -> Void
+        ) -> some View {
             let identifier = id
             let enabled = on
             return Button(action: act) {
@@ -175,7 +177,7 @@ extension GuideBoard {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(isPlaying ? "Playing \(channel)" : channel)
+            .accessibilityLabel(isPlaying ? "Playing \(channel)" : LocalizedStringResource.verbatim(channel))
             .accessibilityHint("Back to Live")
             .accessibilityIdentifier("guide.nowPlaying")
         }

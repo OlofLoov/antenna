@@ -14,8 +14,8 @@ enum OnboardingKinds {
     struct Kind: Identifiable {
         var kind: SourceKind
         var systemImage: String
-        var title: String
-        var detail: String
+        var title: LocalizedStringResource
+        var detail: LocalizedStringResource
         var id: String { kind.rawValue }
     }
 

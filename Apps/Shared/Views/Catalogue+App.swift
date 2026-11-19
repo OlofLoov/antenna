@@ -25,7 +25,7 @@ extension CatalogueGroup {
     }
 
     /// How the Apple TV channel column is sorted, under its heading.
-    var order: String {
+    var order: LocalizedStringResource {
         switch self {
         case .favorites: "Your order"
         case .recents, .new: "Newest first"
@@ -46,8 +46,8 @@ extension CatalogueGroup {
     /// What VoiceOver reads for the group with `count` channels
     /// (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels,
     /// new-channels/a-new-group-lists-channels-added-lately).
-    func spokenLabel(count: Int) -> String {
-        "\(label), \(count == 1 ? "1 channel" : "\(count) channels")"
+    func spokenLabel(count: Int) -> LocalizedStringResource {
+        count == 1 ? "\(label), 1 channel" : "\(label), \(count) channels"
     }
 }
 

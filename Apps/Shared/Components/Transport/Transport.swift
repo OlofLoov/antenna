@@ -231,7 +231,9 @@ enum Transport {
                 .accessibilityIdentifier("title.transport.scrubber")
             }
 
-            private func round(_ symbol: String, label: String, id: String, font: Font, action: @escaping () -> Void) -> some View {
+            private func round(
+                _ symbol: String, label: LocalizedStringResource, id: String, font: Font, action: @escaping () -> Void
+            ) -> some View {
                 Button(action: action) {
                     Image(systemName: symbol)
                         .font(font)

@@ -425,6 +425,38 @@ PR 1, catalog setup:
   targets. A rule in `scripts/check-rules.sh` fails on a plain `launch()` in
   any UI test folder.
 
+PR 2, app strings:
+- `Text(LocalizedStringResource)` follows `.environment(\.locale)`. Checked
+  on the iPhone simulator (set to Swedish) with a temporary `ar` value for
+  "Settings" and `ImageRenderer`: the resource under an `ar` environment
+  drew the same pixels as the Arabic text, and under `en` the same as
+  "Settings". So components keep the resource and hand it to `Text`; the
+  `String(localized:)` fallback is not needed. A resource with its
+  `locale` set resolves that language through `String(localized:)`, which
+  is what the app's `Words` does.
+- `LocalizedStringResource` is `Equatable`, `Sendable` and `Codable` but not
+  `Hashable`.
+- Text AntennaCore builds reaches a component parameter that also takes app
+  literals as `.verbatim(text)`, a `"%@"` entry that is never translated,
+  until PR 3 gives Core its own catalog.
+- `LiveModel+Text` holds no words of its own: its sentences come from
+  Core's `LiveNowText` (PR 3). It takes the view's locale for the times it
+  writes. `GuideText` became a struct over a locale with `Words`.
+- An `Int` interpolated into a catalog entry becomes `%lld` and is
+  formatted with the locale, so a count of 1240 in app copy now reads
+  "1,240" in English where it read "1240". Core's counts already grouped.
+- Sentences the app joined from pieces (the Live failure banner, the
+  delete-source message, the sign-in lines) are now one entry per shape,
+  with the same English.
+- Preview fixtures that feed a copy parameter outside a `#Preview` block
+  are extracted like app copy, so fixture numbers and sample data go in as
+  `.verbatim(...)`.
+- Left for PR 3: built-in group names (`CatalogueGroup.label` feeds
+  `Catalogue.label(of:)` as a `String` everywhere), Core's `ShelfStatus`
+  titles, and `SourceLoader.LoadError.errorDescription`, which
+  `LocalizedError` keeps a `String` and which resolves with the process
+  language rather than the view's locale.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

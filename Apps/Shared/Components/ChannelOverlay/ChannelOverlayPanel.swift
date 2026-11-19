@@ -239,7 +239,7 @@ extension ChannelOverlay {
     /// Watch: tunes the highlighted channel. Multi-view's picker names the
     /// tile instead, "Show in tile 2".
     struct WatchButton: View {
-        var title = "Watch"
+        var title: LocalizedStringResource = "Watch"
         let watch: () -> Void
 
         var body: some View {
@@ -357,7 +357,7 @@ extension ChannelOverlay {
     /// The muted 26 pt line centered in the channel column when the group
     /// has no channels; it takes no focus.
     struct EmptyGroup: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
             Text(text)

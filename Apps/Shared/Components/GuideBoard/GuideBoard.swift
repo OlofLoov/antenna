@@ -207,7 +207,7 @@ enum GuideBoard {
 
     /// "No channels in Favorites", muted and centered where the rows go.
     struct Empty: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
             Text(text)

@@ -19,9 +19,9 @@ enum FieldRow {
 
     /// A labeled text field.
     struct Text: View {
-        let label: String
+        let label: LocalizedStringResource
         @Binding var text: String
-        var prompt = ""
+        var prompt: LocalizedStringResource = .verbatim("")
         var entry = Entry.words
         let identifier: String
 
@@ -41,9 +41,9 @@ enum FieldRow {
     /// A labeled password field. On iPhone, iPad and Mac the eye button
     /// beside it shows what is typed.
     struct Secret: View {
-        let label: String
+        let label: LocalizedStringResource
         @Binding var text: String
-        var prompt = ""
+        var prompt: LocalizedStringResource = .verbatim("")
         /// Nil leaves out the eye button, as on Apple TV.
         var reveals: Binding<Bool>?
         var identifier = "onboarding.field.password"
@@ -84,7 +84,8 @@ enum FieldRow {
     /// A value that cannot be changed here, such as a server that came
     /// from the iPhone. Not focusable; VoiceOver reads it as its label and value.
     struct Value: View {
-        let label: String
+        let label: LocalizedStringResource
+        /// What the source holds, such as its name or server, shown as it is.
         let value: String
         let identifier: String
 
@@ -108,14 +109,18 @@ enum FieldRow {
     /// A row that shows its label and current value and does something
     /// when selected, such as Type going back to the kinds on Apple TV.
     struct Choice: View {
-        let label: String
-        let value: String
+        let label: LocalizedStringResource
+        let value: LocalizedStringResource
         let identifier: String
         let action: () -> Void
 
         var body: some View {
             Button(action: action) {
-                LabeledContent(label, value: value)
+                LabeledContent {
+                    SwiftUI.Text(value)
+                } label: {
+                    SwiftUI.Text(label)
+                }
             }
             .accessibilityIdentifier(identifier)
         }
@@ -130,7 +135,7 @@ enum FieldRow {
             LabeledContent {
                 content
             } label: {
-                Label(text: "")
+                Label(text: .verbatim(""))
             }
             .fieldRowBackground()
         }
@@ -138,7 +143,7 @@ enum FieldRow {
 
     /// The row's label, the same width in every row so the fields line up.
     private struct Label: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
             SwiftUI.Text(text)

@@ -11,10 +11,10 @@
 
 ## 2. App strings (PR 2)
 
-- [ ] 2.1 Prove with an Arabic preview that `Text(LocalizedStringResource)` follows `.environment(\.locale)`, and record the result in design.md
-- [ ] 2.2 Change component parameters that carry app copy from `String` to `LocalizedStringResource` and keep source-data parameters as `String`, component folder by component folder, and add the rule to the `swiftui-composition` skill
-- [ ] 2.3 Give `GuideText` and `LiveModel+Text` an app-side `Words` over `Bundle.main` that takes the environment locale, and verify their unit tests with an explicit English locale
-- [ ] 2.4 Sync the catalog, check that no English copy is left outside it with the export check and the `localization:` rules, and verify every preview still renders the same English text in CI
+- [x] 2.1 Prove with an Arabic preview that `Text(LocalizedStringResource)` follows `.environment(\.locale)`, and record the result in design.md
+- [x] 2.2 Change component parameters that carry app copy from `String` to `LocalizedStringResource` and keep source-data parameters as `String`, component folder by component folder, and add the rule to the `swiftui-composition` skill
+- [x] 2.3 Give `GuideText` and `LiveModel+Text` an app-side `Words` over `Bundle.main` that takes the environment locale, and verify their unit tests with an explicit English locale
+- [x] 2.4 Sync the catalog, check that no English copy is left outside it with the export check and the `localization:` rules, and verify every preview still renders the same English text in CI
 
 ## 3. AntennaCore strings (PR 3)
 

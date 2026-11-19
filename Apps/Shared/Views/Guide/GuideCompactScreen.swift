@@ -73,7 +73,7 @@
             ScrollViewReader { proxy in
                 Browse.Chips {
                     ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                        Browse.Chip(title: live.catalogue.label(of: group), isSelected: group == live.group) {
+                        Browse.Chip(title: .verbatim(live.catalogue.label(of: group)), isSelected: group == live.group) {
                             live.show(group)
                         }
                         .id(group)
@@ -167,6 +167,7 @@
 
     /// A channel's header and its strip of cards from the programme on at `anchor`.
     private struct GuideCompactRow: View {
+        @Environment(\.locale) private var locale
         let key: RowKey
         let now: Date
         let anchor: Date
@@ -236,14 +237,15 @@
                     model.open(GuideTarget(key: key, start: segment.start))
                 } label: {
                     GuideBoard.Compact.Card(
-                        time: GuideText.time(segment.start), title: GuidePanelText.title(programme), timing: timing, progress: progress)
+                        time: GuideText(locale: locale).time(segment.start), title: GuidePanelText.title(programme), timing: timing,
+                        progress: progress)
                 }
                 .buttonStyle(.plain)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(GuideText.spoken(cell, channel: channel, now: now))
+                .accessibilityLabel(GuideText(locale: locale).spoken(cell, channel: channel, now: now))
                 .accessibilityIdentifier(identifier)
             } else {
-                GuideBoard.Compact.GapCard(times: GuideText.times(segment.start, segment.stop))
+                GuideBoard.Compact.GapCard(times: GuideText(locale: locale).times(segment.start, segment.stop))
                     .accessibilityIdentifier(identifier)
             }
         }
@@ -262,6 +264,7 @@
 
     /// The details as a sheet at the medium detent on iPhone.
     struct GuideDetailsSheet: View {
+        @Environment(\.locale) private var locale
         let target: GuideTarget
         @Environment(\.reminders) private var reminders
         @Environment(LiveModel.self) private var live
@@ -272,7 +275,7 @@
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                 let reading = GuideBoardReading(live: live, model: model)
                 let data = reading.data(at: context.date, filtered: false)
-                if let details = reading.details(target, data, now: context.date) {
+                if let details = reading.details(target, data, now: context.date, locale: locale) {
                     GuideBoard.Details.Sheet(details: details, reminder: reading.reminder(target, data, reminders, now: context.date)) {
                         reading.watch(target, data: data, now: context.date)
                         openLive()

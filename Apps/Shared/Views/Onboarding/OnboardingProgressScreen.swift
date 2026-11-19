@@ -78,18 +78,22 @@ struct OnboardingProgressScreen: View {
             }
         }
 
-        private var caption: String? {
+        private var caption: LocalizedStringResource? {
             if progress.isEmpty { return "Press Menu to go back and check the link" }
             guard progress.primary == .startWatching(enabled: true) else { return nil }
             return model.setups.contains { !$0.guide.isFinished } ? "The guide keeps loading behind the picture" : nil
         }
 
-        private var footnote: String {
+        private var footnote: LocalizedStringResource {
             let hasLogin = model.setups.contains { $0.connection.login != nil }
-            let base = model.setups.count > 1 ? "The sources sync" : "The source syncs"
-            let sync =
-                signedInToICloud
-                ? "\(base) through iCloud to iPhone, iPad and Mac." : "Not signed in to iCloud, so it stays on this Apple TV."
+            let sync: LocalizedStringResource =
+                if !signedInToICloud {
+                    "Not signed in to iCloud, so it stays on this Apple TV."
+                } else if model.setups.count > 1 {
+                    "The sources sync through iCloud to iPhone, iPad and Mac."
+                } else {
+                    "The source syncs through iCloud to iPhone, iPad and Mac."
+                }
             return hasLogin ? "\(sync) The login stays on this Apple TV." : sync
         }
     #else
@@ -100,7 +104,7 @@ struct OnboardingProgressScreen: View {
                 footnote: signedInToICloud ? "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own." : nil,
                 primary: progress.primary, actions: actions
             )
-            .navigationTitle(empty ? (model.setups.last?.name ?? "") : progress.title)
+            .navigationTitle(empty ? .verbatim(model.setups.last?.name ?? "") : progress.title)
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -115,13 +119,13 @@ struct OnboardingProgressScreen: View {
             }
         }
 
-        private var headline: String {
+        private var headline: LocalizedStringResource {
             if progress.isEmpty { return "Nothing to watch yet" }
             if model.setups.contains(where: \.hasLive) || model.allFinished { return "You're set" }
             return progress.loadingTitle
         }
 
-        private var subtitle: String {
+        private var subtitle: LocalizedStringResource {
             if progress.isEmpty {
                 return model.setups.contains { $0.connection.descriptor.kind == .m3u }
                     ? "The playlist has no channels. Go back and check the link."

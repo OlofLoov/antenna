@@ -7,7 +7,7 @@ extension ShelfView {
     /// across on iPhone, six on Apple TV, as many as fit on iPad and Mac.
     /// Posters build as they scroll into view.
     struct Grid<Cards: View>: View {
-        let title: String
+        let title: LocalizedStringResource
         let count: String
         /// The width of a wide card, for a grid of Continue watching cards;
         /// nil for posters.
@@ -41,7 +41,7 @@ extension ShelfView {
     /// A genre chip: the selected one takes the white fill, and on Apple TV
     /// the focused one the white card.
     struct Chip: View {
-        let title: String
+        let title: LocalizedStringResource
         let isSelected: Bool
         let select: () -> Void
         @Environment(\.shelfMetrics) private var metrics

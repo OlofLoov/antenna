@@ -5,8 +5,8 @@ import SwiftUI
 /// source-management/the-add-form-offers-xtream-for-a-panel-link). A form
 /// section with Use Xtream as its button row and the reason as its footer.
 enum XtreamLinkOffer {
-    static let message = "This link is an Xtream login. Add it as Xtream to get Movies, Series and the guide."
-    static let button = "Use Xtream"
+    static let message: LocalizedStringResource = "This link is an Xtream login. Add it as Xtream to get Movies, Series and the guide."
+    static let button: LocalizedStringResource = "Use Xtream"
 
     /// iPhone, and the sheet on iPad and Mac.
     struct Phone: View {

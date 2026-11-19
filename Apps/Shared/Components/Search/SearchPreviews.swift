@@ -3,8 +3,10 @@
 
     /// The board's sample rows for "north", for previews only.
     @MainActor private enum SearchSample {
-        static func ranges(_ text: String, _ word: String = "North") -> [Range<String.Index>] {
-            text.range(of: word, options: .caseInsensitive).map { [$0] } ?? []
+        static let query = "north"
+
+        static func ranges(_ text: String) -> [Range<String.Index>] {
+            text.range(of: query, options: .caseInsensitive).map { [$0] } ?? []
         }
 
         @ViewBuilder static var rows: some View {

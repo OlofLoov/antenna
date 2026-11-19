@@ -169,7 +169,7 @@ import Testing
 
         editor.link = "ftp://\(host)"
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "Enter a valid URL.")
+        #expect(editor.error.map { String(localized: $0) } == "Enter a valid URL.")
         #expect(StubURLProtocol.requests(host: host).isEmpty)
 
         editor.link = "http://\(host):8096"
@@ -179,7 +179,7 @@ import Testing
         #expect(editor.error == nil)
         #expect(paths(host).contains("/Users/AuthenticateByName"))
         #expect(try held.load(for: "st-jf-details") == .init(username: "bo", password: "s3cret"))
-        #expect(SourceRowLabel.badge(.jellyfin) == "JELLYFIN")
+        #expect(String(localized: SourceRowLabel.badge(.jellyfin)) == "JELLYFIN")
     }
 
     @Test("sources-and-settings/look-after-a-jellyfin-server: Sign in on this Apple TV keeps the login")

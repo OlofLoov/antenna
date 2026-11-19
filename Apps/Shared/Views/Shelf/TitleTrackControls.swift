@@ -93,7 +93,7 @@ import SwiftUI
         private var lists: TrackPicker.Lists {
             TrackPicker.Lists(
                 audio: tracks.audioRows, subtitles: tracks.subtitleRows,
-                footer: [tracks.streamLine] + (tracks.route == .demuxer ? [LivePicture.noAirPlay] : []),
+                footer: [.verbatim(tracks.streamLine)] + (tracks.route == .demuxer ? [LivePicture.noAirPlay] : []),
                 pickAudio: { tracks.selectAudio($0) }, pickSubtitle: { tracks.selectSubtitle($0) })
         }
     }

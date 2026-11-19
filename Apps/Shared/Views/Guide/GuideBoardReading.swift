@@ -13,7 +13,7 @@
 
         let id: UUID
         let kind: Kind
-        let text: String
+        let text: LocalizedStringResource
     }
 
     /// What both guide layouts read from Live and the guide model: the
@@ -46,9 +46,9 @@
         }
 
         /// The details for `target` (guide-on-iphone-ipad-and-mac/read-about-a-programme).
-        func details(_ target: GuideTarget, _ data: GuideData, now: Date) -> GuidePanel.Details? {
+        func details(_ target: GuideTarget, _ data: GuideData, now: Date, locale: Locale) -> GuidePanel.Details? {
             guard let cell = cell(target, data), let channel = channel(target.key) else { return nil }
-            return GuideText.details(cell, channel: channel, timeline: data.timeline, now: now, quality: nil)
+            return GuideText(locale: locale).details(cell, channel: channel, timeline: data.timeline, now: now, quality: nil)
         }
 
         /// Plays `key` in Live in the same group: a later programme plays

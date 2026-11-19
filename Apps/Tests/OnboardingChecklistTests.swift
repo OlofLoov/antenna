@@ -78,22 +78,22 @@ import Testing
         await setup.finishedLoading()
         let progress = OnboardingProgress(setups: model.setups, text: text)
         var lines = progress.lines(for: setup, .television)
-        #expect(lines.map(\.title).prefix(3) == ["Signed in", "3 live channels in 2 groups", "5 movies and 2 series"])
-        #expect(lines[0].detail == "Account active until March 14, 2026 · 2 connections")
-        #expect(lines[1].detail == "News, Sport")
-        #expect(lines.last?.title == "Downloading the guide")
+        #expect(lines.map { english($0.title) }.prefix(3) == ["Signed in", "3 live channels in 2 groups", "5 movies and 2 series"])
+        #expect(english(lines[0].detail) == "Account active until March 14, 2026 · 2 connections")
+        #expect(english(lines[1].detail) == "News, Sport")
+        #expect(english(lines.last?.title) == "Downloading the guide")
 
         guide.send(.downloading(sourceID: setup.id, bytesReceived: 2_400_000, expectedBytes: nil))
         await guide.drained()
         lines = progress.lines(for: setup, .television)
-        #expect(lines.last?.title.hasPrefix("Downloading the guide · 2.4") == true)
+        #expect(english(lines.last?.title)?.hasPrefix("Downloading the guide · 2.4") == true)
         #expect(lines.last?.bar == .indeterminate)
         #expect(!model.allFinished)
 
         guide.send(.loaded(sourceID: setup.id, channelsWithGuide: 2, channelsTotal: 3, days: 7, unmatched: 0))
         await setup.finished()
         lines = progress.lines(for: setup, .television)
-        #expect(lines.last?.title == "Guide for 7 days · 2 of 3 channels")
+        #expect(english(lines.last?.title) == "Guide for 7 days · 2 of 3 channels")
         #expect(lines.last?.state == .done)
         #expect(model.allFinished)
         #expect(guide.refreshes == 1)
@@ -110,8 +110,8 @@ import Testing
         await setup.finished()
         let lines = OnboardingProgress(setups: model.setups, text: text).lines(for: setup, .phone)
         #expect(lines.map(\.id) == ["playlist", "channels"])
-        #expect(lines.map(\.title) == ["Playlist downloaded", "1 live channel"])
-        #expect(lines[0].detail == host)
+        #expect(lines.map { english($0.title) } == ["Playlist downloaded", "1 live channel"])
+        #expect(english(lines[0].detail) == host)
         #expect(model.allFinished)
     }
 
@@ -122,10 +122,10 @@ import Testing
         let setup = try await connectXtream(model, host: host)
         await setup.finishedLoading()
         let progress = OnboardingProgress(setups: model.setups, text: text)
-        #expect(progress.lines(for: setup, .television).map(\.title).contains("Movies and series available"))
+        #expect(progress.lines(for: setup, .television).map { english($0.title) }.contains("Movies and series available"))
         guide.send(.failed(sourceID: setup.id, .offline))
         await setup.finished()
-        #expect(progress.lines(for: setup, .television).last?.title == "Guide could not be loaded")
+        #expect(english(progress.lines(for: setup, .television).last?.title) == "Guide could not be loaded")
         // first-run-onboarding/a-summary-when-everything-has-loaded: no movie tile after the cutoff, no guide tile after a failure.
         #expect(progress.tiles.map(\.id) == ["channels", "catchUp"])
     }
@@ -139,14 +139,14 @@ import Testing
         guide.send(.loaded(sourceID: setup.id, channelsWithGuide: 3, channelsTotal: 4, days: 7, unmatched: 0))
         await setup.finished()
         let progress = OnboardingProgress(setups: model.setups, text: text)
-        #expect(progress.tiles.map(\.value) == ["4", "7 days", "7", "7 days"])
+        #expect(progress.tiles.map { english($0.value) } == ["4", "7 days", "7", "7 days"])
         #expect(
-            progress.tiles.map(\.caption) == [
+            progress.tiles.map { english($0.caption) } == [
                 "live channels · 2 groups", "of guide · 3 channels", "movies and series", "of catch-up on 1 channels",
             ])
-        #expect(progress.eyebrow == "Home provider added")
+        #expect(english(progress.eyebrow) == "Home provider added")
         #expect(progress.firstChannel?.name == "summary.test 0")
-        #expect(progress.liveCaption == "Live · 100 summary.test 0")
+        #expect(english(progress.liveCaption) == "Live · 100 summary.test 0")
         #expect(progress.primary == .startWatching(enabled: true))
     }
 
@@ -160,7 +160,7 @@ import Testing
         await setup.finished()
         let progress = OnboardingProgress(setups: model.setups, text: text)
         #expect(progress.primary == .browseMovies)
-        #expect(progress.lines(for: setup, .television)[1].title == "No live channels")
+        #expect(english(progress.lines(for: setup, .television)[1].title) == "No live channels")
         #expect(progress.lines(for: setup, .television)[1].state == .muted)
         #expect(!progress.isEmpty)
     }
@@ -175,7 +175,7 @@ import Testing
         let progress = OnboardingProgress(setups: model.setups, text: text)
         #expect(progress.isEmpty)
         #expect(progress.primary == .startWatching(enabled: false))
-        #expect(progress.lines(for: setup, .television)[1].title == "No channels found")
+        #expect(english(progress.lines(for: setup, .television)[1].title) == "No channels found")
         let key = try #require(try context.fetch(FetchDescriptor<SourceRecord>()).first?.credentialKey)
         #expect(try held.load(for: key) != nil)
 
@@ -238,12 +238,12 @@ import Testing
 
         let progress = OnboardingProgress(setups: model.setups, text: text)
         #expect(model.showsChecklist)
-        #expect(progress.title == "2 sources added")
-        #expect(progress.eyebrow == "Home provider · Holiday flat")
-        #expect(progress.tiles.first?.value == "5")
-        #expect(progress.tiles.first?.caption == "live channels · 3 groups")
-        #expect(progress.tiles[1].value == "7 days")
-        #expect(progress.tiles[1].caption == "of guide · 4 channels")
+        #expect(english(progress.title) == "2 sources added")
+        #expect(english(progress.eyebrow) == "Home provider · Holiday flat")
+        #expect(english(progress.tiles.first?.value) == "5")
+        #expect(english(progress.tiles.first?.caption) == "live channels · 3 groups")
+        #expect(english(progress.tiles[1].value) == "7 days")
+        #expect(english(progress.tiles[1].caption) == "of guide · 4 channels")
         #expect(progress.sections(.phone).map(\.title) == ["Home provider", "Holiday flat"])
         // The first guide download was never restarted.
         #expect(guide.restarts == 0)
@@ -268,7 +268,7 @@ extension OnboardingChecklistTests {
         #expect(model.fields.url == "http://\(host):8080")
         #expect(model.fields.username.isEmpty)
         #expect(model.signInsAfterThis == ["Holiday flat"])
-        #expect(OnboardingSignIn.remaining(model.signInsAfterThis) == "1 more source to sign in after this one: Holiday flat")
+        #expect(english(OnboardingSignIn.remaining(model.signInsAfterThis)) == "1 more source to sign in after this one: Holiday flat")
 
         await model.signIn(into: context)
         #expect(model.error == "Enter the username.")
@@ -289,8 +289,17 @@ extension OnboardingChecklistTests {
         #expect(model.setups.map(\.name) == ["Home provider", "Holiday flat"])
         #expect(model.showsChecklist)
         let progress = OnboardingProgress(setups: [try #require(model.setups.first)], signedIn: model.signedIn)
-        #expect(progress.eyebrow == "Home provider signed in")
+        #expect(english(progress.eyebrow) == "Home provider signed in")
     }
+}
+
+/// App copy in English, the language the tests compare against.
+private func english(_ resource: LocalizedStringResource) -> String {
+    Words(Locale(identifier: "en_US"))(resource)
+}
+
+private func english(_ resource: LocalizedStringResource?) -> String? {
+    resource.map { english($0) }
 }
 
 /// A guide store whose progress the test sends.

@@ -15,20 +15,39 @@ struct SourceRemoval {
     var refresher: SourceRefresher?
 
     /// "Delete <name>?"
-    static func title(name: String) -> String { "Delete \(name)?" }
+    static func title(name: String) -> LocalizedStringResource { "Delete \(name)?" }
 
     /// "Removes its 412 channels, 3 favorites and guide from every device
     /// signed in to your iCloud account." The channels clause goes when
     /// the source never loaded, the favorites clause at 0, and the ending
-    /// reads "from this device." when not signed in to iCloud.
-    static func message(channels: Int?, favorites: Int, signedInToICloud: Bool, text: SetupText = SetupText()) -> String {
-        var parts: [String] = []
-        if let channels { parts.append("its \(channels == 1 ? "1 channel" : "\(text.count(channels)) channels")") }
-        if favorites > 0 { parts.append(favorites == 1 ? "1 favorite" : "\(text.count(favorites)) favorites") }
-        parts.append(parts.isEmpty ? "its guide" : "guide")
-        let list = parts.count == 1 ? parts[0] : parts.dropLast().joined(separator: ", ") + " and " + (parts.last ?? "")
-        let ending = signedInToICloud ? "from every device signed in to your iCloud account." : "from this device."
-        return "Removes \(list) \(ending)"
+    /// reads "from this device." when not signed in to iCloud. Each shape
+    /// is one whole sentence, so a translation can order it freely.
+    static func message(channels: Int?, favorites: Int, signedInToICloud: Bool, text: SetupText = SetupText()) -> LocalizedStringResource {
+        let channelCount: LocalizedStringResource? = channels.map { $0 == 1 ? "1 channel" : "\(text.count($0)) channels" }
+        let favoriteCount: LocalizedStringResource? =
+            switch favorites {
+            case 0: nil
+            case 1: "1 favorite"
+            default: "\(text.count(favorites)) favorites"
+            }
+        switch (channelCount, favoriteCount, signedInToICloud) {
+        case (let channels?, let favorites?, true):
+            return "Removes its \(channels), \(favorites) and guide from every device signed in to your iCloud account."
+        case (let channels?, let favorites?, false):
+            return "Removes its \(channels), \(favorites) and guide from this device."
+        case (let channels?, nil, true):
+            return "Removes its \(channels) and guide from every device signed in to your iCloud account."
+        case (let channels?, nil, false):
+            return "Removes its \(channels) and guide from this device."
+        case (nil, let favorites?, true):
+            return "Removes \(favorites) and guide from every device signed in to your iCloud account."
+        case (nil, let favorites?, false):
+            return "Removes \(favorites) and guide from this device."
+        case (nil, nil, true):
+            return "Removes its guide from every device signed in to your iCloud account."
+        case (nil, nil, false):
+            return "Removes its guide from this device."
+        }
     }
 
     /// How many favorites, in every profile, point at `id`.

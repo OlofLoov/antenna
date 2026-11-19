@@ -145,8 +145,8 @@ final class TitleModel {
         shelf.hasSource(title)
     }
 
-    private var sourceName: String {
-        shelf.sources.first { $0.id == title.sourceID }?.name ?? "Source"
+    private var sourceName: String? {
+        shelf.sources.first { $0.id == title.sourceID }?.name
     }
 
     private func apply(_ info: TitleInfo) {
@@ -176,17 +176,18 @@ final class TitleModel {
 enum TitleProblem: Equatable {
     case offline
     case failed
-    /// The source's name.
-    case waitingForLogin(String)
+    /// The source's name, nil when the library no longer has the source.
+    case waitingForLogin(String?)
 
     /// The line the page shows: "Could not load details" for a movie and
     /// "Could not load episodes" for a series, the offline message, or the
     /// waiting line.
-    func message(_ kind: ShelfTitle.Kind) -> String {
+    func message(_ kind: ShelfTitle.Kind) -> LocalizedStringResource {
         switch self {
-        case .offline: "\(ShelfStatus.offlineTitle) \(ShelfStatus.offlineLine)"
+        case .offline: .verbatim("\(ShelfStatus.offlineTitle) \(ShelfStatus.offlineLine)")
         case .failed: kind == .movie ? "Could not load details" : "Could not load episodes"
-        case .waitingForLogin(let source): "\(source): waiting for its login to sync from iCloud"
+        case .waitingForLogin(let source?): "\(source): waiting for its login to sync from iCloud"
+        case .waitingForLogin(nil): "Source: waiting for its login to sync from iCloud"
         }
     }
 }

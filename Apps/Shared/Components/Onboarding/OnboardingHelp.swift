@@ -3,17 +3,14 @@ import SwiftUI
 /// "What is a source?" from the welcome screen (`iPhone-Onboard-Help`,
 /// `TV-Onboard-Help`). Done closes it.
 enum OnboardingHelp {
-    static let title = "What is a source?"
-    static let m3uHeading = "M3U playlist"
-    static let m3uText =
-        "A link ending in .m3u or .m3u8. It lists every channel with its stream address. "
-        + "A second link, in XMLTV format, carries the programme guide and is optional."
-    static let xtreamHeading = "Xtream login"
-    static let xtreamText =
-        "A server address with a username and password, sometimes called Xtream Codes. "
-        + "The server answers with channels, guide, movies and series, so there is nothing else to add."
-    static let intro = "Antenna includes no channels. A source is the playlist or login a TV provider gives you."
-    static let noServers = " Antenna has no servers of its own; everything you add stays between you and your provider."
+    static let title: LocalizedStringResource = "What is a source?"
+    static let m3uHeading: LocalizedStringResource = "M3U playlist"
+    static let m3uText: LocalizedStringResource = """
+        A link ending in .m3u or .m3u8. It lists every channel with its stream address. \
+        A second link, in XMLTV format, carries the programme guide and is optional.
+        """
+    static let xtreamHeading: LocalizedStringResource = "Xtream login"
+    static let intro: LocalizedStringResource = "Antenna includes no channels. A source is the playlist or login a TV provider gives you."
 
     /// The sheet on iPhone, iPad and Mac, with the title in the bar and
     /// Done as its confirming action.
@@ -24,12 +21,21 @@ enum OnboardingHelp {
             NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Metrics.Spacing.large) {
-                        Text(OnboardingHelp.intro + OnboardingHelp.noServers)
-                            .foregroundStyle(.secondary)
+                        Text(
+                            """
+                            Antenna includes no channels. A source is the playlist or login a TV provider gives you. \
+                            Antenna has no servers of its own; everything you add stays between you and your provider.
+                            """
+                        )
+                        .foregroundStyle(.secondary)
                         Kind(heading: OnboardingHelp.m3uHeading, text: OnboardingHelp.m3uText)
                         Kind(
                             heading: OnboardingHelp.xtreamHeading,
-                            text: OnboardingHelp.xtreamText + " The login is saved in your iCloud Keychain.")
+                            text: """
+                                A server address with a username and password, sometimes called Xtream Codes. \
+                                The server answers with channels, guide, movies and series, so there is nothing else to add. \
+                                The login is saved in your iCloud Keychain.
+                                """)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, Metrics.Spacing.large)
@@ -67,7 +73,11 @@ enum OnboardingHelp {
                 Kind(heading: OnboardingHelp.m3uHeading, text: OnboardingHelp.m3uText)
                 Kind(
                     heading: OnboardingHelp.xtreamHeading,
-                    text: OnboardingHelp.xtreamText + " The login is saved in the Keychain on this Apple TV.")
+                    text: """
+                        A server address with a username and password, sometimes called Xtream Codes. \
+                        The server answers with channels, guide, movies and series, so there is nothing else to add. \
+                        The login is saved in the Keychain on this Apple TV.
+                        """)
                 Button("Done", action: done)
                     .primaryActionStyle()
                     .accessibilityIdentifier("onboarding.helpDone")
@@ -83,8 +93,8 @@ enum OnboardingHelp {
 
     /// A heading over its explanation: headline over body in secondary.
     private struct Kind: View {
-        let heading: String
-        let text: String
+        let heading: LocalizedStringResource
+        let text: LocalizedStringResource
 
         var body: some View {
             VStack(alignment: .leading, spacing: Metrics.Spacing.xSmall) {

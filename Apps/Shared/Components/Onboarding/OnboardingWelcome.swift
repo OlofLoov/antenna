@@ -4,7 +4,7 @@ import SwiftUI
 /// `iPhone-Onboard-1` and `TV-Onboard-1`). Compiles on every platform so
 /// the snapshot job renders both variants.
 enum OnboardingWelcome {
-    static let title = "Welcome to Antenna"
+    static let title: LocalizedStringResource = "Welcome to Antenna"
 
     /// What the welcome screen's buttons do. Each variant also takes
     /// `signedInToICloud`; when false it leaves out what it says about sync.
@@ -29,8 +29,10 @@ enum OnboardingWelcome {
                                 .font(.largeTitle.bold())
                                 .accessibilityAddTraits(.isHeader)
                             Text(
-                                "Antenna plays the TV sources you already have. "
-                                    + "It comes with no channels, so start by adding a playlist or a login from your provider."
+                                """
+                                Antenna plays the TV sources you already have. \
+                                It comes with no channels, so start by adding a playlist or a login from your provider.
+                                """
                             )
                             .foregroundStyle(.secondary)
                         }
@@ -89,8 +91,10 @@ enum OnboardingWelcome {
                         .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text(
-                        "Antenna plays the TV sources you already have. It does not come with any channels, "
-                            + "so the first step is to add a playlist or a login from your provider."
+                        """
+                        Antenna plays the TV sources you already have. It does not come with any channels, \
+                        so the first step is to add a playlist or a login from your provider.
+                        """
                     )
                     .foregroundStyle(.secondary)
                 }
@@ -123,8 +127,8 @@ enum OnboardingWelcome {
     /// One feature row on the iPhone welcome: icon tile, title, muted detail.
     private struct Feature: View {
         let systemImage: String
-        let title: String
-        let detail: String
+        let title: LocalizedStringResource
+        let detail: LocalizedStringResource
 
         var body: some View {
             HStack(spacing: Metrics.Spacing.medium) {

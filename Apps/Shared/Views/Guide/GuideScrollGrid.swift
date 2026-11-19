@@ -225,6 +225,7 @@
 
     /// One block, a button that opens its details, at its place in the grid.
     private struct GuideGridBlock: View {
+        @Environment(\.locale) private var locale
         let cell: GuideCell
         let block: GuideBlock
         let key: RowKey
@@ -250,7 +251,7 @@
             .buttonStyle(.plain)
             .disabled(cell.programme == nil)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(GuideText.spoken(cell, channel: channel, now: now))
+            .accessibilityLabel(GuideText(locale: locale).spoken(cell, channel: channel, now: now))
             .accessibilityAddTraits(isSelected ? .isSelected : [])
             .accessibilityIdentifier(GuideText.identifier(cell, key: key))
             .popover(isPresented: presented(target)) {
@@ -336,6 +337,7 @@
 
     /// The group title and the half-hour labels, which follow the grid sideways.
     private struct GuideGridHeader: View {
+        @Environment(\.locale) private var locale
         let scroll: GuideGridScroll
         let timeline: GuideTimeline
         let scale: GuideScale
@@ -352,12 +354,12 @@
                     let visible = DateInterval(start: start, duration: proxy.size.width / scale.columnWidth * GuideTimeline.column)
                     ZStack(alignment: .topLeading) {
                         ForEach(timeline.columns(in: visible), id: \.self) { column in
-                            GuideBoard.ColumnLabel(text: GuideText.time(column), width: scale.columnWidth)
+                            GuideBoard.ColumnLabel(text: GuideText(locale: locale).time(column), width: scale.columnWidth)
                                 .offset(x: scale.offset(of: column, from: start))
                                 .accessibilityIdentifier("guide.column")
                         }
                         if visible.contains(now) {
-                            GuideBoard.NowPill(time: GuideText.time(now))
+                            GuideBoard.NowPill(time: GuideText(locale: locale).time(now))
                                 .offset(x: scale.offset(of: now, from: start) - 24, y: 6)
                                 .accessibilityIdentifier("guide.nowLine")
                         }

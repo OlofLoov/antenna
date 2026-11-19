@@ -255,7 +255,7 @@ enum GuideGrid {
 
     /// The muted line in place of the rows when the group has no channels.
     struct Empty: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
             Text(text)

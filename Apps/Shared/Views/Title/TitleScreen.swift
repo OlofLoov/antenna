@@ -93,7 +93,7 @@ struct TitleScreen<Page: View>: View {
     }
 
     /// A movie's failure shows under the buttons; a series' shows in place of its episodes.
-    private var problem: String? {
+    private var problem: LocalizedStringResource? {
         guard route.title.kind == .movie, case .failed(let problem) = model.phase else { return nil }
         return problem.message(.movie)
     }

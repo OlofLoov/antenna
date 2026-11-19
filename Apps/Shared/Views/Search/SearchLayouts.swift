@@ -128,7 +128,7 @@ enum SearchLayout {
 enum SearchSectionKind {
     case channels, guide, titles
 
-    var title: String {
+    var title: LocalizedStringResource {
         switch self {
         case .channels: "Channels"
         case .guide: "In the guide"
@@ -151,23 +151,24 @@ struct SearchSectionHeader: View {
     let kind: SearchSectionKind
     let model: SearchModel
     let uppercase: Bool
+    @Environment(\.locale) private var locale
 
     var body: some View {
         let results = model.results
-        SearchParts.Header(title: uppercase ? kind.title.uppercased() : kind.title, count: count(results)) {
+        SearchParts.Header(title: uppercase ? .verbatim(Words(locale)(kind.title).uppercased()) : kind.title, count: count(results)) {
             if kind == .guide, model.scope == .all, !model.guideExpanded, results.programmes.count > SearchResults.guidePreview {
                 SearchParts.SeeAll(count: results.programmes.count) { model.expandGuide() }
             }
         }
     }
 
-    private func count(_ results: SearchResults) -> String? {
+    private func count(_ results: SearchResults) -> LocalizedStringResource? {
         switch kind {
-        case .channels: return "\(results.count(.channels))"
+        case .channels: return .verbatim("\(results.count(.channels))")
         case .guide:
             if results.programmes.isEmpty, model.guideLoading { return "loading" }
-            return "\(SearchText.nextSevenDays) · \(results.count(.guide))"
-        case .titles: return "\(results.titles.count)"
+            return .verbatim("\(SearchText.nextSevenDays) · \(results.count(.guide))")
+        case .titles: return .verbatim("\(results.titles.count)")
         }
     }
 }

@@ -32,7 +32,7 @@ extension TitlePage {
             if hides { hiding.insert(line) } else { hiding.remove(line) }
         }
 
-        private func line(_ label: String, _ names: String) -> Text {
+        private func line(_ label: LocalizedStringResource, _ names: String) -> Text {
             Text("\(Text(label).foregroundStyle(Palette.textMuted)) \(Text(names).foregroundStyle(Browse.textSecondary))")
                 .font(.system(size: type.plot * 0.9))
         }

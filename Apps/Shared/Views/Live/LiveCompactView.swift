@@ -76,7 +76,7 @@
             ScrollViewReader { proxy in
                 Browse.Chips {
                     ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                        Browse.Chip(title: live.catalogue.label(of: group), isSelected: group == live.group) {
+                        Browse.Chip(title: .verbatim(live.catalogue.label(of: group)), isSelected: group == live.group) {
                             live.show(group)
                         }
                         .id(group)
@@ -92,12 +92,13 @@
 
     /// What the iPhone line under the picture says about the playing channel.
     struct LiveNowPlayingLine: View {
+        @Environment(\.locale) private var locale
         let channel: Channel
         @Environment(LiveModel.self) private var live
 
         var body: some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                let text = live.nowText(for: channel, at: context.date)
+                let text = live.nowText(for: channel, at: context.date, locale: locale)
                 Browse.NowPlaying(title: text.title, detail: text.compact) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 } trailing: {

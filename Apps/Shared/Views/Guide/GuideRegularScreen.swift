@@ -151,6 +151,7 @@
 
     /// The programme details in the popover (guide-on-iphone-ipad-and-mac/read-about-a-programme).
     struct GuideDetailsPopover: View {
+        @Environment(\.locale) private var locale
         let target: GuideTarget
         @Environment(\.reminders) private var reminders
         @Environment(LiveModel.self) private var live
@@ -161,7 +162,7 @@
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                 let reading = GuideBoardReading(live: live, model: model)
                 let data = reading.data(at: context.date, filtered: false)
-                if let details = reading.details(target, data, now: context.date) {
+                if let details = reading.details(target, data, now: context.date, locale: locale) {
                     GuideBoard.Details.Popover(details: details, reminder: reading.reminder(target, data, reminders, now: context.date)) {
                         reading.watch(target, data: data, now: context.date)
                         openLive()

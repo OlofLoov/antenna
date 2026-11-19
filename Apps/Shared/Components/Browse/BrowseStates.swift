@@ -7,7 +7,7 @@ extension Browse {
             /// Still loading: a spinner.
             case loading
             /// Done: "412 channels", "No channels", "Could not load" or the like.
-            case done(String)
+            case done(LocalizedStringResource)
         }
 
         var id: UUID
@@ -55,8 +55,8 @@ extension Browse {
     /// A centered message in place of the list: a 17 pt title, 15 pt lines
     /// under it and a Retry button (`iPhone-Error`, `iPad-Error`, `iPad-Empty`).
     struct Message: View {
-        let title: String
-        let lines: [String]
+        let title: LocalizedStringResource
+        let lines: [LocalizedStringResource]
         /// The Retry button's identifier; Movies and Series use their own prefix.
         var retryIdentifier = "browse.retry"
         let retry: () -> Void
@@ -66,8 +66,8 @@ extension Browse {
                 Text(title)
                     .font(.headline)
                     .foregroundStyle(Palette.text)
-                ForEach(lines, id: \.self) { line in
-                    Text(line)
+                ForEach(lines.indices, id: \.self) { index in
+                    Text(lines[index])
                         .font(.subheadline)
                         .foregroundStyle(Browse.textSecondary)
                 }
@@ -92,7 +92,7 @@ extension Browse {
     /// The banner over the channels naming the sources that failed, with
     /// Retry and a dismiss button (`iPhone-Banner`, `iPad-Banner`).
     struct FailureBanner: View {
-        let text: String
+        let text: LocalizedStringResource
         /// The banner's identifier, and the start of its parts' identifiers.
         var identifier = "browse.banner.failed"
         let retry: () -> Void
@@ -130,7 +130,7 @@ extension Browse {
 
     /// "Office · waiting for login": text only, no Retry and no dismiss.
     struct WaitingNote: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
             Text(text)

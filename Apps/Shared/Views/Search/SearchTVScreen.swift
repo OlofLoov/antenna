@@ -86,7 +86,7 @@
         @ViewBuilder private var recents: some View {
             if !activity.searches.isEmpty {
                 VStack(alignment: .leading, spacing: 14) {
-                    SearchParts.Header(title: "Recent searches", count: "\(activity.searches.count)") { EmptyView() }
+                    SearchParts.Header(title: "Recent searches", count: .verbatim("\(activity.searches.count)")) { EmptyView() }
                     ForEach(Array(activity.searches.enumerated()), id: \.offset) { index, text in
                         SearchRow.Recent(text: text) { model.run(text) }
                             .frame(maxWidth: 800, alignment: .leading)
@@ -174,7 +174,7 @@
                     let results = feed.model.results
                     LazyVStack(alignment: .leading, spacing: 28) {
                         if !results.channels.isEmpty {
-                            section(.channels, count: "\(results.count(.channels))") {
+                            section(.channels, count: .verbatim("\(results.count(.channels))")) {
                                 ScrollView(.horizontal) {
                                     LazyHStack(spacing: 20) {
                                         ForEach(Array(results.shownChannels.enumerated()), id: \.element.id) { index, hit in
@@ -188,9 +188,9 @@
                             }
                         }
                         if !results.programmes.isEmpty || feed.model.guideLoading {
-                            let count =
+                            let count: LocalizedStringResource =
                                 results.programmes.isEmpty
-                                ? "loading" : "\(SearchText.nextSevenDays) · \(results.count(.guide))"
+                                ? "loading" : .verbatim("\(SearchText.nextSevenDays) · \(results.count(.guide))")
                             section(.guide, count: count) {
                                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 20), GridItem(.flexible(), spacing: 20)], spacing: 12) {
                                     // Apple TV lists every programme (search/very-long-result-lists).
@@ -201,7 +201,7 @@
                             }
                         }
                         if !results.titles.isEmpty {
-                            section(.titles, count: "\(results.titles.count)") {
+                            section(.titles, count: .verbatim("\(results.titles.count)")) {
                                 ScrollView(.horizontal) {
                                     LazyHStack(alignment: .top, spacing: 20) {
                                         ForEach(Array(results.titles.enumerated()), id: \.element.id) { index, hit in
@@ -219,7 +219,7 @@
             }
 
             private func section<Content: View>(
-                _ kind: SearchSectionKind, count: String, @ViewBuilder content: () -> Content
+                _ kind: SearchSectionKind, count: LocalizedStringResource, @ViewBuilder content: () -> Content
             ) -> some View {
                 VStack(alignment: .leading, spacing: 14) {
                     SearchParts.Header(title: kind.title, count: count) { EmptyView() }

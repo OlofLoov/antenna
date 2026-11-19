@@ -32,7 +32,8 @@
             var body: some View {
                 FormPage.Television(
                     title: "Sign in on this Apple TV",
-                    line: "\(fields.kind == .stalker ? "Portal" : "Server") and name came from your iPhone.",
+                    line: fields.kind == .stalker
+                        ? "Portal and name came from your iPhone." : "Server and name came from your iPhone.",
                     footer: OnboardingForm.keychainLine(fields.kind), error: status.error
                 ) {
                     SetupCard.Television(link: link, status: cardStatus) {

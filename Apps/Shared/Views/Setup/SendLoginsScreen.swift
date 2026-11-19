@@ -98,8 +98,10 @@
             case .offline, .failed: return .problem("Couldn't send. Check that this \(device) is online, then try again.")
             case .notSignedIn:
                 return .problem(
-                    "This \(device) isn't signed in to iCloud, so it can't send logins to your Apple TV. "
-                        + "Sign in to iCloud in Settings, then scan the code again.")
+                    """
+                    This \(device) isn't signed in to iCloud, so it can't send logins to your Apple TV. \
+                    Sign in to iCloud in Settings, then scan the code again.
+                    """)
             case .storageFull: return .problem("Couldn't send because your iCloud storage is full.")
             case .alreadyUsed: return .problem("This code was already used. If the Apple TV still needs a login, it shows a new code.")
             }

@@ -10,7 +10,7 @@ struct SourceRowLabel: View {
     let kind: SourceKind
     let lines: [SourceStatusText.Line]
 
-    static func badge(_ kind: SourceKind) -> String {
+    static func badge(_ kind: SourceKind) -> LocalizedStringResource {
         switch kind {
         case .m3u: "M3U"
         case .xtream: "XTREAM"
@@ -22,7 +22,7 @@ struct SourceRowLabel: View {
     }
 
     /// The type as the add-source kinds name it, for a lead column.
-    static func kindName(_ kind: SourceKind) -> String {
+    static func kindName(_ kind: SourceKind) -> LocalizedStringResource {
         switch kind {
         case .m3u: "M3U playlist"
         case .xtream: "Xtream login"

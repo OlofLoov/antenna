@@ -122,7 +122,7 @@
             !offer.movies && offer.series ? .series : .movies
         }
 
-        var title: String {
+        var title: LocalizedStringResource {
             switch self {
             case .live: "Live"
             case .guide: "Guide"

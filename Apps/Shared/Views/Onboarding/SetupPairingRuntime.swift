@@ -53,7 +53,7 @@ struct SetupPairingRuntime: ViewModifier {
 
 extension SetupCard {
     /// The hint's wording.
-    static func text(_ hint: SetupPairingModel.Hint) -> String {
+    static func text(_ hint: SetupPairingModel.Hint) -> LocalizedStringResource {
         switch hint {
         case .nothing: nothingYet
         case .unusable: cannotSetUp

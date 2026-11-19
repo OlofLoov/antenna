@@ -156,8 +156,13 @@ enum SearchRow {
             }
             .buttonStyle(RowStyle())
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("In the guide, \(title), \(lead ?? "Now") \(detail)\(hasCatchup ? ", catch-up" : "")")
+            .accessibilityLabel(spoken)
             .accessibilityAddTraits(.isButton)
+        }
+
+        private var spoken: LocalizedStringResource {
+            let when: LocalizedStringResource = lead.map { .verbatim($0) } ?? "Now"
+            return hasCatchup ? "In the guide, \(title), \(when) \(detail), catch-up" : "In the guide, \(title), \(when) \(detail)"
         }
     }
 
@@ -239,7 +244,7 @@ enum SearchRow {
             }
             .buttonStyle(PosterStyle())
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Movies & series, \(name)\(isSeries ? ", series" : "")")
+            .accessibilityLabel(isSeries ? "Movies & series, \(name), series" : "Movies & series, \(name)")
             .accessibilityAddTraits(.isButton)
         }
     }

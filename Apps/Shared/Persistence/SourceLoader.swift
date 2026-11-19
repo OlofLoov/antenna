@@ -49,11 +49,13 @@ struct SourceLoader: Sendable {
         /// offline, which arrives as a `URLError` instead.
         case channelsDVR(ChannelsDVRError, host: String)
 
+        /// Resolved in the app's current language, since the refresher and
+        /// Live keep it as a `String` in a source's status.
         var errorDescription: String? {
             switch self {
-            case .badStatus(let code): "The playlist server answered with status \(code)."
-            case .waitingForICloud: "Waiting for its playlist to sync from iCloud."
-            case .loginUnreadable: "Its saved login is unreadable. Re-import the file."
+            case .badStatus(let code): String(localized: "The playlist server answered with status \(code).")
+            case .waitingForICloud: String(localized: "Waiting for its playlist to sync from iCloud.")
+            case .loginUnreadable: String(localized: "Its saved login is unreadable. Re-import the file.")
             case .portal(let error): Self.message(error)
             case .jellyfin(let error): Self.message(error)
             case .channelsDVR(let error, let host): ConnectFailure(error, host: host).message
@@ -62,21 +64,22 @@ struct SourceLoader: Sendable {
 
         private static func message(_ error: JellyfinClient.JellyfinError) -> String {
             switch error {
-            case .unauthorized: "The server turned down the username and password. Sign in again."
+            case .unauthorized: String(localized: "The server turned down the username and password. Sign in again.")
             case .forbidden: ConnectFailure.forbidden.message
             case .untrustedCertificate: ConnectFailure.untrustedCertificate.message
-            case .badStatus(let status): "The server answered with status \(status)."
-            case .transport, .decoding: "The server replied with something Antenna could not read."
+            case .badStatus(let status): String(localized: "The server answered with status \(status).")
+            case .transport, .decoding: String(localized: "The server replied with something Antenna could not read.")
             }
         }
 
         private static func message(_ error: StalkerError) -> String {
             switch error {
-            case .serverError(let status): "The portal answered with status \(status)."
-            case .notAuthorized: "The portal turned down this MAC address or login."
-            case .deviceRefused(let message): "The portal turned this device down. It said “\(message)”."
-            case .noPortal: "No Stalker portal answered at this address."
-            case .transport, .unreadable, .notStalkerChannel, .noLink: "The portal replied with something Antenna could not read."
+            case .serverError(let status): String(localized: "The portal answered with status \(status).")
+            case .notAuthorized: String(localized: "The portal turned down this MAC address or login.")
+            case .deviceRefused(let message): String(localized: "The portal turned this device down. It said “\(message)”.")
+            case .noPortal: String(localized: "No Stalker portal answered at this address.")
+            case .transport, .unreadable, .notStalkerChannel, .noLink:
+                String(localized: "The portal replied with something Antenna could not read.")
             }
         }
     }

@@ -36,7 +36,7 @@ import Testing
         }
 
         private func run(_ name: String, in actions: [NamedAction]) throws {
-            try #require(actions.first { $0.name == name }, "no \(name) action").run()
+            try #require(actions.first { String(localized: $0.name) == name }, "no \(name) action").run()
         }
 
         /// Lets the model's engine tasks run.
@@ -47,7 +47,9 @@ import Testing
         @Test("live-tv-on-iphone-ipad-mac/swipe-on-the-picture-to-change-channel Channel up and Channel down zap like a swipe")
         func zap() throws {
             live.pick(try channel("Two"))
-            #expect(live.pictureActions.map(\.name) == ["Channel up", "Channel down"], "no skips while the channel cannot rewind")
+            #expect(
+                live.pictureActions.map { String(localized: $0.name) } == ["Channel up", "Channel down"],
+                "no skips while the channel cannot rewind")
 
             try run("Channel up", in: live.pictureActions)
             #expect(live.playing?.name == "Three")
@@ -62,7 +64,10 @@ import Testing
             live.pick(try channel("One"))
             await settle()
             live.player.timeshift.statusChanged(TimeshiftModelTests.status(behind: 600))
-            #expect(live.pictureActions.map(\.name) == ["Channel up", "Channel down", "Back 15 seconds", "Forward 15 seconds"])
+            #expect(
+                live.pictureActions.map { String(localized: $0.name) } == [
+                    "Channel up", "Channel down", "Back 15 seconds", "Forward 15 seconds",
+                ])
 
             try run("Back 15 seconds", in: live.pictureActions)
             await settle()
@@ -87,12 +92,12 @@ import Testing
                 live.favoritesChanged(records.map(\.snapshot))
             }
 
-            #expect(action().name == "Add to Favorites")
+            #expect(String(localized: action().name) == "Add to Favorites")
             action().run()
             try sync()
             #expect(live.catalogue.isFavorite(two))
             #expect(live.playing == nil, "adding a favorite plays nothing")
-            #expect(action().name == "Remove from Favorites")
+            #expect(String(localized: action().name) == "Remove from Favorites")
             action().run()
             try sync()
             #expect(!live.catalogue.isFavorite(two))

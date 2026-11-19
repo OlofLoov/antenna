@@ -95,7 +95,7 @@ enum Browse {
 
     /// The muted line in place of the list when the group has no channels.
     struct EmptyGroup: View {
-        let text: String
+        let text: LocalizedStringResource
 
         var body: some View {
             Text(text)
@@ -109,7 +109,7 @@ enum Browse {
 
         /// What empty Favorites says, naming how a channel becomes a favorite
         /// on this platform (live-tv-on-iphone-ipad-mac/pick-a-group).
-        static var noFavorites: String {
+        static var noFavorites: LocalizedStringResource {
             #if os(macOS)
                 "No favorites yet. Right-click a channel to add it."
             #else

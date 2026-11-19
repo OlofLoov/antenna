@@ -3,10 +3,10 @@ import SwiftUI
 /// An action VoiceOver offers by name. Kept as a value, so the actions a
 /// screen offers can be read and run in a unit test, which XCUITest cannot do.
 struct NamedAction: Identifiable {
-    let name: String
+    let name: LocalizedStringResource
     let run: () -> Void
 
-    var id: String { name }
+    var id: String { String(localized: name) }
 }
 
 extension View {
