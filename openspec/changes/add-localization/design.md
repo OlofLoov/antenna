@@ -663,6 +663,28 @@ Portuguese (Brazil) review:
 - Every device name is masculine in Portuguese ("o Mac", "o Apple TV"), so
   "este %@" and "neste %@" stay.
 
+PR 10, Arabic text:
+- Modern Standard Arabic, with Apple's Arabic names where they exist
+  ("الإعدادات", "سلسلة مفاتيح iCloud", "المشاركة العائلية"). Catch-up is
+  "إعادة المشاهدة". Product names (Apple TV, AirPlay, Xtream, Jellyfin,
+  Channels DVR, M3U, FFmpeg) stay in Latin letters.
+- Plural entries fill all six forms. Zero, few, many and other carry the
+  number; one and two write the word alone ("قناة واحدة", "قناتان"), as
+  Arabic counts. Few takes the plural noun ("٣ قنوات"), many and other the
+  singular ("١١ قناة", "١١ يومًا").
+- App entries that count with a bare `%lld` and no plural variation in
+  English ("%lld channels", "%lld sources added") are written as a label
+  and the number ("القنوات: %lld"), which needs no agreement. The Arabic
+  reviewer can give them their own plural forms instead, as the French
+  review did.
+- "Swipe it right" in the empty favorites hint is "to the left" in Arabic:
+  the swipe action sits on the leading edge, which is the right side in a
+  right-to-left layout, so the row slides left to show it.
+- Under `ar_SA` counts and channel numbers use Arabic-Indic digits and
+  "٬" for grouping ("١٢٬٥٠٠"). `LanguageTests` pins one example of each
+  plural form, the digits and a Latin channel name isolated inside an
+  Arabic sentence.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

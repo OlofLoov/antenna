@@ -92,4 +92,36 @@ import Testing
         #expect(SourceStatusText(locale: Locale(identifier: "pt_PT")).count(1) == "1 canal")
         #expect(CatalogueGroup.favorites.label(Locale(identifier: "pt_PT")) == "Favoritos")
     }
+
+    static let arabic = Locale(identifier: "ar_SA")
+
+    @Test("localization/counts-use-the-language-s-plural-forms Arabic zero, one, two, few, many and other")
+    func arabicPlural() {
+        let text = SourceStatusText(locale: Self.arabic)
+        #expect(text.count(0) == "٠ قناة")
+        #expect(text.count(1) == "قناة واحدة")
+        #expect(text.count(2) == "قناتان")
+        #expect(text.count(3) == "٣ قنوات")
+        #expect(text.count(11) == "١١ قناة")
+        #expect(text.count(100) == "١٠٠ قناة")
+        let setup = SetupText(locale: Self.arabic)
+        #expect(setup.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "قناتان مباشرتان في مجموعتين")
+        #expect(setup.channels(ChannelTally(channels: 11, groups: ["News"])) == "١١ قناة مباشرة في مجموعة واحدة")
+    }
+
+    @Test("localization/numbers-use-the-region-s-digits-and-separators Saudi Arabia writes Arabic-Indic digits")
+    func arabicDigits() {
+        #expect(ChannelNumber(major: 1001).text(Self.arabic) == "١٠٠١")
+        #expect(ChannelNumber(major: 6, minor: 1).text(Self.arabic) == "٦.١")
+        #expect(SetupText(locale: Self.arabic).liveChannels(12_500) == "١٢٬٥٠٠ قناة مباشرة")
+    }
+
+    @Test("localization/mixed-scripts-keep-their-own-direction a Latin name inside an Arabic sentence is isolated")
+    func arabicIsolatesLatinName() {
+        let reply = IntentFailure.alreadyFavorite(channel: "BBC One").description(Self.arabic)
+        #expect(reply == "\u{2068}BBC One\u{2069} موجودة بالفعل في المفضلة.")
+        #expect(reply.withoutIsolates == "BBC One موجودة بالفعل في المفضلة.")
+        let english = IntentFailure.alreadyFavorite(channel: "BBC One").description(Locale(identifier: "en_US"))
+        #expect(english == "BBC One is already a favorite.")
+    }
 }

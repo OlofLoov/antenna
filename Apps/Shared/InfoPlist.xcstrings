@@ -31,6 +31,12 @@
       "comment" : "Privacy - Local Network Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "يتصل Antenna بخوادم التلفزيون على شبكتك المنزلية عندما يشير أحد مصادرك إليها."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
