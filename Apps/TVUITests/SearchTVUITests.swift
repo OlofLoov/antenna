@@ -186,6 +186,9 @@ final class SearchTVUITests: XCTestCase {
         press(.right, times: 4)
         expectFocus("shell.tab.search")
         press(.select)
+        // Down before Search has opened leaves the field without the keyboard.
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
+        expectFocus("shell.tab.search")
         press(.down)
         let field = app.searchFields.firstMatch
         expect(field, "value BEGINSWITH 'a2'")
