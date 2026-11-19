@@ -10,7 +10,7 @@ DEINE QUELLEN
 LIVE-TV
 • Eine Senderliste, die zeigt, was gerade läuft und was danach kommt
 • Ein Programmführer für die nächsten Tage
-• Live-TV pausieren, bis zu eine Stunde zurückspulen und zurück zu Live springen
+• Live-TV pausieren, bis zu einer Stunde zurückspulen und zurück zu Live springen
 • Die laufende Sendung von vorn starten oder frühere Sendungen in der Mediathek ansehen, wenn dein Anbieter das unterstützt
 • Gruppen ausblenden, umbenennen und sortieren, eigene anlegen und eine Gruppe mit einem Code sperren
 • Favoriten und eine Erinnerung, bevor eine Sendung beginnt
@@ -23,7 +23,7 @@ FILME UND SERIEN
 • Die nächste Folge startet automatisch, außer du schaltest das aus
 
 AUF APPLE TV
-• Sender wechseln mit der Siri Remote oder eine Sendernummer eingeben
+• Mit der Siri Remote Sender wechseln oder eine Sendernummer eingeben
 • Favoriten und angefangene Titel ganz oben auf dem Home-Bildschirm
 • Das Apple TV anmelden, indem du mit dem iPhone einen Code scannst, statt ein Passwort mit der Fernbedienung einzutippen
 
@@ -37,6 +37,6 @@ KAUF
 Antenna kannst du kostenlos laden. Zum Nutzen ist ein Kauf nötig: ein Jahresabo oder eine dauerhafte Freischaltung mit einer einzigen Zahlung. Beides funktioniert mit der Familienfreigabe. Die App zeigt den Preis für deine Region, bevor du kaufst.
 
 DATENSCHUTZ
-Antenna hat kein Konto, keine Werbung und keine Analyse. Die App verbindet sich nur mit den Quellen, die du hinzufügst, mit deinem iCloud-Konto und mit dem App Store.
+Antenna braucht kein Konto und hat keine Werbung und keine Nutzungsanalyse. Die App verbindet sich nur mit den Quellen, die du hinzufügst, mit deinem iCloud-Konto und mit dem App Store.
 
 Du brauchst das Recht, anzusehen, was deine Quellen abspielen. Antenna verkauft und empfiehlt keine TV-Abos.

@@ -18,7 +18,7 @@
 
 ## 3. Review (PR 3)
 
-- [ ] 3.1 Review each language's listing for meaning, Apple's terms, length, keywords per market and claims, fix what it finds, and record the findings in design.md
+- [x] 3.1 Review each language's listing for meaning, Apple's terms, length, keywords per market and claims, fix what it finds, and record the findings in design.md
 - [ ] 3.2 Look at the store screenshots of each ready language for untranslated or cut-off text
 
 ## 4. Verify

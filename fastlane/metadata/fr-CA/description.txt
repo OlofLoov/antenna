@@ -1,4 +1,4 @@
-Antenna lit les sources TV que vous avez déjà, sur iPhone, iPad, Mac et Apple TV. L’app ne contient aucune chaîne, aucune playlist et aucune adresse de fournisseur. Vous ajoutez votre propre source, et Antenna en fait une liste de chaînes, un guide TV et une bibliothèque de films et de séries.
+Antenna lit les sources TV que vous avez déjà, sur iPhone, iPad, Mac et Apple TV. L’app ne contient aucune chaîne, aucune playlist ni aucune adresse de fournisseur. Vous ajoutez votre propre source, et Antenna en fait une liste de chaînes, un guide TV et une bibliothèque de films et de séries.
 
 VOS SOURCES
 • Playlists M3U, depuis un lien ou un fichier
@@ -19,24 +19,24 @@ TV EN DIRECT
 
 FILMS ET SÉRIES
 • Les films et séries de votre fournisseur en rangées d’affiches, avec saisons et épisodes
-• Reprenez là où vous vous êtes arrêté, sur n’importe lequel de vos appareils
+• Reprenez la lecture là où vous l’avez laissée, sur n’importe lequel de vos appareils
 • L’épisode suivant démarre automatiquement, sauf si vous désactivez cette option
 
 SUR APPLE TV
-• Changez de chaîne avec la télécommande Siri Remote ou tapez un numéro de chaîne
+• Changez de chaîne avec la télécommande Siri Remote ou saisissez un numéro de chaîne
 • Favoris et titres en cours tout en haut de l’écran d’accueil
-• Connectez l’Apple TV en scannant un code avec votre iPhone, au lieu de taper un mot de passe avec la télécommande
+• Connectez-vous sur l’Apple TV en scannant un code avec votre iPhone, au lieu de saisir un mot de passe avec la télécommande
 
 SUR TOUS VOS APPAREILS
 • Sources, favoris et progression se synchronisent via votre propre compte iCloud. Les mots de passe restent dans votre trousseau iCloud.
 • Un profil pour chaque personne du foyer, avec ses propres favoris et son historique
-• Siri et Raccourcis peuvent mettre une chaîne ou lancer un titre sur iPhone, iPad et Mac
+• Siri et Raccourcis peuvent lancer une chaîne ou un titre sur iPhone, iPad et Mac
 • Raccourcis clavier sur Mac et iPad
 
 ACHAT
 Antenna se télécharge gratuitement. Pour l’utiliser, un achat est nécessaire : un abonnement annuel ou un déblocage à vie en un seul paiement. Les deux fonctionnent avec le Partage familial. L’app affiche le prix pour votre région avant l’achat.
 
 CONFIDENTIALITÉ
-Antenna n’a ni compte, ni publicité, ni outil d’analyse. L’app se connecte uniquement aux sources que vous ajoutez, à votre compte iCloud et à l’App Store.
+Antenna ne demande aucun compte et n’a ni publicité ni outil d’analyse. L’app se connecte uniquement aux sources que vous ajoutez, à votre compte iCloud et à l’App Store.
 
 Vous devez avoir le droit de regarder ce que lisent vos sources. Antenna ne vend ni ne recommande d’abonnements TV.
