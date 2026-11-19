@@ -376,12 +376,12 @@
             }
 
             /// A tiny text the UI tests read through `shell.debug.engine`.
-            /// Draws nothing outside UI tests.
+            /// Draws nothing outside UI tests, or in the store screenshots.
             struct Probe: View {
                 let engine: any PlaybackEngine
 
                 var body: some View {
-                    let shown = !ProcessInfo.processInfo.arguments.contains(UITestingLive.Probe.hiddenArgument)
+                    let shown = !UITestingStoreShots.isOn
                     if shown, let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
                         Text(engine.summary)
                             .font(.system(size: 18))

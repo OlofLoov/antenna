@@ -5,11 +5,9 @@
     extension UITestingLive {
         /// A tiny text the UI tests read through `browse.debug.engine`, and
         /// a button, `browse.debug.switchLayout`, that flips `Layout.compact`.
-        /// Draws nothing outside UI tests, or with `-ui-testing-no-probe`,
-        /// which the store screenshots pass (add-store-localization).
+        /// Draws nothing outside UI tests, or in the store screenshots
+        /// (`UITestingStoreShots`).
         struct Probe: View {
-            static let hiddenArgument = "-ui-testing-no-probe"
-
             let engine: any PlaybackEngine
             /// With a player, `browse.debug.player` reads the engine's
             /// summary and what the player draws over the picture in one
@@ -18,7 +16,7 @@
             var player: PlayerModel?
 
             var body: some View {
-                let shown = !ProcessInfo.processInfo.arguments.contains(Self.hiddenArgument)
+                let shown = !UITestingStoreShots.isOn
                 if shown, let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(engine.summary)

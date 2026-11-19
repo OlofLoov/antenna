@@ -138,7 +138,7 @@
                 load: { try await script.load($0) },
                 hasLogin: { script.hasLogin($0) },
                 guide: nil,
-                programmes: guide)
+                programmes: UITestingStoreShots.guide(launched: launched) ?? guide)
             dependencies.touchHold = .seconds(environment[controlsVariable].flatMap(Double.init) ?? 60)
             dependencies.network = UITestingPlayback.network
             dependencies.slowDelay = UITestingPlayback.slowDelay

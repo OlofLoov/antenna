@@ -42,6 +42,13 @@ final class Journey {
         return ["-AppleLanguages", "(\(language))", "-AppleLocale", region]
     }
 
+    /// Waits up to `timeout` seconds for the element with `identifier` to
+    /// go away, and carries on either way.
+    func waitUntilGone(_ identifier: String, timeout: TimeInterval = 10) {
+        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: element(identifier))
+        _ = XCTWaiter().wait(for: [gone], timeout: timeout)
+    }
+
     func element(_ identifier: String) -> XCUIElement {
         app.descendants(matching: .any)[identifier].firstMatch
     }

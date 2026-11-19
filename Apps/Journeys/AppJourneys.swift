@@ -29,24 +29,32 @@ final class AppJourneys: XCTestCase {
     }
 
     /// The App Store set, in the language the runner's `STORE_LANGUAGE`
-    /// names: Live, the guide, Movies, a movie playing, and adding a source
-    /// (add-store-localization, store-listing/store-screenshots-in-every-ready-language).
-    /// Every step anchors on an identifier, never on a translated label.
+    /// names: Live with News One playing, the guide, Movies, a movie playing,
+    /// and adding a source (add-store-localization,
+    /// store-listing/store-screenshots-in-every-ready-language). Every step
+    /// anchors on an identifier, never on a translated label.
+    /// `-ui-testing-store-shots` fills the guide, plays the store clip and
+    /// hides the test probes.
     func testStore() {
-        // The scripted Live launch has a guide for every channel; the
-        // screenshot seed leaves the guide loading.
-        let journey = Journey(self, arguments: ["-ui-testing-live", "favorites", "-ui-testing-no-probe"])
+        let store = "-ui-testing-store-shots"
+        let journey = Journey(
+            self, arguments: ["-ui-testing-live", "favorites", store], environment: ["UITESTING_CONTROLS_SECONDS": "1"])
         open("live", label: "Live", in: journey)
+        let newsOne = journey.element("browse.row.00000000-0000-0000-0000-0000000000D1.0")
+        XCTAssertTrue(newsOne.waitForExistence(timeout: 10), "no News One")
+        newsOne.tap()
+        XCTAssertTrue(journey.element("browse.player.surface").waitForExistence(timeout: 10), "News One never played")
+        journey.waitUntilGone("browse.player.controls")
         journey.snap("live", anchor: "browse.list")
         open("guide", label: "Guide", in: journey)
         journey.snap("guide", anchor: UIDevice.current.userInterfaceIdiom == .pad ? "guide.toolbar" : "guide.root")
-        journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", "-ui-testing-no-probe"])
+        journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", store])
         open("movies", label: "Movies", in: journey)
         journey.snap("movies", anchor: "movies.hero.title")
         let poster = journey.element("movies.card.xtream#cabin#vod#2")
         if poster.waitForExistence(timeout: 10) { poster.tap() }
         journey.snap("player", anchor: "title.transport")
-        journey.launch(["-ui-screenshots", "empty"])
+        journey.launch(["-ui-screenshots", "empty", store])
         let add = journey.element("onboarding.addSource")
         XCTAssertTrue(add.waitForExistence(timeout: 10), "no Add a source")
         add.tap()

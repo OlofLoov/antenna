@@ -105,6 +105,17 @@ jobs:
               -derivedDataPath dd-ios -resultBundlePath "store-ios-$code.xcresult" || failed=1
           done 3< store-languages.txt
           exit "$failed"
+      - name: Swap the iOS simulators for the Apple TV
+        if: success() || failure()
+        env:
+          IPHONE: ${{ steps.devices.outputs.iphone }}
+          IPAD: ${{ steps.devices.outputs.ipad }}
+          TV: ${{ steps.devices.outputs.tv }}
+        run: |
+          xcrun simctl shutdown "$IPHONE" || true
+          xcrun simctl shutdown "$IPAD" || true
+          xcrun simctl boot "$TV"
+          xcrun simctl bootstatus "$TV"
       - name: Build for Apple TV
         if: success() || failure()
         env:

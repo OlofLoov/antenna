@@ -23,5 +23,5 @@
 
 ## 4. Verify
 
-- [ ] 4.1 Each requirement in `store-listing` has a test citing `store-listing/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [x] 4.1 Each requirement in `store-listing` has a test citing `store-listing/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
 - [ ] 4.2 `/opsx:verify add-store-localization` passes, then archive the change
