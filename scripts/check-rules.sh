@@ -151,4 +151,13 @@ check_except "localization: copy in views and components is not a plain String c
   'Apps/Shared/(Views|Components)/[A-Za-z/]+Fixtures\.swift' \
   Apps/Shared/Views Apps/Shared/Components
 
+# Xcode's string extraction skips a literal whose declared type is an
+# optional resource, such as `let x: LocalizedStringResource? = n == 1 ?
+# "1 favorite" : "\(n) favorites"`, so the catalog never gets the key and
+# the sync check cannot see it. Build the resource in a function that
+# returns it non-optional, and make the optional from that.
+check "localization: no copy declared as an optional resource" \
+  '(let|var)[[:space:]]+[A-Za-z_]+[[:space:]]*:[[:space:]]*(LocalizedStringResource|String\.LocalizationValue|LocalizedStringKey)\?[[:space:]]*=' \
+  Apps Packages/AntennaCore/Sources
+
 exit "$status"

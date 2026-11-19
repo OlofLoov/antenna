@@ -5,7 +5,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " • المشاركة العائلية"
           }
         },
@@ -45,7 +45,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " • تمت مشاركته معك عبر المشاركة العائلية"
           }
         },
@@ -510,7 +510,7 @@
         }
       }
     },
-    "%@ for %@, then %@ per year" : {
+    "%@ for the first %@, then %@ per year" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -527,7 +527,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ for %2$@, then %3$@ per year"
+            "value" : "%1$@ for the first %2$@, then %3$@ per year"
           }
         },
         "es" : {
@@ -888,7 +888,53 @@
         }
       }
     },
-    "%@ per %@ for %@, then %@ per year" : {
+    "%@ of %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ من %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ von %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ of %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ de %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sur %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ de %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ av %2$@"
+          }
+        }
+      }
+    },
+    "%@ per %@ for the first %@, then %@ per year" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -905,7 +951,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ per %2$@ for %3$@, then %4$@ per year"
+            "value" : "%1$@ per %2$@ for the first %3$@, then %4$@ per year"
           }
         },
         "es" : {
@@ -917,7 +963,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ par %2$@ pendant %3$@, puis %4$@ par an"
+            "value" : "%1$@ par période de %2$@ pendant %3$@, puis %4$@ par an"
           }
         },
         "pt-BR" : {
@@ -929,7 +975,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ per %2$@ i %3$@, sedan %4$@ per år"
+            "value" : "%1$@ per period om %2$@ i %3$@, sedan %4$@ per år"
           }
         }
       }
@@ -1224,7 +1270,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ • %2$@ من %3$@"
           }
         },
@@ -1986,37 +2032,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قنوات • جارٍ التحديث…"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة • جارٍ التحديث…"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناة واحدة • جارٍ التحديث…"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة • جارٍ التحديث…"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناتان • جارٍ التحديث…"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة • جارٍ التحديث…"
                 }
               }
@@ -5151,6 +5197,46 @@
         }
       }
     },
+    "0 seconds" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 ثانية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 Sekunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 segundos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 seconde"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 segundos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 sekunder"
+          }
+        }
+      }
+    },
     "1 guide is still downloading." : {
       "localizations" : {
         "ar" : {
@@ -5191,7 +5277,7 @@
         }
       }
     },
-    "<offer displayPrice> for <period>, then <displayPrice> per year" : {
+    "<offer displayPrice> for the first <period>, then <displayPrice> per year" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5231,7 +5317,7 @@
         }
       }
     },
-    "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" : {
+    "<offer displayPrice> per <unit> for the first <period>, then <displayPrice> per year" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5254,7 +5340,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "<offer displayPrice> par <unit> pendant <period>, puis <displayPrice> par an"
+            "value" : "<offer displayPrice> par période de <unit> pendant <period>, puis <displayPrice> par an"
           }
         },
         "pt-BR" : {
@@ -5266,7 +5352,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "<offer displayPrice> per <unit> i <period>, sedan <displayPrice> per år"
+            "value" : "<offer displayPrice> per period om <unit> i <period>, sedan <displayPrice> per år"
           }
         }
       }
@@ -5315,7 +5401,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحساب نشط حتى %1$@ • %2$#@arg2@"
           },
           "substitutions" : {
@@ -7160,7 +7246,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "REPRISE"
+            "value" : "REPLAY"
           }
         },
         "sv" : {
@@ -7236,7 +7322,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "REPRISE %lld D"
+            "value" : "REPLAY %lld D"
           }
         },
         "sv" : {
@@ -7436,7 +7522,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprise"
+            "value" : "Replay"
           }
         },
         "sv" : {
@@ -7569,13 +7655,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Reprise de %lld dia"
+                  "value" : "Replay de %lld dia"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Reprise de %lld dias"
+                  "value" : "Replay de %lld dias"
                 }
               }
             }
@@ -7971,7 +8057,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "قنوات بلا دليل • %lld"
           }
         },
@@ -8451,7 +8537,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر التنزيل • %@"
           }
         },
@@ -9051,7 +9137,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ تنزيل الدليل • %@"
           }
         },
@@ -9091,7 +9177,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التنزيل • %@"
           }
         },
@@ -10128,7 +10214,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Första %1$@ gratis, sedan %2$@ per år"
+            "value" : "Gratis i %1$@, sedan %2$@ per år"
           }
         }
       }
@@ -10168,7 +10254,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Första <period> gratis, sedan <displayPrice> per år"
+            "value" : "Gratis i <period>, sedan <displayPrice> per år"
           }
         }
       }
@@ -10847,7 +10933,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "دليل %1$#@arg1@ • %2$lld من %3$#@arg3@"
           },
           "substitutions" : {
@@ -11717,6 +11803,46 @@
         }
       }
     },
+    "IMDb %@ out of 10" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMDb %@ من 10"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMDb %@ von 10"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMDb %@ de 10"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMDb %@ sur 10"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMDb %@ de 10"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IMDb %@ av 10"
+          }
+        }
+      }
+    },
     "Id not found" : {
       "localizations" : {
         "ar" : {
@@ -12121,7 +12247,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم التحميل • %1$lld من %2$#@arg2@ • %3$#@arg3@"
           },
           "substitutions" : {
@@ -12669,7 +12795,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التحميل… • آخر تحميل %@"
           }
         },
@@ -12989,7 +13115,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مطابق بالاسم • %lld"
           }
         },
@@ -13141,6 +13267,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menu"
+          }
+        }
+      }
+    },
+    "Metacritic %lld out of 100" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metacritic %lld من 100"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metacritic %lld von 100"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metacritic %lld de 100"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metacritic %lld sur 100"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metacritic %lld de 100"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metacritic %lld av 100"
           }
         }
       }
@@ -13515,7 +13681,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فيلم • %@"
           }
         },
@@ -13675,7 +13841,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "العرض المتعدد • المربع %1$lld من %2$lld"
           }
         },
@@ -15167,7 +15333,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "غير متصل • تتم إعادة المحاولة عند عودة الاتصال"
           }
         },
@@ -16037,7 +16203,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "integritetspolicy"
           }
         }
@@ -17289,6 +17455,46 @@
         }
       }
     },
+    "Rotten Tomatoes %lld percent" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotten Tomatoes %lld بالمئة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotten Tomatoes %lld Prozent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotten Tomatoes %lld por ciento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotten Tomatoes %lld pour cent"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotten Tomatoes %lld por cento"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotten Tomatoes %lld procent"
+          }
+        }
+      }
+    },
     "Scrub" : {
       "localizations" : {
         "ar" : {
@@ -17699,7 +17905,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مسلسل • %@"
           }
         },
@@ -18499,7 +18705,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المصدر: %1$@ • محاولة في %2$@"
           }
         },
@@ -19707,6 +19913,46 @@
         }
       }
     },
+    "TMDB user score %lld percent" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقييم مستخدمي TMDB: %lld بالمئة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TMDB-Nutzerwertung %lld Prozent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puntuación de usuarios de TMDB: %lld por ciento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note des utilisateurs TMDB : %lld pour cent"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nota dos usuários do TMDB: %lld por cento"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TMDB-användarbetyg %lld procent"
+          }
+        }
+      }
+    },
     "Tab bar" : {
       "localizations" : {
         "ar" : {
@@ -19781,7 +20027,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Användarvillkor"
           }
         }
@@ -21637,7 +21883,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المربع %1$lld • %2$@"
           }
         },
@@ -23377,7 +23623,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Årsabonnemanget förnyas automatiskt tills det avslutas i Inställningar. Betalningen debiteras ditt Apple-konto."
           }
         }
@@ -24180,7 +24426,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "jour"
+                  "value" : "1 jour"
                 }
               },
               "other" : {
@@ -24216,7 +24462,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "dag"
+                  "value" : "1 dag"
                 }
               },
               "other" : {
@@ -24334,7 +24580,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "mois"
+                  "value" : "1 mois"
                 }
               },
               "other" : {
@@ -24370,7 +24616,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "månad"
+                  "value" : "1 månad"
                 }
               },
               "other" : {
@@ -24488,7 +24734,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "semaine"
+                  "value" : "1 semaine"
                 }
               },
               "other" : {
@@ -24524,7 +24770,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "vecka"
+                  "value" : "1 vecka"
                 }
               },
               "other" : {
@@ -24642,7 +24888,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "an"
+                  "value" : "1 an"
                 }
               },
               "other" : {
@@ -24678,7 +24924,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "år"
+                  "value" : "1 år"
                 }
               },
               "other" : {
@@ -24808,6 +25054,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "per år"
+          }
+        }
+      }
+    },
+    "rated %@ out of 10" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقييم %@ من 10"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bewertet mit %@ von 10"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "valoración de %@ sobre 10"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "noté %@ sur 10"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nota %@ de 10"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "betyg %@ av 10"
           }
         }
       }

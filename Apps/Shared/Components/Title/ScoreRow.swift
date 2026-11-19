@@ -13,6 +13,7 @@ struct ScoreRow: View {
     let note: LocalizedStringResource?
     /// The value's point size: 13 on iPhone, 14 on iPad and Mac, 24 on Apple TV.
     let size: CGFloat
+    @Environment(\.locale) private var locale
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
@@ -38,7 +39,7 @@ struct ScoreRow: View {
             .padding(.vertical, size / 3)
             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: size * 0.55, style: .continuous))
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(score.spoken ?? score.site.name)
+            .accessibilityLabel(score.spoken(locale) ?? score.site.name)
             .accessibilityIdentifier("title.score.\(score.site.rawValue)")
         }
         if let note {

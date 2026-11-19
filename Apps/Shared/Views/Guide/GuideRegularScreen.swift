@@ -173,7 +173,7 @@
                     }
                     .presentationCompactAdaptation(.popover)
                     .onAppear {
-                        AccessibilityNotification.Announcement("\(details.title), details").post()
+                        AccessibilityNotification.Announcement(Words(locale)("\(details.title), details")).post()
                     }
                 }
             }

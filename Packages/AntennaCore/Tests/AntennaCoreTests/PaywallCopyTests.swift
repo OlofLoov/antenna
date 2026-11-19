@@ -39,10 +39,10 @@ import Testing
         let monthly = PaywallCopy.yearlyLine(
             offer: IntroOffer(payment: .payAsYouGo, displayPrice: "$0.99", unit: .month, periodCount: 3), displayPrice: "$9.99")
         #expect(monthly.key == .lineIntroPerPeriod)
-        #expect(monthly.text.hasPrefix("$0.99 per month for 3 months"))
+        #expect(monthly.text.hasPrefix("$0.99 per month for the first 3 months"))
         let upFront = PaywallCopy.yearlyLine(
             offer: IntroOffer(payment: .payUpFront, displayPrice: "$1.99", unit: .month, value: 6), displayPrice: "$9.99")
-        #expect(upFront.text == "$1.99 for 6 months, then $9.99 per year")
+        #expect(upFront.text == "$1.99 for the first 6 months, then $9.99 per year")
     }
 
     @Test("paywall-and-entitlement/restore-your-purchase the restored note names what was found")

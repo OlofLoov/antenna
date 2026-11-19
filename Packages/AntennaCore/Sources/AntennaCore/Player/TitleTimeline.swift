@@ -94,19 +94,23 @@ public struct TitleTimeline: Sendable, Equatable {
     }
 
     /// "12 minutes, 4 seconds of 1 hour, 30 minutes" for VoiceOver, or the
-    /// elapsed time alone with no length.
-    public func spokenText(at moment: Duration? = nil) -> String {
-        let elapsed = Self.spoken(clamped(moment ?? time))
+    /// elapsed time alone with no length, in the language of `locale`.
+    public func spokenText(at moment: Duration? = nil, locale: Locale = .autoupdatingCurrent) -> String {
+        let elapsed = Self.spoken(clamped(moment ?? time), locale: locale)
         guard let length else { return elapsed }
-        return "\(elapsed) of \(Self.spoken(length))"
+        return Words(locale)("\(elapsed) of \(Self.spoken(length, locale: locale))")
     }
 
-    private static func spoken(_ duration: Duration) -> String {
+    private static func spoken(_ duration: Duration, locale: Locale) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = locale
         let formatter = DateComponentsFormatter()
+        formatter.calendar = calendar
         formatter.unitsStyle = .full
         formatter.allowedUnits = [.hour, .minute, .second]
         formatter.zeroFormattingBehavior = .dropAll
         let seconds = max(0, Int(duration.components.seconds))
-        return seconds == 0 ? "0 seconds" : formatter.string(from: TimeInterval(seconds)) ?? clock(duration)
+        guard seconds > 0 else { return Words(locale)("0 seconds") }
+        return formatter.string(from: TimeInterval(seconds)) ?? clock(duration)
     }
 }

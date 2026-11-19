@@ -56,7 +56,7 @@ import Testing
     @Test("title-detail-and-episode-picker/scores-from-other-sites: each site's text and what VoiceOver reads")
     func scoreText() {
         #expect(Score(site: .tmdb, value: 7.4, scale: 10).text == "74%")
-        #expect(Score(site: .tmdb, value: 7.4, scale: 10).spoken == "TMDB user score 74 percent")
+        #expect(Score(site: .tmdb, value: 7.4, scale: 10).spoken(Locale(identifier: "en_US")) == "TMDB user score 74 percent")
         #expect(Score(site: .imdb, value: 7.8, scale: 10).text == "7.8")
         #expect(Score(site: .rottenTomatoes, value: 92, scale: 100).text == "92%")
         #expect(Score(site: .metacritic, value: 81, scale: 100).text == "81")

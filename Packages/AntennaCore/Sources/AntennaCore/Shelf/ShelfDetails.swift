@@ -70,7 +70,7 @@ public struct BannerText: Sendable, Hashable {
         let span = title.kind == .movie ? ShelfText.length(details?.duration) : details?.seasons.flatMap { ShelfText.seasons($0) }
         let score = details?.rating ?? title.rating
         rating = score.flatMap(TitleMetadata.rating)
-        spokenRating = score.flatMap(TitleMetadata.spokenRating)
+        spokenRating = score.flatMap { TitleMetadata.spokenRating($0) }
         facts = [details?.year.map(String.init), span, rating].compactMap(\.self)
         if title.kind == .movie {
             badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(details?.ageRating)].compactMap(\.self)

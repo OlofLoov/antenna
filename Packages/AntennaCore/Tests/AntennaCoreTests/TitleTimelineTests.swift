@@ -55,7 +55,9 @@ import Testing
 
     @Test("player-controls-and-playback-errors/move-around-in-a-movie-or-episode VoiceOver reads the time and the length")
     func spoken() {
-        #expect(TitleTimeline(time: .seconds(724), length: .seconds(5400)).spokenText() == "12 minutes, 4 seconds of 1 hour, 30 minutes")
-        #expect(TitleTimeline(time: .zero, length: nil).spokenText() == "0 seconds")
+        #expect(
+            TitleTimeline(time: .seconds(724), length: .seconds(5400)).spokenText(locale: Locale(identifier: "en_US"))
+                == "12 minutes, 4 seconds of 1 hour, 30 minutes")
+        #expect(TitleTimeline(time: .zero, length: nil).spokenText(locale: Locale(identifier: "en_US")) == "0 seconds")
     }
 }

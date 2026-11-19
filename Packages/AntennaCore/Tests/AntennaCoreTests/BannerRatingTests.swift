@@ -93,7 +93,7 @@ import Testing
         #expect(details.rating == 7.4 && details.trailerURL == trailer)
         let series = ShelfDetails(series: SeriesInfo(rating: 8.1, trailerURL: trailer))
         #expect(series.rating == 8.1 && series.trailerURL == trailer)
-        #expect(TitleMetadata.spokenRating(8.05) == "rated 8.1 out of 10")
-        #expect(TitleMetadata.spokenRating(0) == nil)
+        #expect(TitleMetadata.spokenRating(8.05, locale: Locale(identifier: "en_US")) == "rated 8.1 out of 10")
+        #expect(TitleMetadata.spokenRating(0, locale: Locale(identifier: "en_US")) == nil)
     }
 }
