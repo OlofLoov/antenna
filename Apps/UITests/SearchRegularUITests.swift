@@ -8,11 +8,12 @@ final class SearchRegularUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch(_ scenario: String = "titles") throws -> XCUIApplication {
+    func launch(_ scenario: String = "titles", environment: [String: String] = [:]) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "the sidebar layout runs on iPad and Mac")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"]
+        app.launchEnvironment.merge(environment) { $1 }
         app.launch()
         return app
     }
@@ -102,7 +103,7 @@ final class SearchRegularUITests: XCTestCase {
     // guide-on-iphone-ipad-and-mac/open-at-a-programme, from Search
     // guide-on-iphone-ipad-and-mac/start-watching-from-the-guide, a later programme
     func testPickingALaterProgrammeOpensTheGuideAtIt() throws {
-        let app = try launch()
+        let app = try launch(environment: Midday.environment)
         let field = openSearch(app)
         field.typeText("late film")
         let result = app.element("search.result.programme.0")

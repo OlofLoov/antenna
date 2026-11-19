@@ -45,9 +45,10 @@ final class SearchTVUITests: XCTestCase {
     }
 
     /// Launches with a1 playing and opens the Search tab from the bar.
-    func openSearch() {
+    func openSearch(environment: [String: String] = [:]) {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launchEnvironment.merge(environment) { $1 }
         app.launch()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
@@ -128,7 +129,7 @@ final class SearchTVUITests: XCTestCase {
 
     // search/pick-a-programme
     func testPickingALaterProgrammeOpensTheGuideAtIt() {
-        openSearch()
+        openSearch(environment: Midday.environment)
         type("late film")
         moveToResults("search.result.programme.0")
         press(.select)

@@ -142,7 +142,7 @@ extension ShellUITests {
 
     // tv-guide-grid/the-panel-describes-the-highlighted-programme
     func testThePanelDescribesTheHighlightedProgramme() {
-        launchPlaying()
+        launchPlaying(environment: Midday.environment)
         openGuide()
         expect(element("guide.panel.title"), "label == 'Morning News'")
         expect(element("guide.panel.eyebrow"), "label == 'Now · Channel a1'")

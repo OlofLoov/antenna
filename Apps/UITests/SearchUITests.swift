@@ -10,10 +10,11 @@ final class SearchUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch(_ scenario: String = "titles", _ extra: [String] = []) throws -> XCUIApplication {
+    func launch(_ scenario: String = "titles", _ extra: [String] = [], environment: [String: String] = [:]) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"] + extra
+        app.launchEnvironment.merge(environment) { $1 }
         app.launch()
         return app
     }
@@ -212,7 +213,7 @@ final class SearchUITests: XCTestCase {
     // guide-on-iphone-ipad-and-mac/open-at-a-programme, from Search
     // guide-on-iphone-ipad-and-mac/start-watching-from-the-guide, a later programme
     func testPickingALaterProgrammeOpensTheGuideAtIt() throws {
-        let app = try launch()
+        let app = try launch(environment: Midday.environment)
         search(app, "late film")
         let result = app.element("search.result.programme.0")
         XCTAssertTrue(result.waitForExistence(timeout: 5))
