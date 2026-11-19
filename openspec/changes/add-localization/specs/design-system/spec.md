@@ -12,7 +12,9 @@ flipped.
 #### Scenario: A channel row in Arabic
 - **GIVEN** the app is in Arabic
 - **WHEN** the viewer opens the Live list on any platform
-- **THEN** each row reads from the right: channel number, logo tile, name, current programme and progress bar
+- **THEN** each row reads from the right in the order the English row reads from the left
+- **AND** on iPhone, iPad and Mac that is the logo tile, the name with its channel number after it, the current programme and progress bar
+- **AND** on Apple TV that is the channel number, logo tile, name, current programme and progress bar
 - **AND** the catch-up glyph sits at the row's left edge
 
 #### Scenario: Group chips in Arabic
