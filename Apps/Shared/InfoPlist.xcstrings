@@ -33,7 +33,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتصل Antenna بخوادم التلفزيون على شبكتك المنزلية عندما يشير أحد مصادرك إليها."
           }
         },

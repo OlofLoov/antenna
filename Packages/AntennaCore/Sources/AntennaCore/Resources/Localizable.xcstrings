@@ -5,7 +5,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " · المشاركة العائلية"
           }
         },
@@ -45,7 +45,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " · تمت مشاركته معك عبر المشاركة العائلية"
           }
         },
@@ -96,7 +96,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (إجبارية)"
           }
         },
@@ -136,7 +136,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (غير مدعوم)"
           }
         },
@@ -176,7 +176,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ و%2$@"
           }
         },
@@ -222,7 +222,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ و%2$lld أخرى"
           }
         },
@@ -290,8 +290,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "لم يرسل %1$@ أي بيانات منذ %2$#@arg2@."
+            "state" : "translated",
+            "value" : "لم يرسل %1$@ أي بيانات لمدة %2$#@arg2@."
           },
           "substitutions" : {
             "arg2" : {
@@ -301,37 +301,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثوانٍ"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثانية"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "ثانية واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثانية"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "ثانيتين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثانية"
                     }
                   }
@@ -514,7 +514,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ لمدة %2$@، ثم %3$@ سنويًا"
           }
         },
@@ -560,7 +560,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ موجودة بالفعل في المفضلة."
           }
         },
@@ -600,7 +600,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ مشغول الآن. حاول مرة أخرى بعد قليل."
           }
         },
@@ -640,7 +640,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ في مجموعة مقفلة. افتح قفلها في Antenna أولًا."
           }
         },
@@ -680,7 +680,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يعد %1$@ متاحًا من %2$@."
           }
         },
@@ -726,7 +726,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يعد %1$@ في %2$@."
           }
         },
@@ -772,7 +772,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ ليست في المفضلة."
           }
         },
@@ -812,7 +812,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يعرف %@ هذه القناة لكنه لا يحمل لها أي برامج. اختر إدخالًا آخر أدناه، أو انتظر حتى يملأه المزود."
           }
         },
@@ -852,7 +852,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يسرد %@ برامج لهذه القناة لكن لا شيء بعد الآن. انتظر التحديث التالي للدليل أو اختر إدخالًا آخر أدناه."
           }
         },
@@ -892,7 +892,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ لكل %2$@ لمدة %3$@، ثم %4$@ سنويًا"
           }
         },
@@ -938,7 +938,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رفض %@ تسجيل الدخول. تحقق من اسم المستخدم وكلمة السر في الإعدادات، أو اسأل المزود إن كان الحساب قد انتهى."
           }
         },
@@ -978,7 +978,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رفض %@ تسجيل الدخول. سجّل الدخول مرة أخرى على Apple TV هذا، أو اسأل المزود إن كان الحساب قد انتهى."
           }
         },
@@ -1018,7 +1018,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أعاد %1$@ الرمز %2$@ لهذه القناة."
           }
         },
@@ -1064,7 +1064,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أعاد %@ الرمز 404 لهذه القناة. ربما نقل المزود القناة أو أزالها."
           }
         },
@@ -1104,7 +1104,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أعاد %@ خطأ في الخادم. يواجه خادمه مشكلة. حاول مرة أخرى بعد قليل."
           }
         },
@@ -1144,7 +1144,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أرسل %@ بيانات ليست بثًا قابلًا للتشغيل. ربما يشير العنوان إلى صفحة ويب أو ملف فارغ."
           }
         },
@@ -1184,7 +1184,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "توقف %@ عن إرسال البيانات."
           }
         },
@@ -1224,7 +1224,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ · %2$@ من %3$@"
           }
         },
@@ -1281,7 +1281,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@، ولا يوجد إدخال في الدليل يحمل اسمها بالضبط. اختر إدخالًا أدناه."
           }
         },
@@ -1321,7 +1321,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: لا توجد أفلام"
           }
         },
@@ -1361,7 +1361,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: لا توجد مسلسلات"
           }
         },
@@ -1401,7 +1401,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: بانتظار مزامنة تسجيل الدخول من iCloud"
           }
         },
@@ -1444,37 +1444,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قنوات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناتان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة"
                 }
               }
@@ -1595,7 +1595,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ في %2$#@arg2@"
           },
           "substitutions" : {
@@ -1606,37 +1606,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قنوات"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناة واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناتان"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   }
@@ -1650,37 +1650,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعات"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعة"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "مجموعة واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعة"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "مجموعتين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعة"
                     }
                   }
@@ -1986,37 +1986,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قنوات · جارٍ التحديث…"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة · جارٍ التحديث…"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناة واحدة · جارٍ التحديث…"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة · جارٍ التحديث…"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناتان · جارٍ التحديث…"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة · جارٍ التحديث…"
                 }
               }
@@ -2140,37 +2140,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld اتصالات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld اتصالًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "اتصال واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld اتصال"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "اتصالان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld اتصال"
                 }
               }
@@ -2294,37 +2294,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أيام"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld يومًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "يوم واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld يوم"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "يومان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld يوم"
                 }
               }
@@ -2448,37 +2448,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تم تخطي %lld إدخالات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تم تخطي %lld إدخالًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تم تخطي إدخال واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تم تخطي %lld إدخال"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تم تخطي إدخالين"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لم يُتخطَّ أي إدخال"
                 }
               }
@@ -2602,37 +2602,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld حلقات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld حلقة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "حلقة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld حلقة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "حلقتان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld حلقة"
                 }
               }
@@ -2756,37 +2756,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تعذرت قراءة %lld حلقات من قائمة المزود."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تعذرت قراءة %lld حلقة من قائمة المزود."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تعذرت قراءة حلقة واحدة من قائمة المزود."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تعذرت قراءة %lld حلقة من قائمة المزود."
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تعذرت قراءة حلقتين من قائمة المزود."
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لم تتعذر قراءة أي حلقة من قائمة المزود."
                 }
               }
@@ -2910,37 +2910,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld مجموعات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld مجموعة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "مجموعة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld مجموعة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "مجموعتان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld مجموعة"
                 }
               }
@@ -3064,37 +3064,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لا تزال %lld أدلة قيد التنزيل."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لا يزال %lld دليلًا قيد التنزيل."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لا يزال دليل واحد قيد التنزيل."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لا يزال %lld دليل قيد التنزيل."
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لا يزال دليلان قيد التنزيل."
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "لا يوجد دليل قيد التنزيل."
                 }
               }
@@ -3215,7 +3215,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld س"
           }
         },
@@ -3255,7 +3255,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld س %2$@%3$lld د"
           }
         },
@@ -3301,7 +3301,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld س %2$lld د"
           }
         },
@@ -3347,8 +3347,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "متبقٍ %1$lld س %2$lld د"
+            "state" : "translated",
+            "value" : "تبقّى %1$lld س %2$lld د"
           }
         },
         "de" : {
@@ -3393,8 +3393,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "متبقٍ %lld س"
+            "state" : "translated",
+            "value" : "تبقّى %lld س"
           }
         },
         "de" : {
@@ -3436,37 +3436,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld ساعات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld ساعة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "ساعة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld ساعة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "ساعتان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld ساعة"
                 }
               }
@@ -3590,37 +3590,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قنوات مباشرة"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة مباشرة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناة مباشرة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة مباشرة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "قناتان مباشرتان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld قناة مباشرة"
                 }
               }
@@ -3741,7 +3741,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ في %2$#@arg2@"
           },
           "substitutions" : {
@@ -3752,37 +3752,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قنوات مباشرة"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة مباشرة"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناة مباشرة واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة مباشرة"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناتان مباشرتان"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة مباشرة"
                     }
                   }
@@ -3796,37 +3796,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعات"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعة"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "مجموعة واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعة"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "مجموعتين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg مجموعة"
                     }
                   }
@@ -4129,7 +4129,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld د"
           }
         },
@@ -4169,8 +4169,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "متأخر %lld د"
+            "state" : "translated",
+            "value" : "متأخر بـ %lld د"
           }
         },
         "de" : {
@@ -4209,8 +4209,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "متبقٍ %lld د"
+            "state" : "translated",
+            "value" : "تبقّى %lld د"
           }
         },
         "de" : {
@@ -4252,37 +4252,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld دقائق"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld دقيقة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "دقيقة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld دقيقة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "دقيقتان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld دقيقة"
                 }
               }
@@ -4403,7 +4403,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ والمسلسلات: %2$lld"
           },
           "substitutions" : {
@@ -4414,37 +4414,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg أفلام"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg فيلمًا"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "فيلم واحد"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg فيلم"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "فيلمان"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg فيلم"
                     }
                   }
@@ -4647,7 +4647,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تنزيل %1$lld من %2$lld من الأدلة."
           }
         },
@@ -4696,37 +4696,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld برامج"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld برنامجًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "برنامج واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld برنامج"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "برنامجان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld برنامج"
                 }
               }
@@ -4850,37 +4850,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld مواسم"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld موسمًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "موسم واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld موسم"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "موسمان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld موسم"
                 }
               }
@@ -5004,37 +5004,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld عناوين"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld عنوانًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عنوان واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld عنوان"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عنوانان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld عنوان"
                 }
               }
@@ -5155,7 +5155,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يزال دليل واحد قيد التنزيل."
           }
         },
@@ -5195,7 +5195,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "<offer displayPrice> لمدة <period>، ثم <displayPrice> سنويًا"
           }
         },
@@ -5235,7 +5235,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "<offer displayPrice> لكل <unit> لمدة <period>، ثم <displayPrice> سنويًا"
           }
         },
@@ -5275,7 +5275,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحساب نشط حتى %@"
           }
         },
@@ -5315,7 +5315,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحساب نشط حتى %1$@ · %2$#@arg2@"
           },
           "substitutions" : {
@@ -5326,37 +5326,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg اتصالات"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg اتصالًا"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "اتصال واحد"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg اتصال"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "اتصالان"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg اتصال"
                     }
                   }
@@ -5539,7 +5539,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أضف رابط دليل للحصول على معلومات البرامج لـ %@."
           }
         },
@@ -5579,7 +5579,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إضافة كمربع جديد"
           }
         },
@@ -5619,7 +5619,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أضف كل رابط كمصدر M3U مستقل."
           }
         },
@@ -5659,7 +5659,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أضف قنوات إلى المفضلة في Antenna لتراها هنا"
           }
         },
@@ -5699,7 +5699,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إضافة رابط الدليل"
           }
         },
@@ -5739,7 +5739,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أضف قائمة تشغيل القناة بدلًا من ذلك."
           }
         },
@@ -5779,7 +5779,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إضافة إلى العرض المتعدد"
           }
         },
@@ -5819,7 +5819,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إضافة إلى العرض المتعدد"
           }
         },
@@ -5859,7 +5859,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الإضافة إلى المفضلة أو الإزالة منها"
           }
         },
@@ -5899,7 +5899,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تمت إضافة %@ إلى المفضلة."
           }
         },
@@ -5939,7 +5939,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الكل"
           }
         },
@@ -5979,7 +5979,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "كل القنوات"
           }
         },
@@ -6019,7 +6019,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اسمح لـ Antenna بالوصول إلى الشبكة المحلية في الإعدادات."
           }
         },
@@ -6059,7 +6059,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مباشر بالفعل"
           }
         },
@@ -6099,7 +6099,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "دائمًا"
           }
         },
@@ -6139,7 +6139,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يمكن شراء Antenna في منطقة App Store هذه بعد."
           }
         },
@@ -6179,7 +6179,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يستطيع Antenna التحقق من شهادة هذا الخادم. استخدم http على شبكتك أو شهادة موثوقة."
           }
         },
@@ -6219,7 +6219,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر على Antenna الوصول إلى %@. حاول مرة أخرى لاحقًا."
           }
         },
@@ -6259,7 +6259,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ينزّل Antenna الدليل عندما ينتهي تحميل المصدر."
           }
         },
@@ -6299,7 +6299,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد مصادر في Antenna بعد. افتح Antenna لإضافة واحد."
           }
         },
@@ -6339,7 +6339,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يطلب Antenna إذن إرسال الإشعارات. تظهر التذكيرات فقط أثناء فتح التطبيق."
           }
         },
@@ -6379,7 +6379,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم قفل Antenna مرة أخرى"
           }
         },
@@ -6419,7 +6419,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يزال Antenna يحمّل مكتبتك. حاول مرة أخرى بعد قليل."
           }
         },
@@ -6459,7 +6459,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يشغّل Antenna أي قناة الآن. قل اسم القناة بدلًا من ذلك."
           }
         },
@@ -6499,7 +6499,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُفتح قفل Antenna على هذا الجهاز بعد. افتح Antenna للمتابعة."
           }
         },
@@ -6539,7 +6539,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشغّل Antenna"
           }
         },
@@ -6579,7 +6579,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يشغّل Antenna مصادر التلفزيون التي لديك ولا يتضمن أي قنوات. شراء واحد يفتح كل الميزات على iPhone وiPad وMac وApple TV، لكل من في مجموعة المشاركة العائلية."
           }
         },
@@ -6619,7 +6619,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يقرأ Antenna قوائم تشغيل M3U: أسطر ‎#EXTINF، يتبع كلًا منها رابط بث. لا يحتوي هذا الملف على مثل هذا الزوج."
           }
         },
@@ -6659,7 +6659,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يقرأ Antenna روابط الدليل من قائمة التشغيل عندما ينتهي تحميلها."
           }
         },
@@ -6699,7 +6699,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يستطيع Apple TV عرض الإشعارات. تظهر التذكيرات كلافتة أثناء فتح Antenna."
           }
         },
@@ -6739,7 +6739,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشغّل Apple"
           }
         },
@@ -6779,7 +6779,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "عند البدء"
           }
         },
@@ -6819,7 +6819,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الصوت والترجمة"
           }
         },
@@ -6859,7 +6859,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تلقائي"
           }
         },
@@ -6899,7 +6899,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رجوع"
           }
         },
@@ -6938,9 +6938,45 @@
     "Back %lld Seconds" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "رجوع %lld ثانية"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "رجوع %lld ثوانٍ"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "رجوع %lld ثانية"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "رجوع ثانية واحدة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "رجوع %lld ثانية"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "رجوع ثانيتين"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "رجوع %lld ثانية"
+                }
+              }
+            }
           }
         },
         "de" : {
@@ -6979,7 +7015,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رجوع أو إغلاق"
           }
         },
@@ -7019,7 +7055,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المخزن المؤقت ممتلئ. التشغيل من أبكر نقطة"
           }
         },
@@ -7059,7 +7095,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التخزين المؤقت"
           }
         },
@@ -7099,7 +7135,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إعادة المشاهدة"
           }
         },
@@ -7138,9 +7174,45 @@
     "CATCH-UP %lldD" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "إعادة المشاهدة %lld ي"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة %lld أيام"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة %lld يومًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة يوم واحد"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة %lld يوم"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة يومان"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة %lld يوم"
+                }
+              }
+            }
           }
         },
         "de" : {
@@ -7179,7 +7251,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يمكن تشغيل بث آخر"
           }
         },
@@ -7219,7 +7291,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر الوصول إلى App Store"
           }
         },
@@ -7259,7 +7331,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إلغاء"
           }
         },
@@ -7299,7 +7371,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "طاقم التمثيل"
           }
         },
@@ -7339,7 +7411,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إعادة المشاهدة"
           }
         },
@@ -7382,38 +7454,38 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "إعادة المشاهدة %lld أيام"
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة: %lld أيام"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "إعادة المشاهدة %lld يومًا"
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة: %lld يومًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "إعادة المشاهدة يوم واحد"
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة: يوم واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "إعادة المشاهدة %lld يوم"
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة: %lld يوم"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "إعادة المشاهدة يومان"
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة: يومان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "إعادة المشاهدة %lld يوم"
+                  "state" : "translated",
+                  "value" : "إعادة المشاهدة: %lld يوم"
                 }
               }
             }
@@ -7533,7 +7605,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تغيير القناة"
           }
         },
@@ -7573,7 +7645,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يغيّر القناة"
           }
         },
@@ -7613,7 +7685,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تغيير المربع %1$lld من %2$lld"
           }
         },
@@ -7659,7 +7731,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "قائمة القنوات"
           }
         },
@@ -7699,7 +7771,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "القنوات"
           }
         },
@@ -7739,7 +7811,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Channels DVR قيد البدء. حاول مرة أخرى بعد قليل."
           }
         },
@@ -7779,7 +7851,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا تزال القنوات قيد التحميل"
           }
         },
@@ -7819,7 +7891,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم تُحمَّل القنوات لـ %@"
           }
         },
@@ -7859,7 +7931,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "قنوات بلا دليل"
           }
         },
@@ -7899,7 +7971,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "قنوات بلا دليل · %lld"
           }
         },
@@ -7939,7 +8011,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تحقق من الاتصال وحاول مرة أخرى. إذا كنت قد اشتريت Antenna من قبل، فإن «استعادة الشراء» تجده عندما يعود الاتصال."
           }
         },
@@ -7979,7 +8051,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تحقق من الإملاء أو جرّب رقم قناة."
           }
         },
@@ -8019,7 +8091,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اختر «ذكّرني» على برنامج لم يبدأ بعد، في الدليل أو في البحث."
           }
         },
@@ -8059,7 +8131,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اختر مجموعة"
           }
         },
@@ -8099,7 +8171,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اختر علامة تبويب"
           }
         },
@@ -8139,7 +8211,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "نقر"
           }
         },
@@ -8179,7 +8251,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "انقر يسارًا أو يمينًا"
           }
         },
@@ -8219,7 +8291,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إغلاق"
           }
         },
@@ -8259,7 +8331,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اتصل بالإنترنت وحاول مرة أخرى."
           }
         },
@@ -8299,7 +8371,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اتصل بالإنترنت وحاول مرة أخرى. يُستأنف التشغيل تلقائيًا عندما يعود الاتصال."
           }
         },
@@ -8339,7 +8411,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "متابعة المشاهدة"
           }
         },
@@ -8379,7 +8451,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر التنزيل · %@"
           }
         },
@@ -8419,7 +8491,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تحميل %@"
           }
         },
@@ -8459,7 +8531,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تحميل الأفلام"
           }
         },
@@ -8499,7 +8571,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تحميل المسلسلات"
           }
         },
@@ -8539,7 +8611,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر الوصول إلى %@"
           }
         },
@@ -8579,7 +8651,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر الوصول إلى %@. تحقق من العنوان وحاول مرة أخرى."
           }
         },
@@ -8619,7 +8691,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّرت قراءة %@. تأكد من تنزيله وحاول مرة أخرى."
           }
         },
@@ -8659,7 +8731,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّرت قراءة تسجيل الدخول"
           }
         },
@@ -8699,7 +8771,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر التحديث: %@"
           }
         },
@@ -8739,7 +8811,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تسجيل الدخول. تحقق من عنوان MAC، ومن تسجيل الدخول إن كان لديك واحد."
           }
         },
@@ -8779,7 +8851,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تسجيل الدخول. تحقق من اسم المستخدم وكلمة السر."
           }
         },
@@ -8819,7 +8891,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر حفظ بيانات الاعتماد: %@"
           }
         },
@@ -8859,7 +8931,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المخرج"
           }
         },
@@ -8899,7 +8971,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التنزيل"
           }
         },
@@ -8939,7 +9011,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ تنزيل الدليل…"
           }
         },
@@ -8979,7 +9051,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ تنزيل الدليل · %@"
           }
         },
@@ -9019,7 +9091,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التنزيل · %@"
           }
         },
@@ -9059,7 +9131,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ينتهي الآن"
           }
         },
@@ -9099,7 +9171,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل اسم مستخدم بدون نقطتين."
           }
         },
@@ -9139,7 +9211,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل عنوان MAC صالحًا، مثل 00:1A:79:12:34:56."
           }
         },
@@ -9179,7 +9251,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل عنوان URL صالحًا."
           }
         },
@@ -9219,7 +9291,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل عنوان خادم صالحًا."
           }
         },
@@ -9259,7 +9331,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل عنوان MAC."
           }
         },
@@ -9299,7 +9371,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل كلمة السر."
           }
         },
@@ -9339,7 +9411,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل رابط قائمة التشغيل."
           }
         },
@@ -9379,7 +9451,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل عنوان البوابة."
           }
         },
@@ -9419,7 +9491,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل عنوان الخادم."
           }
         },
@@ -9459,7 +9531,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أدخل اسم المستخدم."
           }
         },
@@ -9499,7 +9571,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحلقة"
           }
         },
@@ -9539,7 +9611,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحلقة %@"
           }
         },
@@ -9579,7 +9651,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "كل 12 ساعة"
           }
         },
@@ -9619,7 +9691,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "كل 24 ساعة"
           }
         },
@@ -9659,7 +9731,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "كل 6 ساعات"
           }
         },
@@ -9699,7 +9771,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لكل قناة في %@ دليل"
           }
         },
@@ -9739,7 +9811,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الخروج من العرض المتعدد"
           }
         },
@@ -9779,7 +9851,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المفضلة"
           }
         },
@@ -9819,7 +9891,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تصفية القنوات"
           }
         },
@@ -9859,7 +9931,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تصفية القنوات"
           }
         },
@@ -9899,7 +9971,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بحث"
           }
         },
@@ -9939,7 +10011,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "البحث عن قناة"
           }
         },
@@ -9979,7 +10051,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "البحث عن إدخال في الدليل"
           }
         },
@@ -10019,7 +10091,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أول %1$@ مجانًا، ثم %2$@ سنويًا"
           }
         },
@@ -10065,7 +10137,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أول <period> مجانًا، ثم <displayPrice> سنويًا"
           }
         },
@@ -10105,7 +10177,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إجبارية"
           }
         },
@@ -10145,7 +10217,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الصيغة غير مدعومة"
           }
         },
@@ -10185,7 +10257,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تقديم"
           }
         },
@@ -10224,9 +10296,45 @@
     "Forward %lld Seconds" : {
       "localizations" : {
         "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "تقديم %lld ثانية"
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تقديم %lld ثوانٍ"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تقديم %lld ثانية"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تقديم ثانية واحدة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تقديم %lld ثانية"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تقديم ثانيتين"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "تقديم %lld ثانية"
+                }
+              }
+            }
           }
         },
         "de" : {
@@ -10265,7 +10373,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "من قائمة التشغيل"
           }
         },
@@ -10305,7 +10413,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ملء الشاشة"
           }
         },
@@ -10345,7 +10453,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المجموعة"
           }
         },
@@ -10385,7 +10493,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المجموعات أو التفاصيل"
           }
         },
@@ -10425,7 +10533,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الدليل"
           }
         },
@@ -10468,38 +10576,38 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "الدليل %lld أيام"
+                  "state" : "translated",
+                  "value" : "الدليل: %lld أيام"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "الدليل %lld يومًا"
+                  "state" : "translated",
+                  "value" : "الدليل: %lld يومًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "الدليل يوم واحد"
+                  "state" : "translated",
+                  "value" : "الدليل: يوم واحد"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "الدليل %lld يوم"
+                  "state" : "translated",
+                  "value" : "الدليل: %lld يوم"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "الدليل يومان"
+                  "state" : "translated",
+                  "value" : "الدليل: يومان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "الدليل %lld يوم"
+                  "state" : "translated",
+                  "value" : "الدليل: %lld يوم"
                 }
               }
             }
@@ -10619,7 +10727,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رابط الدليل"
           }
         },
@@ -10659,7 +10767,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "انتهى الدليل"
           }
         },
@@ -10699,7 +10807,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فشل الدليل"
           }
         },
@@ -10739,7 +10847,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "دليل %1$#@arg1@ · %2$lld من %3$#@arg3@"
           },
           "substitutions" : {
@@ -10750,37 +10858,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg أيام"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg يومًا"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "يوم واحد"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg يوم"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "يومين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg يوم"
                     }
                   }
@@ -10794,37 +10902,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قنوات"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناة واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناتين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   }
@@ -11127,7 +11235,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الدليل من %@"
           }
         },
@@ -11167,7 +11275,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "معرّف الدليل «%1$@» غير موجود في أي من الأدلة (%2$lld)"
           }
         },
@@ -11213,7 +11321,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "معرّف الدليل «%@» غير موجود في الدليل"
           }
         },
@@ -11253,7 +11361,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رابط الدليل"
           }
         },
@@ -11293,7 +11401,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مصادر الدليل"
           }
         },
@@ -11333,7 +11441,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الدليل غير متاح"
           }
         },
@@ -11373,7 +11481,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إخفاء شريط المعلومات"
           }
         },
@@ -11413,7 +11521,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ضغط مطول"
           }
         },
@@ -11453,7 +11561,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اضغط مطولًا على تشغيل/إيقاف مؤقت للبث المباشر"
           }
         },
@@ -11493,7 +11601,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اضغط مطولًا على زر التحديد"
           }
         },
@@ -11533,7 +11641,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اضغط مطولًا على زر التحديد للخيارات"
           }
         },
@@ -11573,7 +11681,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الشاشة الرئيسية"
           }
         },
@@ -11613,7 +11721,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المعرّف غير موجود"
           }
         },
@@ -11653,7 +11761,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إذا كان يشير إلى قائمة تشغيل أو بث، فأضفه كمصدر."
           }
         },
@@ -11693,7 +11801,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يشمل المشاركة العائلية"
           }
         },
@@ -11733,7 +11841,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "شريط المعلومات"
           }
         },
@@ -11773,7 +11881,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المعلومات والصوت والترجمة"
           }
         },
@@ -11813,7 +11921,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تابع المشاهدة"
           }
         },
@@ -11853,7 +11961,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مباشر"
           }
         },
@@ -11893,8 +12001,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "القناة الأخيرة أو الأخيرة المشاهدة"
+            "state" : "translated",
+            "value" : "آخر قناة أو الأخيرة"
           }
         },
         "de" : {
@@ -11933,7 +12041,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مدى الحياة"
           }
         },
@@ -11973,7 +12081,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مباشر"
           }
         },
@@ -12013,7 +12121,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم التحميل · %1$lld من %2$#@arg2@ · %3$#@arg3@"
           },
           "substitutions" : {
@@ -12024,37 +12132,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قنوات"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناة واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "قناتين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg قناة"
                     }
                   }
@@ -12068,37 +12176,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg أيام"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg يومًا"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "يوم واحد"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg يوم"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "يومان"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg يوم"
                     }
                   }
@@ -12401,7 +12509,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التحميل"
           }
         },
@@ -12441,7 +12549,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ تحميل الدليل…"
           }
         },
@@ -12481,7 +12589,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ تحميل السعر"
           }
         },
@@ -12521,7 +12629,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التحميل…"
           }
         },
@@ -12561,7 +12669,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ التحميل… · آخر تحميل %@"
           }
         },
@@ -12601,7 +12709,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم رفض تسجيل الدخول"
           }
         },
@@ -12641,7 +12749,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يسمح كثير من المزودين ببث واحد أو اثنين لكل حساب في الوقت نفسه."
           }
         },
@@ -12681,7 +12789,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يسمح كثير من المزودين ببث واحد أو اثنين لكل حساب في الوقت نفسه. إذا تغيّر تسجيل الدخول، فتحقق منه في الإعدادات."
           }
         },
@@ -12721,7 +12829,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يسمح كثير من المزودين ببث واحد أو اثنين لكل حساب في الوقت نفسه. إذا تغيّر تسجيل الدخول، فسجّل الدخول مرة أخرى على Apple TV هذا."
           }
         },
@@ -12761,7 +12869,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ربطته بنفسك"
           }
         },
@@ -12801,7 +12909,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُعثر على الربط"
           }
         },
@@ -12841,7 +12949,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مطابق بالاسم"
           }
         },
@@ -12881,7 +12989,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مطابق بالاسم · %lld"
           }
         },
@@ -12921,7 +13029,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مطابق بـ tvg-id"
           }
         },
@@ -12961,7 +13069,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يطابق %@"
           }
         },
@@ -13001,7 +13109,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Menu"
           }
         },
@@ -13041,7 +13149,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أحادي"
           }
         },
@@ -13081,7 +13189,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مزيد من المعلومات وقائمتي"
           }
         },
@@ -13121,7 +13229,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "نقل للأسفل"
           }
         },
@@ -13161,7 +13269,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "انقل إلى المكان الجديد"
           }
         },
@@ -13201,7 +13309,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "التنقل في الدليل"
           }
         },
@@ -13241,7 +13349,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "نقل للأعلى"
           }
         },
@@ -13281,7 +13389,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "نُقل من %@"
           }
         },
@@ -13321,7 +13429,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "نُقل من %1$@ %2$@"
           }
         },
@@ -13367,7 +13475,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فيلم"
           }
         },
@@ -13407,7 +13515,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فيلم · %@"
           }
         },
@@ -13447,7 +13555,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الأفلام"
           }
         },
@@ -13487,7 +13595,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "العرض المتعدد"
           }
         },
@@ -13527,7 +13635,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "العرض المتعدد ممتلئ"
           }
         },
@@ -13567,7 +13675,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "العرض المتعدد · المربع %1$lld من %2$lld"
           }
         },
@@ -13613,7 +13721,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "كتم الصوت"
           }
         },
@@ -13653,7 +13761,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "قائمتي"
           }
         },
@@ -13693,7 +13801,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "خطأ في الشبكة"
           }
         },
@@ -13733,7 +13841,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جديد"
           }
         },
@@ -13773,7 +13881,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الأيام السبعة القادمة"
           }
         },
@@ -13813,7 +13921,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحلقة التالية"
           }
         },
@@ -13853,7 +13961,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحلقة التالية بعد %lld"
           }
         },
@@ -13893,7 +14001,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الحلقة التالية، %@"
           }
         },
@@ -13933,7 +14041,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "التالي: %@"
           }
         },
@@ -13973,7 +14081,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يوجد خادم Channels DVR على %@."
           }
         },
@@ -14013,7 +14121,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يستجب أي خادم Jellyfin على %@. تحقق من العنوان وحاول مرة أخرى."
           }
         },
@@ -14053,7 +14161,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم تستجب أي بوابة Stalker على %@. تحقق من العنوان وحاول مرة أخرى."
           }
         },
@@ -14093,7 +14201,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُعثر على قنوات في %@."
           }
         },
@@ -14133,7 +14241,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يوجد دليل"
           }
         },
@@ -14173,7 +14281,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يوجد إدخال في الدليل يطابق «%@»"
           }
         },
@@ -14213,7 +14321,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يوجد معرّف دليل"
           }
         },
@@ -14253,7 +14361,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يعد في الدليل"
           }
         },
@@ -14293,7 +14401,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد معلومات عن البرنامج"
           }
         },
@@ -14333,7 +14441,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد برامج"
           }
         },
@@ -14373,7 +14481,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد برامج في الدليل"
           }
         },
@@ -14413,7 +14521,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُعثر على عملية شراء لحساب Apple هذا. إذا اشترى أحد أفراد العائلة Antenna، فتأكد من تشغيل مشاركة المشتريات في المشاركة العائلية."
           }
         },
@@ -14453,7 +14561,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد تذكيرات"
           }
         },
@@ -14493,7 +14601,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد نتائج لـ «%@»"
           }
         },
@@ -14533,7 +14641,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد ترجمة في هذا البث"
           }
         },
@@ -14573,7 +14681,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يسرد أي من الأدلة (%1$lld) لـ %2$@ «%3$@». اختر إدخالًا أدناه."
           }
         },
@@ -14619,7 +14727,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ليس ملف دليل"
           }
         },
@@ -14659,7 +14767,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُنزَّل بعد"
           }
         },
@@ -14699,7 +14807,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد مساحة تخزين كافية لإرجاع البث المباشر"
           }
         },
@@ -14739,7 +14847,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُحمَّل بعد"
           }
         },
@@ -14779,7 +14887,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يتم تسجيل الدخول على Apple TV هذا"
           }
         },
@@ -14819,7 +14927,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا شيء هنا بعد"
           }
         },
@@ -14859,7 +14967,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يوجد ما تدفعه بعد الآن. مصادرك ومفضلتك كما تركتها."
           }
         },
@@ -14899,7 +15007,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الإشعارات متوقفة لـ Antenna. تظهر التذكيرات فقط أثناء فتح التطبيق."
           }
         },
@@ -14939,7 +15047,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الآن: %@"
           }
         },
@@ -14979,7 +15087,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إيقاف"
           }
         },
@@ -15019,7 +15127,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "غير متصل"
           }
         },
@@ -15059,7 +15167,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "غير متصل · تتم إعادة المحاولة عند عودة الاتصال"
           }
         },
@@ -15099,7 +15207,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يُعرض الآن"
           }
         },
@@ -15139,7 +15247,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يدويًا فقط"
           }
         },
@@ -15179,7 +15287,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فتح"
           }
         },
@@ -15219,7 +15327,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فتح أو تغيير"
           }
         },
@@ -15259,7 +15367,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أخرى"
           }
         },
@@ -15299,7 +15407,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إيقاف مؤقت"
           }
         },
@@ -15339,7 +15447,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إيقاف مؤقت أو تشغيل"
           }
         },
@@ -15379,7 +15487,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ادفع مرة واحدة. لك إلى الأبد."
           }
         },
@@ -15419,7 +15527,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اختر إدخالًا آخر أدناه، أو أزل الربط للعودة إلى معرّف قائمة التشغيل."
           }
         },
@@ -15459,7 +15567,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل"
           }
         },
@@ -15499,7 +15607,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل %@"
           }
         },
@@ -15539,7 +15647,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "التشغيل من هنا"
           }
         },
@@ -15579,7 +15687,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "التشغيل الآن"
           }
         },
@@ -15619,7 +15727,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل أو اختيار"
           }
         },
@@ -15659,7 +15767,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل الحلقة التالية"
           }
         },
@@ -15699,7 +15807,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل/إيقاف مؤقت"
           }
         },
@@ -15739,7 +15847,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل/إيقاف مؤقت للعودة"
           }
         },
@@ -15779,7 +15887,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يشغّل الحلقة التالية من المسلسل عند انتهاء الحلقة. ينطبق على هذا الجهاز فقط."
           }
         },
@@ -15819,7 +15927,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اضغط لتصفّح القنوات"
           }
         },
@@ -15859,7 +15967,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "السعر غير متاح"
           }
         },
@@ -15899,7 +16007,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سياسة الخصوصية"
           }
         },
@@ -15939,7 +16047,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المزود مشغول"
           }
         },
@@ -15979,7 +16087,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "خطأ من المزود"
           }
         },
@@ -16019,7 +16127,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "دليل المزود"
           }
         },
@@ -16059,7 +16167,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "عمليات الشراء متوقفة على هذا الجهاز. تحقق من مدة استخدام الجهاز، أو اسأل منظّم العائلة."
           }
         },
@@ -16099,7 +16207,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إعادة إدخال الرابط"
           }
         },
@@ -16139,7 +16247,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ قراءة الدليل…"
           }
         },
@@ -16179,7 +16287,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المضافة حديثًا"
           }
         },
@@ -16219,7 +16327,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الأخيرة"
           }
         },
@@ -16259,7 +16367,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جارٍ إعادة الاتصال… المحاولة %1$lld من %2$lld"
           }
         },
@@ -16305,7 +16413,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم التحديث %@"
           }
         },
@@ -16345,7 +16453,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ذكّرني"
           }
         },
@@ -16385,7 +16493,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم ضبط التذكير"
           }
         },
@@ -16425,7 +16533,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تتم مزامنة التذكيرات مع أجهزتك الأخرى عبر iCloud. يذكّرك كل جهاز بطريقته: إشعار على iPhone وiPad وMac، ولافتة على Apple TV أثناء فتح Antenna."
           }
         },
@@ -16465,7 +16573,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جهاز التحكم: %@"
           }
         },
@@ -16505,7 +16613,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إزالة"
           }
         },
@@ -16545,7 +16653,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إزالة المربع"
           }
         },
@@ -16585,7 +16693,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أزل مربعًا أو اختر قناة بدقة أقل."
           }
         },
@@ -16625,7 +16733,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إزالة من العرض المتعدد"
           }
         },
@@ -16665,7 +16773,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إزالة المطابقة"
           }
         },
@@ -16705,7 +16813,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أزل اسم المستخدم وكلمة السر من العنوان."
           }
         },
@@ -16745,7 +16853,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تمت إزالة %@ من المفضلة."
           }
         },
@@ -16785,7 +16893,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتجدد كل سنة. يمكنك الإلغاء في أي وقت."
           }
         },
@@ -16825,7 +16933,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتجدد في %@. مصادرك ومفضلتك كما تركتها."
           }
         },
@@ -16865,7 +16973,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتجدد في <expiresAt>. مصادرك ومفضلتك كما تركتها."
           }
         },
@@ -16905,7 +17013,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم تكتمل الاستعادة. حاول مرة أخرى."
           }
         },
@@ -16945,7 +17053,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "استئناف"
           }
         },
@@ -16985,7 +17093,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "استئناف %@"
           }
         },
@@ -17025,7 +17133,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أعد المحاولة الآن"
           }
         },
@@ -17065,7 +17173,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الإرجاع غير متاح على هذه القناة"
           }
         },
@@ -17105,7 +17213,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "توقف الإرجاع عن العمل"
           }
         },
@@ -17145,7 +17253,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "توقف الإرجاع عن العمل. العودة إلى البث المباشر"
           }
         },
@@ -17185,7 +17293,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تمرير"
           }
         },
@@ -17225,7 +17333,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بحث"
           }
         },
@@ -17265,7 +17373,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ابحث في القنوات والبرامج والأفلام والمسلسلات"
           }
         },
@@ -17305,7 +17413,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ابحث في الدليل باسم القناة أو معرّفها"
           }
         },
@@ -17345,7 +17453,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الموسم %@"
           }
         },
@@ -17385,7 +17493,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الموسم %1$@ الحلقة %2$@"
           }
         },
@@ -17431,7 +17539,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "عرض الكل (%lld)"
           }
         },
@@ -17471,7 +17579,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تحديد"
           }
         },
@@ -17511,7 +17619,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تحديد المربع %lld"
           }
         },
@@ -17551,7 +17659,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المسلسلات"
           }
         },
@@ -17591,7 +17699,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مسلسل · %@"
           }
         },
@@ -17631,7 +17739,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أعاد الخادم %@"
           }
         },
@@ -17671,7 +17779,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إعداد Antenna على Apple TV"
           }
         },
@@ -17714,37 +17822,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عرض %lld قنوات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عرض %lld قناة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عرض قناة واحدة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عرض %lld قناة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عرض قناتين"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "عرض %lld قناة"
                 }
               }
@@ -17865,7 +17973,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "العرض في المربع %lld"
           }
         },
@@ -17905,7 +18013,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "عرض قنواته"
           }
         },
@@ -17945,7 +18053,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "عرض %1$lld من %2$lld"
           }
         },
@@ -17991,7 +18099,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يعرض شريط التنقل بين القنوات"
           }
         },
@@ -18031,7 +18139,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تسجيل الدخول"
           }
         },
@@ -18071,7 +18179,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يلزم تسجيل الدخول"
           }
         },
@@ -18111,7 +18219,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تسجيل الدخول على Apple TV هذا"
           }
         },
@@ -18151,7 +18259,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سجّل الدخول إلى %@ على Apple TV هذا"
           }
         },
@@ -18191,7 +18299,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سجّل الدخول إلى %@ على Apple TV هذا لتشغيل قنواته."
           }
         },
@@ -18231,7 +18339,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم رفض تسجيل الدخول"
           }
         },
@@ -18271,7 +18379,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تخطي 10 ثوانٍ"
           }
         },
@@ -18311,7 +18419,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم التخطي إلى البث المباشر"
           }
         },
@@ -18351,7 +18459,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا تزال بعض المصادر قيد التحميل."
           }
         },
@@ -18391,7 +18499,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المصدر: %1$@ · محاولة في %2$@"
           }
         },
@@ -18437,7 +18545,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المصادر والإعدادات"
           }
         },
@@ -18477,7 +18585,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "حلقات خاصة"
           }
         },
@@ -18517,7 +18625,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "قسّم الملف، أو استضفه وأضف الرابط كمصدر M3U بدلًا من ذلك."
           }
         },
@@ -18557,7 +18665,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "البدء من جديد غير متاح لهذا البرنامج"
           }
         },
@@ -18597,7 +18705,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يبدأ في %1$@ على %2$@"
           }
         },
@@ -18643,7 +18751,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يبدأ بعد %@"
           }
         },
@@ -18683,7 +18791,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يبدأ الآن"
           }
         },
@@ -18723,7 +18831,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يبدأ الآن على %@"
           }
         },
@@ -18763,7 +18871,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ستيريو"
           }
         },
@@ -18803,7 +18911,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يزال التخزين المؤقت جاريًا. يرسل %@ البيانات ببطء."
           }
         },
@@ -18843,7 +18951,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هل ما زلت تشاهد؟"
           }
         },
@@ -18883,7 +18991,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هل ما زلت تشاهد؟ %@"
           }
         },
@@ -18923,7 +19031,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إيقاف والرجوع"
           }
         },
@@ -18963,7 +19071,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مساحة التخزين ممتلئة"
           }
         },
@@ -19003,7 +19111,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مساحة التخزين ممتلئة. العودة إلى البث المباشر"
           }
         },
@@ -19043,7 +19151,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّرت قراءة البث"
           }
         },
@@ -19083,7 +19191,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تفاصيل البث غير متاحة بعد"
           }
         },
@@ -19123,7 +19231,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُعثر على البث"
           }
         },
@@ -19163,7 +19271,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "توقف البث"
           }
         },
@@ -19203,7 +19311,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "البث غير متاح"
           }
         },
@@ -19243,7 +19351,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تظهر الترجمة بلغتك كلما توفرت في البث."
           }
         },
@@ -19283,7 +19391,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تظهر الترجمة عندما لا يكون الصوت بإحدى لغاتك."
           }
         },
@@ -19323,7 +19431,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تبدأ الترجمة متوقفة. تظل الترجمة الإجبارية بلغتك ظاهرة."
           }
         },
@@ -19363,7 +19471,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سحب"
           }
         },
@@ -19403,7 +19511,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اسحب لأسفل"
           }
         },
@@ -19443,7 +19551,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اسحب يسارًا أو يمينًا"
           }
         },
@@ -19483,7 +19591,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اسحب لأعلى أو لأسفل"
           }
         },
@@ -19523,7 +19631,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اسحب لأعلى أو لأسفل لقناة أخرى. يفتح Menu شريط علامات التبويب."
           }
         },
@@ -19563,7 +19671,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المربع %lld"
           }
         },
@@ -19603,7 +19711,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "شريط علامات التبويب"
           }
         },
@@ -19643,7 +19751,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "شروط الاستخدام"
           }
         },
@@ -19683,7 +19791,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم تعد تلك القناة في %@."
           }
         },
@@ -19723,7 +19831,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يعد مصدر تلك القناة في Antenna."
           }
         },
@@ -19763,7 +19871,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يعد ذلك العنوان متاحًا من %@."
           }
         },
@@ -19803,7 +19911,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يعد مصدر ذلك العنوان في Antenna."
           }
         },
@@ -19843,7 +19951,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فشل الاتصال (%@). تحقق من الشبكة، أو من VPN إن كان مفعلًا."
           }
         },
@@ -19883,7 +19991,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فشل الاتصال. تحقق من الشبكة، أو من VPN إن كان مفعلًا."
           }
         },
@@ -19923,7 +20031,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الإدخالات في هذا الملف ليست روابط."
           }
         },
@@ -19963,7 +20071,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الدليل"
           }
         },
@@ -20003,7 +20111,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تعذّر تنزيل الدليل"
           }
         },
@@ -20043,7 +20151,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يُنزَّل الدليل عندما يعود الاتصال بالإنترنت."
           }
         },
@@ -20083,7 +20191,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "نفد الدليل لـ «%@»"
           }
         },
@@ -20123,7 +20231,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُنزَّل الدليل بعد"
           }
         },
@@ -20163,7 +20271,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يُنزَّل الدليل بعد."
           }
         },
@@ -20203,7 +20311,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يسرد الدليل «%@» لكن بلا برامج له"
           }
         },
@@ -20243,7 +20351,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم يصل تسجيل الدخول لـ %@ إلى هذا الجهاز من سلسلة مفاتيح iCloud بعد."
           }
         },
@@ -20283,7 +20391,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم تتم مزامنة تسجيل الدخول لـ %@ من iCloud إلى هذا الجهاز بعد."
           }
         },
@@ -20323,7 +20431,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الإدخال المربوط «%@» بلا برامج"
           }
         },
@@ -20363,7 +20471,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا تحتوي قائمة التشغيل على tvg-id لـ %@"
           }
         },
@@ -20403,7 +20511,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رفضت البوابة هذا الجهاز برسالة «%@»."
           }
         },
@@ -20443,7 +20551,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يحتاج دليل المزود إلى تسجيل دخول هذا المصدر، ولم يصل إلى هذا الجهاز من iCloud بعد."
           }
         },
@@ -20483,7 +20591,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يحتاج دليل المزود إلى تسجيل دخول هذا المصدر. سجّل الدخول من المصادر والإعدادات."
           }
         },
@@ -20523,7 +20631,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يرسل المزود epg_channel_id لـ %@"
           }
         },
@@ -20563,7 +20671,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لم تكتمل عملية الشراء. حاول مرة أخرى."
           }
         },
@@ -20603,7 +20711,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم استرداد مبلغ الشراء على حساب Apple هذا أو لم يعد مشاركًا معك."
           }
         },
@@ -20643,7 +20751,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فشل الاتصال الآمن. تحقق من الشبكة، أو من VPN إن كان مفعلًا."
           }
         },
@@ -20683,7 +20791,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رد الخادم بخطأ (%@). تحقق من العنوان وحاول مرة أخرى."
           }
         },
@@ -20723,7 +20831,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رد الخادم بشيء لم يستطع Antenna قراءته."
           }
         },
@@ -20763,7 +20871,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يعطي المصدر هذه القناة معرّف دليل"
           }
         },
@@ -20803,7 +20911,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يستطيع Apple TV هذا تشغيل بث آخر"
           }
         },
@@ -20843,7 +20951,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يستطيع Mac هذا تشغيل بث آخر"
           }
         },
@@ -20883,8 +20991,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "هذا الحساب %@."
+            "state" : "translated",
+            "value" : "حالة الحساب: %@."
           }
         },
         "de" : {
@@ -20923,7 +21031,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يُسمح لهذا الحساب بتسجيل الدخول من هذا الجهاز."
           }
         },
@@ -20963,7 +21071,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذه القناة"
           }
         },
@@ -21003,7 +21111,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يشغّل هذا الجهاز بالفعل أكبر عدد ممكن من البثوث."
           }
         },
@@ -21043,7 +21151,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "حجم هذا الملف %@. يستورد Antenna قوائم تشغيل حتى 16 ميغابايت."
           }
         },
@@ -21083,7 +21191,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذا الملف رابط، وليس قائمة تشغيل."
           }
         },
@@ -21123,7 +21231,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذا الملف قائمة روابط، وليس قائمة تشغيل."
           }
         },
@@ -21163,7 +21271,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذا الملف أكبر من 16 ميغابايت. يستورد Antenna قوائم تشغيل حتى 16 ميغابايت."
           }
         },
@@ -21203,7 +21311,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذا الدليل موجود بالفعل في القائمة."
           }
         },
@@ -21243,7 +21351,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يحتاج رابط الدليل هذا إلى تسجيل الدخول على Apple TV هذا"
           }
         },
@@ -21283,7 +21391,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذا بث واحد، وليس قائمة قنوات."
           }
         },
@@ -21323,7 +21431,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يطلب هذا الخادم اسم مستخدم وكلمة سر، ولا يستطيع Antenna إرسالهما بعد."
           }
         },
@@ -21363,7 +21471,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يوجد دليل لهذا المصدر"
           }
         },
@@ -21403,7 +21511,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يستخدم هذا البث %@، ولا يستطيع هذا الجهاز تشغيله. لن تفيد إعادة المحاولة. اختر قناة أخرى أو اطلب من المزود بثًا بصيغة مدعومة."
           }
         },
@@ -21443,7 +21551,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "هذا العنوان"
           }
         },
@@ -21483,7 +21591,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المربع %1$lld من %2$lld"
           }
         },
@@ -21529,7 +21637,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المربع %1$lld · %2$@"
           }
         },
@@ -21575,7 +21683,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "انتهت المهلة"
           }
         },
@@ -21615,7 +21723,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "العنوان"
           }
         },
@@ -21655,7 +21763,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "اليوم"
           }
         },
@@ -21695,7 +21803,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "غدًا"
           }
         },
@@ -21735,7 +21843,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "كبير جدًا"
           }
         },
@@ -21775,7 +21883,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "عدد الروابط كبير جدًا لهذا المصدر. أزل بعضها لإضافة المزيد."
           }
         },
@@ -21815,7 +21923,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "المسار %lld"
           }
         },
@@ -21855,7 +21963,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "جرّب اسمًا أقصر أو tvg-id الخاص بالقناة."
           }
         },
@@ -21895,7 +22003,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "حاول مرة أخرى"
           }
         },
@@ -21935,7 +22043,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إيقاف"
           }
         },
@@ -21975,7 +22083,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تشغيل"
           }
         },
@@ -22015,7 +22123,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "متوقف"
           }
         },
@@ -22055,7 +22163,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بلا مجموعة"
           }
         },
@@ -22095,7 +22203,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "فتح قفل Antenna"
           }
         },
@@ -22135,7 +22243,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "افتح قفل %@ مرة واحدة وحاول مرة أخرى."
           }
         },
@@ -22175,7 +22283,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بلا عنوان"
           }
         },
@@ -22215,7 +22323,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "التالي، %1$@، الحلقة التالية بعد %2$#@arg2@"
           },
           "substitutions" : {
@@ -22226,37 +22334,37 @@
                 "plural" : {
                   "few" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثوانٍ"
                     }
                   },
                   "many" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثانية"
                     }
                   },
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "ثانية واحدة"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثانية"
                     }
                   },
                   "two" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "ثانيتين"
                     }
                   },
                   "zero" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg ثانية"
                     }
                   }
@@ -22439,7 +22547,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "خفض الصوت"
           }
         },
@@ -22479,7 +22587,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رفع الصوت"
           }
         },
@@ -22519,7 +22627,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار الموافقة. يُفتح قفل Antenna فور الموافقة على الشراء."
           }
         },
@@ -22559,7 +22667,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار iCloud…"
           }
         },
@@ -22599,7 +22707,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار تسجيل الدخول"
           }
         },
@@ -22639,7 +22747,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار تسجيل الدخول من iCloud"
           }
         },
@@ -22679,7 +22787,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار مزامنة تسجيل الدخول من iCloud"
           }
         },
@@ -22719,7 +22827,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار App Store…"
           }
         },
@@ -22759,7 +22867,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار الدليل…"
           }
         },
@@ -22799,7 +22907,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار مزامنة تسجيل الدخول"
           }
         },
@@ -22839,7 +22947,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار قائمة التشغيل"
           }
         },
@@ -22879,7 +22987,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "بانتظار مزامنة تسجيل دخول هذا الدليل من iCloud"
           }
         },
@@ -22919,7 +23027,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشاهدة"
           }
         },
@@ -22959,7 +23067,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "شاهد الآن، أو التفاصيل لوقت لاحق"
           }
         },
@@ -22999,7 +23107,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تمت المشاهدة"
           }
         },
@@ -23039,7 +23147,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مرحبًا بعودتك"
           }
         },
@@ -23079,7 +23187,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أي قناة؟"
           }
         },
@@ -23119,7 +23227,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أي فيلم أو مسلسل؟"
           }
         },
@@ -23159,8 +23267,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "سنة"
+            "state" : "translated",
+            "value" : "السنة"
           }
         },
         "de" : {
@@ -23199,7 +23307,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سنويًا"
           }
         },
@@ -23239,7 +23347,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتجدد الاشتراك السنوي تلقائيًا حتى إلغائه في الإعدادات. يُحصَّل المبلغ من حساب Apple."
           }
         },
@@ -23279,7 +23387,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتجدد الاشتراك السنوي تلقائيًا حتى إلغائه في الإعدادات. يُحصَّل المبلغ من حساب Apple. شروط الاستخدام وسياسة الخصوصية."
           }
         },
@@ -23319,7 +23427,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لقد استوردت %1$@ من قبل باسم %2$@"
           }
         },
@@ -23365,7 +23473,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أنت غير متصل بالإنترنت"
           }
         },
@@ -23405,7 +23513,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أنت غير متصل بالإنترنت."
           }
         },
@@ -23445,7 +23553,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "أنت غير متصل بالإنترنت. اتصل بالإنترنت وحاول مرة أخرى."
           }
         },
@@ -23485,7 +23593,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رفض مزودك بثًا آخر"
           }
         },
@@ -23525,7 +23633,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تم العثور على عملية الشراء لحساب Apple هذا."
           }
         },
@@ -23565,7 +23673,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "انتهى اشتراكك السنوي في %@."
           }
         },
@@ -23605,7 +23713,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "انتهى اشتراكك السنوي في <date>."
           }
         },
@@ -23645,7 +23753,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تكبير"
           }
         },
@@ -23685,7 +23793,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تصغير"
           }
         },
@@ -23725,7 +23833,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تغيير القناة"
           }
         },
@@ -23766,7 +23874,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "رجوع"
           }
         },
@@ -23812,7 +23920,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ملء الشاشة"
           }
         },
@@ -23852,7 +23960,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مغادرة العرض المتعدد"
           }
         },
@@ -23892,7 +24000,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مكتوم"
           }
         },
@@ -23932,7 +24040,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا توجد برامج"
           }
         },
@@ -23975,37 +24083,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أيام"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld يومًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "يوم"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld يوم"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "يومين"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld يوم"
                 }
               }
@@ -24129,37 +24237,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أشهر"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld شهرًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "شهر"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld شهر"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "شهرين"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld شهر"
                 }
               }
@@ -24283,37 +24391,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أسابيع"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أسبوعًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "أسبوع"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أسبوع"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "أسبوعين"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld أسبوع"
                 }
               }
@@ -24437,37 +24545,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld سنوات"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld سنة"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "سنة"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld سنة"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "سنتين"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld سنة"
                 }
               }
@@ -24588,7 +24696,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مرة واحدة"
           }
         },
@@ -24628,7 +24736,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الخيارات"
           }
         },
@@ -24668,7 +24776,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سنويًا"
           }
         },
@@ -24708,7 +24816,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الصوت مفعل"
           }
         },
@@ -24748,7 +24856,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "التالي"
           }
         },
@@ -24788,7 +24896,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تمت المشاهدة"
           }
         },
@@ -24828,7 +24936,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مصدرك"
           }
         },
@@ -24868,7 +24976,7 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "لا يسرد «%1$@» «%2$@». اختر إدخالًا أدناه."
           }
         },
