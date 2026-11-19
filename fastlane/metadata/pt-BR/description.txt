@@ -25,7 +25,7 @@ FILMES E SÉRIES
 NO APPLE TV
 • Troque de canal com o Siri Remote ou digite o número do canal
 • Favoritos e títulos em andamento no topo da Tela de Início
-• Inicie sessão no Apple TV lendo um código com o iPhone, em vez de digitar uma senha com o controle remoto
+• Inicie sessão no Apple TV escaneando um código com o iPhone, em vez de digitar uma senha com o controle remoto
 
 EM TODOS OS DISPOSITIVOS
 • Fontes, favoritos e progresso são sincronizados pela sua própria conta do iCloud. As senhas ficam nas suas Chaves do iCloud.
@@ -37,6 +37,6 @@ COMPRA
 O Antenna é gratuito para baixar e precisa de uma compra para ser usado: uma assinatura anual ou um desbloqueio vitalício com pagamento único. As duas opções funcionam com o Compartilhamento Familiar. O app mostra o preço da sua região antes da compra.
 
 PRIVACIDADE
-O Antenna não tem conta, anúncios nem análises. Ele se conecta apenas às fontes que você adiciona, à sua conta do iCloud e à App Store.
+O Antenna não pede conta e não tem anúncios nem análises. Ele se conecta apenas às fontes que você adiciona, à sua conta do iCloud e à App Store.
 
 Você precisa ter o direito de assistir ao que suas fontes reproduzem. O Antenna não vende nem recomenda assinaturas de TV.

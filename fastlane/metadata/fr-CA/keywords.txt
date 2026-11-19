@@ -1,1 +1,1 @@
-m3u,m3u8,epg,xmltv,direct,chaînes,postes,playlist,télévision,horaire,timeshift,multivue,télé
+m3u,m3u8,epg,xmltv,direct,chaînes,postes,liste de lecture,télévision,horaire,timeshift,multivue,télé

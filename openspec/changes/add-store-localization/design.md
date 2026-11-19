@@ -318,6 +318,67 @@ iPad and Apple TV. The Mac version needs Mac screenshots before it can be
 submitted; the workflow does not run the Mac app, and taking them is a
 later change (owner to-do).
 
+## Review of the first pass
+
+Each listing reviewed by a model reviewer in place of a native speaker, as
+for the app's languages: meaning, Apple's names, length, keywords per
+market, and claims the app cannot back. No language needed a claim taken
+out; every one says the app has no channels and needs a purchase, and none
+names a provider.
+
+Swedish:
+- "spelar de tv-källor" is "spelar upp": "spela" alone reads as playing an
+  instrument or a game.
+- Posters are "omslagsbilder", the word Swedish streaming apps use;
+  "affischer" reads as paper posters.
+- The promotional text put "hur långt du har kommit på iPhone" together,
+  which reads as progress on the iPhone only. It now ends "och fortsätter
+  där du slutade".
+- Keywords: "efterhand" alone is not a search word; "programguide" replaces
+  it, and "streaming" makes room.
+
+German:
+- "bis zu einer Stunde", the dative most readers expect.
+- "Mit der Siri Remote Sender wechseln", verb last as in the other bullets.
+- "Antenna braucht kein Konto": "hat kein Konto" read as the app lacking
+  one. "Nutzungsanalyse" for analytics.
+
+Spanish (both stores):
+- The stressed "Tú añades" is just "Añades".
+- "Títulos que ya empezaste", since "títulos empezados" reads as a
+  translation.
+- "No pide cuenta", same reason as German.
+- Spain reads "en vivo" where it would say "en directo". The listing keeps
+  the app's word so the text matches the screenshots; the Spain keywords
+  carry "directo" and "tele".
+
+French (both stores):
+- "aucune chaîne, aucune playlist ni aucune adresse", the negative list
+  French expects.
+- "Reprenez la lecture là où vous l’avez laissée", which avoids a gendered
+  "arrêté".
+- "Saisissez un numéro de chaîne": nobody types on a Siri Remote.
+- "Connectez-vous sur l’Apple TV", since Apple TV is feminine in French
+  and "connecter l’Apple TV" reads as plugging it in.
+- "Siri et Raccourcis peuvent lancer une chaîne ou un titre"; "mettre une
+  chaîne" is spoken French.
+- Canada's keywords take "liste de lecture", the Quebec word for playlist,
+  in place of "playlist" and "streaming".
+- The promotional text is shorter: "Retrouvez ensuite chaînes, guide,
+  favoris et progression".
+
+Portuguese (Brazil):
+- "escaneando um código", the verb Brazilian apps use for a QR code.
+- "não pede conta", same reason as German.
+
+Arabic (held):
+- "قائمة قنوات تبيّن ما يُعرض الآن": "تعرض ما يُعرض" repeated the verb.
+- "وأقفِل مجموعة", form IV as in the app's "مقفلة".
+- "ارجع إلى الوراء حتى ساعة", "ما لم توقف هذا الخيار", and "رمز QR" so the
+  sign-in code is not read as the group passcode ("رمز الدخول").
+- Keywords: "بث" and "مباشر" as single words instead of the phrase plus
+  both words, since the App Store combines keyword words; "برامج" added.
+
 ## Risks / Trade-offs
 
 - [The name "Antenna" may be taken on the App Store] → the owner checks

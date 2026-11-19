@@ -1,4 +1,4 @@
-Antenna reproduce las fuentes de TV que ya tienes, en iPhone, iPad, Mac y Apple TV. No incluye ningún canal, lista ni dirección de proveedor. Tú añades tu propia fuente y Antenna la convierte en una lista de canales, una guía de TV y una biblioteca de películas y series.
+Antenna reproduce las fuentes de TV que ya tienes, en iPhone, iPad, Mac y Apple TV. No incluye ningún canal, lista ni dirección de proveedor. Añades tu propia fuente y Antenna la convierte en una lista de canales, una guía de TV y una biblioteca de películas y series.
 
 TUS FUENTES
 • Listas M3U, desde un enlace o un archivo
@@ -24,7 +24,7 @@ PELÍCULAS Y SERIES
 
 EN APPLE TV
 • Cambia de canal con el Siri Remote o escribe un número de canal
-• Favoritos y títulos empezados en la fila superior de la pantalla de inicio
+• Favoritos y títulos que ya empezaste en la fila superior de la pantalla de inicio
 • Inicia sesión en el Apple TV escaneando un código con tu iPhone, en lugar de escribir una contraseña con el control remoto
 
 EN TODOS TUS DISPOSITIVOS
@@ -37,6 +37,6 @@ COMPRA
 Antenna se descarga gratis y necesita una compra para usarse: una suscripción anual o un desbloqueo para siempre con un solo pago. Ambas opciones funcionan con En familia. La app muestra el precio de tu región antes de comprar.
 
 PRIVACIDAD
-Antenna no tiene cuenta, ni anuncios, ni analíticas. Solo se conecta a las fuentes que añades, a tu cuenta de iCloud y al App Store.
+Antenna no pide cuenta y no tiene anuncios ni analíticas. Solo se conecta a las fuentes que añades, a tu cuenta de iCloud y al App Store.
 
 Necesitas tener derecho a ver lo que reproducen tus fuentes. Antenna no vende ni recomienda suscripciones de TV.
