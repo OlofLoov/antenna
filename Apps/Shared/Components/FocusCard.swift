@@ -53,15 +53,17 @@ struct FocusCard: ViewModifier {
 struct FocusCardStyle: ButtonStyle {
     let corner: Metrics.Corner
     var resting: Color = .clear
+    var restingText: Color = Palette.text
 
-    init(_ corner: Metrics.Corner, resting: Color = .clear) {
+    init(_ corner: Metrics.Corner, resting: Color = .clear, restingText: Color = Palette.text) {
         self.corner = corner
         self.resting = resting
+        self.restingText = restingText
     }
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .modifier(FocusCard(corner, resting: resting))
+            .modifier(FocusCard(corner, resting: resting, restingText: restingText))
             .opacity(configuration.isPressed ? 0.7 : 1)
             .contentShape(corner.shape())
     }

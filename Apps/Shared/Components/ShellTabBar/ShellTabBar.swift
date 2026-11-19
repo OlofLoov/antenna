@@ -37,7 +37,7 @@ enum ShellTabBar {
                 }
                 HStack(spacing: 6) { pills }
                     .padding(6)
-                    .background(Palette.tabBar, in: Capsule())
+                    .glassEffect(.regular, in: Capsule())
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel("Tabs")
                     .accessibilityIdentifier("shell.tabs")
@@ -75,43 +75,27 @@ enum ShellTabBar {
         let select: () -> Void
 
         var body: some View {
-            Button(title, action: select)
-                .buttonStyle(PillStyle(look: look))
-                .accessibilityAddTraits(look == .plain ? [] : .isSelected)
-        }
-    }
-
-    struct PillStyle: ButtonStyle {
-        let look: Look
-
-        func makeBody(configuration: Configuration) -> some View {
-            PillLabel(label: configuration.label, look: look)
-        }
-    }
-
-    private struct PillLabel<Label: View>: View {
-        let label: Label
-        let look: Look
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.boardStyle(26, weight: isFocused || look != .plain ? .semibold : .regular))
-                .padding(.vertical, 10)
-                .padding(.horizontal, 26)
-                .foregroundStyle(isFocused || look == .currentInContent ? Palette.ground : Palette.text)
-                .background(fill, in: Capsule())
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+            Button(action: select) {
+                Text(title)
+                    .font(.boardStyle(26, weight: look != .plain ? .semibold : .regular))
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 26)
+            }
+            .buttonStyle(FocusCardStyle(.capsule, resting: resting, restingText: restingText))
+            .accessibilityAddTraits(look == .plain ? [] : .isSelected)
         }
 
-        private var fill: Color {
-            if isFocused { return Palette.focus }
+        /// The open tab rests white while focus is in its content, and on
+        /// the surface while focus is elsewhere in the bar.
+        private var resting: Color {
             switch look {
-            case .plain: return .clear
-            case .currentInContent: return Palette.focus
-            case .currentInBar: return Palette.surface(0.12)
+            case .plain: .clear
+            case .currentInContent: Palette.focus
+            case .currentInBar: Palette.surface(0.12)
             }
         }
+
+        private var restingText: Color { look == .currentInContent ? Palette.ground : Palette.text }
     }
 
     /// The current profile's color and initial, 56 by 56, between the tabs
@@ -124,37 +108,17 @@ enum ShellTabBar {
             Button(action: open) {
                 Text(tile.initial)
                     .font(.boardStyle(26, weight: .bold))
+                    .foregroundStyle(Palette.ground)
+                    .frame(width: 56, height: 56)
+                    .background(Color(hex: tile.color), in: Circle())
+                    .profileCircleHighlight()
             }
-            .buttonStyle(ProfileStyle(color: Color(hex: tile.color)))
+            .buttonStyle(.borderless)
             .accessibilityLabel("Profile, \(tile.name)")
         }
     }
 
-    private struct ProfileStyle: ButtonStyle {
-        let color: Color
-
-        func makeBody(configuration: Configuration) -> some View {
-            ProfileLabel(label: configuration.label, color: color)
-        }
-    }
-
-    private struct ProfileLabel<Label: View>: View {
-        let label: Label
-        let color: Color
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .foregroundStyle(Palette.ground)
-                .frame(width: 56, height: 56)
-                .background(color, in: Circle())
-                .overlay(Circle().stroke(isFocused ? Palette.focus : .clear, lineWidth: 4).padding(-6))
-                .scaleEffect(isFocused ? 1.1 : 1)
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-        }
-    }
-
-    /// The gear that opens Settings: 56 by 56 with a 30 pt glyph. Not a tab.
+    /// The gear that opens Settings, a bordered circle. Not a tab.
     struct SettingsButton: View {
         let open: () -> Void
 
@@ -163,27 +127,9 @@ enum ShellTabBar {
                 Image(systemName: "gearshape")
                     .font(.boardStyle(30))
             }
-            .buttonStyle(GearStyle())
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.circle)
             .accessibilityLabel("Settings")
-        }
-    }
-
-    private struct GearStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            GearLabel(label: configuration.label)
-        }
-    }
-
-    private struct GearLabel<Label: View>: View {
-        let label: Label
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .frame(width: 56, height: 56)
-                .background(isFocused ? Palette.focus : .clear, in: Circle())
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
         }
     }
 
@@ -211,6 +157,17 @@ enum ShellTabBar {
                 .frame(width: 260, height: 1)
                 .accessibilityHidden(true)
         }
+    }
+}
+
+extension View {
+    /// The highlight hover effect on the profile circle on Apple TV; nothing elsewhere.
+    @ViewBuilder fileprivate func profileCircleHighlight() -> some View {
+        #if os(tvOS)
+            contentShape(.hoverEffect, Circle()).hoverEffect(.highlight)
+        #else
+            self
+        #endif
     }
 }
 
