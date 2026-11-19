@@ -32,6 +32,7 @@ core_tests() {
 
 step "repo rules" bash scripts/check-rules.sh
 step "translations" bash scripts/check-translations.sh
+step "store listing" bash scripts/check-store-metadata.sh
 step "spec references" bash scripts/check-spec-refs.sh
 if command -v openspec >/dev/null; then
   step "openspec" openspec validate --all --strict --no-interactive
