@@ -56,6 +56,14 @@
   appears. The `App screenshots` workflow runs them every night, by hand, and
   on a PR with the `screenshots` label; the PNGs are in the run's
   `app-screenshots` artifact as `<device>/<test>/<nn>-<step>.png`.
+- `testStore` in each walk-through file is the App Store set. The workflow
+  runs it once per ready language with `TEST_RUNNER_STORE_LANGUAGE` and
+  `TEST_RUNNER_STORE_REGION` (the walk reads them without the prefix) and
+  uploads `store-screenshots` as `<store-locale>/<nn>-<device>-<step>.png`
+  and `<store-locale>/appleTV/<nn>-<step>.png`. Its steps anchor on
+  identifiers only, never on a label, since the labels are translated. To
+  run it in German locally, set `TEST_RUNNER_STORE_LANGUAGE=de` and
+  `TEST_RUNNER_STORE_REGION=de_DE` in front of `xcodebuild test`.
 
 ## Git
 

@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 4 * * *"
   workflow_dispatch:
+    inputs:
+      languages:
+        description: App languages for the store set, such as "de ar". Empty takes English and the reviewed languages.
+        required: false
+        default: ""
   pull_request:
     types: [labeled, synchronize]
 
@@ -19,7 +24,7 @@ jobs:
     name: App screenshots
     runs-on: macos-26
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'screenshots')
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,7 +46,7 @@ jobs:
             xcrun simctl list devices available | grep -E "$1" | head -1 \
               | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}'
           }
-          iphone=$(pick '^ +iPhone [0-9]+ Pro \(')
+          iphone=$(pick '^ +iPhone [0-9]+ Pro Max \(')
           ipad=$(pick '^ +iPad Pro 13')
           tv=$(pick '^ +Apple TV 4K')
           for id in "$iphone" "$ipad"; do
@@ -56,29 +61,84 @@ jobs:
             echo "ipad=$ipad"
             echo "tv=$tv"
           } >> "$GITHUB_OUTPUT"
+      - name: Store languages
+        env:
+          LANGUAGES: ${{ github.event.inputs.languages }}
+        run: |
+          set -e
+          read -r -a codes <<< "${LANGUAGES:-}"
+          python3 scripts/store_metadata.py locales "${codes[@]}" > store-languages.txt
+          cat store-languages.txt
+      - name: Build for iPhone and iPad
+        env:
+          IPHONE: ${{ steps.devices.outputs.iphone }}
+        run: |
+          xcodebuild build-for-testing -project Antenna.xcodeproj -scheme Antenna \
+            -destination "platform=iOS Simulator,id=$IPHONE" \
+            -derivedDataPath dd-ios CODE_SIGNING_ALLOWED=NO
       - name: iPhone and iPad walk-throughs
         env:
           IPHONE: ${{ steps.devices.outputs.iphone }}
           IPAD: ${{ steps.devices.outputs.ipad }}
         run: |
-          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
+          xcodebuild test-without-building -project Antenna.xcodeproj -scheme Antenna \
             -destination "platform=iOS Simulator,id=$IPHONE" \
             -destination "platform=iOS Simulator,id=$IPAD" \
             -only-testing:AntennaJourneys \
             -retry-tests-on-failure -test-iterations 2 \
-            -resultBundlePath ios-journeys.xcresult \
-            CODE_SIGNING_ALLOWED=NO
+            -derivedDataPath dd-ios -resultBundlePath ios-journeys.xcresult
+      - name: iPhone and iPad store sets
+        if: success() || failure()
+        env:
+          IPHONE: ${{ steps.devices.outputs.iphone }}
+          IPAD: ${{ steps.devices.outputs.ipad }}
+        run: |
+          failed=0
+          while read -r code region _ <&3; do
+            [ "$code" = "en" ] && continue
+            TEST_RUNNER_STORE_LANGUAGE="$code" TEST_RUNNER_STORE_REGION="$region" \
+              xcodebuild test-without-building -project Antenna.xcodeproj -scheme Antenna \
+              -destination "platform=iOS Simulator,id=$IPHONE" \
+              -destination "platform=iOS Simulator,id=$IPAD" \
+              -only-testing:AntennaJourneys/AppJourneys/testStore \
+              -retry-tests-on-failure -test-iterations 2 \
+              -derivedDataPath dd-ios -resultBundlePath "store-ios-$code.xcresult" || failed=1
+          done 3< store-languages.txt
+          exit "$failed"
+      - name: Build for Apple TV
+        if: success() || failure()
+        env:
+          TV: ${{ steps.devices.outputs.tv }}
+        run: |
+          xcodebuild build-for-testing -project Antenna.xcodeproj -scheme AntennaTV \
+            -destination "platform=tvOS Simulator,id=$TV" \
+            -derivedDataPath dd-tv CODE_SIGNING_ALLOWED=NO
       - name: Apple TV walk-throughs
         if: success() || failure()
         env:
           TV: ${{ steps.devices.outputs.tv }}
         run: |
-          xcodebuild test -project Antenna.xcodeproj -scheme AntennaTV \
+          xcodebuild test-without-building -project Antenna.xcodeproj -scheme AntennaTV \
             -destination "platform=tvOS Simulator,id=$TV" \
             -only-testing:AntennaTVJourneys \
             -retry-tests-on-failure -test-iterations 2 \
-            -resultBundlePath tv-journeys.xcresult \
-            CODE_SIGNING_ALLOWED=NO
+            -derivedDataPath dd-tv -resultBundlePath tv-journeys.xcresult
+      - name: Apple TV store sets
+        if: success() || failure()
+        env:
+          TV: ${{ steps.devices.outputs.tv }}
+        run: |
+          failed=0
+          while read -r code region _ <&3; do
+            [ "$code" = "en" ] && continue
+            TEST_RUNNER_STORE_LANGUAGE="$code" TEST_RUNNER_STORE_REGION="$region" \
+              xcodebuild test-without-building -project Antenna.xcodeproj -scheme AntennaTV \
+              -destination "platform=tvOS Simulator,id=$TV" \
+              -only-testing:AntennaTVJourneys/TVJourneys/testStore \
+              -retry-tests-on-failure -test-iterations 2 \
+              -derivedDataPath dd-tv -resultBundlePath "store-tv-$code.xcresult" || failed=1
+          done 3< store-languages.txt
+          exit "$failed"
       - name: Export screenshots
         if: always()
         run: |
@@ -89,6 +149,20 @@ jobs:
           done
           [ "${#bundles[@]}" -gt 0 ] || exit 0
           bash scripts/export-screenshots.sh app-screenshots "${bundles[@]}"
+          [ -f store-languages.txt ] || exit 0
+          while read -r code _ stores <&3; do
+            if [ "$code" = "en" ]; then
+              set -- "${bundles[@]}"
+            else
+              set --
+              for bundle in "store-ios-$code.xcresult" "store-tv-$code.xcresult"; do
+                [ -d "$bundle" ] && set -- "$@" "$bundle"
+              done
+            fi
+            if [ "$#" -gt 0 ]; then
+              bash scripts/export-screenshots.sh --store "$stores" store-screenshots "$@"
+            fi
+          done 3< store-languages.txt
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v7
@@ -97,10 +171,18 @@ jobs:
           path: app-screenshots
           retention-days: 14
           if-no-files-found: warn
+      - name: Upload store screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: store-screenshots
+          path: store-screenshots
+          retention-days: 14
+          if-no-files-found: warn
       - name: Upload result bundles
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: app-screenshots-xcresult
-          path: "*-journeys.xcresult"
+          path: "*.xcresult"
           if-no-files-found: ignore

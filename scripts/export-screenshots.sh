@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 # Exports the screenshot walk-throughs' steps from result bundles as
 # <out>/<device>/<test>/<nn>-<step>.png (add-app-screenshots-ci).
+# With --store, exports only the testStore walk as the App Store set for
+# each listed store locale: <out>/<locale>/<nn>-<device>-<step>.png, and
+# <out>/<locale>/appleTV/<nn>-<step>.png for Apple TV (add-store-localization).
 # Only attachments named <nn>-<step> are kept, so failure snapshots and
 # debug descriptions stay out. A test method testFirstRun becomes firstRun.
 #
-# Usage: scripts/export-screenshots.sh <out-dir> <bundle.xcresult>...
+# Usage: scripts/export-screenshots.sh [--store <locale,...>] <out-dir> <bundle.xcresult>...
 set -euo pipefail
 
+store=""
+if [ "${1:-}" = "--store" ]; then
+    store=${2:?"--store takes a comma-separated list of store locales"}
+    shift 2
+fi
+
 if [ "$#" -lt 2 ]; then
-    echo "usage: $0 <out-dir> <bundle.xcresult>..." >&2
+    echo "usage: $0 [--store <locale,...>] <out-dir> <bundle.xcresult>..." >&2
     exit 64
 fi
 
@@ -31,6 +40,20 @@ for bundle in "$@"; do
         method=${method#test}
         method="$(printf '%s' "${method:0:1}" | tr '[:upper:]' '[:lower:]')${method:1}"
         folder=$(printf '%s' "$device" | sed -E 's/[^A-Za-z0-9]+/-/g; s/^-+//; s/-+$//')
+        if [ -n "$store" ]; then
+            [ "$method" = "store" ] || continue
+            IFS=',' read -r -a locales <<< "$store"
+            for locale in "${locales[@]}"; do
+                case "$test" in
+                    TVJourneys/*) target="$out/$locale/appleTV/$step.png" ;;
+                    *) target="$out/$locale/${step:0:2}-$folder-${step:3}.png" ;;
+                esac
+                mkdir -p "$(dirname "$target")"
+                cp "$dir/$file" "$target"
+                count=$((count + 1))
+            done
+            continue
+        fi
         mkdir -p "$out/$folder/$method"
         cp "$dir/$file" "$out/$folder/$method/$step.png"
         count=$((count + 1))

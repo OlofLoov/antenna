@@ -148,6 +148,35 @@ final class TVJourneys: XCTestCase {
         journey.snap("add-source-xtream", anchor: "onboarding.connect")
     }
 
+    /// The App Store set, in the language the runner's `STORE_LANGUAGE`
+    /// names: the zap bar, the guide, Movies, a movie playing, and the source
+    /// kinds (add-store-localization, store-listing/store-screenshots-in-every-ready-language).
+    func testStore() {
+        let journey = Journey(self, arguments: ["-ui-screenshots", "full", "-ui-testing-no-probe"])
+        journey.snap("live", anchor: "zapBar.bar")
+        expectGone("zapBar.bar", in: journey)
+        expectFocus("shell.picture", in: journey)
+        remote.press(.menu)
+        moveRight(to: "shell.tab.guide", in: journey)
+        remote.press(.select)
+        expectFocus("guide.grid", in: journey)
+        journey.snap("guide", anchor: "guide.grid")
+        journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", "-ui-testing-no-probe"])
+        remote.press(.menu)
+        moveRight(to: "shell.tab.movies", in: journey)
+        remote.press(.select)
+        expectFocus("movies.hero.play", in: journey)
+        journey.snap("movies", anchor: "movies.hero.play")
+        remote.press(.select)
+        journey.snap("player", anchor: "title.transport")
+        journey.launch(["-ui-screenshots", "empty"])
+        expectFocus("onboarding.addSource", in: journey)
+        remote.press(.select)
+        expectFocus("onboarding.kind.m3u", in: journey)
+        waitUntilStill(journey.element("onboarding.kind.m3u"))
+        journey.snap("add-source", anchor: "onboarding.kind.m3u")
+    }
+
     /// Live with the zap bar, then the menu bar, the guide and settings, with two sources.
     func testShell() {
         let journey = Journey(self, scenario: "full")

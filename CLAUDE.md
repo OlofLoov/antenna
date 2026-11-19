@@ -105,8 +105,10 @@ associated domains, and the app runs without sync.
   a local simulator before opening its PR (see the `sim` skill).
 - **Screenshots on demand.** The `App screenshots` workflow walks the main
   screens on iPhone, iPad and Apple TV and uploads the PNGs as the
-  `app-screenshots` artifact. It runs every night; on a PR, add the
+  `app-screenshots` artifact, plus the App Store set per ready language as
+  `store-screenshots`. It runs every night; on a PR, add the
   `screenshots` label. How to add a step: `docs/conventions.md`, Tests.
+  The store listing text is in `fastlane/metadata/` (`docs/release/store-listing.md`).
 - **Tests cite requirements.** A test that proves a requirement names it as
   `<capability>/<requirement-slug>` in its name or a comment, for example
   `// guide-data/programmes-in-a-time-window`. `scripts/check-spec-refs.sh`

@@ -166,12 +166,13 @@
         }
 
         /// A tiny text the UI tests read through `shelf.debug.engine`. Draws
-        /// nothing outside UI tests.
+        /// nothing outside UI tests, or with `-ui-testing-no-probe`.
         struct Probe: View {
             let engine: any PlaybackEngine
 
             var body: some View {
-                if let engine = engine as? Engine {
+                let shown = !ProcessInfo.processInfo.arguments.contains(UITestingLive.Probe.hiddenArgument)
+                if shown, let engine = engine as? Engine {
                     Text(engine.summary)
                         .font(.system(size: 8))
                         .foregroundStyle(Palette.textMuted)
