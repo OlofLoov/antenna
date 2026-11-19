@@ -239,7 +239,7 @@ enum GuideBoard {
             GuideBoard.Block(
                 content: .programme(title: "La Liga: Pre-match", timing: .past, startedEarlier: false), width: 86, isSelected: false)
             GuideBoard.Block(content: .gap, width: 86, isSelected: false)
-            GuideBoard.Block(content: .placeholder(GuideLine.loading), width: 440, isSelected: false)
+            GuideBoard.Block(content: .placeholder(GuideLine.loading()), width: 440, isSelected: false)
         }
         .frame(height: GuideBoard.rowHeight)
         HStack(spacing: 0) {

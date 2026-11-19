@@ -28,9 +28,10 @@ public struct LiveNowText: Sendable, Equatable {
     ///   - time: formats a start or end time for the user's locale.
     public init(
         channel: String, number: ChannelNumber?, state: GuideLoadingState, current: Programme?, next: [Programme], now: Date,
-        time: (Date) -> String
+        time: (Date) -> String, locale: Locale = .autoupdatingCurrent
     ) {
-        let line = GuideLine(state: state, current: current, now: now)
+        let words = Words(locale)
+        let line = GuideLine(state: state, current: current, now: now, locale: locale)
         let upcoming = Array(next.prefix(3))
         self.next = upcoming
         title = line.text
@@ -49,7 +50,7 @@ public struct LiveNowText: Sendable, Equatable {
             progress = nil
             summary = nil
         }
-        if let first = upcoming.first { compactParts.append("Next: \(first.title)") }
+        if let first = upcoming.first { compactParts.append(words("Next: \(words.source(first.title))")) }
         meta = metaParts.joined(separator: " · ")
         compact = compactParts.joined(separator: " · ")
     }

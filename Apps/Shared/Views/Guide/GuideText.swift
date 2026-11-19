@@ -36,8 +36,8 @@ struct GuideText {
     /// What VoiceOver reads for a block: channel, title, times, and
     /// whether it is past, on now or still to come.
     func spoken(_ cell: GuideCell, channel: Channel, now: Date) -> String {
-        if let placeholder = cell.placeholder { return words("\(channel.name), \(placeholder.text)") }
-        let title = cell.programme.map(GuidePanelText.title) ?? GuideLine.noProgramme
+        if let placeholder = cell.placeholder { return words("\(channel.name), \(placeholder.text(locale))") }
+        let title = cell.programme.map { GuidePanelText.title($0, locale: locale) } ?? GuideLine.noProgramme(locale)
         let timing =
             switch GuideTiming(start: cell.start, stop: cell.stop, now: now) {
             case .past: words("past")
@@ -55,17 +55,19 @@ struct GuideText {
         _ cell: GuideCell, channel: Channel, timeline: GuideTimeline, now: Date, quality: String?
     ) -> GuidePanel.Details {
         if let placeholder = cell.placeholder {
-            return GuidePanel.Details(eyebrow: channel.name, look: .other, title: placeholder.text, meta: quality)
+            return GuidePanel.Details(eyebrow: channel.name, look: .other, title: placeholder.text(locale), meta: quality)
         }
         let onNow = cell.programme != nil && cell.segment.contains(now)
         let day = timeline.dayLabel(cell.start, today: now, locale: locale)
         let eyebrow =
             onNow ? words("Now · \(channel.name)") : words("\(day) \(time(cell.start)) · \(channel.name)")
         let meta = GuidePanelText.line([
-            times(cell.start, cell.stop), GuidePanelText.length(from: cell.start, to: cell.stop), cell.programme?.category, quality,
+            times(cell.start, cell.stop), GuidePanelText.length(from: cell.start, to: cell.stop, locale: locale), cell.programme?.category,
+            quality,
         ])
         return GuidePanel.Details(
-            eyebrow: eyebrow, look: onNow ? .now : .other, title: cell.programme.map(GuidePanelText.title) ?? GuideLine.noProgramme,
+            eyebrow: eyebrow, look: onNow ? .now : .other,
+            title: cell.programme.map { GuidePanelText.title($0, locale: locale) } ?? GuideLine.noProgramme(locale),
             meta: meta, progress: onNow ? ProgrammeProgress.fraction(start: cell.start, end: cell.stop, now: now) : nil,
             summary: cell.programme?.summary)
     }

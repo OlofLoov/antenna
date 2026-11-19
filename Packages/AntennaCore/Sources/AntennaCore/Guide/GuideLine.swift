@@ -8,20 +8,27 @@ public enum GuideLine: Sendable, Equatable {
     /// No progress bar goes with a message.
     case message(String)
 
-    public static let noProgramme = "No programme information"
-    public static let loading = "Loading guide…"
+    /// "No programme information".
+    public static func noProgramme(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("No programme information")
+    }
+
+    /// "Loading guide…".
+    public static func loading(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Loading guide…")
+    }
 
     /// The programme covering `now`, else "Loading guide…" while the
     /// channel's guide has not loaded yet, else "No programme information".
-    public init(state: GuideLoadingState, current: Programme?, now: Date) {
+    public init(state: GuideLoadingState, current: Programme?, now: Date, locale: Locale = .autoupdatingCurrent) {
         if let current, current.start <= now, now < current.stop {
             self = .programme(
                 title: current.title, progress: ProgrammeProgress.fraction(start: current.start, end: current.stop, now: now),
-                remaining: RemainingTime.text(until: current.stop, now: now))
+                remaining: RemainingTime.text(until: current.stop, now: now, locale: locale))
         } else if state == .loading {
-            self = .message(Self.loading)
+            self = .message(Self.loading(locale))
         } else {
-            self = .message(Self.noProgramme)
+            self = .message(Self.noProgramme(locale))
         }
     }
 
@@ -37,8 +44,11 @@ public enum GuideLine: Sendable, Equatable {
 extension Channel {
     /// The catch-up mark's words: "CATCH-UP 7D" with a day count, "CATCH-UP"
     /// without one, nil for a channel with no catch-up.
-    public var catchUpBadge: String? {
-        if let days = catchupDays, days > 0 { return "CATCH-UP \(days)D" }
-        return hasCatchup ? "CATCH-UP" : nil
+    public var catchUpBadge: String? { catchUpBadge(.autoupdatingCurrent) }
+
+    public func catchUpBadge(_ locale: Locale) -> String? {
+        let words = Words(locale)
+        if let days = catchupDays, days > 0 { return words("CATCH-UP \(days)D") }
+        return hasCatchup ? words("CATCH-UP") : nil
     }
 }

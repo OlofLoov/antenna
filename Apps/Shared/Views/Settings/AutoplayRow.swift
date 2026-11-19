@@ -8,7 +8,7 @@ struct AutoplayRow: View {
         Section {
             AutoplayToggle()
         } footer: {
-            Text(AutoplaySetting.footer)
+            Text(AutoplaySetting.footer())
         }
     }
 }

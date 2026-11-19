@@ -90,10 +90,13 @@ public enum GuideLinkInput {
         /// "This guide is already in the list."
         case duplicate
 
-        public var message: String {
-            switch self {
-            case .invalid: "Enter a valid URL."
-            case .duplicate: "This guide is already in the list."
+        public var message: String { message(.autoupdatingCurrent) }
+
+        public func message(_ locale: Locale) -> String {
+            let words = Words(locale)
+            return switch self {
+            case .invalid: words("Enter a valid URL.")
+            case .duplicate: words("This guide is already in the list.")
             }
         }
     }

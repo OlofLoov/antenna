@@ -188,7 +188,7 @@ private struct GridPreview: View {
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: 101, name: "Eurosport 1", look: .plain) { GuideGrid.Initials(text: "E1", look: .plain) }
         } blocks: {
-            GuideGrid.Block(content: .placeholder(GuideLine.loading), width: 1476)
+            GuideGrid.Block(content: .placeholder(GuideLine.loading()), width: 1476)
         }
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: 106, name: "Arena HD", look: .plain) { GuideGrid.Initials(text: "AH", look: .plain) }
@@ -204,7 +204,7 @@ private struct GridPreview: View {
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: 108, name: "Golf Channel", look: .plain) { GuideGrid.Initials(text: "GC", look: .plain) }
         } blocks: {
-            GuideGrid.Block(content: .placeholder(ZapBarText.guideUnavailable), width: 1476)
+            GuideGrid.Block(content: .placeholder(ZapBarText.guideUnavailable()), width: 1476)
         }
     }
     .padding(64)

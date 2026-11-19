@@ -12,17 +12,7 @@ enum BrowseSignposts {
 
 extension CatalogueGroup {
     /// The name the group column, the chips and the list heading show.
-    var label: String {
-        switch self {
-        case .favorites: "Favorites"
-        case .recents: "Recents"
-        case .new: "New"
-        case .all: "All channels"
-        case .named(_, let name): name
-        case .ungrouped: "Ungrouped"
-        case .own: "Group"
-        }
-    }
+    var label: String { label(.autoupdatingCurrent) }
 
     /// How the Apple TV channel column is sorted, under its heading.
     var order: LocalizedStringResource {

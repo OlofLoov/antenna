@@ -307,7 +307,7 @@ final class HandoffSetupActivity: SetupActivityRecording {
     func begin(_ link: SetupLink) {
         end()
         let activity = NSUserActivity(activityType: SetupLink.activityType)
-        activity.title = SetupLink.activityTitle
+        activity.title = SetupLink.activityTitle()
         activity.webpageURL = link.url
         activity.userInfo = link.userInfo
         activity.isEligibleForHandoff = true

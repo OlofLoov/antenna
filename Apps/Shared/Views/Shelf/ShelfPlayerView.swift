@@ -120,7 +120,7 @@ extension ShelfPlayback.UpNextShown {
     var isAsking: Bool { offer == .asking }
 
     /// Play now, or Keep watching for "Still watching?".
-    var primary: String { isAsking ? UpNextText.keepWatching : UpNextText.playNow }
+    var primary: String { isAsking ? UpNextText.keepWatching() : UpNextText.playNow() }
 }
 
 extension TitleTransport {

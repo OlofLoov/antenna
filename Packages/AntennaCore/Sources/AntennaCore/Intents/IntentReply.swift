@@ -31,25 +31,31 @@ public enum IntentFailure: Error, Equatable, Sendable, CustomStringConvertible, 
     case needsUnlock(Device)
 
     /// One plain sentence.
-    public var description: String {
-        switch self {
-        case .notUnlocked: "Antenna isn't unlocked on this device yet. Open Antenna to continue."
-        case .noSources: "Antenna has no sources yet. Open Antenna to add one."
-        case .offline: "You're offline. Connect to the internet and try again."
-        case .stillLoading: "Antenna is still loading your library. Try again in a moment."
-        case .sourceFailed(let source): "Antenna couldn't reach \(IntentText.source(source)). Try again later."
-        case .loginMissing(let source): "The login for \(IntentText.source(source)) hasn't synced from iCloud to this device yet."
-        case .channelSourceGone: "That channel's source is no longer in Antenna."
-        case .titleSourceGone: "That title's source is no longer in Antenna."
-        case .channelGone(let channel, let source):
-            "\(channel.map(IntentText.channel) ?? "That channel") is no longer in \(IntentText.source(source))."
-        case .titleGone(let title, let source):
-            "\(title.map(IntentText.title) ?? "That title") is no longer available from \(IntentText.source(source))."
-        case .locked(let channel): "\(IntentText.channel(channel)) is in a locked group. Unlock it in Antenna first."
-        case .nothingPlaying: "Antenna isn't playing a channel right now. Say which channel instead."
-        case .alreadyFavorite(let channel): "\(IntentText.channel(channel)) is already a favorite."
-        case .notFavorite(let channel): "\(IntentText.channel(channel)) isn't a favorite."
-        case .needsUnlock(let device): "Unlock your \(IntentText.name(device)) once and try again."
+    public var description: String { description(.autoupdatingCurrent) }
+
+    public func description(_ locale: Locale) -> String {
+        let words = Words(locale)
+        let source = { (name: String) in IntentText.source(name, locale: locale) }
+        let channel = { (name: String) in IntentText.channel(name, locale: locale) }
+        let title = { (name: String) in IntentText.title(name, locale: locale) }
+        return switch self {
+        case .notUnlocked: words("Antenna isn't unlocked on this device yet. Open Antenna to continue.")
+        case .noSources: words("Antenna has no sources yet. Open Antenna to add one.")
+        case .offline: words("You're offline. Connect to the internet and try again.")
+        case .stillLoading: words("Antenna is still loading your library. Try again in a moment.")
+        case .sourceFailed(let name): words("Antenna couldn't reach \(source(name)). Try again later.")
+        case .loginMissing(let name): words("The login for \(source(name)) hasn't synced from iCloud to this device yet.")
+        case .channelSourceGone: words("That channel's source is no longer in Antenna.")
+        case .titleSourceGone: words("That title's source is no longer in Antenna.")
+        case .channelGone(let name?, let from): words("\(channel(name)) is no longer in \(source(from)).")
+        case .channelGone(nil, let from): words("That channel is no longer in \(source(from)).")
+        case .titleGone(let name?, let from): words("\(title(name)) is no longer available from \(source(from)).")
+        case .titleGone(nil, let from): words("That title is no longer available from \(source(from)).")
+        case .locked(let name): words("\(channel(name)) is in a locked group. Unlock it in Antenna first.")
+        case .nothingPlaying: words("Antenna isn't playing a channel right now. Say which channel instead.")
+        case .alreadyFavorite(let name): words("\(channel(name)) is already a favorite.")
+        case .notFavorite(let name): words("\(channel(name)) isn't a favorite.")
+        case .needsUnlock(let device): words("Unlock your \(IntentText.name(device)) once and try again.")
         }
     }
 
@@ -61,46 +67,59 @@ public enum IntentFailure: Error, Equatable, Sendable, CustomStringConvertible, 
 /// (app-intents capability). Every name passes through here first.
 public enum IntentText {
     /// What Siri asks when a channel is missing or matched nothing.
-    public static let whichChannel = "Which channel?"
+    public static func whichChannel(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Which channel?")
+    }
     /// What Siri asks when a title is missing or matched nothing.
-    public static let whichTitle = "Which movie or series?"
+    public static func whichTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Which movie or series?")
+    }
 
     /// "Added <channel> to favorites."
-    public static func added(_ channel: String) -> String {
-        "Added \(Self.channel(channel)) to favorites."
+    public static func added(_ channel: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Added \(Self.channel(channel, locale: locale)) to favorites.")
     }
 
     /// "Removed <channel> from favorites."
-    public static func removed(_ channel: String) -> String {
-        "Removed \(Self.channel(channel)) from favorites."
+    public static func removed(_ channel: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Removed \(Self.channel(channel, locale: locale)) from favorites.")
     }
 
     /// A source's name, or "your source" when the name looks like a link
     /// or a login (app-intents/shortcuts-never-hold-a-password).
-    public static func source(_ name: String) -> String {
-        clean(name) ?? "your source"
+    public static func source(_ name: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return clean(name) ?? words("your source")
     }
 
     /// A channel's name, or "This channel" when it looks like a link or a login.
-    public static func channel(_ name: String) -> String {
-        clean(name) ?? "This channel"
+    public static func channel(_ name: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return clean(name) ?? words("This channel")
     }
 
     /// A title's name, or "This title" when it looks like a link or a login.
-    public static func title(_ name: String) -> String {
-        clean(name) ?? "This title"
+    public static func title(_ name: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return clean(name) ?? words("This title")
     }
 
     /// A channel's second line in Shortcuts and Siri: "201 · Sport ·
     /// Cabin", leaving out what it lacks.
-    public static func channelSubtitle(number: ChannelNumber?, group: String?, source: String) -> String {
+    public static func channelSubtitle(
+        number: ChannelNumber?, group: String?, source: String, locale: Locale = .autoupdatingCurrent
+    ) -> String {
         let group = group.flatMap { $0.allSatisfy(\.isWhitespace) ? nil : clean($0) }
-        return [number?.description, group, Self.source(source)].compactMap(\.self).joined(separator: " · ")
+        return [number?.description, group, Self.source(source, locale: locale)].compactMap(\.self).joined(separator: " · ")
     }
 
     /// A title's second line: "Movie · Cabin" or "Series · Cabin".
-    public static func titleSubtitle(_ kind: ShelfTitle.Kind, source: String) -> String {
-        "\(kind == .movie ? "Movie" : "Series") · \(Self.source(source))"
+    public static func titleSubtitle(_ kind: ShelfTitle.Kind, source: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        let source = Self.source(source, locale: locale)
+        return kind == .movie ? words("Movie · \(source)") : words("Series · \(source)")
     }
 
     static func name(_ device: IntentFailure.Device) -> String {

@@ -50,7 +50,7 @@ enum GuideSourcesRows {
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(identifier)
                 if let retry {
-                    Button(GuideSourcesText.retry, action: retry)
+                    Button(GuideSourcesText().retry, action: retry)
                         .accessibilityIdentifier("\(identifier).retry")
                 }
             }

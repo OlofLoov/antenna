@@ -22,30 +22,33 @@ public struct TrackRow: Sendable, Equatable, Identifiable {
 /// (player-controls-and-playback-errors/choose-audio-and-subtitles).
 public enum TrackMenu {
     public static let offID = "off"
-    public static let off = "Off"
-    public static let noSubtitles = "No subtitles in this stream"
+    public static func off(_ locale: Locale = .autoupdatingCurrent) -> String { Words(locale)("Off") }
+    public static func noSubtitles(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("No subtitles in this stream")
+    }
 
     /// One row per audio track in stream order, the playing one ticked.
     /// Engines report the sound format of the playing track only, so only
     /// that row has a detail.
-    public static func audio(_ tracks: TrackList, presentation: PresentationInfo?) -> [TrackRow] {
-        let format = presentation?.audio.map(SoundFormat.display)
+    public static func audio(_ tracks: TrackList, presentation: PresentationInfo?, locale: Locale = .autoupdatingCurrent) -> [TrackRow] {
+        let format = presentation?.audio.map { SoundFormat.display($0, locale: locale) }
         return zip(tracks.audio.indices, tracks.audio).map { index, track in
             let selected = track.id == tracks.selectedAudio
             return TrackRow(
-                id: track.id, name: TrackName.display(track, position: index), detail: selected ? format : nil, isSelected: selected)
+                id: track.id, name: TrackName.display(track, position: index, locale: locale), detail: selected ? format : nil,
+                isSelected: selected)
         }
     }
 
     /// Off first, then one row per subtitle track; empty when the stream
     /// has no subtitles, and the list then says `noSubtitles`.
-    public static func subtitles(_ tracks: TrackList) -> [TrackRow] {
+    public static func subtitles(_ tracks: TrackList, locale: Locale = .autoupdatingCurrent) -> [TrackRow] {
         guard !tracks.subtitles.isEmpty else { return [] }
-        let offRow = TrackRow(id: offID, name: off, detail: nil, isSelected: tracks.selectedSubtitle == nil)
+        let offRow = TrackRow(id: offID, name: off(locale), detail: nil, isSelected: tracks.selectedSubtitle == nil)
         return [offRow]
             + zip(tracks.subtitles.indices, tracks.subtitles).map { index, track in
                 TrackRow(
-                    id: track.id, name: TrackName.display(track, position: index, isForced: isForced(track)), detail: nil,
+                    id: track.id, name: TrackName.display(track, position: index, isForced: isForced(track), locale: locale), detail: nil,
                     isSelected: track.id == tracks.selectedSubtitle)
             }
     }

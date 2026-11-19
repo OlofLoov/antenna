@@ -83,13 +83,13 @@ import Testing
         model.run("arena")
         #expect(model.results.isEmpty)
         #expect(model.sources == .loading)
-        #expect(searchMessage(model)?.title == SearchText.channelsLoading)
+        #expect(searchMessage(model)?.title == SearchText.channelsLoading())
 
         await model.load(corpus([channel("Arena")], sources: .partial))
         #expect(model.results.channels.map(\.channel.name) == ["Arena"])
 
         model.run("zzz")
-        #expect(searchMessage(model)?.lines == [SearchText.hint, SearchText.someStillLoading])
+        #expect(searchMessage(model)?.lines == [SearchText.hint(), SearchText.someStillLoading()])
     }
 
     @Test("search/seven-days-of-guide a programme that ends drops out on the next refresh")

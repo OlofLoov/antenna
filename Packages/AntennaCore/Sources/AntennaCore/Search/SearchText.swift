@@ -6,63 +6,82 @@ public struct SearchText: Sendable {
     public var calendar: Calendar
     public var locale: Locale
 
+    var words: Words { Words(locale) }
+
     public init(calendar: Calendar = .autoupdatingCurrent, locale: Locale = .autoupdatingCurrent) {
         self.calendar = calendar
         self.locale = locale
     }
 
-    public static let placeholder = "Search channels, programmes, movies and series"
-    public static let hint = "Check the spelling or try a channel number."
-    public static let someStillLoading = "Some sources are still loading."
-    public static let channelsLoading = "Channels are still loading"
-    public static let nextSevenDays = "Next 7 days"
+    public static func placeholder(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Search channels, programmes, movies and series")
+    }
+    public static func hint(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Check the spelling or try a channel number.")
+    }
+    public static func someStillLoading(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Some sources are still loading.")
+    }
+    public static func channelsLoading(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Channels are still loading")
+    }
+    public static func nextSevenDays(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Next 7 days")
+    }
 
     /// "No results for “<query>”" (search/nothing-found).
-    public static func noResults(_ query: SearchQuery) -> String {
-        "No results for “\(query.text)”"
+    public static func noResults(_ query: SearchQuery, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("No results for “\(words.source(query.text))”")
     }
 
     /// "Showing 500 of 612" under a capped Channels section
     /// (search/very-long-result-lists).
-    public static func showing(_ shown: Int, of total: Int) -> String {
-        "Showing \(shown) of \(total)"
+    public static func showing(_ shown: Int, of total: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Showing \(shown) of \(total)")
     }
 
     /// "See all 12".
-    public static func seeAll(_ count: Int) -> String {
-        "See all \(count)"
+    public static func seeAll(_ count: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("See all \(count)")
     }
 
     /// A chip's label: "Channels · 3".
-    public static func chip(_ scope: SearchScope, count: Int) -> String {
-        "\(name(scope)) · \(count)"
+    public static func chip(_ scope: SearchScope, count: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        return "\(name(scope, locale: locale)) · \(count)"
     }
 
-    public static func name(_ scope: SearchScope) -> String {
-        switch scope {
-        case .all: "All"
-        case .channels: "Channels"
-        case .guide: "Guide"
-        case .movies: "Movies"
-        case .series: "Series"
+    public static func name(_ scope: SearchScope, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return switch scope {
+        case .all: words("All")
+        case .channels: words("Channels")
+        case .guide: words("Guide")
+        case .movies: words("Movies")
+        case .series: words("Series")
         }
     }
 
     /// A channel's second line: "201 · Now: Late Edition", "201 · Matches
     /// Northern Report" for a group match, or the number alone.
-    public static func channelLine(_ hit: SearchResults.ChannelHit, now programme: String?) -> String {
+    public static func channelLine(
+        _ hit: SearchResults.ChannelHit, now programme: String?, locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let words = Words(locale)
         let number = hit.channel.number.map { ChannelNumber(major: $0, minor: hit.channel.minorNumber).description }
         let detail: String? =
             if hit.match == .group, let group = hit.channel.group {
-                "Matches \(group)"
+                words("Matches \(words.source(group))")
             } else {
-                programme.map { "Now: \($0)" }
+                programme.map { words("Now: \(words.source($0))") }
             }
         return [number, detail].compactMap(\.self).joined(separator: " · ")
     }
 
     /// The programme's line: its title, then " · " and its episode title when it has one.
-    public static func programmeTitle(_ programme: Programme) -> String {
+    public static func programmeTitle(_ programme: Programme, locale: Locale = .autoupdatingCurrent) -> String {
         guard let subtitle = programme.subtitle, !subtitle.isEmpty else { return programme.title }
         return "\(programme.title) · \(subtitle)"
     }
@@ -88,14 +107,14 @@ public struct SearchText: Sendable {
     /// The Live screen's line for a programme picked in Search
     /// (search/pick-a-programme): "Tomorrow 20:00 · Northern Soul Night".
     public func later(_ programme: Programme, now: Date) -> String {
-        "\(day(programme.start, now: now)) \(time(programme.start)) · \(Self.programmeTitle(programme))"
+        "\(day(programme.start, now: now)) \(time(programme.start)) · \(Self.programmeTitle(programme, locale: locale))"
     }
 
     /// "Today", "Tomorrow" or the weekday's name.
     public func day(_ date: Date, now: Date) -> String {
-        if calendar.isDate(date, inSameDayAs: now) { return "Today" }
+        if calendar.isDate(date, inSameDayAs: now) { return words("Today") }
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(date, inSameDayAs: tomorrow) {
-            return "Tomorrow"
+            return words("Tomorrow")
         }
         return format(date, template: "EEEE")
     }

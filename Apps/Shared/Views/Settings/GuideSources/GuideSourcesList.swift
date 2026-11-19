@@ -26,7 +26,7 @@ struct GuideSourcesList: View {
         #if os(tvOS)
             // The search field at the top opens the full-screen keyboard
             // (guide-sources-and-channel-mapping/find-the-channels-without-a-guide).
-            .searchable(text: $model.filter, prompt: GuideSourcesText.filterPrompt)
+            .searchable(text: $model.filter, prompt: GuideSourcesText().filterPrompt)
         #endif
         .confirmationDialog(
             acting.map { model.name($0.reference) } ?? "", isPresented: Binding(get: { acting != nil }, set: { if !$0 { acting = nil } }),
@@ -42,14 +42,14 @@ struct GuideSourcesList: View {
     // MARK: Guides
 
     private var guides: some View {
-        Section(GuideSourcesText.title) {
+        Section(GuideSourcesText().title) {
             ForEach(Array(model.status.rows.enumerated()), id: \.element.reference) { position, row in
                 GuideSourcesRows.Guide(
                     name: model.name(row.reference), address: model.text.address(row, link: model.link(row.reference)),
                     status: model.statusLine(row), identifier: "guideSources.row.\(position)", select: { acting = row },
                     retry: retry(row))
             }
-            Button(GuideSourcesText.addGuide) { adding = AddForm(replacing: nil, prefill: "") }
+            Button(GuideSourcesText().addGuide) { adding = AddForm(replacing: nil, prefill: "") }
                 .accessibilityIdentifier("guideSources.add")
         }
     }
@@ -78,7 +78,7 @@ struct GuideSourcesList: View {
         Button(row.enabled ? "Turn off" : "Turn on") { model.toggle(row) }
             .accessibilityIdentifier("guideSources.action.toggle")
         if case .failed(let error) = row.status, error != .credentialMissing {
-            Button(GuideSourcesText.retry) { model.retry(row.reference) }
+            Button(GuideSourcesText().retry) { model.retry(row.reference) }
                 .accessibilityIdentifier("guideSources.action.retry")
         }
         if row.reference.isRemovable {
@@ -113,12 +113,12 @@ struct GuideSourcesList: View {
             } header: {
                 header(model.text.header(count))
             }
-            .id(GuideSourcesText.label(reason))
+            .id(GuideSourcesText().label(reason))
         case .waiting:
             Section(model.text.header(nil)) {
                 HStack(spacing: 10) {
                     ProgressView()
-                    Text(GuideSourcesText.waitingForGuide)
+                    Text(GuideSourcesText().waitingForGuide)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("guideSources.channels.empty")
@@ -134,7 +134,7 @@ struct GuideSourcesList: View {
         case .rows:
             Section {
                 #if !os(tvOS)
-                    TextField(GuideSourcesText.filterPrompt, text: $model.filter)
+                    TextField(GuideSourcesText().filterPrompt, text: $model.filter)
                         .autocorrectionDisabled()
                         .accessibilityIdentifier("guideSources.channels.filter")
                 #endif
@@ -154,7 +154,7 @@ struct GuideSourcesList: View {
         ForEach(Array(list.enumerated()), id: \.element.id) { position, item in
             GuideSourcesRows.Channel(
                 name: item.channel.name, number: number(item.channel), logo: item.channel.logoURL,
-                label: GuideSourcesText.label(item.reason), identifier: "guideSources.channels.row.\(position)",
+                label: GuideSourcesText().label(item.reason), identifier: "guideSources.channels.row.\(position)",
                 select: { model.selected = item.channel.id })
         }
     }
@@ -220,7 +220,7 @@ struct GuideAddLinkSheet: View {
                         .accessibilityIdentifier("guideSources.addForm.save")
                 }
             }
-            .navigationTitle(replacing == nil ? GuideSourcesText.addGuide : GuideSourcesText.reenter)
+            .navigationTitle(replacing == nil ? GuideSourcesText().addGuide : GuideSourcesText().reenter)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

@@ -209,7 +209,7 @@ extension GuideBoard {
             GuideBoard.Compact.Card(time: "22:15", title: "Match of the Day", timing: .future, progress: nil)
         }
         .padding(.horizontal, 16)
-        GuideBoard.Compact.Placeholder(text: GuideLine.loading)
+        GuideBoard.Compact.Placeholder(text: GuideLine.loading())
         Spacer()
         GuideBoard.Compact.NowPlayingBar(
             title: "Premier League: Arsenal v Liverpool", detail: "104 Sport One · 26 min left", isPlaying: true, progress: 0.78, open: {}

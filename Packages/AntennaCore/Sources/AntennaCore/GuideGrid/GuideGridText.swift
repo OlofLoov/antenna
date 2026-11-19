@@ -20,34 +20,35 @@ public enum GuidePlaceholder: Sendable, Equatable {
     }
 
     /// "Loading guide…", "No programme information" or "Guide unavailable".
-    public var text: String {
+    public var text: String { text(.autoupdatingCurrent) }
+
+    public func text(_ locale: Locale) -> String {
         switch self {
-        case .loading: GuideLine.loading
-        case .noGuide: GuideLine.noProgramme
-        case .failed: ZapBarText.guideUnavailable
+        case .loading: GuideLine.loading(locale)
+        case .noGuide: GuideLine.noProgramme(locale)
+        case .failed: ZapBarText.guideUnavailable(locale)
         }
     }
 }
 
 /// The guide panel's words (tv-guide-grid/the-panel-describes-the-highlighted-programme).
 public enum GuidePanelText {
-    public static let untitled = "Untitled"
-
     /// The title, or "Untitled" when it is blank.
-    public static func title(_ programme: Programme) -> String {
+    public static func title(_ programme: Programme, locale: Locale = .autoupdatingCurrent) -> String {
         let title = programme.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        return title.isEmpty ? untitled : title
+        return title.isEmpty ? Words(locale)("Untitled") : title
     }
 
     /// How long from `start` to `stop`, as the info bar counts time left
     /// without the "left": "2 h", "1 h 30 min", "30 min". Minutes round up;
     /// anything shorter than a minute reads "1 min".
-    public static func length(from start: Date, to stop: Date) -> String {
+    public static func length(from start: Date, to stop: Date, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
         let minutes = max(1, Int((stop.timeIntervalSince(start) / 60).rounded(.up)))
         let hours = minutes / 60
         let rest = minutes % 60
-        if hours == 0 { return "\(rest) min" }
-        return rest == 0 ? "\(hours) h" : "\(hours) h \(rest) min"
+        if hours == 0 { return words("\(rest) min") }
+        return rest == 0 ? words("\(hours) h") : words("\(hours) h \(rest) min")
     }
 
     /// The parts that are there, joined with " · ".

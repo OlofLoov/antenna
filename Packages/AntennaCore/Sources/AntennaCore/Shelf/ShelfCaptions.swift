@@ -4,8 +4,8 @@ extension ShelfText {
     /// What VoiceOver reads for a poster: the title, the year when the name
     /// has one and, while in progress, the minutes left
     /// (movies-and-series-browsing/rows-in-a-predictable-order).
-    public static func posterLabel(_ title: ShelfTitle, progress: WatchProgress?) -> String {
-        let left = progress.flatMap { $0.state == .inProgress ? ShelfText.left($0) : nil }
+    public static func posterLabel(_ title: ShelfTitle, progress: WatchProgress?, locale: Locale = .autoupdatingCurrent) -> String {
+        let left = progress.flatMap { $0.state == .inProgress ? ShelfText.left($0, locale: locale) : nil }
         return [title.name, title.year.map(String.init), left].compactMap(\.self).joined(separator: ", ")
     }
 
@@ -19,10 +19,10 @@ extension ShelfText {
     /// left for a movie; "Next episode", or the season and episode, for a
     /// series. `episode` is the episode the progress belongs to, once the
     /// series' episodes are known.
-    public static func continueCaption(_ item: ContinueWatching.Item, episode: Episode?) -> String? {
-        guard item.title.kind == .series else { return left(item.progress) }
-        if item.isNextEpisode { return "Next episode" }
-        return episode.flatMap(episodeCode) ?? left(item.progress)
+    public static func continueCaption(_ item: ContinueWatching.Item, episode: Episode?, locale: Locale = .autoupdatingCurrent) -> String? {
+        guard item.title.kind == .series else { return left(item.progress, locale: locale) }
+        if item.isNextEpisode { return Words(locale)("Next episode") }
+        return episode.flatMap(episodeCode) ?? left(item.progress, locale: locale)
     }
 }
 

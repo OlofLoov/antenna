@@ -304,7 +304,7 @@ private struct SettingsLeadFooter: View {
             Text(subtitles)
                 .accessibilityIdentifier("settings.subtitles.footer")
         case .autoplay:
-            Text(AutoplaySetting.footer)
+            Text(AutoplaySetting.footer())
                 .accessibilityIdentifier("settings.autoplayNext.footer")
         case nil:
             EmptyView()
@@ -386,7 +386,7 @@ private struct PreferencesSection: View {
             .accessibilityIdentifier("settings.openOnLaunch")
             PreferenceChoice(
                 label: "Guide window", selection: binding(\.guideHours), choices: AppPreferences.guideHours,
-                title: AppPreferences.hoursTitle
+                title: { AppPreferences.hoursTitle($0) }
             )
             .accessibilityIdentifier("settings.guideWindow")
             PreferenceChoice(

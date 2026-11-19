@@ -219,7 +219,7 @@ import Testing
         let secrets = [url.absoluteString, "panel.acme-iptv.example", "acme-iptv", "olof77", "hunter2pw", "12345", "abc987"]
         var strings: [String] = [
             PlayerStatusText.slowSource("Acme TV"), PlayerStatusText.reconnecting(attempt: 2, of: 8),
-            PlayerStatusText.attempted(source: "Acme TV", at: "21:34"), PlayerStatusText.changeChannelHint,
+            PlayerStatusText.attempted(source: "Acme TV", at: "21:34"), PlayerStatusText.changeChannelHint(),
         ]
         for reason in Self.reasons {
             for device in [FailureMessage.Device.appleTV, .other] {

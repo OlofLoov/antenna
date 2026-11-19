@@ -223,6 +223,7 @@ extension TitlePageContext.PlayState {
         guard let target else { return Self(label: PlayLabel.text(resumes: false), enabled: false) }
         let saved = target.resumes ? progress[target.episode.id] : nil
         return Self(
-            label: target.label, enabled: true, fraction: saved.flatMap(EpisodeText.fraction), remaining: saved.flatMap(ShelfText.left))
+            label: target.label, enabled: true, fraction: saved.flatMap(EpisodeText.fraction),
+            remaining: saved.flatMap { ShelfText.left($0) })
     }
 }

@@ -29,7 +29,7 @@ struct GuideSourcesScreen: View {
                 Color.clear
             }
         }
-        .navigationTitle(GuideSourcesText.title)
+        .navigationTitle(GuideSourcesText().title)
         .onChange(of: record == nil) { _, gone in
             if gone { dismiss() }
         }

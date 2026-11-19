@@ -33,17 +33,23 @@ public struct SeasonGroup: Sendable, Hashable, Identifiable {
     }
 
     /// "Season 3", "Specials" or "Other".
-    public var title: String {
-        switch kind {
-        case .season(let number): "Season \(number)"
-        case .specials: "Specials"
-        case .other: "Other"
+    public var title: String { title(.autoupdatingCurrent) }
+
+    public func title(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch kind {
+        case .season(let number): words("Season \(String(number))")
+        case .specials: words("Specials")
+        case .other: words("Other")
         }
     }
 
     /// "1 episode" or "8 episodes".
-    public var countLabel: String {
-        episodes.count == 1 ? "1 episode" : "\(episodes.count) episodes"
+    public var countLabel: String { countLabel(.autoupdatingCurrent) }
+
+    public func countLabel(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return words("\(episodes.count) episodes")
     }
 
     /// Groups episodes into Season 1 to n, Specials for season 0 and Other

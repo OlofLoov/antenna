@@ -14,8 +14,11 @@ public enum ReminderLeadTime: Int, CaseIterable, Codable, Sendable {
     public var interval: TimeInterval { TimeInterval(rawValue * 60) }
 
     /// "At start" or "5 minutes".
-    public var title: String {
-        self == .atStart ? "At start" : "\(rawValue) minutes"
+    public var title: String { title(.autoupdatingCurrent) }
+
+    public func title(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return self == .atStart ? words("At start") : words("\(rawValue) minutes")
     }
 }
 

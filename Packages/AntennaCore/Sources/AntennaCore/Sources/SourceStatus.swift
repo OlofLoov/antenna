@@ -81,6 +81,7 @@ public struct SourceStatusText: Sendable {
     }
 
     private var setup: SetupText { SetupText(locale: locale) }
+    private var words: Words { Words(locale) }
 
     /// "12 minutes ago", "yesterday".
     public func relative(_ date: Date, now: Date) -> String {
@@ -95,25 +96,25 @@ public struct SourceStatusText: Sendable {
     public func rowLines(_ status: SourceStatus, now: Date) -> [Line] {
         switch status.load {
         case .waitingForLogin:
-            return [Line(television ? "Not signed in on this Apple TV" : "Waiting for login from iCloud", style: .muted)]
+            return [Line(television ? words("Not signed in on this Apple TV") : words("Waiting for login from iCloud"), style: .muted)]
         case .waitingForICloud:
-            return [Line("Waiting for iCloud…", style: .muted)]
+            return [Line(words("Waiting for iCloud…"), style: .muted)]
         case .idle, .loading:
             if let channels = status.channels, status.load == .loading {
-                return [Line("\(count(channels)) · Refreshing…", busy: true)]
+                return [Line(words("\(channels) channels · Refreshing…"), busy: true)]
             }
             if let channels = status.channels {
                 return [loadedLine(channels, status, now: now)]
             }
             if let last = status.lastSuccess {
-                return [Line("Loading… · last loaded \(relative(last, now: now))", busy: true)]
+                return [Line(words("Loading… · last loaded \(relative(last, now: now))"), busy: true)]
             }
-            return [Line("Loading…", busy: true)]
+            return [Line(words("Loading…"), busy: true)]
         case .loaded:
             return [loadedLine(status.channels ?? 0, status, now: now)]
         case .failed(let sentence):
             guard let channels = status.channels else { return [Line(sentence, style: .error)] }
-            return [loadedLine(channels, status, now: now), Line("Could not refresh: \(sentence)", style: .error)]
+            return [loadedLine(channels, status, now: now), Line(words("Could not refresh: \(sentence)"), style: .error)]
         }
     }
 
@@ -125,16 +126,16 @@ public struct SourceStatusText: Sendable {
 
     /// "412 channels", or "1 channel".
     public func count(_ channels: Int) -> String {
-        channels == 1 ? "1 channel" : "\(setup.count(channels)) channels"
+        words("\(channels) channels")
     }
 
     public func guidePart(_ status: SourceStatus) -> String {
         switch status.guide {
-        case .none: "No guide"
-        case .notStarted: "Loading guide…"
-        case .downloading: "Downloading guide…"
-        case .loaded(let days, _, _): "Guide \(setup.days(days))"
-        case .failed: status.lastGuideDays.map { "Guide \(setup.days($0))" } ?? "Guide failed"
+        case .none: words("No guide")
+        case .notStarted: words("Loading guide…")
+        case .downloading: words("Downloading guide…")
+        case .loaded(let days, _, _): words("Guide \(days) days")
+        case .failed: status.lastGuideDays.map { words("Guide \($0) days") } ?? words("Guide failed")
         }
     }
 
@@ -148,17 +149,18 @@ public struct SourceStatusText: Sendable {
         }
         var lines: [Line] = []
         if let channels = status.channels {
-            lines.append(Line("\(count(channels)) in \(setup.groups(status.groups ?? 0))"))
+            lines.append(Line(words("\(channels) channels in \(status.groups ?? 0) groups")))
             if case .loaded(let days, let matched, let total) = status.guide {
                 lines.append(Line(setup.guide(days: days, matched: matched, total: total)))
             }
-            if let last = status.lastSuccess { lines.append(Line("Refreshed \(relative(last, now: now))")) }
+            if let last = status.lastSuccess { lines.append(Line(words("Refreshed \(relative(last, now: now))"))) }
             if let account { lines.append(Line(account)) }
         }
         if case .failed(let sentence) = status.load {
-            lines.append(Line(status.channels == nil ? sentence : "Could not refresh: \(sentence)", style: .error))
+            lines.append(Line(status.channels == nil ? sentence : words("Could not refresh: \(sentence)"), style: .error))
         } else if status.channels == nil {
-            lines.append(Line(status.load == .loading ? "Loading…" : "Not loaded yet", style: .muted, busy: status.load == .loading))
+            lines.append(
+                Line(status.load == .loading ? words("Loading…") : words("Not loaded yet"), style: .muted, busy: status.load == .loading))
         }
         return lines
     }

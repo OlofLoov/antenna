@@ -99,7 +99,9 @@ public struct SetupLink: Hashable, Sendable {
     /// The Handoff activity type for the setup offer.
     public static let activityType = "se.codecrave.antenna.setup"
     /// The Handoff activity's title.
-    public static let activityTitle = "Set up Antenna on Apple TV"
+    public static func activityTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Set up Antenna on Apple TV")
+    }
     /// The key of a version 1 Handoff activity's user info.
     public static let tokenKey = "token"
     /// The key of a version 2 Handoff activity's user info.

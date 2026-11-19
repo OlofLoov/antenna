@@ -145,7 +145,7 @@ private let previewSources = [
 }
 
 #Preview("Nothing here yet, Apple TV", traits: .fixedLayout(width: 1920, height: 600)) {
-    ShelfView.Message(title: ShelfStatus.emptyTitle, lines: ["Cabin: no movies", "Office: waiting for its login to sync from iCloud"]) {
+    ShelfView.Message(title: ShelfStatus.emptyTitle(), lines: ["Cabin: no movies", "Office: waiting for its login to sync from iCloud"]) {
         EmptyView()
     }
     .environment(\.shelfMetrics, .tv)

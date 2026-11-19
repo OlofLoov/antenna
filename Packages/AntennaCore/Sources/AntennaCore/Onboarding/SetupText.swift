@@ -33,7 +33,7 @@ public struct ChannelTally: Equatable, Sendable {
         self.channels = catalogue.count(of: .all)
         self.groups = groups.map { group in
             if case .named(_, let name) = group { return name }
-            return "Ungrouped"
+            return group.label()
         }
         let catchUp = channels.filter(\.hasCatchup)
         catchUpChannels = catchUp.count
@@ -56,6 +56,8 @@ public struct SetupText: Sendable {
         self.timeZone = timeZone
     }
 
+    var words: Words { Words(locale) }
+
     public func count(_ value: Int) -> String {
         value.formatted(.number.locale(locale))
     }
@@ -64,57 +66,56 @@ public struct SetupText: Sendable {
     /// <date>" and the connections, whichever exist, joined by " · ". Nil
     /// when the server gave neither.
     public func account(expiry: String?, connections: String?) -> String? {
-        var parts: [String] = []
-        if let seconds = expiry.flatMap(Self.positive) {
-            var style = Date.FormatStyle(date: .long, time: .omitted).locale(locale)
-            style.timeZone = timeZone
-            parts.append("Account active until \(Date(timeIntervalSince1970: TimeInterval(seconds)).formatted(style))")
+        var style = Date.FormatStyle(date: .long, time: .omitted).locale(locale)
+        style.timeZone = timeZone
+        let date = expiry.flatMap(Self.positive).map { Date(timeIntervalSince1970: TimeInterval($0)).formatted(style) }
+        switch (date, connections.flatMap(Self.positive)) {
+        case (let date?, let count?): return words("Account active until \(date) · \(count) connections")
+        case (let date?, nil): return words("Account active until \(date)")
+        case (nil, let count?): return words("\(count) connections")
+        case (nil, nil): return nil
         }
-        if let count = connections.flatMap(Self.positive) {
-            parts.append(count == 1 ? "1 connection" : "\(self.count(count)) connections")
-        }
-        return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
     /// "412 live channels in 18 groups".
     public func channels(_ tally: ChannelTally) -> String {
-        "\(liveChannels(tally.channels)) in \(groups(tally.groups.count))"
+        words("\(tally.channels) live channels in \(tally.groups.count) groups")
     }
 
     /// "412 live channels", or "1 live channel".
     public func liveChannels(_ value: Int) -> String {
-        value == 1 ? "1 live channel" : "\(count(value)) live channels"
+        words("\(value) live channels")
     }
 
     /// "18 groups", or "1 group".
     public func groups(_ value: Int) -> String {
-        value == 1 ? "1 group" : "\(count(value)) groups"
+        words("\(value) groups")
     }
 
     /// The first eight group names, then "and <n> more".
     public func groupNames(_ names: [String]) -> String {
         let shown = names.prefix(8).joined(separator: ", ")
-        return names.count > 8 ? "\(shown) and \(count(names.count - 8)) more" : shown
+        return names.count > 8 ? words("\(shown) and \(names.count - 8) more") : shown
     }
 
     /// "1 240 movies and 86 series".
     public func movies(_ movies: Int, series: Int) -> String {
-        "\(movies == 1 ? "1 movie" : "\(count(movies)) movies") and \(count(series)) series"
+        words("\(movies) movies and \(series) series")
     }
 
     /// "Downloading the guide · 2,4 MB".
     public func downloading(bytes: Int64) -> String {
-        "Downloading the guide · \(bytes.formatted(.byteCount(style: .file).locale(locale)))"
+        words("Downloading the guide · \(bytes.formatted(.byteCount(style: .file).locale(locale)))")
     }
 
     /// "Guide for 7 days · 388 of 412 channels".
     public func guide(days: Int, matched: Int, total: Int) -> String {
-        "Guide for \(self.days(days)) · \(count(matched)) of \(count(total)) channels"
+        words("Guide for \(days) days · \(matched) of \(total) channels")
     }
 
     /// "7 days", or "1 day".
     public func days(_ value: Int) -> String {
-        value == 1 ? "1 day" : "\(count(value)) days"
+        words("\(value) days")
     }
 
     private static func positive(_ text: String) -> Int? {

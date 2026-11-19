@@ -43,16 +43,18 @@ public enum PaywallCopy {
 
     /// The en text of `key`. Placeholders in angle brackets are filled by
     /// the formatting functions below.
-    public static func text(_ key: Key) -> String {
-        texts[key] ?? key.rawValue
+    public static func text(_ key: Key, locale: Locale = .autoupdatingCurrent) -> String {
+        texts[key].map { Words(locale)($0) } ?? key.rawValue
     }
 
-    private static let texts: [Key: String] = [
+    private static let texts: [Key: String.LocalizationValue] = [
         .titleDefault: "Unlock Antenna",
         .titleLapsed: "Antenna is locked again",
-        .body:
-            "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, "
-            + "Mac and Apple TV, for everyone in your Family Sharing group.",
+        .body: """
+        Antenna plays the TV sources you already have and includes no channels. \
+        One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for \
+        everyone in your Family Sharing group.
+        """,
         .lineLifetime: "Pay once. Yours for good.",
         .lineRenews: "Renews every year. Cancel any time.",
         .lineFreeTrial: "First <period> free, then <displayPrice> per year",
@@ -62,15 +64,17 @@ public enum PaywallCopy {
         .unitOneTime: "one time",
         .priceLoading: "Loading price",
         .priceUnavailable: "Price unavailable",
-        .legal:
-            "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account. "
-            + "Terms of Use and Privacy Policy.",
+        .legal: """
+        Yearly renews automatically until canceled in Settings. Payment is charged \
+        to your Apple Account. Terms of Use and Privacy Policy.
+        """,
         .statusPending: "Waiting for approval. Antenna unlocks as soon as the purchase is approved.",
         .statusFailed: "The purchase did not go through. Try again.",
         .statusRestoreFailed: "Restore did not go through. Try again.",
-        .statusNothingFound:
-            "No purchase found for this Apple Account. If a family member bought Antenna, "
-            + "check that purchase sharing is on in Family Sharing.",
+        .statusNothingFound: """
+        No purchase found for this Apple Account. If a family member bought Antenna, \
+        check that purchase sharing is on in Family Sharing.
+        """,
         .statusOffline: "You're offline. Connect to the internet and try again.",
         .statusNotAllowed: "Purchases are turned off on this device. Check Screen Time, or ask the family organizer.",
         .statusNotInStorefront: "Antenna can't be bought in this App Store region yet.",
@@ -87,8 +91,10 @@ public enum PaywallCopy {
         .restoredBody: "Your purchase was found for this Apple Account.",
         .restoredSharedTV: " · Shared with you through Family Sharing",
         .restoredSharedTouch: " · Family Sharing",
-        .unavailableBody:
-            "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back.",
+        .unavailableBody: """
+        Check the connection and try again. If you already bought Antenna, Restore \
+        purchase finds it once the connection is back.
+        """,
     ]
 
     /// A line with its key, so a test can find it without reading the text.
@@ -96,47 +102,53 @@ public enum PaywallCopy {
         public let key: Key
         public let text: String
 
-        public init(_ key: Key, _ text: String? = nil) {
+        public init(_ key: Key, _ text: String? = nil, locale: Locale = .autoupdatingCurrent) {
             self.key = key
-            self.text = text ?? PaywallCopy.text(key)
+            self.text = text ?? PaywallCopy.text(key, locale: locale)
         }
     }
 
     /// The line under Yearly: the renewal sentence until eligibility for the
     /// offer is known or when there is none, else the offer with the price after it.
-    public static func yearlyLine(offer: IntroOffer?, displayPrice: String) -> Line {
-        guard let offer else { return Line(.lineRenews) }
-        let period = offer.unit.phrase(offer.value * offer.periodCount)
+    public static func yearlyLine(offer: IntroOffer?, displayPrice: String, locale: Locale = .autoupdatingCurrent) -> Line {
+        guard let offer else { return Line(.lineRenews, locale: locale) }
+        let words = Words(locale)
+        let period = offer.unit.phrase(offer.value * offer.periodCount, words)
         switch offer.payment {
         case .freeTrial:
-            return Line(.lineFreeTrial, "First \(period) free, then \(displayPrice) per year")
+            return Line(.lineFreeTrial, words("First \(period) free, then \(displayPrice) per year"))
         case .payUpFront:
-            return Line(.lineIntroPrice, "\(offer.displayPrice) for \(period), then \(displayPrice) per year")
+            return Line(.lineIntroPrice, words("\(offer.displayPrice) for \(period), then \(displayPrice) per year"))
         case .payAsYouGo:
-            let unit = offer.unit.phrase(offer.value)
-            return Line(.lineIntroPerPeriod, "\(offer.displayPrice) per \(unit) for \(period), then \(displayPrice) per year")
+            let unit = offer.unit.phrase(offer.value, words)
+            return Line(.lineIntroPerPeriod, words("\(offer.displayPrice) per \(unit) for \(period), then \(displayPrice) per year"))
         }
     }
 
     /// The note under "Welcome back".
     public static func restoredNote(_ grant: Grant, locale: Locale = .current) -> Line {
-        guard grant.kind == .yearly, let end = grant.expiresAt else { return Line(.restoredLifetime) }
-        return Line(.restoredYearly, "Renews on \(longDate(end, locale: locale)). Your sources and favorites are where you left them.")
+        guard grant.kind == .yearly, let end = grant.expiresAt else { return Line(.restoredLifetime, locale: locale) }
+        return Line(
+            .restoredYearly,
+            Words(locale)("Renews on \(longDate(end, locale: locale)). Your sources and favorites are where you left them."))
     }
 
     /// What was found, such as "Lifetime · Family Sharing". `sharedSuffix`
     /// is `.restoredSharedTV` on Apple TV and `.restoredSharedTouch` elsewhere.
-    public static func restoredKind(_ grant: Grant, sharedSuffix: Key) -> String {
-        let name = text(grant.kind == .lifetime ? .productLifetime : .productYearly)
-        return grant.familyShared ? name + text(sharedSuffix) : name
+    public static func restoredKind(_ grant: Grant, sharedSuffix: Key, locale: Locale = .autoupdatingCurrent) -> String {
+        let name = text(grant.kind == .lifetime ? .productLifetime : .productYearly, locale: locale)
+        return grant.familyShared ? name + text(sharedSuffix, locale: locale) : name
     }
 
     /// The reason line on a paywall after a lapse; nil for a user who never bought.
     public static func lapsedNote(_ lapse: Lapse, locale: Locale = .current) -> Line? {
         switch lapse {
         case .neverPurchased: nil
-        case .expired(let date): Line(.lapsedExpired, "Your yearly subscription ended on \(longDate(date, locale: locale)).")
-        case .revoked: Line(.lapsedRevoked)
+        case .expired(let date):
+            Line(
+                .lapsedExpired,
+                Words(locale)("Your yearly subscription ended on \(longDate(date, locale: locale))."))
+        case .revoked: Line(.lapsedRevoked, locale: locale)
         }
     }
 
@@ -159,17 +171,20 @@ public struct IntroOffer: Equatable, Sendable {
     public enum Unit: Sendable {
         case day, week, month, year
 
-        /// "week" for one, "3 days" for more. The copy is English, so the
-        /// unit names are too, whatever the device language.
-        func phrase(_ count: Int) -> String {
-            let name =
+        /// "week" for one, "3 days" for more.
+        func phrase(_ count: Int, _ words: Words) -> String {
+            let resource =
                 switch self {
-                case .day: "day"
-                case .week: "week"
-                case .month: "month"
-                case .year: "year"
+                case .day:
+                    LocalizedStringResource("offer.days", defaultValue: "\(count) days", locale: words.locale, bundle: Words.bundle)
+                case .week:
+                    LocalizedStringResource("offer.weeks", defaultValue: "\(count) weeks", locale: words.locale, bundle: Words.bundle)
+                case .month:
+                    LocalizedStringResource("offer.months", defaultValue: "\(count) months", locale: words.locale, bundle: Words.bundle)
+                case .year:
+                    LocalizedStringResource("offer.years", defaultValue: "\(count) years", locale: words.locale, bundle: Words.bundle)
                 }
-            return count == 1 ? name : "\(count) \(name)s"
+            return String(localized: resource)
         }
     }
 

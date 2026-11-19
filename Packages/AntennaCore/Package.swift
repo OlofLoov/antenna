@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "AntennaCore",
+    defaultLocalization: "en",
     platforms: [.iOS(.v26), .tvOS(.v26), .macOS(.v26)],
     products: [
         .library(name: "AntennaCore", targets: ["AntennaCore"]),
@@ -11,6 +12,7 @@ let package = Package(
     targets: [
         .target(
             name: "AntennaCore",
+            resources: [.process("Resources")],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .target(

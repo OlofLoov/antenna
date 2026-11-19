@@ -6,11 +6,14 @@ public struct AppPreferences: Equatable, Sendable {
     public enum LaunchScreen: String, CaseIterable, Sendable {
         case live, guide, movies
 
-        public var title: String {
-            switch self {
-            case .live: "Live"
-            case .guide: "Guide"
-            case .movies: "Movies"
+        public var title: String { title(.autoupdatingCurrent) }
+
+        public func title(_ locale: Locale) -> String {
+            let words = Words(locale)
+            return switch self {
+            case .live: words("Live")
+            case .guide: words("Guide")
+            case .movies: words("Movies")
             }
         }
     }
@@ -22,12 +25,15 @@ public struct AppPreferences: Equatable, Sendable {
         /// Only manually.
         case manual = 0
 
-        public var title: String {
-            switch self {
-            case .six: "Every 6 hours"
-            case .twelve: "Every 12 hours"
-            case .day: "Every 24 hours"
-            case .manual: "Only manually"
+        public var title: String { title(.autoupdatingCurrent) }
+
+        public func title(_ locale: Locale) -> String {
+            let words = Words(locale)
+            return switch self {
+            case .six: words("Every 6 hours")
+            case .twelve: words("Every 12 hours")
+            case .day: words("Every 24 hours")
+            case .manual: words("Only manually")
             }
         }
 
@@ -43,10 +49,13 @@ public struct AppPreferences: Equatable, Sendable {
     public enum Swipe: String, CaseIterable, Sendable {
         case changesChannel, showsZapBar
 
-        public var title: String {
-            switch self {
-            case .changesChannel: "Changes channel"
-            case .showsZapBar: "Shows the zap bar"
+        public var title: String { title(.autoupdatingCurrent) }
+
+        public func title(_ locale: Locale) -> String {
+            let words = Words(locale)
+            return switch self {
+            case .changesChannel: words("Changes channel")
+            case .showsZapBar: words("Shows the zap bar")
             }
         }
     }
@@ -76,7 +85,10 @@ public struct AppPreferences: Equatable, Sendable {
     }
 
     /// "2 hours".
-    public static func hoursTitle(_ hours: Int) -> String { "\(hours) hours" }
+    public static func hoursTitle(_ hours: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("\(hours) hours")
+    }
 
     /// The screen to open, Live when Movies is stored and not offered here.
     public func launchScreen(offersMovies: Bool) -> LaunchScreen {
@@ -94,20 +106,26 @@ public struct AppPreferences: Equatable, Sendable {
 
 extension SubtitleMode {
     /// "Off", "Auto" or "Always", in the listed order.
-    public var title: String {
-        switch self {
-        case .off: "Off"
-        case .auto: "Auto"
-        case .always: "Always"
+    public var title: String { title(.autoupdatingCurrent) }
+
+    public func title(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch self {
+        case .off: words("Off")
+        case .auto: words("Auto")
+        case .always: words("Always")
         }
     }
 
     /// The line under the Subtitles row saying what the choice does.
-    public var explanation: String {
-        switch self {
-        case .off: "Subtitles start off. Forced subtitles in your language still show."
-        case .auto: "Subtitles show when the sound is not in one of your languages."
-        case .always: "Subtitles show in your language whenever the stream has them."
+    public var explanation: String { explanation(.autoupdatingCurrent) }
+
+    public func explanation(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch self {
+        case .off: words("Subtitles start off. Forced subtitles in your language still show.")
+        case .auto: words("Subtitles show when the sound is not in one of your languages.")
+        case .always: words("Subtitles show in your language whenever the stream has them.")
         }
     }
 }

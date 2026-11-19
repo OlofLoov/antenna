@@ -116,7 +116,7 @@
                             .accessibilityIdentifier("\(identifier).buffering")
                     case .failed(let message):
                         MultiViewParts.Failure(
-                            title: message.title, explanation: message.explanation, hint: MultiViewText.failedHint,
+                            title: message.title, explanation: message.explanation, hint: MultiViewText.failedHint(),
                             identifier: "\(identifier).failed"
                         ) { EmptyView() }
                     case .playing:
@@ -143,17 +143,17 @@
             .accessibilityLabel(model.spokenLabel(tile.id))
             .accessibilityValue(model.statusText(tile.id))
             .accessibilityIdentifier(identifier)
-            .accessibilityAction(named: MultiViewText.fullScreen) { Task { await model.enlarge(tile.id) } }
-            .accessibilityAction(named: MultiViewText.changeChannel) { openPicker(for: tile.id) }
-            .accessibilityAction(named: MultiViewText.remove) { Task { await model.remove(tile.id) } }
-            .accessibilityAction(named: PlayerStatusText.tryAgain) { Task { await model.retry(tile.id) } }
+            .accessibilityAction(named: MultiViewText.fullScreen()) { Task { await model.enlarge(tile.id) } }
+            .accessibilityAction(named: MultiViewText.changeChannel()) { openPicker(for: tile.id) }
+            .accessibilityAction(named: MultiViewText.remove()) { Task { await model.remove(tile.id) } }
+            .accessibilityAction(named: PlayerStatusText.tryAgain()) { Task { await model.retry(tile.id) } }
         }
 
         // MARK: Hint, badge and picker
 
         @ViewBuilder private var overlays: some View {
             if model.hintShown, model.session.enlarged == nil, model.picking == nil {
-                MultiViewParts.Hint(keys: MultiViewText.hints)
+                MultiViewParts.Hint(keys: MultiViewText.hints())
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     .padding(.bottom, 96)
                     .allowsHitTesting(false)
@@ -161,7 +161,7 @@
             }
             if let enlarged = model.session.enlarged, model.badgeShown, let number = model.session.number(of: enlarged) {
                 MultiViewParts.Badge(
-                    text: MultiViewText.enlargedBadge(tile: number, of: model.session.tiles.count), hint: MultiViewText.enlargedHint
+                    text: MultiViewText.enlargedBadge(tile: number, of: model.session.tiles.count), hint: MultiViewText.enlargedHint()
                 )
                 .padding(.leading, 64)
                 .padding(.top, 44)
@@ -182,7 +182,7 @@
         private func pickOffer(for tile: Int) -> OverlayMultiView {
             let number = model.session.number(of: tile) ?? 1
             return OverlayMultiView(
-                title: MultiViewText.addAsNewTile,
+                title: MultiViewText.addAsNewTile(),
                 offered: { channel in
                     model.session.canAdd && RowKey(channel).flatMap(model.session.tile(showing:)) == nil
                 },
@@ -206,20 +206,20 @@
                     .foregroundStyle(Palette.textMuted)
                     .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
                 if failed {
-                    actionRow(PlayerStatusText.tryAgain, .retry, "multiView.action.retry") {
+                    actionRow(PlayerStatusText.tryAgain(), .retry, "multiView.action.retry") {
                         returnFocus(to: tile)
                         Task { await model.retry(tile) }
                     }
                 }
-                actionRow(MultiViewText.fullScreen, .fullScreen, "multiView.action.fullScreen") {
+                actionRow(MultiViewText.fullScreen(), .fullScreen, "multiView.action.fullScreen") {
                     returnFocus(to: tile)
                     Task { await model.enlarge(tile) }
                 }
-                actionRow(MultiViewText.changeChannel, .changeChannel, "multiView.action.changeChannel") {
+                actionRow(MultiViewText.changeChannel(), .changeChannel, "multiView.action.changeChannel") {
                     model.actionsOpen = nil
                     openPicker(for: tile)
                 }
-                actionRow(MultiViewText.remove, .remove, "multiView.action.remove") { Task { await model.remove(tile) } }
+                actionRow(MultiViewText.remove(), .remove, "multiView.action.remove") { Task { await model.remove(tile) } }
             }
             .padding(14)
             .background(Palette.scrimTint.opacity(0.88), in: RoundedRectangle(cornerRadius: 20))

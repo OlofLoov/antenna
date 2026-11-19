@@ -184,7 +184,7 @@ enum TitleProblem: Equatable {
     /// waiting line.
     func message(_ kind: ShelfTitle.Kind) -> LocalizedStringResource {
         switch self {
-        case .offline: .verbatim("\(ShelfStatus.offlineTitle) \(ShelfStatus.offlineLine)")
+        case .offline: .verbatim("\(ShelfStatus.offlineTitle()) \(ShelfStatus.offlineLine())")
         case .failed: kind == .movie ? "Could not load details" : "Could not load episodes"
         case .waitingForLogin(let source?): "\(source): waiting for its login to sync from iCloud"
         case .waitingForLogin(nil): "Source: waiting for its login to sync from iCloud"

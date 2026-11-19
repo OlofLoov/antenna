@@ -79,48 +79,57 @@ public enum ShelfStatus: Sendable, Hashable {
     case titles(banner: String?, waiting: [ShelfSource])
 
     /// `dismissed` holds the failed sources whose banner the user closed.
-    public init(sources: [ShelfSource], kind: ShelfTitle.Kind, dismissed: Set<UUID> = []) {
+    public init(sources: [ShelfSource], kind: ShelfTitle.Kind, dismissed: Set<UUID> = [], locale: Locale = .autoupdatingCurrent) {
+        let words = Words(locale)
         let waiting = sources.filter { $0.state == .waitingForLogin }
         guard sources.contains(where: \.state.hasTitles) else {
             if sources.contains(where: { $0.state == .loading }) || sources.isEmpty {
                 self = .loading(sources)
                 return
             }
-            let lines = waiting.map { "\($0.name): waiting for its login to sync from iCloud" }
+            let lines = waiting.map { words("\(words.source($0.name)): waiting for its login to sync from iCloud") }
             let failures = sources.filter(\.state.isFailure)
             if !failures.isEmpty, failures.allSatisfy({ $0.state == .offline }) {
                 self = .offline(waiting: lines)
             } else if !failures.isEmpty {
                 self = .failed(waiting: lines)
             } else {
-                self = .empty(lines: sources.map { Self.emptyLine($0, kind: kind) })
+                self = .empty(lines: sources.map { Self.emptyLine($0, kind: kind, words: words) })
             }
             return
         }
         let failed = sources.filter { $0.state.isFailure && !dismissed.contains($0.id) }
-        self = .titles(banner: failed.isEmpty ? nil : "Could not load " + Self.list(failed.map(\.name)), waiting: waiting)
+        self = .titles(
+            banner: failed.isEmpty ? nil : words("Could not load \(Self.list(failed.map(\.name), words: words))"), waiting: waiting)
     }
 
-    public static let offlineTitle = "You're offline."
-    public static let offlineLine = "Connect to the internet and try again."
-    public static let emptyTitle = "Nothing here yet"
+    public static func offlineTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("You're offline.")
+    }
+    public static func offlineLine(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Connect to the internet and try again.")
+    }
+    public static func emptyTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Nothing here yet")
+    }
 
     /// "Could not load movies" or "Could not load series".
-    public static func failedTitle(_ kind: ShelfTitle.Kind) -> String {
-        "Could not load " + noun(kind)
+    public static func failedTitle(_ kind: ShelfTitle.Kind, locale: Locale = .autoupdatingCurrent) -> String {
+        kind == .movie ? Words(locale)("Could not load movies") : Words(locale)("Could not load series")
     }
 
-    private static func noun(_ kind: ShelfTitle.Kind) -> String {
-        kind == .movie ? "movies" : "series"
+    private static func emptyLine(_ source: ShelfSource, kind: ShelfTitle.Kind, words: Words) -> String {
+        let name = words.source(source.name)
+        return switch (source.state, kind) {
+        case (.waitingForLogin, _): words("\(name): waiting for its login to sync from iCloud")
+        case (_, .movie): words("\(name): no movies")
+        case (_, .series): words("\(name): no series")
+        }
     }
 
-    private static func emptyLine(_ source: ShelfSource, kind: ShelfTitle.Kind) -> String {
-        source.state == .waitingForLogin
-            ? "\(source.name): waiting for its login to sync from iCloud" : "\(source.name): no \(noun(kind))"
-    }
-
-    private static func list(_ names: [String]) -> String {
+    private static func list(_ names: [String], words: Words) -> String {
+        let names = names.map(words.source)
         guard names.count > 1, let last = names.last else { return names.first ?? "" }
-        return names.dropLast().joined(separator: ", ") + " and " + last
+        return words("\(names.dropLast().joined(separator: ", ")) and \(last)")
     }
 }

@@ -184,7 +184,7 @@ enum SearchRow {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(isSet ? ReminderText.reminderSet : ReminderText.remindMe)
+            .accessibilityLabel(isSet ? ReminderText.reminderSet() : ReminderText.remindMe())
             .accessibilityAddTraits(isSet ? .isSelected : [])
         }
     }

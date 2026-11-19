@@ -92,7 +92,7 @@ extension TimeshiftModel {
                 return restartChannel()
             }
             startingCatchup = false
-            if fallback == nil { announce(TimeshiftText.startOverUnavailable) }
+            if fallback == nil { announce(TimeshiftText.startOverUnavailable()) }
         }
     }
 

@@ -122,8 +122,8 @@ public struct TitleMetadata: Sendable, Hashable {
         return "\(tenths / 10).\(tenths % 10)"
     }
 
-    static func eyebrow(_ title: ShelfTitle) -> String {
-        let kind = title.kind == .movie ? "Movie" : "Series"
+    static func eyebrow(_ title: ShelfTitle, locale: Locale = .autoupdatingCurrent) -> String {
+        let kind = title.kind == .movie ? Words(locale)("Movie") : Words(locale)("Series")
         return ([kind] + [present(title.category)].compactMap(\.self)).joined(separator: " · ")
     }
 
@@ -139,14 +139,15 @@ public struct TitleMetadata: Sendable, Hashable {
 public enum EpisodeText {
     /// "Watched" for a finished episode, "44 min · 21 min left" in progress,
     /// "44 min" otherwise; nil with no length and nothing to say.
-    public static func status(_ episode: Episode, progress: WatchProgress?) -> String? {
+    public static func status(_ episode: Episode, progress: WatchProgress?, locale: Locale = .autoupdatingCurrent) -> String? {
         switch progress?.state {
         case .watched:
-            return "Watched"
+            return Words(locale)("Watched")
         case .inProgress:
-            return [ShelfText.length(episode.duration), progress.flatMap(ShelfText.left)].compactMap(\.self).joined(separator: " · ")
+            return [ShelfText.length(episode.duration, locale: locale), progress.flatMap { ShelfText.left($0, locale: locale) }]
+                .compactMap(\.self).joined(separator: " · ")
         default:
-            return ShelfText.length(episode.duration)
+            return ShelfText.length(episode.duration, locale: locale)
         }
     }
 
@@ -162,25 +163,26 @@ public enum EpisodeText {
     }
 
     /// "Episode 4, Low Water, 44 min, 21 min left, up next".
-    public static func accessibilityLabel(_ episode: Episode, progress: WatchProgress?, upNext: Bool) -> String {
-        let number = episode.number.map { "Episode \($0)" }
-        let title = episode.title == number ? nil : episode.title
-        let length = ShelfText.length(episode.duration)
+    public static func accessibilityLabel(
+        _ episode: Episode, progress: WatchProgress?, upNext: Bool, locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let words = Words(locale)
+        let number = episode.number.map { words("Episode \(String($0))") }
+        let title = episode.title == number || episode.title == episode.number.map({ "Episode \($0)" }) ? nil : episode.title
+        let length = ShelfText.length(episode.duration, locale: locale)
         let state: String? =
             switch progress?.state {
-            case .watched: "watched"
-            case .inProgress: progress.flatMap(ShelfText.left)
+            case .watched: words("watched")
+            case .inProgress: progress.flatMap { ShelfText.left($0, locale: locale) }
             default: nil
             }
-        return [number, title, length, state, upNext ? "up next" : nil].compactMap(\.self).joined(separator: ", ")
+        return [number, title, length, state, upNext ? words("up next") : nil].compactMap(\.self).joined(separator: ", ")
     }
 
     /// "1 episode could not be read from the provider's list." or the
     /// plural; nil when none were dropped.
-    public static func skipped(_ count: Int) -> String? {
+    public static func skipped(_ count: Int, locale: Locale = .autoupdatingCurrent) -> String? {
         guard count > 0 else { return nil }
-        return count == 1
-            ? "1 episode could not be read from the provider's list."
-            : "\(count) episodes could not be read from the provider's list."
+        return Words(locale)("\(count) episodes could not be read from the provider's list.")
     }
 }

@@ -23,7 +23,7 @@ struct GuideChannelDetail: View {
                 Section {
                     GuideSourcesRows.Card(card: model.card(for: channel))
                     if model.match(for: channel) != nil {
-                        Button(GuideSourcesText.removeMatch, role: .destructive) { model.removeMatch(for: channel) }
+                        Button(GuideSourcesText().removeMatch, role: .destructive) { model.removeMatch(for: channel) }
                             .accessibilityIdentifier("guideSources.removeMatch")
                     }
                     if let error = model.error {
@@ -46,8 +46,8 @@ struct GuideChannelDetail: View {
     }
 
     @ViewBuilder private func picker(_ channel: Channel) -> some View {
-        Section(GuideSourcesText.pickerTitle) {
-            TextField(GuideSourcesText.pickerPrompt, text: $query)
+        Section(GuideSourcesText().pickerTitle) {
+            TextField(GuideSourcesText().pickerPrompt, text: $query)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier("guideSources.picker.field")
             results(channel)
@@ -56,7 +56,7 @@ struct GuideChannelDetail: View {
 
     @ViewBuilder private func results(_ channel: Channel) -> some View {
         if !model.hasLoadedGuide {
-            Text(GuideSourcesText.notDownloadedPicker)
+            Text(GuideSourcesText().notDownloadedPicker)
                 .foregroundStyle(.secondary)
                 .accessibilityIdentifier("guideSources.picker.empty")
         } else if !query.trimmingCharacters(in: .whitespaces).isEmpty {
@@ -64,7 +64,7 @@ struct GuideChannelDetail: View {
             if found.entries.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(model.text.noMatch(query.trimmingCharacters(in: .whitespaces)))
-                    Text(GuideSourcesText.noMatchCaption)
+                    Text(GuideSourcesText().noMatchCaption)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

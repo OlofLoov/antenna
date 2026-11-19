@@ -139,7 +139,7 @@ enum GuidePanel {
 
         var body: some View {
             Button(action: toggle) {
-                Label(isSet ? ReminderText.reminderSet : ReminderText.remindMe, systemImage: isSet ? "bell.fill" : "bell")
+                Label(isSet ? ReminderText.reminderSet() : ReminderText.remindMe(), systemImage: isSet ? "bell.fill" : "bell")
             }
             .buttonStyle(WatchStyle())
             .accessibilityValue(isSet ? "On" : "Off")

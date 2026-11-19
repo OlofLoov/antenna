@@ -18,11 +18,11 @@
 
 ## 3. AntennaCore strings (PR 3)
 
-- [ ] 3.1 Add `defaultLocalization: "en"` and `Resources/Localizable.xcstrings` to AntennaCore, add `Words` with first-strong isolates around source text, and verify with tests that an explicit locale picks its table and that `swift test` compiles the catalog under the Command Line Tools toolchain (record the result in design.md)
-- [ ] 3.2 Convert the guide and guide-sources helpers (`GuideSourcesText`, `GuideSourcesText+Reasons`, `GuideGridText`, `LiveNowText`, `GuideNowPlaying`, `GuideLine`) to whole-sentence entries with plural variations, and verify their tests with `en_US` pinned
-- [ ] 3.3 Convert onboarding, import, setup and source status (`SetupText`, `ImportText`, `ConnectFailure`, `SourceStatus`, `PaywallCopy`, `UnlockGate`), and verify their tests
-- [ ] 3.4 Convert player, zap bar, timeshift, multi-view, search, shelf, reminders, Top Shelf and intents replies (`ZapBarText`, `TimeshiftText`, `MultiViewFailureText`, `FailureMessage`, `TrackMenu`, `TrackName`, `SubtitleText`, `SearchText`, `ShelfText`, `ShelfCaptions`, `ReminderText`, `TopShelfContent`, `IntentReply`), and verify their tests
-- [ ] 3.5 Localize the built-in group names (Favorites, All channels, Ungrouped) at display time, and verify a test that switching the locale renames them and that no SwiftData record stores them (localization/built-in-names-follow-the-language)
+- [x] 3.1 Add `defaultLocalization: "en"` and `Resources/Localizable.xcstrings` to AntennaCore, add `Words` with first-strong isolates around source text, and verify with tests that an explicit locale picks its table and that `swift test` compiles the catalog under the Command Line Tools toolchain (record the result in design.md)
+- [x] 3.2 Convert the guide and guide-sources helpers (`GuideSourcesText`, `GuideSourcesText+Reasons`, `GuideGridText`, `LiveNowText`, `GuideNowPlaying`, `GuideLine`) to whole-sentence entries with plural variations, and verify their tests with `en_US` pinned
+- [x] 3.3 Convert onboarding, import, setup and source status (`SetupText`, `ImportText`, `ConnectFailure`, `SourceStatus`, `PaywallCopy`, `UnlockGate`), and verify their tests
+- [x] 3.4 Convert player, zap bar, timeshift, multi-view, search, shelf, reminders, Top Shelf and intents replies (`ZapBarText`, `TimeshiftText`, `MultiViewFailureText`, `FailureMessage`, `TrackMenu`, `TrackName`, `SubtitleText`, `SearchText`, `ShelfText`, `ShelfCaptions`, `ReminderText`, `TopShelfContent`, `IntentReply`), and verify their tests
+- [x] 3.5 Localize the built-in group names (Favorites, All channels, Ungrouped) at display time, and verify a test that switching the locale renames them and that no SwiftData record stores them (localization/built-in-names-follow-the-language)
 - [ ] 3.6 Pass `@Environment(\.locale)` from every view that calls a Core text helper, and verify the iOS and tvOS builds and the previews
 
 ## 4. Numbers, dates and durations (PR 4)

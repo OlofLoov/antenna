@@ -17,12 +17,12 @@ enum SearchParts {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityHidden(true)
-                TextField("Search", text: $text, prompt: Text(SearchText.placeholder).foregroundStyle(Palette.textMuted))
+                TextField("Search", text: $text, prompt: Text(SearchText.placeholder()).foregroundStyle(Palette.textMuted))
                     .textFieldStyle(.plain)
                     .autocorrectionDisabled()
                     .submitLabel(.search)
                     .onSubmit(submit)
-                    .accessibilityLabel(SearchText.placeholder)
+                    .accessibilityLabel(SearchText.placeholder())
                     .accessibilityIdentifier("search.field")
                 if !text.isEmpty {
                     Button(action: clear) {

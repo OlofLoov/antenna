@@ -165,7 +165,7 @@ extension ChannelOverlay {
             }
             .buttonStyle(NextRowStyle())
             .accessibilityLabel("\(item.time) \(item.title)")
-            .accessibilityValue(isSet ? ReminderText.reminderSet : ReminderText.remindMe)
+            .accessibilityValue(isSet ? ReminderText.reminderSet() : ReminderText.remindMe())
         }
     }
 
@@ -186,7 +186,7 @@ extension ChannelOverlay {
                     .lineLimit(1)
                 Spacer(minLength: 12)
                 if let mark, isFocused {
-                    Text(mark ? ReminderText.reminderSet : ReminderText.remindMe)
+                    Text(mark ? ReminderText.reminderSet() : ReminderText.remindMe())
                         .font(.system(size: 22, weight: .semibold))
                         .lineLimit(1)
                 }
