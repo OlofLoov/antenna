@@ -97,8 +97,11 @@ final class ShelfStatesUITests: XCTestCase {
         let title = app.element("series.hero.title")
         XCTAssertTrue(title.waitForExistence(timeout: 10))
         XCTAssertEqual(title.label, "Harbor Watch", "the series changed last")
-        let seasons = app.element("series.hero").staticTexts.matching(NSPredicate(format: "label CONTAINS '3 seasons'")).firstMatch
-        XCTAssertTrue(seasons.waitForExistence(timeout: 5))
+        // The facts line reads as one element. Harbor Watch's two episodes
+        // are both in season 1.
+        let facts = app.element("series.hero.facts")
+        let seasons = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS '1 season'"), object: facts)
+        XCTAssertEqual(XCTWaiter().wait(for: [seasons], timeout: 5), .completed, "facts read \(facts.label)")
         XCTAssertTrue(app.element("series.row.recentlyAdded").exists)
         XCTAssertTrue(app.element("series.genres.crime").exists)
     }
