@@ -127,7 +127,9 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 
 - Three columns: sidebar (232) | list (352) | detail. The sidebar holds the
   sections and, below them, the context list (channel groups, genres,
-  recent searches). Sources and Settings sits at the bottom.
+  recent searches). Sources and Settings sits at the bottom. On Live and
+  the Guide a search field heads the channel groups and narrows them by
+  name (`iPad-Live-Groups-Search`).
 - Live: the detail column is the inline player (16:9) with now and next and
   the upcoming list under it.
 - Movies and Search put a toolbar on top of the detail column and scroll
@@ -144,11 +146,15 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 
 ### iPhone
 
-- Tab bar: Live, Guide, Movies, Search, Settings. Favorites is a group chip
+- Tab bar: Live, Guide, Movies, Search, Settings. Favorites is a group
   inside Live, not a tab.
-- Live: player pinned at the top (16:9), now playing row, scrolling group
-  chips, channel list.
-- Guide: group chips, day chips, then one row per channel with a header
+- Live: player pinned at the top (16:9), now playing row, the group button,
+  channel list. The group button shows the open group's name, its channel
+  count and a chevron, and opens the Groups sheet: medium and large
+  detents, a search field, the built-in groups first, then every group with
+  its count and a checkmark on the open one (`iPhone-Live-Groups`,
+  `iPhone-Live-Groups-Search`).
+- Guide: the same group button and sheet, day chips, then one row per channel with a header
   line and its own horizontal strip of programme cards. No time grid. Detail
   is a sheet. A now-playing mini bar sits above the tab bar.
 - Movies: tall portrait hero, chips laid over the art, copy on the hero scrim
@@ -259,7 +265,7 @@ mirrored, with these rules. Four boards are drawn in Arabic: `iPhone-RTL`,
   move to what is drawn on that side.
 - The boards this applies to most: `TV-Guide`, `TV-Guide-Future`,
   `iPad-Guide`, `iPhone-Guide` (time axis); `iPhone`, `iPad`, `Main` (Live
-  list and chips); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
+  list and group button); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
   `iPhone-Player`, `iPhone-Player-Timeshift`, `iPad-Player` (progress,
   scrubber and transport); `TV-Shell-TabView`, `TV-Movies-Rows` (tab bar and
   first focus).
