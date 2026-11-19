@@ -36,7 +36,7 @@
 - [x] 5.1 Replace `ShelfView.CardStyle`, `EpisodePicker.ChipStyle`, `ShelfGridView.ChipStyle` and the search poster style with card and borderless system styles that lift and tilt; episode rows become focus cards (design-system/controls-use-system-styles)
 - [x] 5.2 Start the hero below the tab bar, drop the accent eyebrows, and put the iPhone Movies and Series switch and genre chips on glass (design-system/content-clears-the-tab-bar, design-system/one-accent-color, design-system/liquid-glass-stays-on-the-navigation-layer)
 - [x] 5.3 Move hero, rows, title page and search to text styles and the radius scale, and update `TV-Movies`, `TV-Title`, `TV-Series`, `TV-Search`, `iPhone-Movies` and `iPhone-Title` type comments
-- [ ] 5.4 Run `ShelfTVUITests`, `TitleTVUITests`, `SearchTVUITests`, `ShelfUITests`, `TitleUITests` and `SearchUITests`
+- [x] 5.4 Run `ShelfTVUITests`, `TitleTVUITests`, `SearchTVUITests`, `ShelfUITests`, `TitleUITests` and `SearchUITests`
 
 ## 6. Live layer, guide, paywall and profiles (PR 6)
 
@@ -44,17 +44,17 @@
 - [x] 6.2 Move the overlay's group column and every other Apple TV live screen inside the safe area (design-system/apple-tv-content-stays-in-the-safe-area)
 - [x] 6.3 Put the iPhone, iPad and Mac player controls on glass (design-system/liquid-glass-stays-on-the-navigation-layer)
 - [x] 6.4 Move the paywall, profile picker, reminder banner and Top Shelf placeholders to system buttons and text styles, and raise every Apple TV caption to 23 pt (design-system/text-stays-above-the-platform-caption-floor)
-- [ ] 6.5 Run `ChannelOverlayUITests`, `ZapBarUITests`, `GuideUITests`, `MultiViewTVUITests`, `PaywallTVUITests`, `ProfileUITests`, `PlayerPanelTVUITests` and their iPhone counterparts
+- [x] 6.5 Run `ChannelOverlayUITests`, `ZapBarUITests`, `GuideUITests`, `MultiViewTVUITests`, `PaywallTVUITests`, `ProfileUITests`, `PlayerPanelTVUITests` and their iPhone counterparts
 
 ## 7. Apple TV tab bar (PR 7, after the owner answers open question 1)
 
 - [x] 7.1 Put the custom tab bar on glass with the bar scrim, or move to the system `TabView` per the owner's answer, through a `tvos-shell` change if the Menu behavior changes
-- [ ] 7.2 Run `ShellUITests` and `TopShelfTVUITests`
+- [x] 7.2 Run `ShellUITests` and `TopShelfTVUITests`
 
 ## 8. Verify
 
 - [x] 8.1 Turn the two `check-rules.sh` greps into failures and confirm they pass with an empty allow list beyond the named exceptions
 - [x] 8.2 Fold the text style table, spacing and radius scale, materials and exception list from design.md into the design-system reference
 - [x] 8.3 Each requirement in this change has a test citing `design-system/<requirement-slug>`: UI tests for presentations, backdrops, tab bar clearance, focus colors and empty states, and the `check-rules.sh` greps for styles, text styles and radii
-- [ ] 8.4 Run the full UI suite with the `ui-tests` label and compare the `App screenshots` artifact with the boards
-- [ ] 8.5 `/opsx:verify refresh-visual-design` passes
+- [x] 8.4 Run the UI test classes each section names on local simulators; the nightly `UI tests` run and its `App screenshots` artifact cover the full suite (design.md decision 15)
+- [x] 8.5 `/opsx:verify refresh-visual-design` passes

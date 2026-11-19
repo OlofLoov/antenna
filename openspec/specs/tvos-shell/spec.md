@@ -177,21 +177,22 @@ The system SHALL show a loading screen on Live while no channel plays and at lea
 
 #### Scenario: Late password
 - **GIVEN** a source whose password or record arrives after launch
-- **WHEN** the app returns to the foreground or the user presses Retry
+- **WHEN** the app returns to the foreground or the user presses Try again
 - **THEN** a source waiting for its password loads once the password is on this Apple TV, and the loading screen never appears while a channel plays
 
 ### Requirement: An empty screen with Retry
-The system SHALL show a "No channels yet" screen naming each source that added nothing and why ("no channels", "offline", "could not load its channels" or "waiting for its login to sync from iCloud"), once no source is loading and no channel plays. Retry SHALL load those sources again behind the loading screen and give the last channel another 10 seconds.
+The system SHALL show a "No channels yet" screen naming each source that added nothing and why ("no channels", "offline", "could not load its channels" or "waiting for its login to sync from iCloud"), once no source is loading and no channel plays, with Open Settings, focused first, and Try again. Try again SHALL load those sources again behind the loading screen and give the last channel another 10 seconds.
 
 #### Scenario: Nothing to play
 - **GIVEN** every source has finished, failed or is waiting for its password, and none has any channels
 - **WHEN** Live is shown
-- **THEN** "No channels yet" names each source and why, Retry loads them again and shows the loading screen, and Menu shows the tab bar so the user can reach Settings
+- **THEN** "No channels yet" names each source and why, with Open Settings focused and Try again beside it
+- **AND** Open Settings opens Sources and Settings, Try again loads the sources again and shows the loading screen, and Menu shows the tab bar
 
 #### Scenario: Offline at launch
 - **GIVEN** the device is offline at launch
 - **WHEN** every source fails
-- **THEN** the empty screen shows each source as offline, with Retry and Settings as the ways on
+- **THEN** the empty screen shows each source as offline, with Open Settings and Try again as the ways on
 
 #### Scenario: Offline compared with other failures
 - **GIVEN** one source whose request fails because there is no connection or the connection dropped, and one that fails for any other reason
@@ -201,7 +202,7 @@ The system SHALL show a "No channels yet" screen naming each source that added n
 #### Scenario: No sources at all
 - **GIVEN** the user has no sources
 - **WHEN** Live is shown
-- **THEN** "No channels yet" shows with no source lines, and Retry does nothing
+- **THEN** "No channels yet" shows with no source lines, and Try again does nothing
 
 ### Requirement: Open Settings
 The system SHALL open Settings over the current screen without touching the video when the user selects the Settings button.
