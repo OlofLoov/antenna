@@ -73,6 +73,12 @@
                 .background(Palette.ground)
                 .ignoresSafeArea()
                 .defaultFocus($focused, .play)
+                // More sits above Play and the focus engine picks it over the
+                // default when a long description is cut, so Play asks once.
+                .task {
+                    await Task.yield()
+                    if page?.state.play.enabled ?? false { focused = .play }
+                }
                 // A series' Play waits for its episodes, and a disabled button
                 // cannot hold focus; once Play can play, focus moves to it.
                 .onChange(of: page?.state.play.enabled ?? false) { _, enabled in
