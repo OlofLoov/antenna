@@ -48,7 +48,7 @@
 
 ## 7. Apple TV tab bar (PR 7, after the owner answers open question 1)
 
-- [ ] 7.1 Put the custom tab bar on glass with the bar scrim, or move to the system `TabView` per the owner's answer, through a `tvos-shell` change if the Menu behavior changes
+- [x] 7.1 Put the custom tab bar on glass with the bar scrim, or move to the system `TabView` per the owner's answer, through a `tvos-shell` change if the Menu behavior changes
 - [ ] 7.2 Run `ShellUITests` and `TopShelfTVUITests`
 
 ## 8. Verify

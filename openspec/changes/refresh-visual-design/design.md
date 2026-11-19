@@ -194,7 +194,7 @@ None. No stored data changes.
 
 The owner took each recommendation.
 
-1. **Apple TV moves to the system `TabView`.** Settings is the last tab, the page draws the clock itself, and the Antenna mark goes. The Menu behavior changes with it, so PR 7 carries a `tvos-shell` delta spec in this change rather than a separate change: the shell's rules move in the same PR as the bar, and the archive folds both at once.
+1. **Apple TV moves to the system `TabView`.** Settings is the last tab, the page draws the clock itself, and the Antenna mark goes. The move is its own change, `adopt-tvos-tab-view`, proposed in PR 7 with its `tvos-shell` delta spec and the `TV-Shell-TabView` board. It replaces the shell's single `ZStack` of layers, its focus routing (`ShellFocus.tab`, `.settings`) and its Menu handling, and about 140 lines of the Apple TV UI tests assert focus on the bar; landing that inside a styling change would leave main with a half-moved shell if a slice failed. PR 7 instead puts the custom bar on glass with system focus, so the bar meets the rules of this change until `adopt-tvos-tab-view` replaces it.
 2. **Primary buttons keep the system's light platter.** Bordered on Apple TV and glass prominent elsewhere, through `primaryActionStyle()`, as PR 2 shipped.
 3. **Apple TV Settings uses the split view.** PR 3 (`fd73c96b`) shipped it: the lead column with the focused row's footer and the rows on the right, on `TV-Settings`.
 4. **The welcome mark uses the app icon artwork.** The navy tile goes; the welcome screen draws the icon's own image, so the only blue on screen is the accent.
@@ -234,3 +234,7 @@ Every button that loads something again reads Try again, the label the player er
 On iPhone, iPad and Mac the Picture in Picture button leaves the bottom strip and sits at the picture's top trailing corner on a glass capsule, as `AVPlayerViewController` puts it, with AirPlay beside it when AirPlay shows (full screen, regular width and Mac). The live picture has no close button, so the pair stands alone at the top; in full screen it sits over the trailing end of the channel line. Both keep their identifiers (`browse.player.pip`, the AirPlay picker). The slot it frees gives the iPhone programme bar its width back, so `TimeshiftUITests.testTheProgrammeBarKeepsItsWidthAtLive` and `LocalizationRTLUITests` now ask for more than 56 pt where they asked for 20.
 
 Starting Picture in Picture on its own when the user swipes home during playback was already on: both `AVPlayerEngine` and the demux engine's sample-buffer controller set `canStartPictureInPictureAutomaticallyFromInline` on iOS. macOS has no such setting. No spec scenario named the button's place in the strip, so no requirement changes.
+
+### 14. What PR 7 did with the Apple TV bar
+
+The pill group sits on glass in place of the opaque bar color. Tabs are `FocusCardStyle` capsules: the open tab rests white while focus is in its content and on the surface while focus is elsewhere in the bar, which keeps the `tvos-shell` deviation until `adopt-tvos-tab-view` removes it. The gear is a bordered circle and the profile circle takes the highlight hover effect in place of its ring and scale. No `ButtonStyle` type is left outside the exception components, so PR 8 can turn the style check into a failure.
