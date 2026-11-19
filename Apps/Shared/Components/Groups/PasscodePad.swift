@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The passcode prompt (`TV-Groups-Locked`, `iPhone-Groups-Locked`): a
@@ -32,6 +33,7 @@ enum PasscodePad {
         let delete: () -> Void
 
         private let rows: [[Character]] = [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"]]
+        @Environment(\.locale) private var locale
 
         var body: some View {
             Grid(horizontalSpacing: 16, verticalSpacing: 12) {
@@ -57,7 +59,7 @@ enum PasscodePad {
             Button {
                 type(digit)
             } label: {
-                Text(String(digit)).font(.title2.monospacedDigit()).frame(minWidth: 64, minHeight: 52)
+                Text(ChannelNumber.digits(String(digit), locale: locale)).font(.title2.monospacedDigit()).frame(minWidth: 64, minHeight: 52)
             }
             .accessibilityIdentifier("groups.passcode.key.\(digit)")
         }

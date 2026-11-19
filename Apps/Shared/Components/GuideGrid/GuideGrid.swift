@@ -219,7 +219,7 @@ enum GuideGrid {
 
         var body: some View {
             HStack(spacing: 16) {
-                Text(number.map(\.description) ?? "")
+                ChannelNumberText(number)
                     .font(.system(size: 20))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)

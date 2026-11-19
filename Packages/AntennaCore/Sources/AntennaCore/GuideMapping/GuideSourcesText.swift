@@ -169,12 +169,7 @@ public struct GuideSourcesText: Sendable {
 
     /// "<id> · <guide> · <n> programmes".
     public func detail(_ entry: GuideEntry, guide: String) -> String {
-        let count =
-            switch entry.programmes {
-            case 0: words("no programmes")
-            case 1: words("1 programme")
-            default: words("\(entry.programmes) programmes")
-            }
+        let count = entry.programmes == 0 ? words("no programmes") : words("\(entry.programmes) programmes")
         return "\(entry.id) · \(guide) · \(count)"
     }
 

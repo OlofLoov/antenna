@@ -108,7 +108,7 @@ enum InfoPanel {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(alignment: .firstTextBaseline, spacing: 18) {
                         if let number {
-                            Text(number.description)
+                            ChannelNumberText(number)
                                 .font(.system(size: 26))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)

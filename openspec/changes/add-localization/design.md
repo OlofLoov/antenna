@@ -505,6 +505,26 @@ PR 3, AntennaCore strings:
   channel is already a favorite") keep the phrase as a `%@` argument, so
   a language that inflects it may need a review edit.
 
+PR 4, numbers, dates and durations:
+- `ChannelNumber.text(_:)` writes a number in the locale's digits with no
+  grouping, and `ChannelNumberText` shows it in every channel row, pill,
+  guide row and panel. `ChannelNumber.digit(_:)` reads a digit in any
+  script, so number entry from a keyboard accepts Arabic-Indic digits and
+  tunes the same channel. The number box and the passcode keys show the
+  typed digits in the locale's digits; the values stay "0" to "9".
+- Apple TV has no on-screen pad for channel numbers; digits come from a
+  keyboard or an IR remote. The passcode pad is the only on-screen digit
+  pad, and its keys send the same values in every language.
+- The `DateFormatter` templates in `SearchText` and `ReminderText` became
+  `Date.FormatStyle` with the locale, calendar and guide time zone. A
+  locale with `@hours=h12` gives German a 12-hour clock, which is how a
+  user's 24-hour switch reaches `Locale.autoupdatingCurrent`.
+- Durations stay catalog entries ("%lld min left", "%lld h %lld min")
+  rather than `Duration.UnitsFormatStyle`: the format style writes "1 hr,
+  30 min" in English, which would change the agreed copy. Each language
+  writes its own abbreviations in the catalog, and the Spanish and German
+  duration tests land with those languages (tasks 6.3 and 7.2).
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

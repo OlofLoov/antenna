@@ -27,9 +27,9 @@
 
 ## 4. Numbers, dates and durations (PR 4)
 
-- [ ] 4.1 Format channel numbers without grouping in the locale's digits, and make the tvOS number pad map keys to values, and verify Core tests and `ZapBarUITests` in English (localization/numbers-use-the-region-s-digits-and-separators)
-- [ ] 4.2 Move every clock time, weekday, date and relative day to `Date.FormatStyle` with the locale, calendar and guide time zone, make "Today", "Tomorrow" and "Now" catalog entries, and verify Core tests for 24-hour Swedish and 12-hour German (localization/times-and-dates-follow-the-user-s-region)
-- [ ] 4.3 Move runtimes, time left, skip amounts and reminder lead times to `Duration.UnitsFormatStyle` or plural entries, and verify Core tests in Spanish and German (localization/durations-follow-the-user-s-language)
+- [x] 4.1 Format channel numbers without grouping in the locale's digits, and make the tvOS number pad map keys to values, and verify Core tests and `ZapBarUITests` in English (localization/numbers-use-the-region-s-digits-and-separators)
+- [x] 4.2 Move every clock time, weekday, date and relative day to `Date.FormatStyle` with the locale, calendar and guide time zone, make "Today", "Tomorrow" and "Now" catalog entries, and verify Core tests for 24-hour Swedish and 12-hour German (localization/times-and-dates-follow-the-user-s-region)
+- [x] 4.3 Move runtimes, time left, skip amounts and reminder lead times to `Duration.UnitsFormatStyle` or plural entries, and verify Core tests in Spanish and German (localization/durations-follow-the-user-s-language)
 
 ## 5. Swedish (PR 5)
 

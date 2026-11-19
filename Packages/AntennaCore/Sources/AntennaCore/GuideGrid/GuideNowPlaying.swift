@@ -18,7 +18,7 @@ public struct GuideNowPlaying: Sendable, Equatable {
         channel name: String, number: ChannelNumber?, state: GuideLoadingState, current: Programme?, now: Date,
         locale: Locale = .autoupdatingCurrent
     ) {
-        channel = [number.map(\.description), name].compactMap(\.self).joined(separator: " ")
+        channel = [number.map { $0.text(locale) }, name].compactMap(\.self).joined(separator: " ")
         let line = GuideLine(state: state, current: current, now: now, locale: locale)
         title = line.text
         if case .programme(_, let fraction, let remaining) = line {

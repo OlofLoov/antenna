@@ -35,8 +35,8 @@ public struct LiveNowText: Sendable, Equatable {
         let upcoming = Array(next.prefix(3))
         self.next = upcoming
         title = line.text
-        let identity = [number.map(\.description), channel].compactMap(\.self).joined(separator: " ")
-        var metaParts = [channel] + [number.map(\.description)].compactMap(\.self)
+        let identity = [number.map { $0.text(locale) }, channel].compactMap(\.self).joined(separator: " ")
+        var metaParts = [channel] + [number.map { $0.text(locale) }].compactMap(\.self)
         var compactParts = [identity]
         if case .programme(_, let fraction, let remaining) = line, let current {
             let span = "\(time(current.start)) – \(time(current.stop))"

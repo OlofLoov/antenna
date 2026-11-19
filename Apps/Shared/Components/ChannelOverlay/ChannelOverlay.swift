@@ -313,7 +313,7 @@ enum ChannelOverlay {
         @Environment(\.isFocused) private var isFocused
 
         var body: some View {
-            Text(number.map(\.description) ?? "")
+            ChannelNumberText(number)
                 .font(.system(size: 24))
                 .monospacedDigit()
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)

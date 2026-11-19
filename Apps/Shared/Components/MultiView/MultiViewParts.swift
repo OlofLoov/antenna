@@ -45,7 +45,7 @@ enum MultiViewParts {
         var body: some View {
             HStack(spacing: metrics.labelInset * 0.7) {
                 if let number {
-                    Text(number.description)
+                    ChannelNumberText(number)
                         .font(.system(size: metrics.number).monospacedDigit())
                         .foregroundStyle(highlighted ? MultiViewParts.mutedOnCard : Palette.textMuted)
                 }

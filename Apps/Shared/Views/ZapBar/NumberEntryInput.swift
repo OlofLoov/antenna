@@ -62,7 +62,7 @@
                 guard model.isOpen else { return .ignored }
                 model.cancel()
             default:
-                guard let digit = press.characters.first, press.characters.count == 1, digit.isASCII, digit.isNumber else {
+                guard let digit = press.characters.first, press.characters.count == 1, ChannelNumber.digit(digit) != nil else {
                     return .ignored
                 }
                 typing()

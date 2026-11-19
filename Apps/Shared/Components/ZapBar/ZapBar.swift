@@ -51,7 +51,7 @@ enum ZapBar {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 8) {
                     if let number {
-                        Text(number.description)
+                        ChannelNumberText(number)
                             .font(.system(size: 26).monospacedDigit())
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("zapBar.number")

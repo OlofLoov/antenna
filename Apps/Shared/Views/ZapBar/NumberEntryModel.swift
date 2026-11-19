@@ -41,8 +41,8 @@
         var isOpen: Bool { phase != .closed }
 
         /// A digit typed (tv-zap-bar-and-number-entry/typing-a-number-shows-the-match).
-        func type(_ digit: Character) {
-            guard digit.isASCII, digit.isNumber else { return }
+        func type(_ typed: Character) {
+            guard let digit = ChannelNumber.digit(typed) else { return }
             if case .noChannel = phase { digits = "" }
             guard digits.count < maxDigits else { return }
             digits.append(digit)

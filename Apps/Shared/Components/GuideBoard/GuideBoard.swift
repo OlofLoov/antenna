@@ -30,7 +30,7 @@ enum GuideBoard {
 
         var body: some View {
             HStack(spacing: 10) {
-                Text(number.map(\.description) ?? "")
+                ChannelNumberText(number)
                     .font(.system(size: numberSize))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)

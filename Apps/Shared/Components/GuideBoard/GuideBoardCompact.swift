@@ -23,7 +23,7 @@ extension GuideBoard {
                             .frame(width: 30, height: 20)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                         if let number {
-                            Text(number.description)
+                            ChannelNumberText(number)
                                 .font(.system(size: numberSize))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)
