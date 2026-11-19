@@ -24,6 +24,8 @@ jobs:
       tv: ${{ steps.shards.outputs.tv }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'schedule' && github.event.repository.default_branch || '' }}
       - id: shards
         run: |
           set -e
@@ -41,6 +43,8 @@ jobs:
         include: ${{ fromJSON(needs.plan.outputs.iphone) }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'schedule' && github.event.repository.default_branch || '' }}
       - uses: ./.github/actions/simulator
         with:
           platform: iOS
@@ -72,6 +76,8 @@ jobs:
     needs: plan
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'schedule' && github.event.repository.default_branch || '' }}
       - uses: ./.github/actions/simulator
         with:
           platform: iOS
@@ -106,6 +112,8 @@ jobs:
     needs: plan
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'schedule' && github.event.repository.default_branch || '' }}
       - uses: ./.github/actions/simulator
         with:
           platform: tvOS
@@ -138,6 +146,8 @@ jobs:
         include: ${{ fromJSON(needs.plan.outputs.tv) }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'schedule' && github.event.repository.default_branch || '' }}
       - uses: ./.github/actions/simulator
         with:
           platform: tvOS
