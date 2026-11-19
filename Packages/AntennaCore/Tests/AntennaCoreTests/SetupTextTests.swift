@@ -9,23 +9,23 @@ import Testing
     @Test("first-run-onboarding/the-checklist-shows-real-progress: the account line shows what the server gave")
     func accountLine() {
         // 1 773 446 400 is 14 March 2026, 00:00 UTC.
-        #expect(text.account(expiry: "1773446400", connections: "2") == "Account active until 14 mars 2026 · 2 connections")
-        #expect(text.account(expiry: nil, connections: "2") == "2 connections")
-        #expect(text.account(expiry: "0", connections: "1") == "1 connection")
+        #expect(text.account(expiry: "1773446400", connections: "2") == "Kontot är aktivt till 14 mars 2026 · 2 anslutningar")
+        #expect(text.account(expiry: nil, connections: "2") == "2 anslutningar")
+        #expect(text.account(expiry: "0", connections: "1") == "1 anslutning")
         #expect(text.account(expiry: "never", connections: "0") == nil)
         #expect(text.account(expiry: nil, connections: nil) == nil)
-        #expect(text.account(expiry: "1773446400", connections: nil) == "Account active until 14 mars 2026")
+        #expect(text.account(expiry: "1773446400", connections: nil) == "Kontot är aktivt till 14 mars 2026")
     }
 
     @Test("first-run-onboarding/the-checklist-shows-real-progress: channels, groups, movies and guide with real numbers")
     func numbers() {
         let tally = ChannelTally(channels: 1412, groups: (1...10).map { "G\($0)" })
-        #expect(text.channels(tally) == "1\u{a0}412 live channels in 10 groups")
-        #expect(text.groupNames(tally.groups) == "G1, G2, G3, G4, G5, G6, G7, G8 and 2 more")
+        #expect(text.channels(tally) == "1\u{a0}412 livekanaler i 10 grupper")
+        #expect(text.groupNames(tally.groups) == "G1, G2, G3, G4, G5, G6, G7, G8 och 2 till")
         #expect(text.groupNames(["News", "Sport"]) == "News, Sport")
-        #expect(text.movies(1240, series: 86) == "1\u{a0}240 movies and 86 series")
-        #expect(text.guide(days: 7, matched: 388, total: 412) == "Guide for 7 days · 388 of 412 channels")
-        #expect(text.downloading(bytes: 2_400_000).hasPrefix("Downloading the guide · 2,4"))
+        #expect(text.movies(1240, series: 86) == "1\u{a0}240 filmer och 86 serier")
+        #expect(text.guide(days: 7, matched: 388, total: 412) == "Tablå för 7 dagar · 388 av 412 kanaler")
+        #expect(text.downloading(bytes: 2_400_000).hasPrefix("Hämtar tablån · 2,4"))
     }
 
     @Test("first-run-onboarding/a-summary-when-everything-has-loaded: the first channel and catch-up come from the catalogue")

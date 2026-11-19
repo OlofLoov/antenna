@@ -32,18 +32,126 @@
       },
       "shouldTranslate" : false
     },
-    "%@ (locked)" : {},
-    "%@ The login stays on this Apple TV." : {},
-    "%@ added" : {},
-    "%@ arrived from your iPhone" : {},
-    "%@ channels" : {},
-    "%@ has no channels" : {},
-    "%@ have no channels" : {},
-    "%@ is locked." : {},
-    "%@ scores, not from the movie database" : {},
-    "%@ signed in" : {},
-    "%@ will be locked." : {},
-    "%@ will not remind you on any of your devices." : {},
+    "%@ (locked)" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ (låst)"
+          }
+        }
+      }
+    },
+    "%@ The login stays on this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ Inloggningen stannar på den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "%@ added" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ tillagd"
+          }
+        }
+      }
+    },
+    "%@ arrived from your iPhone" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ kom från din iPhone"
+          }
+        }
+      }
+    },
+    "%@ channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ kanaler"
+          }
+        }
+      }
+    },
+    "%@ has no channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ har inga kanaler"
+          }
+        }
+      }
+    },
+    "%@ have no channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ har inga kanaler"
+          }
+        }
+      }
+    },
+    "%@ is locked." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ är låst."
+          }
+        }
+      }
+    },
+    "%@ scores, not from the movie database" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@-betyg, inte från filmdatabasen"
+          }
+        }
+      }
+    },
+    "%@ signed in" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ inloggad"
+          }
+        }
+      }
+    },
+    "%@ will be locked." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ kommer att låsas."
+          }
+        }
+      }
+    },
+    "%@ will not remind you on any of your devices." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ påminner dig inte på någon av dina enheter."
+          }
+        }
+      }
+    },
     "%@ · %@" : {
       "localizations" : {
         "en" : {
@@ -55,9 +163,36 @@
       },
       "shouldTranslate" : false
     },
-    "%@ · Live" : {},
-    "%@ · waiting for iCloud" : {},
-    "%@ · waiting for login" : {},
+    "%@ · Live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · Live"
+          }
+        }
+      }
+    },
+    "%@ · waiting for iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · väntar på iCloud"
+          }
+        }
+      }
+    },
+    "%@ · waiting for login" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · väntar på inloggning"
+          }
+        }
+      }
+    },
     "%@%@" : {
       "localizations" : {
         "en" : {
@@ -98,6 +233,12 @@
             "state" : "new",
             "value" : "%1$@, %2$@, %3$@ to %4$@, %5$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@, %2$@, %3$@ till %4$@, %5$@"
+          }
         }
       }
     },
@@ -108,13 +249,55 @@
             "state" : "new",
             "value" : "%1$@, %2$lld channels"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@, %2$lld kanaler"
+          }
         }
       }
     },
-    "%@, 1 channel" : {},
-    "%@, locked" : {},
-    "%@, profile" : {},
-    "%@, trailer" : {},
+    "%@, 1 channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, 1 kanal"
+          }
+        }
+      }
+    },
+    "%@, locked" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, låst"
+          }
+        }
+      }
+    },
+    "%@, profile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, profil"
+          }
+        }
+      }
+    },
+    "%@, trailer" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, trailer"
+          }
+        }
+      }
+    },
     "%@. %@" : {
       "localizations" : {
         "en" : {
@@ -137,23 +320,101 @@
       },
       "shouldTranslate" : false
     },
-    "%@: could not load its channels" : {},
-    "%@: loading" : {},
-    "%@: no channels" : {},
-    "%@: offline" : {},
-    "%@: waiting for its login to sync from iCloud" : {},
-    "%@: waiting for its playlist to sync from iCloud" : {},
+    "%@: could not load its channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: kunde inte läsa in kanalerna"
+          }
+        }
+      }
+    },
+    "%@: loading" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: läser in"
+          }
+        }
+      }
+    },
+    "%@: no channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: inga kanaler"
+          }
+        }
+      }
+    },
+    "%@: offline" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: offline"
+          }
+        }
+      }
+    },
+    "%@: waiting for its login to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: väntar på att inloggningen synkas från iCloud"
+          }
+        }
+      }
+    },
+    "%@: waiting for its playlist to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: väntar på att spellistan synkas från iCloud"
+          }
+        }
+      }
+    },
     "%lld" : {
       "shouldTranslate" : false
     },
-    "%lld channels" : {},
-    "%lld channels without guide" : {},
+    "%lld channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld kanaler"
+          }
+        }
+      }
+    },
+    "%lld channels without guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld kanaler utan tablå"
+          }
+        }
+      }
+    },
     "%lld more sources to sign in after this one: %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld more sources to sign in after this one: %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld källor till att logga in efter den här: %2$@"
           }
         }
       }
@@ -165,12 +426,45 @@
             "state" : "new",
             "value" : "%1$lld of %2$lld"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld av %2$lld"
+          }
         }
       }
     },
-    "%lld of 4 digits entered" : {},
-    "%lld percent" : {},
-    "%lld sources added" : {},
+    "%lld of 4 digits entered" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld av 4 siffror inmatade"
+          }
+        }
+      }
+    },
+    "%lld percent" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld procent"
+          }
+        }
+      }
+    },
+    "%lld sources added" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld källor tillagda"
+          }
+        }
+      }
+    },
     "%lld sources the Apple TV asked for aren't on this %@ yet. New sources can take a minute to arrive through iCloud." : {
       "localizations" : {
         "en" : {
@@ -178,85 +472,775 @@
             "state" : "new",
             "value" : "%1$lld sources the Apple TV asked for aren't on this %2$@ yet. New sources can take a minute to arrive through iCloud."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld källor som Apple TV:n bad om finns inte på den här %2$@ än. Nya källor kan ta en minut att komma fram via iCloud."
+          }
         }
       }
     },
-    "00:1A:79:12:34:56" : {},
-    "1 channel" : {},
-    "1 channel without guide" : {},
-    "1 favorite" : {},
-    "1 more source to sign in after this one: %@" : {},
-    "1 source the Apple TV asked for isn't on this %@ yet. New sources can take a minute to arrive through iCloud." : {},
-    "192.168.1.20 or nas.local" : {},
-    "A Channels DVR server on your home network." : {},
-    "A link ending in .m3u or .m3u8, with an optional guide link." : {},
-    "A link ending in .m3u or .m3u8. It lists every channel with its stream address. A second link, in XMLTV format, carries the programme guide and is optional." : {},
-    "A link with a login or token is kept in your iCloud Keychain only." : {},
-    "A portal address and a MAC address." : {},
-    "A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in the Keychain on this Apple TV." : {},
-    "A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in your iCloud Keychain." : {},
-    "A server address with a username and password." : {},
-    "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here." : {},
-    "About" : {},
-    "Add" : {},
-    "Add a profile" : {},
-    "Add a source" : {},
-    "Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud." : {},
-    "Add another source" : {},
-    "Add channels" : {},
-    "Add here, watch on Apple TV" : {},
-    "Add profile" : {},
-    "Add the link as a source" : {},
-    "Add to Favorites" : {},
-    "Add to My list" : {},
-    "Add to favorites" : {},
-    "Add to my list" : {},
-    "Adds or removes the playing or named channel from Favorites." : {},
-    "Adds the playing channel to Favorites." : {},
-    "AirPlay" : {},
-    "AirPlay not available for this stream" : {},
-    "All" : {},
-    "All movies" : {},
-    "All series" : {},
-    "Allow notifications" : {},
-    "An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over." : {},
-    "Antenna" : {},
-    "Antenna also appears in the App Switcher on your iPhone. Prefer the remote? Type here; your iPhone offers its keyboard too." : {},
-    "Antenna includes no channels. A source is the playlist or login a TV provider gives you." : {},
-    "Antenna includes no channels. A source is the playlist or login a TV provider gives you. Antenna has no servers of its own; everything you add stays between you and your provider." : {},
-    "Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. Changes to the file are not picked up; re-import to update." : {},
-    "Antenna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed under the GNU Lesser General Public License, version 2.1 or later. Antenna links its own build of FFmpeg as a separate library and changes none of FFmpeg's code." : {},
-    "Antenna plays the TV sources you already have. It comes with no channels, so start by adding a playlist or a login from your provider." : {},
-    "Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider." : {},
-    "Antenna reads the clipboard only when you tap Fill in." : {},
-    "Audio" : {},
-    "Audio & Subtitles" : {},
-    "Audio and subtitles" : {},
-    "Autoplay next episode" : {},
-    "Back" : {},
-    "Back 10 seconds" : {},
-    "Back 15 seconds" : {},
-    "Back to %@" : {},
-    "Back to Live" : {},
-    "Back to the grid" : {},
-    "Banner" : {},
-    "Before start" : {},
-    "Browse movies" : {},
-    "Buffering" : {},
-    "CATCH-UP" : {},
-    "CHANNELS DVR" : {},
-    "CUSTOM" : {},
-    "Cancel" : {},
-    "Cast" : {},
-    "Catch-up" : {},
-    "Change" : {},
-    "Change passcode" : {},
-    "Channel" : {},
-    "Channel down" : {},
-    "Channel up" : {},
-    "Channels" : {},
-    "Channels DVR" : {},
-    "Channels · %lld" : {},
+    "00:1A:79:12:34:56" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "00:1A:79:12:34:56"
+          }
+        }
+      }
+    },
+    "1 channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 kanal"
+          }
+        }
+      }
+    },
+    "1 channel without guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 kanal utan tablå"
+          }
+        }
+      }
+    },
+    "1 favorite" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 favorit"
+          }
+        }
+      }
+    },
+    "1 more source to sign in after this one: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 källa till att logga in efter den här: %@"
+          }
+        }
+      }
+    },
+    "1 source the Apple TV asked for isn't on this %@ yet. New sources can take a minute to arrive through iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 källa som Apple TV:n bad om finns inte på den här %@ än. Nya källor kan ta en minut att komma fram via iCloud."
+          }
+        }
+      }
+    },
+    "192.168.1.20 or nas.local" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "192.168.1.20 eller nas.local"
+          }
+        }
+      }
+    },
+    "A Channels DVR server on your home network." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En Channels DVR-server i ditt hemnätverk."
+          }
+        }
+      }
+    },
+    "A link ending in .m3u or .m3u8, with an optional guide link." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En länk som slutar på .m3u eller .m3u8, med en valfri tablålänk."
+          }
+        }
+      }
+    },
+    "A link ending in .m3u or .m3u8. It lists every channel with its stream address. A second link, in XMLTV format, carries the programme guide and is optional." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En länk som slutar på .m3u eller .m3u8. Den listar varje kanal med dess strömadress. En andra länk, i XMLTV-format, innehåller programtablån och är valfri."
+          }
+        }
+      }
+    },
+    "A link with a login or token is kept in your iCloud Keychain only." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En länk med inloggning eller token sparas bara i din iCloud-nyckelring."
+          }
+        }
+      }
+    },
+    "A portal address and a MAC address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En portaladress och en MAC-adress."
+          }
+        }
+      }
+    },
+    "A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in the Keychain on this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En serveradress med användarnamn och lösenord, ibland kallat Xtream Codes. Servern svarar med kanaler, tablå, filmer och serier, så det finns inget mer att lägga till. Inloggningen sparas i nyckelringen på den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "A server address with a username and password, sometimes called Xtream Codes. The server answers with channels, guide, movies and series, so there is nothing else to add. The login is saved in your iCloud Keychain." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En serveradress med användarnamn och lösenord, ibland kallat Xtream Codes. Servern svarar med kanaler, tablå, filmer och serier, så det finns inget mer att lägga till. Inloggningen sparas i din iCloud-nyckelring."
+          }
+        }
+      }
+    },
+    "A server address with a username and password." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En serveradress med användarnamn och lösenord."
+          }
+        }
+      }
+    },
+    "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En källa kom från iCloud som den här Apple TV:n inte kan ställa in här. Uppdatera Antenna eller skriv in källan här."
+          }
+        }
+      }
+    },
+    "About" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Om"
+          }
+        }
+      }
+    },
+    "Add" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till"
+          }
+        }
+      }
+    },
+    "Add a profile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till en profil"
+          }
+        }
+      }
+    },
+    "Add a source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till en källa"
+          }
+        }
+      }
+    },
+    "Add an M3U playlist or Xtream login under Settings. It syncs to your other devices through iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till en M3U-spellista eller en Xtream-inloggning under Inställningar. Den synkas till dina andra enheter via iCloud."
+          }
+        }
+      }
+    },
+    "Add another source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till en till källa"
+          }
+        }
+      }
+    },
+    "Add channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till kanaler"
+          }
+        }
+      }
+    },
+    "Add here, watch on Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till här, titta på Apple TV"
+          }
+        }
+      }
+    },
+    "Add profile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till profil"
+          }
+        }
+      }
+    },
+    "Add the link as a source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till länken som källa"
+          }
+        }
+      }
+    },
+    "Add to Favorites" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i favoriter"
+          }
+        }
+      }
+    },
+    "Add to My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i Min lista"
+          }
+        }
+      }
+    },
+    "Add to favorites" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i favoriter"
+          }
+        }
+      }
+    },
+    "Add to my list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i min lista"
+          }
+        }
+      }
+    },
+    "Adds or removes the playing or named channel from Favorites." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägger till eller tar bort den spelande eller namngivna kanalen från favoriterna."
+          }
+        }
+      }
+    },
+    "Adds the playing channel to Favorites." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägger till den spelande kanalen bland favoriterna."
+          }
+        }
+      }
+    },
+    "AirPlay" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "AirPlay"
+          }
+        }
+      }
+    },
+    "AirPlay not available for this stream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "AirPlay är inte tillgängligt för den här strömmen"
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alla"
+          }
+        }
+      }
+    },
+    "All movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alla filmer"
+          }
+        }
+      }
+    },
+    "All series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alla serier"
+          }
+        }
+      }
+    },
+    "Allow notifications" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillåt notiser"
+          }
+        }
+      }
+    },
+    "An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En upplåst iPhone eller iPad i närheten erbjuder sitt tangentbord för den här Apple TV:n. Tryck på notisen så fylls fälten i här medan du skriver. Eller lägg till källan i Antenna på iPhone så synkas den hit."
+          }
+        }
+      }
+    },
+    "Antenna" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna"
+          }
+        }
+      }
+    },
+    "Antenna also appears in the App Switcher on your iPhone. Prefer the remote? Type here; your iPhone offers its keyboard too." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna finns också i appväxlaren på din iPhone. Föredrar du fjärrkontrollen? Skriv här; din iPhone erbjuder också sitt tangentbord."
+          }
+        }
+      }
+    },
+    "Antenna includes no channels. A source is the playlist or login a TV provider gives you." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig."
+          }
+        }
+      }
+    },
+    "Antenna includes no channels. A source is the playlist or login a TV provider gives you. Antenna has no servers of its own; everything you add stays between you and your provider." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig. Antenna har inga egna servrar; allt du lägger till stannar mellan dig och din leverantör."
+          }
+        }
+      }
+    },
+    "Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. Changes to the file are not picked up; re-import to update." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna sparar en kopia av filen och synkar den via iCloud, Apple TV inräknad. Ändringar i filen hämtas inte; importera igen för att uppdatera."
+          }
+        }
+      }
+    },
+    "Antenna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed under the GNU Lesser General Public License, version 2.1 or later. Antenna links its own build of FFmpeg as a separate library and changes none of FFmpeg's code." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spelar sändningsströmmar, Matroska och AVI med FFmpeg 7.1, som är licensierat under GNU Lesser General Public License, version 2.1 eller senare. Antenna länkar sin egen version av FFmpeg som ett separat bibliotek och ändrar ingen av FFmpegs kod."
+          }
+        }
+      }
+    },
+    "Antenna plays the TV sources you already have. It comes with no channels, so start by adding a playlist or a login from your provider." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spelar de TV-källor du redan har. Appen har inga kanaler, så börja med att lägga till en spellista eller en inloggning från din leverantör."
+          }
+        }
+      }
+    },
+    "Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spelar de TV-källor du redan har. Appen har inga kanaler, så första steget är att lägga till en spellista eller en inloggning från din leverantör."
+          }
+        }
+      }
+    },
+    "Antenna reads the clipboard only when you tap Fill in." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna läser urklippet bara när du trycker på Fyll i."
+          }
+        }
+      }
+    },
+    "Audio" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud"
+          }
+        }
+      }
+    },
+    "Audio & Subtitles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud och undertexter"
+          }
+        }
+      }
+    },
+    "Audio and subtitles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud och undertexter"
+          }
+        }
+      }
+    },
+    "Autoplay next episode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela nästa avsnitt automatiskt"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka"
+          }
+        }
+      }
+    },
+    "Back 10 seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bakåt 10 sekunder"
+          }
+        }
+      }
+    },
+    "Back 15 seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bakåt 15 sekunder"
+          }
+        }
+      }
+    },
+    "Back to %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka till %@"
+          }
+        }
+      }
+    },
+    "Back to Live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka till live"
+          }
+        }
+      }
+    },
+    "Back to the grid" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka till rutnätet"
+          }
+        }
+      }
+    },
+    "Banner" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Banner"
+          }
+        }
+      }
+    },
+    "Before start" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Före start"
+          }
+        }
+      }
+    },
+    "Browse movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bläddra bland filmer"
+          }
+        }
+      }
+    },
+    "Buffering" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Buffrar"
+          }
+        }
+      }
+    },
+    "CATCH-UP" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "SE I EFTERHAND"
+          }
+        }
+      }
+    },
+    "CHANNELS DVR" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "CHANNELS DVR"
+          }
+        }
+      }
+    },
+    "CUSTOM" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ANPASSAD"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avbryt"
+          }
+        }
+      }
+    },
+    "Cast" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Medverkande"
+          }
+        }
+      }
+    },
+    "Catch-up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Se i efterhand"
+          }
+        }
+      }
+    },
+    "Change" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ändra"
+          }
+        }
+      }
+    },
+    "Change passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ändra lösenkod"
+          }
+        }
+      }
+    },
+    "Channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanal"
+          }
+        }
+      }
+    },
+    "Channel down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanal ned"
+          }
+        }
+      }
+    },
+    "Channel up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanal upp"
+          }
+        }
+      }
+    },
+    "Channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanaler"
+          }
+        }
+      }
+    },
+    "Channels DVR" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Channels DVR"
+          }
+        }
+      }
+    },
+    "Channels · %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanaler · %lld"
+          }
+        }
+      }
+    },
     "Channels, %@, %@" : {
       "localizations" : {
         "en" : {
@@ -264,36 +1248,237 @@
             "state" : "new",
             "value" : "Channels, %1$@, %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanaler, %1$@, %2$@"
+          }
         }
       }
     },
-    "Check" : {},
-    "Check that this %@ is online and signed in to iCloud. It sends on its own once it can." : {},
-    "Checked with the server first, then kept in your iCloud Keychain on this %@." : {},
-    "Checking the login…" : {},
-    "Checking…" : {},
-    "Choose another file" : {},
-    "Clear" : {},
-    "Clear the search" : {},
-    "Close" : {},
-    "Color %lld" : {},
-    "Connect" : {},
-    "Connect to the internet and try again." : {},
-    "Connecting" : {},
-    "Connecting…" : {},
-    "Continue" : {},
-    "Continue on %@" : {},
-    "Continue watching" : {},
-    "Copy these from the email or page your provider sent you." : {},
-    "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one." : {},
-    "Could not load" : {},
-    "Could not load %@" : {},
+    "Check" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrollera"
+          }
+        }
+      }
+    },
+    "Check that this %@ is online and signed in to iCloud. It sends on its own once it can." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrollera att den här %@ är online och inloggad på iCloud. Den skickar av sig själv så snart den kan."
+          }
+        }
+      }
+    },
+    "Checked with the server first, then kept in your iCloud Keychain on this %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrolleras först mot servern och sparas sedan i din iCloud-nyckelring på den här %@."
+          }
+        }
+      }
+    },
+    "Checking the login…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrollerar inloggningen…"
+          }
+        }
+      }
+    },
+    "Checking…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrollerar…"
+          }
+        }
+      }
+    },
+    "Choose another file" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en annan fil"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rensa"
+          }
+        }
+      }
+    },
+    "Clear the search" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rensa sökningen"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stäng"
+          }
+        }
+      }
+    },
+    "Color %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Färg %lld"
+          }
+        }
+      }
+    },
+    "Connect" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anslut"
+          }
+        }
+      }
+    },
+    "Connect to the internet and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anslut till internet och försök igen."
+          }
+        }
+      }
+    },
+    "Connecting" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansluter"
+          }
+        }
+      }
+    },
+    "Connecting…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansluter…"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fortsätt"
+          }
+        }
+      }
+    },
+    "Continue on %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fortsätt på %@"
+          }
+        }
+      }
+    },
+    "Continue watching" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fortsätt titta"
+          }
+        }
+      }
+    },
+    "Copy these from the email or page your provider sent you." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kopiera dem från mejlet eller sidan som din leverantör skickade."
+          }
+        }
+      }
+    },
+    "Copy these from the email or page your provider sent you. Leave the login empty unless your provider gave you one." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kopiera dem från mejlet eller sidan som din leverantör skickade. Lämna inloggningen tom om inte din leverantör gav dig en."
+          }
+        }
+      }
+    },
+    "Could not load" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in"
+          }
+        }
+      }
+    },
+    "Could not load %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in %@"
+          }
+        }
+      }
+    },
     "Could not load %@. %@ has no channels" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Could not load %1$@. %2$@ has no channels"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in %1$@. %2$@ har inga kanaler"
           }
         }
       }
@@ -305,94 +1490,817 @@
             "state" : "new",
             "value" : "Could not load %1$@. %2$@ have no channels"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in %1$@. %2$@ har inga kanaler"
+          }
         }
       }
     },
-    "Could not load channels" : {},
-    "Could not load details" : {},
-    "Could not load episodes" : {},
-    "Could not load the guide for %@" : {},
-    "Could not store credentials: %@" : {},
-    "Could not store the logins in this file: %@" : {},
-    "Couldn't send because your iCloud storage is full." : {},
-    "Couldn't send. Check that this %@ is online, then try again." : {},
-    "Create" : {},
-    "Custom" : {},
-    "Delete" : {},
-    "Delete %@?" : {},
-    "Delete group" : {},
-    "Delete profile" : {},
-    "Delete source" : {},
-    "Description" : {},
-    "Director" : {},
-    "Dismiss" : {},
-    "Done" : {},
-    "Down" : {},
-    "Downloading the guide" : {},
-    "Drop to import %@" : {},
-    "Drop to import a playlist" : {},
-    "Earlier" : {},
-    "Easier to type on iPhone" : {},
-    "Edit %@" : {},
-    "Edit profile" : {},
-    "Enter" : {},
-    "Enter a new passcode" : {},
-    "Enter a valid URL." : {},
-    "Enter it again" : {},
-    "Enter passcode" : {},
-    "Enter the current passcode first." : {},
-    "Enter the login for %@" : {},
-    "Enter your username and password." : {},
-    "Everything below is loading. The guide finishes in the background while you watch." : {},
-    "Everything has loaded." : {},
-    "Exit full screen" : {},
-    "FFmpeg" : {},
-    "FILE" : {},
-    "Failed" : {},
-    "Fill in from the copied link" : {},
-    "Fill this in here. The source syncs to the Apple TV through iCloud." : {},
-    "Filter" : {},
-    "Filter channels" : {},
-    "Filter channels by name or number" : {},
-    "Forgot it? Reset the passcode in Antenna on your iPhone, iPad or Mac." : {},
-    "Forgot passcode?" : {},
-    "Forward 10 seconds" : {},
-    "Forward 15 seconds" : {},
-    "Forward 30 seconds" : {},
-    "Full screen" : {},
-    "GNU LGPL 2.1" : {},
-    "Genres" : {},
-    "Go" : {},
-    "Go to live" : {},
-    "Groups" : {},
-    "Groups has locked groups." : {},
-    "Groups · %lld" : {},
-    "Groups, favorites, catch-up" : {},
-    "Guide" : {},
-    "Guide URL" : {},
-    "Guide could not be loaded" : {},
-    "Guide link found" : {},
-    "Guide window" : {},
-    "HIDDEN" : {},
-    "Handed to iCloud. Open Antenna on your Apple TV." : {},
-    "Hidden" : {},
-    "Hide password" : {},
-    "Hide, lock, rename and reorder. Changes reach every device signed into your iCloud." : {},
-    "Import" : {},
-    "Import a file" : {},
-    "Import a file instead" : {},
-    "Import a playlist" : {},
-    "Import as new" : {},
-    "Imported %@" : {},
-    "In progress" : {},
-    "In the Movies tab" : {},
-    "In the guide" : {},
+    "Could not load channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in kanalerna"
+          }
+        }
+      }
+    },
+    "Could not load details" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in detaljerna"
+          }
+        }
+      }
+    },
+    "Could not load episodes" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in avsnitten"
+          }
+        }
+      }
+    },
+    "Could not load the guide for %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in tablån för %@"
+          }
+        }
+      }
+    },
+    "Could not store credentials: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte spara inloggningsuppgifterna: %@"
+          }
+        }
+      }
+    },
+    "Could not store the logins in this file: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte spara inloggningarna i den här filen: %@"
+          }
+        }
+      }
+    },
+    "Couldn't send because your iCloud storage is full." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte skicka eftersom ditt iCloud-lagringsutrymme är fullt."
+          }
+        }
+      }
+    },
+    "Couldn't send. Check that this %@ is online, then try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte skicka. Kontrollera att den här %@ är online och försök igen."
+          }
+        }
+      }
+    },
+    "Create" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skapa"
+          }
+        }
+      }
+    },
+    "Custom" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anpassad"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Radera"
+          }
+        }
+      }
+    },
+    "Delete %@?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Radera %@?"
+          }
+        }
+      }
+    },
+    "Delete group" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Radera grupp"
+          }
+        }
+      }
+    },
+    "Delete profile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Radera profil"
+          }
+        }
+      }
+    },
+    "Delete source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Radera källa"
+          }
+        }
+      }
+    },
+    "Description" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Beskrivning"
+          }
+        }
+      }
+    },
+    "Director" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Regissör"
+          }
+        }
+      }
+    },
+    "Dismiss" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stäng"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Klar"
+          }
+        }
+      }
+    },
+    "Down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ned"
+          }
+        }
+      }
+    },
+    "Downloading the guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hämtar tablån"
+          }
+        }
+      }
+    },
+    "Drop to import %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Släpp för att importera %@"
+          }
+        }
+      }
+    },
+    "Drop to import a playlist" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Släpp för att importera en spellista"
+          }
+        }
+      }
+    },
+    "Earlier" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tidigare"
+          }
+        }
+      }
+    },
+    "Easier to type on iPhone" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enklare att skriva på iPhone"
+          }
+        }
+      }
+    },
+    "Edit %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Redigera %@"
+          }
+        }
+      }
+    },
+    "Edit profile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Redigera profil"
+          }
+        }
+      }
+    },
+    "Enter" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange"
+          }
+        }
+      }
+    },
+    "Enter a new passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange en ny lösenkod"
+          }
+        }
+      }
+    },
+    "Enter a valid URL." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange en giltig URL."
+          }
+        }
+      }
+    },
+    "Enter it again" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange den igen"
+          }
+        }
+      }
+    },
+    "Enter passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange lösenkod"
+          }
+        }
+      }
+    },
+    "Enter the current passcode first." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange den nuvarande lösenkoden först."
+          }
+        }
+      }
+    },
+    "Enter the login for %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange inloggningen för %@"
+          }
+        }
+      }
+    },
+    "Enter your username and password." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange ditt användarnamn och lösenord."
+          }
+        }
+      }
+    },
+    "Everything below is loading. The guide finishes in the background while you watch." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Allt nedan läses in. Tablån blir klar i bakgrunden medan du tittar."
+          }
+        }
+      }
+    },
+    "Everything has loaded." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Allt är inläst."
+          }
+        }
+      }
+    },
+    "Exit full screen" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avsluta helskärm"
+          }
+        }
+      }
+    },
+    "FFmpeg" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "FFmpeg"
+          }
+        }
+      }
+    },
+    "FILE" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "FIL"
+          }
+        }
+      }
+    },
+    "Failed" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Misslyckades"
+          }
+        }
+      }
+    },
+    "Fill in from the copied link" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fyll i från den kopierade länken"
+          }
+        }
+      }
+    },
+    "Fill this in here. The source syncs to the Apple TV through iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fyll i det här. Källan synkas till Apple TV:n via iCloud."
+          }
+        }
+      }
+    },
+    "Filter" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filtrera"
+          }
+        }
+      }
+    },
+    "Filter channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filtrera kanaler"
+          }
+        }
+      }
+    },
+    "Filter channels by name or number" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filtrera kanaler efter namn eller nummer"
+          }
+        }
+      }
+    },
+    "Forgot it? Reset the passcode in Antenna on your iPhone, iPad or Mac." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Glömt den? Återställ lösenkoden i Antenna på din iPhone, iPad eller Mac."
+          }
+        }
+      }
+    },
+    "Forgot passcode?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Glömt lösenkoden?"
+          }
+        }
+      }
+    },
+    "Forward 10 seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Framåt 10 sekunder"
+          }
+        }
+      }
+    },
+    "Forward 15 seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Framåt 15 sekunder"
+          }
+        }
+      }
+    },
+    "Forward 30 seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Framåt 30 sekunder"
+          }
+        }
+      }
+    },
+    "Full screen" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Helskärm"
+          }
+        }
+      }
+    },
+    "GNU LGPL 2.1" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "GNU LGPL 2.1"
+          }
+        }
+      }
+    },
+    "Genres" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Genrer"
+          }
+        }
+      }
+    },
+    "Go" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gå"
+          }
+        }
+      }
+    },
+    "Go to live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gå till live"
+          }
+        }
+      }
+    },
+    "Groups" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grupper"
+          }
+        }
+      }
+    },
+    "Groups has locked groups." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grupper har låsta grupper."
+          }
+        }
+      }
+    },
+    "Groups · %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grupper · %lld"
+          }
+        }
+      }
+    },
+    "Groups, favorites, catch-up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grupper, favoriter, se i efterhand"
+          }
+        }
+      }
+    },
+    "Guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå"
+          }
+        }
+      }
+    },
+    "Guide URL" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå-URL"
+          }
+        }
+      }
+    },
+    "Guide could not be loaded" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån kunde inte läsas in"
+          }
+        }
+      }
+    },
+    "Guide link found" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablålänk hittad"
+          }
+        }
+      }
+    },
+    "Guide window" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablåfönster"
+          }
+        }
+      }
+    },
+    "HIDDEN" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DOLD"
+          }
+        }
+      }
+    },
+    "Handed to iCloud. Open Antenna on your Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Överlämnad till iCloud. Öppna Antenna på din Apple TV."
+          }
+        }
+      }
+    },
+    "Hidden" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dold"
+          }
+        }
+      }
+    },
+    "Hide password" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dölj lösenord"
+          }
+        }
+      }
+    },
+    "Hide, lock, rename and reorder. Changes reach every device signed into your iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dölj, lås, byt namn och ändra ordning. Ändringarna når alla enheter som är inloggade på ditt iCloud."
+          }
+        }
+      }
+    },
+    "Import" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera"
+          }
+        }
+      }
+    },
+    "Import a file" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera en fil"
+          }
+        }
+      }
+    },
+    "Import a file instead" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera en fil i stället"
+          }
+        }
+      }
+    },
+    "Import a playlist" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera en spellista"
+          }
+        }
+      }
+    },
+    "Import as new" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera som ny"
+          }
+        }
+      }
+    },
+    "Imported %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importerade %@"
+          }
+        }
+      }
+    },
+    "In progress" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pågår"
+          }
+        }
+      }
+    },
+    "In the Movies tab" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "På fliken Filmer"
+          }
+        }
+      }
+    },
+    "In the guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I tablån"
+          }
+        }
+      }
+    },
     "In the guide, %@, %@ %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In the guide, %1$@, %2$@ %3$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I tablån, %1$@, %2$@ %3$@"
           }
         }
       }
@@ -404,201 +2312,1887 @@
             "state" : "new",
             "value" : "In the guide, %1$@, %2$@ %3$@, catch-up"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I tablån, %1$@, %2$@ %3$@, se i efterhand"
+          }
         }
       }
     },
-    "Include hidden channels in search" : {},
-    "Info" : {},
-    "It checks them with the provider and signs in." : {},
-    "Its favorites, hidden groups and history go too. Sources stay." : {},
-    "Its saved login is unreadable. Re-import the file." : {},
-    "JELLYFIN" : {},
-    "Jellyfin" : {},
-    "Jellyfin server" : {},
-    "Keep the sign-in open on the Apple TV. If the code there changed, scan the new one." : {},
-    "Keyboard focus" : {},
-    "LIVE" : {},
-    "LOCKED" : {},
-    "Later" : {},
-    "Later: " : {},
-    "License" : {},
-    "Live" : {},
-    "Live TV from your own Jellyfin server." : {},
-    "Live TV with a guide" : {},
-    "Live picture" : {},
-    "Live · %@" : {},
-    "Loading" : {},
-    "Loading channels" : {},
-    "Loading channels…" : {},
-    "Loading details" : {},
-    "Loading episodes" : {},
-    "Loading movies and series…" : {},
-    "Lock now" : {},
-    "Locked" : {},
-    "Login" : {},
-    "Login not picked up yet" : {},
-    "Login not sent" : {},
-    "Login received from your iPhone" : {},
-    "Login received. Checking with %@…" : {},
-    "Login received. Checking…" : {},
-    "Logins stay in your iCloud Keychain on this %@." : {},
-    "M3U" : {},
-    "M3U playlist" : {},
-    "M3U, M3U8 and text files, up to 16 MB" : {},
-    "MAC address" : {},
-    "Manage profiles" : {},
-    "Menu closes" : {},
-    "Missing" : {},
-    "More" : {},
-    "More description" : {},
-    "More info" : {},
-    "Move down" : {},
-    "Move up" : {},
-    "Movie info and scores" : {},
-    "Movie or Series" : {},
-    "Movies" : {},
-    "Movies & series" : {},
-    "Movies & series, %@" : {},
-    "Movies & series, %@, series" : {},
-    "Movies and series" : {},
-    "Movies and series available" : {},
-    "Mute" : {},
-    "My list" : {},
-    "NAME" : {},
-    "NEXT" : {},
-    "NOW" : {},
-    "Name" : {},
-    "New group" : {},
-    "Newest first" : {},
-    "Next channel" : {},
-    "Next result" : {},
-    "Next result across" : {},
-    "Next season" : {},
-    "No Stalker portal answered at this address." : {},
-    "No channel %@" : {},
-    "No channels found" : {},
-    "No channels in %@" : {},
-    "No channels in this group yet. Add some from Groups in Settings." : {},
-    "No channels match." : {},
-    "No channels yet" : {},
-    "No channels yet. Add a source in Settings." : {},
-    "No episodes available" : {},
-    "No favorites yet. Hold select on a channel to add it." : {},
-    "No favorites yet. Right-click a channel to add it." : {},
-    "No favorites yet. Touch and hold a channel, or swipe it right, to add it." : {},
-    "No groups yet. Add a source in Settings and its groups appear here." : {},
-    "No link on the clipboard" : {},
-    "No live channels" : {},
-    "No movies or series" : {},
-    "No programme information" : {},
-    "No sources yet" : {},
-    "None of the sources this Apple TV asked for are on this %@. Both need the same iCloud account, and new sources can take a minute to arrive." : {},
-    "Not done" : {},
-    "Not in any source" : {},
-    "Not links" : {},
-    "Not on My list" : {},
-    "Not on this %@" : {},
-    "Not picked up yet" : {},
-    "Not sent yet" : {},
-    "Not signed in to iCloud, so it stays on this Apple TV." : {},
-    "Not signed in to iCloud. Sources stay on this device." : {},
-    "Nothing to watch yet" : {},
-    "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV." : {},
-    "Now" : {},
-    "Now · %@" : {},
-    "Now, %@" : {},
-    "OK" : {},
-    "Off" : {},
-    "Offline" : {},
-    "On" : {},
-    "On My list" : {},
-    "Open Search" : {},
-    "Open Settings" : {},
-    "Open details" : {},
-    "Open on launch" : {},
-    "Open the result" : {},
-    "Opened from your Apple TV" : {},
-    "Opens Antenna and resumes the movie, or opens the series." : {},
-    "Opens Antenna on Live with the channel playing." : {},
-    "Opens Antenna on Search." : {},
-    "Optional" : {},
-    "Optional XMLTV link" : {},
-    "Passcode" : {},
-    "Password" : {},
-    "Paste the link your provider gave you. The guide link is optional." : {},
-    "Pause" : {},
-    "Paused" : {},
-    "Picture" : {},
-    "Picture in picture" : {},
-    "Play" : {},
-    "Play Title" : {},
-    "Play or pause" : {},
-    "Play the channel" : {},
-    "Playback" : {},
-    "Playing" : {},
-    "Playing %@" : {},
-    "Playing in Picture in Picture" : {},
-    "Playing on AirPlay" : {},
-    "Playlist" : {},
-    "Playlist downloaded" : {},
-    "Playlist file" : {},
-    "Playlist imported" : {},
-    "Plays the channel" : {},
-    "Point your iPhone camera at the code. Antenna opens there with this form, and what you enter syncs to this Apple TV through iCloud." : {},
-    "Portal" : {},
-    "Portal and name came from your iPhone." : {},
-    "Position" : {},
-    "Posters and descriptions load as you browse" : {},
-    "Prefer the remote? Type here; your iPhone offers its keyboard too." : {},
-    "Preferences" : {},
-    "Press Menu to go back" : {},
-    "Press Menu to go back and check the link" : {},
-    "Previous channel" : {},
-    "Previous result" : {},
-    "Previous result across" : {},
-    "Previous season" : {},
-    "Profile, %@" : {},
-    "Profiles" : {},
-    "Programme progress" : {},
-    "Progress" : {},
-    "QR code. Scan it with your iPhone to send the login to this Apple TV." : {},
-    "QR code. Scan it with your iPhone to set up this Apple TV from there." : {},
-    "RECENT" : {},
-    "Re-import %@" : {},
-    "Re-import…" : {},
-    "Reading %@…" : {},
-    "Reading the guide…" : {},
-    "Ready to send" : {},
-    "Recent" : {},
-    "Recent search, %@" : {},
-    "Recent searches" : {},
-    "Recently added" : {},
-    "Recently watched" : {},
-    "Redeem a code" : {},
-    "Refresh all" : {},
-    "Refresh all sources" : {},
-    "Refresh now" : {},
-    "Refresh sources" : {},
-    "Remind me" : {},
-    "Reminder · %@" : {},
-    "Reminders" : {},
-    "Remote" : {},
-    "Remove" : {},
-    "Remove from Favorites" : {},
-    "Remove from My list" : {},
-    "Remove from favorites" : {},
-    "Remove from my list" : {},
-    "Remove reminder?" : {},
-    "Removes %@ and guide from every device signed in to your iCloud account." : {},
-    "Removes %@ and guide from this device." : {},
-    "Removes its %@ and guide from every device signed in to your iCloud account." : {},
-    "Removes its %@ and guide from this device." : {},
+    "Include hidden channels in search" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta med dolda kanaler i sökningen"
+          }
+        }
+      }
+    },
+    "Info" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Info"
+          }
+        }
+      }
+    },
+    "It checks them with the provider and signs in." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den kontrollerar dem med leverantören och loggar in."
+          }
+        }
+      }
+    },
+    "Its favorites, hidden groups and history go too. Sources stay." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dess favoriter, dolda grupper och historik försvinner också. Källorna finns kvar."
+          }
+        }
+      }
+    },
+    "Its saved login is unreadable. Re-import the file." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den sparade inloggningen går inte att läsa. Importera filen igen."
+          }
+        }
+      }
+    },
+    "JELLYFIN" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "JELLYFIN"
+          }
+        }
+      }
+    },
+    "Jellyfin" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jellyfin"
+          }
+        }
+      }
+    },
+    "Jellyfin server" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jellyfin-server"
+          }
+        }
+      }
+    },
+    "Keep the sign-in open on the Apple TV. If the code there changed, scan the new one." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Låt inloggningen vara öppen på Apple TV:n. Om koden där har ändrats, skanna den nya."
+          }
+        }
+      }
+    },
+    "Keyboard focus" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tangentbordsfokus"
+          }
+        }
+      }
+    },
+    "LIVE" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "LIVE"
+          }
+        }
+      }
+    },
+    "LOCKED" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "LÅST"
+          }
+        }
+      }
+    },
+    "Later" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senare"
+          }
+        }
+      }
+    },
+    "Later: " : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senare:"
+          }
+        }
+      }
+    },
+    "License" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Licens"
+          }
+        }
+      }
+    },
+    "Live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Live"
+          }
+        }
+      }
+    },
+    "Live TV from your own Jellyfin server." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Live-TV från din egen Jellyfin-server."
+          }
+        }
+      }
+    },
+    "Live TV with a guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Live-TV med tablå"
+          }
+        }
+      }
+    },
+    "Live picture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Livebild"
+          }
+        }
+      }
+    },
+    "Live · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Live · %@"
+          }
+        }
+      }
+    },
+    "Loading" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in"
+          }
+        }
+      }
+    },
+    "Loading channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in kanaler"
+          }
+        }
+      }
+    },
+    "Loading channels…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in kanaler…"
+          }
+        }
+      }
+    },
+    "Loading details" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in detaljer"
+          }
+        }
+      }
+    },
+    "Loading episodes" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in avsnitt"
+          }
+        }
+      }
+    },
+    "Loading movies and series…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in filmer och serier…"
+          }
+        }
+      }
+    },
+    "Lock now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lås nu"
+          }
+        }
+      }
+    },
+    "Locked" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Låst"
+          }
+        }
+      }
+    },
+    "Login" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggning"
+          }
+        }
+      }
+    },
+    "Login not picked up yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen har inte hämtats än"
+          }
+        }
+      }
+    },
+    "Login not sent" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen skickades inte"
+          }
+        }
+      }
+    },
+    "Login received from your iPhone" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggning mottagen från din iPhone"
+          }
+        }
+      }
+    },
+    "Login received. Checking with %@…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggning mottagen. Kontrollerar med %@…"
+          }
+        }
+      }
+    },
+    "Login received. Checking…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggning mottagen. Kontrollerar…"
+          }
+        }
+      }
+    },
+    "Logins stay in your iCloud Keychain on this %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningar stannar i din iCloud-nyckelring på den här %@."
+          }
+        }
+      }
+    },
+    "M3U" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "M3U"
+          }
+        }
+      }
+    },
+    "M3U playlist" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "M3U-spellista"
+          }
+        }
+      }
+    },
+    "M3U, M3U8 and text files, up to 16 MB" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "M3U-, M3U8- och textfiler, upp till 16 MB"
+          }
+        }
+      }
+    },
+    "MAC address" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MAC-adress"
+          }
+        }
+      }
+    },
+    "Manage profiles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hantera profiler"
+          }
+        }
+      }
+    },
+    "Menu closes" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Menu stänger"
+          }
+        }
+      }
+    },
+    "Missing" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Saknas"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mer"
+          }
+        }
+      }
+    },
+    "More description" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mer beskrivning"
+          }
+        }
+      }
+    },
+    "More info" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mer info"
+          }
+        }
+      }
+    },
+    "Move down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flytta ned"
+          }
+        }
+      }
+    },
+    "Move up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flytta upp"
+          }
+        }
+      }
+    },
+    "Movie info and scores" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filminfo och betyg"
+          }
+        }
+      }
+    },
+    "Movie or Series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Film eller serie"
+          }
+        }
+      }
+    },
+    "Movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer"
+          }
+        }
+      }
+    },
+    "Movies & series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer och serier"
+          }
+        }
+      }
+    },
+    "Movies & series, %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer och serier, %@"
+          }
+        }
+      }
+    },
+    "Movies & series, %@, series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer och serier, %@, serier"
+          }
+        }
+      }
+    },
+    "Movies and series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer och serier"
+          }
+        }
+      }
+    },
+    "Movies and series available" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer och serier tillgängliga"
+          }
+        }
+      }
+    },
+    "Mute" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud av"
+          }
+        }
+      }
+    },
+    "My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Min lista"
+          }
+        }
+      }
+    },
+    "NAME" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "NAMN"
+          }
+        }
+      }
+    },
+    "NEXT" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "NÄSTA"
+          }
+        }
+      }
+    },
+    "NOW" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "NU"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Namn"
+          }
+        }
+      }
+    },
+    "New group" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ny grupp"
+          }
+        }
+      }
+    },
+    "Newest first" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nyast först"
+          }
+        }
+      }
+    },
+    "Next channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa kanal"
+          }
+        }
+      }
+    },
+    "Next result" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa resultat"
+          }
+        }
+      }
+    },
+    "Next result across" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa resultat i sidled"
+          }
+        }
+      }
+    },
+    "Next season" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa säsong"
+          }
+        }
+      }
+    },
+    "No Stalker portal answered at this address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen Stalker-portal svarade på den här adressen."
+          }
+        }
+      }
+    },
+    "No channel %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen kanal %@"
+          }
+        }
+      }
+    },
+    "No channels found" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler hittades"
+          }
+        }
+      }
+    },
+    "No channels in %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler i %@"
+          }
+        }
+      }
+    },
+    "No channels in this group yet. Add some from Groups in Settings." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler i den här gruppen än. Lägg till några från Grupper i Inställningar."
+          }
+        }
+      }
+    },
+    "No channels match." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler matchar."
+          }
+        }
+      }
+    },
+    "No channels yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler än"
+          }
+        }
+      }
+    },
+    "No channels yet. Add a source in Settings." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler än. Lägg till en källa i Inställningar."
+          }
+        }
+      }
+    },
+    "No episodes available" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga avsnitt tillgängliga"
+          }
+        }
+      }
+    },
+    "No favorites yet. Hold select on a channel to add it." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga favoriter än. Håll ned select på en kanal för att lägga till den."
+          }
+        }
+      }
+    },
+    "No favorites yet. Right-click a channel to add it." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga favoriter än. Högerklicka på en kanal för att lägga till den."
+          }
+        }
+      }
+    },
+    "No favorites yet. Touch and hold a channel, or swipe it right, to add it." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga favoriter än. Tryck och håll på en kanal, eller svep den åt höger, för att lägga till den."
+          }
+        }
+      }
+    },
+    "No groups yet. Add a source in Settings and its groups appear here." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga grupper än. Lägg till en källa i Inställningar så visas dess grupper här."
+          }
+        }
+      }
+    },
+    "No link on the clipboard" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen länk i urklippet"
+          }
+        }
+      }
+    },
+    "No live channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga livekanaler"
+          }
+        }
+      }
+    },
+    "No movies or series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga filmer eller serier"
+          }
+        }
+      }
+    },
+    "No programme information" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen programinformation"
+          }
+        }
+      }
+    },
+    "No sources yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga källor än"
+          }
+        }
+      }
+    },
+    "None of the sources this Apple TV asked for are on this %@. Both need the same iCloud account, and new sources can take a minute to arrive." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen av källorna som Apple TV:n bad om finns på den här %@. Båda behöver samma iCloud-konto, och nya källor kan ta en minut att komma fram."
+          }
+        }
+      }
+    },
+    "Not done" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte klar"
+          }
+        }
+      }
+    },
+    "Not in any source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte i någon källa"
+          }
+        }
+      }
+    },
+    "Not links" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte länkar"
+          }
+        }
+      }
+    },
+    "Not on My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte i Min lista"
+          }
+        }
+      }
+    },
+    "Not on this %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte på den här %@"
+          }
+        }
+      }
+    },
+    "Not picked up yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte hämtad än"
+          }
+        }
+      }
+    },
+    "Not sent yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte skickad än"
+          }
+        }
+      }
+    },
+    "Not signed in to iCloud, so it stays on this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte inloggad på iCloud, så den stannar på den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "Not signed in to iCloud. Sources stay on this device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte inloggad på iCloud. Källorna stannar på den här enheten."
+          }
+        }
+      }
+    },
+    "Nothing to watch yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inget att titta på än"
+          }
+        }
+      }
+    },
+    "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inget än? Din iPhone behöver ha Antenna installerat, en internetanslutning och samma iCloud-konto som den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "Now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nu"
+          }
+        }
+      }
+    },
+    "Now · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nu · %@"
+          }
+        }
+      }
+    },
+    "Now, %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nu, %@"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Av"
+          }
+        }
+      }
+    },
+    "Offline" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Offline"
+          }
+        }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "På"
+          }
+        }
+      }
+    },
+    "On My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I Min lista"
+          }
+        }
+      }
+    },
+    "Open Search" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna Sök"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna Inställningar"
+          }
+        }
+      }
+    },
+    "Open details" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna detaljer"
+          }
+        }
+      }
+    },
+    "Open on launch" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna vid start"
+          }
+        }
+      }
+    },
+    "Open the result" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna resultatet"
+          }
+        }
+      }
+    },
+    "Opened from your Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppnad från din Apple TV"
+          }
+        }
+      }
+    },
+    "Opens Antenna and resumes the movie, or opens the series." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppnar Antenna och fortsätter filmen, eller öppnar serien."
+          }
+        }
+      }
+    },
+    "Opens Antenna on Live with the channel playing." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppnar Antenna på Live med kanalen igång."
+          }
+        }
+      }
+    },
+    "Opens Antenna on Search." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppnar Antenna på Sök."
+          }
+        }
+      }
+    },
+    "Optional" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Valfritt"
+          }
+        }
+      }
+    },
+    "Optional XMLTV link" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Valfri XMLTV-länk"
+          }
+        }
+      }
+    },
+    "Passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lösenkod"
+          }
+        }
+      }
+    },
+    "Password" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lösenord"
+          }
+        }
+      }
+    },
+    "Paste the link your provider gave you. The guide link is optional." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Klistra in länken som din leverantör gav dig. Tablålänken är valfri."
+          }
+        }
+      }
+    },
+    "Pause" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pausa"
+          }
+        }
+      }
+    },
+    "Paused" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pausad"
+          }
+        }
+      }
+    },
+    "Picture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bild"
+          }
+        }
+      }
+    },
+    "Picture in picture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bild-i-bild"
+          }
+        }
+      }
+    },
+    "Play" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela"
+          }
+        }
+      }
+    },
+    "Play Title" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela titel"
+          }
+        }
+      }
+    },
+    "Play or pause" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela eller pausa"
+          }
+        }
+      }
+    },
+    "Play the channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela kanalen"
+          }
+        }
+      }
+    },
+    "Playback" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppspelning"
+          }
+        }
+      }
+    },
+    "Playing" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spelar"
+          }
+        }
+      }
+    },
+    "Playing %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spelar %@"
+          }
+        }
+      }
+    },
+    "Playing in Picture in Picture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spelar i bild-i-bild"
+          }
+        }
+      }
+    },
+    "Playing on AirPlay" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spelar via AirPlay"
+          }
+        }
+      }
+    },
+    "Playlist" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellista"
+          }
+        }
+      }
+    },
+    "Playlist downloaded" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellistan hämtad"
+          }
+        }
+      }
+    },
+    "Playlist file" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellistefil"
+          }
+        }
+      }
+    },
+    "Playlist imported" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellistan importerad"
+          }
+        }
+      }
+    },
+    "Plays the channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spelar kanalen"
+          }
+        }
+      }
+    },
+    "Point your iPhone camera at the code. Antenna opens there with this form, and what you enter syncs to this Apple TV through iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rikta iPhone-kameran mot koden. Antenna öppnas där med det här formuläret, och det du anger synkas till den här Apple TV:n via iCloud."
+          }
+        }
+      }
+    },
+    "Portal" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portal"
+          }
+        }
+      }
+    },
+    "Portal and name came from your iPhone." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portal och namn kom från din iPhone."
+          }
+        }
+      }
+    },
+    "Position" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Position"
+          }
+        }
+      }
+    },
+    "Posters and descriptions load as you browse" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Affischer och beskrivningar läses in medan du bläddrar"
+          }
+        }
+      }
+    },
+    "Prefer the remote? Type here; your iPhone offers its keyboard too." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Föredrar du fjärrkontrollen? Skriv här; din iPhone erbjuder också sitt tangentbord."
+          }
+        }
+      }
+    },
+    "Preferences" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inställningar"
+          }
+        }
+      }
+    },
+    "Press Menu to go back" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tryck på Menu för att gå tillbaka"
+          }
+        }
+      }
+    },
+    "Press Menu to go back and check the link" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tryck på Menu för att gå tillbaka och kontrollera länken"
+          }
+        }
+      }
+    },
+    "Previous channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Föregående kanal"
+          }
+        }
+      }
+    },
+    "Previous result" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Föregående resultat"
+          }
+        }
+      }
+    },
+    "Previous result across" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Föregående resultat i sidled"
+          }
+        }
+      }
+    },
+    "Previous season" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Föregående säsong"
+          }
+        }
+      }
+    },
+    "Profile, %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Profil, %@"
+          }
+        }
+      }
+    },
+    "Profiles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Profiler"
+          }
+        }
+      }
+    },
+    "Programme progress" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programförlopp"
+          }
+        }
+      }
+    },
+    "Progress" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Förlopp"
+          }
+        }
+      }
+    },
+    "QR code. Scan it with your iPhone to send the login to this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "QR-kod. Skanna den med din iPhone för att skicka inloggningen till den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "QR code. Scan it with your iPhone to set up this Apple TV from there." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "QR-kod. Skanna den med din iPhone för att ställa in den här Apple TV:n därifrån."
+          }
+        }
+      }
+    },
+    "RECENT" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "SENASTE"
+          }
+        }
+      }
+    },
+    "Re-import %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera %@ igen"
+          }
+        }
+      }
+    },
+    "Re-import…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importera igen…"
+          }
+        }
+      }
+    },
+    "Reading %@…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser %@…"
+          }
+        }
+      }
+    },
+    "Reading the guide…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser tablån…"
+          }
+        }
+      }
+    },
+    "Ready to send" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Redo att skicka"
+          }
+        }
+      }
+    },
+    "Recent" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senaste"
+          }
+        }
+      }
+    },
+    "Recent search, %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senaste sökning, %@"
+          }
+        }
+      }
+    },
+    "Recent searches" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senaste sökningar"
+          }
+        }
+      }
+    },
+    "Recently added" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nyligen tillagt"
+          }
+        }
+      }
+    },
+    "Recently watched" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nyligen sett"
+          }
+        }
+      }
+    },
+    "Redeem a code" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lös in en kod"
+          }
+        }
+      }
+    },
+    "Refresh all" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppdatera alla"
+          }
+        }
+      }
+    },
+    "Refresh all sources" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppdatera alla källor"
+          }
+        }
+      }
+    },
+    "Refresh now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppdatera nu"
+          }
+        }
+      }
+    },
+    "Refresh sources" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppdatera källor"
+          }
+        }
+      }
+    },
+    "Remind me" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Påminn mig"
+          }
+        }
+      }
+    },
+    "Reminder · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Påminnelse · %@"
+          }
+        }
+      }
+    },
+    "Reminders" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Påminnelser"
+          }
+        }
+      }
+    },
+    "Remote" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fjärrkontroll"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort"
+          }
+        }
+      }
+    },
+    "Remove from Favorites" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort från favoriter"
+          }
+        }
+      }
+    },
+    "Remove from My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort från Min lista"
+          }
+        }
+      }
+    },
+    "Remove from favorites" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort från favoriter"
+          }
+        }
+      }
+    },
+    "Remove from my list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort från min lista"
+          }
+        }
+      }
+    },
+    "Remove reminder?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort påminnelsen?"
+          }
+        }
+      }
+    },
+    "Removes %@ and guide from every device signed in to your iCloud account." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort %@ och tablån från alla enheter som är inloggade på ditt iCloud-konto."
+          }
+        }
+      }
+    },
+    "Removes %@ and guide from this device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort %@ och tablån från den här enheten."
+          }
+        }
+      }
+    },
+    "Removes its %@ and guide from every device signed in to your iCloud account." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort dess %@ och tablå från alla enheter som är inloggade på ditt iCloud-konto."
+          }
+        }
+      }
+    },
+    "Removes its %@ and guide from this device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort dess %@ och tablå från den här enheten."
+          }
+        }
+      }
+    },
     "Removes its %@, %@ and guide from every device signed in to your iCloud account." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Removes its %1$@, %2$@ and guide from every device signed in to your iCloud account."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort dess %1$@, %2$@ och tablå från alla enheter som är inloggade på ditt iCloud-konto."
           }
         }
       }
@@ -610,109 +4204,1015 @@
             "state" : "new",
             "value" : "Removes its %1$@, %2$@ and guide from this device."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort dess %1$@, %2$@ och tablå från den här enheten."
+          }
         }
       }
     },
-    "Removes its guide from every device signed in to your iCloud account." : {},
-    "Removes its guide from this device." : {},
-    "Removes the playing channel from Favorites." : {},
-    "Rename" : {},
-    "Replace" : {},
-    "Replace %@" : {},
-    "Required" : {},
-    "Reset the group passcode" : {},
-    "Restore purchase" : {},
-    "Retry" : {},
-    "SERIES" : {},
-    "STALKER" : {},
-    "Sample" : {},
-    "Save" : {},
-    "Saved in the Keychain on this Apple TV. Antenna has no servers." : {},
-    "Saved in the Keychain on this device." : {},
-    "Saved in your iCloud Keychain only. Antenna has no servers and never sees your login." : {},
-    "Saved on this %@" : {},
-    "Scan the code with your iPhone camera. Antenna there sends the login to this Apple TV, encrypted, through iCloud." : {},
-    "Search" : {},
-    "Search For" : {},
-    "Search channels" : {},
-    "Search movies" : {},
-    "Search series" : {},
-    "See all" : {},
-    "See all %lld" : {},
-    "Select a channel" : {},
-    "Selected" : {},
-    "Selected, %@" : {},
-    "Send the login from your iPhone" : {},
-    "Send to Apple TV" : {},
-    "Sending" : {},
-    "Sending the login…" : {},
-    "Sending to your Apple TV" : {},
-    "Sending to your Apple TV…" : {},
-    "Sent" : {},
-    "Series" : {},
-    "Server" : {},
-    "Server and name came from your iPhone." : {},
-    "Set a new passcode. Every locked group stays locked." : {},
-    "Set a passcode" : {},
-    "Set up Apple TV" : {},
-    "Set up from your iPhone" : {},
-    "Setting up %@" : {},
-    "Settings" : {},
-    "Show channel list" : {},
-    "Show password" : {},
-    "Show remote hints" : {},
-    "Show sidebar" : {},
-    "Shows the player controls" : {},
-    "Sign in" : {},
-    "Sign in Apple TV" : {},
-    "Sign in on this Apple TV" : {},
-    "Sign in to %@" : {},
-    "Sign in your Apple TV" : {},
-    "Signed in" : {},
-    "Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own." : {},
-    "Something arrived from your iPhone that this Apple TV can't read." : {},
-    "Sort" : {},
-    "Sorted by number" : {},
-    "Source" : {},
-    "Source: waiting for its login to sync from iCloud" : {},
-    "Sources" : {},
-    "Sources & Settings" : {},
-    "Sources sync to your other devices through iCloud. Logins sync through iCloud Keychain when it is on, and never to Apple TV." : {},
-    "Stalker portal" : {},
-    "Start over" : {},
-    "Start watching" : {},
-    "Start watching now" : {},
-    "Subtitles" : {},
-    "Subtitles Off" : {},
-    "Subtitles On" : {},
-    "Swipe up or down while watching" : {},
-    "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own." : {},
-    "Synced with iCloud" : {},
-    "Tabs" : {},
-    "The MAC address hasn't reached this Apple TV." : {},
-    "The address you open Jellyfin at in a browser, with the username and password you sign in with." : {},
-    "The build script, the build and FFmpeg's source are published with the release." : {},
-    "The first channel is already playing. Press the touch surface for the channel list, press play/pause for the channel bar." : {},
-    "The guide keeps loading behind the picture" : {},
-    "The login could not be saved on this Apple TV. Try again." : {},
-    "The login from your iPhone didn't work here. %@" : {},
-    "The login hasn't reached this Apple TV." : {},
-    "The login stays in your iCloud Keychain. If the Apple TV asks for it, enter it once there." : {},
-    "The offer comes from iOS and needs no setup." : {},
-    "The passcode was changed on another device." : {},
-    "The passcodes did not match. Start again." : {},
-    "The playlist has no channels. Go back and check the link." : {},
-    "The playlist server answered with status %lld." : {},
-    "The portal answered with status %lld." : {},
-    "The portal replied with something Antenna could not read." : {},
-    "The portal turned down this MAC address or login." : {},
-    "The portal turned this device down. It said “%@”." : {},
-    "The provider sent no channels, movies or series. Go back and check the details." : {},
-    "The server answered with status %lld." : {},
-    "The server replied with something Antenna could not read." : {},
-    "The server turned down the username and password. Sign in again." : {},
-    "The source syncs through iCloud to iPhone, iPad and Mac." : {},
-    "The sources sync through iCloud to iPhone, iPad and Mac." : {},
+    "Removes its guide from every device signed in to your iCloud account." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort dess tablå från alla enheter som är inloggade på ditt iCloud-konto."
+          }
+        }
+      }
+    },
+    "Removes its guide from this device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort dess tablå från den här enheten."
+          }
+        }
+      }
+    },
+    "Removes the playing channel from Favorites." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tar bort den spelande kanalen från favoriterna."
+          }
+        }
+      }
+    },
+    "Rename" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Byt namn"
+          }
+        }
+      }
+    },
+    "Replace" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ersätt"
+          }
+        }
+      }
+    },
+    "Replace %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ersätt %@"
+          }
+        }
+      }
+    },
+    "Required" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Obligatoriskt"
+          }
+        }
+      }
+    },
+    "Reset the group passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Återställ grupplösenkoden"
+          }
+        }
+      }
+    },
+    "Restore purchase" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Återställ köp"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Försök igen"
+          }
+        }
+      }
+    },
+    "SERIES" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "SERIE"
+          }
+        }
+      }
+    },
+    "STALKER" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "STALKER"
+          }
+        }
+      }
+    },
+    "Sample" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Exempel"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spara"
+          }
+        }
+      }
+    },
+    "Saved in the Keychain on this Apple TV. Antenna has no servers." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sparas i nyckelringen på den här Apple TV:n. Antenna har inga servrar."
+          }
+        }
+      }
+    },
+    "Saved in the Keychain on this device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sparas i nyckelringen på den här enheten."
+          }
+        }
+      }
+    },
+    "Saved in your iCloud Keychain only. Antenna has no servers and never sees your login." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sparas bara i din iCloud-nyckelring. Antenna har inga servrar och ser aldrig din inloggning."
+          }
+        }
+      }
+    },
+    "Saved on this %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sparad på den här %@"
+          }
+        }
+      }
+    },
+    "Scan the code with your iPhone camera. Antenna there sends the login to this Apple TV, encrypted, through iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skanna koden med iPhone-kameran. Antenna där skickar inloggningen till den här Apple TV:n, krypterad, via iCloud."
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök"
+          }
+        }
+      }
+    },
+    "Search For" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök efter"
+          }
+        }
+      }
+    },
+    "Search channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök kanaler"
+          }
+        }
+      }
+    },
+    "Search movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök filmer"
+          }
+        }
+      }
+    },
+    "Search series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök serier"
+          }
+        }
+      }
+    },
+    "See all" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa alla"
+          }
+        }
+      }
+    },
+    "See all %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa alla %lld"
+          }
+        }
+      }
+    },
+    "Select a channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en kanal"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vald"
+          }
+        }
+      }
+    },
+    "Selected, %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vald, %@"
+          }
+        }
+      }
+    },
+    "Send the login from your iPhone" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skicka inloggningen från din iPhone"
+          }
+        }
+      }
+    },
+    "Send to Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skicka till Apple TV"
+          }
+        }
+      }
+    },
+    "Sending" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skickar"
+          }
+        }
+      }
+    },
+    "Sending the login…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skickar inloggningen…"
+          }
+        }
+      }
+    },
+    "Sending to your Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skickar till din Apple TV"
+          }
+        }
+      }
+    },
+    "Sending to your Apple TV…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skickar till din Apple TV…"
+          }
+        }
+      }
+    },
+    "Sent" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skickad"
+          }
+        }
+      }
+    },
+    "Series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serier"
+          }
+        }
+      }
+    },
+    "Server" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Server"
+          }
+        }
+      }
+    },
+    "Server and name came from your iPhone." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Server och namn kom från din iPhone."
+          }
+        }
+      }
+    },
+    "Set a new passcode. Every locked group stays locked." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en ny lösenkod. Alla låsta grupper förblir låsta."
+          }
+        }
+      }
+    },
+    "Set a passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en lösenkod"
+          }
+        }
+      }
+    },
+    "Set up Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ställ in Apple TV"
+          }
+        }
+      }
+    },
+    "Set up from your iPhone" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ställ in från din iPhone"
+          }
+        }
+      }
+    },
+    "Setting up %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ställer in %@"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inställningar"
+          }
+        }
+      }
+    },
+    "Show channel list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa kanallistan"
+          }
+        }
+      }
+    },
+    "Show password" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa lösenord"
+          }
+        }
+      }
+    },
+    "Show remote hints" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa tips för fjärrkontrollen"
+          }
+        }
+      }
+    },
+    "Show sidebar" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa sidofältet"
+          }
+        }
+      }
+    },
+    "Shows the player controls" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visar uppspelningsreglagen"
+          }
+        }
+      }
+    },
+    "Sign in" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in"
+          }
+        }
+      }
+    },
+    "Sign in Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in Apple TV"
+          }
+        }
+      }
+    },
+    "Sign in on this Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in på den här Apple TV:n"
+          }
+        }
+      }
+    },
+    "Sign in to %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in på %@"
+          }
+        }
+      }
+    },
+    "Sign in your Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in din Apple TV"
+          }
+        }
+      }
+    },
+    "Signed in" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggad"
+          }
+        }
+      }
+    },
+    "Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggad på iCloud. Källor som läggs till i Antenna på iPhone, iPad eller Mac visas här av sig själva."
+          }
+        }
+      }
+    },
+    "Something arrived from your iPhone that this Apple TV can't read." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Något kom från din iPhone som den här Apple TV:n inte kan läsa."
+          }
+        }
+      }
+    },
+    "Sort" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sortera"
+          }
+        }
+      }
+    },
+    "Sorted by number" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sorterade efter nummer"
+          }
+        }
+      }
+    },
+    "Source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källa"
+          }
+        }
+      }
+    },
+    "Source: waiting for its login to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källa: väntar på att inloggningen synkas från iCloud"
+          }
+        }
+      }
+    },
+    "Sources" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källor"
+          }
+        }
+      }
+    },
+    "Sources & Settings" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källor och inställningar"
+          }
+        }
+      }
+    },
+    "Sources sync to your other devices through iCloud. Logins sync through iCloud Keychain when it is on, and never to Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källor synkas till dina andra enheter via iCloud. Inloggningar synkas via iCloud-nyckelringen när den är på, och aldrig till Apple TV."
+          }
+        }
+      }
+    },
+    "Stalker portal" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stalker-portal"
+          }
+        }
+      }
+    },
+    "Start over" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börja om"
+          }
+        }
+      }
+    },
+    "Start watching" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börja titta"
+          }
+        }
+      }
+    },
+    "Start watching now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börja titta nu"
+          }
+        }
+      }
+    },
+    "Subtitles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undertexter"
+          }
+        }
+      }
+    },
+    "Subtitles Off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undertexter av"
+          }
+        }
+      }
+    },
+    "Subtitles On" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undertexter på"
+          }
+        }
+      }
+    },
+    "Swipe up or down while watching" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Svep uppåt eller nedåt medan du tittar"
+          }
+        }
+      }
+    },
+    "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Synkad via iCloud. Antenna på Apple TV, iPad och Mac visar den här källan av sig själv."
+          }
+        }
+      }
+    },
+    "Synced with iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Synkad med iCloud"
+          }
+        }
+      }
+    },
+    "Tabs" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flikar"
+          }
+        }
+      }
+    },
+    "The MAC address hasn't reached this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MAC-adressen har inte kommit fram till den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "The address you open Jellyfin at in a browser, with the username and password you sign in with." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Adressen du öppnar Jellyfin på i en webbläsare, med användarnamnet och lösenordet du loggar in med."
+          }
+        }
+      }
+    },
+    "The build script, the build and FFmpeg's source are published with the release." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Byggskriptet, bygget och FFmpegs källkod publiceras med versionen."
+          }
+        }
+      }
+    },
+    "The first channel is already playing. Press the touch surface for the channel list, press play/pause for the channel bar." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den första kanalen spelas redan. Tryck på pekytan för kanallistan, tryck på spela/paus för kanalraden."
+          }
+        }
+      }
+    },
+    "The guide keeps loading behind the picture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån fortsätter läsas in bakom bilden"
+          }
+        }
+      }
+    },
+    "The login could not be saved on this Apple TV. Try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen kunde inte sparas på den här Apple TV:n. Försök igen."
+          }
+        }
+      }
+    },
+    "The login from your iPhone didn't work here. %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen från din iPhone fungerade inte här. %@"
+          }
+        }
+      }
+    },
+    "The login hasn't reached this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen har inte kommit fram till den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "The login stays in your iCloud Keychain. If the Apple TV asks for it, enter it once there." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen stannar i din iCloud-nyckelring. Om Apple TV:n frågar efter den, ange den en gång där."
+          }
+        }
+      }
+    },
+    "The offer comes from iOS and needs no setup." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erbjudandet kommer från iOS och behöver ingen inställning."
+          }
+        }
+      }
+    },
+    "The passcode was changed on another device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lösenkoden ändrades på en annan enhet."
+          }
+        }
+      }
+    },
+    "The passcodes did not match. Start again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lösenkoderna stämde inte överens. Börja om."
+          }
+        }
+      }
+    },
+    "The playlist has no channels. Go back and check the link." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellistan har inga kanaler. Gå tillbaka och kontrollera länken."
+          }
+        }
+      }
+    },
+    "The playlist server answered with status %lld." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellisteservern svarade med status %lld."
+          }
+        }
+      }
+    },
+    "The portal answered with status %lld." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portalen svarade med status %lld."
+          }
+        }
+      }
+    },
+    "The portal replied with something Antenna could not read." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portalen svarade med något som Antenna inte kunde läsa."
+          }
+        }
+      }
+    },
+    "The portal turned down this MAC address or login." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portalen avvisade den här MAC-adressen eller inloggningen."
+          }
+        }
+      }
+    },
+    "The portal turned this device down. It said “%@”." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portalen avvisade den här enheten. Den sa ”%@”."
+          }
+        }
+      }
+    },
+    "The provider sent no channels, movies or series. Go back and check the details." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantören skickade inga kanaler, filmer eller serier. Gå tillbaka och kontrollera uppgifterna."
+          }
+        }
+      }
+    },
+    "The server answered with status %lld." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Servern svarade med status %lld."
+          }
+        }
+      }
+    },
+    "The server replied with something Antenna could not read." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Servern svarade med något som Antenna inte kunde läsa."
+          }
+        }
+      }
+    },
+    "The server turned down the username and password. Sign in again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Servern avvisade användarnamnet och lösenordet. Logga in igen."
+          }
+        }
+      }
+    },
+    "The source syncs through iCloud to iPhone, iPad and Mac." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källan synkas via iCloud till iPhone, iPad och Mac."
+          }
+        }
+      }
+    },
+    "The sources sync through iCloud to iPhone, iPad and Mac." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källorna synkas via iCloud till iPhone, iPad och Mac."
+          }
+        }
+      }
+    },
     "This %@ already has %lld sources. They appear on the Apple TV on their own when both use the same iCloud account." : {
       "localizations" : {
         "en" : {
@@ -720,101 +5220,908 @@
             "state" : "new",
             "value" : "This %1$@ already has %2$lld sources. They appear on the Apple TV on their own when both use the same iCloud account."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här %1$@ har redan %2$lld källor. De visas på Apple TV:n av sig själva när båda använder samma iCloud-konto."
+          }
         }
       }
     },
-    "This %@ already has 1 source. It appears on the Apple TV on its own when both use the same iCloud account." : {},
-    "This %@ isn't signed in to iCloud, so it can't send logins to your Apple TV. Sign in to iCloud in Settings, then scan the code again." : {},
-    "This %@ isn't signed in to iCloud, so the source can't reach your Apple TV. Sign in to iCloud in Settings and it sends on its own." : {},
-    "This channel is locked." : {},
-    "This code is from a newer Antenna. Update Antenna on this %@ to set up your Apple TV from here." : {},
-    "This code was already used. If the Apple TV still needs a login, it shows a new code." : {},
-    "This link is an Xtream login. Add it as Xtream to get Movies, Series and the guide." : {},
-    "This runs once." : {},
-    "This source arrived through iCloud without its login. Enter it once here." : {},
-    "This source is already added." : {},
-    "This stream can't skip" : {},
-    "Through iCloud. Antenna on the Apple TV picks it up on its own." : {},
-    "Titles and people you open, and names you search for, are looked up in TMDB. Nothing about you or your sources is sent." : {},
-    "Toggle" : {},
-    "Toggle Favorite" : {},
-    "Trailer" : {},
-    "Try again" : {},
-    "Try again in %lld seconds" : {},
-    "Tune Channel" : {},
-    "Turn off" : {},
-    "Turn on" : {},
-    "Type" : {},
-    "Type the address your Channels DVR server shows, such as 192.168.1.20 or nas.local." : {},
-    "Type the details from your provider above." : {},
-    "UP NEXT" : {},
-    "Unmute" : {},
-    "Up" : {},
-    "Up next on %@" : {},
-    "Upcoming" : {},
-    "Update Antenna on both, or type the login here." : {},
-    "Use Xtream" : {},
-    "Username" : {},
-    "Usually a few seconds" : {},
-    "Version" : {},
-    "Volume" : {},
-    "Waiting for its login to sync from iCloud" : {},
-    "Waiting for its playlist to sync from iCloud" : {},
-    "Waiting for its playlist to sync from iCloud." : {},
-    "Waiting for login" : {},
-    "Waiting for the login…" : {},
-    "Waiting for the passcode from iCloud." : {},
-    "Waiting for your iPhone" : {},
-    "Waiting for your iPhone · %lld logins" : {},
-    "Watch" : {},
-    "Welcome to Antenna" : {},
-    "What is a source?" : {},
-    "What kind of source?" : {},
-    "When your provider includes them" : {},
-    "Which channel?" : {},
-    "Which movie or series?" : {},
-    "Who's watching?" : {},
-    "Wrong passcode" : {},
-    "XTREAM" : {},
-    "Xtream" : {},
-    "Xtream login" : {},
-    "You can also sign in on the Apple TV." : {},
-    "You can have up to eight profiles." : {},
-    "You're offline." : {},
-    "You're set" : {},
-    "Your Apple TV asked for these logins. They're encrypted for that Apple TV only and go through your iCloud." : {},
-    "Your Apple TV picked up the login." : {},
-    "Your Apple TV picked up the logins." : {},
-    "Your order" : {},
-    "Your own group needs a name." : {},
-    "Your provider gave you one of these. You can add more later." : {},
-    "Zoom in" : {},
-    "Zoom out" : {},
+    "This %@ already has 1 source. It appears on the Apple TV on its own when both use the same iCloud account." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här %@ har redan 1 källa. Den visas på Apple TV:n av sig själv när båda använder samma iCloud-konto."
+          }
+        }
+      }
+    },
+    "This %@ isn't signed in to iCloud, so it can't send logins to your Apple TV. Sign in to iCloud in Settings, then scan the code again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här %@ är inte inloggad på iCloud, så den kan inte skicka inloggningar till din Apple TV. Logga in på iCloud i Inställningar och skanna sedan koden igen."
+          }
+        }
+      }
+    },
+    "This %@ isn't signed in to iCloud, so the source can't reach your Apple TV. Sign in to iCloud in Settings and it sends on its own." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här %@ är inte inloggad på iCloud, så källan kan inte nå din Apple TV. Logga in på iCloud i Inställningar så skickas den av sig själv."
+          }
+        }
+      }
+    },
+    "This channel is locked." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här kanalen är låst."
+          }
+        }
+      }
+    },
+    "This code is from a newer Antenna. Update Antenna on this %@ to set up your Apple TV from here." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här koden kommer från en nyare Antenna. Uppdatera Antenna på den här %@ för att ställa in din Apple TV härifrån."
+          }
+        }
+      }
+    },
+    "This code was already used. If the Apple TV still needs a login, it shows a new code." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här koden har redan använts. Om Apple TV:n fortfarande behöver en inloggning visar den en ny kod."
+          }
+        }
+      }
+    },
+    "This link is an Xtream login. Add it as Xtream to get Movies, Series and the guide." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här länken är en Xtream-inloggning. Lägg till den som Xtream för att få filmer, serier och tablån."
+          }
+        }
+      }
+    },
+    "This runs once." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Det här körs en gång."
+          }
+        }
+      }
+    },
+    "This source arrived through iCloud without its login. Enter it once here." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här källan kom via iCloud utan sin inloggning. Ange den en gång här."
+          }
+        }
+      }
+    },
+    "This source is already added." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här källan är redan tillagd."
+          }
+        }
+      }
+    },
+    "This stream can't skip" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här strömmen kan inte hoppa"
+          }
+        }
+      }
+    },
+    "Through iCloud. Antenna on the Apple TV picks it up on its own." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Via iCloud. Antenna på Apple TV:n hämtar den av sig själv."
+          }
+        }
+      }
+    },
+    "Titles and people you open, and names you search for, are looked up in TMDB. Nothing about you or your sources is sent." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Titlar och personer du öppnar, och namn du söker efter, slås upp i TMDB. Inget om dig eller dina källor skickas."
+          }
+        }
+      }
+    },
+    "Toggle" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Växla"
+          }
+        }
+      }
+    },
+    "Toggle Favorite" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Växla favorit"
+          }
+        }
+      }
+    },
+    "Trailer" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Trailer"
+          }
+        }
+      }
+    },
+    "Try again" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Försök igen"
+          }
+        }
+      }
+    },
+    "Try again in %lld seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Försök igen om %lld sekunder"
+          }
+        }
+      }
+    },
+    "Tune Channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Byt kanal"
+          }
+        }
+      }
+    },
+    "Turn off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stäng av"
+          }
+        }
+      }
+    },
+    "Turn on" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Slå på"
+          }
+        }
+      }
+    },
+    "Type" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Typ"
+          }
+        }
+      }
+    },
+    "Type the address your Channels DVR server shows, such as 192.168.1.20 or nas.local." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skriv adressen som din Channels DVR-server visar, till exempel 192.168.1.20 eller nas.local."
+          }
+        }
+      }
+    },
+    "Type the details from your provider above." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Skriv in uppgifterna från din leverantör ovan."
+          }
+        }
+      }
+    },
+    "UP NEXT" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HÄRNÄST"
+          }
+        }
+      }
+    },
+    "Unmute" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud på"
+          }
+        }
+      }
+    },
+    "Up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Upp"
+          }
+        }
+      }
+    },
+    "Up next on %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Härnäst på %@"
+          }
+        }
+      }
+    },
+    "Upcoming" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kommande"
+          }
+        }
+      }
+    },
+    "Update Antenna on both, or type the login here." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppdatera Antenna på båda, eller skriv inloggningen här."
+          }
+        }
+      }
+    },
+    "Use Xtream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Använd Xtream"
+          }
+        }
+      }
+    },
+    "Username" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Användarnamn"
+          }
+        }
+      }
+    },
+    "Usually a few seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Brukar ta några sekunder"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version"
+          }
+        }
+      }
+    },
+    "Volume" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Volym"
+          }
+        }
+      }
+    },
+    "Waiting for its login to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på att inloggningen synkas från iCloud"
+          }
+        }
+      }
+    },
+    "Waiting for its playlist to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på att spellistan synkas från iCloud"
+          }
+        }
+      }
+    },
+    "Waiting for its playlist to sync from iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på att spellistan synkas från iCloud."
+          }
+        }
+      }
+    },
+    "Waiting for login" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på inloggning"
+          }
+        }
+      }
+    },
+    "Waiting for the login…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på inloggningen…"
+          }
+        }
+      }
+    },
+    "Waiting for the passcode from iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på lösenkoden från iCloud."
+          }
+        }
+      }
+    },
+    "Waiting for your iPhone" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på din iPhone"
+          }
+        }
+      }
+    },
+    "Waiting for your iPhone · %lld logins" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på din iPhone · %lld inloggningar"
+          }
+        }
+      }
+    },
+    "Watch" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Titta"
+          }
+        }
+      }
+    },
+    "Welcome to Antenna" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välkommen till Antenna"
+          }
+        }
+      }
+    },
+    "What is a source?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vad är en källa?"
+          }
+        }
+      }
+    },
+    "What kind of source?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vilken sorts källa?"
+          }
+        }
+      }
+    },
+    "When your provider includes them" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "När din leverantör har med dem"
+          }
+        }
+      }
+    },
+    "Which channel?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vilken kanal?"
+          }
+        }
+      }
+    },
+    "Which movie or series?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vilken film eller serie?"
+          }
+        }
+      }
+    },
+    "Who's watching?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vem tittar?"
+          }
+        }
+      }
+    },
+    "Wrong passcode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fel lösenkod"
+          }
+        }
+      }
+    },
+    "XTREAM" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "XTREAM"
+          }
+        }
+      }
+    },
+    "Xtream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Xtream"
+          }
+        }
+      }
+    },
+    "Xtream login" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Xtream-inloggning"
+          }
+        }
+      }
+    },
+    "You can also sign in on the Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du kan också logga in på Apple TV:n."
+          }
+        }
+      }
+    },
+    "You can have up to eight profiles." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du kan ha upp till åtta profiler."
+          }
+        }
+      }
+    },
+    "You're offline." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du är offline."
+          }
+        }
+      }
+    },
+    "You're set" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Klart"
+          }
+        }
+      }
+    },
+    "Your Apple TV asked for these logins. They're encrypted for that Apple TV only and go through your iCloud." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din Apple TV bad om de här inloggningarna. De är krypterade bara för den Apple TV:n och går via ditt iCloud."
+          }
+        }
+      }
+    },
+    "Your Apple TV picked up the login." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din Apple TV hämtade inloggningen."
+          }
+        }
+      }
+    },
+    "Your Apple TV picked up the logins." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din Apple TV hämtade inloggningarna."
+          }
+        }
+      }
+    },
+    "Your order" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din ordning"
+          }
+        }
+      }
+    },
+    "Your own group needs a name." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din egen grupp behöver ett namn."
+          }
+        }
+      }
+    },
+    "Your provider gave you one of these. You can add more later." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din leverantör gav dig en av de här. Du kan lägga till fler senare."
+          }
+        }
+      }
+    },
+    "Zoom in" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zooma in"
+          }
+        }
+      }
+    },
+    "Zoom out" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zooma ut"
+          }
+        }
+      }
+    },
     "_" : {
       "shouldTranslate" : false
     },
-    "behind" : {},
-    "dimmed" : {},
-    "full" : {},
-    "http://" : {},
-    "http://jellyfin.local:8096" : {},
-    "https://" : {},
-    "later" : {},
-    "live" : {},
-    "live channels · %@" : {},
-    "loading" : {},
-    "movies and series" : {},
-    "of catch-up on %@ channels" : {},
-    "of guide · %@ channels" : {},
-    "off" : {},
-    "on" : {},
-    "on %@ channels" : {},
-    "on now" : {},
-    "past" : {},
-    "paused" : {},
-    "playing" : {},
-    "rating" : {},
-    "the section" : {},
+    "behind" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "efter"
+          }
+        }
+      }
+    },
+    "dimmed" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nedtonad"
+          }
+        }
+      }
+    },
+    "full" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "full"
+          }
+        }
+      }
+    },
+    "http://" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "http://"
+          }
+        }
+      }
+    },
+    "http://jellyfin.local:8096" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "http://jellyfin.local:8096"
+          }
+        }
+      }
+    },
+    "https://" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://"
+          }
+        }
+      }
+    },
+    "later" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "senare"
+          }
+        }
+      }
+    },
+    "live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "live"
+          }
+        }
+      }
+    },
+    "live channels · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "livekanaler · %@"
+          }
+        }
+      }
+    },
+    "loading" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "läser in"
+          }
+        }
+      }
+    },
+    "movies and series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "filmer och serier"
+          }
+        }
+      }
+    },
+    "of catch-up on %@ channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "i efterhand på %@ kanaler"
+          }
+        }
+      }
+    },
+    "of guide · %@ channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tablå · %@ kanaler"
+          }
+        }
+      }
+    },
+    "off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "av"
+          }
+        }
+      }
+    },
+    "on" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "på"
+          }
+        }
+      }
+    },
+    "on %@ channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "på %@ kanaler"
+          }
+        }
+      }
+    },
+    "on now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sänds nu"
+          }
+        }
+      }
+    },
+    "past" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tidigare"
+          }
+        }
+      }
+    },
+    "paused" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pausad"
+          }
+        }
+      }
+    },
+    "playing" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "spelar"
+          }
+        }
+      }
+    },
+    "rating" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "betyg"
+          }
+        }
+      }
+    },
+    "the section" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "avsnittet"
+          }
+        }
+      }
+    },
     "◂" : {
       "shouldTranslate" : false
     }

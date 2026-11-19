@@ -36,6 +36,12 @@
             "state" : "new",
             "value" : "Antenna connects to TV servers on your home network when one of your sources points there."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna ansluter till TV-servrar i ditt hemnätverk när någon av dina källor pekar dit."
+          }
         }
       }
     }

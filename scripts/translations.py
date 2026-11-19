@@ -161,6 +161,14 @@ def sync(export_dir):
             continue
         data = json.loads(exported.read_text())
         strings = data.get("strings", {})
+        # The export holds the source language only. Translations come from
+        # the repo's catalog, which the export rewrites in place and keeps.
+        source = data.get("sourceLanguage", "en")
+        current = json.loads(target.read_text()).get("strings", {})
+        for key, entry in strings.items():
+            for lang, node in current.get(key, {}).get("localizations", {}).items():
+                if lang != source:
+                    entry.setdefault("localizations", {})[lang] = node
         for key in [k for k, v in strings.items() if v.get("extractionState") == "stale"]:
             del strings[key]
         for key, entry in strings.items():

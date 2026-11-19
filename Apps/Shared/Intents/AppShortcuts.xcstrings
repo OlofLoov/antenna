@@ -11,6 +11,14 @@
               "Add this channel to favorites in ${applicationName}"
             ]
           }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Lägg till den här kanalen bland favoriterna i ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -25,6 +33,15 @@
               "Play a movie in ${applicationName}"
             ]
           }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Spela ${title} i ${applicationName}",
+              "Spela en film i ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -36,6 +53,14 @@
             "state" : "new",
             "values" : [
               "Remove this channel from favorites in ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Ta bort den här kanalen från favoriterna i ${applicationName}"
             ]
           }
         }
@@ -52,6 +77,15 @@
               "Find a channel in ${applicationName}"
             ]
           }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Sök i ${applicationName}",
+              "Hitta en kanal i ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -66,6 +100,17 @@
               "Watch ${channel} in ${applicationName}",
               "Put on ${channel} in ${applicationName}",
               "Tune a channel in ${applicationName}"
+            ]
+          }
+        },
+        "sv" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Byt till ${channel} i ${applicationName}",
+              "Titta på ${channel} i ${applicationName}",
+              "Sätt på ${channel} i ${applicationName}",
+              "Byt kanal i ${applicationName}"
             ]
           }
         }

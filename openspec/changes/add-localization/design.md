@@ -527,6 +527,23 @@ PR 4, numbers, dates and durations:
   writes its own abbreviations in the catalog, and the Spanish and German
   duration tests land with those languages (tasks 6.3 and 7.2).
 
+PR 5, Swedish:
+- The export's `Source Contents` catalogs hold English only, while the
+  catalogs in the repo, which the export rewrites in place, keep every
+  language. `scripts/translations.py sync` now carries each key's other
+  languages over from the repo catalog, so a sync no longer drops a
+  translation.
+- A language is added by its code in `Config/languages` and its entries in
+  the catalogs. XcodeGen lists it in `knownRegions` on its own once a
+  catalog holds it, and the build writes `sv.lproj` into the app, the
+  Apple TV app and the Core bundle.
+- Translations go in as `needs_review` from a machine first pass, Siri
+  phrases included. Source text stays as it arrives: the Live list on an
+  iPhone simulator set to Swedish shows "Alla kanaler", "Tablå" and "Läser in
+  tablån…" around English channel and programme names.
+- Language tests live in `LanguageTests.swift` in AntennaCore, one set of
+  examples per language.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

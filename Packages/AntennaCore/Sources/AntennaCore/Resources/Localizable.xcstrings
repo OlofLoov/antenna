@@ -1,8 +1,26 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    " · Family Sharing" : {},
-    " · Shared with you through Family Sharing" : {},
+    " · Family Sharing" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · Familjedelning"
+          }
+        }
+      }
+    },
+    " · Shared with you through Family Sharing" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · Delas med dig via Familjedelning"
+          }
+        }
+      }
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -14,14 +32,38 @@
       },
       "shouldTranslate" : false
     },
-    "%@ (Forced)" : {},
-    "%@ (not supported)" : {},
+    "%@ (Forced)" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ (tvingade)"
+          }
+        }
+      }
+    },
+    "%@ (not supported)" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ (stöds inte)"
+          }
+        }
+      }
+    },
     "%@ and %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ and %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ och %2$@"
           }
         }
       }
@@ -32,6 +74,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ and %2$lld more"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ och %2$lld till"
           }
         }
       }
@@ -65,6 +113,34 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ skickade ingen data på %2$#@arg2@."
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg sekund"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg sekunder"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -75,18 +151,57 @@
             "state" : "new",
             "value" : "%1$@ for %2$@, then %3$@ per year"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ i %2$@, sedan %3$@ per år"
+          }
         }
       }
     },
-    "%@ is already a favorite." : {},
-    "%@ is busy right now. Try again in a moment." : {},
-    "%@ is in a locked group. Unlock it in Antenna first." : {},
+    "%@ is already a favorite." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ är redan en favorit."
+          }
+        }
+      }
+    },
+    "%@ is busy right now. Try again in a moment." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ är upptagen just nu. Försök igen om en stund."
+          }
+        }
+      }
+    },
+    "%@ is in a locked group. Unlock it in Antenna first." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ finns i en låst grupp. Lås upp den i Antenna först."
+          }
+        }
+      }
+    },
     "%@ is no longer available from %@." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ is no longer available from %2$@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ finns inte längre hos %2$@."
           }
         }
       }
@@ -98,12 +213,45 @@
             "state" : "new",
             "value" : "%1$@ is no longer in %2$@."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ finns inte längre i %2$@."
+          }
         }
       }
     },
-    "%@ isn't a favorite." : {},
-    "%@ knows the channel but carries no programmes for it. Pick another entry below, or wait for the provider to fill it." : {},
-    "%@ lists programmes for this channel but none after now. Wait for the next guide refresh or pick another entry below." : {},
+    "%@ isn't a favorite." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ är inte en favorit."
+          }
+        }
+      }
+    },
+    "%@ knows the channel but carries no programmes for it. Pick another entry below, or wait for the provider to fill it." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ känner till kanalen men har inga program för den. Välj en annan post nedan, eller vänta tills leverantören fyller på den."
+          }
+        }
+      }
+    },
+    "%@ lists programmes for this channel but none after now. Wait for the next guide refresh or pick another entry below." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ listar program för den här kanalen men inga efter nu. Vänta på nästa tablåuppdatering eller välj en annan post nedan."
+          }
+        }
+      }
+    },
     "%@ per %@ for %@, then %@ per year" : {
       "localizations" : {
         "en" : {
@@ -111,11 +259,35 @@
             "state" : "new",
             "value" : "%1$@ per %2$@ for %3$@, then %4$@ per year"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ per %2$@ i %3$@, sedan %4$@ per år"
+          }
         }
       }
     },
-    "%@ rejected the login. Check the username and password in Settings, or ask the provider whether the account has expired." : {},
-    "%@ rejected the login. Sign in again on this Apple TV, or ask the provider whether the account has expired." : {},
+    "%@ rejected the login. Check the username and password in Settings, or ask the provider whether the account has expired." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ avvisade inloggningen. Kontrollera användarnamnet och lösenordet i Inställningar, eller fråga leverantören om kontot har gått ut."
+          }
+        }
+      }
+    },
+    "%@ rejected the login. Sign in again on this Apple TV, or ask the provider whether the account has expired." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ avvisade inloggningen. Logga in igen på den här Apple TV:n, eller fråga leverantören om kontot har gått ut."
+          }
+        }
+      }
+    },
     "%@ returned %@ for this channel." : {
       "localizations" : {
         "en" : {
@@ -123,19 +295,67 @@
             "state" : "new",
             "value" : "%1$@ returned %2$@ for this channel."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ svarade %2$@ för den här kanalen."
+          }
         }
       }
     },
-    "%@ returned 404 for this channel. The channel may have moved or been removed by the provider." : {},
-    "%@ returned a server error. Its server is having trouble. Try again in a moment." : {},
-    "%@ sent data that is not a playable stream. The address may point to a web page or an empty file." : {},
-    "%@ stopped sending data." : {},
+    "%@ returned 404 for this channel. The channel may have moved or been removed by the provider." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ svarade 404 för den här kanalen. Kanalen kan ha flyttats eller tagits bort av leverantören."
+          }
+        }
+      }
+    },
+    "%@ returned a server error. Its server is having trouble. Try again in a moment." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ svarade med ett serverfel. Servern har problem. Försök igen om en stund."
+          }
+        }
+      }
+    },
+    "%@ sent data that is not a playable stream. The address may point to a web page or an empty file." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ skickade data som inte är en spelbar ström. Adressen kan peka på en webbsida eller en tom fil."
+          }
+        }
+      }
+    },
+    "%@ stopped sending data." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ slutade skicka data."
+          }
+        }
+      }
+    },
     "%@ · %@ of %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ · %2$@ of %3$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$@ av %3$@"
           }
         }
       }
@@ -151,10 +371,46 @@
       },
       "shouldTranslate" : false
     },
-    "%@, and no guide entry has exactly its name. Pick an entry below." : {},
-    "%@: no movies" : {},
-    "%@: no series" : {},
-    "%@: waiting for its login to sync from iCloud" : {},
+    "%@, and no guide entry has exactly its name. Pick an entry below." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, och ingen tablåpost har exakt det namnet. Välj en post nedan."
+          }
+        }
+      }
+    },
+    "%@: no movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: inga filmer"
+          }
+        }
+      }
+    },
+    "%@: no series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: inga serier"
+          }
+        }
+      }
+    },
+    "%@: waiting for its login to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: väntar på att inloggningen synkas från iCloud"
+          }
+        }
+      }
+    },
     "%lld channels" : {
       "localizations" : {
         "en" : {
@@ -170,6 +426,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld channels"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld kanal"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld kanaler"
                 }
               }
             }
@@ -226,6 +500,54 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$#@arg1@ i %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg kanal"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg kanaler"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg grupp"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg grupper"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -244,6 +566,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld channels · Refreshing…"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld kanal · Uppdaterar…"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld kanaler · Uppdaterar…"
                 }
               }
             }
@@ -270,6 +610,24 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld anslutning"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld anslutningar"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -288,6 +646,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld dag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld dagar"
                 }
               }
             }
@@ -314,6 +690,24 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld post hoppades över"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld poster hoppades över"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -332,6 +726,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld episodes"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld avsnitt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld avsnitt"
                 }
               }
             }
@@ -358,6 +770,24 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld avsnitt kunde inte läsas från leverantörens lista."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld avsnitt kunde inte läsas från leverantörens lista."
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -376,6 +806,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld groups"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld grupp"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld grupper"
                 }
               }
             }
@@ -402,16 +850,49 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld tablå hämtas fortfarande."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld tablåer hämtas fortfarande."
+                }
+              }
+            }
+          }
         }
       }
     },
-    "%lld h" : {},
+    "%lld h" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld tim"
+          }
+        }
+      }
+    },
     "%lld h %@%lld min" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld h %2$@%3$lld min"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld tim %2$@%3$lld min"
           }
         }
       }
@@ -423,6 +904,12 @@
             "state" : "new",
             "value" : "%1$lld h %2$lld min"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld tim %2$lld min"
+          }
         }
       }
     },
@@ -433,10 +920,25 @@
             "state" : "new",
             "value" : "%1$lld h %2$lld min left"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld tim %2$lld min kvar"
+          }
         }
       }
     },
-    "%lld h left" : {},
+    "%lld h left" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld tim kvar"
+          }
+        }
+      }
+    },
     "%lld hours" : {
       "localizations" : {
         "en" : {
@@ -452,6 +954,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld hours"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld timme"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld timmar"
                 }
               }
             }
@@ -474,6 +994,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld live channels"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld livekanal"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld livekanaler"
                 }
               }
             }
@@ -530,12 +1068,87 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$#@arg1@ i %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg livekanal"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg livekanaler"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg grupp"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg grupper"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "%lld min" : {},
-    "%lld min behind" : {},
-    "%lld min left" : {},
+    "%lld min" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld min"
+          }
+        }
+      }
+    },
+    "%lld min behind" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld min efter"
+          }
+        }
+      }
+    },
+    "%lld min left" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld min kvar"
+          }
+        }
+      }
+    },
     "%lld minutes" : {
       "localizations" : {
         "en" : {
@@ -551,6 +1164,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld minutes"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld minut"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld minuter"
                 }
               }
             }
@@ -587,6 +1218,34 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$#@arg1@ och %2$lld serier"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg film"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg filmer"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -596,6 +1255,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld of %2$lld guides could not be downloaded."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld av %2$lld tablåer kunde inte hämtas."
           }
         }
       }
@@ -615,6 +1280,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld programmes"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld program"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld program"
                 }
               }
             }
@@ -641,6 +1324,24 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld säsong"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld säsonger"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -663,13 +1364,67 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld titel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld titlar"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "1 guide is still downloading." : {},
-    "<offer displayPrice> for <period>, then <displayPrice> per year" : {},
-    "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" : {},
-    "Account active until %@" : {},
+    "1 guide is still downloading." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 tablå hämtas fortfarande."
+          }
+        }
+      }
+    },
+    "<offer displayPrice> for <period>, then <displayPrice> per year" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "<offer displayPrice> i <period>, sedan <displayPrice> per år"
+          }
+        }
+      }
+    },
+    "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "<offer displayPrice> per <unit> i <period>, sedan <displayPrice> per år"
+          }
+        }
+      }
+    },
+    "Account active until %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontot är aktivt till %@"
+          }
+        }
+      }
+    },
     "Account active until %@ · %lld connections" : {
       "localizations" : {
         "en" : {
@@ -699,55 +1454,497 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontot är aktivt till %1$@ · %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg anslutning"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg anslutningar"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Add a guide URL to get programme information for %@." : {},
-    "Add as new tile" : {},
-    "Add each link as its own M3U source." : {},
-    "Add favorites in Antenna to see them here" : {},
-    "Add guide URL" : {},
-    "Add the channel's playlist instead." : {},
-    "Add to Multi-view" : {},
-    "Add to multi-view" : {},
-    "Add to or remove from Favorites" : {},
-    "Added %@ to favorites." : {},
-    "All" : {},
-    "All channels" : {},
-    "Allow local network access for Antenna in Settings." : {},
-    "Already live" : {},
-    "Always" : {},
-    "Antenna can't be bought in this App Store region yet." : {},
-    "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate." : {},
-    "Antenna couldn't reach %@. Try again later." : {},
-    "Antenna downloads the guide when the source finishes loading." : {},
-    "Antenna has no sources yet. Open Antenna to add one." : {},
-    "Antenna has not asked to send notifications. Reminders show only while the app is open." : {},
-    "Antenna is locked again" : {},
-    "Antenna is still loading your library. Try again in a moment." : {},
-    "Antenna isn't playing a channel right now. Say which channel instead." : {},
-    "Antenna isn't unlocked on this device yet. Open Antenna to continue." : {},
-    "Antenna player" : {},
-    "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." : {},
-    "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." : {},
-    "Antenna reads the guide links from the playlist when it finishes loading." : {},
-    "Apple TV cannot show notifications. Reminders show as a banner while Antenna is open." : {},
-    "Apple player" : {},
-    "At start" : {},
-    "Audio and subtitles" : {},
-    "Auto" : {},
-    "Back" : {},
-    "Back %lld Seconds" : {},
-    "Back or close" : {},
-    "Buffer full. Playing from the earliest point" : {},
-    "Buffering" : {},
-    "CATCH-UP" : {},
-    "CATCH-UP %lldD" : {},
-    "Can't play another stream" : {},
-    "Can't reach the App Store" : {},
-    "Cancel" : {},
-    "Cast" : {},
-    "Catch-up" : {},
+    "Add a guide URL to get programme information for %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till en tablå-URL för att få programinformation för %@."
+          }
+        }
+      }
+    },
+    "Add as new tile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till som ny ruta"
+          }
+        }
+      }
+    },
+    "Add each link as its own M3U source." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till varje länk som en egen M3U-källa."
+          }
+        }
+      }
+    },
+    "Add favorites in Antenna to see them here" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till favoriter i Antenna för att se dem här"
+          }
+        }
+      }
+    },
+    "Add guide URL" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till tablå-URL"
+          }
+        }
+      }
+    },
+    "Add the channel's playlist instead." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till kanalens spellista i stället."
+          }
+        }
+      }
+    },
+    "Add to Multi-view" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i Multivy"
+          }
+        }
+      }
+    },
+    "Add to multi-view" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i multivy"
+          }
+        }
+      }
+    },
+    "Add to or remove from Favorites" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lägg till i eller ta bort från favoriter"
+          }
+        }
+      }
+    },
+    "Added %@ to favorites." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ har lagts till bland favoriterna."
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alla"
+          }
+        }
+      }
+    },
+    "All channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alla kanaler"
+          }
+        }
+      }
+    },
+    "Allow local network access for Antenna in Settings." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillåt åtkomst till lokalt nätverk för Antenna i Inställningar."
+          }
+        }
+      }
+    },
+    "Already live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Redan live"
+          }
+        }
+      }
+    },
+    "Always" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alltid"
+          }
+        }
+      }
+    },
+    "Antenna can't be bought in this App Store region yet." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna kan inte köpas i den här App Store-regionen än."
+          }
+        }
+      }
+    },
+    "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna kan inte verifiera serverns certifikat. Använd http i ditt nätverk eller ett betrott certifikat."
+          }
+        }
+      }
+    },
+    "Antenna couldn't reach %@. Try again later." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna kunde inte nå %@. Försök igen senare."
+          }
+        }
+      }
+    },
+    "Antenna downloads the guide when the source finishes loading." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna hämtar tablån när källan har lästs in."
+          }
+        }
+      }
+    },
+    "Antenna has no sources yet. Open Antenna to add one." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna har inga källor än. Öppna Antenna för att lägga till en."
+          }
+        }
+      }
+    },
+    "Antenna has not asked to send notifications. Reminders show only while the app is open." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna har inte bett om att få skicka notiser. Påminnelser visas bara medan appen är öppen."
+          }
+        }
+      }
+    },
+    "Antenna is locked again" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna är låst igen"
+          }
+        }
+      }
+    },
+    "Antenna is still loading your library. Try again in a moment." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna läser fortfarande in ditt bibliotek. Försök igen om en stund."
+          }
+        }
+      }
+    },
+    "Antenna isn't playing a channel right now. Say which channel instead." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spelar ingen kanal just nu. Säg vilken kanal i stället."
+          }
+        }
+      }
+    },
+    "Antenna isn't unlocked on this device yet. Open Antenna to continue." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna är inte upplåst på den här enheten än. Öppna Antenna för att fortsätta."
+          }
+        }
+      }
+    },
+    "Antenna player" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna-spelaren"
+          }
+        }
+      }
+    },
+    "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spelar de TV-källor du redan har och innehåller inga kanaler. Ett köp låser upp alla funktioner på iPhone, iPad, Mac och Apple TV, för alla i din familjedelningsgrupp."
+          }
+        }
+      }
+    },
+    "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna läser M3U-spellistor: #EXTINF-rader, var och en följd av en strömlänk. Den här filen har inget sådant par."
+          }
+        }
+      }
+    },
+    "Antenna reads the guide links from the playlist when it finishes loading." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna läser tablålänkarna från spellistan när den har lästs in."
+          }
+        }
+      }
+    },
+    "Apple TV cannot show notifications. Reminders show as a banner while Antenna is open." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple TV kan inte visa notiser. Påminnelser visas som en banner medan Antenna är öppen."
+          }
+        }
+      }
+    },
+    "Apple player" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apples spelare"
+          }
+        }
+      }
+    },
+    "At start" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vid start"
+          }
+        }
+      }
+    },
+    "Audio and subtitles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud och undertexter"
+          }
+        }
+      }
+    },
+    "Auto" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auto"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka"
+          }
+        }
+      }
+    },
+    "Back %lld Seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bakåt %lld sekunder"
+          }
+        }
+      }
+    },
+    "Back or close" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka eller stäng"
+          }
+        }
+      }
+    },
+    "Buffer full. Playing from the earliest point" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bufferten är full. Spelar från den tidigaste punkten"
+          }
+        }
+      }
+    },
+    "Buffering" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Buffrar"
+          }
+        }
+      }
+    },
+    "CATCH-UP" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "SE I EFTERHAND"
+          }
+        }
+      }
+    },
+    "CATCH-UP %lldD" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "SE I EFTERHAND %lld D"
+          }
+        }
+      }
+    },
+    "Can't play another stream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kan inte spela en ström till"
+          }
+        }
+      }
+    },
+    "Can't reach the App Store" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kan inte nå App Store"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avbryt"
+          }
+        }
+      }
+    },
+    "Cast" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Medverkande"
+          }
+        }
+      }
+    },
+    "Catch-up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Se i efterhand"
+          }
+        }
+      }
+    },
     "Catch-up %lld days" : {
       "localizations" : {
         "en" : {
@@ -767,11 +1964,47 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Se i efterhand %lld dag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Se i efterhand %lld dagar"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Change channel" : {},
-    "Changes channel" : {},
+    "Change channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Byt kanal"
+          }
+        }
+      }
+    },
+    "Changes channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Byter kanal"
+          }
+        }
+      }
+    },
     "Changing tile %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -779,68 +2012,605 @@
             "state" : "new",
             "value" : "Changing tile %1$lld of %2$lld"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Byter ruta %1$lld av %2$lld"
+          }
         }
       }
     },
-    "Channel list" : {},
-    "Channels" : {},
-    "Channels DVR is starting. Try again in a moment." : {},
-    "Channels are still loading" : {},
-    "Channels have not loaded for %@" : {},
-    "Channels without guide" : {},
-    "Channels without guide · %lld" : {},
-    "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back." : {},
-    "Check the spelling or try a channel number." : {},
-    "Choose Remind me on a programme that has not started, in the Guide or in Search." : {},
-    "Choose a group" : {},
-    "Choose a tab" : {},
-    "Click" : {},
-    "Click left or right" : {},
-    "Close" : {},
-    "Connect to the internet and try again." : {},
-    "Connect to the internet and try again. Playback resumes on its own when the connection returns." : {},
-    "Continue watching" : {},
-    "Could not download · %@" : {},
-    "Could not load %@" : {},
-    "Could not load movies" : {},
-    "Could not load series" : {},
-    "Could not reach %@" : {},
-    "Could not reach %@. Check the address and try again." : {},
-    "Could not read %@. Make sure it is downloaded and try again." : {},
-    "Could not read login" : {},
-    "Could not refresh: %@" : {},
-    "Could not sign in. Check the MAC address, and the login if you have one." : {},
-    "Could not sign in. Check the username and password." : {},
-    "Could not store credentials: %@" : {},
-    "Director" : {},
-    "Downloading" : {},
-    "Downloading guide…" : {},
-    "Downloading the guide · %@" : {},
-    "Downloading · %@" : {},
-    "Ends now" : {},
-    "Enter a username without a colon." : {},
-    "Enter a valid MAC address, like 00:1A:79:12:34:56." : {},
-    "Enter a valid URL." : {},
-    "Enter a valid server address." : {},
-    "Enter the MAC address." : {},
-    "Enter the password." : {},
-    "Enter the playlist URL." : {},
-    "Enter the portal address." : {},
-    "Enter the server address." : {},
-    "Enter the username." : {},
-    "Episode" : {},
-    "Episode %@" : {},
-    "Every 12 hours" : {},
-    "Every 24 hours" : {},
-    "Every 6 hours" : {},
-    "Every channel in %@ has a guide" : {},
-    "Exit multi-view" : {},
-    "Favorites" : {},
-    "Filter Channels" : {},
-    "Filter channels" : {},
-    "Find" : {},
-    "Find Channel" : {},
-    "Find a guide entry" : {},
+    "Channel list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanallista"
+          }
+        }
+      }
+    },
+    "Channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanaler"
+          }
+        }
+      }
+    },
+    "Channels DVR is starting. Try again in a moment." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Channels DVR startar. Försök igen om en stund."
+          }
+        }
+      }
+    },
+    "Channels are still loading" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanalerna läses fortfarande in"
+          }
+        }
+      }
+    },
+    "Channels have not loaded for %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanalerna har inte lästs in för %@"
+          }
+        }
+      }
+    },
+    "Channels without guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanaler utan tablå"
+          }
+        }
+      }
+    },
+    "Channels without guide · %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kanaler utan tablå · %lld"
+          }
+        }
+      }
+    },
+    "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrollera anslutningen och försök igen. Om du redan har köpt Antenna hittar Återställ köp det när anslutningen är tillbaka."
+          }
+        }
+      }
+    },
+    "Check the spelling or try a channel number." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kontrollera stavningen eller prova ett kanalnummer."
+          }
+        }
+      }
+    },
+    "Choose Remind me on a programme that has not started, in the Guide or in Search." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj Påminn mig på ett program som inte har börjat, i Tablå eller i Sök."
+          }
+        }
+      }
+    },
+    "Choose a group" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en grupp"
+          }
+        }
+      }
+    },
+    "Choose a tab" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en flik"
+          }
+        }
+      }
+    },
+    "Click" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Klicka"
+          }
+        }
+      }
+    },
+    "Click left or right" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Klicka åt vänster eller höger"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stäng"
+          }
+        }
+      }
+    },
+    "Connect to the internet and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anslut till internet och försök igen."
+          }
+        }
+      }
+    },
+    "Connect to the internet and try again. Playback resumes on its own when the connection returns." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anslut till internet och försök igen. Uppspelningen fortsätter av sig själv när anslutningen är tillbaka."
+          }
+        }
+      }
+    },
+    "Continue watching" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fortsätt titta"
+          }
+        }
+      }
+    },
+    "Could not download · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte hämta · %@"
+          }
+        }
+      }
+    },
+    "Could not load %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in %@"
+          }
+        }
+      }
+    },
+    "Could not load movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in filmer"
+          }
+        }
+      }
+    },
+    "Could not load series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa in serier"
+          }
+        }
+      }
+    },
+    "Could not reach %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte nå %@"
+          }
+        }
+      }
+    },
+    "Could not reach %@. Check the address and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte nå %@. Kontrollera adressen och försök igen."
+          }
+        }
+      }
+    },
+    "Could not read %@. Make sure it is downloaded and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa %@. Se till att den är hämtad och försök igen."
+          }
+        }
+      }
+    },
+    "Could not read login" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte läsa inloggningen"
+          }
+        }
+      }
+    },
+    "Could not refresh: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte uppdatera: %@"
+          }
+        }
+      }
+    },
+    "Could not sign in. Check the MAC address, and the login if you have one." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte logga in. Kontrollera MAC-adressen, och inloggningen om du har en."
+          }
+        }
+      }
+    },
+    "Could not sign in. Check the username and password." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte logga in. Kontrollera användarnamnet och lösenordet."
+          }
+        }
+      }
+    },
+    "Could not store credentials: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kunde inte spara inloggningsuppgifterna: %@"
+          }
+        }
+      }
+    },
+    "Director" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Regissör"
+          }
+        }
+      }
+    },
+    "Downloading" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hämtar"
+          }
+        }
+      }
+    },
+    "Downloading guide…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hämtar tablån…"
+          }
+        }
+      }
+    },
+    "Downloading the guide · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hämtar tablån · %@"
+          }
+        }
+      }
+    },
+    "Downloading · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hämtar · %@"
+          }
+        }
+      }
+    },
+    "Ends now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Slutar nu"
+          }
+        }
+      }
+    },
+    "Enter a username without a colon." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange ett användarnamn utan kolon."
+          }
+        }
+      }
+    },
+    "Enter a valid MAC address, like 00:1A:79:12:34:56." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange en giltig MAC-adress, som 00:1A:79:12:34:56."
+          }
+        }
+      }
+    },
+    "Enter a valid URL." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange en giltig URL."
+          }
+        }
+      }
+    },
+    "Enter a valid server address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange en giltig serveradress."
+          }
+        }
+      }
+    },
+    "Enter the MAC address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange MAC-adressen."
+          }
+        }
+      }
+    },
+    "Enter the password." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange lösenordet."
+          }
+        }
+      }
+    },
+    "Enter the playlist URL." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange spellistans URL."
+          }
+        }
+      }
+    },
+    "Enter the portal address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange portaladressen."
+          }
+        }
+      }
+    },
+    "Enter the server address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange serveradressen."
+          }
+        }
+      }
+    },
+    "Enter the username." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange användarnamnet."
+          }
+        }
+      }
+    },
+    "Episode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avsnitt"
+          }
+        }
+      }
+    },
+    "Episode %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avsnitt %@"
+          }
+        }
+      }
+    },
+    "Every 12 hours" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Var 12:e timme"
+          }
+        }
+      }
+    },
+    "Every 24 hours" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Var 24:e timme"
+          }
+        }
+      }
+    },
+    "Every 6 hours" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Var 6:e timme"
+          }
+        }
+      }
+    },
+    "Every channel in %@ has a guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alla kanaler i %@ har en tablå"
+          }
+        }
+      }
+    },
+    "Exit multi-view" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avsluta multivy"
+          }
+        }
+      }
+    },
+    "Favorites" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Favoriter"
+          }
+        }
+      }
+    },
+    "Filter Channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filtrera kanaler"
+          }
+        }
+      }
+    },
+    "Filter channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filtrera kanaler"
+          }
+        }
+      }
+    },
+    "Find" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hitta"
+          }
+        }
+      }
+    },
+    "Find Channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hitta kanal"
+          }
+        }
+      }
+    },
+    "Find a guide entry" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hitta en tablåpost"
+          }
+        }
+      }
+    },
     "First %@ free, then %@ per year" : {
       "localizations" : {
         "en" : {
@@ -848,19 +2618,115 @@
             "state" : "new",
             "value" : "First %1$@ free, then %2$@ per year"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Första %1$@ gratis, sedan %2$@ per år"
+          }
         }
       }
     },
-    "First <period> free, then <displayPrice> per year" : {},
-    "Forced" : {},
-    "Format not supported" : {},
-    "Forward" : {},
-    "Forward %lld Seconds" : {},
-    "From the playlist" : {},
-    "Full screen" : {},
-    "Group" : {},
-    "Groups or details" : {},
-    "Guide" : {},
+    "First <period> free, then <displayPrice> per year" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Första <period> gratis, sedan <displayPrice> per år"
+          }
+        }
+      }
+    },
+    "Forced" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tvingade"
+          }
+        }
+      }
+    },
+    "Format not supported" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Formatet stöds inte"
+          }
+        }
+      }
+    },
+    "Forward" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Framåt"
+          }
+        }
+      }
+    },
+    "Forward %lld Seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Framåt %lld sekunder"
+          }
+        }
+      }
+    },
+    "From the playlist" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Från spellistan"
+          }
+        }
+      }
+    },
+    "Full screen" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Helskärm"
+          }
+        }
+      }
+    },
+    "Group" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grupp"
+          }
+        }
+      }
+    },
+    "Groups or details" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grupper eller detaljer"
+          }
+        }
+      }
+    },
+    "Guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå"
+          }
+        }
+      }
+    },
     "Guide %lld days" : {
       "localizations" : {
         "en" : {
@@ -880,12 +2746,57 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Tablå %lld dag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Tablå %lld dagar"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Guide URL" : {},
-    "Guide ended" : {},
-    "Guide failed" : {},
+    "Guide URL" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå-URL"
+          }
+        }
+      }
+    },
+    "Guide ended" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån har tagit slut"
+          }
+        }
+      }
+    },
+    "Guide failed" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån misslyckades"
+          }
+        }
+      }
+    },
     "Guide for %lld days · %lld of %lld channels" : {
       "localizations" : {
         "en" : {
@@ -935,10 +2846,67 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå för %1$#@arg1@ · %2$lld av %3$#@arg3@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg dag"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg dagar"
+                    }
+                  }
+                }
+              }
+            },
+            "arg3" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg kanal"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg kanaler"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Guide from %@" : {},
+    "Guide from %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå från %@"
+          }
+        }
+      }
+    },
     "Guide id “%@” is not in any of the %lld guides" : {
       "localizations" : {
         "en" : {
@@ -946,29 +2914,215 @@
             "state" : "new",
             "value" : "Guide id “%1$@” is not in any of the %2$lld guides"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå-id ”%1$@” finns inte i någon av de %2$lld tablåerna"
+          }
         }
       }
     },
-    "Guide id “%@” is not in the guide" : {},
-    "Guide link" : {},
-    "Guide sources" : {},
-    "Guide unavailable" : {},
-    "Hide the info bar" : {},
-    "Hold" : {},
-    "Hold play/pause for live" : {},
-    "Hold select" : {},
-    "Hold select for options" : {},
-    "Home Screen" : {},
-    "Id not found" : {},
-    "If it points to a playlist or a stream, add it as a source." : {},
-    "Includes Family Sharing" : {},
-    "Info bar" : {},
-    "Info, audio and subtitles" : {},
-    "Keep watching" : {},
-    "LIVE" : {},
-    "Last channel or Recents" : {},
-    "Lifetime" : {},
-    "Live" : {},
+    "Guide id “%@” is not in the guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablå-id ”%@” finns inte i tablån"
+          }
+        }
+      }
+    },
+    "Guide link" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablålänk"
+          }
+        }
+      }
+    },
+    "Guide sources" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablåkällor"
+          }
+        }
+      }
+    },
+    "Guide unavailable" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån är inte tillgänglig"
+          }
+        }
+      }
+    },
+    "Hide the info bar" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dölj inforaden"
+          }
+        }
+      }
+    },
+    "Hold" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Håll ned"
+          }
+        }
+      }
+    },
+    "Hold play/pause for live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Håll ned spela/paus för live"
+          }
+        }
+      }
+    },
+    "Hold select" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Håll ned select"
+          }
+        }
+      }
+    },
+    "Hold select for options" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Håll ned select för alternativ"
+          }
+        }
+      }
+    },
+    "Home Screen" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hemskärmen"
+          }
+        }
+      }
+    },
+    "Id not found" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Id hittades inte"
+          }
+        }
+      }
+    },
+    "If it points to a playlist or a stream, add it as a source." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Om den pekar på en spellista eller en ström, lägg till den som en källa."
+          }
+        }
+      }
+    },
+    "Includes Family Sharing" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inklusive familjedelning"
+          }
+        }
+      }
+    },
+    "Info bar" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inforad"
+          }
+        }
+      }
+    },
+    "Info, audio and subtitles" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Info, ljud och undertexter"
+          }
+        }
+      }
+    },
+    "Keep watching" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fortsätt titta"
+          }
+        }
+      }
+    },
+    "LIVE" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "LIVE"
+          }
+        }
+      }
+    },
+    "Last channel or Recents" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senaste kanalen eller Senaste"
+          }
+        }
+      }
+    },
+    "Lifetime" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Livstid"
+          }
+        }
+      }
+    },
+    "Live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Live"
+          }
+        }
+      }
+    },
     "Loaded · %lld of %lld channels · %lld days" : {
       "localizations" : {
         "en" : {
@@ -1018,32 +3172,287 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inläst · %1$lld av %2$#@arg2@ · %3$#@arg3@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg kanal"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg kanaler"
+                    }
+                  }
+                }
+              }
+            },
+            "arg3" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg dag"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg dagar"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Loading" : {},
-    "Loading guide…" : {},
-    "Loading price" : {},
-    "Loading…" : {},
-    "Loading… · last loaded %@" : {},
-    "Login rejected" : {},
-    "Many providers allow one or two streams per account at a time." : {},
-    "Many providers allow one or two streams per account at a time. If the login changed, check it in Settings." : {},
-    "Many providers allow one or two streams per account at a time. If the login changed, sign in again on this Apple TV." : {},
-    "Mapped by you" : {},
-    "Mapping not found" : {},
-    "Matched by name" : {},
-    "Matched by name · %lld" : {},
-    "Matched by tvg-id" : {},
-    "Matches %@" : {},
-    "Menu" : {},
-    "Mono" : {},
-    "More info and My list" : {},
-    "Move down" : {},
-    "Move the new place" : {},
-    "Move through the guide" : {},
-    "Move up" : {},
-    "Moved from %@" : {},
+    "Loading" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in"
+          }
+        }
+      }
+    },
+    "Loading guide…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in tablån…"
+          }
+        }
+      }
+    },
+    "Loading price" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in pris"
+          }
+        }
+      }
+    },
+    "Loading…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in…"
+          }
+        }
+      }
+    },
+    "Loading… · last loaded %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser in… · senast inläst %@"
+          }
+        }
+      }
+    },
+    "Login rejected" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen avvisades"
+          }
+        }
+      }
+    },
+    "Many providers allow one or two streams per account at a time." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Många leverantörer tillåter en eller två strömmar per konto åt gången."
+          }
+        }
+      }
+    },
+    "Many providers allow one or two streams per account at a time. If the login changed, check it in Settings." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Många leverantörer tillåter en eller två strömmar per konto åt gången. Om inloggningen har ändrats, kontrollera den i Inställningar."
+          }
+        }
+      }
+    },
+    "Many providers allow one or two streams per account at a time. If the login changed, sign in again on this Apple TV." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Många leverantörer tillåter en eller två strömmar per konto åt gången. Om inloggningen har ändrats, logga in igen på den här Apple TV:n."
+          }
+        }
+      }
+    },
+    "Mapped by you" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kopplad av dig"
+          }
+        }
+      }
+    },
+    "Mapping not found" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kopplingen hittades inte"
+          }
+        }
+      }
+    },
+    "Matched by name" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Matchad på namn"
+          }
+        }
+      }
+    },
+    "Matched by name · %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Matchad på namn · %lld"
+          }
+        }
+      }
+    },
+    "Matched by tvg-id" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Matchad på tvg-id"
+          }
+        }
+      }
+    },
+    "Matches %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Matchar %@"
+          }
+        }
+      }
+    },
+    "Menu" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Menu"
+          }
+        }
+      }
+    },
+    "Mono" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mono"
+          }
+        }
+      }
+    },
+    "More info and My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mer info och Min lista"
+          }
+        }
+      }
+    },
+    "Move down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flytta ned"
+          }
+        }
+      }
+    },
+    "Move the new place" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flytta till den nya platsen"
+          }
+        }
+      }
+    },
+    "Move through the guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rör dig i tablån"
+          }
+        }
+      }
+    },
+    "Move up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flytta upp"
+          }
+        }
+      }
+    },
+    "Moved from %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flyttad från %@"
+          }
+        }
+      }
+    },
     "Moved from %@ %@" : {
       "localizations" : {
         "en" : {
@@ -1051,14 +3460,65 @@
             "state" : "new",
             "value" : "Moved from %1$@ %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flyttad från %1$@ %2$@"
+          }
         }
       }
     },
-    "Movie" : {},
-    "Movie · %@" : {},
-    "Movies" : {},
-    "Multi-view" : {},
-    "Multi-view is full" : {},
+    "Movie" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Film"
+          }
+        }
+      }
+    },
+    "Movie · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Film · %@"
+          }
+        }
+      }
+    },
+    "Movies" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filmer"
+          }
+        }
+      }
+    },
+    "Multi-view" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multivy"
+          }
+        }
+      }
+    },
+    "Multi-view is full" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multivyn är full"
+          }
+        }
+      }
+    },
     "Multi-view · tile %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -1066,33 +3526,255 @@
             "state" : "new",
             "value" : "Multi-view · tile %1$lld of %2$lld"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multivy · ruta %1$lld av %2$lld"
+          }
         }
       }
     },
-    "Mute" : {},
-    "My list" : {},
-    "Network error" : {},
-    "New" : {},
-    "Next 7 days" : {},
-    "Next episode" : {},
-    "Next episode in %lld" : {},
-    "Next episode, %@" : {},
-    "Next: %@" : {},
-    "No Channels DVR server at %@." : {},
-    "No Jellyfin server answered at %@. Check the address and try again." : {},
-    "No Stalker portal answered at %@. Check the address and try again." : {},
-    "No channels found in %@." : {},
-    "No guide" : {},
-    "No guide entry matches “%@”" : {},
-    "No guide id" : {},
-    "No longer in the guide" : {},
-    "No programme information" : {},
-    "No programmes" : {},
-    "No programmes in the guide" : {},
-    "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." : {},
-    "No reminders" : {},
-    "No results for “%@”" : {},
-    "No subtitles in this stream" : {},
+    "Mute" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ljud av"
+          }
+        }
+      }
+    },
+    "My list" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Min lista"
+          }
+        }
+      }
+    },
+    "Network error" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nätverksfel"
+          }
+        }
+      }
+    },
+    "New" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ny"
+          }
+        }
+      }
+    },
+    "Next 7 days" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa 7 dagar"
+          }
+        }
+      }
+    },
+    "Next episode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa avsnitt"
+          }
+        }
+      }
+    },
+    "Next episode in %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa avsnitt om %lld"
+          }
+        }
+      }
+    },
+    "Next episode, %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa avsnitt, %@"
+          }
+        }
+      }
+    },
+    "Next: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nästa: %@"
+          }
+        }
+      }
+    },
+    "No Channels DVR server at %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen Channels DVR-server på %@."
+          }
+        }
+      }
+    },
+    "No Jellyfin server answered at %@. Check the address and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen Jellyfin-server svarade på %@. Kontrollera adressen och försök igen."
+          }
+        }
+      }
+    },
+    "No Stalker portal answered at %@. Check the address and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen Stalker-portal svarade på %@. Kontrollera adressen och försök igen."
+          }
+        }
+      }
+    },
+    "No channels found in %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga kanaler hittades i %@."
+          }
+        }
+      }
+    },
+    "No guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen tablå"
+          }
+        }
+      }
+    },
+    "No guide entry matches “%@”" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen tablåpost matchar ”%@”"
+          }
+        }
+      }
+    },
+    "No guide id" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inget tablå-id"
+          }
+        }
+      }
+    },
+    "No longer in the guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte längre i tablån"
+          }
+        }
+      }
+    },
+    "No programme information" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen programinformation"
+          }
+        }
+      }
+    },
+    "No programmes" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga program"
+          }
+        }
+      }
+    },
+    "No programmes in the guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga program i tablån"
+          }
+        }
+      }
+    },
+    "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inget köp hittades för det här Apple-kontot. Om en familjemedlem köpte Antenna, kontrollera att köpdelning är på i Familjedelning."
+          }
+        }
+      }
+    },
+    "No reminders" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga påminnelser"
+          }
+        }
+      }
+    },
+    "No results for “%@”" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga resultat för ”%@”"
+          }
+        }
+      }
+    },
+    "No subtitles in this stream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inga undertexter i den här strömmen"
+          }
+        }
+      }
+    },
     "None of the %lld guides for %@ lists “%@”. Pick an entry below." : {
       "localizations" : {
         "en" : {
@@ -1100,49 +3782,415 @@
             "state" : "new",
             "value" : "None of the %1$lld guides for %2$@ lists “%3$@”. Pick an entry below."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ingen av de %1$lld tablåerna för %2$@ listar ”%3$@”. Välj en post nedan."
+          }
         }
       }
     },
-    "Not a guide file" : {},
-    "Not downloaded yet" : {},
-    "Not enough free storage to rewind live TV" : {},
-    "Not loaded yet" : {},
-    "Not signed in on this Apple TV" : {},
-    "Nothing here yet" : {},
-    "Nothing more to pay. Your sources and favorites are where you left them." : {},
-    "Notifications are off for Antenna. Reminders show only while the app is open." : {},
-    "Now: %@" : {},
-    "Off" : {},
-    "Offline" : {},
-    "Offline · retries when you're back online" : {},
-    "On now" : {},
-    "Only manually" : {},
-    "Open" : {},
-    "Open or change" : {},
-    "Other" : {},
-    "Pause" : {},
-    "Pause or play" : {},
-    "Pay once. Yours for good." : {},
-    "Pick another entry below, or remove the mapping to go back to the playlist's id." : {},
-    "Play" : {},
-    "Play %@" : {},
-    "Play from here" : {},
-    "Play now" : {},
-    "Play or choose" : {},
-    "Play the next episode" : {},
-    "Play/Pause" : {},
-    "Play/Pause to return" : {},
-    "Plays the next episode of a series when one ends. Applies to this device only." : {},
-    "Press to browse channels" : {},
-    "Price unavailable" : {},
-    "Provider busy" : {},
-    "Provider error" : {},
-    "Provider guide" : {},
-    "Purchases are turned off on this device. Check Screen Time, or ask the family organizer." : {},
-    "Re-enter link" : {},
-    "Reading the guide…" : {},
-    "Recently added" : {},
-    "Recents" : {},
+    "Not a guide file" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte en tablåfil"
+          }
+        }
+      }
+    },
+    "Not downloaded yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte hämtad än"
+          }
+        }
+      }
+    },
+    "Not enough free storage to rewind live TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte tillräckligt med ledigt lagringsutrymme för att spola tillbaka live-TV"
+          }
+        }
+      }
+    },
+    "Not loaded yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte inläst än"
+          }
+        }
+      }
+    },
+    "Not signed in on this Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inte inloggad på den här Apple TV:n"
+          }
+        }
+      }
+    },
+    "Nothing here yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inget här än"
+          }
+        }
+      }
+    },
+    "Nothing more to pay. Your sources and favorites are where you left them." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inget mer att betala. Dina källor och favoriter är där du lämnade dem."
+          }
+        }
+      }
+    },
+    "Notifications are off for Antenna. Reminders show only while the app is open." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notiser är avstängda för Antenna. Påminnelser visas bara medan appen är öppen."
+          }
+        }
+      }
+    },
+    "Now: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nu: %@"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Av"
+          }
+        }
+      }
+    },
+    "Offline" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Offline"
+          }
+        }
+      }
+    },
+    "Offline · retries when you're back online" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Offline · försöker igen när du är online"
+          }
+        }
+      }
+    },
+    "On now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sänds nu"
+          }
+        }
+      }
+    },
+    "Only manually" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bara manuellt"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna"
+          }
+        }
+      }
+    },
+    "Open or change" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öppna eller ändra"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Övrigt"
+          }
+        }
+      }
+    },
+    "Pause" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pausa"
+          }
+        }
+      }
+    },
+    "Pause or play" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pausa eller spela"
+          }
+        }
+      }
+    },
+    "Pay once. Yours for good." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Betala en gång. Din för alltid."
+          }
+        }
+      }
+    },
+    "Pick another entry below, or remove the mapping to go back to the playlist's id." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj en annan post nedan, eller ta bort kopplingen för att gå tillbaka till spellistans id."
+          }
+        }
+      }
+    },
+    "Play" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela"
+          }
+        }
+      }
+    },
+    "Play %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela %@"
+          }
+        }
+      }
+    },
+    "Play from here" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela härifrån"
+          }
+        }
+      }
+    },
+    "Play now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela nu"
+          }
+        }
+      }
+    },
+    "Play or choose" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela eller välj"
+          }
+        }
+      }
+    },
+    "Play the next episode" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela nästa avsnitt"
+          }
+        }
+      }
+    },
+    "Play/Pause" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela/paus"
+          }
+        }
+      }
+    },
+    "Play/Pause to return" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spela/paus för att gå tillbaka"
+          }
+        }
+      }
+    },
+    "Plays the next episode of a series when one ends. Applies to this device only." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spelar nästa avsnitt i en serie när ett tar slut. Gäller bara den här enheten."
+          }
+        }
+      }
+    },
+    "Press to browse channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tryck för att bläddra bland kanaler"
+          }
+        }
+      }
+    },
+    "Price unavailable" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Priset är inte tillgängligt"
+          }
+        }
+      }
+    },
+    "Provider busy" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantören är upptagen"
+          }
+        }
+      }
+    },
+    "Provider error" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantörsfel"
+          }
+        }
+      }
+    },
+    "Provider guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantörens tablå"
+          }
+        }
+      }
+    },
+    "Purchases are turned off on this device. Check Screen Time, or ask the family organizer." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Köp är avstängda på den här enheten. Kontrollera Skärmtid, eller fråga familjens organisatör."
+          }
+        }
+      }
+    },
+    "Re-enter link" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ange länken igen"
+          }
+        }
+      }
+    },
+    "Reading the guide…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läser tablån…"
+          }
+        }
+      }
+    },
+    "Recently added" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nyligen tillagt"
+          }
+        }
+      }
+    },
+    "Recents" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senaste"
+          }
+        }
+      }
+    },
     "Reconnecting… attempt %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -1150,36 +4198,285 @@
             "state" : "new",
             "value" : "Reconnecting… attempt %1$lld of %2$lld"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansluter igen… försök %1$lld av %2$lld"
+          }
         }
       }
     },
-    "Refreshed %@" : {},
-    "Remind me" : {},
-    "Reminder set" : {},
-    "Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antenna is open." : {},
-    "Remote: %@" : {},
-    "Remove" : {},
-    "Remove Tile" : {},
-    "Remove a tile or pick a lower-resolution channel." : {},
-    "Remove from multi-view" : {},
-    "Remove match" : {},
-    "Remove the username and password from the address." : {},
-    "Removed %@ from favorites." : {},
-    "Renews every year. Cancel any time." : {},
-    "Renews on %@. Your sources and favorites are where you left them." : {},
-    "Renews on <expiresAt>. Your sources and favorites are where you left them." : {},
-    "Restore did not go through. Try again." : {},
-    "Resume" : {},
-    "Resume %@" : {},
-    "Retry now" : {},
-    "Rewind isn't available on this channel" : {},
-    "Rewind stopped working" : {},
-    "Rewind stopped working. Back to live TV" : {},
-    "Scrub" : {},
-    "Search" : {},
-    "Search channels, programmes, movies and series" : {},
-    "Search the guide by channel name or id" : {},
-    "Season %@" : {},
+    "Refreshed %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uppdaterad %@"
+          }
+        }
+      }
+    },
+    "Remind me" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Påminn mig"
+          }
+        }
+      }
+    },
+    "Reminder set" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Påminnelse inställd"
+          }
+        }
+      }
+    },
+    "Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antenna is open." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Påminnelser synkas till dina andra enheter via iCloud. Varje enhet påminner dig på sitt sätt: en notis på iPhone, iPad och Mac, en banner på Apple TV medan Antenna är öppen."
+          }
+        }
+      }
+    },
+    "Remote: %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fjärrkontroll: %@"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort"
+          }
+        }
+      }
+    },
+    "Remove Tile" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort ruta"
+          }
+        }
+      }
+    },
+    "Remove a tile or pick a lower-resolution channel." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort en ruta eller välj en kanal med lägre upplösning."
+          }
+        }
+      }
+    },
+    "Remove from multi-view" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort från multivy"
+          }
+        }
+      }
+    },
+    "Remove match" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort matchning"
+          }
+        }
+      }
+    },
+    "Remove the username and password from the address." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta bort användarnamnet och lösenordet från adressen."
+          }
+        }
+      }
+    },
+    "Removed %@ from favorites." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ har tagits bort från favoriterna."
+          }
+        }
+      }
+    },
+    "Renews every year. Cancel any time." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Förnyas varje år. Avsluta när du vill."
+          }
+        }
+      }
+    },
+    "Renews on %@. Your sources and favorites are where you left them." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Förnyas %@. Dina källor och favoriter är där du lämnade dem."
+          }
+        }
+      }
+    },
+    "Renews on <expiresAt>. Your sources and favorites are where you left them." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Förnyas <expiresAt>. Dina källor och favoriter är där du lämnade dem."
+          }
+        }
+      }
+    },
+    "Restore did not go through. Try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Återställningen gick inte igenom. Försök igen."
+          }
+        }
+      }
+    },
+    "Resume" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Återuppta"
+          }
+        }
+      }
+    },
+    "Resume %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Återuppta %@"
+          }
+        }
+      }
+    },
+    "Retry now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Försök igen nu"
+          }
+        }
+      }
+    },
+    "Rewind isn't available on this channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbakaspolning är inte tillgänglig på den här kanalen"
+          }
+        }
+      }
+    },
+    "Rewind stopped working" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbakaspolningen slutade fungera"
+          }
+        }
+      }
+    },
+    "Rewind stopped working. Back to live TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbakaspolningen slutade fungera. Tillbaka till live-TV"
+          }
+        }
+      }
+    },
+    "Scrub" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spola"
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök"
+          }
+        }
+      }
+    },
+    "Search channels, programmes, movies and series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök kanaler, program, filmer och serier"
+          }
+        }
+      }
+    },
+    "Search the guide by channel name or id" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sök i tablån efter kanalnamn eller id"
+          }
+        }
+      }
+    },
+    "Season %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Säsong %@"
+          }
+        }
+      }
+    },
     "Season %@ Episode %@" : {
       "localizations" : {
         "en" : {
@@ -1187,16 +4484,85 @@
             "state" : "new",
             "value" : "Season %1$@ Episode %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Säsong %1$@ avsnitt %2$@"
+          }
         }
       }
     },
-    "See all %lld" : {},
-    "Select" : {},
-    "Select Tile %lld" : {},
-    "Series" : {},
-    "Series · %@" : {},
-    "Server returned %@" : {},
-    "Set up Antenna on Apple TV" : {},
+    "See all %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa alla %lld"
+          }
+        }
+      }
+    },
+    "Select" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj"
+          }
+        }
+      }
+    },
+    "Select Tile %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välj ruta %lld"
+          }
+        }
+      }
+    },
+    "Series" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serier"
+          }
+        }
+      }
+    },
+    "Series · %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serie · %@"
+          }
+        }
+      }
+    },
+    "Server returned %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Servern svarade %@"
+          }
+        }
+      }
+    },
+    "Set up Antenna on Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ställ in Antenna på Apple TV"
+          }
+        }
+      }
+    },
     "Show %lld channels" : {
       "localizations" : {
         "en" : {
@@ -1216,11 +4582,47 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Visa %lld kanal"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Visa %lld kanaler"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Show in tile %lld" : {},
-    "Show its channels" : {},
+    "Show in tile %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa i ruta %lld"
+          }
+        }
+      }
+    },
+    "Show its channels" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visa dess kanaler"
+          }
+        }
+      }
+    },
     "Showing %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -1228,19 +4630,115 @@
             "state" : "new",
             "value" : "Showing %1$lld of %2$lld"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visar %1$lld av %2$lld"
+          }
         }
       }
     },
-    "Shows the zap bar" : {},
-    "Sign in" : {},
-    "Sign in needed" : {},
-    "Sign in on this Apple TV" : {},
-    "Sign in to %@ on this Apple TV" : {},
-    "Sign in to %@ on this Apple TV to play its channels." : {},
-    "Sign-in refused" : {},
-    "Skip 10 seconds" : {},
-    "Skipped ahead to live" : {},
-    "Some sources are still loading." : {},
+    "Shows the zap bar" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visar kanalraden"
+          }
+        }
+      }
+    },
+    "Sign in" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in"
+          }
+        }
+      }
+    },
+    "Sign in needed" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggning krävs"
+          }
+        }
+      }
+    },
+    "Sign in on this Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in på den här Apple TV:n"
+          }
+        }
+      }
+    },
+    "Sign in to %@ on this Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in på %@ på den här Apple TV:n"
+          }
+        }
+      }
+    },
+    "Sign in to %@ on this Apple TV to play its channels." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logga in på %@ på den här Apple TV:n för att spela dess kanaler."
+          }
+        }
+      }
+    },
+    "Sign-in refused" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen nekades"
+          }
+        }
+      }
+    },
+    "Skip 10 seconds" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoppa 10 sekunder"
+          }
+        }
+      }
+    },
+    "Skipped ahead to live" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoppade fram till live"
+          }
+        }
+      }
+    },
+    "Some sources are still loading." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Några källor läses fortfarande in."
+          }
+        }
+      }
+    },
     "Source: %@ · Attempted at %@" : {
       "localizations" : {
         "en" : {
@@ -1248,13 +4746,55 @@
             "state" : "new",
             "value" : "Source: %1$@ · Attempted at %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källa: %1$@ · Försökte %2$@"
+          }
         }
       }
     },
-    "Sources & Settings" : {},
-    "Specials" : {},
-    "Split the file, or host it and add the link as an M3U source instead." : {},
-    "Start over isn't available for this programme" : {},
+    "Sources & Settings" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källor och inställningar"
+          }
+        }
+      }
+    },
+    "Specials" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Specialavsnitt"
+          }
+        }
+      }
+    },
+    "Split the file, or host it and add the link as an M3U source instead." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dela upp filen, eller lägg den på en server och lägg till länken som en M3U-källa i stället."
+          }
+        }
+      }
+    },
+    "Start over isn't available for this programme" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börja om är inte tillgängligt för det här programmet"
+          }
+        }
+      }
+    },
     "Starts at %@ on %@" : {
       "localizations" : {
         "en" : {
@@ -1262,85 +4802,727 @@
             "state" : "new",
             "value" : "Starts at %1$@ on %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börjar %1$@ på %2$@"
+          }
         }
       }
     },
-    "Starts in %@" : {},
-    "Starts now" : {},
-    "Starts now on %@" : {},
-    "Stereo" : {},
-    "Still buffering. %@ is sending data slowly." : {},
-    "Still watching?" : {},
-    "Still watching? %@" : {},
-    "Stop and go back" : {},
-    "Storage is full" : {},
-    "Storage is full. Back to live TV" : {},
-    "Stream could not be read" : {},
-    "Stream details not available yet" : {},
-    "Stream not found" : {},
-    "Stream stopped" : {},
-    "Stream unavailable" : {},
-    "Subtitles show in your language whenever the stream has them." : {},
-    "Subtitles show when the sound is not in one of your languages." : {},
-    "Subtitles start off. Forced subtitles in your language still show." : {},
-    "Swipe" : {},
-    "Swipe down" : {},
-    "Swipe left or right" : {},
-    "Swipe up or down" : {},
-    "Swipe up or down for another channel. Menu opens the tab bar." : {},
-    "TILE %lld" : {},
-    "Tab bar" : {},
-    "That channel is no longer in %@." : {},
-    "That channel's source is no longer in Antenna." : {},
-    "That title is no longer available from %@." : {},
-    "That title's source is no longer in Antenna." : {},
-    "The connection failed (%@). Check the network, or a VPN if one is on." : {},
-    "The connection failed. Check the network, or a VPN if one is on." : {},
-    "The entries in this file are not links." : {},
-    "The guide" : {},
-    "The guide could not be downloaded" : {},
-    "The guide downloads when you're back online." : {},
-    "The guide for “%@” has run out" : {},
-    "The guide has not been downloaded yet" : {},
-    "The guide has not been downloaded yet." : {},
-    "The guide lists “%@” but has no programmes for it" : {},
-    "The login for %@ has not reached this device from iCloud Keychain yet." : {},
-    "The login for %@ hasn't synced from iCloud to this device yet." : {},
-    "The mapped entry “%@” has no programmes" : {},
-    "The playlist has no tvg-id for %@" : {},
-    "The portal refused this device with the message “%@”." : {},
-    "The provider guide needs this source's login, which has not reached this device from iCloud yet." : {},
-    "The provider guide needs this source's login. Sign in from Sources & Settings." : {},
-    "The provider sends no epg_channel_id for %@" : {},
-    "The purchase did not go through. Try again." : {},
-    "The purchase on this Apple Account was refunded or is no longer shared with you." : {},
-    "The secure connection failed. Check the network, or a VPN if one is on." : {},
-    "The server answered with an error (%@). Check the address and try again." : {},
-    "The server replied with something Antenna could not read." : {},
-    "The source gives this channel no guide id" : {},
-    "This Apple TV can't play another stream" : {},
-    "This Mac can't play another stream" : {},
-    "This account is %@." : {},
-    "This account is not allowed to sign in from this device." : {},
-    "This channel" : {},
-    "This device is already playing as many streams as it can." : {},
-    "This file is %@. Antenna imports playlists up to 16 MB." : {},
-    "This file is a link, not a playlist." : {},
-    "This file is a list of links, not a playlist." : {},
-    "This file is larger than 16 MB. Antenna imports playlists up to 16 MB." : {},
-    "This guide is already in the list." : {},
-    "This guide link needs its login on this Apple TV" : {},
-    "This is a single stream, not a channel list." : {},
-    "This server asks for a username and password, which Antenna cannot send yet." : {},
-    "This source has no guide" : {},
-    "This stream uses %@, which this device cannot play. Trying again will not help. Pick another channel or ask the provider for a stream in a supported format." : {},
-    "This title" : {},
+    "Starts in %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börjar om %@"
+          }
+        }
+      }
+    },
+    "Starts now" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börjar nu"
+          }
+        }
+      }
+    },
+    "Starts now on %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Börjar nu på %@"
+          }
+        }
+      }
+    },
+    "Stereo" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stereo"
+          }
+        }
+      }
+    },
+    "Still buffering. %@ is sending data slowly." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Buffrar fortfarande. %@ skickar data långsamt."
+          }
+        }
+      }
+    },
+    "Still watching?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tittar du fortfarande?"
+          }
+        }
+      }
+    },
+    "Still watching? %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tittar du fortfarande? %@"
+          }
+        }
+      }
+    },
+    "Stop and go back" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stoppa och gå tillbaka"
+          }
+        }
+      }
+    },
+    "Storage is full" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lagringsutrymmet är fullt"
+          }
+        }
+      }
+    },
+    "Storage is full. Back to live TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lagringsutrymmet är fullt. Tillbaka till live-TV"
+          }
+        }
+      }
+    },
+    "Stream could not be read" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Strömmen kunde inte läsas"
+          }
+        }
+      }
+    },
+    "Stream details not available yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Strömdetaljer är inte tillgängliga än"
+          }
+        }
+      }
+    },
+    "Stream not found" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Strömmen hittades inte"
+          }
+        }
+      }
+    },
+    "Stream stopped" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Strömmen stoppades"
+          }
+        }
+      }
+    },
+    "Stream unavailable" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Strömmen är inte tillgänglig"
+          }
+        }
+      }
+    },
+    "Subtitles show in your language whenever the stream has them." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undertexter visas på ditt språk när strömmen har dem."
+          }
+        }
+      }
+    },
+    "Subtitles show when the sound is not in one of your languages." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undertexter visas när ljudet inte är på något av dina språk."
+          }
+        }
+      }
+    },
+    "Subtitles start off. Forced subtitles in your language still show." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Undertexter är av från början. Tvingade undertexter på ditt språk visas ändå."
+          }
+        }
+      }
+    },
+    "Swipe" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Svep"
+          }
+        }
+      }
+    },
+    "Swipe down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Svep nedåt"
+          }
+        }
+      }
+    },
+    "Swipe left or right" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Svep åt vänster eller höger"
+          }
+        }
+      }
+    },
+    "Swipe up or down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Svep uppåt eller nedåt"
+          }
+        }
+      }
+    },
+    "Swipe up or down for another channel. Menu opens the tab bar." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Svep uppåt eller nedåt för en annan kanal. Menu öppnar flikraden."
+          }
+        }
+      }
+    },
+    "TILE %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "RUTA %lld"
+          }
+        }
+      }
+    },
+    "Tab bar" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flikrad"
+          }
+        }
+      }
+    },
+    "That channel is no longer in %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den kanalen finns inte längre i %@."
+          }
+        }
+      }
+    },
+    "That channel's source is no longer in Antenna." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den kanalens källa finns inte längre i Antenna."
+          }
+        }
+      }
+    },
+    "That title is no longer available from %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den titeln finns inte längre hos %@."
+          }
+        }
+      }
+    },
+    "That title's source is no longer in Antenna." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den titelns källa finns inte längre i Antenna."
+          }
+        }
+      }
+    },
+    "The connection failed (%@). Check the network, or a VPN if one is on." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anslutningen misslyckades (%@). Kontrollera nätverket, eller ett VPN om ett är på."
+          }
+        }
+      }
+    },
+    "The connection failed. Check the network, or a VPN if one is on." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anslutningen misslyckades. Kontrollera nätverket, eller ett VPN om ett är på."
+          }
+        }
+      }
+    },
+    "The entries in this file are not links." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Posterna i den här filen är inte länkar."
+          }
+        }
+      }
+    },
+    "The guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån"
+          }
+        }
+      }
+    },
+    "The guide could not be downloaded" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån kunde inte hämtas"
+          }
+        }
+      }
+    },
+    "The guide downloads when you're back online." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån hämtas när du är online igen."
+          }
+        }
+      }
+    },
+    "The guide for “%@” has run out" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån för ”%@” har tagit slut"
+          }
+        }
+      }
+    },
+    "The guide has not been downloaded yet" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån har inte hämtats än"
+          }
+        }
+      }
+    },
+    "The guide has not been downloaded yet." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån har inte hämtats än."
+          }
+        }
+      }
+    },
+    "The guide lists “%@” but has no programmes for it" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tablån listar ”%@” men har inga program för den"
+          }
+        }
+      }
+    },
+    "The login for %@ has not reached this device from iCloud Keychain yet." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen för %@ har inte kommit till den här enheten från iCloud-nyckelringen än."
+          }
+        }
+      }
+    },
+    "The login for %@ hasn't synced from iCloud to this device yet." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inloggningen för %@ har inte synkats från iCloud till den här enheten än."
+          }
+        }
+      }
+    },
+    "The mapped entry “%@” has no programmes" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den kopplade posten ”%@” har inga program"
+          }
+        }
+      }
+    },
+    "The playlist has no tvg-id for %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spellistan har inget tvg-id för %@"
+          }
+        }
+      }
+    },
+    "The portal refused this device with the message “%@”." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Portalen nekade den här enheten med meddelandet ”%@”."
+          }
+        }
+      }
+    },
+    "The provider guide needs this source's login, which has not reached this device from iCloud yet." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantörens tablå behöver den här källans inloggning, som inte har kommit till den här enheten från iCloud än."
+          }
+        }
+      }
+    },
+    "The provider guide needs this source's login. Sign in from Sources & Settings." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantörens tablå behöver den här källans inloggning. Logga in från Källor och inställningar."
+          }
+        }
+      }
+    },
+    "The provider sends no epg_channel_id for %@" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leverantören skickar inget epg_channel_id för %@"
+          }
+        }
+      }
+    },
+    "The purchase did not go through. Try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Köpet gick inte igenom. Försök igen."
+          }
+        }
+      }
+    },
+    "The purchase on this Apple Account was refunded or is no longer shared with you." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Köpet på det här Apple-kontot har återbetalats eller delas inte längre med dig."
+          }
+        }
+      }
+    },
+    "The secure connection failed. Check the network, or a VPN if one is on." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den säkra anslutningen misslyckades. Kontrollera nätverket, eller ett VPN om ett är på."
+          }
+        }
+      }
+    },
+    "The server answered with an error (%@). Check the address and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Servern svarade med ett fel (%@). Kontrollera adressen och försök igen."
+          }
+        }
+      }
+    },
+    "The server replied with something Antenna could not read." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Servern svarade med något som Antenna inte kunde läsa."
+          }
+        }
+      }
+    },
+    "The source gives this channel no guide id" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Källan ger den här kanalen inget tablå-id"
+          }
+        }
+      }
+    },
+    "This Apple TV can't play another stream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här Apple TV:n kan inte spela en ström till"
+          }
+        }
+      }
+    },
+    "This Mac can't play another stream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här Macen kan inte spela en ström till"
+          }
+        }
+      }
+    },
+    "This account is %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Det här kontot är %@."
+          }
+        }
+      }
+    },
+    "This account is not allowed to sign in from this device." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Det här kontot får inte logga in från den här enheten."
+          }
+        }
+      }
+    },
+    "This channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här kanalen"
+          }
+        }
+      }
+    },
+    "This device is already playing as many streams as it can." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här enheten spelar redan så många strömmar som den kan."
+          }
+        }
+      }
+    },
+    "This file is %@. Antenna imports playlists up to 16 MB." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här filen är %@. Antenna importerar spellistor upp till 16 MB."
+          }
+        }
+      }
+    },
+    "This file is a link, not a playlist." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här filen är en länk, inte en spellista."
+          }
+        }
+      }
+    },
+    "This file is a list of links, not a playlist." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här filen är en lista med länkar, inte en spellista."
+          }
+        }
+      }
+    },
+    "This file is larger than 16 MB. Antenna imports playlists up to 16 MB." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här filen är större än 16 MB. Antenna importerar spellistor upp till 16 MB."
+          }
+        }
+      }
+    },
+    "This guide is already in the list." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här tablån finns redan i listan."
+          }
+        }
+      }
+    },
+    "This guide link needs its login on this Apple TV" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här tablålänken behöver sin inloggning på den här Apple TV:n"
+          }
+        }
+      }
+    },
+    "This is a single stream, not a channel list." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Det här är en enskild ström, inte en kanallista."
+          }
+        }
+      }
+    },
+    "This server asks for a username and password, which Antenna cannot send yet." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här servern ber om användarnamn och lösenord, som Antenna inte kan skicka än."
+          }
+        }
+      }
+    },
+    "This source has no guide" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här källan har ingen tablå"
+          }
+        }
+      }
+    },
+    "This stream uses %@, which this device cannot play. Trying again will not help. Pick another channel or ask the provider for a stream in a supported format." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här strömmen använder %@, som den här enheten inte kan spela. Det hjälper inte att försöka igen. Välj en annan kanal eller be leverantören om en ström i ett format som stöds."
+          }
+        }
+      }
+    },
+    "This title" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Den här titeln"
+          }
+        }
+      }
+    },
     "Tile %lld of %lld" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Tile %1$lld of %2$lld"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ruta %1$lld av %2$lld"
           }
         }
       }
@@ -1352,25 +5534,175 @@
             "state" : "new",
             "value" : "Tile %1$lld · %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ruta %1$lld · %2$@"
+          }
         }
       }
     },
-    "Timed out" : {},
-    "Title" : {},
-    "Today" : {},
-    "Tomorrow" : {},
-    "Too large" : {},
-    "Too many mappings for this source. Remove some to add more." : {},
-    "Track %lld" : {},
-    "Try a shorter name or the channel's tvg-id." : {},
-    "Try again" : {},
-    "Turn off" : {},
-    "Turn on" : {},
-    "Turned off" : {},
-    "Ungrouped" : {},
-    "Unlock Antenna" : {},
-    "Unlock your %@ once and try again." : {},
-    "Untitled" : {},
+    "Timed out" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tidsgränsen nåddes"
+          }
+        }
+      }
+    },
+    "Title" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Titel"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I dag"
+          }
+        }
+      }
+    },
+    "Tomorrow" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I morgon"
+          }
+        }
+      }
+    },
+    "Too large" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "För stor"
+          }
+        }
+      }
+    },
+    "Too many mappings for this source. Remove some to add more." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "För många kopplingar för den här källan. Ta bort några för att lägga till fler."
+          }
+        }
+      }
+    },
+    "Track %lld" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spår %lld"
+          }
+        }
+      }
+    },
+    "Try a shorter name or the channel's tvg-id." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prova ett kortare namn eller kanalens tvg-id."
+          }
+        }
+      }
+    },
+    "Try again" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Försök igen"
+          }
+        }
+      }
+    },
+    "Turn off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stäng av"
+          }
+        }
+      }
+    },
+    "Turn on" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Slå på"
+          }
+        }
+      }
+    },
+    "Turned off" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avstängd"
+          }
+        }
+      }
+    },
+    "Ungrouped" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ogrupperade"
+          }
+        }
+      }
+    },
+    "Unlock Antenna" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lås upp Antenna"
+          }
+        }
+      }
+    },
+    "Unlock your %@ once and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lås upp din %@ en gång och försök igen."
+          }
+        }
+      }
+    },
+    "Untitled" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Namnlös"
+          }
+        }
+      }
+    },
     "Up next, %@, next episode in %lld seconds" : {
       "localizations" : {
         "en" : {
@@ -1400,30 +5732,247 @@
               }
             }
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Härnäst, %1$@, nästa avsnitt om %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg sekund"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg sekunder"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "Volume Down" : {},
-    "Volume Up" : {},
-    "Waiting for approval. Antenna unlocks as soon as the purchase is approved." : {},
-    "Waiting for iCloud…" : {},
-    "Waiting for login" : {},
-    "Waiting for login from iCloud" : {},
-    "Waiting for login to sync from iCloud" : {},
-    "Waiting for the App Store…" : {},
-    "Waiting for the guide…" : {},
-    "Waiting for the login to sync" : {},
-    "Waiting for the playlist" : {},
-    "Waiting for this guide's login to sync from iCloud" : {},
-    "Watch" : {},
-    "Watch, or details for later" : {},
-    "Watched" : {},
-    "Welcome back" : {},
-    "Which channel?" : {},
-    "Which movie or series?" : {},
-    "Year" : {},
-    "Yearly" : {},
-    "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account. Terms of Use and Privacy Policy." : {},
+    "Volume Down" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Volym ned"
+          }
+        }
+      }
+    },
+    "Volume Up" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Volym upp"
+          }
+        }
+      }
+    },
+    "Waiting for approval. Antenna unlocks as soon as the purchase is approved." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på godkännande. Antenna låses upp så snart köpet har godkänts."
+          }
+        }
+      }
+    },
+    "Waiting for iCloud…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på iCloud…"
+          }
+        }
+      }
+    },
+    "Waiting for login" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på inloggning"
+          }
+        }
+      }
+    },
+    "Waiting for login from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på inloggning från iCloud"
+          }
+        }
+      }
+    },
+    "Waiting for login to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på att inloggningen synkas från iCloud"
+          }
+        }
+      }
+    },
+    "Waiting for the App Store…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på App Store…"
+          }
+        }
+      }
+    },
+    "Waiting for the guide…" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på tablån…"
+          }
+        }
+      }
+    },
+    "Waiting for the login to sync" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på att inloggningen synkas"
+          }
+        }
+      }
+    },
+    "Waiting for the playlist" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på spellistan"
+          }
+        }
+      }
+    },
+    "Waiting for this guide's login to sync from iCloud" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Väntar på att tablåns inloggning synkas från iCloud"
+          }
+        }
+      }
+    },
+    "Watch" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Titta"
+          }
+        }
+      }
+    },
+    "Watch, or details for later" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Titta, eller detaljer för senare"
+          }
+        }
+      }
+    },
+    "Watched" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sedd"
+          }
+        }
+      }
+    },
+    "Welcome back" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Välkommen tillbaka"
+          }
+        }
+      }
+    },
+    "Which channel?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vilken kanal?"
+          }
+        }
+      }
+    },
+    "Which movie or series?" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vilken film eller serie?"
+          }
+        }
+      }
+    },
+    "Year" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "År"
+          }
+        }
+      }
+    },
+    "Yearly" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Årsvis"
+          }
+        }
+      }
+    },
+    "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account. Terms of Use and Privacy Policy." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Årsabonnemanget förnyas automatiskt tills det avslutas i Inställningar. Betalningen debiteras ditt Apple-konto. Användarvillkor och integritetspolicy."
+          }
+        }
+      }
+    },
     "You imported %@ before as %@" : {
       "localizations" : {
         "en" : {
@@ -1431,19 +5980,115 @@
             "state" : "new",
             "value" : "You imported %1$@ before as %2$@"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du har importerat %1$@ tidigare som %2$@"
+          }
         }
       }
     },
-    "You're offline" : {},
-    "You're offline." : {},
-    "You're offline. Connect to the internet and try again." : {},
-    "Your provider refused another stream" : {},
-    "Your purchase was found for this Apple Account." : {},
-    "Your yearly subscription ended on %@." : {},
-    "Your yearly subscription ended on <date>." : {},
-    "Zoom In" : {},
-    "Zoom Out" : {},
-    "change channel" : {},
+    "You're offline" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du är offline"
+          }
+        }
+      }
+    },
+    "You're offline." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du är offline."
+          }
+        }
+      }
+    },
+    "You're offline. Connect to the internet and try again." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du är offline. Anslut till internet och försök igen."
+          }
+        }
+      }
+    },
+    "Your provider refused another stream" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Din leverantör nekade en ström till"
+          }
+        }
+      }
+    },
+    "Your purchase was found for this Apple Account." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ditt köp hittades för det här Apple-kontot."
+          }
+        }
+      }
+    },
+    "Your yearly subscription ended on %@." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ditt årsabonnemang upphörde %@."
+          }
+        }
+      }
+    },
+    "Your yearly subscription ended on <date>." : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ditt årsabonnemang upphörde <date>."
+          }
+        }
+      }
+    },
+    "Zoom In" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zooma in"
+          }
+        }
+      }
+    },
+    "Zoom Out" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zooma ut"
+          }
+        }
+      }
+    },
+    "change channel" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "byt kanal"
+          }
+        }
+      }
+    },
     "command.back" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -1452,13 +6097,55 @@
             "state" : "new",
             "value" : "Back"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tillbaka"
+          }
         }
       }
     },
-    "full screen" : {},
-    "leave multi-view" : {},
-    "muted" : {},
-    "no programmes" : {},
+    "full screen" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "helskärm"
+          }
+        }
+      }
+    },
+    "leave multi-view" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "lämna multivy"
+          }
+        }
+      }
+    },
+    "muted" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ljud av"
+          }
+        }
+      }
+    },
+    "no programmes" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "inga program"
+          }
+        }
+      }
+    },
     "offer.days" : {
       "localizations" : {
         "en" : {
@@ -1474,6 +6161,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "dag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld dagar"
                 }
               }
             }
@@ -1500,6 +6205,24 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "månad"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld månader"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1518,6 +6241,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld weeks"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "vecka"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld veckor"
                 }
               }
             }
@@ -1544,22 +6285,109 @@
               }
             }
           }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "år"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld år"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "one time" : {},
-    "options" : {},
-    "per year" : {},
-    "sound on" : {},
-    "up next" : {},
-    "watched" : {},
-    "your source" : {},
+    "one time" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "en gång"
+          }
+        }
+      }
+    },
+    "options" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "alternativ"
+          }
+        }
+      }
+    },
+    "per year" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "per år"
+          }
+        }
+      }
+    },
+    "sound on" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ljud på"
+          }
+        }
+      }
+    },
+    "up next" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "härnäst"
+          }
+        }
+      }
+    },
+    "watched" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sedd"
+          }
+        }
+      }
+    },
+    "your source" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "din källa"
+          }
+        }
+      }
+    },
     "“%@” does not list “%@”. Pick an entry below." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "“%1$@” does not list “%2$@”. Pick an entry below."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "”%1$@” listar inte ”%2$@”. Välj en post nedan."
           }
         }
       }
