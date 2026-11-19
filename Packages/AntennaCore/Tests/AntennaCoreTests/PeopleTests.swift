@@ -170,14 +170,26 @@ import Testing
         #expect(!allNamed.page(try #require(PersonName("Mira Holt"))).showsNote)
     }
 
-    @Test("browse-by-person/a-person-s-page-never-asks-the-provider 40,000 titles index without a request, quickly")
+    @Test("browse-by-person/a-person-s-page-never-asks-the-provider 40,000 titles index without a request")
     func large() throws {
-        let titles = (0..<40_000).map { movie($0, "Movie \($0)", cast: "Actor \($0 % 500), Mira Holt", director: "Director \($0 % 90)") }
+        let index = PeopleIndex(titles: largeCatalogue(), learned: LearnedCredits())
+        #expect(index.page(try #require(PersonName("Mira Holt"))).count == 40_000)
+    }
+
+    /// Timed, so it runs with the benchmarks under `ANTENNA_BENCHMARKS=1 swift test`.
+    @Test(
+        "browse-by-person/a-person-s-page-never-asks-the-provider 40,000 titles index within 5 s",
+        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"))
+    func largeIsQuick() {
+        let titles = largeCatalogue()
         let clock = ContinuousClock()
         let started = clock.now
-        let index = PeopleIndex(titles: titles, learned: LearnedCredits())
+        _ = PeopleIndex(titles: titles, learned: LearnedCredits())
         #expect(clock.now - started < .seconds(5))
-        #expect(index.page(try #require(PersonName("Mira Holt"))).count == 40_000)
+    }
+
+    private func largeCatalogue() -> [ShelfTitle] {
+        (0..<40_000).map { movie($0, "Movie \($0)", cast: "Actor \($0 % 500), Mira Holt", director: "Director \($0 % 90)") }
     }
 
     // MARK: Kept names
