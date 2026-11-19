@@ -160,4 +160,15 @@ check "localization: no copy declared as an optional resource" \
   '(let|var)[[:space:]]+[A-Za-z_]+[[:space:]]*:[[:space:]]*(LocalizedStringResource|String\.LocalizationValue|LocalizedStringKey)\?[[:space:]]*=' \
   Apps Packages/AntennaCore/Sources
 
+# Shown text is translated, so "LIVE" is "EN VIVO" in Spanish and a test
+# against the English word fails. Code branches on a kind, never on copy.
+check_except "localization: views never compare text with English copy" \
+  '(==|!=)[[:space:]]*"[A-Z][A-Za-z -]+"|"[A-Z][A-Za-z -]+"[[:space:]]*(==|!=)' \
+  'Apps/Shared/Views/Import/ImportModel\.swift' \
+  Apps/Shared/Views Apps/Shared/Components Apps/Mobile Apps/TV
+
+check "localization: Core never compares translated words" \
+  '(==|!=)[[:space:]]*[Ww]ords(\([a-z]+\))?\("|[Ww]ords(\([a-z]+\))?\("[^"]*"\)[[:space:]]*(==|!=)' \
+  Packages/AntennaCore/Sources
+
 exit "$status"

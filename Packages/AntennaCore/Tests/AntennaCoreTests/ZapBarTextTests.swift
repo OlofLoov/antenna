@@ -84,11 +84,22 @@ import Testing
         let format = PresentationInfo(
             video: .init(width: 1920, height: 1080, frameRate: 25, dynamicRange: .sdr, codec: "h264"),
             audio: .init(codec: "aac", channels: 6, isDecodable: true))
-        #expect(ZapBarText.badges(state: .playing, presentation: format) == ["LIVE", "1080p", "AAC 5.1"])
-        #expect(ZapBarText.badges(state: .playing, presentation: nil) == ["LIVE"], "before the player reports the format")
+        #expect(
+            ZapBarText.badges(state: .playing, presentation: format)
+                == [.init(kind: .live, text: "LIVE"), .init(kind: .quality, text: "1080p"), .init(kind: .quality, text: "AAC 5.1")])
+        #expect(
+            ZapBarText.badges(state: .playing, presentation: nil) == [.init(kind: .live, text: "LIVE")],
+            "before the player reports the format")
         #expect(ZapBarText.badges(state: .buffering, presentation: format) == [])
         #expect(ZapBarText.badges(state: .failed(.unreadable), presentation: format) == [])
         #expect(ZapBarText.badges(state: .loading, presentation: nil) == [])
+    }
+
+    @Test("timeshift-catch-up-and-start-over/start-the-programme-from-the-beginning CATCH-UP takes LIVE's place")
+    func catchUpBadge() {
+        #expect(
+            ZapBarText.badges(state: .playing, presentation: nil, catchUp: true) == [.init(kind: .catchUp, text: "CATCH-UP")])
+        #expect(ZapBarText.badges(state: .buffering, presentation: nil, catchUp: true) == [])
     }
 
     @Test("tv-zap-bar-and-number-entry/catch-up-hint the footer names the days")

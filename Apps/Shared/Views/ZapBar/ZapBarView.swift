@@ -64,10 +64,8 @@
 
         /// LIVE and the quality badges; CATCH-UP in place of LIVE while catch-up plays
         /// (timeshift-catch-up-and-start-over/start-the-programme-from-the-beginning).
-        private var badges: [String] {
-            let list = ZapBarText.badges(state: rewinds ? .playing : state, presentation: presentation)
-            guard timeshift.catchup != nil else { return list }
-            return [ZapBar.Status.catchUp] + list.filter { $0 != "LIVE" }
+        private var badges: [ZapBarBadge] {
+            ZapBarText.badges(state: rewinds ? .playing : state, presentation: presentation, catchUp: timeshift.catchup != nil)
         }
 
         /// The rewind row shows while paused or behind live on a channel that records.

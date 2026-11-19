@@ -163,4 +163,21 @@ import Testing
         #expect(["Sport One", "104"].joinedAsDetail(Locale(identifier: "en_US")) == "Sport One · 104")
         #expect(["Sport One", "104"].joinedAsDetail(Locale(identifier: "sv_SE")) == "Sport One · 104")
     }
+
+    @Test(
+        "localization/the-app-speaks-the-user-s-language the live badge stays the live badge in every language",
+        arguments: ["en_US", "sv_SE", "de_DE", "es_ES", "fr_FR", "pt_BR", "ar_SA"])
+    func liveBadgeKind(identifier: String) {
+        let locale = Locale(identifier: identifier)
+        let live = ZapBarText.badges(state: .playing, presentation: nil, locale: locale)
+        #expect(live.map(\.kind) == [.live])
+        let catchUp = ZapBarText.badges(state: .playing, presentation: nil, catchUp: true, locale: locale)
+        #expect(catchUp.map(\.kind) == [.catchUp])
+    }
+
+    @Test("localization/the-app-speaks-the-user-s-language the live badge reads in Spanish")
+    func spanishLiveBadge() {
+        let badges = ZapBarText.badges(state: .playing, presentation: nil, locale: Locale(identifier: "es_ES"))
+        #expect(badges == [.init(kind: .live, text: "EN VIVO")])
+    }
 }

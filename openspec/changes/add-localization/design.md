@@ -865,6 +865,21 @@ Sweep after the reviews:
   language. Catalog entries that hold a dot inside a sentence keep their
   own, as PR 11 wrote them.
 
+Live badge in other languages:
+- The Apple TV zap bar and info panel picked the LIVE badge by comparing
+  its text with "LIVE", and the zap bar dropped LIVE for CATCH-UP the same
+  way. Swedish and German write "LIVE", so they drew correctly by luck.
+  Spanish ("EN VIVO"), French, Portuguese and Arabic got an outlined quality
+  badge with no red dot and no behind state, and during catch-up CATCH-UP
+  sat next to it instead of replacing it.
+- `ZapBarText.badges` returns `ZapBarBadge` values now: a kind (`live`,
+  `catchUp`, `quality`) that picks the drawing and a text that is only
+  shown. Core puts CATCH-UP in LIVE's place, so the view no longer filters.
+- Two rules in `scripts/check-rules.sh` fail on code that compares text
+  with a capitalized English literal in views, components and the
+  platform folders, and on Core code that compares a `Words` result. File
+  and wire names (the "Inbox" folder in `ImportModel`) are allowed.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

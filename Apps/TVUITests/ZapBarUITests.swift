@@ -145,6 +145,28 @@ extension ShellUITests {
         XCTAssertTrue(quality["AAC 5.1"].exists)
     }
 
+    // localization/the-app-speaks-the-user-s-language
+    // tv-zap-bar-and-number-entry/picture-and-sound-quality
+    /// The live badge keeps its red dot in a translated app. Swedish writes
+    /// LIVE like English; Spanish writes EN VIVO, which the bar once drew as
+    /// an outlined quality badge.
+    func testLiveBadgeInSwedishAndSpanish() {
+        // VoiceOver reads the badge's state in the app's language.
+        for (language, region, word, state) in [("sv", "sv_SE", "LIVE", "live"), ("es", "es_ES", "EN VIVO", "en vivo")] {
+            app = XCUIApplication()
+            app.launchArguments = ["-ui-testing-shell", "channels", "-AppleLanguages", "(\(language))", "-AppleLocale", region]
+            app.launchInEnglish()
+            expectEngine("playing loads=1 file=a1.ts")
+            XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 10), language)
+            freshBar()
+            expect(element("zapBar.live"), "label == '\(word)' AND value == '\(state)'")
+            let quality = app.staticTexts.matching(identifier: "zapBar.quality")
+            XCTAssertTrue(quality["1080p"].waitForExistence(timeout: 3), language)
+            XCTAssertFalse(quality[word].exists, "\(language): the live word is not a quality badge")
+            app.terminate()
+        }
+    }
+
     // tv-zap-bar-and-number-entry/picture-and-sound-quality
     func testNoBadgesAfterAFailure() {
         // The bar stays a minute, so a slow runner reads it before it hides.
