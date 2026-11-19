@@ -53,8 +53,8 @@
 
 ## 8. Verify
 
-- [ ] 8.1 Turn the two `check-rules.sh` greps into failures and confirm they pass with an empty allow list beyond the named exceptions
-- [ ] 8.2 Fold the text style table, spacing and radius scale, materials and exception list from design.md into the design-system reference
-- [ ] 8.3 Each requirement in this change has a test citing `design-system/<requirement-slug>`: UI tests for presentations, backdrops, tab bar clearance, focus colors and empty states, and the `check-rules.sh` greps for styles, text styles and radii
+- [x] 8.1 Turn the two `check-rules.sh` greps into failures and confirm they pass with an empty allow list beyond the named exceptions
+- [x] 8.2 Fold the text style table, spacing and radius scale, materials and exception list from design.md into the design-system reference
+- [x] 8.3 Each requirement in this change has a test citing `design-system/<requirement-slug>`: UI tests for presentations, backdrops, tab bar clearance, focus colors and empty states, and the `check-rules.sh` greps for styles, text styles and radii
 - [ ] 8.4 Run the full UI suite with the `ui-tests` label and compare the `App screenshots` artifact with the boards
 - [ ] 8.5 `/opsx:verify refresh-visual-design` passes

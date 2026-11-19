@@ -18,29 +18,79 @@ patterns and shared components the requirements point to.
 |-------|-------|-----|
 | Ground | `#0B0E13` | App background on every platform |
 | Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar, the pill group of the tvOS tab bar |
-| Overlay scrim | `rgba(8,10,14,0.88)` | tvOS panels over live video |
+| Overlay scrim | `rgba(8,10,14,0.72)` over the regular material | tvOS panels over live video (`OverlayMaterial`) |
 | Bar scrim | `rgba(8,10,14,0.55)` | Dims the tvOS picture or guide under the raised tab bar |
 | Surface | `rgba(255,255,255,0.06)` to `0.18` | Rows, cards, chips; `0.08` for dividers, `0.12` is the selected row on touch platforms and the selected-but-unfocused group or tab on tvOS, `0.18` the track of a loading ring |
 | Text | `#F2F4F8` | Primary |
 | Text secondary | `#D7DEE8` | Body copy and descriptions |
 | Text muted | `#A7B0BF` | Captions, metadata, section eyebrows. 9:1 on ground |
 | Text muted on focus | `#4B5563` | Muted text on the focused white card. 7.5:1 on `#F2F4F8` |
-| Accent | `#5BB8FF` | Progress fills, guide now line, NOW badge, iPhone selected tab, links |
+| Accent | `#5BB8FF` | The app tint. Progress fills, guide now line, NOW and UP NEXT badges, iPhone selected tab, links, and system controls that tint (the prominent button on iPhone, iPad and Mac, switches, selected picker values). Never eyebrows |
 | Live dot | `#FF5F57` | Only the small dot before "LIVE" |
 | Logo placeholder | `#26344A`, `#1E3A5F` | Tile with channel initials when no logo has loaded |
 | Focus (tvOS) | background `#F2F4F8`, text `#0B0E13`, shadow `0 12px 32px rgba(0,0,0,.45)` | The focused element, always |
 
-Type is the system font. Sizes in CSS px on the boards equal points in
-SwiftUI.
+Type is the system font in the platform's text styles. A board gives a size
+in CSS px, which equals points; the view writes `.font(.boardStyle(size))`,
+and `TypeScale` (`Apps/Shared/Components/TypeScale.swift`) picks the style
+nearest that size, the larger one on a tie. Nothing on Apple TV is smaller
+than Caption 2 (23 pt); nothing on iPhone, iPad or Mac is smaller than
+Caption 1 (12 pt). iPad and Mac use the iOS column; the Mac's sizes come
+from the system.
 
-| Platform | Title | Body | Secondary | Caption, minimum |
-|----------|-------|------|-----------|------------------|
-| tvOS | 38 to 76 | 29 | 22 to 26 | 18 |
-| iPadOS, macOS | 22 to 28 | 16 to 17 | 14 to 15 | 13 |
-| iOS | 22 to 34 | 15 to 17 | 13 | 12 |
+| tvOS size | Text style | iOS size | Text style |
+|-----------|------------|----------|------------|
+| 76 | `.title` (Title 1) | 34 | `.largeTitle` |
+| 57 | `.title2` | 28 | `.title` |
+| 48 | `.title3` | 22 | `.title2` |
+| 38 | `.headline` | 20 | `.title3` |
+| 31 | `.callout` | 17 | `.headline` / `.body` |
+| 29 | `.body` | 16 | `.callout` |
+| 25 | `.caption` | 15 | `.subheadline` |
+| 23 | `.caption2` | 13 | `.footnote` |
+| | | 12 | `.caption` |
 
-Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
-(logo tiles, badges), 999 (chips, tvOS tab bar).
+Fixed sizes stay only for the channel number entry (`NumberBox`), subtitles
+sized to the picture (`SubtitleOverlay`) and an initial sized to its circle
+(`ProfileBadge`). `scripts/check-rules.sh` fails on any other.
+
+Spacing scale (`Metrics.Spacing`): 4, 8, 12, 16, 24, 32, 48, 64, 80.
+
+Corners (`Metrics.Corner`, drawn with `cornerShape(_:)`):
+
+| Corner | Apple TV | iPhone, iPad, Mac | Use |
+|--------|----------|-------------------|-----|
+| Small | 8 | 8 | Badges, logo tiles |
+| Medium | 16 | 12 | Fields, small cards, rows |
+| Large | 20 | 26 | Cards, grouped sections, panels |
+| Capsule | half the height | half the height | Buttons, chips, the tab bar |
+
+Anything inside a rounded container uses `ConcentricRectangle`. A literal
+radius fails `scripts/check-rules.sh`.
+
+Apple TV safe area: 60 pt top and bottom, 80 pt at the sides
+(`Metrics.televisionSafeArea`). Full-bleed art, video and scrims may run to
+the edge.
+
+Materials:
+
+| Where | Material |
+|-------|----------|
+| Apple TV panels over live video: channel overlay, zap bar, info panel | `OverlayMaterial`: regular material under the overlay scrim at 0.72 |
+| Apple TV full-screen covers | `CoverBackdrop`: ultra thick material under the ground at 0.55 |
+| Tab bars, toolbars, controls floating over video, the iPhone Movies and Series switch | Liquid Glass, from the system or `.glassEffect` |
+| Forms and Settings on touch platforms | The system grouped background |
+| Content screens | Ground |
+
+Controls take system styles: `primaryActionStyle()` (bordered on Apple TV,
+glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule),
+`posterButtonStyle()` (card on Apple TV, borderless elsewhere) and
+`chipStyle(isPicked:on:)`. The parts the app draws itself share `FocusCard`
+and `FocusCardStyle`: guide programme blocks, channel overlay rows and
+groups, zap bar sections, multi-view tiles and their actions, passcode
+digits, episode rows and, until `adopt-tvos-tab-view`, the Apple TV tab bar
+pills. A button that only holds focus uses `FocusHolderStyle`.
+`scripts/check-rules.sh` fails on a `ButtonStyle` type outside those files.
 
 ## 2. Layout patterns
 
@@ -127,8 +177,8 @@ Radii: 14 (tvOS rows and cards), 10 to 12 (touch rows, cards, fields), 6 to 8
 - **Section header**: title plus a muted count or "See all" at the trailing
   edge.
 - **Content card**: 2:3 poster for titles, 16:9 for continue watching with
-  a progress bar along the bottom edge. Focused card on tvOS gets a 5 pt
-  white ring and shadow.
+  a progress bar along the bottom edge. On tvOS the card button style lifts
+  and tilts the focused card, with no ring.
 - **Search highlight**: the matched substring gets an accent background at
   35% opacity.
 - **Passcode prompt**: lock glyph, title, one muted line naming what is
@@ -172,11 +222,12 @@ Element names come from the board's comments and labels, for example
   unless the design lists it under "Not drawn" with the text style it uses.
 - Reviewing an implementation: for each design-system requirement the change
   names, find the evidence in the diff. Compare the view hierarchy to the
-  board's structure and the inline sizes to section 1 here. Check identifier
+  board's structure and the inline sizes to the type table in section 1. Check identifier
   prefixes against section 5. A mismatch the change did not call out is a
   finding.
 - "Live video keeps playing under overlays" is checkable in code:
   no `PlayerView` teardown and no `pause()` when an overlay is presented.
+  Search is a tab, and `LiveHold` pauses the channel behind it.
 
 ## 7. Right to left
 
