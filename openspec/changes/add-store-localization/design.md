@@ -427,6 +427,29 @@ Arabic (held):
 - Keywords: "بث" and "مباشر" as single words instead of the phrase plus
   both words, since the App Store combines keyword words; "برامج" added.
 
+## Review of the store screenshots
+
+Run 44566758831 took the set in all nine store locales, `ar-SA` among
+them, 15 pictures each, and every walk passed. Read picture by picture in
+English, German, Swedish and Arabic, and through the rest by sheet:
+- Every tab, button and label of the app reads in the picture's language;
+  Arabic runs right to left on all three devices. Channel names, programme
+  titles, genres ("Action", "Drama", "Kids") and the film synopsis stay
+  English, as provider data does.
+- The guide is full on every device and no row says it is loading.
+- The player picture was black in 7 of 9 Apple TV sets and in the English
+  iPad set: the walk took the picture as soon as the transport appeared,
+  before the clip's first frame. The walks now wait up to 10 seconds for a
+  lit pixel on the player (`Journey.waitForPicture`) before the player step.
+
+Left for the visual refresh, not changed here:
+- iPhone Live and Guide leave an empty band above and below the group
+  chips, and the iPad guide starts its rows a third of the way down.
+- The iPad Live side panel truncates the programme title ("News Ho…") and
+  wraps 12-hour times in its Up next list ("6:00 P" over "M").
+- Movies has no artwork: the hero panel is a blank block and the posters
+  are name cards, because the seed's titles have no images.
+
 ## Risks / Trade-offs
 
 - [The name "Antenna" may be taken on the App Store] → the owner checks

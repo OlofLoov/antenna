@@ -49,6 +49,35 @@ final class Journey {
         _ = XCTWaiter().wait(for: [gone], timeout: timeout)
     }
 
+    /// Waits up to 10 seconds until the screen a quarter of the way across
+    /// and halfway down is not black, so the store clip has drawn a frame
+    /// on the player. Carries on either way.
+    func waitForPicture() {
+        for _ in 0..<20 {
+            if Self.brightness(at: CGPoint(x: 0.25, y: 0.5)) > 12 { return }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        }
+    }
+
+    /// The sum of red, green and blue, 0 to 765, of the screen's pixel at
+    /// `point`, given as fractions of its width and height.
+    private static func brightness(at point: CGPoint) -> Int {
+        guard let image = XCUIScreen.main.screenshot().image.cgImage else { return 0 }
+        var pixel = [UInt8](repeating: 0, count: 4)
+        let drawn = pixel.withUnsafeMutableBytes { bytes -> Bool in
+            guard
+                let context = CGContext(
+                    data: bytes.baseAddress, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
+                    space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+            else { return false }
+            let x = CGFloat(image.width) * point.x
+            let y = CGFloat(image.height) * (1 - point.y)
+            context.draw(image, in: CGRect(x: -x, y: -y, width: CGFloat(image.width), height: CGFloat(image.height)))
+            return true
+        }
+        return drawn ? Int(pixel[0]) + Int(pixel[1]) + Int(pixel[2]) : 0
+    }
+
     func element(_ identifier: String) -> XCUIElement {
         app.descendants(matching: .any)[identifier].firstMatch
     }
