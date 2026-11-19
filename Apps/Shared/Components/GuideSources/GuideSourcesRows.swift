@@ -19,6 +19,7 @@ enum GuideSourcesRows {
         let name: String
         let address: String?
         let status: GuideSourcesText.Line
+        @Environment(\.locale) private var locale
         let identifier: String
         let select: () -> Void
         let retry: (() -> Void)?
@@ -50,7 +51,7 @@ enum GuideSourcesRows {
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier(identifier)
                 if let retry {
-                    Button(GuideSourcesText().retry, action: retry)
+                    Button(GuideSourcesText(locale: locale).retry, action: retry)
                         .accessibilityIdentifier("\(identifier).retry")
                 }
             }
@@ -208,5 +209,34 @@ enum GuideSourcesRows {
                 identifier: "guideSources.picker.row.0", pick: {})
         }
     }
+    .preferredColorScheme(.dark)
+}
+
+#Preview("Guide sources rows, Apple TV, German", traits: .fixedLayout(width: 1920, height: 1080)) {
+    let text = GuideSourcesText(locale: PreviewLanguage.german.locale, television: true)
+    let saved = GuideRow(reference: .saved, enabled: true, status: .loaded(Date(timeIntervalSince1970: 1_800_000_000)))
+    let provider = GuideRow(reference: .provider, enabled: true, status: .failed(.credentialMissing))
+    List {
+        Section(text.title) {
+            GuideSourcesRows.Guide(
+                name: text.name(.saved, link: nil), address: "https://epg.sportpack.tv/….gz",
+                status: text.status(saved, coverage: (388, 7), channels: 412, source: "Acme TV"), identifier: "guideSources.row.0",
+                select: {}, retry: nil)
+            GuideSourcesRows.Guide(
+                name: text.name(.provider, link: nil), address: nil,
+                status: text.status(provider, coverage: nil, channels: 412, source: "Acme TV"), identifier: "guideSources.row.1",
+                select: {}, retry: {})
+        }
+        Section(text.header(2)) {
+            GuideSourcesRows.Channel(
+                name: "Sport One", number: "104", logo: nil, label: text.label(.idNotFound(id: "sport1")),
+                identifier: "guideSources.channels.row.0",
+                select: {})
+            GuideSourcesRows.Channel(
+                name: "Arena HD", number: "106", logo: nil, label: text.label(.noGuideID), identifier: "guideSources.channels.row.1",
+                select: {})
+        }
+    }
+    .previewLanguage(.german)
     .preferredColorScheme(.dark)
 }

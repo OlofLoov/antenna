@@ -329,6 +329,20 @@ enum OnboardingForm {
     }
 }
 
+#Preview("Form, iPhone, Xtream, German") {
+    @Previewable @State var fields = SourceFields(
+        kind: .xtream, name: "Home provider", url: "http://tv.example-provider.net:8080", username: "user4821", password: "pass1234")
+    @Previewable @State var reveals = false
+    NavigationStack {
+        OnboardingForm.Phone(
+            fields: $fields, revealsPassword: $reveals, status: .init(clipboard: .link),
+            actions: .init(choose: { _ in }, connect: {}, fillIn: {}, cancel: {})
+        )
+        .navigationTitle("Add a source")
+    }
+    .previewLanguage(.german)
+}
+
 #Preview("Form, iPhone, M3U with an Xtream link") {
     @Previewable @State var fields = SourceFields(
         kind: .m3u, name: "Home provider",

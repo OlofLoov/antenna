@@ -12,19 +12,20 @@
         let focus: FocusState<ShellFocus?>.Binding
         /// Nil when the failure has nothing to do with the login.
         let signIn: (() -> Void)?
+        @Environment(\.locale) private var locale
 
         var body: some View {
             PlayerStatus.TelevisionFailure(
                 title: message.title, explanation: message.explanation, detail: detail,
-                hint: .verbatim(PlayerStatusText.changeChannelHint())
+                hint: .verbatim(PlayerStatusText.changeChannelHint(locale))
             ) {
-                PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.tryAgain())) { player.retry() }
+                PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.tryAgain(locale))) { player.retry() }
                     // Holding select on the error is Try again too.
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in player.retry() })
                     .focused(focus, equals: .retry)
                     .accessibilityIdentifier("player.retry")
                 if let signIn {
-                    PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.signIn()), action: signIn)
+                    PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.signIn(locale)), action: signIn)
                         .focused(focus, equals: .signIn)
                         .accessibilityIdentifier("player.signIn")
                 }
@@ -33,8 +34,8 @@
 
         /// "Source: Acme TV · Attempted at 21:34".
         private var detail: String {
-            let time = (player.failedAt ?? .now).formatted(date: .omitted, time: .shortened)
-            return PlayerStatusText.attempted(source: player.subject?.source ?? PlayerModel.unnamedSource, at: time)
+            let time = (player.failedAt ?? .now).formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: locale))
+            return PlayerStatusText.attempted(source: player.subject?.source ?? PlayerModel.unnamedSource, at: time, locale: locale)
         }
     }
 

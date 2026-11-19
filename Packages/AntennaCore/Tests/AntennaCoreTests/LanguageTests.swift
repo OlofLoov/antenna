@@ -41,4 +41,24 @@ import Testing
         #expect(text.day(Self.ten, now: Self.ten) == "I dag")
         #expect(CatalogueGroup.favorites.label(Locale(identifier: "sv_SE")) == "Favoriter")
     }
+
+    @Test("localization/counts-use-the-language-s-plural-forms German one and other")
+    func germanPlural() {
+        let german = SetupText(locale: Locale(identifier: "de_DE"))
+        #expect(german.channels(ChannelTally(channels: 1, groups: ["News"])) == "1 Live-Sender in 1 Gruppe")
+        #expect(german.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 Live-Sender in 2 Gruppen")
+    }
+
+    @Test("localization/numbers-use-the-region-s-digits-and-separators a German count groups with a period")
+    func germanCount() {
+        #expect(SetupText(locale: Locale(identifier: "de_DE")).liveChannels(12_500) == "12.500 Live-Sender")
+        #expect(SourceStatusText(locale: Locale(identifier: "de_DE")).count(12_500) == "12.500 Sender")
+    }
+
+    @Test("localization/durations-follow-the-user-s-language a German programme length")
+    func germanDuration() {
+        let german = Locale(identifier: "de_DE")
+        #expect(GuidePanelText.length(from: Self.ten, to: Self.ten.addingTimeInterval(90 * 60), locale: german) == "1 Std. 30 Min.")
+        #expect(GuidePanelText.length(from: Self.ten, to: Self.ten.addingTimeInterval(45 * 60), locale: german) == "45 Min.")
+    }
 }

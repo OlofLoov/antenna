@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension PlayerStatus {
@@ -242,4 +243,18 @@ extension EnvironmentValues {
         PlayerStatus.TelevisionButton(title: "Try again") {}
         PlayerStatus.TelevisionButton(title: "Sign in") {}
     }
+}
+
+#Preview("Error, Apple TV, German", traits: .fixedLayout(width: 1920, height: 1080)) {
+    let german = PreviewLanguage.german.locale
+    let message = FailureMessage(.notFound, source: "Acme TV", device: .appleTV, locale: german)
+    PlayerStatus.TelevisionFailure(
+        title: message.title, explanation: message.explanation,
+        detail: PlayerStatusText.attempted(source: "Acme TV", at: "21:34", locale: german),
+        hint: .verbatim(PlayerStatusText.changeChannelHint(german))
+    ) {
+        PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.tryAgain(german))) {}
+        PlayerStatus.TelevisionButton(title: .verbatim(PlayerStatusText.signIn(german))) {}
+    }
+    .previewLanguage(.german)
 }

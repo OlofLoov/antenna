@@ -6,6 +6,7 @@ extension Paywall {
     /// product cards side by side, Restore purchase, and the legal line with
     /// the addresses as text at the bottom. No offer codes on Apple TV.
     struct Television: View {
+        @Environment(\.locale) private var locale
         let state: State
         let actions: Actions
 
@@ -13,7 +14,7 @@ extension Paywall {
             VStack(spacing: 44) {
                 switch state.phase {
                 case .offer:
-                    TelevisionHeading(title: state.title, message: PaywallCopy.Line(.body), note: state.lapsedNote)
+                    TelevisionHeading(title: state.title, message: PaywallCopy.Line(.body, locale: locale), note: state.lapsedNote)
                     HStack(spacing: 32) {
                         ForEach(state.products) { product in
                             Button {
@@ -24,7 +25,7 @@ extension Paywall {
                             .buttonStyle(CardStyle())
                             .disabled(!product.enabled)
                             .accessibilityIdentifier(product.identifier)
-                            .accessibilityValue(product.accessibilityValue)
+                            .accessibilityValue(product.accessibilityValue(locale))
                         }
                     }
                     if let status = state.status { StatusLine(status: status, size: 22) }
@@ -33,10 +34,12 @@ extension Paywall {
                         .disabled(!state.canRestore)
                         .accessibilityIdentifier("paywall.restore")
                 case .unavailable(let reason):
-                    TelevisionHeading(title: state.title, message: PaywallCopy.Line(.body), note: state.lapsedNote)
+                    TelevisionHeading(title: state.title, message: PaywallCopy.Line(.body, locale: locale), note: state.lapsedNote)
                     TelevisionUnavailable(reason: reason, status: state.status, canAct: state.canRestore, actions: actions)
                 case .restored(let grant):
-                    TelevisionHeading(title: PaywallCopy.Line(.restoredTitle), message: PaywallCopy.Line(.restoredBody), note: nil)
+                    TelevisionHeading(
+                        title: PaywallCopy.Line(.restoredTitle, locale: locale), message: PaywallCopy.Line(.restoredBody, locale: locale),
+                        note: nil)
                     TelevisionRestored(grant: grant)
                     Button("Continue", action: actions.finish)
                         .buttonStyle(OnboardingStyle.PrimaryTV())
@@ -54,7 +57,7 @@ extension Paywall {
             }
             .overlay(alignment: .bottom) {
                 if !state.phase.isRestored {
-                    Text(state.links.legalWithAddresses)
+                    Text(state.links.legalWithAddresses(locale))
                         .font(.system(size: 20))
                         .foregroundStyle(Palette.textMuted)
                         .multilineTextAlignment(.center)
@@ -94,29 +97,30 @@ extension Paywall {
 
     /// A product card: kind, price with unit, the line, and Family Sharing at the bottom.
     private struct TelevisionCardLabel: View {
+        @Environment(\.locale) private var locale
         let product: Product
         @Environment(\.isFocused) private var isFocused
 
         var body: some View {
             VStack(alignment: .leading, spacing: 18) {
-                Text(product.name.uppercased())
+                Text(product.name(locale).uppercased())
                     .font(.system(size: 20, weight: .semibold))
                     .tracking(1)
                     .foregroundStyle(muted)
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     PriceText(price: product.price).font(.system(size: 56, weight: .heavy))
                     if product.kind == .yearly {
-                        Text(product.unit).font(.system(size: 26)).foregroundStyle(muted)
+                        Text(product.unit(locale)).font(.system(size: 26)).foregroundStyle(muted)
                     }
                 }
                 HStack(spacing: 12) {
                     if product.purchasing { ProgressView() }
-                    Text(product.purchasing ? PaywallCopy.text(.lineWaiting) : product.line.text)
+                    Text(product.purchasing ? PaywallCopy.text(.lineWaiting, locale: locale) : product.line.text)
                         .font(.system(size: 23))
                         .foregroundStyle(isFocused ? Paywall.mutedOnFocus : Paywall.body)
                 }
                 Spacer(minLength: 0)
-                Label(PaywallCopy.text(.familyIncluded), systemImage: "person.2")
+                Label(PaywallCopy.text(.familyIncluded, locale: locale), systemImage: "person.2")
                     .font(.system(size: 20))
                     .foregroundStyle(muted)
             }
@@ -154,6 +158,8 @@ extension Paywall {
     }
 
     private struct TelevisionUnavailable: View {
+
+        @Environment(\.locale) private var locale
         let reason: Unavailable
         let status: PaywallStatus?
         let canAct: Bool
@@ -166,13 +172,13 @@ extension Paywall {
                     .frame(width: 80, height: 80)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 20))
                     .accessibilityHidden(true)
-                Text(PaywallCopy.text(.unavailableTitle))
+                Text(PaywallCopy.text(.unavailableTitle, locale: locale))
                     .font(.system(size: 34, weight: .bold))
                     .accessibilityIdentifier("paywall.unavailable.title")
                 if let status {
                     StatusLine(status: status, size: 22)
                 } else {
-                    Text(PaywallCopy.text(reason == .notSold ? .statusNotInStorefront : .unavailableBody))
+                    Text(PaywallCopy.text(reason == .notSold ? .statusNotInStorefront : .unavailableBody, locale: locale))
                         .font(.system(size: 24))
                         .foregroundStyle(Paywall.body)
                         .multilineTextAlignment(.center)
@@ -202,6 +208,8 @@ extension Paywall {
     }
 
     private struct TelevisionRestored: View {
+
+        @Environment(\.locale) private var locale
         let grant: Grant
 
         var body: some View {
@@ -212,10 +220,10 @@ extension Paywall {
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 20))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTV))
+                    Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTV, locale: locale))
                         .font(.system(size: 29, weight: .semibold))
                         .accessibilityIdentifier("paywall.restored.kind")
-                    let note = PaywallCopy.restoredNote(grant)
+                    let note = PaywallCopy.restoredNote(grant, locale: locale)
                     Text(note.text)
                         .font(.system(size: 23))
                         .foregroundStyle(Palette.textMuted)

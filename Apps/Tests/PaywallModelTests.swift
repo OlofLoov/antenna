@@ -40,7 +40,7 @@ import Testing
         #expect(products.map(\.price) == [.shown("$29.99"), .shown("$9.99")])
         #expect(products[0].line.key == .lineLifetime)
         #expect(products[1].line == PaywallCopy.Line(.lineFreeTrial, "First month free, then $9.99 per year"))
-        #expect(products[1].unit == "per year")
+        #expect(products[1].unit(Locale(identifier: "en_US")) == "per year")
         #expect(paywall.state.title.key == .titleDefault)
         #expect(paywall.state.lapsedNote == nil)
     }
