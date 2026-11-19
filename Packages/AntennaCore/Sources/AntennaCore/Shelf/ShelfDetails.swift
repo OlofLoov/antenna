@@ -64,13 +64,13 @@ public struct BannerText: Sendable, Hashable {
     public var badges: [String]
     public var description: String?
 
-    public init(_ title: ShelfTitle, details: ShelfDetails?) {
+    public init(_ title: ShelfTitle, details: ShelfDetails?, locale: Locale = .autoupdatingCurrent) {
         eyebrow = ([ShelfSort.recentlyAdded.name] + [title.category].compactMap(\.self)).joinedAsDetail()
         self.title = title.name
         let span = title.kind == .movie ? ShelfText.length(details?.duration) : details?.seasons.flatMap { ShelfText.seasons($0) }
         let score = details?.rating ?? title.rating
-        rating = score.flatMap(TitleMetadata.rating)
-        spokenRating = score.flatMap { TitleMetadata.spokenRating($0) }
+        rating = score.flatMap { TitleMetadata.rating($0, locale: locale) }
+        spokenRating = score.flatMap { TitleMetadata.spokenRating($0, locale: locale) }
         facts = [details?.year.map(String.init), span, rating].compactMap(\.self)
         if title.kind == .movie {
             badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(details?.ageRating)].compactMap(\.self)

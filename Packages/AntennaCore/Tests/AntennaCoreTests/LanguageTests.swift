@@ -152,7 +152,7 @@ import Testing
     func spokenInSwedish() {
         let swedish = Locale(identifier: "sv_SE")
         #expect(Score(site: .tmdb, value: 7.4, scale: 10).spoken(swedish) == "TMDB-användarbetyg 74 procent")
-        #expect(TitleMetadata.spokenRating(7.4, locale: swedish) == "betyg 7.4 av 10")
+        #expect(TitleMetadata.spokenRating(7.4, locale: swedish) == "betyg 7,4 av 10")
         #expect(TitleTimeline(time: .zero, length: nil).spokenText(locale: swedish) == "0 sekunder")
     }
 

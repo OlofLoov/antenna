@@ -3,6 +3,8 @@ import Testing
 
 @testable import AntennaCore
 
+private let english = Locale(identifier: "en_US")
+
 @Suite struct XtreamRatingTests {
     private let host = "H"
 
@@ -64,7 +66,7 @@ import Testing
 
     @Test("movies-and-series-browsing/rating-and-trailer-on-the-banner a rated movie ends its facts with the star")
     func ratedMovie() {
-        let text = BannerText(movie(), details: ShelfDetails(year: 2024, duration: 128 * 60, rating: 7.4))
+        let text = BannerText(movie(), details: ShelfDetails(year: 2024, duration: 128 * 60, rating: 7.4), locale: english)
         #expect(text.facts == ["2024", "2 h 08 min", "★ 7.4"])
         #expect(text.facts.joined(separator: " · ") == "2024 · 2 h 08 min · ★ 7.4")
         #expect(text.rating == "★ 7.4")
@@ -73,10 +75,10 @@ import Testing
 
     @Test("movies-and-series-browsing/rating-and-trailer-on-the-banner the row's rating shows before the info call answers")
     func ratingBeforeDetails() {
-        #expect(BannerText(movie(rating: 6.25), details: nil).facts == ["★ 6.3"])
-        let answered = BannerText(movie(rating: 6.2), details: ShelfDetails(year: 2024, rating: 7.4))
+        #expect(BannerText(movie(rating: 6.25), details: nil, locale: english).facts == ["★ 6.3"])
+        let answered = BannerText(movie(rating: 6.2), details: ShelfDetails(year: 2024, rating: 7.4), locale: english)
         #expect(answered.facts == ["2024", "★ 7.4"])
-        #expect(BannerText(movie(rating: 6.2), details: ShelfDetails(year: 2024)).facts == ["2024", "★ 6.2"])
+        #expect(BannerText(movie(rating: 6.2), details: ShelfDetails(year: 2024), locale: english).facts == ["2024", "★ 6.2"])
     }
 
     @Test("movies-and-series-browsing/rating-and-trailer-on-the-banner no rating, no star")

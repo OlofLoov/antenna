@@ -3,6 +3,8 @@ import Foundation
 import Testing
 
 /// The title page's details line, season groups and play target.
+private let english = Locale(identifier: "en_US")
+
 @Suite struct TitleRulesTests {
     let now = Date(timeIntervalSince1970: 1_800_000_000)
     let source = UUID()
@@ -33,7 +35,7 @@ import Testing
             plot: " A harbour pilot. ", year: 2024, duration: 7_680, genre: "Thriller", ageRating: "15",
             backdropURLs: [URL(string: "http://h/b.jpg")!], cast: "Mira Holt", director: "Sanna Weiss", rating: 7.4,
             trailerURL: URL(string: "https://t.example/x"))
-        let meta = TitleMetadata(movie: movie(), info: info)
+        let meta = TitleMetadata(movie: movie(), info: info, locale: english)
         #expect(meta.eyebrow == "Movie · Thriller")
         #expect(meta.name == "The Long Harbor 2160p")
         #expect(meta.detailsLine == "2024 · 2 h 08 min · Thriller · ★ 7.4")
@@ -58,8 +60,8 @@ import Testing
 
     @Test("title-detail-and-episode-picker/what-the-title-is-about the rating falls back to the list row, one decimal")
     func ratingFallback() {
-        #expect(TitleMetadata(movie: movie(rating: 6.25), info: VODInfo()).facts == ["★ 6.3"])
-        #expect(TitleMetadata(movie: movie(rating: 6), info: VODInfo(rating: 8)).facts == ["★ 8.0"])
+        #expect(TitleMetadata(movie: movie(rating: 6.25), info: VODInfo(), locale: english).facts == ["★ 6.3"])
+        #expect(TitleMetadata(movie: movie(rating: 6), info: VODInfo(rating: 8), locale: english).facts == ["★ 8.0"])
         #expect(TitleMetadata.rating(0) == nil)
         #expect(TitleMetadata.rating(.nan) == nil)
     }
@@ -68,7 +70,7 @@ import Testing
     func seriesSeasons() {
         let episodes = [episode(1, season: 1, number: 1), episode(2, season: 3, number: 1), episode(3, season: 0, number: 1)]
         let info = SeriesInfo(year: 2019, genre: "Drama", ageRating: "15", rating: 8.1, episodes: episodes)
-        let meta = TitleMetadata(series: series(), info: info, groups: SeasonGroup.group(episodes))
+        let meta = TitleMetadata(series: series(), info: info, groups: SeasonGroup.group(episodes), locale: english)
         #expect(meta.eyebrow == "Series · Drama")
         #expect(meta.detailsLine == "2019 · 2 seasons · Drama · ★ 8.1")
         #expect(meta.badges == ["15"], "a series shows no 4K badge")

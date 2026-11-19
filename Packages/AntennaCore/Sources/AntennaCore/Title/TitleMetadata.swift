@@ -58,13 +58,13 @@ public struct TitleMetadata: Sendable, Hashable {
 
     /// A movie's page once `get_vod_info` answered. The rating is the info
     /// call's, else the list row's.
-    public init(movie title: ShelfTitle, info: VODInfo) {
+    public init(movie title: ShelfTitle, info: VODInfo, locale: Locale = .autoupdatingCurrent) {
         self.init(title: title)
         let rating = info.rating ?? title.rating
         year = info.year.map(String.init)
         length = ShelfText.length(info.duration)
         genre = Self.present(info.genre)
-        self.rating = rating.flatMap(Self.rating)
+        self.rating = rating.flatMap { Self.rating($0, locale: locale) }
         badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
         description = Self.present(info.plot)
         cast = Self.present(info.cast) ?? Self.present(title.cast)
@@ -75,13 +75,13 @@ public struct TitleMetadata: Sendable, Hashable {
 
     /// A series' page once `get_series_info` answered. The seasons count
     /// is the number of numbered season groups.
-    public init(series title: ShelfTitle, info: SeriesInfo, groups: [SeasonGroup]) {
+    public init(series title: ShelfTitle, info: SeriesInfo, groups: [SeasonGroup], locale: Locale = .autoupdatingCurrent) {
         self.init(title: title)
         let rating = info.rating ?? title.rating
         year = info.year.map(String.init)
         length = ShelfText.seasons(SeasonGroup.seasonCount(groups))
         genre = Self.present(info.genre)
-        self.rating = rating.flatMap(Self.rating)
+        self.rating = rating.flatMap { Self.rating($0, locale: locale) }
         badges = [ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
         description = Self.present(info.plot)
         cast = Self.present(info.cast) ?? Self.present(title.cast)
@@ -111,22 +111,23 @@ public struct TitleMetadata: Sendable, Hashable {
     }
 
     /// "★ 7.4", one decimal; nil for 0 or less or not finite. The banner
-    /// and the title page both write the provider's rating with it.
-    public static func rating(_ value: Double) -> String? {
-        decimal(value).map { "★ \($0)" }
+    /// and the title page both write the provider's rating with it, with
+    /// the decimal separator and digits of `locale`
+    /// (localization/numbers-use-the-region-s-digits-and-separators).
+    public static func rating(_ value: Double, locale: Locale = .autoupdatingCurrent) -> String? {
+        decimal(value, locale: locale).map { "★ \($0)" }
     }
 
     /// "rated 7.4 out of 10", what VoiceOver reads for `rating(_:)`, in
     /// the language of `locale`.
     public static func spokenRating(_ value: Double, locale: Locale = .autoupdatingCurrent) -> String? {
-        decimal(value).map { Words(locale)("rated \($0) out of 10") }
+        decimal(value, locale: locale).map { Words(locale)("rated \($0) out of 10") }
     }
 
     /// "7.4": one decimal, nil for 0 or less or not finite.
-    private static func decimal(_ value: Double) -> String? {
+    private static func decimal(_ value: Double, locale: Locale) -> String? {
         guard value.isFinite, value > 0 else { return nil }
-        let tenths = Int((value * 10).rounded())
-        return "\(tenths / 10).\(tenths % 10)"
+        return Int((value * 10).rounded()).tenths(locale)
     }
 
     static func eyebrow(_ title: ShelfTitle, locale: Locale = .autoupdatingCurrent) -> String {

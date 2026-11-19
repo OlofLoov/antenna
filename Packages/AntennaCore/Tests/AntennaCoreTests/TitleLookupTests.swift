@@ -3,6 +3,8 @@ import Foundation
 import Testing
 
 /// Title names, scores, the kept-match rules and the Debug mock.
+private let english = Locale(identifier: "en_US")
+
 @Suite struct TitleLookupTests {
     let source = UUID()
 
@@ -55,11 +57,11 @@ import Testing
 
     @Test("title-detail-and-episode-picker/scores-from-other-sites: each site's text and what VoiceOver reads")
     func scoreText() {
-        #expect(Score(site: .tmdb, value: 7.4, scale: 10).text == "74%")
+        #expect(Score(site: .tmdb, value: 7.4, scale: 10).text(english) == "74%")
         #expect(Score(site: .tmdb, value: 7.4, scale: 10).spoken(Locale(identifier: "en_US")) == "TMDB user score 74 percent")
-        #expect(Score(site: .imdb, value: 7.8, scale: 10).text == "7.8")
-        #expect(Score(site: .rottenTomatoes, value: 92, scale: 100).text == "92%")
-        #expect(Score(site: .metacritic, value: 81, scale: 100).text == "81")
+        #expect(Score(site: .imdb, value: 7.8, scale: 10).text(english) == "7.8")
+        #expect(Score(site: .rottenTomatoes, value: 92, scale: 100).text(english) == "92%")
+        #expect(Score(site: .metacritic, value: 81, scale: 100).text(english) == "81")
         #expect(Score(site: .tmdb, value: 0, scale: 10).text == nil)
         #expect(Score(site: .tmdb, value: 11, scale: 10).text == nil)
         #expect(Score(site: .tmdb, value: .nan, scale: 10).text == nil)
@@ -72,7 +74,7 @@ import Testing
             Score(site: .imdb, value: 7.8, scale: 10), Score(site: .imdb, value: 6, scale: 10),
         ]
         #expect(Score.ordered(scores).map(\.site) == [.imdb, .tmdb])
-        #expect(Score.ordered(scores).first?.text == "7.8")
+        #expect(Score.ordered(scores).first?.text(english) == "7.8")
     }
 
     // MARK: Merging
@@ -91,7 +93,7 @@ import Testing
         #expect(meta.cast == "A, B")
         #expect(meta.director == "C")
         #expect(meta.backdropURL == URL(string: "https://img.example/b.jpg"))
-        #expect(meta.scores.map(\.text) == ["74%"])
+        #expect(meta.scores.map { $0.text(english) } == ["74%"])
         #expect(!meta.scoresAreSample)
     }
 
@@ -106,7 +108,7 @@ import Testing
 
     @Test("title-detail-and-episode-picker/what-the-title-is-about: scores replace the provider's rating")
     func scoresReplaceRating() {
-        let base = TitleMetadata(movie: movie("Heat"), info: VODInfo(year: 1995, rating: 7.4))
+        let base = TitleMetadata(movie: movie("Heat"), info: VODInfo(year: 1995, rating: 7.4), locale: english)
         #expect(base.detailsLine == "1995 · ★ 7.4")
         let scored = base.merging(TitleMatch(tmdbID: 1, scores: [Score(site: .tmdb, value: 7.9, scale: 10)]))
         #expect(scored.detailsLine == "1995")
@@ -252,7 +254,7 @@ import Testing
         #expect(first?.isSample == true)
         #expect(first?.scores.map(\.site) == [.tmdb])
         #expect(MockTitleLookup.stableHash("a") == 0xaf63_dc4c_8601_ec8c, "FNV-1a, the same on every launch")
-        let text = try #require(first?.scores.first?.text)
+        let text = try #require(first?.scores.first?.text(english))
         #expect(text.hasSuffix("%"))
         let percent = try #require(Int(text.dropLast()))
         #expect((50...90).contains(percent))
