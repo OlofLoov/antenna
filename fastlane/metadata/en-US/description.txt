@@ -1,0 +1,42 @@
+Antenna plays the TV sources you already have, on iPhone, iPad, Mac and Apple TV. It comes with no channels, playlists or provider addresses. You add your own source, and Antenna turns it into a channel list, a TV guide and a movie and series library.
+
+YOUR SOURCES
+• M3U playlists, from a link or a file
+• Xtream Codes logins
+• Stalker portals
+• Jellyfin and Channels DVR servers
+• XMLTV guides, from the playlist or an address you add
+
+LIVE TV
+• A channel list that shows what's on now and next
+• A TV guide for the coming days
+• Pause live TV, rewind up to an hour, and jump back to live
+• Start the current program over or watch earlier ones, when your provider offers catch-up
+• Hide, rename and reorder groups, build your own, and lock a group with a passcode
+• Favorites, and a reminder before a program starts
+• Up to four channels at once on Apple TV, iPad and Mac
+• One search for channels, programs, movies and series
+
+MOVIES AND SERIES
+• Your provider's movies and series as rows of posters, with seasons and episodes
+• Pick up where you stopped, on any of your devices
+• The next episode starts by itself, unless you turn that off
+
+ON APPLE TV
+• Change channels with the Siri Remote, or type a channel number
+• Favorites and titles in progress on the Top Shelf
+• Sign the TV in by scanning a code with your iPhone, instead of typing a password with the remote
+
+ON EVERY DEVICE
+• Sources, favorites and watch progress sync through your own iCloud account. Passwords stay in iCloud Keychain.
+• A profile for each person in the house, with their own favorites and history
+• Siri and Shortcuts can tune a channel or play a title on iPhone, iPad and Mac
+• Keyboard shortcuts on Mac and iPad
+
+PURCHASE
+Antenna is free to download and needs a purchase to use: a yearly subscription or a one-time lifetime unlock. Both work with Family Sharing. The app shows the price for your region before you buy.
+
+PRIVACY
+Antenna has no account, no ads and no analytics. It connects only to the sources you add, your iCloud account and the App Store.
+
+You need the right to watch what your sources play. Antenna does not sell or recommend TV subscriptions.
