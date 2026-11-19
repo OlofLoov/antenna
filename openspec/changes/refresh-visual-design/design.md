@@ -238,3 +238,10 @@ Starting Picture in Picture on its own when the user swipes home during playback
 ### 14. What PR 7 did with the Apple TV bar
 
 The pill group sits on glass in place of the opaque bar color. Tabs are `FocusCardStyle` capsules: the open tab rests white while focus is in its content and on the surface while focus is elsewhere in the bar, which keeps the `tvos-shell` deviation until `adopt-tvos-tab-view` removes it. The gear is a bordered circle and the profile circle takes the highlight hover effect in place of its ring and scale. No `ButtonStyle` type is left outside the exception components, so PR 8 can turn the style check into a failure.
+
+### 15. What PR 8 closed
+
+- **The style and type checks fail now.** No `ButtonStyle` type is left outside the exception components and `FocusCard.swift`, and no fixed font size outside the number box, the subtitle overlay and the profile badge. The person page from `add-browse-by-person` moved onto `TypeScale` here.
+- **Two more checks.** A literal `cornerRadius:` fails outside `Metrics.swift` and the Debug views: the 110 literal radii became `cornerShape(.small)` for 8 pt and less, `.medium` for 10 to 14 and `.large` for 16 to 22, and `CornerShape` is now insettable so borders draw inside it. `.glassEffect` fails outside the tab bar, the player strip and the Movies and Series switch. The spacing scale has no check: paddings are too varied for a grep to tell a scale value from a layout measure, so it stays a review rule.
+- **Citations.** `liquid-glass-stays-on-the-navigation-layer` and `one-spacing-and-radius-scale` are cited by their checks; `live-video-keeps-playing-under-overlays` by the overlay, guide and Search UI tests; `focus-is-the-lifted-white-card` by `TVJourneys.testMoviesFocus`, whose screenshot a reviewer compares with `TV-Movies`.
+- **The full UI suite.** This batch ran without the `ui-tests` label, as its brief asked: each PR ran the UI test classes its section names on a local simulator, and the nightly `UI tests` run on main covers the rest. The `App screenshots` artifact of that night is the one to compare with the boards.
