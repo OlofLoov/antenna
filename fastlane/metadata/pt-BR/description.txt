@@ -1,0 +1,42 @@
+O Antenna reproduz as fontes de TV que você já tem, no iPhone, iPad, Mac e Apple TV. O app não vem com nenhum canal, playlist ou endereço de provedor. Você adiciona sua própria fonte, e o Antenna a transforma em uma lista de canais, um guia de TV e uma biblioteca de filmes e séries.
+
+SUAS FONTES
+• Playlists M3U, de um link ou de um arquivo
+• Contas Xtream Codes
+• Portais Stalker
+• Servidores Jellyfin e Channels DVR
+• Guias XMLTV, da playlist ou de um endereço que você adicionar
+
+TV AO VIVO
+• Uma lista de canais que mostra o que está passando agora e o que vem a seguir
+• Um guia para os próximos dias
+• Pause a TV ao vivo, volte até uma hora e retorne ao vivo
+• Comece do início o programa atual ou assista aos anteriores em reprise, se o seu provedor oferecer
+• Oculte, renomeie e reordene grupos, crie os seus e bloqueie um grupo com um código
+• Favoritos e um lembrete antes de um programa começar
+• Até quatro canais ao mesmo tempo com a Multivisão no Apple TV, iPad e Mac
+• Uma só busca para canais, programas, filmes e séries
+
+FILMES E SÉRIES
+• Os filmes e séries do seu provedor em fileiras de pôsteres, com temporadas e episódios
+• Continue de onde parou, em qualquer um dos seus dispositivos
+• O próximo episódio começa automaticamente, a menos que você desative essa opção
+
+NO APPLE TV
+• Troque de canal com o Siri Remote ou digite o número do canal
+• Favoritos e títulos em andamento no topo da Tela de Início
+• Inicie sessão no Apple TV lendo um código com o iPhone, em vez de digitar uma senha com o controle remoto
+
+EM TODOS OS DISPOSITIVOS
+• Fontes, favoritos e progresso são sincronizados pela sua própria conta do iCloud. As senhas ficam nas suas Chaves do iCloud.
+• Um perfil para cada pessoa da casa, com seus próprios favoritos e histórico
+• A Siri e o app Atalhos podem sintonizar um canal ou reproduzir um título no iPhone, iPad e Mac
+• Atalhos de teclado no Mac e no iPad
+
+COMPRA
+O Antenna é gratuito para baixar e precisa de uma compra para ser usado: uma assinatura anual ou um desbloqueio vitalício com pagamento único. As duas opções funcionam com o Compartilhamento Familiar. O app mostra o preço da sua região antes da compra.
+
+PRIVACIDADE
+O Antenna não tem conta, anúncios nem análises. Ele se conecta apenas às fontes que você adiciona, à sua conta do iCloud e à App Store.
+
+Você precisa ter o direito de assistir ao que suas fontes reproduzem. O Antenna não vende nem recomenda assinaturas de TV.

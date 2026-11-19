@@ -1,0 +1,42 @@
+Antenna spelar de tv-källor du redan har, på iPhone, iPad, Mac och Apple TV. Appen har inga kanaler, spellistor eller leverantörsadresser. Du lägger till din egen källa, och Antenna gör den till en kanallista, en tablå och ett bibliotek med filmer och serier.
+
+DINA KÄLLOR
+• M3U-spellistor, från en länk eller en fil
+• Xtream Codes-inloggningar
+• Stalker-portaler
+• Jellyfin- och Channels DVR-servrar
+• XMLTV-tablåer, från spellistan eller från en adress du lägger till
+
+LIVE-TV
+• En kanallista som visar vad som sänds nu och härnäst
+• En tablå för de kommande dagarna
+• Pausa live-tv, spola tillbaka upp till en timme och hoppa tillbaka till live
+• Börja om programmet som sänds, eller se tidigare program i efterhand, när din leverantör erbjuder det
+• Dölj, byt namn på och sortera grupper, skapa egna och lås en grupp med en lösenkod
+• Favoriter, och en påminnelse innan ett program börjar
+• Upp till fyra kanaler samtidigt med Multivy på Apple TV, iPad och Mac
+• En sökning för kanaler, program, filmer och serier
+
+FILMER OCH SERIER
+• Leverantörens filmer och serier i rader med affischer, säsonger och avsnitt
+• Fortsätt där du slutade, på vilken av dina enheter som helst
+• Nästa avsnitt startar automatiskt, om du inte stänger av det
+
+PÅ APPLE TV
+• Byt kanal med Siri Remote, eller knappa in ett kanalnummer
+• Favoriter och påbörjade titlar överst på hemskärmen
+• Logga in Apple TV genom att skanna en kod med din iPhone, så slipper du skriva lösenord med fjärrkontrollen
+
+PÅ ALLA ENHETER
+• Källor, favoriter och hur långt du har kommit synkas via ditt eget iCloud-konto. Lösenord stannar i iCloud-nyckelringen.
+• En profil för varje person i hemmet, med egna favoriter och egen historik
+• Siri och Genvägar kan byta till en kanal eller spela en titel på iPhone, iPad och Mac
+• Kortkommandon på Mac och iPad
+
+KÖP
+Antenna är gratis att ladda ned och kräver ett köp för att användas: ett årsabonnemang eller ett engångsköp som gäller för alltid. Båda fungerar med Familjedelning. Appen visar priset för din region innan du köper.
+
+INTEGRITET
+Antenna har inget konto, ingen reklam och ingen analys. Appen ansluter bara till källorna du lägger till, ditt iCloud-konto och App Store.
+
+Du måste ha rätt att titta på det dina källor spelar. Antenna varken säljer eller rekommenderar tv-abonnemang.

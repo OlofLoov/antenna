@@ -1,0 +1,1 @@
+m3u,m3u8,epg,xmltv,tv,live,kanaler,spellista,playlist,tv-guide,timeshift,multivy,streaming,efterhand
