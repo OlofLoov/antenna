@@ -85,6 +85,14 @@
                 guard titles, focus.wrappedValue == nil || focus.wrappedValue == .content else { return }
                 refocus()
             }
+            // Select on the tab sends focus to the loading holder, and the
+            // focus engine moves it a moment later. When titles replace the
+            // holder in that moment, focus leaves the tab for nothing, and
+            // Play takes it.
+            .onChange(of: focus.wrappedValue) { old, new in
+                guard new == nil, case .tab = old, model.status.showsTitles, list == nil, library.page == nil else { return }
+                refocus()
+            }
         }
 
         private func rows(_ model: ShelfModel) -> some View {
