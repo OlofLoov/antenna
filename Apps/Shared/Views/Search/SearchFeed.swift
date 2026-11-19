@@ -7,6 +7,8 @@ struct SearchPicks {
     var channel: @MainActor (Channel) -> Void
     var programme: @MainActor (SearchResults.ProgrammeHit, Channel) -> Void
     var title: @MainActor (ShelfTitle) -> Void
+    /// Opens the person's page over Search (browse-by-person/find-a-person-in-search).
+    var person: @MainActor (PersonName) -> Void
 }
 
 /// What the result rows read, provided once by the Search screen.
@@ -42,6 +44,12 @@ struct SearchFeed {
         picks.title(hit.title)
     }
 
+    @MainActor func pick(_ person: PeopleIndex.Person) {
+        remember(model.query)
+        model.cursor = .person(person.key)
+        picks.person(PersonName(key: person.key, display: person.name))
+    }
+
     /// Picks the row the cursor is on (search/search-with-a-keyboard).
     @MainActor func pickCursor() {
         let results = model.results
@@ -52,6 +60,8 @@ struct SearchFeed {
             if let hit = results.programmes.first(where: { $0.id == id }) { pick(hit) }
         case .title(let id):
             if let hit = results.titles.first(where: { $0.id == id }) { pick(hit) }
+        case .person(let key):
+            if let person = model.people.first(where: { $0.key == key }) { pick(person) }
         case nil:
             break
         }
@@ -169,13 +179,37 @@ struct SearchTitleResult: View {
     }
 }
 
+/// A person with their initials, name and count line.
+struct SearchPersonResult: View {
+    let person: PeopleIndex.Person
+    let index: Int
+    @Environment(\.searchFeed) private var feed
+    @Environment(\.locale) private var locale
+
+    var body: some View {
+        if let feed {
+            let page = person.page
+            SearchRow.Person(
+                name: person.name, nameRanges: feed.model.results.query.highlights(in: person.name),
+                detail: page.countLine(locale: locale), initials: page.initials
+            ) {
+                feed.pick(person)
+            }
+            .environment(\.searchCursor, feed.model.cursor == .person(person.key))
+            .accessibilityValue(feed.model.cursor == .person(person.key) ? "Keyboard focus" : "")
+            .accessibilityIdentifier("search.person.\(index)")
+            .id(SearchItem.person(person.key))
+        }
+    }
+}
+
 /// What shows under the field when there are no rows: nothing for one
 /// letter, "Channels are still loading", or no results with the hint
 /// (search/nothing-found). Nil when there are rows to show.
 @MainActor
 func searchMessage(_ model: SearchModel) -> (title: String, lines: [String])? {
     let results = model.results
-    guard results.query.isSearchable, results.isEmpty, results.query.text == SearchQuery(model.query).text else { return nil }
+    guard results.query.isSearchable, model.foundNothing, results.query.text == SearchQuery(model.query).text else { return nil }
     if model.sources == .loading { return (SearchText.channelsLoading(), []) }
     let lines = [SearchText.hint()] + (model.sources == .partial ? [SearchText.someStillLoading()] : [])
     return (SearchText.noResults(results.query), lines)

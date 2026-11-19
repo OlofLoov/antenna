@@ -139,4 +139,25 @@ import Testing
         #expect(model.cursor == nil)
         #expect(model.focusRequests == requests + 1, "up from the first row goes back to the field")
     }
+
+    // search/results-grouped-best-first, People last
+    @Test("browse-by-person/find-a-person-in-search people come last in All, out of the narrowed views, and count as results")
+    func people() async {
+        let gate = Gate()
+        let model = model(gate: gate, clock: Clock(start))
+        await model.load(corpus([channel("Mira TV")]))
+        let titles = [ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: source, name: "Salt Road", cast: "Mira Holt")]
+        model.peopleChanged(PeopleIndex(titles: titles, learned: LearnedCredits()))
+        model.run("mira")
+        #expect(model.people.map(\.name) == ["Mira Holt"])
+        #expect(model.items.last == .person(PersonName.key("Mira Holt")), "People comes after every other section")
+        model.scope = .channels
+        #expect(model.shownPeople.isEmpty, "no People in a narrowed view")
+        model.scope = .all
+        model.run("holt")
+        #expect(model.results.isEmpty)
+        #expect(!model.foundNothing, "a person alone is a result")
+        model.run("zz")
+        #expect(model.people.isEmpty)
+    }
 }

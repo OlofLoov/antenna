@@ -26,6 +26,9 @@
                 lead: "Tue 20:00", title: "Northern Soul Night", ranges: ranges("Northern Soul Night"), detail: "Music Box · Tomorrow",
                 hasCatchup: false
             ) {}
+            SearchRow.Person(
+                name: "Northa Berg", nameRanges: ranges("Northa Berg"), detail: "Acting · 4 in your sources", initials: "NB"
+            ) {}
         }
 
         @ViewBuilder static var titles: some View {

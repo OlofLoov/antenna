@@ -39,6 +39,11 @@ enum SearchLayout {
                             .scrollIndicators(.hidden)
                         }
                     }
+                    if !model.shownPeople.isEmpty {
+                        section(.people, model: model) {
+                            people(model.shownPeople)
+                        }
+                    }
                 }
                 .padding(.vertical, 12)
             }
@@ -101,6 +106,11 @@ enum SearchLayout {
                             }
                         }
                     }
+                    if !model.shownPeople.isEmpty {
+                        section(.people, model: model) {
+                            LazyVGrid(columns: columns(3), spacing: 10) { people(model.shownPeople) }
+                        }
+                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 4)
@@ -124,15 +134,16 @@ enum SearchLayout {
     }
 }
 
-/// The three sections.
+/// The four sections, in order.
 enum SearchSectionKind {
-    case channels, guide, titles
+    case channels, guide, titles, people
 
     var title: LocalizedStringResource {
         switch self {
         case .channels: "Channels"
         case .guide: "In the guide"
         case .titles: "Movies & series"
+        case .people: "People"
         }
     }
 
@@ -141,6 +152,7 @@ enum SearchSectionKind {
         case .channels: "channels"
         case .guide: "guide"
         case .titles: "titles"
+        case .people: "people"
         }
     }
 }
@@ -169,6 +181,7 @@ struct SearchSectionHeader: View {
             if results.programmes.isEmpty, model.guideLoading { return "loading" }
             return .verbatim([SearchText.nextSevenDays(locale), "\(results.count(.guide))"].joinedAsDetail(locale))
         case .titles: return .verbatim("\(results.titles.count)")
+        case .people: return .verbatim("\(model.people.count)")
         }
     }
 }
@@ -227,6 +240,13 @@ private func showsTitles(_ model: SearchModel) -> Bool {
 private func capNote(_ results: SearchResults) -> some View {
     if results.isChannelListCapped {
         SearchParts.CapNote(text: SearchText.showing(results.shownChannels.count, of: results.count(.channels)))
+    }
+}
+
+@MainActor @ViewBuilder
+func people(_ people: [PeopleIndex.Person]) -> some View {
+    ForEach(Array(people.enumerated()), id: \.element.id) { index, person in
+        SearchPersonResult(person: person, index: index)
     }
 }
 

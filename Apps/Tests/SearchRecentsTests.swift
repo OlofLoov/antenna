@@ -53,7 +53,7 @@ import Testing
         var played: [String] = []
         let feed = SearchFeed(
             model: model, channel: { key in tagged.first { RowKey($0) == key } }, onNow: { _, _ in nil },
-            picks: SearchPicks(channel: { played.append($0.name) }, programme: { _, _ in }, title: { _ in }),
+            picks: SearchPicks(channel: { played.append($0.name) }, programme: { _, _ in }, title: { _ in }, person: { _ in }),
             remember: { activity.recordSearch($0) }, text: SearchText())
         model.run("  Arena  ")
         try feed.pick(#require(model.results.channels.first))

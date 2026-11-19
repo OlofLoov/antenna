@@ -92,7 +92,7 @@ On iPhone the person page shows in place of the title page inside the Movies or 
 
 ### 7. People in Search
 
-`PeopleIndex.search(_:)` takes a `SearchQuery` and returns up to three people for whom every typed word starts a word of the folded name, ordered by title count, then name. Shown as `search.people` after Movies & series in the All view only, rows `search.person.<index>` with initials, name and the count line, on every platform's result layout. Nothing leaves the device, so no switch or pause applies. Picking a person opens their page over Search.
+`PeopleIndex.search(_:)` takes a `SearchQuery` and returns up to three people for whom every typed word starts a word of the folded name, ordered by title count, then name. Shown as `search.section.people` after Movies & series in the All view only (on Apple TV, which has no chips, always), rows `search.person.<index>` drawn by `SearchRow.Person` with initials, name and the count line, on every platform's result layout. The section follows Search's own 300 ms pause and two-letter minimum, and a person alone counts as a result, so the no-results message stays away. Picking a person opens their page over Search; Back returns to Search with the query kept. Nothing leaves the device, so no lookups switch applies.
 
 ## Later: with the lookup service
 
