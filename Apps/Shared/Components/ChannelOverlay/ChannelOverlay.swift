@@ -78,7 +78,7 @@ enum ChannelOverlay {
         var body: some View {
             Text(Words(locale)(text).uppercased(with: locale))
                 .font(.system(size: 20, weight: .semibold))
-                .tracking(1.5)
+                .letterSpacing(1.5)
                 .foregroundStyle(Palette.textMuted)
         }
     }
@@ -353,7 +353,7 @@ enum ChannelOverlay {
                 isFocused ? ChannelOverlay.tileOnFocus : ChannelOverlay.tile
                 Text(text)
                     .font(.system(size: 16, weight: .bold))
-                    .kerning(1)
+                    .letterSpacing(1)
                     .foregroundStyle(isFocused ? Palette.text : ChannelOverlay.tileText)
             }
             .accessibilityValue(text)
@@ -414,6 +414,11 @@ private struct OverlayPreview: View {
 
 #Preview("Channel overlay, a group selected", traits: .fixedLayout(width: 1920, height: 1080)) {
     OverlayPreview()
+}
+
+#Preview("Channel overlay, a group selected, Arabic", traits: .fixedLayout(width: 1920, height: 1080)) {
+    OverlayPreview()
+        .previewLanguage(.arabic)
 }
 
 #Preview("Channel overlay, Favorites empty", traits: .fixedLayout(width: 1920, height: 1080)) {

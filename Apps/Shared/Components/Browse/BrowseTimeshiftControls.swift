@@ -35,6 +35,7 @@
             @ViewBuilder var extras: Extras
             @Environment(\.browseMetrics) private var metrics
             @Environment(\.locale) private var locale
+            @Environment(\.layoutDirection) private var direction
 
             var body: some View {
                 let regular = metrics == .regular
@@ -43,7 +44,7 @@
                         if let badge = scrub.badge {
                             Text(badge)
                                 .font(.system(size: 10, weight: .bold))
-                                .tracking(1)
+                                .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
@@ -120,7 +121,9 @@
                         .contentShape(Rectangle())
                         .gesture(
                             DragGesture(minimumDistance: 0)
-                                .onChanged { value in drag(value.location.x / max(1, proxy.size.width)) }
+                                .onChanged { value in
+                                    drag(direction.fromLeading(value.location.x, in: proxy.size.width) / max(1, proxy.size.width))
+                                }
                                 .onEnded { _ in endDrag() })
                 }
                 .frame(height: 30)
@@ -162,7 +165,9 @@
                         Circle().fill(Palette.textMuted).frame(width: 6, height: 6)
                         Text("LIVE")
                             .font(.system(size: 11, weight: .semibold))
-                            .tracking(1)
+                            .letterSpacing(1)
+                            .lineLimit(1)
+                            .fixedSize()
                     }
                     .padding(.vertical, 3)
                     .padding(.horizontal, 7)
@@ -205,6 +210,18 @@
         } extras: {
             EmptyView()
         }
+    }
+
+    #Preview("Timeshift controls, iPhone, paused 12 minutes behind, Arabic", traits: .fixedLayout(width: 390, height: 90)) {
+        Browse.TimeshiftControls(
+            scrub: .init(time: "٢١:٢٢", marker: 0.8, behind: "متأخر بـ ١٢ د"), isPaused: true, progress: 0.68, clock: "٢١:٣٤",
+            isFullScreen: false, playPause: {}, skip: { _ in }, drag: { _ in }, endDrag: {}, goLive: {}, toggleFullScreen: {}
+        ) {
+            Browse.StartOverButton {}
+        } extras: {
+            EmptyView()
+        }
+        .previewLanguage(.arabic)
     }
 
     #Preview("Timeshift controls, iPad, at live", traits: .fixedLayout(width: 700, height: 90)) {

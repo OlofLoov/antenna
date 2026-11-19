@@ -178,7 +178,7 @@ struct ProfileFlow: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("NAME")
                         .font(.system(size: 22, weight: .semibold))
-                        .tracking(1.5)
+                        .letterSpacing(1.5)
                         .foregroundStyle(Palette.textMuted)
                     TextField("Name", text: $name)
                         .font(.system(size: 34))

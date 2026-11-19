@@ -51,7 +51,7 @@ extension GuideBoard {
             var body: some View {
                 Text(text)
                     .font(.system(size: 9, weight: .bold))
-                    .kerning(0.5)
+                    .letterSpacing(0.5)
                     .foregroundStyle(look == .playing ? Palette.text : Browse.textSecondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(look == .playing ? Browse.tileSelected : Browse.tile)
@@ -78,7 +78,7 @@ extension GuideBoard {
                         if timing == .now {
                             Text("NOW")
                                 .font(.system(size: 11, weight: .bold))
-                                .kerning(1)
+                                .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
                                 .padding(.vertical, 1)
                                 .padding(.horizontal, 5)
@@ -172,7 +172,7 @@ extension GuideBoard {
                                 Text("LIVE")
                             }
                             .font(.system(size: 11, weight: .semibold))
-                            .kerning(1)
+                            .letterSpacing(1)
                             .padding(.vertical, 3)
                             .padding(.horizontal, 7)
                             .background(Palette.surface(0.14), in: RoundedRectangle(cornerRadius: 5))
@@ -219,4 +219,23 @@ extension GuideBoard {
     }
     .frame(width: 390, height: 400)
     .background(Palette.ground)
+}
+
+#Preview("Guide rows, Arabic") {
+    VStack(alignment: .leading, spacing: 6) {
+        GuideBoard.Compact.RowHeader(number: 104, name: "Sport One", look: .playing, watch: {}) {
+            GuideBoard.Compact.Initials(text: "S1", look: .playing)
+        }
+        HStack(spacing: GuideStrip.spacing) {
+            GuideBoard.Compact.Card(time: "٢٠:٠٠", title: "Premier League: Arsenal v Liverpool", timing: .now, progress: 0.78)
+            GuideBoard.Compact.GapCard(times: "٢٢:٠٠ – ٢٢:١٥")
+            GuideBoard.Compact.Card(time: "٢٢:١٥", title: "Match of the Day", timing: .future, progress: nil)
+        }
+        .padding(.horizontal, 16)
+        GuideBoard.Compact.Placeholder(text: GuideLine.loading(PreviewLanguage.arabic.locale))
+        Spacer()
+    }
+    .frame(width: 390, height: 400)
+    .background(Palette.ground)
+    .previewLanguage(.arabic)
 }

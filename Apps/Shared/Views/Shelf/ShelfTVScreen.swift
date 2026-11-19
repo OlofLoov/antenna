@@ -343,6 +343,7 @@
         @Environment(\.shelfBanner) private var banner
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfPlayback.self) private var playback
+        @Environment(\.layoutDirection) private var direction
         @FocusState private var focused: Part?
 
         enum Part: Hashable { case play, info, trailer, myList }
@@ -353,7 +354,7 @@
                     .fixedSize()
                     .focused(focus, equals: .content)
                     .focused($focused, equals: .play)
-                    .onMoveCommand { if $0 == .left { banner?.actions.page(-1) } }
+                    .onMoveCommand { if $0.reading(direction) == .left { banner?.actions.page(-1) } }
                 ShelfBanner.InfoButton(type: .tv, title: "More info")
                     .fixedSize()
                     .focused($focused, equals: .info)
@@ -362,7 +363,7 @@
                     .focused($focused, equals: .trailer)
                 ShelfBanner.MyListButton(type: .tv)
                     .focused($focused, equals: .myList)
-                    .onMoveCommand { if $0 == .right { banner?.actions.page(1) } }
+                    .onMoveCommand { if $0.reading(direction) == .right { banner?.actions.page(1) } }
             }
             // Every move between the buttons starts the banner's wait again.
             .onChange(of: focused) { _, part in

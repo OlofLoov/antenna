@@ -126,7 +126,7 @@ extension Browse {
                 Circle().fill(Color(red: 0xFF / 255, green: 0x5F / 255, blue: 0x57 / 255)).frame(width: 6, height: 6)
                 Text("LIVE")
                     .font(.system(size: 11, weight: .semibold))
-                    .tracking(1)
+                    .letterSpacing(1)
             }
             .padding(.vertical, 3)
             .padding(.horizontal, 7)

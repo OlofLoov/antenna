@@ -183,6 +183,11 @@ private struct GridPreview: View {
     GridPreview()
 }
 
+#Preview("Guide grid, a programme on now, Arabic", traits: .fixedLayout(width: 1920, height: 1080)) {
+    GridPreview()
+        .previewLanguage(.arabic)
+}
+
 #Preview("Guide grid, placeholders and a highlighted gap", traits: .fixedLayout(width: 1920, height: 400)) {
     VStack(alignment: .leading, spacing: GuideGrid.rowSpacing) {
         GuideGrid.Row {

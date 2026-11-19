@@ -137,6 +137,19 @@ private struct RowsPreview: View {
         .frame(width: 352)
 }
 
+#Preview("Channel rows, iPhone, Arabic") {
+    RowsPreview()
+        .frame(width: 390)
+        .previewLanguage(.arabic)
+}
+
+#Preview("Channel rows, iPad, Arabic") {
+    RowsPreview()
+        .environment(\.browseMetrics, .regular)
+        .frame(width: 352)
+        .previewLanguage(.arabic)
+}
+
 #Preview("Favorite menu items") {
     VStack(alignment: .leading, spacing: 12) {
         Browse.FavoriteMenuButton(isFavorite: false) {}

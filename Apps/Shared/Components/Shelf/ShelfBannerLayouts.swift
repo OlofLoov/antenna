@@ -10,6 +10,7 @@ import SwiftUI
             @ViewBuilder var top: Top
             @Environment(\.shelfBanner) private var banner
             @Environment(\.shelfPrefix) private var prefix
+            @Environment(\.layoutDirection) private var direction
 
             var body: some View {
                 ZStack(alignment: .bottom) {
@@ -41,7 +42,7 @@ import SwiftUI
                 .frame(height: 520)
                 .overlay(alignment: .top) { top }
                 .contentShape(Rectangle())
-                .gesture(Swipe.gesture(banner))
+                .gesture(Swipe.gesture(banner, direction: direction))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).hero")
             }
@@ -53,6 +54,7 @@ import SwiftUI
         struct Pad: View {
             @Environment(\.shelfBanner) private var banner
             @Environment(\.shelfPrefix) private var prefix
+            @Environment(\.layoutDirection) private var direction
 
             var body: some View {
                 ZStack(alignment: .topLeading) {
@@ -86,7 +88,7 @@ import SwiftUI
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .contentShape(Rectangle())
                 .onHover { inside in banner?.actions.interacting(inside) }
-                .gesture(Swipe.gesture(banner))
+                .gesture(Swipe.gesture(banner, direction: direction))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).hero")
             }
@@ -95,11 +97,13 @@ import SwiftUI
         /// A sideways swipe of 40 pt or more pages the banner; while the finger
         /// is down the banner holds still.
         enum Swipe {
-            @MainActor static func gesture(_ banner: BannerContext?) -> some Gesture {
+            /// A swipe toward the leading edge shows the next page, which
+            /// the mirrored layout draws on the trailing side.
+            @MainActor static func gesture(_ banner: BannerContext?, direction: LayoutDirection) -> some Gesture {
                 DragGesture(minimumDistance: 20)
                     .onChanged { _ in banner?.actions.interacting(true) }
                     .onEnded { value in
-                        let distance = value.translation.width
+                        let distance = direction.towardTrailing(value.translation.width)
                         if abs(distance) >= 40, abs(distance) > abs(value.translation.height) {
                             banner?.actions.page(distance < 0 ? 1 : -1)
                         }

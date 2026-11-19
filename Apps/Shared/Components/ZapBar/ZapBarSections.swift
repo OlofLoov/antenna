@@ -33,7 +33,7 @@ extension ZapBar {
                             HStack(alignment: .firstTextBaseline, spacing: 14) {
                                 Text("NEXT")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .tracking(1.5)
+                                    .letterSpacing(1.5)
                                     .foregroundStyle(Palette.textMuted)
                                 Text(next)
                                     .font(.system(size: 24))
@@ -102,7 +102,7 @@ extension ZapBar {
                         if badge == Self.catchUp {
                             Text("CATCH-UP")
                                 .font(.system(size: 18, weight: .semibold))
-                                .tracking(1)
+                                .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
@@ -151,7 +151,7 @@ extension View {
     /// the quality ones outlined.
     func badge(filled: Bool) -> some View {
         font(.system(size: 18, weight: .semibold))
-            .tracking(1)
+            .letterSpacing(1)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .foregroundStyle(filled ? Palette.text : ChannelOverlay.tileText)
@@ -191,4 +191,27 @@ extension View {
             ZapBar.Status(badges: [], catchUp: nil, hint: "Press to browse channels")
         }
     }
+}
+
+#Preview("Zap bar, paused 12 minutes behind, Arabic", traits: .fixedLayout(width: 1920, height: 1080)) {
+    ZStack(alignment: .bottom) {
+        Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255)
+        VStack(spacing: 16) {
+            Timeshift.Row(isPaused: true, time: "٢١:٢٢", marker: 0.8, behind: "متأخر بـ ١٢ د")
+                .padding(.horizontal, 80)
+            ZapBar.Bar {
+                ZapBar.ChannelIdentity(number: 104, name: "Sport One", position: "Sport · ٤ من ٤٢") {
+                    ZapBar.Initials(text: "S1")
+                }
+            } nowPlaying: {
+                ZapBar.NowPlaying(
+                    content: .programme(
+                        title: "Premier League: Arsenal v Liverpool", times: "٢٠:٠٠ – ٢٢:٠٠", progress: 0.78,
+                        next: "٢٢:٠٠ · Match of the Day", remaining: "تبقّى ٢٦ د"))
+            } status: {
+                ZapBar.Status(badges: ["LIVE", "1080p", "AAC 5.1"], catchUp: "Catch-up 7 days", hint: "Press to browse channels")
+            }
+        }
+    }
+    .previewLanguage(.arabic)
 }

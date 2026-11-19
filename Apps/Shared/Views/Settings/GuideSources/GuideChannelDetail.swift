@@ -10,6 +10,7 @@ struct GuideChannelDetail: View {
     @Bindable var model: GuideSourcesModel
     let channelID: String
     @State private var query: String
+    @Environment(\.locale) private var locale
 
     init(model: GuideSourcesModel, channelID: String) {
         self.model = model
@@ -41,7 +42,7 @@ struct GuideChannelDetail: View {
 
     /// "Sport One · 104".
     private func heading(_ channel: Channel) -> String {
-        let number = channel.number.map { ChannelNumber(major: $0, minor: channel.minorNumber).description }
+        let number = channel.number.map { ChannelNumber(major: $0, minor: channel.minorNumber).text(locale) }
         return [channel.name, number].compactMap(\.self).joined(separator: " · ")
     }
 

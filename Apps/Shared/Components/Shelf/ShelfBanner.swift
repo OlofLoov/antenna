@@ -117,7 +117,7 @@ enum ShelfBanner {
             if let text = banner?.state.text.eyebrow {
                 Text(text.uppercased())
                     .font(.system(size: type.eyebrow, weight: .semibold))
-                    .tracking(type.eyebrow / 8)
+                    .letterSpacing(type.eyebrow / 8)
                     .foregroundStyle(Palette.accent)
                     .lineLimit(1)
             }
@@ -191,7 +191,7 @@ enum ShelfBanner {
         var body: some View {
             Text(text)
                 .font(.system(size: size, weight: .bold))
-                .tracking(1)
+                .letterSpacing(1)
                 .foregroundStyle(Palette.text)
                 .padding(.vertical, size / 5)
                 .padding(.horizontal, size / 2)

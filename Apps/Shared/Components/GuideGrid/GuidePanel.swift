@@ -39,7 +39,7 @@ enum GuidePanel {
                 HStack(alignment: .firstTextBaseline, spacing: 24) {
                     Text(details.eyebrow)
                         .font(.system(size: 20, weight: .semibold))
-                        .kerning(1.5)
+                        .letterSpacing(1.5)
                         .textCase(.uppercase)
                         .lineLimit(1)
                         .foregroundStyle(details.look == .now ? Palette.accent : Palette.textMuted)
@@ -94,7 +94,7 @@ enum GuidePanel {
         var body: some View {
             Text(date, format: .dateTime.hour().minute())
                 .font(.system(size: 34, weight: .semibold))
-                .tracking(0.5)
+                .letterSpacing(0.5)
                 .monospacedDigit()
                 .lineLimit(1)
                 .fixedSize()

@@ -11,6 +11,7 @@
         @FocusState var focus: ShellFocus?
         @Environment(\.scenePhase) private var scenePhase
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
+        @Environment(\.layoutDirection) private var layoutDirection
         @Environment(\.guideStore) private var guideStore
         @Environment(\.sourceRefresher) private var refresher
         @Query private var preferences: [PreferencesRecord]
@@ -362,7 +363,7 @@
         fileprivate func zap(_ direction: MoveCommandDirection) {
             numbers.cancel()
             let steps: Int
-            switch direction {
+            switch direction.reading(layoutDirection) {
             case .up: steps = 1
             case .down: steps = -1
             // Behind live or paused, left and right skip (timeshift-catch-up-and-start-over/skip-scan-and-drag).

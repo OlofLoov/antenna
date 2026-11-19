@@ -164,6 +164,7 @@ enum Transport {
             let skip: (_ forward: Bool) -> Void
             let drag: (_ fraction: Double) -> Void
             let endDrag: () -> Void
+            @Environment(\.layoutDirection) private var direction
 
             var body: some View {
                 VStack {
@@ -214,7 +215,7 @@ enum Transport {
                     .contentShape(Rectangle())
                     .gesture(
                         DragGesture(minimumDistance: 0)
-                            .onChanged { drag($0.location.x / width) }
+                            .onChanged { drag(direction.fromLeading($0.location.x, in: width) / width) }
                             .onEnded { _ in endDrag() })
                 }
                 .frame(height: 44)

@@ -26,7 +26,7 @@ enum ReminderBanner {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(content.eyebrow)
                         .font(.system(size: 12, weight: .semibold))
-                        .kerning(1)
+                        .letterSpacing(1)
                         .textCase(.uppercase)
                         .foregroundStyle(Palette.textMuted)
                     Text(content.title)
@@ -86,7 +86,7 @@ enum ReminderBanner {
             VStack(alignment: .leading, spacing: 14) {
                 Label("Reminder · \(content.eyebrow)", systemImage: "bell.fill")
                     .font(.system(size: 18, weight: .semibold))
-                    .tracking(1.5)
+                    .letterSpacing(1.5)
                     .textCase(.uppercase)
                     .foregroundStyle(Palette.textMuted)
                 Text(content.title)

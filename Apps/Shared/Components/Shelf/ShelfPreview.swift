@@ -68,7 +68,7 @@ enum ShelfPreview {
                 if !text.eyebrow.isEmpty {
                     Text(text.eyebrow.uppercased())
                         .font(.system(size: ShelfBanner.Sizes.tv.eyebrow, weight: .semibold))
-                        .tracking(2)
+                        .letterSpacing(2)
                         .foregroundStyle(Palette.accent)
                         .lineLimit(1)
                 }

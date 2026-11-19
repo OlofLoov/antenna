@@ -81,7 +81,7 @@ enum ZapBar {
                 ZapBar.placeholder
                 Text(text)
                     .font(.system(size: 28, weight: .bold))
-                    .kerning(1)
+                    .letterSpacing(1)
                     .foregroundStyle(Palette.text)
             }
         }

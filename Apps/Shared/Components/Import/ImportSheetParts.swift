@@ -174,7 +174,7 @@
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Source")
                         .font(.system(size: 13, weight: .semibold))
-                        .tracking(1)
+                        .letterSpacing(1)
                         .textCase(.uppercase)
                         .foregroundStyle(Palette.textMuted)
                         .padding(.horizontal, 4)

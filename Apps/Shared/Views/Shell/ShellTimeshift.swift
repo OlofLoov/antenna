@@ -34,6 +34,7 @@
         let timeshift: TimeshiftModel
         let zapBar: ZapBarModel
         let active: Bool
+        @Environment(\.layoutDirection) private var direction
 
         func body(content: Content) -> some View {
             content
@@ -41,7 +42,7 @@
                     RemoteHolds(
                         active: active, holdForLive: timeshift.limits.holdForLive, holdToScan: timeshift.limits.clickLimit,
                         live: { timeshift.holdForLive() },
-                        scan: { forward in timeshift.beginScan(forward: forward) },
+                        scan: { right in timeshift.beginScan(forward: direction.isTrailing(right: right)) },
                         endScan: { timeshift.endScan() }
                     )
                     .allowsHitTesting(false)
@@ -66,7 +67,8 @@
         let holdForLive: Duration
         let holdToScan: Duration
         let live: () -> Void
-        let scan: (_ forward: Bool) -> Void
+        /// A hold of the right arrow, or of the left.
+        let scan: (_ right: Bool) -> Void
         let endScan: () -> Void
 
         func makeCoordinator() -> Coordinator { Coordinator() }

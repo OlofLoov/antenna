@@ -149,6 +149,7 @@ extension TitleTransport {
         @State private var panelOpenedAt: ContinuousClock.Instant?
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.locale) private var locale
+        @Environment(\.layoutDirection) private var direction
 
         var body: some View {
             let panel = playback.tracks?.panel
@@ -206,9 +207,9 @@ extension TitleTransport {
             .background {
                 TitleRemote(
                     active: panel == nil,
-                    click: { transport.click(forward: $0) },
+                    click: { transport.click(forward: direction.isTrailing(right: $0)) },
                     slideBegan: { transport.beginSlide() },
-                    slid: { transport.slide(by: $0) },
+                    slid: { transport.slide(by: direction.towardTrailing($0)) },
                     slideEnded: { transport.endSlide() }
                 )
                 .allowsHitTesting(false)
@@ -303,6 +304,7 @@ extension TitleTransport {
         let kind: String
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.locale) private var locale
+        @Environment(\.layoutDirection) private var direction
         @Environment(\.publishesMenuCommands) private var inMenus
         @State private var width: CGFloat = 0
 
@@ -360,7 +362,7 @@ extension TitleTransport {
                 }
                 #if os(iOS)
                     .onTapGesture(count: 2) { location in
-                        transport.skip(forward: location.x > width / 2)
+                        transport.skip(forward: direction.isTrailing(right: location.x > width / 2))
                     }
                 #endif
                 .onTapGesture { transport.toggle() }

@@ -45,7 +45,7 @@ struct GroupRow: View {
             ForEach(badges, id: \.self) { badge in
                 Text(badge.title)
                     .font(.caption.bold())
-                    .tracking(0.5)
+                    .letterSpacing(0.5)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 5))

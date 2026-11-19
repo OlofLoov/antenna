@@ -127,7 +127,7 @@ enum TitlePage {
             if let text = page?.state.metadata.eyebrow {
                 Text(text.uppercased())
                     .font(.system(size: type.eyebrow, weight: .semibold))
-                    .tracking(type.eyebrow / 8)
+                    .letterSpacing(type.eyebrow / 8)
                     .foregroundStyle(Palette.accent)
                     .lineLimit(1)
                     .accessibilityLabel(text)

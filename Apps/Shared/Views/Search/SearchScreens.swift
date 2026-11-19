@@ -87,25 +87,13 @@
                     TitleScreen(route: page) {
                         TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EpisodePicker.Section(type: .phone) }
                     }
-                    .simultaneousGesture(edgeSwipe)
+                    .edgeSwipeBack { library.closePage() }
                     .environment(\.shelfMetrics, .phone)
                     .environment(\.shelfPrefix, page.title.kind.prefix)
                 }
             }
             .background(Palette.ground)
             .environment(\.searchMetrics, .phone)
-        }
-
-        /// A swipe in from the left edge goes back to Search, as a pushed
-        /// page does (title-detail-and-episode-picker/back-to-where-you-were).
-        private var edgeSwipe: some Gesture {
-            DragGesture(minimumDistance: 20)
-                .onEnded { drag in
-                    guard drag.startLocation.x < 28, drag.translation.width > 80,
-                        abs(drag.translation.height) < drag.translation.width
-                    else { return }
-                    library.closePage()
-                }
         }
 
         private var search: some View {
@@ -160,7 +148,7 @@
                 VStack(alignment: .leading, spacing: 6) {
                     Text("RECENT")
                         .font(.system(size: 13, weight: .semibold))
-                        .tracking(1)
+                        .letterSpacing(1)
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityAddTraits(.isHeader)
                         .padding(.horizontal, 16)
