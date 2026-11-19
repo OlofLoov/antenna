@@ -60,14 +60,30 @@ enum GuideGrid {
         let now: NowMark?
         @ViewBuilder var days: Days
         @ViewBuilder var rows: Rows
+        /// The drawn width of each label's text and of the now tag, so a
+        /// label under the tag can be left out.
+        @State private var labelWidths: [Int: Double] = [:]
+        @State private var tagWidth = 0.0
+
+        private var columnWidth: Double { window / Double(max(1, columns.count)) }
+
+        /// The labels the now tag covers (tv-guide-grid/the-grid-opens-around-now-and-keeps-time).
+        private var covered: Set<Int> {
+            guard let now, tagWidth > 0 else { return [] }
+            return GuideTimeline.labelsUnderTag(
+                line: now.offset + NowLine.width / 2, tagWidth: tagWidth, columnWidth: columnWidth,
+                labelWidths: columns.indices.map { labelWidths[$0] ?? 0 }, inset: ColumnLabel.inset, gap: 8)
+        }
 
         var body: some View {
             VStack(alignment: .leading, spacing: rowSpacing) {
                 HStack(spacing: 0) {
                     days
                         .frame(width: channelColumn + GuideRowLayout.gap, alignment: .leading)
-                    ForEach(Array(zip(columns.indices, columns)), id: \.0) { _, label in
-                        ColumnLabel(text: label, width: window / Double(max(1, columns.count)))
+                    ForEach(Array(zip(columns.indices, columns)), id: \.0) { index, label in
+                        ColumnLabel(text: label, width: columnWidth, isCovered: covered.contains(index)) {
+                            labelWidths[index] = $0
+                        }
                     }
                 }
                 .frame(height: 52)
@@ -76,7 +92,7 @@ enum GuideGrid {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .overlay(alignment: .topLeading) {
                 if let now {
-                    NowLine(time: now.time)
+                    NowLine(time: now.time) { tagWidth = $0 }
                         .offset(x: channelColumn + GuideRowLayout.gap + now.offset)
                 }
             }
@@ -85,16 +101,24 @@ enum GuideGrid {
     }
 
     private struct ColumnLabel: View {
+        /// From the column's rule to the start of its text.
+        static let inset = 12.0
+
         let text: String
         let width: Double
+        /// True while the now tag sits over the text. The label keeps its
+        /// place and what VoiceOver reads, and draws no text.
+        let isCovered: Bool
+        let measured: (Double) -> Void
 
         var body: some View {
             Text(text)
                 .font(.boardStyle(22))
                 .monospacedDigit()
-                .foregroundStyle(Palette.textMuted)
+                .foregroundStyle(isCovered ? Color.clear : Palette.textMuted)
                 .lineLimit(1)
-                .padding(.leading, 12)
+                .onGeometryChange(for: Double.self, of: { $0.size.width }, action: measured)
+                .padding(.leading, Self.inset)
                 .frame(width: width, height: 52, alignment: .leading)
                 .overlay(alignment: .leading) {
                     Rectangle().fill(Palette.surface(0.12)).frame(width: 1)
@@ -105,13 +129,16 @@ enum GuideGrid {
 
     /// The 3 pt accent line with the time on a tag at its top.
     private struct NowLine: View {
+        static let width = 3.0
+
         let time: String
+        let measured: (Double) -> Void
 
         var body: some View {
             ZStack(alignment: .top) {
                 cornerShape(.small)
                     .fill(Palette.accent)
-                    .frame(width: 3)
+                    .frame(width: Self.width)
                     .frame(maxHeight: .infinity)
                 Text(time)
                     .font(.boardStyle(18, weight: .bold))
@@ -121,9 +148,10 @@ enum GuideGrid {
                     .padding(.vertical, 4)
                     .padding(.horizontal, 10)
                     .background(Palette.accent, in: cornerShape(.small))
+                    .onGeometryChange(for: Double.self, of: { $0.size.width }, action: measured)
                     .padding(.top, 8)
             }
-            .frame(width: 3)
+            .frame(width: Self.width)
             .accessibilityElement()
             .accessibilityLabel("Now, \(time)")
             .accessibilityIdentifier("guide.nowLine")

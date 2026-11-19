@@ -48,6 +48,19 @@ func clockText(_ date: Date, in calendar: Calendar = gridCalendar()) -> String {
         #expect(timeline.nowLine(at: march(22, 20), windowStart: start) == 0)
     }
 
+    @Test("tv-guide-grid/the-grid-opens-around-now-and-keeps-time the now tag leaves out the hour label it covers")
+    func labelsUnderTag() {
+        let labels = [58.0, 58, 58, 58]
+        func covered(_ line: Double, tag: Double = 76) -> Set<Int> {
+            GuideTimeline.labelsUnderTag(line: line, tagWidth: tag, columnWidth: 370, labelWidths: labels, inset: 12, gap: 8)
+        }
+        #expect(covered(1159 + 1.5) == [3], "21:34 sits on the 21:30 label")
+        #expect(covered(370 * 3 - 20) == [3], "just before 21:30 the tag still reaches the label")
+        #expect(covered(370 * 2 + 200) == [], "the middle of a column covers nothing")
+        #expect(covered(370 + 1.5, tag: 110) == [1], "a wider Arabic tag on 20:30")
+        #expect(covered(1.5) == [0])
+    }
+
     @Test("tv-guide-grid/the-grid-opens-around-now-and-keeps-time half hours are local, also in a zone a quarter off")
     func localHalfHours() {
         let nepal = gridCalendar("Asia/Kathmandu")
