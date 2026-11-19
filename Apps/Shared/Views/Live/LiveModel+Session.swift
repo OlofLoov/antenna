@@ -94,8 +94,11 @@ extension LiveModel {
         }
     }
 
-    /// The user opened `tab`; the next launch opens on it.
+    /// The user opened `tab`; the next launch opens on it, and the channel
+    /// pauses behind Movies, Series and Search
+    /// (live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search).
     func opened(_ tab: LiveSession.Tab) {
         restore.opened(tab)
+        queue { await $0.tabOpened(tab) }
     }
 }

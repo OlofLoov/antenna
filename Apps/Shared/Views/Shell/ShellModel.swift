@@ -39,8 +39,6 @@
 
         static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
         static let launchDeadline = Duration.seconds(10)
-        /// How long the paused channel waits behind Movies, Series and Search before it stops.
-        static let stopDelay = Duration.seconds(30)
 
         private(set) var tab: ShellTab = .live
         private(set) var barRaised = false
@@ -89,9 +87,10 @@
         /// A Top Shelf item waiting for its source; the launch tune waits while set.
         @ObservationIgnored var shelfItem: UUID?
         @ObservationIgnored private var deadline: Task<Void, Never>?
-        @ObservationIgnored var stopTimer: Task<Void, Never>?
+        /// The pause, then stop, behind Movies, Series and Search.
+        @ObservationIgnored let hold: LiveHold
         /// What the shell did to the channel behind Movies, Series or Search, nil when nothing.
-        @ObservationIgnored var heldByShell: ShellHold?
+        var heldByShell: LiveHold.Kind? { hold.kind }
         var pausedByShell: Bool { heldByShell != nil }
         /// What played before the Guide's small picture first followed the
         /// highlight; nil while it shows the channel the Guide opened with.
@@ -111,6 +110,7 @@
                 .init(
                     engine: dependencies.engine, sleep: dependencies.sleep, network: dependencies.network,
                     slowDelay: dependencies.slowDelay))
+            hold = LiveHold(engine: dependencies.engine, timeshift: player.timeshift, sleep: dependencies.sleep)
             player.reload = { [weak self] channel in self?.load(channel) }
             wireStartOver()
             player.hasLogin = { [weak self] id in

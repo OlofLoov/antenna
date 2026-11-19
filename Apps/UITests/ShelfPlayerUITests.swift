@@ -125,6 +125,18 @@ final class ShelfPlayerUITests: XCTestCase {
         app.waitForEngine("playing loads=2")
     }
 
+    // live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search
+    func testMoviesPausesLiveAndLiveResumesIt() throws {
+        let app = try launch()
+        app.element("browse.row.00000000-0000-0000-0000-0000000000E1.0").tap()
+        app.waitForEngine("playing loads=1")
+        open(app, "movies")
+        app.waitForEngine("paused loads=1")
+
+        app.tabBars.buttons["Live"].tap()
+        app.waitForEngine("playing loads=1")
+    }
+
     func expectPlace(_ app: XCUIApplication, _ place: String, file: StaticString = #filePath, line: UInt = #line) {
         let probe = app.element("shelf.debug.position")
         let wait = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", place), object: probe)

@@ -92,12 +92,17 @@ final class PlayerModel {
     private(set) var airPlayActive = false
     /// The picture plays in the Picture in Picture window.
     private(set) var pictureInPictureActive = false
+    /// The picture plays outside the app's own screens, in the Picture in
+    /// Picture window or on an AirPlay device.
+    var playsElsewhere: Bool { pictureInPictureActive || airPlayActive }
 
     /// Loads the channel again. The owner sets it.
     @ObservationIgnored var reload: @MainActor (Channel) -> Void = { _ in }
     /// True once the login of the source with this id is in the Keychain.
     /// The owner sets it.
     @ObservationIgnored var hasLogin: @MainActor (UUID) -> Bool = { _ in true }
+    /// Told each time the Picture in Picture window opens or ends. The owner sets it.
+    @ObservationIgnored var pictureInPictureChanged: @MainActor (Bool) -> Void = { _ in }
 
     @ObservationIgnored let engine: any PlaybackEngine
     /// Pause, rewind and back to live for the channel on screen.
@@ -161,7 +166,9 @@ final class PlayerModel {
     /// Follows the Picture in Picture window until the calling task ends.
     func observePictureInPicture() async {
         for await active in pictureInPicture.activity() {
+            let changed = active != pictureInPictureActive
             pictureInPictureActive = active
+            if changed { pictureInPictureChanged(active) }
         }
     }
 
