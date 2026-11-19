@@ -23,7 +23,7 @@ If on `main`, create a branch first. Naming:
 
 ## 2. Verify
 
-- `swift test --package-path Packages/AntennaCore` must pass. Paste the
+- `swift test --build-system swiftbuild --package-path Packages/AntennaCore` must pass. Paste the
   failing output and stop if it does not.
 - `openspec validate --all --strict` and `bash scripts/check-spec-refs.sh`
   must pass. The second fails when a test cites a requirement that is not

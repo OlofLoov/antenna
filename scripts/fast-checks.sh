@@ -24,7 +24,9 @@ core_tests() {
       -Xswiftc -F"$fw" -Xswiftc -Xfrontend -Xswiftc -disable-cross-import-overlays \
       -Xlinker -F"$fw" -Xlinker -rpath -Xlinker "$fw"
   else
-    swift test --package-path Packages/AntennaCore
+    # Swift Build compiles the String Catalog; the native build system
+    # copies it as it is and plural entries fall back to their keys.
+    swift test --build-system swiftbuild --package-path Packages/AntennaCore
   fi
 }
 

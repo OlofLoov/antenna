@@ -6,7 +6,7 @@ sources (M3U, Xtream, later Stalker / Jellyfin / Channels DVR). Ships no content
 ## Commands
 
 ```sh
-swift test --package-path Packages/AntennaCore          # core tests, no Xcode needed
+swift test --build-system swiftbuild --package-path Packages/AntennaCore   # core tests; Swift Build compiles the String Catalog
 swift format lint --strict --recursive --parallel Apps Packages   # formatting, ships with the toolchain
 swiftlint lint --strict                                  # conventions; brew install swiftlint
 scripts/check-rules.sh                                   # decision greps: layering, CloudKit, availability

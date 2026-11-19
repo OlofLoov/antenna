@@ -65,7 +65,7 @@ jobs:
       - name: Show toolchain
         run: xcodebuild -version && swift --version
       - name: Test
-        run: swift test --package-path Packages/AntennaCore
+        run: swift test --build-system swiftbuild --package-path Packages/AntennaCore
       - name: Test the FFmpeg path
         run: swift test --no-parallel --package-path Packages/AntennaDemux
 
