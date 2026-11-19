@@ -19,15 +19,15 @@ enough to hit", "Visual changes update the boards in the same change",
 "Undrawn states are listed and drawn before implementation", "Accessibility
 identifiers follow the board", and the six requirements this change adds.
 
-Not drawn:
-- Arabic Live list on iPhone (`iPhone`), mirrored, body and caption styles unchanged.
-- Arabic guide grid on Apple TV (`TV-Guide`), channel column at the right, time running left.
-- Arabic player strip on iPhone (`iPhone-Player-Timeshift`), skip back to the right of play.
-- Arabic zap bar (`TV-ZapBar`), identity at the right, badges at the left.
+Drawn for this change, as `*-RTL` boards next to the English ones:
+- `iPhone-RTL`: the Arabic Live list on iPhone (`iPhone`), mirrored, body and caption styles unchanged.
+- `TV-Guide-RTL`: the Arabic guide grid on Apple TV (`TV-Guide`), channel column at the right, time running left.
+- `iPhone-Player-Timeshift-RTL`: the Arabic player strip on iPhone (`iPhone-Player-Timeshift`), skip back to the right of play.
+- `TV-ZapBar-RTL`: the Arabic zap bar (`TV-ZapBar`), identity at the right, badges at the left.
 
-These four are drawn on the canvas and exported as `*-RTL` boards before
-the RTL pull request (task group 11) opens. The German copy needs no board:
-the rule is that it fits, and the German previews show it.
+They were drawn after PR 11 landed, from the app and this spec (see PR 11
+under Findings). The German copy needs no board: the rule is that it fits,
+and the German previews show it.
 
 What the code does today:
 - No String Catalog, no `String(localized:)` outside App Intents, and no
@@ -710,11 +710,20 @@ Arabic review:
   in Western digits.
 
 PR 11, right to left:
-- Owed: the four `*-RTL` boards listed under Not drawn (task 11.1) and the
-  RTL note on each board named in Context (part of task 11.6). Both need
-  the design canvas, which this PR did not have. The reference's new
-  "Right to left" section holds the rules and the board list until then.
-  11.1 and 11.6 stay open, and the change is not archived until they close.
+- The four `*-RTL` boards (task 11.1) and the RTL notes (task 11.6) came in
+  a follow-up PR. The boards copy the English boards' markup with
+  `dir="rtl"`, Arabic copy from the catalogs, Arabic-Indic digits, the
+  12-hour clock `ar_SA` formats, no letter spacing, and provider text in
+  `<bdi>`. They were checked against the screenshots `LocalizationRTLUITests`
+  attaches on an iPhone 17 simulator. Where the app and the spec disagree,
+  the boards draw the spec: the zap bar's LIVE badge reads مباشر with its
+  red dot, the guide's started-earlier arrow points right, and the iPhone
+  now-playing line reads from the right with its Latin parts isolated.
+- The RTL note is a comment at the top of the 15 boards the reference
+  lists under "Right to left": the four guide boards, the three Live
+  boards, the six player and zap bar boards, `TV-Shell-Menu` and
+  `TV-Movies-Rows`. The five German-copy boards in Context are about
+  length, not direction, and get no note.
 - The premise under Right-to-left was wrong: SwiftUI mirrors `.offset(x:)`,
   `.position`, `Path` and alignment guides on its own. Checked with
   `ImageRenderer`: a 10 pt block offset 80 pt in a 100 pt frame draws at
