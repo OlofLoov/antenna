@@ -19,9 +19,9 @@
 ## 3. Review (PR 3)
 
 - [x] 3.1 Review each language's listing for meaning, Apple's terms, length, keywords per market and claims, fix what it finds, and record the findings in design.md
-- [ ] 3.2 Look at the store screenshots of each ready language for untranslated or cut-off text
+- [x] 3.2 Look at the store screenshots of each ready language for untranslated or cut-off text
 
 ## 4. Verify
 
 - [x] 4.1 Each requirement in `store-listing` has a test citing `store-listing/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 4.2 `/opsx:verify add-store-localization` passes, then archive the change
+- [x] 4.2 `/opsx:verify add-store-localization` passes, then archive the change

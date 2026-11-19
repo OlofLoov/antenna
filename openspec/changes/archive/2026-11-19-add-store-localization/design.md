@@ -442,11 +442,18 @@ English, German, Swedish and Arabic, and through the rest by sheet:
   before the clip's first frame. The walks now wait up to 10 seconds for a
   lit pixel on the player (`Journey.waitForPicture`) before the player step.
 
+Run 44586119949, with that wait, passed and filed 15 pictures in each of
+the nine store locales with a lit player in every one. Read again by
+sheet in every language: nothing loading, no hints or probes, no
+untranslated app text.
+
 Left for the visual refresh, not changed here:
 - iPhone Live and Guide leave an empty band above and below the group
   chips, and the iPad guide starts its rows a third of the way down.
 - The iPad Live side panel truncates the programme title ("News Ho…") and
-  wraps 12-hour times in its Up next list ("6:00 P" over "M").
+  wraps 12-hour times in its Up next list ("6:00 P" over "M", Spanish
+  "7:30 p." over "m."), and the list title truncates in Spanish ("Todos
+  los canal…").
 - Movies has no artwork: the hero panel is a blank block and the posters
   are name cards, because the seed's titles have no images.
 
