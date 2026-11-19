@@ -2,11 +2,11 @@
 
 ## 1. Listing and check (PR 1)
 
-- [ ] 1.1 Write the English listing in `fastlane/metadata/en-US/` and the app-wide files, each claim traced to a spec as in design.md decision 3, and run the no-ai-slop Detect pass on it
-- [ ] 1.2 Add `scripts/store_metadata.py` and `scripts/check-store-metadata.sh`, run them from `scripts/fast-checks.sh` and the Repo rules job, and verify the check fails on a missing locale, a long subtitle, spaced keywords and a broadcaster name
-- [ ] 1.3 Machine-translate the listing into `sv`, `de-DE`, `es-ES`, `es-MX`, `fr-FR`, `fr-CA`, `pt-BR` and `ar-SA` with the terms in decision 5, and verify the check passes with Arabic reported as held
-- [ ] 1.4 Add `StoreListingTests` to AntennaCore, citing the requirements, and verify it passes with the CLT toolchain
-- [ ] 1.5 Add a store listing section to `docs/release/` (where the files are, what is held, what the owner sets in App Store Connect)
+- [x] 1.1 Write the English listing in `fastlane/metadata/en-US/` and the app-wide files, each claim traced to a spec as in design.md decision 3, and run the no-ai-slop Detect pass on it
+- [x] 1.2 Add `scripts/store_metadata.py` and `scripts/check-store-metadata.sh`, run them from `scripts/fast-checks.sh` and the Repo rules job, and verify the check fails on a missing locale, a long subtitle, spaced keywords and a broadcaster name
+- [x] 1.3 Machine-translate the listing into `sv`, `de-DE`, `es-ES`, `es-MX`, `fr-FR`, `fr-CA`, `pt-BR` and `ar-SA` with the terms in decision 5, and verify the check passes with Arabic reported as held
+- [x] 1.4 Add `StoreListingTests` to AntennaCore, citing the requirements, and verify it passes with the CLT toolchain
+- [x] 1.5 Add a store listing section to `docs/release/` (where the files are, what is held, what the owner sets in App Store Connect)
 
 ## 2. Store screenshots (PR 2)
 

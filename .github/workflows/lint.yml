@@ -40,6 +40,8 @@ jobs:
         run: bash scripts/check-rules.sh
       - name: Translations
         run: bash scripts/check-translations.sh
+      - name: Store listing
+        run: bash scripts/check-store-metadata.sh
 
   scripts:
     name: Shell and workflow files
