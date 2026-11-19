@@ -921,9 +921,23 @@ Arabic boards against the app:
   `PreviewLanguage.time(_:_:)` formats a fixed time in UTC with the
   preview's locale and the app's `.shortened` style, and the zap bar,
   guide grid, guide rows and timeshift strip previews use it.
+- Task 12.7 checked the Arabic guide and scrubber on an iPhone 17 Pro and
+  an Apple TV 4K simulator (iOS and tvOS 27.2). The guide runs from the
+  right on both, with the programme on now at the right edge. The iPhone
+  scrubber puts the buffer start at the right and live at the left. No RTL
+  UI test covered the Apple TV scrubber, so
+  `LocalizationRTLTVUITests.testRightSkipsBackOnThePausedScrubber` pauses,
+  presses right and expects one minute behind; the screenshot shows the
+  timeshift bar filled from the right with the knob near live at the left.
+- Task 13.1 found three localization requirements no test cited: source
+  text, system prompts and the release gate. Core tests now cover them:
+  a Swedish channel and group name stay as sent, the Top Shelf titles are
+  in Swedish, the local network reason and every Siri phrase are
+  translated in every language, the translation check fails on an
+  English-only label and names it, and the strip script removes an
+  unreviewed `.lproj` while keeping English, Base and Arabic.
 
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.
-- Whether the Arabic reviewer accepts the mirrored guide and scrubber (see Right-to-left). The fallback is local to two code paths.
 - Whether Siri accepts every translated phrase. Apple rejects phrases it cannot match at build time; the language PR adjusts wording if the build warns.

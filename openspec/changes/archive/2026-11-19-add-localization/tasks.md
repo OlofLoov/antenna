@@ -79,12 +79,12 @@
 - [x] 12.4 French reviewed, `fr` added to `Config/reviewed-languages`
 - [x] 12.5 Portuguese (Brazil) reviewed, `pt-BR` added to `Config/reviewed-languages`
 - [x] 12.6 Arabic strings reviewed and moved to `translated`
-- [ ] 12.7 Arabic guide and scrubber direction checked once section 11 lands, `ar` added to `Config/reviewed-languages`
+- [x] 12.7 Arabic guide and scrubber direction checked once section 11 lands, `ar` added to `Config/reviewed-languages`
 
 ## 13. Verify
 
-- [ ] 13.1 Each requirement has a test citing `localization/<requirement-slug>` or `design-system/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 13.2 `/opsx:verify` passes
+- [x] 13.1 Each requirement has a test citing `localization/<requirement-slug>` or `design-system/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [x] 13.2 `/opsx:verify` passes
 
 ## Workflow follow-up
 
