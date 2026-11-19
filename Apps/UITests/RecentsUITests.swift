@@ -24,7 +24,7 @@ final class RecentsUITests: XCTestCase {
         app.launchEnvironment["UITESTING_WATCH_SECONDS"] = String(watchSeconds)
         app.launchEnvironment["UITESTING_RECENTS_FILE"] = recentsFile.path
         if let recents { app.launchEnvironment["UITESTING_RECENTS"] = recents }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the channel list never appeared")
         return app
     }

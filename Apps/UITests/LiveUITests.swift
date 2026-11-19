@@ -23,7 +23,7 @@ final class LiveUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario] + arguments
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the channel list never appeared")
         return app
     }

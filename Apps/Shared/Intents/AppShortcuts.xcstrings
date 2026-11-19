@@ -1,0 +1,76 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Add this channel to favorites in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Add this channel to favorites in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Play ${title} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Play ${title} in ${applicationName}",
+              "Play a movie in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Remove this channel from favorites in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Remove this channel from favorites in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Search ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Search ${applicationName}",
+              "Find a channel in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Tune to ${channel} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Tune to ${channel} in ${applicationName}",
+              "Watch ${channel} in ${applicationName}",
+              "Put on ${channel} in ${applicationName}",
+              "Tune a channel in ${applicationName}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

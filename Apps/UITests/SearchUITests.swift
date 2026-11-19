@@ -15,7 +15,7 @@ final class SearchUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"] + extra
         app.launchEnvironment.merge(environment) { $1 }
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

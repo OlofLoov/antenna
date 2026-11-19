@@ -10,7 +10,7 @@ final class GroupsUITests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"] + arguments
-        app.launch()
+        app.launchInEnglish()
         let tab = app.tabBars.buttons["Settings"]
         let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
         button.tap()
@@ -109,7 +109,7 @@ final class GroupsUITests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels", "-ui-testing-groups", "locked"]
-        app.launch()
+        app.launchInEnglish()
         let locked = element(app, "browse.locked.named.00000000-0000-0000-0000-0000000000D1.Sport")
         XCTAssertTrue(locked.waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["Sport"].exists)

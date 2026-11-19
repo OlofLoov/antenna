@@ -26,7 +26,7 @@ final class ReminderBannerUITests: XCTestCase {
         app.launchEnvironment["UITESTING_REMINDER_LOG"] = log.path
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = engine.path
         for (key, value) in environment { app.launchEnvironment[key] = value }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.tabBars.buttons["Live"].waitForExistence(timeout: 10))
         return app
     }
@@ -133,7 +133,7 @@ final class ReminderBannerUITests: XCTestCase {
             ]
             app.launchEnvironment["UITESTING_ENGINE_LOG"] = engine.path
             app.launchEnvironment["UITESTING_REMINDER_OPEN"] = "2"
-            app.launch()
+            app.launchInEnglish()
             XCTAssertTrue(app.element("paywall.root").waitForExistence(timeout: 10))
             XCTAssertFalse(app.element("reminders.banner").waitForExistence(timeout: 6), "a banner over the paywall")
             XCTAssertTrue(app.element("paywall.root").exists, "a notification tap opened the app")
@@ -146,7 +146,7 @@ final class ReminderBannerUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels", "-ui-testing-notifications", "denied", "-ui-testing-reminders", "due"]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = engine.path
-        app.launch()
+        app.launchInEnglish()
         let banner = app.element("reminders.banner")
         XCTAssertTrue(banner.waitForExistence(timeout: 15))
         XCTAssertEqual(banner.frame.width, 400, accuracy: 1)

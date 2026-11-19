@@ -16,7 +16,7 @@ final class NewChannelsUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         if let newChannel { app.launchEnvironment["UITESTING_NEW_CHANNEL"] = newChannel }
         if let recents { app.launchEnvironment["UITESTING_RECENTS"] = recents }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the channel list never appeared")
         return app
     }

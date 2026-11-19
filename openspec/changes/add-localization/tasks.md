@@ -2,12 +2,12 @@
 
 ## 1. Catalog setup, checks and English test runs (PR 1)
 
-- [ ] 1.1 Set `developmentLanguage: en`, `SWIFT_EMIT_LOC_STRINGS` and `LOCALIZATION_PREFERS_STRING_CATALOGS` in `project.yml`, add empty `Localizable.xcstrings`, `InfoPlist.xcstrings` and `Intents/AppShortcuts.xcstrings` under `Apps/Shared`, and verify both app targets and the Top Shelf extension build and the catalogs fill with the English literals, Intents titles, Siri phrases and the local network reason
-- [ ] 1.2 Add `scripts/check-translations.sh` for missing, incomplete-plural and stale entries, run it from `scripts/fast-checks.sh` and the Repo rules job, and verify it fails on a fixture catalog with a missing Arabic plural form
-- [ ] 1.3 Add the export check to the Build apps job (`xcodebuild -exportLocalizations` for both schemes, fail on strings missing from the catalogs), and verify it fails on a branch with a literal added without a catalog sync
-- [ ] 1.4 Add the three `localization:` rules to `scripts/check-rules.sh`, replace the `chevron.left`/`chevron.right`/`arrow.*` symbols they find with `backward`/`forward` names, and verify the script passes
-- [ ] 1.5 Add `scripts/strip-unreviewed-languages.sh` as a Release-only run-script phase on both app targets with an empty `Config/reviewed-languages`, and verify a Release build with a test `sv.lproj` ends up without it while a Debug build keeps it
-- [ ] 1.6 Add the shared launch helper that pins `-AppleLanguages (en) -AppleLocale en_US` to `Apps/UITests` and `Apps/TVUITests`, move every UI test class onto it, and verify the UI test classes that touch Live and the guide pass on a simulator set to Swedish
+- [x] 1.1 Set `developmentLanguage: en`, `SWIFT_EMIT_LOC_STRINGS` and `LOCALIZATION_PREFERS_STRING_CATALOGS` in `project.yml`, add empty `Localizable.xcstrings`, `InfoPlist.xcstrings` and `Intents/AppShortcuts.xcstrings` under `Apps/Shared`, and verify both app targets and the Top Shelf extension build and the catalogs fill with the English literals, Intents titles, Siri phrases and the local network reason
+- [x] 1.2 Add `scripts/check-translations.sh` for missing, incomplete-plural and stale entries, run it from `scripts/fast-checks.sh` and the Repo rules job, and verify it fails on a fixture catalog with a missing Arabic plural form
+- [x] 1.3 Add the export check to the Build apps job (`xcodebuild -exportLocalizations` for both schemes, fail on strings missing from the catalogs), and verify it fails on a branch with a literal added without a catalog sync
+- [x] 1.4 Add the three `localization:` rules to `scripts/check-rules.sh`, replace the `chevron.left`/`chevron.right`/`arrow.*` symbols they find with `backward`/`forward` names, and verify the script passes
+- [x] 1.5 Add `scripts/strip-unreviewed-languages.sh` as a Release-only run-script phase on both app targets with an empty `Config/reviewed-languages`, and verify a Release build with a test `sv.lproj` ends up without it while a Debug build keeps it
+- [x] 1.6 Add the shared launch helper that pins `-AppleLanguages (en) -AppleLocale en_US` to `Apps/UITests` and `Apps/TVUITests`, move every UI test class onto it, and verify the UI test classes that touch Live and the guide pass on a simulator set to Swedish
 
 ## 2. App strings (PR 2)
 

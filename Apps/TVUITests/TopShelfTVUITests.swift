@@ -24,7 +24,7 @@ final class TopShelfTVUITests: XCTestCase {
         app.launchArguments =
             ["-ui-testing-shell", "channels", "-antenna.openURL", link] + (running ? ["-ui-testing-open-url-running"] : []) + extra
         app.launchEnvironment["UITESTING_LAST_CHANNEL"] = "b1"
-        app.launch()
+        app.launchInEnglish()
     }
 
     private var engine: XCUIElement {
@@ -96,7 +96,7 @@ final class TopShelfTVUITests: XCTestCase {
     func testSetupComesFirstWithNoSources() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-onboarding", "signedIn", "-antenna.openURL", Self.a2]
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.descendants(matching: .any)["onboarding.welcome"].firstMatch.waitForExistence(timeout: 10))
         XCTAssertFalse(app.descendants(matching: .any)["shell.player"].firstMatch.exists, "the link does not skip setup")
     }

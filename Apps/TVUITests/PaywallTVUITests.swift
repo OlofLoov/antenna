@@ -13,7 +13,7 @@ final class PaywallTVUITests: XCTestCase {
     private func launch(entitlement: String, store: String = "products") {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-antenna.entitlement", entitlement, "-antenna.store", store]
-        app.launch()
+        app.launchInEnglish()
     }
 
     private func element(_ identifier: String) -> XCUIElement {

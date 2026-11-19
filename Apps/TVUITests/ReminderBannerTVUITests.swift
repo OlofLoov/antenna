@@ -6,7 +6,7 @@ extension ShellUITests {
     func launchWithDueReminder() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-reminders", "due"]
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         XCTAssertTrue(element("reminders.banner").waitForExistence(timeout: 10), "no banner")
     }

@@ -9,7 +9,7 @@ extension ShellUITests {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_NEW_CHANNEL"] = "a3"
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)

@@ -28,7 +28,7 @@ final class Journey {
         app = XCUIApplication()
         app.launchArguments = arguments
         app.launchEnvironment = environment
-        app.launch()
+        app.launchInEnglish()
     }
 
     func element(_ identifier: String) -> XCUIElement {

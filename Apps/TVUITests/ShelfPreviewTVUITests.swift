@@ -49,7 +49,7 @@ final class ShelfPreviewTVUITests: XCTestCase {
     func openMovies() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
-        app.launch()
+        app.launchInEnglish()
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")
         press(.menu)
@@ -65,7 +65,7 @@ final class ShelfPreviewTVUITests: XCTestCase {
     func open(_ tab: String, rights: Int) {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.\(tab)").waitForExistence(timeout: 10))
         expectFocus("shell.tab.live")

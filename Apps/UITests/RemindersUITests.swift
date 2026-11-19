@@ -23,7 +23,7 @@ final class RemindersUITests: XCTestCase {
             (shelf ? ["-ui-testing-shelf", "titles", "-ui-testing-reduce-motion"] : ["-ui-testing-live", "channels"])
             + ["-ui-testing-notifications", notifications] + extra
         app.launchEnvironment["UITESTING_REMINDER_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.tabBars.buttons["Settings"].waitForExistence(timeout: 10))
         return app
     }

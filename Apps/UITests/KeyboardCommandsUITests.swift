@@ -21,7 +21,7 @@ final class KeyboardCommandsUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
         if multiView { app.launchEnvironment["UITESTING_MULTIVIEW"] = "1" }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")
@@ -107,7 +107,7 @@ final class KeyboardCommandsUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"]
-        app.launch()
+        app.launchInEnglish()
         let movies = app.element("browse.section.movies")
         XCTAssertTrue(movies.waitForExistence(timeout: 10), "the sidebar never appeared")
         movies.tap()

@@ -14,7 +14,7 @@ final class ProfileUITests: XCTestCase {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "favorites"] + (profiles ? ["-ui-testing-profiles"] : [])
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

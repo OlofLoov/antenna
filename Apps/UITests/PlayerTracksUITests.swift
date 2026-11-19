@@ -16,7 +16,7 @@ final class PlayerTracksUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"]
         if let tracks { app.launchEnvironment["UITESTING_TRACKS"] = tracks }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")

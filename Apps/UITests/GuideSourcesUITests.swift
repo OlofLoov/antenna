@@ -15,7 +15,7 @@ final class GuideSourcesUITests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-guide-sources"]
-        app.launch()
+        app.launchInEnglish()
         let tab = app.tabBars.buttons["Settings"]
         let button = tab.waitForExistence(timeout: 15) ? tab : app.buttons["Settings"].firstMatch
         button.tap()

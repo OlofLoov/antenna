@@ -78,7 +78,7 @@
                 Text(tile.name)
                     .foregroundStyle(Color.primary)
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Color.secondary)
                     .accessibilityHidden(true)

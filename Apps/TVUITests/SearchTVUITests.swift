@@ -49,7 +49,7 @@ final class SearchTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment.merge(environment) { $1 }
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")

@@ -13,7 +13,7 @@ final class TitleRegularUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"]
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.element("browse.sidebar").waitForExistence(timeout: 10), "the sidebar never appeared")
         return app
     }

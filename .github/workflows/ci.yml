@@ -102,6 +102,8 @@ jobs:
           xcodebuild build -project Antenna.xcodeproj -scheme AntennaTV \
             -destination 'generic/platform=tvOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
+      - name: Catalogs hold every string in code
+        run: bash scripts/sync-strings.sh --check
 
   snapshots:
     name: Preview snapshots

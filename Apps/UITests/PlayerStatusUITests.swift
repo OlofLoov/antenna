@@ -17,7 +17,7 @@ final class PlayerStatusUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_PLAYBACK"] = playback
         app.launchEnvironment["UITESTING_SLOW_SECONDS"] = "2"
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         return app

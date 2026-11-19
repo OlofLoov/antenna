@@ -17,7 +17,7 @@ final class PlayerTVUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_PLAYBACK"] = playback
         app.launchEnvironment["UITESTING_SLOW_SECONDS"] = "2"
-        app.launch()
+        app.launchInEnglish()
     }
 
     func element(_ identifier: String) -> XCUIElement {

@@ -15,7 +15,7 @@ final class MultiViewRegularUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_MULTIVIEW"] = "1"
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")

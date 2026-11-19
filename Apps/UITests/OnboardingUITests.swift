@@ -10,7 +10,7 @@ final class OnboardingUITests: XCTestCase {
     private func launch(_ scenario: String, _ extra: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-onboarding", scenario] + extra
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 
@@ -42,7 +42,7 @@ final class OnboardingUITests: XCTestCase {
     func testALapsedPurchaseKeepsTheSavedProvider() {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels", "-antenna.entitlement", "revoked", "-antenna.store", "restoreShared"]
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(element(app, "paywall.root").waitForExistence(timeout: 10))
         XCTAssertFalse(element(app, "onboarding.welcome").exists)
         element(app, "paywall.restore").tap()
@@ -188,7 +188,7 @@ final class OnboardingUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-onboarding", "connect"]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         connect(app, playlist: "http://onboarding.test/tv.m3u")
         XCTAssertTrue(element(app, "onboarding.checklist").waitForExistence(timeout: 10))
         XCTAssertTrue(element(app, "onboarding.line.channels").waitForExistence(timeout: 10))

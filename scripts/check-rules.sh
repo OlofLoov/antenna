@@ -65,6 +65,20 @@ check_except "conventions: AVPlayerLayer only in the engine and the player surfa
   'Apps/Shared/Player/(AVPlayerEngine(\+[A-Za-z]+)?|PlayerSurfaceView)\.swift' \
   Apps
 
+check "localization: directional symbols use backward and forward" \
+  '"(chevron|arrow)\.(left|right)(\.(circle|square))?(\.fill)?"' \
+  Apps
+
+check_except "localization: no fixed date format outside the parsers and test fixtures" \
+  'dateFormat[[:space:]]*=' \
+  'Packages/AntennaCore/Sources/AntennaCore/(Parsers|Stalker|Xtream)/[A-Za-z+]+\.swift|Apps/Shared/Debug/[A-Za-z+]+\.swift|Apps/(Tests|TVTests)/[A-Za-z+]+\.swift' \
+  Apps Packages/AntennaCore/Sources
+
+check_except "localization: UI tests launch through launchInEnglish()" \
+  '\.launch\(\)' \
+  'Apps/UITests/LaunchInEnglish\.swift' \
+  Apps/UITests Apps/TVUITests Apps/Journeys Apps/TVJourneys
+
 check_except "app-intents: Siri and Shortcuts types only in Apps/Shared/Intents, never on Apple TV" \
   "${word}(AppIntent|AppEntity|AppEnum|AppShortcutsProvider)${end}" \
   'Apps/Shared/Intents/[A-Za-z]+\.swift' \
@@ -129,5 +143,12 @@ warn_except "design-system/controls-use-system-styles: ButtonStyle types only in
   '(struct|class|enum)[[:space:]]+[A-Za-z]+(<[^>]*>)?[[:space:]]*:[^{]*\b(Primitive)?ButtonStyle\b' \
   'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift' \
   Apps
+
+# Copy kept in a String constant skips the String Catalog. Warns until the
+# app strings move to the catalog (add-localization task 2.4), then fails.
+warn_except "localization: copy in views and components is not a plain String constant" \
+  '(static let [A-Za-z]+ = "[A-Z][a-z]+( [A-Za-z]+)*|: String = "[A-Z][a-z]+( [A-Za-z]+)*)' \
+  'Apps/Shared/(Views|Components)/[A-Za-z/]+Fixtures\.swift' \
+  Apps/Shared/Views Apps/Shared/Components
 
 exit "$status"

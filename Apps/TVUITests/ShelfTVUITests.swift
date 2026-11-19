@@ -38,7 +38,7 @@ final class ShelfTVUITests: XCTestCase {
     func launchPlaying() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
-        app.launch()
+        app.launchInEnglish()
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")
     }
@@ -71,7 +71,7 @@ final class ShelfTVUITests: XCTestCase {
     func testNoXtreamSourceHasNoMoviesTab() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "noXtream"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.live").waitForExistence(timeout: 10))
         XCTAssertTrue(element("shell.tab.search").exists)
@@ -84,7 +84,7 @@ final class ShelfTVUITests: XCTestCase {
     func testAPlaylistOfEpisodesShowsSeriesWithoutMovies() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "playlistSeries"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
         XCTAssertFalse(element("shell.tab.movies").exists)
@@ -99,7 +99,7 @@ final class ShelfTVUITests: XCTestCase {
     func testSearchFindsAPlaylistSeries() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "playlistSeries"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.search").waitForExistence(timeout: 10))
         expectFocus("shell.tab.live")
@@ -181,7 +181,7 @@ final class ShelfTVUITests: XCTestCase {
     func testRecentlyWatchedShowsAFinishedMovie() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         let tab = element("shell.tab.movies")
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
@@ -311,7 +311,7 @@ final class ShelfTVUITests: XCTestCase {
     func openSeriesNearTheEnd() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-near-end"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
         expectFocus("shell.tab.live")

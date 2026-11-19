@@ -19,7 +19,7 @@ final class LoginFromPhoneTVUITests: XCTestCase {
         if let sources { app.launchArguments += ["-ui-testing-signin-sources", "\(sources)"] }
         if let kind { app.launchArguments += ["-ui-testing-setup-send", kind] }
         app.launchEnvironment = environment
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 
