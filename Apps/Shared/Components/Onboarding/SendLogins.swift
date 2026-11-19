@@ -87,7 +87,7 @@
                         Image(systemName: "appletv")
                             .font(.boardStyle(34))
                             .frame(width: 72, height: 72)
-                            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 18))
+                            .background(Palette.surface(0.08), in: cornerShape(.large))
                             .accessibilityHidden(true)
                         Text(SendLogins.heading)
                             .font(.boardStyle(22, weight: .bold))
@@ -107,7 +107,7 @@
                             .foregroundStyle(OnboardingStyle.body)
                             .padding(14)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                            .background(Palette.surface(0.06), in: cornerShape(.medium))
                             .accessibilityIdentifier("sendLogins.missing")
                     } else {
                         list
@@ -133,7 +133,7 @@
                         RowView(row: row, device: device) { enter(row.id) }
                     }
                 }
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.surface(0.06), in: cornerShape(.medium))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("sendLogins.list")
             }
@@ -218,7 +218,7 @@
                             .foregroundStyle(OnboardingForm.errorColor)
                     }
                 }
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.surface(0.06), in: cornerShape(.medium))
                 .accessibilityIdentifier("sendLogins.status")
             }
         }
@@ -236,7 +236,7 @@
                         .font(.boardStyle(17, weight: .bold))
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(Palette.ground)
-                        .background(Palette.text, in: RoundedRectangle(cornerRadius: 14))
+                        .background(Palette.text, in: cornerShape(.medium))
                         .opacity(enabled ? 1 : 0.35)
                 }
                 .buttonStyle(.plain)

@@ -28,8 +28,8 @@
             }
             .padding(32)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20))
-            .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Palette.text, style: StrokeStyle(lineWidth: 2, dash: [8, 6])))
+            .background(Palette.surface(0.08), in: cornerShape(.large))
+            .overlay(cornerShape(.large).strokeBorder(Palette.text, style: StrokeStyle(lineWidth: 2, dash: [8, 6])))
             .padding(16)
             .background(Palette.ground.opacity(0.7))
             .accessibilityElement(children: .combine)

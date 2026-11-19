@@ -48,7 +48,7 @@ struct GroupRow: View {
                     .letterSpacing(0.5)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 5))
+                    .background(Palette.surface(0.12), in: cornerShape(.small))
             }
             Text("\(count)").monospacedDigit().foregroundStyle(Palette.textMuted)
         }

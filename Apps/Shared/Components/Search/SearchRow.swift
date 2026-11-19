@@ -79,7 +79,7 @@ enum SearchRow {
                 HStack(spacing: metrics.spacing) {
                     Browse.Logo(url: logo, initials: initials, isSelected: false)
                         .frame(width: metrics.logo.width, height: metrics.logo.height)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .clipShape(cornerShape(.small))
                     VStack(alignment: .leading, spacing: 3) {
                         Highlighted(text: name, ranges: nameRanges)
                             .font(.boardStyle(metrics.title))
@@ -200,7 +200,7 @@ enum SearchRow {
                 .foregroundStyle(Palette.ground)
                 .padding(.horizontal, metrics.badge * 0.6)
                 .padding(.vertical, 3)
-                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 5))
+                .background(Palette.accent, in: cornerShape(.small))
         }
     }
 
@@ -229,7 +229,7 @@ enum SearchRow {
                                     .foregroundStyle(Palette.text)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)
-                                    .background(Palette.scrimTint.opacity(0.72), in: RoundedRectangle(cornerRadius: 4))
+                                    .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
                                     .padding(8)
                             }
                         }

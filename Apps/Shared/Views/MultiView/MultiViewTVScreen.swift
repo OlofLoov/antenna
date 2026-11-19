@@ -129,7 +129,7 @@
                 .clipShape(RoundedRectangle(cornerRadius: model.session.enlarged == tile.id ? 0 : 14))
                 .overlay {
                     if highlighted, model.session.enlarged != tile.id {
-                        RoundedRectangle(cornerRadius: 14).stroke(Palette.focus, lineWidth: 5)
+                        cornerShape(.medium).stroke(Palette.focus, lineWidth: 5)
                             .shadow(color: Palette.focusShadow, radius: 16, y: 12)
                     }
                 }
@@ -222,7 +222,7 @@
                 actionRow(MultiViewText.remove(), .remove, "multiView.action.remove") { Task { await model.remove(tile) } }
             }
             .padding(14)
-            .background(Palette.scrimTint.opacity(0.88), in: RoundedRectangle(cornerRadius: 20))
+            .background(Palette.scrimTint.opacity(0.88), in: cornerShape(.large))
             .focusSection()
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("multiView.actions")

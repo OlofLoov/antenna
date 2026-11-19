@@ -121,7 +121,8 @@ final class TVJourneys: XCTestCase {
         journey.snap("guide-window-choices", anchor: "settings.choices")
     }
 
-    /// Movies with focus on a poster in the first row (refresh-visual-design, `TV-Movies`).
+    /// Movies with focus on a poster in the first row (refresh-visual-design, `TV-Movies`):
+    /// the card style lifts the poster with no ring (design-system/focus-is-the-lifted-white-card).
     func testMoviesFocus() {
         let journey = Journey(self, arguments: ["-ui-testing-shell", "channels", "-ui-testing-reduce-motion"])
         expectFocus("shell.picture", in: journey)

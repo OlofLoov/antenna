@@ -104,7 +104,7 @@ extension ZapBar {
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 6))
+                                .background(Palette.accent, in: cornerShape(.small))
                                 .accessibilityIdentifier("zapBar.catchupBadge")
                         case .live:
                             HStack(spacing: 8) {
@@ -153,8 +153,8 @@ extension View {
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .foregroundStyle(filled ? Palette.text : ChannelOverlay.tileText)
-            .background(filled ? Palette.surface(0.12) : .clear, in: RoundedRectangle(cornerRadius: 6))
-            .overlay(RoundedRectangle(cornerRadius: 6).stroke(filled ? .clear : Palette.textMuted, lineWidth: 1.5))
+            .background(filled ? Palette.surface(0.12) : .clear, in: cornerShape(.small))
+            .overlay(cornerShape(.small).stroke(filled ? .clear : Palette.textMuted, lineWidth: 1.5))
     }
 }
 

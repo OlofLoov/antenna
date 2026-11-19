@@ -125,7 +125,7 @@ extension View {
     func browseFocusRing(_ shown: Bool) -> some View {
         overlay {
             if shown {
-                RoundedRectangle(cornerRadius: 10).strokeBorder(Palette.text, lineWidth: 2)
+                cornerShape(.medium).strokeBorder(Palette.text, lineWidth: 2)
             }
         }
     }

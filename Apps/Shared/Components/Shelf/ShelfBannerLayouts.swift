@@ -85,7 +85,7 @@ import SwiftUI
                 .overlay(alignment: .bottomTrailing) {
                     Dots(size: 5).padding(.trailing, 20).padding(.bottom, 4)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .clipShape(cornerShape(.large))
                 .contentShape(Rectangle())
                 .onHover { inside in banner?.actions.interacting(inside) }
                 .gesture(Swipe.gesture(banner, direction: direction))

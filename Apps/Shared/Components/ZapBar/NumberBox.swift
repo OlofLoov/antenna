@@ -43,7 +43,7 @@ extension ZapBar {
             .padding(.vertical, 10)
             .padding(.horizontal, 22)
             .frame(minHeight: 73)
-            .background(Palette.scrimTint.opacity(0.82), in: RoundedRectangle(cornerRadius: 14))
+            .background(Palette.scrimTint.opacity(0.82), in: cornerShape(.medium))
             .foregroundStyle(Palette.text)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("zapBar.numberBox")

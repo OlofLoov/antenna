@@ -85,7 +85,7 @@ extension Browse {
             }
             .foregroundStyle(Palette.text)
             .padding(.leading, 14)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+            .background(Palette.surface(0.08), in: cornerShape(.medium))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier(identifier)
         }
@@ -102,7 +102,7 @@ extension Browse {
                 .lineLimit(1)
                 .padding(.horizontal, 14)
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+                .background(Palette.surface(0.08), in: cornerShape(.medium))
         }
     }
 }

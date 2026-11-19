@@ -80,7 +80,7 @@ enum InfoPanel {
             HStack(alignment: .top, spacing: 40) {
                 logo
                     .frame(width: 132, height: 88)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(cornerShape(.medium))
                     .accessibilityIdentifier("player.panel.logo")
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(alignment: .firstTextBaseline, spacing: 18) {

@@ -35,7 +35,7 @@ enum GuideBoard {
                     .frame(width: 32, alignment: .trailing)
                 logo
                     .frame(width: 56, height: 36)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .clipShape(cornerShape(.small))
                 Text(name)
                     .font(.boardStyle(15, weight: look == .playing ? .semibold : .regular))
                     .lineLimit(1)
@@ -109,10 +109,10 @@ enum GuideBoard {
             .padding(.horizontal, content == .gap ? 0 : 12)
             .frame(width: width, alignment: .leading)
             .frame(maxHeight: .infinity)
-            .background(fill, in: RoundedRectangle(cornerRadius: 8))
+            .background(fill, in: cornerShape(.small))
             .overlay {
                 if isSelected {
-                    RoundedRectangle(cornerRadius: 8).strokeBorder(Palette.accent, lineWidth: 2)
+                    cornerShape(.small).strokeBorder(Palette.accent, lineWidth: 2)
                 }
             }
             .clipped()
@@ -188,14 +188,14 @@ enum GuideBoard {
                 .fixedSize()
                 .padding(.vertical, 3)
                 .padding(.horizontal, 7)
-                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 6))
+                .background(Palette.accent, in: cornerShape(.small))
         }
     }
 
     /// The 2 pt accent line at the current time.
     struct NowLine: View {
         var body: some View {
-            RoundedRectangle(cornerRadius: 1)
+            cornerShape(.small)
                 .fill(Palette.accent)
                 .frame(width: 2)
                 .frame(maxHeight: .infinity)

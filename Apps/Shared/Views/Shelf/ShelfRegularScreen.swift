@@ -128,7 +128,7 @@
                     .foregroundStyle(Palette.text)
                     .padding(.horizontal, 12)
                     .frame(minHeight: 34)
-                    .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+                    .background(Palette.surface(0.08), in: cornerShape(.medium))
                     .frame(minHeight: 44)
                     .contentShape(Rectangle())
             }

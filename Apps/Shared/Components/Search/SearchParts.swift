@@ -41,7 +41,7 @@ enum SearchParts {
             .padding(.leading, 12)
             .padding(.trailing, text.isEmpty ? 12 : 0)
             .frame(height: metrics.title * 2.7)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 12))
+            .background(Palette.surface(0.08), in: cornerShape(.medium))
         }
     }
 
@@ -132,8 +132,8 @@ enum SearchParts {
                     .lineLimit(1)
                     .padding(.horizontal, 12)
                     .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    .background(isCursor ? Palette.surface(0.12) : .clear, in: RoundedRectangle(cornerRadius: 10))
-                    .contentShape(RoundedRectangle(cornerRadius: 10))
+                    .background(isCursor ? Palette.surface(0.12) : .clear, in: cornerShape(.medium))
+                    .contentShape(cornerShape(.medium))
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Recent search, \(text)")
@@ -180,7 +180,7 @@ enum SearchParts {
             .foregroundStyle(Palette.text)
             .padding(.horizontal, 12)
             .frame(width: 220, height: 34)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+            .background(Palette.surface(0.08), in: cornerShape(.medium))
         }
     }
 

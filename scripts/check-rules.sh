@@ -124,30 +124,31 @@ debug_only "title-metadata: the mock lookup and its sample scores only inside #i
   "${word}(MockTitleLookup|DebugTitleScores)${end}" \
   Apps/Shared Apps/Mobile Apps/TV Apps/TopShelf Packages/AntennaCore/Sources
 
-# Like check_except, but hits only print a warning with a count per file and
-# never fail. refresh-visual-design turns these into failures once no file is left.
-warn_except() {
-  local name="$1" pattern="$2" allowed="$3"
-  shift 3
-  local hits
-  hits=$(grep -rnE --include='*.swift' "$pattern" "$@" | grep -vE "^($allowed):" | grep -vE '^[^:]+:[0-9]+:[[:space:]]*//' || true)
-  if [[ -n "$hits" ]]; then
-    printf 'WARN %s: %s lines\n' "$name" "$(wc -l <<<"$hits" | tr -d ' ')"
-    cut -d: -f1 <<<"$hits" | sort | uniq -c | sort -rn | sed 's/^ */  /'
-    printf '\n'
-  else
-    printf 'ok   %s\n' "$name"
-  fi
-}
-
-warn_except "design-system/type-uses-text-styles: fixed font sizes only for number entry, subtitles sized to the picture and badge initials" \
+check_except "design-system/type-uses-text-styles: fixed font sizes only for number entry, subtitles sized to the picture and badge initials" \
   '\.system\(size:' \
   'Apps/Shared/Components/ZapBar/NumberBox\.swift|Apps/Shared/Components/Player/SubtitleOverlay\.swift|Apps/Shared/Components/Profiles/ProfileBadge\.swift|Apps/Shared/Debug/[A-Za-z]+\.swift' \
   Apps
 
-warn_except "design-system/controls-use-system-styles: ButtonStyle types only in the app-drawn parts" \
+check_except "design-system/controls-use-system-styles: ButtonStyle types only in the app-drawn parts" \
   '(struct|class|enum)[[:space:]]+[A-Za-z]+(<[^>]*>)?[[:space:]]*:[^{]*\b(Primitive)?ButtonStyle\b' \
   'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift|Apps/Shared/Components/FocusCard\.swift' \
+  Apps
+
+# Corners come from the scale through Metrics.Corner or cornerShape(_:), never
+# a literal radius (design-system/one-spacing-and-radius-scale). Metrics.swift
+# defines the radii.
+check_except "design-system/one-spacing-and-radius-scale: corner radii from the scale" \
+  'cornerRadius: [0-9]' \
+  'Apps/Shared/Components/Metrics\.swift|Apps/Shared/Debug/[A-Za-z]+\.swift' \
+  Apps
+
+# Glass belongs to the navigation layer: the tab bar, controls over video
+# (the player strip and the Picture in Picture and AirPlay pair)
+# and floating switches (design-system/liquid-glass-stays-on-the-navigation-layer).
+# Buttons take glass through the system .glass and .glassProminent styles.
+check_except "design-system/liquid-glass-stays-on-the-navigation-layer: the glass effect only on the navigation layer" \
+  '\.glassEffect\(' \
+  'Apps/Shared/Components/ShellTabBar/ShellTabBar\.swift|Apps/Shared/Components/Shelf/ShelfControls\.swift|Apps/Shared/Components/Browse/BrowseControls\.swift|Apps/Shared/Views/Live/LivePicture\.swift' \
   Apps
 
 # Copy kept in a String constant skips the String Catalog. Copy is a

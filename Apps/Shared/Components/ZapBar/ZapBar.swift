@@ -47,7 +47,7 @@ enum ZapBar {
             HStack(spacing: 24) {
                 logo
                     .frame(width: 132, height: 88)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(cornerShape(.medium))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 8) {
                     if let number {

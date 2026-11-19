@@ -48,7 +48,7 @@
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 4))
+                                .background(Palette.accent, in: cornerShape(.small))
                                 .accessibilityIdentifier("timeshift.catchupBadge")
                         }
                         Text(scrub.time)
@@ -171,7 +171,7 @@
                     }
                     .padding(.vertical, 3)
                     .padding(.horizontal, 7)
-                    .overlay(RoundedRectangle(cornerRadius: 5).strokeBorder(Palette.textMuted, lineWidth: 1))
+                    .overlay(cornerShape(.small).strokeBorder(Palette.textMuted, lineWidth: 1))
                     .frame(minWidth: 44, minHeight: 44)
                     .contentShape(Rectangle())
                 }

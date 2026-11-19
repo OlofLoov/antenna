@@ -67,7 +67,7 @@ extension Browse {
             HStack(spacing: 12) {
                 logo
                     .frame(width: 48, height: 30)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .clipShape(cornerShape(.small))
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.callout.weight(.semibold))
@@ -132,7 +132,7 @@ extension Browse {
             }
             .padding(.vertical, 3)
             .padding(.horizontal, 7)
-            .background(Palette.surface(0.14), in: RoundedRectangle(cornerRadius: 5))
+            .background(Palette.surface(0.14), in: cornerShape(.small))
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("browse.player.live")
         }

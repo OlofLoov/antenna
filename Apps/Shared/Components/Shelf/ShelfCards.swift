@@ -26,7 +26,7 @@ extension ShelfView {
                         .overlay(alignment: .topLeading) {
                             if title.kind == .series {
                                 ShelfBanner.Badge(text: "SERIES", size: max(10, metrics.count - 3))
-                                    .background(Palette.scrimTint.opacity(0.72), in: RoundedRectangle(cornerRadius: 4))
+                                    .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
                                     .padding(metrics.corner * 0.7)
                                     .accessibilityIdentifier("\(prefix).card.\(title.id).badge")
                             }

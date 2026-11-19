@@ -16,6 +16,7 @@ extension ShellUITests {
     }
 
     // tv-channel-overlay/the-picture-keeps-playing
+    // design-system/live-video-keeps-playing-under-overlays
     func testOverlayOpensOverThePlayingPicture() {
         launchPlaying()
         openOverlay()

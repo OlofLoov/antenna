@@ -35,7 +35,7 @@ extension GuideBoard {
             .padding(.leading, 12)
             .padding(.trailing, text.isEmpty ? 12 : 2)
             .frame(width: 160, height: 36)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+            .background(Palette.surface(0.08), in: cornerShape(.medium))
         }
     }
 
@@ -113,7 +113,7 @@ extension GuideBoard {
                 Rectangle().fill(Palette.surface(0.1)).frame(width: 1, height: 32)
                 button("plus", "Zoom in", "guide.zoomIn", canZoomIn, zoomIn)
             }
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+            .background(Palette.surface(0.08), in: cornerShape(.medium))
         }
 
         private func button(
@@ -151,7 +151,7 @@ extension GuideBoard {
                 HStack(spacing: 10) {
                     logo
                         .frame(width: 40, height: 26)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                        .clipShape(cornerShape(.small))
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 6) {
                             if isPlaying {
@@ -170,7 +170,7 @@ extension GuideBoard {
                 .padding(.leading, 6)
                 .padding(.trailing, 10)
                 .frame(height: 36)
-                .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+                .background(Palette.surface(0.08), in: cornerShape(.medium))
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }

@@ -40,7 +40,7 @@ enum ShellLoading {
             .padding(.vertical, 16)
             .padding(.horizontal, 32)
             .frame(width: 1000)
-            .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 20))
+            .background(Palette.surface(0.06), in: cornerShape(.large))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }

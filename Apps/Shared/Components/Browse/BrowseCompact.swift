@@ -46,7 +46,7 @@ extension Browse {
             HStack(spacing: 12) {
                 logo
                     .frame(width: 56, height: 36)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .clipShape(cornerShape(.small))
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title)
                         .font(.callout.weight(.semibold))
@@ -85,7 +85,7 @@ extension Browse {
                     .font(.boardStyle(16, weight: .semibold))
                     .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
                     .frame(width: side, height: side)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .background(Palette.surface(0.1), in: cornerShape(.medium))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }

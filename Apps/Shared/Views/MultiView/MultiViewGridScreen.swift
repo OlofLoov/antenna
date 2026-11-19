@@ -118,7 +118,7 @@ import SwiftUI
             .clipShape(RoundedRectangle(cornerRadius: model.session.enlarged == tile.id ? 0 : 12))
             .overlay {
                 if selected, model.session.enlarged != tile.id {
-                    RoundedRectangle(cornerRadius: 12).stroke(Palette.focus, lineWidth: 3)
+                    cornerShape(.medium).stroke(Palette.focus, lineWidth: 3)
                 }
             }
             .overlay(alignment: .topTrailing) {

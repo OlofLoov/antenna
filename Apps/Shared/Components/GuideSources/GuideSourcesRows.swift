@@ -104,7 +104,7 @@ enum GuideSourcesRows {
 
         var body: some View {
             ZStack {
-                RoundedRectangle(cornerRadius: 6).fill(Palette.surface(0.08))
+                cornerShape(.small).fill(Palette.surface(0.08))
                 if let logo {
                     AsyncImage(url: logo) { image in
                         image.resizable().scaledToFit().padding(4)
