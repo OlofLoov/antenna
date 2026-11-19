@@ -22,7 +22,7 @@ public struct GuideNowPlaying: Sendable, Equatable {
         let line = GuideLine(state: state, current: current, now: now, locale: locale)
         title = line.text
         if case .programme(_, let fraction, let remaining) = line {
-            detail = "\(channel) · \(remaining)"
+            detail = [channel, remaining].joinedAsDetail(locale)
             progress = fraction
         } else {
             detail = channel

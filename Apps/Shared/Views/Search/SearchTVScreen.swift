@@ -190,7 +190,7 @@
                         if !results.programmes.isEmpty || feed.model.guideLoading {
                             let count: LocalizedStringResource =
                                 results.programmes.isEmpty
-                                ? "loading" : .verbatim("\(SearchText.nextSevenDays()) · \(results.count(.guide))")
+                                ? "loading" : .verbatim([SearchText.nextSevenDays(), "\(results.count(.guide))"].joinedAsDetail())
                             section(.guide, count: count) {
                                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 20), GridItem(.flexible(), spacing: 20)], spacing: 12) {
                                     // Apple TV lists every programme (search/very-long-result-lists).

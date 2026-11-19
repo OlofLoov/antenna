@@ -50,7 +50,7 @@ public struct SearchText: Sendable {
 
     /// A chip's label: "Channels · 3".
     public static func chip(_ scope: SearchScope, count: Int, locale: Locale = .autoupdatingCurrent) -> String {
-        return "\(name(scope, locale: locale)) · \(count)"
+        return [name(scope, locale: locale), String(count)].joinedAsDetail(locale)
     }
 
     public static func name(_ scope: SearchScope, locale: Locale = .autoupdatingCurrent) -> String {
@@ -77,13 +77,13 @@ public struct SearchText: Sendable {
             } else {
                 programme.map { words("Now: \(words.source($0))") }
             }
-        return [number, detail].compactMap(\.self).joined(separator: " · ")
+        return [number, detail].compactMap(\.self).joinedAsDetail(locale)
     }
 
     /// The programme's line: its title, then " · " and its episode title when it has one.
     public static func programmeTitle(_ programme: Programme, locale: Locale = .autoupdatingCurrent) -> String {
         guard let subtitle = programme.subtitle, !subtitle.isEmpty else { return programme.title }
-        return "\(programme.title) · \(subtitle)"
+        return [programme.title, subtitle].joinedAsDetail(locale)
     }
 
     /// What leads a programme row: nil for one on now, which shows NOW;
@@ -100,14 +100,15 @@ public struct SearchText: Sendable {
     /// otherwise the channel and "Today", "Tomorrow" or the weekday.
     public func detail(_ hit: SearchResults.ProgrammeHit, now: Date) -> String {
         let channel = hit.channel.name
-        if hit.isOnNow { return "\(channel) · \(time(hit.programme.start)) – \(time(hit.programme.stop))" }
-        return "\(channel) · \(day(hit.programme.start, now: now))"
+        if hit.isOnNow { return [channel, "\(time(hit.programme.start)) – \(time(hit.programme.stop))"].joinedAsDetail(locale) }
+        return [channel, day(hit.programme.start, now: now)].joinedAsDetail(locale)
     }
 
     /// The Live screen's line for a programme picked in Search
     /// (search/pick-a-programme): "Tomorrow 20:00 · Northern Soul Night".
     public func later(_ programme: Programme, now: Date) -> String {
-        "\(day(programme.start, now: now)) \(time(programme.start)) · \(Self.programmeTitle(programme, locale: locale))"
+        ["\(day(programme.start, now: now)) \(time(programme.start))", Self.programmeTitle(programme, locale: locale)].joinedAsDetail(
+            locale)
     }
 
     /// "Today", "Tomorrow" or the weekday's name.

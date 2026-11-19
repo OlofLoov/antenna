@@ -51,7 +51,7 @@ public struct LiveNowText: Sendable, Equatable {
             summary = nil
         }
         if let first = upcoming.first { compactParts.append(words("Next: \(words.source(first.title))")) }
-        meta = metaParts.joined(separator: " · ")
-        compact = compactParts.joined(separator: " · ")
+        meta = metaParts.joinedAsDetail(locale)
+        compact = compactParts.joinedAsDetail(locale)
     }
 }

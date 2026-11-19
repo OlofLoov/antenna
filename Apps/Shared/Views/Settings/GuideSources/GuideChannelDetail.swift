@@ -43,7 +43,7 @@ struct GuideChannelDetail: View {
     /// "Sport One · 104".
     private func heading(_ channel: Channel) -> String {
         let number = channel.number.map { ChannelNumber(major: $0, minor: channel.minorNumber).text(locale) }
-        return [channel.name, number].compactMap(\.self).joined(separator: " · ")
+        return [channel.name, number].compactMap(\.self).joinedAsDetail(locale)
     }
 
     @ViewBuilder private func picker(_ channel: Channel) -> some View {

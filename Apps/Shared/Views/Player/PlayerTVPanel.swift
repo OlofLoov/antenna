@@ -54,7 +54,7 @@
             let line = ZapBarText.line(state: guide.state(channel), current: panel.now, now: date)
             var programme: InfoPanel.Info<ChannelLogo>.Programme?
             if case .programme(let title, let progress, let remaining) = line, let now = panel.now {
-                let times = "\(Self.time(now.start)) – \(Self.time(now.stop)) · \(remaining)"
+                let times = ["\(Self.time(now.start)) – \(Self.time(now.stop))", remaining].joinedAsDetail()
                 programme = .init(title: title, times: times, progress: progress, summary: now.summary)
             }
             return InfoPanel.Info(

@@ -71,7 +71,7 @@ public enum StreamLine {
             parts.append(SoundFormat.display(audio, locale: locale))
         }
         parts.append(playerName(route, locale: locale))
-        return parts.joined(separator: " · ")
+        return parts.joinedAsDetail(locale)
     }
 
     /// The name of the path that plays the stream.

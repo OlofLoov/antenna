@@ -53,3 +53,19 @@ extension String {
         replacing("\u{2068}", with: "").replacing("\u{2069}", with: "")
     }
 }
+
+/// The mark between the parts of a detail line ("412 channels · Guide 7
+/// days"): " · ", and " • " in Arabic, where a middle dot beside
+/// Arabic-Indic digits reads as the digit zero.
+public enum DetailSeparator {
+    public static func text(_ locale: Locale = .autoupdatingCurrent) -> String {
+        String(localized: LocalizedStringResource("separator.detail", defaultValue: " · ", locale: locale, bundle: Words.bundle))
+    }
+}
+
+extension Sequence<String> {
+    /// The parts joined with the language's `DetailSeparator`.
+    public func joinedAsDetail(_ locale: Locale = .autoupdatingCurrent) -> String {
+        joined(separator: DetailSeparator.text(locale))
+    }
+}

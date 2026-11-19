@@ -155,4 +155,12 @@ import Testing
         #expect(TitleMetadata.spokenRating(7.4, locale: swedish) == "betyg 7.4 av 10")
         #expect(TitleTimeline(time: .zero, length: nil).spokenText(locale: swedish) == "0 sekunder")
     }
+
+    @Test("localization/numbers-use-the-region-s-digits-and-separators Arabic detail lines use a bullet, not a middle dot")
+    func arabicDetailSeparator() {
+        #expect(["Sport One", "١٠٤"].joinedAsDetail(Self.arabic) == "Sport One • ١٠٤")
+        #expect(SearchText.chip(.channels, count: 3, locale: Self.arabic).hasSuffix(" • 3"))
+        #expect(["Sport One", "104"].joinedAsDetail(Locale(identifier: "en_US")) == "Sport One · 104")
+        #expect(["Sport One", "104"].joinedAsDetail(Locale(identifier: "sv_SE")) == "Sport One · 104")
+    }
 }
