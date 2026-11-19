@@ -198,6 +198,7 @@ final class TVJourneys: XCTestCase {
         expectFocus("movies.hero.play", in: journey)
         journey.snap("movies", anchor: "movies.hero.play")
         remote.press(.select)
+        journey.waitForPicture()
         journey.snap("player", anchor: "title.transport")
         journey.launch(["-ui-screenshots", "empty", store])
         expectFocus("onboarding.addSource", in: journey)

@@ -53,6 +53,7 @@ final class AppJourneys: XCTestCase {
         journey.snap("movies", anchor: "movies.hero.title")
         let poster = journey.element("movies.card.xtream#cabin#vod#2")
         if poster.waitForExistence(timeout: 10) { poster.tap() }
+        journey.waitForPicture()
         journey.snap("player", anchor: "title.transport")
         journey.launch(["-ui-screenshots", "empty", store])
         let add = journey.element("onboarding.addSource")
