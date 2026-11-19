@@ -76,4 +76,12 @@ import Testing
         #expect(GuidePanelText.length(from: Self.ten, to: Self.ten.addingTimeInterval(90 * 60), locale: spanish) == "1 h 30 min")
         #expect(SourceStatusText(locale: spanish).count(1) == "1 canal")
     }
+
+    @Test("localization/counts-use-the-language-s-plural-forms French one and other")
+    func frenchPlural() {
+        let french = SetupText(locale: Locale(identifier: "fr_FR"))
+        #expect(french.channels(ChannelTally(channels: 1, groups: ["News"])) == "1 chaîne en direct dans 1 groupe")
+        #expect(french.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 chaînes en direct dans 2 groupes")
+        #expect(SourceStatusText(locale: Locale(identifier: "fr_CA")).count(1) == "1 chaîne")
+    }
 }

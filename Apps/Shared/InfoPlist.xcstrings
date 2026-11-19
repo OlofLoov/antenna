@@ -49,6 +49,12 @@
             "value" : "Antenna se conecta a servidores de TV de tu red doméstica cuando una de tus fuentes apunta allí."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna se connecte aux serveurs TV de votre réseau domestique quand l’une de vos sources y renvoie."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
