@@ -7,11 +7,18 @@ import Foundation
 enum FastestRun {
     static let runs = 3
 
-    /// The fastest of `runs` timings of `body`.
+    /// The fastest of `runs` timings of `body`, in CPU time on the calling
+    /// thread. The test suite runs in parallel, and wall time counts every
+    /// moment another test holds the core; CPU time counts only `body`'s own
+    /// work. `body` must run on the calling thread, as synchronous code does.
     static func of(_ runs: Int = runs, _ body: () throws -> Void) rethrows -> Duration {
-        let clock = ContinuousClock()
         var fastest = Duration.seconds(Int64.max)
-        for _ in 0..<runs { fastest = min(fastest, try clock.measure(body)) }
+        for _ in 0..<runs {
+            let started = clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID)
+            try body()
+            let used = clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID) - started
+            fastest = min(fastest, .nanoseconds(Int64(used)))
+        }
         return fastest
     }
 
