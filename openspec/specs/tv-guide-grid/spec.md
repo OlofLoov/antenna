@@ -60,6 +60,11 @@ The system SHALL open the grid with the last hour and a half and the current tim
 - **THEN** the now line moves
 - **AND** the grid never scrolls by itself to follow the time
 
+#### Scenario: The time tag over an hour label
+- **GIVEN** it is 21:34 and the header shows 21:30
+- **WHEN** the time tag at the top of the now line reaches the 21:30 label
+- **THEN** the header leaves that label out while the tag covers it, in every language
+
 #### Scenario: Now out of view
 - **GIVEN** the user has scrolled now out of view
 - **WHEN** the grid is drawn
