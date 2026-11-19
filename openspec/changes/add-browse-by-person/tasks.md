@@ -29,8 +29,8 @@
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement of the provider-names part has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 5.2 `/opsx:verify` passes for groups 1 to 4
+- [x] 5.1 Each requirement of the provider-names part has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [x] 5.2 `/opsx:verify` passes for groups 1 to 4, with one gap: the Apple TV focus after Back to Search, task 4.4
 
 ## 6. Later: with the lookup service (waits on the title-info server)
 
