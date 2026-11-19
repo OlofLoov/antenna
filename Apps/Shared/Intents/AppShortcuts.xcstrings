@@ -38,7 +38,7 @@
         },
         "pt-BR" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Adicionar este canal aos favoritos no ${applicationName}"
             ]
@@ -95,7 +95,7 @@
         },
         "pt-BR" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Reproduzir ${title} no ${applicationName}",
               "Reproduzir um filme no ${applicationName}"
@@ -150,7 +150,7 @@
         },
         "pt-BR" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Remover este canal dos favoritos no ${applicationName}"
             ]
@@ -207,7 +207,7 @@
         },
         "pt-BR" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Buscar no ${applicationName}",
               "Encontrar um canal no ${applicationName}"
@@ -274,11 +274,11 @@
         },
         "pt-BR" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Sintonizar ${channel} no ${applicationName}",
               "Assistir ${channel} no ${applicationName}",
-              "Colocar ${channel} no ${applicationName}",
+              "Mudar para ${channel} no ${applicationName}",
               "Sintonizar um canal no ${applicationName}"
             ]
           }
