@@ -544,6 +544,14 @@ PR 5, Swedish:
 - Language tests live in `LanguageTests.swift` in AntennaCore, one set of
   examples per language.
 
+Swedish review:
+- sv reviewed by a model reviewer in place of a native speaker (owner's
+  decision 2026-11-19).
+- The first pass wrote "on its own" word for word as "av sig själv"; it is
+  "automatiskt" now. Phrases
+  built on the -ing form ("den spelande kanalen") became "kanalen som
+  spelas". "Watched" on an episode is "Sett", since "avsnitt" is neuter.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

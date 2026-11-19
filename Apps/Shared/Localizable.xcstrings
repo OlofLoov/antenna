@@ -36,7 +36,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (låst)"
           }
         }
@@ -46,7 +46,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ Inloggningen stannar på den här Apple TV:n."
           }
         }
@@ -56,7 +56,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ tillagd"
           }
         }
@@ -66,7 +66,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ kom från din iPhone"
           }
         }
@@ -76,7 +76,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ kanaler"
           }
         }
@@ -86,7 +86,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ har inga kanaler"
           }
         }
@@ -96,7 +96,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ har inga kanaler"
           }
         }
@@ -106,7 +106,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ är låst."
           }
         }
@@ -116,7 +116,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@-betyg, inte från filmdatabasen"
           }
         }
@@ -126,7 +126,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ inloggad"
           }
         }
@@ -136,7 +136,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ kommer att låsas."
           }
         }
@@ -146,7 +146,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ påminner dig inte på någon av dina enheter."
           }
         }
@@ -167,7 +167,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ · Live"
           }
         }
@@ -177,7 +177,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ · väntar på iCloud"
           }
         }
@@ -187,7 +187,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ · väntar på inloggning"
           }
         }
@@ -236,7 +236,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@, %2$@, %3$@ till %4$@, %5$@"
           }
         }
@@ -252,7 +252,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@, %2$lld kanaler"
           }
         }
@@ -262,7 +262,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@, 1 kanal"
           }
         }
@@ -272,7 +272,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@, låst"
           }
         }
@@ -282,7 +282,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@, profil"
           }
         }
@@ -292,7 +292,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@, trailer"
           }
         }
@@ -324,7 +324,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: kunde inte läsa in kanalerna"
           }
         }
@@ -334,7 +334,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: läser in"
           }
         }
@@ -344,7 +344,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: inga kanaler"
           }
         }
@@ -354,7 +354,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: offline"
           }
         }
@@ -364,7 +364,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: väntar på att inloggningen synkas från iCloud"
           }
         }
@@ -374,7 +374,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: väntar på att spellistan synkas från iCloud"
           }
         }
@@ -387,7 +387,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld kanaler"
           }
         }
@@ -397,7 +397,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld kanaler utan tablå"
           }
         }
@@ -413,8 +413,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%1$lld källor till att logga in efter den här: %2$@"
+            "state" : "translated",
+            "value" : "%1$lld källor till ska loggas in efter den här: %2$@"
           }
         }
       }
@@ -429,7 +429,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld av %2$lld"
           }
         }
@@ -439,7 +439,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld av 4 siffror inmatade"
           }
         }
@@ -449,7 +449,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld procent"
           }
         }
@@ -459,7 +459,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld källor tillagda"
           }
         }
@@ -475,7 +475,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld källor som Apple TV:n bad om finns inte på den här %2$@ än. Nya källor kan ta en minut att komma fram via iCloud."
           }
         }
@@ -485,7 +485,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "00:1A:79:12:34:56"
           }
         }
@@ -495,7 +495,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "1 kanal"
           }
         }
@@ -505,7 +505,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "1 kanal utan tablå"
           }
         }
@@ -515,7 +515,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "1 favorit"
           }
         }
@@ -525,8 +525,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "1 källa till att logga in efter den här: %@"
+            "state" : "translated",
+            "value" : "1 källa till ska loggas in efter den här: %@"
           }
         }
       }
@@ -535,7 +535,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "1 källa som Apple TV:n bad om finns inte på den här %@ än. Nya källor kan ta en minut att komma fram via iCloud."
           }
         }
@@ -545,7 +545,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "192.168.1.20 eller nas.local"
           }
         }
@@ -555,7 +555,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En Channels DVR-server i ditt hemnätverk."
           }
         }
@@ -565,7 +565,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En länk som slutar på .m3u eller .m3u8, med en valfri tablålänk."
           }
         }
@@ -575,7 +575,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En länk som slutar på .m3u eller .m3u8. Den listar varje kanal med dess strömadress. En andra länk, i XMLTV-format, innehåller programtablån och är valfri."
           }
         }
@@ -585,7 +585,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En länk med inloggning eller token sparas bara i din iCloud-nyckelring."
           }
         }
@@ -595,7 +595,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En portaladress och en MAC-adress."
           }
         }
@@ -605,7 +605,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En serveradress med användarnamn och lösenord, ibland kallat Xtream Codes. Servern svarar med kanaler, tablå, filmer och serier, så det finns inget mer att lägga till. Inloggningen sparas i nyckelringen på den här Apple TV:n."
           }
         }
@@ -615,7 +615,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En serveradress med användarnamn och lösenord, ibland kallat Xtream Codes. Servern svarar med kanaler, tablå, filmer och serier, så det finns inget mer att lägga till. Inloggningen sparas i din iCloud-nyckelring."
           }
         }
@@ -625,7 +625,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En serveradress med användarnamn och lösenord."
           }
         }
@@ -635,7 +635,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En källa kom från iCloud som den här Apple TV:n inte kan ställa in här. Uppdatera Antenna eller skriv in källan här."
           }
         }
@@ -645,7 +645,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Om"
           }
         }
@@ -655,7 +655,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till"
           }
         }
@@ -665,7 +665,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till en profil"
           }
         }
@@ -675,7 +675,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till en källa"
           }
         }
@@ -685,7 +685,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till en M3U-spellista eller en Xtream-inloggning under Inställningar. Den synkas till dina andra enheter via iCloud."
           }
         }
@@ -695,8 +695,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Lägg till en till källa"
+            "state" : "translated",
+            "value" : "Lägg till en källa till"
           }
         }
       }
@@ -705,7 +705,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till kanaler"
           }
         }
@@ -715,7 +715,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till här, titta på Apple TV"
           }
         }
@@ -725,7 +725,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till profil"
           }
         }
@@ -735,7 +735,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till länken som källa"
           }
         }
@@ -745,7 +745,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i favoriter"
           }
         }
@@ -755,7 +755,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i Min lista"
           }
         }
@@ -765,7 +765,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i favoriter"
           }
         }
@@ -775,7 +775,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i min lista"
           }
         }
@@ -785,8 +785,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Lägger till eller tar bort den spelande eller namngivna kanalen från favoriterna."
+            "state" : "translated",
+            "value" : "Lägger till kanalen som spelas, eller den du nämner, i favoriterna eller tar bort den därifrån."
           }
         }
       }
@@ -795,8 +795,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Lägger till den spelande kanalen bland favoriterna."
+            "state" : "translated",
+            "value" : "Lägger till kanalen som spelas i favoriterna."
           }
         }
       }
@@ -805,7 +805,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "AirPlay"
           }
         }
@@ -815,7 +815,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "AirPlay är inte tillgängligt för den här strömmen"
           }
         }
@@ -825,7 +825,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alla"
           }
         }
@@ -835,7 +835,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alla filmer"
           }
         }
@@ -845,7 +845,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alla serier"
           }
         }
@@ -855,7 +855,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillåt notiser"
           }
         }
@@ -865,7 +865,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "En upplåst iPhone eller iPad i närheten erbjuder sitt tangentbord för den här Apple TV:n. Tryck på notisen så fylls fälten i här medan du skriver. Eller lägg till källan i Antenna på iPhone så synkas den hit."
           }
         }
@@ -875,7 +875,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna"
           }
         }
@@ -885,7 +885,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna finns också i appväxlaren på din iPhone. Föredrar du fjärrkontrollen? Skriv här; din iPhone erbjuder också sitt tangentbord."
           }
         }
@@ -895,7 +895,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig."
           }
         }
@@ -905,7 +905,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig. Antenna har inga egna servrar; allt du lägger till stannar mellan dig och din leverantör."
           }
         }
@@ -915,8 +915,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Antenna sparar en kopia av filen och synkar den via iCloud, Apple TV inräknad. Ändringar i filen hämtas inte; importera igen för att uppdatera."
+            "state" : "translated",
+            "value" : "Antenna sparar en kopia av filen och synkar den via iCloud, även till Apple TV. Ändringar i filen hämtas inte; importera igen för att uppdatera."
           }
         }
       }
@@ -925,8 +925,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Antenna spelar sändningsströmmar, Matroska och AVI med FFmpeg 7.1, som är licensierat under GNU Lesser General Public License, version 2.1 eller senare. Antenna länkar sin egen version av FFmpeg som ett separat bibliotek och ändrar ingen av FFmpegs kod."
+            "state" : "translated",
+            "value" : "Antenna spelar upp sändningsströmmar, Matroska och AVI med FFmpeg 7.1, som är licensierat under GNU Lesser General Public License, version 2.1 eller senare. Antenna länkar sin egen version av FFmpeg som ett separat bibliotek och ändrar inget i FFmpegs kod."
           }
         }
       }
@@ -935,8 +935,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Antenna spelar de TV-källor du redan har. Appen har inga kanaler, så börja med att lägga till en spellista eller en inloggning från din leverantör."
+            "state" : "translated",
+            "value" : "Antenna spelar upp de TV-källor du redan har. Appen har inga kanaler, så börja med att lägga till en spellista eller en inloggning från din leverantör."
           }
         }
       }
@@ -945,8 +945,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Antenna spelar de TV-källor du redan har. Appen har inga kanaler, så första steget är att lägga till en spellista eller en inloggning från din leverantör."
+            "state" : "translated",
+            "value" : "Antenna spelar upp de TV-källor du redan har. Appen har inga kanaler, så första steget är att lägga till en spellista eller en inloggning från din leverantör."
           }
         }
       }
@@ -955,7 +955,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna läser urklippet bara när du trycker på Fyll i."
           }
         }
@@ -965,7 +965,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud"
           }
         }
@@ -975,7 +975,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud och undertexter"
           }
         }
@@ -985,7 +985,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud och undertexter"
           }
         }
@@ -995,7 +995,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela nästa avsnitt automatiskt"
           }
         }
@@ -1005,7 +1005,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka"
           }
         }
@@ -1015,7 +1015,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bakåt 10 sekunder"
           }
         }
@@ -1025,7 +1025,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bakåt 15 sekunder"
           }
         }
@@ -1035,7 +1035,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka till %@"
           }
         }
@@ -1045,7 +1045,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka till live"
           }
         }
@@ -1055,7 +1055,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka till rutnätet"
           }
         }
@@ -1065,7 +1065,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Banner"
           }
         }
@@ -1075,7 +1075,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Före start"
           }
         }
@@ -1085,7 +1085,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bläddra bland filmer"
           }
         }
@@ -1095,7 +1095,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buffrar"
           }
         }
@@ -1105,7 +1105,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "SE I EFTERHAND"
           }
         }
@@ -1115,7 +1115,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "CHANNELS DVR"
           }
         }
@@ -1125,7 +1125,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ANPASSAD"
           }
         }
@@ -1135,7 +1135,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avbryt"
           }
         }
@@ -1145,7 +1145,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Medverkande"
           }
         }
@@ -1155,7 +1155,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Se i efterhand"
           }
         }
@@ -1165,7 +1165,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ändra"
           }
         }
@@ -1175,7 +1175,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ändra lösenkod"
           }
         }
@@ -1185,7 +1185,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanal"
           }
         }
@@ -1195,7 +1195,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanal ned"
           }
         }
@@ -1205,7 +1205,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanal upp"
           }
         }
@@ -1215,7 +1215,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanaler"
           }
         }
@@ -1225,7 +1225,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Channels DVR"
           }
         }
@@ -1235,7 +1235,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanaler · %lld"
           }
         }
@@ -1251,7 +1251,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanaler, %1$@, %2$@"
           }
         }
@@ -1261,7 +1261,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontrollera"
           }
         }
@@ -1271,8 +1271,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Kontrollera att den här %@ är online och inloggad på iCloud. Den skickar av sig själv så snart den kan."
+            "state" : "translated",
+            "value" : "Kontrollera att den här %@ är online och inloggad på iCloud. Den skickar automatiskt så snart den kan."
           }
         }
       }
@@ -1281,7 +1281,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontrolleras först mot servern och sparas sedan i din iCloud-nyckelring på den här %@."
           }
         }
@@ -1291,7 +1291,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontrollerar inloggningen…"
           }
         }
@@ -1301,7 +1301,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontrollerar…"
           }
         }
@@ -1311,7 +1311,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en annan fil"
           }
         }
@@ -1321,7 +1321,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Rensa"
           }
         }
@@ -1331,7 +1331,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Rensa sökningen"
           }
         }
@@ -1341,7 +1341,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stäng"
           }
         }
@@ -1351,7 +1351,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Färg %lld"
           }
         }
@@ -1361,7 +1361,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Anslut"
           }
         }
@@ -1371,7 +1371,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Anslut till internet och försök igen."
           }
         }
@@ -1381,7 +1381,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ansluter"
           }
         }
@@ -1391,7 +1391,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ansluter…"
           }
         }
@@ -1401,7 +1401,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fortsätt"
           }
         }
@@ -1411,7 +1411,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fortsätt på %@"
           }
         }
@@ -1421,7 +1421,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fortsätt titta"
           }
         }
@@ -1431,7 +1431,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kopiera dem från mejlet eller sidan som din leverantör skickade."
           }
         }
@@ -1441,8 +1441,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Kopiera dem från mejlet eller sidan som din leverantör skickade. Lämna inloggningen tom om inte din leverantör gav dig en."
+            "state" : "translated",
+            "value" : "Kopiera dem från mejlet eller sidan som din leverantör skickade. Lämna inloggningen tom om din leverantör inte gav dig någon."
           }
         }
       }
@@ -1451,7 +1451,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in"
           }
         }
@@ -1461,7 +1461,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in %@"
           }
         }
@@ -1477,7 +1477,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in %1$@. %2$@ har inga kanaler"
           }
         }
@@ -1493,7 +1493,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in %1$@. %2$@ har inga kanaler"
           }
         }
@@ -1503,7 +1503,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in kanalerna"
           }
         }
@@ -1513,7 +1513,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in detaljerna"
           }
         }
@@ -1523,7 +1523,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in avsnitten"
           }
         }
@@ -1533,7 +1533,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in tablån för %@"
           }
         }
@@ -1543,7 +1543,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte spara inloggningsuppgifterna: %@"
           }
         }
@@ -1553,7 +1553,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte spara inloggningarna i den här filen: %@"
           }
         }
@@ -1563,7 +1563,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte skicka eftersom ditt iCloud-lagringsutrymme är fullt."
           }
         }
@@ -1573,7 +1573,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte skicka. Kontrollera att den här %@ är online och försök igen."
           }
         }
@@ -1583,7 +1583,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skapa"
           }
         }
@@ -1593,7 +1593,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Anpassad"
           }
         }
@@ -1603,7 +1603,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Radera"
           }
         }
@@ -1613,7 +1613,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Radera %@?"
           }
         }
@@ -1623,7 +1623,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Radera grupp"
           }
         }
@@ -1633,7 +1633,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Radera profil"
           }
         }
@@ -1643,7 +1643,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Radera källa"
           }
         }
@@ -1653,7 +1653,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Beskrivning"
           }
         }
@@ -1663,7 +1663,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Regissör"
           }
         }
@@ -1673,7 +1673,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stäng"
           }
         }
@@ -1683,7 +1683,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Klar"
           }
         }
@@ -1693,7 +1693,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ned"
           }
         }
@@ -1703,7 +1703,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hämtar tablån"
           }
         }
@@ -1713,7 +1713,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Släpp för att importera %@"
           }
         }
@@ -1723,7 +1723,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Släpp för att importera en spellista"
           }
         }
@@ -1733,7 +1733,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tidigare"
           }
         }
@@ -1743,7 +1743,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Enklare att skriva på iPhone"
           }
         }
@@ -1753,7 +1753,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Redigera %@"
           }
         }
@@ -1763,7 +1763,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Redigera profil"
           }
         }
@@ -1773,7 +1773,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange"
           }
         }
@@ -1783,7 +1783,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange en ny lösenkod"
           }
         }
@@ -1793,7 +1793,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange en giltig URL."
           }
         }
@@ -1803,7 +1803,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange den igen"
           }
         }
@@ -1813,7 +1813,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange lösenkod"
           }
         }
@@ -1823,7 +1823,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange den nuvarande lösenkoden först."
           }
         }
@@ -1833,7 +1833,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange inloggningen för %@"
           }
         }
@@ -1843,7 +1843,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange ditt användarnamn och lösenord."
           }
         }
@@ -1853,7 +1853,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Allt nedan läses in. Tablån blir klar i bakgrunden medan du tittar."
           }
         }
@@ -1863,7 +1863,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Allt är inläst."
           }
         }
@@ -1873,7 +1873,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avsluta helskärm"
           }
         }
@@ -1883,7 +1883,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "FFmpeg"
           }
         }
@@ -1893,7 +1893,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "FIL"
           }
         }
@@ -1903,7 +1903,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Misslyckades"
           }
         }
@@ -1913,7 +1913,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fyll i från den kopierade länken"
           }
         }
@@ -1923,7 +1923,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fyll i det här. Källan synkas till Apple TV:n via iCloud."
           }
         }
@@ -1933,7 +1933,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrera"
           }
         }
@@ -1943,7 +1943,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrera kanaler"
           }
         }
@@ -1953,7 +1953,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrera kanaler efter namn eller nummer"
           }
         }
@@ -1963,7 +1963,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Glömt den? Återställ lösenkoden i Antenna på din iPhone, iPad eller Mac."
           }
         }
@@ -1973,7 +1973,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Glömt lösenkoden?"
           }
         }
@@ -1983,7 +1983,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Framåt 10 sekunder"
           }
         }
@@ -1993,7 +1993,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Framåt 15 sekunder"
           }
         }
@@ -2003,7 +2003,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Framåt 30 sekunder"
           }
         }
@@ -2013,7 +2013,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Helskärm"
           }
         }
@@ -2023,7 +2023,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "GNU LGPL 2.1"
           }
         }
@@ -2033,7 +2033,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Genrer"
           }
         }
@@ -2043,7 +2043,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Gå"
           }
         }
@@ -2053,7 +2053,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Gå till live"
           }
         }
@@ -2063,7 +2063,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupper"
           }
         }
@@ -2073,8 +2073,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Grupper har låsta grupper."
+            "state" : "translated",
+            "value" : "Grupper innehåller låsta grupper."
           }
         }
       }
@@ -2083,7 +2083,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupper · %lld"
           }
         }
@@ -2093,7 +2093,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupper, favoriter, se i efterhand"
           }
         }
@@ -2103,7 +2103,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå"
           }
         }
@@ -2113,7 +2113,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå-URL"
           }
         }
@@ -2123,7 +2123,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån kunde inte läsas in"
           }
         }
@@ -2133,7 +2133,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablålänk hittad"
           }
         }
@@ -2143,7 +2143,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablåfönster"
           }
         }
@@ -2153,7 +2153,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "DOLD"
           }
         }
@@ -2163,7 +2163,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Överlämnad till iCloud. Öppna Antenna på din Apple TV."
           }
         }
@@ -2173,7 +2173,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dold"
           }
         }
@@ -2183,7 +2183,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dölj lösenord"
           }
         }
@@ -2193,8 +2193,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Dölj, lås, byt namn och ändra ordning. Ändringarna når alla enheter som är inloggade på ditt iCloud."
+            "state" : "translated",
+            "value" : "Dölj, lås, byt namn och ändra ordning. Ändringarna når alla enheter som är inloggade på ditt iCloud-konto."
           }
         }
       }
@@ -2203,7 +2203,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera"
           }
         }
@@ -2213,7 +2213,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera en fil"
           }
         }
@@ -2223,7 +2223,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera en fil i stället"
           }
         }
@@ -2233,7 +2233,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera en spellista"
           }
         }
@@ -2243,7 +2243,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera som ny"
           }
         }
@@ -2253,7 +2253,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importerade %@"
           }
         }
@@ -2263,7 +2263,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pågår"
           }
         }
@@ -2273,7 +2273,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "På fliken Filmer"
           }
         }
@@ -2283,7 +2283,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "I tablån"
           }
         }
@@ -2299,7 +2299,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "I tablån, %1$@, %2$@ %3$@"
           }
         }
@@ -2315,7 +2315,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "I tablån, %1$@, %2$@ %3$@, se i efterhand"
           }
         }
@@ -2325,7 +2325,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta med dolda kanaler i sökningen"
           }
         }
@@ -2335,7 +2335,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Info"
           }
         }
@@ -2345,8 +2345,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den kontrollerar dem med leverantören och loggar in."
+            "state" : "translated",
+            "value" : "Den kontrollerar dem hos leverantören och loggar in."
           }
         }
       }
@@ -2355,7 +2355,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dess favoriter, dolda grupper och historik försvinner också. Källorna finns kvar."
           }
         }
@@ -2365,7 +2365,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den sparade inloggningen går inte att läsa. Importera filen igen."
           }
         }
@@ -2375,7 +2375,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "JELLYFIN"
           }
         }
@@ -2385,7 +2385,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Jellyfin"
           }
         }
@@ -2395,7 +2395,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Jellyfin-server"
           }
         }
@@ -2405,7 +2405,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Låt inloggningen vara öppen på Apple TV:n. Om koden där har ändrats, skanna den nya."
           }
         }
@@ -2415,7 +2415,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tangentbordsfokus"
           }
         }
@@ -2425,7 +2425,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "LIVE"
           }
         }
@@ -2435,7 +2435,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "LÅST"
           }
         }
@@ -2445,7 +2445,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Senare"
           }
         }
@@ -2455,8 +2455,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Senare:"
+            "state" : "translated",
+            "value" : "Senare: "
           }
         }
       }
@@ -2465,7 +2465,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Licens"
           }
         }
@@ -2475,7 +2475,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live"
           }
         }
@@ -2485,7 +2485,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live-TV från din egen Jellyfin-server."
           }
         }
@@ -2495,7 +2495,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live-TV med tablå"
           }
         }
@@ -2505,7 +2505,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Livebild"
           }
         }
@@ -2515,7 +2515,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live · %@"
           }
         }
@@ -2525,7 +2525,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in"
           }
         }
@@ -2535,7 +2535,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in kanaler"
           }
         }
@@ -2545,7 +2545,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in kanaler…"
           }
         }
@@ -2555,7 +2555,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in detaljer"
           }
         }
@@ -2565,7 +2565,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in avsnitt"
           }
         }
@@ -2575,7 +2575,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in filmer och serier…"
           }
         }
@@ -2585,7 +2585,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lås nu"
           }
         }
@@ -2595,7 +2595,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Låst"
           }
         }
@@ -2605,7 +2605,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggning"
           }
         }
@@ -2615,7 +2615,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen har inte hämtats än"
           }
         }
@@ -2625,7 +2625,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen skickades inte"
           }
         }
@@ -2635,7 +2635,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggning mottagen från din iPhone"
           }
         }
@@ -2645,7 +2645,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggning mottagen. Kontrollerar med %@…"
           }
         }
@@ -2655,7 +2655,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggning mottagen. Kontrollerar…"
           }
         }
@@ -2665,7 +2665,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningar stannar i din iCloud-nyckelring på den här %@."
           }
         }
@@ -2675,7 +2675,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "M3U"
           }
         }
@@ -2685,7 +2685,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "M3U-spellista"
           }
         }
@@ -2695,7 +2695,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "M3U-, M3U8- och textfiler, upp till 16 MB"
           }
         }
@@ -2705,7 +2705,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "MAC-adress"
           }
         }
@@ -2715,7 +2715,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hantera profiler"
           }
         }
@@ -2725,7 +2725,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Menu stänger"
           }
         }
@@ -2735,7 +2735,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Saknas"
           }
         }
@@ -2745,7 +2745,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mer"
           }
         }
@@ -2755,7 +2755,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mer beskrivning"
           }
         }
@@ -2765,7 +2765,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mer info"
           }
         }
@@ -2775,7 +2775,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flytta ned"
           }
         }
@@ -2785,7 +2785,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flytta upp"
           }
         }
@@ -2795,7 +2795,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filminfo och betyg"
           }
         }
@@ -2805,7 +2805,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Film eller serie"
           }
         }
@@ -2815,7 +2815,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer"
           }
         }
@@ -2825,7 +2825,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer och serier"
           }
         }
@@ -2835,7 +2835,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer och serier, %@"
           }
         }
@@ -2845,7 +2845,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer och serier, %@, serier"
           }
         }
@@ -2855,7 +2855,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer och serier"
           }
         }
@@ -2865,7 +2865,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer och serier tillgängliga"
           }
         }
@@ -2875,7 +2875,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud av"
           }
         }
@@ -2885,7 +2885,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Min lista"
           }
         }
@@ -2895,7 +2895,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "NAMN"
           }
         }
@@ -2905,7 +2905,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "NÄSTA"
           }
         }
@@ -2915,7 +2915,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "NU"
           }
         }
@@ -2925,7 +2925,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Namn"
           }
         }
@@ -2935,7 +2935,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ny grupp"
           }
         }
@@ -2945,7 +2945,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nyast först"
           }
         }
@@ -2955,7 +2955,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa kanal"
           }
         }
@@ -2965,7 +2965,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa resultat"
           }
         }
@@ -2975,7 +2975,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa resultat i sidled"
           }
         }
@@ -2985,7 +2985,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa säsong"
           }
         }
@@ -2995,7 +2995,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen Stalker-portal svarade på den här adressen."
           }
         }
@@ -3005,7 +3005,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen kanal %@"
           }
         }
@@ -3015,7 +3015,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler hittades"
           }
         }
@@ -3025,7 +3025,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler i %@"
           }
         }
@@ -3035,7 +3035,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler i den här gruppen än. Lägg till några från Grupper i Inställningar."
           }
         }
@@ -3045,7 +3045,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler matchar."
           }
         }
@@ -3055,7 +3055,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler än"
           }
         }
@@ -3065,7 +3065,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler än. Lägg till en källa i Inställningar."
           }
         }
@@ -3075,7 +3075,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga avsnitt tillgängliga"
           }
         }
@@ -3085,7 +3085,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga favoriter än. Håll ned select på en kanal för att lägga till den."
           }
         }
@@ -3095,7 +3095,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga favoriter än. Högerklicka på en kanal för att lägga till den."
           }
         }
@@ -3105,7 +3105,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga favoriter än. Tryck och håll på en kanal, eller svep den åt höger, för att lägga till den."
           }
         }
@@ -3115,7 +3115,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga grupper än. Lägg till en källa i Inställningar så visas dess grupper här."
           }
         }
@@ -3125,7 +3125,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen länk i urklippet"
           }
         }
@@ -3135,7 +3135,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga livekanaler"
           }
         }
@@ -3145,7 +3145,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga filmer eller serier"
           }
         }
@@ -3155,7 +3155,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen programinformation"
           }
         }
@@ -3165,7 +3165,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga källor än"
           }
         }
@@ -3175,7 +3175,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen av källorna som Apple TV:n bad om finns på den här %@. Båda behöver samma iCloud-konto, och nya källor kan ta en minut att komma fram."
           }
         }
@@ -3185,7 +3185,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte klar"
           }
         }
@@ -3195,7 +3195,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte i någon källa"
           }
         }
@@ -3205,7 +3205,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte länkar"
           }
         }
@@ -3215,7 +3215,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte i Min lista"
           }
         }
@@ -3225,7 +3225,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte på den här %@"
           }
         }
@@ -3235,7 +3235,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte hämtad än"
           }
         }
@@ -3245,7 +3245,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte skickad än"
           }
         }
@@ -3255,7 +3255,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte inloggad på iCloud, så den stannar på den här Apple TV:n."
           }
         }
@@ -3265,7 +3265,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte inloggad på iCloud. Källorna stannar på den här enheten."
           }
         }
@@ -3275,7 +3275,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inget att titta på än"
           }
         }
@@ -3285,7 +3285,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inget än? Din iPhone behöver ha Antenna installerat, en internetanslutning och samma iCloud-konto som den här Apple TV:n."
           }
         }
@@ -3295,7 +3295,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nu"
           }
         }
@@ -3305,7 +3305,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nu · %@"
           }
         }
@@ -3315,7 +3315,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nu, %@"
           }
         }
@@ -3325,7 +3325,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "OK"
           }
         }
@@ -3335,7 +3335,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Av"
           }
         }
@@ -3345,7 +3345,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Offline"
           }
         }
@@ -3355,7 +3355,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "På"
           }
         }
@@ -3365,7 +3365,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "I Min lista"
           }
         }
@@ -3375,7 +3375,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna Sök"
           }
         }
@@ -3385,7 +3385,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna Inställningar"
           }
         }
@@ -3395,7 +3395,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna detaljer"
           }
         }
@@ -3405,7 +3405,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna vid start"
           }
         }
@@ -3415,7 +3415,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna resultatet"
           }
         }
@@ -3425,7 +3425,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppnad från din Apple TV"
           }
         }
@@ -3435,7 +3435,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppnar Antenna och fortsätter filmen, eller öppnar serien."
           }
         }
@@ -3445,7 +3445,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppnar Antenna på Live med kanalen igång."
           }
         }
@@ -3455,7 +3455,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppnar Antenna på Sök."
           }
         }
@@ -3465,7 +3465,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Valfritt"
           }
         }
@@ -3475,7 +3475,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Valfri XMLTV-länk"
           }
         }
@@ -3485,7 +3485,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lösenkod"
           }
         }
@@ -3495,7 +3495,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lösenord"
           }
         }
@@ -3505,7 +3505,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Klistra in länken som din leverantör gav dig. Tablålänken är valfri."
           }
         }
@@ -3515,7 +3515,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pausa"
           }
         }
@@ -3525,7 +3525,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pausad"
           }
         }
@@ -3535,7 +3535,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bild"
           }
         }
@@ -3545,7 +3545,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bild-i-bild"
           }
         }
@@ -3555,7 +3555,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela"
           }
         }
@@ -3565,7 +3565,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela titel"
           }
         }
@@ -3575,7 +3575,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela eller pausa"
           }
         }
@@ -3585,7 +3585,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela kanalen"
           }
         }
@@ -3595,7 +3595,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppspelning"
           }
         }
@@ -3605,7 +3605,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spelar"
           }
         }
@@ -3615,7 +3615,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spelar %@"
           }
         }
@@ -3625,7 +3625,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spelar i bild-i-bild"
           }
         }
@@ -3635,7 +3635,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spelar via AirPlay"
           }
         }
@@ -3645,7 +3645,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellista"
           }
         }
@@ -3655,7 +3655,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellistan hämtad"
           }
         }
@@ -3665,7 +3665,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellistefil"
           }
         }
@@ -3675,7 +3675,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellistan importerad"
           }
         }
@@ -3685,7 +3685,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spelar kanalen"
           }
         }
@@ -3695,7 +3695,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Rikta iPhone-kameran mot koden. Antenna öppnas där med det här formuläret, och det du anger synkas till den här Apple TV:n via iCloud."
           }
         }
@@ -3705,7 +3705,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portal"
           }
         }
@@ -3715,7 +3715,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portal och namn kom från din iPhone."
           }
         }
@@ -3725,7 +3725,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Position"
           }
         }
@@ -3735,7 +3735,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Affischer och beskrivningar läses in medan du bläddrar"
           }
         }
@@ -3745,7 +3745,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Föredrar du fjärrkontrollen? Skriv här; din iPhone erbjuder också sitt tangentbord."
           }
         }
@@ -3755,7 +3755,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inställningar"
           }
         }
@@ -3765,7 +3765,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tryck på Menu för att gå tillbaka"
           }
         }
@@ -3775,7 +3775,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tryck på Menu för att gå tillbaka och kontrollera länken"
           }
         }
@@ -3785,7 +3785,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Föregående kanal"
           }
         }
@@ -3795,7 +3795,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Föregående resultat"
           }
         }
@@ -3805,7 +3805,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Föregående resultat i sidled"
           }
         }
@@ -3815,7 +3815,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Föregående säsong"
           }
         }
@@ -3825,7 +3825,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Profil, %@"
           }
         }
@@ -3835,7 +3835,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Profiler"
           }
         }
@@ -3845,7 +3845,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Programförlopp"
           }
         }
@@ -3855,7 +3855,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Förlopp"
           }
         }
@@ -3865,7 +3865,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "QR-kod. Skanna den med din iPhone för att skicka inloggningen till den här Apple TV:n."
           }
         }
@@ -3875,7 +3875,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "QR-kod. Skanna den med din iPhone för att ställa in den här Apple TV:n därifrån."
           }
         }
@@ -3885,7 +3885,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "SENASTE"
           }
         }
@@ -3895,7 +3895,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera %@ igen"
           }
         }
@@ -3905,7 +3905,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importera igen…"
           }
         }
@@ -3915,7 +3915,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser %@…"
           }
         }
@@ -3925,7 +3925,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser tablån…"
           }
         }
@@ -3935,7 +3935,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Redo att skicka"
           }
         }
@@ -3945,7 +3945,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Senaste"
           }
         }
@@ -3955,7 +3955,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Senaste sökning, %@"
           }
         }
@@ -3965,7 +3965,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Senaste sökningar"
           }
         }
@@ -3975,7 +3975,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nyligen tillagt"
           }
         }
@@ -3985,7 +3985,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nyligen sett"
           }
         }
@@ -3995,7 +3995,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lös in en kod"
           }
         }
@@ -4005,7 +4005,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppdatera alla"
           }
         }
@@ -4015,7 +4015,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppdatera alla källor"
           }
         }
@@ -4025,7 +4025,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppdatera nu"
           }
         }
@@ -4035,7 +4035,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppdatera källor"
           }
         }
@@ -4045,7 +4045,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Påminn mig"
           }
         }
@@ -4055,7 +4055,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Påminnelse · %@"
           }
         }
@@ -4065,7 +4065,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Påminnelser"
           }
         }
@@ -4075,7 +4075,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fjärrkontroll"
           }
         }
@@ -4085,7 +4085,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort"
           }
         }
@@ -4095,7 +4095,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort från favoriter"
           }
         }
@@ -4105,7 +4105,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort från Min lista"
           }
         }
@@ -4115,7 +4115,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort från favoriter"
           }
         }
@@ -4125,7 +4125,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort från min lista"
           }
         }
@@ -4135,7 +4135,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort påminnelsen?"
           }
         }
@@ -4145,7 +4145,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort %@ och tablån från alla enheter som är inloggade på ditt iCloud-konto."
           }
         }
@@ -4155,7 +4155,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort %@ och tablån från den här enheten."
           }
         }
@@ -4165,7 +4165,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort dess %@ och tablå från alla enheter som är inloggade på ditt iCloud-konto."
           }
         }
@@ -4175,7 +4175,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort dess %@ och tablå från den här enheten."
           }
         }
@@ -4191,7 +4191,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort dess %1$@, %2$@ och tablå från alla enheter som är inloggade på ditt iCloud-konto."
           }
         }
@@ -4207,7 +4207,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort dess %1$@, %2$@ och tablå från den här enheten."
           }
         }
@@ -4217,7 +4217,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort dess tablå från alla enheter som är inloggade på ditt iCloud-konto."
           }
         }
@@ -4227,7 +4227,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tar bort dess tablå från den här enheten."
           }
         }
@@ -4237,8 +4237,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Tar bort den spelande kanalen från favoriterna."
+            "state" : "translated",
+            "value" : "Tar bort kanalen som spelas från favoriterna."
           }
         }
       }
@@ -4247,7 +4247,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Byt namn"
           }
         }
@@ -4257,7 +4257,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ersätt"
           }
         }
@@ -4267,7 +4267,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ersätt %@"
           }
         }
@@ -4277,7 +4277,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Obligatoriskt"
           }
         }
@@ -4287,7 +4287,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Återställ grupplösenkoden"
           }
         }
@@ -4297,7 +4297,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Återställ köp"
           }
         }
@@ -4307,7 +4307,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Försök igen"
           }
         }
@@ -4317,7 +4317,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "SERIE"
           }
         }
@@ -4327,7 +4327,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "STALKER"
           }
         }
@@ -4337,7 +4337,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Exempel"
           }
         }
@@ -4347,7 +4347,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spara"
           }
         }
@@ -4357,7 +4357,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sparas i nyckelringen på den här Apple TV:n. Antenna har inga servrar."
           }
         }
@@ -4367,7 +4367,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sparas i nyckelringen på den här enheten."
           }
         }
@@ -4377,7 +4377,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sparas bara i din iCloud-nyckelring. Antenna har inga servrar och ser aldrig din inloggning."
           }
         }
@@ -4387,7 +4387,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sparad på den här %@"
           }
         }
@@ -4397,8 +4397,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Skanna koden med iPhone-kameran. Antenna där skickar inloggningen till den här Apple TV:n, krypterad, via iCloud."
+            "state" : "translated",
+            "value" : "Skanna koden med iPhone-kameran. Antenna på iPhone skickar sedan inloggningen krypterad via iCloud till den här Apple TV:n."
           }
         }
       }
@@ -4407,7 +4407,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök"
           }
         }
@@ -4417,7 +4417,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök efter"
           }
         }
@@ -4427,7 +4427,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök kanaler"
           }
         }
@@ -4437,7 +4437,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök filmer"
           }
         }
@@ -4447,7 +4447,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök serier"
           }
         }
@@ -4457,7 +4457,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa alla"
           }
         }
@@ -4467,7 +4467,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa alla %lld"
           }
         }
@@ -4477,7 +4477,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en kanal"
           }
         }
@@ -4487,7 +4487,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vald"
           }
         }
@@ -4497,7 +4497,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vald, %@"
           }
         }
@@ -4507,7 +4507,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skicka inloggningen från din iPhone"
           }
         }
@@ -4517,7 +4517,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skicka till Apple TV"
           }
         }
@@ -4527,7 +4527,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skickar"
           }
         }
@@ -4537,7 +4537,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skickar inloggningen…"
           }
         }
@@ -4547,7 +4547,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skickar till din Apple TV"
           }
         }
@@ -4557,7 +4557,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skickar till din Apple TV…"
           }
         }
@@ -4567,7 +4567,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skickad"
           }
         }
@@ -4577,7 +4577,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Serier"
           }
         }
@@ -4587,7 +4587,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Server"
           }
         }
@@ -4597,7 +4597,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Server och namn kom från din iPhone."
           }
         }
@@ -4607,7 +4607,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en ny lösenkod. Alla låsta grupper förblir låsta."
           }
         }
@@ -4617,7 +4617,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en lösenkod"
           }
         }
@@ -4627,7 +4627,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ställ in Apple TV"
           }
         }
@@ -4637,7 +4637,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ställ in från din iPhone"
           }
         }
@@ -4647,7 +4647,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ställer in %@"
           }
         }
@@ -4657,7 +4657,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inställningar"
           }
         }
@@ -4667,7 +4667,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa kanallistan"
           }
         }
@@ -4677,7 +4677,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa lösenord"
           }
         }
@@ -4687,7 +4687,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa tips för fjärrkontrollen"
           }
         }
@@ -4697,7 +4697,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa sidofältet"
           }
         }
@@ -4707,7 +4707,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visar uppspelningsreglagen"
           }
         }
@@ -4717,7 +4717,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in"
           }
         }
@@ -4727,8 +4727,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Logga in Apple TV"
+            "state" : "translated",
+            "value" : "Logga in på Apple TV"
           }
         }
       }
@@ -4737,7 +4737,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in på den här Apple TV:n"
           }
         }
@@ -4747,7 +4747,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in på %@"
           }
         }
@@ -4757,8 +4757,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Logga in din Apple TV"
+            "state" : "translated",
+            "value" : "Logga in på din Apple TV"
           }
         }
       }
@@ -4767,7 +4767,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggad"
           }
         }
@@ -4777,8 +4777,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Inloggad på iCloud. Källor som läggs till i Antenna på iPhone, iPad eller Mac visas här av sig själva."
+            "state" : "translated",
+            "value" : "Inloggad på iCloud. Källor som läggs till i Antenna på iPhone, iPad eller Mac visas här automatiskt."
           }
         }
       }
@@ -4787,7 +4787,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Något kom från din iPhone som den här Apple TV:n inte kan läsa."
           }
         }
@@ -4797,7 +4797,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sortera"
           }
         }
@@ -4807,8 +4807,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sorterade efter nummer"
+            "state" : "translated",
+            "value" : "Sorterat efter nummer"
           }
         }
       }
@@ -4817,7 +4817,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källa"
           }
         }
@@ -4827,7 +4827,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källa: väntar på att inloggningen synkas från iCloud"
           }
         }
@@ -4837,7 +4837,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källor"
           }
         }
@@ -4847,7 +4847,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källor och inställningar"
           }
         }
@@ -4857,7 +4857,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källor synkas till dina andra enheter via iCloud. Inloggningar synkas via iCloud-nyckelringen när den är på, och aldrig till Apple TV."
           }
         }
@@ -4867,7 +4867,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stalker-portal"
           }
         }
@@ -4877,7 +4877,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börja om"
           }
         }
@@ -4887,7 +4887,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börja titta"
           }
         }
@@ -4897,7 +4897,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börja titta nu"
           }
         }
@@ -4907,7 +4907,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Undertexter"
           }
         }
@@ -4917,7 +4917,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Undertexter av"
           }
         }
@@ -4927,7 +4927,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Undertexter på"
           }
         }
@@ -4937,7 +4937,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Svep uppåt eller nedåt medan du tittar"
           }
         }
@@ -4947,8 +4947,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Synkad via iCloud. Antenna på Apple TV, iPad och Mac visar den här källan av sig själv."
+            "state" : "translated",
+            "value" : "Synkad via iCloud. Antenna på Apple TV, iPad och Mac visar den här källan automatiskt."
           }
         }
       }
@@ -4957,7 +4957,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Synkad med iCloud"
           }
         }
@@ -4967,7 +4967,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flikar"
           }
         }
@@ -4977,7 +4977,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "MAC-adressen har inte kommit fram till den här Apple TV:n."
           }
         }
@@ -4987,7 +4987,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adressen du öppnar Jellyfin på i en webbläsare, med användarnamnet och lösenordet du loggar in med."
           }
         }
@@ -4997,7 +4997,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Byggskriptet, bygget och FFmpegs källkod publiceras med versionen."
           }
         }
@@ -5007,7 +5007,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den första kanalen spelas redan. Tryck på pekytan för kanallistan, tryck på spela/paus för kanalraden."
           }
         }
@@ -5017,7 +5017,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån fortsätter läsas in bakom bilden"
           }
         }
@@ -5027,7 +5027,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen kunde inte sparas på den här Apple TV:n. Försök igen."
           }
         }
@@ -5037,7 +5037,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen från din iPhone fungerade inte här. %@"
           }
         }
@@ -5047,7 +5047,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen har inte kommit fram till den här Apple TV:n."
           }
         }
@@ -5057,7 +5057,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen stannar i din iCloud-nyckelring. Om Apple TV:n frågar efter den, ange den en gång där."
           }
         }
@@ -5067,8 +5067,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Erbjudandet kommer från iOS och behöver ingen inställning."
+            "state" : "translated",
+            "value" : "Erbjudandet kommer från iOS och behöver inte ställas in."
           }
         }
       }
@@ -5077,7 +5077,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lösenkoden ändrades på en annan enhet."
           }
         }
@@ -5087,7 +5087,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lösenkoderna stämde inte överens. Börja om."
           }
         }
@@ -5097,7 +5097,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellistan har inga kanaler. Gå tillbaka och kontrollera länken."
           }
         }
@@ -5107,7 +5107,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellisteservern svarade med status %lld."
           }
         }
@@ -5117,7 +5117,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portalen svarade med status %lld."
           }
         }
@@ -5127,7 +5127,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portalen svarade med något som Antenna inte kunde läsa."
           }
         }
@@ -5137,7 +5137,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portalen avvisade den här MAC-adressen eller inloggningen."
           }
         }
@@ -5147,7 +5147,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portalen avvisade den här enheten. Den sa ”%@”."
           }
         }
@@ -5157,7 +5157,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantören skickade inga kanaler, filmer eller serier. Gå tillbaka och kontrollera uppgifterna."
           }
         }
@@ -5167,7 +5167,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Servern svarade med status %lld."
           }
         }
@@ -5177,7 +5177,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Servern svarade med något som Antenna inte kunde läsa."
           }
         }
@@ -5187,7 +5187,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Servern avvisade användarnamnet och lösenordet. Logga in igen."
           }
         }
@@ -5197,7 +5197,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källan synkas via iCloud till iPhone, iPad och Mac."
           }
         }
@@ -5207,7 +5207,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källorna synkas via iCloud till iPhone, iPad och Mac."
           }
         }
@@ -5223,8 +5223,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den här %1$@ har redan %2$lld källor. De visas på Apple TV:n av sig själva när båda använder samma iCloud-konto."
+            "state" : "translated",
+            "value" : "Den här %1$@ har redan %2$lld källor. De visas automatiskt på Apple TV:n när båda använder samma iCloud-konto."
           }
         }
       }
@@ -5233,8 +5233,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den här %@ har redan 1 källa. Den visas på Apple TV:n av sig själv när båda använder samma iCloud-konto."
+            "state" : "translated",
+            "value" : "Den här %@ har redan 1 källa. Den visas automatiskt på Apple TV:n när båda använder samma iCloud-konto."
           }
         }
       }
@@ -5243,7 +5243,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här %@ är inte inloggad på iCloud, så den kan inte skicka inloggningar till din Apple TV. Logga in på iCloud i Inställningar och skanna sedan koden igen."
           }
         }
@@ -5253,8 +5253,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den här %@ är inte inloggad på iCloud, så källan kan inte nå din Apple TV. Logga in på iCloud i Inställningar så skickas den av sig själv."
+            "state" : "translated",
+            "value" : "Den här %@ är inte inloggad på iCloud, så källan kan inte nå din Apple TV. Logga in på iCloud i Inställningar så skickas den automatiskt."
           }
         }
       }
@@ -5263,7 +5263,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här kanalen är låst."
           }
         }
@@ -5273,8 +5273,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den här koden kommer från en nyare Antenna. Uppdatera Antenna på den här %@ för att ställa in din Apple TV härifrån."
+            "state" : "translated",
+            "value" : "Den här koden kommer från en nyare version av Antenna. Uppdatera Antenna på den här %@ för att ställa in din Apple TV härifrån."
           }
         }
       }
@@ -5283,7 +5283,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här koden har redan använts. Om Apple TV:n fortfarande behöver en inloggning visar den en ny kod."
           }
         }
@@ -5293,7 +5293,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här länken är en Xtream-inloggning. Lägg till den som Xtream för att få filmer, serier och tablån."
           }
         }
@@ -5303,7 +5303,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Det här körs en gång."
           }
         }
@@ -5313,7 +5313,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här källan kom via iCloud utan sin inloggning. Ange den en gång här."
           }
         }
@@ -5323,7 +5323,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här källan är redan tillagd."
           }
         }
@@ -5333,8 +5333,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den här strömmen kan inte hoppa"
+            "state" : "translated",
+            "value" : "Det går inte att hoppa i den här strömmen"
           }
         }
       }
@@ -5343,8 +5343,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Via iCloud. Antenna på Apple TV:n hämtar den av sig själv."
+            "state" : "translated",
+            "value" : "Via iCloud. Antenna på Apple TV:n hämtar den automatiskt."
           }
         }
       }
@@ -5353,7 +5353,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Titlar och personer du öppnar, och namn du söker efter, slås upp i TMDB. Inget om dig eller dina källor skickas."
           }
         }
@@ -5363,7 +5363,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Växla"
           }
         }
@@ -5373,7 +5373,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Växla favorit"
           }
         }
@@ -5383,7 +5383,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Trailer"
           }
         }
@@ -5393,7 +5393,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Försök igen"
           }
         }
@@ -5403,7 +5403,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Försök igen om %lld sekunder"
           }
         }
@@ -5413,7 +5413,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Byt kanal"
           }
         }
@@ -5423,7 +5423,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stäng av"
           }
         }
@@ -5433,7 +5433,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Slå på"
           }
         }
@@ -5443,7 +5443,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Typ"
           }
         }
@@ -5453,7 +5453,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skriv adressen som din Channels DVR-server visar, till exempel 192.168.1.20 eller nas.local."
           }
         }
@@ -5463,7 +5463,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skriv in uppgifterna från din leverantör ovan."
           }
         }
@@ -5473,7 +5473,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "HÄRNÄST"
           }
         }
@@ -5483,7 +5483,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud på"
           }
         }
@@ -5493,7 +5493,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Upp"
           }
         }
@@ -5503,7 +5503,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Härnäst på %@"
           }
         }
@@ -5513,7 +5513,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kommande"
           }
         }
@@ -5523,7 +5523,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppdatera Antenna på båda, eller skriv inloggningen här."
           }
         }
@@ -5533,7 +5533,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Använd Xtream"
           }
         }
@@ -5543,7 +5543,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Användarnamn"
           }
         }
@@ -5553,7 +5553,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Brukar ta några sekunder"
           }
         }
@@ -5563,7 +5563,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version"
           }
         }
@@ -5573,7 +5573,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Volym"
           }
         }
@@ -5583,7 +5583,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på att inloggningen synkas från iCloud"
           }
         }
@@ -5593,7 +5593,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på att spellistan synkas från iCloud"
           }
         }
@@ -5603,7 +5603,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på att spellistan synkas från iCloud."
           }
         }
@@ -5613,7 +5613,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på inloggning"
           }
         }
@@ -5623,7 +5623,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på inloggningen…"
           }
         }
@@ -5633,7 +5633,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på lösenkoden från iCloud."
           }
         }
@@ -5643,7 +5643,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på din iPhone"
           }
         }
@@ -5653,7 +5653,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på din iPhone · %lld inloggningar"
           }
         }
@@ -5663,7 +5663,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Titta"
           }
         }
@@ -5673,7 +5673,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välkommen till Antenna"
           }
         }
@@ -5683,7 +5683,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vad är en källa?"
           }
         }
@@ -5693,7 +5693,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vilken sorts källa?"
           }
         }
@@ -5703,7 +5703,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "När din leverantör har med dem"
           }
         }
@@ -5713,7 +5713,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vilken kanal?"
           }
         }
@@ -5723,7 +5723,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vilken film eller serie?"
           }
         }
@@ -5733,7 +5733,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vem tittar?"
           }
         }
@@ -5743,7 +5743,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fel lösenkod"
           }
         }
@@ -5753,7 +5753,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "XTREAM"
           }
         }
@@ -5763,7 +5763,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Xtream"
           }
         }
@@ -5773,7 +5773,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Xtream-inloggning"
           }
         }
@@ -5783,7 +5783,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du kan också logga in på Apple TV:n."
           }
         }
@@ -5793,7 +5793,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du kan ha upp till åtta profiler."
           }
         }
@@ -5803,7 +5803,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du är offline."
           }
         }
@@ -5813,7 +5813,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Klart"
           }
         }
@@ -5823,8 +5823,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Din Apple TV bad om de här inloggningarna. De är krypterade bara för den Apple TV:n och går via ditt iCloud."
+            "state" : "translated",
+            "value" : "Din Apple TV bad om de här inloggningarna. De krypteras så att bara den Apple TV:n kan läsa dem och skickas via ditt iCloud."
           }
         }
       }
@@ -5833,7 +5833,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Din Apple TV hämtade inloggningen."
           }
         }
@@ -5843,7 +5843,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Din Apple TV hämtade inloggningarna."
           }
         }
@@ -5853,7 +5853,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Din ordning"
           }
         }
@@ -5863,7 +5863,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Din egen grupp behöver ett namn."
           }
         }
@@ -5873,7 +5873,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Din leverantör gav dig en av de här. Du kan lägga till fler senare."
           }
         }
@@ -5883,7 +5883,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Zooma in"
           }
         }
@@ -5893,7 +5893,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Zooma ut"
           }
         }
@@ -5906,8 +5906,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "efter"
+            "state" : "translated",
+            "value" : "fördröjd"
           }
         }
       }
@@ -5916,7 +5916,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "nedtonad"
           }
         }
@@ -5926,8 +5926,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "full"
+            "state" : "translated",
+            "value" : "normal"
           }
         }
       }
@@ -5936,7 +5936,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "http://"
           }
         }
@@ -5946,7 +5946,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "http://jellyfin.local:8096"
           }
         }
@@ -5956,7 +5956,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "https://"
           }
         }
@@ -5966,8 +5966,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "senare"
+            "state" : "translated",
+            "value" : "sänds senare"
           }
         }
       }
@@ -5976,7 +5976,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "live"
           }
         }
@@ -5986,7 +5986,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "livekanaler · %@"
           }
         }
@@ -5996,7 +5996,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "läser in"
           }
         }
@@ -6006,7 +6006,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "filmer och serier"
           }
         }
@@ -6016,8 +6016,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "i efterhand på %@ kanaler"
+            "state" : "translated",
+            "value" : "att se i efterhand på %@ kanaler"
           }
         }
       }
@@ -6026,7 +6026,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "tablå · %@ kanaler"
           }
         }
@@ -6036,7 +6036,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "av"
           }
         }
@@ -6046,7 +6046,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "på"
           }
         }
@@ -6056,7 +6056,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "på %@ kanaler"
           }
         }
@@ -6066,7 +6066,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "sänds nu"
           }
         }
@@ -6076,8 +6076,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "tidigare"
+            "state" : "translated",
+            "value" : "har sänts"
           }
         }
       }
@@ -6086,7 +6086,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "pausad"
           }
         }
@@ -6096,7 +6096,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "spelar"
           }
         }
@@ -6106,7 +6106,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "betyg"
           }
         }
@@ -6116,8 +6116,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "avsnittet"
+            "state" : "translated",
+            "value" : "sektionen"
           }
         }
       }

@@ -39,7 +39,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna ansluter till TV-servrar i ditt hemnätverk när någon av dina källor pekar dit."
           }
         }

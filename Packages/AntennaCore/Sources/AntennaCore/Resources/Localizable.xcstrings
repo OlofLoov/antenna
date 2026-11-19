@@ -5,7 +5,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " · Familjedelning"
           }
         }
@@ -15,7 +15,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " · Delas med dig via Familjedelning"
           }
         }
@@ -36,7 +36,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (tvingade)"
           }
         }
@@ -46,7 +46,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (stöds inte)"
           }
         }
@@ -62,7 +62,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ och %2$@"
           }
         }
@@ -78,7 +78,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ och %2$lld till"
           }
         }
@@ -116,7 +116,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ skickade ingen data på %2$#@arg2@."
           },
           "substitutions" : {
@@ -127,13 +127,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg sekund"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg sekunder"
                     }
                   }
@@ -154,7 +154,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ i %2$@, sedan %3$@ per år"
           }
         }
@@ -164,7 +164,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ är redan en favorit."
           }
         }
@@ -174,7 +174,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ är upptagen just nu. Försök igen om en stund."
           }
         }
@@ -184,7 +184,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ finns i en låst grupp. Lås upp den i Antenna först."
           }
         }
@@ -200,7 +200,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ finns inte längre hos %2$@."
           }
         }
@@ -216,7 +216,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ finns inte längre i %2$@."
           }
         }
@@ -226,7 +226,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ är inte en favorit."
           }
         }
@@ -236,7 +236,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ känner till kanalen men har inga program för den. Välj en annan post nedan, eller vänta tills leverantören fyller på den."
           }
         }
@@ -246,8 +246,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ listar program för den här kanalen men inga efter nu. Vänta på nästa tablåuppdatering eller välj en annan post nedan."
+            "state" : "translated",
+            "value" : "%@ listar program för den här kanalen men inga från och med nu. Vänta på nästa tablåuppdatering eller välj en annan post nedan."
           }
         }
       }
@@ -262,7 +262,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ per %2$@ i %3$@, sedan %4$@ per år"
           }
         }
@@ -272,7 +272,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ avvisade inloggningen. Kontrollera användarnamnet och lösenordet i Inställningar, eller fråga leverantören om kontot har gått ut."
           }
         }
@@ -282,7 +282,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ avvisade inloggningen. Logga in igen på den här Apple TV:n, eller fråga leverantören om kontot har gått ut."
           }
         }
@@ -298,7 +298,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ svarade %2$@ för den här kanalen."
           }
         }
@@ -308,7 +308,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ svarade 404 för den här kanalen. Kanalen kan ha flyttats eller tagits bort av leverantören."
           }
         }
@@ -318,7 +318,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ svarade med ett serverfel. Servern har problem. Försök igen om en stund."
           }
         }
@@ -328,7 +328,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ skickade data som inte är en spelbar ström. Adressen kan peka på en webbsida eller en tom fil."
           }
         }
@@ -338,7 +338,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ slutade skicka data."
           }
         }
@@ -354,7 +354,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ · %2$@ av %3$@"
           }
         }
@@ -375,7 +375,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@, och ingen tablåpost har exakt det namnet. Välj en post nedan."
           }
         }
@@ -385,7 +385,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: inga filmer"
           }
         }
@@ -395,7 +395,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: inga serier"
           }
         }
@@ -405,7 +405,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: väntar på att inloggningen synkas från iCloud"
           }
         }
@@ -436,13 +436,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld kanal"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld kanaler"
                 }
               }
@@ -503,7 +503,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ i %2$#@arg2@"
           },
           "substitutions" : {
@@ -514,13 +514,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg kanal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg kanaler"
                     }
                   }
@@ -534,13 +534,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupp"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupper"
                     }
                   }
@@ -576,13 +576,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld kanal · Uppdaterar…"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld kanaler · Uppdaterar…"
                 }
               }
@@ -616,13 +616,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld anslutning"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld anslutningar"
                 }
               }
@@ -656,13 +656,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld dag"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld dagar"
                 }
               }
@@ -696,13 +696,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld post hoppades över"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld poster hoppades över"
                 }
               }
@@ -736,13 +736,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld avsnitt"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld avsnitt"
                 }
               }
@@ -776,13 +776,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld avsnitt kunde inte läsas från leverantörens lista."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld avsnitt kunde inte läsas från leverantörens lista."
                 }
               }
@@ -816,13 +816,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld grupp"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld grupper"
                 }
               }
@@ -856,13 +856,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld tablå hämtas fortfarande."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld tablåer hämtas fortfarande."
                 }
               }
@@ -875,7 +875,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld tim"
           }
         }
@@ -891,7 +891,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld tim %2$@%3$lld min"
           }
         }
@@ -907,7 +907,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld tim %2$lld min"
           }
         }
@@ -923,7 +923,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld tim %2$lld min kvar"
           }
         }
@@ -933,7 +933,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld tim kvar"
           }
         }
@@ -964,13 +964,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld timme"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld timmar"
                 }
               }
@@ -1004,13 +1004,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld livekanal"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld livekanaler"
                 }
               }
@@ -1071,7 +1071,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ i %2$#@arg2@"
           },
           "substitutions" : {
@@ -1082,13 +1082,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg livekanal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg livekanaler"
                     }
                   }
@@ -1102,13 +1102,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupp"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupper"
                     }
                   }
@@ -1123,7 +1123,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld min"
           }
         }
@@ -1133,7 +1133,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld min efter"
           }
         }
@@ -1143,7 +1143,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld min kvar"
           }
         }
@@ -1174,13 +1174,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld minut"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld minuter"
                 }
               }
@@ -1221,7 +1221,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ och %2$lld serier"
           },
           "substitutions" : {
@@ -1232,13 +1232,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg film"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg filmer"
                     }
                   }
@@ -1259,7 +1259,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld av %2$lld tablåer kunde inte hämtas."
           }
         }
@@ -1290,13 +1290,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld program"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld program"
                 }
               }
@@ -1330,13 +1330,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld säsong"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld säsonger"
                 }
               }
@@ -1370,13 +1370,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld titel"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld titlar"
                 }
               }
@@ -1389,7 +1389,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "1 tablå hämtas fortfarande."
           }
         }
@@ -1399,7 +1399,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "<offer displayPrice> i <period>, sedan <displayPrice> per år"
           }
         }
@@ -1409,7 +1409,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "<offer displayPrice> per <unit> i <period>, sedan <displayPrice> per år"
           }
         }
@@ -1419,7 +1419,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontot är aktivt till %@"
           }
         }
@@ -1457,7 +1457,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontot är aktivt till %1$@ · %2$#@arg2@"
           },
           "substitutions" : {
@@ -1468,13 +1468,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg anslutning"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg anslutningar"
                     }
                   }
@@ -1489,7 +1489,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till en tablå-URL för att få programinformation för %@."
           }
         }
@@ -1499,7 +1499,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till som ny ruta"
           }
         }
@@ -1509,7 +1509,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till varje länk som en egen M3U-källa."
           }
         }
@@ -1519,7 +1519,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till favoriter i Antenna för att se dem här"
           }
         }
@@ -1529,7 +1529,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till tablå-URL"
           }
         }
@@ -1539,7 +1539,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till kanalens spellista i stället."
           }
         }
@@ -1549,7 +1549,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i Multivy"
           }
         }
@@ -1559,7 +1559,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i multivy"
           }
         }
@@ -1569,7 +1569,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lägg till i eller ta bort från favoriter"
           }
         }
@@ -1579,7 +1579,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ har lagts till bland favoriterna."
           }
         }
@@ -1589,7 +1589,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alla"
           }
         }
@@ -1599,7 +1599,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alla kanaler"
           }
         }
@@ -1609,7 +1609,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillåt åtkomst till lokalt nätverk för Antenna i Inställningar."
           }
         }
@@ -1619,7 +1619,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Redan live"
           }
         }
@@ -1629,7 +1629,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alltid"
           }
         }
@@ -1639,7 +1639,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna kan inte köpas i den här App Store-regionen än."
           }
         }
@@ -1649,7 +1649,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna kan inte verifiera serverns certifikat. Använd http i ditt nätverk eller ett betrott certifikat."
           }
         }
@@ -1659,7 +1659,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna kunde inte nå %@. Försök igen senare."
           }
         }
@@ -1669,7 +1669,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna hämtar tablån när källan har lästs in."
           }
         }
@@ -1679,7 +1679,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna har inga källor än. Öppna Antenna för att lägga till en."
           }
         }
@@ -1689,7 +1689,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna har inte bett om att få skicka notiser. Påminnelser visas bara medan appen är öppen."
           }
         }
@@ -1699,7 +1699,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna är låst igen"
           }
         }
@@ -1709,7 +1709,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna läser fortfarande in ditt bibliotek. Försök igen om en stund."
           }
         }
@@ -1719,7 +1719,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna spelar ingen kanal just nu. Säg vilken kanal i stället."
           }
         }
@@ -1729,7 +1729,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna är inte upplåst på den här enheten än. Öppna Antenna för att fortsätta."
           }
         }
@@ -1739,7 +1739,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna-spelaren"
           }
         }
@@ -1749,8 +1749,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Antenna spelar de TV-källor du redan har och innehåller inga kanaler. Ett köp låser upp alla funktioner på iPhone, iPad, Mac och Apple TV, för alla i din familjedelningsgrupp."
+            "state" : "translated",
+            "value" : "Antenna spelar upp de TV-källor du redan har och innehåller inga kanaler. Ett köp låser upp alla funktioner på iPhone, iPad, Mac och Apple TV, för alla i din familjegrupp."
           }
         }
       }
@@ -1759,7 +1759,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna läser M3U-spellistor: #EXTINF-rader, var och en följd av en strömlänk. Den här filen har inget sådant par."
           }
         }
@@ -1769,7 +1769,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna läser tablålänkarna från spellistan när den har lästs in."
           }
         }
@@ -1779,7 +1779,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Apple TV kan inte visa notiser. Påminnelser visas som en banner medan Antenna är öppen."
           }
         }
@@ -1789,7 +1789,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Apples spelare"
           }
         }
@@ -1799,7 +1799,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vid start"
           }
         }
@@ -1809,7 +1809,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud och undertexter"
           }
         }
@@ -1819,7 +1819,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Auto"
           }
         }
@@ -1829,7 +1829,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka"
           }
         }
@@ -1839,7 +1839,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bakåt %lld sekunder"
           }
         }
@@ -1849,7 +1849,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka eller stäng"
           }
         }
@@ -1859,7 +1859,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bufferten är full. Spelar från den tidigaste punkten"
           }
         }
@@ -1869,7 +1869,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buffrar"
           }
         }
@@ -1879,7 +1879,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "SE I EFTERHAND"
           }
         }
@@ -1889,7 +1889,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "SE I EFTERHAND %lld D"
           }
         }
@@ -1899,7 +1899,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kan inte spela en ström till"
           }
         }
@@ -1909,7 +1909,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kan inte nå App Store"
           }
         }
@@ -1919,7 +1919,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avbryt"
           }
         }
@@ -1929,7 +1929,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Medverkande"
           }
         }
@@ -1939,7 +1939,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Se i efterhand"
           }
         }
@@ -1970,14 +1970,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Se i efterhand %lld dag"
+                  "state" : "translated",
+                  "value" : "Se i efterhand: %lld dag"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Se i efterhand %lld dagar"
+                  "state" : "translated",
+                  "value" : "Se i efterhand: %lld dagar"
                 }
               }
             }
@@ -1989,7 +1989,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Byt kanal"
           }
         }
@@ -1999,7 +1999,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Byter kanal"
           }
         }
@@ -2015,7 +2015,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Byter ruta %1$lld av %2$lld"
           }
         }
@@ -2025,7 +2025,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanallista"
           }
         }
@@ -2035,7 +2035,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanaler"
           }
         }
@@ -2045,7 +2045,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Channels DVR startar. Försök igen om en stund."
           }
         }
@@ -2055,7 +2055,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanalerna läses fortfarande in"
           }
         }
@@ -2065,7 +2065,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanalerna har inte lästs in för %@"
           }
         }
@@ -2075,7 +2075,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanaler utan tablå"
           }
         }
@@ -2085,7 +2085,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kanaler utan tablå · %lld"
           }
         }
@@ -2095,7 +2095,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontrollera anslutningen och försök igen. Om du redan har köpt Antenna hittar Återställ köp det när anslutningen är tillbaka."
           }
         }
@@ -2105,7 +2105,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kontrollera stavningen eller prova ett kanalnummer."
           }
         }
@@ -2115,7 +2115,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj Påminn mig på ett program som inte har börjat, i Tablå eller i Sök."
           }
         }
@@ -2125,7 +2125,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en grupp"
           }
         }
@@ -2135,7 +2135,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en flik"
           }
         }
@@ -2145,7 +2145,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Klicka"
           }
         }
@@ -2155,7 +2155,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Klicka åt vänster eller höger"
           }
         }
@@ -2165,7 +2165,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stäng"
           }
         }
@@ -2175,7 +2175,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Anslut till internet och försök igen."
           }
         }
@@ -2185,8 +2185,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Anslut till internet och försök igen. Uppspelningen fortsätter av sig själv när anslutningen är tillbaka."
+            "state" : "translated",
+            "value" : "Anslut till internet och försök igen. Uppspelningen fortsätter automatiskt när anslutningen är tillbaka."
           }
         }
       }
@@ -2195,7 +2195,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fortsätt titta"
           }
         }
@@ -2205,7 +2205,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte hämta · %@"
           }
         }
@@ -2215,7 +2215,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in %@"
           }
         }
@@ -2225,7 +2225,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in filmer"
           }
         }
@@ -2235,7 +2235,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa in serier"
           }
         }
@@ -2245,7 +2245,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte nå %@"
           }
         }
@@ -2255,7 +2255,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte nå %@. Kontrollera adressen och försök igen."
           }
         }
@@ -2265,7 +2265,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa %@. Se till att den är hämtad och försök igen."
           }
         }
@@ -2275,7 +2275,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte läsa inloggningen"
           }
         }
@@ -2285,7 +2285,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte uppdatera: %@"
           }
         }
@@ -2295,7 +2295,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte logga in. Kontrollera MAC-adressen, och inloggningen om du har en."
           }
         }
@@ -2305,7 +2305,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte logga in. Kontrollera användarnamnet och lösenordet."
           }
         }
@@ -2315,7 +2315,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunde inte spara inloggningsuppgifterna: %@"
           }
         }
@@ -2325,7 +2325,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Regissör"
           }
         }
@@ -2335,7 +2335,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hämtar"
           }
         }
@@ -2345,7 +2345,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hämtar tablån…"
           }
         }
@@ -2355,7 +2355,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hämtar tablån · %@"
           }
         }
@@ -2365,7 +2365,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hämtar · %@"
           }
         }
@@ -2375,7 +2375,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Slutar nu"
           }
         }
@@ -2385,7 +2385,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange ett användarnamn utan kolon."
           }
         }
@@ -2395,8 +2395,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ange en giltig MAC-adress, som 00:1A:79:12:34:56."
+            "state" : "translated",
+            "value" : "Ange en giltig MAC-adress, till exempel 00:1A:79:12:34:56."
           }
         }
       }
@@ -2405,7 +2405,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange en giltig URL."
           }
         }
@@ -2415,7 +2415,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange en giltig serveradress."
           }
         }
@@ -2425,7 +2425,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange MAC-adressen."
           }
         }
@@ -2435,7 +2435,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange lösenordet."
           }
         }
@@ -2445,7 +2445,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange spellistans URL."
           }
         }
@@ -2455,7 +2455,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange portaladressen."
           }
         }
@@ -2465,7 +2465,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange serveradressen."
           }
         }
@@ -2475,7 +2475,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange användarnamnet."
           }
         }
@@ -2485,7 +2485,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avsnitt"
           }
         }
@@ -2495,7 +2495,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avsnitt %@"
           }
         }
@@ -2505,7 +2505,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Var 12:e timme"
           }
         }
@@ -2515,7 +2515,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Var 24:e timme"
           }
         }
@@ -2525,7 +2525,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Var 6:e timme"
           }
         }
@@ -2535,7 +2535,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alla kanaler i %@ har en tablå"
           }
         }
@@ -2545,7 +2545,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avsluta multivy"
           }
         }
@@ -2555,7 +2555,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Favoriter"
           }
         }
@@ -2565,7 +2565,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrera kanaler"
           }
         }
@@ -2575,7 +2575,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrera kanaler"
           }
         }
@@ -2585,7 +2585,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hitta"
           }
         }
@@ -2595,7 +2595,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hitta kanal"
           }
         }
@@ -2605,7 +2605,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hitta en tablåpost"
           }
         }
@@ -2621,7 +2621,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Första %1$@ gratis, sedan %2$@ per år"
           }
         }
@@ -2631,7 +2631,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Första <period> gratis, sedan <displayPrice> per år"
           }
         }
@@ -2641,7 +2641,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tvingade"
           }
         }
@@ -2651,7 +2651,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Formatet stöds inte"
           }
         }
@@ -2661,7 +2661,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Framåt"
           }
         }
@@ -2671,7 +2671,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Framåt %lld sekunder"
           }
         }
@@ -2681,7 +2681,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Från spellistan"
           }
         }
@@ -2691,7 +2691,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Helskärm"
           }
         }
@@ -2701,7 +2701,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupp"
           }
         }
@@ -2711,7 +2711,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupper eller detaljer"
           }
         }
@@ -2721,7 +2721,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå"
           }
         }
@@ -2752,14 +2752,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Tablå %lld dag"
+                  "state" : "translated",
+                  "value" : "Tablå: %lld dag"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Tablå %lld dagar"
+                  "state" : "translated",
+                  "value" : "Tablå: %lld dagar"
                 }
               }
             }
@@ -2771,7 +2771,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå-URL"
           }
         }
@@ -2781,7 +2781,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån har tagit slut"
           }
         }
@@ -2791,7 +2791,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån misslyckades"
           }
         }
@@ -2849,7 +2849,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå för %1$#@arg1@ · %2$lld av %3$#@arg3@"
           },
           "substitutions" : {
@@ -2860,13 +2860,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dag"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dagar"
                     }
                   }
@@ -2880,13 +2880,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg kanal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg kanaler"
                     }
                   }
@@ -2901,7 +2901,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå från %@"
           }
         }
@@ -2917,7 +2917,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå-id ”%1$@” finns inte i någon av de %2$lld tablåerna"
           }
         }
@@ -2927,7 +2927,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablå-id ”%@” finns inte i tablån"
           }
         }
@@ -2937,7 +2937,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablålänk"
           }
         }
@@ -2947,7 +2947,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablåkällor"
           }
         }
@@ -2957,7 +2957,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån är inte tillgänglig"
           }
         }
@@ -2967,7 +2967,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dölj inforaden"
           }
         }
@@ -2977,7 +2977,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Håll ned"
           }
         }
@@ -2987,7 +2987,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Håll ned spela/paus för live"
           }
         }
@@ -2997,7 +2997,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Håll ned select"
           }
         }
@@ -3007,7 +3007,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Håll ned select för alternativ"
           }
         }
@@ -3017,7 +3017,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hemskärmen"
           }
         }
@@ -3027,7 +3027,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Id hittades inte"
           }
         }
@@ -3037,7 +3037,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Om den pekar på en spellista eller en ström, lägg till den som en källa."
           }
         }
@@ -3047,8 +3047,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Inklusive familjedelning"
+            "state" : "translated",
+            "value" : "Inklusive Familjedelning"
           }
         }
       }
@@ -3057,7 +3057,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inforad"
           }
         }
@@ -3067,7 +3067,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Info, ljud och undertexter"
           }
         }
@@ -3077,7 +3077,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fortsätt titta"
           }
         }
@@ -3087,7 +3087,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "LIVE"
           }
         }
@@ -3097,8 +3097,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Senaste kanalen eller Senaste"
+            "state" : "translated",
+            "value" : "Föregående kanal eller Senaste"
           }
         }
       }
@@ -3107,7 +3107,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Livstid"
           }
         }
@@ -3117,7 +3117,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live"
           }
         }
@@ -3175,7 +3175,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inläst · %1$lld av %2$#@arg2@ · %3$#@arg3@"
           },
           "substitutions" : {
@@ -3186,13 +3186,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg kanal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg kanaler"
                     }
                   }
@@ -3206,13 +3206,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dag"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dagar"
                     }
                   }
@@ -3227,7 +3227,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in"
           }
         }
@@ -3237,7 +3237,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in tablån…"
           }
         }
@@ -3247,7 +3247,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in pris"
           }
         }
@@ -3257,7 +3257,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in…"
           }
         }
@@ -3267,7 +3267,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser in… · senast inläst %@"
           }
         }
@@ -3277,7 +3277,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen avvisades"
           }
         }
@@ -3287,7 +3287,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Många leverantörer tillåter en eller två strömmar per konto åt gången."
           }
         }
@@ -3297,7 +3297,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Många leverantörer tillåter en eller två strömmar per konto åt gången. Om inloggningen har ändrats, kontrollera den i Inställningar."
           }
         }
@@ -3307,7 +3307,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Många leverantörer tillåter en eller två strömmar per konto åt gången. Om inloggningen har ändrats, logga in igen på den här Apple TV:n."
           }
         }
@@ -3317,7 +3317,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kopplad av dig"
           }
         }
@@ -3327,7 +3327,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kopplingen hittades inte"
           }
         }
@@ -3337,7 +3337,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Matchad på namn"
           }
         }
@@ -3347,7 +3347,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Matchad på namn · %lld"
           }
         }
@@ -3357,7 +3357,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Matchad på tvg-id"
           }
         }
@@ -3367,7 +3367,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Matchar %@"
           }
         }
@@ -3377,7 +3377,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Menu"
           }
         }
@@ -3387,7 +3387,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mono"
           }
         }
@@ -3397,7 +3397,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mer info och Min lista"
           }
         }
@@ -3407,7 +3407,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flytta ned"
           }
         }
@@ -3417,8 +3417,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Flytta till den nya platsen"
+            "state" : "translated",
+            "value" : "Välj ny position"
           }
         }
       }
@@ -3427,8 +3427,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Rör dig i tablån"
+            "state" : "translated",
+            "value" : "Navigera i tablån"
           }
         }
       }
@@ -3437,7 +3437,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flytta upp"
           }
         }
@@ -3447,7 +3447,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flyttad från %@"
           }
         }
@@ -3463,7 +3463,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flyttad från %1$@ %2$@"
           }
         }
@@ -3473,7 +3473,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Film"
           }
         }
@@ -3483,7 +3483,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Film · %@"
           }
         }
@@ -3493,7 +3493,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmer"
           }
         }
@@ -3503,7 +3503,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Multivy"
           }
         }
@@ -3513,7 +3513,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Multivyn är full"
           }
         }
@@ -3529,7 +3529,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Multivy · ruta %1$lld av %2$lld"
           }
         }
@@ -3539,7 +3539,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ljud av"
           }
         }
@@ -3549,7 +3549,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Min lista"
           }
         }
@@ -3559,7 +3559,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nätverksfel"
           }
         }
@@ -3569,7 +3569,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ny"
           }
         }
@@ -3579,7 +3579,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa 7 dagar"
           }
         }
@@ -3589,7 +3589,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa avsnitt"
           }
         }
@@ -3599,7 +3599,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa avsnitt om %lld"
           }
         }
@@ -3609,7 +3609,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa avsnitt, %@"
           }
         }
@@ -3619,7 +3619,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nästa: %@"
           }
         }
@@ -3629,7 +3629,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen Channels DVR-server på %@."
           }
         }
@@ -3639,7 +3639,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen Jellyfin-server svarade på %@. Kontrollera adressen och försök igen."
           }
         }
@@ -3649,7 +3649,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen Stalker-portal svarade på %@. Kontrollera adressen och försök igen."
           }
         }
@@ -3659,7 +3659,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga kanaler hittades i %@."
           }
         }
@@ -3669,7 +3669,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen tablå"
           }
         }
@@ -3679,7 +3679,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen tablåpost matchar ”%@”"
           }
         }
@@ -3689,7 +3689,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inget tablå-id"
           }
         }
@@ -3699,7 +3699,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte längre i tablån"
           }
         }
@@ -3709,7 +3709,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen programinformation"
           }
         }
@@ -3719,7 +3719,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga program"
           }
         }
@@ -3729,7 +3729,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga program i tablån"
           }
         }
@@ -3739,7 +3739,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inget köp hittades för det här Apple-kontot. Om en familjemedlem köpte Antenna, kontrollera att köpdelning är på i Familjedelning."
           }
         }
@@ -3749,7 +3749,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga påminnelser"
           }
         }
@@ -3759,7 +3759,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga resultat för ”%@”"
           }
         }
@@ -3769,7 +3769,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inga undertexter i den här strömmen"
           }
         }
@@ -3785,7 +3785,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ingen av de %1$lld tablåerna för %2$@ listar ”%3$@”. Välj en post nedan."
           }
         }
@@ -3795,7 +3795,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte en tablåfil"
           }
         }
@@ -3805,7 +3805,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte hämtad än"
           }
         }
@@ -3815,7 +3815,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte tillräckligt med ledigt lagringsutrymme för att spola tillbaka live-TV"
           }
         }
@@ -3825,7 +3825,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte inläst än"
           }
         }
@@ -3835,7 +3835,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inte inloggad på den här Apple TV:n"
           }
         }
@@ -3845,7 +3845,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inget här än"
           }
         }
@@ -3855,7 +3855,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inget mer att betala. Dina källor och favoriter är där du lämnade dem."
           }
         }
@@ -3865,7 +3865,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Notiser är avstängda för Antenna. Påminnelser visas bara medan appen är öppen."
           }
         }
@@ -3875,7 +3875,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nu: %@"
           }
         }
@@ -3885,7 +3885,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Av"
           }
         }
@@ -3895,7 +3895,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Offline"
           }
         }
@@ -3905,7 +3905,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Offline · försöker igen när du är online"
           }
         }
@@ -3915,7 +3915,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sänds nu"
           }
         }
@@ -3925,7 +3925,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bara manuellt"
           }
         }
@@ -3935,7 +3935,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna"
           }
         }
@@ -3945,7 +3945,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öppna eller ändra"
           }
         }
@@ -3955,7 +3955,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Övrigt"
           }
         }
@@ -3965,7 +3965,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pausa"
           }
         }
@@ -3975,7 +3975,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pausa eller spela"
           }
         }
@@ -3985,7 +3985,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Betala en gång. Din för alltid."
           }
         }
@@ -3995,7 +3995,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj en annan post nedan, eller ta bort kopplingen för att gå tillbaka till spellistans id."
           }
         }
@@ -4005,7 +4005,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela"
           }
         }
@@ -4015,7 +4015,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela %@"
           }
         }
@@ -4025,7 +4025,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela härifrån"
           }
         }
@@ -4035,7 +4035,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela nu"
           }
         }
@@ -4045,7 +4045,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela eller välj"
           }
         }
@@ -4055,7 +4055,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela nästa avsnitt"
           }
         }
@@ -4065,7 +4065,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela/paus"
           }
         }
@@ -4075,7 +4075,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spela/paus för att gå tillbaka"
           }
         }
@@ -4085,7 +4085,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spelar nästa avsnitt i en serie när ett tar slut. Gäller bara den här enheten."
           }
         }
@@ -4095,7 +4095,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tryck för att bläddra bland kanaler"
           }
         }
@@ -4105,7 +4105,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Priset är inte tillgängligt"
           }
         }
@@ -4115,7 +4115,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantören är upptagen"
           }
         }
@@ -4125,7 +4125,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantörsfel"
           }
         }
@@ -4135,7 +4135,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantörens tablå"
           }
         }
@@ -4145,8 +4145,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Köp är avstängda på den här enheten. Kontrollera Skärmtid, eller fråga familjens organisatör."
+            "state" : "translated",
+            "value" : "Köp är avstängda på den här enheten. Kontrollera Skärmtid eller fråga familjeorganisatören."
           }
         }
       }
@@ -4155,7 +4155,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ange länken igen"
           }
         }
@@ -4165,7 +4165,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Läser tablån…"
           }
         }
@@ -4175,7 +4175,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nyligen tillagt"
           }
         }
@@ -4185,7 +4185,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Senaste"
           }
         }
@@ -4201,7 +4201,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ansluter igen… försök %1$lld av %2$lld"
           }
         }
@@ -4211,7 +4211,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Uppdaterad %@"
           }
         }
@@ -4221,7 +4221,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Påminn mig"
           }
         }
@@ -4231,7 +4231,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Påminnelse inställd"
           }
         }
@@ -4241,7 +4241,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Påminnelser synkas till dina andra enheter via iCloud. Varje enhet påminner dig på sitt sätt: en notis på iPhone, iPad och Mac, en banner på Apple TV medan Antenna är öppen."
           }
         }
@@ -4251,7 +4251,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fjärrkontroll: %@"
           }
         }
@@ -4261,7 +4261,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort"
           }
         }
@@ -4271,7 +4271,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort ruta"
           }
         }
@@ -4281,7 +4281,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort en ruta eller välj en kanal med lägre upplösning."
           }
         }
@@ -4291,7 +4291,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort från multivy"
           }
         }
@@ -4301,7 +4301,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort matchning"
           }
         }
@@ -4311,7 +4311,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ta bort användarnamnet och lösenordet från adressen."
           }
         }
@@ -4321,7 +4321,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ har tagits bort från favoriterna."
           }
         }
@@ -4331,7 +4331,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Förnyas varje år. Avsluta när du vill."
           }
         }
@@ -4341,7 +4341,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Förnyas %@. Dina källor och favoriter är där du lämnade dem."
           }
         }
@@ -4351,7 +4351,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Förnyas <expiresAt>. Dina källor och favoriter är där du lämnade dem."
           }
         }
@@ -4361,7 +4361,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Återställningen gick inte igenom. Försök igen."
           }
         }
@@ -4371,7 +4371,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Återuppta"
           }
         }
@@ -4381,7 +4381,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Återuppta %@"
           }
         }
@@ -4391,7 +4391,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Försök igen nu"
           }
         }
@@ -4401,7 +4401,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbakaspolning är inte tillgänglig på den här kanalen"
           }
         }
@@ -4411,7 +4411,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbakaspolningen slutade fungera"
           }
         }
@@ -4421,7 +4421,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbakaspolningen slutade fungera. Tillbaka till live-TV"
           }
         }
@@ -4431,7 +4431,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spola"
           }
         }
@@ -4441,7 +4441,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök"
           }
         }
@@ -4451,7 +4451,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök kanaler, program, filmer och serier"
           }
         }
@@ -4461,7 +4461,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sök i tablån efter kanalnamn eller id"
           }
         }
@@ -4471,7 +4471,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Säsong %@"
           }
         }
@@ -4487,7 +4487,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Säsong %1$@ avsnitt %2$@"
           }
         }
@@ -4497,7 +4497,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa alla %lld"
           }
         }
@@ -4507,7 +4507,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj"
           }
         }
@@ -4517,7 +4517,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välj ruta %lld"
           }
         }
@@ -4527,7 +4527,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Serier"
           }
         }
@@ -4537,7 +4537,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Serie · %@"
           }
         }
@@ -4547,7 +4547,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Servern svarade %@"
           }
         }
@@ -4557,7 +4557,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ställ in Antenna på Apple TV"
           }
         }
@@ -4588,13 +4588,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Visa %lld kanal"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Visa %lld kanaler"
                 }
               }
@@ -4607,7 +4607,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa i ruta %lld"
           }
         }
@@ -4617,7 +4617,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visa dess kanaler"
           }
         }
@@ -4633,7 +4633,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visar %1$lld av %2$lld"
           }
         }
@@ -4643,7 +4643,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Visar kanalraden"
           }
         }
@@ -4653,7 +4653,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in"
           }
         }
@@ -4663,7 +4663,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggning krävs"
           }
         }
@@ -4673,7 +4673,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in på den här Apple TV:n"
           }
         }
@@ -4683,7 +4683,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in på %@ på den här Apple TV:n"
           }
         }
@@ -4693,7 +4693,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Logga in på %@ på den här Apple TV:n för att spela dess kanaler."
           }
         }
@@ -4703,7 +4703,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen nekades"
           }
         }
@@ -4713,7 +4713,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hoppa 10 sekunder"
           }
         }
@@ -4723,7 +4723,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hoppade fram till live"
           }
         }
@@ -4733,7 +4733,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Några källor läses fortfarande in."
           }
         }
@@ -4749,8 +4749,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Källa: %1$@ · Försökte %2$@"
+            "state" : "translated",
+            "value" : "Källa: %1$@ · Försök kl. %2$@"
           }
         }
       }
@@ -4759,7 +4759,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källor och inställningar"
           }
         }
@@ -4769,7 +4769,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Specialavsnitt"
           }
         }
@@ -4779,7 +4779,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dela upp filen, eller lägg den på en server och lägg till länken som en M3U-källa i stället."
           }
         }
@@ -4789,7 +4789,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börja om är inte tillgängligt för det här programmet"
           }
         }
@@ -4805,7 +4805,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börjar %1$@ på %2$@"
           }
         }
@@ -4815,7 +4815,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börjar om %@"
           }
         }
@@ -4825,7 +4825,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börjar nu"
           }
         }
@@ -4835,7 +4835,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Börjar nu på %@"
           }
         }
@@ -4845,7 +4845,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stereo"
           }
         }
@@ -4855,7 +4855,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buffrar fortfarande. %@ skickar data långsamt."
           }
         }
@@ -4865,7 +4865,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tittar du fortfarande?"
           }
         }
@@ -4875,7 +4875,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tittar du fortfarande? %@"
           }
         }
@@ -4885,7 +4885,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stoppa och gå tillbaka"
           }
         }
@@ -4895,7 +4895,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lagringsutrymmet är fullt"
           }
         }
@@ -4905,7 +4905,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lagringsutrymmet är fullt. Tillbaka till live-TV"
           }
         }
@@ -4915,7 +4915,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Strömmen kunde inte läsas"
           }
         }
@@ -4925,7 +4925,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Strömdetaljer är inte tillgängliga än"
           }
         }
@@ -4935,7 +4935,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Strömmen hittades inte"
           }
         }
@@ -4945,7 +4945,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Strömmen stoppades"
           }
         }
@@ -4955,7 +4955,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Strömmen är inte tillgänglig"
           }
         }
@@ -4965,7 +4965,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Undertexter visas på ditt språk när strömmen har dem."
           }
         }
@@ -4975,7 +4975,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Undertexter visas när ljudet inte är på något av dina språk."
           }
         }
@@ -4985,7 +4985,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Undertexter är av från början. Tvingade undertexter på ditt språk visas ändå."
           }
         }
@@ -4995,7 +4995,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Svep"
           }
         }
@@ -5005,7 +5005,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Svep nedåt"
           }
         }
@@ -5015,7 +5015,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Svep åt vänster eller höger"
           }
         }
@@ -5025,7 +5025,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Svep uppåt eller nedåt"
           }
         }
@@ -5035,7 +5035,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Svep uppåt eller nedåt för en annan kanal. Menu öppnar flikraden."
           }
         }
@@ -5045,7 +5045,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "RUTA %lld"
           }
         }
@@ -5055,7 +5055,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Flikrad"
           }
         }
@@ -5065,7 +5065,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den kanalen finns inte längre i %@."
           }
         }
@@ -5075,7 +5075,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den kanalens källa finns inte längre i Antenna."
           }
         }
@@ -5085,7 +5085,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den titeln finns inte längre hos %@."
           }
         }
@@ -5095,7 +5095,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den titelns källa finns inte längre i Antenna."
           }
         }
@@ -5105,8 +5105,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Anslutningen misslyckades (%@). Kontrollera nätverket, eller ett VPN om ett är på."
+            "state" : "translated",
+            "value" : "Anslutningen misslyckades (%@). Kontrollera nätverket eller eventuellt VPN."
           }
         }
       }
@@ -5115,8 +5115,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Anslutningen misslyckades. Kontrollera nätverket, eller ett VPN om ett är på."
+            "state" : "translated",
+            "value" : "Anslutningen misslyckades. Kontrollera nätverket eller eventuellt VPN."
           }
         }
       }
@@ -5125,7 +5125,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Posterna i den här filen är inte länkar."
           }
         }
@@ -5135,7 +5135,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån"
           }
         }
@@ -5145,7 +5145,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån kunde inte hämtas"
           }
         }
@@ -5155,7 +5155,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån hämtas när du är online igen."
           }
         }
@@ -5165,7 +5165,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån för ”%@” har tagit slut"
           }
         }
@@ -5175,7 +5175,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån har inte hämtats än"
           }
         }
@@ -5185,7 +5185,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån har inte hämtats än."
           }
         }
@@ -5195,7 +5195,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tablån listar ”%@” men har inga program för den"
           }
         }
@@ -5205,7 +5205,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen för %@ har inte kommit till den här enheten från iCloud-nyckelringen än."
           }
         }
@@ -5215,7 +5215,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inloggningen för %@ har inte synkats från iCloud till den här enheten än."
           }
         }
@@ -5225,7 +5225,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den kopplade posten ”%@” har inga program"
           }
         }
@@ -5235,7 +5235,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spellistan har inget tvg-id för %@"
           }
         }
@@ -5245,7 +5245,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Portalen nekade den här enheten med meddelandet ”%@”."
           }
         }
@@ -5255,7 +5255,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantörens tablå behöver den här källans inloggning, som inte har kommit till den här enheten från iCloud än."
           }
         }
@@ -5265,7 +5265,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantörens tablå behöver den här källans inloggning. Logga in från Källor och inställningar."
           }
         }
@@ -5275,7 +5275,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Leverantören skickar inget epg_channel_id för %@"
           }
         }
@@ -5285,7 +5285,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Köpet gick inte igenom. Försök igen."
           }
         }
@@ -5295,7 +5295,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Köpet på det här Apple-kontot har återbetalats eller delas inte längre med dig."
           }
         }
@@ -5305,8 +5305,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Den säkra anslutningen misslyckades. Kontrollera nätverket, eller ett VPN om ett är på."
+            "state" : "translated",
+            "value" : "Den säkra anslutningen misslyckades. Kontrollera nätverket eller eventuellt VPN."
           }
         }
       }
@@ -5315,7 +5315,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Servern svarade med ett fel (%@). Kontrollera adressen och försök igen."
           }
         }
@@ -5325,7 +5325,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Servern svarade med något som Antenna inte kunde läsa."
           }
         }
@@ -5335,7 +5335,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Källan ger den här kanalen inget tablå-id"
           }
         }
@@ -5345,7 +5345,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här Apple TV:n kan inte spela en ström till"
           }
         }
@@ -5355,7 +5355,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här Macen kan inte spela en ström till"
           }
         }
@@ -5365,8 +5365,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Det här kontot är %@."
+            "state" : "translated",
+            "value" : "Kontots status: %@."
           }
         }
       }
@@ -5375,7 +5375,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Det här kontot får inte logga in från den här enheten."
           }
         }
@@ -5385,7 +5385,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här kanalen"
           }
         }
@@ -5395,7 +5395,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här enheten spelar redan så många strömmar som den kan."
           }
         }
@@ -5405,7 +5405,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här filen är %@. Antenna importerar spellistor upp till 16 MB."
           }
         }
@@ -5415,7 +5415,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här filen är en länk, inte en spellista."
           }
         }
@@ -5425,7 +5425,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här filen är en lista med länkar, inte en spellista."
           }
         }
@@ -5435,7 +5435,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här filen är större än 16 MB. Antenna importerar spellistor upp till 16 MB."
           }
         }
@@ -5445,7 +5445,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här tablån finns redan i listan."
           }
         }
@@ -5455,7 +5455,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här tablålänken behöver sin inloggning på den här Apple TV:n"
           }
         }
@@ -5465,7 +5465,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Det här är en enskild ström, inte en kanallista."
           }
         }
@@ -5475,7 +5475,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här servern ber om användarnamn och lösenord, som Antenna inte kan skicka än."
           }
         }
@@ -5485,7 +5485,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här källan har ingen tablå"
           }
         }
@@ -5495,7 +5495,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här strömmen använder %@, som den här enheten inte kan spela. Det hjälper inte att försöka igen. Välj en annan kanal eller be leverantören om en ström i ett format som stöds."
           }
         }
@@ -5505,7 +5505,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den här titeln"
           }
         }
@@ -5521,7 +5521,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ruta %1$lld av %2$lld"
           }
         }
@@ -5537,7 +5537,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ruta %1$lld · %2$@"
           }
         }
@@ -5547,7 +5547,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tidsgränsen nåddes"
           }
         }
@@ -5557,7 +5557,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Titel"
           }
         }
@@ -5567,7 +5567,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "I dag"
           }
         }
@@ -5577,7 +5577,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "I morgon"
           }
         }
@@ -5587,7 +5587,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "För stor"
           }
         }
@@ -5597,7 +5597,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "För många kopplingar för den här källan. Ta bort några för att lägga till fler."
           }
         }
@@ -5607,7 +5607,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Spår %lld"
           }
         }
@@ -5617,7 +5617,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Prova ett kortare namn eller kanalens tvg-id."
           }
         }
@@ -5627,7 +5627,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Försök igen"
           }
         }
@@ -5637,7 +5637,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stäng av"
           }
         }
@@ -5647,7 +5647,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Slå på"
           }
         }
@@ -5657,7 +5657,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avstängd"
           }
         }
@@ -5667,7 +5667,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ogrupperade"
           }
         }
@@ -5677,7 +5677,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lås upp Antenna"
           }
         }
@@ -5687,7 +5687,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lås upp din %@ en gång och försök igen."
           }
         }
@@ -5697,7 +5697,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Namnlös"
           }
         }
@@ -5735,7 +5735,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Härnäst, %1$@, nästa avsnitt om %2$#@arg2@"
           },
           "substitutions" : {
@@ -5746,13 +5746,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg sekund"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg sekunder"
                     }
                   }
@@ -5767,7 +5767,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Volym ned"
           }
         }
@@ -5777,7 +5777,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Volym upp"
           }
         }
@@ -5787,7 +5787,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på godkännande. Antenna låses upp så snart köpet har godkänts."
           }
         }
@@ -5797,7 +5797,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på iCloud…"
           }
         }
@@ -5807,7 +5807,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på inloggning"
           }
         }
@@ -5817,7 +5817,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på inloggning från iCloud"
           }
         }
@@ -5827,7 +5827,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på att inloggningen synkas från iCloud"
           }
         }
@@ -5837,7 +5837,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på App Store…"
           }
         }
@@ -5847,7 +5847,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på tablån…"
           }
         }
@@ -5857,7 +5857,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på att inloggningen synkas"
           }
         }
@@ -5867,7 +5867,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på spellistan"
           }
         }
@@ -5877,7 +5877,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Väntar på att tablåns inloggning synkas från iCloud"
           }
         }
@@ -5887,7 +5887,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Titta"
           }
         }
@@ -5897,7 +5897,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Titta, eller detaljer för senare"
           }
         }
@@ -5907,8 +5907,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sedd"
+            "state" : "translated",
+            "value" : "Sett"
           }
         }
       }
@@ -5917,7 +5917,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Välkommen tillbaka"
           }
         }
@@ -5927,7 +5927,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vilken kanal?"
           }
         }
@@ -5937,7 +5937,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vilken film eller serie?"
           }
         }
@@ -5947,7 +5947,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "År"
           }
         }
@@ -5957,7 +5957,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Årsvis"
           }
         }
@@ -5967,7 +5967,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Årsabonnemanget förnyas automatiskt tills det avslutas i Inställningar. Betalningen debiteras ditt Apple-konto. Användarvillkor och integritetspolicy."
           }
         }
@@ -5983,7 +5983,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du har importerat %1$@ tidigare som %2$@"
           }
         }
@@ -5993,7 +5993,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du är offline"
           }
         }
@@ -6003,7 +6003,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du är offline."
           }
         }
@@ -6013,7 +6013,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Du är offline. Anslut till internet och försök igen."
           }
         }
@@ -6023,7 +6023,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Din leverantör nekade en ström till"
           }
         }
@@ -6033,7 +6033,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ditt köp hittades för det här Apple-kontot."
           }
         }
@@ -6043,7 +6043,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ditt årsabonnemang upphörde %@."
           }
         }
@@ -6053,7 +6053,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ditt årsabonnemang upphörde <date>."
           }
         }
@@ -6063,7 +6063,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Zooma in"
           }
         }
@@ -6073,7 +6073,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Zooma ut"
           }
         }
@@ -6083,7 +6083,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "byt kanal"
           }
         }
@@ -6100,7 +6100,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tillbaka"
           }
         }
@@ -6110,7 +6110,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "helskärm"
           }
         }
@@ -6120,7 +6120,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "lämna multivy"
           }
         }
@@ -6130,7 +6130,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ljud av"
           }
         }
@@ -6140,7 +6140,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "inga program"
           }
         }
@@ -6171,13 +6171,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "dag"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld dagar"
                 }
               }
@@ -6211,13 +6211,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "månad"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld månader"
                 }
               }
@@ -6251,13 +6251,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "vecka"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld veckor"
                 }
               }
@@ -6291,13 +6291,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "år"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld år"
                 }
               }
@@ -6310,7 +6310,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "en gång"
           }
         }
@@ -6320,7 +6320,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "alternativ"
           }
         }
@@ -6330,7 +6330,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "per år"
           }
         }
@@ -6340,7 +6340,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ljud på"
           }
         }
@@ -6350,7 +6350,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "härnäst"
           }
         }
@@ -6360,8 +6360,8 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "sedd"
+            "state" : "translated",
+            "value" : "sett"
           }
         }
       }
@@ -6370,7 +6370,7 @@
       "localizations" : {
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "din källa"
           }
         }
@@ -6386,7 +6386,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "”%1$@” listar inte ”%2$@”. Välj en post nedan."
           }
         }
