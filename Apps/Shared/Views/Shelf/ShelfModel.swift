@@ -29,6 +29,8 @@ final class ShelfModel {
     /// time a source's titles change
     /// (movies-and-series-browsing/browsing-stays-responsive).
     private(set) var index = ShelfIndex.empty
+    /// Bumped each time `index` changes, so the people index knows to rebuild.
+    private(set) var indexRevision = 0
     /// Details by title id, once the banner, the preview or a page has asked.
     private(set) var details: [String: ShelfDetails] = [:]
     /// Titles whose info call has answered or failed.
@@ -41,6 +43,9 @@ final class ShelfModel {
     private(set) var episodes: [String: [Episode]] = [:]
 
     @ObservationIgnored private let dependencies: Dependencies
+    /// Hears every info answer, whichever screen asked, so the names in it
+    /// reach the people index (browse-by-person/a-person-s-page-never-asks-the-provider).
+    @ObservationIgnored var heard: (ShelfTitle, TitleInfo) -> Void = { _, _ in }
     @ObservationIgnored private var descriptors: [UUID: SourceDescriptor] = [:]
     @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private var catalogues: [UUID: ShelfCatalogue] = [:]
@@ -283,6 +288,7 @@ final class ShelfModel {
             BrowseSignposts.signposter.endInterval("shelf index", signpost)
             guard let self, current == generation else { return }
             self.index = index
+            indexRevision += 1
             sortedLists = [:]
             showPendingStates()
             building = nil
@@ -366,6 +372,7 @@ final class ShelfModel {
         keptOrder.append(key)
         while keptOrder.count > Self.keptLimit { kept[keptOrder.removeFirst()] = nil }
         details[title.id] = ShelfDetails(answer)
+        heard(title, answer)
         asked.insert(title.id)
         answered.insert(title.id)
         if case .series(let series) = answer { episodes[title.id] = series.episodes }
@@ -411,78 +418,5 @@ final class ShelfModel {
     /// Loads a series' episodes for its Continue watching caption, ignoring failures.
     func prefetchEpisodes(_ series: ShelfTitle) async {
         _ = try? await loadEpisodes(series)
-    }
-}
-
-/// Movies and Series side by side, so switching sections reloads nothing.
-@MainActor @Observable
-final class ShelfLibrary {
-    let movies: ShelfModel
-    let series: ShelfModel
-    /// The title page open over a section, nil when none is
-    /// (title-detail-and-episode-picker).
-    private(set) var page: TitleRoute?
-    /// The page just closed, until the poster or button that opened it
-    /// takes focus back (title-detail-and-episode-picker/back-to-where-you-were).
-    private(set) var returning: TitleRoute?
-    /// Which sections the sources offer, set by `ShelfSync`
-    /// (m3u-playlists/playlist-titles-show-on-every-platform).
-    var offer = TitleOffer.none
-
-    init(movies: ShelfModel, series: ShelfModel) {
-        self.movies = movies
-        self.series = series
-    }
-
-    func model(_ kind: ShelfTitle.Kind) -> ShelfModel {
-        kind == .movie ? movies : series
-    }
-
-    func sourcesChanged(_ all: [SourceDescriptor]) {
-        movies.sourcesChanged(all)
-        series.sourcesChanged(all)
-    }
-
-    /// One section opened. Both load, because Continue watching shows
-    /// movies and series together
-    /// (movies-and-series-browsing/continue-watching).
-    func open() {
-        movies.open()
-        series.open()
-    }
-
-    /// Opens a title's page over the section it was picked in.
-    func openPage(_ title: ShelfTitle, from origin: TitleRoute.Origin, in section: ShelfTitle.Kind) {
-        let model = TitleModel(title: title, shelf: model(title.kind), lookup: TitleLookups.app)
-        page = TitleRoute(title: title, section: section, origin: origin, model: model)
-    }
-
-    /// Closes the page; the section shows as it was.
-    func closePage() {
-        returning = page
-        page = nil
-    }
-
-    /// The starting poster or button has focus again.
-    func returned() {
-        returning = nil
-    }
-
-    /// The app came back to the foreground: sources waiting for a login try again.
-    func becameActive() {
-        movies.checkLogins()
-        series.checkLogins()
-    }
-}
-
-extension ShelfLibrary {
-    /// The library the app runs on, reading through `loader`.
-    static func live(_ loader: ShelfLoader) -> ShelfLibrary {
-        let dependencies = ShelfModel.Dependencies(
-            load: { try await loader.load($0, kind: $1) },
-            hasLogin: { loader.hasLogin($0) },
-            episodes: { try await loader.episodes($0, series: $1) },
-            info: { try await loader.info($0, title: $1) })
-        return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
     }
 }

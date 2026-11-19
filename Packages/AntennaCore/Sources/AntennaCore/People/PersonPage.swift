@@ -40,6 +40,11 @@ public struct PersonPage: Sendable, Hashable {
     /// The circle's letters: the first and last word's first letters, "MH"
     /// for Mira Holt, one letter for a one-word name, "?" with no letter.
     public var initials: String {
+        Self.initials(of: name)
+    }
+
+    /// The circle's letters for any name, with the rule of `initials`.
+    public static func initials(of name: String) -> String {
         let words = name.split(whereSeparator: \.isWhitespace).compactMap { $0.first { $0.isLetter } }
         guard let first = words.first else { return "?" }
         let letters = words.count > 1 ? [first, words[words.count - 1]] : [first]

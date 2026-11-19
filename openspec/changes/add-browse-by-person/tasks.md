@@ -13,12 +13,12 @@
 
 ## 3. Cast chips and the person page
 
-- [ ] 3.1 Turn the library's title page into a stack of title and person pages, with Back popping one level on every platform
-- [ ] 3.2 Record names from every info answer into `LearnedCredits`, save it to `Caches/people/credits.json`, and build the people index in the library
-- [ ] 3.3 Show cast and directors as chips on the title page on iPhone, iPad, Mac and Apple TV, with previews
-- [ ] 3.4 Add the person page on every platform with previews, and copy in every app language
-- [ ] 3.5 Add cast to the UI-testing shelf and UI tests on iPhone and Apple TV: pick a name, see the rows, open a title, go back to the same chip
-- [ ] 3.6 Add journey steps anchored on `person.header` and `title.cast.0`
+- [x] 3.1 Turn the library's title page into a stack of title and person pages, with Back popping one level on every platform
+- [x] 3.2 Record names from every info answer into `LearnedCredits`, save it to `Caches/people/credits.json`, and build the people index in the library
+- [x] 3.3 Show cast and directors as chips on the title page on iPhone, iPad, Mac and Apple TV, with previews
+- [x] 3.4 Add the person page on every platform with previews, and copy in every app language
+- [x] 3.5 Add cast to the UI-testing shelf and UI tests on iPhone and Apple TV: pick a name, see the rows, open a title, go back to the same chip
+- [x] 3.6 Add journey steps anchored on `person.header` and `title.cast.0`
 
 ## 4. People in Search
 

@@ -21,7 +21,7 @@
         @Environment(\.guideStore) private var guideStore
 
         var body: some View {
-            let page = library.page.flatMap { $0.origin == .search ? $0 : nil }
+            let page = library.top.flatMap { $0.origin == .search ? $0 : nil }
             let corpus = corpus
             ZStack {
                 search
@@ -29,15 +29,17 @@
                     .accessibilityHidden(page != nil)
                     .disabled(page != nil)
                 if let page {
-                    TitleScreen(route: page) {
+                    LibraryPageView(page: page) { page in
                         TitlePage.Television(
                             plotLines: page.title.kind == .movie ? 4 : 2, artHeight: page.title.kind == .movie ? 1080 : 520
                         ) {
                             EpisodePicker.Section(type: .tv)
                         }
+                    } person: {
+                        PersonPageLayout.Television()
                     }
                     .environment(\.shelfMetrics, .tv)
-                    .environment(\.shelfPrefix, page.title.kind.prefix)
+                    .environment(\.shelfPrefix, page.section.prefix)
                 }
             }
             .environment(\.searchMetrics, .tv)
@@ -51,7 +53,7 @@
                 }
             }
             .onDisappear {
-                if library.page?.origin == .search { library.closePage() }
+                if library.top?.origin == .search { library.closeAll() }
             }
         }
 

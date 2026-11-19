@@ -53,8 +53,9 @@ final class TitleUITests: XCTestCase {
         expect(app.element("title.meta"), "label CONTAINS '2024, 2 h 08 min, Thriller, rating 7.4, 15'")
         XCTAssertTrue(app.element("title.plot").exists)
         XCTAssertTrue(app.element("title.more").exists, "a long description is cut with More")
-        XCTAssertTrue(app.element("title.cast").label.contains("Mira Holt"))
-        XCTAssertTrue(app.element("title.director").label.contains("Sanna Weiss"))
+        // browse-by-person/pick-someone-in-the-cast
+        XCTAssertEqual(app.element("title.cast.0").label, "Mira Holt")
+        XCTAssertEqual(app.element("title.cast.3").label, "Sanna Weiss, Director")
         XCTAssertFalse(app.element("title.scores").exists, "no score row without a lookup")
         XCTAssertFalse(app.element("movies.hero").isHittable, "the page covers the section")
         XCTAssertTrue(app.tabBars.buttons["Movies"].exists, "the tab bar stays on iPhone")
@@ -84,8 +85,7 @@ final class TitleUITests: XCTestCase {
         XCTAssertEqual(app.element("title.name").label, "Salt Road")
         expect(app.element("title.meta"), "label == '1 h 32 min'")
         XCTAssertFalse(app.element("title.plot").exists)
-        XCTAssertFalse(app.element("title.cast").exists)
-        XCTAssertFalse(app.element("title.director").exists)
+        XCTAssertFalse(app.element("title.cast").exists, "no names, no Cast and crew row")
         XCTAssertFalse(app.element("title.trailer").exists)
         XCTAssertFalse(app.staticTexts["Unknown"].exists)
     }

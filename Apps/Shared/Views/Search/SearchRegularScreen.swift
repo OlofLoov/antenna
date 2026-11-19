@@ -17,18 +17,20 @@
         @FocusState private var focused: Bool
 
         var body: some View {
-            let page = library.page.flatMap { $0.origin == .search ? $0 : nil }
+            let page = library.top.flatMap { $0.origin == .search ? $0 : nil }
             ZStack {
                 search
                     .opacity(page == nil ? 1 : 0)
                     .accessibilityHidden(page != nil)
                     .disabled(page != nil)
                 if let page {
-                    TitleScreen(route: page) {
+                    LibraryPageView(page: page) { page in
                         TitlePage.Pad(plotLines: page.title.kind == .movie ? 5 : 2) { EpisodePicker.Section(type: .pad) }
+                    } person: {
+                        PersonPageLayout.Pad()
                     }
                     .environment(\.shelfMetrics, .pad)
-                    .environment(\.shelfPrefix, page.title.kind.prefix)
+                    .environment(\.shelfPrefix, page.section.prefix)
                 }
             }
             .background(Palette.ground)

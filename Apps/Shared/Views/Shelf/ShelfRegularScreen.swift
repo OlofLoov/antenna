@@ -25,7 +25,7 @@
         }
 
         var body: some View {
-            let page = library.page.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
+            let page = library.top.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
             ZStack {
                 section
                     .opacity(page == nil ? 1 : 0)
@@ -33,8 +33,10 @@
                     .disabled(page != nil)
                 if let page {
                     // The page replaces the content column; the sidebar stays.
-                    TitleScreen(route: page) {
+                    LibraryPageView(page: page) { page in
                         TitlePage.Pad(plotLines: page.title.kind == .movie ? 5 : 2) { EpisodePicker.Section(type: .pad) }
+                    } person: {
+                        PersonPageLayout.Pad()
                     }
                     .environment(\.shelfMetrics, .pad)
                     .environment(\.shelfPrefix, kind.prefix)
@@ -42,10 +44,10 @@
             }
             // Another section or list in the sidebar closes the page.
             .task(id: kind) {
-                if library.page?.section != kind { library.closePage() }
+                if library.top?.section != kind { library.closeAll() }
             }
             .task(id: browse.list) {
-                if library.page != nil, browse.list != nil { library.closePage() }
+                if library.top != nil, browse.list != nil { library.closeAll() }
             }
         }
 

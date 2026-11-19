@@ -104,7 +104,7 @@
         private func resolve() {
             guard model.shelfItem != nil else { return }
             if case .resume(let title) = model.resolveShelfItem(titles: titles, titlesPending: titlesPending) {
-                library.closePage()
+                library.closeAll()
                 playback.play(title, library: library, activity: activity)
             }
         }

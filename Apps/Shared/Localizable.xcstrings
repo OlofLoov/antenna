@@ -768,6 +768,52 @@
         }
       }
     },
+    "%@, Director" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@، المخرج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, Regie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@, Director"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, dirección"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, réalisation"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, direção"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, regissör"
+          }
+        }
+      }
+    },
     "%@, details" : {
       "localizations" : {
         "ar" : {
@@ -4439,36 +4485,42 @@
         }
       }
     },
-    "Cast" : {
+    "Cast and crew" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "طاقم التمثيل"
+            "value" : "طاقم العمل"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Besetzung"
+            "value" : "Besetzung und Team"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cast and crew"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reparto"
+            "value" : "Reparto y equipo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Distribution"
+            "value" : "Distribution et équipe"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elenco"
+            "value" : "Elenco e equipe"
           }
         },
         "sv" : {
@@ -6453,6 +6505,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beskrivning"
+          }
+        }
+      }
+    },
+    "Directed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخراج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Directed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirigidas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réalisations"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirigidos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regi"
           }
         }
       }

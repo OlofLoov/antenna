@@ -120,6 +120,18 @@ final class AppJourneys: XCTestCase {
         journey.snap("movies-recently-watched", anchor: "movies.row.recentlyWatched")
     }
 
+    /// A movie's cast and crew, then Mira Holt's page (add-browse-by-person,
+    /// `iPhone-Title-Cast`, `iPhone-Person`, `iPad-Person`).
+    func testPerson() {
+        let journey = Journey(self, arguments: ["-ui-testing-shelf", "titles", "-ui-testing-reduce-motion"])
+        open("movies", label: "Movies", in: journey)
+        let info = journey.element("movies.hero.info")
+        if info.waitForExistence(timeout: 10) { info.tap() }
+        journey.snap("title-cast", anchor: "title.cast.0")
+        journey.element("title.cast.0").tap()
+        journey.snap("person", anchor: "person.header")
+    }
+
     /// A movie playing with its controls up (add-title-transport-controls,
     /// `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`).
     func testMoviePlayer() {

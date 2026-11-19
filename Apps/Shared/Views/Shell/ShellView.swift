@@ -59,7 +59,7 @@
                 if model.dimmed { ShellScrim() }
                 // A title page hides the bar and clock, so swiping up from it reaches nothing
                 // (tvos-shell/the-tab-bar-stays-hidden-on-a-title-page).
-                if model.barVisible, shelves.page == nil {
+                if model.barVisible, shelves.top == nil {
                     ShellBarLayer(model: model, focus: $focus, barHasFocus: barHasFocus)
                 }
                 if model.pickerOpen {

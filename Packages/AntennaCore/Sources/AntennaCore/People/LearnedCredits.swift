@@ -49,6 +49,13 @@ public struct LearnedCredits: Sendable, Hashable {
         return previous?.credits != credits || previous?.year != year
     }
 
+    /// Adds `newer`'s entries, which replace this one's for the same title,
+    /// then drops the oldest past `limit`.
+    public mutating func merge(_ newer: LearnedCredits) {
+        entries.merge(newer.entries) { _, new in new }
+        if entries.count > Self.limit { dropOldest(entries.count - Self.limit) }
+    }
+
     /// Drops the names of sources not in `sources`. Returns false when nothing was dropped.
     @discardableResult
     public mutating func keep(sources: Set<UUID>) -> Bool {

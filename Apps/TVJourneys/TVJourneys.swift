@@ -134,6 +134,24 @@ final class TVJourneys: XCTestCase {
         journey.snap("movies-row-focus", anchor: "movies.row.recentlyAdded")
     }
 
+    /// The Long Harbor's cast and crew with the first name focused, then
+    /// Mira Holt's page (add-browse-by-person, `TV-Title-Cast`, `TV-Person`).
+    func testPerson() {
+        let journey = Journey(self, arguments: ["-ui-testing-shelf", "titles", "-ui-testing-reduce-motion"])
+        remote.press(.menu)
+        moveRight(to: "shell.tab.movies", in: journey)
+        remote.press(.select)
+        expectFocus("movies.hero.play", in: journey)
+        moveRight(to: "movies.hero.info", in: journey)
+        remote.press(.select)
+        expectFocus("title.play", in: journey)
+        remote.press(.down)
+        expectFocus("title.cast.0", in: journey)
+        journey.snap("title-cast", anchor: "title.cast.0")
+        remote.press(.select)
+        journey.snap("person", anchor: "person.header")
+    }
+
     /// What a new user sees before adding a source, then the kinds and the
     /// Xtream form (refresh-visual-design, `TV-Onboard-2`, `TV-Onboard-3`).
     func testFirstRun() {
