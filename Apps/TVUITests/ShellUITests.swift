@@ -145,6 +145,8 @@ extension ShellUITests {
 
         press(.right, toFocus: element("shell.tab.movies"), from: element("shell.tab.guide"))
         press(.select)
+        // Menu before Movies has focus would reach the Home Screen.
+        expectFocus("movies.hero.play")
         press(.menu)
         expectFocus("shell.tab.movies")
         let overMovies = tabs()
