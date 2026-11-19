@@ -49,8 +49,8 @@
 
 ## 8. French (PR 8)
 
-- [ ] 8.1 Add `fr` and translate every catalog as `needs_review`
-- [ ] 8.2 Add Core tests for a French plural and the day chips, and verify the translation check passes
+- [x] 8.1 Add `fr` and translate every catalog as `needs_review`
+- [x] 8.2 Add Core tests for a French plural and the day chips, and verify the translation check passes
 
 ## 9. Portuguese, Brazil (PR 9)
 

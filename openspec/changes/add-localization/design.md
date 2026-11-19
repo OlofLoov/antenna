@@ -584,6 +584,15 @@ PR 7, Spanish:
   shows the `es` text: "Todos los canales", "En directo", "Ajustes". A Core
   test pins the same fallback, with Mexico's "12,500" grouping.
 
+PR 8, French:
+- "vous" throughout, Apple's French names ("Réglages", "Partage familial",
+  "Temps d'écran") and "Replay" for catch-up.
+- Device names arrive as an argument ("cet %@"), so "cet iPhone" reads
+  right and "cet Mac" does not. The reviewer decides between rewording
+  those sentences and a variation per device.
+- "First %@ free" became "Essai gratuit : %@, puis…", since the period
+  noun ("semaine", "mois") changes the adjective's gender.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

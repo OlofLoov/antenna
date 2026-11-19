@@ -11,6 +11,13 @@ import Testing
         GuideTimeline(horizon: DateInterval(start: march(22, 6), end: march(30, 6)), now: now, calendar: calendar)
     }
 
+    @Test("localization/times-and-dates-follow-the-user-s-region French day chips")
+    func frenchDayList() {
+        let french = Locale(identifier: "fr_FR")
+        let labels = timeline.days(at: now).map { timeline.dayLabel($0, today: now, locale: french) }
+        #expect(labels == ["Aujourd’hui", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim.", "lun. 29", "mar. 30"])
+    }
+
     @Test("tv-guide-grid/pick-a-day today and each later day the guide covers")
     func dayList() {
         let days = timeline.days(at: now)

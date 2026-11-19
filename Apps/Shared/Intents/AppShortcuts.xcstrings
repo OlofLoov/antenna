@@ -28,6 +28,14 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Ajouter cette chaîne aux favoris dans ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -65,6 +73,15 @@
             "values" : [
               "Reproducir ${title} en ${applicationName}",
               "Reproducir una película en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Lire ${title} dans ${applicationName}",
+              "Lire un film dans ${applicationName}"
             ]
           }
         },
@@ -106,6 +123,14 @@
             ]
           }
         },
+        "fr" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Retirer cette chaîne des favoris dans ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -143,6 +168,15 @@
             "values" : [
               "Buscar en ${applicationName}",
               "Encontrar un canal en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Rechercher dans ${applicationName}",
+              "Trouver une chaîne dans ${applicationName}"
             ]
           }
         },
@@ -190,6 +224,17 @@
               "Ver ${channel} en ${applicationName}",
               "Poner ${channel} en ${applicationName}",
               "Sintonizar un canal en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Mettre ${channel} dans ${applicationName}",
+              "Regarder ${channel} dans ${applicationName}",
+              "Passer sur ${channel} dans ${applicationName}",
+              "Changer de chaîne dans ${applicationName}"
             ]
           }
         },
