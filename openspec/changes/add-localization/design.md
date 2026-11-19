@@ -648,6 +648,21 @@ French review:
   "%@ channels", where the count arrives as text, still reads "1 chaînes".
 - The time left reads "Encore 26 min", so "min" needs no agreement.
 
+Portuguese (Brazil) review:
+- pt-BR reviewed by a model reviewer in place of a native speaker (owner's
+  decision 2026-11-19).
+- "On its own" was "sozinho" or "sozinha" in eight entries; it is
+  "automaticamente" now.
+- "On" and "Off" were "Sim" and "Não", which read wrong as a subtitle
+  track name. They are "Ativado" and "Desativado", as in iOS.
+- The intro offer one forms carry the number ("1 semana", "1 mês"), so
+  "Grátis por 1 semana" and "R$ 4,90 a cada 1 mês durante 3 meses" both
+  read. A bare "semana" after "Teste grátis:" did not.
+- The provider's account status sits after "Status da conta:", not inside
+  the sentence. Picture in Picture is "Imagem no Imagem".
+- Every device name is masculine in Portuguese ("o Mac", "o Apple TV"), so
+  "este %@" and "neste %@" stay.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.
