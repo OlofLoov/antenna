@@ -4,7 +4,15 @@
 
     extension EnvironmentValues {
         /// Shows Live; the window root sets it for the guide.
-        @Entry var guideBoardOpenLive: @MainActor () -> Void = {}
+        @Entry var guideBoardOpenLive = GuideOpenLiveAction {}
+    }
+
+    /// What `guideBoardOpenLive` calls. A struct rather than a bare
+    /// closure, which SwiftUI flags in an `@Entry`.
+    struct GuideOpenLiveAction {
+        let perform: @MainActor () -> Void
+
+        @MainActor func callAsFunction() { perform() }
     }
 
     /// The Guide on iPad and Mac in the wide layout
@@ -191,7 +199,7 @@
                 TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                     let text = GuideNowPlaying.text(for: channel, live: live, at: context.date)
                     GuideBoard.NowPlayingChip(
-                        channel: text.channel, isPlaying: live.playback == .playing, progress: text.progress, open: openLive
+                        channel: text.channel, isPlaying: live.playback == .playing, progress: text.progress, open: openLive.perform
                     ) {
                         GuideBoardLogo(channel: channel, look: .playing)
                     }

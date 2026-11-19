@@ -24,7 +24,7 @@ struct ProfileGate<Content: View>: View {
         if let chosen {
             content
                 .environment(\.currentProfile, chosen)
-                .environment(\.switchProfile, { self.chosen = nil })
+                .environment(\.switchProfile, SwitchProfileAction { self.chosen = nil })
                 .id(chosen)
                 // A profile deleted on another device ends its session here.
                 .onChange(of: records.map(\.id)) {
@@ -46,5 +46,13 @@ struct ProfileGate<Content: View>: View {
 
 extension EnvironmentValues {
     /// Goes back to "Who's watching?" (profiles/switching-profile); nil outside a gate.
-    @Entry var switchProfile: (@MainActor () -> Void)?
+    @Entry var switchProfile: SwitchProfileAction?
+}
+
+/// What `switchProfile` calls. A struct rather than a bare closure, which
+/// SwiftUI flags in an `@Entry`.
+struct SwitchProfileAction {
+    let perform: @MainActor () -> Void
+
+    @MainActor func callAsFunction() { perform() }
 }

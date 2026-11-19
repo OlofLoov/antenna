@@ -28,7 +28,7 @@ final class DVBSubtitleDecoder {
 
     /// Nil when the build has no DVB subtitle decoder or it does not open.
     init?(stream: DemuxedStream) {
-        guard let decoder = avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE), var context = avcodec_alloc_context3(decoder) else {
+        guard let decoder = avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE), let context = avcodec_alloc_context3(decoder) else {
             return nil
         }
         // The composition and ancillary page ids from the PMT.

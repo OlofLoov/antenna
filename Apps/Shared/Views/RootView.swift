@@ -88,9 +88,9 @@
         }
 
         /// `switchProfile` after the engine stops; nil outside a profile gate.
-        private func stopping(_ live: LiveModel) -> (@MainActor () -> Void)? {
+        private func stopping(_ live: LiveModel) -> SwitchProfileAction? {
             guard let switchProfile else { return nil }
-            return {
+            return SwitchProfileAction {
                 Task {
                     await live.engine.stop()
                     switchProfile()
@@ -170,7 +170,7 @@
                 }
                 SwiftUI.Tab("Guide", systemImage: "list.bullet.rectangle", value: .guide) {
                     GuideCompactScreen()
-                        .environment(\.guideBoardOpenLive) { selection = .live }
+                        .environment(\.guideBoardOpenLive, GuideOpenLiveAction { selection = .live })
                         .environment(\.tabTaps, taps[.guide, default: 0])
                 }
                 if showsMovies {

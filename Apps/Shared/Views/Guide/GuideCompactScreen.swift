@@ -284,7 +284,7 @@
                     let text = GuideNowPlaying.text(for: channel, live: live, at: context.date)
                     GuideBoard.Compact.NowPlayingBar(
                         title: text.title, detail: text.detail, isPlaying: live.playback == .playing, progress: text.progress,
-                        open: openLive
+                        open: openLive.perform
                     ) {
                         GuideCompactLogo(channel: channel, look: .playing)
                     }
