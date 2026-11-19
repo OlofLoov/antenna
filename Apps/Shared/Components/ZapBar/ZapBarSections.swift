@@ -192,10 +192,11 @@ extension View {
 }
 
 #Preview("Zap bar, paused 12 minutes behind, Arabic", traits: .fixedLayout(width: 1920, height: 1080)) {
+    let arabic = PreviewLanguage.arabic
     ZStack(alignment: .bottom) {
         Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255)
         VStack(spacing: 16) {
-            Timeshift.Row(isPaused: true, time: "٢١:٢٢", marker: 0.8, behind: "متأخر بـ ١٢ د")
+            Timeshift.Row(isPaused: true, time: arabic.time(21, 22), marker: 0.8, behind: "متأخر بـ ١٢ د")
                 .padding(.horizontal, 80)
             ZapBar.Bar {
                 ZapBar.ChannelIdentity(number: 104, name: "Sport One", position: "Sport · ٤ من ٤٢") {
@@ -204,8 +205,9 @@ extension View {
             } nowPlaying: {
                 ZapBar.NowPlaying(
                     content: .programme(
-                        title: "Premier League: Arsenal v Liverpool", times: "٢٠:٠٠ – ٢٢:٠٠", progress: 0.78,
-                        next: "٢٢:٠٠ · Match of the Day", remaining: "تبقّى ٢٦ د"))
+                        title: "Premier League: Arsenal v Liverpool", times: "\(arabic.time(20)) – \(arabic.time(22))",
+                        progress: 0.78, next: [arabic.time(22), "Match of the Day"].joinedAsDetail(arabic.locale),
+                        remaining: "تبقّى ٢٦ د"))
             } status: {
                 ZapBar.Status(
                     badges: ZapBarBadge.previewBadges(PreviewLanguage.arabic.locale), catchUp: "Catch-up 7 days",

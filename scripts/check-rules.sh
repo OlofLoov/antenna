@@ -69,6 +69,12 @@ check "localization: directional symbols use backward and forward" \
   '"(chevron|arrow)\.(left|right)(\.(circle|square))?(\.fill)?"' \
   Apps
 
+# An arrow typed as text keeps pointing the same way in Arabic. A
+# `.backward` or `.forward` symbol mirrors.
+check "localization: no arrows drawn as text" \
+  'Text\("[^"]*[◂▸◀▶←→]' \
+  Apps
+
 check_except "localization: no fixed date format outside the parsers and test fixtures" \
   'dateFormat[[:space:]]*=' \
   'Packages/AntennaCore/Sources/AntennaCore/(Parsers|Stalker|Xtream)/[A-Za-z+]+\.swift|Apps/Shared/Debug/[A-Za-z+]+\.swift|Apps/(Tests|TVTests)/[A-Za-z+]+\.swift' \

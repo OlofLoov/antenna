@@ -37,6 +37,17 @@ struct Words: Sendable {
         return "\u{2068}\(text)\u{2069}"
     }
 
+    /// A line joined in code from parts, as in "104 Sport One · 20:00 – 22:00
+    /// · Next: Match of the Day". Each part is a catalog sentence, a time, or
+    /// source text passed through `source(_:)`. In a right-to-left language
+    /// the line starts with a right-to-left mark, so it reads from the right
+    /// even when its first part is a Latin name
+    /// (localization/mixed-scripts-keep-their-own-direction).
+    func line(_ parts: [String]) -> String {
+        let joined = parts.joinedAsDetail(locale)
+        return locale.language.characterDirection == .rightToLeft ? "\u{200F}\(joined)" : joined
+    }
+
     /// Hebrew, Arabic, Syriac, Thaana, N'Ko and the Arabic presentation forms.
     private static func isRightToLeft(_ scalar: Unicode.Scalar) -> Bool {
         switch scalar.value {

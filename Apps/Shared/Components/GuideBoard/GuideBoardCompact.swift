@@ -227,9 +227,10 @@ extension GuideBoard {
             GuideBoard.Compact.Initials(text: "S1", look: .playing)
         }
         HStack(spacing: GuideStrip.spacing) {
-            GuideBoard.Compact.Card(time: "٢٠:٠٠", title: "Premier League: Arsenal v Liverpool", timing: .now, progress: 0.78)
-            GuideBoard.Compact.GapCard(times: "٢٢:٠٠ – ٢٢:١٥")
-            GuideBoard.Compact.Card(time: "٢٢:١٥", title: "Match of the Day", timing: .future, progress: nil)
+            let arabic = PreviewLanguage.arabic
+            GuideBoard.Compact.Card(time: arabic.time(20), title: "Premier League: Arsenal v Liverpool", timing: .now, progress: 0.78)
+            GuideBoard.Compact.GapCard(times: "\(arabic.time(22)) – \(arabic.time(22, 15))")
+            GuideBoard.Compact.Card(time: arabic.time(22, 15), title: "Match of the Day", timing: .future, progress: nil)
         }
         .padding(.horizontal, 16)
         GuideBoard.Compact.Placeholder(text: GuideLine.loading(PreviewLanguage.arabic.locale))
