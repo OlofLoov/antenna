@@ -159,7 +159,8 @@ final class ShelfUITests: XCTestCase {
 
     // live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top
     func testTappingMoviesAgainScrollsToTheTop() throws {
-        let app = try launch()
+        // The banner holds its title: another title's copy moves the title line.
+        let app = try launch(arguments: ["-ui-testing-reduce-motion"])
         openMovies(app)
         let title = app.element("movies.hero.title")
         let top = title.frame.minY
