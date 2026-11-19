@@ -43,6 +43,12 @@
             "value" : "Antenna connects to TV servers on your home network when one of your sources points there."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna se conecta a servidores de TV de tu red doméstica cuando una de tus fuentes apunta allí."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",

@@ -20,6 +20,14 @@
             ]
           }
         },
+        "es" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Añadir este canal a favoritos en ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -48,6 +56,15 @@
             "values" : [
               "Play ${title} in ${applicationName}",
               "Play a movie in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Reproducir ${title} en ${applicationName}",
+              "Reproducir una película en ${applicationName}"
             ]
           }
         },
@@ -81,6 +98,14 @@
             ]
           }
         },
+        "es" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Quitar este canal de favoritos en ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -109,6 +134,15 @@
             "values" : [
               "Search ${applicationName}",
               "Find a channel in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Buscar en ${applicationName}",
+              "Encontrar un canal en ${applicationName}"
             ]
           }
         },
@@ -145,6 +179,17 @@
               "Watch ${channel} in ${applicationName}",
               "Put on ${channel} in ${applicationName}",
               "Tune a channel in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Sintonizar ${channel} en ${applicationName}",
+              "Ver ${channel} en ${applicationName}",
+              "Poner ${channel} en ${applicationName}",
+              "Sintonizar un canal en ${applicationName}"
             ]
           }
         },

@@ -44,8 +44,8 @@
 
 ## 7. Spanish (PR 7)
 
-- [ ] 7.1 Add `es` and translate every catalog as `needs_review`
-- [ ] 7.2 Add Core tests for a Spanish plural and a duration, and verify on a simulator set to Spanish (Mexico) that the app shows the `es` text
+- [x] 7.1 Add `es` and translate every catalog as `needs_review`
+- [x] 7.2 Add Core tests for a Spanish plural and a duration, and verify on a simulator set to Spanish (Mexico) that the app shows the `es` text
 
 ## 8. French (PR 8)
 
