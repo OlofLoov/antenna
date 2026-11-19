@@ -3,6 +3,12 @@
   "strings" : {
     " · Family Sharing" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · Familienfreigabe"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13,6 +19,12 @@
     },
     " · Shared with you through Family Sharing" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · Über die Familienfreigabe mit dir geteilt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34,6 +46,12 @@
     },
     "%@ (Forced)" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ (erzwungen)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44,6 +62,12 @@
     },
     "%@ (not supported)" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ (nicht unterstützt)"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -54,6 +78,12 @@
     },
     "%@ and %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ und %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -70,6 +100,12 @@
     },
     "%@ and %lld more" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ und %2$lld weitere"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -86,6 +122,34 @@
     },
     "%@ did not send any data for %lld seconds." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ hat %2$#@arg2@ lang keine Daten gesendet."
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sekunde"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sekunden"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -146,6 +210,12 @@
     },
     "%@ for %@, then %@ per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ für %2$@, danach %3$@ pro Jahr"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -162,6 +232,12 @@
     },
     "%@ is already a favorite." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ ist bereits ein Favorit."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -172,6 +248,12 @@
     },
     "%@ is busy right now. Try again in a moment." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ ist gerade ausgelastet. Versuche es gleich noch einmal."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -182,6 +264,12 @@
     },
     "%@ is in a locked group. Unlock it in Antenna first." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ ist in einer gesperrten Gruppe. Entsperre sie zuerst in Antenna."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -192,6 +280,12 @@
     },
     "%@ is no longer available from %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ ist bei %2$@ nicht mehr verfügbar."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -208,6 +302,12 @@
     },
     "%@ is no longer in %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ ist nicht mehr in %2$@."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -224,6 +324,12 @@
     },
     "%@ isn't a favorite." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ ist kein Favorit."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -234,6 +340,12 @@
     },
     "%@ knows the channel but carries no programmes for it. Pick another entry below, or wait for the provider to fill it." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ kennt den Sender, hat aber keine Sendungen dafür. Wähle unten einen anderen Eintrag oder warte, bis der Anbieter ihn füllt."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -244,6 +356,12 @@
     },
     "%@ lists programmes for this channel but none after now. Wait for the next guide refresh or pick another entry below." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ listet Sendungen für diesen Sender, aber keine ab jetzt. Warte auf die nächste Aktualisierung des Programmführers oder wähle unten einen anderen Eintrag."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -254,6 +372,12 @@
     },
     "%@ per %@ for %@, then %@ per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ pro %2$@ für %3$@, danach %4$@ pro Jahr"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -270,6 +394,12 @@
     },
     "%@ rejected the login. Check the username and password in Settings, or ask the provider whether the account has expired." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ hat die Anmeldung abgelehnt. Prüfe Benutzername und Passwort in den Einstellungen oder frag den Anbieter, ob das Konto abgelaufen ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -280,6 +410,12 @@
     },
     "%@ rejected the login. Sign in again on this Apple TV, or ask the provider whether the account has expired." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ hat die Anmeldung abgelehnt. Melde dich auf diesem Apple TV erneut an oder frag den Anbieter, ob das Konto abgelaufen ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -290,6 +426,12 @@
     },
     "%@ returned %@ for this channel." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ hat für diesen Sender %2$@ zurückgegeben."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -306,6 +448,12 @@
     },
     "%@ returned 404 for this channel. The channel may have moved or been removed by the provider." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ hat für diesen Sender 404 zurückgegeben. Der Sender wurde vom Anbieter vielleicht verschoben oder entfernt."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -316,6 +464,12 @@
     },
     "%@ returned a server error. Its server is having trouble. Try again in a moment." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ hat einen Serverfehler gemeldet. Der Server hat Probleme. Versuche es gleich noch einmal."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -326,6 +480,12 @@
     },
     "%@ sent data that is not a playable stream. The address may point to a web page or an empty file." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ hat Daten gesendet, die kein abspielbarer Stream sind. Die Adresse zeigt vielleicht auf eine Webseite oder eine leere Datei."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -336,6 +496,12 @@
     },
     "%@ stopped sending data." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ sendet keine Daten mehr."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -346,6 +512,12 @@
     },
     "%@ · %@ of %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$@ von %3$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -373,6 +545,12 @@
     },
     "%@, and no guide entry has exactly its name. Pick an entry below." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, und kein Eintrag im Programmführer hat genau diesen Namen. Wähle unten einen Eintrag."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -383,6 +561,12 @@
     },
     "%@: no movies" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: keine Filme"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -393,6 +577,12 @@
     },
     "%@: no series" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: keine Serien"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -403,6 +593,12 @@
     },
     "%@: waiting for its login to sync from iCloud" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: wartet darauf, dass die Anmeldung aus iCloud synchronisiert wird"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -413,6 +609,24 @@
     },
     "%lld channels" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sender"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sender"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -453,6 +667,54 @@
     },
     "%lld channels in %lld groups" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$#@arg1@ in %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sender"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sender"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Gruppe"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Gruppen"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -553,6 +815,24 @@
     },
     "%lld channels · Refreshing…" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sender · Wird aktualisiert …"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sender · Wird aktualisiert …"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -593,6 +873,24 @@
     },
     "%lld connections" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Verbindung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Verbindungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -633,6 +931,24 @@
     },
     "%lld days" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Tage"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -673,6 +989,24 @@
     },
     "%lld entries skipped" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Eintrag übersprungen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Einträge übersprungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -713,6 +1047,24 @@
     },
     "%lld episodes" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Folge"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Folgen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -753,6 +1105,24 @@
     },
     "%lld episodes could not be read from the provider's list." : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Folge konnte nicht aus der Liste des Anbieters gelesen werden."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Folgen konnten nicht aus der Liste des Anbieters gelesen werden."
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -793,6 +1163,24 @@
     },
     "%lld groups" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Gruppe"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Gruppen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -833,6 +1221,24 @@
     },
     "%lld guides are still downloading." : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Programmführer wird noch geladen."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Programmführer werden noch geladen."
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -873,6 +1279,12 @@
     },
     "%lld h" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Std."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -883,6 +1295,12 @@
     },
     "%lld h %@%lld min" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld Std. %2$@%3$lld Min."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -899,6 +1317,12 @@
     },
     "%lld h %lld min" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld Std. %2$lld Min."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -915,6 +1339,12 @@
     },
     "%lld h %lld min left" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch %1$lld Std. %2$lld Min."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -931,6 +1361,12 @@
     },
     "%lld h left" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch %lld Std."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -941,6 +1377,24 @@
     },
     "%lld hours" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Stunde"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Stunden"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -981,6 +1435,24 @@
     },
     "%lld live channels" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Live-Sender"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Live-Sender"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1021,6 +1493,54 @@
     },
     "%lld live channels in %lld groups" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$#@arg1@ in %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Live-Sender"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Live-Sender"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Gruppe"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Gruppen"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1121,6 +1641,12 @@
     },
     "%lld min" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Min."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1131,6 +1657,12 @@
     },
     "%lld min behind" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Min. zurück"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1141,6 +1673,12 @@
     },
     "%lld min left" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch %lld Min."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1151,6 +1689,24 @@
     },
     "%lld minutes" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Minute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Minuten"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1191,6 +1747,34 @@
     },
     "%lld movies and %lld series" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$#@arg1@ und %2$lld Serien"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Film"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Filme"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1251,6 +1835,12 @@
     },
     "%lld of %lld guides could not be downloaded." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld von %2$lld Programmführern konnten nicht geladen werden."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -1267,6 +1857,24 @@
     },
     "%lld programmes" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sendung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sendungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1307,6 +1915,24 @@
     },
     "%lld seasons" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Staffel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Staffeln"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1347,6 +1973,24 @@
     },
     "%lld titles" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Titel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Titel"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1387,6 +2031,12 @@
     },
     "1 guide is still downloading." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 Programmführer wird noch geladen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1397,6 +2047,12 @@
     },
     "<offer displayPrice> for <period>, then <displayPrice> per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "<offer displayPrice> für <period>, danach <displayPrice> pro Jahr"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1407,6 +2063,12 @@
     },
     "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "<offer displayPrice> pro <unit> für <period>, danach <displayPrice> pro Jahr"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1417,6 +2079,12 @@
     },
     "Account active until %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Konto aktiv bis %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1427,6 +2095,34 @@
     },
     "Account active until %@ · %lld connections" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Konto aktiv bis %1$@ · %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Verbindung"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Verbindungen"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1487,6 +2183,12 @@
     },
     "Add a guide URL to get programme information for %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge eine Programmführer-URL hinzu, um Programminformationen für %@ zu bekommen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1497,6 +2199,12 @@
     },
     "Add as new tile" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Als neue Kachel hinzufügen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1507,6 +2215,12 @@
     },
     "Add each link as its own M3U source." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge jeden Link als eigene M3U-Quelle hinzu."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1517,6 +2231,12 @@
     },
     "Add favorites in Antenna to see them here" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge Favoriten in Antenna hinzu, um sie hier zu sehen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1527,6 +2247,12 @@
     },
     "Add guide URL" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-URL hinzufügen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1537,6 +2263,12 @@
     },
     "Add the channel's playlist instead." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge stattdessen die Playlist des Senders hinzu."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1547,6 +2279,12 @@
     },
     "Add to Multi-view" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zu Multi-View hinzufügen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1557,6 +2295,12 @@
     },
     "Add to multi-view" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zu Multi-View hinzufügen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1567,6 +2311,12 @@
     },
     "Add to or remove from Favorites" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zu Favoriten hinzufügen oder daraus entfernen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1577,6 +2327,12 @@
     },
     "Added %@ to favorites." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ zu Favoriten hinzugefügt."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1587,6 +2343,12 @@
     },
     "All" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1597,6 +2359,12 @@
     },
     "All channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle Sender"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1607,6 +2375,12 @@
     },
     "Allow local network access for Antenna in Settings." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erlaube Antenna in den Einstellungen den Zugriff auf das lokale Netzwerk."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1617,6 +2391,12 @@
     },
     "Already live" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bereits live"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1627,6 +2407,12 @@
     },
     "Always" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Immer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1637,6 +2423,12 @@
     },
     "Antenna can't be bought in this App Store region yet." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna kann in dieser App Store-Region noch nicht gekauft werden."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1647,6 +2439,12 @@
     },
     "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna kann das Zertifikat dieses Servers nicht prüfen. Verwende http in deinem Netzwerk oder ein vertrauenswürdiges Zertifikat."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1657,6 +2455,12 @@
     },
     "Antenna couldn't reach %@. Try again later." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna konnte %@ nicht erreichen. Versuche es später erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1667,6 +2471,12 @@
     },
     "Antenna downloads the guide when the source finishes loading." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna lädt den Programmführer, wenn die Quelle fertig geladen ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1677,6 +2487,12 @@
     },
     "Antenna has no sources yet. Open Antenna to add one." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna hat noch keine Quellen. Öffne Antenna, um eine hinzuzufügen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1687,6 +2503,12 @@
     },
     "Antenna has not asked to send notifications. Reminders show only while the app is open." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna hat noch nicht gefragt, ob es Mitteilungen senden darf. Erinnerungen erscheinen nur, während die App geöffnet ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1697,6 +2519,12 @@
     },
     "Antenna is locked again" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna ist wieder gesperrt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1707,6 +2535,12 @@
     },
     "Antenna is still loading your library. Try again in a moment." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna lädt noch deine Mediathek. Versuche es gleich noch einmal."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1717,6 +2551,12 @@
     },
     "Antenna isn't playing a channel right now. Say which channel instead." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spielt gerade keinen Sender ab. Sag stattdessen, welcher Sender."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1727,6 +2567,12 @@
     },
     "Antenna isn't unlocked on this device yet. Open Antenna to continue." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna ist auf diesem Gerät noch nicht freigeschaltet. Öffne Antenna, um fortzufahren."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1737,6 +2583,12 @@
     },
     "Antenna player" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna-Player"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1747,6 +2599,12 @@
     },
     "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna spielt die TV-Quellen ab, die du schon hast, und enthält keine Sender. Ein Kauf schaltet jede Funktion auf iPhone, iPad, Mac und Apple TV frei, für alle in deiner Familienfreigabe."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1757,6 +2615,12 @@
     },
     "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna liest M3U-Playlists: #EXTINF-Zeilen, jeweils gefolgt von einem Stream-Link. Diese Datei hat kein solches Paar."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1767,6 +2631,12 @@
     },
     "Antenna reads the guide links from the playlist when it finishes loading." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna liest die Programmführer-Links aus der Playlist, wenn sie fertig geladen ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1777,6 +2647,12 @@
     },
     "Apple TV cannot show notifications. Reminders show as a banner while Antenna is open." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple TV kann keine Mitteilungen anzeigen. Erinnerungen erscheinen als Banner, während Antenna geöffnet ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1787,6 +2663,12 @@
     },
     "Apple player" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple-Player"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1797,6 +2679,12 @@
     },
     "At start" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bei Beginn"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1807,6 +2695,12 @@
     },
     "Audio and subtitles" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Audio und Untertitel"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1817,6 +2711,12 @@
     },
     "Auto" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Automatisch"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1827,6 +2727,12 @@
     },
     "Back" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zurück"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1837,6 +2743,12 @@
     },
     "Back %lld Seconds" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Sekunden zurück"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1847,6 +2759,12 @@
     },
     "Back or close" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zurück oder schließen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1857,6 +2775,12 @@
     },
     "Buffer full. Playing from the earliest point" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Puffer voll. Wiedergabe ab dem frühesten Punkt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1867,6 +2791,12 @@
     },
     "Buffering" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Puffern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1877,6 +2807,12 @@
     },
     "CATCH-UP" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MEDIATHEK"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1887,6 +2823,12 @@
     },
     "CATCH-UP %lldD" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MEDIATHEK %lld T"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1897,6 +2839,12 @@
     },
     "Can't play another stream" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kein weiterer Stream möglich"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1907,6 +2855,12 @@
     },
     "Can't reach the App Store" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "App Store nicht erreichbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1917,6 +2871,12 @@
     },
     "Cancel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abbrechen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1927,6 +2887,12 @@
     },
     "Cast" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Besetzung"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1937,6 +2903,12 @@
     },
     "Catch-up" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mediathek"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1947,6 +2919,24 @@
     },
     "Catch-up %lld days" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Mediathek %lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Mediathek %lld Tage"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1987,6 +2977,12 @@
     },
     "Change channel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender wechseln"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1997,6 +2993,12 @@
     },
     "Changes channel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wechselt den Sender"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2007,6 +3009,12 @@
     },
     "Changing tile %lld of %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kachel %1$lld von %2$lld wird gewechselt"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -2023,6 +3031,12 @@
     },
     "Channel list" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Senderliste"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2033,6 +3047,12 @@
     },
     "Channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2043,6 +3063,12 @@
     },
     "Channels DVR is starting. Try again in a moment." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Channels DVR startet. Versuche es gleich noch einmal."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2053,6 +3079,12 @@
     },
     "Channels are still loading" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender werden noch geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2063,6 +3095,12 @@
     },
     "Channels have not loaded for %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender für %@ wurden nicht geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2073,6 +3111,12 @@
     },
     "Channels without guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender ohne Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2083,6 +3127,12 @@
     },
     "Channels without guide · %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender ohne Programmführer · %lld"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2093,6 +3143,12 @@
     },
     "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prüfe die Verbindung und versuche es erneut. Wenn du Antenna bereits gekauft hast, findet „Kauf wiederherstellen“ den Kauf, sobald die Verbindung wieder da ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2103,6 +3159,12 @@
     },
     "Check the spelling or try a channel number." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prüfe die Schreibweise oder versuche eine Sendernummer."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2113,6 +3175,12 @@
     },
     "Choose Remind me on a programme that has not started, in the Guide or in Search." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wähle „Erinnern“ bei einer Sendung, die noch nicht begonnen hat, im Programm oder in der Suche."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2123,6 +3191,12 @@
     },
     "Choose a group" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gruppe wählen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2133,6 +3207,12 @@
     },
     "Choose a tab" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tab wählen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2143,6 +3223,12 @@
     },
     "Click" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Klicken"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2153,6 +3239,12 @@
     },
     "Click left or right" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Links oder rechts klicken"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2163,6 +3255,12 @@
     },
     "Close" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schließen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2173,6 +3271,12 @@
     },
     "Connect to the internet and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stelle eine Internetverbindung her und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2183,6 +3287,12 @@
     },
     "Connect to the internet and try again. Playback resumes on its own when the connection returns." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stelle eine Internetverbindung her und versuche es erneut. Die Wiedergabe geht von selbst weiter, sobald die Verbindung wieder da ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2193,6 +3303,12 @@
     },
     "Continue watching" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Weiterschauen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2203,6 +3319,12 @@
     },
     "Could not download · %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Laden fehlgeschlagen · %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2213,6 +3335,12 @@
     },
     "Could not load %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ konnte nicht geladen werden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2223,6 +3351,12 @@
     },
     "Could not load movies" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filme konnten nicht geladen werden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2233,6 +3367,12 @@
     },
     "Could not load series" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serien konnten nicht geladen werden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2243,6 +3383,12 @@
     },
     "Could not reach %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ nicht erreichbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2253,6 +3399,12 @@
     },
     "Could not reach %@. Check the address and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ nicht erreichbar. Prüfe die Adresse und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2263,6 +3415,12 @@
     },
     "Could not read %@. Make sure it is downloaded and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ konnte nicht gelesen werden. Stelle sicher, dass die Datei geladen ist, und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2273,6 +3431,12 @@
     },
     "Could not read login" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldung konnte nicht gelesen werden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2283,6 +3447,12 @@
     },
     "Could not refresh: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aktualisierung fehlgeschlagen: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2293,6 +3463,12 @@
     },
     "Could not sign in. Check the MAC address, and the login if you have one." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldung fehlgeschlagen. Prüfe die MAC-Adresse und, falls vorhanden, die Anmeldung."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2303,6 +3479,12 @@
     },
     "Could not sign in. Check the username and password." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldung fehlgeschlagen. Prüfe Benutzername und Passwort."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2313,6 +3495,12 @@
     },
     "Could not store credentials: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zugangsdaten konnten nicht gespeichert werden: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2323,6 +3511,12 @@
     },
     "Director" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Regie"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2333,6 +3527,12 @@
     },
     "Downloading" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2343,6 +3543,12 @@
     },
     "Downloading guide…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer wird geladen …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2353,6 +3559,12 @@
     },
     "Downloading the guide · %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer wird geladen · %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2363,6 +3575,12 @@
     },
     "Downloading · %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird geladen · %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2373,6 +3591,12 @@
     },
     "Ends now" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Endet jetzt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2383,6 +3607,12 @@
     },
     "Enter a username without a colon." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib einen Benutzernamen ohne Doppelpunkt ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2393,6 +3623,12 @@
     },
     "Enter a valid MAC address, like 00:1A:79:12:34:56." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib eine gültige MAC-Adresse ein, zum Beispiel 00:1A:79:12:34:56."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2403,6 +3639,12 @@
     },
     "Enter a valid URL." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib eine gültige URL ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2413,6 +3655,12 @@
     },
     "Enter a valid server address." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib eine gültige Serveradresse ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2423,6 +3671,12 @@
     },
     "Enter the MAC address." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib die MAC-Adresse ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2433,6 +3687,12 @@
     },
     "Enter the password." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib das Passwort ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2443,6 +3703,12 @@
     },
     "Enter the playlist URL." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib die Playlist-URL ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2453,6 +3719,12 @@
     },
     "Enter the portal address." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib die Portaladresse ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2463,6 +3735,12 @@
     },
     "Enter the server address." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib die Serveradresse ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2473,6 +3751,12 @@
     },
     "Enter the username." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib den Benutzernamen ein."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2483,6 +3767,12 @@
     },
     "Episode" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Folge"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2493,6 +3783,12 @@
     },
     "Episode %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Folge %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2503,6 +3799,12 @@
     },
     "Every 12 hours" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle 12 Stunden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2513,6 +3815,12 @@
     },
     "Every 24 hours" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle 24 Stunden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2523,6 +3831,12 @@
     },
     "Every 6 hours" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle 6 Stunden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2533,6 +3847,12 @@
     },
     "Every channel in %@ has a guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jeder Sender in %@ hat einen Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2543,6 +3863,12 @@
     },
     "Exit multi-view" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multi-View beenden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2553,6 +3879,12 @@
     },
     "Favorites" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Favoriten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2563,6 +3895,12 @@
     },
     "Filter Channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender filtern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2573,6 +3911,12 @@
     },
     "Filter channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender filtern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2583,6 +3927,12 @@
     },
     "Find" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Finden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2593,6 +3943,12 @@
     },
     "Find Channel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender finden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2603,6 +3959,12 @@
     },
     "Find a guide entry" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-Eintrag finden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2613,6 +3975,12 @@
     },
     "First %@ free, then %@ per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die ersten %1$@ gratis, danach %2$@ pro Jahr"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -2629,6 +3997,12 @@
     },
     "First <period> free, then <displayPrice> per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die ersten <period> gratis, danach <displayPrice> pro Jahr"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2639,6 +4013,12 @@
     },
     "Forced" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erzwungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2649,6 +4029,12 @@
     },
     "Format not supported" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Format nicht unterstützt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2659,6 +4045,12 @@
     },
     "Forward" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vor"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2669,6 +4061,12 @@
     },
     "Forward %lld Seconds" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Sekunden vor"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2679,6 +4077,12 @@
     },
     "From the playlist" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aus der Playlist"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2689,6 +4093,12 @@
     },
     "Full screen" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vollbild"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2699,6 +4109,12 @@
     },
     "Group" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gruppe"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2709,6 +4125,12 @@
     },
     "Groups or details" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gruppen oder Details"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2719,6 +4141,12 @@
     },
     "Guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programm"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2729,6 +4157,24 @@
     },
     "Guide %lld days" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Programm %lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Programm %lld Tage"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -2769,6 +4215,12 @@
     },
     "Guide URL" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-URL"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2779,6 +4231,12 @@
     },
     "Guide ended" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer zu Ende"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2789,6 +4247,12 @@
     },
     "Guide failed" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer fehlgeschlagen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2799,6 +4263,54 @@
     },
     "Guide for %lld days · %lld of %lld channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer für %1$#@arg1@ · %2$lld von %3$#@arg3@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Tag"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Tage"
+                    }
+                  }
+                }
+              }
+            },
+            "arg3" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sender"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sendern"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2899,6 +4411,12 @@
     },
     "Guide from %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer von %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2909,6 +4427,12 @@
     },
     "Guide id “%@” is not in any of the %lld guides" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-ID „%1$@“ ist in keinem der %2$lld Programmführer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -2925,6 +4449,12 @@
     },
     "Guide id “%@” is not in the guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-ID „%@“ ist nicht im Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2935,6 +4465,12 @@
     },
     "Guide link" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-Link"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2945,6 +4481,12 @@
     },
     "Guide sources" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer-Quellen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2955,6 +4497,12 @@
     },
     "Guide unavailable" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer nicht verfügbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2965,6 +4513,12 @@
     },
     "Hide the info bar" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Infoleiste ausblenden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2975,6 +4529,12 @@
     },
     "Hold" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Halten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2985,6 +4545,12 @@
     },
     "Hold play/pause for live" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Play/Pause halten für Live"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2995,6 +4561,12 @@
     },
     "Hold select" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auswahltaste halten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3005,6 +4577,12 @@
     },
     "Hold select for options" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auswahltaste halten für Optionen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3015,6 +4593,12 @@
     },
     "Home Screen" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Home-Bildschirm"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3025,6 +4609,12 @@
     },
     "Id not found" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ID nicht gefunden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3035,6 +4625,12 @@
     },
     "If it points to a playlist or a stream, add it as a source." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wenn er auf eine Playlist oder einen Stream zeigt, füge ihn als Quelle hinzu."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3045,6 +4641,12 @@
     },
     "Includes Family Sharing" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mit Familienfreigabe"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3055,6 +4657,12 @@
     },
     "Info bar" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Infoleiste"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3065,6 +4673,12 @@
     },
     "Info, audio and subtitles" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Info, Audio und Untertitel"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3075,6 +4689,12 @@
     },
     "Keep watching" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Weiterschauen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3085,6 +4705,12 @@
     },
     "LIVE" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "LIVE"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3095,6 +4721,12 @@
     },
     "Last channel or Recents" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Letzter Sender oder Zuletzt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3105,6 +4737,12 @@
     },
     "Lifetime" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lebenslang"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3115,6 +4753,12 @@
     },
     "Live" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Live"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3125,6 +4769,54 @@
     },
     "Loaded · %lld of %lld channels · %lld days" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Geladen · %1$lld von %2$#@arg2@ · %3$#@arg3@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sender"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sendern"
+                    }
+                  }
+                }
+              }
+            },
+            "arg3" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Tag"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Tage"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3225,6 +4917,12 @@
     },
     "Loading" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Laden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3235,6 +4933,12 @@
     },
     "Loading guide…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer wird geladen …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3245,6 +4949,12 @@
     },
     "Loading price" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Preis wird geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3255,6 +4965,12 @@
     },
     "Loading…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird geladen …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3265,6 +4981,12 @@
     },
     "Loading… · last loaded %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wird geladen … · zuletzt geladen %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3275,6 +4997,12 @@
     },
     "Login rejected" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldung abgelehnt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3285,6 +5013,12 @@
     },
     "Many providers allow one or two streams per account at a time." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Viele Anbieter erlauben ein oder zwei Streams gleichzeitig pro Konto."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3295,6 +5029,12 @@
     },
     "Many providers allow one or two streams per account at a time. If the login changed, check it in Settings." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Viele Anbieter erlauben ein oder zwei Streams gleichzeitig pro Konto. Wenn sich die Anmeldung geändert hat, prüfe sie in den Einstellungen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3305,6 +5045,12 @@
     },
     "Many providers allow one or two streams per account at a time. If the login changed, sign in again on this Apple TV." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Viele Anbieter erlauben ein oder zwei Streams gleichzeitig pro Konto. Wenn sich die Anmeldung geändert hat, melde dich auf diesem Apple TV erneut an."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3315,6 +5061,12 @@
     },
     "Mapped by you" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Von dir zugeordnet"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3325,6 +5077,12 @@
     },
     "Mapping not found" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zuordnung nicht gefunden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3335,6 +5093,12 @@
     },
     "Matched by name" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach Name zugeordnet"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3345,6 +5109,12 @@
     },
     "Matched by name · %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach Name zugeordnet · %lld"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3355,6 +5125,12 @@
     },
     "Matched by tvg-id" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach tvg-id zugeordnet"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3365,6 +5141,12 @@
     },
     "Matches %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Passt zu %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3375,6 +5157,12 @@
     },
     "Menu" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Menu"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3385,6 +5173,12 @@
     },
     "Mono" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mono"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3395,6 +5189,12 @@
     },
     "More info and My list" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mehr Infos und Meine Liste"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3405,6 +5205,12 @@
     },
     "Move down" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach unten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3415,6 +5221,12 @@
     },
     "Move the new place" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "An die neue Stelle verschieben"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3425,6 +5237,12 @@
     },
     "Move through the guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Durch das Programm bewegen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3435,6 +5253,12 @@
     },
     "Move up" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach oben"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3445,6 +5269,12 @@
     },
     "Moved from %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verschoben von %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3455,6 +5285,12 @@
     },
     "Moved from %@ %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verschoben von %1$@ %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -3471,6 +5307,12 @@
     },
     "Movie" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Film"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3481,6 +5323,12 @@
     },
     "Movie · %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Film · %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3491,6 +5339,12 @@
     },
     "Movies" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Filme"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3501,6 +5355,12 @@
     },
     "Multi-view" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multi-View"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3511,6 +5371,12 @@
     },
     "Multi-view is full" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multi-View ist voll"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3521,6 +5387,12 @@
     },
     "Multi-view · tile %lld of %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multi-View · Kachel %1$lld von %2$lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -3537,6 +5409,12 @@
     },
     "Mute" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ton aus"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3547,6 +5425,12 @@
     },
     "My list" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Meine Liste"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3557,6 +5441,12 @@
     },
     "Network error" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Netzwerkfehler"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3567,6 +5457,12 @@
     },
     "New" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neu"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3577,6 +5473,12 @@
     },
     "Next 7 days" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nächste 7 Tage"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3587,6 +5489,12 @@
     },
     "Next episode" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nächste Folge"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3597,6 +5505,12 @@
     },
     "Next episode in %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nächste Folge in %lld"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3607,6 +5521,12 @@
     },
     "Next episode, %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nächste Folge, %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3617,6 +5537,12 @@
     },
     "Next: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Danach: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3627,6 +5553,12 @@
     },
     "No Channels DVR server at %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kein Channels DVR-Server unter %@."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3637,6 +5569,12 @@
     },
     "No Jellyfin server answered at %@. Check the address and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Unter %@ hat kein Jellyfin-Server geantwortet. Prüfe die Adresse und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3647,6 +5585,12 @@
     },
     "No Stalker portal answered at %@. Check the address and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Unter %@ hat kein Stalker-Portal geantwortet. Prüfe die Adresse und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3657,6 +5601,12 @@
     },
     "No channels found in %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Sender in %@ gefunden."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3667,6 +5617,12 @@
     },
     "No guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kein Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3677,6 +5633,12 @@
     },
     "No guide entry matches “%@”" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kein Programmführer-Eintrag passt zu „%@“"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3687,6 +5649,12 @@
     },
     "No guide id" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Programmführer-ID"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3697,6 +5665,12 @@
     },
     "No longer in the guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nicht mehr im Programm"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3707,6 +5681,12 @@
     },
     "No programme information" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Programminformationen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3717,6 +5697,12 @@
     },
     "No programmes" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Sendungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3727,6 +5713,12 @@
     },
     "No programmes in the guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Sendungen im Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3737,6 +5729,12 @@
     },
     "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Für diesen Apple Account wurde kein Kauf gefunden. Wenn ein Familienmitglied Antenna gekauft hat, prüfe, ob die Kauffreigabe in der Familienfreigabe aktiv ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3747,6 +5745,12 @@
     },
     "No reminders" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Erinnerungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3757,6 +5761,12 @@
     },
     "No results for “%@”" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Ergebnisse für „%@“"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3767,6 +5777,12 @@
     },
     "No subtitles in this stream" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Untertitel in diesem Stream"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3777,6 +5793,12 @@
     },
     "None of the %lld guides for %@ lists “%@”. Pick an entry below." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keiner der %1$lld Programmführer für %2$@ listet „%3$@“. Wähle unten einen Eintrag."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -3793,6 +5815,12 @@
     },
     "Not a guide file" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Programmführer-Datei"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3803,6 +5831,12 @@
     },
     "Not downloaded yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch nicht geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3813,6 +5847,12 @@
     },
     "Not enough free storage to rewind live TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nicht genug freier Speicher, um Live-TV zurückzuspulen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3823,6 +5863,12 @@
     },
     "Not loaded yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch nicht geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3833,6 +5879,12 @@
     },
     "Not signed in on this Apple TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auf diesem Apple TV nicht angemeldet"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3843,6 +5895,12 @@
     },
     "Nothing here yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hier ist noch nichts"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3853,6 +5911,12 @@
     },
     "Nothing more to pay. Your sources and favorites are where you left them." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nichts mehr zu zahlen. Deine Quellen und Favoriten sind da, wo du sie gelassen hast."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3863,6 +5927,12 @@
     },
     "Notifications are off for Antenna. Reminders show only while the app is open." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mitteilungen für Antenna sind aus. Erinnerungen erscheinen nur, während die App geöffnet ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3873,6 +5943,12 @@
     },
     "Now: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jetzt: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3883,6 +5959,12 @@
     },
     "Off" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aus"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3893,6 +5975,12 @@
     },
     "Offline" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Offline"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3903,6 +5991,12 @@
     },
     "Offline · retries when you're back online" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Offline · neuer Versuch, sobald du wieder online bist"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3913,6 +6007,12 @@
     },
     "On now" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Läuft gerade"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3923,6 +6023,12 @@
     },
     "Only manually" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nur manuell"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3933,6 +6039,12 @@
     },
     "Open" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öffnen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3943,6 +6055,12 @@
     },
     "Open or change" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öffnen oder ändern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3953,6 +6071,12 @@
     },
     "Other" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Andere"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3963,6 +6087,12 @@
     },
     "Pause" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pause"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3973,6 +6103,12 @@
     },
     "Pause or play" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pausieren oder abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3983,6 +6119,12 @@
     },
     "Pay once. Yours for good." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einmal zahlen. Für immer deins."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3993,6 +6135,12 @@
     },
     "Pick another entry below, or remove the mapping to go back to the playlist's id." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wähle unten einen anderen Eintrag oder entferne die Zuordnung, um zur ID der Playlist zurückzukehren."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4003,6 +6151,12 @@
     },
     "Play" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4013,6 +6167,12 @@
     },
     "Play %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4023,6 +6183,12 @@
     },
     "Play from here" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ab hier abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4033,6 +6199,12 @@
     },
     "Play now" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jetzt abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4043,6 +6215,12 @@
     },
     "Play or choose" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abspielen oder wählen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4053,6 +6231,12 @@
     },
     "Play the next episode" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nächste Folge abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4063,6 +6247,12 @@
     },
     "Play/Pause" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Play/Pause"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4073,6 +6263,12 @@
     },
     "Play/Pause to return" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Play/Pause zum Zurückkehren"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4083,6 +6279,12 @@
     },
     "Plays the next episode of a series when one ends. Applies to this device only." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spielt die nächste Folge einer Serie ab, wenn eine endet. Gilt nur für dieses Gerät."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4093,6 +6295,12 @@
     },
     "Press to browse channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Drücken, um Sender zu durchsuchen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4103,6 +6311,12 @@
     },
     "Price unavailable" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Preis nicht verfügbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4111,8 +6325,30 @@
         }
       }
     },
+    "Privacy Policy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Datenschutzrichtlinie"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "integritetspolicy"
+          }
+        }
+      }
+    },
     "Provider busy" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anbieter ausgelastet"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4123,6 +6359,12 @@
     },
     "Provider error" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anbieterfehler"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4133,6 +6375,12 @@
     },
     "Provider guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer des Anbieters"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4143,6 +6391,12 @@
     },
     "Purchases are turned off on this device. Check Screen Time, or ask the family organizer." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Käufe sind auf diesem Gerät deaktiviert. Prüfe die Bildschirmzeit oder frag die Person, die die Familie organisiert."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4153,6 +6407,12 @@
     },
     "Re-enter link" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Link erneut eingeben"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4163,6 +6423,12 @@
     },
     "Reading the guide…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer wird gelesen …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4173,6 +6439,12 @@
     },
     "Recently added" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neu hinzugefügt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4183,6 +6455,12 @@
     },
     "Recents" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zuletzt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4193,6 +6471,12 @@
     },
     "Reconnecting… attempt %lld of %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neue Verbindung … Versuch %1$lld von %2$lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -4209,6 +6493,12 @@
     },
     "Refreshed %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aktualisiert %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4219,6 +6509,12 @@
     },
     "Remind me" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erinnern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4229,6 +6525,12 @@
     },
     "Reminder set" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erinnerung gesetzt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4239,6 +6541,12 @@
     },
     "Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antenna is open." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erinnerungen werden über iCloud mit deinen anderen Geräten synchronisiert. Jedes Gerät erinnert dich auf seine Art: eine Mitteilung auf iPhone, iPad und Mac, ein Banner auf Apple TV, während Antenna geöffnet ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4249,6 +6557,12 @@
     },
     "Remote: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fernbedienung: %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4259,6 +6573,12 @@
     },
     "Remove" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entfernen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4269,6 +6589,12 @@
     },
     "Remove Tile" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kachel entfernen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4279,6 +6605,12 @@
     },
     "Remove a tile or pick a lower-resolution channel." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entferne eine Kachel oder wähle einen Sender mit geringerer Auflösung."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4289,6 +6621,12 @@
     },
     "Remove from multi-view" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aus Multi-View entfernen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4299,6 +6637,12 @@
     },
     "Remove match" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zuordnung entfernen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4309,6 +6653,12 @@
     },
     "Remove the username and password from the address." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entferne Benutzername und Passwort aus der Adresse."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4319,6 +6669,12 @@
     },
     "Removed %@ from favorites." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ aus Favoriten entfernt."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4329,6 +6685,12 @@
     },
     "Renews every year. Cancel any time." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verlängert sich jedes Jahr. Jederzeit kündbar."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4339,6 +6701,12 @@
     },
     "Renews on %@. Your sources and favorites are where you left them." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verlängert sich am %@. Deine Quellen und Favoriten sind da, wo du sie gelassen hast."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4349,6 +6717,12 @@
     },
     "Renews on <expiresAt>. Your sources and favorites are where you left them." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verlängert sich am <expiresAt>. Deine Quellen und Favoriten sind da, wo du sie gelassen hast."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4359,6 +6733,12 @@
     },
     "Restore did not go through. Try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wiederherstellen hat nicht geklappt. Versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4369,6 +6749,12 @@
     },
     "Resume" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fortsetzen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4379,6 +6765,12 @@
     },
     "Resume %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ fortsetzen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4389,6 +6781,12 @@
     },
     "Retry now" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jetzt erneut versuchen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4399,6 +6797,12 @@
     },
     "Rewind isn't available on this channel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zurückspulen ist auf diesem Sender nicht möglich"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4409,6 +6813,12 @@
     },
     "Rewind stopped working" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zurückspulen funktioniert nicht mehr"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4419,6 +6829,12 @@
     },
     "Rewind stopped working. Back to live TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zurückspulen funktioniert nicht mehr. Zurück zu Live-TV"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4429,6 +6845,12 @@
     },
     "Scrub" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spulen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4439,6 +6861,12 @@
     },
     "Search" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suchen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4449,6 +6877,12 @@
     },
     "Search channels, programmes, movies and series" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender, Sendungen, Filme und Serien suchen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4459,6 +6893,12 @@
     },
     "Search the guide by channel name or id" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Programmführer nach Sendername oder ID durchsuchen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4469,6 +6909,12 @@
     },
     "Season %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Staffel %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4479,6 +6925,12 @@
     },
     "Season %@ Episode %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Staffel %1$@ Folge %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -4495,6 +6947,12 @@
     },
     "See all %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle %lld anzeigen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4505,6 +6963,12 @@
     },
     "Select" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auswählen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4515,6 +6979,12 @@
     },
     "Select Tile %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kachel %lld auswählen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4525,6 +6995,12 @@
     },
     "Series" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serien"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4535,6 +7011,12 @@
     },
     "Series · %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serie · %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4545,6 +7027,12 @@
     },
     "Server returned %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Server meldete %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4555,6 +7043,12 @@
     },
     "Set up Antenna on Apple TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna auf Apple TV einrichten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4565,6 +7059,24 @@
     },
     "Show %lld channels" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sender anzeigen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Sender anzeigen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -4605,6 +7117,12 @@
     },
     "Show in tile %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "In Kachel %lld anzeigen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4615,6 +7133,12 @@
     },
     "Show its channels" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seine Sender anzeigen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4625,6 +7149,12 @@
     },
     "Showing %lld of %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld von %2$lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -4641,6 +7171,12 @@
     },
     "Shows the zap bar" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zeigt die Senderleiste"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4651,6 +7187,12 @@
     },
     "Sign in" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmelden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4661,6 +7203,12 @@
     },
     "Sign in needed" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldung erforderlich"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4671,6 +7219,12 @@
     },
     "Sign in on this Apple TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auf diesem Apple TV anmelden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4681,6 +7235,12 @@
     },
     "Sign in to %@ on this Apple TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auf diesem Apple TV bei %@ anmelden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4691,6 +7251,12 @@
     },
     "Sign in to %@ on this Apple TV to play its channels." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Melde dich auf diesem Apple TV bei %@ an, um seine Sender abzuspielen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4701,6 +7267,12 @@
     },
     "Sign-in refused" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldung verweigert"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4711,6 +7283,12 @@
     },
     "Skip 10 seconds" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "10 Sekunden überspringen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4721,6 +7299,12 @@
     },
     "Skipped ahead to live" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zu Live vorgesprungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4731,6 +7315,12 @@
     },
     "Some sources are still loading." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einige Quellen werden noch geladen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4741,6 +7331,12 @@
     },
     "Source: %@ · Attempted at %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quelle: %1$@ · Versucht um %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -4757,6 +7353,12 @@
     },
     "Sources & Settings" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quellen & Einstellungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4767,6 +7369,12 @@
     },
     "Specials" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Specials"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4777,6 +7385,12 @@
     },
     "Split the file, or host it and add the link as an M3U source instead." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Teile die Datei auf oder lege sie auf einen Server und füge den Link stattdessen als M3U-Quelle hinzu."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4787,6 +7401,12 @@
     },
     "Start over isn't available for this programme" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "„Von vorn“ ist für diese Sendung nicht verfügbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4797,6 +7417,12 @@
     },
     "Starts at %@ on %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Beginnt um %1$@ auf %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -4813,6 +7439,12 @@
     },
     "Starts in %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Beginnt in %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4823,6 +7455,12 @@
     },
     "Starts now" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Beginnt jetzt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4833,6 +7471,12 @@
     },
     "Starts now on %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Beginnt jetzt auf %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4843,6 +7487,12 @@
     },
     "Stereo" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stereo"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4853,6 +7503,12 @@
     },
     "Still buffering. %@ is sending data slowly." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Puffert noch. %@ sendet Daten langsam."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4863,6 +7519,12 @@
     },
     "Still watching?" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schaust du noch?"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4873,6 +7535,12 @@
     },
     "Still watching? %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schaust du noch? %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4883,6 +7551,12 @@
     },
     "Stop and go back" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stoppen und zurück"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4893,6 +7567,12 @@
     },
     "Storage is full" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Speicher ist voll"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4903,6 +7583,12 @@
     },
     "Storage is full. Back to live TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Speicher ist voll. Zurück zu Live-TV"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4913,6 +7599,12 @@
     },
     "Stream could not be read" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stream konnte nicht gelesen werden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4923,6 +7615,12 @@
     },
     "Stream details not available yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stream-Details noch nicht verfügbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4933,6 +7631,12 @@
     },
     "Stream not found" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stream nicht gefunden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4943,6 +7647,12 @@
     },
     "Stream stopped" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stream gestoppt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4953,6 +7663,12 @@
     },
     "Stream unavailable" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stream nicht verfügbar"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4963,6 +7679,12 @@
     },
     "Subtitles show in your language whenever the stream has them." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Untertitel erscheinen in deiner Sprache, wann immer der Stream welche hat."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4973,6 +7695,12 @@
     },
     "Subtitles show when the sound is not in one of your languages." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Untertitel erscheinen, wenn der Ton nicht in einer deiner Sprachen ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4983,6 +7711,12 @@
     },
     "Subtitles start off. Forced subtitles in your language still show." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Untertitel sind zu Beginn aus. Erzwungene Untertitel in deiner Sprache erscheinen trotzdem."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4993,6 +7727,12 @@
     },
     "Swipe" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Streichen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5003,6 +7743,12 @@
     },
     "Swipe down" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach unten streichen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5013,6 +7759,12 @@
     },
     "Swipe left or right" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach links oder rechts streichen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5023,6 +7775,12 @@
     },
     "Swipe up or down" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nach oben oder unten streichen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5033,6 +7791,12 @@
     },
     "Swipe up or down for another channel. Menu opens the tab bar." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Streiche nach oben oder unten für einen anderen Sender. Menu öffnet die Tableiste."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5043,6 +7807,12 @@
     },
     "TILE %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "KACHEL %lld"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5053,6 +7823,12 @@
     },
     "Tab bar" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tableiste"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5061,8 +7837,30 @@
         }
       }
     },
+    "Terms of Use" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nutzungsbedingungen"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Användarvillkor"
+          }
+        }
+      }
+    },
     "That channel is no longer in %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Sender ist nicht mehr in %@."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5073,6 +7871,12 @@
     },
     "That channel's source is no longer in Antenna." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Quelle dieses Senders ist nicht mehr in Antenna."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5083,6 +7887,12 @@
     },
     "That title is no longer available from %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Titel ist bei %@ nicht mehr verfügbar."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5093,6 +7903,12 @@
     },
     "That title's source is no longer in Antenna." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Quelle dieses Titels ist nicht mehr in Antenna."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5103,6 +7919,12 @@
     },
     "The connection failed (%@). Check the network, or a VPN if one is on." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Verbindung ist fehlgeschlagen (%@). Prüfe das Netzwerk oder ein aktives VPN."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5113,6 +7935,12 @@
     },
     "The connection failed. Check the network, or a VPN if one is on." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Verbindung ist fehlgeschlagen. Prüfe das Netzwerk oder ein aktives VPN."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5123,6 +7951,12 @@
     },
     "The entries in this file are not links." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Einträge in dieser Datei sind keine Links."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5133,6 +7967,12 @@
     },
     "The guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5143,6 +7983,12 @@
     },
     "The guide could not be downloaded" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer konnte nicht geladen werden"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5153,6 +7999,12 @@
     },
     "The guide downloads when you're back online." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer wird geladen, sobald du wieder online bist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5163,6 +8015,12 @@
     },
     "The guide for “%@” has run out" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer für „%@“ ist abgelaufen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5173,6 +8031,12 @@
     },
     "The guide has not been downloaded yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer wurde noch nicht geladen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5183,6 +8047,12 @@
     },
     "The guide has not been downloaded yet." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer wurde noch nicht geladen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5193,6 +8063,12 @@
     },
     "The guide lists “%@” but has no programmes for it" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer listet „%@“, hat aber keine Sendungen dafür"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5203,6 +8079,12 @@
     },
     "The login for %@ has not reached this device from iCloud Keychain yet." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Anmeldung für %@ ist noch nicht aus dem iCloud-Schlüsselbund auf diesem Gerät angekommen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5213,6 +8095,12 @@
     },
     "The login for %@ hasn't synced from iCloud to this device yet." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Anmeldung für %@ wurde noch nicht aus iCloud auf dieses Gerät synchronisiert."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5223,6 +8111,12 @@
     },
     "The mapped entry “%@” has no programmes" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der zugeordnete Eintrag „%@“ hat keine Sendungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5233,6 +8127,12 @@
     },
     "The playlist has no tvg-id for %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Playlist hat keine tvg-id für %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5243,6 +8143,12 @@
     },
     "The portal refused this device with the message “%@”." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Portal hat dieses Gerät mit der Meldung „%@“ abgelehnt."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5253,6 +8159,12 @@
     },
     "The provider guide needs this source's login, which has not reached this device from iCloud yet." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer des Anbieters braucht die Anmeldung dieser Quelle, die noch nicht aus iCloud auf diesem Gerät angekommen ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5263,6 +8175,12 @@
     },
     "The provider guide needs this source's login. Sign in from Sources & Settings." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Programmführer des Anbieters braucht die Anmeldung dieser Quelle. Melde dich unter „Quellen & Einstellungen“ an."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5273,6 +8191,12 @@
     },
     "The provider sends no epg_channel_id for %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Anbieter sendet keine epg_channel_id für %@"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5283,6 +8207,12 @@
     },
     "The purchase did not go through. Try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Kauf hat nicht geklappt. Versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5293,6 +8223,12 @@
     },
     "The purchase on this Apple Account was refunded or is no longer shared with you." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Kauf auf diesem Apple Account wurde erstattet oder wird nicht mehr mit dir geteilt."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5303,6 +8239,12 @@
     },
     "The secure connection failed. Check the network, or a VPN if one is on." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die sichere Verbindung ist fehlgeschlagen. Prüfe das Netzwerk oder ein aktives VPN."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5313,6 +8255,12 @@
     },
     "The server answered with an error (%@). Check the address and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Server hat mit einem Fehler (%@) geantwortet. Prüfe die Adresse und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5323,6 +8271,12 @@
     },
     "The server replied with something Antenna could not read." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Server hat etwas gesendet, das Antenna nicht lesen konnte."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5333,6 +8287,12 @@
     },
     "The source gives this channel no guide id" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Die Quelle gibt diesem Sender keine Programmführer-ID"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5343,6 +8303,12 @@
     },
     "This Apple TV can't play another stream" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Apple TV kann keinen weiteren Stream abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5353,6 +8319,12 @@
     },
     "This Mac can't play another stream" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Mac kann keinen weiteren Stream abspielen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5363,6 +8335,12 @@
     },
     "This account is %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Konto ist %@."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5373,6 +8351,12 @@
     },
     "This account is not allowed to sign in from this device." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Konto darf sich nicht von diesem Gerät anmelden."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5383,6 +8367,12 @@
     },
     "This channel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Sender"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5393,6 +8383,12 @@
     },
     "This device is already playing as many streams as it can." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Gerät spielt bereits so viele Streams ab, wie es kann."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5403,6 +8399,12 @@
     },
     "This file is %@. Antenna imports playlists up to 16 MB." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Datei ist %@ groß. Antenna importiert Playlists bis 16 MB."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5413,6 +8415,12 @@
     },
     "This file is a link, not a playlist." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Datei ist ein Link, keine Playlist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5423,6 +8431,12 @@
     },
     "This file is a list of links, not a playlist." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Datei ist eine Liste von Links, keine Playlist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5433,6 +8447,12 @@
     },
     "This file is larger than 16 MB. Antenna imports playlists up to 16 MB." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Datei ist größer als 16 MB. Antenna importiert Playlists bis 16 MB."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5443,6 +8463,12 @@
     },
     "This guide is already in the list." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Programmführer ist bereits in der Liste."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5453,6 +8479,12 @@
     },
     "This guide link needs its login on this Apple TV" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Programmführer-Link braucht seine Anmeldung auf diesem Apple TV"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5463,6 +8495,12 @@
     },
     "This is a single stream, not a channel list." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das ist ein einzelner Stream, keine Senderliste."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5473,6 +8511,12 @@
     },
     "This server asks for a username and password, which Antenna cannot send yet." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Server verlangt Benutzername und Passwort, die Antenna noch nicht senden kann."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5483,6 +8527,12 @@
     },
     "This source has no guide" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Quelle hat keinen Programmführer"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5493,6 +8543,12 @@
     },
     "This stream uses %@, which this device cannot play. Trying again will not help. Pick another channel or ask the provider for a stream in a supported format." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Stream verwendet %@, das dieses Gerät nicht abspielen kann. Ein neuer Versuch hilft nicht. Wähle einen anderen Sender oder bitte den Anbieter um einen Stream in einem unterstützten Format."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5503,6 +8559,12 @@
     },
     "This title" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Titel"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5513,6 +8575,12 @@
     },
     "Tile %lld of %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kachel %1$lld von %2$lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -5529,6 +8597,12 @@
     },
     "Tile %lld · %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kachel %1$lld · %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -5545,6 +8619,12 @@
     },
     "Timed out" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zeitüberschreitung"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5555,6 +8635,12 @@
     },
     "Title" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Titel"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5565,6 +8651,12 @@
     },
     "Today" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5575,6 +8667,12 @@
     },
     "Tomorrow" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Morgen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5585,6 +8683,12 @@
     },
     "Too large" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zu groß"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5595,6 +8699,12 @@
     },
     "Too many mappings for this source. Remove some to add more." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zu viele Zuordnungen für diese Quelle. Entferne einige, um weitere hinzuzufügen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5605,6 +8715,12 @@
     },
     "Track %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Spur %lld"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5615,6 +8731,12 @@
     },
     "Try a shorter name or the channel's tvg-id." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versuche einen kürzeren Namen oder die tvg-id des Senders."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5625,6 +8747,12 @@
     },
     "Try again" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erneut versuchen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5635,6 +8763,12 @@
     },
     "Turn off" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ausschalten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5645,6 +8779,12 @@
     },
     "Turn on" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einschalten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5655,6 +8795,12 @@
     },
     "Turned off" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ausgeschaltet"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5665,6 +8811,12 @@
     },
     "Ungrouped" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ohne Gruppe"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5675,6 +8827,12 @@
     },
     "Unlock Antenna" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Antenna freischalten"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5685,6 +8843,12 @@
     },
     "Unlock your %@ once and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entsperre dein %@ einmal und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5695,6 +8859,12 @@
     },
     "Untitled" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ohne Titel"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5705,6 +8875,34 @@
     },
     "Up next, %@, next episode in %lld seconds" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Als Nächstes, %1$@, nächste Folge in %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sekunde"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "needs_review",
+                      "value" : "%arg Sekunden"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5765,6 +8963,12 @@
     },
     "Volume Down" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leiser"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5775,6 +8979,12 @@
     },
     "Volume Up" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lauter"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5785,6 +8995,12 @@
     },
     "Waiting for approval. Antenna unlocks as soon as the purchase is approved." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten auf Bestätigung. Antenna wird freigeschaltet, sobald der Kauf bestätigt ist."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5795,6 +9011,12 @@
     },
     "Waiting for iCloud…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten auf iCloud …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5805,6 +9027,12 @@
     },
     "Waiting for login" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wartet auf Anmeldung"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5815,6 +9043,12 @@
     },
     "Waiting for login from iCloud" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten auf die Anmeldung aus iCloud"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5825,6 +9059,12 @@
     },
     "Waiting for login to sync from iCloud" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten, bis die Anmeldung aus iCloud synchronisiert ist"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5835,6 +9075,12 @@
     },
     "Waiting for the App Store…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten auf den App Store …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5845,6 +9091,12 @@
     },
     "Waiting for the guide…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten auf den Programmführer …"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5855,6 +9107,12 @@
     },
     "Waiting for the login to sync" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten, bis die Anmeldung synchronisiert ist"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5865,6 +9123,12 @@
     },
     "Waiting for the playlist" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten auf die Playlist"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5875,6 +9139,12 @@
     },
     "Waiting for this guide's login to sync from iCloud" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Warten, bis die Anmeldung dieses Programmführers aus iCloud synchronisiert ist"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5885,6 +9155,12 @@
     },
     "Watch" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansehen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5895,6 +9171,12 @@
     },
     "Watch, or details for later" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansehen oder Details für später"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5905,6 +9187,12 @@
     },
     "Watched" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gesehen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5915,6 +9203,12 @@
     },
     "Welcome back" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Willkommen zurück"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5925,6 +9219,12 @@
     },
     "Which channel?" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Welcher Sender?"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5935,6 +9235,12 @@
     },
     "Which movie or series?" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Welcher Film oder welche Serie?"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5945,6 +9251,12 @@
     },
     "Year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jahr"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5955,6 +9267,12 @@
     },
     "Yearly" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jährlich"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5963,8 +9281,30 @@
         }
       }
     },
+    "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Jahresabo verlängert sich automatisch, bis es in den Einstellungen gekündigt wird. Die Zahlung wird deinem Apple Account belastet."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Årsabonnemanget förnyas automatiskt tills det avslutas i Inställningar. Betalningen debiteras ditt Apple-konto."
+          }
+        }
+      }
+    },
     "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account. Terms of Use and Privacy Policy." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Jahresabo verlängert sich automatisch, bis es in den Einstellungen gekündigt wird. Die Zahlung wird deinem Apple Account belastet. Nutzungsbedingungen und Datenschutzrichtlinie."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5975,6 +9315,12 @@
     },
     "You imported %@ before as %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du hast %1$@ schon einmal als %2$@ importiert"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -5991,6 +9337,12 @@
     },
     "You're offline" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du bist offline"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6001,6 +9353,12 @@
     },
     "You're offline." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du bist offline."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6011,6 +9369,12 @@
     },
     "You're offline. Connect to the internet and try again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Du bist offline. Stelle eine Internetverbindung her und versuche es erneut."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6021,6 +9385,12 @@
     },
     "Your provider refused another stream" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein Anbieter hat einen weiteren Stream abgelehnt"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6031,6 +9401,12 @@
     },
     "Your purchase was found for this Apple Account." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein Kauf für diesen Apple Account wurde gefunden."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6041,6 +9417,12 @@
     },
     "Your yearly subscription ended on %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein Jahresabo ist am %@ abgelaufen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6051,6 +9433,12 @@
     },
     "Your yearly subscription ended on <date>." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein Jahresabo ist am <date> abgelaufen."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6061,6 +9449,12 @@
     },
     "Zoom In" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vergrößern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6071,6 +9465,12 @@
     },
     "Zoom Out" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verkleinern"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6081,6 +9481,12 @@
     },
     "change channel" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sender wechseln"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6092,6 +9498,12 @@
     "command.back" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zurück"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -6108,6 +9520,12 @@
     },
     "full screen" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vollbild"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6118,6 +9536,12 @@
     },
     "leave multi-view" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Multi-View verlassen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6128,6 +9552,12 @@
     },
     "muted" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "stumm"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6138,6 +9568,12 @@
     },
     "no programmes" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "keine Sendungen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6148,6 +9584,24 @@
     },
     "offer.days" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Tage"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -6188,6 +9642,24 @@
     },
     "offer.months" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Monat"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Monate"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -6228,6 +9700,24 @@
     },
     "offer.weeks" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Woche"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Wochen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -6268,6 +9758,24 @@
     },
     "offer.years" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Jahr"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld Jahre"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -6308,6 +9816,12 @@
     },
     "one time" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "einmalig"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6318,6 +9832,12 @@
     },
     "options" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Optionen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6328,6 +9848,12 @@
     },
     "per year" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pro Jahr"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6338,6 +9864,12 @@
     },
     "sound on" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ton an"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6348,6 +9880,12 @@
     },
     "up next" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "als Nächstes"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6358,6 +9896,12 @@
     },
     "watched" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "gesehen"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6368,6 +9912,12 @@
     },
     "your source" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "deine Quelle"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6378,6 +9928,12 @@
     },
     "“%@” does not list “%@”. Pick an entry below." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "„%1$@“ listet „%2$@“ nicht. Wähle unten einen Eintrag."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",

@@ -40,8 +40,8 @@ enum Paywall {
         var enabled: Bool
 
         var id: ProductKind { kind }
-        var name: String { PaywallCopy.text(kind == .lifetime ? .productLifetime : .productYearly) }
-        var unit: String { PaywallCopy.text(kind == .lifetime ? .unitOneTime : .unitPerYear) }
+        func name(_ locale: Locale) -> String { PaywallCopy.text(kind == .lifetime ? .productLifetime : .productYearly, locale: locale) }
+        func unit(_ locale: Locale) -> String { PaywallCopy.text(kind == .lifetime ? .unitOneTime : .unitPerYear, locale: locale) }
         var identifier: String { "paywall.product.\(kind.rawValue)" }
     }
 
@@ -142,9 +142,10 @@ struct PaywallLinks: Equatable {
     }
 
     /// The legal line with "Terms of Use" and "Privacy Policy" as links.
-    var legal: AttributedString {
-        var text = AttributedString(PaywallCopy.text(.legal))
-        for (words, url) in [("Terms of Use", terms), ("Privacy Policy", privacy)] {
+    func legal(_ locale: Locale) -> AttributedString {
+        var text = AttributedString(PaywallCopy.text(.legal, locale: locale))
+        let names = [PaywallCopy.text(.termsOfUse, locale: locale), PaywallCopy.text(.privacyPolicy, locale: locale)]
+        for (words, url) in zip(names, [terms, privacy]) {
             guard let url, let range = text.range(of: words) else { continue }
             text[range].link = url
             text[range].foregroundColor = Palette.accent
@@ -153,9 +154,12 @@ struct PaywallLinks: Equatable {
     }
 
     /// The legal line on Apple TV, which has no browser: the addresses as text.
-    var legalWithAddresses: String {
-        let renewal = PaywallCopy.text(.legal).replacingOccurrences(of: " Terms of Use and Privacy Policy.", with: "")
-        let parts = [("Terms", terms), ("Privacy", privacy)].compactMap { name, url in url.map { "\(name): \(Self.short($0))." } }
+    func legalWithAddresses(_ locale: Locale) -> String {
+        let renewal = PaywallCopy.text(.legalRenewal, locale: locale)
+        let words = Words(locale)
+        let parts = [
+            terms.map { words("Terms: \(Self.short($0)).") }, privacy.map { words("Privacy: \(Self.short($0)).") },
+        ].compactMap(\.self)
         return ([renewal] + parts).joined(separator: " ")
     }
 

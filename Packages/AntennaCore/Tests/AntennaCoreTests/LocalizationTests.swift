@@ -19,7 +19,7 @@ import Testing
 
     @Test("localization/numbers-use-the-region-s-digits-and-separators a count groups in the locale's way")
     func grouping() {
-        #expect(SetupText(locale: Locale(identifier: "de_DE")).liveChannels(12_500) == "12.500 live channels")
+        #expect(SetupText(locale: Locale(identifier: "de_DE")).liveChannels(12_500) == "12.500 Live-Sender")
         #expect(SetupText(locale: english).liveChannels(12_500) == "12,500 live channels")
     }
 

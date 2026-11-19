@@ -97,3 +97,19 @@ struct SourceRowLabel: View {
     .padding(Metrics.televisionSafeArea)
     .preferredColorScheme(.dark)
 }
+
+#Preview("Source rows, German") {
+    let text = SourceStatusText(locale: PreviewLanguage.german.locale)
+    let now = Date(timeIntervalSince1970: 1_800_000_000)
+    let loaded = SourceStatus(
+        load: .loaded, channels: 1_240, groups: 18, lastSuccess: now.addingTimeInterval(-720),
+        guide: .loaded(days: 7, matched: 388, total: 412))
+    let failed = SourceStatus(
+        load: .failed("Du bist offline."), channels: 412, lastSuccess: now.addingTimeInterval(-86_400), guide: .failed)
+    List {
+        SourceRowLabel(name: "Home provider", kind: .xtream, lines: text.rowLines(loaded, now: now))
+        SourceRowLabel(name: "Playlist (old)", kind: .m3u, lines: text.rowLines(failed, now: now))
+    }
+    .previewLanguage(.german)
+    .preferredColorScheme(.dark)
+}

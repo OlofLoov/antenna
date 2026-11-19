@@ -38,9 +38,9 @@
 
 ## 6. German (PR 6)
 
-- [ ] 6.1 Add `de` and translate every catalog as `needs_review`
-- [ ] 6.2 Add `.previewLanguage(.german)` in `Apps/Shared/Debug` and the six German previews named in design.md, fix any copy that truncates, and verify the CI preview PNGs (design-system/copy-fits-in-every-language)
-- [ ] 6.3 Add Core tests for a German count with grouping ("12.500") and a plural, and verify the translation check passes
+- [x] 6.1 Add `de` and translate every catalog as `needs_review`
+- [x] 6.2 Add `.previewLanguage(.german)` in `Apps/Shared/Debug` and the six German previews named in design.md, fix any copy that truncates, and verify the CI preview PNGs (design-system/copy-fits-in-every-language)
+- [x] 6.3 Add Core tests for a German count with grouping ("12.500") and a plural, and verify the translation check passes
 
 ## 7. Spanish (PR 7)
 

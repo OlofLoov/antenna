@@ -7,15 +7,19 @@ extension Paywall.State {
 
     static func fixture(
         phase: Paywall.Phase = .offer, lapse: Lapse = .neverPurchased, prices: [Paywall.Price] = [.shown("$29.99"), .shown("$9.99")],
-        purchasing: ProductKind? = nil, status: PaywallStatus? = nil, offer: IntroOffer? = nil
+        purchasing: ProductKind? = nil, status: PaywallStatus? = nil, offer: IntroOffer? = nil,
+        locale: Locale = .autoupdatingCurrent
     ) -> Paywall.State {
         let products = zip(ProductKind.allCases, prices).map { kind, price in
-            var line = PaywallCopy.Line(kind == .lifetime ? .lineLifetime : .lineRenews)
-            if kind == .yearly, case .shown(let text) = price { line = PaywallCopy.yearlyLine(offer: offer, displayPrice: text) }
+            var line = PaywallCopy.Line(kind == .lifetime ? .lineLifetime : .lineRenews, locale: locale)
+            if kind == .yearly, case .shown(let text) = price {
+                line = PaywallCopy.yearlyLine(offer: offer, displayPrice: text, locale: locale)
+            }
             return Paywall.Product(kind: kind, price: price, line: line, purchasing: purchasing == kind, enabled: purchasing == nil)
         }
         return Paywall.State(
-            phase: phase, title: PaywallCopy.Line(lapse.isLapsed ? .titleLapsed : .titleDefault), lapsedNote: PaywallCopy.lapsedNote(lapse),
+            phase: phase, title: PaywallCopy.Line(lapse.isLapsed ? .titleLapsed : .titleDefault, locale: locale),
+            lapsedNote: PaywallCopy.lapsedNote(lapse, locale: locale),
             products: products, status: status, canRestore: purchasing == nil, links: .fixture)
     }
 }
@@ -67,12 +71,22 @@ extension Paywall.Actions {
     Paywall.Touch(state: .fixture(phase: .unavailable(.notSold)), actions: .none)
 }
 
+#Preview("Paywall, iPhone, German") {
+    Paywall.Touch(state: .fixture(locale: PreviewLanguage.german.locale), actions: .none)
+        .previewLanguage(.german)
+}
+
 #Preview("Paywall, iPad", traits: .fixedLayout(width: 1194, height: 834)) {
     Paywall.Touch(state: .fixture(), actions: .none)
 }
 
 #Preview("Paywall, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
     Paywall.Television(state: .fixture(), actions: .none)
+}
+
+#Preview("Paywall, Apple TV, German", traits: .fixedLayout(width: 1920, height: 1080)) {
+    Paywall.Television(state: .fixture(locale: PreviewLanguage.german.locale), actions: .none)
+        .previewLanguage(.german)
 }
 
 #Preview("Paywall, Apple TV, purchasing", traits: .fixedLayout(width: 1920, height: 1080)) {

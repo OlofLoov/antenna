@@ -6,6 +6,7 @@ extension Paywall {
     /// (`iPhone-Paywall`, `iPad-Paywall`). Nothing sits behind it
     /// (design-system/nothing-shows-before-the-paywall).
     struct Touch: View {
+        @Environment(\.locale) private var locale
         let state: State
         let actions: Actions
 
@@ -35,7 +36,7 @@ extension Paywall {
         @ViewBuilder private var content: some View {
             switch state.phase {
             case .offer:
-                TouchHeading(title: state.title, message: PaywallCopy.Line(.body), note: state.lapsedNote)
+                TouchHeading(title: state.title, message: PaywallCopy.Line(.body, locale: locale), note: state.lapsedNote)
                 VStack(spacing: 10) {
                     ForEach(state.products) { product in
                         TouchProductRow(product: product) { actions.buy(product.kind) }
@@ -43,15 +44,17 @@ extension Paywall {
                 }
                 .padding(.top, 4)
                 if let status = state.status { StatusLine(status: status, size: 15) }
-                Label(PaywallCopy.text(.familyIncluded), systemImage: "person.2")
+                Label(PaywallCopy.text(.familyIncluded, locale: locale), systemImage: "person.2")
                     .font(.system(size: 12))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("paywall.familyNote")
             case .unavailable(let reason):
-                TouchHeading(title: state.title, message: PaywallCopy.Line(.body), note: state.lapsedNote)
+                TouchHeading(title: state.title, message: PaywallCopy.Line(.body, locale: locale), note: state.lapsedNote)
                 TouchUnavailable(reason: reason, status: state.status)
             case .restored(let grant):
-                TouchHeading(title: PaywallCopy.Line(.restoredTitle), message: PaywallCopy.Line(.restoredBody), note: nil)
+                TouchHeading(
+                    title: PaywallCopy.Line(.restoredTitle, locale: locale), message: PaywallCopy.Line(.restoredBody, locale: locale),
+                    note: nil)
                 TouchRestored(grant: grant)
             }
         }
@@ -115,6 +118,7 @@ extension Paywall {
     /// While its purchase runs the line reads "Waiting for the App Store…"
     /// and a spinner takes the price's place.
     private struct TouchProductRow: View {
+        @Environment(\.locale) private var locale
         let product: Product
         let buy: () -> Void
 
@@ -122,8 +126,8 @@ extension Paywall {
             Button(action: buy) {
                 HStack(spacing: 14) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(product.name).font(.system(size: 17, weight: .semibold))
-                        Text(product.purchasing ? PaywallCopy.text(.lineWaiting) : product.line.text)
+                        Text(product.name(locale)).font(.system(size: 17, weight: .semibold))
+                        Text(product.purchasing ? PaywallCopy.text(.lineWaiting, locale: locale) : product.line.text)
                             .font(.system(size: 13))
                             .foregroundStyle(Palette.textMuted)
                             .fixedSize(horizontal: false, vertical: true)
@@ -135,7 +139,7 @@ extension Paywall {
                         VStack(alignment: .trailing, spacing: 2) {
                             PriceText(price: product.price)
                                 .font(.system(size: 17, weight: .bold))
-                            Text(product.unit).font(.system(size: 12)).foregroundStyle(Palette.textMuted)
+                            Text(product.unit(locale)).font(.system(size: 12)).foregroundStyle(Palette.textMuted)
                         }
                     }
                 }
@@ -149,27 +153,30 @@ extension Paywall {
             .disabled(!product.enabled)
             .opacity(product.enabled || product.purchasing ? 1 : 0.4)
             .accessibilityIdentifier(product.identifier)
-            .accessibilityValue(product.accessibilityValue)
+            .accessibilityValue(product.accessibilityValue(locale))
         }
     }
 
     /// The App Store's price as given, a placeholder while it loads, or
     /// "Price unavailable".
     struct PriceText: View {
+        @Environment(\.locale) private var locale
         let price: Price
 
         var body: some View {
             switch price {
             case .shown(let text): Text(text)
             case .loading:
-                Text("$00.00").redacted(reason: .placeholder).accessibilityLabel(PaywallCopy.text(.priceLoading))
+                Text("$00.00").redacted(reason: .placeholder).accessibilityLabel(PaywallCopy.text(.priceLoading, locale: locale))
             case .unavailable:
-                Text(PaywallCopy.text(.priceUnavailable)).foregroundStyle(Palette.textMuted)
+                Text(PaywallCopy.text(.priceUnavailable, locale: locale)).foregroundStyle(Palette.textMuted)
             }
         }
     }
 
     private struct TouchUnavailable: View {
+
+        @Environment(\.locale) private var locale
         let reason: Unavailable
         let status: PaywallStatus?
 
@@ -180,13 +187,13 @@ extension Paywall {
                     .frame(width: 44, height: 44)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 12))
                     .accessibilityHidden(true)
-                Text(PaywallCopy.text(.unavailableTitle))
+                Text(PaywallCopy.text(.unavailableTitle, locale: locale))
                     .font(.system(size: 17, weight: .semibold))
                     .accessibilityIdentifier("paywall.unavailable.title")
                 if let status {
                     StatusLine(status: status, size: 15)
                 } else {
-                    Text(PaywallCopy.text(reason == .notSold ? .statusNotInStorefront : .unavailableBody))
+                    Text(PaywallCopy.text(reason == .notSold ? .statusNotInStorefront : .unavailableBody, locale: locale))
                         .font(.system(size: 15))
                         .foregroundStyle(Palette.textMuted)
                         .multilineTextAlignment(.center)
@@ -204,6 +211,8 @@ extension Paywall {
     }
 
     private struct TouchRestored: View {
+
+        @Environment(\.locale) private var locale
         let grant: Grant
 
         var body: some View {
@@ -214,10 +223,10 @@ extension Paywall {
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTouch))
+                    Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTouch, locale: locale))
                         .font(.system(size: 17, weight: .semibold))
                         .accessibilityIdentifier("paywall.restored.kind")
-                    let note = PaywallCopy.restoredNote(grant)
+                    let note = PaywallCopy.restoredNote(grant, locale: locale)
                     Text(note.text)
                         .font(.system(size: 13))
                         .foregroundStyle(Palette.textMuted)
@@ -235,10 +244,12 @@ extension Paywall {
     }
 
     private struct TouchLegal: View {
+
+        @Environment(\.locale) private var locale
         let links: PaywallLinks
 
         var body: some View {
-            Text(links.legal)
+            Text(links.legal(locale))
                 .font(.system(size: 12))
                 .foregroundStyle(Palette.textMuted)
                 .multilineTextAlignment(.center)
@@ -284,17 +295,17 @@ extension Paywall {
 
 extension Paywall.Product {
     /// The price, and in debug builds the line's copy key, for VoiceOver and UI tests.
-    var accessibilityValue: String {
+    func accessibilityValue(_ locale: Locale) -> String {
         let price: String =
             switch self.price {
-            case .shown(let text): "\(text) \(unit)"
-            case .loading: PaywallCopy.text(.priceLoading)
-            case .unavailable: PaywallCopy.text(.priceUnavailable)
+            case .shown(let text): "\(text) \(unit(locale))"
+            case .loading: PaywallCopy.text(.priceLoading, locale: locale)
+            case .unavailable: PaywallCopy.text(.priceUnavailable, locale: locale)
             }
         #if DEBUG
             return "\(price), \(purchasing ? PaywallCopy.Key.lineWaiting.rawValue : line.key.rawValue)"
         #else
-            return "\(price), \(purchasing ? PaywallCopy.text(.lineWaiting) : line.text)"
+            return "\(price), \(purchasing ? PaywallCopy.text(.lineWaiting, locale: locale) : line.text)"
         #endif
     }
 }

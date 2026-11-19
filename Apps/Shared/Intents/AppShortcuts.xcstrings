@@ -4,6 +4,14 @@
     "Add this channel to favorites in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Diesen Sender in ${applicationName} zu den Favoriten hinzufügen"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
@@ -25,6 +33,15 @@
     "Play ${title} in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "${title} in ${applicationName} abspielen",
+              "Einen Film in ${applicationName} abspielen"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
@@ -48,6 +65,14 @@
     "Remove this channel from favorites in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Diesen Sender in ${applicationName} aus den Favoriten entfernen"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
@@ -69,6 +94,15 @@
     "Search ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "In ${applicationName} suchen",
+              "Einen Sender in ${applicationName} finden"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",
@@ -92,6 +126,17 @@
     "Tune to ${channel} in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "${channel} in ${applicationName} einschalten",
+              "${channel} in ${applicationName} ansehen",
+              "${channel} in ${applicationName} anmachen",
+              "Einen Sender in ${applicationName} einschalten"
+            ]
+          }
+        },
         "en" : {
           "stringSet" : {
             "state" : "new",

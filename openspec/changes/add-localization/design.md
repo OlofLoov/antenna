@@ -552,6 +552,31 @@ Swedish review:
   built on the -ing form ("den spelande kanalen") became "kanalen som
   spelas". "Watched" on an episode is "Sett", since "avsnitt" is neuter.
 
+PR 6, German:
+- `.previewLanguage(.german)` and `.previewLanguage(.arabic)` live in
+  `Apps/Shared/Debug/PreviewLanguage.swift`. They set the locale and the
+  reading direction; a preview that shows Core text builds that text with
+  `PreviewLanguage.german.locale` too, since its fixtures are made outside
+  the view.
+- The six German previews: "Paywall, iPhone, German", "Paywall, Apple TV,
+  German", "Form, iPhone, Xtream, German" (onboarding step 2), "Source rows,
+  German", "Guide sources rows, Apple TV, German" and "Error, Apple TV,
+  German". Settings detail on iPhone has no component preview: the screen
+  owns its SwiftData queries. Its German check is the source rows, whose
+  status lines are the detail page's longest copy.
+- The paywall, its product rows and the Apple TV player error now take
+  `@Environment(\.locale)` for every Core text they show (part of task 3.6).
+- The paywall linked "Terms of Use" and "Privacy Policy" by finding the
+  English words in the legal line, and the Apple TV paywall cut the English
+  sentence off to add the addresses. Both broke in any other language. The
+  link words and the renewal sentence are now their own Core entries
+  (`legal.terms`, `legal.privacy`, `legal.renewal`), and the Apple TV labels
+  "Terms: %@." and "Privacy: %@." are app entries. A translation of
+  `legal` must contain the two link words as the translator wrote them.
+- The German previews rendered on the iPhone simulator show no truncated
+  copy. They caught one English leftover, the guide row's "Retry now",
+  which now takes the environment locale.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

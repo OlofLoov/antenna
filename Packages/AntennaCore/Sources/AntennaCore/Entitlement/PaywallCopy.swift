@@ -18,6 +18,9 @@ public enum PaywallCopy {
         case priceLoading = "price.loading"
         case priceUnavailable = "price.unavailable"
         case legal
+        case legalRenewal = "legal.renewal"
+        case termsOfUse = "legal.terms"
+        case privacyPolicy = "legal.privacy"
         case statusPending = "status.pending"
         case statusFailed = "status.failed"
         case statusRestoreFailed = "status.restoreFailed"
@@ -68,6 +71,9 @@ public enum PaywallCopy {
         Yearly renews automatically until canceled in Settings. Payment is charged \
         to your Apple Account. Terms of Use and Privacy Policy.
         """,
+        .legalRenewal: "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account.",
+        .termsOfUse: "Terms of Use",
+        .privacyPolicy: "Privacy Policy",
         .statusPending: "Waiting for approval. Antenna unlocks as soon as the purchase is approved.",
         .statusFailed: "The purchase did not go through. Try again.",
         .statusRestoreFailed: "Restore did not go through. Try again.",
