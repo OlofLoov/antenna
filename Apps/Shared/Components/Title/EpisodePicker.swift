@@ -284,7 +284,7 @@ enum EpisodePicker {
                                     .foregroundStyle(Palette.ground)
                                     .padding(.vertical, type.badge / 5)
                                     .padding(.horizontal, type.badge / 2)
-                                    .background(Palette.accent, in: RoundedRectangle(cornerRadius: 4))
+                                    .background(Palette.accent, in: cornerShape(.small))
                                     .fixedSize()
                                     .accessibilityIdentifier("episodes.row.\(episode.id).upNext")
                             }

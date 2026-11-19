@@ -100,7 +100,7 @@
                                 .padding(28)
                             }
                             .frame(height: 380)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .clipShape(cornerShape(.large))
                             VStack(alignment: .leading, spacing: type.spacing) {
                                 Problem(type: type)
                                 Plot(type: type, lines: plotLines)

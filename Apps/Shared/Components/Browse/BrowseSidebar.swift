@@ -71,8 +71,8 @@ extension Browse {
                     .labelStyle(SidebarLabelStyle())
                     .padding(.horizontal, 12)
                     .frame(maxWidth: .infinity, minHeight: 40, alignment: .leading)
-                    .background(isSelected ? Palette.surface(0.12) : .clear, in: RoundedRectangle(cornerRadius: 10))
-                    .contentShape(RoundedRectangle(cornerRadius: 10))
+                    .background(isSelected ? Palette.surface(0.12) : .clear, in: cornerShape(.medium))
+                    .contentShape(cornerShape(.medium))
             }
             .buttonStyle(.plain)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -105,8 +105,8 @@ extension Browse {
                 .font(.callout.weight(isSelected ? .semibold : .regular))
                 .padding(.horizontal, 12)
                 .frame(maxWidth: .infinity, minHeight: 36, alignment: .leading)
-                .background(isSelected ? Palette.surface(0.08) : .clear, in: RoundedRectangle(cornerRadius: 10))
-                .contentShape(RoundedRectangle(cornerRadius: 10))
+                .background(isSelected ? Palette.surface(0.08) : .clear, in: cornerShape(.medium))
+                .contentShape(cornerShape(.medium))
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .combine)

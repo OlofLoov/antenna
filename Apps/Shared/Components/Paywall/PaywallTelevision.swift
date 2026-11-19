@@ -147,7 +147,7 @@ extension Paywall {
                 Image(systemName: reason == .notSold ? "storefront" : "wifi.exclamationmark")
                     .font(.boardStyle(36))
                     .frame(width: 80, height: 80)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 20))
+                    .background(Palette.surface(0.1), in: cornerShape(.large))
                     .accessibilityHidden(true)
                 Text(PaywallCopy.text(.unavailableTitle, locale: locale))
                     .font(.boardStyle(34, weight: .bold))
@@ -180,7 +180,7 @@ extension Paywall {
             }
             .padding(40)
             .frame(width: 1072)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20))
+            .background(Palette.surface(0.08), in: cornerShape(.large))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywall.unavailable")
         }
@@ -196,7 +196,7 @@ extension Paywall {
                 Image(systemName: "checkmark")
                     .font(.boardStyle(32, weight: .bold))
                     .frame(width: 72, height: 72)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 20))
+                    .background(Palette.surface(0.1), in: cornerShape(.large))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTV, locale: locale))
@@ -214,7 +214,7 @@ extension Paywall {
             .padding(.vertical, 36)
             .padding(.horizontal, 40)
             .frame(width: 1072)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 20))
+            .background(Palette.surface(0.08), in: cornerShape(.large))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywall.restored")
         }

@@ -8,7 +8,7 @@ struct LaunchSplash: View {
             .font(.boardStyle(40))
             .foregroundStyle(Palette.text)
             .frame(width: 88, height: 88)
-            .background(Paywall.markTile, in: RoundedRectangle(cornerRadius: 22))
+            .background(Paywall.markTile, in: cornerShape(.large))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Palette.ground)
             .accessibilityElement()

@@ -86,7 +86,7 @@ extension Paywall {
             Image(systemName: Paywall.mark)
                 .font(.boardStyle(40))
                 .frame(width: 88, height: 88)
-                .background(Paywall.markTile, in: RoundedRectangle(cornerRadius: 22))
+                .background(Paywall.markTile, in: cornerShape(.large))
                 .accessibilityHidden(true)
         }
     }
@@ -184,7 +184,7 @@ extension Paywall {
                 Image(systemName: reason == .notSold ? "storefront" : "wifi.exclamationmark")
                     .font(.boardStyle(20))
                     .frame(width: 44, height: 44)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 12))
+                    .background(Palette.surface(0.1), in: cornerShape(.medium))
                     .accessibilityHidden(true)
                 Text(PaywallCopy.text(.unavailableTitle, locale: locale))
                     .font(.boardStyle(17, weight: .semibold))
@@ -203,7 +203,7 @@ extension Paywall {
             .padding(.vertical, 20)
             .padding(.horizontal, 16)
             .frame(maxWidth: .infinity)
-            .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .background(Palette.surface(0.06), in: cornerShape(.medium))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywall.unavailable")
         }
@@ -219,7 +219,7 @@ extension Paywall {
                 Image(systemName: "checkmark")
                     .font(.boardStyle(18, weight: .bold))
                     .frame(width: 40, height: 40)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .background(Palette.surface(0.1), in: cornerShape(.medium))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTouch, locale: locale))
@@ -236,7 +236,7 @@ extension Paywall {
             }
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
-            .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .background(Palette.surface(0.06), in: cornerShape(.medium))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywall.restored")
         }

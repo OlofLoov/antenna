@@ -51,7 +51,7 @@ extension Browse {
                 HStack(spacing: 12) {
                     logo
                         .frame(width: metrics.tile.width, height: metrics.tile.height)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .clipShape(cornerShape(.small))
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Text(name)
@@ -82,8 +82,8 @@ extension Browse {
                 }
                 .padding(.horizontal, 8)
                 .frame(maxWidth: .infinity, minHeight: metrics.rowHeight * scale, alignment: .leading)
-                .background(isPlaying ? Palette.surface(0.12) : .clear, in: RoundedRectangle(cornerRadius: 10))
-                .contentShape(RoundedRectangle(cornerRadius: 10))
+                .background(isPlaying ? Palette.surface(0.12) : .clear, in: cornerShape(.medium))
+                .contentShape(cornerShape(.medium))
             }
             .buttonStyle(.plain)
             .foregroundStyle(Palette.text)

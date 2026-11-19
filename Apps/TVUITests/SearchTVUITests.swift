@@ -119,6 +119,7 @@ final class SearchTVUITests: XCTestCase {
     }
 
     // search/pick-a-programme
+    // design-system/live-video-keeps-playing-under-overlays, Search pauses the channel
     func testPickingAProgrammeOnNowPlaysItsChannel() {
         openSearch()
         type("evening")
@@ -128,6 +129,7 @@ final class SearchTVUITests: XCTestCase {
     }
 
     // search/pick-a-programme
+    // design-system/live-video-keeps-playing-under-overlays, Search pauses the channel
     func testPickingALaterProgrammeOpensTheGuideAtIt() {
         openSearch(environment: Midday.environment)
         type("late film")

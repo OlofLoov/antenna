@@ -78,7 +78,7 @@ enum PersonPageLayout {
             if let page {
                 HStack(spacing: type.gutter) {
                     Text(verbatim: page.state.initials)
-                        .font(.system(size: type.initials, weight: .bold))
+                        .font(.boardStyle(type.initials, weight: .bold))
                         .foregroundStyle(Palette.textMuted)
                         .frame(width: type.circle, height: type.circle)
                         .background(Circle().fill(PersonPageLayout.circle))
@@ -86,14 +86,14 @@ enum PersonPageLayout {
                     VStack(alignment: .leading, spacing: type.count / 2) {
                         // Provider text: never translated, laid out in its own script's direction.
                         Text(verbatim: page.state.name)
-                            .font(.system(size: type.name, weight: .heavy))
+                            .font(.boardStyle(type.name, weight: .heavy))
                             .foregroundStyle(Palette.text)
                             .lineLimit(2)
                             .minimumScaleFactor(0.7)
                             .accessibilityAddTraits(.isHeader)
                         if let count = page.state.count {
                             Text(verbatim: count)
-                                .font(.system(size: type.count))
+                                .font(.boardStyle(type.count))
                                 .foregroundStyle(Browse.textSecondary)
                                 .accessibilityIdentifier("person.count")
                         }
@@ -120,7 +120,7 @@ enum PersonPageLayout {
                 VStack(alignment: .leading, spacing: metrics.rowSpacing) {
                     if let empty = page.state.empty {
                         Text(verbatim: empty)
-                            .font(.system(size: type.count))
+                            .font(.boardStyle(type.count))
                             .foregroundStyle(Browse.textSecondary)
                             .padding(.horizontal, type.gutter)
                             .accessibilityIdentifier("person.empty")
@@ -161,7 +161,7 @@ enum PersonPageLayout {
         var body: some View {
             if let note = page?.state.note {
                 Text(verbatim: note)
-                    .font(.system(size: type.note))
+                    .font(.boardStyle(type.note))
                     .foregroundStyle(Palette.textMuted)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, type.gutter)
@@ -180,7 +180,7 @@ enum PersonPageLayout {
                 page?.actions.back()
             } label: {
                 Label(page?.state.back ?? "Back", systemImage: "chevron.backward")
-                    .font(.system(size: size, weight: .semibold))
+                    .font(.boardStyle(size, weight: .semibold))
                     .foregroundStyle(Palette.accent)
                     .lineLimit(1)
                     .frame(minHeight: 44)

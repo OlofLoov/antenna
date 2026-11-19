@@ -22,7 +22,7 @@
                             .font(.boardStyle(22))
                             .foregroundStyle(ImportSheetParts.body)
                             .frame(width: 44, height: 44)
-                            .background(ImportSheetParts.fileTile, in: RoundedRectangle(cornerRadius: 10))
+                            .background(ImportSheetParts.fileTile, in: cornerShape(.medium))
                             .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(fileName)
@@ -39,7 +39,7 @@
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.surface(0.06), in: cornerShape(.medium))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("import.file")
             }
@@ -83,7 +83,7 @@
                             id: "import.summary.skipped")
                     }
                 }
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.surface(0.06), in: cornerShape(.medium))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("import.summary")
             }
@@ -146,7 +146,7 @@
                     Spacer(minLength: 0)
                 }
                 .padding(14)
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.surface(0.06), in: cornerShape(.medium))
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("import.error")
             }
@@ -185,7 +185,7 @@
                         }
                         field("Guide URL", text: $guideLink, id: "import.field.guideURL")
                     }
-                    .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    .background(Palette.surface(0.06), in: cornerShape(.medium))
                     Label(
                         """
                         Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. \
@@ -230,7 +230,7 @@
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(isEnabled ? Palette.ground : Palette.textMuted)
-                        .background(isEnabled ? Palette.text : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 14))
+                        .background(isEnabled ? Palette.text : Palette.surface(0.12), in: cornerShape(.medium))
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -250,7 +250,7 @@
                         .font(.boardStyle(17, weight: .semibold))
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(Palette.text)
-                        .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 14))
+                        .background(Palette.surface(0.12), in: cornerShape(.medium))
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)

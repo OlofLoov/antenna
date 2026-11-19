@@ -31,7 +31,7 @@ enum SetupFromTV {
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 14)
-                .background(Palette.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.accent.opacity(0.12), in: cornerShape(.medium))
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("onboarding.fromTV.banner")
                 if let line = Self.existing(existing, device: device) {
@@ -112,7 +112,7 @@ enum SetupFromTV {
                             .accessibilityIdentifier("onboarding.sending.row.login")
                     }
                 }
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .background(Palette.surface(0.06), in: cornerShape(.medium))
                 Label("The login stays in your iCloud Keychain. If the Apple TV asks for it, enter it once there.", systemImage: "lock")
                     .font(.boardStyle(13))
                     .foregroundStyle(Palette.textMuted)
@@ -122,7 +122,7 @@ enum SetupFromTV {
                         .font(.boardStyle(17, weight: .bold))
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(primary ? Palette.ground : Palette.text)
-                        .background(primary ? Palette.text : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 14))
+                        .background(primary ? Palette.text : Palette.surface(0.12), in: cornerShape(.medium))
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("onboarding.sending.continue")

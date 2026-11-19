@@ -156,7 +156,7 @@ enum MultiViewParts {
             .foregroundStyle(Palette.text)
             .padding(.horizontal, 24)
             .frame(height: 60)
-            .background(Palette.scrimTint.opacity(0.82), in: RoundedRectangle(cornerRadius: 14))
+            .background(Palette.scrimTint.opacity(0.82), in: cornerShape(.medium))
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("multiView.swapBadge")
         }

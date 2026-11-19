@@ -35,6 +35,7 @@ extension ShellUITests {
 
 extension ShellUITests {
     // tv-guide-grid/the-channel-keeps-playing-in-a-small-picture
+    // design-system/live-video-keeps-playing-under-overlays
     func testTheChannelKeepsPlayingInASmallPicture() {
         launchPlaying()
         openGuide()

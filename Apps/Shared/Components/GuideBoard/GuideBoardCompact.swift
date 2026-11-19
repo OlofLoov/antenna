@@ -19,7 +19,7 @@ extension GuideBoard {
                     HStack(spacing: 8) {
                         logo
                             .frame(width: 30, height: 20)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .clipShape(cornerShape(.small))
                         if let number {
                             ChannelNumberText(number)
                                 .font(.boardStyle(13))
@@ -78,7 +78,7 @@ extension GuideBoard {
                                 .foregroundStyle(Palette.ground)
                                 .padding(.vertical, 1)
                                 .padding(.horizontal, 5)
-                                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 4))
+                                .background(Palette.accent, in: cornerShape(.small))
                         }
                     }
                     Text(title)
@@ -95,7 +95,7 @@ extension GuideBoard {
                         ProgressTrack(fraction: progress)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(cornerShape(.small))
                 .contentShape(Rectangle())
             }
         }
@@ -112,7 +112,7 @@ extension GuideBoard {
                     .padding(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
                     .frame(width: GuideStrip.cardWidth, alignment: .topLeading)
                     .frame(minHeight: GuideStrip.cardHeight, alignment: .topLeading)
-                    .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 8))
+                    .background(Palette.surface(0.06), in: cornerShape(.small))
             }
         }
 
@@ -128,7 +128,7 @@ extension GuideBoard {
                     .lineLimit(1)
                     .padding(.horizontal, 12)
                     .frame(maxWidth: .infinity, minHeight: GuideStrip.cardHeight, alignment: .leading)
-                    .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 8))
+                    .background(Palette.surface(0.06), in: cornerShape(.small))
                     .padding(.horizontal, 16)
             }
         }
@@ -149,7 +149,7 @@ extension GuideBoard {
                     HStack(spacing: 12) {
                         logo
                             .frame(width: 44, height: 28)
-                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .clipShape(cornerShape(.small))
                         VStack(alignment: .leading, spacing: 2) {
                             Text(title)
                                 .font(.boardStyle(15, weight: .semibold))
@@ -169,7 +169,7 @@ extension GuideBoard {
                             .letterSpacing(1)
                             .padding(.vertical, 3)
                             .padding(.horizontal, 7)
-                            .background(Palette.surface(0.14), in: RoundedRectangle(cornerRadius: 5))
+                            .background(Palette.surface(0.14), in: cornerShape(.small))
                         }
                     }
                     .foregroundStyle(Palette.text)

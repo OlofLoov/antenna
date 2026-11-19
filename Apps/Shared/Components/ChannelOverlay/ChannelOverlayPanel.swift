@@ -69,7 +69,7 @@ extension ChannelOverlay {
             HStack(spacing: 24) {
                 logo
                     .frame(width: 132, height: 88)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(cornerShape(.medium))
                     .accessibilityIdentifier("overlay.panel.logo")
                 VStack(alignment: .leading, spacing: 8) {
                     Text(name)
@@ -83,7 +83,7 @@ extension ChannelOverlay {
                                 .foregroundStyle(ChannelOverlay.tileText)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 4)
-                                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Palette.textMuted, lineWidth: 1.5))
+                                .overlay(cornerShape(.small).stroke(Palette.textMuted, lineWidth: 1.5))
                         }
                     }
                     .accessibilityElement(children: .combine)
@@ -377,7 +377,7 @@ extension ChannelOverlay {
                 .foregroundStyle(color)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .overlay(RoundedRectangle(cornerRadius: 6).stroke(color, lineWidth: 1.5))
+                .overlay(cornerShape(.small).stroke(color, lineWidth: 1.5))
         }
     }
 }

@@ -109,7 +109,7 @@ enum GuideGrid {
 
         var body: some View {
             ZStack(alignment: .top) {
-                RoundedRectangle(cornerRadius: 2)
+                cornerShape(.small)
                     .fill(Palette.accent)
                     .frame(width: 3)
                     .frame(maxHeight: .infinity)
@@ -120,7 +120,7 @@ enum GuideGrid {
                     .fixedSize()
                     .padding(.vertical, 4)
                     .padding(.horizontal, 10)
-                    .background(Palette.accent, in: RoundedRectangle(cornerRadius: 6))
+                    .background(Palette.accent, in: cornerShape(.small))
                     .padding(.top, 8)
             }
             .frame(width: 3)
@@ -200,7 +200,7 @@ enum GuideGrid {
                     .frame(width: 44, alignment: .leading)
                 logo
                     .frame(width: 64, height: 42)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .clipShape(cornerShape(.small))
                 Text(name)
                     .font(.boardStyle(24, weight: look == .playing ? .semibold : .regular))
                     .lineLimit(1)

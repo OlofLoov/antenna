@@ -182,7 +182,7 @@ enum TrackPicker {
                 }
                 .padding(.horizontal, 12)
                 .frame(minHeight: 44)
-                .background(row.isSelected ? Palette.surface(0.08) : .clear, in: RoundedRectangle(cornerRadius: 10))
+                .background(row.isSelected ? Palette.surface(0.08) : .clear, in: cornerShape(.medium))
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

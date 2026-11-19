@@ -68,15 +68,29 @@ enum Metrics {
     static let televisionSafeArea = EdgeInsets(top: 60, leading: 80, bottom: 60, trailing: 80)
 
     /// A rounded rectangle with the scale's radius, or a capsule.
-    struct CornerShape: Shape {
+    struct CornerShape: InsettableShape {
         let corner: Corner
         let radii: Radii
+        var inset: CGFloat = 0
 
         func path(in rect: CGRect) -> Path {
+            let rect = rect.insetBy(dx: inset, dy: inset)
             guard let radius = radii.radius(corner) else { return Capsule(style: .continuous).path(in: rect) }
-            return RoundedRectangle(cornerRadius: radius, style: .continuous).path(in: rect)
+            return RoundedRectangle(cornerRadius: max(0, radius - inset), style: .continuous).path(in: rect)
+        }
+
+        func inset(by amount: CGFloat) -> CornerShape {
+            var shape = self
+            shape.inset += amount
+            return shape
         }
     }
+}
+
+/// The scale's shape for `corner` on this platform, for views inside a type
+/// whose own `Metrics` hides the app-wide one: `cornerShape(.medium)`.
+func cornerShape(_ corner: Metrics.Corner) -> Metrics.CornerShape {
+    corner.shape()
 }
 
 private struct ScaleSample: View {

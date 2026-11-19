@@ -461,10 +461,10 @@
                 VStack(alignment: .leading, spacing: 18) {
                     toggles
                     LivePicture()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(cornerShape(.medium))
                         .overlay {
                             if live.playing == nil {
-                                RoundedRectangle(cornerRadius: 12).strokeBorder(Palette.surface(0.08))
+                                cornerShape(.medium).strokeBorder(Palette.surface(0.08))
                             }
                         }
                     if let channel = live.playing {

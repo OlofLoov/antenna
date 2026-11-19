@@ -12,7 +12,7 @@ enum PasscodePad {
         var body: some View {
             HStack(spacing: 16) {
                 ForEach(1...4, id: \.self) { slot in
-                    RoundedRectangle(cornerRadius: 12)
+                    cornerShape(.medium)
                         .stroke(Palette.textMuted, lineWidth: 2)
                         .frame(width: 56, height: 64)
                         .overlay {

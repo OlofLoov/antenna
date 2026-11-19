@@ -166,10 +166,10 @@ enum GuidePanel {
 
         var body: some View {
             ZStack(alignment: .bottomLeading) {
-                RoundedRectangle(cornerRadius: 14)
+                cornerShape(.medium)
                     .fill(look == .playing ? Color.clear : Palette.ground)
                     .overlay {
-                        RoundedRectangle(cornerRadius: 14).stroke(Palette.surface(look == .playing ? 0 : 0.08), lineWidth: 1)
+                        cornerShape(.medium).stroke(Palette.surface(look == .playing ? 0 : 0.08), lineWidth: 1)
                     }
                 if look != .nothing {
                     HStack(spacing: 10) {

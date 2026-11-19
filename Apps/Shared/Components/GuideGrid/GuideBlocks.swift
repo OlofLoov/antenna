@@ -33,7 +33,7 @@ extension GuideGrid {
             .foregroundStyle(muted ? Palette.textMuted : Palette.text)
             .padding(.horizontal, 16)
             .frame(width: width, height: GuideRowLayout.rowHeight, alignment: .leading)
-            .background(Palette.surface(muted ? 0.06 : 0.08), in: RoundedRectangle(cornerRadius: 8))
+            .background(Palette.surface(muted ? 0.06 : 0.08), in: cornerShape(.small))
         }
 
         private var title: String? {
@@ -78,7 +78,7 @@ extension GuideGrid {
             .foregroundStyle(Palette.ground)
             .padding(.horizontal, 16)
             .frame(width: width, height: GuideRowLayout.rowHeight, alignment: .leading)
-            .background(Palette.focus, in: RoundedRectangle(cornerRadius: 8))
+            .background(Palette.focus, in: cornerShape(.small))
             .shadow(color: Color.black.opacity(0.5), radius: 14, y: 10)
         }
 
@@ -126,7 +126,7 @@ private struct GridPreview: View {
     var body: some View {
         GuideGrid.Screen {
             ZStack(alignment: .bottomLeading) {
-                RoundedRectangle(cornerRadius: 14).fill(Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255))
+                cornerShape(.medium).fill(Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255))
                 GuidePanel.PictureCaption(caption: "104 Sport One", look: .playing)
             }
         } panel: {

@@ -195,7 +195,7 @@ enum ShelfBanner {
                 .foregroundStyle(Palette.text)
                 .padding(.vertical, size / 5)
                 .padding(.horizontal, size / 2)
-                .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Palette.textMuted, lineWidth: 1.5))
+                .overlay(cornerShape(.small).strokeBorder(Palette.textMuted, lineWidth: 1.5))
         }
     }
 

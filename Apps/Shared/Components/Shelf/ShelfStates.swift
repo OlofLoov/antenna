@@ -74,7 +74,7 @@ extension ShelfView {
                 .lineLimit(1)
                 .padding(.horizontal, 14)
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+                .background(Palette.surface(0.08), in: cornerShape(.medium))
                 .accessibilityIdentifier("\(prefix).waiting.\(source.id.uuidString)")
         }
     }

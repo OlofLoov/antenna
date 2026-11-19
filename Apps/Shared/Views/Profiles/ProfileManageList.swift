@@ -124,14 +124,14 @@
                             TextField("Name", text: $name)
                                 .padding(.horizontal, 14)
                                 .frame(minHeight: 48)
-                                .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                                .background(.white.opacity(0.06), in: cornerShape(.medium))
                                 .accessibilityIdentifier("profiles.edit.name")
                         }
                         ProfileColorRow(selected: colorIndex) { colorIndex = $0 }
                         if let profile, profiles.canDelete(profile.id) {
                             Button("Delete profile", role: .destructive) { confirmingDelete = true }
                                 .frame(maxWidth: .infinity, minHeight: 48)
-                                .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                                .background(.white.opacity(0.06), in: cornerShape(.medium))
                                 .accessibilityIdentifier("profiles.edit.delete")
                         }
                     }

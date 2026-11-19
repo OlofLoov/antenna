@@ -232,7 +232,7 @@ enum ChannelOverlay {
                     NumberText(number: number)
                     logo
                         .frame(width: 76, height: 50)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(cornerShape(.small))
                         .accessibilityIdentifier("\(identifier).logo")
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .firstTextBaseline, spacing: 16) {

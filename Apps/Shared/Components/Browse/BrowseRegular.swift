@@ -66,7 +66,7 @@ extension Browse {
             .padding(.leading, 12)
             .padding(.trailing, text.isEmpty ? 12 : 2)
             .frame(height: 36)
-            .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 10))
+            .background(Palette.surface(0.08), in: cornerShape(.medium))
         }
     }
 
@@ -81,7 +81,7 @@ extension Browse {
                 Image(systemName: systemImage)
                     .font(.boardStyle(17))
                     .frame(width: 36, height: 36)
-                    .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .background(Palette.surface(0.1), in: cornerShape(.medium))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -127,7 +127,7 @@ extension Browse {
                 HStack(alignment: .top, spacing: 16) {
                     logo
                         .frame(width: 84, height: 56)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(cornerShape(.small))
                         .environment(\.browseMetrics, .panel)
                     VStack(alignment: .leading, spacing: 6) {
                         HStack(alignment: .firstTextBaseline, spacing: 12) {
