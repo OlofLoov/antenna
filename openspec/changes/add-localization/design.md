@@ -633,6 +633,21 @@ PR 9, Portuguese (Brazil):
 - "você", Apple's Brazilian names ("Ajustes", "Chaves do iCloud",
   "Compartilhamento Familiar", "Conta Apple"). Catch-up is "Reprise".
 
+French review:
+- fr reviewed by a model reviewer in place of a native speaker (owner's
+  decision 2026-11-19).
+- The device sentences now say "votre %@", which reads right for iPhone,
+  iPad and Mac. "On its own" had gone in as "tout seul"; it is
+  "automatiquement" now.
+- French has a space before `:` `?` `!` `;` and inside « », and the first
+  pass used a plain one, so a line could break before the mark. Every one
+  is a no-break space now.
+- French counts 0 as singular, and some English entries have no plural
+  because English picks "1 channel" in code. The French entries for those
+  counts carry their own plural forms ("0 chaîne", "1 série", "1 autre").
+  "%@ channels", where the count arrives as text, still reads "1 chaînes".
+- The time left reads "Encore 26 min", so "min" needs no agreement.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

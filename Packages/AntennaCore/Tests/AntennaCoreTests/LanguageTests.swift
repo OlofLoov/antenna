@@ -83,6 +83,7 @@ import Testing
         #expect(french.channels(ChannelTally(channels: 1, groups: ["News"])) == "1 chaîne en direct dans 1 groupe")
         #expect(french.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 chaînes en direct dans 2 groupes")
         #expect(SourceStatusText(locale: Locale(identifier: "fr_CA")).count(1) == "1 chaîne")
+        #expect(SourceStatusText(locale: Locale(identifier: "fr_FR")).count(0) == "0 chaîne")
     }
 
     @Test("localization/the-app-speaks-the-user-s-language Portugal reads the Brazilian table")
