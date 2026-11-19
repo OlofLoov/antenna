@@ -3,6 +3,7 @@ include:
   - Config/version.yml
 options:
   bundleIdPrefix: se.codecrave
+  developmentLanguage: en
   xcodeVersion: "26.0"
   deploymentTarget:
     iOS: "26.0"
@@ -35,6 +36,13 @@ targets:
     dependencies:
       - package: AntennaCore
       - package: AntennaDemux
+    postBuildScripts:
+      - name: Strip unreviewed languages
+        script: bash "$SRCROOT/scripts/strip-unreviewed-languages.sh"
+        inputFiles:
+          - $(SRCROOT)/Config/reviewed-languages
+          - $(SRCROOT)/scripts/strip-unreviewed-languages.sh
+        basedOnDependencyAnalysis: false
     info:
       path: Apps/Mobile/Info.plist
       properties:
@@ -69,6 +77,9 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
 
   AntennaTests:
     type: bundle.unit-test
@@ -103,6 +114,7 @@ targets:
     supportedDestinations: [iOS]
     sources:
       - Apps/Journeys
+      - Apps/UITests/LaunchInEnglish.swift
     dependencies:
       - target: Antenna
     settings:
@@ -120,6 +132,13 @@ targets:
       - package: AntennaCore
       - package: AntennaDemux
       - target: AntennaTopShelf
+    postBuildScripts:
+      - name: Strip unreviewed languages
+        script: bash "$SRCROOT/scripts/strip-unreviewed-languages.sh"
+        inputFiles:
+          - $(SRCROOT)/Config/reviewed-languages
+          - $(SRCROOT)/scripts/strip-unreviewed-languages.sh
+        basedOnDependencyAnalysis: false
     info:
       path: Apps/TV/Info.plist
       properties:
@@ -144,6 +163,9 @@ targets:
         CODE_SIGN_ENTITLEMENTS: Config/AntennaTV$(ANTENNA_ENTITLEMENTS_SUFFIX).entitlements
         TARGETED_DEVICE_FAMILY: "3"
         ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
 
   AntennaTopShelf:
     type: app-extension
@@ -152,6 +174,13 @@ targets:
       - Apps/TopShelf
     dependencies:
       - package: AntennaCore
+    postBuildScripts:
+      - name: Strip unreviewed languages
+        script: bash "$SRCROOT/scripts/strip-unreviewed-languages.sh"
+        inputFiles:
+          - $(SRCROOT)/Config/reviewed-languages
+          - $(SRCROOT)/scripts/strip-unreviewed-languages.sh
+        basedOnDependencyAnalysis: false
     entitlements:
       path: Config/AntennaTopShelf.entitlements
       properties:
@@ -168,6 +197,9 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna.tv.topshelf
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
         TARGETED_DEVICE_FAMILY: "3"
 
   AntennaTVTests:
@@ -191,6 +223,7 @@ targets:
     sources:
       - Apps/TVUITests
       - Apps/UITests/Midday.swift
+      - Apps/UITests/LaunchInEnglish.swift
     dependencies:
       - target: AntennaTV
     settings:
@@ -203,6 +236,7 @@ targets:
     sources:
       - Apps/TVJourneys
       - Apps/Journeys/Snap.swift
+      - Apps/UITests/LaunchInEnglish.swift
     dependencies:
       - target: AntennaTV
     settings:

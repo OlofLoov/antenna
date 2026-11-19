@@ -26,7 +26,7 @@ final class RestoreUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", scenario] + (keep ? ["-ui-testing-keep-session"] : [])
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
         app.launchEnvironment["UITESTING_LAST_CHANNEL_FILE"] = lastChannel.path
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

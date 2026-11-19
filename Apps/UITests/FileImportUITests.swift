@@ -23,7 +23,7 @@ final class FileImportUITests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments = arguments
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

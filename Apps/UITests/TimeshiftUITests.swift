@@ -20,7 +20,7 @@ final class TimeshiftUITests: XCTestCase {
         // reads 20 or 21 at its start, depending on the last tick; 20.5 always reads 21.
         app.launchEnvironment["UITESTING_TIMESHIFT_MINUTES"] = "20.5"
         app.launchEnvironment["TZ"] = "UTC"
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")

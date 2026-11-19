@@ -17,7 +17,7 @@ final class ShellUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", scenario]
         app.launchEnvironment.merge(environment) { $1 }
-        app.launch()
+        app.launchInEnglish()
     }
 
     func element(_ identifier: String) -> XCUIElement {

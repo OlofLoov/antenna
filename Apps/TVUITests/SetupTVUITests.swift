@@ -16,7 +16,7 @@ final class SetupTVUITests: XCTestCase {
         if let hintSeconds { app.launchEnvironment["UITESTING_SETUP_HINT_SECONDS"] = "\(hintSeconds)" }
         // The login sent with a source gets two seconds instead of a minute.
         app.launchEnvironment["UITESTING_LOGIN_WAIT_SECONDS"] = "2"
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

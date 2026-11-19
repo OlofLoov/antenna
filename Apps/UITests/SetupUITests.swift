@@ -19,7 +19,7 @@ final class SetupUITests: XCTestCase {
         app.launchArguments =
             ["-ui-testing-onboarding", "connect", "-ui-testing-setup-link", link, "-ui-testing-setup-delivery", delivery] + extra
         if let timeout { app.launchEnvironment["UITESTING_SETUP_SEND_TIMEOUT_SECONDS"] = "\(timeout)" }
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

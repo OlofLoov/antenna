@@ -94,7 +94,7 @@ extension ShellUITests {
     func testAFailedGuideSaysUnavailable() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-guide-failed"]
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectGone("zapBar.bar", timeout: 10)
         openGuide()
@@ -264,7 +264,7 @@ extension ShellUITests {
         // b1's Evening Film, asked for once a1 plays, as Search will. b1 is not in a1's group.
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-guide-request"]
-        app.launch()
+        app.launchInEnglish()
         expectFocus("guide.grid")
         expectHighlight("guide.block.00000000-0000-0000-0000-00000000000B.0.")
         XCTAssertTrue(highlighted().label.contains("Evening Film"), highlighted().label)

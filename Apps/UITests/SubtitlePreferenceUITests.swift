@@ -2,7 +2,7 @@ import XCTest
 
 /// The Subtitles preference and the subtitles a channel starts with on
 /// iPhone, on the scripted launch of `LiveUITests`. The device's language is
-/// fixed to English with `-AppleLanguages`.
+/// fixed to English by `launchInEnglish()`.
 @MainActor
 final class SubtitlePreferenceUITests: XCTestCase {
     override func setUp() {
@@ -13,10 +13,10 @@ final class SubtitlePreferenceUITests: XCTestCase {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         XCUIDevice.shared.orientation = .portrait
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-live", "channels", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launchArguments = ["-ui-testing-live", "channels"]
         if let tracks { app.launchEnvironment["UITESTING_TRACKS"] = tracks }
         if let subtitles { app.launchEnvironment["UITESTING_SUBTITLES"] = subtitles }
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

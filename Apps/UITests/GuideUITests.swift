@@ -22,7 +22,7 @@ final class GuideUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario] + extra
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.tabBars.buttons["Guide"].waitForExistence(timeout: 10))
         return app
     }

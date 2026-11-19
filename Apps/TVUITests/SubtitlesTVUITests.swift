@@ -2,13 +2,13 @@ import XCTest
 
 /// The Subtitles preference and the subtitles a channel starts with on
 /// Apple TV, over the shell's scripted `channels` scenario. The device's
-/// language is fixed to English with `-AppleLanguages`.
+/// language is fixed to English by `launchInEnglish()`.
 extension ShellUITests {
     func launchSubtitles(environment: [String: String]) {
         app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shell", "channels", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment.merge(environment) { $1 }
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)

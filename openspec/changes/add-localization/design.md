@@ -393,6 +393,38 @@ No data migration. Nothing in SwiftData or UserDefaults stores app copy;
 built-in group names are derived at display time. Rollback is a revert of
 the language PR, or removing a code from `Config/reviewed-languages`.
 
+## Findings while building
+
+PR 1, catalog setup:
+- `xcodebuild build` never writes extracted strings into a catalog.
+  `xcodebuild -exportLocalizations` does: it rewrites the catalogs in place
+  and puts the same copies under the export's `Source Contents`. So
+  `scripts/sync-strings.sh` exports and writes those catalogs back through
+  `scripts/translations.py sync`, dropping stale keys and marking keys with
+  no words (`%@ · %@`) and the bundle names as not translated. With
+  `--check` it puts the committed catalogs back and fails when code holds a
+  string they lack; the Build apps job runs that. One export builds every
+  target, iOS, macOS and tvOS, so one scheme covers both apps and the Top
+  Shelf extension. Strings inside `#Preview` blocks are not extracted.
+- The export also writes an `InfoPlist.xcstrings` for the Top Shelf
+  extension holding only the bundle names. It is left out of the repo, as
+  decided above; the check fails if that catalog gains any other key.
+- The languages the checks require live in `Config/languages`, one code per
+  line, next to `Config/reviewed-languages`. A language PR adds its code
+  there. XcodeGen has no `knownRegions` option, and the built app lists a
+  language once its `.lproj` exists, which the catalog compiler writes.
+- The strip phase cannot run under user script sandboxing: it must list and
+  delete folders inside the built product, which a sandboxed script cannot
+  read. `ENABLE_USER_SCRIPT_SANDBOXING` is off for the two app targets and
+  the Top Shelf extension. The phase runs in each of the three, since the
+  extension is signed before the app embeds it.
+- The rule against copy in `String` constants has 25 hits on main. It warns
+  in PR 1 and fails from PR 2, which moves that copy into the catalog.
+- `XCUIApplication.launchInEnglish()` in `Apps/UITests/LaunchInEnglish.swift`
+  is the launch helper, shared with the Apple TV UI tests and both journey
+  targets. A rule in `scripts/check-rules.sh` fails on a plain `launch()` in
+  any UI test folder.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

@@ -36,7 +36,7 @@ final class TitleTVUITests: XCTestCase {
     func openMoviePage(sampleScores: Bool = false) {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-mock-title-scores", sampleScores ? "YES" : "NO"]
-        app.launch()
+        app.launchInEnglish()
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")
         press(.menu)
@@ -104,7 +104,7 @@ final class TitleTVUITests: XCTestCase {
     func openNorthernLights() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
         press(.right, times: 3)
@@ -141,7 +141,7 @@ final class TitleTVUITests: XCTestCase {
     func testMoreOpensTheWholeDescriptionThatMenuCloses() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         XCTAssertTrue(element("shell.tab.movies").waitForExistence(timeout: 10))
         press(.right, times: 2)

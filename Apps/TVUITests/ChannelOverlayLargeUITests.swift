@@ -8,7 +8,7 @@ extension ShellUITests {
     func launchPlayingLarge() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-large-catalogue"]
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)

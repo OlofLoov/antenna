@@ -7,7 +7,7 @@ extension ShellUITests {
     func launchPlaying(reminders seed: String?) {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"] + (seed.map { ["-ui-testing-reminders", $0] } ?? [])
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)

@@ -8,7 +8,7 @@ extension ShellUITests {
     func launchWithHints() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-hints"]
-        app.launch()
+        app.launchInEnglish()
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false", timeout: 10)
     }

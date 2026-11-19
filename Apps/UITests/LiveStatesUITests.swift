@@ -13,7 +13,7 @@ final class LiveStatesUITests: XCTestCase {
     private func launch(_ scenario: String) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario]
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

@@ -21,7 +21,7 @@ final class SourceSignInTVUITests: XCTestCase {
         app.launchArguments =
             ["-ui-testing-onboarding", "connect"] + (mode.map { ["-ui-testing-login-drops", $0] } ?? [])
             + ["-ui-testing-signin-sources", "1", "-ui-testing-signin-playlist"]
-        app.launch()
+        app.launchInEnglish()
     }
 
     private func element(_ identifier: String) -> XCUIElement {

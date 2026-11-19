@@ -31,7 +31,7 @@ final class TimeshiftTVUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_TIMESHIFT"] = script
         app.launchEnvironment["TZ"] = "UTC"
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expect(element("zapBar.bar"), "exists == false", timeout: 10)
     }

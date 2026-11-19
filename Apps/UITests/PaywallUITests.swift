@@ -20,7 +20,7 @@ final class PaywallUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = base + ["-antenna.entitlement", entitlement, "-antenna.store", store]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

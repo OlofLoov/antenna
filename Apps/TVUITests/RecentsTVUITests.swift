@@ -9,7 +9,7 @@ extension ShellUITests {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_RECENTS"] = recents
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)
@@ -108,7 +108,7 @@ extension ShellUITests {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_LAST_CHANNEL_FILE"] = mirror.path
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)
@@ -120,7 +120,7 @@ extension ShellUITests {
         app.terminate()
 
         app.launchArguments.append("-ui-testing-keep-session")
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a2.ts")
     }
 }

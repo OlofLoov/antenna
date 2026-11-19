@@ -133,7 +133,7 @@
                 Button {
                     page?.actions.back()
                 } label: {
-                    Image(systemName: "chevron.left")
+                    Image(systemName: "chevron.backward")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundStyle(Palette.text)
                         .frame(width: 36, height: 36)
@@ -156,7 +156,7 @@
                 Button {
                     page?.actions.back()
                 } label: {
-                    Label(page?.state.section ?? "Back", systemImage: "chevron.left")
+                    Label(page?.state.section ?? "Back", systemImage: "chevron.backward")
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(Palette.accent)
                         .frame(minHeight: 44)

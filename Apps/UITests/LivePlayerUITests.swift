@@ -39,7 +39,7 @@ final class LivePlayerUITests: XCTestCase {
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
         app.launchEnvironment["UITESTING_LAST_CHANNEL_FILE"] = lastChannel.path
         if let controlsSeconds { app.launchEnvironment["UITESTING_CONTROLS_SECONDS"] = String(controlsSeconds) }
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

@@ -19,7 +19,7 @@ final class MultiViewTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment = environment
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar")
@@ -124,7 +124,7 @@ final class MultiViewTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment = ["UITESTING_PLAYBACK": "stall"]
-        app.launch()
+        app.launchInEnglish()
         expectEngine("loading loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar")

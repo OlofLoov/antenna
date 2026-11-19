@@ -18,7 +18,7 @@ final class PlayerErrorTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_PLAYBACK"] = "fail-\(reason)"
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(element("player.error").waitForExistence(timeout: 15), "no error")
     }
 
@@ -101,7 +101,7 @@ final class PlayerErrorTVUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_PLAYBACK"] = "fail-loginNotOnDevice"
         app.launchEnvironment["UITESTING_LAST_CHANNEL"] = "b1"
-        app.launch()
+        app.launchInEnglish()
         expectEngine("failed loads=1 file=b1.ts")
         XCTAssertEqual(element("player.error.title").label, "Sign in needed")
         let signIn = element("player.signIn")

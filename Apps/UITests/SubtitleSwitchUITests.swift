@@ -2,7 +2,7 @@ import XCTest
 
 /// The subtitles switch next to the audio-and-subtitles button and the
 /// subtitles over the picture, on the scripted launch of `LiveUITests`. The
-/// device's language is fixed to English with `-AppleLanguages`.
+/// device's language is fixed to English by `launchInEnglish()`.
 @MainActor
 final class SubtitleSwitchUITests: XCTestCase {
     override func setUp() {
@@ -13,11 +13,11 @@ final class SubtitleSwitchUITests: XCTestCase {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         XCUIDevice.shared.orientation = .portrait
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-live", "channels", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_CONTROLS_SECONDS"] = "600"
         if let tracks { app.launchEnvironment["UITESTING_TRACKS"] = tracks }
         if let subtitles { app.launchEnvironment["UITESTING_SUBTITLES"] = subtitles }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")

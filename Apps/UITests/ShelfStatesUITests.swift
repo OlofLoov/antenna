@@ -15,7 +15,7 @@ final class ShelfStatesUITests: XCTestCase {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"]
-        app.launch()
+        app.launchInEnglish()
         let tab = app.tabBars.buttons["Movies"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         tab.tap()

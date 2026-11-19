@@ -21,7 +21,7 @@ final class PlayerErrorUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_PLAYBACK"] = "fail-\(reason)"
         app.launchEnvironment.merge(environment) { _, new in new }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         XCTAssertTrue(app.element("player.error").waitForExistence(timeout: 10), "no error")

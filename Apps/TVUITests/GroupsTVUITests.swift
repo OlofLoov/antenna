@@ -8,7 +8,7 @@ extension ShellUITests {
     func testGroupsAsksForThePasscodeAndOffersNoResetOnAppleTV() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-groups", "locked"]
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
         expectGone("zapBar.bar", timeout: 10)
         openSettingsOnProfiles()

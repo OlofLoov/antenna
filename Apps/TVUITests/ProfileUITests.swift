@@ -6,7 +6,7 @@ extension ShellUITests {
     func launchWithProfiles() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-profiles"]
-        app.launch()
+        app.launchInEnglish()
     }
 
     // profiles/who-s-watching-at-launch

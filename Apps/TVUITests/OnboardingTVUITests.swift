@@ -10,7 +10,7 @@ final class OnboardingTVUITests: XCTestCase {
     private func launch(_ scenario: String) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-onboarding", scenario]
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 
@@ -125,7 +125,7 @@ final class OnboardingTVUITests: XCTestCase {
     func testAddASourceFromSettingsOpensTheKindsThenTheFormInOneCover() {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
-        app.launch()
+        app.launchInEnglish()
         let picture = element(app, "shell.picture")
         XCTAssertTrue(picture.waitForExistence(timeout: 15))
         XCTAssertTrue(element(app, "zapBar.bar").waitForNonExistence(timeout: 15))
@@ -202,7 +202,7 @@ final class OnboardingTVUITests: XCTestCase {
     func testConnectShowsTheSummaryAndStartWatchingOpensLive() {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-onboarding", "connect", "-ui-testing-playlist", "http://onboarding.test/tv.m3u"]
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         XCUIRemote.shared.press(.select)
         XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))

@@ -31,7 +31,7 @@ final class SendLoginsUITests: XCTestCase {
                 "-ui-testing-setup-link", link ?? Self.link(sources),
             ] + extra
         app.launchEnvironment = environment
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

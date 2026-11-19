@@ -17,7 +17,7 @@ final class StartOverUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_TIMESHIFT"] = script
         app.launchEnvironment["UITESTING_TIMESHIFT_MINUTES"] = String(minutes)
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(row).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(row).tap()
         app.waitForEngine("playing loads=1")

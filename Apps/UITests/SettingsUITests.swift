@@ -8,7 +8,7 @@ final class SettingsUITests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"]
-        app.launch()
+        app.launchInEnglish()
 
         let tab = app.tabBars.buttons["Settings"]
         let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
@@ -33,7 +33,7 @@ final class SettingsUITests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario]
-        app.launch()
+        app.launchInEnglish()
         let tab = app.tabBars.buttons["Settings"]
         let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
         button.tap()

@@ -23,7 +23,7 @@ final class IntentRequestUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels", "-ui-testing-intent", request]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 
@@ -57,7 +57,7 @@ final class IntentRequestUITests: XCTestCase {
             "-ui-testing-live", "channels", "-ui-testing-intent-on-return", "play:\(Self.cabin)/xtream#office#vod#1",
         ]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")

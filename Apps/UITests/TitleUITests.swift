@@ -15,7 +15,7 @@ final class TitleUITests: XCTestCase {
         app.launchArguments = [
             "-ui-testing-shelf", scenario, "-ui-testing-reduce-motion", "-mock-title-scores", sampleScores ? "YES" : "NO",
         ]
-        app.launch()
+        app.launchInEnglish()
         return app
     }
 

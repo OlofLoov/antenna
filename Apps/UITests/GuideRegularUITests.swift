@@ -26,7 +26,7 @@ final class GuideRegularUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", scenario] + extra + (reset ? ["-ui-testing-reset-guide-zoom"] : [])
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
         app.launchEnvironment.merge(environment) { $1 }
-        app.launch()
+        app.launchInEnglish()
         XCTAssertTrue(app.element("browse.section.guide").waitForExistence(timeout: 10), "the sidebar never appeared")
         return app
     }

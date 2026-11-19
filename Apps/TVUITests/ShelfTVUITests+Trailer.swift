@@ -22,7 +22,7 @@ extension ShelfTVUITests {
     func testATrailerPageLinkGetsNoButtonOnTheBanner() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles", "-ui-testing-reduce-motion"]
-        app.launch()
+        app.launchInEnglish()
         press(.menu)
         let tab = element("shell.tab.movies")
         XCTAssertTrue(tab.waitForExistence(timeout: 10))

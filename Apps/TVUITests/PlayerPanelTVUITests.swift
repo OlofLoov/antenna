@@ -17,7 +17,7 @@ final class PlayerPanelTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         if let tracks { app.launchEnvironment["UITESTING_TRACKS"] = tracks }
-        app.launch()
+        app.launchInEnglish()
         expectEngine("playing loads=1 file=a1.ts")
     }
 
