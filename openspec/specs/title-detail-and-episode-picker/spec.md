@@ -129,12 +129,12 @@ The system SHALL offer a Trailer button when the provider gives a trailer link, 
 - **THEN** there is no Trailer button
 
 ### Requirement: When details or episodes do not load
-The system SHALL say which part of the page failed to load, with Retry, and SHALL still let a movie whose details failed be played and added to My list. Each failure SHALL be kept in the device log with a reason, such as the server's status, the network error code or where the answer stopped making sense, and never with an address, login or the answer itself.
+The system SHALL say which part of the page failed to load, with Try again, and SHALL still let a movie whose details failed be played and added to My list. Each failure SHALL be kept in the device log with a reason, such as the server's status, the network error code or where the answer stopped making sense, and never with an address, login or the answer itself.
 
 #### Scenario: The provider fails
 - **GIVEN** the provider fails to answer for the details or the episodes
 - **WHEN** the page is showing
-- **THEN** the part that failed reads "Could not load details" or "Could not load episodes", or the offline message when that is the cause, with Retry
+- **THEN** the part that failed reads "Could not load details" or "Could not load episodes", or the offline message when that is the cause, with Try again
 - **AND** a movie whose details failed can still be played and added to My list
 
 #### Scenario: Offline with a provider login
@@ -150,7 +150,7 @@ The system SHALL say which part of the page failed to load, with Retry, and SHAL
 #### Scenario: A login not on this device
 - **GIVEN** a title whose source login has not reached this device
 - **WHEN** the page shows or the user presses Play
-- **THEN** it shows "<source>: waiting for its login to sync from iCloud" with Retry, and Play plays nothing
+- **THEN** it shows "<source>: waiting for its login to sync from iCloud" with Try again, and Play plays nothing
 
 #### Scenario: A slow provider
 - **WHEN** the provider is slow

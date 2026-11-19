@@ -184,7 +184,7 @@ The system SHALL show that a series poster is working while its episode list loa
 #### Scenario: No episodes or a failed list
 - **GIVEN** a series has no episodes, or its episode list fails to load
 - **WHEN** the user selects it
-- **THEN** it says "No episodes available", or "Could not load episodes" with Retry
+- **THEN** it says "No episodes available", or "Could not load episodes" with Try again
 
 ### Requirement: Resume where you left off
 The system SHALL start a movie the user stopped part-way through within five seconds of where they stopped, from any place it can be played, and SHALL start a movie barely started or already finished from the beginning.
@@ -206,7 +206,7 @@ The system SHALL start a movie the user stopped part-way through within five sec
 - **AND** the last live channel starts again the next time they open Live
 
 ### Requirement: When sources fail
-The system SHALL show titles from sources that loaded under a dismissible banner naming each failed source, and SHALL show "Could not load movies" with a Retry for only the failed sources when no source has titles.
+The system SHALL show titles from sources that loaded under a dismissible banner naming each failed source, and SHALL show "Could not load movies" with Try again for only the failed sources when no source has titles.
 
 #### Scenario: Some sources failed
 - **GIVEN** at least one Xtream source failed to load and others have titles
@@ -216,13 +216,13 @@ The system SHALL show titles from sources that loaded under a dismissible banner
 #### Scenario: No source has titles
 - **GIVEN** no source has titles because they failed
 - **WHEN** the user opens the section
-- **THEN** "Could not load movies" with a Retry that asks only the failed sources again takes their place
+- **THEN** "Could not load movies" with Try again that asks only the failed sources again takes their place
 - **AND** offline, the message says so
 
 #### Scenario: Every source answered with nothing
 - **GIVEN** every source answered with no titles
 - **WHEN** the user opens the section
-- **THEN** it says "Nothing here yet" with a line per source
+- **THEN** it says "Nothing here yet" with a line per source and Open Settings
 
 #### Scenario: A login not yet arrived
 - **GIVEN** a source's login has not arrived from iCloud

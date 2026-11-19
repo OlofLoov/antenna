@@ -131,13 +131,13 @@ The system SHALL open Live with the chosen channel in the same group when the us
 - **THEN** Live plays the channel now and shows the programme as coming up later, as Search does
 
 ### Requirement: Channels with gaps or no guide
-The system SHALL say in a channel's row when its guide is loading, missing or failed, and SHALL show a banner with Retry for a source whose guide failed.
+The system SHALL say in a channel's row when its guide is loading, missing or failed, and SHALL show a banner with Try again for a source whose guide failed.
 
 #### Scenario: Missing and failed guides
 - **GIVEN** channels whose guide is loading, missing or failed
 - **WHEN** the user looks at the guide
 - **THEN** their rows read "Loading guide…", "No programme information" or "Guide unavailable" in place of programmes
-- **AND** a source whose guide failed gets a banner "Could not load the guide for <source>" with Retry and dismiss
+- **AND** a source whose guide failed gets a banner "Could not load the guide for <source>" with Try again and dismiss
 
 #### Scenario: A login still to sync
 - **GIVEN** a source whose login has not synced
@@ -159,7 +159,7 @@ The system SHALL replace the grid or list with Live's loading rows or error mess
 #### Scenario: Loading, failed or empty
 - **GIVEN** sources still loading, every source failed, or a group with no channels
 - **WHEN** the user opens the Guide
-- **THEN** the grid or list is replaced by the same loading rows or error message with Retry as Live, or by "No channels in <group>" with the toolbar or chips still working
+- **THEN** the grid or list is replaced by the same loading rows or error message with Try again as Live, or by "No channels in <group>" with the toolbar or chips still working
 - **AND** while loading or failed, the toolbar and chips are hidden
 
 ### Requirement: Open at a programme
