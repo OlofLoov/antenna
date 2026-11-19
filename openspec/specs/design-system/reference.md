@@ -177,3 +177,35 @@ Element names come from the board's comments and labels, for example
   finding.
 - "Live video keeps playing under overlays" is checkable in code:
   no `PlayerView` teardown and no `pause()` when an overlay is presented.
+
+## 7. Right to left
+
+Arabic mirrors every screen. The boards are drawn left to right; read them
+mirrored, with these rules.
+
+- SwiftUI mirrors what it draws: stacks, `leading` and `trailing`,
+  `.offset(x:)`, `.position` and shapes all flip. Logos, posters, artwork,
+  the picture and text are not flipped. Never add
+  `.flipsForRightToLeftLayoutDirection(true)` to an image.
+- Input does not mirror. A touch or pointer location, a drag's translation,
+  a tap on one half of the picture, an arrow key and a Siri Remote click
+  report the physical side. Convert them with the helpers in
+  `Apps/Shared/Components/ReadingDirection.swift` (`fromLeading`,
+  `towardTrailing`, `isTrailing(right:)`, `MoveCommandDirection.reading`)
+  so input lands on the side the layout draws.
+- Progress bars, the scrubber and the timeshift bar fill from the right.
+  The guide's channel column is at the right and time runs to the left.
+- Play, pause, Picture in Picture, AirPlay, track and start-over glyphs keep
+  their shape. Skip back and skip forward swap sides with the layout.
+- Uppercase labels and badges use `.letterSpacing(_:)`, which drops the
+  spacing in a right-to-left layout: Arabic letters join, and spacing pulls
+  them apart.
+- The skip keys on a keyboard (left arrow back, right arrow forward) and the
+  Mac menu items stay as they are in every language. The guide's arrow keys
+  move to what is drawn on that side.
+- The boards this applies to most: `TV-Guide`, `TV-Guide-Future`,
+  `iPad-Guide`, `iPhone-Guide` (time axis); `iPhone`, `iPad`, `Main` (Live
+  list and chips); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
+  `iPhone-Player`, `iPhone-Player-Timeshift`, `iPad-Player` (progress,
+  scrubber and transport); `TV-Shell-Menu`, `TV-Movies-Rows` (tab bar and
+  first focus).

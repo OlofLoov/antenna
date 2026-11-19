@@ -709,6 +709,63 @@ Arabic review:
   only fixed figures in the copy (10, 15, 30 seconds, 16 MB) are written
   in Western digits.
 
+PR 11, right to left:
+- Owed: the four `*-RTL` boards listed under Not drawn (task 11.1) and the
+  RTL note on each board named in Context (part of task 11.6). Both need
+  the design canvas, which this PR did not have. The reference's new
+  "Right to left" section holds the rules and the board list until then.
+  11.1 and 11.6 stay open, and the change is not archived until they close.
+- The premise under Right-to-left was wrong: SwiftUI mirrors `.offset(x:)`,
+  `.position`, `Path` and alignment guides on its own. Checked with
+  `ImageRenderer`: a 10 pt block offset 80 pt in a 100 pt frame draws at
+  x 80 in English and x 10 in Arabic, and the same for `.position` and a
+  `Path`. The guide grid, the iPhone guide strips, the progress bars and
+  the scrubbers already ran from the right, so task 11.2's rebuild on
+  leading padding was not needed. The Arabic guide previews and both RTL UI
+  tests confirm the axis.
+- Input is where it broke. A touch location, a drag translation, a
+  double-tap half, a Siri Remote click, swipe or hold, and `onMoveCommand`
+  report the physical side. On iPhone a drag on the Arabic scrubber moved
+  the wrong way and a double tap on the right half skipped forward. The
+  helpers in `Apps/Shared/Components/ReadingDirection.swift` convert the
+  side, and every scrubber drag, double-tap skip, banner swipe, edge swipe
+  back, tvOS guide move, zap-bar left and right, title click and slide, and
+  timeshift scan hold goes through them. The edge swipe back on the iPhone
+  Movies, Series and Search pages is one shared modifier now,
+  `edgeSwipeBack`.
+- Keyboard skip keys and the Mac menu keep left arrow for back and right
+  for forward in every language: Core's `KeyCommand` table fixes them and
+  the menu bar shows them. The iPad and Mac guide's left and right arrows
+  move to what is drawn on that side.
+- Letter spacing on uppercase labels pulled Arabic letters apart and wrapped
+  the iPhone LIVE button onto two lines. The 40 `.tracking` and `.kerning`
+  calls are `.letterSpacing(_:)`, which drops the spacing in a
+  right-to-left layout, and the LIVE label stays on one line.
+- The middle dot "·" reads as the Arabic-Indic zero "٠" next to Arabic
+  digits ("قنوات بلا دليل · ٢" looked like "٢٠"). The Arabic catalog
+  entries use "•" instead. About 20 places in Core and the app still join
+  parts with " · " in code; the Arabic reviewer decides whether those need
+  a per-language separator.
+- Guide sources wrote channel numbers with `ChannelNumber.description`,
+  Latin digits in every language. They use `text(locale)` now.
+- The start-over glyph (`backward.end.fill`) keeps pointing left in Arabic,
+  as a transport glyph. The reviewer may want it to point at the start of
+  the bar, which is on the right.
+- The ten Arabic previews: "Channel rows, iPhone, Arabic", "Channel rows,
+  iPad, Arabic", "Channel overlay, a group selected, Arabic", "Zap bar,
+  paused 12 minutes behind, Arabic", "Guide grid, a programme on now,
+  Arabic", "Guide rows, Arabic", "Timeshift controls, iPhone, paused 12
+  minutes behind, Arabic", "Checklist, iPhone, two sources, Arabic",
+  "Paywall, iPhone, Arabic" and "Guide sources rows, iPhone, Arabic".
+  Their fixtures are the English previews', so fixture text such as group
+  names and badges stays English; Core text in them takes
+  `PreviewLanguage.arabic.locale`. Task 3.6 is ticked with them.
+- `LocalizationRTLUITests` (iPhone) and `LocalizationRTLTVUITests` (Apple
+  TV) launch with `-AppleLanguages (ar) -AppleLocale ar_SA` and attach a
+  screenshot of each screen they pass. Apple TV's first focus in Movies is
+  the banner's Play button, at the right; the spec's "rightmost poster" is
+  read as the first focusable element of the first row.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.
