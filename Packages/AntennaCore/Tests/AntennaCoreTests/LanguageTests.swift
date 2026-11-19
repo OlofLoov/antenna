@@ -61,4 +61,19 @@ import Testing
         #expect(GuidePanelText.length(from: Self.ten, to: Self.ten.addingTimeInterval(90 * 60), locale: german) == "1 Std. 30 Min.")
         #expect(GuidePanelText.length(from: Self.ten, to: Self.ten.addingTimeInterval(45 * 60), locale: german) == "45 Min.")
     }
+
+    @Test("localization/counts-use-the-language-s-plural-forms Spanish one and other, Mexico reads the same table")
+    func spanishPlural() {
+        let spanish = SetupText(locale: Locale(identifier: "es_ES"))
+        #expect(spanish.channels(ChannelTally(channels: 1, groups: ["News"])) == "1 canal en directo en 1 grupo")
+        #expect(spanish.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 canales en directo en 2 grupos")
+        #expect(SetupText(locale: Locale(identifier: "es_MX")).liveChannels(12_500) == "12,500 canales en directo")
+    }
+
+    @Test("localization/durations-follow-the-user-s-language a Spanish programme length")
+    func spanishDuration() {
+        let spanish = Locale(identifier: "es_ES")
+        #expect(GuidePanelText.length(from: Self.ten, to: Self.ten.addingTimeInterval(90 * 60), locale: spanish) == "1 h 30 min")
+        #expect(SourceStatusText(locale: spanish).count(1) == "1 canal")
+    }
 }

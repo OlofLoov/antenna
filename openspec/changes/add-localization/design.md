@@ -577,6 +577,13 @@ PR 6, German:
   copy. They caught one English leftover, the guide row's "Retry now",
   which now takes the environment locale.
 
+PR 7, Spanish:
+- One neutral Spanish with "tú", Spain's "Ajustes" and Apple's Spanish
+  names ("En familia", "Tiempo de uso"). Catch-up is "A la carta".
+- An iPhone simulator set to Spanish (Mexico), `es-MX` with region `es_MX`,
+  shows the `es` text: "Todos los canales", "En directo", "Ajustes". A Core
+  test pins the same fallback, with Mexico's "12,500" grouping.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.
