@@ -348,9 +348,9 @@ long-text check).
   arguments. The three classes that set it today switch to the helper.
 - `LocalizationRTLUITests` on iPhone launches with `-AppleLanguages (ar)
   -AppleLocale ar_SA` and the Live fixture. It checks by identifier and
-  frame that the channel number sits right of the channel name, that the
-  first group chip is the rightmost, and that the skip back button is right
-  of play.
+  frame that the channel number sits left of the channel name, after it in
+  reading order as on the English row, that the first group chip is the
+  rightmost, and that the skip back button is right of play.
 - `LocalizationRTLTVUITests` on Apple TV opens the guide in Arabic, checks
   the channel column is right of the now programme, presses left and checks
   focus moved to the next programme by identifier.
@@ -879,6 +879,48 @@ Live badge in other languages:
   with a capitalized English literal in views, components and the
   platform folders, and on Core code that compares a `Words` result. File
   and wire names (the "Inbox" folder in `ImportModel`) are allowed.
+
+Arabic boards against the app:
+- The guide's started-earlier mark was the text "◂", which keeps pointing
+  left in Arabic. The Apple TV grid and the iPad and Mac board draw
+  `arrowtriangle.backward.fill` now, which points right in a right-to-left
+  layout, as `TV-Guide-RTL` draws it. A rule in `scripts/check-rules.sh`
+  fails on an arrow typed inside `Text`.
+- The iPhone now-playing line ("104 Sport One · 20:00 – 22:00 · Next: …")
+  was joined in code with the channel name bare. SwiftUI picks a line's
+  direction from its first strong letter, so a Latin name first made the
+  whole Arabic line run left to right. `LiveNowText` passes the name
+  through `Words.source`, and `Words.line` joins the parts with the
+  language's separator and starts a right-to-left line with U+200F, so it
+  reads from the right whatever comes first. The iPad and Mac details'
+  meta line goes through the same path. The Apple TV guide's picture
+  caption had the same fault and Latin digits ("1 Channel a1" in Arabic);
+  it and the iPhone line share `ChannelIdentityText` now.
+- Foundation already isolates a `%@` argument when it resolves an Arabic
+  entry, so "Next: %@" with `Words.source` inside it holds the title in two
+  pairs of isolates. Nested isolates render the same; the extra pair is
+  left alone, since every `Words` call site does it.
+- PR 11 kept the behind-live LIVE button on one line, but the LIVE badge
+  at the live edge had no line limit. On the iPhone timeshift strip the
+  second row holds skip back, play, skip forward, previous channel, the
+  tracks button, Picture in Picture and full screen, 308 pt of 44 pt
+  targets plus LIVE, more than a 402 pt screen holds with 4 pt gaps. The
+  row squeezed the LIVE text into a column and the programme bar to 0 pt,
+  in English too. The badge text is fixed-size and the compact row has no
+  gaps (each target keeps its 44 pt frame and its glyph sits inside it),
+  which leaves the bar 28 pt on an iPhone 17. A 390 pt iPhone gets about
+  16 pt. The board draws neither previous channel nor the tracks button;
+  if the bar has to be longer, Picture in Picture is the candidate to move
+  out of the compact row.
+- The delta's Arabic channel row named the Apple TV order (number, logo,
+  name) for every platform. The iPhone, iPad and Mac row puts the number
+  after the name, as `iPhone-RTL` draws it and the English row does. The
+  scenario names both orders now.
+- The Arabic previews wrote 24-hour times in Arabic-Indic digits
+  ("٢١:٣٤"), which `ar_SA` never shows: it writes "٩:٣٤ م".
+  `PreviewLanguage.time(_:_:)` formats a fixed time in UTC with the
+  preview's locale and the app's `.shortened` style, and the zap bar,
+  guide grid, guide rows and timeshift strip previews use it.
 
 ## Open Questions
 
