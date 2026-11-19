@@ -17,7 +17,9 @@
 
         enum Scenario: String {
             /// Cabin: six movies in Action and Drama, three series. Office:
-            /// three movies in Drama and Kids, one series.
+            /// three movies in Drama and Kids, one series. Mira Holt is in The
+            /// Long Harbor's info answer, in Quiet Engines' and Small Rooms'
+            /// list rows, and directs Paper Cities (browse-by-person).
             case titles
             /// Only Home, an M3U playlist: no Movies or Series anywhere.
             case noXtream
@@ -251,8 +253,8 @@
 
             private var infoLoads: [String: Int] = [:]
 
-            /// The title page's info call. The Long Harbor has every field and
-            /// a trailer; Night Ferry has a trailer too; Salt Road only a length; Copper Hills (Office) fails
+            /// The title page's info call. The Long Harbor has every field, a
+            /// cast and a trailer; Night Ferry has a trailer too; Salt Road only a length; Copper Hills (Office) fails
             /// once, then answers. A series carries its episodes and answers
             /// after half a second.
             func info(_ title: ShelfTitle) async throws -> TitleInfo {
@@ -320,19 +322,23 @@
             private func catalogue(_ source: UUID, kind: ShelfTitle.Kind) -> ShelfCatalogue {
                 let isCabin = source == cabinID
                 let host = isCabin ? "cabin" : "office"
-                func title(_ number: Int, _ name: String, daysAgo: Double?, _ category: String?) -> ShelfTitle {
+                func title(
+                    _ number: Int, _ name: String, daysAgo: Double?, _ category: String?, cast: String? = nil, director: String? = nil
+                ) -> ShelfTitle {
                     ShelfTitle(
                         id: "xtream#\(host)#\(kind == .movie ? "vod" : "series")#\(number)", kind: kind, sourceID: source, name: name,
                         added: daysAgo.map { launched.addingTimeInterval(-$0 * 86_400) }, category: category,
-                        containerExtension: "mp4")
+                        containerExtension: "mp4", cast: cast, director: director)
                 }
                 switch (kind, isCabin) {
                 case (.movie, true):
                     return ShelfCatalogue(
                         titles: [
                             title(1, "The Long Harbor", daysAgo: 1, "Action"), title(2, "Second Act", daysAgo: 3, "Drama"),
-                            title(3, "Salt Road", daysAgo: 40, "Action"), title(4, "Paper Cities", daysAgo: nil, "Drama"),
-                            title(5, "Quiet Engines", daysAgo: 12, "Action"), title(6, "Glass Orchard", daysAgo: nil, nil),
+                            title(3, "Salt Road", daysAgo: 40, "Action"),
+                            title(4, "Paper Cities", daysAgo: nil, "Drama", director: "Mira Holt"),
+                            title(5, "Quiet Engines", daysAgo: 12, "Action", cast: "MIRA HOLT / Teodor Lind"),
+                            title(6, "Glass Orchard", daysAgo: nil, nil),
                         ],
                         categories: ["Action", "Drama"])
                 case (.movie, false):
@@ -346,7 +352,7 @@
                     return ShelfCatalogue(
                         titles: [
                             title(1, "Northern Lights", daysAgo: 4, "Drama"), title(2, "Harbor Watch", daysAgo: 1, "Crime"),
-                            title(3, "Small Rooms", daysAgo: 30, "Drama"),
+                            title(3, "Small Rooms", daysAgo: 30, "Drama", cast: "Mira Holt, N/A, Teodor Lind"),
                         ],
                         categories: ["Drama", "Crime"])
                 case (.series, false):

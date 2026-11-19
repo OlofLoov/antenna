@@ -26,15 +26,17 @@
         }
 
         var body: some View {
-            let page = library.page.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
+            let page = library.top.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
             ZStack {
                 section
                     .opacity(page == nil ? 1 : 0)
                     .accessibilityHidden(page != nil)
                     .disabled(page != nil)
                 if let page {
-                    TitleScreen(route: page) {
+                    LibraryPageView(page: page) { page in
                         TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EpisodePicker.Section(type: .phone) }
+                    } person: {
+                        PersonPageLayout.Phone()
                     }
                     .edgeSwipeBack { library.closePage() }
                     .environment(\.shelfMetrics, .phone)
@@ -45,7 +47,7 @@
             // Tapping Movies again closes an open page, as a pushed page goes
             // back to its root (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).
             .onChange(of: tabTaps) { _, _ in
-                if library.page.map({ $0.section == kind && $0.origin != .search }) == true { library.closePage() }
+                if library.top.map({ $0.section == kind && $0.origin != .search }) == true { library.closeAll() }
             }
         }
 

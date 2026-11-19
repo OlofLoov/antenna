@@ -1,75 +1,113 @@
+import AntennaCore
 import SwiftUI
 
 extension TitlePage {
-    /// "Cast Mira Holt, …" and "Director Sanna Weiss", each up to two
-    /// lines until the page is expanded. `cut` hears whether either line
-    /// hides names, so the page can offer More.
-    struct Credits: View {
+    /// "Cast and crew": every name the provider sent, at most 15, as chips
+    /// that open the person's page (browse-by-person/pick-someone-in-the-cast).
+    /// The cast first in the provider's order, then the directors with a
+    /// muted "Director". Absent when the provider sent no names. One focus
+    /// section on Apple TV, so Down from the buttons lands on the first name.
+    struct CastChips: View {
         let type: Sizes
-        var cut: (Bool) -> Void = { _ in }
         @Environment(\.titlePage) private var page
-        @State private var hiding: Set<String> = []
+        @FocusState private var focused: String?
 
         var body: some View {
-            if let page, page.state.metadata.cast != nil || page.state.metadata.director != nil {
-                let meta = page.state.metadata
-                let expanded = page.state.expanded
+            if let page, !page.state.chips.isEmpty {
                 VStack(alignment: .leading, spacing: type.spacing / 2) {
-                    if let cast = meta.cast {
-                        CutLine(text: line("Cast", cast), lines: 2, expanded: expanded) { record($0, "title.cast") }
-                            .accessibilityIdentifier("title.cast")
-                    }
-                    if let director = meta.director {
-                        CutLine(text: line("Director", director), lines: 2, expanded: expanded) { record($0, "title.director") }
-                            .accessibilityIdentifier("title.director")
+                    Text("Cast and crew")
+                        .font(.system(size: type.meta))
+                        .foregroundStyle(Palette.textMuted)
+                        .accessibilityAddTraits(.isHeader)
+                    ScrollViewReader { proxy in
+                        ScrollView(.horizontal) {
+                            HStack(spacing: type.spacing * 0.8) {
+                                ForEach(Array(page.state.chips.enumerated()), id: \.element.id) { index, chip in
+                                    Chip(type: type, chip: chip) { page.actions.openPerson(chip) }
+                                        .focused($focused, equals: chip.id)
+                                        .id(chip.id)
+                                        .accessibilityIdentifier("title.cast.\(index)")
+                                }
+                            }
+                            .padding(.vertical, type.spacing / 2)
+                        }
+                        .scrollIndicators(.hidden)
+                        .scrollClipDisabled()
+                        .task(id: page.state.returningChip) {
+                            // Back from the person's page, the chip that opened it is in view and focused.
+                            guard let chip = page.state.returningChip else { return }
+                            proxy.scrollTo(chip)
+                            await Task.yield()
+                            focused = chip
+                            page.actions.restored()
+                        }
                     }
                 }
-                .onChange(of: hiding.isEmpty, initial: true) { _, none in cut(!none) }
+                #if os(tvOS)
+                    .focusSection()
+                #endif
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("title.cast")
             }
-        }
-
-        private func record(_ hides: Bool, _ line: String) {
-            if hides { hiding.insert(line) } else { hiding.remove(line) }
-        }
-
-        private func line(_ label: LocalizedStringResource, _ names: String) -> Text {
-            Text("\(Text(label).foregroundStyle(Palette.textMuted)) \(Text(names).foregroundStyle(Browse.textSecondary))")
-                .font(.system(size: type.plot * 0.9))
         }
     }
 
-    /// Text cut to `lines` unless `expanded`, telling `hides` whether the
-    /// cut leaves words out.
-    struct CutLine: View {
-        let text: Text
-        let lines: Int
-        let expanded: Bool
-        let hides: (Bool) -> Void
-        @State private var cutHeight: CGFloat = 0
-        @State private var fullHeight: CGFloat = 0
+    /// One name, a 44 pt capsule; the lifted white card when focused on Apple TV.
+    struct Chip: View {
+        let type: Sizes
+        let chip: CastChip
+        let select: () -> Void
 
         var body: some View {
-            text
-                .lineLimit(expanded ? nil : lines)
-                .fixedSize(horizontal: false, vertical: true)
-                .background {
-                    ZStack {
-                        text.lineLimit(lines).fixedSize(horizontal: false, vertical: true)
-                            .onGeometryChange(for: CGFloat.self) {
-                                $0.size.height
-                            } action: {
-                                cutHeight = $0
-                            }
-                        text.fixedSize(horizontal: false, vertical: true)
-                            .onGeometryChange(for: CGFloat.self) {
-                                $0.size.height
-                            } action: {
-                                fullHeight = $0
-                            }
+            Button(action: select) {
+                HStack(spacing: type.chipGap) {
+                    // Provider text: never translated, laid out in its own script's direction.
+                    Text(verbatim: chip.name.display)
+                        .lineLimit(1)
+                    if chip.role == .director {
+                        Text("Director")
+                            .foregroundStyle(Palette.textMuted)
+                            .lineLimit(1)
                     }
-                    .hidden()
                 }
-                .onChange(of: fullHeight > cutHeight + 1, initial: true) { _, over in hides(over) }
+                .font(.system(size: type.chip))
+                .padding(.horizontal, type.chip * 1.1)
+                .frame(minHeight: max(44, type.chipHeight))
+                .contentShape(Capsule())
+            }
+            .buttonStyle(ChipStyle(height: max(44, type.chipHeight)))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(chip.role == .director ? Text("\(chip.name.display), Director") : Text(verbatim: chip.name.display))
+            .accessibilityAddTraits(.isButton)
+        }
+    }
+
+    private struct ChipStyle: ButtonStyle {
+        let height: CGFloat
+
+        func makeBody(configuration: Configuration) -> some View {
+            ChipLabel(label: configuration.label, height: height, isPressed: configuration.isPressed)
+        }
+    }
+
+    private struct ChipLabel<Label: View>: View {
+        let label: Label
+        let height: CGFloat
+        let isPressed: Bool
+        @Environment(\.isFocused) private var isFocused
+
+        var body: some View {
+            label
+                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
+                .background {
+                    Capsule()
+                        .fill(isFocused ? Palette.focus : Palette.surface(0.08))
+                        .frame(height: height)
+                }
+                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+                .scaleEffect(isFocused ? 1.06 : 1)
+                .opacity(isPressed ? 0.7 : 1)
+                .animation(.easeOut(duration: 0.15), value: isFocused)
         }
     }
 }

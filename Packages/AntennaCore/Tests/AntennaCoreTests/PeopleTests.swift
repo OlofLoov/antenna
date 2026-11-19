@@ -214,6 +214,10 @@ import Testing
             full.record(movie(index, "M"), credits: TitleCredits(), year: nil, now: now.addingTimeInterval(Double(index)))
         }
         #expect(full.count == LearnedCredits.limit)
+        var kept = LearnedCredits()
+        kept.record(movie(1, "A", source: cabin), credits: TitleCredits(cast: "Old Name", director: nil), year: nil, now: now)
+        kept.merge(learned)
+        #expect(kept.entry(movie(1, "A", source: cabin).activityKey)?.credits.isEmpty == true)
         #expect(full.entry(movie(0, "M").activityKey) == nil)
         #expect(full.entry(movie(1, "M").activityKey) != nil)
     }

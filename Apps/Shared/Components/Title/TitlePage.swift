@@ -22,6 +22,11 @@ struct TitlePageContext {
         /// What opened the About page while it shows; when it closes,
         /// focus goes back there.
         var aboutOpen: AboutOpener?
+        /// The cast and directors as chips (browse-by-person/pick-someone-in-the-cast).
+        var chips: [CastChip] = []
+        /// The chip whose person's page just closed, focused again until
+        /// `Actions.restored` runs.
+        var returningChip: String?
     }
 
     /// More, or an episode's Description, by episode id.
@@ -50,6 +55,10 @@ struct TitlePageContext {
         var expand: () -> Void
         /// Opens the trailer outside the app; nil without a link.
         var trailer: (() -> Void)?
+        /// Opens the person's page for a chip.
+        var openPerson: (CastChip) -> Void = { _ in }
+        /// The returning chip has focus again.
+        var restored: () -> Void = {}
     }
 
     var state: State
@@ -76,13 +85,20 @@ enum TitlePage {
         var buttonHeight: CGFloat
         var spacing: CGFloat
         var progress: CGFloat
+        /// A cast chip's text and height, and the gap before "Director".
+        var chip: CGFloat
+        var chipHeight: CGFloat
+        var chipGap: CGFloat
 
         static let phone = Sizes(
-            eyebrow: 11, name: 28, meta: 13, badge: 10, plot: 14, button: 15, buttonHeight: 44, spacing: 10, progress: 3)
+            eyebrow: 11, name: 28, meta: 13, badge: 10, plot: 14, button: 15, buttonHeight: 44, spacing: 10, progress: 3, chip: 15,
+            chipHeight: 44, chipGap: 6)
         static let pad = Sizes(
-            eyebrow: 12, name: 40, meta: 14, badge: 11, plot: 15, button: 15, buttonHeight: 44, spacing: 12, progress: 4)
+            eyebrow: 12, name: 40, meta: 14, badge: 11, plot: 15, button: 15, buttonHeight: 44, spacing: 12, progress: 4, chip: 15,
+            chipHeight: 44, chipGap: 6)
         static let tv = Sizes(
-            eyebrow: 20, name: 72, meta: 24, badge: 17, plot: 26, button: 26, buttonHeight: 70, spacing: 22, progress: 6)
+            eyebrow: 20, name: 72, meta: 24, badge: 17, plot: 26, button: 26, buttonHeight: 70, spacing: 22, progress: 6, chip: 24,
+            chipHeight: 60, chipGap: 10)
     }
 
     /// The board's placeholder color behind missing artwork.
@@ -202,13 +218,11 @@ enum TitlePage {
         }
     }
 
-    /// The description cut to `lines`, with More when it runs over or, as
-    /// `creditsCut` says, the cast and director do. More expands them in
-    /// place; on Apple TV the screen opens the About page.
+    /// The description cut to `lines`, with More when it runs over. More
+    /// expands it in place; on Apple TV the screen opens the About page.
     struct Plot: View {
         let type: Sizes
         let lines: Int
-        var creditsCut = false
         @Environment(\.titlePage) private var page
         @State private var cutHeight: CGFloat = 0
         @State private var fullHeight: CGFloat = 0
@@ -238,7 +252,7 @@ enum TitlePage {
                             .hidden()
                         }
                         .accessibilityIdentifier("title.plot")
-                    if fullHeight > cutHeight + 1 || creditsCut, !page.state.expanded {
+                    if fullHeight > cutHeight + 1, !page.state.expanded {
                         More(type: type)
                     }
                 }
@@ -415,7 +429,7 @@ extension TitlePageContext {
         TitlePageContext(
             state: State(
                 metadata: metadata, posterURL: nil, loading: loading, play: play, isOnMyList: onMyList, problem: problem,
-                expanded: false, section: "Movies"),
+                expanded: false, section: "Movies", chips: TitleCredits(cast: metadata.cast, director: metadata.director).chips),
             actions: Actions(back: {}, play: {}, toggleMyList: {}, retry: {}, expand: {}, trailer: trailer ? {} : nil))
     }
 }

@@ -31,7 +31,7 @@
                 }
                 // A page opened from a result closes when Search goes away.
                 .onDisappear {
-                    if shelves.page?.origin == .search { shelves.closePage() }
+                    if shelves.top?.origin == .search { shelves.closeAll() }
                 }
         }
 
@@ -77,19 +77,21 @@
         @FocusState private var focused: Bool
 
         var body: some View {
-            let page = library.page.flatMap { $0.origin == .search ? $0 : nil }
+            let page = library.top.flatMap { $0.origin == .search ? $0 : nil }
             ZStack {
                 search
                     .opacity(page == nil ? 1 : 0)
                     .accessibilityHidden(page != nil)
                     .disabled(page != nil)
                 if let page {
-                    TitleScreen(route: page) {
+                    LibraryPageView(page: page) { page in
                         TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EpisodePicker.Section(type: .phone) }
+                    } person: {
+                        PersonPageLayout.Phone()
                     }
                     .edgeSwipeBack { library.closePage() }
                     .environment(\.shelfMetrics, .phone)
-                    .environment(\.shelfPrefix, page.title.kind.prefix)
+                    .environment(\.shelfPrefix, page.section.prefix)
                 }
             }
             .background(Palette.ground)

@@ -41,7 +41,7 @@
         }
 
         var body: some View {
-            let page = library.page.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
+            let page = library.top.flatMap { $0.section == kind && $0.origin != .search ? $0 : nil }
             ZStack {
                 section
                     .opacity(page == nil ? 1 : 0)
@@ -49,12 +49,14 @@
                     .disabled(page != nil)
                 if let page {
                     // Full screen: the shell hides the tab bar and clock while a page is open.
-                    TitleScreen(route: page) {
+                    LibraryPageView(page: page) { page in
                         TitlePage.Television(
                             plotLines: page.title.kind == .movie ? 4 : 2, artHeight: page.title.kind == .movie ? 1080 : 520
                         ) {
                             EpisodePicker.Section(type: .tv)
                         }
+                    } person: {
+                        PersonPageLayout.Television()
                     }
                     .environment(\.shelfMetrics, .tv)
                     .environment(\.shelfPrefix, kind.prefix)
@@ -90,7 +92,7 @@
             // holder in that moment, focus leaves the tab for nothing, and
             // Play takes it.
             .onChange(of: focus.wrappedValue) { old, new in
-                guard new == nil, case .tab = old, model.status.showsTitles, list == nil, library.page == nil else { return }
+                guard new == nil, case .tab = old, model.status.showsTitles, list == nil, library.top == nil else { return }
                 refocus()
             }
         }
@@ -186,7 +188,7 @@
                 try? await Task.sleep(for: BannerArt.patience)
                 if !Task.isCancelled { previewWaited.insert(id) }
             }
-            .onChange(of: library.page == nil) { _, closed in
+            .onChange(of: library.top == nil) { _, closed in
                 // Back from a page opened from a poster, its preview shows at
                 // once (title-detail-and-episode-picker/back-to-where-you-were).
                 guard closed, list == nil, case .poster? = library.returning?.origin else { return }
@@ -201,7 +203,7 @@
         /// True while the highlight is in a row of the section, so the
         /// preview shows (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
         private var previewing: Bool {
-            focusedRow != nil && list == nil && library.page == nil
+            focusedRow != nil && list == nil && library.top == nil
         }
 
         private struct RestKey: Hashable {
@@ -245,7 +247,7 @@
         /// preview. The anchor is the point of the row that lands on the same
         /// point of the screen, so it follows from the row's height.
         private func bringUp(_ row: String, _ proxy: ScrollViewProxy) {
-            guard library.page == nil, list == nil else { return }
+            guard library.top == nil, list == nil else { return }
             let height = rowHeights.heights[row] ?? 392
             let anchor = UnitPoint(x: 0, y: Self.rowTop / max(1, Self.screenHeight - height))
             withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
@@ -257,7 +259,7 @@
         /// preview starts over on the banner's title next time. Not while a
         /// page covers the rows, so the poster it opened from stays loaded.
         private func backToTop() {
-            guard library.page == nil, list == nil else { return }
+            guard library.top == nil, list == nil else { return }
             withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
                 position.scrollTo(edge: .top)
             }
@@ -379,7 +381,7 @@
             }
             // Back from the trailer, by Menu or its end, focus is on Trailer again.
             .onChange(of: playback.playing) { before, now in
-                guard now == nil, library.page == nil, case .trailer = before else { return }
+                guard now == nil, library.top == nil, case .trailer = before else { return }
                 Task {
                     await Task.yield()
                     focused = .trailer

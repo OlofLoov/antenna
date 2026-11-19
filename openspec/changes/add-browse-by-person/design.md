@@ -74,7 +74,7 @@ Learned names are kept in `Caches/people/credits.json`: per title the source id,
 
 ### 4. The person page
 
-`PersonPage` (components) and `PersonScreen` (screen). Header `person.header`: an initials circle, the name, and "Acting · 9 in your sources" (`person.count`), where the department is Directing when the person has more directing credits than acting ones. Rows `person.row.movies` (acted, movies), `person.row.series` (acted, series), `person.row.directed` (directed, both kinds), posters drawn with `ShelfView.PosterArt` at the section's poster size, identifiers `person.poster.<row>.<index>`. Order: newest first by the year from the info answer or the year in the name (`TitleName.clean`), then by added date, undated last in source order. A title on two sources shows once per source, as Movies does.
+`PersonPage` in AntennaCore (the rows and words), `PersonPageLayout` (components: `Phone`, `Pad`, `Television`) and `PersonScreen` (screen). Header `person.header`: an initials circle, the name, and "Acting · 9 in your sources" (`person.count`), where the department is Directing when the person has more directing credits than acting ones. Rows `person.row.movies` (acted, movies), `person.row.series` (acted, series), `person.row.directed` (directed, both kinds), posters drawn with `ShelfView.PosterCard` at the section's poster size, identifiers `person.row.<row>.card.<title id>`. Back is `person.back`, the whole page `person.root`. Order: newest first by the year from the info answer or the year in the name (`TitleName.clean`), then by added date, undated last in source order. A title on two sources shows once per source, as Movies does.
 
 The note `person.note`, muted under the rows: "Only titles whose cast your provider has sent are here. More appear as you browse." It shows when a loaded title of either kind has no names known yet, which is true for any panel that sends names only in details. The empty page (`person.empty`): "Nothing with <name> in your sources."
 
@@ -88,7 +88,7 @@ On iPhone the person page shows in place of the title page inside the Movies or 
 
 ### 6. Chips on the title page
 
-`TitlePage.CastChips` replaces the cut Cast and Director text lines on iPhone, iPad, Mac and Apple TV; the About page keeps the full text. Heading "Cast and crew", one horizontally scrolling row of 44 pt capsule chips (`title.cast.<index>`), the director chips last with a muted "Director" after the name. On Apple TV the row sits under the buttons, its own focus section, with the lifted white focus card. VoiceOver reads "Mira Holt, button" and "Sanna Weiss, Director, button". More now opens only when the description is cut, since the names no longer cut.
+`TitlePage.CastChips` replaces the cut Cast and Director text lines on iPhone, iPad, Mac and Apple TV; the About page keeps the full text. The chips are the provider's names only. Names a database match fills in (`add-title-metadata`) stay in the About text and get no chips, since the people index has none of them and their pages would be empty. Heading "Cast and crew", one horizontally scrolling row of 44 pt capsule chips (`title.cast.<index>`), the director chips last with a muted "Director" after the name. On Apple TV the row sits under the buttons, its own focus section, with the lifted white focus card. VoiceOver reads "Mira Holt, button" and "Sanna Weiss, Director, button". More now opens only when the description is cut, since the names no longer cut.
 
 ### 7. People in Search
 

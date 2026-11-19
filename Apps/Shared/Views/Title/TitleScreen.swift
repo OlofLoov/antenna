@@ -34,7 +34,7 @@ struct TitleScreen<Page: View>: View {
             }
             .onChange(of: model.sourceExists) { _, exists in
                 // A deleted source closes the page (title-detail-and-episode-picker/open-a-movie-s-page).
-                if !exists { library.closePage() }
+                if !exists { library.closeAll() }
             }
             .onChange(of: playback.playing) { _, playing in
                 // Episodes that Up next started come back into view
@@ -66,11 +66,27 @@ struct TitleScreen<Page: View>: View {
             state: .init(
                 metadata: metadata, posterURL: route.title.posterURL, loading: model.phase == .loading, play: play,
                 isOnMyList: activity.isOnMyList(route.title), problem: problem, expanded: expandsInPlace && expanded,
-                section: route.section.sectionTitle, aboutOpen: aboutOpener),
+                section: backTitle, aboutOpen: aboutOpener,
+                chips: model.credits.chips, returningChip: returningChip),
             actions: .init(
                 back: { library.closePage() }, play: start, toggleMyList: { activity.toggleMyList(route.title) },
                 retry: { attempt += 1 }, expand: expand,
-                trailer: ShelfActions.trailer(metadata.trailerURL, of: route.title, playback: playback, openURL: openURL)))
+                trailer: ShelfActions.trailer(metadata.trailerURL, of: route.title, playback: playback, openURL: openURL),
+                openPerson: { library.openPerson($0.name, chip: $0.id) }, restored: { library.restored() }))
+    }
+
+    /// Where Back leads: the person's name over a person's page, else the section.
+    private var backTitle: LocalizedStringResource {
+        if let index = library.stack.firstIndex(of: .title(route)), index > 0, case .person(let person) = library.stack[index - 1] {
+            return .verbatim(person.name.display)
+        }
+        return route.section.sectionTitle
+    }
+
+    /// The chip whose person's page just closed over this page.
+    private var returningChip: String? {
+        guard case .person(let person)? = library.popped, library.page == route else { return nil }
+        return person.chip
     }
 
     /// More: the About page on Apple TV, the whole text in place elsewhere.

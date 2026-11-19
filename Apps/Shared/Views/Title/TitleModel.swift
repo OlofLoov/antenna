@@ -22,6 +22,11 @@ final class TitleModel {
     var metadata: TitleMetadata { provided.merging(match) }
     /// What the provider gave.
     private var provided: TitleMetadata
+    /// The cast and directors the provider sent, the title page's chips. A
+    /// database match's names stay out: the people index holds only
+    /// provider names, so their pages would be empty
+    /// (browse-by-person/pick-someone-in-the-cast).
+    var credits: TitleCredits { TitleCredits(cast: provided.cast, director: provided.director) }
     /// The movie database match, nil without one or with lookups off.
     private(set) var match: TitleMatch?
     private(set) var phase: Phase = .loading
