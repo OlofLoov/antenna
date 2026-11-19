@@ -16,7 +16,8 @@ final class LocalizationRTLTVUITests: XCTestCase {
     }
 
     /// Launches in Arabic with the first channel playing full screen.
-    private func launch() {
+    private func launch(timeshift: String? = nil) {
+        if let timeshift { app.launchEnvironment["UITESTING_TIMESHIFT"] = timeshift }
         app.launchArguments = ["-ui-testing-shell", "channels", "-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA"]
         app.launchInEnglish()
         expectFocus("shell.picture")
@@ -96,5 +97,18 @@ final class LocalizationRTLTVUITests: XCTestCase {
         expectFocus("shell.tab.live")
         XCTAssertGreaterThan(element("shell.tab.live").frame.minX, element("shell.tab.guide").frame.maxX, "Live is the rightmost tab")
         snap("tabs")
+    }
+
+    // design-system/progress-runs-in-the-reading-direction
+    // design-system/focus-moves-where-the-remote-points
+    func testRightSkipsBackOnThePausedScrubber() {
+        launch(timeshift: "buffer")
+        remote.press(.playPause)
+        XCTAssertTrue(element("timeshift.row").waitForExistence(timeout: 5), "the zap bar shows the rewind row")
+        remote.press(.right)
+        let behind = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label == %@", "متأخر بـ ١ د"), object: element("timeshift.behindLive"))
+        XCTAssertEqual(XCTWaiter().wait(for: [behind], timeout: 10), .completed, element("timeshift.behindLive").label)
+        snap("scrubber")
     }
 }
