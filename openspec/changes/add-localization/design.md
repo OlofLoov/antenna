@@ -584,6 +584,21 @@ PR 7, Spanish:
   shows the `es` text: "Todos los canales", "En directo", "Ajustes". A Core
   test pins the same fallback, with Mexico's "12,500" grouping.
 
+Spanish review:
+- es reviewed by a model reviewer in place of a native speaker (owner's
+  decision 2026-11-19).
+- The first pass leaned on Spain: "mando", "pulsa", "caducado", "la tele",
+  "en directo". These are now "control remoto", "presiona", "vencido",
+  "en vivo". "Ajustes", "En familia" and "Tiempo de uso" stay, as in the
+  PR 7 decision. A stream is a "transmisión"; "emisión" is kept only for
+  broadcasting ("En emisión" for on now).
+- "On its own" had become "solo" or "sola"; it is "automáticamente" now.
+  "Apple Account" is "cuenta de Apple". The Xtream account status no longer
+  sits inside a sentence: "Estado de la cuenta: %@.".
+- A free trial reads "Gratis durante %@", and the one form of each offer
+  period carries its number ("1 semana"). Spanish "Primer"/"Primera"
+  agrees with the unit's gender, which one template could not do.
+
 PR 8, French:
 - "vous" throughout, Apple's French names ("Réglages", "Partage familial",
   "Temps d'écran") and "Replay" for catch-up.

@@ -75,7 +75,7 @@
 
 - [x] 12.1 Swedish reviewed: strings moved to `translated`, `sv` added to `Config/reviewed-languages`
 - [x] 12.2 German reviewed, `de` added to `Config/reviewed-languages`
-- [ ] 12.3 Spanish reviewed, `es` added to `Config/reviewed-languages`
+- [x] 12.3 Spanish reviewed, `es` added to `Config/reviewed-languages`
 - [ ] 12.4 French reviewed, `fr` added to `Config/reviewed-languages`
 - [ ] 12.5 Portuguese (Brazil) reviewed, `pt-BR` added to `Config/reviewed-languages`
 - [ ] 12.6 Arabic reviewed, including the guide and scrubber direction, `ar` added to `Config/reviewed-languages`
