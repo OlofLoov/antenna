@@ -24,15 +24,15 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <span>The Long Harbor</span>
     </button>
   </div>
-  <!-- person.header -->
+  <!-- person.header: initials only, as on iPhone-Person; person.count -->
   <div style="display: flex; align-items: center; gap: 20px; padding: 0 24px">
     <div style="width: 112px; height: 112px; border-radius: 56px; background: #26344A; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: #A7B0BF">MH</div>
     <div style="display: flex; flex-direction: column; gap: 6px">
       <div style="font-size: 36px; font-weight: 800; letter-spacing: -0.5px">Mira Holt</div>
-      <div style="font-size: 14px; color: #A7B0BF">Acting · 9 in your sources · Filmography from TMDB</div>
+      <div style="font-size: 14px; color: #A7B0BF">Acting · 9 in your sources</div>
     </div>
   </div>
-  <!-- person.row.movies, person.row.series, person.row.directed (browse-by-person/a-person-s-page): only titles the user's sources have, newest release first, each row hidden when empty. A poster acts as any poster: it opens the title page. -->
+  <!-- person.row.movies, person.row.series, person.row.directed (browse-by-person/a-person-s-page): only titles of the user's sources whose provider names this person, newest first, each row hidden when empty. A poster acts as any poster: it opens the title page. -->
   <!-- person.row.movies -->
   <div style="display: flex; flex-direction: column; gap: 10px">
     <div style="padding: 0 24px; display: flex; justify-content: space-between; align-items: baseline">
@@ -61,6 +61,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="width: 132px; height: 198px; border-radius: 10px; background: #2F3F4A; flex: 0 0 auto"></div>
     </div>
   </div>
+  <!-- person.note, as on iPhone-Person -->
+  <div style="padding: 0 24px 16px; font-size: 13px; color: #A7B0BF">Only titles whose cast your provider has sent are here. More appear as you browse.</div>
   </div>
 </div>
 </x-dc>

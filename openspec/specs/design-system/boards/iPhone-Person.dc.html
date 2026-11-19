@@ -22,7 +22,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <span>The Long Harbor</span>
     </button>
   </div>
-  <!-- person.header: TMDB profile photo in a circle, or initials on the logo placeholder when there is none; name; department and "<n> in your sources" -->
+  <!-- person.header: initials on the logo placeholder (the provider sends names only, no photo); the name, isolated and in its own script's direction; person.count, Acting or Directing and "<n> in your sources" -->
   <div style="display: flex; align-items: center; gap: 16px; padding: 0 16px">
     <div style="width: 88px; height: 88px; border-radius: 44px; background: #26344A; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #A7B0BF">MH</div>
     <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
@@ -30,7 +30,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="font-size: 13px; color: #A7B0BF">Acting · 9 in your sources</div>
     </div>
   </div>
-  <!-- person.row.movies, person.row.series, person.row.directed (browse-by-person/a-person-s-page): only titles the user's sources have, newest release first, each row hidden when empty. A poster acts as any poster: it opens the title page. -->
+  <!-- person.row.movies, person.row.series, person.row.directed (browse-by-person/a-person-s-page): only titles of the user's sources whose provider names this person, newest first, each row hidden when empty. A poster acts as any poster: it opens the title page. -->
   <!-- person.row.movies -->
   <div style="display: flex; flex-direction: column; gap: 8px">
     <div style="padding: 0 16px; display: flex; justify-content: space-between; align-items: baseline">
@@ -58,8 +58,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </div>
   </div>
   <div style="flex: 1 1 auto"></div>
-  <!-- person.credit: TMDB named under the rows, muted -->
-  <div style="padding: 0 16px 12px; font-size: 12px; color: #A7B0BF">Filmography from TMDB</div>
+  <!-- person.note (browse-by-person/a-person-s-page-never-asks-the-provider): muted, under the rows, while some loaded titles have no names known yet. With nothing left, person.empty replaces the rows: "Nothing with Mira Holt in your sources." -->
+  <div style="padding: 0 16px 12px; font-size: 12px; color: #A7B0BF">Only titles whose cast your provider has sent are here. More appear as you browse.</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>

@@ -2,77 +2,121 @@
 
 ## Context
 
-See proposal.md for why. What exists on 2026-11-13:
+See proposal.md for why. What exists on 2026-11-19:
 
-- The provider's cast and director arrive only from `get_vod_info` and `get_series_info`, one call per title, as a comma-separated string with no ids (`xtream-vod-client/vod-info`). Some panels also put `cast` on `get_series` rows; it is not decoded. Plain playlists have no cast.
-- `add-title-metadata` matches a title when its page opens and brings TMDB credits (top 15 cast and the directors) with person ids.
-- `add-discover-rows` adds a matcher from a list of TMDB entries to the loaded catalogue for Trending.
+- The provider's cast and director arrive from `get_vod_info` and `get_series_info`, one call per title, as free text with no ids (`xtream-vod-client/vod-info`). The app makes that call for the banner's titles, for each title the Apple TV highlight rests on, and for each title page. Answers stay in memory for the 100 most recent titles (`ShelfModel.keptLimit`).
+- The list calls `get_vod_streams` and `get_series` are what the shelf index is built from. The decoder reads no names from them. The fixtures under `Packages/AntennaCore/Tests/AntennaCoreTests/Fixtures/Xtream/` carry none either: `vod_streams.json` and `series.json` have ids, names, posters, dates, ratings and categories only, and `vod_info.json` has no cast. Many panels do send `cast`, `director` and `genre` on `get_series` rows, and a few send `cast` or `director` on `get_vod_streams` rows; nothing in the repo relies on either.
+- Playlists (M3U) carry a name, a logo and a group per entry. They have no cast, so playlist titles show no names and appear on no person page.
+- The title page shows "Cast …" and "Director …" as two cut text lines (`TitlePage.Credits`), and the About page repeats them.
+- `ShelfLibrary.page` holds one title page at a time, shown over its section or over Search.
 - Search shows Channels, In the guide, and Movies & series, with chips to narrow on iPhone, iPad and Mac.
 
 Boards, under `openspec/specs/design-system/boards/`:
-- New: `iPhone-Person.dc.html`, `iPad-Person.dc.html` (iPad and Mac), `TV-Person.dc.html`: the person page. `iPhone-Title-Cast.dc.html` and `TV-Title-Cast.dc.html`: cast and crew as chips on a matched title's page. `iPhone-Search-People.dc.html`: the People section.
-- Follows: `iPhone-Title-Scores`, `iPad-Title-Scores`, `TV-Title-Scores`, `iPhone-Movies-Rows`, `iPad-Movies-Rows`, `TV-Movies-Rows`, `iPhone-Search`, `iPad-Search`, `TV-Search`.
-- Not drawn: the cast chips on iPad and Mac (the iPhone chips under the plot in the content column), People on iPad, Mac and Apple TV Search (a section after Movies & series in each platform's existing result layout), and the person page's empty and offline states (the header with one line of muted text, and Retry where the design system's error pattern puts it). Draw these before task group 4.
+- `iPhone-Person.dc.html`, `iPad-Person.dc.html` (iPad and Mac), `TV-Person.dc.html`: the person page, with initials, the count line and the note.
+- `iPhone-Title-Cast.dc.html` and `TV-Title-Cast.dc.html`: cast and directors as chips.
+- `iPhone-Search-People.dc.html`: the People section.
+- Follows: `iPhone-Title`, `iPad-Title`, `TV-Title`, `iPhone-Movies-Rows`, `iPad-Movies-Rows`, `TV-Movies-Rows`, `iPhone-Search`, `iPad-Search`, `TV-Search`.
+- Not drawn: the chips on iPad and Mac (the iPhone chips under the description in the content column), People on iPad, Mac and Apple TV Search (a section after Movies & series in each platform's result layout, rows as the iPhone board), and the empty person page (the header and one line of muted text).
 
-Design-system requirements that apply: "Focus is the lifted white card", "Targets are large enough to hit" (44 pt chips), "Channels without a logo show initials" (the same initials tile for a person without a photo), "One search across everything", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled" (the page lists only the user's own titles; TMDB photos are fetched, never bundled).
+Design-system requirements that apply: "Focus is the lifted white card", "Targets are large enough to hit" (44 pt chips), "Channels without a logo show initials" (the same initials tile for a person), "One search across everything", "Accessibility identifiers follow the board", "Nothing fake and nothing bundled".
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Movies and series by actor with no provider requests beyond what the app already makes.
+- Movies and series by actor or director with no provider request beyond what the app already makes.
 - Never a title the user cannot play.
+- Works with no server of ours.
 
 **Non-Goals:**
-- A full person profile. Browsing people with lookups off.
+- A full person profile or photos.
+- A complete filmography for providers that send names only in details answers.
 
 ## Decisions
 
-### 1. Cast for whole catalogues comes from TMDB filmographies, not provider details
+### 1. No lookup service for now (owner, 2026-11-19)
 
 Options considered:
-- **Call `get_vod_info` for every title** to collect cast strings. A 40,000-title source means 40,000 requests; panels rate-limit and ban accounts for less. Ruled out.
-- **Collect cast as the user opens pages.** No extra requests, but a person's page would list only titles the user had already opened, which is the opposite of discovery.
-- **Decode `cast` on Xtream series rows.** Free for series on panels that send it, nothing for movies or playlists, and names without ids collide ("Chris Evans").
-- **Ask TMDB for the person's filmography and match it locally (chosen).** One request per person page. `/v1/person/{id}` on the lookup service returns name, department, photo path and `combined_credits` reduced to `{tmdbID, kind, title, original title, year, role}`, sorted newest first. The app matches it against the loaded catalogue with the same matcher as Trending: provider TMDB id first, else `TitleName.clean` plus year within one, skipping ambiguous names. A title on two sources shows once, from the first source in the user's order.
+- **Wait for the title-info server** and build the change as first written: TMDB filmographies matched against the catalogue, photos, People from TMDB in Search. Complete pages, but nothing ships until the server, the TMDB agreement and `add-title-metadata` land.
+- **Match by provider names now, keep the TMDB part for later (chosen).** The owner decided on 2026-11-19 not to run the server for now. Provider names give useful pages today on panels that send names in their lists, and pages that fill out with use elsewhere. The TMDB part stays in tasks.md under "Later" and the change is not archived while those tasks are open.
 
-Limits: one person request per page open, none while a kept answer is under seven days old; credits capped at 500 entries per person on the service (enough for prolific actors, keeps the answer under about 60 KB); at most 15 names on a title page.
+When the server comes, TMDB's credits replace provider names on matched titles and the person page gains a photo and the full filmography (see "Later" below). The provider-name index stays as the fallback for unmatched titles and with lookups off.
 
 ### 2. Where the names come from
 
-A matched title's page shows TMDB's credits: cast in billing order up to 14, then the first director, as chips. Identifiers `title.cast.<index>`, each opening `person.root` with the TMDB person id. An unmatched title keeps the provider's text line from `title-detail-and-episode-picker/what-the-title-is-about`. Matching a provider name to a TMDB person by name alone was rejected: common names collide and the page would show someone else's films.
+The shelf index has only catalogue fields, and the per-title info call is the only place every panel sends cast. A filmography from the info call alone would need a request per title.
 
-### 3. The person page
+Options considered:
+- **(a) Names from info answers the app already gets, kept and grown as the user browses.** No extra requests. A person's page lists only titles the user has looked at, which is thin at first.
+- **(b) Names from the list rows.** Free, catalogue-wide, and complete for panels that put `cast` and `director` on `get_series` or `get_vod_streams` rows. Nothing for panels that do not.
+- **(c) A bounded background fetch** of `get_vod_info` for, say, 200 titles a day. Panels rate-limit and ban accounts for bursts of info calls, the user did not ask for the traffic, and 200 a day covers a 40,000-title catalogue in half a year. Ruled out; it would also break `browse-by-person/a-person-s-page-never-asks-the-provider`.
 
-`PersonPage` in `Apps/Shared/Views/` owns the request and the match; `PosterRow` from the Movies screen draws the rows. Rows: `person.row.movies` (acting, movies), `person.row.series` (acting, series), `person.row.directed` (directing, both kinds). A title in two rows (acted in and directed) shows in both. Header: `person.header`, photo from TMDB's image CDN at `w185` through the existing poster cache, initials otherwise. "Filmography from TMDB" sits under the name as the credit for this page.
+Chosen: **(b) and (a) together.** The decoder reads `cast` (else `actors`) and `director` on both row kinds (`xtream-vod-client/names-on-list-rows`), carried on `ShelfTitle.cast` and `ShelfTitle.director`. Every info answer the app receives adds its names to `LearnedCredits`, keyed by `ActivityKey`, whichever screen asked. `browse-by-person/a-person-s-page-never-asks-the-provider` stands as written: the page reads the index and never calls the provider.
 
-Navigation: pushed on the Movies or Series stack on iPhone, replaces the content column on iPad and Mac, its own screen on Apple TV with the tab bar hidden, as `tvos-shell/the-tab-bar-stays-hidden-on-a-title-page` does for title pages. Back restores the title page or Search with the picked name focused or in view. A title page opened from a person page and then another person page stack; the stack is not capped, since each level is one user action.
+A title page prefers the info answer's names, and falls back to the row's when the answer has none.
 
-### 4. People in Search
+Learned names are kept in `Caches/people/credits.json`: per title the source id, title id, names, year and the date learned; entries older than 30 days dropped on load, at most 20,000 titles with the oldest dropped first, entries of deleted sources dropped when the library's sources change. Written at most every five seconds while names arrive. A file that fails to decode reads as empty. Names are provider text, not secrets or stream links. Caches, not UserDefaults, because 20,000 entries is too large for defaults and losing them only thins the pages.
 
-`/v1/people?query=` on the service calls TMDB `/3/search/person`, keeps the five most popular, and returns each with their credits in the same reduced form. The app matches each person's credits against the catalogue and keeps up to three with at least one match, ordered by match count. It sends the query after 500 ms without a keystroke and at least three characters, cancels on the next keystroke, and never with lookups off or offline. The section is `search.people`, rows `search.person.<index>`.
+### 3. How names are normalized and matched
 
-What leaves the device is typed text. The Settings footer from `add-title-metadata` says so ("Titles and people you open, and names you search for, are looked up in TMDB."), edited in that change's delta and boards in this PR, and the Privacy Policy names it. The service logs nothing, so "Data Not Collected" holds by the same reasoning as `add-title-metadata` decision 1.
+`PersonName` in AntennaCore:
 
-Options considered: matching people locally from cached filmographies (only finds people the user already opened), and a People chip (adds a fifth chip on iPhone for a section that holds three rows).
+- **Splitting.** A provider field is split at `,`, `/`, `|`, `;`, `·` and line breaks. "&" and "and" are not separators: a duo credit is rare and splitting would invent people.
+- **Cleaning each part.** Trimmed; a trailing part in brackets dropped ("Jonas Reeve (voice)"); runs of spaces made one.
+- **Junk.** Dropped when, once folded, the part is empty, has no letter, is longer than 60 characters (a description pasted into the field), or is one of `n/a`, `na`, `none`, `null`, `unknown`, `nil`, `-`, `tba`, `tbd`, `various`.
+- **Key.** `TitleName.folded` (case and accents ignored), then dots and apostrophes removed and hyphens made spaces, so "J.J. Abrams" and "JJ Abrams" meet, and "Zoë" meets "ZOE".
+- **"Last, First".** Not reordered. In a comma list, "Holt, Mira" cannot be told from two single-name people, and reordering would merge strangers. A provider that writes names last-first everywhere still matches itself.
+- **Display.** The spelling of the first title in source order that names the person.
+- **Repeats.** A name listed twice in one title counts once; a person who acts and directs in one title shows in both rows.
+- **Limits.** At most 15 chips: the first 14 cast names when there are directors, then up to the remaining room of directors (at least one), else 15 cast names. The index keeps every name.
+- **Collisions.** Two different people with the same name merge. Without ids there is no way to tell them apart; the risk is accepted and written down here.
 
-### 5. Kept on the device
+`PeopleIndex` maps keys to people with their credits (`ActivityKey`, kind, role). Built off the main actor with `@concurrent` from both shelves' titles and the learned names, rebuilt when either shelf's index or `LearnedCredits` changes, with the same newest-build-wins rule as `ShelfIndex`.
 
-`Caches/people/<tmdb id>.json` with the reduced credits and the fetch date, used for seven days, at most 200 files with the oldest removed first, deleted when lookups are turned off. Matches are recomputed on each open, so a source that gains a title shows it the next time without a new request.
+### 4. The person page
+
+`PersonPage` (components) and `PersonScreen` (screen). Header `person.header`: an initials circle, the name, and "Acting · 9 in your sources" (`person.count`), where the department is Directing when the person has more directing credits than acting ones. Rows `person.row.movies` (acted, movies), `person.row.series` (acted, series), `person.row.directed` (directed, both kinds), posters drawn with `ShelfView.PosterArt` at the section's poster size, identifiers `person.poster.<row>.<index>`. Order: newest first by the year from the info answer or the year in the name (`TitleName.clean`), then by added date, undated last in source order. A title on two sources shows once per source, as Movies does.
+
+The note `person.note`, muted under the rows: "Only titles whose cast your provider has sent are here. More appear as you browse." It shows when a loaded title of either kind has no names known yet, which is true for any panel that sends names only in details. The empty page (`person.empty`): "Nothing with <name> in your sources."
+
+People's names are provider text: never in the string catalog, wrapped in a first-strong isolate inside localized lines, and laid out with the reading direction of their own script.
+
+### 5. Navigation
+
+`ShelfLibrary.page` becomes a stack, `stack: [LibraryPage]` with `LibraryPage` either `.title(TitleRoute)` or `.person(PersonRoute)`. `page` and `person` read the top. The stack's first entry sets the section and origin, and every later entry shows in the same place: over Movies, Series or Search. `closePage()` pops one level; `closeAll()` empties it (a deleted source, switching section, Top Shelf links, App Intents). Every check that meant "no title page shows" reads `stack.isEmpty`. A title page under a person page keeps its `TitleModel`, so going back shows it without loading. `returningPerson` holds the key of the name that opened a person page, so the chip takes focus on Apple TV and scrolls into view elsewhere when the page closes. The stack is not capped; each level is one user action.
+
+On iPhone the person page shows in place of the title page inside the Movies or Series tab and the tab bar stays. On iPad and Mac it replaces the content column. On Apple TV it is its own screen with the tab bar hidden, as `tvos-shell/the-tab-bar-stays-hidden-on-a-title-page` does for title pages.
+
+### 6. Chips on the title page
+
+`TitlePage.CastChips` replaces the cut Cast and Director text lines on iPhone, iPad, Mac and Apple TV; the About page keeps the full text. Heading "Cast and crew", one horizontally scrolling row of 44 pt capsule chips (`title.cast.<index>`), the director chips last with a muted "Director" after the name. On Apple TV the row sits under the buttons, its own focus section, with the lifted white focus card. VoiceOver reads "Mira Holt, button" and "Sanna Weiss, Director, button". More now opens only when the description is cut, since the names no longer cut.
+
+### 7. People in Search
+
+`PeopleIndex.search(_:)` takes a `SearchQuery` and returns up to three people for whom every typed word starts a word of the folded name, ordered by title count, then name. Shown as `search.people` after Movies & series in the All view only, rows `search.person.<index>` with initials, name and the count line, on every platform's result layout. Nothing leaves the device, so no switch or pause applies. Picking a person opens their page over Search.
+
+## Later: with the lookup service
+
+Waits on the title-info server; kept here from the first design so the work is not lost.
+
+- `/v1/person/{id}` on the lookup service returns name, department, photo path and `combined_credits` reduced to `{tmdbID, kind, title, original title, year, role}`, newest first, capped at 500. The app matches it against the loaded catalogue with the Trending matcher from `add-discover-rows` (provider TMDB id first, else `TitleName.clean` plus year within one, ambiguous names skipped). A matched title's chips carry TMDB person ids and open the TMDB filmography; unmatched titles keep provider names.
+- Photo from TMDB's image CDN at `w185` through the poster cache, and "Filmography from TMDB" under the name.
+- Filmographies in `Caches/people/<tmdb id>.json` for seven days, at most 200 files, deleted when lookups are turned off; offline shows what was kept or "You're offline" with Retry; a failure shows "Could not load this filmography" with Retry.
+- `/v1/people?query=` calls TMDB `/3/search/person`, keeps the five most popular with their credits. The app sends the query after 500 ms without a keystroke and three characters, never with lookups off or offline, and merges those people with the provider-name ones.
+- What leaves the device is typed text. The Settings footer from `add-title-metadata` becomes "Titles and people you open, and names you search for, are looked up in TMDB.", and the Privacy Policy (`antenna-website/the-privacy-policy-rules-out-tracking`) names person pages and names typed in Search among what the movie info service receives. The service logs nothing, so "Data Not Collected" holds. The first version of this change already wrote that footer line on `iPhone-Settings-Lookups` and `TV-Settings-Lookups`; it stays, since the footer ships only with the lookup service.
+- Owner's open questions from the first design still apply then: People from TMDB in Search given it sends typed text (recommend yes, behind the switch), and no biography.
 
 ## Risks / Trade-offs
 
-- Name matching misses titles whose provider names are in another language than TMDB's title and original title. They are left out rather than guessed.
-- Search text reaches the lookup service. It is the one place user-typed text leaves the device; the delay, the minimum length and the switch keep it to deliberate searches.
-- A person with hundreds of credits and a large catalogue means matching 500 entries against tens of thousands of titles; the catalogue's name index from `add-discover-rows` keeps it to dictionary lookups.
+- Pages are thin on panels that send names only in details. The note says so, and the page fills out with use.
+- Two people with the same name merge. Accepted until TMDB ids arrive with the lookup service.
+- Names in a script the provider transliterates differently across titles do not meet.
+- 20,000 learned titles at about 200 bytes each is a 4 MB cache file. It is read once per launch, off the main actor.
+- Building the index for 50,000 titles with names is a few hundred thousand dictionary inserts; it runs off the main actor and only when a shelf or the learned names change.
 
 ## Migration Plan
 
-Additive. New cache folder only.
+Additive. One new cache file. No SwiftData change.
 
 ## Open Questions
 
-Open questions for the owner, each with a recommendation:
-
-1. **People in Search at all, given it sends typed text?** Recommend yes, behind the same switch, with the pause and three-letter minimum.
-2. **Directors only, or writers too?** Recommend directors only for now; writers rarely drive what people pick.
-3. **Biography on the person page?** Recommend no: the page is for finding something to watch, and a biography is one more TMDB field to cache and translate.
+None for the provider-names part. The owner's choice of no server is recorded in decision 1.
