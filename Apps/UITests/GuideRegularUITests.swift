@@ -50,7 +50,8 @@ final class GuideRegularUITests: XCTestCase {
     }
 
     private func time(_ date: Date) -> String {
-        date.formatted(date: .omitted, time: .shortened)
+        // The app runs in English with a US region, whatever the simulator's region.
+        date.formatted(Date.FormatStyle(date: .omitted, time: .shortened).locale(Locale(identifier: "en_US")))
     }
 
     // guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac
