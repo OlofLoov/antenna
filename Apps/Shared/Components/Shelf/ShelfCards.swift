@@ -33,13 +33,13 @@ extension ShelfView {
                         }
                         .clipShape(RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
                     Text([title.name, caption].compactMap(\.self).joinedAsDetail(locale))
-                        .font(.system(size: metrics.caption))
+                        .font(.boardStyle(metrics.caption))
                         .foregroundStyle(Browse.textSecondary)
                         .lineLimit(1)
                         .frame(width: metrics.card.width, alignment: .leading)
                 }
             }
-            .buttonStyle(CardStyle())
+            .posterButtonStyle()
             .accessibilityElement(children: .ignore)
             .accessibilityLabel([title.name, caption].compactMap(\.self).joined(separator: ", "))
             .accessibilityIdentifier("\(prefix).card.\(title.id)")
@@ -68,7 +68,7 @@ extension ShelfView {
         var body: some View {
             FilledArt(image: poster?.image, background: Browse.tile) {
                 Text(name)
-                    .font(.system(size: metrics.caption + 2, weight: .semibold))
+                    .font(.boardStyle(metrics.caption + 2, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
@@ -96,7 +96,7 @@ extension ShelfView {
         var body: some View {
             Button(action: open) {
                 Text("See all")
-                    .font(.system(size: metrics.count))
+                    .font(.boardStyle(metrics.count))
                     .foregroundStyle(Palette.textMuted)
                     .padding(.vertical, Self.reach)
                     .contentShape(Rectangle())
@@ -118,12 +118,12 @@ extension ShelfView {
         var body: some View {
             Button(action: open) {
                 Text("See all")
-                    .font(.system(size: metrics.header, weight: .semibold))
+                    .font(.boardStyle(metrics.header, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .frame(width: metrics.poster.width, height: metrics.poster.height)
                     .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
             }
-            .buttonStyle(CardStyle())
+            .posterButtonStyle()
         }
     }
 

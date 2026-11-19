@@ -28,10 +28,10 @@ struct ScoreRow: View {
         ForEach(scores, id: \.site) { score in
             HStack(alignment: .firstTextBaseline, spacing: size * 0.4) {
                 Text(score.site.name)
-                    .font(.system(size: (size * 0.84).rounded()))
+                    .font(.boardStyle((size * 0.84).rounded()))
                     .foregroundStyle(Palette.textMuted)
                 Text(score.text ?? "")
-                    .font(.system(size: size, weight: .bold))
+                    .font(.boardStyle(size, weight: .bold))
                     .foregroundStyle(Palette.text)
             }
             .lineLimit(1)
@@ -44,7 +44,7 @@ struct ScoreRow: View {
         }
         if let note {
             Text(note)
-                .font(.system(size: (size * 0.84).rounded(), weight: .semibold))
+                .font(.boardStyle((size * 0.84).rounded(), weight: .semibold))
                 .foregroundStyle(Palette.textMuted)
                 .lineLimit(1)
                 .padding(.horizontal, size * 0.6)

@@ -67,36 +67,6 @@ enum ShelfView {
         }
     }
 
-    /// The board's focus: a 5 pt white ring and a lifted shadow on Apple TV
-    /// (design-system/focus-is-the-lifted-white-card), dimming while pressed elsewhere.
-    struct CardStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            CardLabel(label: configuration.label, isPressed: configuration.isPressed)
-        }
-    }
-
-    private struct CardLabel<Label: View>: View {
-        let label: Label
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
-        @Environment(\.shelfMetrics) private var metrics
-
-        var body: some View {
-            label
-                .overlay {
-                    if isFocused {
-                        RoundedRectangle(cornerRadius: metrics.corner, style: .continuous)
-                            .strokeBorder(Palette.focus, lineWidth: 5)
-                            .padding(-5)
-                    }
-                }
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 20, y: 16)
-                .scaleEffect(isFocused ? 1.04 : 1)
-                .opacity(isPressed ? 0.7 : 1)
-                .animation(.easeOut(duration: 0.15), value: isFocused)
-        }
-    }
-
     /// A poster in a row or grid. VoiceOver reads `label`
     /// (movies-and-series-browsing/rows-in-a-predictable-order).
     struct PosterCard: View {
@@ -111,7 +81,7 @@ enum ShelfView {
                 PosterArt(name: title.name, url: title.posterURL)
                     .frame(width: metrics.poster.width, height: metrics.poster.height)
             }
-            .buttonStyle(CardStyle())
+            .posterButtonStyle()
             .accessibilityLabel(label)
             .accessibilityIdentifier("\(prefix).card.\(title.id)")
         }
@@ -127,13 +97,13 @@ enum ShelfView {
         var body: some View {
             HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(.system(size: metrics.header, weight: .bold))
+                    .font(.boardStyle(metrics.header, weight: .bold))
                     .foregroundStyle(Palette.text)
                     .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 12)
                 if let count {
                     Text(count)
-                        .font(.system(size: metrics.count))
+                        .font(.boardStyle(metrics.count))
                         .foregroundStyle(Palette.textMuted)
                 }
                 trailing

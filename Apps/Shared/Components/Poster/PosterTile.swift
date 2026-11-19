@@ -14,7 +14,7 @@ struct PosterTile: View {
     var body: some View {
         FilledArt(image: image, background: Browse.tile) {
             Text(name)
-                .font(.system(size: nameSize, weight: .semibold))
+                .font(.boardStyle(nameSize, weight: .semibold))
                 .foregroundStyle(Palette.text)
                 .multilineTextAlignment(.center)
                 .lineLimit(4)

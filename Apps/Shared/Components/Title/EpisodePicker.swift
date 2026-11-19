@@ -128,7 +128,7 @@ enum EpisodePicker {
                     }
                     if let skipped = episodes.state.skipped {
                         Text(skipped)
-                            .font(.system(size: type.line))
+                            .font(.boardStyle(type.line))
                             .foregroundStyle(Palette.textMuted)
                             .padding(.horizontal, type.gutter)
                             .accessibilityIdentifier("episodes.skipped")
@@ -166,7 +166,7 @@ enum EpisodePicker {
                     .scrollClipDisabled()
                     if let count = episodes.state.seasons.first(where: { $0.id == episodes.state.picked })?.count {
                         Text(count)
-                            .font(.system(size: type.line))
+                            .font(.boardStyle(type.line))
                             .foregroundStyle(Palette.textMuted)
                             .fixedSize()
                             .padding(.trailing, type.gutter)
@@ -191,14 +191,11 @@ enum EpisodePicker {
         var body: some View {
             Button(action: pick) {
                 Text(season.title)
-                    .font(.system(size: type.chipText, weight: isPicked ? .semibold : .regular))
+                    .font(.boardStyle(type.chipText, weight: isPicked ? .semibold : .regular))
                     .lineLimit(1)
-                    .padding(.horizontal, type.chipText)
-                    .frame(height: type.chip)
                     .frame(minHeight: 44)
-                    .contentShape(Rectangle())
             }
-            .buttonStyle(ChipStyle(isPicked: isPicked, height: type.chip))
+            .chipStyle(isPicked: isPicked)
             .accessibilityValue(isPicked ? Text("Selected, \(season.count)") : Text(season.count))
             .accessibilityAddTraits(isPicked ? .isSelected : [])
             .accessibilityIdentifier("episodes.season.\(season.id)")
@@ -210,37 +207,6 @@ enum EpisodePicker {
                 guard !Task.isCancelled else { return }
                 pick()
             }
-        }
-    }
-
-    /// The 0.12 surface when picked, the white card when focused on Apple TV.
-    private struct ChipStyle: ButtonStyle {
-        let isPicked: Bool
-        let height: CGFloat
-
-        func makeBody(configuration: Configuration) -> some View {
-            ChipLabel(label: configuration.label, isPicked: isPicked, height: height, isPressed: configuration.isPressed)
-        }
-    }
-
-    private struct ChipLabel<Label: View>: View {
-        let label: Label
-        let isPicked: Bool
-        let height: CGFloat
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .foregroundStyle(isFocused ? Palette.ground : isPicked ? Palette.text : Browse.textSecondary)
-                .background {
-                    Capsule()
-                        .fill(isFocused ? Palette.focus : isPicked ? Palette.surface(0.12) : .clear)
-                        .frame(height: height)
-                }
-                .scaleEffect(isFocused ? 1.06 : 1)
-                .opacity(isPressed ? 0.7 : 1)
-                .animation(.easeOut(duration: 0.15), value: isFocused)
         }
     }
 
@@ -302,19 +268,18 @@ enum EpisodePicker {
                         .clipShape(RoundedRectangle(cornerRadius: type.corner * 0.7, style: .continuous))
                     if let number = episode.number {
                         Text("\(number)")
-                            .font(.system(size: type.number, weight: .bold).monospacedDigit())
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.boardStyle(type.number, weight: .bold).monospacedDigit())
+                            .foregroundStyle(.secondary)
                             .frame(minWidth: type.number * 1.2)
                     }
                     VStack(alignment: .leading, spacing: 3) {
                         HStack(spacing: type.spacing / 2) {
                             Text(episode.title)
-                                .font(.system(size: type.title, weight: .semibold))
-                                .foregroundStyle(Palette.text)
+                                .font(.boardStyle(type.title, weight: .semibold))
                                 .lineLimit(1)
                             if row.upNext {
                                 Text("UP NEXT")
-                                    .font(.system(size: type.badge, weight: .bold))
+                                    .font(.boardStyle(type.badge, weight: .bold))
                                     .letterSpacing(1)
                                     .foregroundStyle(Palette.ground)
                                     .padding(.vertical, type.badge / 5)
@@ -326,14 +291,14 @@ enum EpisodePicker {
                         }
                         if let status = row.status {
                             Text(status)
-                                .font(.system(size: type.line))
-                                .foregroundStyle(Browse.textSecondary)
+                                .font(.boardStyle(type.line))
+                                .foregroundStyle(.secondary)
                                 .lineLimit(1)
                         }
                         if let plot = episode.plot {
                             Text(plot)
-                                .font(.system(size: type.line))
-                                .foregroundStyle(Palette.textMuted)
+                                .font(.boardStyle(type.line))
+                                .foregroundStyle(.tertiary)
                                 .lineLimit(1)
                         }
                     }
@@ -341,10 +306,8 @@ enum EpisodePicker {
                 }
                 .padding(type.spacing * 0.8)
                 .frame(minHeight: type.row)
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: type.corner, style: .continuous))
-                .contentShape(Rectangle())
             }
-            .buttonStyle(ShelfView.CardStyle())
+            .buttonStyle(FocusCardStyle(.large, resting: Palette.surface(0.06)))
             .contextMenu {
                 if let describe {
                     Button("Description", systemImage: "text.alignleft", action: describe)
@@ -379,7 +342,7 @@ enum EpisodePicker {
             FilledArt(image: poster?.image, background: TitlePage.placeholder) {
                 if let number {
                     Text("\(number)")
-                        .font(.system(size: type.number, weight: .bold))
+                        .font(.boardStyle(type.number, weight: .bold))
                         .foregroundStyle(Palette.textMuted)
                 }
             }

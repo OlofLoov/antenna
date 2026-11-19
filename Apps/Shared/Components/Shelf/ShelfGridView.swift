@@ -38,8 +38,8 @@ extension ShelfView {
         }
     }
 
-    /// A genre chip: the selected one takes the white fill, and on Apple TV
-    /// the focused one the white card.
+    /// A genre chip over the art: glass on iPhone, iPad and Mac, prominent
+    /// when selected; bordered on Apple TV (design-system/controls-use-system-styles).
     struct Chip: View {
         let title: LocalizedStringResource
         let isSelected: Bool
@@ -49,40 +49,11 @@ extension ShelfView {
         var body: some View {
             Button(action: select) {
                 Text(title)
-                    .font(.system(size: metrics.count, weight: isSelected ? .semibold : .regular))
+                    .font(.boardStyle(metrics.count, weight: isSelected ? .semibold : .regular))
                     .lineLimit(1)
-                    .padding(.horizontal, metrics.count)
-                    .padding(.vertical, metrics.count / 2)
-                    .frame(minHeight: 30)
             }
-            .buttonStyle(ChipStyle(isSelected: isSelected))
+            .chipStyle(isPicked: isSelected, on: .art)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
-        }
-    }
-
-    private struct ChipStyle: ButtonStyle {
-        let isSelected: Bool
-
-        func makeBody(configuration: Configuration) -> some View {
-            ChipLabel(label: configuration.label, isSelected: isSelected, isPressed: configuration.isPressed)
-        }
-    }
-
-    private struct ChipLabel<Label: View>: View {
-        let label: Label
-        let isSelected: Bool
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            let white = isSelected || isFocused
-            label
-                .foregroundStyle(white ? Palette.ground : Palette.text)
-                .background(white ? Palette.focus : Palette.scrimTint.opacity(0.6), in: Capsule())
-                .contentShape(Capsule())
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-                .scaleEffect(isFocused ? 1.06 : 1)
-                .opacity(isPressed ? 0.7 : 1)
         }
     }
 

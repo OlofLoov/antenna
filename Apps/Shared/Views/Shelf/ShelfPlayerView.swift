@@ -162,7 +162,7 @@ extension TitleTransport {
                 } label: {
                     Color.clear
                 }
-                .buttonStyle(TitlePictureStyle())
+                .buttonStyle(FocusHolderStyle())
                 .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
                 .disabled(panel != nil || card != nil)
                 .focused($focus, equals: .picture)
@@ -382,7 +382,7 @@ extension TitleTransport {
                 Task { await playback.close() }
             } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.boardStyle(17, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .frame(width: 44, height: 44)
                     .background(Palette.scrimTint.opacity(0.6), in: Circle())
@@ -463,13 +463,6 @@ extension TitleTransport {
         case track(String)
         /// The Subtitles On/Off switch after the tabs.
         case subtitles
-    }
-
-    /// The picture as a button that draws nothing, focused or not.
-    private struct TitlePictureStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-        }
     }
 
 #endif

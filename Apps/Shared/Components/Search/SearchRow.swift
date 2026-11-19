@@ -23,8 +23,6 @@ enum SearchRow {
         var posterName: CGFloat
         var header: CGFloat
         var headerCount: CGFloat
-        /// Apple TV lifts the focused row as a white card; touch platforms tint it.
-        var liftsOnFocus = false
 
         static let phone = Metrics(
             title: 15, detail: 12, lead: 12, leadWidth: 52, badge: 10, logo: CGSize(width: 52, height: 34), initials: 11,
@@ -37,7 +35,7 @@ enum SearchRow {
         static let tv = Metrics(
             title: 24, detail: 18, lead: 20, leadWidth: 120, badge: 18, logo: CGSize(width: 84, height: 56), initials: 18,
             channelHeight: 112, programmeHeight: 76, spacing: 18, padding: 20, corner: 14, poster: CGSize(width: 180, height: 270),
-            posterName: 20, header: 26, headerCount: 20, liftsOnFocus: true)
+            posterName: 20, header: 26, headerCount: 20)
     }
 
     /// Text with the matched letters on the accent tint
@@ -84,11 +82,11 @@ enum SearchRow {
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     VStack(alignment: .leading, spacing: 3) {
                         Highlighted(text: name, ranges: nameRanges)
-                            .font(.system(size: metrics.title * scale))
+                            .font(.boardStyle(metrics.title))
                             .lineLimit(1)
                         Highlighted(text: detail, ranges: detailRanges)
-                            .font(.system(size: metrics.detail * scale))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.boardStyle(metrics.detail))
+                            .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
                     Spacer(minLength: 0)
@@ -97,7 +95,7 @@ enum SearchRow {
                 .frame(minHeight: metrics.channelHeight * scale)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(RowStyle())
+            .modifier(RowLook())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Channels, \(name), \(detail)")
             .accessibilityAddTraits(.isButton)
@@ -124,8 +122,8 @@ enum SearchRow {
                     Group {
                         if let lead {
                             Text(lead)
-                                .font(.system(size: metrics.lead * scale).monospacedDigit())
-                                .foregroundStyle(Browse.textSecondary)
+                                .font(.boardStyle(metrics.lead).monospacedDigit())
+                                .foregroundStyle(.secondary)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
                         } else {
@@ -135,18 +133,18 @@ enum SearchRow {
                     .frame(width: metrics.leadWidth, alignment: .leading)
                     VStack(alignment: .leading, spacing: 3) {
                         Highlighted(text: title, ranges: ranges)
-                            .font(.system(size: metrics.title * scale))
+                            .font(.boardStyle(metrics.title))
                             .lineLimit(1)
                         Text(detail)
-                            .font(.system(size: metrics.detail * scale))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.boardStyle(metrics.detail))
+                            .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
                     Spacer(minLength: 0)
                     if hasCatchup {
                         Image(systemName: "clock.arrow.circlepath")
-                            .font(.system(size: metrics.detail * scale))
-                            .foregroundStyle(Palette.textMuted)
+                            .font(.boardStyle(metrics.detail))
+                            .foregroundStyle(.secondary)
                             .accessibilityHidden(true)
                     }
                 }
@@ -154,7 +152,7 @@ enum SearchRow {
                 .frame(minHeight: metrics.programmeHeight * scale)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(RowStyle())
+            .modifier(RowLook())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(spoken)
             .accessibilityAddTraits(.isButton)
@@ -178,7 +176,7 @@ enum SearchRow {
         var body: some View {
             Button(action: toggle) {
                 Image(systemName: isSet ? "bell.fill" : "bell")
-                    .font(.system(size: metrics.title * scale))
+                    .font(.boardStyle(metrics.title))
                     .foregroundStyle(isSet ? Palette.text : Palette.textMuted)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
@@ -197,7 +195,7 @@ enum SearchRow {
 
         var body: some View {
             Text("NOW")
-                .font(.system(size: metrics.badge * scale, weight: .bold))
+                .font(.boardStyle(metrics.badge, weight: .bold))
                 .letterSpacing(1)
                 .foregroundStyle(Palette.ground)
                 .padding(.horizontal, metrics.badge * 0.6)
@@ -226,7 +224,7 @@ enum SearchRow {
                         .overlay(alignment: .topLeading) {
                             if isSeries {
                                 Text("SERIES")
-                                    .font(.system(size: metrics.badge * scale, weight: .bold))
+                                    .font(.boardStyle(metrics.badge, weight: .bold))
                                     .letterSpacing(1)
                                     .foregroundStyle(Palette.text)
                                     .padding(.horizontal, 6)
@@ -236,13 +234,14 @@ enum SearchRow {
                             }
                         }
                     Highlighted(text: name, ranges: ranges)
-                        .font(.system(size: metrics.posterName * scale))
+                        .font(.boardStyle(metrics.posterName))
                         .lineLimit(1)
                         .frame(width: metrics.poster.width, alignment: .leading)
                 }
                 .contentShape(Rectangle())
             }
-            .buttonStyle(PosterStyle())
+            .posterButtonStyle()
+            .modifier(PosterCursor())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(isSeries ? "Movies & series, \(name), series" : "Movies & series, \(name)")
             .accessibilityAddTraits(.isButton)
@@ -261,11 +260,11 @@ enum SearchRow {
             Button(action: select) {
                 HStack(spacing: 12) {
                     Image(systemName: "clock.arrow.circlepath")
-                        .foregroundStyle(Palette.textMuted)
+                        .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
                     Text(text)
-                        .font(.system(size: metrics.title * scale))
-                        .foregroundStyle(Browse.textSecondary)
+                        .font(.boardStyle(metrics.title))
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                     Spacer(minLength: 0)
                 }
@@ -273,64 +272,44 @@ enum SearchRow {
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(RowStyle())
+            .modifier(RowLook())
             .accessibilityLabel("Recent search, \(text)")
         }
     }
 
-    /// Touch platforms tint the pressed row; Apple TV lifts the focused one
-    /// as a white card (design-system/focus-is-the-lifted-white-card).
-    struct RowStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            RowLabel(label: configuration.label, isPressed: configuration.isPressed)
-        }
-    }
-
-    private struct RowLabel<Label: View>: View {
-        let label: Label
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
+    /// A result row's look (design-system/controls-use-system-styles). On
+    /// Apple TV the row is a bordered button, which rests translucent and
+    /// takes the light platter with dark text when focused. Elsewhere it is
+    /// borderless on the row surface, brighter under the keyboard cursor.
+    struct RowLook: ViewModifier {
         @Environment(\.searchMetrics) private var metrics
         @Environment(\.searchCursor) private var cursor
 
-        var body: some View {
-            let lifted = isFocused && metrics.liftsOnFocus
-            label
-                .foregroundStyle(lifted ? Palette.ground : Palette.text)
-                .background(
-                    RoundedRectangle(cornerRadius: metrics.corner)
-                        .fill(lifted ? Palette.focus : Palette.surface(isPressed || cursor ? 0.12 : 0.06))
-                )
-                .shadow(color: lifted ? Palette.focusShadow : .clear, radius: 16, y: 12)
-                .scaleEffect(lifted ? 1.03 : 1)
-                .animation(.easeOut(duration: 0.15), value: lifted)
+        func body(content: Content) -> some View {
+            #if os(tvOS)
+                content
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle(radius: metrics.corner))
+            #else
+                content
+                    .buttonStyle(.borderless)
+                    .tint(Palette.text)
+                    .background(Palette.surface(cursor ? 0.12 : 0.06), in: RoundedRectangle(cornerRadius: metrics.corner))
+            #endif
         }
     }
 
-    private struct PosterStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            PosterLabel(label: configuration.label, isPressed: configuration.isPressed)
-        }
-    }
-
-    private struct PosterLabel<Label: View>: View {
-        let label: Label
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
+    /// The keyboard cursor on a poster on iPad and Mac (search/search-with-a-keyboard).
+    struct PosterCursor: ViewModifier {
         @Environment(\.searchCursor) private var cursor
 
-        var body: some View {
-            label
-                .foregroundStyle(Palette.text)
-                .scaleEffect(isFocused ? 1.06 : 1)
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-                .opacity(isPressed ? 0.7 : 1)
+        func body(content: Content) -> some View {
+            content
                 .overlay {
                     if cursor {
-                        RoundedRectangle(cornerRadius: 12).strokeBorder(Palette.text, lineWidth: 3).padding(-4)
+                        posterCursorShape.stroke(Palette.text, lineWidth: 3).padding(-5)
                     }
                 }
-                .animation(.easeOut(duration: 0.15), value: isFocused)
         }
     }
 }
@@ -341,3 +320,6 @@ extension EnvironmentValues {
     /// True on the row the arrow keys are on (search/search-with-a-keyboard).
     @Entry var searchCursor = false
 }
+
+/// Read here because `SearchRow.Metrics` hides the app-wide `Metrics` inside the enum.
+private let posterCursorShape = Metrics.Corner.medium.shape()

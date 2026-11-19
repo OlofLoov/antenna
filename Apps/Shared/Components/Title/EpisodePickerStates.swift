@@ -30,7 +30,7 @@ extension EpisodePicker {
 
         var body: some View {
             Text(text)
-                .font(.system(size: type.title))
+                .font(.boardStyle(type.title))
                 .foregroundStyle(Browse.textSecondary)
                 .padding(.horizontal, type.gutter)
                 .padding(.vertical, type.spacing)
@@ -47,18 +47,18 @@ extension EpisodePicker {
         var body: some View {
             VStack(alignment: .leading, spacing: type.spacing) {
                 Text(message)
-                    .font(.system(size: type.title))
+                    .font(.boardStyle(type.title))
                     .foregroundStyle(Browse.textSecondary)
                     .accessibilityIdentifier("episodes.error")
                 Button {
                     episodes?.actions.retry()
                 } label: {
                     Text("Try again")
-                        .font(.system(size: type.title, weight: .semibold))
+                        .font(.boardStyle(type.title, weight: .semibold))
                         .padding(.horizontal, type.title * 1.2)
                         .frame(minHeight: max(44, type.chip))
                 }
-                .buttonStyle(ShelfBanner.BannerButtonStyle(fill: .secondary))
+                .secondaryActionStyle()
                 .accessibilityIdentifier("episodes.retry")
             }
             .padding(.horizontal, type.gutter)

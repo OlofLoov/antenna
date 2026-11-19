@@ -62,7 +62,7 @@ struct TitleAbout: View {
         var lineSpacing: CGFloat
 
         static let tv = Sizes(
-            heading: .system(size: 57, weight: .bold), details: .system(size: 29), body: .system(size: 31), spacing: 28,
+            heading: .boardStyle(57, weight: .bold), details: .boardStyle(29), body: .boardStyle(31), spacing: 28,
             lineSpacing: 10)
         static let phone = Sizes(heading: .title2.bold(), details: .subheadline, body: .body, spacing: 12, lineSpacing: 5)
     }

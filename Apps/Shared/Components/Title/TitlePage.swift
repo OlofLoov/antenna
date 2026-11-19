@@ -134,7 +134,7 @@ enum TitlePage {
         }
     }
 
-    /// "MOVIE · THRILLER" in the accent color, as design.md allows.
+    /// "MOVIE · THRILLER" in the muted color (design-system/one-accent-color).
     struct Eyebrow: View {
         let type: Sizes
         @Environment(\.titlePage) private var page
@@ -142,9 +142,9 @@ enum TitlePage {
         var body: some View {
             if let text = page?.state.metadata.eyebrow {
                 Text(text.uppercased())
-                    .font(.system(size: type.eyebrow, weight: .semibold))
+                    .font(.boardStyle(type.eyebrow, weight: .semibold))
                     .letterSpacing(type.eyebrow / 8)
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(Palette.textMuted)
                     .lineLimit(1)
                     .accessibilityLabel(text)
                     .accessibilityIdentifier("title.eyebrow")
@@ -159,7 +159,7 @@ enum TitlePage {
         var body: some View {
             if let name = page?.state.metadata.name {
                 Text(name)
-                    .font(.system(size: type.name, weight: .heavy))
+                    .font(.boardStyle(type.name, weight: .heavy))
                     .foregroundStyle(Palette.text)
                     .lineLimit(3)
                     .minimumScaleFactor(0.7)
@@ -191,7 +191,7 @@ enum TitlePage {
                         HStack(spacing: type.meta / 2) { parts(meta) }
                         VStack(alignment: .leading, spacing: type.meta / 3) { parts(meta) }
                     }
-                    .font(.system(size: type.meta))
+                    .font(.boardStyle(type.meta))
                     .foregroundStyle(Browse.textSecondary)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(
@@ -261,7 +261,7 @@ enum TitlePage {
 
         private func styled(_ text: String) -> some View {
             Text(text)
-                .font(.system(size: type.plot))
+                .font(.boardStyle(type.plot))
                 .lineSpacing(type.plot * 0.3)
                 .foregroundStyle(Browse.textSecondary)
         }
@@ -278,7 +278,7 @@ enum TitlePage {
                 page?.actions.expand()
             } label: {
                 Text("More")
-                    .font(.system(size: type.plot, weight: .semibold))
+                    .font(.boardStyle(type.plot, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .frame(minHeight: 44)
                     .contentShape(Rectangle())
@@ -309,12 +309,11 @@ enum TitlePage {
                     page?.actions.play()
                 } label: {
                     Label(play.label, systemImage: "play.fill")
-                        .font(.system(size: type.button, weight: .bold))
+                        .font(.boardStyle(type.button, weight: .bold))
                         .lineLimit(1)
-                        .padding(.horizontal, type.button * 1.3)
                         .frame(maxWidth: .infinity, minHeight: type.buttonHeight)
                 }
-                .buttonStyle(ShelfBanner.BannerButtonStyle(fill: .primary))
+                .primaryActionStyle()
                 .disabled(!play.enabled)
                 .opacity(play.enabled ? 1 : 0.5)
                 .accessibilityIdentifier("title.play")
@@ -333,10 +332,10 @@ enum TitlePage {
                 page?.actions.toggleMyList()
             } label: {
                 Image(systemName: added ? "checkmark" : "plus")
-                    .font(.system(size: type.button + 2, weight: .bold))
+                    .font(.boardStyle(type.button + 2, weight: .bold))
                     .frame(width: type.buttonHeight, height: type.buttonHeight)
             }
-            .buttonStyle(ShelfBanner.BannerButtonStyle(fill: .secondary))
+            .secondaryActionStyle()
             .accessibilityLabel(added ? "Remove from my list" : "Add to my list")
             .accessibilityValue(added ? "On My list" : "Not on My list")
             .accessibilityIdentifier("title.myList")
@@ -353,12 +352,11 @@ enum TitlePage {
             if let trailer = page?.actions.trailer {
                 Button(action: trailer) {
                     Label("Trailer", systemImage: "play.rectangle")
-                        .font(.system(size: type.button, weight: .semibold))
+                        .font(.boardStyle(type.button, weight: .semibold))
                         .lineLimit(1)
-                        .padding(.horizontal, type.button * 1.1)
                         .frame(minHeight: type.buttonHeight)
                 }
-                .buttonStyle(ShelfBanner.BannerButtonStyle(fill: .secondary))
+                .secondaryActionStyle()
                 .accessibilityIdentifier("title.trailer")
             }
         }
@@ -385,7 +383,7 @@ enum TitlePage {
                     .accessibilityIdentifier("title.progress")
                     if let remaining = play.remaining {
                         Text(remaining)
-                            .font(.system(size: type.meta))
+                            .font(.boardStyle(type.meta))
                             .foregroundStyle(Browse.textSecondary)
                             .accessibilityIdentifier("title.remaining")
                     }
@@ -403,16 +401,15 @@ enum TitlePage {
             if let page, let problem = page.state.problem {
                 VStack(alignment: .leading, spacing: type.spacing / 2) {
                     Text(problem)
-                        .font(.system(size: type.meta))
+                        .font(.boardStyle(type.meta))
                         .foregroundStyle(Browse.textSecondary)
                         .accessibilityIdentifier("title.error")
                     Button(action: page.actions.retry) {
                         Text("Try again")
-                            .font(.system(size: type.button, weight: .semibold))
-                            .padding(.horizontal, type.button * 1.2)
+                            .font(.boardStyle(type.button, weight: .semibold))
                             .frame(minHeight: type.buttonHeight)
                     }
-                    .buttonStyle(ShelfBanner.BannerButtonStyle(fill: .secondary))
+                    .secondaryActionStyle()
                     .accessibilityIdentifier("title.retry")
                 }
             }

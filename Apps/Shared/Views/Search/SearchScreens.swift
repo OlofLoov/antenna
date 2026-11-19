@@ -110,7 +110,7 @@
                             model.run("")
                             cancel()
                         }
-                        .font(.system(size: 16))
+                        .font(.boardStyle(16))
                         .foregroundStyle(Palette.accent)
                         .frame(minHeight: 44)
                         .accessibilityIdentifier("search.cancel")
@@ -152,7 +152,7 @@
             if !activity.searches.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("RECENT")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.boardStyle(13, weight: .semibold))
                         .letterSpacing(1)
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityAddTraits(.isHeader)

@@ -67,13 +67,13 @@ enum ShelfPreview {
             VStack(alignment: .leading, spacing: 18) {
                 if !text.eyebrow.isEmpty {
                     Text(text.eyebrow.uppercased())
-                        .font(.system(size: ShelfBanner.Sizes.tv.eyebrow, weight: .semibold))
+                        .font(.boardStyle(ShelfBanner.Sizes.tv.eyebrow, weight: .semibold))
                         .letterSpacing(2)
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(Palette.textMuted)
                         .lineLimit(1)
                 }
                 Text(text.title)
-                    .font(.system(size: 56, weight: .heavy))
+                    .font(.boardStyle(56, weight: .heavy))
                     .foregroundStyle(Palette.text)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)

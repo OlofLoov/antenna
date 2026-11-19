@@ -36,7 +36,7 @@ enum SearchParts {
                     .accessibilityIdentifier("search.clear")
                 }
             }
-            .font(.system(size: metrics.title + 2))
+            .font(.boardStyle(metrics.title + 2))
             .foregroundStyle(Palette.text)
             .padding(.leading, 12)
             .padding(.trailing, text.isEmpty ? 12 : 0)
@@ -70,12 +70,12 @@ enum SearchParts {
         var body: some View {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
                 Text(title)
-                    .font(.system(size: metrics.header, weight: .bold))
+                    .font(.boardStyle(metrics.header, weight: .bold))
                     .foregroundStyle(Palette.text)
                     .accessibilityAddTraits(.isHeader)
                 if let count {
                     Text(count)
-                        .font(.system(size: metrics.headerCount))
+                        .font(.boardStyle(metrics.headerCount))
                         .foregroundStyle(Palette.textMuted)
                 }
                 Spacer(minLength: 0)
@@ -93,7 +93,7 @@ enum SearchParts {
         var body: some View {
             Button(action: select) {
                 Text("See all \(count)")
-                    .font(.system(size: metrics.headerCount))
+                    .font(.boardStyle(metrics.headerCount))
                     .foregroundStyle(Palette.accent)
                     .frame(minHeight: 44)
                     .contentShape(Rectangle())
@@ -110,7 +110,7 @@ enum SearchParts {
 
         var body: some View {
             Text(text)
-                .font(.system(size: metrics.detail))
+                .font(.boardStyle(metrics.detail))
                 .foregroundStyle(Palette.textMuted)
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .accessibilityIdentifier("search.capNote")
@@ -127,7 +127,7 @@ enum SearchParts {
         var body: some View {
             Button(action: select) {
                 Text(text)
-                    .font(.system(size: 16))
+                    .font(.boardStyle(16))
                     .foregroundStyle(Browse.textSecondary)
                     .lineLimit(1)
                     .padding(.horizontal, 12)
@@ -148,7 +148,7 @@ enum SearchParts {
         var body: some View {
             Button(action: action) {
                 Image(systemName: "magnifyingglass")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .frame(width: 36, height: 36)
                     .background(Palette.scrimTint.opacity(0.6), in: Circle())
@@ -176,7 +176,7 @@ enum SearchParts {
                     .autocorrectionDisabled()
                     .accessibilityLabel(prompt)
             }
-            .font(.system(size: 15))
+            .font(.boardStyle(15))
             .foregroundStyle(Palette.text)
             .padding(.horizontal, 12)
             .frame(width: 220, height: 34)
@@ -194,7 +194,7 @@ enum SearchParts {
             HStack(alignment: .firstTextBaseline, spacing: 14) {
                 Text("Later")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(Palette.textMuted)
                     .frame(width: 52, alignment: .leading)
                 Text(text)
                     .font(.callout)
@@ -212,11 +212,10 @@ enum SearchParts {
     /// Northern Soul Night" (search/pick-a-programme).
     struct LaterLine: View {
         let text: String
-        @ScaledMetric(relativeTo: .footnote) private var size: CGFloat = 13
 
         var body: some View {
-            Text("\(Text("Later: ").foregroundStyle(Palette.accent))\(text)")
-                .font(.system(size: size))
+            Text("\(Text("Later: ").foregroundStyle(Palette.textMuted))\(text)")
+                .font(.footnote)
                 .lineLimit(1)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 6)

@@ -170,7 +170,7 @@
             } label: {
                 Color.clear
             }
-            .buttonStyle(GuideHolderStyle())
+            .buttonStyle(FocusHolderStyle())
             .focused(focus, equals: .content)
             .onMoveCommand { direction in move(direction, data) }
             .contextMenu {
@@ -346,12 +346,5 @@
         let cell: GuideCell
         let key: RowKey
         let channel: Channel
-    }
-
-    /// Draws nothing: the highlighted block shows where focus is.
-    private struct GuideHolderStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label.contentShape(Rectangle())
-        }
     }
 #endif

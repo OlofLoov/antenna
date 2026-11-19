@@ -68,7 +68,7 @@
                 HStack(spacing: 8) {
                     leading
                     Text(kind.sectionTitle)
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.boardStyle(28, weight: .bold))
                         .foregroundStyle(Palette.text)
                         .accessibilityAddTraits(.isHeader)
                     Spacer()
@@ -124,7 +124,7 @@
                 }
             } label: {
                 Text(browse.sort.name)
-                    .font(.system(size: 14))
+                    .font(.boardStyle(14))
                     .foregroundStyle(Palette.text)
                     .padding(.horizontal, 12)
                     .frame(minHeight: 34)

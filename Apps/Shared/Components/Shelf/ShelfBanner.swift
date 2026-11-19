@@ -108,7 +108,7 @@ enum ShelfBanner {
         }
     }
 
-    /// "Recently added · Thriller" in the accent color, uppercase.
+    /// "Recently added · Thriller" in the muted color, uppercase (design-system/one-accent-color).
     struct Eyebrow: View {
         let type: Sizes
         @Environment(\.shelfBanner) private var banner
@@ -116,9 +116,9 @@ enum ShelfBanner {
         var body: some View {
             if let text = banner?.state.text.eyebrow {
                 Text(text.uppercased())
-                    .font(.system(size: type.eyebrow, weight: .semibold))
+                    .font(.boardStyle(type.eyebrow, weight: .semibold))
                     .letterSpacing(type.eyebrow / 8)
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(Palette.textMuted)
                     .lineLimit(1)
             }
         }
@@ -132,7 +132,7 @@ enum ShelfBanner {
         var body: some View {
             if let text = banner?.state.text.title {
                 Text(text)
-                    .font(.system(size: type.title, weight: .heavy))
+                    .font(.boardStyle(type.title, weight: .heavy))
                     .foregroundStyle(Palette.text)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
@@ -166,7 +166,7 @@ enum ShelfBanner {
                         Badge(text: .verbatim(badge), size: type.badge)
                     }
                 }
-                .font(.system(size: type.facts))
+                .font(.boardStyle(type.facts))
                 .foregroundStyle(Browse.textSecondary)
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("\(prefix).hero.facts")
@@ -190,7 +190,7 @@ enum ShelfBanner {
 
         var body: some View {
             Text(text)
-                .font(.system(size: size, weight: .bold))
+                .font(.boardStyle(size, weight: .bold))
                 .letterSpacing(1)
                 .foregroundStyle(Palette.text)
                 .padding(.vertical, size / 5)
@@ -207,7 +207,7 @@ enum ShelfBanner {
         var body: some View {
             if let text = banner?.state.text.description {
                 Text(text)
-                    .font(.system(size: type.description))
+                    .font(.boardStyle(type.description))
                     .lineSpacing(type.description * 0.3)
                     .foregroundStyle(Browse.textSecondary)
                     .lineLimit(lines)
@@ -226,11 +226,10 @@ enum ShelfBanner {
                 banner?.actions.play()
             } label: {
                 Label("Play", systemImage: "play.fill")
-                    .font(.system(size: type.button, weight: .bold))
-                    .padding(.horizontal, type.button * 1.3)
+                    .font(.boardStyle(type.button, weight: .bold))
                     .frame(maxWidth: .infinity, minHeight: type.buttonHeight)
             }
-            .buttonStyle(BannerButtonStyle(fill: .primary))
+            .primaryActionStyle()
             .accessibilityIdentifier("\(prefix).hero.play")
         }
     }
@@ -248,11 +247,10 @@ enum ShelfBanner {
                 banner?.actions.moreInfo()
             } label: {
                 Text(title)
-                    .font(.system(size: type.button, weight: .semibold))
-                    .padding(.horizontal, type.button * 1.2)
+                    .font(.boardStyle(type.button, weight: .semibold))
                     .frame(minHeight: type.buttonHeight)
             }
-            .buttonStyle(BannerButtonStyle(fill: .secondary))
+            .secondaryActionStyle()
             .accessibilityIdentifier("\(prefix).hero.info")
         }
     }
@@ -269,10 +267,10 @@ enum ShelfBanner {
                 banner?.actions.toggleMyList()
             } label: {
                 Image(systemName: added ? "checkmark" : "plus")
-                    .font(.system(size: type.button + 2, weight: .bold))
+                    .font(.boardStyle(type.button + 2, weight: .bold))
                     .frame(width: type.buttonHeight, height: type.buttonHeight)
             }
-            .buttonStyle(BannerButtonStyle(fill: .secondary))
+            .secondaryActionStyle()
             .accessibilityLabel(added ? "Remove from My list" : "Add to My list")
             .accessibilityValue(added ? "On My list" : "Not on My list")
             .accessibilityIdentifier("\(prefix).hero.myList")
@@ -311,36 +309,6 @@ enum ShelfBanner {
                 }
                 .accessibilityIdentifier("\(prefix).hero.pager")
             }
-        }
-    }
-
-    /// The fills of `iPad-Movies`: white with dark text for Play, the 0.14
-    /// surface for the others. On Apple TV the focused button takes the
-    /// white card (design-system/focus-is-the-lifted-white-card).
-    struct BannerButtonStyle: ButtonStyle {
-        enum Fill { case primary, secondary }
-        let fill: Fill
-
-        func makeBody(configuration: Configuration) -> some View {
-            BannerButtonLabel(label: configuration.label, fill: fill, isPressed: configuration.isPressed)
-        }
-    }
-
-    private struct BannerButtonLabel<Label: View>: View {
-        let label: Label
-        let fill: BannerButtonStyle.Fill
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            let white = fill == .primary || isFocused
-            label
-                .foregroundStyle(white ? Palette.ground : Palette.text)
-                .background(white ? Palette.focus : Palette.surface(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-                .scaleEffect(isFocused ? 1.06 : 1)
-                .opacity(isPressed ? 0.7 : 1)
-                .animation(.easeOut(duration: 0.15), value: isFocused)
         }
     }
 }

@@ -37,7 +37,7 @@ extension ShelfView {
                                 ProgressView().accessibilityLabel("Loading")
                             }
                         }
-                        .font(.system(size: metrics.caption))
+                        .font(.boardStyle(metrics.caption))
                         .frame(minHeight: 44)
                         .accessibilityElement(children: .combine)
                         .accessibilityIdentifier("\(prefix).loading.\(source.id.uuidString)")
@@ -69,7 +69,7 @@ extension ShelfView {
 
         var body: some View {
             Text("\(source.name) · waiting for login")
-                .font(.system(size: metrics.caption))
+                .font(.boardStyle(metrics.caption))
                 .foregroundStyle(Browse.textSecondary)
                 .lineLimit(1)
                 .padding(.horizontal, 14)
