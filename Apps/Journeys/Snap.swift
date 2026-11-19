@@ -26,9 +26,20 @@ final class Journey {
     func launch(_ arguments: [String], environment: [String: String] = [:]) {
         app.terminate()
         app = XCUIApplication()
-        app.launchArguments = arguments
+        app.launchArguments = arguments + Self.storeLanguage
         app.launchEnvironment = environment
         app.launchInEnglish()
+    }
+
+    /// `-AppleLanguages` and `-AppleLocale` from the runner's `STORE_LANGUAGE`
+    /// and `STORE_REGION`, which the store screenshot run sets per language
+    /// (add-store-localization). Empty when they are not set, so the walk
+    /// runs in English.
+    static var storeLanguage: [String] {
+        let environment = ProcessInfo.processInfo.environment
+        guard let language = environment["STORE_LANGUAGE"], !language.isEmpty else { return [] }
+        let region = environment["STORE_REGION"] ?? language.replacingOccurrences(of: "-", with: "_")
+        return ["-AppleLanguages", "(\(language))", "-AppleLocale", region]
     }
 
     func element(_ identifier: String) -> XCUIElement {

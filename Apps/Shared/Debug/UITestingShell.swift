@@ -381,7 +381,8 @@
                 let engine: any PlaybackEngine
 
                 var body: some View {
-                    if let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
+                    let shown = !ProcessInfo.processInfo.arguments.contains(UITestingLive.Probe.hiddenArgument)
+                    if shown, let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
                         Text(engine.summary)
                             .font(.system(size: 18))
                             .foregroundStyle(Palette.textMuted)

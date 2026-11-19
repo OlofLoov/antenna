@@ -84,7 +84,7 @@
             SeedChannel(id: "sport-one", name: "Sport One", group: "Sport"),
             SeedChannel(id: "sport-two", name: "Sport Two", group: "Sport"),
             SeedChannel(id: "football-live", name: "Football Live", group: "Sport"),
-            SeedChannel(id: "tennis-tv", name: "Tennis TV", group: "Sport"),
+            SeedChannel(id: "tennis-live", name: "Tennis Live", group: "Sport"),
             SeedChannel(id: "movies-one", name: "Movies One", group: "Movies"),
             SeedChannel(id: "classic-cinema", name: "Classic Cinema", group: "Movies"),
             SeedChannel(id: "family-films", name: "Family Films", group: "Movies"),

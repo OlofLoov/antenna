@@ -9,14 +9,48 @@ final class AppJourneys: XCTestCase {
     }
 
     /// Opens a tab: its `browse.section.<id>` row in the iPad sidebar, or
-    /// the tab bar button labelled `label` on iPhone. Tab bar buttons carry
-    /// no identifier of their own, so there the label is the only handle, as
-    /// in the other UI tests.
+    /// its place in the iPhone tab bar (Live, Guide, Movies when a source
+    /// offers titles, Search, Settings). Tab bar buttons take no identifier
+    /// from SwiftUI, and their labels are translated, so the place is the
+    /// handle that works in every language.
     private func open(_ id: String, label: String, in journey: Journey) {
-        let button =
-            UIDevice.current.userInterfaceIdiom == .pad ? journey.element("browse.section.\(id)") : journey.app.tabBars.buttons[label]
+        let button: XCUIElement
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            button = journey.element("browse.section.\(id)")
+        } else {
+            let buttons = journey.app.tabBars.firstMatch.buttons
+            XCTAssertTrue(buttons.firstMatch.waitForExistence(timeout: 10), "no tab bar")
+            let count = buttons.count
+            let index = ["live": 0, "guide": 1, "movies": 2, "search": count - 2, "settings": count - 1][id] ?? 0
+            button = buttons.element(boundBy: index)
+        }
         XCTAssertTrue(button.waitForExistence(timeout: 10), "no \(label) tab")
         button.tap()
+    }
+
+    /// The App Store set, in the language the runner's `STORE_LANGUAGE`
+    /// names: Live, the guide, Movies, a movie playing, and adding a source
+    /// (add-store-localization, store-listing/store-screenshots-in-every-ready-language).
+    /// Every step anchors on an identifier, never on a translated label.
+    func testStore() {
+        // The scripted Live launch has a guide for every channel; the
+        // screenshot seed leaves the guide loading.
+        let journey = Journey(self, arguments: ["-ui-testing-live", "favorites", "-ui-testing-no-probe"])
+        open("live", label: "Live", in: journey)
+        journey.snap("live", anchor: "browse.list")
+        open("guide", label: "Guide", in: journey)
+        journey.snap("guide", anchor: UIDevice.current.userInterfaceIdiom == .pad ? "guide.toolbar" : "guide.root")
+        journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", "-ui-testing-no-probe"])
+        open("movies", label: "Movies", in: journey)
+        journey.snap("movies", anchor: "movies.hero.title")
+        let poster = journey.element("movies.card.xtream#cabin#vod#2")
+        if poster.waitForExistence(timeout: 10) { poster.tap() }
+        journey.snap("player", anchor: "title.transport")
+        journey.launch(["-ui-screenshots", "empty"])
+        let add = journey.element("onboarding.addSource")
+        XCTAssertTrue(add.waitForExistence(timeout: 10), "no Add a source")
+        add.tap()
+        journey.snap("add-source", anchor: "onboarding.connect")
     }
 
     /// What a new user sees before adding a source.

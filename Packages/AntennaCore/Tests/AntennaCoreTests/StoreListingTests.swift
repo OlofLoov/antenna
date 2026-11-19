@@ -170,4 +170,16 @@ import Testing
             #expect(after.output.contains("ar ar_SA ar-SA\n"))
         }
     #endif
+
+    @Test("store-listing/store-screenshots-in-every-ready-language: the workflow takes the store set per ready language")
+    func screenshotWorkflow() throws {
+        let workflow = try String(contentsOf: Self.root.appending(path: ".github/workflows/screenshots.yml"), encoding: .utf8)
+        #expect(workflow.contains("python3 scripts/store_metadata.py locales"))
+        #expect(workflow.contains("TEST_RUNNER_STORE_LANGUAGE=\"$code\" TEST_RUNNER_STORE_REGION=\"$region\""))
+        #expect(workflow.contains("-only-testing:AntennaJourneys/AppJourneys/testStore"))
+        #expect(workflow.contains("-only-testing:AntennaTVJourneys/TVJourneys/testStore"))
+        #expect(workflow.contains("export-screenshots.sh --store \"$stores\" store-screenshots"))
+        #expect(workflow.contains("name: store-screenshots"))
+        #expect(workflow.contains("iPhone [0-9]+ Pro Max"))
+    }
 }
