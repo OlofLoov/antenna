@@ -23,7 +23,7 @@
 - [x] 3.3 Convert onboarding, import, setup and source status (`SetupText`, `ImportText`, `ConnectFailure`, `SourceStatus`, `PaywallCopy`, `UnlockGate`), and verify their tests
 - [x] 3.4 Convert player, zap bar, timeshift, multi-view, search, shelf, reminders, Top Shelf and intents replies (`ZapBarText`, `TimeshiftText`, `MultiViewFailureText`, `FailureMessage`, `TrackMenu`, `TrackName`, `SubtitleText`, `SearchText`, `ShelfText`, `ShelfCaptions`, `ReminderText`, `TopShelfContent`, `IntentReply`), and verify their tests
 - [x] 3.5 Localize the built-in group names (Favorites, All channels, Ungrouped) at display time, and verify a test that switching the locale renames them and that no SwiftData record stores them (localization/built-in-names-follow-the-language)
-- [ ] 3.6 Pass `@Environment(\.locale)` from every view that calls a Core text helper, and verify the iOS and tvOS builds and the previews
+- [x] 3.6 Pass `@Environment(\.locale)` from every view that calls a Core text helper, and verify the iOS and tvOS builds and the previews
 
 ## 4. Numbers, dates and durations (PR 4)
 
@@ -64,12 +64,12 @@
 
 ## 11. Right-to-left layout (PR 11)
 
-- [ ] 11.1 Draw the four Arabic boards listed under Not drawn on the canvas and export them as `*-RTL` boards before this PR opens
-- [ ] 11.2 Rebuild guide block placement in `GuideBlocks` and `GuideScrollGrid` on leading padding instead of `.offset(x:)`, and verify the Arabic guide previews on iPhone and Apple TV (design-system/the-guide-s-time-axis-follows-the-reading-direction)
-- [ ] 11.3 Route scrubber and timeshift drags and tvOS `onMoveCommand` left and right through `layoutDirection`, audit the other `.offset(x:)` and `.position` uses listed in design.md, and verify `TimeshiftUITests` in English
-- [ ] 11.4 Add `.previewLanguage(.arabic)` and the ten Arabic previews named in design.md, and fix what they show
-- [ ] 11.5 Add `LocalizationRTLUITests` on iPhone and `LocalizationRTLTVUITests` on Apple TV, and verify both on local simulators (design-system/layouts-mirror-in-right-to-left-languages, design-system/focus-moves-where-the-remote-points, design-system/playback-glyphs-keep-their-meaning)
-- [ ] 11.6 Add the "Right to left" section to the design-system reference and an RTL note on each board named in design.md
+- [ ] 11.1 (owed, see design.md PR 11) Draw the four Arabic boards listed under Not drawn on the canvas and export them as `*-RTL` boards before this PR opens
+- [x] 11.2 Rebuild guide block placement in `GuideBlocks` and `GuideScrollGrid` on leading padding instead of `.offset(x:)`, and verify the Arabic guide previews on iPhone and Apple TV (design-system/the-guide-s-time-axis-follows-the-reading-direction). Not needed: SwiftUI mirrors `.offset(x:)` (design.md, PR 11); the previews and RTL UI tests verify the axis
+- [x] 11.3 Route scrubber and timeshift drags and tvOS `onMoveCommand` left and right through `layoutDirection`, audit the other `.offset(x:)` and `.position` uses listed in design.md, and verify `TimeshiftUITests` in English
+- [x] 11.4 Add `.previewLanguage(.arabic)` and the ten Arabic previews named in design.md, and fix what they show
+- [x] 11.5 Add `LocalizationRTLUITests` on iPhone and `LocalizationRTLTVUITests` on Apple TV, and verify both on local simulators (design-system/layouts-mirror-in-right-to-left-languages, design-system/focus-moves-where-the-remote-points, design-system/playback-glyphs-keep-their-meaning)
+- [ ] 11.6 (section added; board notes owed with 11.1) Add the "Right to left" section to the design-system reference and an RTL note on each board named in design.md
 
 ## 12. Native-speaker review (one small PR per language)
 
