@@ -181,7 +181,8 @@ Element names come from the board's comments and labels, for example
 ## 7. Right to left
 
 Arabic mirrors every screen. The boards are drawn left to right; read them
-mirrored, with these rules.
+mirrored, with these rules. Four boards are drawn in Arabic: `iPhone-RTL`,
+`TV-Guide-RTL`, `iPhone-Player-Timeshift-RTL` and `TV-ZapBar-RTL`.
 
 - SwiftUI mirrors what it draws: stacks, `leading` and `trailing`,
   `.offset(x:)`, `.position` and shapes all flip. Logos, posters, artwork,

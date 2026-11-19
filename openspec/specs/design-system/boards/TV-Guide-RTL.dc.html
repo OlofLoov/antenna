@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Apple TV guide grid, Arabic</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div dir="rtl" style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+
+  <!-- TV-Guide.dc.html in Arabic, ar_SA (design-system/the-guide-s-time-axis-follows-the-reading-direction, design-system/focus-moves-where-the-remote-points). The channel column is at the right, the programme on now sits next to it and later programmes follow to the left; the now line moves left as time passes. The small picture sits at the right of the panel. A swipe left moves the highlight to the next programme, the one drawn to the left (LocalizationRTLTVUITests). Times are on the 12-hour clock ar_SA uses, in Arabic-Indic digits; provider text is isolated in its own direction. The panel's meta line joins its parts with " · " in code (design.md, PR 11). No letter spacing. -->
+
+  <!-- Top: PiP video + details of the focused programme. The 120 top keeps the tab bar's 104 band clear, so the bar sits over the guide where it sits on every tab and never covers the picture (tvos-shell/the-tab-bar-sits-in-the-same-place-on-every-tab). The picture shows the highlighted row's channel once the highlight rests there (tv-guide-grid/the-small-picture-follows-the-highlight) -->
+  <div style="display: flex; gap: 40px; padding: 120px 64px 28px; align-items: flex-start">
+    <div style="width: 480px; height: 270px; border-radius: 14px; background: #1A2535; flex: 0 0 auto; position: relative; overflow: hidden">
+      <div style="position: absolute; right: 16px; bottom: 14px; display: flex; align-items: center; gap: 10px; font-size: 18px; color: #D7DEE8">
+        <span style="width: 10px; height: 10px; border-radius: 5px; background: #FF5F57; display: inline-block"></span>
+        <span>١٠٤ <bdi>Sport One</bdi></span>
+      </div>
+    </div>
+    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding-top: 6px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px">
+        <div style="font-size: 20px; font-weight: 600; color: {{accent}}">الآن • <bdi>Sport One</bdi></div>
+        <div style="font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums">٩:٣٤ م</div>
+      </div>
+      <div style="font-size: 40px; font-weight: 700; line-height: 1.15"><bdi>Premier League: Arsenal v Liverpool</bdi></div>
+      <div style="font-size: 24px; color: #A7B0BF">٨:٠٠ م – ١٠:٠٠ م · ٢ س · <bdi>Football</bdi> · HD</div>
+      <!-- guide.panel.progress: 94 of 120 min, filled from the right -->
+      <div style="height: 4px; max-width: 1100px; border-radius: 2px; background: rgba(255,255,255,0.12); overflow: hidden"><div style="width: 78.3%; height: 100%; border-radius: 2px; background: {{accent}}"></div></div>
+      <div style="font-size: 24px; line-height: 1.4; color: #D7DEE8; max-width: 1100px"><bdi>Second half from the Emirates. Commentary by the studio team, with analysis at full time.</bdi></div>
+      <div style="display: flex; gap: 14px; padding-top: 6px">
+        <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; padding: 12px 24px; border-radius: 10px; border: 0; background: #F2F4F8; color: #0B0E13; cursor: pointer">مشاهدة</button>
+        <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; padding: 12px 24px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">البدء من جديد</button>
+        <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; padding: 12px 24px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">ذكّرني</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid. Hold select: system menu with guide.menu.favorite for the highlighted programme's channel (favorites/hold-select-to-favorite-on-apple-tv). -->
+  <div style="flex: 1 1 auto; position: relative; padding: 0 64px 40px; display: flex; flex-direction: column; gap: 6px">
+
+    <!-- Time header: day chips over the channel column at the right, then the half hours running left -->
+    <div style="display: flex; align-items: center; height: 52px">
+      <div style="width: 300px; flex: 0 0 auto; display: flex; gap: 10px; align-items: center">
+        <span style="font-size: 20px; font-weight: 600; padding: 6px 14px; border-radius: 8px; background: rgba(255,255,255,0.12)">اليوم</span>
+        <span style="font-size: 20px; color: #A7B0BF; padding: 6px 14px">ثلاثاء</span>
+        <span style="font-size: 20px; color: #A7B0BF; padding: 6px 14px">أربعاء</span>
+      </div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-right: 12px; border-right: 1px solid rgba(255,255,255,0.12)">٨:٠٠ م</div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-right: 12px; border-right: 1px solid rgba(255,255,255,0.12)">٨:٣٠ م</div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-right: 12px; border-right: 1px solid rgba(255,255,255,0.12)">٩:٠٠ م</div>
+      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-right: 12px; border-right: 1px solid rgba(255,255,255,0.12)">٩:٣٠ م</div>
+    </div>
+
+    <!-- 101 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠١</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #D7DEE8; flex: 0 0 auto">EUR</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Eurosport 1</bdi></span>
+      </div>
+      <div style="width: 736px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 10px; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><!-- started earlier: points right, toward the earlier side -->
+        <span style="font-size: 18px">▸</span><bdi>Snooker: UK Championship</bdi></div>
+      <div style="width: 736px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Cycling: Tour Down Under, Stage 4</bdi></div>
+    </div>
+
+    <!-- 102 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠٢</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #D7DEE8; flex: 0 0 auto">EUR2</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Eurosport 2</bdi></span>
+      </div>
+      <div style="width: 551px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Ski Jumping: World Cup</bdi></div>
+      <div style="width: 551px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Alpine Skiing: Night slalom</bdi></div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Sports News</bdi></div>
+    </div>
+
+    <!-- 104 focused: the highlighted block's line is "%@ · Live" -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠٤</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #F2F4F8; flex: 0 0 auto">S1</span>
+        <span style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Sport One</bdi></span>
+      </div>
+      <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: #F2F4F8; color: #0B0E13; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 16px; box-sizing: border-box; box-shadow: 0 10px 28px rgba(0,0,0,0.5)">
+        <div style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Premier League: Arsenal v Liverpool</bdi></div>
+        <div style="font-size: 18px; color: #4B5563">٨:٠٠ م – ١٠:٠٠ م • مباشر</div>
+      </div>
+    </div>
+
+    <!-- 105 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠٥</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #D7DEE8; flex: 0 0 auto">S2</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Sport Two</bdi></span>
+      </div>
+      <div style="width: 736px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>La Liga: Pre-match</bdi></div>
+      <div style="width: 736px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>La Liga: Sevilla v Betis</bdi></div>
+    </div>
+
+    <!-- 106 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠٦</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #D7DEE8; flex: 0 0 auto">ARN</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Arena HD</bdi></span>
+      </div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Handball Weekly</bdi></div>
+      <div style="width: 1106px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Handball: EHF Champions League</bdi></div>
+    </div>
+
+    <!-- 107 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠٧</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #D7DEE8; flex: 0 0 auto">MTR</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Motor TV</bdi></span>
+      </div>
+      <div style="width: 736px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>WRC Rally: Day 2 highlights</bdi></div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Pit Lane</bdi></div>
+      <div style="width: 366px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>WRC Rally: Day 3 preview</bdi></div>
+    </div>
+
+    <!-- 108 -->
+    <div style="display: flex; align-items: stretch; gap: 4px; height: 84px">
+      <div style="width: 296px; flex: 0 0 auto; display: flex; align-items: center; gap: 16px; padding-left: 16px">
+        <span style="width: 44px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">١٠٨</span>
+        <span style="width: 64px; height: 42px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #D7DEE8; flex: 0 0 auto">GLF</span>
+        <span style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>Golf Channel</bdi></span>
+      </div>
+      <div style="width: 1476px; flex: 0 0 auto; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><bdi>DP World Tour: Round 3</bdi></div>
+    </div>
+
+    <!-- Now line, measured from the right (٩:٣٤ م, 94 min past ٨:٠٠ م at 12.33 px/min) -->
+    <div style="position: absolute; right: 1523px; top: 0; bottom: 40px; width: 3px; background: {{accent}}; border-radius: 2px"></div>
+    <div style="position: absolute; right: 1489px; top: 8px; padding: 4px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">٩:٣٤ م</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
