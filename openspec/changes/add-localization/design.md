@@ -593,6 +593,22 @@ PR 8, French:
 - "First %@ free" became "Essai gratuit : %@, puis…", since the period
   noun ("semaine", "mois") changes the adjective's gender.
 
+German review:
+- de reviewed by a model reviewer in place of a native speaker (owner's
+  decision 2026-11-19).
+- "On its own" was "von selbst" in eight entries; it is "automatisch" now.
+- A device placeholder can be "Mac", which is masculine, so "dieses %@"
+  became "dein %@", and "auf diesem %@" stays. "Unlock your %@" is
+  reworded so the placeholder sits in the nominative.
+- The intro offer fills "%@" with a bare unit for one ("week"), which
+  German cannot put after "Die ersten". The one forms carry their article
+  in the accusative ("eine Woche", "einen Monat"), and the three offer
+  lines are built around that: "Gratis für eine Woche", "für einen Monat",
+  "für jeweils einen Monat, 3 Monate lang".
+- The provider's account status sits after "Kontostatus:", not inside
+  the sentence. Catch-up is "Mediathek", so the library is "Bibliothek".
+  The tab is "Programm", and longer copy says "Programmführer".
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.
