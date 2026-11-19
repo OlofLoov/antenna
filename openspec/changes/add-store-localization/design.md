@@ -243,13 +243,46 @@ The last step shows that the user brings the source.
 
 The iPhone and iPad walk starts on the scripted Live launch rather than the
 screenshot seed: the seed's Xtream source has no login, so its Live list
-shows a failed-source banner and its guide stays loading. The scripted
-launches draw small test probes (engine state, a layout switch) in a
-corner; a new Debug-only `-ui-testing-no-probe` argument hides them, and
-the store walk passes it. The pictures are still test fixtures: a black
-player picture, made-up names in English. They prove the pipeline and show
-the translated screens for review; a seed made for the store is a later
-change.
+shows a failed-source banner and its guide stays loading.
+
+The first run (44532619133) showed what the scripted launches leave on
+screen: an empty picture area with "Select a channel", a black player, a
+News Two row and an Apple TV guide still saying "Loading guide…", empty
+rows for the channels without programmes, and the Apple TV remote-hints
+card over Live, the guide, Movies and the player. The store walk now
+launches every step with a Debug-only `-ui-testing-store-shots`
+(`UITestingStoreShots`), which:
+- gives every channel of the scripted Live launch and of the screenshot
+  seed a made-up schedule from two hours before launch to six after, on
+  the quarter hour, all loaded;
+- puts one muted, looping `AVQueuePlayer` on `StorePicture.mp4` behind
+  every `PlayerSurfaceView`, in place of the scripted engines, which draw
+  nothing;
+- hides the test probes (it replaces `-ui-testing-no-probe`) and the
+  remote hints legend.
+
+The iPhone and iPad walk taps News One before the Live step, with the
+player controls set to hide after a second, so the picture area plays
+the clip on Live and in the iPhone guide.
+
+The clip is 12 seconds of an evening landscape, a sun rising over two
+rows of hills, that `scripts/make-store-picture.sh` draws pixel by pixel
+with ffmpeg's `geq` filter, about 250 KB. Options considered:
+- The stream fixtures in AntennaTestSupport (`testsrc2` patterns): a test
+  card with a counter reads as debug content in a store picture.
+- Playing a fixture through the real `AVPlayerEngine`: the shelf player
+  starts at the scripted resume point (36 minutes), past the end of any
+  small fixture, and the walk would lose the scripted engines' fixed
+  times.
+- Drawing frames in the app at launch with `AVAssetWriter`: no binary in
+  the repo, but more Debug code and seconds of encoding on a slow runner.
+The clip sits in `Apps/Shared/Debug/`, so both app targets copy it in
+Debug, and `EXCLUDED_SOURCE_FILE_NAMES[config=Release]` in
+`Config/Shared.xcconfig` leaves it out of Release builds.
+
+Still fixtures, by design: made-up channel names in English, posters drawn
+as name cards because the seed's titles have no artwork, and real clock
+times in the guide while the iPhone and iPad status bar says 9:41.
 
 The walk reads `STORE_LANGUAGE` and `STORE_REGION` from its environment.
 `xcodebuild` passes `TEST_RUNNER_STORE_LANGUAGE` to the test runner as
@@ -267,8 +300,12 @@ iPhone walks now open a tab by its place in the tab bar instead: Live 0,
 Guide 1, Movies 2 when a source offers titles, Search and Settings the
 last two. No app code changes. The iPad already uses
 `browse.section.<id>`. Apple TV steps already use identifiers only.
-Arabic, once it ships, needs a look: whether the tab bar lists its buttons
-in reading order or screen order decides if the places hold.
+Arabic shipped with #434, so `store_metadata.py locales` lists `ar` and
+the run photographs `ar-SA` with no workflow change. On the iOS 27.2
+simulator the Arabic tab bar lists its buttons in reading order, so the
+places hold. Apple TV mirrors its tab bar and rows too, and the remote's
+right press moved focus away from Guide; the Apple TV walk now presses
+left to move forward when `STORE_LANGUAGE` reads right to left.
 
 Devices and sizes:
 - iPhone: the workflow now picks the first "iPhone N Pro Max", whose 6.9-inch
@@ -294,6 +331,17 @@ stay as they are.
 Which languages: by default `store_metadata.py locales`, so English and the
 reviewed languages. A run started by hand takes a `languages` input (for
 example `ar`) to photograph a held language for review.
+
+The first run's Apple TV walk-throughs failed in
+`testSettingsPreferences`, before any of its steps: "Failed to
+terminate", then "Timed out while launching application via Xcode" on the
+retry, with DTServiceHub unable to signal the app. The night before,
+`testSettingsAddSource` failed on the same runner with a focus that never
+arrived, and both pass locally. That reads as the runner, not a hang in
+the app: by then the iPhone and the iPad simulators were still booted
+next to the Apple TV. The workflow now shuts both down and boots the
+Apple TV, waiting for `bootstatus`, before the Apple TV build. The retry
+(`-retry-tests-on-failure -test-iterations 2`) stays.
 
 Run time: the store walk is five steps, about two minutes per language and
 platform after the build. Six languages add about 25 minutes, so the job's

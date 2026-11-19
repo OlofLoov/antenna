@@ -61,7 +61,11 @@
   `TEST_RUNNER_STORE_REGION` (the walk reads them without the prefix) and
   uploads `store-screenshots` as `<store-locale>/<nn>-<device>-<step>.png`
   and `<store-locale>/appleTV/<nn>-<step>.png`. Its steps anchor on
-  identifiers only, never on a label, since the labels are translated. To
+  identifiers only, never on a label, since the labels are translated. It
+  launches with `-ui-testing-store-shots`, which fills every channel's
+  guide, plays `Apps/Shared/Debug/StorePicture.mp4` on the player surfaces
+  and hides the test probes and the Apple TV remote hints. The clip is drawn
+  by `scripts/make-store-picture.sh` and left out of Release builds. To
   run it in German locally, set `TEST_RUNNER_STORE_LANGUAGE=de` and
   `TEST_RUNNER_STORE_REGION=de_DE` in front of `xcodebuild test`.
 

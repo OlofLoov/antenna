@@ -20,7 +20,9 @@
             timeshift.restartChannel = { [weak self] in self?.restartWithNewBuffer() }
             var guide = OverlayGuide.store(dependencies.guide)
             #if DEBUG
-                if let scripted = UITestingShell.guide() { guide = scripted }
+                if let scripted = UITestingStoreShots.guide(launched: UITestingShell.launched) ?? UITestingShell.guide() {
+                    guide = scripted
+                }
             #endif
             timeshift.nowPlaying = { [weak self] in
                 guard let self, let tuned else { return nil }

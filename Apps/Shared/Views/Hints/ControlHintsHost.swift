@@ -41,7 +41,7 @@
         func body(content: Content) -> some View {
             content
                 .overlay {
-                    if Self.holds || hideAt != nil, shows, let screen {
+                    if Self.holds || hideAt != nil, shows, !Self.suppressed, let screen {
                         ControlHints.Legend(screen: screen)
                             .padding(Metrics.televisionSafeArea)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: screen.corner.alignment)
@@ -68,6 +68,15 @@
             } catch {
                 // A later arrival moved the moment; its own task waits for it.
             }
+        }
+
+        /// The store screenshots show no legend (add-store-localization).
+        private static var suppressed: Bool {
+            #if DEBUG
+                UITestingStoreShots.isOn
+            #else
+                false
+            #endif
         }
 
         /// The legend never fades in UI tests launched with `-ui-testing-hints`.

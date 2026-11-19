@@ -260,7 +260,7 @@
 
         private var overlayGuide: OverlayGuide {
             #if DEBUG
-                if let scripted = UITestingShell.guide() { return scripted }
+                if let scripted = UITestingStoreShots.guide(launched: UITestingShell.launched) ?? UITestingShell.guide() { return scripted }
             #endif
             return .store(guideStore)
         }

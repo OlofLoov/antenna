@@ -37,10 +37,18 @@ final class TVJourneys: XCTestCase {
         }
     }
 
-    /// Presses right until `identifier` has focus, at most `limit` times.
+    /// The way the tab bar and rows run: left in a right-to-left store
+    /// language such as Arabic, where the app mirrors its layout.
+    private var forward: XCUIRemote.Button {
+        let language = ProcessInfo.processInfo.environment["STORE_LANGUAGE"] ?? "en"
+        return Locale.Language(identifier: language).characterDirection == .rightToLeft ? .left : .right
+    }
+
+    /// Presses toward the end of the reading line until `identifier` has
+    /// focus, at most `limit` times.
     private func moveRight(to identifier: String, in journey: Journey, limit: Int = 8) {
         for _ in 0..<limit where !journey.element(identifier).hasFocus {
-            remote.press(.right)
+            remote.press(forward)
         }
         expectFocus(identifier, in: journey)
     }
@@ -169,8 +177,11 @@ final class TVJourneys: XCTestCase {
     /// The App Store set, in the language the runner's `STORE_LANGUAGE`
     /// names: the zap bar, the guide, Movies, a movie playing, and the source
     /// kinds (add-store-localization, store-listing/store-screenshots-in-every-ready-language).
+    /// `-ui-testing-store-shots` fills the guide, plays the store clip and
+    /// hides the remote hints and the test probes.
     func testStore() {
-        let journey = Journey(self, arguments: ["-ui-screenshots", "full", "-ui-testing-no-probe"])
+        let store = "-ui-testing-store-shots"
+        let journey = Journey(self, arguments: ["-ui-screenshots", "full", store])
         journey.snap("live", anchor: "zapBar.bar")
         expectGone("zapBar.bar", in: journey)
         expectFocus("shell.picture", in: journey)
@@ -179,7 +190,7 @@ final class TVJourneys: XCTestCase {
         remote.press(.select)
         expectFocus("guide.grid", in: journey)
         journey.snap("guide", anchor: "guide.grid")
-        journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", "-ui-testing-no-probe"])
+        journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", store])
         remote.press(.menu)
         moveRight(to: "shell.tab.movies", in: journey)
         remote.press(.select)
@@ -187,7 +198,7 @@ final class TVJourneys: XCTestCase {
         journey.snap("movies", anchor: "movies.hero.play")
         remote.press(.select)
         journey.snap("player", anchor: "title.transport")
-        journey.launch(["-ui-screenshots", "empty"])
+        journey.launch(["-ui-screenshots", "empty", store])
         expectFocus("onboarding.addSource", in: journey)
         remote.press(.select)
         expectFocus("onboarding.kind.m3u", in: journey)

@@ -24,6 +24,10 @@ import SwiftUI
         }
 
         private func attach(_ view: PlayerLayerView) {
+            #if DEBUG
+                // The store screenshots show a looping clip in place of the scripted engines' black picture.
+                if let picture = UITestingStoreShots.picture { return picture.attach(to: view.playerLayer) }
+            #endif
             AVPlayerEngine.resolve(engine)?.attach(to: view.playerLayer)
             let demuxer = DemuxEngine.resolve(engine)
             view.host(demuxer?.videoLayer, hold: demuxer?.hold.layer)
@@ -96,6 +100,10 @@ import SwiftUI
 
         private func attach(_ view: PlayerLayerView) {
             guard let layer = view.playerLayer else { return }
+            #if DEBUG
+                // The store screenshots show a looping clip in place of the scripted engines' black picture.
+                if let picture = UITestingStoreShots.picture { return picture.attach(to: layer) }
+            #endif
             AVPlayerEngine.resolve(engine)?.attach(to: layer)
             let demuxer = DemuxEngine.resolve(engine)
             view.host(demuxer?.videoLayer, hold: demuxer?.hold.layer)
