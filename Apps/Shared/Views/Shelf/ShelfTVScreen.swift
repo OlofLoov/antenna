@@ -10,6 +10,7 @@
         let focus: FocusState<ShellFocus?>.Binding
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfActivity.self) private var activity
+        @Environment(\.shellBarFocused) private var barFocused
 
         /// The grid open over the rows, a screen of its own that Menu closes.
         @State private var list: ShelfList?
@@ -83,16 +84,9 @@
                 library.open()
             }
             // The loading holder had focus; once titles replace it, Play takes it.
+            // With the highlight in the tab bar, which opens a tab as it passes, focus stays there.
             .onChange(of: model.status.showsTitles) { _, titles in
-                guard titles, focus.wrappedValue == nil || focus.wrappedValue == .content else { return }
-                refocus()
-            }
-            // Select on the tab sends focus to the loading holder, and the
-            // focus engine moves it a moment later. When titles replace the
-            // holder in that moment, focus leaves the tab for nothing, and
-            // Play takes it.
-            .onChange(of: focus.wrappedValue) { old, new in
-                guard new == nil, case .tab = old, model.status.showsTitles, list == nil, library.top == nil else { return }
+                guard titles, !barFocused, focus.wrappedValue == nil || focus.wrappedValue == .content else { return }
                 refocus()
             }
         }
@@ -170,6 +164,7 @@
                     Palette.ground.frame(height: Self.barHeight).accessibilityHidden(true)
                 }
             }
+            .overlay(alignment: .topTrailing) { heroClock(shows: !scrolled && !previewing && library.top == nil) }
             .overlay(alignment: .top) {
                 ZStack {
                     if previewing {
@@ -277,6 +272,17 @@
             return PreviewContext(text: BannerText(preview: title, details: details), art: art, bare: art == nil && settled)
         }
 
+        /// The system tab bar holds no clock, so the hero draws it in its top right (`TV-Shell-TabView`).
+        @ViewBuilder private func heroClock(shows: Bool) -> some View {
+            if shows {
+                TimelineView(.everyMinute) { context in
+                    TVClock(date: context.date)
+                }
+                .padding(.top, Self.clockTop)
+                .padding(.trailing, 80)
+            }
+        }
+
         private var reduceMotion: Bool {
             #if DEBUG
                 if UITestingShelf.reduceMotion { return true }
@@ -285,9 +291,11 @@
         }
 
         /// The tab bar's height; rows scroll to just under it.
-        static let barHeight: CGFloat = 120
+        static let barHeight: CGFloat = SystemTabBar.bottom
+        /// The clock's top, level with the system tab bar.
+        static let clockTop: CGFloat = 58
         /// Where the focused row's header aims while the preview shows. On the
-        /// simulator it lands about 25 pt lower, still clear of the preview.
+        /// simulator under the system tab bar it lands a point above the preview's foot.
         static let rowTop: CGFloat = ShelfPreview.height + 16
         static let screenHeight: CGFloat = 1080
         /// How long a focus move takes to scroll before the rows are placed.

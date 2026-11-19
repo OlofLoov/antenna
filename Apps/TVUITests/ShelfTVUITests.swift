@@ -43,22 +43,12 @@ final class ShelfTVUITests: XCTestCase {
         expect(element("zapBar.bar"), "exists == false")
     }
 
-    /// Movies open from the bar, with focus on the banner's Play button.
-    func openMovies() {
-        launchPlaying()
-        press(.menu)
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
-        press(.select)
-        expectFocus("movies.hero.play")
-    }
-
     // movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them
     // tvos-shell/the-tabs-in-order
     func testMoviesAndSeriesOpenFromTheTabBar() {
         openMovies()
         XCTAssertTrue(element("movies.row.recentlyAdded").exists)
-        press(.up)
+        press(.menu)
         expectFocus("shell.tab.movies")
         press(.right)
         expectFocus("shell.tab.series")
@@ -72,7 +62,7 @@ final class ShelfTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "noXtream"]
         app.launchInEnglish()
-        press(.menu)
+        pressMenuOnceFocused()
         XCTAssertTrue(element("shell.tab.live").waitForExistence(timeout: 10))
         XCTAssertTrue(element("shell.tab.search").exists)
         XCTAssertFalse(element("shell.tab.movies").exists)
@@ -85,12 +75,11 @@ final class ShelfTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "playlistSeries"]
         app.launchInEnglish()
-        press(.menu)
+        pressMenuOnceFocused()
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
         XCTAssertFalse(element("shell.tab.movies").exists)
         expectFocus("shell.tab.live")
-        press(.right, times: 2)
-        expectFocus("shell.tab.series")
+        moveAlongTheBar(.right, to: "shell.tab.series")
         press(.select)
         expectFocus("series.hero.play")
     }
@@ -100,15 +89,16 @@ final class ShelfTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "playlistSeries"]
         app.launchInEnglish()
-        press(.menu)
+        pressMenuOnceFocused()
         XCTAssertTrue(element("shell.tab.search").waitForExistence(timeout: 10))
         expectFocus("shell.tab.live")
-        press(.right, times: 3)
-        expectFocus("shell.tab.search")
+        moveAlongTheBar(.right, to: "shell.tab.search")
         press(.select)
         XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
-        expectFocus("shell.tab.search")
-        press(.down)
+        // Select on the tab takes the highlight to the keyboard; one that lands
+        // while the page opens leaves it on the tab, and a swipe down goes on.
+        let tab = element("shell.tab.search")
+        if tab.exists, tab.hasFocus { press(.down) }
         let field = app.searchFields.firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 10))
         field.typeText("pier")
@@ -174,7 +164,7 @@ final class ShelfTVUITests: XCTestCase {
         press(.menu)
         expect(grid, "exists == false")
         expectFocus("movies.hero.play")
-        XCTAssertTrue(element("shell.tab.movies").isSelected)
+        XCTAssertTrue(element("movies.hero").exists, "Movies stays the open tab")
     }
 
     // movies-and-series-browsing/recently-watched, on Apple TV
@@ -182,7 +172,7 @@ final class ShelfTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"]
         app.launchInEnglish()
-        press(.menu)
+        pressMenuOnceFocused()
         let tab = element("shell.tab.movies")
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         for _ in 0..<4 where !tab.hasFocus {
@@ -251,8 +241,7 @@ final class ShelfTVUITests: XCTestCase {
         expectFocus("movies.hero.play")
         press(.menu)
         expectFocus("shell.tab.movies")
-        press(.left, times: 2)
-        expectFocus("shell.tab.live")
+        moveAlongTheBar(.left, to: "shell.tab.live")
         press(.select)
         expect(element("shell.debug.engine"), "value BEGINSWITH 'playing loads=2'")
     }
@@ -312,11 +301,10 @@ final class ShelfTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-near-end"]
         app.launchInEnglish()
-        press(.menu)
+        pressMenuOnceFocused()
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
         expectFocus("shell.tab.live")
-        press(.right, times: 3)
-        expectFocus("shell.tab.series")
+        moveAlongTheBar(.right, to: "shell.tab.series")
         press(.select)
         expectFocus("series.hero.play")
     }
@@ -362,5 +350,28 @@ final class ShelfTVUITests: XCTestCase {
         XCTAssertEqual(probe.value as? String, first, "nothing else plays")
         press(.menu)
         expect(element("series.player"), "exists == false")
+    }
+}
+
+extension ShelfTVUITests {
+    /// Movies open from the bar, with focus on the banner's Play button.
+    func openMovies() {
+        launchPlaying()
+        press(.menu)
+        expectFocus("shell.tab.live")
+        // Each tab opens as the highlight lands on it, which can swallow a quick second press.
+        for _ in 0..<4 where !element("shell.tab.movies").hasFocus {
+            press(.right)
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        expectFocus("shell.tab.movies")
+        press(.select)
+        expectFocus("movies.hero.play")
+    }
+
+    /// Menu once something on the page has focus; the system bar takes it only then.
+    func pressMenuOnceFocused() {
+        _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
+        press(.menu)
     }
 }

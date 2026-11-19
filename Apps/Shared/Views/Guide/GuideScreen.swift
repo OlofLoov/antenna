@@ -38,6 +38,7 @@
         @Environment(\.reminders) private var reminders
         @Environment(\.locale) private var locale
         @Environment(\.layoutDirection) private var layoutDirection
+        @Environment(\.shellBarFocused) private var barFocused
         @Query private var preferences: [PreferencesRecord]
 
         var body: some View {
@@ -55,7 +56,8 @@
                 let data = data(at: now)
                 model.open(data, playing: playingKey, now: now)
                 opened = true
-                if data.rows.isEmpty { local = .day(model.selectedDay(data, now: now)) }
+                // Opened by the highlight passing over it in the tab bar, the Guide leaves focus there.
+                if data.rows.isEmpty, !barFocused { local = .day(model.selectedDay(data, now: now)) }
             }
             .task {
                 for await value in await shell.engine.states() { engineState = value }
@@ -77,7 +79,11 @@
                 local = .day(model.selectedDay(data(at: .now), now: .now))
             }
             .onChange(of: model.highlight) { _, _ in highlightMoved() }
-            .onDisappear { shell.guideHighlightMoved(to: nil) }
+            // The system tab view keeps the page; the Guide opens on what is on now each time it shows.
+            .onDisappear {
+                shell.guideHighlightMoved(to: nil)
+                opened = false
+            }
             .onChange(of: model.highlight) { _, _ in
                 // Focus stays on the holder, so VoiceOver hears each new block read out.
                 guard voiceOver, model.area == .grid else { return }

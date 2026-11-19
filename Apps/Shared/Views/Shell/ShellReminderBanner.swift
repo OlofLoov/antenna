@@ -41,7 +41,10 @@
                     .onAppear { before = focus.wrappedValue }
                     .task(id: shown.key) {
                         local = .watch
-                        try? await Task.sleep(for: .seconds(ReminderBannerText.timeout))
+                        // A tune landing as the banner appears can take the highlight back to the picture.
+                        try? await Task.sleep(for: .milliseconds(500))
+                        if reminders.banner?.key == shown.key, local == nil { local = .watch }
+                        try? await Task.sleep(for: .seconds(ReminderBannerText.timeout) - .milliseconds(500))
                         if reminders.banner?.key == shown.key { close { reminders.dismissBanner() } }
                     }
                 }

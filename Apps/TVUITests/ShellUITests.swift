@@ -107,8 +107,7 @@ extension ShellUITests {
         launchPlaying()
         press(.menu)
         let order = [
-            "shell.mark", "shell.tab.live", "shell.tab.guide", "shell.tab.movies", "shell.tab.series", "shell.tab.search",
-            "shell.settings", "shell.clock",
+            "shell.tab.live", "shell.tab.guide", "shell.tab.movies", "shell.tab.series", "shell.tab.search", "shell.settings",
         ]
         var previous = -CGFloat.infinity
         for identifier in order {
@@ -117,8 +116,7 @@ extension ShellUITests {
             XCTAssertGreaterThan(item.frame.minX, previous, "\(identifier) is out of order")
             previous = item.frame.minX
         }
-        let selected = order.filter { $0.hasPrefix("shell.tab.") && element($0).isSelected }
-        XCTAssertEqual(selected, ["shell.tab.live"])
+        XCTAssertFalse(element("shell.clock").exists, "the bar holds no clock")
     }
 
     // tvos-shell/the-tab-bar-sits-in-the-same-place-on-every-tab
@@ -127,21 +125,30 @@ extension ShellUITests {
         press(.menu)
         expectFocus("shell.tab.live")
         let screen = app.windows.firstMatch.frame
-        // The capsule around the tabs; a pill's own frame grows while it has focus.
-        func tabs() -> CGRect { element("shell.tabs").frame }
-        let overLive = tabs()
-        XCTAssertGreaterThan(overLive.width, 400, "the capsule holds the tabs")
-        XCTAssertEqual(overLive.midX, screen.midX, accuracy: 2, "the tabs sit on the screen's center")
+        // Series never has focus here, so its frame does not grow with the highlight.
+        func series() -> CGRect { element("shell.tab.series").frame }
+        let overLive = series()
+        let live = element("shell.tab.live").frame
+        let settings = element("shell.settings").frame
+        // The system bar's own insets, the same at both ends: no padding of the app's.
+        XCTAssertEqual(screen.midX - live.minX, settings.maxX - screen.midX, accuracy: 4, "the tabs sit on the screen's center")
+
+        func check(_ tab: String, file: StaticString = #filePath, line: UInt = #line) {
+            let frame = series()
+            XCTAssertEqual(frame.minX, overLive.minX, accuracy: 1, "\(tab) moves the bar sideways", file: file, line: line)
+            XCTAssertEqual(frame.minY, overLive.minY, accuracy: 1, "\(tab) moves the bar up or down", file: file, line: line)
+            XCTAssertEqual(app.tabBars.firstMatch.frame.minY, 46, accuracy: 2, "\(tab) puts the bar elsewhere", file: file, line: line)
+        }
+        check("Live")
 
         press(.right, toFocus: element("shell.tab.guide"), from: element("shell.tab.live"))
         press(.select)
         expectFocus("guide.grid")
         press(.menu)
         expectFocus("shell.tab.guide")
-        let overGuide = tabs()
-        XCTAssertEqual(overGuide.midX, overLive.midX, accuracy: 1)
-        XCTAssertEqual(overGuide.minY, overLive.minY, accuracy: 1)
-        XCTAssertGreaterThanOrEqual(element("shell.player").frame.minY, overGuide.maxY, "the bar leaves the small picture uncovered")
+        check("the Guide")
+        XCTAssertGreaterThanOrEqual(
+            element("shell.player").frame.minY, app.tabBars.firstMatch.frame.maxY, "the bar leaves the small picture uncovered")
 
         press(.right, toFocus: element("shell.tab.movies"), from: element("shell.tab.guide"))
         press(.select)
@@ -149,10 +156,15 @@ extension ShellUITests {
         expectFocus("movies.hero.play")
         press(.menu)
         expectFocus("shell.tab.movies")
-        let overMovies = tabs()
-        XCTAssertEqual(overMovies.midX, overLive.midX, accuracy: 1)
-        XCTAssertEqual(overMovies.minY, overLive.minY, accuracy: 1)
-        XCTAssertGreaterThan(element("shell.settings").frame.minX, overMovies.maxX, "Settings hangs right of the tabs")
+        check("Movies")
+
+        for _ in 0..<4 where !element("shell.settings").hasFocus {
+            press(.right)
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        expectFocus("shell.settings")
+        check("Settings")
+        XCTAssertGreaterThan(element("shell.settings").frame.minX, element("shell.tab.search").frame.maxX, "Settings is the last tab")
     }
 
     // tvos-shell/menu-shows-the-tab-bar-over-the-picture
@@ -202,16 +214,18 @@ extension ShellUITests {
         expectGone("shell.tab.live")
     }
 
-    // tvos-shell/moving-along-the-bar-does-not-switch-tabs
-    func testMovingAlongBarKeepsTab() {
+    // tvos-shell/the-page-follows-the-highlight-in-the-tab-bar
+    func testThePageFollowsTheHighlightInTheBar() {
         launchPlaying()
         press(.menu)
         expectFocus("shell.tab.live")
-        press(.right, times: 4)
-        expectFocus("shell.tab.search")
-        XCTAssertTrue(element("shell.tab.live").isSelected)
-        XCTAssertFalse(element("shell.tab.search").isSelected)
-        XCTAssertFalse(element("search.results").exists)
+        moveAlongTheBar(.right, to: "shell.tab.search")
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
+        // tvos-shell/the-video-pauses-behind-movies-series-and-search
+        expectEngine("paused loads=1 file=a1.ts")
+
+        moveAlongTheBar(.left, to: "shell.tab.live")
+        expectEngine("playing loads=1 file=a1.ts")
         expect(element("shell.player"), "value == 'dimmed'")
     }
 
@@ -221,8 +235,7 @@ extension ShellUITests {
         launchPlaying()
         press(.menu)
         expectFocus("shell.tab.live")
-        press(.right, times: 5)
-        expectFocus("shell.settings")
+        moveAlongTheBar(.right, to: "shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
         let title = element("settings.title")
@@ -247,16 +260,14 @@ extension ShellUITests {
     func testMoviesPausesLiveAndLiveResumesIt() {
         launchPlaying()
         press(.menu)
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         expectEngine("paused loads=1 file=a1.ts")
 
         press(.menu)
         expectFocus("shell.tab.movies")
-        press(.left, times: 2)
-        expectFocus("shell.tab.live")
+        moveAlongTheBar(.left, to: "shell.tab.live")
         press(.select)
         expectEngine("playing loads=1 file=a1.ts")
     }
@@ -265,20 +276,18 @@ extension ShellUITests {
     func testMenuFromTabReachesBar() {
         launchPlaying()
         press(.menu)
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         press(.menu)
         expectFocus("shell.tab.movies")
-        XCTAssertTrue(element("shell.tab.movies").isSelected)
         XCTAssertTrue(element("movies.hero.play").exists)
 
         press(.select)
         expectFocus("movies.hero.play")
         press(.up)
-        expectFocus("shell.tab.movies")
-        XCTAssertTrue(element("movies.hero.play").exists)
+        expectFocus("movies.hero.play")
+        XCTAssertFalse(element("shell.tab.movies").exists, "the system bar is not reached by swiping up")
     }
 
     // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
@@ -334,7 +343,7 @@ extension ShellUITests {
     func testBackAlwaysLeavesAGenreGrid() {
         launchPlaying()
         press(.menu)
-        press(.right, times: 2)
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         let chips = app.descendants(matching: .any)
@@ -363,7 +372,7 @@ extension ShellUITests {
     func testBackFromMoviesGoesToBarThenHome() {
         launchPlaying()
         press(.menu)
-        press(.right, times: 2)
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         press(.menu)
@@ -376,7 +385,7 @@ extension ShellUITests {
     func testBackFromALowerRowScrollsToTheTop() {
         launchPlaying()
         press(.menu)
-        press(.right, times: 2)
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         let chips = app.descendants(matching: .any)
@@ -423,8 +432,7 @@ extension ShellUITests {
         }
         press(.menu)
         expectFocus("shell.tab.live")
-        press(.right, times: 5)
-        expectFocus("shell.settings")
+        moveAlongTheBar(.right, to: "shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
     }
@@ -464,8 +472,7 @@ extension ShellUITests {
         press(.menu)
         expectFocus("shell.tab.live")
         expect(element("shell.empty.settings"), "hasFocus == false")
-        press(.right, times: 5)
-        expectFocus("shell.settings")
+        moveAlongTheBar(.right, to: "shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
     }

@@ -23,7 +23,7 @@ extension ShelfTVUITests {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles", "-ui-testing-reduce-motion"]
         app.launchInEnglish()
-        press(.menu)
+        pressMenuOnceFocused()
         let tab = element("shell.tab.movies")
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         for _ in 0..<4 where !tab.hasFocus {

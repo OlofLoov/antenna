@@ -20,7 +20,7 @@
 
         /// Full-screen live TV with nothing open over it.
         var fullScreenLive: Bool {
-            model.tab == .live && !model.barVisible && !model.pickerOpen && model.player.panel == nil && numbers.phase == .closed
+            model.liveInFront && !model.pickerOpen && model.player.panel == nil && numbers.phase == .closed
         }
     }
 

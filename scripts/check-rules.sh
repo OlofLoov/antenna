@@ -148,7 +148,7 @@ check_except "design-system/one-spacing-and-radius-scale: corner radii from the 
 # Buttons take glass through the system .glass and .glassProminent styles.
 check_except "design-system/liquid-glass-stays-on-the-navigation-layer: the glass effect only on the navigation layer" \
   '\.glassEffect\(' \
-  'Apps/Shared/Components/ShellTabBar/ShellTabBar\.swift|Apps/Shared/Components/Shelf/ShelfControls\.swift|Apps/Shared/Components/Browse/BrowseControls\.swift|Apps/Shared/Views/Live/LivePicture\.swift' \
+  'Apps/Shared/Components/Shelf/ShelfControls\.swift|Apps/Shared/Components/Browse/BrowseControls\.swift|Apps/Shared/Views/Live/LivePicture\.swift' \
   Apps
 
 # Copy kept in a String constant skips the String Catalog. Copy is a

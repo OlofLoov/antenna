@@ -64,11 +64,10 @@ import Testing
         #expect(engine.pauses == 1)
         let plays = engine.plays
 
-        #expect(model.menu(from: .content) == .tab(.movies))
         let focus = await model.select(.live)
         #expect(focus == .picture)
         #expect(model.tab == .live)
-        #expect(!model.barVisible)
+        #expect(model.liveInFront)
         #expect(engine.plays == plays + 1)
         #expect(engine.loaded.count == 1)
     }
@@ -88,7 +87,6 @@ import Testing
         await wait { model.tab == .guide }
         #expect(model.guideRequest == key)
         #expect(!model.pickerOpen, "a request from the overlay closes it")
-        #expect(!model.barVisible)
     }
 
     // tvos-shell/channel-list-over-the-picture
@@ -99,13 +97,12 @@ import Testing
         await model.pick(model.channels[1])
         #expect(model.tab == .live)
         #expect(!model.pickerOpen)
-        #expect(!model.barVisible)
+        #expect(model.liveInFront)
         await wait { engine.loaded.count == 2 }
 
         _ = await model.select(.search)
         model.navigator.showLive()
         await wait { model.tab == .live }
-        #expect(!model.barVisible)
     }
 
     @Test("tvos-shell/an-empty-screen-with-retry Retry loads again only the sources that added nothing")
@@ -138,17 +135,61 @@ import Testing
         #expect(model.liveScreen == .loading)
     }
 
-    @Test("tvos-shell/back-to-full-screen-from-the-tab-bar swipe down lowers the bar only over Live and Guide")
-    func swipeDown() async {
+    @Test("tvos-shell/menu-shows-the-tab-bar-over-the-picture the picture dims while the highlight is in the bar over Live and the Guide")
+    func dimUnderTheBar() async {
         await playing()
-        _ = model.menu(from: .picture)
+        model.barFocused = true
         #expect(model.dimmed)
-        #expect(model.swipeDown() == .picture)
-        #expect(!model.barVisible)
+        #expect(!model.liveInFront)
+        model.barFocused = false
+        #expect(!model.dimmed)
+        #expect(model.liveInFront)
 
+        _ = await model.select(.guide)
+        model.barFocused = true
+        #expect(model.dimmed)
         _ = await model.select(.movies)
-        #expect(model.swipeDown() == nil)
-        #expect(model.barVisible)
+        #expect(!model.dimmed, "Movies hides the picture, so there is nothing to dim")
+    }
+
+    @Test("tvos-shell/open-settings Settings is the last tab and leaves the video alone")
+    func settingsTab() async {
+        await playing()
+        #expect(model.tabs.last == .settings)
+        let plays = engine.plays
+        _ = await model.select(.settings)
+        #expect(model.tab == .settings)
+        #expect(engine.pauses == 0)
+        #expect(engine.state == .playing)
+
+        _ = await model.select(.live)
+        #expect(engine.plays == plays)
+        #expect(engine.loaded.count == 1)
+    }
+
+    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search Settings opened from Movies keeps the hold")
+    func settingsKeepsTheHold() async {
+        await playing()
+        _ = await model.select(.movies)
+        _ = await model.select(.settings)
+        #expect(engine.pauses == 1)
+        #expect(engine.state == .paused, "Settings does not play the channel")
+
+        _ = await model.select(.live)
+        await wait { engine.state == .playing }
+        #expect(engine.loaded.count == 1)
+    }
+
+    @Test("tvos-shell/back-to-full-screen-from-the-tab-bar the bar changes tab at once and the video follows in order")
+    func chooseQueues() async {
+        await playing()
+        model.choose(.guide)
+        model.choose(.movies)
+        model.choose(.live)
+        #expect(model.tab == .live, "the page changes before the video does")
+        await model.tabChange?.value
+        await wait { engine.state == .playing }
+        #expect(engine.loaded.count == 1)
     }
 
     @Test("tvos-shell/back-to-full-screen-from-the-tab-bar selecting Live over the dimmed Guide loads a failed stream again")
@@ -159,12 +200,11 @@ import Testing
         loader.finish(source.id, with: [.fixture("a1")])
         await wait { engine.loaded.count == 1 }
         _ = await model.select(.guide)
-        _ = model.menu(from: .content)
+        model.barFocused = true
         #expect(model.dimmed)
 
         _ = await model.select(.live)
         await wait { engine.loaded.count == 2 }
-        #expect(!model.barVisible)
     }
 
     @Test("tv-guide-grid/the-channel-keeps-playing-in-a-small-picture opening the Guide resumes a paused stream without a reload")
@@ -172,7 +212,7 @@ import Testing
         await playing()
         await engine.pause()
         let plays = engine.plays
-        #expect(await model.select(.guide) == .content)
+        #expect(await model.select(.guide) == nil)
         #expect(engine.plays == plays + 1)
         #expect(engine.loaded.count == 1)
         #expect(engine.state == .playing)
