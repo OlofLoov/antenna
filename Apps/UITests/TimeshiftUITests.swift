@@ -68,7 +68,7 @@ final class TimeshiftUITests: XCTestCase {
         let app = try launch("buffer")
         let live = app.element("browse.player.live")
         XCTAssertGreaterThan(live.frame.width, live.frame.height, "LIVE reads on one line")
-        XCTAssertGreaterThan(app.element("browse.player.progress").frame.width, 20, "the programme bar keeps its width")
+        XCTAssertGreaterThan(app.element("browse.player.progress").frame.width, 56, "the programme bar keeps its width")
     }
 
     // timeshift-catch-up-and-start-over/skip-scan-and-drag
