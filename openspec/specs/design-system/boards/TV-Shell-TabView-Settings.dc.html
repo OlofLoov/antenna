@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV system tab bar with Settings focused</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- adopt-tvos-tab-view: Settings is the last tab. With the highlight on it the Settings page shows under the bar: the opaque split page of TV-Settings. With two or more profiles the profile button (shell.profile, 56 round, the profile's color and initial) sits at the top of the lead column; with one profile there is none (tvos-shell/the-tabs-in-order). -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- Lead column, one third -->
+  <div style="position: absolute; top: 0; left: 80px; width: 560px; height: 1080px; display: flex; flex-direction: column; align-items: center">
+    <!-- shell.profile -->
+    <div style="margin-top: 150px; width: 56px; height: 56px; border-radius: 28px; background: #F5A623; color: #0B0E13; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700">K</div>
+    <div style="margin-top: 170px; width: 160px; height: 160px; border-radius: 80px; border: 10px solid #A7B0BF; box-sizing: border-box"></div>
+    <div style="margin-top: 40px; font-size: 38px; font-weight: 600">Sources &amp; Settings</div>
+    <div style="margin-top: 24px; font-size: 25px; color: #A7B0BF; text-align: center">Sources sync through iCloud to your other devices.</div>
+  </div>
+  <!-- Rows, two thirds -->
+  <div style="position: absolute; top: 150px; left: 760px; right: 80px; display: flex; flex-direction: column; gap: 12px; font-size: 29px">
+    <div style="height: 88px; padding: 0 32px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between"><span>Profiles</span><span style="color: #A7B0BF">Kids</span></div>
+    <div style="height: 88px; padding: 0 32px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center">Groups</div>
+    <div style="height: 88px; padding: 0 32px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between"><span>Home</span><span style="color: #A7B0BF">2,140 channels</span></div>
+    <div style="height: 88px; padding: 0 32px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center">Add a source</div>
+  </div>
+  <!-- System tab bar, Settings highlighted -->
+  <div style="position: absolute; top: 46px; left: 50%; transform: translateX(-50%); height: 68px; padding: 0 8px; border-radius: 999px; background: rgba(255,255,255,0.16); backdrop-filter: blur(30px); display: flex; align-items: center; gap: 4px; font-size: 29px">
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Live</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Guide</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Movies</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Series</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Search</div>
+    <div style="height: 56px; padding: 0 28px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; font-weight: 600">Settings</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

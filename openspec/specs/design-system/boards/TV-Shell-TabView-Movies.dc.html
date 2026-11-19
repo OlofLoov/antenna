@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV system tab bar over Movies</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- adopt-tvos-tab-view: the system TabView bar over the Movies hero with the highlight on Movies. The hero runs full bleed behind the bar; its eyebrow and title start below it (design-system/content-clears-the-tab-bar). The hero draws the clock in its top right, level with the bar. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- movies.hero: art on the right half, fading into the ground -->
+  <div style="position: absolute; top: 0; right: 0; width: 820px; height: 620px; background: linear-gradient(90deg, #0B0E13, #1E2A3D)"></div>
+  <!-- shell.clock: drawn by the hero, 58 from the top, 80 from the right -->
+  <div style="position: absolute; top: 58px; right: 80px; font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+  <!-- System tab bar: Liquid Glass capsule, 68 tall, 46 from the top, centered. Movies has the highlight (system light platter). -->
+  <div style="position: absolute; top: 46px; left: 50%; transform: translateX(-50%); height: 68px; padding: 0 8px; border-radius: 999px; background: rgba(255,255,255,0.16); backdrop-filter: blur(30px); display: flex; align-items: center; gap: 4px; font-size: 29px">
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Live</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Guide</div>
+    <div style="height: 56px; padding: 0 28px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; font-weight: 600">Movies</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Series</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Search</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Settings</div>
+  </div>
+  <!-- Hero text below the bar -->
+  <div style="position: absolute; top: 180px; left: 64px; width: 900px">
+    <div style="font-size: 24px; font-weight: 600; letter-spacing: 2px; color: #A7B0BF">RECENTLY ADDED · DRAMA</div>
+    <div style="font-size: 76px; font-weight: 700; margin-top: 16px">Night Ferry</div>
+    <div style="font-size: 26px; color: #D7DEE8; margin-top: 16px">2001 · 1 h 31 min · ★ 6.8</div>
+    <div style="display: flex; gap: 16px; margin-top: 40px">
+      <div style="height: 96px; padding: 0 36px; border-radius: 999px; background: rgba(255,255,255,0.12); display: flex; align-items: center; font-size: 28px; font-weight: 600">Play</div>
+      <div style="height: 96px; padding: 0 32px; border-radius: 999px; background: rgba(255,255,255,0.12); display: flex; align-items: center; font-size: 28px">More info</div>
+    </div>
+  </div>
+  <!-- First row -->
+  <div style="position: absolute; top: 680px; left: 64px; font-size: 30px; font-weight: 600">Recently added</div>
+  <div style="position: absolute; top: 740px; left: 64px; display: flex; gap: 20px">
+    <div style="width: 212px; height: 318px; border-radius: 16px; background: #1E2A3D"></div>
+    <div style="width: 212px; height: 318px; border-radius: 16px; background: #1E2A3D"></div>
+    <div style="width: 212px; height: 318px; border-radius: 16px; background: #1E2A3D"></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
