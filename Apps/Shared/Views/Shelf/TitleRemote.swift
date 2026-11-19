@@ -11,9 +11,12 @@
     /// remote moves focus there as usual.
     struct TitleRemote: UIViewRepresentable {
         let active: Bool
-        let click: (_ forward: Bool) -> Void
+        /// A click on the right of the touch surface, or on its left. The
+        /// caller turns the side into a direction with `isTrailing(right:)`.
+        let click: (_ right: Bool) -> Void
         let slideBegan: () -> Void
-        /// How far the finger moved since it came down, as a share of the surface's width.
+        /// How far the finger moved since it came down, as a share of the
+        /// surface's width, positive to the right.
         let slid: (_ share: Double) -> Void
         let slideEnded: () -> Void
 

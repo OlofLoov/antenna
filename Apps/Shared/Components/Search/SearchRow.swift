@@ -198,7 +198,7 @@ enum SearchRow {
         var body: some View {
             Text("NOW")
                 .font(.system(size: metrics.badge * scale, weight: .bold))
-                .tracking(1)
+                .letterSpacing(1)
                 .foregroundStyle(Palette.ground)
                 .padding(.horizontal, metrics.badge * 0.6)
                 .padding(.vertical, 3)
@@ -227,7 +227,7 @@ enum SearchRow {
                             if isSeries {
                                 Text("SERIES")
                                     .font(.system(size: metrics.badge * scale, weight: .bold))
-                                    .tracking(1)
+                                    .letterSpacing(1)
                                     .foregroundStyle(Palette.text)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)

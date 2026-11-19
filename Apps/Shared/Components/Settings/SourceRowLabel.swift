@@ -48,7 +48,7 @@ struct SourceRowLabel: View {
                 Text(name).font(.body.weight(.semibold))
                 Text(Self.badge(kind))
                     .font(.caption2.weight(.bold))
-                    .tracking(0.5)
+                    .letterSpacing(0.5)
                     .padding(.horizontal, Metrics.Spacing.xSmall)
                     .padding(.vertical, 2)
                     .background(.quaternary, in: Metrics.Corner.small.shape())

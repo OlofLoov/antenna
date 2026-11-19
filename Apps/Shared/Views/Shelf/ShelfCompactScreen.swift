@@ -36,7 +36,7 @@
                     TitleScreen(route: page) {
                         TitlePage.Phone(plotLines: page.title.kind == .movie ? 4 : 2) { EpisodePicker.Section(type: .phone) }
                     }
-                    .simultaneousGesture(edgeSwipe)
+                    .edgeSwipeBack { library.closePage() }
                     .environment(\.shelfMetrics, .phone)
                     .environment(\.shelfPrefix, kind.prefix)
                 }
@@ -47,18 +47,6 @@
             .onChange(of: tabTaps) { _, _ in
                 if library.page.map({ $0.section == kind && $0.origin != .search }) == true { library.closePage() }
             }
-        }
-
-        /// A swipe in from the left edge goes back, as a pushed page does
-        /// (title-detail-and-episode-picker/back-to-where-you-were).
-        private var edgeSwipe: some Gesture {
-            DragGesture(minimumDistance: 20)
-                .onEnded { drag in
-                    guard drag.startLocation.x < 28, drag.translation.width > 80,
-                        abs(drag.translation.height) < drag.translation.width
-                    else { return }
-                    library.closePage()
-                }
         }
 
         private var section: some View {

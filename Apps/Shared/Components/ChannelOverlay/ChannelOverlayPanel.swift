@@ -42,7 +42,7 @@ extension ChannelOverlay {
                 if let eyebrow {
                     Text(eyebrow.uppercased())
                         .font(.system(size: 20, weight: .semibold))
-                        .tracking(1.5)
+                        .letterSpacing(1.5)
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityIdentifier("overlay.pickTarget")
                 }
@@ -79,7 +79,7 @@ extension ChannelOverlay {
                         ForEach(badges, id: \.self) { badge in
                             Text(badge)
                                 .font(.system(size: 18, weight: .semibold))
-                                .tracking(1)
+                                .letterSpacing(1)
                                 .foregroundStyle(ChannelOverlay.tileText)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 4)
@@ -98,7 +98,7 @@ extension ChannelOverlay {
                     HStack(alignment: .firstTextBaseline) {
                         Text("NOW")
                             .font(.system(size: 20, weight: .semibold))
-                            .tracking(1.5)
+                            .letterSpacing(1.5)
                             .foregroundStyle(Palette.accent)
                         Spacer(minLength: 12)
                         Text(now.times)
@@ -379,7 +379,7 @@ extension ChannelOverlay {
             let color = isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted
             Text(text)
                 .font(.system(size: 18, weight: .semibold))
-                .tracking(1)
+                .letterSpacing(1)
                 .foregroundStyle(color)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)

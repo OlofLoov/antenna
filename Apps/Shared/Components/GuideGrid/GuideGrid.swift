@@ -247,7 +247,7 @@ enum GuideGrid {
                 look == .playing ? ChannelOverlay.tileOnFocus : ChannelOverlay.tile
                 Text(text)
                     .font(.system(size: 14, weight: .bold))
-                    .kerning(1)
+                    .letterSpacing(1)
                     .foregroundStyle(look == .playing ? Palette.text : ChannelOverlay.tileText)
             }
         }

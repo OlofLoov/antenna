@@ -196,7 +196,7 @@ enum ShellTabBar {
         var body: some View {
             Text(date, format: .dateTime.hour().minute())
                 .font(.system(size: 34, weight: .semibold))
-                .tracking(0.5)
+                .letterSpacing(0.5)
                 .monospacedDigit()
                 .foregroundStyle(Palette.text)
                 .frame(width: 260, alignment: .trailing)

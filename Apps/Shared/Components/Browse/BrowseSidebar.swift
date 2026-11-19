@@ -51,7 +51,7 @@ extension Browse {
         var body: some View {
             Text(Words(locale)(text).uppercased(with: locale))
                 .font(.footnote.weight(.semibold))
-                .tracking(1)
+                .letterSpacing(1)
                 .foregroundStyle(Palette.textMuted)
                 .accessibilityAddTraits(.isHeader)
         }

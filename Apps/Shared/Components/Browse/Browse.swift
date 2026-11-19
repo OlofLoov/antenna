@@ -38,7 +38,7 @@ enum Browse {
                 isSelected ? Browse.tileSelected : Browse.tile
                 Text(text)
                     .font(.system(size: metrics.tileText, weight: .bold))
-                    .kerning(1)
+                    .letterSpacing(1)
                     .foregroundStyle(isSelected ? Palette.text : Browse.textSecondary)
             }
             .accessibilityHidden(true)

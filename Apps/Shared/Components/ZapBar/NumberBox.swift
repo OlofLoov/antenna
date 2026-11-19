@@ -23,7 +23,7 @@ extension ZapBar {
                     let digits = ChannelNumber.digits(typed, locale: locale)
                     Text("\(digits)\(Text("_").foregroundStyle(Palette.textMuted))")
                         .font(.system(size: 44, weight: .bold).monospacedDigit())
-                        .tracking(2)
+                        .letterSpacing(2)
                         .accessibilityLabel(digits)
                         .accessibilityIdentifier("zapBar.digits")
                     if let name {

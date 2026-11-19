@@ -9,6 +9,7 @@ struct GuideSourcesList: View {
     @Bindable var model: GuideSourcesModel
     @State private var acting: GuideRow?
     @State private var adding: AddForm?
+    @Environment(\.locale) private var locale
 
     /// The add form, empty or filled to re-enter an added link's login.
     struct AddForm: Identifiable {
@@ -160,7 +161,7 @@ struct GuideSourcesList: View {
     }
 
     private func number(_ channel: Channel) -> String? {
-        channel.number.map { ChannelNumber(major: $0, minor: channel.minorNumber).description }
+        channel.number.map { ChannelNumber(major: $0, minor: channel.minorNumber).text(locale) }
     }
 
     // MARK: Matched by name

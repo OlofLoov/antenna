@@ -527,8 +527,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · مباشر"
+            "state" : "needs_review",
+            "value" : "%@ • مباشر"
           }
         },
         "de" : {
@@ -567,8 +567,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · بانتظار iCloud"
+            "state" : "needs_review",
+            "value" : "%@ • بانتظار iCloud"
           }
         },
         "de" : {
@@ -607,8 +607,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · بانتظار تسجيل الدخول"
+            "state" : "needs_review",
+            "value" : "%@ • بانتظار تسجيل الدخول"
           }
         },
         "de" : {
@@ -4689,8 +4689,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "القنوات · %lld"
+            "state" : "needs_review",
+            "value" : "القنوات • %lld"
           }
         },
         "de" : {
@@ -8027,8 +8027,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "المجموعات · %lld"
+            "state" : "needs_review",
+            "value" : "المجموعات • %lld"
           }
         },
         "de" : {
@@ -9719,8 +9719,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "مباشر · %@"
+            "state" : "needs_review",
+            "value" : "مباشر • %@"
           }
         },
         "de" : {
@@ -12879,8 +12879,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "الآن · %@"
+            "state" : "needs_review",
+            "value" : "الآن • %@"
           }
         },
         "de" : {
@@ -15919,8 +15919,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "تذكير · %@"
+            "state" : "needs_review",
+            "value" : "تذكير • %@"
           }
         },
         "de" : {
@@ -22345,8 +22345,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "بانتظار iPhone · تسجيلات الدخول: %lld"
+            "state" : "needs_review",
+            "value" : "بانتظار iPhone • تسجيلات الدخول: %lld"
           }
         },
         "de" : {
@@ -23668,8 +23668,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "قنوات مباشرة · %@"
+            "state" : "needs_review",
+            "value" : "قنوات مباشرة • %@"
           }
         },
         "de" : {
@@ -23828,8 +23828,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "من الدليل · قنوات عددها %@"
+            "state" : "needs_review",
+            "value" : "من الدليل • قنوات عددها %@"
           }
         },
         "de" : {

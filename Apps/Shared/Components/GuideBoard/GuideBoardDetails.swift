@@ -91,7 +91,7 @@ extension GuideBoard {
             var body: some View {
                 Text(details.eyebrow)
                     .font(.system(size: 12, weight: .semibold))
-                    .kerning(1.2)
+                    .letterSpacing(1.2)
                     .textCase(.uppercase)
                     .foregroundStyle(details.look == .now ? Palette.accent : Palette.textMuted)
                     .lineLimit(2)

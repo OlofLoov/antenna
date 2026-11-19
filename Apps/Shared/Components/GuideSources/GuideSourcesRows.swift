@@ -240,3 +240,32 @@ enum GuideSourcesRows {
     .previewLanguage(.german)
     .preferredColorScheme(.dark)
 }
+
+#Preview("Guide sources rows, iPhone, Arabic") {
+    let text = GuideSourcesText(locale: PreviewLanguage.arabic.locale, television: false)
+    let saved = GuideRow(reference: .saved, enabled: true, status: .loaded(Date(timeIntervalSince1970: 1_800_000_000)))
+    let provider = GuideRow(reference: .provider, enabled: true, status: .failed(.credentialMissing))
+    List {
+        Section(text.title) {
+            GuideSourcesRows.Guide(
+                name: text.name(.saved, link: nil), address: "https://epg.sportpack.tv/….gz",
+                status: text.status(saved, coverage: (388, 7), channels: 412, source: "Acme TV"), identifier: "guideSources.row.0",
+                select: {}, retry: nil)
+            GuideSourcesRows.Guide(
+                name: text.name(.provider, link: nil), address: nil,
+                status: text.status(provider, coverage: nil, channels: 412, source: "Acme TV"), identifier: "guideSources.row.1",
+                select: {}, retry: {})
+        }
+        Section(text.header(2)) {
+            GuideSourcesRows.Channel(
+                name: "Sport One", number: "104", logo: nil, label: text.label(.idNotFound(id: "sport1")),
+                identifier: "guideSources.channels.row.0",
+                select: {})
+            GuideSourcesRows.Channel(
+                name: "Arena HD", number: "106", logo: nil, label: text.label(.noGuideID), identifier: "guideSources.channels.row.1",
+                select: {})
+        }
+    }
+    .previewLanguage(.arabic)
+    .preferredColorScheme(.dark)
+}

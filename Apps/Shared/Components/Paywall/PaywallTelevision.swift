@@ -105,7 +105,7 @@ extension Paywall {
             VStack(alignment: .leading, spacing: 18) {
                 Text(product.name(locale).uppercased())
                     .font(.system(size: 20, weight: .semibold))
-                    .tracking(1)
+                    .letterSpacing(1)
                     .foregroundStyle(muted)
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     PriceText(price: product.price).font(.system(size: 56, weight: .heavy))

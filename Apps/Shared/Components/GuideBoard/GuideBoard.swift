@@ -61,7 +61,7 @@ enum GuideBoard {
         var body: some View {
             Text(text)
                 .font(.system(size: 12, weight: .bold))
-                .kerning(1)
+                .letterSpacing(1)
                 .foregroundStyle(look == .playing ? Palette.text : Browse.textSecondary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(look == .playing ? Browse.tileSelected : Browse.tile)

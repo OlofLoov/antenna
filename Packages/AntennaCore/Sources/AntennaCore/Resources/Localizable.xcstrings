@@ -5,8 +5,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : " · المشاركة العائلية"
+            "state" : "needs_review",
+            "value" : " • المشاركة العائلية"
           }
         },
         "de" : {
@@ -45,8 +45,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : " · تمت مشاركته معك عبر المشاركة العائلية"
+            "state" : "needs_review",
+            "value" : " • تمت مشاركته معك عبر المشاركة العائلية"
           }
         },
         "de" : {
@@ -1224,8 +1224,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@ من %3$@"
+            "state" : "needs_review",
+            "value" : "%1$@ • %2$@ من %3$@"
           }
         },
         "de" : {
@@ -1986,38 +1986,38 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld قنوات · جارٍ التحديث…"
+                  "state" : "needs_review",
+                  "value" : "%lld قنوات • جارٍ التحديث…"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld قناة · جارٍ التحديث…"
+                  "state" : "needs_review",
+                  "value" : "%lld قناة • جارٍ التحديث…"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "قناة واحدة · جارٍ التحديث…"
+                  "state" : "needs_review",
+                  "value" : "قناة واحدة • جارٍ التحديث…"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld قناة · جارٍ التحديث…"
+                  "state" : "needs_review",
+                  "value" : "%lld قناة • جارٍ التحديث…"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "قناتان · جارٍ التحديث…"
+                  "state" : "needs_review",
+                  "value" : "قناتان • جارٍ التحديث…"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld قناة · جارٍ التحديث…"
+                  "state" : "needs_review",
+                  "value" : "%lld قناة • جارٍ التحديث…"
                 }
               }
             }
@@ -5315,8 +5315,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "الحساب نشط حتى %1$@ · %2$#@arg2@"
+            "state" : "needs_review",
+            "value" : "الحساب نشط حتى %1$@ • %2$#@arg2@"
           },
           "substitutions" : {
             "arg2" : {
@@ -7971,8 +7971,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "قنوات بلا دليل · %lld"
+            "state" : "needs_review",
+            "value" : "قنوات بلا دليل • %lld"
           }
         },
         "de" : {
@@ -8451,8 +8451,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعذّر التنزيل · %@"
+            "state" : "needs_review",
+            "value" : "تعذّر التنزيل • %@"
           }
         },
         "de" : {
@@ -9051,8 +9051,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ تنزيل الدليل · %@"
+            "state" : "needs_review",
+            "value" : "جارٍ تنزيل الدليل • %@"
           }
         },
         "de" : {
@@ -9091,8 +9091,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ التنزيل · %@"
+            "state" : "needs_review",
+            "value" : "جارٍ التنزيل • %@"
           }
         },
         "de" : {
@@ -10847,8 +10847,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "دليل %1$#@arg1@ · %2$lld من %3$#@arg3@"
+            "state" : "needs_review",
+            "value" : "دليل %1$#@arg1@ • %2$lld من %3$#@arg3@"
           },
           "substitutions" : {
             "arg1" : {
@@ -12121,8 +12121,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم التحميل · %1$lld من %2$#@arg2@ · %3$#@arg3@"
+            "state" : "needs_review",
+            "value" : "تم التحميل • %1$lld من %2$#@arg2@ • %3$#@arg3@"
           },
           "substitutions" : {
             "arg2" : {
@@ -12669,8 +12669,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ التحميل… · آخر تحميل %@"
+            "state" : "needs_review",
+            "value" : "جارٍ التحميل… • آخر تحميل %@"
           }
         },
         "de" : {
@@ -12989,8 +12989,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "مطابق بالاسم · %lld"
+            "state" : "needs_review",
+            "value" : "مطابق بالاسم • %lld"
           }
         },
         "de" : {
@@ -13515,8 +13515,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "فيلم · %@"
+            "state" : "needs_review",
+            "value" : "فيلم • %@"
           }
         },
         "de" : {
@@ -13675,8 +13675,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "العرض المتعدد · المربع %1$lld من %2$lld"
+            "state" : "needs_review",
+            "value" : "العرض المتعدد • المربع %1$lld من %2$lld"
           }
         },
         "de" : {
@@ -15167,8 +15167,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "غير متصل · تتم إعادة المحاولة عند عودة الاتصال"
+            "state" : "needs_review",
+            "value" : "غير متصل • تتم إعادة المحاولة عند عودة الاتصال"
           }
         },
         "de" : {
@@ -17699,8 +17699,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "مسلسل · %@"
+            "state" : "needs_review",
+            "value" : "مسلسل • %@"
           }
         },
         "de" : {
@@ -18499,8 +18499,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "المصدر: %1$@ · محاولة في %2$@"
+            "state" : "needs_review",
+            "value" : "المصدر: %1$@ • محاولة في %2$@"
           }
         },
         "de" : {
@@ -21637,8 +21637,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "المربع %1$lld · %2$@"
+            "state" : "needs_review",
+            "value" : "المربع %1$lld • %2$@"
           }
         },
         "de" : {

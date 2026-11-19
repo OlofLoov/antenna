@@ -76,6 +76,11 @@ extension Paywall.Actions {
         .previewLanguage(.german)
 }
 
+#Preview("Paywall, iPhone, Arabic") {
+    Paywall.Touch(state: .fixture(locale: PreviewLanguage.arabic.locale), actions: .none)
+        .previewLanguage(.arabic)
+}
+
 #Preview("Paywall, iPad", traits: .fixedLayout(width: 1194, height: 834)) {
     Paywall.Touch(state: .fixture(), actions: .none)
 }

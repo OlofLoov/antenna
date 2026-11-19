@@ -315,7 +315,7 @@ enum EpisodePicker {
                             if row.upNext {
                                 Text("UP NEXT")
                                     .font(.system(size: type.badge, weight: .bold))
-                                    .tracking(1)
+                                    .letterSpacing(1)
                                     .foregroundStyle(Palette.ground)
                                     .padding(.vertical, type.badge / 5)
                                     .padding(.horizontal, type.badge / 2)

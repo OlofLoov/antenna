@@ -7,6 +7,7 @@
     /// every layout, so moving it never restarts the channel.
     struct LivePicture: View {
         @Environment(\.locale) private var locale
+        @Environment(\.layoutDirection) private var direction
         @Environment(LiveModel.self) private var live
         /// Which half of the picture a double-tap lands on.
         @State private var surfaceWidth: CGFloat = 0
@@ -28,7 +29,7 @@
                                 surfaceWidth = $0
                             }
                             .onTapGesture(count: 2) { location in
-                                live.player.timeshift.doubleTapSkip(forward: location.x > surfaceWidth / 2)
+                                live.player.timeshift.doubleTapSkip(forward: direction.isTrailing(right: location.x > surfaceWidth / 2))
                             }
                             .onTapGesture { live.controlsShown ? live.hideControls() : live.showControls(after: .touch) }
                             .gesture(swipe)

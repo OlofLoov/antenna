@@ -202,7 +202,7 @@
             return VStack(alignment: .leading, spacing: 4) {
                 Text(MultiViewText.actionsTitle(tile: number, name: model.channel(of: tile)?.name ?? "").uppercased())
                     .font(.system(size: 20, weight: .semibold))
-                    .tracking(1.5)
+                    .letterSpacing(1.5)
                     .foregroundStyle(Palette.textMuted)
                     .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
                 if failed {

@@ -18,6 +18,7 @@
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
         @Environment(\.guideBoardOpenLive) private var openLive
+        @Environment(\.layoutDirection) private var layoutDirection
         @FocusState private var filterFocused: Bool
 
         private var reading: GuideBoardReading { GuideBoardReading(live: live, model: model) }
@@ -124,9 +125,9 @@
                     Button("Down") { move(.down, data, now: now) }
                         .keyboardShortcut(.downArrow, modifiers: [])
                     Button("Earlier") { move(.left, data, now: now) }
-                        .keyboardShortcut(.leftArrow, modifiers: [])
+                        .keyboardShortcut(layoutDirection.leadingArrow, modifiers: [])
                     Button("Later") { move(.right, data, now: now) }
-                        .keyboardShortcut(.rightArrow, modifiers: [])
+                        .keyboardShortcut(layoutDirection.trailingArrow, modifiers: [])
                     Button("Open details") { openCursor(data) }
                         .keyboardShortcut(.return, modifiers: [])
                 }
@@ -157,6 +158,7 @@
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
         @Environment(\.guideBoardOpenLive) private var openLive
+        @Environment(\.layoutDirection) private var layoutDirection
 
         var body: some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in

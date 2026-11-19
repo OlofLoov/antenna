@@ -68,6 +68,25 @@ private enum Fixture {
         footnote: Fixture.note, primary: .startWatching(enabled: true), actions: Fixture.actions)
 }
 
+#Preview("Checklist, iPhone, two sources, Arabic") {
+    OnboardingChecklist.Phone(
+        headline: "You're set", subtitle: "Everything below is loading. The guide finishes in the background while you watch.",
+        sections: [
+            .init(
+                id: "a", title: "Home provider",
+                lines: [Fixture.signedIn, Fixture.channelsPhone, Fixture.moviesPhone, Fixture.downloading]),
+            .init(
+                id: "b", title: "Holiday flat",
+                lines: [
+                    Fixture.playlist, .init(id: "channels", state: .done, title: "96 live channels", detail: "6 groups"),
+                    .init(id: "guide", state: .running, title: "Reading the guide…", bar: .indeterminate),
+                ]),
+        ],
+        footnote: Fixture.note, primary: .startWatching(enabled: true), actions: Fixture.actions
+    )
+    .previewLanguage(.arabic)
+}
+
 #Preview("Checklist, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
     OnboardingChecklist.Television(
         title: "Setting up Home provider", lines: [Fixture.signedIn, Fixture.channelsTV, Fixture.movies, Fixture.downloading],

@@ -37,6 +37,7 @@
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.reminders) private var reminders
         @Environment(\.locale) private var locale
+        @Environment(\.layoutDirection) private var layoutDirection
         @Query private var preferences: [PreferencesRecord]
 
         var body: some View {
@@ -212,7 +213,7 @@
         private func move(_ direction: MoveCommandDirection, _ data: GuideData) {
             guard model.area == .grid else { return }
             let move: GuideMove
-            switch direction {
+            switch direction.reading(layoutDirection) {
             case .up: move = .up
             case .down: move = .down
             case .left: move = .left
