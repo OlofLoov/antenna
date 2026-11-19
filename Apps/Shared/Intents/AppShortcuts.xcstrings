@@ -36,6 +36,14 @@
             ]
           }
         },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Adicionar este canal aos favoritos no ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -85,6 +93,15 @@
             ]
           }
         },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Reproduzir ${title} no ${applicationName}",
+              "Reproduzir um filme no ${applicationName}"
+            ]
+          }
+        },
         "sv" : {
           "stringSet" : {
             "state" : "translated",
@@ -128,6 +145,14 @@
             "state" : "needs_review",
             "values" : [
               "Retirer cette chaîne des favoris dans ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Remover este canal dos favoritos no ${applicationName}"
             ]
           }
         },
@@ -177,6 +202,15 @@
             "values" : [
               "Rechercher dans ${applicationName}",
               "Trouver une chaîne dans ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Buscar no ${applicationName}",
+              "Encontrar um canal no ${applicationName}"
             ]
           }
         },
@@ -235,6 +269,17 @@
               "Regarder ${channel} dans ${applicationName}",
               "Passer sur ${channel} dans ${applicationName}",
               "Changer de chaîne dans ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "needs_review",
+            "values" : [
+              "Sintonizar ${channel} no ${applicationName}",
+              "Assistir ${channel} no ${applicationName}",
+              "Colocar ${channel} no ${applicationName}",
+              "Sintonizar um canal no ${applicationName}"
             ]
           }
         },

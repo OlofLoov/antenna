@@ -84,4 +84,11 @@ import Testing
         #expect(french.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 chaînes en direct dans 2 groupes")
         #expect(SourceStatusText(locale: Locale(identifier: "fr_CA")).count(1) == "1 chaîne")
     }
+
+    @Test("localization/the-app-speaks-the-user-s-language Portugal reads the Brazilian table")
+    func portuguese() {
+        #expect(SourceStatusText(locale: Locale(identifier: "pt_BR")).count(2) == "2 canais")
+        #expect(SourceStatusText(locale: Locale(identifier: "pt_PT")).count(1) == "1 canal")
+        #expect(CatalogueGroup.favorites.label(Locale(identifier: "pt_PT")) == "Favoritos")
+    }
 }

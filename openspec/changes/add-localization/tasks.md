@@ -54,8 +54,8 @@
 
 ## 9. Portuguese, Brazil (PR 9)
 
-- [ ] 9.1 Add `pt-BR` and translate every catalog as `needs_review`
-- [ ] 9.2 Verify on a simulator set to Portuguese (Portugal) that the app shows the Brazilian text, and record the result in design.md (localization/the-app-speaks-the-user-s-language)
+- [x] 9.1 Add `pt-BR` and translate every catalog as `needs_review`
+- [x] 9.2 Verify on a simulator set to Portuguese (Portugal) that the app shows the Brazilian text, and record the result in design.md (localization/the-app-speaks-the-user-s-language)
 
 ## 10. Arabic text (PR 10)
 
