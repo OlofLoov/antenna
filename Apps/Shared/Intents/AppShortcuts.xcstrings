@@ -22,7 +22,7 @@
         },
         "es" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Añadir este canal a favoritos en ${applicationName}"
             ]
@@ -77,7 +77,7 @@
         },
         "es" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Reproducir ${title} en ${applicationName}",
               "Reproducir una película en ${applicationName}"
@@ -134,7 +134,7 @@
         },
         "es" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Quitar este canal de favoritos en ${applicationName}"
             ]
@@ -189,10 +189,10 @@
         },
         "es" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Buscar en ${applicationName}",
-              "Encontrar un canal en ${applicationName}"
+              "Buscar un canal en ${applicationName}"
             ]
           }
         },
@@ -252,7 +252,7 @@
         },
         "es" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Sintonizar ${channel} en ${applicationName}",
               "Ver ${channel} en ${applicationName}",
