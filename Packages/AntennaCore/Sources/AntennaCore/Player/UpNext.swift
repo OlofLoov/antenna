@@ -164,9 +164,9 @@ public enum UpNextText {
     }
 
     /// "S2 E5 · The Long Night", or the title alone without a number.
-    public static func title(_ episode: Episode) -> String {
+    public static func title(_ episode: Episode, locale: Locale = .autoupdatingCurrent) -> String {
         guard let code = ShelfText.episodeCode(episode) else { return episode.title }
-        return "\(code) · \(episode.title)"
+        return [code, episode.title].joinedAsDetail(locale)
     }
 
     /// "Next episode in 7", or "Still watching?"; nil for no card.

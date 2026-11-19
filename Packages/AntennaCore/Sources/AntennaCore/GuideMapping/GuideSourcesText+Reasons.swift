@@ -76,7 +76,8 @@ extension GuideSourcesText {
             return Card(title: Line(words("You're offline"), .muted), body: [words("The guide downloads when you're back online.")])
         case .everyGuideFailed:
             let lines = context.status.rows.filter(\.enabled).map { row in
-                "\(context.guideName(row.reference)) · \(status(row, coverage: nil, channels: 0, source: context.source).text)"
+                [context.guideName(row.reference), status(row, coverage: nil, channels: 0, source: context.source).text].joinedAsDetail(
+                    words.locale)
             }
             return Card(title: Line(words("The guide could not be downloaded"), .error), body: lines)
         default:

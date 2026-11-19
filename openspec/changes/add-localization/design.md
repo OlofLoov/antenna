@@ -853,6 +853,17 @@ Sweep after the reviews:
   now (`@MainActor Equatable`), which `.equatable()` accepts in a view
   body. The tvOS build also warned on `doomed` in `TimeshiftStore`, which
   the cleanup closure now captures by value.
+- The separators built in code go through one catalog entry,
+  `separator.detail`: " · " in every language and " • " in Arabic.
+  `DetailSeparator.text(locale)` and `joinedAsDetail(locale)` in
+  AntennaCore build every detail line that was joined or interpolated with
+  " · ": 25 sites in Core (source status, guide and search lines,
+  reminders, Top Shelf, title facts, stream line, intents) and 12 in the
+  app, among them the guide panel's eyebrow, whose untranslatable "%@ %@ ·
+  %@" entry is gone. Views with an environment locale pass it; models
+  without one use the current locale, which is the running app's
+  language. Catalog entries that hold a dot inside a sentence keep their
+  own, as PR 11 wrote them.
 
 ## Open Questions
 

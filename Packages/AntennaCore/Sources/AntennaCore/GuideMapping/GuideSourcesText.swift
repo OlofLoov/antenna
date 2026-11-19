@@ -170,7 +170,7 @@ public struct GuideSourcesText: Sendable {
     /// "<id> · <guide> · <n> programmes".
     public func detail(_ entry: GuideEntry, guide: String) -> String {
         let count = entry.programmes == 0 ? words("no programmes") : words("\(entry.programmes) programmes")
-        return "\(entry.id) · \(guide) · \(count)"
+        return [entry.id, guide, count].joinedAsDetail(words.locale)
     }
 
     public func showing(_ shown: Int, of total: Int) -> String {

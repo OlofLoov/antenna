@@ -38,7 +38,7 @@ public struct TitleAboutText: Sendable, Hashable, Identifiable {
             TitleMetadata.present(metadata.cast).map { Paragraph(label: words("Cast"), text: $0) },
             TitleMetadata.present(metadata.director).map { Paragraph(label: words("Director"), text: $0) },
         ]
-        self.init(heading: metadata.name, details: metadata.detailsLine, paragraphs: paragraphs.compactMap(\.self))
+        self.init(heading: metadata.name, details: metadata.detailsLine(locale), paragraphs: paragraphs.compactMap(\.self))
     }
 
     /// The episode's number and title, its season, number and length, and
@@ -59,7 +59,7 @@ public struct TitleAboutText: Sendable, Hashable, Identifiable {
         ]
         .compactMap(\.self)
         self.init(
-            heading: heading, details: details.isEmpty ? nil : details.joined(separator: " · "),
+            heading: heading, details: details.isEmpty ? nil : details.joinedAsDetail(locale),
             paragraphs: TitleMetadata.present(episode.plot).map { [Paragraph(text: $0)] } ?? [])
     }
 }

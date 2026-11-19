@@ -52,7 +52,7 @@ public enum GuidePanelText {
     }
 
     /// The parts that are there, joined with " · ".
-    public static func line(_ parts: [String?]) -> String {
-        parts.compactMap { $0?.isEmpty == false ? $0 : nil }.joined(separator: " · ")
+    public static func line(_ parts: [String?], locale: Locale = .autoupdatingCurrent) -> String {
+        parts.compactMap { $0?.isEmpty == false ? $0 : nil }.joinedAsDetail(locale)
     }
 }

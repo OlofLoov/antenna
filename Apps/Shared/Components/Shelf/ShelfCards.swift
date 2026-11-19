@@ -15,6 +15,7 @@ extension ShelfView {
         let select: () -> Void
         @Environment(\.shelfMetrics) private var metrics
         @Environment(\.shelfPrefix) private var prefix
+        @Environment(\.locale) private var locale
 
         var body: some View {
             Button(action: select) {
@@ -31,7 +32,7 @@ extension ShelfView {
                             }
                         }
                         .clipShape(RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
-                    Text([title.name, caption].compactMap(\.self).joined(separator: " · "))
+                    Text([title.name, caption].compactMap(\.self).joinedAsDetail(locale))
                         .font(.system(size: metrics.caption))
                         .foregroundStyle(Browse.textSecondary)
                         .lineLimit(1)

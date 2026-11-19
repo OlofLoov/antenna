@@ -160,7 +160,7 @@
             let guideNow = guide.panel(for: channel, at: date)
             let now = guideNow.now.flatMap { programme -> ChannelOverlay.PanelNow? in
                 guard case .programme(_, let progress, let remaining) = guideNow.line else { return nil }
-                let times = "\(Self.time(programme.start)) – \(Self.time(programme.stop)) · \(remaining)"
+                let times = ["\(Self.time(programme.start)) – \(Self.time(programme.stop))", remaining].joinedAsDetail()
                 return .init(title: programme.title, times: times, progress: progress, summary: programme.summary)
             }
             return ChannelOverlay.Panel(

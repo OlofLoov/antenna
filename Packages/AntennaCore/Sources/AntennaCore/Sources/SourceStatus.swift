@@ -121,7 +121,7 @@ public struct SourceStatusText: Sendable {
     /// "412 channels · Guide 7 days · 12 minutes ago".
     private func loadedLine(_ channels: Int, _ status: SourceStatus, now: Date) -> Line {
         let parts = [count(channels), guidePart(status), status.lastSuccess.map { relative($0, now: now) }]
-        return Line(parts.compactMap(\.self).joined(separator: " · "))
+        return Line(parts.compactMap(\.self).joinedAsDetail(locale))
     }
 
     /// "412 channels", or "1 channel".

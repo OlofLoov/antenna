@@ -52,8 +52,8 @@ public enum TopShelfContent: Sendable, Hashable {
     /// add-favorites tile shows.
     public static func make(from snapshot: TopShelfSnapshot?, now: Date, locale: Locale = .autoupdatingCurrent) -> TopShelfContent? {
         guard let snapshot else { return nil }
-        let favorites = snapshot.favorites.prefix(TopShelfSnapshot.favoriteLimit).map { favorite($0, now: now) }
-        let titles = snapshot.titles.prefix(TopShelfSnapshot.titleLimit).map(title)
+        let favorites = snapshot.favorites.prefix(TopShelfSnapshot.favoriteLimit).map { favorite($0, now: now, locale: locale) }
+        let titles = snapshot.titles.prefix(TopShelfSnapshot.titleLimit).map { title($0, locale: locale) }
         let sections = [
             Section(kind: .favorites, items: Array(favorites)),
             Section(kind: .continueWatching, items: Array(titles)),
@@ -68,9 +68,9 @@ public enum TopShelfContent: Sendable, Hashable {
     /// "<channel> · <programme>" with the share of the programme gone by,
     /// or the channel alone when no programme airs at `now`
     /// (top-shelf/favorites-show-what-is-on-now, top-shelf/a-channel-with-no-guide-left-shows-its-name).
-    private static func favorite(_ favorite: TopShelfSnapshot.Favorite, now: Date) -> Item {
+    private static func favorite(_ favorite: TopShelfSnapshot.Favorite, now: Date, locale: Locale) -> Item {
         let airing = favorite.programmes.first { $0.start <= now && now < $0.stop }
-        let title = airing.map { "\(favorite.name) · \($0.title)" } ?? favorite.name
+        let title = airing.map { [favorite.name, $0.title].joinedAsDetail(locale) } ?? favorite.name
         let progress = airing.map { min(max(now.timeIntervalSince($0.start) / $0.stop.timeIntervalSince($0.start), 0), 1) }
         return Item(
             id: "topShelf.item.\(favorite.itemID.uuidString.lowercased())", title: title, tileFile: favorite.tileFile, progress: progress,
@@ -79,8 +79,8 @@ public enum TopShelfContent: Sendable, Hashable {
 
     /// The title, with "S2 E4" for an episode, and how far the user got
     /// (top-shelf/continue-watching-shows-titles-in-progress).
-    private static func title(_ title: TopShelfSnapshot.Title) -> Item {
-        let text = title.detail.map { "\(title.title) · \($0)" } ?? title.title
+    private static func title(_ title: TopShelfSnapshot.Title, locale: Locale) -> Item {
+        let text = title.detail.map { [title.title, $0].joinedAsDetail(locale) } ?? title.title
         return Item(
             id: "topShelf.item.\(title.itemID.uuidString.lowercased())", title: text, tileFile: title.tileFile,
             progress: min(max(title.progress, 0), 1), link: .item(title.itemID))

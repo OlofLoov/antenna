@@ -60,11 +60,13 @@ struct GuideText {
         let onNow = cell.programme != nil && cell.segment.contains(now)
         let day = timeline.dayLabel(cell.start, today: now, locale: locale)
         let eyebrow =
-            onNow ? words("Now · \(channel.name)") : words("\(day) \(time(cell.start)) · \(channel.name)")
-        let meta = GuidePanelText.line([
-            times(cell.start, cell.stop), GuidePanelText.length(from: cell.start, to: cell.stop, locale: locale), cell.programme?.category,
-            quality,
-        ])
+            onNow ? words("Now · \(channel.name)") : ["\(day) \(time(cell.start))", channel.name].joinedAsDetail(locale)
+        let meta = GuidePanelText.line(
+            [
+                times(cell.start, cell.stop), GuidePanelText.length(from: cell.start, to: cell.stop, locale: locale),
+                cell.programme?.category,
+                quality,
+            ], locale: locale)
         return GuidePanel.Details(
             eyebrow: eyebrow, look: onNow ? .now : .other,
             title: cell.programme.map { GuidePanelText.title($0, locale: locale) } ?? GuideLine.noProgramme(locale),

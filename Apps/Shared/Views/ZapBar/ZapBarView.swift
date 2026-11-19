@@ -89,7 +89,7 @@
             guard case .programme(let title, let progress, let remaining) = line, let now else { return .message(line.text) }
             let times = "\(Self.time(now.start)) – \(Self.time(now.stop))"
             return .programme(
-                title: title, times: times, progress: progress, next: next.map { "\(Self.time($0.start)) · \($0.title)" },
+                title: title, times: times, progress: progress, next: next.map { [Self.time($0.start), $0.title].joinedAsDetail() },
                 remaining: remaining)
         }
 

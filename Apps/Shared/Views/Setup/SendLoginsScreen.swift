@@ -160,7 +160,12 @@
                         SecureField("Password", text: $fields.password)
                             .accessibilityIdentifier("sendLogins.enter.password")
                     } header: {
-                        Text("\(SendLogins.kindName(row.source.kind)) · \(row.source.url.host() ?? row.source.url.absoluteString)")
+                        Text(
+                            verbatim: [
+                                String(localized: SendLogins.kindName(row.source.kind)),
+                                row.source.url.host() ?? row.source.url.absoluteString,
+                            ]
+                            .joinedAsDetail())
                     } footer: {
                         VStack(alignment: .leading, spacing: 8) {
                             if let error {

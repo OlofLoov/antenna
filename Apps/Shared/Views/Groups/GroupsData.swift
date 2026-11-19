@@ -47,7 +47,7 @@ struct GroupsData {
     func caption(_ group: CatalogueGroup) -> String {
         switch group {
         case .named(let source, _), .ungrouped(let source):
-            let name = sourceNames[source].map { " · \($0)" } ?? ""
+            let name = sourceNames[source].map { DetailSeparator.text() + $0 } ?? ""
             return group.label + name
         case .favorites, .recents, .new, .all, .own: return catalogue.label(of: group)
         }

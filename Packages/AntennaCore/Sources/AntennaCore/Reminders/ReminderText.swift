@@ -67,14 +67,14 @@ public struct ReminderText: Sendable {
     /// The banner's body: "22:00 · 104 Sport One", with the number when the channel has one.
     public func bannerBody(_ reminder: Reminder, number: ChannelNumber?) -> String {
         let channel = [number.map { $0.text(locale) }, reminder.channelName].compactMap(\.self).joined(separator: " ")
-        return "\(time(reminder.start)) · \(channel)"
+        return [time(reminder.start), channel].joinedAsDetail(locale)
     }
 
     /// A list row's second line: "Today 22:00 – 23:15 · Sport One". With no
     /// stop the end time is left out.
     public func rowDetail(_ reminder: Reminder, now: Date) -> String {
         let times = reminder.stop.map { "\(time(reminder.start)) – \(time($0))" } ?? time(reminder.start)
-        return "\(day(reminder.start, now: now)) \(times) · \(reminder.channelName)"
+        return ["\(day(reminder.start, now: now)) \(times)", reminder.channelName].joinedAsDetail(locale)
     }
 
     /// A list row's note: "Moved from 20:00" (with the day when it moved

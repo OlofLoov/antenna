@@ -142,7 +142,7 @@ struct OnboardingProgress {
 
     /// The Apple TV eyebrow: "<name> added", the names joined by " · ".
     var eyebrow: LocalizedStringResource {
-        if setups.count > 1 { return .verbatim(setups.map(\.name).joined(separator: " · ")) }
+        if setups.count > 1 { return .verbatim(setups.map(\.name).joinedAsDetail()) }
         let name = setups.first?.name ?? ""
         return signedIn ? "\(name) signed in" : "\(name) added"
     }

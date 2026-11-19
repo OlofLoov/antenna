@@ -38,8 +38,11 @@ public struct TitleMetadata: Sendable, Hashable {
     public var trailerURL: URL?
 
     /// "2024 · 2 h 08 min · Thriller · ★ 7.4", nil when there are no facts.
-    public var detailsLine: String? {
-        facts.isEmpty ? nil : facts.joined(separator: " · ")
+    public var detailsLine: String? { detailsLine(.autoupdatingCurrent) }
+
+    /// `detailsLine` with the separator of `locale`'s language.
+    public func detailsLine(_ locale: Locale) -> String? {
+        facts.isEmpty ? nil : facts.joinedAsDetail(locale)
     }
 
     /// What the page shows before the details arrive: the eyebrow and name.
@@ -125,7 +128,7 @@ public struct TitleMetadata: Sendable, Hashable {
 
     static func eyebrow(_ title: ShelfTitle, locale: Locale = .autoupdatingCurrent) -> String {
         let kind = title.kind == .movie ? Words(locale)("Movie") : Words(locale)("Series")
-        return ([kind] + [present(title.category)].compactMap(\.self)).joined(separator: " · ")
+        return ([kind] + [present(title.category)].compactMap(\.self)).joinedAsDetail(locale)
     }
 
     /// The text trimmed, or nil when nothing is left.
@@ -146,7 +149,7 @@ public enum EpisodeText {
             return Words(locale)("Watched")
         case .inProgress:
             return [ShelfText.length(episode.duration, locale: locale), progress.flatMap { ShelfText.left($0, locale: locale) }]
-                .compactMap(\.self).joined(separator: " · ")
+                .compactMap(\.self).joinedAsDetail(locale)
         default:
             return ShelfText.length(episode.duration, locale: locale)
         }

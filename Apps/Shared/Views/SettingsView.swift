@@ -181,7 +181,7 @@ struct SettingsView: View {
         guard source.kind == .m3uFile else { return [] }
         let date = source.importedAt.map { words("Imported \($0.formatted(date: .long, time: .omitted))") }
         let parts = [date, source.fileName].compactMap(\.self)
-        return parts.isEmpty ? [] : [.init(parts.joined(separator: " · "))]
+        return parts.isEmpty ? [] : [.init(parts.joinedAsDetail(words.locale))]
     }
 
     /// A record's status: waiting for iCloud without a link, otherwise what
