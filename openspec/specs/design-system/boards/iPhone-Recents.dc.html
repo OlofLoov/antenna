@@ -45,17 +45,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </button>
   </div>
 
-  <!-- Group chips (scrolls horizontally). recents.chip sits after Favorites and before All channels; it is present only while at least one recent channel resolves (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels) -->
-  <div style="display: flex; gap: 8px; padding: 12px 16px 6px; overflow: hidden; white-space: nowrap">
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Favorites</span>
-    <!-- recents.chip, selected -->
-    <span style="font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 16px; background: #F2F4F8; color: #0B0E13; flex: 0 0 auto">Recents</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">All channels</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Sport</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">News</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Kids</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Documentary</span>
-  </div>
+  <!-- browse.groups (live-tv-on-iphone-ipad-mac/find-a-group-among-many): the open group's name in its own text run, its channel count and a chevron, full width and leading-aligned, 44 pt tall, plain system button with no fill. Tapping it opens the Groups sheet (iPhone-Live-Groups). -->
+  <button type="button" aria-label="Recents, 6 channels" style="font: inherit; display: flex; align-items: center; gap: 6px; width: 100%; height: 44px; padding: 0 16px; border: 0; background: transparent; color: #F2F4F8; text-align: start; cursor: pointer; flex: 0 0 auto"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Recents</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">· 6</span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
 
   <!-- Channel list: the Recents group, most recently watched first. The playing channel is always row one once it has been on for ten seconds (session-restore-and-recently-watched/a-channel-counts-as-watched-after-ten-seconds, session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels). Rows keep live-tv-on-iphone-ipad-mac's anatomy and browse.row.<rowKey> identifiers; no list header at compact width (live-tv-on-iphone-ipad-mac/pick-a-group) -->
   <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 4px 8px">

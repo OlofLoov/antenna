@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone group search</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- redesign-group-picker: searching the Groups sheet (iPhone-Live-Groups.dc.html) at the large detent. Left, "sport" matches four provider groups; right, nothing matches. Clearing the field brings back every group. -->
+<div style="width: 820px; height: 844px; display: flex; gap: 40px; background: #05070A">
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; flex: 0 0 auto">
+  <div style="margin-top: 54px; width: 390px; height: 219px; background: #1A2535"></div>
+  <div style="height: 58px; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 12px 16px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px"><div style="font-size: 16px; font-weight: 600">Premier League: Arsenal v Liverpool</div><div style="font-size: 13px; color: #A7B0BF">104 Sport One · 20:00 – 22:00</div></div>
+  <!-- browse.groups (live-tv-on-iphone-ipad-mac/find-a-group-among-many): the open group's name in its own text run, its channel count and a chevron, full width and leading-aligned, 44 pt tall, plain system button with no fill. Tapping it opens the Groups sheet (iPhone-Live-Groups). -->
+  <button type="button" aria-label="SE | SPORT, 42 channels" style="font: inherit; display: flex; align-items: center; gap: 6px; width: 100%; height: 44px; padding: 0 16px; border: 0; background: transparent; color: #F2F4F8; text-align: start; cursor: pointer; flex: 0 0 auto"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">SE | SPORT</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">· 42</span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
+  <!-- Dimmed Live behind the sheet -->
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+  <!-- Typing narrows every section as Live's filter does: case and accents ignored, every word somewhere in the name (live-tv-on-iphone-ipad-mac/find-a-group-among-many). A built-in group matches by its name in the app's language. Sections with no match go away. Identifiers keep the group's place in the full list. -->
+  <div style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; background: #14181F; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden">
+    <div style="display: flex; justify-content: center; padding: 6px 0 0"><span style="width: 36px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.3)"></span></div>
+    <!-- Title bar: browse.groups.close (the system close button) at the leading edge, "Groups" centred -->
+    <div style="display: flex; align-items: center; height: 44px; padding: 0 16px; position: relative">
+      <button type="button" aria-label="Close" style="font: inherit; width: 32px; height: 32px; border-radius: 16px; border: 0; background: rgba(255,255,255,0.1); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="position: absolute; left: 0; right: 0; text-align: center; font-size: 17px; font-weight: 600; pointer-events: none">Groups</div>
+    </div>
+    <!-- System search field (searchable, always shown), prompt "Search groups" -->
+    <label style="display: flex; align-items: center; gap: 8px; height: 36px; margin: 4px 16px 6px; padding: 0 10px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #A7B0BF; font-size: 17px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span style="color: #F2F4F8">sport</span><span style="flex: 1 1 auto"></span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></label>
+    <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding-top: 8px">
+      <div style="height: 20px"></div>
+    <div style="margin: 0 16px; border-radius: 12px; background: #1C2129; overflow: hidden">
+      <!-- browse.group.4 --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">SE | SPORT</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">42</span></div>
+      <!-- browse.group.8 --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">UK ▸ SPORTS HD</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">64</span></div>
+      <!-- browse.group.11 --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">DE | SPORT</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">37</span></div>
+      <!-- browse.group.14 --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">US | ESPN SPORTS</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">22</span></div>
+    </div>
+    </div>
+  </div>
+</div>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; flex: 0 0 auto">
+  <div style="margin-top: 54px; width: 390px; height: 219px; background: #1A2535"></div>
+  <div style="height: 58px; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 12px 16px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px"><div style="font-size: 16px; font-weight: 600">Premier League: Arsenal v Liverpool</div><div style="font-size: 13px; color: #A7B0BF">104 Sport One · 20:00 – 22:00</div></div>
+  <!-- browse.groups (live-tv-on-iphone-ipad-mac/find-a-group-among-many): the open group's name in its own text run, its channel count and a chevron, full width and leading-aligned, 44 pt tall, plain system button with no fill. Tapping it opens the Groups sheet (iPhone-Live-Groups). -->
+  <button type="button" aria-label="SE | SPORT, 42 channels" style="font: inherit; display: flex; align-items: center; gap: 6px; width: 100%; height: 44px; padding: 0 16px; border: 0; background: transparent; color: #F2F4F8; text-align: start; cursor: pointer; flex: 0 0 auto"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">SE | SPORT</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">· 42</span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
+  <!-- Dimmed Live behind the sheet -->
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+  <!-- No group matches: the list gives way to the system's search empty state. -->
+  <div style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; background: #14181F; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden">
+    <div style="display: flex; justify-content: center; padding: 6px 0 0"><span style="width: 36px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.3)"></span></div>
+    <!-- Title bar: browse.groups.close (the system close button) at the leading edge, "Groups" centred -->
+    <div style="display: flex; align-items: center; height: 44px; padding: 0 16px; position: relative">
+      <button type="button" aria-label="Close" style="font: inherit; width: 32px; height: 32px; border-radius: 16px; border: 0; background: rgba(255,255,255,0.1); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="position: absolute; left: 0; right: 0; text-align: center; font-size: 17px; font-weight: 600; pointer-events: none">Groups</div>
+    </div>
+    <!-- System search field (searchable, always shown), prompt "Search groups" -->
+    <label style="display: flex; align-items: center; gap: 8px; height: 36px; margin: 4px 16px 6px; padding: 0 10px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #A7B0BF; font-size: 17px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span style="color: #F2F4F8">cricket</span><span style="flex: 1 1 auto"></span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span></label>
+    <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding-top: 8px">
+      <!-- browse.groups.empty: the system search empty state (ContentUnavailableView.search) -->
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 120px; color: #A7B0BF; text-align: center">
+        <span style="display: inline-flex; transform: scale(2.4); margin-bottom: 16px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
+        <div style="font-size: 22px; font-weight: 700; color: #F2F4F8">No Results for “cricket”</div>
+        <div style="font-size: 15px">Check the spelling or try a new search.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":820,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
