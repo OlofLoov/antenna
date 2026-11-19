@@ -23,7 +23,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " · Compartilhamento Familiar"
           }
         },
@@ -57,7 +57,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : " · Compartilhado com você pelo Compartilhamento Familiar"
           }
         },
@@ -102,7 +102,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (forçadas)"
           }
         },
@@ -136,7 +136,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ (não compatível)"
           }
         },
@@ -176,7 +176,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ e %2$@"
           }
         },
@@ -238,7 +238,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ e mais %2$lld"
           }
         },
@@ -366,7 +366,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ não enviou dados por %2$#@arg2@."
           },
           "substitutions" : {
@@ -377,13 +377,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg segundo"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg segundos"
                     }
                   }
@@ -450,7 +450,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ por %2$@, depois %3$@ por ano"
           }
         },
@@ -484,7 +484,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ já é um favorito."
           }
         },
@@ -518,7 +518,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ está ocupado agora. Tente de novo em instantes."
           }
         },
@@ -552,7 +552,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ está em um grupo bloqueado. Desbloqueie no Antenna primeiro."
           }
         },
@@ -592,7 +592,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ não está mais disponível em %2$@."
           }
         },
@@ -632,7 +632,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ não está mais em %2$@."
           }
         },
@@ -666,7 +666,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ não é um favorito."
           }
         },
@@ -700,7 +700,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ conhece o canal, mas não tem programas para ele. Escolha outra entrada abaixo ou espere o provedor preenchê-la."
           }
         },
@@ -734,7 +734,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ lista programas para este canal, mas nenhum daqui em diante. Espere a próxima atualização do guia ou escolha outra entrada abaixo."
           }
         },
@@ -774,8 +774,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%1$@ por %2$@ durante %3$@, depois %4$@ por ano"
+            "state" : "translated",
+            "value" : "%1$@ a cada %2$@ durante %3$@, depois %4$@ por ano"
           }
         },
         "sv" : {
@@ -808,7 +808,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ recusou o login. Confira o usuário e a senha em Ajustes, ou pergunte ao provedor se a conta expirou."
           }
         },
@@ -842,7 +842,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ recusou o login. Entre de novo neste Apple TV, ou pergunte ao provedor se a conta expirou."
           }
         },
@@ -882,7 +882,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ retornou %2$@ para este canal."
           }
         },
@@ -916,7 +916,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ retornou 404 para este canal. O provedor pode ter movido ou removido o canal."
           }
         },
@@ -950,7 +950,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ retornou um erro de servidor. O servidor está com problemas. Tente de novo em instantes."
           }
         },
@@ -984,7 +984,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ enviou dados que não são uma transmissão reproduzível. O endereço pode apontar para uma página da web ou um arquivo vazio."
           }
         },
@@ -1018,7 +1018,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ parou de enviar dados."
           }
         },
@@ -1058,7 +1058,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$@ · %2$@ de %3$@"
           }
         },
@@ -1103,7 +1103,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@, e nenhuma entrada do guia tem exatamente esse nome. Escolha uma entrada abaixo."
           }
         },
@@ -1137,7 +1137,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: nenhum filme"
           }
         },
@@ -1171,7 +1171,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: nenhuma série"
           }
         },
@@ -1205,7 +1205,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@: aguardando o login sincronizar do iCloud"
           }
         },
@@ -1296,13 +1296,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld canal"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld canais"
                 }
               }
@@ -1525,7 +1525,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ em %2$#@arg2@"
           },
           "substitutions" : {
@@ -1536,13 +1536,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canais"
                     }
                   }
@@ -1556,13 +1556,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupo"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupos"
                     }
                   }
@@ -1700,13 +1700,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld canal · Atualizando…"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld canais · Atualizando…"
                 }
               }
@@ -1812,13 +1812,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld conexão"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld conexões"
                 }
               }
@@ -1924,13 +1924,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld dia"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld dias"
                 }
               }
@@ -2036,13 +2036,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld entrada ignorada"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld entradas ignoradas"
                 }
               }
@@ -2148,13 +2148,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld episódio"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld episódios"
                 }
               }
@@ -2260,13 +2260,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld episódio não pôde ser lido da lista do provedor."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld episódios não puderam ser lidos da lista do provedor."
                 }
               }
@@ -2372,13 +2372,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld grupo"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld grupos"
                 }
               }
@@ -2484,13 +2484,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld guia ainda está baixando."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld guias ainda estão baixando."
                 }
               }
@@ -2539,7 +2539,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld h"
           }
         },
@@ -2579,7 +2579,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld h %2$@%3$lld min"
           }
         },
@@ -2619,7 +2619,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$lld h %2$lld min"
           }
         },
@@ -2659,7 +2659,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Faltam %1$lld h %2$lld min"
           }
         },
@@ -2693,7 +2693,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Faltam %lld h"
           }
         },
@@ -2784,13 +2784,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld hora"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld horas"
                 }
               }
@@ -2896,13 +2896,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld canal ao vivo"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld canais ao vivo"
                 }
               }
@@ -3125,7 +3125,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ em %2$#@arg2@"
           },
           "substitutions" : {
@@ -3136,13 +3136,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canal ao vivo"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canais ao vivo"
                     }
                   }
@@ -3156,13 +3156,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupo"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg grupos"
                     }
                   }
@@ -3243,7 +3243,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%lld min"
           }
         },
@@ -3277,8 +3277,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld min atrás do ao vivo"
+            "state" : "translated",
+            "value" : "%lld min atrás"
           }
         },
         "sv" : {
@@ -3311,7 +3311,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Faltam %lld min"
           }
         },
@@ -3402,13 +3402,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld minuto"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld minutos"
                 }
               }
@@ -3571,7 +3571,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%1$#@arg1@ e %2$lld séries"
           },
           "substitutions" : {
@@ -3582,13 +3582,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg filme"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg filmes"
                     }
                   }
@@ -3655,7 +3655,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível baixar %1$lld de %2$lld guias."
           }
         },
@@ -3746,13 +3746,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld programa"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld programas"
                 }
               }
@@ -3858,13 +3858,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld temporada"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld temporadas"
                 }
               }
@@ -3970,13 +3970,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld título"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld títulos"
                 }
               }
@@ -4025,7 +4025,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "1 guia ainda está baixando."
           }
         },
@@ -4059,7 +4059,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "<offer displayPrice> por <period>, depois <displayPrice> por ano"
           }
         },
@@ -4093,8 +4093,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "<offer displayPrice> por <unit> durante <period>, depois <displayPrice> por ano"
+            "state" : "translated",
+            "value" : "<offer displayPrice> a cada <unit> durante <period>, depois <displayPrice> por ano"
           }
         },
         "sv" : {
@@ -4127,7 +4127,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Conta ativa até %@"
           }
         },
@@ -4255,7 +4255,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Conta ativa até %1$@ · %2$#@arg2@"
           },
           "substitutions" : {
@@ -4266,13 +4266,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg conexão"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg conexões"
                     }
                   }
@@ -4333,7 +4333,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicione uma URL de guia para ter informações dos programas de %@."
           }
         },
@@ -4367,7 +4367,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicionar como novo bloco"
           }
         },
@@ -4401,7 +4401,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicione cada link como uma fonte M3U própria."
           }
         },
@@ -4435,7 +4435,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicione favoritos no Antenna para vê-los aqui"
           }
         },
@@ -4469,7 +4469,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicionar URL do guia"
           }
         },
@@ -4503,7 +4503,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicione a playlist do canal em vez disso."
           }
         },
@@ -4537,7 +4537,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicionar à Multivisão"
           }
         },
@@ -4571,7 +4571,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicionar à multivisão"
           }
         },
@@ -4605,7 +4605,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicionar aos favoritos ou remover deles"
           }
         },
@@ -4639,7 +4639,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ adicionado aos favoritos."
           }
         },
@@ -4673,7 +4673,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tudo"
           }
         },
@@ -4707,7 +4707,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Todos os canais"
           }
         },
@@ -4741,7 +4741,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Permita o acesso à rede local para o Antenna em Ajustes."
           }
         },
@@ -4775,7 +4775,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Já está ao vivo"
           }
         },
@@ -4809,7 +4809,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sempre"
           }
         },
@@ -4843,7 +4843,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna ainda não pode ser comprado nesta região da App Store."
           }
         },
@@ -4877,7 +4877,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna não consegue verificar o certificado deste servidor. Use http na sua rede ou um certificado confiável."
           }
         },
@@ -4911,7 +4911,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna não conseguiu acessar %@. Tente de novo mais tarde."
           }
         },
@@ -4945,7 +4945,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna baixa o guia quando a fonte termina de carregar."
           }
         },
@@ -4979,7 +4979,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna ainda não tem fontes. Abra o Antenna para adicionar uma."
           }
         },
@@ -5013,7 +5013,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna não pediu para enviar notificações. Os lembretes só aparecem com o app aberto."
           }
         },
@@ -5047,7 +5047,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna está bloqueado de novo"
           }
         },
@@ -5081,7 +5081,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna ainda está carregando sua biblioteca. Tente de novo em instantes."
           }
         },
@@ -5115,7 +5115,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna não está reproduzindo nenhum canal agora. Diga qual canal você quer."
           }
         },
@@ -5149,7 +5149,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna ainda não está desbloqueado neste dispositivo. Abra o Antenna para continuar."
           }
         },
@@ -5183,7 +5183,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Player do Antenna"
           }
         },
@@ -5217,7 +5217,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna reproduz as fontes de TV que você já tem e não inclui canais. Uma compra desbloqueia todos os recursos no iPhone, iPad, Mac e Apple TV, para todos do seu grupo de Compartilhamento Familiar."
           }
         },
@@ -5251,7 +5251,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna lê playlists M3U: linhas #EXTINF, cada uma seguida de um link de transmissão. Este arquivo não tem nenhum par assim."
           }
         },
@@ -5285,7 +5285,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Antenna lê os links de guia da playlist quando ela termina de carregar."
           }
         },
@@ -5319,7 +5319,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Apple TV não consegue mostrar notificações. Os lembretes aparecem como banner enquanto o Antenna está aberto."
           }
         },
@@ -5353,7 +5353,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Player da Apple"
           }
         },
@@ -5387,7 +5387,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "No início"
           }
         },
@@ -5421,7 +5421,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Áudio e legendas"
           }
         },
@@ -5455,7 +5455,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Automático"
           }
         },
@@ -5489,7 +5489,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Voltar"
           }
         },
@@ -5523,7 +5523,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Voltar %lld segundos"
           }
         },
@@ -5557,7 +5557,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Voltar ou fechar"
           }
         },
@@ -5591,7 +5591,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buffer cheio. Reproduzindo do ponto mais antigo"
           }
         },
@@ -5625,7 +5625,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregando"
           }
         },
@@ -5659,7 +5659,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "REPRISE"
           }
         },
@@ -5693,7 +5693,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "REPRISE %lld D"
           }
         },
@@ -5727,7 +5727,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não é possível reproduzir outra transmissão"
           }
         },
@@ -5761,7 +5761,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível acessar a App Store"
           }
         },
@@ -5795,7 +5795,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Cancelar"
           }
         },
@@ -5829,7 +5829,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Elenco"
           }
         },
@@ -5863,7 +5863,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reprise"
           }
         },
@@ -5954,14 +5954,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Reprise %lld dia"
+                  "state" : "translated",
+                  "value" : "Reprise de %lld dia"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Reprise %lld dias"
+                  "state" : "translated",
+                  "value" : "Reprise de %lld dias"
                 }
               }
             }
@@ -6009,7 +6009,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mudar de canal"
           }
         },
@@ -6043,7 +6043,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Muda de canal"
           }
         },
@@ -6083,7 +6083,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mudando o bloco %1$lld de %2$lld"
           }
         },
@@ -6117,7 +6117,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lista de canais"
           }
         },
@@ -6151,7 +6151,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Canais"
           }
         },
@@ -6185,7 +6185,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O Channels DVR está iniciando. Tente de novo em instantes."
           }
         },
@@ -6219,7 +6219,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Os canais ainda estão carregando"
           }
         },
@@ -6253,7 +6253,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Os canais de %@ não foram carregados"
           }
         },
@@ -6287,7 +6287,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Canais sem guia"
           }
         },
@@ -6321,7 +6321,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Canais sem guia · %lld"
           }
         },
@@ -6355,7 +6355,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Verifique a conexão e tente de novo. Se você já comprou o Antenna, Restaurar compra encontra a compra quando a conexão voltar."
           }
         },
@@ -6389,7 +6389,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Confira a grafia ou tente um número de canal."
           }
         },
@@ -6423,7 +6423,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Escolha Lembrar em um programa que ainda não começou, no Guia ou na Busca."
           }
         },
@@ -6457,7 +6457,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Escolha um grupo"
           }
         },
@@ -6491,7 +6491,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Escolha uma aba"
           }
         },
@@ -6525,7 +6525,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Clicar"
           }
         },
@@ -6559,7 +6559,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Clicar à esquerda ou à direita"
           }
         },
@@ -6593,7 +6593,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fechar"
           }
         },
@@ -6627,7 +6627,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Conecte-se à internet e tente de novo."
           }
         },
@@ -6661,8 +6661,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Conecte-se à internet e tente de novo. A reprodução continua sozinha quando a conexão voltar."
+            "state" : "translated",
+            "value" : "Conecte-se à internet e tente de novo. A reprodução continua automaticamente quando a conexão voltar."
           }
         },
         "sv" : {
@@ -6695,7 +6695,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Continuar assistindo"
           }
         },
@@ -6729,7 +6729,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível baixar · %@"
           }
         },
@@ -6763,7 +6763,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível carregar %@"
           }
         },
@@ -6797,7 +6797,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível carregar os filmes"
           }
         },
@@ -6831,7 +6831,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível carregar as séries"
           }
         },
@@ -6865,7 +6865,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível acessar %@"
           }
         },
@@ -6899,7 +6899,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível acessar %@. Confira o endereço e tente de novo."
           }
         },
@@ -6933,7 +6933,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível ler %@. Verifique se o arquivo foi baixado e tente de novo."
           }
         },
@@ -6967,7 +6967,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível ler o login"
           }
         },
@@ -7001,7 +7001,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível atualizar: %@"
           }
         },
@@ -7035,7 +7035,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível entrar. Confira o endereço MAC e, se tiver, o login."
           }
         },
@@ -7069,7 +7069,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível entrar. Confira o usuário e a senha."
           }
         },
@@ -7103,7 +7103,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível guardar as credenciais: %@"
           }
         },
@@ -7137,7 +7137,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Direção"
           }
         },
@@ -7171,7 +7171,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Baixando"
           }
         },
@@ -7205,7 +7205,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Baixando o guia…"
           }
         },
@@ -7239,7 +7239,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Baixando o guia · %@"
           }
         },
@@ -7273,7 +7273,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Baixando · %@"
           }
         },
@@ -7307,7 +7307,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Termina agora"
           }
         },
@@ -7341,7 +7341,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite um usuário sem dois-pontos."
           }
         },
@@ -7375,7 +7375,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite um endereço MAC válido, como 00:1A:79:12:34:56."
           }
         },
@@ -7409,7 +7409,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite uma URL válida."
           }
         },
@@ -7443,7 +7443,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite um endereço de servidor válido."
           }
         },
@@ -7477,7 +7477,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite o endereço MAC."
           }
         },
@@ -7511,7 +7511,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite a senha."
           }
         },
@@ -7545,7 +7545,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite a URL da playlist."
           }
         },
@@ -7579,7 +7579,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite o endereço do portal."
           }
         },
@@ -7613,7 +7613,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite o endereço do servidor."
           }
         },
@@ -7647,7 +7647,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digite o usuário."
           }
         },
@@ -7681,7 +7681,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Episódio"
           }
         },
@@ -7715,7 +7715,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Episódio %@"
           }
         },
@@ -7749,7 +7749,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A cada 12 horas"
           }
         },
@@ -7783,7 +7783,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A cada 24 horas"
           }
         },
@@ -7817,7 +7817,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A cada 6 horas"
           }
         },
@@ -7851,7 +7851,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Todos os canais de %@ têm guia"
           }
         },
@@ -7885,7 +7885,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sair da multivisão"
           }
         },
@@ -7919,7 +7919,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Favoritos"
           }
         },
@@ -7953,7 +7953,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrar canais"
           }
         },
@@ -7987,7 +7987,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filtrar canais"
           }
         },
@@ -8021,7 +8021,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Encontrar"
           }
         },
@@ -8055,7 +8055,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Encontrar canal"
           }
         },
@@ -8089,7 +8089,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Encontrar uma entrada do guia"
           }
         },
@@ -8129,8 +8129,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Teste grátis: %1$@, depois %2$@ por ano"
+            "state" : "translated",
+            "value" : "Grátis por %1$@, depois %2$@ por ano"
           }
         },
         "sv" : {
@@ -8163,8 +8163,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Teste grátis: <period>, depois <displayPrice> por ano"
+            "state" : "translated",
+            "value" : "Grátis por <period>, depois <displayPrice> por ano"
           }
         },
         "sv" : {
@@ -8197,7 +8197,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Forçadas"
           }
         },
@@ -8231,7 +8231,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Formato não compatível"
           }
         },
@@ -8265,7 +8265,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avançar"
           }
         },
@@ -8299,7 +8299,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Avançar %lld segundos"
           }
         },
@@ -8333,7 +8333,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Da playlist"
           }
         },
@@ -8367,7 +8367,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tela cheia"
           }
         },
@@ -8401,7 +8401,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupo"
           }
         },
@@ -8435,7 +8435,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grupos ou detalhes"
           }
         },
@@ -8469,7 +8469,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Guia"
           }
         },
@@ -8560,14 +8560,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Guia %lld dia"
+                  "state" : "translated",
+                  "value" : "Guia de %lld dia"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Guia %lld dias"
+                  "state" : "translated",
+                  "value" : "Guia de %lld dias"
                 }
               }
             }
@@ -8615,7 +8615,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "URL do guia"
           }
         },
@@ -8649,8 +8649,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Guia terminado"
+            "state" : "translated",
+            "value" : "Fim do guia"
           }
         },
         "sv" : {
@@ -8683,7 +8683,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Falha no guia"
           }
         },
@@ -8891,7 +8891,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Guia de %1$#@arg1@ · %2$lld de %3$#@arg3@"
           },
           "substitutions" : {
@@ -8902,13 +8902,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dia"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dias"
                     }
                   }
@@ -8922,13 +8922,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canais"
                     }
                   }
@@ -9009,7 +9009,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Guia de %@"
           }
         },
@@ -9049,7 +9049,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O id de guia “%1$@” não está em nenhum dos %2$lld guias"
           }
         },
@@ -9083,7 +9083,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O id de guia “%@” não está no guia"
           }
         },
@@ -9117,7 +9117,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Link do guia"
           }
         },
@@ -9151,7 +9151,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fontes do guia"
           }
         },
@@ -9185,7 +9185,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Guia indisponível"
           }
         },
@@ -9219,7 +9219,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ocultar a barra de informações"
           }
         },
@@ -9253,7 +9253,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Segurar"
           }
         },
@@ -9287,8 +9287,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Segure reproduzir/pausar para o ao vivo"
+            "state" : "translated",
+            "value" : "Segure reproduzir/pausar para voltar ao vivo"
           }
         },
         "sv" : {
@@ -9321,7 +9321,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Segure o botão de seleção"
           }
         },
@@ -9355,7 +9355,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Segure o botão de seleção para opções"
           }
         },
@@ -9389,7 +9389,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tela de Início"
           }
         },
@@ -9423,7 +9423,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Id não encontrado"
           }
         },
@@ -9457,7 +9457,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Se apontar para uma playlist ou transmissão, adicione como fonte."
           }
         },
@@ -9491,7 +9491,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Inclui Compartilhamento Familiar"
           }
         },
@@ -9525,7 +9525,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Barra de informações"
           }
         },
@@ -9559,7 +9559,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Informações, áudio e legendas"
           }
         },
@@ -9593,7 +9593,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Continuar assistindo"
           }
         },
@@ -9627,7 +9627,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "AO VIVO"
           }
         },
@@ -9661,7 +9661,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Último canal ou Recentes"
           }
         },
@@ -9695,7 +9695,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Vitalício"
           }
         },
@@ -9729,7 +9729,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ao vivo"
           }
         },
@@ -9937,7 +9937,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregado · %1$lld de %2$#@arg2@ · %3$#@arg3@"
           },
           "substitutions" : {
@@ -9948,13 +9948,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canal"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg canais"
                     }
                   }
@@ -9968,13 +9968,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dia"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg dias"
                     }
                   }
@@ -10055,7 +10055,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregando"
           }
         },
@@ -10089,7 +10089,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregando o guia…"
           }
         },
@@ -10123,7 +10123,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregando o preço"
           }
         },
@@ -10157,7 +10157,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregando…"
           }
         },
@@ -10191,7 +10191,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Carregando… · último carregamento %@"
           }
         },
@@ -10225,7 +10225,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Login recusado"
           }
         },
@@ -10259,7 +10259,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Muitos provedores permitem uma ou duas transmissões por conta ao mesmo tempo."
           }
         },
@@ -10293,7 +10293,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Muitos provedores permitem uma ou duas transmissões por conta ao mesmo tempo. Se o login mudou, confira em Ajustes."
           }
         },
@@ -10327,7 +10327,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Muitos provedores permitem uma ou duas transmissões por conta ao mesmo tempo. Se o login mudou, entre de novo neste Apple TV."
           }
         },
@@ -10361,7 +10361,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Associado por você"
           }
         },
@@ -10395,7 +10395,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Associação não encontrada"
           }
         },
@@ -10429,7 +10429,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Associado pelo nome"
           }
         },
@@ -10463,7 +10463,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Associado pelo nome · %lld"
           }
         },
@@ -10497,7 +10497,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Associado pelo tvg-id"
           }
         },
@@ -10531,7 +10531,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Corresponde a %@"
           }
         },
@@ -10565,7 +10565,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Menu"
           }
         },
@@ -10599,7 +10599,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mono"
           }
         },
@@ -10633,7 +10633,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mais informações e Minha lista"
           }
         },
@@ -10667,7 +10667,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mover para baixo"
           }
         },
@@ -10701,7 +10701,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mover para o novo lugar"
           }
         },
@@ -10735,7 +10735,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Navegar pelo guia"
           }
         },
@@ -10769,7 +10769,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mover para cima"
           }
         },
@@ -10803,8 +10803,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Movido de %@"
+            "state" : "translated",
+            "value" : "Antes: %@"
           }
         },
         "sv" : {
@@ -10843,8 +10843,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Movido de %1$@ %2$@"
+            "state" : "translated",
+            "value" : "Antes: %1$@ %2$@"
           }
         },
         "sv" : {
@@ -10877,7 +10877,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filme"
           }
         },
@@ -10911,7 +10911,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filme · %@"
           }
         },
@@ -10945,7 +10945,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Filmes"
           }
         },
@@ -10979,7 +10979,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Multivisão"
           }
         },
@@ -11013,7 +11013,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A multivisão está cheia"
           }
         },
@@ -11053,7 +11053,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Multivisão · bloco %1$lld de %2$lld"
           }
         },
@@ -11087,7 +11087,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Silenciar"
           }
         },
@@ -11121,7 +11121,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Minha lista"
           }
         },
@@ -11155,7 +11155,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Erro de rede"
           }
         },
@@ -11189,7 +11189,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Novo"
           }
         },
@@ -11223,7 +11223,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Próximos 7 dias"
           }
         },
@@ -11257,7 +11257,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Próximo episódio"
           }
         },
@@ -11291,7 +11291,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Próximo episódio em %lld"
           }
         },
@@ -11325,7 +11325,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Próximo episódio, %@"
           }
         },
@@ -11359,7 +11359,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A seguir: %@"
           }
         },
@@ -11393,7 +11393,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum servidor Channels DVR em %@."
           }
         },
@@ -11427,7 +11427,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum servidor Jellyfin respondeu em %@. Confira o endereço e tente de novo."
           }
         },
@@ -11461,7 +11461,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum portal Stalker respondeu em %@. Confira o endereço e tente de novo."
           }
         },
@@ -11495,7 +11495,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum canal encontrado em %@."
           }
         },
@@ -11529,7 +11529,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem guia"
           }
         },
@@ -11563,7 +11563,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhuma entrada do guia corresponde a “%@”"
           }
         },
@@ -11597,7 +11597,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem id de guia"
           }
         },
@@ -11631,7 +11631,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não está mais no guia"
           }
         },
@@ -11665,7 +11665,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem informações do programa"
           }
         },
@@ -11699,7 +11699,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem programas"
           }
         },
@@ -11733,7 +11733,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum programa no guia"
           }
         },
@@ -11767,7 +11767,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhuma compra encontrada para esta Conta Apple. Se alguém da família comprou o Antenna, verifique se o compartilhamento de compras está ativado no Compartilhamento Familiar."
           }
         },
@@ -11801,7 +11801,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum lembrete"
           }
         },
@@ -11835,7 +11835,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum resultado para “%@”"
           }
         },
@@ -11869,7 +11869,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhuma legenda nesta transmissão"
           }
         },
@@ -11909,7 +11909,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nenhum dos %1$lld guias de %2$@ lista “%3$@”. Escolha uma entrada abaixo."
           }
         },
@@ -11943,7 +11943,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não é um arquivo de guia"
           }
         },
@@ -11977,7 +11977,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ainda não baixado"
           }
         },
@@ -12011,7 +12011,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem espaço livre suficiente para voltar na TV ao vivo"
           }
         },
@@ -12045,7 +12045,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ainda não carregado"
           }
         },
@@ -12079,8 +12079,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sem sessão neste Apple TV"
+            "state" : "translated",
+            "value" : "Sem login neste Apple TV"
           }
         },
         "sv" : {
@@ -12113,7 +12113,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nada aqui ainda"
           }
         },
@@ -12147,7 +12147,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nada mais a pagar. Suas fontes e favoritos estão onde você os deixou."
           }
         },
@@ -12181,7 +12181,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "As notificações do Antenna estão desativadas. Os lembretes só aparecem com o app aberto."
           }
         },
@@ -12215,7 +12215,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Agora: %@"
           }
         },
@@ -12249,8 +12249,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Não"
+            "state" : "translated",
+            "value" : "Desativado"
           }
         },
         "sv" : {
@@ -12283,7 +12283,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Offline"
           }
         },
@@ -12317,7 +12317,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Offline · tenta de novo quando você voltar a ficar online"
           }
         },
@@ -12351,7 +12351,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Passando agora"
           }
         },
@@ -12385,7 +12385,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Só manualmente"
           }
         },
@@ -12419,7 +12419,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Abrir"
           }
         },
@@ -12453,7 +12453,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Abrir ou alterar"
           }
         },
@@ -12487,7 +12487,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Outros"
           }
         },
@@ -12521,7 +12521,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pausar"
           }
         },
@@ -12555,7 +12555,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pausar ou reproduzir"
           }
         },
@@ -12589,7 +12589,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pague uma vez. Seu para sempre."
           }
         },
@@ -12623,7 +12623,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Escolha outra entrada abaixo ou remova a associação para voltar ao id da playlist."
           }
         },
@@ -12657,7 +12657,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir"
           }
         },
@@ -12691,7 +12691,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir %@"
           }
         },
@@ -12725,7 +12725,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir daqui"
           }
         },
@@ -12759,7 +12759,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir agora"
           }
         },
@@ -12793,7 +12793,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir ou escolher"
           }
         },
@@ -12827,7 +12827,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir o próximo episódio"
           }
         },
@@ -12861,7 +12861,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir/Pausar"
           }
         },
@@ -12895,7 +12895,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduzir/Pausar para voltar"
           }
         },
@@ -12929,7 +12929,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reproduz o próximo episódio de uma série quando um termina. Vale só para este dispositivo."
           }
         },
@@ -12963,7 +12963,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pressione para explorar canais"
           }
         },
@@ -12997,7 +12997,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Preço indisponível"
           }
         },
@@ -13031,7 +13031,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Política de Privacidade"
           }
         },
@@ -13065,7 +13065,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Provedor ocupado"
           }
         },
@@ -13099,7 +13099,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Erro do provedor"
           }
         },
@@ -13133,7 +13133,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Guia do provedor"
           }
         },
@@ -13167,7 +13167,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "As compras estão desativadas neste dispositivo. Confira o Tempo de Uso ou pergunte ao organizador da família."
           }
         },
@@ -13201,7 +13201,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Digitar o link de novo"
           }
         },
@@ -13235,7 +13235,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lendo o guia…"
           }
         },
@@ -13269,7 +13269,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Adicionados recentemente"
           }
         },
@@ -13303,7 +13303,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Recentes"
           }
         },
@@ -13343,7 +13343,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reconectando… tentativa %1$lld de %2$lld"
           }
         },
@@ -13377,7 +13377,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Atualizado %@"
           }
         },
@@ -13411,7 +13411,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lembrar"
           }
         },
@@ -13445,7 +13445,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lembrete criado"
           }
         },
@@ -13479,7 +13479,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Os lembretes sincronizam com seus outros dispositivos pelo iCloud. Cada dispositivo lembra você do seu jeito: uma notificação no iPhone, iPad e Mac, e um banner no Apple TV enquanto o Antenna está aberto."
           }
         },
@@ -13513,7 +13513,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Controle remoto: %@"
           }
         },
@@ -13547,7 +13547,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Remover"
           }
         },
@@ -13581,7 +13581,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Remover bloco"
           }
         },
@@ -13615,7 +13615,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Remova um bloco ou escolha um canal de resolução menor."
           }
         },
@@ -13649,7 +13649,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Remover da multivisão"
           }
         },
@@ -13683,7 +13683,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Remover associação"
           }
         },
@@ -13717,7 +13717,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Remova o usuário e a senha do endereço."
           }
         },
@@ -13751,7 +13751,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ removido dos favoritos."
           }
         },
@@ -13785,7 +13785,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Renova todo ano. Cancele quando quiser."
           }
         },
@@ -13819,7 +13819,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Renova em %@. Suas fontes e favoritos estão onde você os deixou."
           }
         },
@@ -13853,7 +13853,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Renova em <expiresAt>. Suas fontes e favoritos estão onde você os deixou."
           }
         },
@@ -13887,7 +13887,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A restauração não foi concluída. Tente de novo."
           }
         },
@@ -13921,7 +13921,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Retomar"
           }
         },
@@ -13955,7 +13955,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Retomar %@"
           }
         },
@@ -13989,7 +13989,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tentar agora"
           }
         },
@@ -14023,7 +14023,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não é possível voltar neste canal"
           }
         },
@@ -14057,8 +14057,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Voltar parou de funcionar"
+            "state" : "translated",
+            "value" : "Não é mais possível voltar"
           }
         },
         "sv" : {
@@ -14091,8 +14091,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Voltar parou de funcionar. Voltando à TV ao vivo"
+            "state" : "translated",
+            "value" : "Não é mais possível voltar. Voltando à TV ao vivo"
           }
         },
         "sv" : {
@@ -14125,7 +14125,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Navegar"
           }
         },
@@ -14159,7 +14159,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buscar"
           }
         },
@@ -14193,7 +14193,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buscar canais, programas, filmes e séries"
           }
         },
@@ -14227,7 +14227,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buscar no guia por nome do canal ou id"
           }
         },
@@ -14261,7 +14261,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Temporada %@"
           }
         },
@@ -14301,8 +14301,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Temporada %1$@ episódio %2$@"
+            "state" : "translated",
+            "value" : "Temporada %1$@, episódio %2$@"
           }
         },
         "sv" : {
@@ -14335,7 +14335,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ver todos os %lld"
           }
         },
@@ -14369,7 +14369,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Selecionar"
           }
         },
@@ -14403,7 +14403,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Selecionar bloco %lld"
           }
         },
@@ -14437,7 +14437,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Séries"
           }
         },
@@ -14471,7 +14471,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Série · %@"
           }
         },
@@ -14505,7 +14505,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O servidor retornou %@"
           }
         },
@@ -14539,7 +14539,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Configurar o Antenna no Apple TV"
           }
         },
@@ -14630,13 +14630,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Mostrar %lld canal"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Mostrar %lld canais"
                 }
               }
@@ -14685,7 +14685,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mostrar no bloco %lld"
           }
         },
@@ -14719,7 +14719,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mostrar os canais"
           }
         },
@@ -14759,7 +14759,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mostrando %1$lld de %2$lld"
           }
         },
@@ -14793,7 +14793,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mostra a barra do canal"
           }
         },
@@ -14827,7 +14827,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Entrar"
           }
         },
@@ -14861,8 +14861,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "É preciso entrar"
+            "state" : "translated",
+            "value" : "Login necessário"
           }
         },
         "sv" : {
@@ -14895,7 +14895,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Entrar neste Apple TV"
           }
         },
@@ -14929,7 +14929,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Entrar em %@ neste Apple TV"
           }
         },
@@ -14963,7 +14963,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Entre em %@ neste Apple TV para reproduzir os canais."
           }
         },
@@ -14997,8 +14997,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Login negado"
+            "state" : "translated",
+            "value" : "Login recusado"
           }
         },
         "sv" : {
@@ -15031,7 +15031,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pular 10 segundos"
           }
         },
@@ -15065,8 +15065,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Pulou para o ao vivo"
+            "state" : "translated",
+            "value" : "Avançou para o ao vivo"
           }
         },
         "sv" : {
@@ -15099,7 +15099,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Algumas fontes ainda estão carregando."
           }
         },
@@ -15139,7 +15139,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fonte: %1$@ · Tentativa às %2$@"
           }
         },
@@ -15173,7 +15173,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Fontes e ajustes"
           }
         },
@@ -15207,7 +15207,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Especiais"
           }
         },
@@ -15241,7 +15241,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Divida o arquivo, ou hospede-o e adicione o link como fonte M3U."
           }
         },
@@ -15275,7 +15275,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Começar do início não está disponível para este programa"
           }
         },
@@ -15315,7 +15315,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Começa às %1$@ em %2$@"
           }
         },
@@ -15349,7 +15349,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Começa em %@"
           }
         },
@@ -15383,7 +15383,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Começa agora"
           }
         },
@@ -15417,7 +15417,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Começa agora em %@"
           }
         },
@@ -15451,7 +15451,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Estéreo"
           }
         },
@@ -15485,7 +15485,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ainda carregando. %@ está enviando dados devagar."
           }
         },
@@ -15519,7 +15519,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ainda está assistindo?"
           }
         },
@@ -15553,7 +15553,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ainda está assistindo? %@"
           }
         },
@@ -15587,7 +15587,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Parar e voltar"
           }
         },
@@ -15621,7 +15621,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O armazenamento está cheio"
           }
         },
@@ -15655,7 +15655,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O armazenamento está cheio. Voltando à TV ao vivo"
           }
         },
@@ -15689,7 +15689,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível ler a transmissão"
           }
         },
@@ -15723,7 +15723,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Detalhes da transmissão ainda indisponíveis"
           }
         },
@@ -15757,7 +15757,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Transmissão não encontrada"
           }
         },
@@ -15791,7 +15791,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Transmissão interrompida"
           }
         },
@@ -15825,7 +15825,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Transmissão indisponível"
           }
         },
@@ -15859,7 +15859,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "As legendas aparecem no seu idioma sempre que a transmissão tiver."
           }
         },
@@ -15893,7 +15893,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "As legendas aparecem quando o áudio não está em um dos seus idiomas."
           }
         },
@@ -15927,7 +15927,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "As legendas começam desativadas. Legendas forçadas no seu idioma ainda aparecem."
           }
         },
@@ -15961,7 +15961,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Deslizar"
           }
         },
@@ -15995,7 +15995,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Deslizar para baixo"
           }
         },
@@ -16029,7 +16029,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Deslizar para a esquerda ou a direita"
           }
         },
@@ -16063,7 +16063,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Deslizar para cima ou para baixo"
           }
         },
@@ -16097,7 +16097,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Deslize para cima ou para baixo para mudar de canal. Menu abre a barra de abas."
           }
         },
@@ -16131,7 +16131,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "BLOCO %lld"
           }
         },
@@ -16165,7 +16165,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Barra de abas"
           }
         },
@@ -16199,7 +16199,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Termos de Uso"
           }
         },
@@ -16233,7 +16233,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Esse canal não está mais em %@."
           }
         },
@@ -16267,7 +16267,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A fonte desse canal não está mais no Antenna."
           }
         },
@@ -16301,7 +16301,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Esse título não está mais disponível em %@."
           }
         },
@@ -16335,7 +16335,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A fonte desse título não está mais no Antenna."
           }
         },
@@ -16369,7 +16369,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A conexão falhou (%@). Confira a rede, ou a VPN se houver uma ativada."
           }
         },
@@ -16403,7 +16403,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A conexão falhou. Confira a rede, ou a VPN se houver uma ativada."
           }
         },
@@ -16437,7 +16437,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "As entradas deste arquivo não são links."
           }
         },
@@ -16471,7 +16471,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia"
           }
         },
@@ -16505,7 +16505,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Não foi possível baixar o guia"
           }
         },
@@ -16539,7 +16539,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia será baixado quando você voltar a ficar online."
           }
         },
@@ -16573,7 +16573,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia de “%@” acabou"
           }
         },
@@ -16607,7 +16607,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia ainda não foi baixado"
           }
         },
@@ -16641,7 +16641,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia ainda não foi baixado."
           }
         },
@@ -16675,7 +16675,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia lista “%@”, mas não tem programas para ele"
           }
         },
@@ -16709,7 +16709,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O login de %@ ainda não chegou a este dispositivo pelas Chaves do iCloud."
           }
         },
@@ -16743,7 +16743,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O login de %@ ainda não sincronizou do iCloud para este dispositivo."
           }
         },
@@ -16777,7 +16777,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A entrada associada “%@” não tem programas"
           }
         },
@@ -16811,7 +16811,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A playlist não tem tvg-id para %@"
           }
         },
@@ -16845,7 +16845,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O portal recusou este dispositivo com a mensagem “%@”."
           }
         },
@@ -16879,7 +16879,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia do provedor precisa do login desta fonte, que ainda não chegou a este dispositivo pelo iCloud."
           }
         },
@@ -16913,7 +16913,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O guia do provedor precisa do login desta fonte. Entre em Fontes e ajustes."
           }
         },
@@ -16947,7 +16947,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O provedor não envia epg_channel_id para %@"
           }
         },
@@ -16981,7 +16981,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A compra não foi concluída. Tente de novo."
           }
         },
@@ -17015,7 +17015,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A compra nesta Conta Apple foi reembolsada ou não está mais compartilhada com você."
           }
         },
@@ -17049,7 +17049,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A conexão segura falhou. Confira a rede, ou a VPN se houver uma ativada."
           }
         },
@@ -17083,7 +17083,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O servidor respondeu com um erro (%@). Confira o endereço e tente de novo."
           }
         },
@@ -17117,7 +17117,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "O servidor respondeu com algo que o Antenna não conseguiu ler."
           }
         },
@@ -17151,7 +17151,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A fonte não dá id de guia para este canal"
           }
         },
@@ -17185,7 +17185,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este Apple TV não consegue reproduzir outra transmissão"
           }
         },
@@ -17219,7 +17219,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este Mac não consegue reproduzir outra transmissão"
           }
         },
@@ -17253,8 +17253,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Esta conta está %@."
+            "state" : "translated",
+            "value" : "Status da conta: %@."
           }
         },
         "sv" : {
@@ -17287,7 +17287,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Esta conta não tem permissão para entrar por este dispositivo."
           }
         },
@@ -17321,7 +17321,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este canal"
           }
         },
@@ -17355,7 +17355,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este dispositivo já está reproduzindo o máximo de transmissões que consegue."
           }
         },
@@ -17389,7 +17389,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este arquivo tem %@. O Antenna importa playlists de até 16 MB."
           }
         },
@@ -17423,7 +17423,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este arquivo é um link, não uma playlist."
           }
         },
@@ -17457,7 +17457,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este arquivo é uma lista de links, não uma playlist."
           }
         },
@@ -17491,7 +17491,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este arquivo tem mais de 16 MB. O Antenna importa playlists de até 16 MB."
           }
         },
@@ -17525,7 +17525,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este guia já está na lista."
           }
         },
@@ -17559,7 +17559,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este link de guia precisa do login neste Apple TV"
           }
         },
@@ -17593,7 +17593,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Esta é uma transmissão única, não uma lista de canais."
           }
         },
@@ -17627,7 +17627,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este servidor pede usuário e senha, que o Antenna ainda não consegue enviar."
           }
         },
@@ -17661,7 +17661,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Esta fonte não tem guia"
           }
         },
@@ -17695,8 +17695,8 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Esta transmissão usa %@, que este dispositivo não consegue reproduzir. Tentar de novo não vai ajudar. Escolha outro canal ou peça ao provedor uma transmissão num formato compatível."
+            "state" : "translated",
+            "value" : "Esta transmissão usa %@, que este dispositivo não consegue reproduzir. Tentar de novo não vai ajudar. Escolha outro canal ou peça ao provedor uma transmissão em um formato compatível."
           }
         },
         "sv" : {
@@ -17729,7 +17729,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este título"
           }
         },
@@ -17769,7 +17769,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bloco %1$lld de %2$lld"
           }
         },
@@ -17809,7 +17809,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bloco %1$lld · %2$@"
           }
         },
@@ -17843,7 +17843,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tempo esgotado"
           }
         },
@@ -17877,7 +17877,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Título"
           }
         },
@@ -17911,7 +17911,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hoje"
           }
         },
@@ -17945,7 +17945,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Amanhã"
           }
         },
@@ -17979,7 +17979,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Grande demais"
           }
         },
@@ -18013,7 +18013,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Associações demais para esta fonte. Remova algumas para adicionar mais."
           }
         },
@@ -18047,7 +18047,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Faixa %lld"
           }
         },
@@ -18081,7 +18081,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tente um nome mais curto ou o tvg-id do canal."
           }
         },
@@ -18115,7 +18115,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tentar de novo"
           }
         },
@@ -18149,7 +18149,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Desativar"
           }
         },
@@ -18183,7 +18183,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ativar"
           }
         },
@@ -18217,7 +18217,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Desativado"
           }
         },
@@ -18251,7 +18251,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem grupo"
           }
         },
@@ -18285,7 +18285,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Desbloquear o Antenna"
           }
         },
@@ -18319,7 +18319,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Desbloqueie seu %@ uma vez e tente de novo."
           }
         },
@@ -18353,7 +18353,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sem título"
           }
         },
@@ -18481,7 +18481,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A seguir, %1$@, próximo episódio em %2$#@arg2@"
           },
           "substitutions" : {
@@ -18492,13 +18492,13 @@
                 "plural" : {
                   "one" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg segundo"
                     }
                   },
                   "other" : {
                     "stringUnit" : {
-                      "state" : "needs_review",
+                      "state" : "translated",
                       "value" : "%arg segundos"
                     }
                   }
@@ -18559,7 +18559,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Diminuir volume"
           }
         },
@@ -18593,7 +18593,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aumentar volume"
           }
         },
@@ -18627,7 +18627,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando aprovação. O Antenna é desbloqueado assim que a compra for aprovada."
           }
         },
@@ -18661,7 +18661,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando o iCloud…"
           }
         },
@@ -18695,7 +18695,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando login"
           }
         },
@@ -18729,7 +18729,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando o login do iCloud"
           }
         },
@@ -18763,7 +18763,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando o login sincronizar do iCloud"
           }
         },
@@ -18797,7 +18797,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando a App Store…"
           }
         },
@@ -18831,7 +18831,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando o guia…"
           }
         },
@@ -18865,7 +18865,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando o login sincronizar"
           }
         },
@@ -18899,7 +18899,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando a playlist"
           }
         },
@@ -18933,7 +18933,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Aguardando o login deste guia sincronizar do iCloud"
           }
         },
@@ -18967,7 +18967,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Assistir"
           }
         },
@@ -19001,7 +19001,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Assistir, ou detalhes para depois"
           }
         },
@@ -19035,7 +19035,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Assistido"
           }
         },
@@ -19069,7 +19069,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Que bom ver você de novo"
           }
         },
@@ -19103,7 +19103,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Qual canal?"
           }
         },
@@ -19137,7 +19137,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Qual filme ou série?"
           }
         },
@@ -19171,7 +19171,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ano"
           }
         },
@@ -19205,7 +19205,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Anual"
           }
         },
@@ -19239,7 +19239,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A assinatura anual renova automaticamente até ser cancelada em Ajustes. O pagamento é cobrado na sua Conta Apple."
           }
         },
@@ -19273,7 +19273,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A assinatura anual renova automaticamente até ser cancelada em Ajustes. O pagamento é cobrado na sua Conta Apple. Termos de Uso e Política de Privacidade."
           }
         },
@@ -19313,7 +19313,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Você já importou %1$@ antes como %2$@"
           }
         },
@@ -19347,7 +19347,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Você está offline"
           }
         },
@@ -19381,7 +19381,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Você está offline."
           }
         },
@@ -19415,7 +19415,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Você está offline. Conecte-se à internet e tente de novo."
           }
         },
@@ -19449,7 +19449,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Seu provedor recusou outra transmissão"
           }
         },
@@ -19483,7 +19483,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sua compra foi encontrada para esta Conta Apple."
           }
         },
@@ -19517,7 +19517,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sua assinatura anual terminou em %@."
           }
         },
@@ -19551,7 +19551,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sua assinatura anual terminou em <date>."
           }
         },
@@ -19585,7 +19585,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ampliar"
           }
         },
@@ -19619,7 +19619,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Reduzir"
           }
         },
@@ -19653,7 +19653,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "mudar de canal"
           }
         },
@@ -19694,7 +19694,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Voltar"
           }
         },
@@ -19728,7 +19728,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "tela cheia"
           }
         },
@@ -19762,7 +19762,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "sair da multivisão"
           }
         },
@@ -19796,7 +19796,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "sem som"
           }
         },
@@ -19830,7 +19830,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "sem programas"
           }
         },
@@ -19921,13 +19921,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "dia"
+                  "state" : "translated",
+                  "value" : "1 dia"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld dias"
                 }
               }
@@ -20033,13 +20033,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "mês"
+                  "state" : "translated",
+                  "value" : "1 mês"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld meses"
                 }
               }
@@ -20145,13 +20145,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "semana"
+                  "state" : "translated",
+                  "value" : "1 semana"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld semanas"
                 }
               }
@@ -20257,13 +20257,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "ano"
+                  "state" : "translated",
+                  "value" : "1 ano"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld anos"
                 }
               }
@@ -20312,7 +20312,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "pagamento único"
           }
         },
@@ -20346,7 +20346,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "opções"
           }
         },
@@ -20380,7 +20380,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "por ano"
           }
         },
@@ -20414,7 +20414,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "som ativado"
           }
         },
@@ -20448,7 +20448,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "a seguir"
           }
         },
@@ -20482,7 +20482,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "assistido"
           }
         },
@@ -20516,7 +20516,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "sua fonte"
           }
         },
@@ -20556,7 +20556,7 @@
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "“%1$@” não lista “%2$@”. Escolha uma entrada abaixo."
           }
         },
