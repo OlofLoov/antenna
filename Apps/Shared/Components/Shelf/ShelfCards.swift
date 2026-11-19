@@ -82,7 +82,10 @@ extension ShelfView {
     }
 
     /// "See all" at the end of a row's header. `identifier` defaults to
-    /// Continue watching's `<prefix>.seeAll`.
+    /// Continue watching's `<prefix>.seeAll`. The tap area reaches past the
+    /// text without making the header taller: a 44-point frame in the
+    /// baseline-aligned header froze the app when a poster's menu removed
+    /// the row above it.
     struct SeeAllButton: View {
         var identifier: String?
         let open: () -> Void
@@ -94,12 +97,15 @@ extension ShelfView {
                 Text("See all")
                     .font(.system(size: metrics.count))
                     .foregroundStyle(Palette.textMuted)
-                    .frame(minWidth: 44, minHeight: 44)
+                    .padding(.vertical, Self.reach)
                     .contentShape(Rectangle())
+                    .padding(.vertical, -Self.reach)
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier(identifier ?? "\(prefix).seeAll")
         }
+
+        private static let reach: CGFloat = 14
     }
 
     /// "See all" as a poster-sized tile after a row's last poster, where
