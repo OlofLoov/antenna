@@ -98,7 +98,9 @@
                     .id(group)
                     .accessibilityIdentifier(group == .new ? "overlay.group.new" : "overlay.group.\(index)")
                 }
-                ForEach(catalogue.lockedGroups, id: \.self) { group in
+                // Keyed apart from the open rows: with the same key, the row a
+                // passcode opens kept the locked row's look in the lazy column.
+                ForEach(catalogue.lockedGroups, id: \.storageKey) { group in
                     ChannelOverlay.GroupRow(
                         title: catalogue.label(of: group), systemImage: "lock.fill", count: 0, look: .plain
                     ) {
@@ -107,7 +109,7 @@
                     }
                     .disabled(!focusIsOnGroups)
                     .focused(focus, equals: .overlay(.group(group)))
-                    .id(group)
+                    .id("locked.\(group.storageKey)")
                     .accessibilityLabel("\(catalogue.label(of: group)), locked")
                     .accessibilityIdentifier("overlay.locked.\(group.storageKey)")
                 }
