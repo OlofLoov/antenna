@@ -6,12 +6,12 @@ The frame every other Apple TV screen sits in. Opening the app goes straight to 
 ## Requirements
 
 ### Requirement: The tabs, in order
-The system SHALL show a tab bar holding, from left to right, the Antenna mark, Live, Guide, Movies, Series, Search, the profile button when there are two or more profiles, the Settings button and the clock, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
+The system SHALL show the system tab bar holding, from left to right, Live, Guide, Movies, Series, Search and Settings, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
 
 #### Scenario: Sources with movies
 - **GIVEN** the user has at least one Xtream source
 - **WHEN** the tab bar shows
-- **THEN** it holds the mark, Live, Guide, Movies, Series, Search, the Settings button and the clock, in that order, with exactly one tab marked current
+- **THEN** it holds Live, Guide, Movies, Series, Search and Settings, in that order, with exactly one tab marked current
 
 #### Scenario: No Xtream source
 - **GIVEN** the user has no Xtream source and no playlist whose last load had movies or episodes
@@ -20,19 +20,19 @@ The system SHALL show a tab bar holding, from left to right, the Antenna mark, L
 
 #### Scenario: Two or more profiles
 - **GIVEN** the profiles Dad and Kids, with Kids current
-- **WHEN** the tab bar shows
-- **THEN** a profile button with Kids's color and initial sits between Search and the Settings button
+- **WHEN** Settings opens
+- **THEN** a profile button with Kids's color and initial sits at the top of Settings
 - **AND** with one profile there is no profile button
 
 #### Scenario: Bar over the Guide
 - **GIVEN** the Guide is open
 - **WHEN** the tab bar shows over it
-- **THEN** the bar leaves the clock's place empty, because the Guide shows its own clock
+- **THEN** the Guide's own clock stays in its header, since the bar holds no clock
 
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
 - **WHEN** the tab bar shows
-- **THEN** it is read as a group of tabs, the profile button as "Profile, Kids", and the clock and the mark as plain text
+- **THEN** it is read as the system tab bar, one tab per item
 
 ### Requirement: Back to the last channel on launch
 The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one, once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
@@ -111,8 +111,9 @@ The system SHALL hide the tab bar and carry on with the same stream full screen 
 
 #### Scenario: Swipe down over Movies, Series or Search
 - **GIVEN** Movies, Series or Search is open with the highlight in the bar
-- **WHEN** the user swipes down
-- **THEN** the bar stays and the highlight moves into the tab's content
+- **WHEN** the user swipes down, or selects the open tab
+- **THEN** the highlight moves into the tab's content and the system bar slides away
+- **AND** on Search it lands on the keyboard
 
 #### Scenario: Failed stream
 - **GIVEN** the stream had failed
@@ -205,25 +206,17 @@ The system SHALL show a "No channels yet" screen naming each source that added n
 - **THEN** "No channels yet" shows with no source lines, and Try again does nothing
 
 ### Requirement: Open Settings
-The system SHALL open Settings over the current screen without touching the video when the user selects the Settings button.
+The system SHALL open Settings as the last tab without touching the video when the user selects it.
 
 #### Scenario: Settings button
 - **GIVEN** the tab bar shows
-- **WHEN** the user selects the Settings button
-- **THEN** Settings opens full screen over what was there, listing the sources and the way to add one, and the video is not touched
+- **WHEN** the user selects Settings
+- **THEN** Settings opens, listing the sources and the way to add one, and the video is not touched
 
 #### Scenario: Closing Settings
 - **GIVEN** Settings is open
 - **WHEN** the user presses Menu
-- **THEN** Settings closes and the highlight is back on the Settings button
-
-### Requirement: Moving along the bar does not switch tabs
-The system SHALL keep the current tab while the highlight moves along the bar, until the user selects a tab.
-
-#### Scenario: Highlight on Search
-- **GIVEN** the tab bar shows over the dimmed picture with Live highlighted
-- **WHEN** the user moves the highlight to Search without pressing select
-- **THEN** Live stays the current tab and the picture stays dimmed behind the bar
+- **THEN** the highlight moves to Settings in the tab bar
 
 ### Requirement: Other screens can send the user somewhere
 The system SHALL let other screens send the user to Search, to the Guide at a given programme, or to Live after tuning, closing the channel overlay first.
@@ -260,12 +253,12 @@ The system SHALL open the channel overlay over a dark scrim when the user presse
 - **THEN** the list closes and the stream is not loaded again
 
 ### Requirement: Deviations from the design rules
-The tab bar SHALL fill the open tab white while the highlight is in that tab's content, so the open tab stays visible, and SHALL put the tabs on the opaque tab bar color, because the dimmed picture shows through the scrim. The loading screen SHALL mark a finished source with a check on an accent circle, as its board draws it. These depart from the focus and one-accent design rules.
+The loading screen SHALL mark a finished source with a check on an accent circle, as its board draws it. This departs from the one-accent design rule.
 
 #### Scenario: Focus in a tab's content
 - **GIVEN** Movies is open and the highlight is in its content
 - **WHEN** the tab bar shows
-- **THEN** the Movies tab is filled white with dark text, and once the highlight moves to another tab Movies falls back to a light gray fill
+- **THEN** the system bar marks Movies as the current tab in its own style, with no fill the app draws
 
 #### Scenario: A finished source on the loading screen
 - **GIVEN** the loading screen shows a source that finished
@@ -323,7 +316,7 @@ The system SHALL open the Apple TV shell, and tune any channel at launch, only o
 - **THEN** the paywall shows, the shell does not open and no channel is tuned
 
 ### Requirement: Back from a tab goes to the tab bar
-The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Back anywhere on the top level of Guide, Movies, Series or Search, or swipes up from the topmost item on Movies, Series or Search. Movies, Series and Search SHALL scroll back to their top as the highlight reaches the bar. A screen opened from a tab SHALL close on Back first.
+The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Back anywhere on the top level of Guide, Movies, Series, Search or Settings. Movies, Series and Search SHALL scroll back to their top as the highlight reaches the bar. A screen opened from a tab SHALL close on Back first. Swiping up from a page's top does not reach the system bar; Back does.
 
 #### Scenario: Back from a lower row
 - **GIVEN** Movies is open with the highlight on a poster four rows down
@@ -333,8 +326,13 @@ The system SHALL move the highlight to the open tab in the bar, keeping the tab 
 
 #### Scenario: Back at the banner
 - **GIVEN** Movies, Series or Search is open with the highlight on its topmost item
-- **WHEN** the user presses Back, or swipes up
+- **WHEN** the user presses Back
 - **THEN** the highlight moves to that tab in the bar and the tab stays open
+
+#### Scenario: Swipe up at the banner
+- **GIVEN** Movies is open with the highlight on the banner's Play button
+- **WHEN** the user swipes up
+- **THEN** the highlight stays on Play and the bar stays hidden
 
 #### Scenario: Back on the Guide
 - **GIVEN** the Guide is open with the highlight in the grid
@@ -347,7 +345,7 @@ The system SHALL move the highlight to the open tab in the bar, keeping the tab 
 - **THEN** the grid closes and the rows show with the highlight back on the banner, and the bar does not take the highlight
 
 ### Requirement: Back from the tab bar goes to the Home Screen
-The system SHALL leave Back to Apple TV when the highlight is in the tab bar, including on the profile and Settings buttons, so it opens the Apple TV Home Screen whichever tab is open. The app SHALL come back to the same tab when the user opens it again.
+The system SHALL leave Back to Apple TV when the highlight is in the tab bar, on any tab including Settings, so it opens the Apple TV Home Screen whichever tab is open. The app SHALL come back to the same tab when the user opens it again.
 
 #### Scenario: Back from the bar over Live
 - **GIVEN** a channel is playing and the tab bar shows over the dimmed picture with Live highlighted
@@ -378,19 +376,32 @@ The system SHALL reach the Apple TV Home Screen when the user presses Back again
 - **THEN** the grid closes, then the highlight moves to Movies in the bar, then the Apple TV Home Screen opens
 
 ### Requirement: The tab bar sits in the same place on every tab
-The system SHALL center the tabs on the screen's horizontal center, with the profile and Settings buttons to the right of the tabs, and SHALL show the bar at the same height along the top on Live, Guide, Movies, Series and Search. Over the Guide the bar SHALL leave the small picture uncovered.
+The system SHALL show the system tab bar at the same place along the top on every tab. Over the Guide the bar SHALL leave the small picture uncovered.
 
 #### Scenario: Over the picture and over Movies
 - **GIVEN** a channel is playing full screen
-- **WHEN** the user presses Back, and later opens Movies
-- **THEN** the tabs sit on the screen's center line both times, at the same height
+- **WHEN** the user presses Menu, and later opens Movies
+- **THEN** the bar is at the same place both times
 
 #### Scenario: With a profile button
 - **GIVEN** the profiles Dad and Kids
 - **WHEN** the tab bar shows
-- **THEN** the tabs stay on the center line and the profile and Settings buttons sit to their right
+- **THEN** it holds the tabs alone, and the profile button sits at the top of Settings
 
 #### Scenario: Over the Guide
 - **GIVEN** the Guide is open with a channel in the small picture
-- **WHEN** the user presses Back and the bar shows over the guide
-- **THEN** the bar is at the same height as on every other tab, and the small picture starts below it
+- **WHEN** the user presses Menu and the bar shows over the guide
+- **THEN** the small picture starts below the bar
+
+### Requirement: The page follows the highlight in the tab bar
+The system SHALL show the page of the tab the highlight rests on in the system tab bar, as the system bar does, and SHALL treat it as the open tab: passing over Movies, Series or Search pauses the video and coming back to Live or the Guide resumes it.
+
+#### Scenario: Moving to Search
+- **GIVEN** the tab bar shows over the dimmed picture with Live highlighted
+- **WHEN** the user moves the highlight to Search without pressing select
+- **THEN** Search shows under the bar as the open tab and the video pauses
+
+#### Scenario: Back to Live along the bar
+- **GIVEN** the highlight moved from Live to Search along the bar
+- **WHEN** the user moves it back to Live
+- **THEN** the same stream plays on, dimmed behind the bar, without loading again
