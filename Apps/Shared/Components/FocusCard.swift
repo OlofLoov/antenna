@@ -47,6 +47,36 @@ struct FocusCard: ViewModifier {
     }
 }
 
+/// A button whose label is a focus card, for an app-drawn part that is a
+/// whole button, such as an episode row: `.buttonStyle(FocusCardStyle(.large))`.
+/// It dims while pressed on touch platforms.
+struct FocusCardStyle: ButtonStyle {
+    let corner: Metrics.Corner
+    var resting: Color = .clear
+
+    init(_ corner: Metrics.Corner, resting: Color = .clear) {
+        self.corner = corner
+        self.resting = resting
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .modifier(FocusCard(corner, resting: resting))
+            .opacity(configuration.isPressed ? 0.7 : 1)
+            .contentShape(corner.shape())
+    }
+}
+
+/// A button that only holds focus and draws its label alone, such as the
+/// full-screen picture or the guide's highlighted block, which shows focus
+/// itself (design-system/focus-is-the-lifted-white-card, an element that
+/// only holds focus).
+struct FocusHolderStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.contentShape(Rectangle())
+    }
+}
+
 extension View {
     /// The focus card for an app-drawn part; see `FocusCard`.
     func focusCard(_ corner: Metrics.Corner, resting: Color = .clear, restingText: Color = Palette.text) -> some View {

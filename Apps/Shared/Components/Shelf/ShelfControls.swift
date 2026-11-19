@@ -3,7 +3,9 @@ import SwiftUI
 
 extension ShelfView {
     /// The iPhone's Movies | Series switch over the banner
-    /// (`iPhone-Movies`, `movies.kind`): the open kind takes the white fill.
+    /// (`iPhone-Movies`, `movies.kind`) on glass, since it floats over the
+    /// art (design-system/liquid-glass-stays-on-the-navigation-layer): the
+    /// open kind takes the white fill.
     /// Series never gets a tab of its own on iPhone.
     struct KindSwitch: View {
         let selection: ShelfTitle.Kind
@@ -16,7 +18,7 @@ extension ShelfView {
             }
             .padding(4)
             .frame(height: 44)
-            .background(Palette.scrimTint.opacity(0.6), in: Capsule())
+            .glassEffect(.regular, in: Capsule())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("movies.kind")
         }
@@ -27,7 +29,7 @@ extension ShelfView {
                 select(kind)
             } label: {
                 Text(kind.sectionTitle)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.boardStyle(15, weight: .semibold))
                     .foregroundStyle(selected ? Palette.ground : Palette.text)
                     .padding(.horizontal, 18)
                     .frame(maxHeight: .infinity)

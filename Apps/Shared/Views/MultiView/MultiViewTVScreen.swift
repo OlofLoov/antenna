@@ -134,7 +134,7 @@
                     }
                 }
             }
-            .buttonStyle(HolderStyle())
+            .buttonStyle(FocusHolderStyle())
             .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openActions(for: tile.id) })
             // While the picker is open only its tile can take focus, so focus goes
             // straight back to it; the actions menu holds focus until it closes.

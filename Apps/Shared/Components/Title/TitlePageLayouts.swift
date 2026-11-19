@@ -132,7 +132,7 @@
                     page?.actions.back()
                 } label: {
                     Image(systemName: "chevron.backward")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.boardStyle(18, weight: .bold))
                         .foregroundStyle(Palette.text)
                         .frame(width: 36, height: 36)
                         .background(Palette.scrimTint.opacity(0.55), in: Circle())
@@ -155,7 +155,7 @@
                     page?.actions.back()
                 } label: {
                     Label(page?.state.section ?? "Back", systemImage: "chevron.backward")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.boardStyle(17, weight: .semibold))
                         .foregroundStyle(Palette.accent)
                         .frame(minHeight: 44)
                         .contentShape(Rectangle())

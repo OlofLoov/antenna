@@ -13,12 +13,11 @@ extension ShelfBanner {
             if let trailer = banner?.actions.trailer {
                 Button(action: trailer) {
                     Label("Trailer", systemImage: "play.rectangle")
-                        .font(.system(size: type.button, weight: .semibold))
+                        .font(.boardStyle(type.button, weight: .semibold))
                         .lineLimit(1)
-                        .padding(.horizontal, type.button * 1.1)
                         .frame(minHeight: type.buttonHeight)
                 }
-                .buttonStyle(BannerButtonStyle(fill: .secondary))
+                .secondaryActionStyle()
                 .accessibilityIdentifier("\(prefix).hero.trailer")
             }
         }
@@ -35,10 +34,10 @@ extension ShelfBanner {
             if let trailer = banner?.actions.trailer {
                 Button(action: trailer) {
                     Image(systemName: "play.rectangle")
-                        .font(.system(size: type.button + 2, weight: .bold))
+                        .font(.boardStyle(type.button + 2, weight: .bold))
                         .frame(width: type.buttonHeight, height: type.buttonHeight)
                 }
-                .buttonStyle(BannerButtonStyle(fill: .secondary))
+                .secondaryActionStyle()
                 .accessibilityLabel("Trailer")
                 .accessibilityIdentifier("\(prefix).hero.trailer")
             }

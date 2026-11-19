@@ -147,7 +147,7 @@ warn_except "design-system/type-uses-text-styles: fixed font sizes only for glyp
 
 warn_except "design-system/controls-use-system-styles: ButtonStyle types only in the app-drawn parts" \
   '(struct|class|enum)[[:space:]]+[A-Za-z]+(<[^>]*>)?[[:space:]]*:[^{]*\b(Primitive)?ButtonStyle\b' \
-  'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift' \
+  'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift|Apps/Shared/Components/FocusCard\.swift' \
   Apps
 
 # Copy kept in a String constant skips the String Catalog. Copy is a

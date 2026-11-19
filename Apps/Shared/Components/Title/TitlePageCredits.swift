@@ -16,7 +16,7 @@ extension TitlePage {
             if let page, !page.state.chips.isEmpty {
                 VStack(alignment: .leading, spacing: type.spacing / 2) {
                     Text("Cast and crew")
-                        .font(.system(size: type.meta))
+                        .font(.boardStyle(type.meta))
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityAddTraits(.isHeader)
                     ScrollViewReader { proxy in
@@ -52,7 +52,7 @@ extension TitlePage {
         }
     }
 
-    /// One name, a 44 pt capsule; the lifted white card when focused on Apple TV.
+    /// One name on a bordered capsule, at least 44 pt tall (design-system/controls-use-system-styles).
     struct Chip: View {
         let type: Sizes
         let chip: CastChip
@@ -66,48 +66,42 @@ extension TitlePage {
                         .lineLimit(1)
                     if chip.role == .director {
                         Text("Director")
-                            .foregroundStyle(Palette.textMuted)
+                            .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
                 }
-                .font(.system(size: type.chip))
-                .padding(.horizontal, type.chip * 1.1)
+                .font(.boardStyle(type.chip))
+                .castChipPadding(type.chip)
                 .frame(minHeight: max(44, type.chipHeight))
-                .contentShape(Capsule())
             }
-            .buttonStyle(ChipStyle(height: max(44, type.chipHeight)))
+            .castChipStyle()
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(chip.role == .director ? Text("\(chip.name.display), Director") : Text(verbatim: chip.name.display))
             .accessibilityAddTraits(.isButton)
         }
     }
+}
 
-    private struct ChipStyle: ButtonStyle {
-        let height: CGFloat
-
-        func makeBody(configuration: Configuration) -> some View {
-            ChipLabel(label: configuration.label, height: height, isPressed: configuration.isPressed)
-        }
+extension View {
+    /// A cast chip on Apple TV is a focus card: a system bordered chip that
+    /// opens the person's page, which replaces the title page, keeps focus
+    /// from moving into the new page (refresh-visual-design, design.md
+    /// decision 12). Elsewhere it is a system chip.
+    @ViewBuilder fileprivate func castChipStyle() -> some View {
+        #if os(tvOS)
+            buttonStyle(FocusCardStyle(.capsule, resting: Palette.surface(0.08)))
+        #else
+            chipStyle(isPicked: false)
+        #endif
     }
 
-    private struct ChipLabel<Label: View>: View {
-        let label: Label
-        let height: CGFloat
-        let isPressed: Bool
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .background {
-                    Capsule()
-                        .fill(isFocused ? Palette.focus : Palette.surface(0.08))
-                        .frame(height: height)
-                }
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-                .scaleEffect(isFocused ? 1.06 : 1)
-                .opacity(isPressed ? 0.7 : 1)
-                .animation(.easeOut(duration: 0.15), value: isFocused)
-        }
+    /// The focus card's side padding on Apple TV, which the system chip
+    /// draws itself elsewhere.
+    @ViewBuilder fileprivate func castChipPadding(_ size: CGFloat) -> some View {
+        #if os(tvOS)
+            padding(.horizontal, size * 1.1)
+        #else
+            self
+        #endif
     }
 }

@@ -214,7 +214,7 @@
                     } label: {
                         Color.clear
                     }
-                    .buttonStyle(HolderStyle())
+                    .buttonStyle(FocusHolderStyle())
                     // Holding select opens the info panel; a swipe down already changes channel.
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
                     .disabled(model.pickerOpen || model.player.panel != nil)
