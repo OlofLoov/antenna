@@ -98,6 +98,9 @@
                         GuideGridChannels(data: data, viewport: viewport, scroll: scroll, rowHeight: rowHeight)
                     }
                 }
+                // A short group starts under the time labels rather than
+                // in the middle of the space below them.
+                .frame(minHeight: scroll.size.height, alignment: .topLeading)
             }
             .scrollPosition($position)
             .defaultScrollAnchor(.topLeading)

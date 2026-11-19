@@ -50,6 +50,9 @@ final class LiveUITests: XCTestCase {
         XCTAssertLessThanOrEqual(player.frame.maxY, nowPlaying.minY + 1)
         XCTAssertLessThanOrEqual(nowPlaying.maxY, chips.minY + 1)
         XCTAssertLessThanOrEqual(chips.maxY, list.minY + 1)
+        // live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone, the chips sit under the line
+        XCTAssertLessThan(chips.minY - nowPlaying.maxY, 24, "no empty band above the chips")
+        XCTAssertLessThan(list.minY - chips.maxY, 24, "no empty band under the chips")
         for tab in ["Live", "Guide", "Movies", "Search", "Settings"] {
             XCTAssertTrue(app.tabBars.buttons[tab].exists, "no \(tab) tab")
         }

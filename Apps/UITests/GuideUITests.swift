@@ -58,6 +58,10 @@ final class GuideUITests: XCTestCase {
         XCTAssertTrue(app.element("guide.days").exists)
         XCTAssertTrue(app.element("guide.list").exists)
         XCTAssertFalse(app.element("guide.filter").exists, "no iPad filter field on iPhone")
+        // guide-on-iphone-ipad-and-mac/one-row-per-channel-on-iphone, the chips sit at the top
+        let chips = app.element("guide.chips").frame
+        XCTAssertLessThan(app.element("guide.days").frame.minY - chips.maxY, 24, "no empty band under the group chips")
+        XCTAssertLessThan(chips.height, 80, "the group chips are one row tall")
 
         let news = cards(app, row: 0)
         XCTAssertGreaterThanOrEqual(news.count, 2)
