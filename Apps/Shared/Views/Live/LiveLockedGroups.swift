@@ -10,7 +10,7 @@
         @Environment(\.unlockGroup) private var unlock
 
         var body: some View {
-            ForEach(live.catalogue.lockedGroups, id: \.self) { group in
+            ForEach(live.catalogue.lockedGroups, id: \.storageKey) { group in
                 Browse.GroupRow(title: live.catalogue.label(of: group), systemImage: "lock.fill", count: 0, isSelected: false) {
                     unlock?(group)
                 }
@@ -21,12 +21,14 @@
     }
 
     /// Locked groups among the iPhone chips, opening the passcode prompt.
+    /// Keyed by storage key, apart from the open chips: with the same key,
+    /// the chip a passcode opened kept its "(locked)" title in the lazy row.
     struct LockedGroupChips: View {
         @Environment(LiveModel.self) private var live
         @Environment(\.unlockGroup) private var unlock
 
         var body: some View {
-            ForEach(live.catalogue.lockedGroups, id: \.self) { group in
+            ForEach(live.catalogue.lockedGroups, id: \.storageKey) { group in
                 Browse.Chip(title: "\(live.catalogue.label(of: group)) (locked)", isSelected: false) { unlock?(group) }
                     .accessibilityLabel("\(live.catalogue.label(of: group)), locked")
                     .accessibilityIdentifier("browse.locked.\(group.storageKey)")
