@@ -1,0 +1,55 @@
+import Foundation
+
+/// Resolves AntennaCore's own catalog entries in one language. Every text
+/// helper builds its sentences through this, so a sentence is one entry
+/// with its arguments and the caller's locale picks the table.
+///
+/// An `Int` argument becomes `%lld`, formatted with the locale's digits and
+/// grouping, and picks the entry's plural form. Text from a source (a
+/// channel name, a programme title) goes in through `source(_:)`.
+struct Words: Sendable {
+    let locale: Locale
+
+    init(_ locale: Locale) {
+        self.locale = locale
+    }
+
+    /// The entry for `value` in this locale's language, or the English
+    /// text when the language has none.
+    func callAsFunction(_ value: String.LocalizationValue) -> String {
+        String(localized: LocalizedStringResource(value, locale: locale, bundle: Self.bundle))
+    }
+
+    /// Core's catalog, for the few entries built with an explicit key where
+    /// two meanings share the same English.
+    static let bundle = LocalizedStringResource.BundleDescription.atURL(Bundle.module.bundleURL)
+
+    /// Wraps text from a source in first-strong isolates, so a Latin name
+    /// inside an Arabic sentence, or an Arabic name inside an English one,
+    /// keeps its own direction (localization/mixed-scripts-keep-their-own-direction).
+    /// Only where directions can mix: a right-to-left language, or text
+    /// with a right-to-left letter. Latin text in a left-to-right sentence
+    /// stays as it is, so labels that tests and VoiceOver match keep their
+    /// characters.
+    func source(_ text: String) -> String {
+        guard locale.language.characterDirection == .rightToLeft || text.unicodeScalars.contains(where: Self.isRightToLeft)
+        else { return text }
+        return "\u{2068}\(text)\u{2069}"
+    }
+
+    /// Hebrew, Arabic, Syriac, Thaana, N'Ko and the Arabic presentation forms.
+    private static func isRightToLeft(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar.value {
+        case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF, 0x1_0800...0x1_0FFF, 0x1_E800...0x1_EFFF: true
+        default: false
+        }
+    }
+}
+
+extension String {
+    /// The text without the first-strong isolates `Words` puts around
+    /// source text, for code that compares or measures it.
+    public var withoutIsolates: String {
+        replacing("\u{2068}", with: "").replacing("\u{2069}", with: "")
+    }
+}

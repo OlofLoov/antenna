@@ -62,18 +62,18 @@ struct RemindersScreen: View {
     private func notice(_ reminders: ReminderCenter) -> some View {
         switch reminders.authorization {
         case .denied:
-            RemindersNotice(text: ReminderText.cannotNotify) {
+            RemindersNotice(text: ReminderText.cannotNotify()) {
                 if let url = Self.notificationSettings {
                     Button("Open Settings") { openURL(url) }.accessibilityIdentifier("reminders.openSettings")
                 }
             }
         case .notDetermined:
-            RemindersNotice(text: ReminderText.notAskedYet) {
+            RemindersNotice(text: ReminderText.notAskedYet()) {
                 Button("Allow notifications") { Task { await reminders.requestAuthorization() } }
                     .accessibilityIdentifier("reminders.allowNotifications")
             }
         case .unavailable:
-            RemindersNotice(text: ReminderText.television) {}
+            RemindersNotice(text: ReminderText.television()) {}
         case .allowed, nil:
             EmptyView()
         }
@@ -83,8 +83,8 @@ struct RemindersScreen: View {
         Section {
             if reminders.upcoming.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(ReminderText.empty).font(.headline)
-                    Text(ReminderText.emptyHint).foregroundStyle(.secondary)
+                    Text(ReminderText.empty()).font(.headline)
+                    Text(ReminderText.emptyHint()).foregroundStyle(.secondary)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("reminders.empty")
@@ -102,7 +102,7 @@ struct RemindersScreen: View {
                 }
             }
         } footer: {
-            Text(ReminderText.syncNote)
+            Text(ReminderText.syncNote())
         }
     }
 

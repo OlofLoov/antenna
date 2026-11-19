@@ -98,6 +98,6 @@ import Testing
         #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true, catchupDays: 1).catchUpFooter == "Catch-up 1 day")
         #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true).catchUpFooter == "Catch-up")
         #expect(Channel(id: "a", name: "A", streamURL: link).catchUpFooter == nil)
-        #expect(ZapBarText.browseHint == "Press to browse channels")
+        #expect(ZapBarText.browseHint() == "Press to browse channels")
     }
 }

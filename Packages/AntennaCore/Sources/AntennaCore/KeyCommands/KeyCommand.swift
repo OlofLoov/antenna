@@ -113,26 +113,30 @@ public enum KeyCommand: Hashable, Sendable {
     }
 
     /// The title with nothing in front that can use the item.
-    public var title: String {
-        switch self {
-        case .find: "Find"
-        case .zoomIn: "Zoom In"
-        case .zoomOut: "Zoom Out"
-        case .playPause: "Play"
-        case .skipBack: "Back"
-        case .skipForward: "Forward"
-        case .mute: "Mute"
-        case .volumeUp: "Volume Up"
-        case .volumeDown: "Volume Down"
-        case .addToMultiView: "Add to Multi-view"
-        case .selectTile(let number): "Select Tile \(number)"
-        case .removeTile: "Remove Tile"
-        case .goLive: "Live"
-        case .goGuide: "Guide"
-        case .goMovies: "Movies"
-        case .goSeries: "Series"
-        case .goSearch: "Search"
-        case .goSettings: "Sources & Settings"
+    public var title: String { title(.autoupdatingCurrent) }
+
+    public func title(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch self {
+        case .find: words("Find")
+        case .zoomIn: words("Zoom In")
+        case .zoomOut: words("Zoom Out")
+        case .playPause: words("Play")
+        case .skipBack:
+            String(localized: LocalizedStringResource("command.back", defaultValue: "Back", locale: locale, bundle: Words.bundle))
+        case .skipForward: words("Forward")
+        case .mute: words("Mute")
+        case .volumeUp: words("Volume Up")
+        case .volumeDown: words("Volume Down")
+        case .addToMultiView: words("Add to Multi-view")
+        case .selectTile(let number): words("Select Tile \(number)")
+        case .removeTile: words("Remove Tile")
+        case .goLive: words("Live")
+        case .goGuide: words("Guide")
+        case .goMovies: words("Movies")
+        case .goSeries: words("Series")
+        case .goSearch: words("Search")
+        case .goSettings: words("Sources & Settings")
         }
     }
 
@@ -173,22 +177,25 @@ public enum KeyCommand: Hashable, Sendable {
     }
 
     /// "Pause" while it plays, "Play" while paused.
-    public static func pauseTitle(paused: Bool) -> String {
-        paused ? "Play" : "Pause"
+    public static func pauseTitle(paused: Bool, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return paused ? words("Play") : words("Pause")
     }
 
     /// "Back 15 Seconds", "Forward 30 Seconds".
-    public static func skipTitle(forward: Bool, seconds: Int) -> String {
-        "\(forward ? "Forward" : "Back") \(seconds) Seconds"
+    public static func skipTitle(forward: Bool, seconds: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return forward ? words("Forward \(seconds) Seconds") : words("Back \(seconds) Seconds")
     }
 
     /// Find's title on each screen that has it.
-    public static func findTitle(on screen: KeyCommandScreen) -> String {
-        switch screen {
-        case .live: "Find Channel"
-        case .guide: "Filter Channels"
-        case .search: "Search"
-        case .moviePlayer, .multiView, .window: KeyCommand.find.title
+    public static func findTitle(on screen: KeyCommandScreen, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return switch screen {
+        case .live: words("Find Channel")
+        case .guide: words("Filter Channels")
+        case .search: words("Search")
+        case .moviePlayer, .multiView, .window: KeyCommand.find.title(locale)
         }
     }
 }

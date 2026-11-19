@@ -27,29 +27,25 @@ extension CodecName {
 /// How a sound format reads, codec then channel layout, as in
 /// "AAC Stereo" or "AC-3 5.1".
 public enum SoundFormat {
-    public static func display(codec: String, channels: Int) -> String {
+    public static func display(codec: String, channels: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
         let layout: String? =
             switch channels {
-            case 1: "Mono"
-            case 2: "Stereo"
+            case 1: words("Mono")
+            case 2: words("Stereo")
             case 6: "5.1"
             case 8: "7.1"
             case ...0: nil
-            default: "\(channels) channels"
+            default: words("\(channels) channels")
             }
         return [CodecName.display(codec), layout].compactMap(\.self).joined(separator: " ")
     }
 
-    /// Added to the format of sound the device cannot decode, which the
-    /// stream plays without
-    /// (playback-engine/streams-start-with-sound-the-device-can-play).
-    public static let notSupported = "not supported"
-
     /// The format of the sound that plays, "Vorbis 5.1 (not supported)" when
     /// the stream plays without it.
-    public static func display(_ audio: PresentationInfo.Audio) -> String {
-        let format = display(codec: audio.codec, channels: audio.channels)
-        return audio.isDecodable ? format : "\(format) (\(notSupported))"
+    public static func display(_ audio: PresentationInfo.Audio, locale: Locale = .autoupdatingCurrent) -> String {
+        let format = display(codec: audio.codec, channels: audio.channels, locale: locale)
+        return audio.isDecodable ? format : Words(locale)("\(format) (not supported)")
     }
 }
 
@@ -57,13 +53,14 @@ public enum SoundFormat {
 /// "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player". It is built from the
 /// engine's reports and never from the stream address.
 public enum StreamLine {
-    public static let notAvailable = "Stream details not available yet"
 
     /// `container` is the stream's container as it should read, such as
     /// "MPEG-TS" or "HLS", nil when not known. `presentation` is nil until
     /// the first frame, and the line then reads `notAvailable`.
-    public static func text(container: String?, presentation: PresentationInfo?, route: EngineRouter.Route) -> String {
-        guard let presentation else { return notAvailable }
+    public static func text(
+        container: String?, presentation: PresentationInfo?, route: EngineRouter.Route, locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        guard let presentation else { return Words(locale)("Stream details not available yet") }
         var parts: [String] = []
         if let container { parts.append(container) }
         if let video = presentation.video {
@@ -71,17 +68,17 @@ public enum StreamLine {
             parts.append("\(CodecName.display(video.codec)) \(video.height)\(scan)")
         }
         if let audio = presentation.audio {
-            parts.append(SoundFormat.display(audio))
+            parts.append(SoundFormat.display(audio, locale: locale))
         }
-        parts.append(playerName(route))
+        parts.append(playerName(route, locale: locale))
         return parts.joined(separator: " · ")
     }
 
     /// The name of the path that plays the stream.
-    public static func playerName(_ route: EngineRouter.Route) -> String {
+    public static func playerName(_ route: EngineRouter.Route, locale: Locale = .autoupdatingCurrent) -> String {
         switch route {
-        case .demuxer: "Antenna player"
-        case .system: "Apple player"
+        case .demuxer: Words(locale)("Antenna player")
+        case .system: Words(locale)("Apple player")
         }
     }
 }

@@ -44,7 +44,7 @@
                 case .audio:
                     tracks(player.audioRows, empty: nil) { player.selectAudio($0) }
                 case .subtitles:
-                    tracks(player.subtitleRows, empty: TrackMenu.noSubtitles) { player.selectSubtitle($0) }
+                    tracks(player.subtitleRows, empty: TrackMenu.noSubtitles()) { player.selectSubtitle($0) }
                 }
             }
         }

@@ -83,6 +83,8 @@ final class PlayerModel {
     var panel: PanelTab?
     /// The audio and subtitles list is open on iPhone, iPad or Mac.
     var pickerOpen = false
+    /// The language track names are written in; tests pin English.
+    var locale = Locale.autoupdatingCurrent
     /// The Mac's sound level, 0 to 1.
     private(set) var volume: Float = 1
     private(set) var muted = false

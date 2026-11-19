@@ -1,0 +1,1570 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    " · Family Sharing" : {},
+    " · Shared with you through Family Sharing" : {},
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ (Forced)" : {},
+    "%@ (not supported)" : {},
+    "%@ and %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ and %2$@"
+          }
+        }
+      }
+    },
+    "%@ and %lld more" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ and %2$lld more"
+          }
+        }
+      }
+    },
+    "%@ did not send any data for %lld seconds." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ did not send any data for %2$#@arg2@."
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg second"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg seconds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%@ for %@, then %@ per year" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ for %2$@, then %3$@ per year"
+          }
+        }
+      }
+    },
+    "%@ is already a favorite." : {},
+    "%@ is busy right now. Try again in a moment." : {},
+    "%@ is in a locked group. Unlock it in Antenna first." : {},
+    "%@ is no longer available from %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is no longer available from %2$@."
+          }
+        }
+      }
+    },
+    "%@ is no longer in %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is no longer in %2$@."
+          }
+        }
+      }
+    },
+    "%@ isn't a favorite." : {},
+    "%@ knows the channel but carries no programmes for it. Pick another entry below, or wait for the provider to fill it." : {},
+    "%@ lists programmes for this channel but none after now. Wait for the next guide refresh or pick another entry below." : {},
+    "%@ per %@ for %@, then %@ per year" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ per %2$@ for %3$@, then %4$@ per year"
+          }
+        }
+      }
+    },
+    "%@ rejected the login. Check the username and password in Settings, or ask the provider whether the account has expired." : {},
+    "%@ rejected the login. Sign in again on this Apple TV, or ask the provider whether the account has expired." : {},
+    "%@ returned %@ for this channel." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ returned %2$@ for this channel."
+          }
+        }
+      }
+    },
+    "%@ returned 404 for this channel. The channel may have moved or been removed by the provider." : {},
+    "%@ returned a server error. Its server is having trouble. Try again in a moment." : {},
+    "%@ sent data that is not a playable stream. The address may point to a web page or an empty file." : {},
+    "%@ stopped sending data." : {},
+    "%@ · %@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ of %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@."
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@, and no guide entry has exactly its name. Pick an entry below." : {},
+    "%@: no movies" : {},
+    "%@: no series" : {},
+    "%@: waiting for its login to sync from iCloud" : {},
+    "%lld channels" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld channel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld channels"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld channels in %lld groups" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@arg1@ in %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg channel"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg channels"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg group"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg groups"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld channels · Refreshing…" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld channel · Refreshing…"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld channels · Refreshing…"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld connections" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld connection"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld connections"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld entries skipped" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld entry skipped"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld entries skipped"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld episodes" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld episode"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld episodes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld episodes could not be read from the provider's list." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld episode could not be read from the provider's list."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld episodes could not be read from the provider's list."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld groups" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld group"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld groups"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld guides are still downloading." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld guide is still downloading."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld guides are still downloading."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld h" : {},
+    "%lld h %@%lld min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$@%3$lld min"
+          }
+        }
+      }
+    },
+    "%lld h %lld min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "%lld h %lld min left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$lld min left"
+          }
+        }
+      }
+    },
+    "%lld h left" : {},
+    "%lld hours" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hour"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hours"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld live channels" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld live channel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld live channels"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld live channels in %lld groups" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@arg1@ in %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg live channel"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg live channels"
+                    }
+                  }
+                }
+              }
+            },
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg group"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg groups"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld min" : {},
+    "%lld min behind" : {},
+    "%lld min left" : {},
+    "%lld minutes" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld movies and %lld series" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$#@arg1@ and %2$lld series"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg movie"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg movies"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld of %lld guides could not be downloaded." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld guides could not be downloaded."
+          }
+        }
+      }
+    },
+    "%lld programmes" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld programme"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld programmes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld seasons" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld season"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld seasons"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld titles" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld title"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld titles"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "1 guide is still downloading." : {},
+    "1 programme" : {},
+    "<offer displayPrice> for <period>, then <displayPrice> per year" : {},
+    "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year" : {},
+    "Account active until %@" : {},
+    "Account active until %@ · %lld connections" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account active until %1$@ · %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg connection"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg connections"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Add a guide URL to get programme information for %@." : {},
+    "Add as new tile" : {},
+    "Add each link as its own M3U source." : {},
+    "Add favorites in Antenna to see them here" : {},
+    "Add guide URL" : {},
+    "Add the channel's playlist instead." : {},
+    "Add to Multi-view" : {},
+    "Add to multi-view" : {},
+    "Add to or remove from Favorites" : {},
+    "Added %@ to favorites." : {},
+    "All" : {},
+    "All channels" : {},
+    "Allow local network access for Antenna in Settings." : {},
+    "Already live" : {},
+    "Always" : {},
+    "Antenna can't be bought in this App Store region yet." : {},
+    "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate." : {},
+    "Antenna couldn't reach %@. Try again later." : {},
+    "Antenna downloads the guide when the source finishes loading." : {},
+    "Antenna has no sources yet. Open Antenna to add one." : {},
+    "Antenna has not asked to send notifications. Reminders show only while the app is open." : {},
+    "Antenna is locked again" : {},
+    "Antenna is still loading your library. Try again in a moment." : {},
+    "Antenna isn't playing a channel right now. Say which channel instead." : {},
+    "Antenna isn't unlocked on this device yet. Open Antenna to continue." : {},
+    "Antenna player" : {},
+    "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." : {},
+    "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." : {},
+    "Antenna reads the guide links from the playlist when it finishes loading." : {},
+    "Apple TV cannot show notifications. Reminders show as a banner while Antenna is open." : {},
+    "Apple player" : {},
+    "At start" : {},
+    "Audio and subtitles" : {},
+    "Auto" : {},
+    "Back" : {},
+    "Back %lld Seconds" : {},
+    "Back or close" : {},
+    "Buffer full. Playing from the earliest point" : {},
+    "Buffering" : {},
+    "CATCH-UP" : {},
+    "CATCH-UP %lldD" : {},
+    "Can't play another stream" : {},
+    "Can't reach the App Store" : {},
+    "Cancel" : {},
+    "Cast" : {},
+    "Catch-up" : {},
+    "Catch-up %lld days" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Catch-up %lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Catch-up %lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Change channel" : {},
+    "Changes channel" : {},
+    "Changing tile %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Changing tile %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Channel list" : {},
+    "Channels" : {},
+    "Channels DVR is starting. Try again in a moment." : {},
+    "Channels are still loading" : {},
+    "Channels have not loaded for %@" : {},
+    "Channels without guide" : {},
+    "Channels without guide · %lld" : {},
+    "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back." : {},
+    "Check the spelling or try a channel number." : {},
+    "Choose Remind me on a programme that has not started, in the Guide or in Search." : {},
+    "Choose a group" : {},
+    "Choose a tab" : {},
+    "Click" : {},
+    "Click left or right" : {},
+    "Close" : {},
+    "Connect to the internet and try again." : {},
+    "Connect to the internet and try again. Playback resumes on its own when the connection returns." : {},
+    "Continue watching" : {},
+    "Could not download · %@" : {},
+    "Could not load %@" : {},
+    "Could not load movies" : {},
+    "Could not load series" : {},
+    "Could not reach %@" : {},
+    "Could not reach %@. Check the address and try again." : {},
+    "Could not read %@. Make sure it is downloaded and try again." : {},
+    "Could not read login" : {},
+    "Could not refresh: %@" : {},
+    "Could not sign in. Check the MAC address, and the login if you have one." : {},
+    "Could not sign in. Check the username and password." : {},
+    "Could not store credentials: %@" : {},
+    "Director" : {},
+    "Downloading" : {},
+    "Downloading guide…" : {},
+    "Downloading the guide · %@" : {},
+    "Downloading · %@" : {},
+    "Ends now" : {},
+    "Enter a username without a colon." : {},
+    "Enter a valid MAC address, like 00:1A:79:12:34:56." : {},
+    "Enter a valid URL." : {},
+    "Enter a valid server address." : {},
+    "Enter the MAC address." : {},
+    "Enter the password." : {},
+    "Enter the playlist URL." : {},
+    "Enter the portal address." : {},
+    "Enter the server address." : {},
+    "Enter the username." : {},
+    "Episode" : {},
+    "Episode %@" : {},
+    "Every 12 hours" : {},
+    "Every 24 hours" : {},
+    "Every 6 hours" : {},
+    "Every channel in %@ has a guide" : {},
+    "Exit multi-view" : {},
+    "Favorites" : {},
+    "Filter Channels" : {},
+    "Filter channels" : {},
+    "Find" : {},
+    "Find Channel" : {},
+    "Find a guide entry" : {},
+    "First %@ free, then %@ per year" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "First %1$@ free, then %2$@ per year"
+          }
+        }
+      }
+    },
+    "First <period> free, then <displayPrice> per year" : {},
+    "Forced" : {},
+    "Format not supported" : {},
+    "Forward" : {},
+    "Forward %lld Seconds" : {},
+    "From the playlist" : {},
+    "Full screen" : {},
+    "Group" : {},
+    "Groups or details" : {},
+    "Guide" : {},
+    "Guide %lld days" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Guide %lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Guide %lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Guide URL" : {},
+    "Guide ended" : {},
+    "Guide failed" : {},
+    "Guide for %lld days · %lld of %lld channels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guide for %1$#@arg1@ · %2$lld of %3$#@arg3@"
+          },
+          "substitutions" : {
+            "arg1" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg day"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg days"
+                    }
+                  }
+                }
+              }
+            },
+            "arg3" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg channel"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg channels"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Guide from %@" : {},
+    "Guide id “%@” is not in any of the %lld guides" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Guide id “%1$@” is not in any of the %2$lld guides"
+          }
+        }
+      }
+    },
+    "Guide id “%@” is not in the guide" : {},
+    "Guide link" : {},
+    "Guide sources" : {},
+    "Guide unavailable" : {},
+    "Hide the info bar" : {},
+    "Hold" : {},
+    "Hold play/pause for live" : {},
+    "Hold select" : {},
+    "Hold select for options" : {},
+    "Home Screen" : {},
+    "Id not found" : {},
+    "If it points to a playlist or a stream, add it as a source." : {},
+    "Includes Family Sharing" : {},
+    "Info bar" : {},
+    "Info, audio and subtitles" : {},
+    "Keep watching" : {},
+    "LIVE" : {},
+    "Last channel or Recents" : {},
+    "Lifetime" : {},
+    "Live" : {},
+    "Loaded · %lld of %lld channels · %lld days" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loaded · %1$lld of %2$#@arg2@ · %3$#@arg3@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg channel"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg channels"
+                    }
+                  }
+                }
+              }
+            },
+            "arg3" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg day"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg days"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Loading" : {},
+    "Loading guide…" : {},
+    "Loading price" : {},
+    "Loading…" : {},
+    "Loading… · last loaded %@" : {},
+    "Login rejected" : {},
+    "Many providers allow one or two streams per account at a time." : {},
+    "Many providers allow one or two streams per account at a time. If the login changed, check it in Settings." : {},
+    "Many providers allow one or two streams per account at a time. If the login changed, sign in again on this Apple TV." : {},
+    "Mapped by you" : {},
+    "Mapping not found" : {},
+    "Matched by name" : {},
+    "Matched by name · %lld" : {},
+    "Matched by tvg-id" : {},
+    "Matches %@" : {},
+    "Menu" : {},
+    "Mono" : {},
+    "More info and My list" : {},
+    "Move down" : {},
+    "Move the new place" : {},
+    "Move through the guide" : {},
+    "Move up" : {},
+    "Moved from %@" : {},
+    "Moved from %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Moved from %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Movie" : {},
+    "Movie · %@" : {},
+    "Movies" : {},
+    "Multi-view" : {},
+    "Multi-view is full" : {},
+    "Multi-view · tile %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Multi-view · tile %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Mute" : {},
+    "My list" : {},
+    "Network error" : {},
+    "New" : {},
+    "Next 7 days" : {},
+    "Next episode" : {},
+    "Next episode in %lld" : {},
+    "Next episode, %@" : {},
+    "Next: %@" : {},
+    "No Channels DVR server at %@." : {},
+    "No Jellyfin server answered at %@. Check the address and try again." : {},
+    "No Stalker portal answered at %@. Check the address and try again." : {},
+    "No channels found in %@." : {},
+    "No guide" : {},
+    "No guide entry matches “%@”" : {},
+    "No guide id" : {},
+    "No longer in the guide" : {},
+    "No programme information" : {},
+    "No programmes" : {},
+    "No programmes in the guide" : {},
+    "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." : {},
+    "No reminders" : {},
+    "No results for “%@”" : {},
+    "No subtitles in this stream" : {},
+    "None of the %lld guides for %@ lists “%@”. Pick an entry below." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "None of the %1$lld guides for %2$@ lists “%3$@”. Pick an entry below."
+          }
+        }
+      }
+    },
+    "Not a guide file" : {},
+    "Not downloaded yet" : {},
+    "Not enough free storage to rewind live TV" : {},
+    "Not loaded yet" : {},
+    "Not signed in on this Apple TV" : {},
+    "Nothing here yet" : {},
+    "Nothing more to pay. Your sources and favorites are where you left them." : {},
+    "Notifications are off for Antenna. Reminders show only while the app is open." : {},
+    "Now: %@" : {},
+    "Off" : {},
+    "Offline" : {},
+    "Offline · retries when you're back online" : {},
+    "On now" : {},
+    "Only manually" : {},
+    "Open" : {},
+    "Open or change" : {},
+    "Other" : {},
+    "Pause" : {},
+    "Pause or play" : {},
+    "Pay once. Yours for good." : {},
+    "Pick another entry below, or remove the mapping to go back to the playlist's id." : {},
+    "Play" : {},
+    "Play %@" : {},
+    "Play from here" : {},
+    "Play now" : {},
+    "Play or choose" : {},
+    "Play the next episode" : {},
+    "Play/Pause" : {},
+    "Play/Pause to return" : {},
+    "Plays the next episode of a series when one ends. Applies to this device only." : {},
+    "Press to browse channels" : {},
+    "Price unavailable" : {},
+    "Provider busy" : {},
+    "Provider error" : {},
+    "Provider guide" : {},
+    "Purchases are turned off on this device. Check Screen Time, or ask the family organizer." : {},
+    "Re-enter link" : {},
+    "Reading the guide…" : {},
+    "Recently added" : {},
+    "Recents" : {},
+    "Reconnecting… attempt %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Reconnecting… attempt %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Refreshed %@" : {},
+    "Remind me" : {},
+    "Reminder set" : {},
+    "Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antenna is open." : {},
+    "Remote: %@" : {},
+    "Remove" : {},
+    "Remove Tile" : {},
+    "Remove a tile or pick a lower-resolution channel." : {},
+    "Remove from multi-view" : {},
+    "Remove match" : {},
+    "Remove the username and password from the address." : {},
+    "Removed %@ from favorites." : {},
+    "Renews every year. Cancel any time." : {},
+    "Renews on %@. Your sources and favorites are where you left them." : {},
+    "Renews on <expiresAt>. Your sources and favorites are where you left them." : {},
+    "Restore did not go through. Try again." : {},
+    "Resume" : {},
+    "Resume %@" : {},
+    "Retry now" : {},
+    "Rewind isn't available on this channel" : {},
+    "Rewind stopped working" : {},
+    "Rewind stopped working. Back to live TV" : {},
+    "Scrub" : {},
+    "Search" : {},
+    "Search channels, programmes, movies and series" : {},
+    "Search the guide by channel name or id" : {},
+    "Season %@" : {},
+    "Season %@ Episode %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Season %1$@ Episode %2$@"
+          }
+        }
+      }
+    },
+    "See all %lld" : {},
+    "Select" : {},
+    "Select Tile %lld" : {},
+    "Series" : {},
+    "Series · %@" : {},
+    "Server returned %@" : {},
+    "Set up Antenna on Apple TV" : {},
+    "Show %lld channels" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Show %lld channel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Show %lld channels"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Show in tile %lld" : {},
+    "Show its channels" : {},
+    "Showing %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Showing %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Shows the zap bar" : {},
+    "Sign in" : {},
+    "Sign in needed" : {},
+    "Sign in on this Apple TV" : {},
+    "Sign in to %@ on this Apple TV" : {},
+    "Sign in to %@ on this Apple TV to play its channels." : {},
+    "Sign-in refused" : {},
+    "Skip 10 seconds" : {},
+    "Skipped ahead to live" : {},
+    "Some sources are still loading." : {},
+    "Source: %@ · Attempted at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Source: %1$@ · Attempted at %2$@"
+          }
+        }
+      }
+    },
+    "Sources & Settings" : {},
+    "Specials" : {},
+    "Split the file, or host it and add the link as an M3U source instead." : {},
+    "Start over isn't available for this programme" : {},
+    "Starts at %@ on %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Starts at %1$@ on %2$@"
+          }
+        }
+      }
+    },
+    "Starts in %@" : {},
+    "Starts now" : {},
+    "Starts now on %@" : {},
+    "Stereo" : {},
+    "Still buffering. %@ is sending data slowly." : {},
+    "Still watching?" : {},
+    "Still watching? %@" : {},
+    "Stop and go back" : {},
+    "Storage is full" : {},
+    "Storage is full. Back to live TV" : {},
+    "Stream could not be read" : {},
+    "Stream details not available yet" : {},
+    "Stream not found" : {},
+    "Stream stopped" : {},
+    "Stream unavailable" : {},
+    "Subtitles show in your language whenever the stream has them." : {},
+    "Subtitles show when the sound is not in one of your languages." : {},
+    "Subtitles start off. Forced subtitles in your language still show." : {},
+    "Swipe" : {},
+    "Swipe down" : {},
+    "Swipe left or right" : {},
+    "Swipe up or down" : {},
+    "Swipe up or down for another channel. Menu opens the tab bar." : {},
+    "TILE %lld" : {},
+    "Tab bar" : {},
+    "That channel is no longer in %@." : {},
+    "That channel's source is no longer in Antenna." : {},
+    "That title is no longer available from %@." : {},
+    "That title's source is no longer in Antenna." : {},
+    "The connection failed (%@). Check the network, or a VPN if one is on." : {},
+    "The connection failed. Check the network, or a VPN if one is on." : {},
+    "The entries in this file are not links." : {},
+    "The guide" : {},
+    "The guide could not be downloaded" : {},
+    "The guide downloads when you're back online." : {},
+    "The guide for “%@” has run out" : {},
+    "The guide has not been downloaded yet" : {},
+    "The guide has not been downloaded yet." : {},
+    "The guide lists “%@” but has no programmes for it" : {},
+    "The login for %@ has not reached this device from iCloud Keychain yet." : {},
+    "The login for %@ hasn't synced from iCloud to this device yet." : {},
+    "The mapped entry “%@” has no programmes" : {},
+    "The playlist has no tvg-id for %@" : {},
+    "The portal refused this device with the message “%@”." : {},
+    "The provider guide needs this source's login, which has not reached this device from iCloud yet." : {},
+    "The provider guide needs this source's login. Sign in from Sources & Settings." : {},
+    "The provider sends no epg_channel_id for %@" : {},
+    "The purchase did not go through. Try again." : {},
+    "The purchase on this Apple Account was refunded or is no longer shared with you." : {},
+    "The secure connection failed. Check the network, or a VPN if one is on." : {},
+    "The server answered with an error (%@). Check the address and try again." : {},
+    "The server replied with something Antenna could not read." : {},
+    "The source gives this channel no guide id" : {},
+    "This Apple TV can't play another stream" : {},
+    "This Mac can't play another stream" : {},
+    "This account is %@." : {},
+    "This account is not allowed to sign in from this device." : {},
+    "This channel" : {},
+    "This device is already playing as many streams as it can." : {},
+    "This file is %@. Antenna imports playlists up to 16 MB." : {},
+    "This file is a link, not a playlist." : {},
+    "This file is a list of links, not a playlist." : {},
+    "This file is larger than 16 MB. Antenna imports playlists up to 16 MB." : {},
+    "This guide is already in the list." : {},
+    "This guide link needs its login on this Apple TV" : {},
+    "This is a single stream, not a channel list." : {},
+    "This server asks for a username and password, which Antenna cannot send yet." : {},
+    "This source has no guide" : {},
+    "This stream uses %@, which this device cannot play. Trying again will not help. Pick another channel or ask the provider for a stream in a supported format." : {},
+    "This title" : {},
+    "Tile %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Tile %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Tile %lld · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Tile %1$lld · %2$@"
+          }
+        }
+      }
+    },
+    "Timed out" : {},
+    "Title" : {},
+    "Today" : {},
+    "Tomorrow" : {},
+    "Too large" : {},
+    "Too many mappings for this source. Remove some to add more." : {},
+    "Track %lld" : {},
+    "Try a shorter name or the channel's tvg-id." : {},
+    "Try again" : {},
+    "Turn off" : {},
+    "Turn on" : {},
+    "Turned off" : {},
+    "Ungrouped" : {},
+    "Unlock Antenna" : {},
+    "Unlock your %@ once and try again." : {},
+    "Untitled" : {},
+    "Up next, %@, next episode in %lld seconds" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up next, %1$@, next episode in %2$#@arg2@"
+          },
+          "substitutions" : {
+            "arg2" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg second"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg seconds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Volume Down" : {},
+    "Volume Up" : {},
+    "Waiting for approval. Antenna unlocks as soon as the purchase is approved." : {},
+    "Waiting for iCloud…" : {},
+    "Waiting for login" : {},
+    "Waiting for login from iCloud" : {},
+    "Waiting for login to sync from iCloud" : {},
+    "Waiting for the App Store…" : {},
+    "Waiting for the guide…" : {},
+    "Waiting for the login to sync" : {},
+    "Waiting for the playlist" : {},
+    "Waiting for this guide's login to sync from iCloud" : {},
+    "Watch" : {},
+    "Watch, or details for later" : {},
+    "Watched" : {},
+    "Welcome back" : {},
+    "Which channel?" : {},
+    "Which movie or series?" : {},
+    "Year" : {},
+    "Yearly" : {},
+    "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account. Terms of Use and Privacy Policy." : {},
+    "You imported %@ before as %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You imported %1$@ before as %2$@"
+          }
+        }
+      }
+    },
+    "You're offline" : {},
+    "You're offline." : {},
+    "You're offline. Connect to the internet and try again." : {},
+    "Your provider refused another stream" : {},
+    "Your purchase was found for this Apple Account." : {},
+    "Your yearly subscription ended on %@." : {},
+    "Your yearly subscription ended on <date>." : {},
+    "Zoom In" : {},
+    "Zoom Out" : {},
+    "change channel" : {},
+    "command.back" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Back"
+          }
+        }
+      }
+    },
+    "full screen" : {},
+    "leave multi-view" : {},
+    "muted" : {},
+    "no programmes" : {},
+    "offer.days" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "offer.months" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "month"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld months"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "offer.weeks" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "week"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld weeks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "offer.years" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "year"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld years"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "one time" : {},
+    "options" : {},
+    "per year" : {},
+    "sound on" : {},
+    "up next" : {},
+    "watched" : {},
+    "your source" : {},
+    "“%@” does not list “%@”. Pick an entry below." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "“%1$@” does not list “%2$@”. Pick an entry below."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -20,3 +20,23 @@ public enum CatalogueGroup: Hashable, Sendable {
     /// A group the user made from channels of any source, by its id.
     case own(UUID)
 }
+
+extension CatalogueGroup {
+    /// The name the group column, the chips and the list heading show. A
+    /// built-in group's name comes from the catalog each time it is shown,
+    /// so nothing stores it and a language change renames it
+    /// (localization/built-in-names-follow-the-language). A provider group
+    /// keeps its own name.
+    public func label(_ locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return switch self {
+        case .favorites: words("Favorites")
+        case .recents: words("Recents")
+        case .new: words("New")
+        case .all: words("All channels")
+        case .named(_, let name): name
+        case .ungrouped: words("Ungrouped")
+        case .own: words("Group")
+        }
+    }
+}

@@ -10,11 +10,14 @@ public enum ShelfSort: String, Sendable, Hashable, CaseIterable {
     /// Newest year first; titles without a year after, by name.
     case year
 
-    public var name: String {
-        switch self {
-        case .recentlyAdded: "Recently added"
-        case .title: "Title"
-        case .year: "Year"
+    public var name: String { name(.autoupdatingCurrent) }
+
+    public func name(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch self {
+        case .recentlyAdded: words("Recently added")
+        case .title: words("Title")
+        case .year: words("Year")
         }
     }
 }

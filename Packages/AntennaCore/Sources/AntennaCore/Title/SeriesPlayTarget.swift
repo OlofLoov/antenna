@@ -68,9 +68,14 @@ public struct SeriesPlayTarget: Sendable, Hashable {
 public enum PlayLabel {
     /// "Play" or "Resume", followed for an episode by "S2 E3", "E3" or "S2"
     /// as far as the provider numbers it.
-    public static func text(resumes: Bool, episode: Episode? = nil) -> String {
-        let verb = resumes ? "Resume" : "Play"
+    public static func text(resumes: Bool, episode: Episode? = nil, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
         let code = [episode?.season.map { "S\($0)" }, episode?.number.map { "E\($0)" }].compactMap(\.self).joined(separator: " ")
-        return code.isEmpty ? verb : "\(verb) \(code)"
+        switch (resumes, code.isEmpty) {
+        case (true, true): return words("Resume")
+        case (false, true): return words("Play")
+        case (true, false): return words("Resume \(code)")
+        case (false, false): return words("Play \(code)")
+        }
     }
 }

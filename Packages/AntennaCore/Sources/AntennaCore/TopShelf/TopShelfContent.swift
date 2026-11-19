@@ -17,10 +17,13 @@ public enum TopShelfContent: Sendable, Hashable {
 
         public var id: String { "topShelf.section.\(kind.rawValue)" }
 
-        public var title: String {
-            switch kind {
-            case .favorites: "Favorites"
-            case .continueWatching: "Continue watching"
+        public var title: String { title(.autoupdatingCurrent) }
+
+        public func title(_ locale: Locale) -> String {
+            let words = Words(locale)
+            return switch kind {
+            case .favorites: words("Favorites")
+            case .continueWatching: words("Continue watching")
             }
         }
     }
@@ -39,13 +42,15 @@ public enum TopShelfContent: Sendable, Hashable {
     }
 
     /// The add-favorites tile's text.
-    public static let emptyTitle = "Add favorites in Antenna to see them here"
+    public static func emptyTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Add favorites in Antenna to see them here")
+    }
 
     /// The shelf for `snapshot` at `now`. Nil, a blank shelf, when there is
     /// no readable snapshot, or when favorites are still loading and nothing
     /// else shows. A row with no tiles is left out; with no rows at all the
     /// add-favorites tile shows.
-    public static func make(from snapshot: TopShelfSnapshot?, now: Date) -> TopShelfContent? {
+    public static func make(from snapshot: TopShelfSnapshot?, now: Date, locale: Locale = .autoupdatingCurrent) -> TopShelfContent? {
         guard let snapshot else { return nil }
         let favorites = snapshot.favorites.prefix(TopShelfSnapshot.favoriteLimit).map { favorite($0, now: now) }
         let titles = snapshot.titles.prefix(TopShelfSnapshot.titleLimit).map(title)
@@ -56,7 +61,8 @@ public enum TopShelfContent: Sendable, Hashable {
         if !sections.isEmpty { return .sections(sections) }
         if snapshot.unresolvedFavorites > 0 { return nil }
         return .empty(
-            Item(id: "topShelf.emptyItem", title: emptyTitle, tileFile: TopShelfSnapshot.emptyTileFile, progress: nil, link: .empty))
+            Item(id: "topShelf.emptyItem", title: emptyTitle(locale), tileFile: TopShelfSnapshot.emptyTileFile, progress: nil, link: .empty)
+        )
     }
 
     /// "<channel> · <programme>" with the share of the programme gone by,

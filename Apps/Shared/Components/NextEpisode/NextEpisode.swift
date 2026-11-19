@@ -51,7 +51,7 @@ enum NextEpisode {
 
         var body: some View {
             SwiftUI.Button(action: action) {
-                Label(UpNextText.button, systemImage: "forward.end.fill")
+                Label(UpNextText.button(), systemImage: "forward.end.fill")
                     .font(.headline)
                     #if os(tvOS)
                         .padding(.horizontal, 12)
@@ -183,7 +183,7 @@ private let previewContent = NextEpisode.Content(
 
 #Preview("Up next card, counting down", traits: .fixedLayout(width: 900, height: 400)) {
     NextEpisode.Card(content: previewContent) {
-        NextEpisode.PlayNow(title: UpNextText.playNow) {}
+        NextEpisode.PlayNow(title: UpNextText.playNow()) {}
         #if !os(tvOS)
             NextEpisode.Cancel {}
         #endif
@@ -194,9 +194,9 @@ private let previewContent = NextEpisode.Content(
 
 #Preview("Up next card, still watching", traits: .fixedLayout(width: 900, height: 400)) {
     var asking = previewContent
-    asking.heading = UpNextText.stillWatching
+    asking.heading = UpNextText.stillWatching()
     return NextEpisode.Card(content: asking) {
-        NextEpisode.PlayNow(title: UpNextText.keepWatching) {}
+        NextEpisode.PlayNow(title: UpNextText.keepWatching()) {}
         #if !os(tvOS)
             NextEpisode.Cancel {}
         #endif

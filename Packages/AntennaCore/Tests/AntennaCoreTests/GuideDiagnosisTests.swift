@@ -91,7 +91,7 @@ import Testing
         let named = card(channel("named", "On Air HD"))
         #expect(named.title.text == "Guide from Guide URL")
         #expect(named.body.first == "“On Air” (on) · 1 day · Matched by name")
-        #expect(GuideSourcesText.label(.idNotFound(id: "x")) == "Id not found")
+        #expect(GuideSourcesText(locale: Locale(identifier: "en_US")).label(.idNotFound(id: "x")) == "Id not found")
     }
 
     @Test("guide-sources-and-channel-mapping/matches-survive-a-playlist-refresh a renamed or renumbered channel keeps its match")

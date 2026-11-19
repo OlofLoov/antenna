@@ -65,9 +65,9 @@ public struct BannerText: Sendable, Hashable {
     public var description: String?
 
     public init(_ title: ShelfTitle, details: ShelfDetails?) {
-        eyebrow = (["Recently added"] + [title.category].compactMap(\.self)).joined(separator: " · ")
+        eyebrow = ([ShelfSort.recentlyAdded.name] + [title.category].compactMap(\.self)).joined(separator: " · ")
         self.title = title.name
-        let span = title.kind == .movie ? ShelfText.length(details?.duration) : details?.seasons.flatMap(ShelfText.seasons)
+        let span = title.kind == .movie ? ShelfText.length(details?.duration) : details?.seasons.flatMap { ShelfText.seasons($0) }
         let score = details?.rating ?? title.rating
         rating = score.flatMap(TitleMetadata.rating)
         spokenRating = score.flatMap(TitleMetadata.spokenRating)

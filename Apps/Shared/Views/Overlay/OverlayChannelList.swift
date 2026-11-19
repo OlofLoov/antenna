@@ -64,7 +64,7 @@
             let identifier = "overlay.channel.\(key.identifier)"
             return ChannelOverlay.ChannelRow(
                 number: number, name: channel.name, detail: line.text, progress: progress, hasCatchUp: channel.catchUpBadge != nil,
-                identifier: identifier, badge: multiView?.tileBadge(key).map(MultiViewText.tileBadge)
+                identifier: identifier, badge: multiView?.tileBadge(key).map { MultiViewText.tileBadge($0) }
             ) {
                 pick(channel)
             } logo: {

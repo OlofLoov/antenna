@@ -5,17 +5,20 @@ public enum RemoteControl: String, CaseIterable, Sendable {
     case click, clickLeftRight, hold, swipeUpDown, swipeDown, swipeLeftRight, swipe, playPause, back
 
     /// What the legend calls it: "Click", "Swipe up or down", "Back".
-    public var name: String {
-        switch self {
-        case .click: "Click"
-        case .clickLeftRight: "Click left or right"
-        case .hold: "Hold"
-        case .swipeUpDown: "Swipe up or down"
-        case .swipeDown: "Swipe down"
-        case .swipeLeftRight: "Swipe left or right"
-        case .swipe: "Swipe"
-        case .playPause: "Play/Pause"
-        case .back: "Back"
+    public var name: String { name(.autoupdatingCurrent) }
+
+    public func name(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch self {
+        case .click: words("Click")
+        case .clickLeftRight: words("Click left or right")
+        case .hold: words("Hold")
+        case .swipeUpDown: words("Swipe up or down")
+        case .swipeDown: words("Swipe down")
+        case .swipeLeftRight: words("Swipe left or right")
+        case .swipe: words("Swipe")
+        case .playPause: words("Play/Pause")
+        case .back: words("Back")
         }
     }
 }
@@ -82,118 +85,136 @@ public enum ControlHintScreen: Hashable, Sendable {
     }
 
     /// The controls that do something here, most useful first, at most five.
-    public var hints: [ControlHint] {
+    public var hints: [ControlHint] { hints(.autoupdatingCurrent) }
+
+    public func hints(_ locale: Locale) -> [ControlHint] { hints(Words(locale)) }
+
+    private func hints(_ words: Words) -> [ControlHint] {
         switch self {
         case .livePicture(let swipe):
             [
-                ControlHint(.click, "Channel list"),
-                ControlHint(.swipeUpDown, swipe == .changesChannel ? "Change channel" : "Info bar"),
-                ControlHint(.swipeLeftRight, "Last channel or Recents"),
-                ControlHint(.hold, "Info, audio and subtitles"),
-                ControlHint(.back, "Tab bar"),
+                ControlHint(.click, words("Channel list")),
+                ControlHint(.swipeUpDown, swipe == .changesChannel ? words("Change channel") : words("Info bar")),
+                ControlHint(.swipeLeftRight, words("Last channel or Recents")),
+                ControlHint(.hold, words("Info, audio and subtitles")),
+                ControlHint(.back, words("Tab bar")),
             ]
         case .infoBar(let swipe):
             [
-                ControlHint(.click, "Channel list"),
-                swipe == .changesChannel ? ControlHint(.swipeUpDown, "Change channel") : nil,
-                ControlHint(.hold, "Info, audio and subtitles"),
-                ControlHint(.playPause, "Pause"),
-                ControlHint(.back, "Hide the info bar"),
+                ControlHint(.click, words("Channel list")),
+                swipe == .changesChannel ? ControlHint(.swipeUpDown, words("Change channel")) : nil,
+                ControlHint(.hold, words("Info, audio and subtitles")),
+                ControlHint(.playPause, words("Pause")),
+                ControlHint(.back, words("Hide the info bar")),
             ].compactMap(\.self)
         case .overlayGroups:
             [
-                ControlHint(.swipeUpDown, "Choose a group"),
-                ControlHint(.click, "Show its channels"),
-                ControlHint(.back, "Close"),
+                ControlHint(.swipeUpDown, words("Choose a group")),
+                ControlHint(.click, words("Show its channels")),
+                ControlHint(.back, words("Close")),
             ]
         case .overlayChannels:
             [
-                ControlHint(.click, "Watch"),
-                ControlHint(.hold, "Add to or remove from Favorites"),
-                ControlHint(.swipeLeftRight, "Groups or details"),
-                ControlHint(.back, "Close"),
+                ControlHint(.click, words("Watch")),
+                ControlHint(.hold, words("Add to or remove from Favorites")),
+                ControlHint(.swipeLeftRight, words("Groups or details")),
+                ControlHint(.back, words("Close")),
             ]
         case .guide:
             [
-                ControlHint(.swipe, "Move through the guide"),
-                ControlHint(.click, "Watch, or details for later"),
-                ControlHint(.hold, "Add to or remove from Favorites"),
-                ControlHint(.back, "Tab bar"),
+                ControlHint(.swipe, words("Move through the guide")),
+                ControlHint(.click, words("Watch, or details for later")),
+                ControlHint(.hold, words("Add to or remove from Favorites")),
+                ControlHint(.back, words("Tab bar")),
             ]
         case .tabBar:
             [
-                ControlHint(.swipeLeftRight, "Choose a tab"),
-                ControlHint(.click, "Open"),
-                ControlHint(.back, "Home Screen"),
+                ControlHint(.swipeLeftRight, words("Choose a tab")),
+                ControlHint(.click, words("Open")),
+                ControlHint(.back, words("Home Screen")),
             ]
+        default:
+            titleHints(words)
+        }
+    }
+
+    /// Movies, series and their players, Up next and Settings.
+    private func titleHints(_ words: Words) -> [ControlHint] {
+        switch self {
         case .titleRows(.movie):
             [
-                ControlHint(.click, "Play"),
-                ControlHint(.hold, "More info and My list"),
-                ControlHint(.back, "Tab bar"),
+                ControlHint(.click, words("Play")),
+                ControlHint(.hold, words("More info and My list")),
+                ControlHint(.back, words("Tab bar")),
             ]
         case .titleRows(.series):
             [
-                ControlHint(.click, "Open"),
-                ControlHint(.hold, "My list"),
-                ControlHint(.back, "Tab bar"),
+                ControlHint(.click, words("Open")),
+                ControlHint(.hold, words("My list")),
+                ControlHint(.back, words("Tab bar")),
             ]
         case .titlePage:
             [
-                ControlHint(.click, "Play or choose"),
-                ControlHint(.back, "Back"),
+                ControlHint(.click, words("Play or choose")),
+                ControlHint(.back, words("Back")),
             ]
         case .titlePlayer(scrubbing: false, nextEpisode: true):
             [
-                ControlHint(.clickLeftRight, "Skip 10 seconds"),
-                ControlHint(.swipeDown, "Next episode"),
-                ControlHint(.playPause, "Pause or play"),
-                ControlHint(.hold, "Audio and subtitles"),
-                ControlHint(.back, "Stop and go back"),
+                ControlHint(.clickLeftRight, words("Skip 10 seconds")),
+                ControlHint(.swipeDown, words("Next episode")),
+                ControlHint(.playPause, words("Pause or play")),
+                ControlHint(.hold, words("Audio and subtitles")),
+                ControlHint(.back, words("Stop and go back")),
             ]
         case .titlePlayer(scrubbing: false, nextEpisode: false):
             [
-                ControlHint(.clickLeftRight, "Skip 10 seconds"),
-                ControlHint(.swipeLeftRight, "Scrub"),
-                ControlHint(.playPause, "Pause or play"),
-                ControlHint(.hold, "Audio and subtitles"),
-                ControlHint(.back, "Stop and go back"),
+                ControlHint(.clickLeftRight, words("Skip 10 seconds")),
+                ControlHint(.swipeLeftRight, words("Scrub")),
+                ControlHint(.playPause, words("Pause or play")),
+                ControlHint(.hold, words("Audio and subtitles")),
+                ControlHint(.back, words("Stop and go back")),
             ]
         case .titlePlayer(scrubbing: true, _):
             [
-                ControlHint(.swipeLeftRight, "Move the new place"),
-                ControlHint(.click, "Play from here"),
-                ControlHint(.back, "Cancel"),
+                ControlHint(.swipeLeftRight, words("Move the new place")),
+                ControlHint(.click, words("Play from here")),
+                ControlHint(.back, words("Cancel")),
             ]
         case .nextEpisodeButton:
             [
-                ControlHint(.click, "Play the next episode"),
-                ControlHint(.back, "Keep watching"),
+                ControlHint(.click, words("Play the next episode")),
+                ControlHint(.back, words("Keep watching")),
             ]
         case .upNext(asking: false):
             [
-                ControlHint(.click, "Play now"),
-                ControlHint(.clickLeftRight, "Skip 10 seconds"),
-                ControlHint(.playPause, "Pause or play"),
-                ControlHint(.back, "Cancel"),
+                ControlHint(.click, words("Play now")),
+                ControlHint(.clickLeftRight, words("Skip 10 seconds")),
+                ControlHint(.playPause, words("Pause or play")),
+                ControlHint(.back, words("Cancel")),
             ]
         case .upNext(asking: true):
             [
-                ControlHint(.click, "Keep watching"),
-                ControlHint(.back, "Cancel"),
+                ControlHint(.click, words("Keep watching")),
+                ControlHint(.back, words("Cancel")),
             ]
         case .settings:
             [
-                ControlHint(.click, "Open or change"),
-                ControlHint(.back, "Back or close"),
+                ControlHint(.click, words("Open or change")),
+                ControlHint(.back, words("Back or close")),
             ]
+        default:
+            []
         }
     }
 
     /// The legend as one sentence for VoiceOver: "Remote: Click, Channel
     /// list. Hold, Info, audio and subtitles."
-    public var spoken: String {
-        "Remote: " + hints.map { "\($0.control.name), \($0.action)." }.joined(separator: " ")
+    public var spoken: String { spoken(.autoupdatingCurrent) }
+
+    public func spoken(_ locale: Locale) -> String {
+        let words = Words(locale)
+        let items = hints(locale).map { words("\($0.control.name(locale)), \($0.action).") }.joined(separator: " ")
+        return words("Remote: \(items)")
     }
 }
 

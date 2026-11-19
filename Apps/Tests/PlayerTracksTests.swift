@@ -20,6 +20,7 @@ import Testing
 
     init() {
         player = PlayerModel(.init(engine: engine, network: .online, log: PlayerLog { _ in }))
+        player.locale = Locale(identifier: "en_US")
     }
 
     private func tune(_ id: String = "news", file: String = "news.ts") {

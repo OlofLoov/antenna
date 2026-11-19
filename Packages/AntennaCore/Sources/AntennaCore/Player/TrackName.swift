@@ -12,11 +12,11 @@ public enum TrackName {
     /// "Forced", and one with a language "English (Forced)"
     /// (playback-engine/forced-subtitles-in-your-language-show).
     public static func display(
-        _ track: MediaTrack, position: Int, isForced: Bool = false, locale: Locale = Locale(identifier: "en_US")
+        _ track: MediaTrack, position: Int, isForced: Bool = false, locale: Locale = .autoupdatingCurrent
     ) -> String {
         let name = plain(track, position: position, isForced: isForced, locale: locale)
         guard isForced, track.kind == .subtitle, name.range(of: "forced", options: .caseInsensitive) == nil else { return name }
-        return "\(name) (Forced)"
+        return Words(locale)("\(name) (Forced)")
     }
 
     private static func plain(_ track: MediaTrack, position: Int, isForced: Bool, locale: Locale) -> String {
@@ -24,19 +24,19 @@ public enum TrackName {
         let name = track.name?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
         switch (language, name) {
         case (let language?, let name?) where name.caseInsensitiveCompare(language) != .orderedSame:
-            return "\(language) (\(name))"
+            return Words(locale)("\(language) (\(name))")
         case (let language?, _):
             return language
         case (nil, let name?):
             return name
         case (nil, nil):
-            return isForced && track.kind == .subtitle ? "Forced" : "Track \(position + 1)"
+            return isForced && track.kind == .subtitle ? Words(locale)("Forced") : Words(locale)("Track \(position + 1)")
         }
     }
 
     /// The language a code names, nil for no code, an unknown code or one
     /// that names no language.
-    public static func languageName(_ code: String?, locale: Locale = Locale(identifier: "en_US")) -> String? {
+    public static func languageName(_ code: String?, locale: Locale = .autoupdatingCurrent) -> String? {
         guard let code = code?.trimmingCharacters(in: .whitespaces).nilIfEmpty,
             !noLanguage.contains(code.lowercased())
         else { return nil }

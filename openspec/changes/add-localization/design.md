@@ -457,6 +457,54 @@ PR 2, app strings:
   `LocalizedError` keeps a `String` and which resolves with the process
   language rather than the view's locale.
 
+PR 3, AntennaCore strings:
+- An explicit locale picks the package's table. Checked with a scratch
+  package holding `sv` and `ar` entries: "12 500 kanaler" under `sv_SE`
+  and the Arabic dual under `ar_SA`, with the English one and other forms
+  under `en_US`. The `.lproj` fallback in `Words` is not needed.
+- The catalog compiles only with Xcode's toolchain. Under the Command Line
+  Tools toolchain SwiftPM copies `Localizable.xcstrings` into the bundle
+  as it is, so plural entries resolve to the bare key ("1 channels"). Plain
+  `swift test --package-path Packages/AntennaCore` with Xcode 26.6 now runs
+  on this Mac and in CI, so Core tests run that way from here on.
+- `LocalizedStringResource.bundle` cannot be set, so `Words` takes a
+  `String.LocalizationValue` and builds the resource with the locale and
+  `Bundle.module`. Xcode extracts those literals from the package, and the
+  export in `scripts/sync-strings.sh` writes Core's catalog with the app's,
+  so the existing sync and check cover it.
+- English plural forms are catalog variations on the `%lld` that precedes
+  the noun, so "1 channel" and "2 channels" are one entry. Sentences with
+  two counts use substitutions.
+- Numbers that name something rather than count it (season and episode
+  numbers, HTTP status codes, a place in a list) go into a sentence as text
+  without grouping, so "Season 2024" stays as it is.
+- Isolates go around source text only where directions can mix: in a
+  right-to-left language, or when the text holds a right-to-left letter.
+  English sentences with Latin names keep their characters, so Core tests
+  and UI tests that match labels need no stripping. This replaces the
+  strip helper named under Risks.
+- Two English words with two meanings get explicit keys: `command.back`
+  for the skip-back key command ("Back" is also the remote's button), and
+  `offer.days`, `offer.weeks`, `offer.months` and `offer.years`, whose one
+  form leaves out the number ("First week free").
+- Static copy on enums became `static func name(_ locale:)`, copy on
+  structs that hold a locale became instance members, and functions gained
+  a `locale:` parameter. Every default is `.autoupdatingCurrent`, which is
+  the environment locale in the running app.
+- Built-in group names (`CatalogueGroup.label(_:)`) moved into Core; the
+  app's `label` calls it. No record stores them: groups are rebuilt from
+  channels and rules on every load.
+- `TrackName` defaulted to `en_US`; it now defaults to the current locale,
+  so language names follow the app's language.
+- Task 3.6 is left open. Every helper defaults to the current locale,
+  which is what the running app shows, so only previews that set another
+  locale see a difference. The views behind the German and Arabic previews
+  pass `@Environment(\.locale)` in the PRs that add those previews
+  (tasks 6.2 and 11.4), and 3.6 is ticked with the last of them.
+- Sentences that fall back to a phrase when a name is missing ("This
+  channel is already a favorite") keep the phrase as a `%@` argument, so
+  a language that inflects it may need a review edit.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

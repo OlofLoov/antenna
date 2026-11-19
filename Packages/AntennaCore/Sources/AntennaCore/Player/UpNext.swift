@@ -150,10 +150,18 @@ public struct UpNextRun: Sendable, Equatable {
 
 /// The words of the button and the card.
 public enum UpNextText {
-    public static let button = "Next episode"
-    public static let stillWatching = "Still watching?"
-    public static let playNow = "Play now"
-    public static let keepWatching = "Keep watching"
+    public static func button(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Next episode")
+    }
+    public static func stillWatching(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Still watching?")
+    }
+    public static func playNow(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Play now")
+    }
+    public static func keepWatching(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Keep watching")
+    }
 
     /// "S2 E5 · The Long Night", or the title alone without a number.
     public static func title(_ episode: Episode) -> String {
@@ -162,24 +170,30 @@ public enum UpNextText {
     }
 
     /// "Next episode in 7", or "Still watching?"; nil for no card.
-    public static func heading(_ offer: UpNextTimer.Offer) -> String? {
+    public static func heading(_ offer: UpNextTimer.Offer, locale: Locale = .autoupdatingCurrent) -> String? {
         switch offer {
-        case .countdown(let left): "Next episode in \(left)"
-        case .asking: stillWatching
+        case .countdown(let left): Words(locale)("Next episode in \(left)")
+        case .asking: stillWatching(locale)
         case .none, .button: nil
         }
     }
 
     /// "Up next, Season 2 Episode 5, The Long Night, next episode in 7
     /// seconds", or "Still watching? Season 2 Episode 5, The Long Night".
-    public static func spoken(_ episode: Episode, offer: UpNextTimer.Offer) -> String {
-        let code = [episode.season.map { "Season \($0)" }, episode.number.map { "Episode \($0)" }].compactMap(\.self).joined(
-            separator: " ")
-        let name = [code.isEmpty ? nil : code, episode.title].compactMap(\.self).joined(separator: ", ")
+    public static func spoken(_ episode: Episode, offer: UpNextTimer.Offer, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        let code: String? =
+            switch (episode.season, episode.number) {
+            case (let season?, let number?): words("Season \(String(season)) Episode \(String(number))")
+            case (let season?, nil): words("Season \(String(season))")
+            case (nil, let number?): words("Episode \(String(number))")
+            case (nil, nil): nil
+            }
+        let name = [code, episode.title].compactMap(\.self).joined(separator: ", ")
         switch offer {
-        case .countdown(let left): return "Up next, \(name), next episode in \(left) \(left == 1 ? "second" : "seconds")"
-        case .asking: return "\(stillWatching) \(name)"
-        case .none, .button: return "\(button), \(name)"
+        case .countdown(let left): return words("Up next, \(name), next episode in \(left) seconds")
+        case .asking: return words("Still watching? \(name)")
+        case .none, .button: return words("Next episode, \(name)")
         }
     }
 }
@@ -207,5 +221,7 @@ public struct AutoplaySetting: Codable, Equatable, Sendable {
     }
 
     /// The footer under the Settings row.
-    public static let footer = "Plays the next episode of a series when one ends. Applies to this device only."
+    public static func footer(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Plays the next episode of a series when one ends. Applies to this device only.")
+    }
 }

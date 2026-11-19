@@ -72,7 +72,7 @@ enum TrackPicker {
                     Header(text: "Subtitles")
                         .padding(.top, 12)
                     if subtitles.isEmpty {
-                        Text(TrackMenu.noSubtitles)
+                        Text(TrackMenu.noSubtitles())
                             .font(.subheadline)
                             .foregroundStyle(Palette.textMuted)
                             .frame(minHeight: 44)

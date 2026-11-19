@@ -183,7 +183,7 @@ final class TimeshiftModel {
         userPaused = true
         if status.recording == .storageShort, !saidStorageShort {
             saidStorageShort = true
-            say(TimeshiftText.storageShort)
+            say(TimeshiftText.storageShort())
         }
     }
 
@@ -216,8 +216,8 @@ final class TimeshiftModel {
     /// A double-tap on a half of the picture: 15 seconds either way, or a
     /// note saying why nothing moved (live-tv-on-iphone-ipad-mac/double-tap-to-skip).
     func doubleTapSkip(forward: Bool) {
-        guard canRewind else { return say(TimeshiftText.rewindUnavailable) }
-        if forward, !isBehind { return say(TimeshiftText.alreadyLive) }
+        guard canRewind else { return say(TimeshiftText.rewindUnavailable()) }
+        if forward, !isBehind { return say(TimeshiftText.alreadyLive()) }
         skip(seconds: forward ? limits.skipBack : -limits.skipBack)
     }
 

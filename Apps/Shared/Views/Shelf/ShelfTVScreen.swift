@@ -398,7 +398,7 @@
         var body: some View {
             switch status {
             case .offline(let waiting):
-                failure(ShelfStatus.offlineTitle, [ShelfStatus.offlineLine] + waiting)
+                failure(ShelfStatus.offlineTitle(), [ShelfStatus.offlineLine()] + waiting)
             case .failed(let waiting):
                 failure(ShelfStatus.failedTitle(model.kind), waiting)
             case .loading, .empty, .titles:

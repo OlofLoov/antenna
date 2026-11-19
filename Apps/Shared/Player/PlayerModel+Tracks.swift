@@ -58,10 +58,10 @@ extension PlayerModel {
     // MARK: What the lists show
 
     /// The audio rows, the playing one ticked.
-    var audioRows: [TrackRow] { TrackMenu.audio(tracks, presentation: presentation) }
+    var audioRows: [TrackRow] { TrackMenu.audio(tracks, presentation: presentation, locale: locale) }
 
     /// Off and the subtitle rows, empty when the stream has none.
-    var subtitleRows: [TrackRow] { TrackMenu.subtitles(tracks) }
+    var subtitleRows: [TrackRow] { TrackMenu.subtitles(tracks, locale: locale) }
 
     /// False for one sound and no subtitles: the button is grayed out.
     var hasTrackChoices: Bool { TrackMenu.hasChoices(tracks) }

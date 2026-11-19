@@ -60,7 +60,7 @@ import SwiftUI
         private var toolbar: some View {
             HStack(spacing: 12) {
                 Image(systemName: "square.grid.2x2")
-                Text(MultiViewText.title)
+                Text(MultiViewText.title())
                     .font(.system(size: 17, weight: .semibold))
                 Text(model.count)
                     .font(.system(size: 14))
@@ -71,7 +71,7 @@ import SwiftUI
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("multiView.selected")
                 Spacer(minLength: 0)
-                Button(MultiViewText.exit) { Task { await model.leave() } }
+                Button(MultiViewText.exit()) { Task { await model.leave() } }
                     .controlSize(.large)
                     .frame(minHeight: 44)
                     .accessibilityIdentifier("multiView.exit")
@@ -104,7 +104,7 @@ import SwiftUI
                     MultiViewParts.Failure(
                         title: message.title, explanation: message.explanation, hint: nil, identifier: "\(identifier).failed"
                     ) {
-                        Button(PlayerStatusText.tryAgain) { Task { await model.retry(tile.id) } }
+                        Button(PlayerStatusText.tryAgain()) { Task { await model.retry(tile.id) } }
                             .frame(minHeight: 44)
                             .accessibilityIdentifier("\(identifier).retry")
                     }
@@ -135,7 +135,7 @@ import SwiftUI
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(Palette.text)
-                    .accessibilityLabel(MultiViewText.remove)
+                    .accessibilityLabel(MultiViewText.remove())
                     .accessibilityIdentifier("\(identifier).remove")
                 }
             }
@@ -199,10 +199,10 @@ import SwiftUI
         var body: some View {
             switch live.multiViewMenu(for: channel, offered: offered) {
             case .add:
-                Button(MultiViewText.addToMultiViewMenu) { Task { await live.addToMultiView(channel, offered: offered) } }
+                Button(MultiViewText.addToMultiViewMenu()) { Task { await live.addToMultiView(channel, offered: offered) } }
                     .accessibilityIdentifier("browse.menu.multiView")
             case .full:
-                Button(MultiViewText.full) {}
+                Button(MultiViewText.full()) {}
                     .disabled(true)
             case nil:
                 EmptyView()

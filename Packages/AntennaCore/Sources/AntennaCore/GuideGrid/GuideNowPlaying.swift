@@ -14,9 +14,12 @@ public struct GuideNowPlaying: Sendable, Equatable {
     /// How far into the programme, 0 to 1; nil with no programme on now.
     public let progress: Double?
 
-    public init(channel name: String, number: ChannelNumber?, state: GuideLoadingState, current: Programme?, now: Date) {
+    public init(
+        channel name: String, number: ChannelNumber?, state: GuideLoadingState, current: Programme?, now: Date,
+        locale: Locale = .autoupdatingCurrent
+    ) {
         channel = [number.map(\.description), name].compactMap(\.self).joined(separator: " ")
-        let line = GuideLine(state: state, current: current, now: now)
+        let line = GuideLine(state: state, current: current, now: now, locale: locale)
         title = line.text
         if case .programme(_, let fraction, let remaining) = line {
             detail = "\(channel) · \(remaining)"

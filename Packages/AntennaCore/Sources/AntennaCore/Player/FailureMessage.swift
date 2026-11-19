@@ -24,86 +24,122 @@ public struct FailureMessage: Sendable, Equatable {
     /// `connectionDetail` is a short plain cause for `.unreachable`, such as
     /// "server not found", left out of the text when nil.
     public init(
-        _ failure: PlaybackFailure, source: String, device: Device, silentSeconds: Int = 8, connectionDetail: String? = nil
+        _ failure: PlaybackFailure, source name: String, device: Device, silentSeconds: Int = 8, connectionDetail: String? = nil,
+        locale: Locale = .autoupdatingCurrent
     ) {
-        let vpn = "Check the network, or a VPN if one is on."
+        let words = Words(locale)
+        let source = words.source(name)
         switch failure {
         case .offline:
             self.init(
-                title: "You're offline",
-                explanation: "Connect to the internet and try again. Playback resumes on its own when the connection returns.")
+                title: words("You're offline"),
+                explanation: words("Connect to the internet and try again. Playback resumes on its own when the connection returns."))
         case .unreachable:
-            let detail = connectionDetail.map { " (\($0))" } ?? ""
-            self.init(title: "Could not reach \(source)", explanation: "The connection failed\(detail). \(vpn)")
+            self.init(
+                title: words("Could not reach \(source)"),
+                explanation: connectionDetail.map { words("The connection failed (\($0)). Check the network, or a VPN if one is on.") }
+                    ?? words("The connection failed. Check the network, or a VPN if one is on."))
         case .secureConnectionFailed:
-            self.init(title: "Could not reach \(source)", explanation: "The secure connection failed. \(vpn)")
+            self.init(
+                title: words("Could not reach \(source)"),
+                explanation: words("The secure connection failed. Check the network, or a VPN if one is on."))
         case .loginNotOnDevice where device == .appleTV:
-            self.init(title: "Sign in needed", explanation: "Sign in to \(source) on this Apple TV to play its channels.")
+            self.init(title: words("Sign in needed"), explanation: words("Sign in to \(source) on this Apple TV to play its channels."))
         case .loginNotOnDevice:
             self.init(
-                title: "Waiting for login",
-                explanation: "The login for \(source) has not reached this device from iCloud Keychain yet.")
+                title: words("Waiting for login"),
+                explanation: words("The login for \(source) has not reached this device from iCloud Keychain yet."))
         case .notAllowed:
-            let next =
-                device == .appleTV
-                ? "Sign in again on this Apple TV"
-                : "Check the username and password in Settings"
             self.init(
-                title: "Sign-in refused",
-                explanation: "\(source) rejected the login. \(next), or ask the provider whether the account has expired.")
+                title: words("Sign-in refused"),
+                explanation: device == .appleTV
+                    ? words(
+                        """
+                        \(source) rejected the login. Sign in again on this Apple TV, or ask the \
+                        provider whether the account has expired.
+                        """
+                    )
+                    : words(
+                        """
+                        \(source) rejected the login. Check the username and password in Settings, \
+                        or ask the provider whether the account has expired.
+                        """
+                    ))
         case .notFound:
             self.init(
-                title: "Stream not found",
-                explanation: "\(source) returned 404 for this channel. The channel may have moved or been removed by the provider.")
+                title: words("Stream not found"),
+                explanation: words(
+                    """
+                    \(source) returned 404 for this channel. The channel may have moved or \
+                    been removed by the provider.
+                    """))
         case .serverBusy:
-            self.init(title: "Provider busy", explanation: "\(source) is busy right now. Try again in a moment.")
+            self.init(title: words("Provider busy"), explanation: words("\(source) is busy right now. Try again in a moment."))
         case .serverError:
             self.init(
-                title: "Provider error",
-                explanation: "\(source) returned a server error. Its server is having trouble. Try again in a moment.")
+                title: words("Provider error"),
+                explanation: words("\(source) returned a server error. Its server is having trouble. Try again in a moment."))
         case .refused(let status):
-            self.init(title: "Stream unavailable", explanation: "\(source) returned \(status) for this channel.")
+            self.init(title: words("Stream unavailable"), explanation: words("\(source) returned \(String(status)) for this channel."))
         case .timedOut:
-            self.init(title: "Stream stopped", explanation: "\(source) did not send any data for \(silentSeconds) seconds.")
+            self.init(title: words("Stream stopped"), explanation: words("\(source) did not send any data for \(silentSeconds) seconds."))
         case .stoppedSendingData:
-            self.init(title: "Stream stopped", explanation: "\(source) stopped sending data.")
+            self.init(title: words("Stream stopped"), explanation: words("\(source) stopped sending data."))
         case .unreadable:
             self.init(
-                title: "Stream could not be read",
-                explanation: "\(source) sent data that is not a playable stream. The address may point to a web page or an empty file.")
+                title: words("Stream could not be read"),
+                explanation: words(
+                    "\(source) sent data that is not a playable stream. The address may point to a web page or an empty file."))
         case .cannotDecode(let codec):
             self.init(
-                title: "Format not supported",
+                title: words("Format not supported"),
                 explanation:
-                    "This stream uses \(CodecName.display(codec)), which this device cannot play. Trying again will not help. "
-                    + "Pick another channel or ask the provider for a stream in a supported format.")
+                    words(
+                        """
+                        This stream uses \(CodecName.display(codec)), which this device cannot \
+                        play. Trying again will not help. Pick another channel or ask the provider \
+                        for a stream in a supported format.
+                        """
+                    ))
         case .noDecoderFree:
-            self.init(title: "Can't play another stream", explanation: "This device is already playing as many streams as it can.")
+            self.init(
+                title: words("Can't play another stream"), explanation: words("This device is already playing as many streams as it can."))
         }
     }
 }
 
 /// The other lines the player shows around waiting and failure.
 public enum PlayerStatusText {
-    public static let buffering = "Buffering"
-    public static let tryAgain = "Try again"
-    public static let signIn = "Sign in"
+    public static func buffering(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Buffering")
+    }
+    public static func tryAgain(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Try again")
+    }
+    public static func signIn(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Sign in")
+    }
 
     /// Shown under the spinner after it has spun for ten seconds.
-    public static func slowSource(_ source: String) -> String {
-        "Still buffering. \(source) is sending data slowly."
+    public static func slowSource(_ source: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Still buffering. \(words.source(source)) is sending data slowly.")
     }
 
     /// Shown in place of the spinner while the engine reconnects.
-    public static func reconnecting(attempt: Int, of total: Int) -> String {
-        "Reconnecting… attempt \(attempt) of \(total)"
+    public static func reconnecting(attempt: Int, of total: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Reconnecting… attempt \(attempt) of \(total)")
     }
 
     /// The Apple TV error's source line. `time` is the attempt's time as the
     /// screen formats it, such as "21:34".
-    public static func attempted(source: String, at time: String) -> String {
-        "Source: \(source) · Attempted at \(time)"
+    public static func attempted(source: String, at time: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Source: \(words.source(source)) · Attempted at \(time)")
     }
 
-    public static let changeChannelHint = "Swipe up or down for another channel. Menu opens the tab bar."
+    public static func changeChannelHint(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Swipe up or down for another channel. Menu opens the tab bar.")
+    }
 }

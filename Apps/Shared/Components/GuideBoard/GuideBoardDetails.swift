@@ -168,7 +168,7 @@ extension GuideBoard {
         var body: some View {
             Button(action: reminder.toggle) {
                 Label(
-                    reminder.isSet ? ReminderText.reminderSet : ReminderText.remindMe,
+                    reminder.isSet ? ReminderText.reminderSet() : ReminderText.remindMe(),
                     systemImage: reminder.isSet ? "bell.fill" : "bell"
                 )
                 .font(.system(size: size, weight: .semibold))

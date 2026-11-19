@@ -15,7 +15,7 @@
         /// The overlay's "Add to multi-view" over full-screen live.
         var multiViewOffer: OverlayMultiView {
             OverlayMultiView(
-                title: MultiViewText.addToMultiView,
+                title: MultiViewText.addToMultiView(),
                 offered: { [weak self] channel in self?.offersMultiView(for: channel) ?? false },
                 add: { [weak self] channel in Task { await self?.startMultiView(adding: channel) } })
         }

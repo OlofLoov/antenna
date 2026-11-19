@@ -242,7 +242,7 @@ final class GuideSourcesModel {
         let present = Set(channels.map(\.id))
         let date = now()
         let saved = change { $0.setMatch(entry.id, for: channel.id, at: date, present: present) }
-        error = saved ? nil : GuideSourcesText.tooMany
+        error = saved ? nil : GuideSourcesText().tooMany
         return saved
     }
 

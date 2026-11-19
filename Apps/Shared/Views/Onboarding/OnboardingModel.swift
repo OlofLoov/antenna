@@ -107,7 +107,7 @@ final class OnboardingModel {
             return failure.message
         #else
             guard fields.kind == .channelsDVR, failure.wantsLocalNetworkHint(host: fields.host) else { return failure.message }
-            return failure.message + " " + ConnectFailure.localNetworkHint
+            return failure.message + " " + ConnectFailure.localNetworkHint()
         #endif
     }
 

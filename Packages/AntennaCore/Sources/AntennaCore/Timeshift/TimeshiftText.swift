@@ -4,33 +4,47 @@ import Foundation
 /// (timeshift-catch-up-and-start-over capability).
 public enum TimeshiftText {
     /// "12 min behind", the minutes rounded up; nil within `tolerance` of live.
-    public static func behind(_ seconds: TimeInterval, tolerance: TimeInterval) -> String? {
+    public static func behind(_ seconds: TimeInterval, tolerance: TimeInterval, locale: Locale = .autoupdatingCurrent) -> String? {
+        let words = Words(locale)
         guard seconds > tolerance else { return nil }
-        return "\(Int((seconds / 60).rounded(.up))) min behind"
+        return words("\(Int((seconds / 60).rounded(.up))) min behind")
     }
 
     /// The Apple TV zap bar's hint while behind live.
-    public static let liveHint = "Hold play/pause for live"
+    public static func liveHint(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Hold play/pause for live")
+    }
 
     /// The first pause on a device with too little free storage.
-    public static let storageShort = "Not enough free storage to rewind live TV"
+    public static func storageShort(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Not enough free storage to rewind live TV")
+    }
 
     /// Start over through catch-up failed and the buffer does not reach the start.
-    public static let startOverUnavailable = "Start over isn't available for this programme"
+    public static func startOverUnavailable(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Start over isn't available for this programme")
+    }
 
     /// A double-tap to skip on a channel with nothing to rewind.
-    public static let rewindUnavailable = "Rewind isn't available on this channel"
+    public static func rewindUnavailable(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Rewind isn't available on this channel")
+    }
 
     /// A double-tap to skip forward while already at live.
-    public static let alreadyLive = "Already live"
+    public static func alreadyLive(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Already live")
+    }
 
     /// The line a notice shows.
-    public static func notice(_ notice: TimeshiftNotice) -> String {
-        switch notice {
-        case .bufferFull: "Buffer full. Playing from the earliest point"
-        case .storageFull(let wasBehind): wasBehind ? "Storage is full. Back to live TV" : "Storage is full"
-        case .rewindFailed(let wasBehind): wasBehind ? "Rewind stopped working. Back to live TV" : "Rewind stopped working"
-        case .skippedToLive: "Skipped ahead to live"
+    public static func notice(_ notice: TimeshiftNotice, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return switch notice {
+        case .bufferFull: words("Buffer full. Playing from the earliest point")
+        case .storageFull(wasBehind: true): words("Storage is full. Back to live TV")
+        case .storageFull(wasBehind: false): words("Storage is full")
+        case .rewindFailed(wasBehind: true): words("Rewind stopped working. Back to live TV")
+        case .rewindFailed(wasBehind: false): words("Rewind stopped working")
+        case .skippedToLive: words("Skipped ahead to live")
         }
     }
 

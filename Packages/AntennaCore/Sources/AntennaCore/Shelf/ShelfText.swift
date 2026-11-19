@@ -3,12 +3,13 @@ import Foundation
 /// Words and badges on the banner and posters (movies-and-series-browsing).
 public enum ShelfText {
     /// A film's length, "2 h 08 min" or "47 min". Nil when unknown.
-    public static func length(_ seconds: Double?) -> String? {
+    public static func length(_ seconds: Double?, locale: Locale = .autoupdatingCurrent) -> String? {
+        let words = Words(locale)
         guard let seconds, seconds.isFinite, seconds > 0 else { return nil }
         let minutes = max(1, Int((seconds / 60).rounded()))
-        guard minutes >= 60 else { return "\(minutes) min" }
+        guard minutes >= 60 else { return words("\(minutes) min") }
         let rest = minutes % 60
-        return "\(minutes / 60) h \(rest < 10 ? "0" : "")\(rest) min"
+        return words("\(minutes / 60) h \(rest < 10 ? "0" : "")\(rest) min")
     }
 
     /// Whole minutes left, rounded up, for a title with a known length.
@@ -18,14 +19,14 @@ public enum ShelfText {
     }
 
     /// "47 min left", or nil when the length is unknown.
-    public static func left(_ progress: WatchProgress) -> String? {
-        minutesLeft(progress).map { "\($0) min left" }
+    public static func left(_ progress: WatchProgress, locale: Locale = .autoupdatingCurrent) -> String? {
+        minutesLeft(progress).map { Words(locale)("\($0) min left") }
     }
 
     /// "1 season" or "3 seasons", shown for a series instead of a length.
-    public static func seasons(_ count: Int) -> String? {
+    public static func seasons(_ count: Int, locale: Locale = .autoupdatingCurrent) -> String? {
         guard count > 0 else { return nil }
-        return count == 1 ? "1 season" : "\(count) seasons"
+        return Words(locale)("\(count) seasons")
     }
 
     /// True when a movie's name marks it 4K: "2160p", "4K" or "UHD" in any case.
@@ -64,7 +65,7 @@ public enum ShelfText {
     }
 
     /// "1 title" or "214 titles", the count in a row header.
-    public static func titles(_ count: Int) -> String {
-        count == 1 ? "1 title" : "\(count) titles"
+    public static func titles(_ count: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("\(count) titles")
     }
 }

@@ -74,9 +74,12 @@ public struct ShelfRow: Sendable, Hashable, Identifiable {
     }
 
     /// The row's heading.
-    public var name: String {
-        switch id {
-        case .recentlyAdded: "Recently added"
+    public var name: String { name(.autoupdatingCurrent) }
+
+    public func name(_ locale: Locale) -> String {
+        let words = Words(locale)
+        return switch id {
+        case .recentlyAdded: words("Recently added")
         case .category(let name): name
         }
     }

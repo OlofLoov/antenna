@@ -5,6 +5,8 @@ import Foundation
 public struct ImportText: Sendable {
     public var locale: Locale
 
+    var words: Words { Words(locale) }
+
     public init(locale: Locale = .current) {
         self.locale = locale
     }
@@ -51,40 +53,41 @@ public struct ImportText: Sendable {
     public func summary(_ inspected: PlaylistImport.Inspected) -> Summary {
         let playlist = inspected.playlist
         let groups = playlist.groups
-        let channels = playlist.channels.count == 1 ? "1 channel" : "\(count(playlist.channels.count)) channels"
-        let groupWord = groups.count == 1 ? "1 group" : "\(count(groups.count)) groups"
         var names: String?
         if !groups.isEmpty {
             names = groups.prefix(8).joined(separator: ", ")
-            if groups.count > 8 { names = (names ?? "") + " and \(count(groups.count - 8)) more" }
+            if groups.count > 8 { names = words("\(names ?? "") and \(groups.count - 8) more") }
         }
-        let skipped = inspected.skipped == 1 ? "1 entry skipped" : "\(count(inspected.skipped)) entries skipped"
+        let skipped = words("\(inspected.skipped) entries skipped")
         return Summary(
-            channels: "\(channels) in \(groupWord)", groups: names, guideHost: playlist.epgURLs.first?.host(),
+            channels: words("\(playlist.channels.count) channels in \(groups.count) groups"), groups: names,
+            guideHost: playlist.epgURLs.first?.host(),
             skipped: inspected.skipped > 0 ? skipped : nil)
     }
 
     /// Why a file cannot be imported, nil for a channel list.
     public func problem(_ outcome: PlaylistImport.Outcome, fileName: String) -> Problem? {
-        let split = "Split the file, or host it and add the link as an M3U source instead."
+        let split = words("Split the file, or host it and add the link as an M3U source instead.")
         switch outcome {
         case .tooLarge(let bytes?):
-            return Problem(title: "This file is \(size(bytes)). Antenna imports playlists up to 16 MB.", body: split)
+            return Problem(title: words("This file is \(size(bytes)). Antenna imports playlists up to 16 MB."), body: split)
         case .tooLarge(nil):
-            return Problem(title: "This file is larger than 16 MB. Antenna imports playlists up to 16 MB.", body: split)
+            return Problem(title: words("This file is larger than 16 MB. Antenna imports playlists up to 16 MB."), body: split)
         case .noChannels(let sawEntries):
             return Problem(
-                title: "No channels found in \(fileName).",
+                title: words("No channels found in \(words.source(fileName))."),
                 body: sawEntries
-                    ? "The entries in this file are not links."
-                    : "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair.")
+                    ? words("The entries in this file are not links.")
+                    : words("Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair."))
         case .linkList(let links) where links.count == 1:
             return Problem(
-                title: "This file is a link, not a playlist.", body: "If it points to a playlist or a stream, add it as a source.")
+                title: words("This file is a link, not a playlist."),
+                body: words("If it points to a playlist or a stream, add it as a source."))
         case .linkList:
-            return Problem(title: "This file is a list of links, not a playlist.", body: "Add each link as its own M3U source.")
+            return Problem(
+                title: words("This file is a list of links, not a playlist."), body: words("Add each link as its own M3U source."))
         case .hlsStream:
-            return Problem(title: "This is a single stream, not a channel list.", body: "Add the channel's playlist instead.")
+            return Problem(title: words("This is a single stream, not a channel list."), body: words("Add the channel's playlist instead."))
         case .playlist:
             return nil
         }
@@ -92,7 +95,7 @@ public struct ImportText: Sendable {
 
     /// A file that could not be read at all.
     public func unreadable(fileName: String) -> Problem {
-        Problem(title: "Could not read \(fileName). Make sure it is downloaded and try again.")
+        Problem(title: words("Could not read \(words.source(fileName)). Make sure it is downloaded and try again."))
     }
 
     /// The name a file source gets when the Name field is left empty: the
@@ -103,7 +106,8 @@ public struct ImportText: Sendable {
     }
 
     /// "You imported <file> before as <name>".
-    public static func importedBefore(fileName: String, name: String) -> String {
-        "You imported \(fileName) before as \(name)"
+    public static func importedBefore(fileName: String, name: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("You imported \(words.source(fileName)) before as \(words.source(name))")
     }
 }

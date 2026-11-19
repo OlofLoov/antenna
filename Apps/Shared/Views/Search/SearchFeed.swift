@@ -176,7 +176,7 @@ struct SearchTitleResult: View {
 func searchMessage(_ model: SearchModel) -> (title: String, lines: [String])? {
     let results = model.results
     guard results.query.isSearchable, results.isEmpty, results.query.text == SearchQuery(model.query).text else { return nil }
-    if model.sources == .loading { return (SearchText.channelsLoading, []) }
-    let lines = [SearchText.hint] + (model.sources == .partial ? [SearchText.someStillLoading] : [])
+    if model.sources == .loading { return (SearchText.channelsLoading(), []) }
+    let lines = [SearchText.hint()] + (model.sources == .partial ? [SearchText.someStillLoading()] : [])
     return (SearchText.noResults(results.query), lines)
 }

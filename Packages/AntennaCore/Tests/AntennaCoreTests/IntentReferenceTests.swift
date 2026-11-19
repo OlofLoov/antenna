@@ -115,7 +115,7 @@ import Testing
         #expect(IntentFailure.channelGone(channel: nil, source: "Cabin").description == "That channel is no longer in Cabin.")
         #expect(IntentFailure.locked(channel: "Kids").description == "Kids is in a locked group. Unlock it in Antenna first.")
         #expect(IntentFailure.titleGone(title: "Harbor", source: "Cabin").description == "Harbor is no longer available from Cabin.")
-        #expect(IntentText.whichChannel == "Which channel?")
+        #expect(IntentText.whichChannel() == "Which channel?")
     }
 
     @Test("app-intents/change-a-favorite-without-opening-the-app the favorite replies read as written")

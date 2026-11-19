@@ -50,30 +50,43 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     case needsPassword
 
     /// The sentence shown under the form.
-    public var message: String {
-        switch self {
-        case .missingField(let field): "Enter the \(field.spokenName)."
-        case .invalidURL: "Enter a valid URL."
-        case .rejected: "Could not sign in. Check the username and password."
-        case .inactive(let status): "This account is \(status.lowercased())."
-        case .offline: "You're offline. Connect to the internet and try again."
-        case .unreachable(let host): "Could not reach \(host). Check the address and try again."
-        case .serverError(let status): "The server answered with an error (\(status)). Check the address and try again."
-        case .unreadable: "The server replied with something Antenna could not read."
-        case .credentials(let reason): "Could not store credentials: \(reason)"
-        case .invalidMAC: "Enter a valid MAC address, like 00:1A:79:12:34:56."
-        case .portalRejected: "Could not sign in. Check the MAC address, and the login if you have one."
-        case .noPortal(let host): "No Stalker portal answered at \(host). Check the address and try again."
-        case .deviceRefused(let message): "The portal refused this device with the message “\(message)”."
-        case .noJellyfin(let host): "No Jellyfin server answered at \(host). Check the address and try again."
-        case .forbidden: "This account is not allowed to sign in from this device."
-        case .untrustedCertificate: "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate."
-        case .invalidServer: "Enter a valid server address."
-        case .addressHasLogin: "Remove the username and password from the address."
-        case .invalidUsername: "Enter a username without a colon."
-        case .notAChannelsServer(let host): "No Channels DVR server at \(host)."
-        case .starting: "Channels DVR is starting. Try again in a moment."
-        case .needsPassword: "This server asks for a username and password, which Antenna cannot send yet."
+    public var message: String { message(.autoupdatingCurrent) }
+
+    public func message(_ locale: Locale) -> String {
+        Sentence(failure: self, words: Words(locale)).text
+    }
+
+    /// The sentences, one per failure.
+    private struct Sentence {
+        let failure: ConnectFailure
+        let words: Words
+
+        var text: String {
+            switch failure {
+            case .missingField(let field): field.missing(words)
+            case .invalidURL: words("Enter a valid URL.")
+            case .rejected: words("Could not sign in. Check the username and password.")
+            case .inactive(let status): words("This account is \(status.lowercased()).")
+            case .offline: words("You're offline. Connect to the internet and try again.")
+            case .unreachable(let host): words("Could not reach \(host). Check the address and try again.")
+            case .serverError(let status): words("The server answered with an error (\(String(status))). Check the address and try again.")
+            case .unreadable: words("The server replied with something Antenna could not read.")
+            case .credentials(let reason): words("Could not store credentials: \(reason)")
+            case .invalidMAC: words("Enter a valid MAC address, like 00:1A:79:12:34:56.")
+            case .portalRejected: words("Could not sign in. Check the MAC address, and the login if you have one.")
+            case .noPortal(let host): words("No Stalker portal answered at \(host). Check the address and try again.")
+            case .deviceRefused(let message): words("The portal refused this device with the message “\(message)”.")
+            case .noJellyfin(let host): words("No Jellyfin server answered at \(host). Check the address and try again.")
+            case .forbidden: words("This account is not allowed to sign in from this device.")
+            case .untrustedCertificate:
+                words("Antenna can't verify this server's certificate. Use http on your network or a trusted certificate.")
+            case .invalidServer: words("Enter a valid server address.")
+            case .addressHasLogin: words("Remove the username and password from the address.")
+            case .invalidUsername: words("Enter a username without a colon.")
+            case .notAChannelsServer(let host): words("No Channels DVR server at \(host).")
+            case .starting: words("Channels DVR is starting. Try again in a moment.")
+            case .needsPassword: words("This server asks for a username and password, which Antenna cannot send yet.")
+            }
         }
     }
 
@@ -142,7 +155,9 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     /// The line iPhone, iPad and Mac add when a Channels DVR server at home
     /// cannot be reached, since a refused local network permission often
     /// looks like being offline.
-    public static let localNetworkHint = "Allow local network access for Antenna in Settings."
+    public static func localNetworkHint(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Allow local network access for Antenna in Settings.")
+    }
 
     /// True for an offline or unreachable failure when `host` is a private
     /// IPv4 address, an IPv6 link-local address or a `.local` name.
@@ -179,6 +194,18 @@ public enum ConnectFailure: Error, Equatable, Sendable {
 /// A required field of the add-source form.
 public enum SourceField: String, Sendable, CaseIterable {
     case server, username, password, playlist, portal, mac
+
+    /// The sentence that asks for it: "Enter the server address."
+    func missing(_ words: Words) -> String {
+        switch self {
+        case .server: words("Enter the server address.")
+        case .username: words("Enter the username.")
+        case .password: words("Enter the password.")
+        case .playlist: words("Enter the playlist URL.")
+        case .portal: words("Enter the portal address.")
+        case .mac: words("Enter the MAC address.")
+        }
+    }
 
     /// How the "Enter the …" message names it.
     public var spokenName: String {

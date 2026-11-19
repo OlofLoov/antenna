@@ -167,7 +167,7 @@ struct SearchSectionHeader: View {
         case .channels: return .verbatim("\(results.count(.channels))")
         case .guide:
             if results.programmes.isEmpty, model.guideLoading { return "loading" }
-            return .verbatim("\(SearchText.nextSevenDays) · \(results.count(.guide))")
+            return .verbatim("\(SearchText.nextSevenDays()) · \(results.count(.guide))")
         case .titles: return .verbatim("\(results.titles.count)")
         }
     }

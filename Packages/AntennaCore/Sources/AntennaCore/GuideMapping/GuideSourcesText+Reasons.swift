@@ -54,64 +54,92 @@ extension GuideSourcesText {
         switch reason {
         case .playlistLoading:
             return Card(
-                title: Line("Waiting for the playlist"), body: ["Antenna reads the guide links from the playlist when it finishes loading."]
+                title: Line(words("Waiting for the playlist")),
+                body: [words("Antenna reads the guide links from the playlist when it finishes loading.")]
             )
         case .noGuide:
             return Card(
-                title: Line("This source has no guide"), body: ["Add a guide URL to get programme information for \(context.source)."])
+                title: Line(words("This source has no guide")),
+                body: [words("Add a guide URL to get programme information for \(words.source(context.source)).")])
         case .waitingForLogin where television:
             return Card(
-                title: Line("Sign in on this Apple TV", .muted),
-                body: ["The provider guide needs this source's login. Sign in from Sources & Settings."])
+                title: Line(words("Sign in on this Apple TV"), .muted),
+                body: [words("The provider guide needs this source's login. Sign in from Sources & Settings.")])
         case .waitingForLogin:
             return Card(
-                title: Line("Waiting for the login to sync", .muted),
-                body: ["The provider guide needs this source's login, which has not reached this device from iCloud yet."])
+                title: Line(words("Waiting for the login to sync"), .muted),
+                body: [words("The provider guide needs this source's login, which has not reached this device from iCloud yet.")])
         case .notDownloaded(let bytes):
-            let body = bytes.map(setup.downloading(bytes:)) ?? "Antenna downloads the guide when the source finishes loading."
-            return Card(title: Line("The guide has not been downloaded yet"), body: [body])
+            let body = bytes.map(setup.downloading(bytes:)) ?? words("Antenna downloads the guide when the source finishes loading.")
+            return Card(title: Line(words("The guide has not been downloaded yet")), body: [body])
         case .offline:
-            return Card(title: Line("You're offline", .muted), body: ["The guide downloads when you're back online."])
+            return Card(title: Line(words("You're offline"), .muted), body: [words("The guide downloads when you're back online.")])
         case .everyGuideFailed:
             let lines = context.status.rows.filter(\.enabled).map { row in
                 "\(context.guideName(row.reference)) · \(status(row, coverage: nil, channels: 0, source: context.source).text)"
             }
-            return Card(title: Line("The guide could not be downloaded", .error), body: lines)
+            return Card(title: Line(words("The guide could not be downloaded"), .error), body: lines)
+        default:
+            return idCard(reason, context)
+        }
+    }
+
+    /// The cards for a channel whose guide id is missing, unmatched or empty.
+    private func idCard(_ reason: GuideReason, _ context: CardContext) -> Card {
+        let channel = context.channel.name
+        let finished = context.index.sources[context.channel.sourceID ?? UUID()]?.layers ?? []
+        switch reason {
         case .matchNotFound(let id):
             return Card(
-                title: Line("The mapped entry “\(id)” has no programmes"),
-                body: ["Pick another entry below, or remove the mapping to go back to the playlist's id."])
+                title: Line(words("The mapped entry “\(id)” has no programmes")),
+                body: [words("Pick another entry below, or remove the mapping to go back to the playlist's id.")])
         case .noGuideID:
             let opening =
                 context.kind == .xtream
-                ? "The provider sends no epg_channel_id for \(channel)" : "The playlist has no tvg-id for \(channel)"
+                ? words("The provider sends no epg_channel_id for \(words.source(channel))")
+                : words("The playlist has no tvg-id for \(words.source(channel))")
             return Card(
-                title: Line("The source gives this channel no guide id"),
-                body: ["\(opening), and no guide entry has exactly its name. Pick an entry below."])
+                title: Line(words("The source gives this channel no guide id")),
+                body: [words("\(opening), and no guide entry has exactly its name. Pick an entry below.")])
         case .idNotFound(let id):
             if finished.count > 1 {
                 return Card(
-                    title: Line("Guide id “\(id)” is not in any of the \(setup.count(finished.count)) guides"),
-                    body: ["None of the \(setup.count(finished.count)) guides for \(context.source) lists “\(id)”. Pick an entry below."])
+                    title: Line(words("Guide id “\(id)” is not in any of the \(finished.count) guides")),
+                    body: [
+                        words(
+                            """
+                            None of the \(finished.count) guides for \(words.source(context.source)) \
+                            lists “\(id)”. Pick an entry below.
+                            """)
+                    ])
             }
-            let guide = finished.first.map { context.guideName($0.reference) } ?? "The guide"
+            let guide = finished.first.map { context.guideName($0.reference) } ?? words("The guide")
             return Card(
-                title: Line("Guide id “\(id)” is not in the guide"), body: ["“\(guide)” does not list “\(id)”. Pick an entry below."])
+                title: Line(words("Guide id “\(id)” is not in the guide")),
+                body: [words("“\(guide)” does not list “\(id)”. Pick an entry below.")])
         case .noProgrammes(let id):
             let lister = finished.first { $0.guide.names[id] != nil || $0.guide.schedules[id] != nil }
-            let guide = lister.map { context.guideName($0.reference) } ?? "The guide"
+            let guide = lister.map { context.guideName($0.reference) } ?? words("The guide")
             return Card(
-                title: Line("The guide lists “\(id)” but has no programmes for it"),
+                title: Line(words("The guide lists “\(id)” but has no programmes for it")),
                 body: [
-                    "\(guide) knows the channel but carries no programmes for it. "
-                        + "Pick another entry below, or wait for the provider to fill it."
+                    words(
+                        """
+                        \(guide) knows the channel but carries no programmes for it. Pick another \
+                        entry below, or wait for the provider to fill it.
+                        """
+                    )
                 ])
         case .guideEnded(let id):
             return Card(
-                title: Line("The guide for “\(id)” has run out"),
+                title: Line(words("The guide for “\(id)” has run out")),
                 body: [
-                    "\(winner(id, context)) lists programmes for this channel but none after now. "
-                        + "Wait for the next guide refresh or pick another entry below."
+                    words(
+                        """
+                        \(winner(id, context)) lists programmes for this channel but none after \
+                        now. Wait for the next guide refresh or pick another entry below.
+                        """
+                    )
                 ])
         case .hasGuide(let id):
             let layer = finished.first { $0.guide.schedules[id]?.isEmpty == false }
@@ -119,17 +147,19 @@ extension GuideSourcesText {
             let days = layer.map { setup.days($0.guide.days(from: context.now)) } ?? setup.days(0)
             let how =
                 switch context.index.match(for: context.channel)?.origin {
-                case .user: "Mapped by you"
-                case .name: "Matched by name"
-                case nil: "Matched by tvg-id"
+                case .user: words("Mapped by you")
+                case .name: words("Matched by name")
+                case nil: words("Matched by tvg-id")
                 }
-            return Card(title: Line("Guide from \(winner(id, context))"), body: ["“\(name)” (\(id)) · \(days) · \(how)"])
+            return Card(title: Line(words("Guide from \(winner(id, context))")), body: ["“\(name)” (\(id)) · \(days) · \(how)"])
+        case .playlistLoading, .noGuide, .waitingForLogin, .notDownloaded, .offline, .everyGuideFailed:
+            return main(reason, context)
         }
     }
 
     private func winner(_ id: String, _ context: CardContext) -> String {
         let layers = context.index.sources[context.channel.sourceID ?? UUID()]?.layers ?? []
-        return layers.first { $0.guide.schedules[id]?.isEmpty == false }.map { context.guideName($0.reference) } ?? "The guide"
+        return layers.first { $0.guide.schedules[id]?.isEmpty == false }.map { context.guideName($0.reference) } ?? words("The guide")
     }
 
     /// "1 of 3 guides could not be downloaded." and "1 guide is still downloading."
@@ -138,12 +168,12 @@ extension GuideSourcesText {
         let counts = GuideDiagnosis.pending(status)
         var lines: [String] = []
         if counts.failed > 0 {
-            lines.append("\(setup.count(counts.failed)) of \(setup.count(total)) guides could not be downloaded.")
+            lines.append(words("\(counts.failed) of \(total) guides could not be downloaded."))
         }
         if counts.downloading == 1 {
-            lines.append("1 guide is still downloading.")
+            lines.append(words("1 guide is still downloading."))
         } else if counts.downloading > 1 {
-            lines.append("\(setup.count(counts.downloading)) guides are still downloading.")
+            lines.append(words("\(counts.downloading) guides are still downloading."))
         }
         return lines
     }

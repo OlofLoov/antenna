@@ -27,7 +27,7 @@ import SwiftUI
             } content: {
                 switch tab {
                 case .subtitles:
-                    rows(tracks.subtitleRows, empty: TrackMenu.noSubtitles) { tracks.selectSubtitle($0) }
+                    rows(tracks.subtitleRows, empty: TrackMenu.noSubtitles()) { tracks.selectSubtitle($0) }
                 default:
                     rows(tracks.audioRows, empty: nil) { tracks.selectAudio($0) }
                 }

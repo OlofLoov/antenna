@@ -418,7 +418,7 @@ struct ShelfStatusContent: View {
         case .loading(let sources):
             ShelfView.Loading(sources: sources)
         case .offline(let waiting):
-            ShelfView.Message(title: ShelfStatus.offlineTitle, lines: [ShelfStatus.offlineLine] + waiting) {
+            ShelfView.Message(title: ShelfStatus.offlineTitle(), lines: [ShelfStatus.offlineLine()] + waiting) {
                 ShelfView.RetryButton(retry: model.retry)
             }
             .accessibilityElement(children: .contain)
@@ -430,7 +430,7 @@ struct ShelfStatusContent: View {
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).error")
         case .empty(let lines):
-            ShelfView.Message(title: ShelfStatus.emptyTitle, lines: lines) { EmptyView() }
+            ShelfView.Message(title: ShelfStatus.emptyTitle(), lines: lines) { EmptyView() }
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).empty")
         case .titles:
