@@ -685,6 +685,30 @@ PR 10, Arabic text:
   plural form, the digits and a Latin channel name isolated inside an
   Arabic sentence.
 
+Arabic review:
+- ar reviewed by a model reviewer in place of a native speaker (owner's
+  decision 2026-11-19). The strings are `translated`, but `ar` stays out
+  of `Config/reviewed-languages` until the right-to-left layout (section
+  11) and its boards land. Task 12.7 adds it then.
+- Counts the app writes with a bare `%lld` now carry all six Arabic forms
+  ("%lld channels", "%lld channels without guide", "%lld sources added",
+  "Try again in %lld seconds", Core's "Back %lld Seconds" and "CATCH-UP
+  %lldD"), so a skip reads "رجوع ١٠ ثوانٍ", not "١٠ ثانية". Entries with
+  two counts keep the label form.
+- A count that arrives as text ("%@ channels") cannot agree, so it reads
+  "قنوات عددها %@" ("channels numbering %@"). It had been "قنوات %@",
+  "the channels of %@".
+- "%@ will not remind you" had the programme as the subject; it reads
+  "you will not get a reminder for %@" now. The provider's account status
+  sits after "حالة الحساب:". "Later: " keeps its space.
+- "Catch-up 7 days" and "Guide 7 days" put the count after a colon, so the
+  dual stays nominative ("الدليل: يومان"). "Recently watched" was a
+  word-for-word phrase and is "شوهد مؤخرًا"; time left reads "تبقّى".
+- Every device name takes "هذا" after it ("على Mac هذا"), which agrees
+  for iPhone, iPad, Mac and Apple TV. Counts follow the locale's digits;
+  only fixed figures in the copy (10, 15, 30 seconds, 16 MB) are written
+  in Western digits.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

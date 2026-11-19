@@ -78,7 +78,8 @@
 - [x] 12.3 Spanish reviewed, `es` added to `Config/reviewed-languages`
 - [x] 12.4 French reviewed, `fr` added to `Config/reviewed-languages`
 - [x] 12.5 Portuguese (Brazil) reviewed, `pt-BR` added to `Config/reviewed-languages`
-- [ ] 12.6 Arabic reviewed, including the guide and scrubber direction, `ar` added to `Config/reviewed-languages`
+- [x] 12.6 Arabic strings reviewed and moved to `translated`
+- [ ] 12.7 Arabic guide and scrubber direction checked once section 11 lands, `ar` added to `Config/reviewed-languages`
 
 ## 13. Verify
 

@@ -6,7 +6,7 @@
       "localizations" : {
         "ar" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "أضف هذه القناة إلى المفضلة في ${applicationName}"
             ]
@@ -67,7 +67,7 @@
       "localizations" : {
         "ar" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "شغّل ${title} في ${applicationName}",
               "شغّل فيلمًا في ${applicationName}"
@@ -135,7 +135,7 @@
       "localizations" : {
         "ar" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "أزل هذه القناة من المفضلة في ${applicationName}"
             ]
@@ -196,7 +196,7 @@
       "localizations" : {
         "ar" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "ابحث في ${applicationName}",
               "ابحث عن قناة في ${applicationName}"
@@ -264,7 +264,7 @@
       "localizations" : {
         "ar" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "انتقل إلى ${channel} في ${applicationName}",
               "شاهد ${channel} في ${applicationName}",

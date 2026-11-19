@@ -107,6 +107,8 @@ import Testing
         let setup = SetupText(locale: Self.arabic)
         #expect(setup.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "قناتان مباشرتان في مجموعتين")
         #expect(setup.channels(ChannelTally(channels: 11, groups: ["News"])) == "١١ قناة مباشرة في مجموعة واحدة")
+        #expect(KeyCommand.skipTitle(forward: false, seconds: 10, locale: Self.arabic) == "رجوع ١٠ ثوانٍ")
+        #expect(KeyCommand.skipTitle(forward: true, seconds: 30, locale: Self.arabic) == "تقديم ٣٠ ثانية")
     }
 
     @Test("localization/numbers-use-the-region-s-digits-and-separators Saudi Arabia writes Arabic-Indic digits")
