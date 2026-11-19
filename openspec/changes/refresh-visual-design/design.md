@@ -206,3 +206,14 @@ The owner took each recommendation.
 ### 11. Retry becomes Try again
 
 Every button that loads something again reads Try again, the label the player error already used. Requirement names that say Retry, such as `tvos-shell/an-empty-screen-with-retry`, keep their slugs so the tests that cite them still resolve; their text and scenarios say Try again.
+
+### 12. What PR 5 settled for Movies, Series, title pages and Search
+
+- **Board sizes go through one table in code.** `TypeScale` (`Apps/Shared/Components/TypeScale.swift`) holds the text style table above, and `.boardStyle(size)` returns the style nearest a board's size, with the board's weight. Views keep the board's number, so the board stays readable next to the code, and the text grows with the system. Nothing on Apple TV maps below Caption 2 (23 pt), which carries the caption floor; nothing elsewhere maps below Caption 1 (12 pt). A `@ScaledMetric` that multiplied a font size goes, since the text style already scales. PR 5 moves the shelf, title, search and poster files onto it; PR 6 moves the rest.
+- **Posters and cards are card buttons on Apple TV** (`posterButtonStyle()`): lift, grow and tilt, no ring. Elsewhere they are borderless.
+- **Chips are bordered capsules** (`chipStyle(isPicked:on:)`). On iPhone, iPad and Mac the picked chip is bordered prominent, or glass prominent over art, as the genre chips are. On Apple TV every chip stays bordered and the picked one is semibold: switching between two system styles rebuilds the button, which drops focus from a season chip at the moment its dwell picks it.
+- **Search rows are bordered buttons on Apple TV**, which take the light platter with dark text when focused, and borderless on the row surface elsewhere, brighter under the keyboard cursor. Their muted lines use hierarchical styles so the focused row reads dark.
+- **Episode rows are focus cards** (`FocusCardStyle`), the one shape the app draws for a whole-row button, on the 0.06 surface at rest.
+- **Buttons that only hold focus** (the full-screen picture, the guide's highlighted block, a multi-view tile's holder) share `FocusHolderStyle` in `FocusCard.swift`, which the style grep allows next to the exception components.
+- **Eyebrows are muted.** "RECENTLY ADDED · THRILLER", "MOVIE · ACTION" and Search's "Later" take the muted color; See all, Back and Cancel stay in the accent as links.
+- **The Movies hero already clears the bar.** Its copy starts 180 pt down, under the 46 pt inset and the 68 pt bar, so 5.2 needed no move.

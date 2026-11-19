@@ -33,9 +33,9 @@
 
 ## 5. Movies, Series, title pages and Search (PR 5)
 
-- [ ] 5.1 Replace `ShelfView.CardStyle`, `EpisodePicker.ChipStyle`, `ShelfGridView.ChipStyle` and the search poster style with card and borderless system styles that lift and tilt; episode rows become focus cards (design-system/controls-use-system-styles)
-- [ ] 5.2 Start the hero below the tab bar, drop the accent eyebrows, and put the iPhone Movies and Series switch and genre chips on glass (design-system/content-clears-the-tab-bar, design-system/one-accent-color, design-system/liquid-glass-stays-on-the-navigation-layer)
-- [ ] 5.3 Move hero, rows, title page and search to text styles and the radius scale, and update `TV-Movies`, `TV-Title`, `TV-Series`, `TV-Search`, `iPhone-Movies` and `iPhone-Title` type comments
+- [x] 5.1 Replace `ShelfView.CardStyle`, `EpisodePicker.ChipStyle`, `ShelfGridView.ChipStyle` and the search poster style with card and borderless system styles that lift and tilt; episode rows become focus cards (design-system/controls-use-system-styles)
+- [x] 5.2 Start the hero below the tab bar, drop the accent eyebrows, and put the iPhone Movies and Series switch and genre chips on glass (design-system/content-clears-the-tab-bar, design-system/one-accent-color, design-system/liquid-glass-stays-on-the-navigation-layer)
+- [x] 5.3 Move hero, rows, title page and search to text styles and the radius scale, and update `TV-Movies`, `TV-Title`, `TV-Series`, `TV-Search`, `iPhone-Movies` and `iPhone-Title` type comments
 - [ ] 5.4 Run `ShelfTVUITests`, `TitleTVUITests`, `SearchTVUITests`, `ShelfUITests`, `TitleUITests` and `SearchUITests`
 
 ## 6. Live layer, guide, paywall and profiles (PR 6)
