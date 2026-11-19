@@ -3,18 +3,60 @@
     import Foundation
 
     /// What the App Store screenshot walk changes on a scripted launch
-    /// (add-store-localization), compiled into Debug builds only.
+    /// (add-store-localization, polish-store-screenshots), compiled into
+    /// Debug builds only.
     ///
     /// `-ui-testing-store-shots` hides the test probes and the Apple TV
-    /// remote hints, gives every channel a full guide, and plays
-    /// `StorePicture.mp4` on every player surface in place of the scripted
-    /// engines' black picture. The clip is a made-up evening landscape that
-    /// `scripts/make-store-picture.sh` draws with ffmpeg; it sits in the
-    /// Debug app bundle only and nothing reaches the network.
+    /// remote hints, gives every channel a full guide, pins the wall clock
+    /// at 9:41, gives the scripted movies and series posters and backdrops,
+    /// and plays `StorePicture.mp4` on every player surface in place of the
+    /// scripted engines' black picture. The clip and the art are made up:
+    /// `scripts/make-store-picture.sh` draws a landscape at sunrise with
+    /// ffmpeg and `scripts/make-store-art.py` draws abstract shapes. They
+    /// sit in the Debug app bundle only and nothing reaches the network.
     enum UITestingStoreShots {
         static let argument = "-ui-testing-store-shots"
 
         static var isOn: Bool { ProcessInfo.processInfo.arguments.contains(argument) }
+
+        /// The minute of the day the store set shows, 9:41 as on the
+        /// simulator's status bar.
+        static let shownMinute = 9 * 60 + 41
+
+        /// Makes the app's wall clock read 9:41 at launch, so the guide, the
+        /// now line and the info bar agree with the status bar. The app runs
+        /// in a fixed time zone whose offset from GMT puts this moment at
+        /// 9:41, set as the process's system time zone so every formatter
+        /// and calendar follows it. The date itself stays real, so nothing
+        /// that measures time changes. Does nothing without the argument.
+        static func pinClock(now: Date = .now) {
+            guard isOn, let zone = zone(showing: shownMinute, at: now) else { return }
+            setenv("TZ", zone.identifier, 1)
+            NSTimeZone.resetSystemTimeZone()
+        }
+
+        /// The time zone in which `now` falls on `minute` of the day, with
+        /// an offset of at most 12 hours either way.
+        static func zone(showing minute: Int, at now: Date) -> TimeZone? {
+            let utcMinute = Int(now.timeIntervalSince1970 / 60) % 1440
+            var offset = (minute - utcMinute) % 1440
+            if offset > 720 { offset -= 1440 }
+            if offset <= -720 { offset += 1440 }
+            return TimeZone(secondsFromGMT: offset * 60)
+        }
+
+        enum Art: String {
+            case poster, backdrop
+        }
+
+        /// The made-up poster or backdrop `scripts/make-store-art.py` drew
+        /// for a scripted shelf title (`xtream#cabin#vod#1`), as a file in
+        /// the app bundle; nil without the argument or the file.
+        static func art(for titleID: String, _ art: Art) -> URL? {
+            let parts = titleID.split(separator: "#")
+            guard isOn, parts.count == 4 else { return nil }
+            return Bundle.main.url(forResource: "StoreArt-\(parts[1])-\(parts[2])-\(parts[3])-\(art.rawValue)", withExtension: "jpg")
+        }
 
         /// The clip looping on one muted player shared by every surface; nil
         /// without the argument or without the clip in the bundle.
@@ -29,9 +71,12 @@
         @MainActor
         static func guide(launched: Date) -> OverlayGuide? {
             guard isOn else { return nil }
-            let half = 1800.0
-            let base = (launched.timeIntervalSinceReferenceDate / half).rounded(.down) * half - 2 * 3600
-            let start = Date(timeIntervalSinceReferenceDate: base)
+            // The half hour on the wall clock, which pinClock may have set
+            // to an offset that is not a whole hour.
+            let wholeMinute = Date(timeIntervalSince1970: (launched.timeIntervalSince1970 / 60).rounded(.down) * 60)
+            let minute = Calendar.current.component(.minute, from: wholeMinute)
+            let halfHour = wholeMinute.addingTimeInterval(-Double(minute % 30) * 60)
+            let start = halfHour.addingTimeInterval(-2 * 3600)
             let end = launched.addingTimeInterval(6 * 3600)
             let cache = Cache()
             func programmes(_ channel: Channel) -> [Programme] {
@@ -59,7 +104,7 @@
         /// The channel's titles and minutes repeated from `start`, shifted by
         /// its offset so the channels do not all change at once.
         private static func schedule(for key: String, from start: Date, until end: Date) -> [Programme] {
-            let entry = schedules[key] ?? Entry(offset: 0, slots: [("Evening Live", 60), ("Late Show", 60)])
+            let entry = schedules[key] ?? Entry(offset: 0, slots: [("Live Desk", 60), ("Studio Hour", 60)])
             var programmes: [Programme] = []
             var time = start.addingTimeInterval(Double(entry.offset - 60) * 60)
             var index = 0
