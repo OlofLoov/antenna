@@ -45,7 +45,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna se conecta a servidores de TV de tu red doméstica cuando una de tus fuentes apunta allí."
           }
         },

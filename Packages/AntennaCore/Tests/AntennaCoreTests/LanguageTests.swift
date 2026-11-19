@@ -65,9 +65,9 @@ import Testing
     @Test("localization/counts-use-the-language-s-plural-forms Spanish one and other, Mexico reads the same table")
     func spanishPlural() {
         let spanish = SetupText(locale: Locale(identifier: "es_ES"))
-        #expect(spanish.channels(ChannelTally(channels: 1, groups: ["News"])) == "1 canal en directo en 1 grupo")
-        #expect(spanish.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 canales en directo en 2 grupos")
-        #expect(SetupText(locale: Locale(identifier: "es_MX")).liveChannels(12_500) == "12,500 canales en directo")
+        #expect(spanish.channels(ChannelTally(channels: 1, groups: ["News"])) == "1 canal en vivo en 1 grupo")
+        #expect(spanish.channels(ChannelTally(channels: 2, groups: ["News", "Sport"])) == "2 canales en vivo en 2 grupos")
+        #expect(SetupText(locale: Locale(identifier: "es_MX")).liveChannels(12_500) == "12,500 canales en vivo")
     }
 
     @Test("localization/durations-follow-the-user-s-language a Spanish programme length")
