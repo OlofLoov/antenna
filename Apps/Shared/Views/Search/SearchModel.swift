@@ -72,6 +72,8 @@ enum SearchItem: Hashable {
     case channel(RowKey)
     case programme(SearchResults.ProgrammeHit.Identity)
     case title(String)
+    /// A person in People, by their name's key.
+    case person(String)
 }
 
 /// State and rules of Search on every platform (search capability): the
@@ -94,6 +96,9 @@ final class SearchModel {
     private(set) var guideExpanded = false
     /// The results of the last settled query.
     private(set) var results = SearchResults.none(SearchQuery(""))
+    /// People whose names match the last settled query, from the names the
+    /// provider sent (browse-by-person/find-a-person-in-search).
+    private(set) var people: [PeopleIndex.Person] = []
     /// When those results were worked out, for the NOW and day labels.
     private(set) var searchedAt = Date.distantPast
     private(set) var sources: SearchSources = .loaded
@@ -110,6 +115,7 @@ final class SearchModel {
 
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var index = SearchIndex()
+    @ObservationIgnored private var peopleIndex = PeopleIndex.empty
     @ObservationIgnored private var typing: Task<Void, Never>?
 
     init(_ dependencies: Dependencies = Dependencies()) {
@@ -196,7 +202,24 @@ final class SearchModel {
             items += results.shownProgrammes(scope, expanded: guideExpanded).map { .programme(results.programmes[$0].id) }
         }
         if scope != .channels, scope != .guide { items += results.shownTitles(scope).map { .title($0.id) } }
+        items += shownPeople.map { .person($0.key) }
         return items
+    }
+
+    /// People shows last, in the All view only; no chip narrows to it.
+    var shownPeople: [PeopleIndex.Person] {
+        scope == .all ? people : []
+    }
+
+    /// True when the last settled query found nothing of any kind.
+    var foundNothing: Bool {
+        results.isEmpty && people.isEmpty
+    }
+
+    /// The people index changed: titles loaded or names arrived.
+    func peopleChanged(_ index: PeopleIndex) {
+        peopleIndex = index
+        people = index.search(results.query)
     }
 
     /// Moves the cursor by `step` rows, from the field into the first row.
@@ -253,6 +276,7 @@ final class SearchModel {
         if parsed.text != results.query.text { guideExpanded = false }
         searchedAt = dependencies.now()
         results = index.results(for: parsed, now: searchedAt)
+        people = peopleIndex.search(parsed)
         if let cursor, !items.contains(cursor) { self.cursor = nil }
     }
 }

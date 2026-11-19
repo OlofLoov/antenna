@@ -45,6 +45,7 @@
             .environment(\.searchMetrics, .tv)
             .environment(\.searchFeed, feed)
             .task(id: corpus.signature(now: .now)) { await model.load(corpus) }
+            .task(id: library.peopleRevision) { model.peopleChanged(await library.people()) }
             .task { library.open() }
             .task {
                 while !Task.isCancelled {
@@ -161,7 +162,8 @@
                     case .movie: playback.play(title, library: library, activity: activity)
                     case .series: library.openPage(title, from: .search, in: title.kind)
                     }
-                })
+                },
+                person: { library.openPerson($0, fromSearchIn: .movie) })
         }
     }
 
@@ -213,6 +215,13 @@
                                     .padding(.vertical, 20)
                                 }
                                 .scrollClipDisabled()
+                            }
+                        }
+                        if !feed.model.people.isEmpty {
+                            section(.people, count: .verbatim("\(feed.model.people.count)")) {
+                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 20), GridItem(.flexible(), spacing: 20)], spacing: 12) {
+                                    people(feed.model.people)
+                                }
                             }
                         }
                     }

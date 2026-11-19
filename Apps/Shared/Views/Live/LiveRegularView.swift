@@ -296,7 +296,8 @@
                     case .movie: playback.play(title, library: shelves, activity: activity)
                     case .series: shelves.openPage(title, from: .search, in: title.kind)
                     }
-                })
+                },
+                person: { shelves.openPerson($0, fromSearchIn: .movie) })
         }
 
         /// Opens Search, the Guide at a programme, or Live, and sets the shared group.

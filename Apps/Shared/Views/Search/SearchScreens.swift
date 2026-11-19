@@ -19,6 +19,7 @@
             content
                 .environment(\.searchFeed, feed)
                 .task(id: corpus.signature(now: .now)) { await model.load(corpus) }
+                .task(id: shelves.peopleRevision) { model.peopleChanged(await shelves.people()) }
                 // Movies and series load the first time Search opens.
                 .task { shelves.open() }
                 // A programme that starts or ends updates within seconds

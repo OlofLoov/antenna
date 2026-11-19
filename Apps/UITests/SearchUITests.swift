@@ -308,4 +308,22 @@ final class SearchUITests: XCTestCase {
         XCTAssertEqual(app.element("search.result.title.0").label, "Movies & series, The Long Harbor")
         XCTAssertFalse(app.element("search.result.title.1").exists, "Harbor Watch is a series")
     }
+
+    // browse-by-person/find-a-person-in-search
+    // search/results-grouped-best-first, People last
+    func testTypingANameListsThePersonAndPickingOpensTheirPage() throws {
+        let app = try launch()
+        search(app, "mira h")
+        let person = app.element("search.person.0")
+        XCTAssertTrue(person.waitForExistence(timeout: 10))
+        XCTAssertTrue(person.label.hasPrefix("People, Mira Holt, Acting · "), person.label)
+        XCTAssertFalse(app.element("search.person.1").exists)
+        let sections = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'search.section.'"))
+        XCTAssertEqual(sections.allElementsBoundByIndex.last?.identifier, "search.section.people", "People comes last")
+        app.element("search.person.0").tap()
+        XCTAssertTrue(app.element("person.header").waitForExistence(timeout: 5))
+        expect(app.element("person.back"), "label == 'Back to Search'")
+        app.element("person.back").tap()
+        expect(app.element("search.field"), "value == 'mira h'")
+    }
 }

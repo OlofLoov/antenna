@@ -208,4 +208,30 @@ final class SearchTVUITests: XCTestCase {
         XCTAssertTrue(element("movies.hero").waitForExistence(timeout: 10))
         XCTAssertFalse(element("movies.search").exists, "the Search tab is the way to search")
     }
+
+    // browse-by-person/find-a-person-in-search
+    // search/results-grouped-best-first, People last
+    func testTypingANamePicksThePerson() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "titles"]
+        app.launchInEnglish()
+        press(.menu)
+        XCTAssertTrue(element("shell.tab.search").waitForExistence(timeout: 10))
+        press(.right, times: 4)
+        expectFocus("shell.tab.search")
+        press(.select)
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
+        press(.down)
+        type("mira h")
+        let person = element("search.person.0")
+        XCTAssertTrue(person.waitForExistence(timeout: 10))
+        XCTAssertTrue(person.label.hasPrefix("People, Mira Holt, Acting · "), person.label)
+        moveToResults("search.person.0")
+        press(.select)
+        XCTAssertTrue(element("person.header").waitForExistence(timeout: 5))
+        press(.menu)
+        expect(element("person.header"), "exists == false")
+        expect(app.searchFields.firstMatch, "value BEGINSWITH 'mira h'")
+        XCTAssertTrue(element("search.person.0").exists, "back on Search with the person listed")
+    }
 }
