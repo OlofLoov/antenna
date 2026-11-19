@@ -10,9 +10,9 @@
         }
 
         /// `switchProfile` after the engine stops; nil outside a profile gate.
-        var stoppingFirst: (@MainActor () -> Void)? {
+        var stoppingFirst: SwitchProfileAction? {
             guard let switchProfile else { return nil }
-            return { [model] in
+            return SwitchProfileAction { [model] in
                 Task {
                     await model.engine.stop()
                     switchProfile()

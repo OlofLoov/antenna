@@ -5,7 +5,15 @@ extension EnvironmentValues {
     /// Asks for the passcode to open a locked group the user picked in a
     /// channel list (group-management/unlock-with-the-passcode). Nil where
     /// no screen above offers the prompt.
-    @Entry var unlockGroup: ((CatalogueGroup) -> Void)?
+    @Entry var unlockGroup: UnlockGroupAction?
+}
+
+/// What `unlockGroup` calls with the group the user picked. A struct
+/// rather than a bare closure, which SwiftUI flags in an `@Entry`.
+struct UnlockGroupAction {
+    let perform: (CatalogueGroup) -> Void
+
+    func callAsFunction(_ group: CatalogueGroup) { perform(group) }
 }
 
 /// What the passcode prompt is open for.
@@ -58,7 +66,7 @@ struct GroupLockPrompt: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .environment(\.unlockGroup) { group in pending = .group(group, name: name(group)) }
+            .environment(\.unlockGroup, UnlockGroupAction { group in pending = .group(group, name: name(group)) })
             .onChange(of: playingIsLocked, initial: true) { _, locked in
                 guard locked, pending == nil else { return }
                 pause()

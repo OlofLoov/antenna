@@ -49,8 +49,6 @@ extension GuideSourcesText {
     }
 
     private func main(_ reason: GuideReason, _ context: CardContext) -> Card {
-        let channel = context.channel.name
-        let finished = context.index.sources[context.channel.sourceID ?? UUID()]?.layers ?? []
         switch reason {
         case .playlistLoading:
             return Card(

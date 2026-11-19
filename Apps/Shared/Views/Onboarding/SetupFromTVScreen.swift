@@ -159,7 +159,7 @@
     }
 
     /// The name the sheets use for this device.
-    enum SetupDevice {
+    @MainActor enum SetupDevice {
         static var name: String {
             #if os(macOS)
                 "Mac"

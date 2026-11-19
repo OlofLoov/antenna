@@ -285,7 +285,7 @@
                 }
             case .guide:
                 GuideRegularScreen { sidebarButton(columns) }
-                    .environment(\.guideBoardOpenLive) { section = .live }
+                    .environment(\.guideBoardOpenLive, GuideOpenLiveAction { section = .live })
             case .movies:
                 ShelfRegularScreen(kind: .movie, browse: $browse) { sidebarButton(columns) }
                     .environment(\.openSearch, searchOpener)
