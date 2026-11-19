@@ -126,4 +126,33 @@ import Testing
         let english = IntentFailure.alreadyFavorite(channel: "BBC One").description(Locale(identifier: "en_US"))
         #expect(english == "BBC One is already a favorite.")
     }
+
+    @Test("localization/the-app-speaks-the-user-s-language a one-unit intro offer reads in French and Swedish")
+    func oneUnitOffer() {
+        let week = IntroOffer(payment: .freeTrial, displayPrice: "0", unit: .week)
+        let month = IntroOffer(payment: .payUpFront, displayPrice: "19 kr", unit: .month)
+        let monthly = IntroOffer(payment: .payAsYouGo, displayPrice: "9 kr", unit: .month, periodCount: 3)
+        let french = Locale(identifier: "fr_FR")
+        let swedish = Locale(identifier: "sv_SE")
+        #expect(
+            PaywallCopy.yearlyLine(offer: week, displayPrice: "9,99 €", locale: french).text
+                == "Essai gratuit\u{A0}: 1 semaine, puis 9,99 € par an")
+        #expect(
+            PaywallCopy.yearlyLine(offer: month, displayPrice: "9,99 €", locale: french).text == "19 kr pendant 1 mois, puis 9,99 € par an")
+        #expect(PaywallCopy.yearlyLine(offer: week, displayPrice: "99 kr", locale: swedish).text == "Gratis i 1 vecka, sedan 99 kr per år")
+        #expect(
+            PaywallCopy.yearlyLine(offer: monthly, displayPrice: "99 kr", locale: swedish).text
+                == "9 kr per period om 1 månad i 3 månader, sedan 99 kr per år")
+        #expect(
+            PaywallCopy.yearlyLine(offer: month, displayPrice: "$9.99", locale: Locale(identifier: "en_US")).text
+                == "19 kr for the first month, then $9.99 per year")
+    }
+
+    @Test("localization/the-app-speaks-the-user-s-language what VoiceOver reads for scores and the player position")
+    func spokenInSwedish() {
+        let swedish = Locale(identifier: "sv_SE")
+        #expect(Score(site: .tmdb, value: 7.4, scale: 10).spoken(swedish) == "TMDB-användarbetyg 74 procent")
+        #expect(TitleMetadata.spokenRating(7.4, locale: swedish) == "betyg 7.4 av 10")
+        #expect(TitleTimeline(time: .zero, length: nil).spokenText(locale: swedish) == "0 sekunder")
+    }
 }

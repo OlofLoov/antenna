@@ -165,6 +165,10 @@ import Testing
         #expect(
             String(localized: SourceRemoval.message(channels: nil, favorites: 0, signedInToICloud: false))
                 == "Removes its guide from this device.")
+        // localization/the-app-speaks-the-user-s-language: both counts come from the catalog.
+        #expect(
+            Words(Locale(identifier: "sv_SE"))(SourceRemoval.message(channels: 412, favorites: 2, signedInToICloud: false))
+                == "Tar bort dess 412 kanaler, 2 favoriter och tablå från den här enheten.")
         #expect(String(localized: SourceRemoval.title(name: "Home")) == "Delete Home?")
 
         await SourceRemoval(credentials: held).delete(record, in: context)

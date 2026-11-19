@@ -22,14 +22,9 @@ struct SourceRemoval {
     /// the source never loaded, the favorites clause at 0, and the ending
     /// reads "from this device." when not signed in to iCloud. Each shape
     /// is one whole sentence, so a translation can order it freely.
-    static func message(channels: Int?, favorites: Int, signedInToICloud: Bool, text: SetupText = SetupText()) -> LocalizedStringResource {
-        let channelCount: LocalizedStringResource? = channels.map { $0 == 1 ? "1 channel" : "\(text.count($0)) channels" }
-        let favoriteCount: LocalizedStringResource? =
-            switch favorites {
-            case 0: nil
-            case 1: "1 favorite"
-            default: "\(text.count(favorites)) favorites"
-            }
+    static func message(channels: Int?, favorites: Int, signedInToICloud: Bool) -> LocalizedStringResource {
+        let channelCount = channels.map(Self.channelCount)
+        let favoriteCount = favorites == 0 ? nil : Self.favoriteCount(favorites)
         switch (channelCount, favoriteCount, signedInToICloud) {
         case (let channels?, let favorites?, true):
             return "Removes its \(channels), \(favorites) and guide from every device signed in to your iCloud account."
@@ -48,6 +43,18 @@ struct SourceRemoval {
         case (nil, nil, false):
             return "Removes its guide from this device."
         }
+    }
+
+    // Xcode does not extract a literal declared as `LocalizedStringResource?`
+    // next to another literal, so each count is a function with `return`s.
+    private static func channelCount(_ count: Int) -> LocalizedStringResource {
+        if count == 1 { return "1 channel" }
+        return "\(count) channels"
+    }
+
+    private static func favoriteCount(_ count: Int) -> LocalizedStringResource {
+        if count == 1 { return "1 favorite" }
+        return "\(count) favorites"
     }
 
     /// How many favorites, in every profile, point at `id`.

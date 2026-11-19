@@ -58,7 +58,7 @@ public struct TimeshiftStore: Sendable {
             let retired = root.appending(path: Self.retiredPrefix + UUID().uuidString)
             doomed.append((try? FileManager.default.moveItem(at: entry, to: retired)) != nil ? retired : entry)
         }
-        DispatchQueue.global(qos: .utility).async {
+        DispatchQueue.global(qos: .utility).async { [doomed] in
             for entry in doomed { try? FileManager.default.removeItem(at: entry) }
             deleted?()
         }

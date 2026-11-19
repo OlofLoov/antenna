@@ -171,7 +171,7 @@ struct OnboardingProgress {
         }
         let matched = guides.map(\.matched).reduce(0, +)
         if let days = guides.map(\.days).max(), days > 0, matched > 0 {
-            tiles.append(.init(id: "guide", value: .verbatim(text.days(days)), caption: "of guide · \(text.count(matched)) channels"))
+            tiles.append(.init(id: "guide", value: .verbatim(text.days(days)), caption: "of guide · \(matched) channels"))
         }
         let libraries = setups.compactMap { $0.library?.value }
         if !libraries.contains(where: { $0 == nil }) {
@@ -181,11 +181,10 @@ struct OnboardingProgress {
         let catchUp = tallies.map(\.catchUpChannels).reduce(0, +)
         if catchUp > 0 {
             let days = tallies.compactMap(\.catchUpDays).max()
-            let channels = text.count(catchUp)
             tiles.append(
                 .init(
                     id: "catchUp", value: days.map { LocalizedStringResource.verbatim(text.days($0)) } ?? "Catch-up",
-                    caption: days == nil ? "on \(channels) channels" : "of catch-up on \(channels) channels"
+                    caption: days == nil ? "on \(catchUp) channels" : "of catch-up on \(catchUp) channels"
                 ))
         }
         return tiles

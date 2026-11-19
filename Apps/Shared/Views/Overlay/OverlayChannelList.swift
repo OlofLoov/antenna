@@ -10,7 +10,7 @@
     /// one drawn while the catalogue, the group and the entry are the same,
     /// so a focus move elsewhere in the overlay does not walk every row of a
     /// large group again. The guide redraws its rows on its own.
-    struct OverlayChannelList: View, Equatable {
+    struct OverlayChannelList: View, @MainActor Equatable {
         let catalogue: Catalogue<PersistentIdentifier>
         let group: CatalogueGroup
         /// The row the list opens at and focus enters on: the playing
@@ -22,7 +22,7 @@
         let pick: (Channel) -> Void
         let toggleFavorite: (Channel, RowKey) -> Void
 
-        nonisolated static func == (lhs: Self, rhs: Self) -> Bool {
+        static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.catalogue.revision == rhs.catalogue.revision && lhs.group == rhs.group && lhs.entry == rhs.entry
                 && lhs.multiView == nil && rhs.multiView == nil
         }

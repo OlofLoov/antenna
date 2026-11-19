@@ -791,6 +791,69 @@ Catalog check on CI:
   literal. The four switches use `return` now. Xcode 26.6 is not on the
   local machine, so the next CI run is the proof.
 
+Sweep after the reviews:
+- The delete-source message said "3 favorites" in English in every
+  language. Xcode's string extraction skips a literal whose declared type
+  is an optional resource when it sits in a ternary or a `switch` next to
+  another literal (`let x: LocalizedStringResource? = n == 1 ? "1 favorite"
+  : "\(n) favorites"`). The key never reached the export, so
+  `scripts/sync-strings.sh --check`, which compares the export with the
+  catalogs, had nothing to compare. Checked with `swift-frontend
+  -emit-localized-strings` (Xcode 27.2) on a scratch file: the same
+  literal returned from a function, optional or not, is extracted. This is
+  the local cousin of the Xcode 26.6 `switch` gap above. A rule in
+  `scripts/check-rules.sh` now fails on any declaration typed
+  `LocalizedStringResource?`, `String.LocalizationValue?` or
+  `LocalizedStringKey?`, and each count is a function that returns a
+  non-optional resource with `return` statements, the shape both Xcode
+  versions extract. The `switch` gap itself has no rule: a grep cannot
+  tell a copy `switch` from the 300 symbol-name ones, so CI's check on
+  Xcode 26.6 stays the guard.
+- A pass over interpolated literals that match no catalog key found three
+  more strings that were English in every language: the guide's "<title>,
+  details" announcement (`AccessibilityNotification.Announcement` takes a
+  `String`), AntennaCore's spoken scores ("TMDB user score 74 percent",
+  "rated 7.4 out of 10") and the player's spoken position ("12 minutes of
+  1 hour"). They go through `Words` now. The "7.4" itself still has a
+  period in every language.
+- Counts that arrived as text ("%@ channels", "on %@ channels", "of guide
+  · %@ channels", "of catch-up on %@ channels") take the `Int` now, so
+  each is a `%lld` entry with plural forms in every language, all six in
+  Arabic, and English one forms for the three onboarding captions.
+- English read "$1.99 for month" for a one-month offer paid up front,
+  since the one form is the bare unit that "First month free" needs. The
+  two price lines now say "for the first <period>": "$1.99 for the first
+  month", "$0.99 per month for the first 3 months".
+- French and Swedish one forms of the offer periods carry the number, as
+  Spanish and Portuguese do: "Essai gratuit : 1 semaine", "pendant 1
+  mois", and "par période de 1 mois pendant 3 mois" for pay as you go.
+  Swedish "Första vecka gratis" lacked the definite form; it is "Gratis i
+  1 vecka", and pay as you go reads "per period om 1 månad i 3 månader".
+  German keeps its article forms. Arabic keeps the bare noun, which reads
+  after "أول", "لمدة" and "لكل".
+- Five Swedish entries were still `needs_review`: the paywall's two link
+  words, the renewal sentence and the Apple TV "Terms:" and "Privacy:"
+  labels. They read right and are `translated` now. "integritetspolicy"
+  stays lowercase, since the legal sentence holds it mid-sentence and the
+  link is found by the exact words. English entries marked `new` are the
+  copies with numbered arguments that Xcode writes for the source
+  language; the sync rewrites them, so they stay.
+- Portuguese (Brazil): Apple's Brazilian iPhone User Guide calls Picture
+  in Picture "PIP" ("Multitarefa com PIP no iPhone", "Inicie o PIP",
+  support.apple.com/pt-br/guide/iphone/iphcc3587b5d). "Imagem no Imagem"
+  is gone: the control is "PIP" and the status "Reproduzindo em PIP". The
+  Apple TV guide was not checked; the term is assumed to be the same there.
+- Portuguese (Brazil) catch-up is "Replay", as in French, in every entry.
+  "Reprise" reads as a rerun in Brazil.
+- The 35 Arabic entries that PR 11 moved to "•" and back to
+  `needs_review` read right and are `translated`, with the new "of guide
+  • %lld channels" forms written the same way.
+- `OverlayChannelList`'s `==` read the main-actor `multiView` from a
+  nonisolated function. Its `Equatable` conformance is main-actor isolated
+  now (`@MainActor Equatable`), which `.equatable()` accepts in a view
+  body. The tvOS build also warned on `doomed` in `TimeshiftStore`, which
+  the cleanup closure now captures by value.
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

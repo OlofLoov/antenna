@@ -127,15 +127,17 @@ public struct Score: Sendable, Hashable, Codable {
         }
     }
 
-    /// What VoiceOver reads: "TMDB user score 74 percent".
-    public var spoken: String? {
-        guard let share else { return nil }
+    /// What VoiceOver reads: "TMDB user score 74 percent", in the
+    /// language of `locale`.
+    public func spoken(_ locale: Locale = .autoupdatingCurrent) -> String? {
+        guard let share, let text else { return nil }
+        let words = Words(locale)
         let percent = Int((share * 100).rounded())
         switch site {
-        case .imdb: return "IMDb \(text ?? "") out of 10"
-        case .metacritic: return "Metacritic \(percent) out of 100"
-        case .rottenTomatoes: return "Rotten Tomatoes \(percent) percent"
-        case .tmdb: return "TMDB user score \(percent) percent"
+        case .imdb: return words("IMDb \(text) out of 10")
+        case .metacritic: return words("Metacritic \(percent) out of 100")
+        case .rottenTomatoes: return words("Rotten Tomatoes \(percent) percent")
+        case .tmdb: return words("TMDB user score \(percent) percent")
         }
     }
 

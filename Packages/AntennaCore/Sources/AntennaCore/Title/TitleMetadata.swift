@@ -110,9 +110,10 @@ public struct TitleMetadata: Sendable, Hashable {
         decimal(value).map { "★ \($0)" }
     }
 
-    /// "rated 7.4 out of 10", what VoiceOver reads for `rating(_:)`.
-    public static func spokenRating(_ value: Double) -> String? {
-        decimal(value).map { "rated \($0) out of 10" }
+    /// "rated 7.4 out of 10", what VoiceOver reads for `rating(_:)`, in
+    /// the language of `locale`.
+    public static func spokenRating(_ value: Double, locale: Locale = .autoupdatingCurrent) -> String? {
+        decimal(value).map { Words(locale)("rated \($0) out of 10") }
     }
 
     /// "7.4": one decimal, nil for 0 or less or not finite.

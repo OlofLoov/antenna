@@ -61,8 +61,8 @@ public enum PaywallCopy {
         .lineLifetime: "Pay once. Yours for good.",
         .lineRenews: "Renews every year. Cancel any time.",
         .lineFreeTrial: "First <period> free, then <displayPrice> per year",
-        .lineIntroPrice: "<offer displayPrice> for <period>, then <displayPrice> per year",
-        .lineIntroPerPeriod: "<offer displayPrice> per <unit> for <period>, then <displayPrice> per year",
+        .lineIntroPrice: "<offer displayPrice> for the first <period>, then <displayPrice> per year",
+        .lineIntroPerPeriod: "<offer displayPrice> per <unit> for the first <period>, then <displayPrice> per year",
         .unitPerYear: "per year",
         .unitOneTime: "one time",
         .priceLoading: "Loading price",
@@ -124,10 +124,11 @@ public enum PaywallCopy {
         case .freeTrial:
             return Line(.lineFreeTrial, words("First \(period) free, then \(displayPrice) per year"))
         case .payUpFront:
-            return Line(.lineIntroPrice, words("\(offer.displayPrice) for \(period), then \(displayPrice) per year"))
+            return Line(.lineIntroPrice, words("\(offer.displayPrice) for the first \(period), then \(displayPrice) per year"))
         case .payAsYouGo:
             let unit = offer.unit.phrase(offer.value, words)
-            return Line(.lineIntroPerPeriod, words("\(offer.displayPrice) per \(unit) for \(period), then \(displayPrice) per year"))
+            return Line(
+                .lineIntroPerPeriod, words("\(offer.displayPrice) per \(unit) for the first \(period), then \(displayPrice) per year"))
         }
     }
 
