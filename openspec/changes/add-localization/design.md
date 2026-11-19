@@ -609,6 +609,15 @@ German review:
   the sentence. Catch-up is "Mediathek", so the library is "Bibliothek".
   The tab is "Programm", and longer copy says "Programmführer".
 
+PR 9, Portuguese (Brazil):
+- The fallback holds. An iPhone simulator launched with `-AppleLanguages
+  (pt-PT) -AppleLocale pt_PT` shows the `pt-BR` text ("Todos os canais",
+  "Ao vivo", "Ajustes"), and a Core test resolves `pt_PT` to the same
+  table. The catalog code is `pt-BR`, so the built app holds
+  `pt-BR.lproj`.
+- "você", Apple's Brazilian names ("Ajustes", "Chaves do iCloud",
+  "Compartilhamento Familiar", "Conta Apple"). Catch-up is "Reprise".
+
 ## Open Questions
 
 - Who reviews each language. The review tasks stay open until a reviewer is named.

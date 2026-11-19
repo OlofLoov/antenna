@@ -55,6 +55,12 @@
             "value" : "Antenna se connecte aux serveurs TV de votre réseau domestique quand l’une de vos sources y renvoie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O Antenna se conecta a servidores de TV na sua rede doméstica quando uma das suas fontes aponta para lá."
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
