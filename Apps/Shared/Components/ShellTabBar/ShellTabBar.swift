@@ -58,10 +58,10 @@ enum ShellTabBar {
         var body: some View {
             HStack(spacing: 12) {
                 Image(systemName: "antenna.radiowaves.left.and.right")
-                    .font(.system(size: 30))
+                    .font(.boardStyle(30))
                     .accessibilityHidden(true)
                 Text("Antenna")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.boardStyle(28, weight: .bold))
                     .accessibilityIdentifier("shell.mark")
             }
             .foregroundStyle(Palette.text)
@@ -96,7 +96,7 @@ enum ShellTabBar {
 
         var body: some View {
             label
-                .font(.system(size: 26, weight: isFocused || look != .plain ? .semibold : .regular))
+                .font(.boardStyle(26, weight: isFocused || look != .plain ? .semibold : .regular))
                 .padding(.vertical, 10)
                 .padding(.horizontal, 26)
                 .foregroundStyle(isFocused || look == .currentInContent ? Palette.ground : Palette.text)
@@ -123,7 +123,7 @@ enum ShellTabBar {
         var body: some View {
             Button(action: open) {
                 Text(tile.initial)
-                    .font(.system(size: 26, weight: .bold))
+                    .font(.boardStyle(26, weight: .bold))
             }
             .buttonStyle(ProfileStyle(color: Color(hex: tile.color)))
             .accessibilityLabel("Profile, \(tile.name)")
@@ -161,7 +161,7 @@ enum ShellTabBar {
         var body: some View {
             Button(action: open) {
                 Image(systemName: "gearshape")
-                    .font(.system(size: 30))
+                    .font(.boardStyle(30))
             }
             .buttonStyle(GearStyle())
             .accessibilityLabel("Settings")
@@ -195,7 +195,7 @@ enum ShellTabBar {
 
         var body: some View {
             Text(date, format: .dateTime.hour().minute())
-                .font(.system(size: 34, weight: .semibold))
+                .font(.boardStyle(34, weight: .semibold))
                 .letterSpacing(0.5)
                 .monospacedDigit()
                 .foregroundStyle(Palette.text)

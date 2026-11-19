@@ -74,7 +74,7 @@ extension Browse {
                     .accessibilityIdentifier("\(identifier).retry")
                 Button(action: dismiss) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.boardStyle(13, weight: .semibold))
                         .foregroundStyle(Palette.textMuted)
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())

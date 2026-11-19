@@ -79,7 +79,7 @@ enum Paywall {
 
         var body: some View {
             Text(status.text)
-                .font(.system(size: size))
+                .font(.boardStyle(size))
                 .foregroundStyle(status.isError ? Paywall.errorText : Palette.textMuted)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -95,7 +95,7 @@ enum Paywall {
 
         var body: some View {
             Text(line.text)
-                .font(.system(size: size, weight: .semibold))
+                .font(.boardStyle(size, weight: .semibold))
                 .foregroundStyle(Paywall.body)
                 .multilineTextAlignment(.center)
                 .accessibilityIdentifier("paywall.lapsedNote")

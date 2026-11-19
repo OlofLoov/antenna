@@ -45,7 +45,7 @@ extension Paywall {
                 .padding(.top, 4)
                 if let status = state.status { StatusLine(status: status, size: 15) }
                 Label(PaywallCopy.text(.familyIncluded, locale: locale), systemImage: "person.2")
-                    .font(.system(size: 12))
+                    .font(.boardStyle(12))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("paywall.familyNote")
             case .unavailable(let reason):
@@ -84,7 +84,7 @@ extension Paywall {
     private struct TouchMark: View {
         var body: some View {
             Image(systemName: Paywall.mark)
-                .font(.system(size: 40))
+                .font(.boardStyle(40))
                 .frame(width: 88, height: 88)
                 .background(Paywall.markTile, in: RoundedRectangle(cornerRadius: 22))
                 .accessibilityHidden(true)
@@ -99,13 +99,13 @@ extension Paywall {
         var body: some View {
             VStack(spacing: 10) {
                 Text(title.text)
-                    .font(.system(size: 34, weight: .heavy))
+                    .font(.boardStyle(34, weight: .heavy))
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier("paywall.title")
                     .modifier(Paywall.CopyKey(key: title.key))
                 if let note { LapsedNote(line: note, size: 15) }
                 Text(message.text)
-                    .font(.system(size: 17))
+                    .font(.boardStyle(17))
                     .foregroundStyle(Paywall.body)
                     .accessibilityIdentifier("paywall.body")
             }
@@ -126,9 +126,9 @@ extension Paywall {
             Button(action: buy) {
                 HStack(spacing: 14) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(product.name(locale)).font(.system(size: 17, weight: .semibold))
+                        Text(product.name(locale)).font(.boardStyle(17, weight: .semibold))
                         Text(product.purchasing ? PaywallCopy.text(.lineWaiting, locale: locale) : product.line.text)
-                            .font(.system(size: 13))
+                            .font(.boardStyle(13))
                             .foregroundStyle(Palette.textMuted)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -138,18 +138,17 @@ extension Paywall {
                     } else {
                         VStack(alignment: .trailing, spacing: 2) {
                             PriceText(price: product.price)
-                                .font(.system(size: 17, weight: .bold))
-                            Text(product.unit(locale)).font(.system(size: 12)).foregroundStyle(Palette.textMuted)
+                                .font(.boardStyle(17, weight: .bold))
+                            Text(product.unit(locale)).font(.boardStyle(12)).foregroundStyle(Palette.textMuted)
                         }
                     }
                 }
-                .padding(.vertical, 14)
-                .padding(.horizontal, 16)
-                .frame(minHeight: 72)
-                .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 14))
-                .contentShape(RoundedRectangle(cornerRadius: 14))
+                .padding(.vertical, 8)
+                .frame(minHeight: 60)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle(radius: 12))
+            .tint(Palette.text)
             .disabled(!product.enabled)
             .opacity(product.enabled || product.purchasing ? 1 : 0.4)
             .accessibilityIdentifier(product.identifier)
@@ -183,18 +182,18 @@ extension Paywall {
         var body: some View {
             VStack(spacing: 10) {
                 Image(systemName: reason == .notSold ? "storefront" : "wifi.exclamationmark")
-                    .font(.system(size: 20))
+                    .font(.boardStyle(20))
                     .frame(width: 44, height: 44)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 12))
                     .accessibilityHidden(true)
                 Text(PaywallCopy.text(.unavailableTitle, locale: locale))
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.boardStyle(17, weight: .semibold))
                     .accessibilityIdentifier("paywall.unavailable.title")
                 if let status {
                     StatusLine(status: status, size: 15)
                 } else {
                     Text(PaywallCopy.text(reason == .notSold ? .statusNotInStorefront : .unavailableBody, locale: locale))
-                        .font(.system(size: 15))
+                        .font(.boardStyle(15))
                         .foregroundStyle(Palette.textMuted)
                         .multilineTextAlignment(.center)
                         .modifier(Paywall.CopyKey(key: reason == .notSold ? .statusNotInStorefront : .unavailableBody))
@@ -218,17 +217,17 @@ extension Paywall {
         var body: some View {
             HStack(spacing: 14) {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.boardStyle(18, weight: .bold))
                     .frame(width: 40, height: 40)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTouch, locale: locale))
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.boardStyle(17, weight: .semibold))
                         .accessibilityIdentifier("paywall.restored.kind")
                     let note = PaywallCopy.restoredNote(grant, locale: locale)
                     Text(note.text)
-                        .font(.system(size: 13))
+                        .font(.boardStyle(13))
                         .foregroundStyle(Palette.textMuted)
                         .modifier(Paywall.CopyKey(key: note.key))
                         .accessibilityIdentifier("paywall.restored.note")
@@ -250,7 +249,7 @@ extension Paywall {
 
         var body: some View {
             Text(links.legal(locale))
-                .font(.system(size: 12))
+                .font(.boardStyle(12))
                 .foregroundStyle(Palette.textMuted)
                 .multilineTextAlignment(.center)
                 .padding(.top, 6)
@@ -266,12 +265,10 @@ extension Paywall {
         var body: some View {
             Button(action: action) {
                 Text(title)
-                    .font(.system(size: 17, weight: .bold))
-                    .frame(maxWidth: .infinity, minHeight: 52)
-                    .foregroundStyle(Palette.ground)
-                    .background(Palette.text, in: RoundedRectangle(cornerRadius: 14))
+                    .font(.boardStyle(17, weight: .bold))
+                    .frame(maxWidth: .infinity, minHeight: 44)
             }
-            .buttonStyle(.plain)
+            .primaryActionStyle()
             .accessibilityIdentifier(identifier)
         }
     }
@@ -283,11 +280,9 @@ extension Paywall {
 
         var body: some View {
             Button(title, action: action)
-                .font(.system(size: 15))
-                .foregroundStyle(Palette.textMuted)
+                .font(.boardStyle(15))
                 .frame(maxWidth: .infinity, minHeight: 44)
-                .contentShape(Rectangle())
-                .buttonStyle(.plain)
+                .buttonStyle(.borderless)
                 .accessibilityIdentifier(identifier)
         }
     }

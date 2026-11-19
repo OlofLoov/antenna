@@ -41,7 +41,7 @@ extension ChannelOverlay {
             VStack(alignment: .leading, spacing: 28) {
                 if let eyebrow {
                     Text(eyebrow.uppercased())
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.boardStyle(20, weight: .semibold))
                         .letterSpacing(1.5)
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityIdentifier("overlay.pickTarget")
@@ -73,12 +73,12 @@ extension ChannelOverlay {
                     .accessibilityIdentifier("overlay.panel.logo")
                 VStack(alignment: .leading, spacing: 8) {
                     Text(name)
-                        .font(.system(size: 38, weight: .bold))
+                        .font(.boardStyle(38, weight: .bold))
                         .lineLimit(1)
                     HStack(spacing: 10) {
                         ForEach(badges, id: \.self) { badge in
                             Text(badge)
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(.boardStyle(18, weight: .semibold))
                                 .letterSpacing(1)
                                 .foregroundStyle(ChannelOverlay.tileText)
                                 .padding(.horizontal, 10)
@@ -97,24 +97,24 @@ extension ChannelOverlay {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(alignment: .firstTextBaseline) {
                         Text("NOW")
-                            .font(.system(size: 20, weight: .semibold))
+                            .font(.boardStyle(20, weight: .semibold))
                             .letterSpacing(1.5)
                             .foregroundStyle(Palette.accent)
                         Spacer(minLength: 12)
                         Text(now.times)
-                            .font(.system(size: 22))
+                            .font(.boardStyle(22))
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("overlay.panel.remaining")
                     }
                     Text(now.title)
-                        .font(.system(size: 32, weight: .semibold))
+                        .font(.boardStyle(32, weight: .semibold))
                         .lineLimit(2)
                         .accessibilityIdentifier("overlay.panel.now")
                     PanelProgress(fraction: now.progress)
                         .accessibilityIdentifier("overlay.panel.progress")
                     if let summary = now.summary {
                         Text(summary)
-                            .font(.system(size: 24))
+                            .font(.boardStyle(24))
                             .lineSpacing(6)
                             .foregroundStyle(ChannelOverlay.tileText)
                             .lineLimit(4)
@@ -123,7 +123,7 @@ extension ChannelOverlay {
                 }
             } else {
                 Text(nothingOn)
-                    .font(.system(size: 26))
+                    .font(.boardStyle(26))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("overlay.panel.now")
             }
@@ -178,21 +178,21 @@ extension ChannelOverlay {
         var body: some View {
             HStack(alignment: .firstTextBaseline, spacing: 20) {
                 Text(item.time)
-                    .font(.system(size: 22).monospacedDigit())
+                    .font(.boardStyle(22).monospacedDigit())
                     .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
                     .frame(width: 92, alignment: .leading)
                 Text(item.title)
-                    .font(.system(size: 26))
+                    .font(.boardStyle(26))
                     .lineLimit(1)
                 Spacer(minLength: 12)
                 if let mark, isFocused {
                     Text(mark ? ReminderText.reminderSet() : ReminderText.remindMe())
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.boardStyle(22, weight: .semibold))
                         .lineLimit(1)
                 }
                 if mark == true {
                     Image(systemName: "bell.fill")
-                        .font(.system(size: 20))
+                        .font(.boardStyle(20))
                         .accessibilityHidden(true)
                 }
             }
@@ -207,15 +207,12 @@ extension ChannelOverlay {
 
     private struct NextRowCard<Label: View>: View {
         let label: Label
-        @Environment(\.isFocused) private var isFocused
 
         var body: some View {
             label
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .padding(.vertical, 7)
+                .padding(.vertical, 8)
                 .padding(.horizontal, 12)
-                .background(isFocused ? Palette.focus : Color.clear, in: RoundedRectangle(cornerRadius: 10))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+                .focusCard(.small)
                 .padding(.horizontal, -12)
         }
     }
@@ -271,7 +268,7 @@ extension ChannelOverlay {
         var body: some View {
             Button(action: toggle) {
                 Image(systemName: isFavorite ? "star.fill" : "star")
-                    .font(.system(size: 26))
+                    .font(.boardStyle(26))
             }
             .buttonStyle(PanelButtonStyle(width: 64))
             .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
@@ -289,16 +286,13 @@ extension ChannelOverlay {
     private struct PanelButtonLabel<Label: View>: View {
         let label: Label
         let width: CGFloat?
-        @Environment(\.isFocused) private var isFocused
 
         var body: some View {
             label
-                .font(.system(size: 24, weight: .semibold))
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
+                .font(.boardStyle(24, weight: .semibold))
                 .padding(.horizontal, width == nil ? 28 : 0)
                 .frame(width: width, height: 64)
-                .background(isFocused ? Palette.focus : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 12))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+                .focusCard(.capsule, resting: Palette.surface(0.12))
         }
     }
 }
@@ -361,7 +355,7 @@ extension ChannelOverlay {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 26))
+                .font(.boardStyle(26))
                 .foregroundStyle(Palette.textMuted)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
@@ -378,7 +372,7 @@ extension ChannelOverlay {
         var body: some View {
             let color = isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted
             Text(text)
-                .font(.system(size: 18, weight: .semibold))
+                .font(.boardStyle(18, weight: .semibold))
                 .letterSpacing(1)
                 .foregroundStyle(color)
                 .padding(.horizontal, 10)

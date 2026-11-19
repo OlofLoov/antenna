@@ -12,7 +12,7 @@ enum PlayerStatus {
         var caption: Font
 
         /// `TV-Player-Buffering`: a 64 pt ring and a 26 pt line.
-        static let television = Metrics(ring: 64, stroke: 5, gap: 24, caption: .system(size: 26))
+        static let television = Metrics(ring: 64, stroke: 5, gap: 24, caption: .boardStyle(26))
         /// The iPhone, iPad and Mac player, not drawn; the same layout at a third of the size.
         static let compact = Metrics(ring: 32, stroke: 3, gap: 10, caption: .footnote)
     }

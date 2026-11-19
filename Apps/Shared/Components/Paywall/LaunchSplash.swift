@@ -5,7 +5,7 @@ import SwiftUI
 struct LaunchSplash: View {
     var body: some View {
         Image(systemName: Paywall.mark)
-            .font(.system(size: 40))
+            .font(.boardStyle(40))
             .foregroundStyle(Palette.text)
             .frame(width: 88, height: 88)
             .background(Paywall.markTile, in: RoundedRectangle(cornerRadius: 22))

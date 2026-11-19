@@ -13,8 +13,6 @@ extension GuideBoard {
             let look: ChannelLook
             let watch: () -> Void
             @ViewBuilder var logo: Logo
-            @ScaledMetric(relativeTo: .subheadline) private var nameSize: CGFloat = 15
-            @ScaledMetric(relativeTo: .footnote) private var numberSize: CGFloat = 13
 
             var body: some View {
                 Button(action: watch) {
@@ -24,12 +22,12 @@ extension GuideBoard {
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                         if let number {
                             ChannelNumberText(number)
-                                .font(.system(size: numberSize))
+                                .font(.boardStyle(13))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)
                         }
                         Text(name)
-                            .font(.system(size: nameSize, weight: .semibold))
+                            .font(.boardStyle(15, weight: .semibold))
                             .lineLimit(1)
                         Spacer(minLength: 0)
                     }
@@ -50,7 +48,7 @@ extension GuideBoard {
 
             var body: some View {
                 Text(text)
-                    .font(.system(size: 9, weight: .bold))
+                    .font(.boardStyle(9, weight: .bold))
                     .letterSpacing(0.5)
                     .foregroundStyle(look == .playing ? Palette.text : Browse.textSecondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -65,19 +63,17 @@ extension GuideBoard {
             let title: String
             let timing: GuideTiming
             let progress: Double?
-            @ScaledMetric(relativeTo: .subheadline) private var titleSize: CGFloat = 14
-            @ScaledMetric(relativeTo: .caption) private var timeSize: CGFloat = 12
 
             var body: some View {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Text(time)
-                            .font(.system(size: timeSize))
+                            .font(.boardStyle(12))
                             .monospacedDigit()
                             .foregroundStyle(Palette.textMuted)
                         if timing == .now {
                             Text("NOW")
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.boardStyle(11, weight: .bold))
                                 .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
                                 .padding(.vertical, 1)
@@ -86,7 +82,7 @@ extension GuideBoard {
                         }
                     }
                     Text(title)
-                        .font(.system(size: titleSize))
+                        .font(.boardStyle(14))
                         .lineLimit(1)
                         .foregroundStyle(timing == .past ? Palette.textMuted : Palette.text)
                 }
@@ -107,11 +103,10 @@ extension GuideBoard {
         /// A gap between two programmes: just the times, muted.
         struct GapCard: View {
             let times: String
-            @ScaledMetric(relativeTo: .caption) private var size: CGFloat = 12
 
             var body: some View {
                 Text(times)
-                    .font(.system(size: size))
+                    .font(.boardStyle(12))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)
                     .padding(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
@@ -125,11 +120,10 @@ extension GuideBoard {
         /// in place of the cards.
         struct Placeholder: View {
             let text: String
-            @ScaledMetric(relativeTo: .subheadline) private var size: CGFloat = 14
 
             var body: some View {
                 Text(text)
-                    .font(.system(size: size))
+                    .font(.boardStyle(12))
                     .foregroundStyle(Palette.textMuted)
                     .lineLimit(1)
                     .padding(.horizontal, 12)
@@ -158,10 +152,10 @@ extension GuideBoard {
                             .clipShape(RoundedRectangle(cornerRadius: 5))
                         VStack(alignment: .leading, spacing: 2) {
                             Text(title)
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.boardStyle(15, weight: .semibold))
                                 .lineLimit(1)
                             Text(detail)
-                                .font(.system(size: 12))
+                                .font(.boardStyle(12))
                                 .foregroundStyle(Palette.textMuted)
                                 .lineLimit(1)
                         }
@@ -171,7 +165,7 @@ extension GuideBoard {
                                 Circle().fill(GuideBoard.liveDot).frame(width: 6, height: 6)
                                 Text("LIVE")
                             }
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(.boardStyle(11, weight: .semibold))
                             .letterSpacing(1)
                             .padding(.vertical, 3)
                             .padding(.horizontal, 7)

@@ -25,16 +25,16 @@ enum ReminderBanner {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(content.eyebrow)
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.boardStyle(12, weight: .semibold))
                         .letterSpacing(1)
                         .textCase(.uppercase)
                         .foregroundStyle(Palette.textMuted)
                     Text(content.title)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.boardStyle(15, weight: .semibold))
                         .lineLimit(1)
                         .accessibilityIdentifier("reminders.banner.title")
                     Text(content.body)
-                        .font(.system(size: 13))
+                        .font(.boardStyle(13))
                         .foregroundStyle(Palette.textMuted)
                         .lineLimit(1)
                         .accessibilityIdentifier("reminders.banner.body")
@@ -43,7 +43,7 @@ enum ReminderBanner {
                 .accessibilityElement(children: .combine)
                 Button(action: watch) {
                     Text("Watch")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.boardStyle(15, weight: .semibold))
                         .foregroundStyle(Palette.ground)
                         .padding(.horizontal, 16)
                         .frame(height: 36)
@@ -55,7 +55,7 @@ enum ReminderBanner {
                 .accessibilityIdentifier("reminders.banner.watch")
                 Button(action: dismiss) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.boardStyle(14, weight: .semibold))
                         .foregroundStyle(Palette.textMuted)
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
@@ -85,16 +85,16 @@ enum ReminderBanner {
         var body: some View {
             VStack(alignment: .leading, spacing: 14) {
                 Label("Reminder · \(content.eyebrow)", systemImage: "bell.fill")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.boardStyle(18, weight: .semibold))
                     .letterSpacing(1.5)
                     .textCase(.uppercase)
                     .foregroundStyle(Palette.textMuted)
                 Text(content.title)
-                    .font(.system(size: 29, weight: .semibold))
+                    .font(.boardStyle(29, weight: .semibold))
                     .lineLimit(1)
                     .accessibilityIdentifier("reminders.banner.title")
                 Text(content.body)
-                    .font(.system(size: 22))
+                    .font(.boardStyle(22))
                     .foregroundStyle(ChannelOverlay.tileText)
                     .lineLimit(1)
                     .accessibilityIdentifier("reminders.banner.body")
@@ -111,37 +111,18 @@ enum ReminderBanner {
         }
     }
 
-    /// Watch or Dismiss on Apple TV: the white card with focus, 0.12 surface without.
+    /// Watch or Dismiss on Apple TV, a bordered capsule (design-system/controls-use-system-styles).
     struct TelevisionButton: View {
         let title: LocalizedStringResource
         let action: () -> Void
 
         var body: some View {
             Button(title, action: action)
-                .buttonStyle(TelevisionStyle())
+                .font(.boardStyle(22, weight: .semibold))
+                .secondaryActionStyle()
         }
     }
 
-    private struct TelevisionStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            TelevisionLabel(label: configuration.label)
-        }
-    }
-
-    private struct TelevisionLabel<Label: View>: View {
-        let label: Label
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .padding(.horizontal, 28)
-                .frame(height: 64)
-                .background(isFocused ? Palette.focus : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 10))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-        }
-    }
 }
 
 private let previewContent = ReminderBanner.Content(eyebrow: "Starts in 5 min", title: "Match of the Day", body: "22:00 · 104 Sport One")

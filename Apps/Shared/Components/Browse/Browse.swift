@@ -37,7 +37,7 @@ enum Browse {
             ZStack {
                 isSelected ? Browse.tileSelected : Browse.tile
                 Text(text)
-                    .font(.system(size: metrics.tileText, weight: .bold))
+                    .font(.boardStyle(metrics.tileText, weight: .bold))
                     .letterSpacing(1)
                     .foregroundStyle(isSelected ? Palette.text : Browse.textSecondary)
             }
@@ -80,7 +80,7 @@ enum Browse {
         var body: some View {
             VStack(spacing: 12) {
                 Image(systemName: "antenna.radiowaves.left.and.right")
-                    .font(.system(size: 34))
+                    .font(.boardStyle(34))
                     .accessibilityHidden(true)
                 Text("Select a channel")
                     .font(.subheadline)

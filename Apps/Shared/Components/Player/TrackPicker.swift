@@ -14,7 +14,7 @@ enum TrackPicker {
         var body: some View {
             Button(action: open) {
                 Image(systemName: "text.bubble")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -38,7 +38,7 @@ enum TrackPicker {
         var body: some View {
             Button(action: toggle) {
                 Image(systemName: isOn ? "captions.bubble.fill" : "captions.bubble")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -168,7 +168,7 @@ enum TrackPicker {
             Button(action: pick) {
                 HStack(spacing: 10) {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.boardStyle(14, weight: .bold))
                         .foregroundStyle(Palette.accent)
                         .frame(width: 18)
                         .opacity(row.isSelected ? 1 : 0)

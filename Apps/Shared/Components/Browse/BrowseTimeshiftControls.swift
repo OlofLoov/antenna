@@ -43,7 +43,7 @@
                     HStack(spacing: 10) {
                         if let badge = scrub.badge {
                             Text(badge)
-                                .font(.system(size: 10, weight: .bold))
+                                .font(.boardStyle(10, weight: .bold))
                                 .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 6)
@@ -73,7 +73,7 @@
                         glyph("gobackward.15", label: "Back 15 seconds", id: "timeshift.skipBack") { skip(false) }
                         Button(action: playPause) {
                             Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.boardStyle(12, weight: .bold))
                                 .foregroundStyle(Palette.ground)
                                 .frame(width: 32, height: 32)
                                 .background(Palette.text, in: Circle())
@@ -143,7 +143,7 @@
             private func glyph(_ name: String, label: LocalizedStringResource, id: String, action: @escaping () -> Void) -> some View {
                 Button(action: action) {
                     Image(systemName: name)
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.boardStyle(22, weight: .semibold))
                         .frame(width: 32, height: 32)
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
@@ -164,7 +164,7 @@
                     HStack(spacing: 5) {
                         Circle().fill(Palette.textMuted).frame(width: 6, height: 6)
                         Text("LIVE")
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(.boardStyle(11, weight: .semibold))
                             .letterSpacing(1)
                             .lineLimit(1)
                             .fixedSize()
@@ -190,7 +190,7 @@
             var body: some View {
                 Button(action: action) {
                     Image(systemName: "backward.end.fill")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.boardStyle(18, weight: .semibold))
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }

@@ -81,7 +81,7 @@ struct ProfileFlow: View {
             VStack(spacing: 60) {
                 Spacer(minLength: 0)
                 Text("Manage profiles")
-                    .font(.system(size: 56, weight: .bold))
+                    .font(.boardStyle(56, weight: .bold))
                 HStack(spacing: 64) {
                     ForEach(Array(zip(profiles.profiles.indices, profiles.profiles)), id: \.1.id) { index, profile in
                         Button {
@@ -90,7 +90,7 @@ struct ProfileFlow: View {
                             ProfileTileLabel(tile: ProfileTile(profile))
                                 .overlay(alignment: .topTrailing) {
                                     Image(systemName: "pencil.circle.fill")
-                                        .font(.system(size: 48))
+                                        .font(.boardStyle(48))
                                         .accessibilityHidden(true)
                                 }
                         }
@@ -112,7 +112,7 @@ struct ProfileFlow: View {
                 }
                 if !profiles.canAdd {
                     Text("You can have up to eight profiles.")
-                        .font(.system(size: 26))
+                        .font(.boardStyle(26))
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityIdentifier("profiles.limit")
                 }
@@ -139,9 +139,9 @@ struct ProfileFlow: View {
                 Circle()
                     .strokeBorder(isFocused ? Palette.focus : Palette.textMuted, style: StrokeStyle(lineWidth: 3, dash: [10, 8]))
                     .frame(width: 200, height: 200)
-                    .overlay(Image(systemName: "plus").font(.system(size: 80, weight: .light)))
+                    .overlay(Image(systemName: "plus").font(.boardStyle(80, weight: .light)))
                 Text("Add profile")
-                    .font(.system(size: 32, weight: isFocused ? .semibold : .regular))
+                    .font(.boardStyle(32, weight: isFocused ? .semibold : .regular))
             }
             .foregroundStyle(isFocused ? Palette.text : ChannelOverlay.tileText)
             .scaleEffect(isFocused ? 1.08 : 1)
@@ -177,11 +177,11 @@ struct ProfileFlow: View {
                 .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 12) {
                     Text("NAME")
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.boardStyle(22, weight: .semibold))
                         .letterSpacing(1.5)
                         .foregroundStyle(Palette.textMuted)
                     TextField("Name", text: $name)
-                        .font(.system(size: 34))
+                        .font(.boardStyle(34))
                         .accessibilityIdentifier("profiles.edit.name")
                 }
                 .frame(width: 760)
@@ -259,6 +259,6 @@ struct ProfileButton: View {
 
     var body: some View {
         Button(title, role: role, action: action)
-            .font(.system(size: size, weight: .semibold))
+            .font(.boardStyle(size, weight: .semibold))
     }
 }

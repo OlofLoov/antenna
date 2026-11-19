@@ -5,7 +5,9 @@ extension Browse {
     /// (live-tv-on-iphone-ipad-mac/player-controls-when-you-want-them):
     /// pause or play, the programme's progress, the time of day, the LIVE
     /// badge, the extras the platform adds (Picture in Picture on iPhone and
-    /// iPad), and full screen. Controls drawn 30 to 40 pt get a 44 pt hit area.
+    /// iPad), and full screen, on a glass capsule that floats over the
+    /// picture (design-system/liquid-glass-stays-on-the-navigation-layer).
+    /// Every control has a 44 pt hit area.
     struct Controls<Extras: View>: View {
         let isPaused: Bool
         /// How far into the programme, 0 to 1; nil leaves the bar empty.
@@ -22,14 +24,11 @@ extension Browse {
             HStack(spacing: regular ? 14 : 10) {
                 Button(action: playPause) {
                     Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                        .font(.system(size: regular ? 14 : 12, weight: .bold))
-                        .foregroundStyle(Palette.ground)
-                        .frame(width: regular ? 36 : 32, height: regular ? 36 : 32)
-                        .background(Palette.text, in: Circle())
+                        .font(.boardStyle(regular ? 20 : 17, weight: .bold))
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.borderless)
                 .accessibilityLabel(isPaused ? "Play" : "Pause")
                 .accessibilityIdentifier("browse.player.playPause")
                 ProgressTrack(fraction: progress ?? 0, height: regular ? 4 : 3)
@@ -47,9 +46,10 @@ extension Browse {
                 FullScreenButton(isFullScreen: isFullScreen, toggle: toggleFullScreen)
             }
             .foregroundStyle(Palette.text)
-            .padding(.horizontal, regular ? 12 : 6)
-            .padding(.vertical, 2)
-            .background(Palette.scrimTint.opacity(0.72))
+            .tint(Palette.text)
+            .padding(.horizontal, regular ? 12 : 8)
+            .glassEffect(.regular, in: Capsule())
+            .padding(8)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("browse.player.controls")
         }
@@ -99,11 +99,11 @@ extension Browse {
                     systemName: isFullScreen
                         ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right"
                 )
-                .font(.system(size: 16, weight: .semibold))
+                .font(.boardStyle(16, weight: .semibold))
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderless)
             .foregroundStyle(Palette.text)
             .accessibilityLabel(isFullScreen ? "Exit full screen" : "Full screen")
             .accessibilityIdentifier("browse.player.fullscreen")
@@ -125,7 +125,7 @@ extension Browse {
             HStack(spacing: 5) {
                 Circle().fill(Color(red: 0xFF / 255, green: 0x5F / 255, blue: 0x57 / 255)).frame(width: 6, height: 6)
                 Text("LIVE")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.boardStyle(11, weight: .semibold))
                     .letterSpacing(1)
                     .lineLimit(1)
                     .fixedSize()
@@ -147,11 +147,11 @@ extension Browse {
         var body: some View {
             Button(action: goBack) {
                 Image(systemName: "arrow.uturn.backward")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderless)
             .disabled(!isAvailable)
             .opacity(isAvailable ? 1 : 0.4)
             .accessibilityLabel("Previous channel")
@@ -167,11 +167,11 @@ extension Browse {
         var body: some View {
             Button(action: start) {
                 Image(systemName: "pip.enter")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderless)
             .disabled(!isAvailable)
             .opacity(isAvailable ? 1 : 0.4)
             .accessibilityLabel("Picture in picture")
@@ -188,12 +188,12 @@ extension Browse {
         var body: some View {
             Button(action: toggle) {
                 Image(systemName: isFavorite ? "star.fill" : "star")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderless)
             .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
             .accessibilityAddTraits(isFavorite ? .isSelected : [])
             .accessibilityIdentifier("browse.player.favorite")

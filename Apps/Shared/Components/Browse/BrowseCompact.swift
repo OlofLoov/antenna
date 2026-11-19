@@ -15,40 +15,21 @@ extension Browse {
         }
     }
 
-    /// One group chip; the open group is filled white.
+    /// One group chip; the open group is prominent in the accent tint.
     struct Chip: View {
         let title: LocalizedStringResource
         let isSelected: Bool
         let select: () -> Void
-        @ScaledMetric(relativeTo: .subheadline) private var size: CGFloat = 14
 
         var body: some View {
             Button(action: select) {
                 Text(title)
-                    .font(.system(size: size, weight: isSelected ? .semibold : .regular))
+                    .font(.boardStyle(14, weight: isSelected ? .semibold : .regular))
                     .lineLimit(1)
-                    .padding(.vertical, 7)
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: 44)
-                    .contentShape(Capsule())
             }
-            .buttonStyle(ChipStyle(isSelected: isSelected))
+            .chipStyle(isPicked: isSelected)
+            .frame(minHeight: 44)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
-        }
-    }
-
-    private struct ChipStyle: ButtonStyle {
-        let isSelected: Bool
-
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .foregroundStyle(isSelected ? Palette.ground : Palette.text)
-                .background {
-                    Capsule()
-                        .fill(isSelected ? Palette.focus : Palette.surface(0.08))
-                        .padding(.vertical, 6)
-                }
-                .opacity(configuration.isPressed ? 0.7 : 1)
         }
     }
 
@@ -101,7 +82,7 @@ extension Browse {
             let side: CGFloat = metrics == .regular ? 40 : 36
             Button(action: toggle) {
                 Image(systemName: isFavorite ? "star.fill" : "star")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
                     .frame(width: side, height: side)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))

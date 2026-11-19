@@ -13,7 +13,7 @@
             var body: some View {
                 Button(action: toggle) {
                     Image(systemName: symbol)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.boardStyle(15, weight: .semibold))
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
@@ -55,7 +55,7 @@
             var body: some View {
                 VStack(spacing: 8) {
                     Image(systemName: systemImage)
-                        .font(.system(size: 28, weight: .light))
+                        .font(.boardStyle(28, weight: .light))
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityHidden(true)
                     Text(text)

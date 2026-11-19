@@ -151,49 +151,10 @@ enum OnboardingWelcome {
     }
 }
 
-/// The body color and the two Apple TV button styles the paywall still
-/// uses until refresh-visual-design moves it to system styles.
+/// The onboarding screens' body color.
 enum OnboardingStyle {
     /// Body copy under a title, `#D7DEE8` on the boards.
     static let body = Color(red: 0xD7 / 255, green: 0xDE / 255, blue: 0xE8 / 255)
-
-    /// The lifted white card while focused, the 0.12 surface otherwise
-    /// (design-system/focus-is-the-lifted-white-card). 28 pt bold.
-    struct PrimaryTV: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            FocusLabel(
-                label: configuration.label, font: .system(size: 28, weight: .bold),
-                insets: EdgeInsets(top: 20, leading: 48, bottom: 20, trailing: 48), idleText: Palette.text, idleFill: Palette.surface(0.12))
-        }
-    }
-
-    /// Muted text that turns into the white card when focused. 24 pt.
-    struct QuietTV: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            FocusLabel(
-                label: configuration.label, font: .system(size: 24),
-                insets: EdgeInsets(top: 14, leading: 28, bottom: 14, trailing: 28), idleText: Palette.textMuted, idleFill: .clear)
-        }
-    }
-
-    private struct FocusLabel<Label: View>: View {
-        let label: Label
-        let font: Font
-        let insets: EdgeInsets
-        let idleText: Color
-        let idleFill: Color
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(font)
-                .padding(insets)
-                .foregroundStyle(isFocused ? Palette.ground : idleText)
-                .background(isFocused ? Palette.focus : idleFill, in: RoundedRectangle(cornerRadius: 14))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-                .scaleEffect(isFocused ? 1.04 : 1)
-        }
-    }
 }
 
 #Preview("Welcome, iPhone, signed in to iCloud") {

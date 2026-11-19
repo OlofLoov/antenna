@@ -22,11 +22,11 @@ extension GuideGrid {
         var body: some View {
             HStack(spacing: 10) {
                 if case .programme(_, _, true) = content {
-                    Image(systemName: "arrowtriangle.backward.fill").font(.system(size: 14)).accessibilityHidden(true)
+                    Image(systemName: "arrowtriangle.backward.fill").font(.boardStyle(14)).accessibilityHidden(true)
                 }
                 if let title {
                     Text(title)
-                        .font(.system(size: 24))
+                        .font(.boardStyle(24))
                         .lineLimit(1)
                 }
             }
@@ -65,12 +65,12 @@ extension GuideGrid {
             VStack(alignment: .leading, spacing: 6) {
                 if let title {
                     Text(title)
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.boardStyle(24, weight: .semibold))
                         .lineLimit(1)
                 }
                 if let line {
                     Text(line)
-                        .font(.system(size: 18))
+                        .font(.boardStyle(18))
                         .foregroundStyle(GuideGrid.mutedOnFocus)
                         .lineLimit(1)
                 }

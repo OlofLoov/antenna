@@ -22,9 +22,9 @@ enum SetupFromTV {
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Opened from your Apple TV")
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(.boardStyle(15, weight: .semibold))
                         Text("Fill this in here. The source syncs to the Apple TV through iCloud.")
-                            .font(.system(size: 13))
+                            .font(.boardStyle(13))
                             .foregroundStyle(Palette.textMuted)
                     }
                     Spacer(minLength: 0)
@@ -36,7 +36,7 @@ enum SetupFromTV {
                 .accessibilityIdentifier("onboarding.fromTV.banner")
                 if let line = Self.existing(existing, device: device) {
                     Text(line)
-                        .font(.system(size: 13))
+                        .font(.boardStyle(13))
                         .foregroundStyle(Palette.textMuted)
                         .padding(.horizontal, 4)
                         .accessibilityIdentifier("onboarding.fromTV.existing")
@@ -67,7 +67,7 @@ enum SetupFromTV {
 
         var body: some View {
             Text("This code is from a newer Antenna. Update Antenna on this \(device) to set up your Apple TV from here.")
-                .font(.system(size: 13))
+                .font(.boardStyle(13))
                 .foregroundStyle(Palette.textMuted)
                 .padding(.horizontal, 4)
                 .accessibilityIdentifier("onboarding.fromTV.update")
@@ -96,10 +96,10 @@ enum SetupFromTV {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Sending to your Apple TV")
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.boardStyle(22, weight: .bold))
                         .accessibilityAddTraits(.isHeader)
                     Text("Through iCloud. Antenna on the Apple TV picks it up on its own.")
-                        .font(.system(size: 15))
+                        .font(.boardStyle(15))
                         .foregroundStyle(Palette.textMuted)
                 }
                 VStack(spacing: 0) {
@@ -114,12 +114,12 @@ enum SetupFromTV {
                 }
                 .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
                 Label("The login stays in your iCloud Keychain. If the Apple TV asks for it, enter it once there.", systemImage: "lock")
-                    .font(.system(size: 13))
+                    .font(.boardStyle(13))
                     .foregroundStyle(Palette.textMuted)
                 Spacer(minLength: 0)
                 Button(action: continueHere) {
                     Text("Continue on \(device)")
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.boardStyle(17, weight: .bold))
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(primary ? Palette.ground : Palette.text)
                         .background(primary ? Palette.text : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 14))
@@ -216,10 +216,10 @@ enum SetupFromTV {
             HStack(alignment: .top, spacing: 12) {
                 marker.frame(width: 26, height: 26)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.system(size: 16, weight: .semibold))
+                    Text(title).font(.boardStyle(16, weight: .semibold))
                     if let detail {
                         Text(detail)
-                            .font(.system(size: 15))
+                            .font(.boardStyle(15))
                             .foregroundStyle(state == .failed ? OnboardingForm.errorColor : Palette.textMuted)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -239,13 +239,13 @@ enum SetupFromTV {
         @ViewBuilder private var marker: some View {
             switch state {
             case .done:
-                Image(systemName: "checkmark.circle.fill").font(.system(size: 22)).foregroundStyle(Palette.accent)
+                Image(systemName: "checkmark.circle.fill").font(.boardStyle(22)).foregroundStyle(Palette.accent)
             case .running where reduceMotion:
-                Text("In progress").font(.system(size: 11)).foregroundStyle(Palette.textMuted).fixedSize()
+                Text("In progress").font(.boardStyle(11)).foregroundStyle(Palette.textMuted).fixedSize()
             case .running:
                 ProgressView()
             case .failed:
-                Image(systemName: "exclamationmark.circle.fill").font(.system(size: 22)).foregroundStyle(OnboardingForm.errorColor)
+                Image(systemName: "exclamationmark.circle.fill").font(.boardStyle(22)).foregroundStyle(OnboardingForm.errorColor)
             }
         }
 

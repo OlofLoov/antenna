@@ -9,8 +9,8 @@ extension InfoPanel.Frame where Accessory == EmptyView {
 }
 
 extension InfoPanel {
-    /// "Subtitles On" or "Subtitles Off" after the tabs, in the segment
-    /// style: select flips it and the panel stays (`TV-Player-Subtitles`;
+    /// "Subtitles On" or "Subtitles Off" after the tabs, a chip like the
+    /// tabs: select flips it and the panel stays (`TV-Player-Subtitles`;
     /// player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step).
     struct SubtitlesSwitch: View {
         let isOn: Bool
@@ -20,7 +20,8 @@ extension InfoPanel {
             Button(action: toggle) {
                 Label(isOn ? "Subtitles On" : "Subtitles Off", systemImage: isOn ? "captions.bubble.fill" : "captions.bubble")
             }
-            .buttonStyle(SegmentStyle(isSelected: false))
+            .font(.boardStyle(26))
+            .chipStyle(isPicked: false)
             .accessibilityLabel("Subtitles")
             .accessibilityValue(isOn ? "On" : "Off")
             .accessibilityIdentifier("player.panel.subtitles")

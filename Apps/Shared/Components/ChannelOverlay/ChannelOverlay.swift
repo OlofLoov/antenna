@@ -3,8 +3,9 @@ import SwiftUI
 
 /// The Apple TV channel overlay over live video (tv-channel-overlay
 /// capability; `Main`, `Main-Favorites`, `Main-FavoritesEmpty`,
-/// `Main-Empty`). Groups 320 wide, channels 700 wide, the now-and-next
-/// panel in the rest of a 1600 wide scrim, and the clock top right.
+/// `Main-Empty`). Groups 360 wide from the 80 pt safe edge, channels 700
+/// wide, the now-and-next panel in the rest of a 1640 wide panel on the
+/// overlay material, and the clock top right inside the safe area.
 /// Compiles on every platform so the snapshot job renders its previews.
 enum ChannelOverlay {
     /// Muted text on the focused white card (design.md deviation "Text muted on focus").
@@ -24,7 +25,7 @@ enum ChannelOverlay {
             ZStack(alignment: .topLeading) {
                 HStack(spacing: 0) {
                     groups
-                        .frame(width: 320)
+                        .frame(width: 360)
                     Rectangle()
                         .fill(Palette.surface(0.08))
                         .frame(width: 1)
@@ -33,12 +34,12 @@ enum ChannelOverlay {
                     panel
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
-                .frame(width: 1600)
+                .frame(width: 1640)
                 .frame(maxHeight: .infinity)
-                .background(Palette.scrimTint.opacity(0.88))
+                .background { OverlayMaterial() }
                 clock
-                    .padding(.top, 44)
-                    .padding(.trailing, 64)
+                    .padding(.top, 60)
+                    .padding(.trailing, 80)
                     .frame(maxWidth: .infinity, alignment: .topTrailing)
             }
             .foregroundStyle(Palette.text)
@@ -66,7 +67,7 @@ enum ChannelOverlay {
                 Spacer(minLength: 0)
                 search
             }
-            .padding(EdgeInsets(top: 48, leading: 40, bottom: 48, trailing: 20))
+            .padding(EdgeInsets(top: 60, leading: 80, bottom: 60, trailing: 20))
         }
     }
 
@@ -77,7 +78,7 @@ enum ChannelOverlay {
 
         var body: some View {
             Text(Words(locale)(text).uppercased(with: locale))
-                .font(.system(size: 20, weight: .semibold))
+                .font(.boardStyle(20, weight: .semibold))
                 .letterSpacing(1.5)
                 .foregroundStyle(Palette.textMuted)
         }
@@ -103,7 +104,7 @@ enum ChannelOverlay {
                 HStack(spacing: 14) {
                     if let systemImage {
                         Image(systemName: systemImage)
-                            .font(.system(size: 24))
+                            .font(.boardStyle(24))
                             .accessibilityHidden(true)
                     }
                     Text(title)
@@ -126,7 +127,7 @@ enum ChannelOverlay {
             Button(action: open) {
                 HStack(spacing: 14) {
                     Image(systemName: "magnifyingglass")
-                        .font(.system(size: 24))
+                        .font(.boardStyle(24))
                         .accessibilityHidden(true)
                     Text("Search")
                     Spacer(minLength: 0)
@@ -142,7 +143,7 @@ enum ChannelOverlay {
 
         var body: some View {
             Text(String(count))
-                .font(.system(size: 22))
+                .font(.boardStyle(22))
                 .monospacedDigit()
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
         }
@@ -167,17 +168,14 @@ enum ChannelOverlay {
 
         var body: some View {
             label
-                .font(.system(size: size, weight: isFocused || look == .selected ? .semibold : .regular))
-                .foregroundStyle(isFocused ? Palette.ground : muted ? Palette.textMuted : Palette.text)
+                .font(.boardStyle(size, weight: isFocused || look == .selected ? .semibold : .regular))
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
-                .background(fill, in: RoundedRectangle(cornerRadius: 12))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+                .focusCard(.medium, resting: fill, restingText: muted ? Palette.textMuted : Palette.text)
         }
 
         private var fill: Color {
-            if isFocused { return Palette.focus }
-            return look == .selected ? Palette.surface(0.12) : .clear
+            look == .selected ? Palette.surface(0.12) : .clear
         }
     }
 
@@ -195,7 +193,7 @@ enum ChannelOverlay {
                     Eyebrow(text: .verbatim(title))
                     Spacer(minLength: 12)
                     Text(order)
-                        .font(.system(size: 20))
+                        .font(.boardStyle(20))
                         .foregroundStyle(Palette.textMuted)
                 }
                 .padding(.horizontal, 20)
@@ -204,7 +202,7 @@ enum ChannelOverlay {
                 .accessibilityIdentifier("overlay.channelsHeader")
                 rows
             }
-            .padding(.vertical, 48)
+            .padding(.vertical, 60)
             .padding(.horizontal, 24)
         }
     }
@@ -239,7 +237,7 @@ enum ChannelOverlay {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .firstTextBaseline, spacing: 16) {
                             Text(name)
-                                .font(.system(size: 29))
+                                .font(.boardStyle(29))
                                 .lineLimit(1)
                                 .layoutPriority(1)
                             Spacer(minLength: 0)
@@ -271,7 +269,7 @@ enum ChannelOverlay {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 22))
+                .font(.boardStyle(22))
                 .lineLimit(1)
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
         }
@@ -302,7 +300,7 @@ enum ChannelOverlay {
 
         var body: some View {
             Image(systemName: "clock.arrow.circlepath")
-                .font(.system(size: 24))
+                .font(.boardStyle(24))
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
                 .accessibilityLabel("Catch-up")
         }
@@ -314,7 +312,7 @@ enum ChannelOverlay {
 
         var body: some View {
             ChannelNumberText(number)
-                .font(.system(size: 24))
+                .font(.boardStyle(24))
                 .monospacedDigit()
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
                 .frame(width: 52, alignment: .leading)
@@ -334,11 +332,9 @@ enum ChannelOverlay {
         var body: some View {
             label
                 .fontWeight(isFocused ? .semibold : .regular)
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity, minHeight: isFocused ? 100 : 92, alignment: .leading)
-                .background(isFocused ? Palette.focus : .clear, in: RoundedRectangle(cornerRadius: 14))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+                .focusCard(.medium)
         }
     }
 
@@ -352,7 +348,7 @@ enum ChannelOverlay {
             ZStack {
                 isFocused ? ChannelOverlay.tileOnFocus : ChannelOverlay.tile
                 Text(text)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.boardStyle(16, weight: .bold))
                     .letterSpacing(1)
                     .foregroundStyle(isFocused ? Palette.text : ChannelOverlay.tileText)
             }

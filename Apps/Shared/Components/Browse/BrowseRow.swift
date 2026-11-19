@@ -55,18 +55,18 @@ extension Browse {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Text(name)
-                                .font(.system(size: metrics.name * scale, weight: isPlaying ? .semibold : .regular))
+                                .font(.boardStyle(metrics.name, weight: isPlaying ? .semibold : .regular))
                                 .lineLimit(1)
                             Spacer(minLength: 0)
                             if let number {
                                 ChannelNumberText(number)
-                                    .font(.system(size: metrics.detail * scale))
+                                    .font(.boardStyle(metrics.detail))
                                     .monospacedDigit()
                                     .foregroundStyle(Palette.textMuted)
                             }
                         }
                         Text(detail)
-                            .font(.system(size: metrics.detail * scale))
+                            .font(.boardStyle(metrics.detail))
                             .lineLimit(1)
                             .foregroundStyle(isPlaying ? Browse.textSecondary : Palette.textMuted)
                         if let progress {
@@ -75,7 +75,7 @@ extension Browse {
                     }
                     if hasCatchUp {
                         Image(systemName: "clock.arrow.circlepath")
-                            .font(.system(size: (metrics.detail + 2) * scale))
+                            .font(.boardStyle(metrics.detail + 2))
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityHidden(true)
                     }

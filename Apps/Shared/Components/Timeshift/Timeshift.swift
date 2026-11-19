@@ -59,19 +59,19 @@ enum Timeshift {
         var body: some View {
             HStack(spacing: 18) {
                 Image(systemName: isPaused ? "pause.fill" : "play.fill")
-                    .font(.system(size: 22))
+                    .font(.boardStyle(22))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityLabel(isPaused ? "Paused" : "Playing")
                     .accessibilityIdentifier("timeshift.stateGlyph")
                     .accessibilityValue(isPaused ? "paused" : "playing")
                 Text(time)
-                    .font(.system(size: 22).monospacedDigit())
+                    .font(.boardStyle(22).monospacedDigit())
                     .accessibilityIdentifier("timeshift.positionTime")
                 Track(marker: marker, gaps: gaps)
                     .accessibilityIdentifier("timeshift.scrubber")
                 if let behind {
                     Text(behind)
-                        .font(.system(size: 22))
+                        .font(.boardStyle(22))
                         .foregroundStyle(Palette.textMuted)
                         .lineLimit(1)
                         .accessibilityIdentifier("timeshift.behindLive")
@@ -91,7 +91,7 @@ enum Timeshift {
 
         var body: some View {
             Text(text)
-                .font(.system(size: size, weight: .semibold))
+                .font(.boardStyle(size, weight: .semibold))
                 .foregroundStyle(Palette.text)
                 .padding(.horizontal, size)
                 .padding(.vertical, size * 0.55)

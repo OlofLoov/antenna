@@ -35,8 +35,8 @@
                     }
                     .focusSection()
                     .onExitCommand { close { reminders.dismissBanner() } }
-                    .padding(.top, 44)
-                    .padding(.trailing, 64)
+                    .padding(.top, 60)
+                    .padding(.trailing, 80)
                     .transition(.opacity)
                     .onAppear { before = focus.wrappedValue }
                     .task(id: shown.key) {

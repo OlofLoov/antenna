@@ -163,8 +163,8 @@
                 MultiViewParts.Badge(
                     text: MultiViewText.enlargedBadge(tile: number, of: model.session.tiles.count), hint: MultiViewText.enlargedHint()
                 )
-                .padding(.leading, 64)
-                .padding(.top, 44)
+                .padding(.leading, 80)
+                .padding(.top, 60)
                 .allowsHitTesting(false)
                 .zIndex(3)
             }
@@ -201,7 +201,7 @@
             }()
             return VStack(alignment: .leading, spacing: 4) {
                 Text(MultiViewText.actionsTitle(tile: number, name: model.channel(of: tile)?.name ?? "").uppercased())
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.boardStyle(20, weight: .semibold))
                     .letterSpacing(1.5)
                     .foregroundStyle(Palette.textMuted)
                     .padding(EdgeInsets(top: 8, leading: 24, bottom: 12, trailing: 24))
@@ -230,10 +230,15 @@
         }
 
         private func actionRow(_ title: String, _ action: TileAction, _ identifier: String, perform: @escaping () -> Void) -> some View {
-            Button(title, action: perform)
-                .buttonStyle(ActionRowStyle())
-                .focused($actionFocus, equals: action)
-                .accessibilityIdentifier(identifier)
+            Button(action: perform) {
+                Text(verbatim: title)
+                    .font(.boardStyle(29))
+                    .padding(.horizontal, 24)
+                    .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
+            }
+            .buttonStyle(FocusCardStyle(.medium))
+            .focused($actionFocus, equals: action)
+            .accessibilityIdentifier(identifier)
         }
 
         // MARK: Input
@@ -295,25 +300,4 @@
         }
     }
 
-    /// A row of the tile actions: the white card while focused.
-    private struct ActionRowStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            ActionRowLabel(label: configuration.label)
-        }
-    }
-
-    private struct ActionRowLabel<Label: View>: View {
-        let label: Label
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.system(size: 29, weight: isFocused ? .semibold : .regular))
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .padding(.horizontal, 24)
-                .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-                .background(isFocused ? Palette.focus : .clear, in: RoundedRectangle(cornerRadius: 14))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-        }
-    }
 #endif
