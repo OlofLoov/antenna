@@ -15,15 +15,15 @@
         var body: some View {
             VStack(spacing: 8) {
                 Image(systemName: "square.and.arrow.down")
-                    .font(.system(size: 34))
+                    .font(.boardStyle(34))
                     .foregroundStyle(Palette.text)
                     .accessibilityHidden(true)
                 Text(Self.title(fileName: fileName))
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.boardStyle(22, weight: .semibold))
                     .foregroundStyle(Palette.text)
                     .multilineTextAlignment(.center)
                 Text("M3U, M3U8 and text files, up to 16 MB")
-                    .font(.system(size: 15))
+                    .font(.boardStyle(15))
                     .foregroundStyle(Palette.textMuted)
             }
             .padding(32)

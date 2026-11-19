@@ -79,7 +79,7 @@ extension Browse {
         var body: some View {
             Button(action: action) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 17))
+                    .font(.boardStyle(17))
                     .frame(width: 36, height: 36)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 10))
                     .frame(width: 44, height: 44)

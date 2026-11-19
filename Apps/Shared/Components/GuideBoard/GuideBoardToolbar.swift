@@ -30,7 +30,7 @@ extension GuideBoard {
                     .accessibilityIdentifier("guide.filter.clear")
                 }
             }
-            .font(.system(size: 15))
+            .font(.boardStyle(15))
             .foregroundStyle(Palette.text)
             .padding(.leading, 12)
             .padding(.trailing, text.isEmpty ? 12 : 2)
@@ -59,12 +59,11 @@ extension GuideBoard {
         let title: String
         let isSelected: Bool
         let select: () -> Void
-        @ScaledMetric(relativeTo: .footnote) private var size: CGFloat = 14
 
         var body: some View {
             Button(action: select) {
                 Text(title)
-                    .font(.system(size: size, weight: isSelected ? .semibold : .regular))
+                    .font(.boardStyle(14, weight: isSelected ? .semibold : .regular))
                     .lineLimit(1)
                     .foregroundStyle(isSelected ? Palette.ground : Palette.text)
                     .padding(.vertical, 7)
@@ -81,7 +80,6 @@ extension GuideBoard {
     /// Now, with the accent dot: back to today around the current time.
     struct NowButton: View {
         let action: () -> Void
-        @ScaledMetric(relativeTo: .footnote) private var size: CGFloat = 14
 
         var body: some View {
             Button(action: action) {
@@ -89,7 +87,7 @@ extension GuideBoard {
                     Circle().fill(Palette.accent).frame(width: 8, height: 8)
                     Text("Now")
                 }
-                .font(.system(size: size, weight: .semibold))
+                .font(.boardStyle(14, weight: .semibold))
                 .foregroundStyle(Palette.text)
                 .padding(.horizontal, 12)
                 .frame(height: 32)
@@ -125,7 +123,7 @@ extension GuideBoard {
             let enabled = on
             return Button(action: act) {
                 Image(systemName: image)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.boardStyle(15, weight: .medium))
                     .foregroundStyle(enabled ? Palette.text : Palette.textMuted.opacity(0.5))
                     .frame(width: 34, height: 32)
                     .frame(minHeight: 44)
@@ -161,7 +159,7 @@ extension GuideBoard {
                             }
                             Text(channel).lineLimit(1)
                         }
-                        .font(.system(size: 13))
+                        .font(.boardStyle(13))
                         ProgressTrack(fraction: progress ?? 0)
                             .opacity(progress == nil ? 0 : 1)
                             .accessibilityIdentifier("guide.nowPlaying.progress")

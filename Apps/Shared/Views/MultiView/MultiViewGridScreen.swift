@@ -61,13 +61,13 @@ import SwiftUI
             HStack(spacing: 12) {
                 Image(systemName: "square.grid.2x2")
                 Text(MultiViewText.title())
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.boardStyle(17, weight: .semibold))
                 Text(model.count)
-                    .font(.system(size: 14))
+                    .font(.boardStyle(14))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("multiView.count")
                 Text(model.selectedName)
-                    .font(.system(size: 14))
+                    .font(.boardStyle(14))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("multiView.selected")
                 Spacer(minLength: 0)
@@ -127,7 +127,7 @@ import SwiftUI
                         Task { await model.remove(tile.id) }
                     } label: {
                         Image(systemName: "xmark")
-                            .font(.system(size: 12, weight: .bold))
+                            .font(.boardStyle(12, weight: .bold))
                             .frame(width: 28, height: 28)
                             .background(Palette.scrimTint.opacity(0.72), in: Circle())
                             .frame(width: 44, height: 44)

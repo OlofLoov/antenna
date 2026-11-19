@@ -17,62 +17,39 @@ enum InfoPanel {
             VStack(alignment: .leading, spacing: 30) {
                 HStack(spacing: 24) {
                     HStack(spacing: 6) { segments }
-                        .padding(6)
-                        .background(Palette.surface(0.08), in: Capsule())
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("player.panel.segments")
                     accessory
                     Spacer()
                     Text("Menu closes")
-                        .font(.system(size: 22))
+                        .font(.boardStyle(22))
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityIdentifier("player.panel.hint")
                 }
                 content
             }
-            .padding(EdgeInsets(top: 40, leading: 64, bottom: 36, trailing: 64))
+            .padding(EdgeInsets(top: 60, leading: 80, bottom: 36, trailing: 80))
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Palette.scrimTint.opacity(0.88))
+            .background { OverlayMaterial() }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("player.panel")
         }
     }
 
-    /// Info, Audio or Subtitles. Focused it is the white card; selected
-    /// while focus is in the list, the 0.12 surface at weight 600.
+    /// Info, Audio or Subtitles, a system chip; the selected one reads
+    /// semibold (design-system/controls-use-system-styles).
     struct Segment: View {
         let title: LocalizedStringResource
         let isSelected: Bool
         let select: () -> Void
 
         var body: some View {
-            Button(title, action: select)
-                .buttonStyle(SegmentStyle(isSelected: isSelected))
-                .accessibilityAddTraits(isSelected ? .isSelected : [])
-        }
-    }
-
-    struct SegmentStyle: ButtonStyle {
-        let isSelected: Bool
-
-        func makeBody(configuration: Configuration) -> some View {
-            SegmentLabel(label: configuration.label, isSelected: isSelected)
-        }
-    }
-
-    private struct SegmentLabel<Label: View>: View {
-        let label: Label
-        let isSelected: Bool
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.system(size: 26, weight: isFocused || isSelected ? .semibold : .regular))
-                .padding(.vertical, 10)
-                .padding(.horizontal, 26)
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .background(isFocused ? Palette.focus : isSelected ? Palette.surface(0.12) : .clear, in: Capsule())
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
+            Button(action: select) {
+                Text(title)
+                    .font(.boardStyle(26, weight: isSelected ? .semibold : .regular))
+            }
+            .chipStyle(isPicked: isSelected)
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
         }
     }
 
@@ -109,12 +86,12 @@ enum InfoPanel {
                     HStack(alignment: .firstTextBaseline, spacing: 18) {
                         if let number {
                             ChannelNumberText(number)
-                                .font(.system(size: 26))
+                                .font(.boardStyle(26))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)
                         }
-                        Text(channel).font(.system(size: 36, weight: .bold))
-                        Text(source).font(.system(size: 22)).foregroundStyle(Palette.textMuted)
+                        Text(channel).font(.boardStyle(36, weight: .bold))
+                        Text(source).font(.boardStyle(22)).foregroundStyle(Palette.textMuted)
                     }
                     .foregroundStyle(Palette.text)
                     .accessibilityElement(children: .combine)
@@ -122,12 +99,12 @@ enum InfoPanel {
                     if let programme {
                         HStack(alignment: .firstTextBaseline, spacing: 24) {
                             Text(programme.title)
-                                .font(.system(size: 34, weight: .semibold))
+                                .font(.boardStyle(34, weight: .semibold))
                                 .lineLimit(1)
                                 .accessibilityIdentifier("player.panel.title")
                             Spacer(minLength: 0)
                             Text(programme.times)
-                                .font(.system(size: 24))
+                                .font(.boardStyle(24))
                                 .monospacedDigit()
                                 .foregroundStyle(Palette.textMuted)
                                 .accessibilityIdentifier("player.panel.times")
@@ -136,7 +113,7 @@ enum InfoPanel {
                         Progress(fraction: programme.progress)
                         if let summary = programme.summary {
                             Text(summary)
-                                .font(.system(size: 24))
+                                .font(.boardStyle(24))
                                 .lineSpacing(6)
                                 .foregroundStyle(PlayerStatus.televisionBody)
                                 .lineLimit(3)
@@ -145,7 +122,7 @@ enum InfoPanel {
                         }
                     } else {
                         Text(message)
-                            .font(.system(size: 30, weight: .semibold))
+                            .font(.boardStyle(30, weight: .semibold))
                             .foregroundStyle(Palette.text)
                             .accessibilityIdentifier("player.panel.title")
                     }
@@ -167,7 +144,7 @@ enum InfoPanel {
                         .accessibilityElement(children: .combine)
                         .accessibilityIdentifier("player.panel.badges")
                         Text(stream)
-                            .font(.system(size: 22))
+                            .font(.boardStyle(22))
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("player.panel.stream")
                     }
@@ -198,8 +175,9 @@ enum InfoPanel {
         }
     }
 
-    /// One track, 72 pt tall, radius 14: a tick on the current one, the
-    /// name, and the sound format when known.
+    /// One track as a bordered row: a tick on the current one, the name,
+    /// and the sound format when known. Focused, it takes the light platter
+    /// with dark text.
     struct TrackButton: View {
         let name: String
         let detail: String?
@@ -210,41 +188,23 @@ enum InfoPanel {
             Button(action: pick) {
                 HStack(spacing: 20) {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.boardStyle(22, weight: .bold))
                         .frame(width: 26, height: 26)
                         .opacity(isSelected ? 1 : 0)
                     Text(name)
-                        .font(.system(size: 29))
+                        .font(.boardStyle(29))
                         .frame(maxWidth: .infinity, alignment: .leading)
                     if let detail {
-                        Text(detail).font(.system(size: 22))
+                        Text(detail).font(.boardStyle(22)).foregroundStyle(.secondary)
                     }
                 }
+                .frame(minHeight: 56)
             }
-            .buttonStyle(TrackStyle())
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle(radius: 16))
             .frame(width: 900)
             .accessibilityValue(isSelected ? "Selected" : "")
             .accessibilityAddTraits(isSelected ? .isSelected : [])
-        }
-    }
-
-    private struct TrackStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            TrackLabel(label: configuration.label)
-        }
-    }
-
-    private struct TrackLabel<Label: View>: View {
-        let label: Label
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .padding(.horizontal, 24)
-                .frame(height: 72)
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .background(isFocused ? Palette.focus : Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 14))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
         }
     }
 
@@ -265,7 +225,7 @@ enum InfoPanel {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 26))
+                .font(.boardStyle(26))
                 .foregroundStyle(Palette.textMuted)
                 .frame(height: 72)
                 .accessibilityIdentifier("player.panel.empty")

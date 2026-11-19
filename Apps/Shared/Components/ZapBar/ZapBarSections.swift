@@ -18,12 +18,12 @@ extension ZapBar {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(alignment: .firstTextBaseline, spacing: 24) {
                         Text(title)
-                            .font(.system(size: 34, weight: .semibold))
+                            .font(.boardStyle(34, weight: .semibold))
                             .lineLimit(1)
                             .accessibilityIdentifier("zapBar.programme")
                         Spacer(minLength: 0)
                         Text(times)
-                            .font(.system(size: 24).monospacedDigit())
+                            .font(.boardStyle(24).monospacedDigit())
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("zapBar.times")
                     }
@@ -33,11 +33,11 @@ extension ZapBar {
                         if let next {
                             HStack(alignment: .firstTextBaseline, spacing: 14) {
                                 Text("NEXT")
-                                    .font(.system(size: 18, weight: .semibold))
+                                    .font(.boardStyle(18, weight: .semibold))
                                     .letterSpacing(1.5)
                                     .foregroundStyle(Palette.textMuted)
                                 Text(next)
-                                    .font(.system(size: 24))
+                                    .font(.boardStyle(24))
                                     .foregroundStyle(ChannelOverlay.tileText)
                                     .lineLimit(1)
                             }
@@ -46,14 +46,14 @@ extension ZapBar {
                         }
                         Spacer(minLength: 0)
                         Text(remaining)
-                            .font(.system(size: 22))
+                            .font(.boardStyle(22))
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("zapBar.remaining")
                     }
                 }
             case .message(let text):
                 Text(text)
-                    .font(.system(size: 30))
+                    .font(.boardStyle(30))
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityIdentifier("zapBar.programme")
             }
@@ -99,7 +99,7 @@ extension ZapBar {
                         switch badge.kind {
                         case .catchUp:
                             Text(badge.text)
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(.boardStyle(18, weight: .semibold))
                                 .letterSpacing(1)
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 12)
@@ -127,7 +127,7 @@ extension ZapBar {
                 HStack(spacing: 10) {
                     if let catchUp {
                         Image(systemName: "clock.arrow.circlepath")
-                            .font(.system(size: 20))
+                            .font(.boardStyle(20))
                             .accessibilityHidden(true)
                         Text(catchUp)
                             .accessibilityIdentifier("zapBar.catchup")
@@ -137,7 +137,7 @@ extension ZapBar {
                     Text(hint)
                         .accessibilityIdentifier("zapBar.hint")
                 }
-                .font(.system(size: 20))
+                .font(.boardStyle(20))
                 .foregroundStyle(Palette.textMuted)
             }
         }
@@ -148,7 +148,7 @@ extension View {
     /// A zap bar badge: 18 pt semibold, the LIVE one on the 0.12 surface,
     /// the quality ones outlined.
     func badge(filled: Bool) -> some View {
-        font(.system(size: 18, weight: .semibold))
+        font(.boardStyle(18, weight: .semibold))
             .letterSpacing(1)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)

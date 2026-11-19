@@ -16,7 +16,7 @@ struct ProfilePicker<Footer: View>: View {
         VStack(spacing: PickerMetrics.titleGap) {
             Spacer(minLength: 0)
             Text("Who's watching?")
-                .font(.system(size: PickerMetrics.title, weight: .bold))
+                .font(.boardStyle(PickerMetrics.title, weight: .bold))
             LazyVGrid(columns: columns, spacing: PickerMetrics.rowGap) {
                 ForEach(Array(zip(tiles.indices, tiles)), id: \.1.id) { index, tile in
                     Button {
@@ -24,7 +24,7 @@ struct ProfilePicker<Footer: View>: View {
                     } label: {
                         ProfileTileLabel(tile: tile)
                     }
-                    .buttonStyle(TileStyle())
+                    .buttonStyle(.borderless)
                     .focused(focus, equals: tile.id)
                     .accessibilityLabel("\(tile.name), profile")
                     .accessibilityIdentifier("profiles.tile.\(index)")
@@ -82,7 +82,9 @@ extension ProfileTile {
     }
 }
 
-/// A profile's color circle with its initial, and the name under it.
+/// A profile's color circle with its initial, and the name under it. On
+/// Apple TV the focused circle lifts and tilts with the highlight hover
+/// effect, with no ring (design-system/focus-is-the-lifted-white-card).
 struct ProfileTileLabel: View {
     let tile: ProfileTile
     @Environment(\.isFocused) private var isFocused
@@ -102,24 +104,27 @@ struct ProfileTileLabel: View {
             ZStack {
                 Circle().fill(Color(hex: tile.color))
                 Text(tile.initial)
-                    .font(.system(size: initialSize, weight: .bold))
+                    .font(.boardStyle(initialSize, weight: .bold))
                     .foregroundStyle(Palette.ground)
             }
             .frame(width: size, height: size)
-            .overlay(Circle().stroke(isFocused ? Palette.focus : .clear, lineWidth: 6).padding(-10))
-            .scaleEffect(isFocused ? 1.08 : 1)
-            .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 20, y: 18)
+            .circleHighlightOnTelevision()
             Text(tile.name)
-                .font(.system(size: nameSize, weight: isFocused ? .semibold : .regular))
+                .font(.boardStyle(nameSize, weight: isFocused ? .semibold : .regular))
                 .foregroundStyle(isFocused ? Palette.text : ChannelOverlay.tileText)
                 .lineLimit(1)
         }
     }
 }
 
-private struct TileStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label.opacity(configuration.isPressed ? 0.8 : 1)
+extension View {
+    /// The highlight hover effect on a circle on Apple TV; nothing elsewhere.
+    @ViewBuilder fileprivate func circleHighlightOnTelevision() -> some View {
+        #if os(tvOS)
+            contentShape(.hoverEffect, Circle()).hoverEffect(.highlight)
+        #else
+            self
+        #endif
     }
 }
 

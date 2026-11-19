@@ -140,9 +140,9 @@ warn_except() {
   fi
 }
 
-warn_except "design-system/type-uses-text-styles: fixed font sizes only for glyphs, number entry and guide times" \
+warn_except "design-system/type-uses-text-styles: fixed font sizes only for number entry, subtitles sized to the picture and badge initials" \
   '\.system\(size:' \
-  'Apps/Shared/Components/ZapBar/NumberBox\.swift|Apps/Shared/Debug/[A-Za-z]+\.swift' \
+  'Apps/Shared/Components/ZapBar/NumberBox\.swift|Apps/Shared/Components/Player/SubtitleOverlay\.swift|Apps/Shared/Components/Profiles/ProfileBadge\.swift|Apps/Shared/Debug/[A-Za-z]+\.swift' \
   Apps
 
 warn_except "design-system/controls-use-system-styles: ButtonStyle types only in the app-drawn parts" \

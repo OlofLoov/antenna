@@ -29,3 +29,16 @@ struct CoverBackdrop: View {
     }
     .background(Palette.ground)
 }
+
+/// The panel behind the live layer over video on Apple TV: the channel
+/// overlay, the zap bar and the info panel. The regular material softens
+/// the picture and the scrim tint darkens it, so the video shows as color
+/// and not detail, and the panel's text reads over any picture.
+struct OverlayMaterial: View {
+    var body: some View {
+        Rectangle()
+            .fill(.regularMaterial)
+            .overlay(Palette.scrimTint.opacity(0.72))
+            .accessibilityHidden(true)
+    }
+}

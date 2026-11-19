@@ -22,7 +22,8 @@ extension Paywall {
                             } label: {
                                 TelevisionCardLabel(product: product)
                             }
-                            .buttonStyle(CardStyle())
+                            .buttonStyle(.bordered)
+                            .buttonBorderShape(.roundedRectangle(radius: 20))
                             .disabled(!product.enabled)
                             .accessibilityIdentifier(product.identifier)
                             .accessibilityValue(product.accessibilityValue(locale))
@@ -30,7 +31,8 @@ extension Paywall {
                     }
                     if let status = state.status { StatusLine(status: status, size: 22) }
                     Button("Restore purchase", action: actions.restore)
-                        .buttonStyle(OnboardingStyle.QuietTV())
+                        .font(.boardStyle(24))
+                        .buttonStyle(.borderless)
                         .disabled(!state.canRestore)
                         .accessibilityIdentifier("paywall.restore")
                 case .unavailable(let reason):
@@ -42,7 +44,8 @@ extension Paywall {
                         note: nil)
                     TelevisionRestored(grant: grant)
                     Button("Continue", action: actions.finish)
-                        .buttonStyle(OnboardingStyle.PrimaryTV())
+                        .font(.boardStyle(28, weight: .bold))
+                        .primaryActionStyle()
                         .accessibilityIdentifier("paywall.continue")
                 }
             }
@@ -50,7 +53,7 @@ extension Paywall {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .topLeading) {
                 Label("Antenna", systemImage: Paywall.mark)
-                    .font(.system(size: 26, weight: .bold))
+                    .font(.boardStyle(26, weight: .bold))
                     .padding(.leading, 64)
                     .padding(.top, 44)
                     .accessibilityHidden(true)
@@ -58,7 +61,7 @@ extension Paywall {
             .overlay(alignment: .bottom) {
                 if !state.phase.isRestored {
                     Text(state.links.legalWithAddresses(locale))
-                        .font(.system(size: 20))
+                        .font(.boardStyle(20))
                         .foregroundStyle(Palette.textMuted)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 160)
@@ -80,13 +83,13 @@ extension Paywall {
         var body: some View {
             VStack(spacing: 16) {
                 Text(title.text)
-                    .font(.system(size: 64, weight: .heavy))
+                    .font(.boardStyle(64, weight: .heavy))
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier("paywall.title")
                     .modifier(Paywall.CopyKey(key: title.key))
                 if let note { LapsedNote(line: note, size: 26) }
                 Text(message.text)
-                    .font(.system(size: 30))
+                    .font(.boardStyle(30))
                     .foregroundStyle(Paywall.body)
                     .accessibilityIdentifier("paywall.body")
             }
@@ -104,24 +107,24 @@ extension Paywall {
         var body: some View {
             VStack(alignment: .leading, spacing: 18) {
                 Text(product.name(locale).uppercased())
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.boardStyle(20, weight: .semibold))
                     .letterSpacing(1)
                     .foregroundStyle(muted)
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    PriceText(price: product.price).font(.system(size: 56, weight: .heavy))
+                    PriceText(price: product.price).font(.boardStyle(56, weight: .heavy))
                     if product.kind == .yearly {
-                        Text(product.unit(locale)).font(.system(size: 26)).foregroundStyle(muted)
+                        Text(product.unit(locale)).font(.boardStyle(26)).foregroundStyle(muted)
                     }
                 }
                 HStack(spacing: 12) {
                     if product.purchasing { ProgressView() }
                     Text(product.purchasing ? PaywallCopy.text(.lineWaiting, locale: locale) : product.line.text)
-                        .font(.system(size: 23))
+                        .font(.boardStyle(23))
                         .foregroundStyle(isFocused ? Paywall.mutedOnFocus : Paywall.body)
                 }
                 Spacer(minLength: 0)
                 Label(PaywallCopy.text(.familyIncluded, locale: locale), systemImage: "person.2")
-                    .font(.system(size: 20))
+                    .font(.boardStyle(20))
                     .foregroundStyle(muted)
             }
             .padding(40)
@@ -129,32 +132,6 @@ extension Paywall {
         }
 
         private var muted: Color { isFocused ? Paywall.mutedOnFocus : Palette.textMuted }
-    }
-
-    /// The lifted white card while focused, the 0.08 surface otherwise
-    /// (design-system/focus-is-the-lifted-white-card).
-    private struct CardStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            CardBody(label: configuration.label)
-        }
-
-        private struct CardBody<Label: View>: View {
-            let label: Label
-            @Environment(\.isFocused) private var isFocused
-            @Environment(\.isEnabled) private var isEnabled
-
-            var body: some View {
-                label
-                    .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                    .background {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(isFocused ? Palette.focus : Palette.surface(0.08))
-                            .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 22, y: 16)
-                    }
-                    .scaleEffect(isFocused ? 1.04 : 1)
-                    .opacity(isEnabled || isFocused ? 1 : 0.4)
-            }
-        }
     }
 
     private struct TelevisionUnavailable: View {
@@ -168,18 +145,18 @@ extension Paywall {
         var body: some View {
             VStack(spacing: 18) {
                 Image(systemName: reason == .notSold ? "storefront" : "wifi.exclamationmark")
-                    .font(.system(size: 36))
+                    .font(.boardStyle(36))
                     .frame(width: 80, height: 80)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 20))
                     .accessibilityHidden(true)
                 Text(PaywallCopy.text(.unavailableTitle, locale: locale))
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.boardStyle(34, weight: .bold))
                     .accessibilityIdentifier("paywall.unavailable.title")
                 if let status {
                     StatusLine(status: status, size: 22)
                 } else {
                     Text(PaywallCopy.text(reason == .notSold ? .statusNotInStorefront : .unavailableBody, locale: locale))
-                        .font(.system(size: 24))
+                        .font(.boardStyle(24))
                         .foregroundStyle(Paywall.body)
                         .multilineTextAlignment(.center)
                         .modifier(Paywall.CopyKey(key: reason == .notSold ? .statusNotInStorefront : .unavailableBody))
@@ -188,12 +165,14 @@ extension Paywall {
                 HStack(spacing: 24) {
                     if reason == .unreachable {
                         Button("Try again", action: actions.retry)
-                            .buttonStyle(OnboardingStyle.PrimaryTV())
+                            .font(.boardStyle(28, weight: .bold))
+                            .primaryActionStyle()
                             .disabled(!canAct)
                             .accessibilityIdentifier("paywall.retry")
                     }
                     Button("Restore purchase", action: actions.restore)
-                        .buttonStyle(OnboardingStyle.PrimaryTV())
+                        .font(.boardStyle(28, weight: .bold))
+                        .primaryActionStyle()
                         .disabled(!canAct)
                         .accessibilityIdentifier("paywall.restore")
                 }
@@ -215,17 +194,17 @@ extension Paywall {
         var body: some View {
             HStack(spacing: 28) {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.boardStyle(32, weight: .bold))
                     .frame(width: 72, height: 72)
                     .background(Palette.surface(0.1), in: RoundedRectangle(cornerRadius: 20))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(PaywallCopy.restoredKind(grant, sharedSuffix: .restoredSharedTV, locale: locale))
-                        .font(.system(size: 29, weight: .semibold))
+                        .font(.boardStyle(29, weight: .semibold))
                         .accessibilityIdentifier("paywall.restored.kind")
                     let note = PaywallCopy.restoredNote(grant, locale: locale)
                     Text(note.text)
-                        .font(.system(size: 23))
+                        .font(.boardStyle(23))
                         .foregroundStyle(Palette.textMuted)
                         .modifier(Paywall.CopyKey(key: note.key))
                         .accessibilityIdentifier("paywall.restored.note")

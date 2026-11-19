@@ -46,14 +46,14 @@ enum MultiViewParts {
             HStack(spacing: metrics.labelInset * 0.7) {
                 if let number {
                     ChannelNumberText(number)
-                        .font(.system(size: metrics.number).monospacedDigit())
+                        .font(.boardStyle(metrics.number).monospacedDigit())
                         .foregroundStyle(highlighted ? MultiViewParts.mutedOnCard : Palette.textMuted)
                 }
                 Text(name)
-                    .font(.system(size: metrics.name, weight: .semibold))
+                    .font(.boardStyle(metrics.name, weight: .semibold))
                     .lineLimit(1)
                 Image(systemName: audible ? "speaker.wave.2" : "speaker.slash")
-                    .font(.system(size: metrics.glyph * 0.8))
+                    .font(.boardStyle(metrics.glyph * 0.8))
                     .frame(width: metrics.glyph, height: metrics.glyph)
                     .foregroundStyle(highlighted ? Palette.ground : audible ? Palette.text : Palette.textMuted)
                     .accessibilityIdentifier("\(identifier).audio")
@@ -93,18 +93,18 @@ enum MultiViewParts {
         var body: some View {
             VStack(spacing: metrics.failedBody * 0.6) {
                 Image(systemName: "exclamationmark.triangle")
-                    .font(.system(size: metrics.failedGlyph * 0.8))
+                    .font(.boardStyle(metrics.failedGlyph * 0.8))
                     .foregroundStyle(Palette.textMuted)
                 Text(title)
-                    .font(.system(size: metrics.failedTitle, weight: .semibold))
+                    .font(.boardStyle(metrics.failedTitle, weight: .semibold))
                     .accessibilityIdentifier("\(identifier).title")
                 Text(explanation)
-                    .font(.system(size: metrics.failedBody))
+                    .font(.boardStyle(metrics.failedBody))
                     .foregroundStyle(MultiViewParts.secondary)
                     .accessibilityIdentifier("\(identifier).body")
                 if let hint {
                     Text(hint)
-                        .font(.system(size: metrics.failedHint))
+                        .font(.boardStyle(metrics.failedHint))
                         .foregroundStyle(Palette.textMuted)
                 }
                 action
@@ -130,7 +130,7 @@ enum MultiViewParts {
                     Text("\(Text(item.key).fontWeight(.semibold).foregroundStyle(Palette.text)) \(item.action)")
                 }
             }
-            .font(.system(size: 24))
+            .font(.boardStyle(24))
             .foregroundStyle(MultiViewParts.secondary)
             .padding(.horizontal, 28)
             .frame(height: 60)
@@ -148,11 +148,11 @@ enum MultiViewParts {
         var body: some View {
             HStack(spacing: 16) {
                 Image(systemName: "square.grid.2x2")
-                    .font(.system(size: 24))
+                    .font(.boardStyle(24))
                 Text(text).fontWeight(.semibold)
                 Text(hint).foregroundStyle(Palette.textMuted)
             }
-            .font(.system(size: 24))
+            .font(.boardStyle(24))
             .foregroundStyle(Palette.text)
             .padding(.horizontal, 24)
             .frame(height: 60)

@@ -25,10 +25,10 @@ enum ZapBar {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 status
             }
-            .padding(EdgeInsets(top: 32, leading: 64, bottom: 40, trailing: 64))
+            .padding(EdgeInsets(top: 32, leading: 80, bottom: 60, trailing: 80))
             .frame(maxWidth: .infinity)
             .frame(height: height)
-            .background(Palette.scrimTint.opacity(0.88))
+            .background { OverlayMaterial() }
             .foregroundStyle(Palette.text)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("zapBar.bar")
@@ -52,17 +52,17 @@ enum ZapBar {
                 VStack(alignment: .leading, spacing: 8) {
                     if let number {
                         ChannelNumberText(number)
-                            .font(.system(size: 26).monospacedDigit())
+                            .font(.boardStyle(26).monospacedDigit())
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("zapBar.number")
                     }
                     Text(name)
-                        .font(.system(size: 36, weight: .bold))
+                        .font(.boardStyle(36, weight: .bold))
                         .lineLimit(1)
                         .accessibilityIdentifier("zapBar.name")
                     if let position {
                         Text(position)
-                            .font(.system(size: 20))
+                            .font(.boardStyle(20))
                             .foregroundStyle(Palette.textMuted)
                             .accessibilityIdentifier("zapBar.position")
                     }
@@ -80,7 +80,7 @@ enum ZapBar {
             ZStack {
                 ZapBar.placeholder
                 Text(text)
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.boardStyle(28, weight: .bold))
                     .letterSpacing(1)
                     .foregroundStyle(Palette.text)
             }

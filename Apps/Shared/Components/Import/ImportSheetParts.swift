@@ -19,18 +19,18 @@
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 12) {
                         Image(systemName: "doc.text")
-                            .font(.system(size: 22))
+                            .font(.boardStyle(22))
                             .foregroundStyle(ImportSheetParts.body)
                             .frame(width: 44, height: 44)
                             .background(ImportSheetParts.fileTile, in: RoundedRectangle(cornerRadius: 10))
                             .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(fileName)
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.boardStyle(16, weight: .semibold))
                                 .lineLimit(1)
                                 .truncationMode(.middle)
                             if let size {
-                                Text(size).font(.system(size: 13)).foregroundStyle(Palette.textMuted)
+                                Text(size).font(.boardStyle(13)).foregroundStyle(Palette.textMuted)
                             }
                         }
                         Spacer(minLength: 0)
@@ -54,7 +54,7 @@
                     ProgressView()
                         .frame(width: 26, height: 26)
                     Text("Reading \(fileName)…")
-                        .font(.system(size: 16))
+                        .font(.boardStyle(16))
                         .foregroundStyle(ImportSheetParts.body)
                         .lineLimit(1)
                 }
@@ -99,13 +99,13 @@
                         switch mark {
                         case .check:
                             Image(systemName: "checkmark")
-                                .font(.system(size: 12, weight: .heavy))
+                                .font(.boardStyle(12, weight: .heavy))
                                 .foregroundStyle(Palette.ground)
                                 .frame(width: 26, height: 26)
                                 .background(Palette.accent, in: Circle())
                         case .count(let number):
                             Text(number)
-                                .font(.system(size: 13, weight: .bold))
+                                .font(.boardStyle(13, weight: .bold))
                                 .foregroundStyle(Palette.textMuted)
                                 .frame(width: 26, height: 26)
                                 .overlay(Circle().stroke(Palette.textMuted, lineWidth: 1.5))
@@ -113,9 +113,9 @@
                     }
                     .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(title).font(.system(size: 16)).lineLimit(1)
+                        Text(title).font(.boardStyle(16)).lineLimit(1)
                         if let detail {
-                            Text(detail).font(.system(size: 13)).foregroundStyle(Palette.textMuted).lineLimit(1)
+                            Text(detail).font(.boardStyle(13)).foregroundStyle(Palette.textMuted).lineLimit(1)
                         }
                     }
                     Spacer(minLength: 0)
@@ -134,13 +134,13 @@
             var body: some View {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: 20))
+                        .font(.boardStyle(20))
                         .foregroundStyle(OnboardingForm.errorColor)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(problem.title).font(.system(size: 16, weight: .semibold))
+                        Text(problem.title).font(.boardStyle(16, weight: .semibold))
                         if let body = problem.body {
-                            Text(body).font(.system(size: 15)).foregroundStyle(ImportSheetParts.body)
+                            Text(body).font(.boardStyle(15)).foregroundStyle(ImportSheetParts.body)
                         }
                     }
                     Spacer(minLength: 0)
@@ -158,7 +158,7 @@
 
             var body: some View {
                 Label(text, systemImage: "clock.arrow.circlepath")
-                    .font(.system(size: 15))
+                    .font(.boardStyle(15))
                     .foregroundStyle(ImportSheetParts.body)
                     .padding(.horizontal, 4)
                     .accessibilityIdentifier("import.importedBefore")
@@ -173,7 +173,7 @@
             var body: some View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Source")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.boardStyle(13, weight: .semibold))
                         .letterSpacing(1)
                         .textCase(.uppercase)
                         .foregroundStyle(Palette.textMuted)
@@ -193,7 +193,7 @@
                         """,
                         systemImage: "icloud"
                     )
-                    .font(.system(size: 13))
+                    .font(.boardStyle(13))
                     .foregroundStyle(Palette.textMuted)
                     .padding(.horizontal, 4)
                 }
@@ -201,9 +201,9 @@
 
             private func field(_ label: LocalizedStringResource, text: Binding<String>, id: String) -> some View {
                 HStack(spacing: 12) {
-                    Text(label).font(.system(size: 16)).foregroundStyle(ImportSheetParts.body).frame(width: 88, alignment: .leading)
+                    Text(label).font(.boardStyle(16)).foregroundStyle(ImportSheetParts.body).frame(width: 88, alignment: .leading)
                     TextField("Optional", text: text)
-                        .font(.system(size: 16))
+                        .font(.boardStyle(16))
                         .autocorrectionDisabled()
                         #if os(iOS)
                             .textInputAutocapitalization(.never)
@@ -226,7 +226,7 @@
             var body: some View {
                 Button(action: action) {
                     Text(title)
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.boardStyle(17, weight: .bold))
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(isEnabled ? Palette.ground : Palette.textMuted)
@@ -247,7 +247,7 @@
             var body: some View {
                 Button(action: action) {
                     Text(title)
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.boardStyle(17, weight: .semibold))
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(Palette.text)
                         .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 14))
@@ -266,7 +266,7 @@
 
             var body: some View {
                 Button(title, action: action)
-                    .font(.system(size: 17))
+                    .font(.boardStyle(17))
                     .foregroundStyle(Palette.accent)
                     .frame(maxWidth: .infinity, minHeight: 44)
                     .buttonStyle(.plain)

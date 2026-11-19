@@ -90,7 +90,7 @@ enum GuideGrid {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 22))
+                .font(.boardStyle(22))
                 .monospacedDigit()
                 .foregroundStyle(Palette.textMuted)
                 .lineLimit(1)
@@ -114,7 +114,7 @@ enum GuideGrid {
                     .frame(width: 3)
                     .frame(maxHeight: .infinity)
                 Text(time)
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.boardStyle(18, weight: .bold))
                     .monospacedDigit()
                     .foregroundStyle(Palette.ground)
                     .fixedSize()
@@ -145,40 +145,14 @@ enum GuideGrid {
         let pick: () -> Void
 
         var body: some View {
-            Button(title, action: pick)
-                .buttonStyle(DayStyle(look: look))
-                .accessibilityAddTraits(look == .selected ? .isSelected : [])
-        }
-    }
-
-    private struct DayStyle: ButtonStyle {
-        let look: DayLook
-
-        func makeBody(configuration: Configuration) -> some View {
-            DayLabel(label: configuration.label, look: look)
-        }
-    }
-
-    private struct DayLabel<Label: View>: View {
-        let label: Label
-        let look: DayLook
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.system(size: 20, weight: isFocused || look == .selected ? .semibold : .regular))
-                .foregroundStyle(isFocused ? Palette.ground : look == .selected ? Palette.text : Palette.textMuted)
-                .lineLimit(1)
-                .fixedSize()
-                .padding(.vertical, 6)
-                .padding(.horizontal, 14)
-                .background(background, in: RoundedRectangle(cornerRadius: 8))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
-        }
-
-        private var background: Color {
-            if isFocused { return Palette.focus }
-            return look == .selected ? Palette.surface(0.12) : .clear
+            Button(action: pick) {
+                Text(verbatim: title)
+                    .font(.boardStyle(20, weight: look == .selected ? .semibold : .regular))
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            .chipStyle(isPicked: look == .selected)
+            .accessibilityAddTraits(look == .selected ? .isSelected : [])
         }
     }
 
@@ -220,7 +194,7 @@ enum GuideGrid {
         var body: some View {
             HStack(spacing: 16) {
                 ChannelNumberText(number)
-                    .font(.system(size: 20))
+                    .font(.boardStyle(20))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)
                     .frame(width: 44, alignment: .leading)
@@ -228,7 +202,7 @@ enum GuideGrid {
                     .frame(width: 64, height: 42)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
                 Text(name)
-                    .font(.system(size: 24, weight: look == .playing ? .semibold : .regular))
+                    .font(.boardStyle(24, weight: look == .playing ? .semibold : .regular))
                     .lineLimit(1)
             }
             .padding(.trailing, 16)
@@ -246,7 +220,7 @@ enum GuideGrid {
             ZStack {
                 look == .playing ? ChannelOverlay.tileOnFocus : ChannelOverlay.tile
                 Text(text)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.boardStyle(14, weight: .bold))
                     .letterSpacing(1)
                     .foregroundStyle(look == .playing ? Palette.text : ChannelOverlay.tileText)
             }
@@ -259,7 +233,7 @@ enum GuideGrid {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 24))
+                .font(.boardStyle(24))
                 .foregroundStyle(Palette.textMuted)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityIdentifier("guide.empty")

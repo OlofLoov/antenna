@@ -85,15 +85,15 @@
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(spacing: 12) {
                         Image(systemName: "appletv")
-                            .font(.system(size: 34))
+                            .font(.boardStyle(34))
                             .frame(width: 72, height: 72)
                             .background(Palette.surface(0.08), in: RoundedRectangle(cornerRadius: 18))
                             .accessibilityHidden(true)
                         Text(SendLogins.heading)
-                            .font(.system(size: 22, weight: .bold))
+                            .font(.boardStyle(22, weight: .bold))
                             .accessibilityAddTraits(.isHeader)
                         Text(SendLogins.body)
-                            .font(.system(size: 15))
+                            .font(.boardStyle(15))
                             .foregroundStyle(OnboardingStyle.body)
                             .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
@@ -103,7 +103,7 @@
                     if let status { StatusLine(status: status, device: device) }
                     if rows.isEmpty {
                         Text(SendLogins.none(device: device))
-                            .font(.system(size: 15))
+                            .font(.boardStyle(15))
                             .foregroundStyle(OnboardingStyle.body)
                             .padding(14)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -113,13 +113,13 @@
                         list
                         if let line = SendLogins.missing(missing, device: device) {
                             Text(line)
-                                .font(.system(size: 13))
+                                .font(.boardStyle(13))
                                 .foregroundStyle(Palette.textMuted)
                                 .padding(.horizontal, 4)
                                 .accessibilityIdentifier("sendLogins.missing")
                         }
                         Label(SendLogins.lock(device: device), systemImage: "lock")
-                            .font(.system(size: 13))
+                            .font(.boardStyle(13))
                             .foregroundStyle(Palette.textMuted)
                             .padding(.horizontal, 4)
                     }
@@ -149,8 +149,8 @@
             var body: some View {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(row.name).font(.system(size: 16))
-                        Text(SendLogins.kindName(row.kind)).font(.system(size: 13)).foregroundStyle(Palette.textMuted)
+                        Text(row.name).font(.boardStyle(16))
+                        Text(SendLogins.kindName(row.kind)).font(.boardStyle(13)).foregroundStyle(Palette.textMuted)
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(stateText). \(row.name). \(SendLogins.kindName(row.kind))")
@@ -175,22 +175,22 @@
                 switch row.state {
                 case .ready:
                     HStack(spacing: 6) {
-                        Image(systemName: "checkmark.circle.fill").font(.system(size: 22)).foregroundStyle(Palette.accent)
-                        Text(stateText).font(.system(size: 13)).foregroundStyle(Palette.textMuted)
+                        Image(systemName: "checkmark.circle.fill").font(.boardStyle(22)).foregroundStyle(Palette.accent)
+                        Text(stateText).font(.boardStyle(13)).foregroundStyle(Palette.textMuted)
                     }
                     .accessibilityHidden(true)
                 case .notHere:
                     HStack(spacing: 10) {
-                        Text(stateText).font(.system(size: 13)).foregroundStyle(Palette.textMuted).accessibilityHidden(true)
+                        Text(stateText).font(.boardStyle(13)).foregroundStyle(Palette.textMuted).accessibilityHidden(true)
                         Button("Enter", action: enter)
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(.boardStyle(15, weight: .semibold))
                             .buttonStyle(.bordered)
                             .frame(minHeight: 44)
                             .accessibilityLabel("Enter the login for \(row.name)")
                             .accessibilityIdentifier("sendLogins.enter")
                     }
                 case .sending, .sent:
-                    Text(stateText).font(.system(size: 13)).foregroundStyle(Palette.textMuted).accessibilityHidden(true)
+                    Text(stateText).font(.boardStyle(13)).foregroundStyle(Palette.textMuted).accessibilityHidden(true)
                 }
             }
         }
@@ -233,7 +233,7 @@
             var body: some View {
                 Button(action: action) {
                     Text(title)
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.boardStyle(17, weight: .bold))
                         .frame(maxWidth: .infinity, minHeight: 52)
                         .foregroundStyle(Palette.ground)
                         .background(Palette.text, in: RoundedRectangle(cornerRadius: 14))

@@ -29,8 +29,8 @@
                 .overlay(alignment: .topLeading) {
                     if let box {
                         ZapBar.NumberBox(content: box)
-                            .padding(.leading, 64)
-                            .padding(.top, 44)
+                            .padding(.leading, 80)
+                            .padding(.top, 60)
                             .allowsHitTesting(false)
                     }
                 }

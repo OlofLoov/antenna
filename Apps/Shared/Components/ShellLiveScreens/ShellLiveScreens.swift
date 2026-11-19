@@ -55,7 +55,7 @@ enum ShellLoading {
                     Spinner()
                 case .done:
                     Image(systemName: "checkmark")
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.boardStyle(22, weight: .bold))
                         .foregroundStyle(Palette.ground)
                         .frame(width: 44, height: 44)
                         .background(Palette.accent, in: Circle())
@@ -64,10 +64,10 @@ enum ShellLoading {
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(row.name)
-                        .font(.system(size: 26))
+                        .font(.boardStyle(26))
                         .foregroundStyle(Palette.text)
                     Text(row.detail)
-                        .font(.system(size: 22))
+                        .font(.boardStyle(22))
                         .foregroundStyle(Palette.textMuted)
                 }
                 Spacer(minLength: 0)

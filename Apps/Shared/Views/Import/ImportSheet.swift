@@ -84,7 +84,7 @@
                     }
                     ImportSheetParts.Fields(name: model.request.replacing == nil ? $model.name : nil, guideLink: $model.guideLink)
                     if let error = model.saveError {
-                        Text(error).font(.system(size: 15)).foregroundStyle(OnboardingForm.errorColor)
+                        Text(error).font(.boardStyle(15)).foregroundStyle(OnboardingForm.errorColor)
                     }
                 case .refused(let problem, _):
                     ImportSheetParts.FileCard(fileName: model.fileName, size: model.sizeText) { EmptyView() }

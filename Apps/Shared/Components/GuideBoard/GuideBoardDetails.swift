@@ -29,7 +29,7 @@ extension GuideBoard {
                         Spacer(minLength: 0)
                         Button(action: close) {
                             Image(systemName: "xmark")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.boardStyle(12, weight: .bold))
                                 .foregroundStyle(Palette.text)
                                 .frame(width: 28, height: 28)
                                 .background(Palette.surface(0.12), in: Circle())
@@ -90,7 +90,7 @@ extension GuideBoard {
 
             var body: some View {
                 Text(details.eyebrow)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.boardStyle(12, weight: .semibold))
                     .letterSpacing(1.2)
                     .textCase(.uppercase)
                     .foregroundStyle(details.look == .now ? Palette.accent : Palette.textMuted)
@@ -107,13 +107,13 @@ extension GuideBoard {
 
             var body: some View {
                 Text(details.title)
-                    .font(.system(size: titleSize, weight: .bold))
+                    .font(.boardStyle(titleSize, weight: .bold))
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier("guide.panel.title")
                 if let meta = details.meta {
                     Text(meta)
-                        .font(.system(size: 13))
+                        .font(.boardStyle(13))
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityIdentifier("guide.panel.meta")
                 }
@@ -126,7 +126,7 @@ extension GuideBoard {
                 }
                 if let summary = details.summary, !summary.isEmpty {
                     Text(summary)
-                        .font(.system(size: summarySize))
+                        .font(.boardStyle(summarySize))
                         .lineSpacing(summarySize * 0.3)
                         .foregroundStyle(Browse.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -144,7 +144,7 @@ extension GuideBoard {
             var body: some View {
                 Button(action: watch) {
                     Text("Watch")
-                        .font(.system(size: size, weight: .semibold))
+                        .font(.boardStyle(size, weight: .semibold))
                         .foregroundStyle(Palette.ground)
                         .frame(maxWidth: .infinity)
                         .frame(height: height)
@@ -171,7 +171,7 @@ extension GuideBoard {
                     reminder.isSet ? ReminderText.reminderSet() : ReminderText.remindMe(),
                     systemImage: reminder.isSet ? "bell.fill" : "bell"
                 )
-                .font(.system(size: size, weight: .semibold))
+                .font(.boardStyle(size, weight: .semibold))
                 .foregroundStyle(Palette.text)
                 .frame(maxWidth: .infinity)
                 .frame(height: height)

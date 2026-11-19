@@ -38,7 +38,7 @@ enum GuidePanel {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(alignment: .firstTextBaseline, spacing: 24) {
                     Text(details.eyebrow)
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.boardStyle(20, weight: .semibold))
                         .letterSpacing(1.5)
                         .textCase(.uppercase)
                         .lineLimit(1)
@@ -48,12 +48,12 @@ enum GuidePanel {
                     Clock(date: date)
                 }
                 Text(details.title)
-                    .font(.system(size: 40, weight: .bold))
+                    .font(.boardStyle(40, weight: .bold))
                     .lineLimit(2)
                     .accessibilityIdentifier("guide.panel.title")
                 if let meta = details.meta {
                     Text(meta)
-                        .font(.system(size: 24))
+                        .font(.boardStyle(24))
                         .foregroundStyle(Palette.textMuted)
                         .lineLimit(1)
                         .accessibilityIdentifier("guide.panel.meta")
@@ -63,7 +63,7 @@ enum GuidePanel {
                 }
                 if let summary = details.summary {
                     Text(summary)
-                        .font(.system(size: 24))
+                        .font(.boardStyle(24))
                         .lineSpacing(6)
                         .foregroundStyle(ChannelOverlay.tileText)
                         .lineLimit(2)
@@ -93,7 +93,7 @@ enum GuidePanel {
 
         var body: some View {
             Text(date, format: .dateTime.hour().minute())
-                .font(.system(size: 34, weight: .semibold))
+                .font(.boardStyle(34, weight: .semibold))
                 .letterSpacing(0.5)
                 .monospacedDigit()
                 .lineLimit(1)
@@ -121,17 +121,18 @@ enum GuidePanel {
         }
     }
 
-    /// Watch: on the 0.12 surface, the white card with focus (design.md deviation).
+    /// Watch, the panel's primary action (design-system/controls-use-system-styles).
     struct WatchButton: View {
         let watch: () -> Void
 
         var body: some View {
             Button("Watch", action: watch)
-                .buttonStyle(WatchStyle())
+                .font(.boardStyle(22, weight: .semibold))
+                .primaryActionStyle()
         }
     }
 
-    /// Remind me, or Reminder set with a filled bell, in Watch's look
+    /// Remind me, or Reminder set with a filled bell, bordered beside Watch
     /// (programme-reminders/set-a-reminder-in-one-tap).
     struct RemindButton: View {
         let isSet: Bool
@@ -141,29 +142,9 @@ enum GuidePanel {
             Button(action: toggle) {
                 Label(isSet ? ReminderText.reminderSet() : ReminderText.remindMe(), systemImage: isSet ? "bell.fill" : "bell")
             }
-            .buttonStyle(WatchStyle())
+            .font(.boardStyle(22, weight: .semibold))
+            .secondaryActionStyle()
             .accessibilityValue(isSet ? "On" : "Off")
-        }
-    }
-
-    private struct WatchStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            WatchLabel(label: configuration.label)
-        }
-    }
-
-    private struct WatchLabel<Label: View>: View {
-        let label: Label
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            label
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(isFocused ? Palette.ground : Palette.text)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 24)
-                .background(isFocused ? Palette.focus : Palette.surface(0.12), in: RoundedRectangle(cornerRadius: 10))
-                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 16, y: 12)
         }
     }
 
@@ -198,7 +179,7 @@ enum GuidePanel {
                                 .frame(width: 10, height: 10)
                         }
                         Text(caption)
-                            .font(.system(size: 18))
+                            .font(.boardStyle(18))
                             .lineLimit(1)
                     }
                     .foregroundStyle(ChannelOverlay.tileText)

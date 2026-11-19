@@ -170,7 +170,7 @@
                         VStack(alignment: .leading, spacing: 8) {
                             if let error {
                                 Text(error)
-                                    .font(.system(size: 15))
+                                    .font(.boardStyle(15))
                                     .foregroundStyle(OnboardingForm.errorColor)
                                     .accessibilityIdentifier("sendLogins.enter.error")
                             }

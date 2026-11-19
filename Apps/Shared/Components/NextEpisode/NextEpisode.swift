@@ -154,7 +154,7 @@ enum NextEpisode {
             FilledArt(image: poster?.image, background: TitlePage.placeholder) {
                 if let number {
                     Text("\(number)")
-                        .font(.system(size: sizes.number, weight: .bold))
+                        .font(.boardStyle(sizes.number, weight: .bold))
                         .foregroundStyle(Palette.textMuted)
                 }
             }

@@ -25,13 +25,11 @@ enum GuideBoard {
         let name: String
         let look: ChannelLook
         @ViewBuilder var logo: Logo
-        @ScaledMetric(relativeTo: .subheadline) private var nameSize: CGFloat = 15
-        @ScaledMetric(relativeTo: .footnote) private var numberSize: CGFloat = 13
 
         var body: some View {
             HStack(spacing: 10) {
                 ChannelNumberText(number)
-                    .font(.system(size: numberSize))
+                    .font(.boardStyle(13))
                     .monospacedDigit()
                     .foregroundStyle(Palette.textMuted)
                     .frame(width: 32, alignment: .trailing)
@@ -39,7 +37,7 @@ enum GuideBoard {
                     .frame(width: 56, height: 36)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
                 Text(name)
-                    .font(.system(size: nameSize, weight: look == .playing ? .semibold : .regular))
+                    .font(.boardStyle(15, weight: look == .playing ? .semibold : .regular))
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -60,7 +58,7 @@ enum GuideBoard {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 12, weight: .bold))
+                .font(.boardStyle(12, weight: .bold))
                 .letterSpacing(1)
                 .foregroundStyle(look == .playing ? Palette.text : Browse.textSecondary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -88,7 +86,6 @@ enum GuideBoard {
         /// Points the title moves right so it stays on screen while the
         /// block's start is scrolled off to the left.
         var titleInset: Double = 0
-        @ScaledMetric(relativeTo: .subheadline) private var size: CGFloat = 14
 
         var body: some View {
             HStack(spacing: 6) {
@@ -96,7 +93,7 @@ enum GuideBoard {
                 case .programme(let title, _, let startedEarlier):
                     HStack(spacing: 4) {
                         if startedEarlier {
-                            Image(systemName: "arrowtriangle.backward.fill").font(.system(size: size - 5)).accessibilityHidden(true)
+                            Image(systemName: "arrowtriangle.backward.fill").font(.boardStyle(14 - 5)).accessibilityHidden(true)
                         }
                         Text(title).lineLimit(1)
                     }
@@ -107,7 +104,7 @@ enum GuideBoard {
                     Text(text).lineLimit(1)
                 }
             }
-            .font(.system(size: size))
+            .font(.boardStyle(14))
             .foregroundStyle(isDim ? Palette.textMuted : Palette.text)
             .padding(.horizontal, content == .gap ? 0 : 12)
             .frame(width: width, alignment: .leading)
@@ -147,10 +144,10 @@ enum GuideBoard {
         var body: some View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(title)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.boardStyle(16, weight: .semibold))
                     .lineLimit(1)
                 Text("\(count)")
-                    .font(.system(size: 13))
+                    .font(.boardStyle(13))
                     .foregroundStyle(Palette.textMuted)
             }
             .foregroundStyle(Palette.text)
@@ -168,7 +165,7 @@ enum GuideBoard {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 13))
+                .font(.boardStyle(13))
                 .monospacedDigit()
                 .foregroundStyle(Palette.textMuted)
                 .padding(.leading, 8)
@@ -185,7 +182,7 @@ enum GuideBoard {
 
         var body: some View {
             Text(time)
-                .font(.system(size: 12, weight: .bold))
+                .font(.boardStyle(12, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(Palette.ground)
                 .fixedSize()
@@ -212,7 +209,7 @@ enum GuideBoard {
 
         var body: some View {
             Text(text)
-                .font(.system(size: 15))
+                .font(.boardStyle(15))
                 .foregroundStyle(Palette.textMuted)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
