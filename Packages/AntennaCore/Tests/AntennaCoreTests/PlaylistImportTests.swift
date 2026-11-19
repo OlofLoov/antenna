@@ -129,7 +129,7 @@ struct PlaylistImportTests {
             Channel(id: "\($0)", name: "\($0)", streamURL: URL(fileURLWithPath: "/\($0)"), group: "G\($0 % 3)")
         }
         let inspected = PlaylistImport.Inspected(text: "", playlist: Playlist(channels: channels), skipped: 0)
-        #expect(ImportText(locale: Locale(identifier: "sv_SE")).summary(inspected).channels == "1\u{00A0}240 channels in 3 groups")
+        #expect(ImportText(locale: Locale(identifier: "sv_SE")).summary(inspected).channels == "1\u{00A0}240 kanaler i 3 grupper")
         #expect(ImportText(locale: Locale(identifier: "sv_SE")).summary(inspected).skipped == nil)
     }
 

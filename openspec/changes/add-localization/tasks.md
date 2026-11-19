@@ -33,8 +33,8 @@
 
 ## 5. Swedish (PR 5)
 
-- [ ] 5.1 Add `sv` to the project and translate every catalog, plural forms and Siri phrases included, with each string marked `needs_review`
-- [ ] 5.2 Add Core tests for one Swedish plural, one count and one 24-hour time, and verify `scripts/check-translations.sh` passes
+- [x] 5.1 Add `sv` to the project and translate every catalog, plural forms and Siri phrases included, with each string marked `needs_review`
+- [x] 5.2 Add Core tests for one Swedish plural, one count and one 24-hour time, and verify `scripts/check-translations.sh` passes
 
 ## 6. German (PR 6)
 
