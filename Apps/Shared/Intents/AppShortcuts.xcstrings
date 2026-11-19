@@ -6,7 +6,7 @@
       "localizations" : {
         "de" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Diesen Sender in ${applicationName} zu den Favoriten hinzufügen"
             ]
@@ -51,7 +51,7 @@
       "localizations" : {
         "de" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "${title} in ${applicationName} abspielen",
               "Einen Film in ${applicationName} abspielen"
@@ -101,7 +101,7 @@
       "localizations" : {
         "de" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Diesen Sender in ${applicationName} aus den Favoriten entfernen"
             ]
@@ -146,7 +146,7 @@
       "localizations" : {
         "de" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "In ${applicationName} suchen",
               "Einen Sender in ${applicationName} finden"
@@ -196,7 +196,7 @@
       "localizations" : {
         "de" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "${channel} in ${applicationName} einschalten",
               "${channel} in ${applicationName} ansehen",

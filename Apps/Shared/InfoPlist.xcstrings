@@ -33,7 +33,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Antenna verbindet sich mit TV-Servern in deinem Heimnetzwerk, wenn eine deiner Quellen dorthin zeigt."
           }
         },
