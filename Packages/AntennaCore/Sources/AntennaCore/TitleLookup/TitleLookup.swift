@@ -114,23 +114,28 @@ public struct Score: Sendable, Hashable, Codable {
 
     /// "7.8" for IMDb, "81" for Metacritic, "92%" for Rotten Tomatoes and
     /// "74%" for TMDB; nil for a value that is not a score.
-    public var text: String? {
+    public var text: String? { text(.autoupdatingCurrent) }
+
+    /// `text` with the digits and separators of `locale`: "7,8" and
+    /// "92 %" in Swedish
+    /// (localization/numbers-use-the-region-s-digits-and-separators).
+    public func text(_ locale: Locale) -> String? {
         guard let share else { return nil }
+        let percent = Int((share * 100).rounded())
         switch site {
         case .imdb:
-            let tenths = Int((share * 100).rounded())
-            return "\(tenths / 10).\(tenths % 10)"
+            return percent.tenths(locale)
         case .metacritic:
-            return "\(Int((share * 100).rounded()))"
+            return percent.formatted(.number.locale(locale))
         case .rottenTomatoes, .tmdb:
-            return "\(Int((share * 100).rounded()))%"
+            return (Double(percent) / 100).formatted(.percent.locale(locale))
         }
     }
 
     /// What VoiceOver reads: "TMDB user score 74 percent", in the
     /// language of `locale`.
     public func spoken(_ locale: Locale = .autoupdatingCurrent) -> String? {
-        guard let share, let text else { return nil }
+        guard let share, let text = text(locale) else { return nil }
         let words = Words(locale)
         let percent = Int((share * 100).rounded())
         switch site {
