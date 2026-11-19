@@ -46,7 +46,7 @@
                 .frame(maxWidth: 520)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Palette.ground)
-                .navigationTitle(model.request.replacing.map { "Re-import \($0.name)" } ?? "Import a playlist")
+                .navigationTitle(title)
                 #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
                 #endif
@@ -91,6 +91,11 @@
                     ImportSheetParts.Problem(problem: problem)
                 }
             }
+        }
+
+        private var title: LocalizedStringResource {
+            guard let replacing = model.request.replacing else { return "Import a playlist" }
+            return "Re-import \(replacing.name)"
         }
 
         @ViewBuilder private var buttons: some View {

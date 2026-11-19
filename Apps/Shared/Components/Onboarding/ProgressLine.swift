@@ -5,10 +5,10 @@ import SwiftUI
 /// (apple-tv-login-from-iphone/the-sign-in-reads-well-without-sight-or-motion).
 /// Caption text on Apple TV, subheadline elsewhere.
 struct ProgressLine: View {
-    let text: String
+    let text: LocalizedStringResource
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    static let inProgress = "In progress"
+    static let inProgress: LocalizedStringResource = "In progress"
 
     #if os(tvOS)
         private let ring: CGFloat = 28

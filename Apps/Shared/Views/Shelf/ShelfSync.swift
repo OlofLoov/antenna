@@ -34,7 +34,7 @@ struct ShelfSync: ViewModifier {
             }
             // "No episodes available" with OK, or "Could not load episodes"
             // with Retry (movies-and-series-browsing/play-a-series-from-the-next-episode).
-            .alert(playback.problem?.message ?? "", isPresented: showsProblem, presenting: playback.problem) { problem in
+            .alert(Text(playback.problem?.message ?? ""), isPresented: showsProblem, presenting: playback.problem) { problem in
                 if problem.retries {
                     Button("Retry") { playback.retry(problem.series, library: library, activity: activity) }
                     Button("Cancel", role: .cancel) {}

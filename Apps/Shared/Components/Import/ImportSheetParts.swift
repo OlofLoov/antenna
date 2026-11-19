@@ -69,14 +69,18 @@
 
             var body: some View {
                 VStack(spacing: 0) {
-                    row(title: summary.channels, detail: summary.groups, mark: .check, id: "import.summary.channels")
+                    row(
+                        title: .verbatim(summary.channels), detail: summary.groups.map(LocalizedStringResource.verbatim), mark: .check,
+                        id: "import.summary.channels")
                     if let host = summary.guideHost {
                         Divider().overlay(Palette.surface(0.08))
-                        row(title: "Guide link found", detail: host, mark: .check, id: "import.summary.guide")
+                        row(title: "Guide link found", detail: .verbatim(host), mark: .check, id: "import.summary.guide")
                     }
                     if let skipped = summary.skipped {
                         Divider().overlay(Palette.surface(0.08))
-                        row(title: skipped, detail: "Not links", mark: .count(skipped.prefix { $0 != " " }), id: "import.summary.skipped")
+                        row(
+                            title: .verbatim(skipped), detail: "Not links", mark: .count(skipped.prefix { $0 != " " }),
+                            id: "import.summary.skipped")
                     }
                 }
                 .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
@@ -89,7 +93,7 @@
                 case count(Substring)
             }
 
-            private func row(title: String, detail: String?, mark: Mark, id: String) -> some View {
+            private func row(title: LocalizedStringResource, detail: LocalizedStringResource?, mark: Mark, id: String) -> some View {
                 HStack(spacing: 12) {
                     Group {
                         switch mark {
@@ -183,8 +187,10 @@
                     }
                     .background(Palette.surface(0.06), in: RoundedRectangle(cornerRadius: 12))
                     Label(
-                        "Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. "
-                            + "Changes to the file are not picked up; re-import to update.",
+                        """
+                        Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. \
+                        Changes to the file are not picked up; re-import to update.
+                        """,
                         systemImage: "icloud"
                     )
                     .font(.system(size: 13))
@@ -193,7 +199,7 @@
                 }
             }
 
-            private func field(_ label: String, text: Binding<String>, id: String) -> some View {
+            private func field(_ label: LocalizedStringResource, text: Binding<String>, id: String) -> some View {
                 HStack(spacing: 12) {
                     Text(label).font(.system(size: 16)).foregroundStyle(ImportSheetParts.body).frame(width: 88, alignment: .leading)
                     TextField("Optional", text: text)
@@ -212,7 +218,7 @@
         /// The white button: Import, Replace or "Replace <name>". Dimmed
         /// to the surface while disabled, as when the file is read or refused.
         struct Primary: View {
-            let title: String
+            let title: LocalizedStringResource
             let id: String
             let action: () -> Void
             @Environment(\.isEnabled) private var isEnabled
@@ -234,7 +240,7 @@
 
         /// The surface button under a white one: "Import as new".
         struct Secondary: View {
-            let title: String
+            let title: LocalizedStringResource
             let id: String
             let action: () -> Void
 
@@ -254,7 +260,7 @@
 
         /// An accent text button: "Choose another file", "Add the link as a source".
         struct Quiet: View {
-            let title: String
+            let title: LocalizedStringResource
             let id: String
             let action: () -> Void
 

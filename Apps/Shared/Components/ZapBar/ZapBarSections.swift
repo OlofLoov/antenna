@@ -91,7 +91,8 @@ extension ZapBar {
         /// How the LIVE badge looks: red dot at live, muted and outlined behind it.
         var live = LiveStyle.live
 
-        /// The badge shown in place of LIVE while catch-up plays.
+        /// Marks the badge shown in place of LIVE while catch-up plays. The
+        /// badge itself reads "CATCH-UP" in the viewer's language.
         static let catchUp = "CATCH-UP"
 
         var body: some View {
@@ -99,7 +100,7 @@ extension ZapBar {
                 HStack(spacing: 10) {
                     ForEach(badges, id: \.self) { badge in
                         if badge == Self.catchUp {
-                            Text(badge)
+                            Text("CATCH-UP")
                                 .font(.system(size: 18, weight: .semibold))
                                 .tracking(1)
                                 .foregroundStyle(Palette.ground)

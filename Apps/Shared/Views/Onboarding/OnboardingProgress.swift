@@ -36,24 +36,31 @@ struct OnboardingProgress {
             lines.append(
                 .init(
                     id: "login", state: .done, title: "Signed in",
-                    detail: text.account(expiry: info.expDate, connections: info.maxConnections)))
+                    detail: text.account(expiry: info.expDate, connections: info.maxConnections).map(LocalizedStringResource.verbatim)))
         case .playlist where setup.connection.descriptor.kind == .m3uFile:
             // local-m3u-file-import/import-during-onboarding
-            lines.append(.init(id: "playlist", state: .done, title: "Playlist imported", detail: setup.connection.fileName))
+            lines.append(
+                .init(
+                    id: "playlist", state: .done, title: "Playlist imported",
+                    detail: setup.connection.fileName.map(LocalizedStringResource.verbatim)))
         case .playlist where setup.connection.descriptor.kind == .channelsDVR:
             // first-run-onboarding/add-a-channels-dvr-server
             let version = setup.connection.serverVersion.map { "Channels DVR \($0)" } ?? "Channels DVR"
-            lines.append(.init(id: "server", state: .done, title: "Server", detail: version))
+            lines.append(.init(id: "server", state: .done, title: "Server", detail: .verbatim(version)))
         case .playlist where setup.connection.descriptor.kind == .stalker || setup.connection.descriptor.kind == .jellyfin:
             // first-run-onboarding/add-a-stalker-portal, first-run-onboarding/add-a-jellyfin-server
-            lines.append(.init(id: "login", state: .done, title: "Signed in", detail: setup.connection.descriptor.url.host()))
+            lines.append(.init(id: "login", state: .done, title: "Signed in", detail: host(setup)))
         case .playlist:
-            lines.append(.init(id: "playlist", state: .done, title: "Playlist downloaded", detail: setup.connection.descriptor.url.host()))
+            lines.append(.init(id: "playlist", state: .done, title: "Playlist downloaded", detail: host(setup)))
         }
         lines.append(channelsLine(setup, style))
         if let library = setup.library { lines.append(libraryLine(library, style)) }
         if let guide = guideLine(setup.guide) { lines.append(guide) }
         return lines
+    }
+
+    private func host(_ setup: SourceSetup) -> LocalizedStringResource? {
+        setup.connection.descriptor.url.host().map(LocalizedStringResource.verbatim)
     }
 
     private func channelsLine(_ setup: SourceSetup, _ style: Style) -> OnboardingChecklist.Line {
@@ -63,10 +70,12 @@ struct OnboardingProgress {
         case .done(let tally) where tally.channels > 0:
             switch style {
             case .television:
-                return .init(id: "channels", state: .done, title: text.channels(tally), detail: text.groupNames(tally.groups))
+                return .init(
+                    id: "channels", state: .done, title: .verbatim(text.channels(tally)), detail: .verbatim(text.groupNames(tally.groups)))
             case .phone:
                 return .init(
-                    id: "channels", state: .done, title: text.liveChannels(tally.channels), detail: text.groups(tally.groups.count))
+                    id: "channels", state: .done, title: .verbatim(text.liveChannels(tally.channels)),
+                    detail: .verbatim(text.groups(tally.groups.count)))
             }
         case .done, .failed:
             if setup.hasLibrary || setup.library == .running {
@@ -77,12 +86,12 @@ struct OnboardingProgress {
     }
 
     private func libraryLine(_ library: SourceSetup.Line<SourceSetup.Library?>, _ style: Style) -> OnboardingChecklist.Line {
-        let detail = style == .phone ? "In the Movies tab" : "Posters and descriptions load as you browse"
+        let detail: LocalizedStringResource = style == .phone ? "In the Movies tab" : "Posters and descriptions load as you browse"
         switch library {
         case .running:
             return .init(id: "movies", state: .running, title: "Loading movies and series…")
         case .done(let counts?) where counts.total > 0:
-            return .init(id: "movies", state: .done, title: text.movies(counts.movies, series: counts.series), detail: detail)
+            return .init(id: "movies", state: .done, title: .verbatim(text.movies(counts.movies, series: counts.series)), detail: detail)
         case .done(nil):
             return .init(id: "movies", state: .done, title: "Movies and series available", detail: detail)
         case .done, .failed:
@@ -97,11 +106,11 @@ struct OnboardingProgress {
         case .waiting:
             .init(id: "guide", state: .running, title: "Downloading the guide", bar: .indeterminate)
         case .downloading(let bytes):
-            .init(id: "guide", state: .running, title: text.downloading(bytes: bytes), bar: .indeterminate)
+            .init(id: "guide", state: .running, title: .verbatim(text.downloading(bytes: bytes)), bar: .indeterminate)
         case .reading:
             .init(id: "guide", state: .running, title: "Reading the guide…", bar: .indeterminate)
         case .loaded(let days, let matched, let total):
-            .init(id: "guide", state: .done, title: text.guide(days: days, matched: matched, total: total), bar: .full)
+            .init(id: "guide", state: .done, title: .verbatim(text.guide(days: days, matched: matched, total: total)), bar: .full)
         case .failed:
             .init(id: "guide", state: .failed, title: "Guide could not be loaded")
         }
@@ -127,18 +136,19 @@ struct OnboardingProgress {
     }
 
     /// The sheet's title on iPhone, iPad and Mac.
-    var title: String {
-        setups.count > 1 ? "\(setups.count) sources added" : setups.first?.name ?? ""
+    var title: LocalizedStringResource {
+        setups.count > 1 ? "\(setups.count) sources added" : .verbatim(setups.first?.name ?? "")
     }
 
     /// The Apple TV eyebrow: "<name> added", the names joined by " · ".
-    var eyebrow: String {
-        setups.count > 1
-            ? setups.map(\.name).joined(separator: " · ") : "\(setups.first?.name ?? "") \(signedIn ? "signed in" : "added")"
+    var eyebrow: LocalizedStringResource {
+        if setups.count > 1 { return .verbatim(setups.map(\.name).joined(separator: " · ")) }
+        let name = setups.first?.name ?? ""
+        return signedIn ? "\(name) signed in" : "\(name) added"
     }
 
     /// The Apple TV title while loading.
-    var loadingTitle: String {
+    var loadingTitle: LocalizedStringResource {
         "Setting up \(setups.last?.name ?? "")"
     }
 
@@ -153,7 +163,7 @@ struct OnboardingProgress {
         let channels = tallies.map(\.channels).reduce(0, +)
         if channels > 0 {
             let groups = tallies.map(\.groups.count).reduce(0, +)
-            tiles.append(.init(id: "channels", value: text.count(channels), caption: "live channels · \(text.groups(groups))"))
+            tiles.append(.init(id: "channels", value: .verbatim(text.count(channels)), caption: "live channels · \(text.groups(groups))"))
         }
         let guides = setups.compactMap { setup -> (days: Int, matched: Int)? in
             if case .loaded(let days, let matched, _) = setup.guide { return (days, matched) }
@@ -161,30 +171,32 @@ struct OnboardingProgress {
         }
         let matched = guides.map(\.matched).reduce(0, +)
         if let days = guides.map(\.days).max(), days > 0, matched > 0 {
-            tiles.append(.init(id: "guide", value: text.days(days), caption: "of guide · \(text.count(matched)) channels"))
+            tiles.append(.init(id: "guide", value: .verbatim(text.days(days)), caption: "of guide · \(text.count(matched)) channels"))
         }
         let libraries = setups.compactMap { $0.library?.value }
         if !libraries.contains(where: { $0 == nil }) {
             let total = libraries.compactMap { $0?.total }.reduce(0, +)
-            if total > 0 { tiles.append(.init(id: "movies", value: text.count(total), caption: "movies and series")) }
+            if total > 0 { tiles.append(.init(id: "movies", value: .verbatim(text.count(total)), caption: "movies and series")) }
         }
         let catchUp = tallies.map(\.catchUpChannels).reduce(0, +)
         if catchUp > 0 {
             let days = tallies.compactMap(\.catchUpDays).max()
+            let channels = text.count(catchUp)
             tiles.append(
                 .init(
-                    id: "catchUp", value: days.map(text.days) ?? "Catch-up",
-                    caption: "\(days == nil ? "on" : "of catch-up on") \(text.count(catchUp)) channels"
+                    id: "catchUp", value: days.map { LocalizedStringResource.verbatim(text.days($0)) } ?? "Catch-up",
+                    caption: days == nil ? "on \(channels) channels" : "of catch-up on \(channels) channels"
                 ))
         }
         return tiles
     }
 
     /// "Live · 101 Eurosport 1" for the first channel, nil without one.
-    var liveCaption: String? {
+    var liveCaption: LocalizedStringResource? {
         guard let tally = setups.lazy.compactMap({ $0.channels.value }).first(where: { $0.firstChannel != nil }),
             let channel = tally.firstChannel
         else { return nil }
-        return ["Live ·", tally.firstNumber.map(\.description), channel.name].compactMap(\.self).joined(separator: " ")
+        let name = [tally.firstNumber.map(\.description), channel.name].compactMap(\.self).joined(separator: " ")
+        return "Live · \(name)"
     }
 }

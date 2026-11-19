@@ -78,8 +78,8 @@ import Testing
         #expect(all.groups == [.favorites, .all, .named(home, "Sport"), .named(home, "News"), .named(cabin, "Sport")])
         #expect(all.groups.map(all.count(of:)) == [1, 4, 2, 1, 1])
         #expect(all.groups.map(\.label) == ["Favorites", "All channels", "Sport", "News", "Sport"])
-        #expect(CatalogueGroup.favorites.order == "Your order")
-        #expect(CatalogueGroup.named(home, "Sport").order == "Sorted by number")
+        #expect(String(localized: CatalogueGroup.favorites.order) == "Your order")
+        #expect(String(localized: CatalogueGroup.named(home, "Sport").order) == "Sorted by number")
     }
 
     @Test("tv-channel-overlay/every-group-with-its-size changes while open keep the highlight or fall back")
@@ -133,15 +133,15 @@ import Testing
     func emptyText() {
         let all = catalogue()
         model.show(.favorites)
-        #expect(model.emptyText(all) == "No favorites yet. Hold select on a channel to add it.")
+        #expect(model.emptyText(all).map { String(localized: $0) } == "No favorites yet. Hold select on a channel to add it.")
         model.show(.all)
         #expect(model.emptyText(all) == nil)
         let empty = Catalogue<Int>(channels: [], groupOrder: [:], favorites: [])
         _ = model.open(empty, playing: nil)
         #expect(model.group == .all)
-        #expect(model.emptyText(empty) == "No channels yet. Add a source in Settings.")
+        #expect(model.emptyText(empty).map { String(localized: $0) } == "No channels yet. Add a source in Settings.")
         #expect(model.group.label == "All channels")
-        #expect(model.group.order == "Sorted by number")
+        #expect(String(localized: model.group.order) == "Sorted by number")
     }
 
     @Test("tv-channel-overlay/now-and-next-for-the-highlighted-channel the panel follows the highlighted row of the shown group")

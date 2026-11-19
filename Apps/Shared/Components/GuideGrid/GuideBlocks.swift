@@ -89,10 +89,10 @@ extension GuideGrid {
             }
         }
 
-        private var line: String? {
+        private var line: LocalizedStringResource? {
             guard let times else { return nil }
             if case .programme(_, .now, _) = content { return "\(times) · Live" }
-            return times
+            return .verbatim(times)
         }
     }
 }

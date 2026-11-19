@@ -283,6 +283,51 @@ PosterRow(titles) { title in
   renders each preview to a PNG, so a variant without a preview is invisible
   to reviewers.
 
+### 9. Copy is a `LocalizedStringResource`, source text is a `String`
+
+Xcode puts a literal in the String Catalog only when its type is
+`LocalizedStringKey`, `LocalizedStringResource` or
+`String.LocalizationValue`. A literal typed `String` is shown verbatim and
+never translated.
+
+- A parameter that carries words Antenna wrote (a title, a button, an empty
+  state, a VoiceOver label) is a `LocalizedStringResource`. The call site
+  passes a literal, one sentence with its arguments, and `Text(title)`
+  resolves it with the environment's locale.
+- A parameter that carries text from the user or the provider (channel
+  name, programme title, plot, group name, source name, address) stays
+  `String`, which `Text` shows as it is.
+- Text AntennaCore already built goes into a copy parameter as
+  `.verbatim(text)`.
+- Copy is never a `static let` or `: String` constant in a view or
+  component. `scripts/check-rules.sh` fails on it.
+- A model or helper that needs a `String` (a sentence it measures or
+  matches, a label for a notification) takes the view's
+  `@Environment(\.locale)` and resolves through `Words(locale)`.
+
+Before:
+
+```swift
+struct EmptyState: View {
+    let title: String
+    var body: some View { Text(title) }
+}
+EmptyState(title: "No channels yet")
+```
+
+After:
+
+```swift
+struct EmptyState: View {
+    let title: LocalizedStringResource
+    var body: some View { Text(title) }
+}
+EmptyState(title: "No channels yet")
+ChannelRow.Name(text: channel.name)   // provider text stays String
+```
+
+`LocalizedStringResource` is `Equatable` and `Sendable` but not `Hashable`.
+
 ## Review pass
 
 Run these over a diff before `/opsx:verify`. Each hit is a finding unless
@@ -294,8 +339,10 @@ grep -rn '#if os' Apps/Shared/Components
 grep -rnE '@Query|modelContext|URLSession|CredentialStore' Apps/Shared/Components
 grep -rnE 'AnyView|ObservableObject|EnvironmentObject|StateObject|EnvironmentKey|onAppear' Apps/Shared
 grep -rn 'onChange' Apps/Shared
+grep -rnE '(let|var) (title|message|label|caption|heading|detail|hint|prompt): String' Apps/Shared/Components
 ```
 
 Then by eye: a `Bool` in a component init names data, not layout (rule 5
 versus rule 1). Every variant has a `#Preview`. Every `@Entry` is set by
-exactly one screen.
+exactly one screen. A `String` parameter named like copy (the last grep)
+carries provider or Core text, never a literal from a call site.

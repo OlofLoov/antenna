@@ -163,7 +163,7 @@ enum ShelfBanner {
                         }
                     }
                     ForEach(text.badges, id: \.self) { badge in
-                        Badge(text: badge, size: type.badge)
+                        Badge(text: .verbatim(badge), size: type.badge)
                     }
                 }
                 .font(.system(size: type.facts))
@@ -185,7 +185,7 @@ enum ShelfBanner {
     /// An outlined badge: "4K", an age rating or "SERIES". Up to 2 pt under
     /// the caption floor, as design.md allows.
     struct Badge: View {
-        let text: String
+        let text: LocalizedStringResource
         let size: CGFloat
 
         var body: some View {
@@ -239,7 +239,7 @@ enum ShelfBanner {
     /// (title-detail-and-episode-picker/open-a-movie-s-page).
     struct InfoButton: View {
         let type: Sizes
-        let title: String
+        let title: LocalizedStringResource
         @Environment(\.shelfBanner) private var banner
         @Environment(\.shelfPrefix) private var prefix
 

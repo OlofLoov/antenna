@@ -181,7 +181,7 @@ import Testing
         editor.mac = "00:1A:79"
         #expect(editor.needsCheck)
         #expect(await !editor.save(in: context))
-        #expect(editor.error == "Enter a valid MAC address, like 00:1A:79:12:34:56.")
+        #expect(editor.error.map { String(localized: $0) } == "Enter a valid MAC address, like 00:1A:79:12:34:56.")
         #expect(StubURLProtocol.requests(host: host).isEmpty)
 
         editor.mac = "00-1a-79-00-00-0d"

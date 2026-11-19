@@ -150,7 +150,7 @@
         /// The line the channel column shows when the shown group has no
         /// channels (tv-channel-overlay/empty-groups-tell-the-user-what-to-do),
         /// nil while it has some.
-        func emptyText<Token>(_ catalogue: Catalogue<Token>) -> String? {
+        func emptyText<Token>(_ catalogue: Catalogue<Token>) -> LocalizedStringResource? {
             guard catalogue.rows(in: group).isEmpty else { return nil }
             switch group {
             case .favorites: return "No favorites yet. Hold select on a channel to add it."

@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.sourceRefresher) private var refresher
     @Environment(\.guideStore) private var guideStore
+    @Environment(\.locale) private var locale
     @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
     @Query private var preferenceRecords: [PreferencesRecord]
     @State private var showingAdd = false
@@ -100,10 +101,9 @@ struct SettingsView: View {
         #endif
     }
 
-    private var iCloudFooter: String {
+    private var iCloudFooter: LocalizedStringResource {
         signedInToICloud
-            ? "Sources sync to your other devices through iCloud. "
-                + "Logins sync through iCloud Keychain when it is on, and never to Apple TV."
+            ? "Sources sync to your other devices through iCloud. Logins sync through iCloud Keychain when it is on, and never to Apple TV."
             : "Not signed in to iCloud. Sources stay on this device."
     }
 
@@ -154,7 +154,7 @@ struct SettingsView: View {
         }
     }
 
-    private var refreshAllTitle: String {
+    private var refreshAllTitle: LocalizedStringResource {
         #if os(tvOS)
             "Refresh all sources"
         #else
@@ -172,14 +172,14 @@ struct SettingsView: View {
         #else
             let text = SourceStatusText()
         #endif
-        return Self.fileLines(source) + text.rowLines(Self.status(of: source, refresher: refresher), now: now)
+        return Self.fileLines(source, words: Words(locale)) + text.rowLines(Self.status(of: source, refresher: refresher), now: now)
     }
 
     /// "Imported 3 November 2026 · home-playlist.m3u" for a file source,
     /// nothing for a link source (local-m3u-file-import/import-and-watch).
-    static func fileLines(_ source: SourceRecord) -> [SourceStatusText.Line] {
+    static func fileLines(_ source: SourceRecord, words: Words) -> [SourceStatusText.Line] {
         guard source.kind == .m3uFile else { return [] }
-        let date = source.importedAt.map { "Imported \($0.formatted(date: .long, time: .omitted))" }
+        let date = source.importedAt.map { words("Imported \($0.formatted(date: .long, time: .omitted))") }
         let parts = [date, source.fileName].compactMap(\.self)
         return parts.isEmpty ? [] : [.init(parts.joined(separator: " · "))]
     }
@@ -291,7 +291,7 @@ extension FocusedValues {
 /// Reads focus here, not in the screen, so moving focus redraws only the
 /// footer and leaves the list and its navigation alone.
 private struct SettingsLeadFooter: View {
-    let iCloud: String
+    let iCloud: LocalizedStringResource
     let subtitles: String
     @FocusedValue(\.settingsFooter) private var footer
 
@@ -348,19 +348,22 @@ extension View {
 /// (design-system/forms-use-the-platform-form-style), the platform's picker
 /// elsewhere.
 private struct PreferenceChoice<Value: Hashable>: View {
-    let label: String
+    let label: LocalizedStringResource
     let selection: Binding<Value>
     let choices: [Value]
+    /// The value's name from AntennaCore.
     let title: (Value) -> String
 
     var body: some View {
         #if os(tvOS)
             ChoiceRow(label: label, selection: selection, choices: choices, title: title)
         #else
-            Picker(label, selection: selection) {
+            Picker(selection: selection) {
                 ForEach(choices, id: \.self) { choice in
                     Text(title(choice)).tag(choice)
                 }
+            } label: {
+                Text(label)
             }
         #endif
     }
@@ -453,7 +456,7 @@ private struct DeleteSourceConfirmation: ViewModifier {
 
     func body(content: Content) -> some View {
         content.alert(
-            record.map { SourceRemoval.title(name: $0.name) } ?? "",
+            record.map { Text(SourceRemoval.title(name: $0.name)) } ?? Text(verbatim: ""),
             isPresented: Binding(get: { record != nil }, set: { if !$0 { record = nil } }), presenting: record
         ) { shown in
             Button("Delete", role: .destructive) { delete(shown) }

@@ -65,10 +65,10 @@ enum PasscodePad {
 
     /// The whole prompt. `error` is the line under the digits, nil for none.
     struct Prompt<Footer: View>: View {
-        let title: String
-        let message: String
+        let title: LocalizedStringResource
+        let message: LocalizedStringResource
         let filled: Int
-        let error: String?
+        let error: LocalizedStringResource?
         let enabled: Bool
         let type: (Character) -> Void
         let delete: () -> Void
@@ -79,7 +79,7 @@ enum PasscodePad {
                 Text(title).font(.title.bold()).foregroundStyle(Palette.text)
                 Text(message).foregroundStyle(Palette.textMuted).multilineTextAlignment(.center)
                 Digits(filled: filled)
-                Text(error ?? " ")
+                Text(error ?? .verbatim(" "))
                     .foregroundStyle(Palette.text)
                     .accessibilityIdentifier("groups.passcode.error")
                     .accessibilityHidden(error == nil)
@@ -97,7 +97,7 @@ enum PasscodePad {
     /// The prompt while the passcode has not reached this device yet
     /// (group-management/unlock-with-the-passcode): no digit keys.
     struct Waiting: View {
-        let message: String
+        let message: LocalizedStringResource
 
         var body: some View {
             VStack(spacing: 16) {

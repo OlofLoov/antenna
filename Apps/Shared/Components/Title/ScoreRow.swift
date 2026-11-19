@@ -10,7 +10,7 @@ import SwiftUI
 struct ScoreRow: View {
     /// In the order they show.
     let scores: [Score]
-    let note: String?
+    let note: LocalizedStringResource?
     /// The value's point size: 13 on iPhone, 14 on iPad and Mac, 24 on Apple TV.
     let size: CGFloat
 

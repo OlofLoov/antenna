@@ -15,7 +15,7 @@ extension LiveModel {
     func nowPlayingInfo(at date: Date) -> NowPlayingInfo? {
         // In multi-view the selected tile's channel shows (multi-view/sound-follows-the-highlighted-tile).
         guard let channel = listedChannel else { return nil }
-        let text = nowText(for: channel, at: date)
+        let text = nowText(for: channel, at: date, locale: .autoupdatingCurrent)
         let isPlaying = multiView.map { $0.status($0.session.selected) == .playing } ?? (!isPaused && player.failure == nil)
         return NowPlayingInfo(
             title: text.times == nil ? channel.name : text.title, channelLine: subject(for: channel).line,

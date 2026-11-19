@@ -144,9 +144,9 @@ warn_except "design-system/controls-use-system-styles: ButtonStyle types only in
   'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift' \
   Apps
 
-# Copy kept in a String constant skips the String Catalog. Warns until the
-# app strings move to the catalog (add-localization task 2.4), then fails.
-warn_except "localization: copy in views and components is not a plain String constant" \
+# Copy kept in a String constant skips the String Catalog. Copy is a
+# LocalizedStringResource (the swiftui-composition skill, rule 9).
+check_except "localization: copy in views and components is not a plain String constant" \
   '(static let [A-Za-z]+ = "[A-Z][a-z]+( [A-Za-z]+)*|: String = "[A-Z][a-z]+( [A-Za-z]+)*)' \
   'Apps/Shared/(Views|Components)/[A-Za-z/]+Fixtures\.swift' \
   Apps/Shared/Views Apps/Shared/Components

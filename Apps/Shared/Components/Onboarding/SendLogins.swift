@@ -28,28 +28,41 @@
             case sending
             case pickedUp
             case notPickedUp
-            case problem(String)
+            case problem(LocalizedStringResource)
         }
 
-        static let heading = "Sign in your Apple TV"
-        static let body = "Your Apple TV asked for these logins. They're encrypted for that Apple TV only and go through your iCloud."
+        static let heading: LocalizedStringResource = "Sign in your Apple TV"
+        static let body: LocalizedStringResource = """
+            Your Apple TV asked for these logins. \
+            They're encrypted for that Apple TV only and go through your iCloud.
+            """
 
         /// "1 source the Apple TV asked for isn't on this iPhone yet. …"
-        static func missing(_ count: Int, device: String) -> String? {
+        static func missing(_ count: Int, device: String) -> LocalizedStringResource? {
             guard count > 0 else { return nil }
-            let sources = count == 1 ? "1 source the Apple TV asked for isn't" : "\(count) sources the Apple TV asked for aren't"
-            return "\(sources) on this \(device) yet. New sources can take a minute to arrive through iCloud."
+            if count == 1 {
+                return """
+                    1 source the Apple TV asked for isn't on this \(device) yet. \
+                    New sources can take a minute to arrive through iCloud.
+                    """
+            }
+            return """
+                \(count) sources the Apple TV asked for aren't on this \(device) yet. \
+                New sources can take a minute to arrive through iCloud.
+                """
         }
 
-        static func none(device: String) -> String {
-            "None of the sources this Apple TV asked for are on this \(device). "
-                + "Both need the same iCloud account, and new sources can take a minute to arrive."
+        static func none(device: String) -> LocalizedStringResource {
+            """
+            None of the sources this Apple TV asked for are on this \(device). \
+            Both need the same iCloud account, and new sources can take a minute to arrive.
+            """
         }
 
-        static func lock(device: String) -> String { "Logins stay in your iCloud Keychain on this \(device)." }
+        static func lock(device: String) -> LocalizedStringResource { "Logins stay in your iCloud Keychain on this \(device)." }
 
         /// The type line under a source's name.
-        static func kindName(_ kind: SourceKind) -> String {
+        static func kindName(_ kind: SourceKind) -> LocalizedStringResource {
             switch kind {
             case .xtream: "Xtream"
             case .stalker: "Stalker portal"
@@ -149,7 +162,7 @@
                 .frame(minHeight: 60)
             }
 
-            private var stateText: String {
+            private var stateText: LocalizedStringResource {
                 switch row.state {
                 case .ready: "Ready to send"
                 case .notHere: "Not on this \(device)"
@@ -212,7 +225,7 @@
 
         /// The white primary button at the bottom.
         struct Primary: View {
-            let title: String
+            let title: LocalizedStringResource
             let identifier: String
             var enabled = true
             let action: () -> Void

@@ -17,6 +17,7 @@ import SwiftUI
 struct ShelfPlayerView: View {
     let playback: ShelfPlayback
     let target: ShelfPlayback.Target
+    @Environment(\.locale) private var locale
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -60,7 +61,7 @@ struct ShelfPlayerView: View {
         switch target {
         case .movie(let movie): movie.name
         case .episode(let episode, let series): "\(series.name), \(ShelfText.episodeCode(episode) ?? episode.title)"
-        case .trailer(_, let title): "\(title.name), trailer"
+        case .trailer(_, let title): Words(locale)("\(title.name), trailer")
         }
     }
 }
@@ -147,6 +148,7 @@ extension TitleTransport {
         @FocusState private var focus: TitlePanelFocus?
         @State private var panelOpenedAt: ContinuousClock.Instant?
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
+        @Environment(\.locale) private var locale
 
         var body: some View {
             let panel = playback.tracks?.panel
@@ -182,7 +184,7 @@ extension TitleTransport {
                         .transition(.opacity)
                 }
                 if let notice = transport.notice {
-                    Transport.Notice(text: notice)
+                    Transport.Notice(text: Words(locale)(notice))
                         .frame(maxHeight: .infinity, alignment: .top)
                         .padding(.top, 60)
                 }
@@ -300,6 +302,7 @@ extension TitleTransport {
         /// "movies" or "series", for the Close button's identifier.
         let kind: String
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
+        @Environment(\.locale) private var locale
         @Environment(\.publishesMenuCommands) private var inMenus
         @State private var width: CGFloat = 0
 
@@ -326,7 +329,7 @@ extension TitleTransport {
                     }
                 }
                 if let notice = transport.notice {
-                    Transport.Notice(text: notice)
+                    Transport.Notice(text: Words(locale)(notice))
                         .frame(maxWidth: .infinity)
                         .padding(.top, 72)
                 }

@@ -11,7 +11,7 @@
 
         var body: some View {
             ForEach(live.catalogue.lockedGroups, id: \.storageKey) { group in
-                Browse.GroupRow(title: live.catalogue.label(of: group), systemImage: "lock.fill", count: 0, isSelected: false) {
+                Browse.GroupRow(title: .verbatim(live.catalogue.label(of: group)), systemImage: "lock.fill", count: 0, isSelected: false) {
                     unlock?(group)
                 }
                 .accessibilityLabel("\(live.catalogue.label(of: group)), locked")

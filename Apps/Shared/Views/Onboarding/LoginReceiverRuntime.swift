@@ -12,13 +12,15 @@
         let model: OnboardingModel
         @Environment(\.modelContext) private var context
         @Environment(\.scenePhase) private var scenePhase
+        @Environment(\.locale) private var locale
 
         func body(content: Content) -> some View {
             content
                 .task {
                     let receiver = LoginReceiverModel(.app)
+                    let received = Words(locale)(LoginQRCard.received)
                     receiver.onDelivery = { payload in
-                        AccessibilityNotification.Announcement(LoginQRCard.received).post()
+                        AccessibilityNotification.Announcement(received).post()
                         await model.receive(payload, into: context)
                     }
                     model.receiver = receiver

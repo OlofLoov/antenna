@@ -88,6 +88,6 @@ import Testing
         #expect(catalogue.count(of: .favorites) == 0)
         let model = ChannelOverlayModel()
         model.show(.favorites)
-        #expect(model.emptyText(catalogue) == "No favorites yet. Hold select on a channel to add it.")
+        #expect(model.emptyText(catalogue).map { String(localized: $0) } == "No favorites yet. Hold select on a channel to add it.")
     }
 }

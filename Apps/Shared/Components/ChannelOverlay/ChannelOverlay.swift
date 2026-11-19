@@ -72,10 +72,11 @@ enum ChannelOverlay {
 
     /// The 20 pt uppercase muted label over a column.
     struct Eyebrow: View {
-        let text: String
+        let text: LocalizedStringResource
+        @Environment(\.locale) private var locale
 
         var body: some View {
-            Text(text.uppercased())
+            Text(Words(locale)(text).uppercased(with: locale))
                 .font(.system(size: 20, weight: .semibold))
                 .tracking(1.5)
                 .foregroundStyle(Palette.textMuted)
@@ -185,13 +186,13 @@ enum ChannelOverlay {
     /// The group's name over its sort order, then the rows.
     struct ChannelColumn<Rows: View>: View {
         let title: String
-        let order: String
+        let order: LocalizedStringResource
         @ViewBuilder var rows: Rows
 
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .firstTextBaseline) {
-                    Eyebrow(text: title)
+                    Eyebrow(text: .verbatim(title))
                     Spacer(minLength: 12)
                     Text(order)
                         .font(.system(size: 20))

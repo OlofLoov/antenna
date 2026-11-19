@@ -233,7 +233,7 @@ struct ShelfRowsContent: View {
                 recentlyAdded(row)
             } else {
                 ShelfView.Row {
-                    ShelfView.RowHeader(title: row.name, count: ShelfText.titles(row.count)) { EmptyView() }
+                    ShelfView.RowHeader(title: .verbatim(row.name), count: ShelfText.titles(row.count)) { EmptyView() }
                 } cards: {
                     ForEach(row.titles) { title in
                         ShelfPoster(title: title, actions: actions)
@@ -253,7 +253,7 @@ struct ShelfRowsContent: View {
     private func recentlyAdded(_ row: ShelfRow) -> some View {
         let seeAllID = "\(prefix).row.\(row.identifier).seeAll"
         return ShelfView.Row {
-            ShelfView.RowHeader(title: row.name, count: ShelfText.titles(row.count)) {
+            ShelfView.RowHeader(title: .verbatim(row.name), count: ShelfText.titles(row.count)) {
                 #if !os(tvOS)
                     ShelfView.SeeAllButton(identifier: seeAllID) { seeAll(.recentlyAdded) }
                 #endif
@@ -394,7 +394,8 @@ struct ShelfNotices: View {
         if banner != nil || !waiting.isEmpty {
             VStack(spacing: 8) {
                 if let banner {
-                    Browse.FailureBanner(text: banner, identifier: "\(prefix).failure", retry: model.retry, dismiss: model.dismissBanner)
+                    Browse.FailureBanner(
+                        text: .verbatim(banner), identifier: "\(prefix).failure", retry: model.retry, dismiss: model.dismissBanner)
                 }
                 ForEach(waiting) { source in
                     ShelfView.WaitingNote(source: source)

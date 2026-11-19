@@ -36,6 +36,7 @@
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.reminders) private var reminders
+        @Environment(\.locale) private var locale
         @Query private var preferences: [PreferencesRecord]
 
         var body: some View {
@@ -91,7 +92,9 @@
             } panel: {
                 panel(data, now: now)
             } grid: {
-                GuideGrid.Grid(columns: data.timeline.columns(from: model.windowStart).map(GuideText.time), now: nowMark(data, now)) {
+                GuideGrid.Grid(
+                    columns: data.timeline.columns(from: model.windowStart).map(GuideText(locale: locale).time), now: nowMark(data, now)
+                ) {
                     days(data, now: now)
                 } rows: {
                     if data.rows.isEmpty {
@@ -116,7 +119,8 @@
                 let quality = target.key == playingKey ? pictureQuality : nil
                 GuidePanel.Panel(
                     date: now,
-                    details: GuideText.details(target.cell, channel: target.channel, timeline: data.timeline, now: now, quality: quality)
+                    details: GuideText(locale: locale).details(
+                        target.cell, channel: target.channel, timeline: data.timeline, now: now, quality: quality)
                 ) {
                     GuidePanel.WatchButton { tune(model.watch(data)) }
                         .focused($local, equals: .watch)
@@ -303,7 +307,9 @@
         }
 
         private func nowMark(_ data: GuideData, _ now: Date) -> GuideGrid.NowMark? {
-            data.timeline.nowLine(at: now, windowStart: model.windowStart).map { GuideGrid.NowMark(offset: $0, time: GuideText.time(now)) }
+            data.timeline.nowLine(at: now, windowStart: model.windowStart).map {
+                GuideGrid.NowMark(offset: $0, time: GuideText(locale: locale).time(now))
+            }
         }
 
         private var caption: String {
@@ -323,8 +329,8 @@
         }
 
         private func spokenHighlight(_ data: GuideData, now: Date) -> String {
-            guard let target = highlighted(data) else { return "Guide" }
-            return GuideText.spoken(target.cell, channel: target.channel, now: now)
+            guard let target = highlighted(data) else { return Words(locale)("Guide") }
+            return GuideText(locale: locale).spoken(target.cell, channel: target.channel, now: now)
         }
 
         /// The highlighted cell with its row and channel.

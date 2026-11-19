@@ -82,10 +82,10 @@ import Testing
             }
         }
 
-        #expect(try action().name == "Add to Favorites")
+        #expect(try String(localized: action().name) == "Add to Favorites")
         try action().run()
         #expect(try catalogue().isFavorite(channel))
-        #expect(try action().name == "Remove from Favorites")
+        #expect(try String(localized: action().name) == "Remove from Favorites")
         try action().run()
         #expect(try !catalogue().isFavorite(channel))
     }

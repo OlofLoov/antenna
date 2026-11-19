@@ -197,11 +197,11 @@ final class OnboardingModel {
         guard let failure, let index = signIns.firstIndex(where: { $0.id == failure.source.id }) else { return }
         signIns.insert(signIns.remove(at: index), at: 0)
         prepareSignIn()
-        error = Self.deliveredFailure(failure.message)
+        error = String(localized: Self.deliveredFailure(failure.message))
     }
 
     /// The sign-in's message for a delivered login that did not work.
-    static func deliveredFailure(_ message: String) -> String {
+    static func deliveredFailure(_ message: String) -> LocalizedStringResource {
         "The login from your iPhone didn't work here. \(message)"
     }
 

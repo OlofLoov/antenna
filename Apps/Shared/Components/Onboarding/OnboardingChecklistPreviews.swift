@@ -4,28 +4,29 @@ import SwiftUI
 private enum Fixture {
     typealias Line = OnboardingChecklist.Line
 
-    static let signedIn = Line(id: "login", state: .done, title: "Signed in", detail: "Account active until 14 March 2027 · 2 connections")
-    static let playlist = Line(id: "playlist", state: .done, title: "Playlist downloaded", detail: "tv.example-provider.net")
+    static let signedIn = Line(
+        id: "login", state: .done, title: "Signed in", detail: .verbatim("Account active until 14 March 2027 · 2 connections"))
+    static let playlist = Line(id: "playlist", state: .done, title: "Playlist downloaded", detail: .verbatim("tv.example-provider.net"))
     static let channelsTV = Line(
-        id: "channels", state: .done, title: "412 live channels in 18 groups",
-        detail: "Sport, News, Movies, Series, Kids, Documentary, Music, Local and 10 more")
-    static let channelsPhone = Line(id: "channels", state: .done, title: "412 live channels", detail: "18 groups")
+        id: "channels", state: .done, title: .verbatim("412 live channels in 18 groups"),
+        detail: .verbatim("Sport, News, Movies, Series, Kids, Documentary, Music, Local and 10 more"))
+    static let channelsPhone = Line(id: "channels", state: .done, title: .verbatim("412 live channels"), detail: .verbatim("18 groups"))
     static let noLive = Line(id: "channels", state: .muted, title: "No live channels")
     static let noChannels = Line(id: "channels", state: .failed, title: "No channels found")
     static let movies = Line(
-        id: "movies", state: .done, title: "1 240 movies and 86 series", detail: "Posters and descriptions load as you browse")
-    static let moviesPhone = Line(id: "movies", state: .done, title: "1 240 movies and 86 series", detail: "In the Movies tab")
-    static let downloading = Line(id: "guide", state: .running, title: "Downloading the guide · 2,4 MB", bar: .indeterminate)
-    static let guideLoaded = Line(id: "guide", state: .done, title: "Guide for 7 days · 388 of 412 channels", bar: .full)
+        id: "movies", state: .done, title: .verbatim("1 240 movies and 86 series"), detail: "Posters and descriptions load as you browse")
+    static let moviesPhone = Line(id: "movies", state: .done, title: .verbatim("1 240 movies and 86 series"), detail: "In the Movies tab")
+    static let downloading = Line(id: "guide", state: .running, title: .verbatim("Downloading the guide · 2,4 MB"), bar: .indeterminate)
+    static let guideLoaded = Line(id: "guide", state: .done, title: .verbatim("Guide for 7 days · 388 of 412 channels"), bar: .full)
 
     static let tiles = [
-        OnboardingSummary.Tile(id: "channels", value: "412", caption: "live channels · 18 groups"),
-        OnboardingSummary.Tile(id: "guide", value: "7 days", caption: "of guide · 388 channels"),
-        OnboardingSummary.Tile(id: "movies", value: "1 326", caption: "movies and series"),
-        OnboardingSummary.Tile(id: "catchUp", value: "7 days", caption: "of catch-up on 212 channels"),
+        OnboardingSummary.Tile(id: "channels", value: .verbatim("412"), caption: .verbatim("live channels · 18 groups")),
+        OnboardingSummary.Tile(id: "guide", value: .verbatim("7 days"), caption: .verbatim("of guide · 388 channels")),
+        OnboardingSummary.Tile(id: "movies", value: .verbatim("1 326"), caption: "movies and series"),
+        OnboardingSummary.Tile(id: "catchUp", value: .verbatim("7 days"), caption: .verbatim("of catch-up on 212 channels")),
     ]
 
-    static let note = "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own."
+    static let note: LocalizedStringResource = "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own."
     @MainActor static var actions: OnboardingChecklist.Actions { .init(primary: {}, addAnother: {}) }
 }
 

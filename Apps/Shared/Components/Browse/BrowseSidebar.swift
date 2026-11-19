@@ -7,7 +7,7 @@ extension Browse {
     /// sidebar color.
     struct Sidebar<Sections: View, Groups: View, Footer: View>: View {
         /// The label over the groups: "Groups" on Live, "Genres" on Movies and Series.
-        var eyebrow = "Groups"
+        var eyebrow: LocalizedStringResource = "Groups"
         @ViewBuilder var sections: Sections
         @ViewBuilder var groups: Groups
         @ViewBuilder var footer: Footer
@@ -45,10 +45,11 @@ extension Browse {
 
     /// The 13 pt uppercase muted label over a group of rows.
     struct Eyebrow: View {
-        let text: String
+        let text: LocalizedStringResource
+        @Environment(\.locale) private var locale
 
         var body: some View {
-            Text(text.uppercased())
+            Text(Words(locale)(text).uppercased(with: locale))
                 .font(.footnote.weight(.semibold))
                 .tracking(1)
                 .foregroundStyle(Palette.textMuted)
@@ -58,7 +59,7 @@ extension Browse {
 
     /// A section of the app in the sidebar; the open one is filled.
     struct SectionRow: View {
-        let title: String
+        let title: LocalizedStringResource
         let systemImage: String
         let isSelected: Bool
         let select: () -> Void
@@ -80,7 +81,7 @@ extension Browse {
 
     /// A channel group with its count; the open one is filled.
     struct GroupRow: View {
-        let title: String
+        let title: LocalizedStringResource
         let systemImage: String?
         let count: Int
         let isSelected: Bool

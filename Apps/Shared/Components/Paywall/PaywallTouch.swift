@@ -248,7 +248,7 @@ extension Paywall {
     }
 
     private struct PrimaryButton: View {
-        let title: String
+        let title: LocalizedStringResource
         let identifier: String
         let action: () -> Void
 
@@ -266,7 +266,7 @@ extension Paywall {
     }
 
     private struct QuietButton: View {
-        let title: String
+        let title: LocalizedStringResource
         let identifier: String
         let action: () -> Void
 

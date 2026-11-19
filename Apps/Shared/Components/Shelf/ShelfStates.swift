@@ -50,10 +50,10 @@ extension ShelfView {
         }
 
         /// What the list says about a source that is not loading.
-        static func detail(_ state: ShelfSourceState) -> String? {
+        static func detail(_ state: ShelfSourceState) -> LocalizedStringResource? {
             switch state {
             case .loading: nil
-            case .loaded(let count): ShelfText.titles(count)
+            case .loaded(let count): .verbatim(ShelfText.titles(count))
             case .offline: "Offline"
             case .failed: "Could not load"
             case .waitingForLogin: "Waiting for login"

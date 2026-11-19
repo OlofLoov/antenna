@@ -7,8 +7,9 @@
         /// The dragged file's name, nil when the item has none.
         let fileName: String?
 
-        static func title(fileName: String?) -> String {
-            fileName.map { "Drop to import \($0)" } ?? "Drop to import a playlist"
+        static func title(fileName: String?) -> LocalizedStringResource {
+            guard let fileName else { return "Drop to import a playlist" }
+            return "Drop to import \(fileName)"
         }
 
         var body: some View {

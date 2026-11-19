@@ -20,7 +20,7 @@ struct NewSource: Equatable {
         case credentials(String)
 
         /// The text the sheet shows under the form.
-        var message: String {
+        var message: LocalizedStringResource {
             switch self {
             case .invalidURL: "Enter a valid URL."
             case .credentials(let reason): "Could not store credentials: \(reason)"

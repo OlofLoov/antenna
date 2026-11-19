@@ -5,7 +5,7 @@ import Foundation
 enum PanelTab: Hashable, CaseIterable, Sendable {
     case info, audio, subtitles
 
-    var title: String {
+    var title: LocalizedStringResource {
         switch self {
         case .info: "Info"
         case .audio: "Audio"

@@ -80,7 +80,7 @@ final class ShelfPlayback {
         }
 
         /// "No episodes available", or "Could not load episodes" with Retry.
-        var message: String {
+        var message: LocalizedStringResource {
             switch self {
             case .noEpisodes: "No episodes available"
             case .episodesFailed: "Could not load episodes"

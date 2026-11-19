@@ -11,10 +11,11 @@ import SwiftUI
 /// design-system/apple-tv-content-stays-in-the-safe-area).
 enum FormPage {
     struct Television<Card: View, Rows: View, Buttons: View>: View {
-        let title: String
-        let line: String
+        let title: LocalizedStringResource
+        let line: LocalizedStringResource
         /// Under the rows, such as where the login is kept.
-        var footer: String?
+        var footer: LocalizedStringResource?
+        /// The model's error sentence, already final.
         var error: String?
         @ViewBuilder var card: Card
         /// `Section`s of `FieldRow`s.

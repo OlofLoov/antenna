@@ -197,8 +197,8 @@ import Testing
         let model = try #require(failing.page?.model)
         await model.load()
         #expect(model.phase == .failed(.failed))
-        #expect(TitleProblem.failed.message(.movie) == "Could not load details")
-        #expect(TitleProblem.failed.message(.series) == "Could not load episodes")
+        #expect(String(localized: TitleProblem.failed.message(.movie)) == "Could not load details")
+        #expect(String(localized: TitleProblem.failed.message(.series)) == "Could not load episodes")
 
         let calls = Counter()
         let waiting = await library(calls: calls, login: false)
@@ -208,7 +208,8 @@ import Testing
         #expect(page.phase == .failed(.waitingForLogin("Cabin")))
         #expect(calls.value == 0, "nothing is asked without the login")
         #expect(!page.checkLogin())
-        #expect(TitleProblem.waitingForLogin("Cabin").message(.movie) == "Cabin: waiting for its login to sync from iCloud")
+        #expect(
+            String(localized: TitleProblem.waitingForLogin("Cabin").message(.movie)) == "Cabin: waiting for its login to sync from iCloud")
     }
 
     @Test("title-detail-and-episode-picker/what-each-episode-shows a series groups its episodes and counts the unreadable ones")

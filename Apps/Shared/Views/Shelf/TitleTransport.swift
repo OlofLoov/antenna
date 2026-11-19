@@ -32,7 +32,7 @@ final class TitleTransport {
     }
 
     /// Said for a few seconds when the server cannot skip.
-    nonisolated static let cannotSkip = "This stream can't skip"
+    nonisolated static let cannotSkip: LocalizedStringResource = "This stream can't skip"
 
     /// The last position the engine reported.
     private(set) var position = PlaybackPosition.zero
@@ -43,7 +43,7 @@ final class TitleTransport {
     private(set) var target: Duration?
     private(set) var controlsShown = true
     /// A line said for a few seconds after a refused skip.
-    private var said: String?
+    private var said: LocalizedStringResource?
     /// Keeps the controls up while a track list is open or VoiceOver runs.
     var held = false {
         didSet {
@@ -106,7 +106,7 @@ final class TitleTransport {
     /// "This stream can't skip" whenever the controls show for a title
     /// whose server cannot skip, and for a few seconds after a refused
     /// skip; nil otherwise.
-    var notice: String? {
+    var notice: LocalizedStringResource? {
         if let said { return said }
         return controlsShown && !position.canSkip ? Self.cannotSkip : nil
     }
@@ -291,7 +291,7 @@ final class TitleTransport {
         }
     }
 
-    private func say(_ text: String) {
+    private func say(_ text: LocalizedStringResource) {
         said = text
         noticeTimer?.cancel()
         let sleep = dependencies.sleep

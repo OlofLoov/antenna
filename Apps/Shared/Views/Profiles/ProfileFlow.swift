@@ -247,7 +247,7 @@ struct ProfileFlow: View {
 
 /// The button the profile screens use, 26 pt on Apple TV and 17 pt elsewhere.
 struct ProfileButton: View {
-    let title: String
+    let title: LocalizedStringResource
     var role: ButtonRole?
     let action: () -> Void
 

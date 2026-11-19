@@ -47,8 +47,9 @@ import Testing
         model.sourcesChanged([file])
         await wait { model.sources.first?.state == .waitingForLogin }
         #expect(model.sources.first?.waitsForICloud == true)
-        #expect(model.sources.first?.emptyLine.text == "home-playlist: waiting for its playlist to sync from iCloud")
-        #expect(model.sources.first?.loadingRow.detail == "Waiting for its playlist to sync from iCloud")
+        let source = model.sources.first
+        #expect(source.map { String(localized: $0.emptyLine.text) } == "home-playlist: waiting for its playlist to sync from iCloud")
+        #expect(source.map { String(localized: $0.loadingRow.detail) } == "Waiting for its playlist to sync from iCloud")
         #expect(loader.calls.isEmpty)
 
         arrived.playlist = true

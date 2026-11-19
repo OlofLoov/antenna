@@ -8,6 +8,7 @@
     /// tv-guide-grid/programmes-are-drawn-to-scale). Takes no focus; the
     /// screen's holder does.
     struct GuideRows: View {
+        @Environment(\.locale) private var locale
         let data: GuideData
         let model: GuideModel
         let catalogue: Catalogue<PersistentIdentifier>
@@ -53,13 +54,14 @@
             Group {
                 if isHighlighted && model.area == .grid {
                     GuideGrid.HighlightedBlock(
-                        content: content, times: cell.placeholder == nil ? GuideText.times(cell.start, cell.stop) : nil, width: block.width)
+                        content: content, times: cell.placeholder == nil ? GuideText(locale: locale).times(cell.start, cell.stop) : nil,
+                        width: block.width)
                 } else {
                     GuideGrid.Block(content: content, width: block.width)
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(GuideText.spoken(cell, channel: channel, now: now))
+            .accessibilityLabel(GuideText(locale: locale).spoken(cell, channel: channel, now: now))
             .accessibilityAddTraits(isHighlighted ? .isSelected : [])
             .accessibilityIdentifier(GuideText.identifier(cell, key: key))
         }

@@ -119,7 +119,7 @@ enum ShelfView {
 
     /// A row's name and count, with anything trailing such as See all.
     struct RowHeader<Trailing: View>: View {
-        let title: String
+        let title: LocalizedStringResource
         let count: String?
         @ViewBuilder var trailing: Trailing
         @Environment(\.shelfMetrics) private var metrics
@@ -181,7 +181,7 @@ extension EnvironmentValues {
 extension ShelfTitle.Kind {
     /// The section's identifier prefix and name.
     var prefix: String { self == .movie ? "movies" : "series" }
-    var sectionTitle: String { self == .movie ? "Movies" : "Series" }
+    var sectionTitle: LocalizedStringResource { self == .movie ? "Movies" : "Series" }
 }
 
 /// Titles for previews and UI test fixtures. No artwork, so every poster

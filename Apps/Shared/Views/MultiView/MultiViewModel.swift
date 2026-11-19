@@ -91,11 +91,11 @@ final class MultiViewModel {
     }
 
     /// "Loading", the failure's title and explanation, or nothing while it plays.
-    func statusText(_ id: Int) -> String {
+    func statusText(_ id: Int) -> LocalizedStringResource {
         switch status(id) {
         case .waiting: "Loading"
-        case .playing: ""
-        case .failed(let message): "\(message.title). \(message.explanation)"
+        case .playing: .verbatim("")
+        case .failed(let message): .verbatim("\(message.title). \(message.explanation)")
         }
     }
 

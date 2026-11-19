@@ -14,11 +14,11 @@ struct TitlePageContext {
         var isOnMyList: Bool
         /// "Could not load details", the offline message or the waiting
         /// line, under the buttons; nil when nothing failed.
-        var problem: String?
+        var problem: LocalizedStringResource?
         /// The description shows in full.
         var expanded: Bool
         /// Where Back leads: "Movies" or "Series".
-        var section: String
+        var section: LocalizedStringResource
         /// What opened the About page while it shows; when it closes,
         /// focus goes back there.
         var aboutOpen: AboutOpener?
@@ -159,6 +159,7 @@ enum TitlePage {
     struct Meta: View {
         let type: Sizes
         @Environment(\.titlePage) private var page
+        @Environment(\.locale) private var locale
 
         var body: some View {
             if let page {
@@ -178,7 +179,8 @@ enum TitlePage {
                     .foregroundStyle(Browse.textSecondary)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(
-                        (meta.facts.map { $0.replacingOccurrences(of: "★ ", with: "rating ") } + meta.badges).joined(separator: ", ")
+                        (meta.facts.map { $0.replacingOccurrences(of: "★ ", with: "\(Words(locale)("rating")) ") } + meta.badges)
+                            .joined(separator: ", ")
                     )
                     .accessibilityIdentifier("title.meta")
                 }
@@ -192,7 +194,7 @@ enum TitlePage {
             if !meta.badges.isEmpty {
                 HStack(spacing: type.meta / 2) {
                     ForEach(meta.badges, id: \.self) { badge in
-                        ShelfBanner.Badge(text: badge, size: type.badge)
+                        ShelfBanner.Badge(text: .verbatim(badge), size: type.badge)
                     }
                 }
                 .accessibilityIdentifier("title.badges")
@@ -408,7 +410,7 @@ extension TitlePageContext {
     /// A page for previews, built from fixed words and no artwork.
     static func preview(
         _ metadata: TitleMetadata, play: PlayState = PlayState(label: "Play", enabled: true), loading: Bool = false,
-        problem: String? = nil, onMyList: Bool = false, trailer: Bool = true
+        problem: LocalizedStringResource? = nil, onMyList: Bool = false, trailer: Bool = true
     ) -> TitlePageContext {
         TitlePageContext(
             state: State(

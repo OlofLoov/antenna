@@ -16,7 +16,7 @@
                 /// "12 min behind", nil at live.
                 let behind: String?
                 /// "CATCH-UP" while catch-up plays, nil on live TV.
-                var badge: String?
+                var badge: LocalizedStringResource?
             }
 
             let scrub: Scrub
@@ -34,6 +34,7 @@
             @ViewBuilder var startOver: StartOver
             @ViewBuilder var extras: Extras
             @Environment(\.browseMetrics) private var metrics
+            @Environment(\.locale) private var locale
 
             var body: some View {
                 let regular = metrics == .regular
@@ -86,7 +87,7 @@
                         ProgressTrack(fraction: progress ?? 0, height: regular ? 4 : 3)
                             .accessibilityElement()
                             .accessibilityLabel("Programme progress")
-                            .accessibilityValue(progress.map { "\(Int(($0 * 100).rounded())) percent" } ?? "No programme information")
+                            .accessibilityValue(progressValue)
                             .accessibilityIdentifier("browse.player.progress")
                         if scrub.behind != nil {
                             LiveButton(action: goLive)
@@ -105,6 +106,10 @@
                 .accessibilityIdentifier("browse.player.controls")
             }
 
+            private var progressValue: Text {
+                progress.map { Text("\(Int(($0 * 100).rounded())) percent") } ?? Text("No programme information")
+            }
+
             /// Drags move the time shown and seek once on release; VoiceOver
             /// reads it as adjustable, and swiping up and down skips
             /// (timeshift-catch-up-and-start-over/skip-scan-and-drag).
@@ -121,7 +126,7 @@
                 .frame(height: 30)
                 .accessibilityElement()
                 .accessibilityLabel("Position")
-                .accessibilityValue([scrub.time, scrub.behind ?? "Live"].joined(separator: ", "))
+                .accessibilityValue([scrub.time, scrub.behind ?? Words(locale)("Live")].joined(separator: ", "))
                 .accessibilityAdjustableAction { direction in
                     switch direction {
                     case .increment: skip(true)
@@ -132,7 +137,7 @@
                 .accessibilityIdentifier("timeshift.scrubber")
             }
 
-            private func glyph(_ name: String, label: String, id: String, action: @escaping () -> Void) -> some View {
+            private func glyph(_ name: String, label: LocalizedStringResource, id: String, action: @escaping () -> Void) -> some View {
                 Button(action: action) {
                     Image(systemName: name)
                         .font(.system(size: 22, weight: .semibold))

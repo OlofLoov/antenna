@@ -17,7 +17,7 @@ extension Browse {
 
     /// One group chip; the open group is filled white.
     struct Chip: View {
-        let title: String
+        let title: LocalizedStringResource
         let isSelected: Bool
         let select: () -> Void
         @ScaledMetric(relativeTo: .subheadline) private var size: CGFloat = 14

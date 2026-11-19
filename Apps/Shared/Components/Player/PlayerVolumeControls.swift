@@ -49,7 +49,7 @@
         /// "Playing on AirPlay" or "Playing in Picture in Picture" in place of
         /// the picture, while it shows somewhere else.
         struct Elsewhere: View {
-            let text: String
+            let text: LocalizedStringResource
             let systemImage: String
 
             var body: some View {

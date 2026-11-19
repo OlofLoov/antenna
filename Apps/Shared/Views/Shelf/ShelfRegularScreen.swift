@@ -71,7 +71,7 @@
                         .accessibilityAddTraits(.isHeader)
                     Spacer()
                     if openSearch != nil {
-                        SearchParts.SectionField(prompt: "Search \(kind == .movie ? "movies" : "series")", text: typed)
+                        SearchParts.SectionField(prompt: kind == .movie ? "Search movies" : "Search series", text: typed)
                             .accessibilityIdentifier("\(kind.prefix).search")
                     }
                     sortMenu

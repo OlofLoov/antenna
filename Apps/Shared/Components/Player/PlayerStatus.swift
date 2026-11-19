@@ -24,6 +24,7 @@ enum PlayerStatus {
         /// The line under the ring, nil for the ring alone.
         let caption: String?
         @Environment(\.playerStatusMetrics) private var metrics
+        @Environment(\.locale) private var locale
 
         var body: some View {
             VStack(spacing: metrics.gap) {
@@ -36,7 +37,7 @@ enum PlayerStatus {
             .allowsHitTesting(false)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("player.buffering")
-            .task { AccessibilityNotification.Announcement("Buffering").post() }
+            .task { AccessibilityNotification.Announcement(Words(locale)("Buffering")).post() }
         }
     }
 

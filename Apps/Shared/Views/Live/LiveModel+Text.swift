@@ -2,17 +2,19 @@ import AntennaCore
 import Foundation
 
 extension LiveModel {
-    /// What the now-playing line and the details say about `channel` at `date`.
-    func nowText(for channel: Channel, at date: Date) -> LiveNowText {
+    /// What the now-playing line and the details say about `channel` at
+    /// `date`, with times written for `locale`.
+    func nowText(for channel: Channel, at date: Date, locale: Locale) -> LiveNowText {
         let panel = programmes.panel(for: channel, at: date)
         return LiveNowText(
             channel: channel.name, number: RowKey(channel).flatMap(catalogue.channelNumber(for:)), state: programmes.state(channel),
-            current: panel.now, next: panel.next, now: date, time: Self.time)
+            current: panel.now, next: panel.next, now: date, time: { Self.time($0, locale: locale) })
     }
 
-    /// A programme's start or end in the user's locale.
-    static func time(_ date: Date) -> String {
-        date.formatted(date: .omitted, time: .shortened)
+    /// A programme's start or end, written for `locale`. Views pass their
+    /// `@Environment(\.locale)`.
+    nonisolated static func time(_ date: Date, locale: Locale) -> String {
+        date.formatted(Date.FormatStyle(date: .omitted, time: .shortened).locale(locale))
     }
 }
 

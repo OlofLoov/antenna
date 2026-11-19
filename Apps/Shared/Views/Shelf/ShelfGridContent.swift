@@ -17,10 +17,10 @@ enum ShelfList: Hashable {
     case recentlyAdded
 
     /// The grid's heading: "All movies", "All series" or the category.
-    func name(_ kind: ShelfTitle.Kind) -> String {
+    func name(_ kind: ShelfTitle.Kind) -> LocalizedStringResource {
         switch self {
         case .all: kind == .movie ? "All movies" : "All series"
-        case .genre(let name): name
+        case .genre(let name): .verbatim(name)
         case .myList: "My list"
         case .continueWatching: "Continue watching"
         case .recentlyAdded: "Recently added"
@@ -118,7 +118,7 @@ struct ShelfGenreChips<Leading: View>: View {
             leading
             ForEach(Shelf.genres(model.rows)) { genre in
                 let list = ShelfList.genre(genre.name)
-                ShelfView.Chip(title: genre.name, isSelected: selection == list) { select(list) }
+                ShelfView.Chip(title: .verbatim(genre.name), isSelected: selection == list) { select(list) }
                     .accessibilityIdentifier("\(prefix).genres.\(list.identifier)")
             }
         }

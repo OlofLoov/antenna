@@ -184,7 +184,7 @@
         }
 
         /// "Genres" on Movies and Series, "Recent" on Search, "Groups" elsewhere.
-        private var eyebrow: String {
+        private var eyebrow: LocalizedStringResource {
             switch section {
             case .movies, .series: "Genres"
             case .search: "Recent"
@@ -223,7 +223,8 @@
         @ViewBuilder private func liveGroups(_ columns: LiveColumns) -> some View {
             ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
                 Browse.GroupRow(
-                    title: live.catalogue.label(of: group), systemImage: group.systemImage, count: live.catalogue.count(of: group),
+                    title: .verbatim(live.catalogue.label(of: group)), systemImage: group.systemImage,
+                    count: live.catalogue.count(of: group),
                     isSelected: (section == .live || section == .guide) && group == live.group
                 ) {
                     live.show(group)

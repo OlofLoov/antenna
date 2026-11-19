@@ -12,8 +12,8 @@ extension EnvironmentValues {
 private enum PendingUnlock: Identifiable {
     /// A locked group the user picked in a channel list.
     case group(CatalogueGroup, name: String)
-    /// The channel playing, which became locked.
-    case channel(name: String)
+    /// The channel playing, which became locked; nil when its name is unknown.
+    case channel(name: String?)
 
     var id: String {
         switch self {
@@ -22,9 +22,10 @@ private enum PendingUnlock: Identifiable {
         }
     }
 
-    var message: String {
+    var message: LocalizedStringResource {
         switch self {
-        case .group(_, let name), .channel(let name): "\(name) is locked."
+        case .group(_, let name), .channel(.some(let name)): "\(name) is locked."
+        case .channel(nil): "This channel is locked."
         }
     }
 }
@@ -48,7 +49,8 @@ struct GroupLockPrompt: ViewModifier {
     let opened: (CatalogueGroup) -> Void
     /// True while the channel playing now is locked.
     let playingIsLocked: Bool
-    let playingName: String
+    /// The playing channel's name, nil when nothing names it.
+    let playingName: String?
     let pause: () -> Void
     let resume: () -> Void
     let leave: () -> Void

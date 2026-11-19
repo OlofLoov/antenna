@@ -21,7 +21,9 @@ final class SourceEditor {
     var mac: String
     /// Empty until the user types a new password.
     var password = ""
-    private(set) var error: String?
+    /// Why the last save or switch failed: the editor's own copy, or a
+    /// message AntennaCore wrote, passed through as it is.
+    private(set) var error: LocalizedStringResource?
     private(set) var saving = false
     /// True when a login for this source is on this device.
     private(set) var hasLogin: Bool
@@ -84,27 +86,27 @@ final class SourceEditor {
             return true
         }
         if kind == .channelsDVR, let problem = SourceFields(kind: .channelsDVR, url: trimmedLink).check() {
-            error = problem.message
+            error = .verbatim(problem.message)
             return false
         }
         let typed = kind == .channelsDVR ? ChannelsDVRClient.serverURL(from: trimmedLink) : URL(string: trimmedLink)
         guard var url = typed, url.scheme != nil else {
-            error = ConnectFailure.invalidURL.message
+            error = .verbatim(ConnectFailure.invalidURL.message)
             return false
         }
         if kind == .stalker {
             guard let portal = StalkerPortal(trimmedLink) else {
-                error = ConnectFailure.invalidURL.message
+                error = .verbatim(ConnectFailure.invalidURL.message)
                 return false
             }
             url = portal.url
             if let problem = SourceFields(kind: .stalker, url: trimmedLink, mac: mac).check() {
-                error = problem.message
+                error = .verbatim(problem.message)
                 return false
             }
         }
         if kind == .jellyfin, SourceFields(kind: .jellyfin, url: trimmedLink, username: "-", password: "-").check() != nil {
-            error = ConnectFailure.invalidURL.message
+            error = .verbatim(ConnectFailure.invalidURL.message)
             return false
         }
         if isDuplicate(url, in: context) {
@@ -126,7 +128,7 @@ final class SourceEditor {
         } catch is CancellationError {
             return false
         } catch {
-            self.error = ConnectFailure(error, host: url.host() ?? trimmedLink).message
+            self.error = .verbatim(ConnectFailure(error, host: url.host() ?? trimmedLink).message)
             return false
         }
         if kind == .xtream || kind == .stalker || kind == .jellyfin {
@@ -134,7 +136,7 @@ final class SourceEditor {
             do {
                 try connector.credentials.save(login, for: key)
             } catch {
-                self.error = ConnectFailure.credentials("\(error)").message
+                self.error = .verbatim(ConnectFailure.credentials("\(error)").message)
                 return false
             }
             record.credentialKey = key
@@ -180,14 +182,14 @@ final class SourceEditor {
         } catch is CancellationError {
             return nil
         } catch {
-            self.error = ConnectFailure(error, host: host).message
+            self.error = .verbatim(ConnectFailure(error, host: host).message)
             return nil
         }
         let key = record.credentialKey ?? record.id.uuidString
         do {
             try connector.credentials.save(.init(username: login.username, password: login.password), for: key)
         } catch {
-            self.error = ConnectFailure.credentials("\(error)").message
+            self.error = .verbatim(ConnectFailure.credentials("\(error)").message)
             return nil
         }
         let ids = panel.liveChannelIDs(for: channels.filter { $0.sourceID == id })

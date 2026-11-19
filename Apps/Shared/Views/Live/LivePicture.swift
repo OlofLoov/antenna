@@ -6,6 +6,7 @@
     /// "Select a channel" before one is picked. The same engine feeds it in
     /// every layout, so moving it never restarts the channel.
     struct LivePicture: View {
+        @Environment(\.locale) private var locale
         @Environment(LiveModel.self) private var live
         /// Which half of the picture a double-tap lands on.
         @State private var surfaceWidth: CGFloat = 0
@@ -97,7 +98,7 @@
         /// (live-tv-on-iphone-ipad-mac/the-full-screen-channel-line-fades-with-the-controls).
         private func title(_ channel: Channel) -> some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                let text = live.nowText(for: channel, at: context.date)
+                let text = live.nowText(for: channel, at: context.date, locale: locale)
                 Browse.PictureTitle(title: text.title, detail: text.compact) {
                     Browse.Logo(url: channel.logoURL, initials: Channel.initials(for: channel.name), isSelected: true)
                 }
@@ -152,12 +153,12 @@
             let player = live.player
             return TrackPicker.Lists(
                 audio: player.audioRows, subtitles: player.subtitleRows,
-                footer: [player.streamLine] + (player.route == .demuxer ? [Self.noAirPlay] : []),
+                footer: [.verbatim(player.streamLine)] + (player.route == .demuxer ? [Self.noAirPlay] : []),
                 pickAudio: { player.selectAudio($0) }, pickSubtitle: { player.selectSubtitle($0) })
         }
 
         /// Antenna reads this stream itself, so it cannot go to AirPlay.
-        static let noAirPlay = "AirPlay not available for this stream"
+        static let noAirPlay: LocalizedStringResource = "AirPlay not available for this stream"
 
         @ViewBuilder private var controls: some View {
             if live.player.timeshift.canRewind {
@@ -169,9 +170,10 @@
 
         private var strip: some View {
             TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                let progress = live.playing.map { live.nowText(for: $0, at: context.date) }?.progress
+                let progress = live.playing.map { live.nowText(for: $0, at: context.date, locale: locale) }?.progress
                 Browse.Controls(
-                    isPaused: live.isPaused, progress: progress, clock: LiveModel.time(context.date), isFullScreen: live.fullScreen,
+                    isPaused: live.isPaused, progress: progress, clock: LiveModel.time(context.date, locale: locale),
+                    isFullScreen: live.fullScreen,
                     playPause: {
                         live.playPause()
                         live.showControls(after: .touch)

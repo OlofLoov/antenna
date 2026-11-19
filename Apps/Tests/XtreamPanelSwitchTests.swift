@@ -151,7 +151,7 @@ import Testing
         let record = try insert("Home", kind: .m3u, url: panelLink(host))
         let editor = try editor(record, tag: host)
         #expect(await editor.switchToXtream(channels: [], in: context) == nil)
-        #expect(editor.error == "Could not sign in. Check the username and password.")
+        #expect(editor.error.map { String(localized: $0) } == "Could not sign in. Check the username and password.")
         #expect(record.kind == .m3u)
         #expect(record.credentialKey == nil)
         #expect(record.url?.absoluteString == panelLink(host))
@@ -165,7 +165,7 @@ import Testing
         let record = try insert("Home", kind: .m3u, url: panelLink(host), order: 1)
         let editor = try editor(record, tag: host)
         #expect(await editor.switchToXtream(channels: [], in: context) == nil)
-        #expect(editor.error == "This source is already added.")
+        #expect(editor.error.map { String(localized: $0) } == "This source is already added.")
         #expect(record.kind == .m3u)
         #expect(StubURLProtocol.requestCount(tag: host) == 0)
     }

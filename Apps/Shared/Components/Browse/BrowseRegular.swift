@@ -6,7 +6,7 @@ extension Browse {
     /// is folded, and the filter field under them.
     struct ListHeader<Leading: View, Filter: View>: View {
         let title: String
-        let count: String
+        let count: LocalizedStringResource
         @ViewBuilder var leading: Leading
         @ViewBuilder var filter: Filter
 
@@ -72,7 +72,7 @@ extension Browse {
 
     /// A 36 pt square button that shows a folded column, with a 44 pt hit area.
     struct ToggleButton: View {
-        let title: String
+        let title: LocalizedStringResource
         let systemImage: String
         let action: () -> Void
 

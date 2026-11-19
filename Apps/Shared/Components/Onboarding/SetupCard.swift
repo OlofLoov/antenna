@@ -11,30 +11,38 @@ enum SetupCard {
     /// What the card says under the code.
     enum Status: Equatable {
         /// "Waiting for your iPhone", with the hint once two minutes passed.
-        case waiting(hint: String?)
+        case waiting(hint: LocalizedStringResource?)
         /// A login source arrived: its name and what has not reached the TV.
-        case arrived(name: String, missing: String)
+        case arrived(name: String, missing: LocalizedStringResource)
         /// A login source arrived and its login is on the way or being
         /// checked: "Waiting for the login…" or "Checking the login…" (`TV-Onboard-3-QR-Received`).
-        case awaitingLogin(name: String, progress: String)
+        case awaitingLogin(name: String, progress: LocalizedStringResource)
     }
 
-    static let waitingForLogin = "Waiting for the login…"
-    static let checkingLogin = "Checking the login…"
+    static let waitingForLogin: LocalizedStringResource = "Waiting for the login…"
+    static let checkingLogin: LocalizedStringResource = "Checking the login…"
 
-    static let title = "Set up from your iPhone"
-    static let body =
-        "Point your iPhone camera at the code. Antenna opens there with this form, "
-        + "and what you enter syncs to this Apple TV through iCloud."
-    static let footer =
-        "Antenna also appears in the App Switcher on your iPhone. Prefer the remote? Type here; your iPhone offers its keyboard too."
-    static let nothingYet =
-        "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV."
-    static let cannotSetUp = "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here."
-    static let codeLabel = "QR code. Scan it with your iPhone to set up this Apple TV from there."
+    static let title: LocalizedStringResource = "Set up from your iPhone"
+    static let body: LocalizedStringResource = """
+        Point your iPhone camera at the code. Antenna opens there with this form, \
+        and what you enter syncs to this Apple TV through iCloud.
+        """
+    static let footer: LocalizedStringResource = """
+        Antenna also appears in the App Switcher on your iPhone. \
+        Prefer the remote? Type here; your iPhone offers its keyboard too.
+        """
+    static let nothingYet: LocalizedStringResource = """
+        Nothing yet? Your iPhone needs Antenna installed, an internet connection \
+        and the same iCloud account as this Apple TV.
+        """
+    static let cannotSetUp: LocalizedStringResource = """
+        A source arrived from iCloud that this Apple TV can't set up here. \
+        Update Antenna, or type the source here.
+        """
+    static let codeLabel: LocalizedStringResource = "QR code. Scan it with your iPhone to set up this Apple TV from there."
 
     /// What has not reached the TV for a source of `kind`.
-    static func missing(_ kind: SourceKind) -> String {
+    static func missing(_ kind: SourceKind) -> LocalizedStringResource {
         kind == .stalker ? "The MAC address hasn't reached this Apple TV." : "The login hasn't reached this Apple TV."
     }
 
@@ -136,8 +144,8 @@ enum SetupCard {
     private struct Row: View {
         let symbol: String
         let color: Color
-        let text: String
-        let state: String
+        let text: LocalizedStringResource
+        let state: LocalizedStringResource
 
         var body: some View {
             HStack(alignment: .firstTextBaseline, spacing: Metrics.Spacing.small) {

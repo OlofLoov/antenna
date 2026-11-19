@@ -122,7 +122,9 @@ import Testing
     @Test("iphone-as-setup-device/scanning-opens-the-setup-form-on-the-iphone: the banner counts the sources already here")
     func sendingText() {
         #expect(SetupFromTV.Banner.existing(0, device: "iPad") == nil)
-        #expect(SetupFromTV.Banner.existing(1, device: "iPad")?.hasPrefix("This iPad already has 1 source. It appears") == true)
-        #expect(SetupFromTV.Banner.existing(3, device: "Mac")?.hasPrefix("This Mac already has 3 sources. They appear") == true)
+        let one = SetupFromTV.Banner.existing(1, device: "iPad").map { String(localized: $0) }
+        let three = SetupFromTV.Banner.existing(3, device: "Mac").map { String(localized: $0) }
+        #expect(one?.hasPrefix("This iPad already has 1 source. It appears") == true)
+        #expect(three?.hasPrefix("This Mac already has 3 sources. They appear") == true)
     }
 }

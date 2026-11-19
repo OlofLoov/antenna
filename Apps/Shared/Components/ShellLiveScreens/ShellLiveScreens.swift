@@ -17,7 +17,7 @@ enum ShellLoading {
 
         var id: UUID
         var name: String
-        var detail: String
+        var detail: LocalizedStringResource
         var indicator: Indicator
         /// Read by UI tests and VoiceOver: `loading`, `loaded:<n>`, `offline`, `failed`, `waitingForLogin`.
         var value: String
@@ -107,7 +107,7 @@ private struct Spinner: View {
 enum ShellEmpty {
     struct Line: Identifiable, Equatable, Sendable {
         var id: UUID
-        var text: String
+        var text: LocalizedStringResource
         /// Read by UI tests: `loaded:0`, `offline`, `failed`, `waitingForLogin`.
         var value: String
     }
