@@ -70,7 +70,7 @@ public struct SearchText: Sendable {
         _ hit: SearchResults.ChannelHit, now programme: String?, locale: Locale = .autoupdatingCurrent
     ) -> String {
         let words = Words(locale)
-        let number = hit.channel.number.map { ChannelNumber(major: $0, minor: hit.channel.minorNumber).description }
+        let number = hit.channel.number.map { ChannelNumber(major: $0, minor: hit.channel.minorNumber).text(locale) }
         let detail: String? =
             if hit.match == .group, let group = hit.channel.group {
                 words("Matches \(words.source(group))")
@@ -93,7 +93,7 @@ public struct SearchText: Sendable {
         guard !hit.isOnNow else { return nil }
         let start = hit.programme.start
         if calendar.isDate(start, inSameDayAs: now) { return time(start) }
-        return "\(format(start, template: "EEE")) \(time(start))"
+        return "\(format(start, .weekday)) \(time(start))"
     }
 
     /// A programme's second line: "Docu HD · 21:00 – 22:00" when on now,
@@ -116,20 +116,23 @@ public struct SearchText: Sendable {
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(date, inSameDayAs: tomorrow) {
             return words("Tomorrow")
         }
-        return format(date, template: "EEEE")
+        return format(date, .longWeekday)
     }
 
     /// A time of day in the locale's style, "21:00" or "9:00 PM".
     public func time(_ date: Date) -> String {
-        format(date, template: "jmm")
+        format(date, .time)
     }
 
-    private func format(_ date: Date, template: String) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.locale = locale
-        formatter.setLocalizedDateFormatFromTemplate(template)
-        return formatter.string(from: date)
+    private enum Shape { case weekday, longWeekday, weekdayAndDate, time }
+
+    private func format(_ date: Date, _ shape: Shape) -> String {
+        let style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar, timeZone: calendar.timeZone)
+        return switch shape {
+        case .weekday: date.formatted(style.weekday(.abbreviated))
+        case .longWeekday: date.formatted(style.weekday(.wide))
+        case .weekdayAndDate: date.formatted(style.weekday(.abbreviated).day().month(.abbreviated))
+        case .time: date.formatted(style.hour().minute())
+        }
     }
 }

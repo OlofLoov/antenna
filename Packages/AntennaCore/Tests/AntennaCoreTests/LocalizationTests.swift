@@ -46,4 +46,26 @@ import Testing
         #expect(Words(english).source("Sport One") == "Sport One")
         #expect("\u{2068}Sport\u{2069}".withoutIsolates == "Sport")
     }
+
+    @Test("localization/numbers-use-the-region-s-digits-and-separators a channel number never groups and uses the region's digits")
+    func channelNumbers() {
+        #expect(ChannelNumber(major: 1001).text(english) == "1001")
+        #expect(ChannelNumber(major: 6, minor: 1).text(english) == "6.1")
+        #expect(ChannelNumber(major: 105).text(Locale(identifier: "ar_SA")) == "١٠٥")
+        #expect(ChannelNumber.digit("٥") == "5")
+        #expect(ChannelNumber.digit("x") == nil)
+        #expect(ChannelNumber.digits("007", locale: Locale(identifier: "ar_SA")) == "٠٠٧")
+    }
+
+    @Test("localization/times-and-dates-follow-the-user-s-region a 24-hour region and a forced 12-hour clock")
+    func clock() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC") ?? .gmt
+        let nine = Date(timeIntervalSince1970: 1_799_971_200 + 21 * 3_600)
+        #expect(SearchText(calendar: calendar, locale: Locale(identifier: "sv_SE")).time(nine) == "21:00")
+        let german12 = SearchText(calendar: calendar, locale: Locale(identifier: "de_DE@hours=h12")).time(nine)
+        #expect(german12.hasPrefix("9:00"), "\(german12)")
+        #expect(ReminderText(calendar: calendar, locale: Locale(identifier: "sv_SE")).time(nine) == "21:00")
+        #expect(SearchText(calendar: calendar, locale: english).time(nine) == "9:00\u{202F}PM")
+    }
 }

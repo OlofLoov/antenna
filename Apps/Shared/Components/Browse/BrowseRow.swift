@@ -59,7 +59,7 @@ extension Browse {
                                 .lineLimit(1)
                             Spacer(minLength: 0)
                             if let number {
-                                Text(number.description)
+                                ChannelNumberText(number)
                                     .font(.system(size: metrics.detail * scale))
                                     .monospacedDigit()
                                     .foregroundStyle(Palette.textMuted)

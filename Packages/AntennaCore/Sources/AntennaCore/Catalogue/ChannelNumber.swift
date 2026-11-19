@@ -23,6 +23,26 @@ public struct ChannelNumber: Sendable, Hashable, Comparable, CustomStringConvert
         minor.map { "\(major).\($0)" } ?? String(major)
     }
 
+    /// The number as a person reads it in `locale`: that region's digits and
+    /// never a grouping separator, so 1001 stays "1001" and reads "١٠٠١" in
+    /// Arabic (localization/numbers-use-the-region-s-digits-and-separators).
+    public func text(_ locale: Locale = .autoupdatingCurrent) -> String {
+        let style = IntegerFormatStyle<Int>.number.grouping(.never).locale(locale)
+        return minor.map { "\(major.formatted(style)).\($0.formatted(style))" } ?? major.formatted(style)
+    }
+
+    /// The value of a digit in any script, so a number typed with
+    /// Arabic-Indic digits finds the same channel. Nil for anything else.
+    public static func digit(_ character: Character) -> Character? {
+        guard character.isNumber, let value = character.wholeNumberValue, (0...9).contains(value) else { return nil }
+        return Character(String(value))
+    }
+
+    /// Typed digits, "0" to "9", in `locale`'s digits, keeping leading zeros.
+    public static func digits(_ typed: String, locale: Locale = .autoupdatingCurrent) -> String {
+        String(typed.flatMap { $0.wholeNumberValue.map { $0.formatted(.number.locale(locale)) } ?? String($0) })
+    }
+
     public static func < (lhs: Self, rhs: Self) -> Bool {
         (lhs.major, lhs.minor ?? -1) < (rhs.major, rhs.minor ?? -1)
     }

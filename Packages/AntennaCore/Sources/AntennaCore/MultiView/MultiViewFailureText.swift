@@ -106,7 +106,7 @@ public enum MultiViewText {
     /// A tile's spoken label, "104, Sport One, sound on".
     public static func spokenLabel(number: ChannelNumber?, name: String, audible: Bool, locale: Locale = .autoupdatingCurrent) -> String {
         let words = Words(locale)
-        return ([number.map(\.description), name].compactMap(\.self) + [audible ? words("sound on") : words("muted")]).joined(
+        return ([number.map { $0.text(locale) }, name].compactMap(\.self) + [audible ? words("sound on") : words("muted")]).joined(
             separator: ", ")
     }
 

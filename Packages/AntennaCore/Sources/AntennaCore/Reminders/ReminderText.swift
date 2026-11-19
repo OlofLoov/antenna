@@ -66,7 +66,7 @@ public struct ReminderText: Sendable {
 
     /// The banner's body: "22:00 · 104 Sport One", with the number when the channel has one.
     public func bannerBody(_ reminder: Reminder, number: ChannelNumber?) -> String {
-        let channel = [number.map(\.description), reminder.channelName].compactMap(\.self).joined(separator: " ")
+        let channel = [number.map { $0.text(locale) }, reminder.channelName].compactMap(\.self).joined(separator: " ")
         return "\(time(reminder.start)) · \(channel)"
     }
 
@@ -83,7 +83,7 @@ public struct ReminderText: Sendable {
         if reminder.notListed { return Self.notListed(locale) }
         guard let from = reminder.movedFrom else { return nil }
         if calendar.isDate(from, inSameDayAs: reminder.start) { return words("Moved from \(time(from))") }
-        return words("Moved from \(format(from, template: "EEE")) \(time(from))")
+        return words("Moved from \(format(from, .weekday)) \(time(from))")
     }
 
     /// The Settings row's count: nil at zero.
@@ -98,20 +98,23 @@ public struct ReminderText: Sendable {
             return words("Tomorrow")
         }
         let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: date)).day ?? 0
-        return format(date, template: days < 7 ? "EEE" : "EEEdMMM")
+        return format(date, days < 7 ? .weekday : .weekdayAndDate)
     }
 
     /// A time of day in the locale's style, "21:00" or "9:00 PM".
     public func time(_ date: Date) -> String {
-        format(date, template: "jmm")
+        format(date, .time)
     }
 
-    private func format(_ date: Date, template: String) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.locale = locale
-        formatter.setLocalizedDateFormatFromTemplate(template)
-        return formatter.string(from: date)
+    private enum Shape { case weekday, longWeekday, weekdayAndDate, time }
+
+    private func format(_ date: Date, _ shape: Shape) -> String {
+        let style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar, timeZone: calendar.timeZone)
+        return switch shape {
+        case .weekday: date.formatted(style.weekday(.abbreviated))
+        case .longWeekday: date.formatted(style.weekday(.wide))
+        case .weekdayAndDate: date.formatted(style.weekday(.abbreviated).day().month(.abbreviated))
+        case .time: date.formatted(style.hour().minute())
+        }
     }
 }

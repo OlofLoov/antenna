@@ -112,7 +112,7 @@ public enum IntentText {
         number: ChannelNumber?, group: String?, source: String, locale: Locale = .autoupdatingCurrent
     ) -> String {
         let group = group.flatMap { $0.allSatisfy(\.isWhitespace) ? nil : clean($0) }
-        return [number?.description, group, Self.source(source, locale: locale)].compactMap(\.self).joined(separator: " · ")
+        return [number?.text(locale), group, Self.source(source, locale: locale)].compactMap(\.self).joined(separator: " · ")
     }
 
     /// A title's second line: "Movie · Cabin" or "Series · Cabin".

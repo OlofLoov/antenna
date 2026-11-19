@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension ZapBar {
@@ -13,11 +14,13 @@ extension ZapBar {
         }
 
         let content: Content
+        @Environment(\.locale) private var locale
 
         var body: some View {
             HStack(spacing: 18) {
                 switch content {
-                case .typing(let digits, let name):
+                case .typing(let typed, let name):
+                    let digits = ChannelNumber.digits(typed, locale: locale)
                     Text("\(digits)\(Text("_").foregroundStyle(Palette.textMuted))")
                         .font(.system(size: 44, weight: .bold).monospacedDigit())
                         .tracking(2)
@@ -30,8 +33,8 @@ extension ZapBar {
                             .lineLimit(1)
                             .accessibilityIdentifier("zapBar.match")
                     }
-                case .noChannel(let digits):
-                    Text("No channel \(digits)")
+                case .noChannel(let typed):
+                    Text("No channel \(ChannelNumber.digits(typed, locale: locale))")
                         .font(.system(size: 22))
                         .foregroundStyle(Palette.textMuted)
                         .accessibilityIdentifier("zapBar.noChannel")

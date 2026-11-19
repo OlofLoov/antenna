@@ -39,7 +39,7 @@ extension GuideTimeline {
     public func dayLabel(_ day: Date, today: Date, locale: Locale = .current) -> String {
         let start = calendar.startOfDay(for: today)
         let distance = calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: day)).day ?? 0
-        guard distance != 0 else { return "Today" }
+        guard distance != 0 else { return Words(locale)("Today") }
         var style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar, timeZone: calendar.timeZone)
             .weekday(.abbreviated)
         if abs(distance) >= 7 { style = style.day() }
