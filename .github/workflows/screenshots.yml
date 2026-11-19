@@ -24,7 +24,7 @@ jobs:
     name: App screenshots
     runs-on: macos-26
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'screenshots')
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v7
         with:
