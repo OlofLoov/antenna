@@ -24,13 +24,17 @@ final class SetupTVUITests: XCTestCase {
         app.descendants(matching: .any)[identifier].firstMatch
     }
 
-    /// Add a source, then the M3U playlist type, which opens the details step.
-    private func openDetails(_ app: XCUIApplication) {
+    /// Add a source, then the M3U playlist type, which opens the details
+    /// step. A source sent from the phone can move past that step before the
+    /// test looks, so only the steps after it are checked then.
+    private func openDetails(_ app: XCUIApplication, sending: Bool = false) {
         XCTAssertTrue(element(app, "onboarding.addSource").waitForExistence(timeout: 10))
         XCUIRemote.shared.press(.select)
         XCTAssertTrue(element(app, "onboarding.kind.m3u").waitForExistence(timeout: 5))
         XCUIRemote.shared.press(.select)
-        XCTAssertTrue(element(app, "onboarding.field.playlist").waitForExistence(timeout: 5))
+        if !sending {
+            XCTAssertTrue(element(app, "onboarding.field.playlist").waitForExistence(timeout: 5))
+        }
     }
 
     // iphone-as-setup-device/the-apple-tv-offers-a-qr-code
@@ -54,7 +58,7 @@ final class SetupTVUITests: XCTestCase {
     // iphone-as-setup-device/a-playlist-source-sent-from-the-iphone-starts-loading-on-the-tv
     func testAPlaylistFromThePhoneStartsLoading() {
         let app = launch("connect", send: "m3u")
-        openDetails(app)
+        openDetails(app, sending: true)
         // The scripted playlist loads at once, so the checklist goes straight to the summary.
         XCTAssertTrue(element(app, "onboarding.summary").waitForExistence(timeout: 15))
         XCTAssertFalse(element(app, "onboarding.qr").exists)
@@ -63,7 +67,7 @@ final class SetupTVUITests: XCTestCase {
     // iphone-as-setup-device/a-login-source-sent-from-the-iphone-needs-only-its-login-on-the-tv
     func testAnXtreamSourceFromThePhoneAsksForTheLogin() {
         let app = launch("signedIn", send: "xtream")
-        openDetails(app)
+        openDetails(app, sending: true)
         XCTAssertTrue(element(app, "onboarding.signIn").waitForExistence(timeout: 15))
         XCTAssertEqual(element(app, "onboarding.field.server").value as? String, "http://xtream.test")
         XCTAssertEqual(element(app, "onboarding.field.name").value as? String, "Home provider")
@@ -81,7 +85,7 @@ final class SetupTVUITests: XCTestCase {
     // iphone-as-setup-device/a-login-source-sent-from-the-iphone-needs-only-its-login-on-the-tv
     func testAStalkerPortalFromThePhoneAsksForTheMAC() {
         let app = launch("signedIn", send: "stalker")
-        openDetails(app)
+        openDetails(app, sending: true)
         XCTAssertTrue(element(app, "onboarding.signIn").waitForExistence(timeout: 15))
         XCTAssertEqual(element(app, "onboarding.field.portal").value as? String, "http://portal.test/c/")
         XCTAssertTrue(element(app, "onboarding.field.mac").exists)
