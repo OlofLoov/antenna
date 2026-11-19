@@ -17,12 +17,15 @@ final class GuideRegularUITests: XCTestCase {
         try? FileManager.default.removeItem(at: log)
     }
 
-    private func launch(_ scenario: String = "channels", extra: [String] = [], reset: Bool = true) throws -> XCUIApplication {
+    private func launch(
+        _ scenario: String = "channels", extra: [String] = [], reset: Bool = true, environment: [String: String] = [:]
+    ) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "the grid needs an iPad")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario] + extra + (reset ? ["-ui-testing-reset-guide-zoom"] : [])
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
+        app.launchEnvironment.merge(environment) { $1 }
         app.launch()
         XCTAssertTrue(app.element("browse.section.guide").waitForExistence(timeout: 10), "the sidebar never appeared")
         return app
@@ -305,7 +308,7 @@ final class GuideRegularUITests: XCTestCase {
 
     // guide-on-iphone-ipad-and-mac/move-through-the-days, a short guide
     func testAShortGuideListsTodayOnly() throws {
-        let app = try launch()
+        let app = try launch(environment: Midday.environment)
         openGuide(app)
         XCTAssertTrue(app.element("guide.day.0").exists)
         XCTAssertFalse(app.element("guide.day.1").exists)

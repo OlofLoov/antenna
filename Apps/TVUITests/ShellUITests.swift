@@ -91,8 +91,8 @@ final class ShellUITests: XCTestCase {
 
     /// The `channels` scenario with its first channel playing full screen
     /// and the info bar from the launch tune gone again.
-    func launchPlaying() {
-        launch("channels")
+    func launchPlaying(environment: [String: String] = [:]) {
+        launch("channels", environment: environment)
         expectEngine("playing loads=1 file=a1.ts")
         expectFocus("shell.picture")
         expectGone("zapBar.bar", timeout: 10)

@@ -190,6 +190,7 @@ targets:
     platform: tvOS
     sources:
       - Apps/TVUITests
+      - Apps/UITests/Midday.swift
     dependencies:
       - target: AntennaTV
     settings:
