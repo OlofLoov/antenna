@@ -71,11 +71,11 @@
         /// What the loading list says about a source.
         static func detail(_ state: LiveSource.State) -> LocalizedStringResource? {
             switch state {
-            case .loading: nil
-            case .loaded(let count): count == 1 ? "1 channel" : "\(count) channels"
-            case .offline: "Offline"
-            case .failed: "Could not load"
-            case .waitingForLogin: "Waiting for login"
+            case .loading: return nil
+            case .loaded(let count): return count == 1 ? "1 channel" : "\(count) channels"
+            case .offline: return "Offline"
+            case .failed: return "Could not load"
+            case .waitingForLogin: return "Waiting for login"
             }
         }
     }
