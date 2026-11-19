@@ -765,6 +765,22 @@ PR 11, right to left:
   screenshot of each screen they pass. Apple TV's first focus in Movies is
   the banner's Play button, at the right; the spec's "rightmost poster" is
   read as the first focusable element of the first row.
+- `TitleUITests.testResumeAMovieAndComeBackToItsPage` fails on a simulator
+  whose system language is Arabic, though the app launches in English: the
+  poster's context menu is system UI. It passes on an English simulator.
+  Run the English UI tests on an English simulator.
+
+Catalog check on CI:
+- From 5a6e8bae on, the Build apps job failed at "Catalogs hold every
+  string in code" with five keys marked stale, while the same check passed
+  locally. CI's image runs Xcode 26.6; the local machine runs Xcode 27.2.
+  All five keys sat in a `switch` expression returning
+  `LocalizedStringResource?` (`ShelfStates.detail`, `LiveStatus.detail`,
+  `SetupFromTV.existing` and `tvDetail`), and in each the first literal was
+  extracted and the later ones were not. The same shape written with
+  `return` statements (`ChannelOverlayModel.emptyText`) extracted every
+  literal. The four switches use `return` now. Xcode 26.6 is not on the
+  local machine, so the next CI run is the proof.
 
 ## Open Questions
 
