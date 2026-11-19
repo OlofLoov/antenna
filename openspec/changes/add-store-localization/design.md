@@ -6,8 +6,7 @@ Boards: none. The change adds no screen and changes none; the store set
 photographs screens that already have boards (`iPhone`, `iPhone-Guide`,
 `iPhone-Movies`, `iPhone-Title-Player-Transport`, `iPhone-Onboard-2`, their
 iPad counterparts, `TV-ZapBar`, `TV-Guide`, `TV-Movies`,
-`TV-Title-Player-Transport`). Design-system requirements that apply:
-"Accessibility identifiers follow the board", for the new tab identifiers.
+`TV-Title-Player-Transport`). No design-system requirement changes; no identifier is added.
 
 What exists today:
 - No store text anywhere. `docs/release/` holds the App Review notes, the
@@ -234,13 +233,23 @@ takes the screens a store page shows:
 
 | Step | iPhone and iPad | Apple TV |
 |---|---|---|
-| 1 | `live`: the Live list, `-ui-screenshots full` | `live`: the zap bar over the picture, `full` |
+| 1 | `live`: the Live list, `-ui-testing-live favorites` | `live`: the zap bar over the picture, `-ui-screenshots full` |
 | 2 | `guide`: the guide | `guide`: the guide grid |
 | 3 | `movies`: Movies, `-ui-testing-shelf watching` | `movies`: Movies with the banner |
 | 4 | `player`: a movie with its controls | `player`: a movie with the bar up |
 | 5 | `add-source`: the add-source form, `-ui-screenshots empty` | `add-source`: the source kinds, `empty` |
 
 The last step shows that the user brings the source.
+
+The iPhone and iPad walk starts on the scripted Live launch rather than the
+screenshot seed: the seed's Xtream source has no login, so its Live list
+shows a failed-source banner and its guide stays loading. The scripted
+launches draw small test probes (engine state, a layout switch) in a
+corner; a new Debug-only `-ui-testing-no-probe` argument hides them, and
+the store walk passes it. The pictures are still test fixtures: a black
+player picture, made-up names in English. They prove the pipeline and show
+the translated screens for review; a seed made for the store is a later
+change.
 
 The walk reads `STORE_LANGUAGE` and `STORE_REGION` from its environment.
 `xcodebuild` passes `TEST_RUNNER_STORE_LANGUAGE` to the test runner as
@@ -250,12 +259,16 @@ language. `Journey.launch` adds `-AppleLanguages (<language>) -AppleLocale
 <region>` when they are set; `launchInEnglish()` then leaves them alone.
 Without them the walk runs in English, so it runs locally like the others.
 
-The iPhone walks tap tabs by label today, which breaks in any other
-language. The compact tabs get identifiers `tab.live`, `tab.guide`,
-`tab.movies`, `tab.search`, `tab.settings` (`TabContent` takes
-`accessibilityIdentifier` on iOS 26), and every iPhone walk opens tabs by
-them. The iPad already uses `browse.section.<id>`. Apple TV steps already
-use identifiers only.
+The iPhone walks tapped tabs by label, which breaks in any other
+language. The first plan gave the compact tabs `tab.<id>` identifiers
+through `TabContent.accessibilityIdentifier`; on the iOS 27.2 simulator the
+tab bar buttons still report no identifier, only the translated label. The
+iPhone walks now open a tab by its place in the tab bar instead: Live 0,
+Guide 1, Movies 2 when a source offers titles, Search and Settings the
+last two. No app code changes. The iPad already uses
+`browse.section.<id>`. Apple TV steps already use identifiers only.
+Arabic, once it ships, needs a look: whether the tab bar lists its buttons
+in reading order or screen order decides if the places hold.
 
 Devices and sizes:
 - iPhone: the workflow now picks the first "iPhone N Pro Max", whose 6.9-inch

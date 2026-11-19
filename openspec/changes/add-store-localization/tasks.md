@@ -10,11 +10,11 @@
 
 ## 2. Store screenshots (PR 2)
 
-- [ ] 2.1 Give the compact tabs `tab.<id>` identifiers, move the iPhone walks onto them, and rename the seed's "Tennis TV"; verify `AppJourneys` passes on a local iPhone simulator in English and in German
-- [ ] 2.2 Add `testStore` to `AppJourneys` and `TVJourneys`, reading `STORE_LANGUAGE` and `STORE_REGION`; verify it passes on a local iPhone and Apple TV simulator with `TEST_RUNNER_STORE_LANGUAGE=de`
-- [ ] 2.3 Add the `--store` mode to `scripts/export-screenshots.sh` and the per-language store pass to the `App screenshots` workflow, with the Pro Max iPhone and the `languages` input; verify `actionlint` and `shellcheck` pass
+- [x] 2.1 Open iPhone tabs by their place in the tab bar instead of their label, and rename the seed's "Tennis TV"; verify `AppJourneys` passes on a local iPhone simulator in English and in German
+- [x] 2.2 Add `testStore` to `AppJourneys` and `TVJourneys`, reading `STORE_LANGUAGE` and `STORE_REGION`; verify it passes on a local iPhone and Apple TV simulator with `TEST_RUNNER_STORE_LANGUAGE=de`
+- [x] 2.3 Add the `--store` mode to `scripts/export-screenshots.sh` and the per-language store pass to the `App screenshots` workflow, with the Pro Max iPhone and the `languages` input; verify `actionlint` and `shellcheck` pass
 - [ ] 2.4 Run the workflow on the branch with `gh workflow run` and verify `store-screenshots` has every ready store locale with iPhone, iPad and Apple TV pictures in its language
-- [ ] 2.5 Update `docs/conventions.md` (Tests) for the store walk and artifact
+- [x] 2.5 Update `docs/conventions.md` (Tests) for the store walk and artifact
 
 ## 3. Review (PR 3)
 
