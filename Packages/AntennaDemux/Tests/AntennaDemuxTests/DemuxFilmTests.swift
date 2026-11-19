@@ -139,9 +139,13 @@ import Testing
         try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(isLive: false))
         await harness.engine.play()
         #expect(await eventually { harness.engine.state == .playing })
+        let asked = await harness.server.requests(for: "/channel.mkv").count
         await harness.server.script("/channel.mkv", .stall(afterBytes: 0))
         let first = Task { try await harness.engine.seek(to: .seconds(2)) }
         #expect(await eventually { harness.engine.current?.start == nil })
+        // The first skip clears the start before it asks the server; the
+        // second skip waits until the stalled request is out, or it takes the stall.
+        #expect(await eventually { await harness.server.requests(for: "/channel.mkv").count > asked })
         try await expectSkipLands(harness, position)
         first.cancel()
         position.cancel()

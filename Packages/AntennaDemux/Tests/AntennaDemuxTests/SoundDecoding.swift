@@ -1,6 +1,7 @@
 @preconcurrency import AVFoundation
 import CoreMedia
 import Foundation
+import Synchronization
 
 @testable import AntennaDemux
 
@@ -125,14 +126,13 @@ enum SoundDecoding {
             let pcm = AVAudioPCMBuffer(
                 pcmFormat: converter.outputFormat, frameCapacity: AVAudioFrameCount(perPacket * packets * 4))
         else { return nil }
-        var given = false
+        let given = OnceFlag()
         var error: NSError?
         let status = converter.convert(to: pcm, error: &error) { _, state in
-            if given {
+            if given.take() {
                 state.pointee = .noDataNow
                 return nil
             }
-            given = true
             state.pointee = .haveData
             return compressed
         }
@@ -161,6 +161,19 @@ enum SoundDecoding {
         } else {
             let level = frames > 0 ? (sum / Double(frames * channels)).squareRoot() : 0
             outcome.pieces.append(Piece(sampleRate: rate, channels: channels, frames: frames, level: level))
+        }
+    }
+}
+
+/// True from the second `take` on. The converter's input block may run on
+/// any thread, so a captured `var` would be a data race.
+private final class OnceFlag: Sendable {
+    private let taken = Mutex(false)
+
+    func take() -> Bool {
+        taken.withLock { taken in
+            defer { taken = true }
+            return taken
         }
     }
 }

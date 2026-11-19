@@ -142,7 +142,7 @@ import Testing
         #expect(progress.tiles.map { english($0.value) } == ["4", "7 days", "7", "7 days"])
         #expect(
             progress.tiles.map { english($0.caption) } == [
-                "live channels · 2 groups", "of guide · 3 channels", "movies and series", "of catch-up on 1 channels",
+                "live channels · 2 groups", "of guide · 3 channels", "movies and series", "of catch-up on 1 channel",
             ])
         #expect(english(progress.eyebrow) == "Home provider added")
         #expect(progress.firstChannel?.name == "summary.test 0")
