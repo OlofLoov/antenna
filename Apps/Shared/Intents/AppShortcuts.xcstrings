@@ -14,7 +14,7 @@
         },
         "sv" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Lägg till den här kanalen bland favoriterna i ${applicationName}"
             ]
@@ -36,7 +36,7 @@
         },
         "sv" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Spela ${title} i ${applicationName}",
               "Spela en film i ${applicationName}"
@@ -58,7 +58,7 @@
         },
         "sv" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Ta bort den här kanalen från favoriterna i ${applicationName}"
             ]
@@ -80,7 +80,7 @@
         },
         "sv" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Sök i ${applicationName}",
               "Hitta en kanal i ${applicationName}"
@@ -105,7 +105,7 @@
         },
         "sv" : {
           "stringSet" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "values" : [
               "Byt till ${channel} i ${applicationName}",
               "Titta på ${channel} i ${applicationName}",

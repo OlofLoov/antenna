@@ -73,7 +73,7 @@
 
 ## 12. Native-speaker review (one small PR per language)
 
-- [ ] 12.1 Swedish reviewed: strings moved to `translated`, `sv` added to `Config/reviewed-languages`
+- [x] 12.1 Swedish reviewed: strings moved to `translated`, `sv` added to `Config/reviewed-languages`
 - [ ] 12.2 German reviewed, `de` added to `Config/reviewed-languages`
 - [ ] 12.3 Spanish reviewed, `es` added to `Config/reviewed-languages`
 - [ ] 12.4 French reviewed, `fr` added to `Config/reviewed-languages`
