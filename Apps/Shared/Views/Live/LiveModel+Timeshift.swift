@@ -2,6 +2,18 @@ import AntennaCore
 import Foundation
 
 extension LiveModel {
+    /// Pauses a playing channel, plays a paused one, as the user's own pause.
+    func playPause() {
+        // Space and the lock screen pause no tile (multi-view/sound-follows-the-highlighted-tile).
+        guard playing != nil, multiView == nil else { return }
+        player.timeshift.toggle(isPaused: isPaused)
+    }
+
+    /// The options a channel opens with, its remembered languages among them.
+    var languageOptions: @MainActor (Channel) -> PlaybackOptions {
+        { [languages] in languages.options(for: $0) }
+    }
+
     /// The stored source with this id.
     func descriptor(for id: UUID?) -> SourceDescriptor? {
         id.flatMap { descriptors[$0] }

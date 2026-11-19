@@ -14,6 +14,8 @@ final class PlayerTestEngine: PlaybackEngine {
     private(set) var subtitlePicks: [MediaTrack.ID?] = []
     var failNextLoad: PlaybackFailure?
     var supportsPictureInPicture = false
+    /// Awaited inside each load before it reports loading, so a test can hold a load in flight.
+    var loadGate: (@MainActor () async -> Void)?
     private let stateCast = Broadcast(PlaybackState.idle)
     private let presentationCast = Broadcast(PresentationInfo?.none)
     private let tracksCast = Broadcast(TrackList.empty)
@@ -24,6 +26,7 @@ final class PlayerTestEngine: PlaybackEngine {
 
     func load(_ url: URL, options: PlaybackOptions) async throws {
         loaded.append(url)
+        if let loadGate { await loadGate() }
         if let failure = failNextLoad {
             failNextLoad = nil
             stateCast.send(.failed(failure))

@@ -178,6 +178,14 @@
                         ShelfCompactScreen()
                             .environment(\.openSearch, opener)
                             .environment(\.tabTaps, taps[.movies, default: 0])
+                            .overlay(alignment: .bottomLeading) {
+                                #if DEBUG
+                                    // The channel behind Movies, for the UI tests, out of the way of the header.
+                                    UITestingLive.Probe(engine: live.engine)
+                                        .frame(width: 60, height: 30)
+                                        .allowsHitTesting(false)
+                                #endif
+                            }
                     }
                 }
                 SwiftUI.Tab("Search", systemImage: "magnifyingglass", value: .search) {

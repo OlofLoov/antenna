@@ -131,6 +131,26 @@ import Testing
             #expect(live.playback == .playing)
         }
 
+        @Test(
+            "live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search Movies ends multi-view, pausing one tile"
+        )
+        func moviesEndsMultiView() async throws {
+            await live.addToMultiView(try channel(2), offered: true)
+            #expect(await eventually { published.made.count == 2 && published.made[1].state == .playing })
+            let tile = published.made[1]
+            live.opened(.movies)
+            await live.tabChange?.value
+            #expect(await eventually { live.multiView == nil })
+            #expect(await eventually { live.playing == (try? channel(2)) })
+            #expect(tile.state == .paused, "the kept tile pauses behind Movies")
+            #expect(playing.state == .idle, "the other tile stops")
+
+            live.opened(.live)
+            await live.tabChange?.value
+            #expect(await eventually { tile.state == .playing })
+            #expect(tile.loaded.count == 1, "back on Live with no reload")
+        }
+
         @Test("multi-view/leaving-the-app on a Mac nothing pauses when the app goes to the background")
         func macKeepsPlaying() async {
             let lifecycle = PlaybackLifecycle(engine: playing, pausesInBackground: false)

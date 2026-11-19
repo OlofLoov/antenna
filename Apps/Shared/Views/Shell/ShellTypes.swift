@@ -4,15 +4,6 @@
     import Observation
     import os
 
-    /// What the shell did to the channel behind Movies, Series or Search
-    /// (tvos-shell/the-video-pauses-behind-movies-series-and-search).
-    enum ShellHold: Equatable, Sendable {
-        /// Paused when the tab opened; Live or Guide plays on from there.
-        case paused
-        /// Stopped after 30 seconds; Live or Guide tunes the channel again.
-        case stopped
-    }
-
     /// The tabs of the Apple TV shell, in bar order.
     enum ShellTab: Hashable, CaseIterable, Sendable {
         case live, guide, movies, series, search

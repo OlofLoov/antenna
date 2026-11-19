@@ -41,6 +41,8 @@ final class LiveModel {
         var nowPlayingInterval = Duration.seconds(5)
         /// The Picture in Picture window; nil watches the engine's.
         var pictureInPicture: PictureInPictureHooks?
+        /// Yields true while the stream plays on AirPlay; nil asks the engine.
+        var airPlay: (@MainActor () -> AsyncStream<Bool>)?
         /// The tiles' engines and limit when multi-view starts on a Mac.
         var multiView = MultiViewModel.Dependencies()
         /// Builds Start over's catch-up addresses.
@@ -114,7 +116,13 @@ final class LiveModel {
     @ObservationIgnored var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
     @ObservationIgnored private var hiding: Task<Void, Never>?
     @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
-    @ObservationIgnored private var suspended = false
+    @ObservationIgnored private(set) var suspended = false
+    /// The pause, then stop, behind Movies, Series and Search.
+    @ObservationIgnored let hold: LiveHold
+    /// Movies, Series or Search is open and the channel is held behind it.
+    @ObservationIgnored var behindContent = false
+    /// The last tab change, which the next one waits for.
+    @ObservationIgnored var tabChange: Task<Void, Never>?
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -128,10 +136,12 @@ final class LiveModel {
         player = PlayerModel(
             .init(
                 engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay,
-                pictureInPicture: dependencies.pictureInPicture))
+                airPlay: dependencies.airPlay, pictureInPicture: dependencies.pictureInPicture))
+        hold = LiveHold(engine: dependencies.engine, timeshift: player.timeshift, sleep: dependencies.sleep)
         session.recorded = { [weak self] list in self?.recentsChanged(list.entries) }
         player.reload = { [weak self] channel in self?.load(channel) }
         player.timeshift.restartChannel = { [weak self] in self?.restartWithNewBuffer() }
+        wireHold()
         wireStartOver()
         player.hasLogin = { [weak self] id in
             guard let self, let source = descriptors[id] else { return false }
@@ -325,6 +335,7 @@ final class LiveModel {
     }
 
     func tune(_ channel: Channel) {
+        endHoldForPick()
         if channel != playing {
             later = nil
             if let playing { lastChannel = playing }
@@ -348,6 +359,8 @@ final class LiveModel {
             }
             guard !Task.isCancelled, playing == channel else { return }
             canPictureInPicture = await engine.capabilities.supportsPictureInPicture
+            // A load that lands behind Movies, Series or Search stays paused.
+            if behindContent, !player.playsElsewhere { return hold.loadLanded() }
             await engine.play()
         }
     }
@@ -416,22 +429,10 @@ final class LiveModel {
 
 // The setters these need are private to this file.
 extension LiveModel {
-    /// Pauses a playing channel, plays a paused one, as the user's own pause.
-    func playPause() {
-        // Space and the lock screen pause no tile (multi-view/sound-follows-the-highlighted-tile).
-        guard playing != nil, multiView == nil else { return }
-        player.timeshift.toggle(isPaused: isPaused)
-    }
-
     /// Fills the window, or the iPhone screen, with the picture, or goes
     /// back to the list (live-tv-on-iphone-ipad-mac/full-screen). The channel plays on.
     func setFullScreen(_ on: Bool) {
         fullScreen = on && playing != nil
-    }
-
-    /// The options a channel opens with, its remembered languages among them.
-    var languageOptions: @MainActor (Channel) -> PlaybackOptions {
-        { [languages] in languages.options(for: $0) }
     }
 
     /// Multi-view ended with `channel`'s player now playing in the window

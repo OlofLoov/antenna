@@ -71,10 +71,18 @@ struct PictureInPictureHooks {
         }
 
         /// Closing the window pauses; restoring the app plays on with no reload.
+        /// A close says the window ended only once the pause has landed, so
+        /// whoever follows `activity` can tell a close from a restore by the
+        /// engine's state.
         func stopped() {
-            cast.send(false)
-            if !restoring { Task { [engine] in await engine.pause() } }
-            restoring = false
+            guard !restoring else {
+                restoring = false
+                return cast.send(false)
+            }
+            Task { [engine, cast] in
+                await engine.pause()
+                cast.send(false)
+            }
         }
     }
 #endif

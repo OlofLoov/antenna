@@ -34,9 +34,11 @@ Options considered:
 
 The pause, the timer and the resume move out of `ShellModel+Hold.swift` into `LiveHold` in `Apps/Shared/Player/LiveHold.swift`, built for every platform. It owns the engine pause, the 30-second timer, the record of what it did (`LiveHold.Kind`: `.paused` or `.stopped`) and the timeshift calls. Its owner says when a tab opens (`begin(stillBehind:)`), when a load lands (`loadLanded()`), and when Live or the Guide opens (`end()`, which answers whether the owner must tune the channel again). `ShellModel` keeps `heldByShell` and `pausedByShell` as reads of the helper, so the Apple TV tests and callers stay the same. `ShellHold` goes; `PlaybackState.hasStopped` moves with the helper.
 
-The timer now also checks that the engine is still paused before it stops it. A channel the user started again from the lock screen or Control Center behind Movies plays on instead of being cut off. On Apple TV this changes nothing a user can reach today.
+The timer now also checks that the channel has not been played again before it stops it. A channel the user started again from the lock screen or Control Center behind Movies plays on instead of being cut off. A load that landed behind the tab and never played still stops. On Apple TV this changes nothing a user can reach today.
 
-`LiveModel` keeps a `behindContent` flag: set when Movies, Series or Search opens, cleared when Live or the Guide opens. Tab changes arrive from `onChange` handlers, which cannot wait, so `opened(_:)` queues each change behind the previous one (`tabChange`), and `tabOpened(_:)` does the work. Tests call `tabOpened(_:)` and wait for it. A quick Live, Movies, Live never leaves a pause behind on Live.
+`LiveModel` keeps a `behindContent` flag: set when Movies, Series or Search opens, cleared when Live or the Guide opens. Tab changes arrive from `onChange` handlers, which cannot wait, so `opened(_:)` queues each change behind the previous one (`tabChange`), and `tabOpened(_:)` does the work. Tests wait on `tabChange`. A quick Live, Movies, Live never leaves a pause behind on Live.
+
+A channel tuned while one of those tabs is open ends the hold. Every such tune comes from a pick that opens Live next (Search, a reminder banner, Siri), so the channel plays there with one load instead of loading, holding and being restarted by the timeshift on the way back.
 
 Options considered:
 - A copy of the hold in `LiveModel` (rejected): two timers and two sets of rules to keep in step.
@@ -45,7 +47,7 @@ Options considered:
 
 ### Picture in Picture and AirPlay keep playing
 
-When Movies, Series or Search opens with the picture in the Picture in Picture window or on AirPlay, nothing pauses and no timer starts. The user moved the picture out of the app's tabs on purpose. If the window ends while one of those tabs is open and the channel still plays, which is what bringing the picture back into the app does, the hold begins then, as if the tab had just opened. Closing the window pauses the channel, as `player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad` says; that pause is the window's, so the hold leaves it alone and does not stop it after 30 seconds.
+When Movies, Series or Search opens with the picture in the Picture in Picture window or on AirPlay, nothing pauses and no timer starts. The user moved the picture out of the app's tabs on purpose. If the window ends while one of those tabs is open and the channel still plays, which is what bringing the picture back into the app does, the hold begins then, as if the tab had just opened. Closing the window pauses the channel, as `player-controls-and-playback-errors/picture-in-picture-on-iphone-and-ipad` says; that pause is the window's, so the hold leaves it alone and does not stop it after 30 seconds. To tell the two apart, `PictureInPictureWatch` now reports a closed window only after its pause has landed; a restore reports at once, with the channel still playing.
 
 AirPlay was not part of the owner's request. It is included because the picture plays on the TV the user sent it to, the same reason as the Picture in Picture window, and pausing it would stop what the room is watching while someone browses Movies on the phone. `PlayerModel.airPlayActive` is read when the tab opens; AirPlay ending behind Movies does not start the hold.
 
@@ -65,7 +67,7 @@ The Go menu works while the picture fills the window, and the window body shows 
 
 ### Tests
 
-`LiveHoldTests` in `Apps/Tests` runs `LiveModel` on `PlayerTestEngine` and `SleepClock`: the pause on Movies and the resume on Live without a reload, the stop at 30 seconds and the new tune, the timer across Series and Settings, the Guide and Settings leaving the channel alone, a user's pause, a load that lands behind Search, Picture in Picture and AirPlay keeping the channel playing, and the window ending behind Movies. Picture in Picture runs through injected `PictureInPictureHooks`, since a UI test cannot open the system window. `ShelfPlayerUITests.testMoviesPausesLiveAndLiveResumesIt` plays a channel on iPhone, opens Movies, reads the paused engine on the probe that now also sits on Movies, and goes back to Live. The Apple TV `ShellModelTests` cover the shared helper on that side and stay as they are.
+`LiveHoldTests` in `Apps/Tests` runs `LiveModel` on `PlayerTestEngine` and `SleepClock`: the pause on Movies and the resume on Live without a reload, the stop at 30 seconds and the new tune, the timer across Series and Settings, the Guide and Settings leaving the channel alone, a user's pause, a load that lands behind Search, a channel picked in Search, Picture in Picture and AirPlay keeping the channel playing, the window ending behind Movies, full screen, and a movie stopping the held channel. `LiveMultiViewTests` covers multi-view ending behind Movies with the selected tile paused and back on Live with no reload. Picture in Picture runs through injected `PictureInPictureHooks`, since a UI test cannot open the system window. `ShelfPlayerUITests.testMoviesPausesLiveAndLiveResumesIt` plays a channel on iPhone, opens Movies, reads the paused engine on the probe that now also sits on Movies, and goes back to Live. The Apple TV `ShellModelTests` cover the shared helper on that side and stay as they are.
 
 ## Platforms
 
