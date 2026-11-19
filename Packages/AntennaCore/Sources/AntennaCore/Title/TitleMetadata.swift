@@ -42,12 +42,15 @@ public struct TitleMetadata: Sendable, Hashable {
         facts.isEmpty ? nil : facts.joined(separator: " · ")
     }
 
-    /// What the page shows before the details arrive: the eyebrow and name.
+    /// What the page shows before the details arrive: the eyebrow, the name,
+    /// and the cast and directors when the list row gave them.
     public init(title: ShelfTitle) {
         eyebrow = Self.eyebrow(title)
         name = title.name
         kind = title.kind
         badges = []
+        cast = Self.present(title.cast)
+        director = Self.present(title.director)
     }
 
     /// A movie's page once `get_vod_info` answered. The rating is the info
@@ -61,8 +64,8 @@ public struct TitleMetadata: Sendable, Hashable {
         self.rating = rating.flatMap(Self.rating)
         badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
         description = Self.present(info.plot)
-        cast = Self.present(info.cast)
-        director = Self.present(info.director)
+        cast = Self.present(info.cast) ?? Self.present(title.cast)
+        director = Self.present(info.director) ?? Self.present(title.director)
         backdropURL = info.backdropURLs.first
         trailerURL = info.trailerURL
     }
@@ -78,8 +81,8 @@ public struct TitleMetadata: Sendable, Hashable {
         self.rating = rating.flatMap(Self.rating)
         badges = [ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
         description = Self.present(info.plot)
-        cast = Self.present(info.cast)
-        director = Self.present(info.director)
+        cast = Self.present(info.cast) ?? Self.present(title.cast)
+        director = Self.present(info.director) ?? Self.present(title.director)
         backdropURL = info.backdropURLs.first
         trailerURL = info.trailerURL
     }

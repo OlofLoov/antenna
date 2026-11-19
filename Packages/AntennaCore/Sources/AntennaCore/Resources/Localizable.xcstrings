@@ -5621,6 +5621,52 @@
         }
       }
     },
+    "Acting · %lld in your sources" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمثيل · %lld في مصادرك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schauspiel · %lld in deinen Quellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Acting · %lld in your sources"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interpretación · %lld en tus fuentes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interprétation · %lld dans vos sources"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atuação · %lld nas suas fontes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skådespelare · %lld i dina källor"
+          }
+        }
+      }
+    },
     "Add a guide URL to get programme information for %@." : {
       "localizations" : {
         "ar" : {
@@ -9009,6 +9055,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kunde inte spara inloggningsuppgifterna: %@"
+          }
+        }
+      }
+    },
+    "Directing · %lld in your sources" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخراج · %lld في مصادرك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regie · %lld in deinen Quellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Directing · %lld in your sources"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirección · %lld en tus fuentes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réalisation · %lld dans vos sources"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direção · %lld nas suas fontes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regissör · %lld i dina källor"
           }
         }
       }
@@ -15169,6 +15261,52 @@
         }
       }
     },
+    "Nothing with %@ in your sources." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يوجد شيء مع %@ في مصادرك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts mit %@ in deinen Quellen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Nothing with %@ in your sources."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada con %@ en tus fuentes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien avec %@ dans vos sources."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada com %@ nas suas fontes."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget med %@ i dina källor."
+          }
+        }
+      }
+    },
     "Notifications are off for Antenna. Reminders show only while the app is open." : {
       "localizations" : {
         "ar" : {
@@ -15445,6 +15583,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bara manuellt"
+          }
+        }
+      }
+    },
+    "Only titles whose cast your provider has sent are here. More appear as you browse." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تظهر هنا فقط العناوين التي أرسل مزوّدك طاقم تمثيلها. ستظهر عناوين أخرى أثناء تصفحك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier stehen nur Titel, deren Besetzung dein Anbieter gesendet hat. Beim Stöbern kommen weitere dazu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Only titles whose cast your provider has sent are here. More appear as you browse."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí solo aparecen los títulos cuyo reparto ha enviado tu proveedor. Aparecerán más a medida que explores."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seuls les titres dont votre fournisseur a envoyé la distribution figurent ici. D’autres apparaîtront au fil de votre navigation."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aqui aparecem só os títulos cujo elenco seu provedor enviou. Mais títulos aparecem conforme você navega."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Här finns bara titlar vars medverkande din leverantör har skickat. Fler dyker upp medan du bläddrar."
           }
         }
       }

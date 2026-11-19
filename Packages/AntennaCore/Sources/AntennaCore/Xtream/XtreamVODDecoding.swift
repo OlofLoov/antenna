@@ -11,7 +11,7 @@ extension XtreamClient {
             let id = XtreamTitleID(host: host, kind: .vod, rawID: row.streamID).description
             return VODItem(
                 id: id, streamID: row.streamID, name: row.name, posterURL: row.posterURL, added: row.added, rating: row.rating,
-                containerExtension: row.containerExtension, categoryID: row.categoryID)
+                containerExtension: row.containerExtension, categoryID: row.categoryID, cast: row.cast, director: row.director)
         }
     }
 
@@ -21,7 +21,7 @@ extension XtreamClient {
             let id = XtreamTitleID(host: host, kind: .series, rawID: row.seriesID).description
             return Series(
                 id: id, seriesID: row.seriesID, name: row.name, posterURL: row.posterURL, lastModified: row.lastModified,
-                rating: row.rating, categoryID: row.categoryID)
+                rating: row.rating, categoryID: row.categoryID, cast: row.cast, director: row.director)
         }
     }
 

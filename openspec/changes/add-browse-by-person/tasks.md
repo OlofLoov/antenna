@@ -6,10 +6,10 @@
 
 ## 2. Names and the people index
 
-- [ ] 2.1 Decode `cast`, `actors` and `director` on Xtream movie and series rows and carry them on `ShelfTitle`, citing `xtream-vod-client/names-on-list-rows`
-- [ ] 2.2 Add `PersonName` (split, clean, junk, key) and the chip limit, citing `browse-by-person/the-same-person-across-titles` and `browse-by-person/pick-someone-in-the-cast`
-- [ ] 2.3 Add `LearnedCredits` with its 30-day, 20,000-title file format, citing `browse-by-person/names-the-provider-sent-are-kept`
-- [ ] 2.4 Add `PeopleIndex` and the person page model (rows, order, count, department, note), citing `browse-by-person/a-person-s-page`, `browse-by-person/only-titles-your-sources-have` and `browse-by-person/a-person-s-page-never-asks-the-provider`
+- [x] 2.1 Decode `cast`, `actors` and `director` on Xtream movie and series rows and carry them on `ShelfTitle`, citing `xtream-vod-client/names-on-list-rows`
+- [x] 2.2 Add `PersonName` (split, clean, junk, key) and the chip limit, citing `browse-by-person/the-same-person-across-titles` and `browse-by-person/pick-someone-in-the-cast`
+- [x] 2.3 Add `LearnedCredits` with its 30-day, 20,000-title file format, citing `browse-by-person/names-the-provider-sent-are-kept`
+- [x] 2.4 Add `PeopleIndex` and the person page model (rows, order, count, department, note), citing `browse-by-person/a-person-s-page`, `browse-by-person/only-titles-your-sources-have` and `browse-by-person/a-person-s-page-never-asks-the-provider`
 
 ## 3. Cast chips and the person page
 
@@ -22,7 +22,7 @@
 
 ## 4. People in Search
 
-- [ ] 4.1 Add people search to `PeopleIndex`, citing `browse-by-person/find-a-person-in-search` and `search/results-grouped-best-first`
+- [x] 4.1 Add people search to `PeopleIndex`, citing `browse-by-person/find-a-person-in-search` and `search/results-grouped-best-first`
 - [ ] 4.2 Add the People section to Search on iPhone, iPad, Mac and Apple TV, with previews and copy in every app language
 - [ ] 4.3 UI tests on iPhone and Apple TV: type a name, pick the person
 

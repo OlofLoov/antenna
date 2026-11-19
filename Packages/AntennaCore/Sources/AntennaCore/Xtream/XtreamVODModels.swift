@@ -42,12 +42,19 @@ public struct VODItem: Sendable, Hashable, Identifiable {
     public var containerExtension: String?
     /// Matches `XtreamCategory.categoryID`. Nil when the row has none.
     public var categoryID: String?
+    /// The row's `cast`, else `actors`, when the panel lists names in the
+    /// movie list; most do not (xtream-vod-client/names-on-list-rows).
+    public var cast: String?
+    /// The row's `director`, with the rule of `cast`.
+    public var director: String?
 
     /// Builds a row. `decodeVODList(_:host:)` is the usual source.
     public init(
         id: String, streamID: Int, name: String, posterURL: URL? = nil, added: Date? = nil, rating: Double? = nil,
-        containerExtension: String? = nil, categoryID: String? = nil
+        containerExtension: String? = nil, categoryID: String? = nil, cast: String? = nil, director: String? = nil
     ) {
+        self.cast = cast
+        self.director = director
         self.id = id
         self.streamID = streamID
         self.name = name
@@ -122,12 +129,18 @@ public struct Series: Sendable, Hashable, Identifiable {
     public var rating: Double?
     /// Matches `XtreamCategory.categoryID`. Nil when the row has none.
     public var categoryID: String?
+    /// With the rule of `VODItem.cast`.
+    public var cast: String?
+    /// With the rule of `VODItem.director`.
+    public var director: String?
 
     /// Builds a row. `decodeSeriesList(_:host:)` is the usual source.
     public init(
         id: String, seriesID: Int, name: String, posterURL: URL? = nil, lastModified: Date? = nil, rating: Double? = nil,
-        categoryID: String? = nil
+        categoryID: String? = nil, cast: String? = nil, director: String? = nil
     ) {
+        self.cast = cast
+        self.director = director
         self.rating = rating
         self.id = id
         self.seriesID = seriesID
