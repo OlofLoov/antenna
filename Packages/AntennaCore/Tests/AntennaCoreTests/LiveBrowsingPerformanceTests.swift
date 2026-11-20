@@ -63,7 +63,7 @@ import Testing
         }
         #expect(read > 0)
         let perMove = Self.seconds(elapsed) / Double(groups.count)
-        #expect(perMove < 0.008, "a move took \(perMove * 1000) ms")
+        if Benchmarks.enabled { #expect(perMove < 0.008, "a move took \(perMove * 1000) ms") }
     }
 
     // tv-channel-overlay/every-group-with-its-size
@@ -78,7 +78,7 @@ import Testing
         let favorite = FastestRun.of { replaced = catalogue.replacingFavorites(added) }
         #expect(replaced.count(of: .favorites) == catalogue.count(of: .favorites) + 1)
         #expect(replaced.revision != catalogue.revision)
-        #expect(favorite < build / 10, "build took \(build), a favorite took \(favorite)")
+        if Benchmarks.enabled { #expect(favorite < build / 10, "build took \(build), a favorite took \(favorite)") }
     }
 
     // tv-channel-overlay/each-channel-shows-what-is-on
@@ -115,6 +115,6 @@ import Testing
         }
         #expect(read > 0)
         let perMove = Self.seconds(elapsed) / Double(moves)
-        #expect(perMove < 0.005, "a move took \(perMove * 1000) ms")
+        if Benchmarks.enabled { #expect(perMove < 0.005, "a move took \(perMove * 1000) ms") }
     }
 }

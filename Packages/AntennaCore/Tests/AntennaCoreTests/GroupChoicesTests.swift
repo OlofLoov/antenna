@@ -84,7 +84,7 @@ import Testing
         let catalogue = TestCatalogue(channels: Channel.tagged(channels, sourceID: sourceA), groupOrder: [:], favorites: [])
         let start = ContinuousClock.now
         let choices = Self.choices(catalogue, "group 137")
-        #expect(ContinuousClock.now - start < .milliseconds(200))
+        if Benchmarks.enabled { #expect(ContinuousClock.now - start < .milliseconds(200)) }
         #expect(choices.groups.map(\.group) == [.named(sourceA, "UK ▸ GROUP 137")])
     }
 }
