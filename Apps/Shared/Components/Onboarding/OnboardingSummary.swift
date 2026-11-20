@@ -75,7 +75,7 @@ enum OnboardingSummary {
                                 .accessibilityIdentifier("onboarding.primary")
                             if let addAnother = actions.addAnother {
                                 Button("Add another source", action: addAnother)
-                                    .buttonStyle(.glass)
+                                    .secondaryActionStyle()
                                     .accessibilityIdentifier("onboarding.addAnother")
                             }
                         }

@@ -121,7 +121,8 @@
     }
 
     extension TitlePage {
-        /// The chevron back to the section, a 44 pt target.
+        /// The chevron back to the section, a glass circle over the art
+        /// (design-system/liquid-glass-stays-on-the-navigation-layer).
         struct BackButton: View {
             @Environment(\.titlePage) private var page
 
@@ -132,12 +133,10 @@
                     Image(systemName: "chevron.backward")
                         .font(.boardStyle(18, weight: .bold))
                         .foregroundStyle(Palette.text)
-                        .frame(width: 36, height: 36)
-                        .background(Palette.scrimTint.opacity(0.55), in: Circle())
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
+                        .frame(width: 30, height: 30)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
                 .keyboardShortcut(.cancelAction)
                 .accessibilityLabel("Back to \(page?.state.section ?? "the section")")
                 .accessibilityIdentifier("title.back")

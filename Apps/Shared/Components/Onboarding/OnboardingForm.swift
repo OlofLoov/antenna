@@ -227,7 +227,7 @@ enum OnboardingForm {
                 .accessibilityIdentifier("onboarding.connect")
                 if let cancel {
                     Button("Cancel", action: cancel)
-                        .buttonStyle(.glass)
+                        .secondaryActionStyle()
                         .accessibilityIdentifier("onboarding.back")
                 }
             }

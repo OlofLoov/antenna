@@ -127,7 +127,7 @@ enum OnboardingChecklist {
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.glass)
+                        .secondaryActionStyle()
                         .controlSize(.large)
                         .accessibilityIdentifier("onboarding.addAnother")
                     }

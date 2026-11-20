@@ -115,10 +115,10 @@ import SwiftUI
                     number: shown?.channelNumber, name: shown?.name ?? "", audible: model.session.audible == tile.id, highlighted: false,
                     identifier: identifier)
             }
-            .clipShape(RoundedRectangle(cornerRadius: model.session.enlarged == tile.id ? 0 : 12))
+            .clipShape(model.session.enlarged == tile.id ? AnyShape(Rectangle()) : AnyShape(cornerShape(.medium)))
             .overlay {
                 if selected, model.session.enlarged != tile.id {
-                    cornerShape(.medium).stroke(Palette.focus, lineWidth: 3)
+                    cornerShape(.medium).strokeBorder(Palette.focus, lineWidth: 3)
                 }
             }
             .overlay(alignment: .topTrailing) {
@@ -128,13 +128,12 @@ import SwiftUI
                     } label: {
                         Image(systemName: "xmark")
                             .font(.boardStyle(12, weight: .bold))
-                            .frame(width: 28, height: 28)
-                            .background(Palette.scrimTint.opacity(0.72), in: Circle())
-                            .frame(width: 44, height: 44)
-                            .contentShape(Rectangle())
+                            .foregroundStyle(Palette.text)
+                            .frame(width: 22, height: 22)
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(Palette.text)
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    .padding(4)
                     .accessibilityLabel(MultiViewText.remove())
                     .accessibilityIdentifier("\(identifier).remove")
                 }

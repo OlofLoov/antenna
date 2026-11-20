@@ -51,8 +51,10 @@ import SwiftUI
     }
 #else
     /// The audio-and-subtitles button and the subtitles switch over the top
-    /// right of the playing title. The list opens as a sheet at compact
-    /// width and as a popover above the button otherwise, as in Live.
+    /// right of the playing title, on a glass capsule as in Live
+    /// (design-system/liquid-glass-stays-on-the-navigation-layer). The list
+    /// opens as a sheet at compact width and as a popover above the button
+    /// otherwise.
     struct TitleTrackButtons: View {
         let tracks: TitleTracks
         #if os(iOS)
@@ -77,8 +79,10 @@ import SwiftUI
                     tracks.switchSubtitles()
                 }
             }
+            .foregroundStyle(Palette.text)
+            .tint(Palette.text)
             .padding(.horizontal, 4)
-            .background(Palette.scrimTint.opacity(0.6), in: Capsule())
+            .glassEffect(.regular, in: Capsule())
         }
 
         /// True at compact width on iPhone and iPad, never on a Mac.

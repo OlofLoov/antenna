@@ -61,7 +61,7 @@
                 }
                 .padding(Metrics.Spacing.xLarge)
                 .frame(width: 480, alignment: .leading)
-                .background(.regularMaterial, in: Metrics.Corner.large.shape())
+                .background(Palette.surface(0.06), in: Metrics.Corner.large.shape())
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("signIn.qr")
             }

@@ -3,22 +3,24 @@ import SwiftUI
 
 extension ShelfView {
     /// The iPhone's Movies | Series switch over the banner
-    /// (`iPhone-Movies`, `movies.kind`) on glass, since it floats over the
-    /// art (design-system/liquid-glass-stays-on-the-navigation-layer): the
-    /// open kind takes the white fill.
+    /// (`iPhone-Movies`, `movies.kind`): two glass chips grouped in one
+    /// container, since they float over the art. The open kind is glass
+    /// prominent, with no fill or stroke of its own
+    /// (design-system/liquid-glass-stays-on-the-navigation-layer).
     /// Series never gets a tab of its own on iPhone.
     struct KindSwitch: View {
         let selection: ShelfTitle.Kind
         let select: (ShelfTitle.Kind) -> Void
 
         var body: some View {
-            HStack(spacing: 2) {
-                segment(.movie)
-                segment(.series)
+            GlassEffectContainer(spacing: 12) {
+                HStack(spacing: 8) {
+                    segment(.movie)
+                    segment(.series)
+                }
             }
-            .padding(4)
-            .frame(height: 44)
-            .glassEffect(.regular, in: Capsule())
+            .fixedSize()
+            .controlSize(.large)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("movies.kind")
         }
@@ -30,13 +32,8 @@ extension ShelfView {
             } label: {
                 Text(kind.sectionTitle)
                     .font(.boardStyle(15, weight: .semibold))
-                    .foregroundStyle(selected ? Palette.ground : Palette.text)
-                    .padding(.horizontal, 18)
-                    .frame(maxHeight: .infinity)
-                    .background(selected ? Palette.text : .clear, in: Capsule())
-                    .contentShape(Capsule())
             }
-            .buttonStyle(.plain)
+            .chipStyle(isPicked: selected, on: .art)
             .accessibilityAddTraits(selected ? .isSelected : [])
             .accessibilityIdentifier("movies.kind.\(kind.prefix)")
         }

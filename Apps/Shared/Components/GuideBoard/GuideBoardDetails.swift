@@ -42,10 +42,10 @@ extension GuideBoard {
                         .accessibilityIdentifier("guide.panel.close")
                     }
                     Texts(details: details, titleSize: 17, summarySize: 14)
-                    WatchButton(height: 44, size: 15, watch: watch)
+                    WatchButton(size: 15, watch: watch)
                         .padding(.top, 4)
                     if let reminder {
-                        RemindButton(height: 44, size: 15, reminder: reminder)
+                        RemindButton(size: 15, reminder: reminder)
                     }
                 }
                 .padding(EdgeInsets(top: 16, leading: 16, bottom: 14, trailing: 16))
@@ -68,10 +68,10 @@ extension GuideBoard {
                     VStack(alignment: .leading, spacing: 12) {
                         Eyebrow(details: details)
                         Texts(details: details, titleSize: 22, summarySize: 15)
-                        WatchButton(height: 50, size: 17, watch: watch)
+                        WatchButton(size: 17, watch: watch)
                             .padding(.top, 6)
                         if let reminder {
-                            RemindButton(height: 50, size: 17, reminder: reminder)
+                            RemindButton(size: 17, reminder: reminder)
                         }
                     }
                     .padding(EdgeInsets(top: 24, leading: 20, bottom: 20, trailing: 20))
@@ -135,9 +135,9 @@ extension GuideBoard {
             }
         }
 
-        /// White Watch across the panel.
+        /// Watch across the panel, the screen's primary action
+        /// (design-system/controls-use-system-styles).
         struct WatchButton: View {
-            let height: CGFloat
             let size: CGFloat
             let watch: () -> Void
 
@@ -145,23 +145,19 @@ extension GuideBoard {
                 Button(action: watch) {
                     Text("Watch")
                         .font(.boardStyle(size, weight: .semibold))
-                        .foregroundStyle(Palette.ground)
                         .frame(maxWidth: .infinity)
-                        .frame(height: height)
-                        .background(Palette.text, in: RoundedRectangle(cornerRadius: height > 44 ? 12 : 10))
-                        .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .primaryActionStyle()
+                .controlSize(.large)
                 .accessibilityIdentifier("guide.watch")
             }
         }
     }
 
-    /// Remind me, or Reminder set with a filled bell, on the 0.12 surface
+    /// Remind me, or Reminder set with a filled bell, the secondary action
     /// under Watch. Setting it keeps the details open
     /// (programme-reminders/set-a-reminder-in-one-tap).
     struct RemindButton: View {
-        let height: CGFloat
         let size: CGFloat
         let reminder: Details.ReminderToggle
 
@@ -172,13 +168,10 @@ extension GuideBoard {
                     systemImage: reminder.isSet ? "bell.fill" : "bell"
                 )
                 .font(.boardStyle(size, weight: .semibold))
-                .foregroundStyle(Palette.text)
                 .frame(maxWidth: .infinity)
-                .frame(height: height)
-                .background(Palette.surface(0.12), in: RoundedRectangle(cornerRadius: height > 44 ? 12 : 10))
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .secondaryActionStyle()
+            .controlSize(.large)
             .accessibilityValue(reminder.isSet ? "On" : "Off")
             .accessibilityIdentifier("guide.remind")
         }
