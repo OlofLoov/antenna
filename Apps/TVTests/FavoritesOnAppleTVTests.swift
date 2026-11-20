@@ -20,7 +20,7 @@ import Testing
 
     private var channels: [Channel] {
         Channel.tagged(
-            [("a", "News"), ("b", "News"), ("c", "Sport"), ("d", "Adult")].map { id, group in
+            [("a", "News"), ("b", "News"), ("c", "Sport"), ("d", "Late")].map { id, group in
                 Channel(id: id, name: "Channel \(id)", streamURL: URL(fileURLWithPath: "/\(id).ts"), group: group)
             },
             sourceID: source)
@@ -61,11 +61,11 @@ import Testing
     @Test("favorites/favorites-on-apple-tv a favorite in a locked group is left out while locks are closed")
     func locked() throws {
         save([("a", 0), ("d", 1)])
-        let adult = CatalogueGroup.named(source, "Adult")
-        let closed = try catalogue(rules: GroupRules(locked: [adult]))
+        let late = CatalogueGroup.named(source, "Late")
+        let closed = try catalogue(rules: GroupRules(locked: [late]))
         #expect(names(closed) == ["Channel a"])
         #expect(closed.count(of: .favorites) == 1)
-        let open = try catalogue(rules: GroupRules(locked: [adult], locksOpen: true))
+        let open = try catalogue(rules: GroupRules(locked: [late], locksOpen: true))
         #expect(names(open) == ["Channel a", "Channel d"])
     }
 

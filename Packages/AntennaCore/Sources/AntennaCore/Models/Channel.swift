@@ -34,6 +34,9 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
     public var sourceID: UUID?
     /// 0-based index in the source's channel list, set with `sourceID`.
     public var position: Int?
+    /// True when the provider marks the channel or its category as adult
+    /// (adult-content/the-provider-s-adult-flag-counts). Kept in memory only.
+    public var isAdult = false
 
     public init(
         id: String,
@@ -51,8 +54,10 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
         catchupCorrectionHours: Double? = nil,
         duration: Double? = nil,
         sourceID: UUID? = nil,
-        position: Int? = nil
+        position: Int? = nil,
+        isAdult: Bool = false
     ) {
+        self.isAdult = isAdult
         self.id = id
         self.name = name
         self.streamURL = streamURL
@@ -73,7 +78,8 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
 
     /// The catch-up mode, template and correction and the duration are left out, so nothing
     /// that encodes a channel keeps them
-    /// (timeshift-catch-up-and-start-over/logins-stay-private).
+    /// (timeshift-catch-up-and-start-over/logins-stay-private). The adult flag is left out
+    /// too: the source sets it again on every load.
     enum CodingKeys: String, CodingKey {
         case id, name, streamURL, group, logoURL, epgID, number, minorNumber, hasCatchup, catchupDays, sourceID, position
     }

@@ -4,10 +4,13 @@ import Foundation
 public struct StalkerGenre: Sendable, Hashable {
     public var id: String
     public var title: String
+    /// The portal's `censored` flag: the genre holds adult channels.
+    public var isAdult: Bool
 
-    public init(id: String, title: String) {
+    public init(id: String, title: String, isAdult: Bool = false) {
         self.id = id
         self.title = title
+        self.isAdult = isAdult
     }
 
     /// The portal's catch-all genre: id `*`, or the title "All" in any case.
@@ -60,7 +63,8 @@ extension StalkerClient {
         let genres = try await genres()
         let payload = try await call([("type", "itv"), ("action", "get_all_channels")], timeout: Self.channelListTimeout)
         let names = Dictionary(genres.genres.filter { !$0.isAll }.map { ($0.id, $0.title) }, uniquingKeysWith: { first, _ in first })
-        var load = decodeChannels(payload.value, genreNames: names, guide: guide)
+        let adult = Set(genres.genres.filter(\.isAdult).map(\.id))
+        var load = decodeChannels(payload.value, genreNames: names, adultGenres: adult, guide: guide)
         load.skippedGenres = genres.skipped
         return load
     }
@@ -76,7 +80,7 @@ extension StalkerClient {
                 skipped += 1
                 continue
             }
-            genres.append(StalkerGenre(id: id, title: title))
+            genres.append(StalkerGenre(id: id, title: title, isAdult: StalkerWire.int(object["censored"]) == 1))
         }
         return (genres, skipped)
     }
@@ -84,8 +88,11 @@ extension StalkerClient {
     /// Maps `get_all_channels`. `js` may be `{"data": [...]}` or the list
     /// itself; `false` and any other shape give no channels. A row without
     /// an id, a name or a `cmd`, or with an id seen before, is skipped and
-    /// counted.
-    func decodeChannels(_ js: Any, genreNames: [String: String], guide: StalkerGuideMatch) -> StalkerChannelLoad {
+    /// counted. A channel is adult when the portal marks it or its genre
+    /// `censored`.
+    func decodeChannels(
+        _ js: Any, genreNames: [String: String], adultGenres: Set<String> = [], guide: StalkerGuideMatch
+    ) -> StalkerChannelLoad {
         let rows = ((js as? [String: Any])?["data"] as? [Any]) ?? (js as? [Any]) ?? []
         var channels: [Channel] = []
         channels.reserveCapacity(rows.count)
@@ -104,18 +111,21 @@ extension StalkerClient {
             let xmltv = StalkerWire.string(object["xmltv_id"])?.trimmingCharacters(in: .whitespacesAndNewlines)
             let archive = StalkerWire.int(object["tv_archive"]) ?? ((object["tv_archive"] as? Bool) == true ? 1 : 0)
             let hours = StalkerWire.int(object["tv_archive_duration"])
+            let genre = StalkerWire.string(object["tv_genre_id"])
+            let adult = StalkerWire.int(object["censored"]) == 1 || genre.map(adultGenres.contains) == true
             channels.append(
                 Channel(
                     id: "stalker#\(credentials.portal.host)#\(id)",
                     name: name,
                     streamURL: reference,
-                    group: StalkerWire.string(object["tv_genre_id"]).flatMap { genreNames[$0] },
+                    group: genre.flatMap { genreNames[$0] },
                     logoURL: Self.logo(StalkerWire.string(object["logo"]), base: logoBase, portal: credentials.portal.url),
                     epgID: guide == .portal ? id : (xmltv?.isEmpty == false ? xmltv : nil),
                     number: StalkerWire.int(object["number"]),
                     hasCatchup: archive > 0,
                     catchupDays: archive > 0 ? hours.flatMap { $0 > 0 ? ($0 + 23) / 24 : nil } : nil,
-                    catchupMode: archive > 0 ? .unsupported("stalker") : nil
+                    catchupMode: archive > 0 ? .unsupported("stalker") : nil,
+                    isAdult: adult
                 ))
         }
         return StalkerChannelLoad(channels: channels, skippedChannels: skipped, skippedGenres: 0)

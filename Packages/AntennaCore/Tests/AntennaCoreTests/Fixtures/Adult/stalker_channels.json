@@ -1,0 +1,6 @@
+{"js": {"data": [
+  {"id": "101", "name": "News One", "cmd": "ffrt http://localhost/ch/101", "tv_genre_id": "1"},
+  {"id": "102", "name": "Late One", "cmd": "ffrt http://localhost/ch/102", "tv_genre_id": "1", "censored": "1"},
+  {"id": "201", "name": "Night One", "cmd": "ffrt http://localhost/ch/201", "tv_genre_id": "2", "censored": 0},
+  {"id": "301", "name": "Sport One", "cmd": "ffrt http://localhost/ch/301", "tv_genre_id": "3", "censored": 0}
+]}}

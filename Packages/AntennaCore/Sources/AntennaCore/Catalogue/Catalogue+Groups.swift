@@ -29,7 +29,29 @@ extension Catalogue {
     /// may not be shown or played (group-management/locked-channels-stay-out-of-reach).
     public func isLocked(_ key: RowKey) -> Bool {
         guard let policy, let entry = index.entry(for: key) else { return false }
-        return policy.blocked[entry]
+        return policy.blocked[entry] && !policy.adultHidden[entry]
+    }
+
+    /// True when `key`'s channel is adult content the profile hides, so it
+    /// may not be shown or played (adult-content/hidden-everywhere-by-default).
+    /// Such a channel is never also reported locked.
+    public func isAdultHidden(_ key: RowKey) -> Bool {
+        guard let policy, let entry = index.entry(for: key) else { return false }
+        return policy.adultHidden[entry]
+    }
+
+    /// True when `group` holds adult content, found by its name or the
+    /// provider's flag or marked by the user, whether or not the profile
+    /// shows it (adult-content/correct-a-group).
+    public func isAdult(_ group: CatalogueGroup) -> Bool {
+        policy?.adultGroups.contains(group) ?? false
+    }
+
+    /// True when the profile hides at least one adult group, so the Groups
+    /// screen can say why some groups are missing.
+    public var hidesAdultGroups: Bool {
+        guard let policy, !policy.rules.showsAdult else { return false }
+        return !policy.adultGroups.isEmpty
     }
 
     /// Locked groups the channel lists show with a lock while the locks
@@ -41,8 +63,10 @@ extension Catalogue {
 
     /// Every group the Groups screen lists: `.all`, then the source groups
     /// and own groups in the user's order, hidden and locked ones included.
+    /// Adult groups the profile hides are left out.
     public var managedGroups: [CatalogueGroup] {
-        [.all] + (policy?.ordered ?? index.groups)
+        guard let policy else { return [.all] + index.groups }
+        return [.all] + policy.ordered.filter { !policy.isAdultHidden($0) }
     }
 
     /// How many channels `group` holds with no rule applied: the loaded
@@ -63,7 +87,8 @@ extension Catalogue {
     }
 
     /// Provider groups the rules name that no loaded source lists any more
-    /// (group-management/settings-for-groups-that-are-gone). A rule for a
+    /// (group-management/settings-for-groups-that-are-gone). Adult ones are
+    /// left out while the profile hides adult content. A rule for a
     /// source with no loaded channels, still loading, failed or waiting for
     /// its login, is not among them. Sorted by source order, then name.
     public var orphanedGroups: [CatalogueGroup] {
@@ -72,12 +97,14 @@ extension Catalogue {
         let present = Set(index.groups)
         var sourceRank: [UUID: Int] = [:]
         for key in index.keys where sourceRank[key.sourceID] == nil { sourceRank[key.sourceID] = sourceRank.count }
-        let named = rules.hidden.union(rules.locked).union(rules.names.keys).union(rules.order.keys)
+        let named = rules.hidden.union(rules.locked).union(rules.names.keys).union(rules.order.keys).union(rules.adultMarks.keys)
         let orphans = named.filter { group in
+            let adult = rules.adultMarks[group] ?? group.providerName.map(AdultContent.isAdultName) ?? false
+            if !rules.showsAdult, adult { return false }
             switch group {
             case .named(let source, _), .ungrouped(let source):
-                sourceRank[source] != nil && !present.contains(group)
-            case .favorites, .recents, .new, .all, .own: false
+                return sourceRank[source] != nil && !present.contains(group)
+            case .favorites, .recents, .new, .all, .own: return false
             }
         }
         return orphans.sorted { lhs, rhs in

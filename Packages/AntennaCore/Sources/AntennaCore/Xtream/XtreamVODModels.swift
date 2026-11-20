@@ -47,12 +47,16 @@ public struct VODItem: Sendable, Hashable, Identifiable {
     public var cast: String?
     /// The row's `director`, with the rule of `cast`.
     public var director: String?
+    /// The row's `is_adult` flag: true when the panel marks the movie as adult.
+    public var isAdult: Bool
 
     /// Builds a row. `decodeVODList(_:host:)` is the usual source.
     public init(
         id: String, streamID: Int, name: String, posterURL: URL? = nil, added: Date? = nil, rating: Double? = nil,
-        containerExtension: String? = nil, categoryID: String? = nil, cast: String? = nil, director: String? = nil
+        containerExtension: String? = nil, categoryID: String? = nil, cast: String? = nil, director: String? = nil,
+        isAdult: Bool = false
     ) {
+        self.isAdult = isAdult
         self.cast = cast
         self.director = director
         self.id = id
@@ -133,12 +137,15 @@ public struct Series: Sendable, Hashable, Identifiable {
     public var cast: String?
     /// With the rule of `VODItem.director`.
     public var director: String?
+    /// With the rule of `VODItem.isAdult`.
+    public var isAdult: Bool
 
     /// Builds a row. `decodeSeriesList(_:host:)` is the usual source.
     public init(
         id: String, seriesID: Int, name: String, posterURL: URL? = nil, lastModified: Date? = nil, rating: Double? = nil,
-        categoryID: String? = nil, cast: String? = nil, director: String? = nil
+        categoryID: String? = nil, cast: String? = nil, director: String? = nil, isAdult: Bool = false
     ) {
+        self.isAdult = isAdult
         self.cast = cast
         self.director = director
         self.rating = rating

@@ -1,0 +1,7 @@
+{"Items": [
+  {"Id": "a1", "Name": "News One", "ChannelNumber": "1"},
+  {"Id": "a2", "Name": "Rated XXX", "ChannelNumber": "2", "OfficialRating": "XXX"},
+  {"Id": "a3", "Name": "Rated AO", "ChannelNumber": "3", "OfficialRating": "AO"},
+  {"Id": "a4", "Name": "Rated NC-17", "ChannelNumber": "4", "OfficialRating": "NC-17"},
+  {"Id": "a5", "Name": "Rated TV-MA", "ChannelNumber": "5", "OfficialRating": "TV-MA"}
+], "TotalRecordCount": 5}

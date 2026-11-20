@@ -1,0 +1,5 @@
+[
+  {"category_id": "5", "category_name": "Drama"},
+  {"category_id": "6", "category_name": "Late Night", "is_adult": 1},
+  {"category_id": "7", "category_name": "XXX Movies"}
+]

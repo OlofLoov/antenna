@@ -1,0 +1,6 @@
+{"js": [
+  {"id": "*", "title": "All"},
+  {"id": "1", "title": "News"},
+  {"id": "2", "title": "Night", "censored": 1},
+  {"id": "3", "title": "Sport", "censored": "0"}
+]}

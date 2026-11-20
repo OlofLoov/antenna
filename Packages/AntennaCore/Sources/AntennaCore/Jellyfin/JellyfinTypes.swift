@@ -110,8 +110,12 @@ public struct JellyfinChannel: Sendable, Hashable {
     public var number: Int?
     public var isRadio: Bool
     public var primaryImageTag: String?
+    /// True when the server rates the channel XXX or AO
+    /// (`AdultContent.isAdultRating`).
+    public var isAdult: Bool
 
-    public init(id: String, name: String, number: Int?, isRadio: Bool, primaryImageTag: String?) {
+    public init(id: String, name: String, number: Int?, isRadio: Bool, primaryImageTag: String?, isAdult: Bool = false) {
+        self.isAdult = isAdult
         self.id = id
         self.name = name
         self.number = number

@@ -166,7 +166,7 @@
             guard provider.protectedDataAvailable else { return references.map { TitleEntity(id: $0.0, failure: nil) } }
             let library = await provider.titles(loading: Set(references.map(\.1.sourceID)))
             return references.map { id, reference in
-                switch IntentLookup.title(reference, in: library.titles, sources: library.sources) {
+                switch IntentLookup.title(reference, in: library.titles, showsAdult: library.showsAdult, sources: library.sources) {
                 case .success(let title): TitleEntity(title, in: library)
                 case .failure(let failure): TitleEntity(id: id, failure: failure)
                 }
@@ -177,8 +177,10 @@
         static func titles(matching string: String) async -> [TitleEntity] {
             guard let provider = ready() else { return [] }
             let library = await provider.titles(loading: nil)
-            let found = SearchIndex(channels: [], guide: GuideIndex(), titles: library.titles, now: .distantPast)
-                .results(for: SearchQuery(string), now: .distantPast).titles
+            let found = SearchIndex(
+                channels: [], guide: GuideIndex(), titles: library.titles.visible(showsAdult: library.showsAdult), now: .distantPast
+            )
+            .results(for: SearchQuery(string), now: .distantPast).titles
             return found.prefix(IntentLookup.matches).map { TitleEntity($0.title, in: library) }
         }
 
@@ -186,8 +188,10 @@
         static func suggestedTitles() async -> [TitleEntity] {
             guard let provider = ready() else { return [] }
             let library = await provider.titles(loading: nil)
-            return IntentLookup.suggestedTitles(progress: library.progress, myList: library.myList, titles: library.titles)
-                .map { TitleEntity($0, in: library) }
+            return IntentLookup.suggestedTitles(
+                progress: library.progress, myList: library.myList, titles: library.titles, showsAdult: library.showsAdult
+            )
+            .map { TitleEntity($0, in: library) }
         }
 
         /// The provider when it is unlocked, has sources and can read the Keychain.
