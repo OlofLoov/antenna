@@ -61,6 +61,62 @@ public struct XMLTVParser: Sendable {
         case malformed(line: Int, column: Int)
     }
 
+    static let utcFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(secondsFromGMT: 0)
+        f.dateFormat = "yyyyMMddHHmmss"
+        return f
+    }()
+
+    /// The first 14 characters of `s` read as `yyyyMMddHHmmss` in UTC.
+    /// A valid stamp from 1900 on is computed directly; anything else
+    /// goes to the formatter, so both give the same answer.
+    static func utcDate(_ s: String) -> Date? {
+        if let seconds = stampSeconds(s) { return Date(timeIntervalSince1970: TimeInterval(seconds)) }
+        return utcFormatter.date(from: String(s.prefix(14)))
+    }
+
+    /// Seconds since 1970 for 14 ASCII digits forming a valid date and
+    /// time in 1900 or later, when the 15th byte, if any, is ASCII too.
+    /// Nil otherwise.
+    static func stampSeconds(_ s: String) -> Int? {
+        let utf8 = s.utf8
+        var index = utf8.startIndex
+        func number(_ width: Int) -> Int? {
+            var value = 0
+            for _ in 0..<width {
+                guard index != utf8.endIndex else { return nil }
+                let byte = utf8[index]
+                guard byte >= 0x30, byte <= 0x39 else { return nil }
+                value = value * 10 + Int(byte - 0x30)
+                utf8.formIndex(after: &index)
+            }
+            return value
+        }
+        guard let year = number(4), let month = number(2), let day = number(2), let hour = number(2),
+            let minute = number(2), let second = number(2)
+        else { return nil }
+        if index != utf8.endIndex, utf8[index] >= 0x80 { return nil }
+        guard year >= 1900, (1...12).contains(month), hour < 24, minute < 60, second < 60 else { return nil }
+        let leap = year.isMultiple(of: 4) && (!year.isMultiple(of: 100) || year.isMultiple(of: 400))
+        let length =
+            switch month {
+            case 2: leap ? 29 : 28
+            case 4, 6, 9, 11: 30
+            default: 31
+            }
+        guard day >= 1, day <= length else { return nil }
+        // Days from 1970-01-01 to the civil date, after Howard Hinnant's days_from_civil.
+        let y = month <= 2 ? year - 1 : year
+        let era = y / 400
+        let yearOfEra = y - era * 400
+        let dayOfYear = (153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1
+        let dayOfEra = yearOfEra * 365 + yearOfEra / 4 - yearOfEra / 100 + dayOfYear
+        let days = era * 146_097 + dayOfEra - 719_468
+        return days * 86_400 + hour * 3_600 + minute * 60 + second
+    }
+
     // MARK: - SAX delegate
 
     private final class Delegate: NSObject, XMLParserDelegate {
@@ -83,19 +139,11 @@ public struct XMLTVParser: Sendable {
         private var text = ""
         private var capturing = false
 
-        private static let utcFormatter: DateFormatter = {
-            let f = DateFormatter()
-            f.locale = Locale(identifier: "en_US_POSIX")
-            f.timeZone = TimeZone(secondsFromGMT: 0)
-            f.dateFormat = "yyyyMMddHHmmss"
-            return f
-        }()
-
         /// Reads the first 14 characters as UTC, then applies a `±HHMM` or
         /// `±HH:MM` offset that follows, with or without spaces before it.
         /// An offset over 14 hours, or any other suffix, is ignored.
         static func date(_ s: String?) -> Date? {
-            guard let s, let utc = utcFormatter.date(from: String(s.prefix(14))) else { return nil }
+            guard let s, let utc = XMLTVParser.utcDate(s) else { return nil }
             let suffix = s.dropFirst(14).trimmingCharacters(in: .whitespaces)
             guard let offset = offsetSeconds(suffix) else { return utc }
             return utc.addingTimeInterval(-TimeInterval(offset))
