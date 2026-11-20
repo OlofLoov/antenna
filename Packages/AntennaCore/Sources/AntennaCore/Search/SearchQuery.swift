@@ -33,11 +33,6 @@ public struct SearchQuery: Sendable, Equatable {
         text.count(where: { !$0.isWhitespace }) >= Self.minimumLength
     }
 
-    /// True when every word is part of `folded`, a field folded with `fold(_:)`.
-    func matches(folded field: String) -> Bool {
-        !field.isEmpty && tokens.allSatisfy { field.contains($0) }
-    }
-
     /// Text without case or accents, as the index keeps it.
     static func fold(_ text: String) -> String {
         ChannelFilter.fold(text)

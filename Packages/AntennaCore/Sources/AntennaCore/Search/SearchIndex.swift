@@ -18,18 +18,23 @@ public struct SearchIndex: Sendable {
     private struct ChannelEntry: Sendable {
         let channel: SearchChannel
         let name: String
-        let group: String
         let number: String
+        /// The name's place among every channel name, equal for equal names.
+        let nameRank: Int
     }
 
     private struct TitleEntry: Sendable {
         let title: ShelfTitle
         let name: String
         let order: Int
+        let nameRank: Int
     }
 
     private let channelEntries: [ChannelEntry]
+    private let channelNames: FoldedTexts
+    private let channelGroups: FoldedTexts
     private let titleEntries: [TitleEntry]
+    private let titleNames: FoldedTexts
     private let programmes: ProgrammeStore
 
     /// An index with nothing in it.
@@ -45,20 +50,48 @@ public struct SearchIndex: Sendable {
     ///   - titles: every loaded movie and series, in source order. Titles
     ///     with a blank name are left out.
     ///   - now: the time of the build.
+    ///
+    /// Building folds and sorts every name, so it takes a while for a large
+    /// catalogue; build it off the main actor.
     public init(channels: [SearchChannel], guide: GuideIndex, titles: [ShelfTitle], now: Date) {
-        channelEntries = channels.compactMap { channel in
+        let keptChannels = channels.compactMap { channel -> (channel: SearchChannel, name: String)? in
             let name = SearchQuery.fold(channel.name)
             guard !name.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
+            return (channel, name)
+        }
+        let channelRanks = Self.ranks(keptChannels.map(\.name))
+        channelEntries = keptChannels.indices.map { index in
+            let (channel, name) = keptChannels[index]
             return ChannelEntry(
-                channel: channel, name: name, group: channel.group.map(SearchQuery.fold) ?? "",
-                number: channel.number.map(String.init) ?? "")
+                channel: channel, name: name, number: channel.number.map(String.init) ?? "", nameRank: channelRanks[index])
         }
-        titleEntries = zip(titles.indices, titles).compactMap { order, title in
-            let name = SearchQuery.fold(title.name)
+        channelNames = FoldedTexts(keptChannels.map(\.name))
+        channelGroups = FoldedTexts(keptChannels.map { $0.channel.group.map(SearchQuery.fold) ?? "" })
+        let keptTitles = titles.indices.compactMap { order -> (order: Int, name: String)? in
+            let name = SearchQuery.fold(titles[order].name)
             guard !name.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
-            return TitleEntry(title: title, name: name, order: order)
+            return (order, name)
         }
+        let titleRanks = Self.ranks(keptTitles.map(\.name))
+        titleEntries = keptTitles.indices.map { index in
+            let (order, name) = keptTitles[index]
+            return TitleEntry(title: titles[order], name: name, order: order, nameRank: titleRanks[index])
+        }
+        titleNames = FoldedTexts(keptTitles.map(\.name))
         programmes = ProgrammeStore(channels: channels, guide: guide, window: DateInterval(start: now, duration: Self.horizon + Self.slack))
+    }
+
+    /// Each name's place in the names sorted as strings sort, the same for
+    /// equal names, so a query compares numbers instead of text.
+    private static func ranks(_ names: [String]) -> [Int] {
+        let order = names.indices.sorted { names[$0] < names[$1] }
+        var ranks = [Int](repeating: 0, count: names.count)
+        var rank = 0
+        for (place, index) in order.enumerated() {
+            if place > 0, names[order[place - 1]] != names[index] { rank = place }
+            ranks[index] = rank
+        }
+        return ranks
     }
 
     /// Everything `query` finds at `now`; nothing for a query shorter than
@@ -82,12 +115,15 @@ public struct SearchIndex: Sendable {
 
     private func channels(matching query: SearchQuery) -> [SearchResults.ChannelHit] {
         var ranked: [(band: Int, entry: ChannelEntry)] = []
-        for entry in channelEntries {
-            if query.matches(folded: entry.name) {
+        let needles = query.filter.needles
+        let byName = channelNames.nonEmptyMatches(all: needles)
+        let byGroup = channelGroups.nonEmptyMatches(all: needles)
+        for (offset, entry) in channelEntries.enumerated() {
+            if byName[offset] {
                 ranked.append((Self.nameBand(entry.name, query), entry))
             } else if let digits = query.digits, entry.number.hasPrefix(digits) {
                 ranked.append((3, entry))
-            } else if query.matches(folded: entry.group) {
+            } else if byGroup[offset] {
                 ranked.append((4, entry))
             }
         }
@@ -99,7 +135,7 @@ public struct SearchIndex: Sendable {
             if lhs.band == 3, left.channel.number != right.channel.number {
                 return (left.channel.number ?? .max) < (right.channel.number ?? .max)
             }
-            if left.name != right.name { return left.name < right.name }
+            if left.nameRank != right.nameRank { return left.nameRank < right.nameRank }
             if left.channel.number != right.channel.number { return (left.channel.number ?? .max) < (right.channel.number ?? .max) }
             if left.channel.sourceOrder != right.channel.sourceOrder { return left.channel.sourceOrder < right.channel.sourceOrder }
             return left.channel.key.position < right.channel.key.position
@@ -133,12 +169,13 @@ public struct SearchIndex: Sendable {
     // MARK: Titles
 
     private func titles(matching query: SearchQuery) -> [SearchResults.TitleHit] {
-        titleEntries
-            .filter { query.matches(folded: $0.name) }
-            .map { (band: Self.nameBand($0.name, query), entry: $0) }
+        let found = titleNames.nonEmptyMatches(all: query.filter.needles)
+        return titleEntries.indices
+            .filter { found[$0] }
+            .map { (band: Self.nameBand(titleEntries[$0].name, query), entry: titleEntries[$0]) }
             .sorted { lhs, rhs in
                 if lhs.band != rhs.band { return lhs.band < rhs.band }
-                if lhs.entry.name != rhs.entry.name { return lhs.entry.name < rhs.entry.name }
+                if lhs.entry.nameRank != rhs.entry.nameRank { return lhs.entry.nameRank < rhs.entry.nameRank }
                 return lhs.entry.order < rhs.entry.order
             }
             .map { SearchResults.TitleHit(title: $0.entry.title) }
@@ -160,7 +197,7 @@ final class ProgrammeStore: Sendable {
 
     let entries: [Entry]
     let texts: [String]
-    private let foldedTexts: [String]
+    private let foldedTexts: FoldedTexts
     /// Per text, the entries whose title or episode title it is.
     private let entriesByText: [[Int32]]
     let keys: [GuideKey]
@@ -222,7 +259,7 @@ final class ProgrammeStore: Sendable {
             if entry.subtitle >= 0, entry.subtitle != entry.title { byText[Int(entry.subtitle)].append(Int32(offset)) }
         }
         self.texts = texts
-        foldedTexts = texts.map(SearchQuery.fold)
+        foldedTexts = FoldedTexts(texts.map(SearchQuery.fold))
         entriesByText = byText
         self.keys = keys
         self.owners = owners
@@ -259,7 +296,8 @@ final class ProgrammeStore: Sendable {
     func hits(matching query: SearchQuery, now: Date) -> SearchResults.Programmes {
         var marked = [Bool](repeating: false, count: entries.count)
         var any = false
-        for (textID, folded) in foldedTexts.enumerated() where query.matches(folded: folded) {
+        let found = foldedTexts.nonEmptyMatches(all: query.filter.needles)
+        for textID in 0..<foldedTexts.count where found[textID] {
             for offset in entriesByText[textID] { marked[Int(offset)] = true }
             any = true
         }
