@@ -23,12 +23,20 @@ import SwiftUI
                         Title(type: .phone)
                         Facts(type: .phone)
                         Description(type: .phone, lines: 2)
-                        HStack(spacing: 8) {
-                            PlayButton(type: .phone)
-                            InfoButton(type: .phone, title: "Info")
-                                .fixedSize()
-                            TrailerGlyphButton(type: .phone)
-                            MyListButton(type: .phone)
+                        // Two rows, so every button keeps its words on the
+                        // narrowest iPhone and in German.
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack(spacing: 8) {
+                                PlayButton(type: .phone)
+                                InfoButton(type: .phone, title: "Info")
+                                    .fixedSize()
+                            }
+                            HStack(spacing: 8) {
+                                TrailerButton(type: .phone)
+                                    .fixedSize()
+                                MyListButton(type: .phone)
+                                    .fixedSize()
+                            }
                         }
                         .padding(.top, 6)
                         Dots(size: 5)
@@ -61,10 +69,15 @@ import SwiftUI
                     Art()
                     HeroScrim(copyEnd: 0.56)
                     VStack(alignment: .leading, spacing: Sizes.pad.spacing) {
-                        Eyebrow(type: .pad)
-                        Title(type: .pad)
-                        Facts(type: .pad)
-                        Description(type: .pad, lines: 3)
+                        VStack(alignment: .leading, spacing: Sizes.pad.spacing) {
+                            Eyebrow(type: .pad)
+                            Title(type: .pad)
+                            Facts(type: .pad)
+                            Description(type: .pad, lines: 3)
+                        }
+                        .frame(width: 480, alignment: .leading)
+                        // The buttons may run past the copy's width, so My
+                        // list keeps its words.
                         HStack(spacing: 10) {
                             PlayButton(type: .pad)
                                 .fixedSize()
@@ -73,10 +86,10 @@ import SwiftUI
                             TrailerButton(type: .pad)
                                 .fixedSize()
                             MyListButton(type: .pad)
+                                .fixedSize()
                         }
                         .padding(.top, 6)
                     }
-                    .frame(width: 480, alignment: .leading)
                     .padding(EdgeInsets(top: 34, leading: 28, bottom: 20, trailing: 0))
                     .animation(ShelfBanner.crossfade, value: banner?.state.text)
                 }
@@ -249,7 +262,7 @@ extension BannerContext {
     ShelfBanner.Television {
         ShelfBanner.PlayButton(type: .tv).fixedSize()
         ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
-        ShelfBanner.MyListButton(type: .tv)
+        ShelfBanner.MyListButton(type: .tv).fixedSize()
     }
     .environment(\.shelfBanner, .preview())
     .environment(\.shelfMetrics, .tv)
@@ -261,7 +274,7 @@ extension BannerContext {
         ShelfBanner.PlayButton(type: .tv).fixedSize()
         ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
         ShelfBanner.TrailerButton(type: .tv).fixedSize()
-        ShelfBanner.MyListButton(type: .tv)
+        ShelfBanner.MyListButton(type: .tv).fixedSize()
     }
     .environment(\.shelfBanner, .preview(rated: true))
     .environment(\.shelfMetrics, .tv)
@@ -273,7 +286,7 @@ extension BannerContext {
         ShelfBanner.Television {
             ShelfBanner.PlayButton(type: .tv).fixedSize()
             ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
-            ShelfBanner.MyListButton(type: .tv)
+            ShelfBanner.MyListButton(type: .tv).fixedSize()
         }
         Palette.ground.frame(height: 400)
     }
@@ -287,7 +300,7 @@ extension BannerContext {
     ShelfBanner.Television {
         ShelfBanner.PlayButton(type: .tv).fixedSize()
         ShelfBanner.InfoButton(type: .tv, title: "More info").fixedSize()
-        ShelfBanner.MyListButton(type: .tv)
+        ShelfBanner.MyListButton(type: .tv).fixedSize()
     }
     .environment(\.shelfBanner, .preview(art: .backdrop(PreviewArt.address)))
     .environment(\.shelfMetrics, .tv)

@@ -372,6 +372,7 @@
                     .fixedSize()
                     .focused($focused, equals: .trailer)
                 ShelfBanner.MyListButton(type: .tv)
+                    .fixedSize()
                     .focused($focused, equals: .myList)
                     .onMoveCommand { if $0.reading(direction) == .right { banner?.actions.page(1) } }
             }

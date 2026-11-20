@@ -28,12 +28,16 @@
                                 Name(type: type)
                                 Meta(type: type)
                                 Plot(type: type, lines: plotLines)
+                                // Play across the width, then My list and
+                                // Trailer in words under it.
+                                PlayButton(type: type)
+                                    .padding(.top, 4)
                                 HStack(spacing: type.spacing) {
-                                    PlayButton(type: type)
                                     MyListButton(type: type)
+                                        .fixedSize()
                                     TrailerButton(type: type)
+                                        .fixedSize()
                                 }
-                                .padding(.top, 4)
                                 Progress(type: type)
                                 Scores(type: type)
                                 Problem(type: type)
@@ -87,8 +91,8 @@
                                     Meta(type: type)
                                     HStack(spacing: type.spacing) {
                                         PlayButton(type: type).fixedSize()
-                                        MyListButton(type: type)
-                                        TrailerButton(type: type)
+                                        MyListButton(type: type).fixedSize()
+                                        TrailerButton(type: type).fixedSize()
                                     }
                                     .padding(.top, 4)
                                     Progress(type: type)

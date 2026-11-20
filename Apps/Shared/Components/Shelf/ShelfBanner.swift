@@ -255,7 +255,8 @@ enum ShelfBanner {
         }
     }
 
-    /// Plus to add, check to remove (movies-and-series-browsing/keep-a-list-for-later).
+    /// "Add to My list", or "Remove from My list" once added, in words with
+    /// no glyph (movies-and-series-browsing/keep-a-list-for-later).
     struct MyListButton: View {
         let type: Sizes
         @Environment(\.shelfBanner) private var banner
@@ -266,12 +267,12 @@ enum ShelfBanner {
             Button {
                 banner?.actions.toggleMyList()
             } label: {
-                Image(systemName: added ? "checkmark" : "plus")
-                    .font(.boardStyle(type.button + 2, weight: .bold))
-                    .frame(width: type.buttonHeight, height: type.buttonHeight)
+                Text(added ? "Remove from My list" : "Add to My list")
+                    .font(.boardStyle(type.button, weight: .semibold))
+                    .lineLimit(1)
+                    .frame(minHeight: type.buttonHeight)
             }
             .secondaryActionStyle()
-            .accessibilityLabel(added ? "Remove from My list" : "Add to My list")
             .accessibilityValue(added ? "On My list" : "Not on My list")
             .accessibilityIdentifier("\(prefix).hero.myList")
         }

@@ -110,9 +110,16 @@ final class ShelfUITests: XCTestCase {
         let info = app.element("movies.hero.info")
         let myList = app.element("movies.hero.myList")
         XCTAssertLessThan(play.frame.maxX, info.frame.minX)
-        XCTAssertLessThan(info.frame.maxX, trailer.frame.minX)
+        XCTAssertGreaterThan(trailer.frame.minY, play.frame.maxY, "Trailer and My list sit under Play and Info")
         XCTAssertLessThan(trailer.frame.maxX, myList.frame.minX)
-        XCTAssertLessThanOrEqual(myList.frame.maxX, app.windows.firstMatch.frame.maxX, "the four buttons fit the width")
+        XCTAssertEqual(myList.frame.midY, trailer.frame.midY, accuracy: 1)
+        XCTAssertLessThanOrEqual(myList.frame.maxX, app.windows.firstMatch.frame.maxX, "both rows fit the width")
+        // Trailer and My list show words, not a glyph in a square.
+        for button in [trailer, myList] {
+            XCTAssertGreaterThan(button.frame.width, button.frame.height * 1.4, button.identifier)
+        }
+        XCTAssertEqual(myList.label, "Add to My list")
+        XCTAssertEqual(myList.images.count, 0, "My list shows no glyph")
 
         trailer.tap()
         let opened = XCTNSPredicateExpectation(

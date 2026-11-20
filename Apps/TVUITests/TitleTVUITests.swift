@@ -77,6 +77,9 @@ final class TitleTVUITests: XCTestCase {
 
         press(.right)
         expectFocus("title.myList")
+        // title-detail-and-episode-picker/my-list-from-the-page: words, not a plus.
+        XCTAssertEqual(element("title.myList").label, "Add to My list")
+        XCTAssertGreaterThan(element("title.myList").frame.width, element("title.myList").frame.height * 2)
         press(.right)
         expectFocus("title.trailer")
         press(.down)

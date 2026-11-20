@@ -236,6 +236,47 @@ glass_alone "design-system/liquid-glass-stays-on-the-navigation-layer: no fill, 
   'Apps/Shared/Debug/[A-Za-z]+\.swift' \
   Apps
 
+# A button is a system style or a plain surface, never an outline
+# (design-system/controls-use-system-styles). The scan reads each Button's
+# label closure for a stroke or border. The profile color swatches ring the
+# picked color, which marks the choice rather than drawing the button.
+read -r -d '' outlined_py <<'PY' || true
+import re
+import sys
+
+BUTTON = re.compile(r"\bButton\b[^{]*\{\s*$|\blabel:\s*\{\s*$")
+STROKE = re.compile(r"\.(stroke|strokeBorder|border)\(")
+
+
+def hits(path):
+    with open(path, encoding="utf-8") as handle:
+        lines = handle.read().split("\n")
+    found = set()
+    for at, line in enumerate(lines):
+        if line.strip().startswith("//") or not BUTTON.search(line):
+            continue
+        depth = line.count("{") - line.count("}")
+        i = at + 1
+        while i < len(lines) and depth > 0:
+            depth += lines[i].count("{") - lines[i].count("}")
+            if STROKE.search(lines[i]) and not lines[i].strip().startswith("//"):
+                found.add(i)
+            i += 1
+    return [f"{path}:{n + 1}:{lines[n]}" for n in sorted(found)]
+
+
+print("\n".join(hit for path in sys.argv[1:] for hit in hits(path)))
+PY
+
+outlined=$(find Apps -name '*.swift' -print0 | xargs -0 python3 -c "$outlined_py" |
+  grep -vE '^(Apps/Shared/Components/Profiles/ProfileBadge\.swift|Apps/Shared/Views/Profiles/ProfileFlow\.swift):' || true)
+if [[ -n "$outlined" ]]; then
+  printf 'FAIL %s\n%s\n\n' "design-system/controls-use-system-styles: no stroke or border in a button's label" "$outlined"
+  status=1
+else
+  printf 'ok   %s\n' "design-system/controls-use-system-styles: no stroke or border in a button's label"
+fi
+
 # A flat block of the ground color over art leaves an edge across the
 # picture. Copy over art sits on HeroScrim, which spans the whole picture
 # (design-system/the-scrim-blends-into-the-art).

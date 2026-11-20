@@ -161,8 +161,9 @@
             }
         }
 
-        /// LIVE while behind live: a muted dot, outlined, and a button that
-        /// goes back to live (timeshift-catch-up-and-start-over/back-to-live).
+        /// LIVE while behind live: a muted dot on the badge's surface fill,
+        /// with no outline, and a button that goes back to live
+        /// (timeshift-catch-up-and-start-over/back-to-live).
         struct LiveButton: View {
             let action: () -> Void
 
@@ -178,7 +179,7 @@
                     }
                     .padding(.vertical, 3)
                     .padding(.horizontal, 7)
-                    .overlay(cornerShape(.small).strokeBorder(Palette.textMuted, lineWidth: 1))
+                    .background(Palette.surface(0.14), in: cornerShape(.small))
                     .frame(minWidth: 44, minHeight: 44)
                     .contentShape(Rectangle())
                 }
