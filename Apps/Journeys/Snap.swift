@@ -28,6 +28,12 @@ final class Journey {
         app = XCUIApplication()
         app.launchArguments = arguments + Self.storeLanguage
         app.launchEnvironment = environment
+        if arguments.contains(Self.storeShots) {
+            Self.waitForRoomInTheMinute()
+            launchMinute = Self.minute()
+        } else {
+            launchMinute = nil
+        }
         app.launchInEnglish()
         #if os(macOS)
             // A CI runner's Mac can start the app with no window open;
@@ -46,7 +52,46 @@ final class Journey {
         let environment = ProcessInfo.processInfo.environment
         guard let language = environment["STORE_LANGUAGE"], !language.isEmpty else { return [] }
         let region = environment["STORE_REGION"] ?? language.replacingOccurrences(of: "-", with: "_")
-        return ["-AppleLanguages", "(\(language))", "-AppleLocale", region]
+        return ["-AppleLanguages", "(\(language))", "-AppleLocale", region] + layoutDirection(for: language)
+    }
+
+    /// Whether the runner's `STORE_LANGUAGE` reads right to left.
+    static var storeLanguageIsRightToLeft: Bool {
+        guard let language = ProcessInfo.processInfo.environment["STORE_LANGUAGE"], !language.isEmpty else { return false }
+        return Locale.Language(identifier: language).characterDirection == .rightToLeft
+    }
+
+    /// `-AppleTextDirection YES` for a right-to-left language on a Mac.
+    /// AppKit takes the layout direction from that default, which follows
+    /// the Mac's own language and not `-AppleLanguages`, so on an English
+    /// runner an Arabic launch would lay out left to right. iPhone, iPad
+    /// and Apple TV take the direction from the launch language.
+    private static func layoutDirection(for language: String) -> [String] {
+        #if os(macOS)
+            Locale.Language(identifier: language).characterDirection == .rightToLeft ? ["-AppleTextDirection", "YES"] : []
+        #else
+            []
+        #endif
+    }
+
+    static let storeShots = "-ui-testing-store-shots"
+
+    /// The minute, counted from 1970, the last store-shot launch started in;
+    /// nil after any other launch.
+    private var launchMinute: Int?
+
+    private static func minute(_ date: Date = Date()) -> Int {
+        Int(date.timeIntervalSince1970 / 60)
+    }
+
+    /// A store-shot app reads 9:41 for the minute it launched in and 9:42
+    /// from the next one (`UITestingStoreShots.pinClock`). When fewer than
+    /// `room` seconds of this minute are left, waits for the next minute,
+    /// so the steps up to the next launch run inside one.
+    private static func waitForRoomInTheMinute(room: TimeInterval = 40) {
+        let left = 60 - Date().timeIntervalSince1970.truncatingRemainder(dividingBy: 60)
+        guard left < room else { return }
+        RunLoop.current.run(until: Date().addingTimeInterval(left + 0.5))
     }
 
     /// Waits up to `timeout` seconds for the element with `identifier` to
@@ -113,6 +158,12 @@ final class Journey {
             tree.lifetime = .keepAlways
             test.add(tree)
             XCTFail("step \(step): \(anchor) never appeared", file: file, line: line)
+            return
+        }
+        // store-listing/store-screenshots-in-every-ready-language: every
+        // store picture shows 9:41, so it is taken in the launch's minute.
+        if let launchMinute, Self.minute() != launchMinute {
+            XCTFail("step \(step): the clock passed 9:41 before the screenshot", file: file, line: line)
             return
         }
         steps += 1
