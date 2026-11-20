@@ -17,12 +17,12 @@
 
 ## 3. Alternate app icons
 
-- [ ] 3.1 `AppIconChoice` in AntennaCore; `scripts/render-icons.sh` writes the six `.icon` files and Apple TV image stacks; `project.yml` names them for iOS and tvOS; `AppIconTests` (app-release/alternate-icons-keep-the-mark)
-- [ ] 3.2 The App icon row and page on iPhone, iPad and Apple TV, with `setAlternateIconName`; none on the Mac (sources-and-settings/pick-the-app-icon-on-this-device)
-- [ ] 3.3 Strings in every catalog language
-- [ ] 3.4 UI tests on iPhone and Apple TV: the App icon page lists the seven icons
+- [x] 3.1 `AppIconChoice` in AntennaCore; `scripts/render-icons.sh` writes the six `.icon` files and Apple TV image stacks; `project.yml` names them for iOS and tvOS; `AppIconTests` (app-release/alternate-icons-keep-the-mark)
+- [x] 3.2 The App icon row and page on iPhone, iPad and Apple TV, with `setAlternateIconName`; none on the Mac (sources-and-settings/pick-the-app-icon-on-this-device)
+- [x] 3.3 Strings in every catalog language
+- [x] 3.4 UI tests on iPhone and Apple TV: the App icon page lists the seven icons
 
 ## 4. Verify
 
-- [ ] 4.1 Each requirement this change adds or modifies has a test citing `<capability>/<requirement-slug>`
-- [ ] 4.2 `/opsx:verify` passes, then archive
+- [x] 4.1 Each requirement this change adds or modifies has a test citing `<capability>/<requirement-slug>`
+- [x] 4.2 `/opsx:verify` passes, then archive
