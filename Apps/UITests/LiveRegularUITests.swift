@@ -58,6 +58,29 @@ final class LiveRegularUITests: XCTestCase {
         XCTAssertTrue(app.element("browse.group.2").isSelected)
     }
 
+    // live-tv-on-iphone-ipad-mac/find-a-group-among-many
+    func testTheSidebarSearchNarrowsTheGroups() throws {
+        let app = try launch()
+        let field = app.element("browse.groups.search")
+        XCTAssertTrue(field.exists, "no search field over the groups")
+        field.tap()
+        field.typeText("SPO")
+        XCTAssertTrue(app.element("browse.group.2").waitForNonExistence(timeout: 5), "News does not match")
+        XCTAssertFalse(app.element("browse.group.0").exists, "Favorites does not match")
+        let sport = app.element("browse.group.3")
+        XCTAssertTrue(sport.exists)
+        sport.tap()
+        XCTAssertEqual(app.element("browse.header.title").label, "Sport")
+        XCTAssertTrue(app.row(2).exists)
+
+        field.tap()
+        field.typeText(" cricket")
+        XCTAssertTrue(app.element("browse.groups.empty").waitForExistence(timeout: 5))
+        app.element("browse.groups.search.clear").tap()
+        XCTAssertTrue(app.element("browse.group.0").waitForExistence(timeout: 5))
+        XCTAssertTrue(app.element("browse.group.3").isSelected)
+    }
+
     // live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list, the details show the channel
     func testPickingAChannelShowsItsDetailsBesideTheList() throws {
         let app = try launch()

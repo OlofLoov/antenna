@@ -33,20 +33,24 @@ extension Browse {
     }
 
     /// The filter field under the list's heading: a magnifier, "Search" as
-    /// the placeholder and a clear button while it holds text.
+    /// the placeholder and a clear button while it holds text. The sidebar's
+    /// group search passes its own placeholder, label and identifier.
     struct FilterField: View {
         @Binding var text: String
+        var prompt: LocalizedStringResource = "Search"
+        var label: LocalizedStringResource = "Search channels"
+        var identifier = "browse.filter"
 
         var body: some View {
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(Palette.textMuted)
                     .accessibilityHidden(true)
-                TextField("Search", text: $text, prompt: Text("Search").foregroundStyle(Palette.textMuted))
+                TextField(text: $text, prompt: Text(prompt).foregroundStyle(Palette.textMuted)) { Text(prompt) }
                     .textFieldStyle(.plain)
                     .autocorrectionDisabled()
-                    .accessibilityLabel("Search channels")
-                    .accessibilityIdentifier("browse.filter")
+                    .accessibilityLabel(Text(label))
+                    .accessibilityIdentifier(identifier)
                 if !text.isEmpty {
                     Button {
                         text = ""
@@ -58,7 +62,7 @@ extension Browse {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Clear")
-                    .accessibilityIdentifier("browse.filter.clear")
+                    .accessibilityIdentifier("\(identifier).clear")
                 }
             }
             .font(.callout)

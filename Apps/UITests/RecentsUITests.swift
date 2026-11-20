@@ -47,8 +47,8 @@ final class RecentsUITests: XCTestCase {
     // session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels
     func testRecentsSitsBetweenFavoritesAndAllChannelsNewestFirst() {
         let app = launch(recents: "sport-one,news-one")
-        let recents = app.element("browse.group.1")
-        XCTAssertTrue(recents.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        let recents = app.groupRow("browse.group.1")
         XCTAssertTrue(recents.label.hasPrefix("Recents, 2 channels"), "label is \(recents.label)")
         XCTAssertTrue(app.element("browse.group.0").label.hasPrefix("Favorites"))
         XCTAssertTrue(app.element("browse.group.2").label.hasPrefix("All channels"))
@@ -59,32 +59,35 @@ final class RecentsUITests: XCTestCase {
     // session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels, nothing to list
     func testRecentsIsHiddenWithNothingToList() {
         let app = launch(recents: "gone")
-        XCTAssertTrue(app.element("browse.group.1").waitForExistence(timeout: 5))
-        XCTAssertTrue(app.element("browse.group.1").label.hasPrefix("All channels"), "a channel that no longer exists is not listed")
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.groupRow("browse.group.1").label.hasPrefix("All channels"), "a channel that no longer exists is not listed")
     }
 
     // session-restore-and-recently-watched/a-channel-counts-as-watched-after-ten-seconds
     // session-restore-and-recently-watched/the-list-holds-still-while-you-use-it
     func testPlayingFromRecentsKeepsTheOrderUntilItOpensAgain() {
         let app = launch(recents: "sport-one,news-one")
-        app.element("browse.group.1").tap()
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        app.pickGroup("browse.group.1")
         let newsOne = app.element("browse.row.\(LiveUITests.home).0")
         newsOne.tap()
         app.waitForEngine("playing loads=1")
         waitForRecents(["news-one", "sport-one"])
         XCTAssertEqual(rows(app), ["browse.row.\(LiveUITests.home).2", "browse.row.\(LiveUITests.home).0"], "the open list holds still")
-        app.element("browse.group.2").tap()
-        app.element("browse.group.1").tap()
+        app.pickGroup("browse.group.2")
+        app.pickGroup("browse.group.1")
         XCTAssertEqual(rows(app), ["browse.row.\(LiveUITests.home).0", "browse.row.\(LiveUITests.home).2"])
     }
 
     // session-restore-and-recently-watched/a-channel-counts-as-watched-after-ten-seconds
     func testAChannelWatchedLongEnoughJoinsRecents() {
         let app = launch()
-        XCTAssertTrue(app.element("browse.group.1").label.hasPrefix("All channels"))
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.groupRow("browse.group.1").label.hasPrefix("All channels"))
+        if app.element("browse.groups.sheet").exists { app.closeGroups() }
         app.element("browse.row.\(LiveUITests.home).3").tap()
         app.waitForEngine("playing loads=1")
-        let recents = app.element("browse.group.1")
+        let recents = app.groupRow("browse.group.1")
         let joined = NSPredicate(format: "label BEGINSWITH 'Recents, 1 channel'")
         XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: joined, object: recents)], timeout: 10), .completed)
     }

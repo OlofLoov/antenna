@@ -48,16 +48,23 @@ final class LocalizationRTLUITests: XCTestCase {
     }
 
     // design-system/layouts-mirror-in-right-to-left-languages
-    func testTheLiveListAndItsChipsReadFromTheRight() throws {
+    func testTheLiveListAndItsGroupsReadFromTheRight() throws {
         let app = try launch(["-ui-testing-live", "channels"])
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
-        let first = app.element("browse.group.0")
-        let second = app.element("browse.group.1")
-        XCTAssertTrue(first.exists && second.exists, "no group chips")
-        XCTAssertGreaterThan(first.frame.minX, second.frame.maxX, "the first chip sits at the right")
+        let groups = app.element("browse.groups")
+        XCTAssertTrue(groups.exists, "no group button")
+        XCTAssertTrue(groups.label.contains("كل القنوات"), groups.label)
         let tabs = app.tabBars.buttons.allElementsBoundByIndex
         XCTAssertGreaterThan(tabs.first?.frame.minX ?? 0, tabs.last?.frame.maxX ?? .infinity, "Live is the rightmost tab")
         snap("live")
+
+        // localization/built-in-names-follow-the-language
+        groups.tap()
+        let close = app.element("browse.groups.close")
+        XCTAssertTrue(close.waitForExistence(timeout: 5), "no Groups sheet")
+        XCTAssertGreaterThan(close.frame.minX, app.windows.firstMatch.frame.midX, "Close sits at the right")
+        XCTAssertTrue(app.element("browse.group.0").label.contains("المفضلة"), app.element("browse.group.0").label)
+        snap("groups")
     }
 
     // design-system/playback-glyphs-keep-their-meaning

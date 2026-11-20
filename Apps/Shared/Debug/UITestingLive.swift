@@ -120,6 +120,24 @@
             return (1...600).map { channel("harbour-\($0)", "Harbour \($0)", group: "Harbour", number: 999 + $0) }
         }
 
+        /// With this argument Home adds 200 groups of two channels each, named
+        /// the way providers name them, from "SE | NEWS 001" to
+        /// "UK ▸ SPORTS 200", numbered from 2000, so a test can scroll and
+        /// search a provider-sized group list
+        /// (live-tv-on-iphone-ipad-mac/find-a-group-among-many).
+        static let manyGroupsArgument = "-ui-testing-many-groups"
+        static var manyGroups: [Channel] {
+            guard ProcessInfo.processInfo.arguments.contains(manyGroupsArgument) else { return [] }
+            let themes = ["NEWS", "SPORTS", "KIDS", "FILM", "MUSIC"]
+            return (1...200).flatMap { index in
+                let country = index.isMultiple(of: 2) ? "UK ▸" : "SE |"
+                let group = "\(country) \(themes[index % themes.count]) \(String(format: "%03d", index))"
+                return (0..<2).map { position in
+                    channel("group-\(index)-\(position)", "Channel \(index).\(position)", group: group, number: 2000 + index * 2 + position)
+                }
+            }
+        }
+
         /// When the app launched, so the scripted programmes are on now.
         @MainActor static let launched = Date.now
 
@@ -201,7 +219,7 @@
                 if !isHome { cabinLoads += 1 }
                 switch scenario {
                 case .channels, .favorites, .waiting:
-                    return Playlist(channels: isHome ? home : cabin)
+                    return Playlist(channels: isHome ? home + manyGroups : cabin)
                 case .loading:
                     if !isHome { try await Task.sleep(for: .seconds(3600)) }
                     return Playlist(channels: home)

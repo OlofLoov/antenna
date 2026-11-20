@@ -30,8 +30,8 @@ final class NewChannelsUITests: XCTestCase {
     // new-channels/a-new-group-lists-channels-added-lately
     func testNewSitsAfterRecentsAndListsTheGainedChannel() {
         let app = launch(newChannel: "kids-one", recents: "sport-one")
-        let new = app.element("groups.new")
-        XCTAssertTrue(new.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        let new = app.groupRow("groups.new")
         XCTAssertTrue(new.label.hasPrefix("New, 1 channel"), "label is \(new.label)")
         XCTAssertTrue(app.element("browse.group.1").label.hasPrefix("Recents"))
         XCTAssertTrue(app.element("browse.group.3").label.hasPrefix("All channels"))
@@ -42,8 +42,8 @@ final class NewChannelsUITests: XCTestCase {
     // new-channels/a-new-source-starts-with-nothing-new
     func testAFirstLoadHasNoNewGroup() {
         let app = launch(newChannel: nil)
-        XCTAssertTrue(app.element("browse.group.1").waitForExistence(timeout: 5))
-        XCTAssertTrue(app.element("browse.group.1").label.hasPrefix("All channels"))
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.groupRow("browse.group.1").label.hasPrefix("All channels"))
         XCTAssertFalse(app.element("groups.new").exists)
     }
 }
