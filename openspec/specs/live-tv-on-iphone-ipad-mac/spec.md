@@ -170,6 +170,11 @@ The system SHALL show on iPhone, and on iPad in a narrow Split View, the picture
 - **WHEN** Live is shown on iPhone
 - **THEN** the rows grow and the picture keeps its shape
 
+#### Scenario: The group button sits under the line
+- **GIVEN** an iPhone, with or without a channel playing
+- **WHEN** Live is shown
+- **THEN** the group button sits right under the now-playing line, or under the picture area when nothing plays, and the channel list starts right under the button
+
 ### Requirement: Pick a group
 The system SHALL list the picked group's channels in order from the top, keep the playing channel playing and clear the filter. On iPad and Mac the list SHALL be headed by the group's name and count; on iPhone the group button SHALL open a Groups sheet with the built-in groups first, then every other group with its count and a checkmark on the open one. Empty Favorites SHALL say how to add a favorite.
 
@@ -213,6 +218,11 @@ The system SHALL list the picked group's channels in order from the top, keep th
 - **GIVEN** VoiceOver is on
 - **WHEN** the user moves to a channel row
 - **THEN** it is read as name, number, programme and time left, and every control has a label
+
+#### Scenario: A long group name
+- **GIVEN** a group whose name and channel count do not fit on one line of the list's header, such as "Todos los canales" and "5 canales" in Spanish
+- **WHEN** the list shows that group on iPad or Mac
+- **THEN** the count moves under the name, and the name gets the header's full width
 
 ### Requirement: Watch without leaving the list
 The system SHALL play a picked channel in place, highlight its row, keep the list on screen and usable, show that channel in the details, and SHALL NOT restart a channel that is already playing.
@@ -259,6 +269,16 @@ The system SHALL show for the playing channel the programme on now with its time
 - **GIVEN** a programme ends while Live is open
 - **WHEN** a few seconds pass
 - **THEN** the details, the now-playing line and the list show the next programme
+
+#### Scenario: A long title in a narrow panel
+- **GIVEN** the details panel is too narrow for the programme title and its times on one line
+- **WHEN** the panel shows the programme on now
+- **THEN** the times move under the title, the title shows on up to two lines, and the times show whole
+
+#### Scenario: Twelve-hour times
+- **GIVEN** a region that writes times with AM and PM, such as "6:00 PM" or "7:30 p. m."
+- **WHEN** the details list what comes next
+- **THEN** each time stays on one line and the titles line up after the widest time
 
 ### Requirement: Player controls when you want them
 The system SHALL show pause, programme progress, the time of day, a LIVE badge and full screen when the user taps, clicks or hovers over the picture, plus Picture in Picture on iPhone and iPad, and SHALL hide them after a few seconds without input unless paused.
