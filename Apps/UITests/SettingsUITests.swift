@@ -13,7 +13,9 @@ final class SettingsUITests: XCTestCase {
         app.openSettings(timeout: 10)
 
         let notice = app.descendants(matching: .any)["settings.ffmpegNotice"].firstMatch
-        if !notice.waitForExistence(timeout: 5) { app.swipeUp() }
+        // About is the last section, below Appearance and the app icons.
+        _ = notice.waitForExistence(timeout: 5)
+        for _ in 0..<6 where !(notice.exists && notice.isHittable) { app.swipeUp() }
         XCTAssertTrue(notice.waitForExistence(timeout: 5))
         notice.tap()
 

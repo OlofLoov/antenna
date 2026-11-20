@@ -188,12 +188,16 @@ extension ShellUITests {
         press(.menu)
         let save = element("profiles.edit.save")
         expect(name, "value == 'Mum'")
-        for _ in 0..<4 where !save.hasFocus {
+        XCTAssertTrue(save.isEnabled, "Save is off with the name 'Mum'")
+        // Down runs from the name through the colors and the accents to Save.
+        for _ in 0..<6 where !save.hasFocus {
             press(.down)
             _ = XCTWaiter().wait(
-                for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: save)], timeout: 1)
+                for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasFocus == true"), object: save)], timeout: 2)
         }
-        expectFocus("profiles.edit.save")
+        guard save.hasFocus else {
+            return XCTFail("Save at \(save.frame) never took focus; focused: \(focusedElements())")
+        }
         press(.select)
         XCTAssertTrue(element("profiles.tile.2").waitForExistence(timeout: 5))
         expect(element("profiles.tile.2"), "label == 'Edit Mum'")
