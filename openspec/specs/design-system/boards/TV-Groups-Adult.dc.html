@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV groups, adult marking</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- filter-adult-content: the Groups list and the focused group's panel as on TV-Groups, in a profile that shows adult content. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <div style="position: absolute; left: 64px; top: 110px; font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Groups</div>
+
+  <!-- groups.list -->
+  <div style="position: absolute; left: 64px; top: 230px; width: 900px; display: flex; flex-direction: column; gap: 6px">
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <span style="flex: 1 1 auto">All channels</span>
+      <span style="font-size: 22px; color: #A7B0BF">412</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <span style="flex: 1 1 auto">Sport</span>
+      <span style="font-size: 22px; color: #A7B0BF">42</span>
+    </div>
+    <!-- groups.row (focused: white card). groups.row.<groupKey>.adult: the ADULT badge, outlined like LOCKED and HIDDEN -->
+    <div style="display: flex; align-items: center; gap: 18px; height: 80px; padding: 0 20px; border-radius: 14px; font-size: 29px; font-weight: 600; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45)">
+      <span style="flex: 1 1 auto">XXX Movies</span>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; border: 1.5px solid #4B5563; color: #4B5563">ADULT</span>
+      <span style="font-size: 22px; font-weight: 400; color: #4B5563">36</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 18px; height: 72px; padding: 0 20px; border-radius: 14px; font-size: 29px">
+      <span style="flex: 1 1 auto">Adult Swim</span>
+      <span style="font-size: 22px; color: #A7B0BF">12</span>
+    </div>
+  </div>
+
+  <!-- groups.panel: the system Form of GroupDetailScreen. Toggles show On or Off at the trailing edge; the focused row is the system platter. -->
+  <div style="position: absolute; left: 1024px; top: 230px; width: 832px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 38px; font-weight: 700; padding-bottom: 14px">XXX Movies</div>
+    <!-- groups.hide -->
+    <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-radius: 16px; background: rgba(255,255,255,0.08); font-size: 29px"><span>Hidden</span><span style="color: #A7B0BF">Off</span></div>
+    <!-- groups.lock -->
+    <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-radius: 16px; background: rgba(255,255,255,0.08); font-size: 29px"><span>Locked</span><span style="color: #A7B0BF">Off</span></div>
+    <!-- groups.adult -->
+    <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-radius: 16px; background: rgba(255,255,255,0.08); font-size: 29px"><span>Adult content</span><span style="color: #A7B0BF">On</span></div>
+    <!-- groups.adult.footer: caption1, secondary -->
+    <div style="font-size: 25px; line-height: 32px; color: #A7B0BF; padding: 4px 24px 0">Adult groups stay hidden in every profile that does not show adult content.</div>
+  </div>
+  <!-- In a profile that hides adult content the list leaves XXX Movies out and ends with the footer groups.adultHidden: "Adult groups are hidden in this profile. Show adult content in Settings to see and mark them." -->
+</div>
+</x-dc>
+</body>
+</html>

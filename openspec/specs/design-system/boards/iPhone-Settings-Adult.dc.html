@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone settings, show adult content</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- filter-adult-content: the top of Sources & Settings with the per-profile switch. Off is the default for every profile. -->
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <div style="margin-top: 54px; height: 44px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+    <span style="width: 60px"></span>
+    <span style="font-size: 17px; font-weight: 600">Sources &amp; Settings</span>
+    <span style="font-size: 17px; color: #5BB8FF; width: 60px; text-align: right">Edit</span>
+  </div>
+  <!-- settings.root -->
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 0">
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+      <!-- settings.profile -->
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 17px"><span>Profiles</span><span style="color: #A7B0BF">Dad ›</span></div>
+      <!-- settings.groups -->
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 17px"><span>Groups</span><span style="color: #A7B0BF">›</span></div>
+      <!-- settings.adultContent: a system Toggle, off. Turning it on presents the passcode prompt as a sheet (iPhone-Groups-Locked layout) with the message "Enter the passcode to show adult content in this profile." With no passcode yet the prompt is the set-a-passcode flow, four digits twice. Turning it off never asks. -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; box-sizing: border-box">
+        <span style="flex: 1 1 auto; font-size: 17px">Show adult content</span>
+        <span style="width: 51px; height: 31px; border-radius: 16px; background: rgba(120,120,128,0.32); position: relative"><span style="position: absolute; left: 2px; top: 2px; width: 27px; height: 27px; border-radius: 14px; background: #FFFFFF"></span></span>
+      </div>
+    </div>
+    <!-- settings.adultContent.footer: the section footer, secondary. With the switch on it reads "Adult content shows in this profile until you turn this off." -->
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 8px">Adult groups, channels, movies and series are hidden in this profile. Showing them needs the group passcode.</div>
+
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">Sources</div>
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 12px; height: 60px; padding: 0 14px; box-sizing: border-box">
+        <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px">
+          <div style="font-size: 17px">Home provider</div>
+          <div style="font-size: 13px; color: #A7B0BF">412 channels · Guide 7 days · 12 minutes ago</div>
+        </div>
+        <span style="color: #A7B0BF">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
