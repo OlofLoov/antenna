@@ -148,6 +148,35 @@ import Testing
                 == "19 kr for the first month, then $9.99 per year")
     }
 
+    @Test("localization/the-app-speaks-the-user-s-language a one-unit intro offer names its unit in German, Spanish, Portuguese and Arabic")
+    func oneUnitOfferInEveryLanguage() {
+        let week = IntroOffer(payment: .freeTrial, displayPrice: "0", unit: .week)
+        let month = IntroOffer(payment: .payUpFront, displayPrice: "19 kr", unit: .month)
+        func line(_ offer: IntroOffer, _ identifier: String) -> String {
+            PaywallCopy.yearlyLine(offer: offer, displayPrice: "99 kr", locale: Locale(identifier: identifier)).text
+        }
+        #expect(line(week, "de_DE") == "Gratis für eine Woche, danach 99 kr pro Jahr")
+        #expect(line(month, "de_DE") == "19 kr für einen Monat, danach 99 kr pro Jahr")
+        #expect(line(week, "es_ES") == "Gratis durante 1 semana, luego 99 kr al año")
+        #expect(line(month, "es_ES") == "19 kr durante 1 mes, luego 99 kr al año")
+        #expect(line(week, "pt_BR") == "Grátis por 1 semana, depois 99 kr por ano")
+        #expect(line(month, "pt_BR") == "19 kr por 1 mês, depois 99 kr por ano")
+        #expect(line(week, "ar_SA").withoutIsolates == "أول أسبوع مجانًا، ثم 99 kr سنويًا")
+        #expect(line(month, "ar_SA").withoutIsolates == "19 kr لمدة شهر، ثم 99 kr سنويًا")
+    }
+
+    @Test("localization/counts-use-the-language-s-plural-forms the guides that failed take the plural of the total")
+    func failedGuides() {
+        let english = Words(Locale(identifier: "en_US"))
+        #expect(english("\(1) of \(1) guides could not be downloaded.") == "1 of 1 guide could not be downloaded.")
+        #expect(english("\(1) of \(3) guides could not be downloaded.") == "1 of 3 guides could not be downloaded.")
+        #expect(english("\(1) guides are still downloading.") == "1 guide is still downloading.")
+        let arabic = Words(Self.arabic)
+        #expect(arabic("\(1) of \(2) guides could not be downloaded.") == "تعذّر تنزيل ١ من دليلين.")
+        #expect(arabic("\(1) of \(3) guides could not be downloaded.") == "تعذّر تنزيل ١ من ٣ أدلة.")
+        #expect(Words(Locale(identifier: "sv_SE"))("\(1) of \(1) guides could not be downloaded.") == "1 av 1 tablå kunde inte hämtas.")
+    }
+
     @Test("localization/the-app-speaks-the-user-s-language what VoiceOver reads for scores and the player position")
     func spokenInSwedish() {
         let swedish = Locale(identifier: "sv_SE")

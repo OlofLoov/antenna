@@ -61,7 +61,7 @@ struct GroupRow: View {
 
     private var spoken: String {
         let words = Words(locale)
-        let parts = [name] + badges.map { words($0.spoken) } + [words(count == 1 ? "1 channel" : "\(count) channels")]
+        let parts = [name] + badges.map { words($0.spoken) } + [words("\(count) channels")]
         return parts.joined(separator: ", ")
     }
 }

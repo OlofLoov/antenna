@@ -37,7 +37,7 @@ extension CatalogueGroup {
     /// (session-restore-and-recently-watched/recents-sits-between-favorites-and-all-channels,
     /// new-channels/a-new-group-lists-channels-added-lately).
     func spokenLabel(count: Int) -> LocalizedStringResource {
-        count == 1 ? "\(label), 1 channel" : "\(label), \(count) channels"
+        "\(label), \(count) channels"
     }
 }
 

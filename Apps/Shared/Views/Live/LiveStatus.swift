@@ -82,7 +82,7 @@
         static func detail(_ state: LiveSource.State) -> LocalizedStringResource? {
             switch state {
             case .loading: return nil
-            case .loaded(let count): return count == 1 ? "1 channel" : "\(count) channels"
+            case .loaded(let count): return "\(count) channels"
             case .offline: return "Offline"
             case .failed: return "Could not load"
             case .waitingForLogin: return "Waiting for login"

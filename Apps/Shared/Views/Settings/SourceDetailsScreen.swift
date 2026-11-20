@@ -329,7 +329,7 @@ private struct GuideRowSection: View {
             } label: {
                 LabeledContent("Guide") {
                     if let count = GuideSourcesModel.missingCount(id, store: store) {
-                        Text(count == 1 ? LocalizedStringResource("1 channel without guide") : "\(count) channels without guide")
+                        Text("\(count) channels without guide")
                     }
                 }
             }

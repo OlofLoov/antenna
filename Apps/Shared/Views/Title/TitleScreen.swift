@@ -13,6 +13,7 @@ struct TitleScreen<Page: View>: View {
     @Environment(ShelfActivity.self) private var activity
     @Environment(ShelfPlayback.self) private var playback
     @Environment(\.openURL) private var openURL
+    @Environment(\.layoutDirection) private var layoutDirection
     @Query private var preferences: [PreferencesRecord]
     @State private var expanded = false
     /// The About page over the title page: the whole description on Apple
@@ -166,13 +167,14 @@ struct TitleScreen<Page: View>: View {
     }
 
     #if !os(tvOS)
-        /// Left and right pick the season before or after, Return presses Play.
+        /// Left and right pick the season before or after, in the reading
+        /// direction, and Return presses Play.
         private var keys: some View {
             ZStack {
                 Button("Previous season") { moveSeason(-1) }
-                    .keyboardShortcut(.leftArrow, modifiers: [])
+                    .keyboardShortcut(layoutDirection.leadingArrow, modifiers: [])
                 Button("Next season") { moveSeason(1) }
-                    .keyboardShortcut(.rightArrow, modifiers: [])
+                    .keyboardShortcut(layoutDirection.trailingArrow, modifiers: [])
                 Button("Play") { start() }
                     .keyboardShortcut(.return, modifiers: [])
             }

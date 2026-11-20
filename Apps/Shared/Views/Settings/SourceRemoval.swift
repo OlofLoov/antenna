@@ -45,16 +45,15 @@ struct SourceRemoval {
         }
     }
 
-    // Xcode does not extract a literal declared as `LocalizedStringResource?`
-    // next to another literal, so each count is a function with `return`s.
+    // Xcode does not extract a literal declared as `LocalizedStringResource?`,
+    // so each count is a function. The count stays an Int, so the catalog
+    // picks the language's plural form.
     private static func channelCount(_ count: Int) -> LocalizedStringResource {
-        if count == 1 { return "1 channel" }
-        return "\(count) channels"
+        "\(count) channels"
     }
 
     private static func favoriteCount(_ count: Int) -> LocalizedStringResource {
-        if count == 1 { return "1 favorite" }
-        return "\(count) favorites"
+        "\(count) favorites"
     }
 
     /// How many favorites, in every profile, point at `id`.

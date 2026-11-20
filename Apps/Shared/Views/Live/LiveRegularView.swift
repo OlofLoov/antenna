@@ -395,7 +395,7 @@
                         Browse.FailureBanner(text: banner, retry: live.retry, dismiss: live.dismissBanner)
                             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
                     }
-                    Browse.ListHeader(title: live.catalogue.label(of: live.group), count: count == 1 ? "1 channel" : "\(count) channels") {
+                    Browse.ListHeader(title: live.catalogue.label(of: live.group), count: "\(count) channels") {
                         leading
                     } filter: {
                         Browse.FilterField(text: $live.filter)
