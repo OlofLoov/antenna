@@ -130,4 +130,25 @@ final class GuideSourcesUITests: XCTestCase {
         XCTAssertTrue(added.waitForExistence(timeout: 5))
         XCTAssertTrue(added.label.contains("guide-sources.invalid"), added.label)
     }
+
+    // guide-sources-and-channel-mapping/add-a-guide-link
+    func testALinkToAWebPageIsRefused() {
+        let app = openGuideSources()
+        expectHeader(app, count: 2)
+        element(app, "guideSources.add").tap()
+        let field = element(app, "guideSources.addForm.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap()
+        field.typeText("http://guide-sources.web/epg")
+        element(app, "guideSources.addForm.save").tap()
+        let error = element(app, "guideSources.addForm.error")
+        XCTAssertTrue(error.waitForExistence(timeout: 10))
+        XCTAssertEqual(error.label, "This link opens a web page, not a guide.")
+        XCTAssertTrue(field.exists)
+        XCTAssertTrue(element(app, "guideSources.addForm.save").isEnabled)
+
+        app.buttons["Cancel"].tap()
+        XCTAssertTrue(field.waitForNonExistence(timeout: 5))
+        XCTAssertFalse(element(app, "guideSources.row.1").exists)
+    }
 }

@@ -185,8 +185,9 @@ struct GuideSourcesList: View {
     }
 }
 
-/// Enter a guide link; saving checks it and adds it to the end of the list,
-/// or puts a re-entered link back in its place
+/// Enter a guide link; saving checks it, reads its first bytes while Save
+/// reads "Checking…", and adds it to the end of the list, or puts a
+/// re-entered link back in its place
 /// (guide-sources-and-channel-mapping/add-a-guide-link).
 struct GuideAddLinkSheet: View {
     let model: GuideSourcesModel
@@ -194,6 +195,7 @@ struct GuideAddLinkSheet: View {
     @State var text: String
     @State private var problem: String?
     @State private var saving = false
+    @State private var task: Task<Void, Never>?
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -216,15 +218,20 @@ struct GuideAddLinkSheet: View {
                     Text("A link with a login or token is kept in your iCloud Keychain only.")
                 }
                 Section {
-                    Button("Save", action: save)
-                        .disabled(saving)
-                        .accessibilityIdentifier("guideSources.addForm.save")
+                    Button(action: save) {
+                        Text(saving ? LocalizedStringKey("Checking…") : LocalizedStringKey("Save"))
+                    }
+                    .disabled(saving)
+                    .accessibilityIdentifier("guideSources.addForm.save")
                 }
             }
             .navigationTitle(replacing == nil ? GuideSourcesText().addGuide : GuideSourcesText().reenter)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        task?.cancel()
+                        dismiss()
+                    }
                 }
             }
         }
@@ -232,7 +239,7 @@ struct GuideAddLinkSheet: View {
 
     private func save() {
         saving = true
-        Task {
+        task = Task {
             let found = await model.add(text, replacing: replacing)
             saving = false
             if let found {

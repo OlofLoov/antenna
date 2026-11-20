@@ -35,12 +35,13 @@ final class GuideSourcesModel {
     @ObservationIgnored let store: AppGuideStore?
     @ObservationIgnored let context: ModelContext
     @ObservationIgnored let credentials: any CredentialStoring
+    @ObservationIgnored let probe: GuideLinkProbe
     @ObservationIgnored var now: () -> Date
     @ObservationIgnored private var cachedSearch: (key: Int, search: GuideEntrySearch)?
 
     init(
         sourceID: UUID, source: String, kind: SourceKind, store: AppGuideStore?, context: ModelContext,
-        credentials: any CredentialStoring = CredentialStore(), now: @escaping () -> Date = { .now }
+        credentials: any CredentialStoring = CredentialStore(), probe: GuideLinkProbe = .app, now: @escaping () -> Date = { .now }
     ) {
         self.sourceID = sourceID
         self.source = source
@@ -48,6 +49,7 @@ final class GuideSourcesModel {
         self.store = store
         self.context = context
         self.credentials = credentials
+        self.probe = probe
         self.now = now
     }
 
@@ -208,10 +210,11 @@ final class GuideSourcesModel {
         Task { await store?.refresh(sourceID: sourceID, guide: reference) }
     }
 
-    /// Adds the typed link to the end of the list, or replaces the link of
-    /// `replacing` in its place, and starts its download
-    /// (guide-sources-and-channel-mapping/add-a-guide-link). Returns the
-    /// problem to show, or nil once saved.
+    /// Reads the start of the typed link, then adds it to the end of the
+    /// list, or replaces the link of `replacing` in its place, and starts its
+    /// download (guide-sources-and-channel-mapping/add-a-guide-link). Returns
+    /// the problem to show, or nil once saved or when cancelled during the
+    /// check, which saves nothing.
     func add(_ typed: String, replacing: String? = nil) async -> GuideLinkInput.Problem? {
         let existing = await store?.guideLinks(sourceID: sourceID) ?? []
         let url: URL
@@ -219,6 +222,8 @@ final class GuideSourcesModel {
         case .failure(let problem): return problem
         case .success(let checked): url = checked
         }
+        if case .refused(let problem) = await probe.check(url) { return problem }
+        if Task.isCancelled { return nil }
         let id = replacing ?? UUID().uuidString
         let date = now()
         var stored = GuideLinkInput.storage(for: url, at: date)
@@ -261,5 +266,16 @@ final class GuideSourcesModel {
             settings.removeMatch(for: channel.id, at: date)
             return true
         }
+    }
+}
+
+extension GuideLinkProbe {
+    /// The check the Guide sources form uses: the network, or the stub of
+    /// the `-ui-testing-guide-sources` run in a Debug build.
+    static var app: GuideLinkProbe {
+        #if DEBUG
+            if let stub = UITestingGuideSources.probe() { return stub }
+        #endif
+        return GuideLinkProbe()
     }
 }

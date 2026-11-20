@@ -68,7 +68,8 @@ import Testing
         await store.update(channels: [channel])
         await store.refreshIfStale(now: .now)
         let model = GuideSourcesModel(
-            sourceID: record.id, source: "Sport Pack", kind: .m3u, store: store, context: context, credentials: credentials)
+            sourceID: record.id, source: "Sport Pack", kind: .m3u, store: store, context: context, credentials: credentials,
+            probe: GuideLinkProbe(fetch: GuideLinkProbe.live(session: StubURLProtocol.session())))
         try await wait { store.index.current(for: GuideKey(sourceID: record.id, epgID: "x"), at: .now) != nil }
         return Setup(store: store, model: model, record: record, channel: channel)
     }
@@ -115,10 +116,31 @@ import Testing
         #expect(setup.store.index.match(for: setup.channel) == nil)
     }
 
-    @Test("guide-sources-and-channel-mapping/add-a-guide-link a repeated link is refused")
+    @Test("guide-sources-and-channel-mapping/add-a-guide-link a repeated link or a web page is refused")
     func duplicate() async throws {
         let setup = try await setup("gsm-dup")
         #expect(await setup.model.add("http://gsm-dup-saved.test/guide.xml") == .duplicate)
         #expect(await setup.model.add("nonsense") == .invalid)
+        StubURLProtocol.register(host: "gsm-dup-page.test", body: "<!doctype html><html></html>")
+        #expect(await setup.model.add("http://gsm-dup-page.test/epg") == .webPage)
+        #expect(setup.model.status.rows.count == 1)
+    }
+
+    @Test("guide-sources-and-channel-mapping/add-a-guide-link cancelling during the check adds nothing")
+    func cancelWhileChecking() async throws {
+        let setup = try await setup("gsm-cancel")
+        let model = GuideSourcesModel(
+            sourceID: setup.record.id, source: "Sport Pack", kind: .m3u, store: setup.store, context: context,
+            credentials: credentials,
+            probe: GuideLinkProbe(timeout: .seconds(30)) { _ in
+                try await Task.sleep(for: .seconds(30))
+                return (200, Data("<tv>".utf8))
+            })
+        let save = Task { await model.add("http://gsm-cancel-added.test/guide.xml") }
+        try await Task.sleep(for: .milliseconds(200))
+        save.cancel()
+        #expect(await save.value == nil)
+        #expect(model.status.rows.count == 1)
+        #expect(model.settings.activeLinks.isEmpty)
     }
 }
