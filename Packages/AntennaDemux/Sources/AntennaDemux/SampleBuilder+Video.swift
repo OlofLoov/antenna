@@ -13,27 +13,35 @@ extension SampleBuilder {
 
     /// The NAL units in an Annex B byte stream, without start codes.
     static func nalUnits(annexB data: Data) -> [Data] {
-        let bytes = [UInt8](data)
-        var starts: [(code: Int, payload: Int)] = []
-        var index = 0
-        while index + 3 <= bytes.count {
-            if bytes[index] == 0, bytes[index + 1] == 0, bytes[index + 2] == 1 {
-                let code = index > 0 && bytes[index - 1] == 0 ? index - 1 : index
-                starts.append((code, index + 3))
-                index += 3
-            } else {
-                index += 1
+        data.withUnsafeBytes { raw -> [Data] in
+            let bytes = raw.bindMemory(to: UInt8.self)
+            guard let base = bytes.baseAddress else { return [] }
+            var starts: [(code: Int, payload: Int)] = []
+            var index = 0
+            while index + 3 <= bytes.count {
+                let third = bytes[index + 2]
+                if third > 1 {
+                    // No start code can begin at index, index + 1 or index + 2.
+                    index += 3
+                } else if third == 1, bytes[index] == 0, bytes[index + 1] == 0 {
+                    let code = index > 0 && bytes[index - 1] == 0 ? index - 1 : index
+                    starts.append((code, index + 3))
+                    index += 3
+                } else {
+                    index += 1
+                }
             }
-        }
-        return starts.enumerated().compactMap { offset, start in
-            let end = offset + 1 < starts.count ? starts[offset + 1].code : bytes.count
-            guard end > start.payload else { return nil }
-            return Data(bytes[start.payload..<end])
+            return starts.enumerated().compactMap { offset, start in
+                let end = offset + 1 < starts.count ? starts[offset + 1].code : bytes.count
+                guard end > start.payload else { return nil }
+                return Data(bytes: base + start.payload, count: end - start.payload)
+            }
         }
     }
 
     static func lengthPrefixed(_ units: [Data]) -> Data {
         var out = Data()
+        out.reserveCapacity(units.reduce(0) { $0 + 4 + $1.count })
         for unit in units {
             var length = UInt32(unit.count).bigEndian
             withUnsafeBytes(of: &length) { out.append(contentsOf: $0) }
