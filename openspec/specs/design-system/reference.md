@@ -26,7 +26,7 @@ patterns and shared components the requirements point to.
 | Text secondary | `#D7DEE8` | Body copy and descriptions |
 | Text muted | `#A7B0BF` | Captions, metadata, section eyebrows. 9:1 on ground |
 | Text muted on focus | `#4B5563` | Muted text on the focused white card. 7.5:1 on `#F2F4F8` |
-| Accent | `#5BB8FF` | The app tint. Progress fills, guide now line, NOW and UP NEXT badges, iPhone selected tab, links, and system controls that tint (the prominent button on iPhone, iPad and Mac, switches, selected picker values). Never eyebrows |
+| Accent | `#5BB8FF` | The app tint. Progress fills, guide now line, NOW and UP NEXT badges, iPhone selected tab, links, and system controls that tint (the prominent button on iPhone, iPad and Mac, switches, selected picker values). Never eyebrows. Text and glyphs on an accent fill, a prominent button's label or a badge, are Ground (`Palette.onAccent`); white on the five accents is under 2.7:1 |
 | Live dot | `#FF5F57` | Only the small dot before "LIVE" |
 | Logo placeholder | `#26344A`, `#1E3A5F` | Tile with channel initials when no logo has loaded |
 | Focus (tvOS) | background `#F2F4F8`, text `#0B0E13`, shadow `0 12px 32px rgba(0,0,0,.45)` | The focused element, always |
@@ -95,7 +95,8 @@ whose modifier chain also has `.background`, `.border`, `.shadow` or an
 list (today only `Apps/Shared/Debug/`).
 
 Controls take system styles: `primaryActionStyle()` (bordered on Apple TV,
-glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule on
+glass prominent elsewhere), `prominentStyle(_:)` (glass or bordered
+prominent with the Ground label; every prominent button goes through it), `secondaryActionStyle()` (bordered capsule on
 Apple TV, glass capsule elsewhere),
 `posterButtonStyle()` (card on Apple TV, borderless elsewhere) and
 `chipStyle(isPicked:on:)`. The parts the app draws itself share `FocusCard`
@@ -115,7 +116,8 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 - Zap bar: bottom strip, 236 tall, identity | now playing with progress |
   badges. Channel digits typed on a hardware keyboard appear top left.
 - Guide: PiP player (480 by 270) and programme detail on top, grid below
-  with a 300 wide channel column, 370 per 30 minutes, accent now line.
+  with a 300 wide channel column, 365 per 30 minutes, accent now line.
+  The page keeps the 80 pt safe edges: 80 + 300 + 4 x 365 + 80 = 1920.
 - The shell is the system `TabView`: its glass tab bar, 68 tall and 46
   from the top, holds Live, Guide, Movies, Series, Search and Settings.
   It hides over the full-screen picture and shows on Menu. The bar has no

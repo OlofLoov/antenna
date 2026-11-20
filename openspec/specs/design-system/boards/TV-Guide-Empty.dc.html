@@ -16,7 +16,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 <div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
 
   <!-- Top: PiP keeps playing (tv-guide-grid/the-channel-keeps-playing-in-a-small-picture). No block has focus, so the panel shows only the clock. -->
-  <div style="display: flex; gap: 40px; padding: 120px 64px 28px; align-items: flex-start">
+  <div style="display: flex; gap: 40px; padding: 120px 80px 28px; align-items: flex-start">
     <!-- guide.pip, engine playing -->
     <div style="width: 480px; height: 270px; border-radius: 14px; background: #1A2535; flex: 0 0 auto; position: relative; overflow: hidden">
       <div style="position: absolute; left: 16px; bottom: 14px; display: flex; align-items: center; gap: 10px; font-size: 18px; color: #D7DEE8">
@@ -33,7 +33,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
   </div>
 
   <!-- Grid: header and now line stay, no rows -->
-  <div style="flex: 1 1 auto; position: relative; padding: 0 64px 40px; display: flex; flex-direction: column; gap: 6px">
+  <div style="flex: 1 1 auto; position: relative; padding: 0 80px 40px; display: flex; flex-direction: column; gap: 6px">
 
     <!-- Time header. guide.day.0 focused: Focus token (design-system/focus-is-the-lifted-white-card), weight 600, radius 8. -->
     <div style="display: flex; align-items: center; height: 52px">
@@ -42,19 +42,19 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span style="font-size: 20px; color: #A7B0BF; padding: 6px 14px">Tue</span>
         <span style="font-size: 20px; color: #A7B0BF; padding: 6px 14px">Wed</span>
       </div>
-      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">20:00</div>
-      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">20:30</div>
-      <div style="width: 370px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">21:00</div>
+      <div style="width: 365px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">20:00</div>
+      <div style="width: 365px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">20:30</div>
+      <div style="width: 365px; font-size: 22px; color: #A7B0BF; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">21:00</div>
       <!-- The now tag covers this label, so it is left out (tv-guide-grid/the-grid-opens-around-now-and-keeps-time) -->
-      <div style="width: 370px; font-size: 22px; color: transparent; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">21:30</div>
+      <div style="width: 365px; font-size: 22px; color: transparent; font-variant-numeric: tabular-nums; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12)">21:30</div>
     </div>
 
     <!-- guide.empty: muted 24 pt, centered in the grid area -->
     <div style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #A7B0BF">No channels in Favorites</div>
 
-    <!-- Now line (21:34 → 94 min past 20:00 at 12.33 px/min) -->
-    <div style="position: absolute; left: 1523px; top: 0; bottom: 40px; width: 3px; background: {{accent}}; border-radius: 2px"></div>
-    <div style="position: absolute; left: 1489px; top: 8px; padding: 4px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">21:34</div>
+    <!-- Now line (21:34 → 94 min past 20:00 at 12.17 px/min) -->
+    <div style="position: absolute; left: 1524px; top: 0; bottom: 40px; width: 3px; background: {{accent}}; border-radius: 2px"></div>
+    <div style="position: absolute; left: 1490px; top: 8px; padding: 4px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">21:34</div>
   </div>
 </div>
 </x-dc>
