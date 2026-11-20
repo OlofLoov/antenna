@@ -32,6 +32,6 @@ None.
 ## Impact
 
 - Platforms: iPhone, iPad and Mac for the labels; Apple TV for the guide and the Save button.
-- Code: `ProfileAccent.label` in AntennaCore, `GuideScale.television`, `Palette.onAccent`, `prominentStyle(_:)` next to `primaryActionStyle()`, `chipStyle`, the reminder banner, the Up Next card, the source details page, `GuideGrid.Screen`, and `scripts/check-rules.sh`.
+- Code: `ProfileAccent.label` in AntennaCore, `GuideScale.television`, `Palette.onAccent`, `prominentStyle(_:)` next to `primaryActionStyle()`, `chipStyle`, the reminder banner, the Up Next card, the source details page, `GuideGrid.Screen`, the shell's guide picture, and `scripts/check-rules.sh`.
 - Boards: the five `TV-Guide` boards. Boards with prominent buttons already draw a dark label and stay as they are.
 - Depends on `add-accent-and-app-icons` (archived), which added the five accents.
