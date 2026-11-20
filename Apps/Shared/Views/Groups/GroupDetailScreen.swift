@@ -19,13 +19,15 @@ struct GroupDetailScreen: View {
     @Query private var hidden: [HiddenGroupRecord]
     @Query private var passcodes: [PasscodeRecord]
     @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
+    @State private var index = GroupsCatalogueIndex()
     @State private var name = ""
     @State private var refused = false
     @State private var prompt: PasscodeFlow?
     @State private var picking = false
 
     var body: some View {
-        let data = GroupsData(channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile)
+        let data = GroupsData(
+            channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile, index: index)
         Form {
             if group != .all {
                 Section("Name") {

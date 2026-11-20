@@ -19,13 +19,15 @@ struct GroupsData {
     /// so the screen reads them from here.
     let rules: GroupRules
 
+    /// With `index`, the channels are indexed once per load instead of at
+    /// every redraw, and only the rules are applied again.
     init(
         channels: [Channel], groups: [GroupRecord], members: [GroupMemberRecord], hidden: [HiddenGroupRecord], sources: [SourceRecord],
-        profile: UUID
+        profile: UUID, index: GroupsCatalogueIndex? = nil
     ) {
         let rules = GroupStore.rules(groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: true)
         self.rules = rules
-        catalogue = Catalogue(channels: channels, groupOrder: [:], favorites: [], rules: rules)
+        catalogue = index?.catalogue(channels, rules: rules) ?? Catalogue(channels: channels, groupOrder: [:], favorites: [], rules: rules)
         records = groups
         sourceNames = Dictionary(sources.map { ($0.id, $0.name) }, uniquingKeysWith: { first, _ in first })
     }
@@ -51,6 +53,25 @@ struct GroupsData {
             return group.label + name
         case .favorites, .recents, .new, .all, .own: return catalogue.label(of: group)
         }
+    }
+}
+
+/// The Groups screens' channels indexed with no rules, kept between
+/// redraws. Indexing 50 000 channels takes about 35 ms; a hide, lock or
+/// move changes only the rules.
+@MainActor
+final class GroupsCatalogueIndex {
+    private var channels: [Channel] = []
+    private var plain = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+
+    /// The same catalogue as `Catalogue(channels:groupOrder:favorites:rules:)`
+    /// with no group order or favorites.
+    func catalogue(_ channels: [Channel], rules: GroupRules) -> Catalogue<PersistentIdentifier> {
+        if channels != self.channels {
+            self.channels = channels
+            plain = Catalogue(channels: channels, groupOrder: [:], favorites: [])
+        }
+        return plain.replacingRules(rules)
     }
 }
 

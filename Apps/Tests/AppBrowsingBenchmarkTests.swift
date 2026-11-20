@@ -44,6 +44,29 @@ struct AppBrowsingBenchmarkTests {
         return live
     }
 
+    @Test("group-management/put-groups-in-your-order the Groups screens' data for 50 000 channels")
+    func groupsData() throws {
+        let channels = Channel.tagged(Self.raw, sourceID: Self.source)
+        for index in 0..<400 where index.isMultiple(of: 4) {
+            GroupStore.setLocked(.named(Self.source, "G\(index)"), true, in: container.mainContext)
+        }
+        let records = try container.mainContext.fetch(FetchDescriptor<GroupRecord>())
+        let build = median {
+            _ = GroupsData(channels: channels, groups: records, members: [], hidden: [], sources: [], profile: Profile.mainID).groups
+        }
+        let index = GroupsCatalogueIndex()
+        _ = GroupsData(
+            channels: channels, groups: records, members: [], hidden: [], sources: [], profile: Profile.mainID, index: index)
+        let kept = median {
+            _ =
+                GroupsData(
+                    channels: channels, groups: records, members: [], hidden: [], sources: [], profile: Profile.mainID, index: index
+                ).groups
+        }
+        print("benchmark groups data: fresh \(build), kept index \(kept)")
+        #expect(kept < .milliseconds(15))
+    }
+
     @Test("guide-on-iphone-ipad-and-mac/filter-channels-by-typing the guide's rows for a typed filter")
     func guideFilter() async {
         let live = await loadedLive()

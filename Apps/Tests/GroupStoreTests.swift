@@ -135,6 +135,31 @@ import Testing
         }
     }
 
+    @Test("group-management/put-groups-in-your-order the kept index reads the same as a fresh catalogue after a hide, a move and a reload")
+    func keptIndex() throws {
+        let index = GroupsCatalogueIndex()
+        func check(_ channels: [Channel]) throws {
+            let groups = try context.fetch(FetchDescriptor<GroupRecord>())
+            let hidden = try context.fetch(FetchDescriptor<HiddenGroupRecord>())
+            let fresh = GroupsData(channels: channels, groups: groups, members: [], hidden: hidden, sources: [], profile: Profile.mainID)
+            let kept = GroupsData(
+                channels: channels, groups: groups, members: [], hidden: hidden, sources: [], profile: Profile.mainID, index: index)
+            #expect(kept.groups == fresh.groups)
+            #expect(kept.groups.map(kept.catalogue.memberCount(of:)) == fresh.groups.map(fresh.catalogue.memberCount(of:)))
+            #expect(kept.groups.map(kept.catalogue.label(of:)) == fresh.groups.map(fresh.catalogue.label(of:)))
+            #expect(kept.groups.map(kept.isHidden) == fresh.groups.map(fresh.isHidden))
+            #expect(kept.catalogue.rows(in: .all) == fresh.catalogue.rows(in: .all))
+        }
+        try check(channels)
+        GroupStore.setHidden(.named(source, "News"), true, profile: Profile.mainID, in: context)
+        GroupStore.rename(.named(source, "Sport"), to: "Football", in: context)
+        try check(channels)
+        GroupStore.reorder([.all, .named(source, "Sport"), .named(source, "News")], in: context)
+        try check(channels)
+        try check(Array(channels.prefix(2)))
+        try check([])
+    }
+
     @Test("group-management/lock-a-group-with-a-passcode All channels and Favorites cannot be locked")
     func locks() throws {
         GroupStore.setLocked(.all, true, in: context)
