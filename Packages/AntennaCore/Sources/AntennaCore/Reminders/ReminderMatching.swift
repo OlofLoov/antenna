@@ -25,10 +25,13 @@ public enum ReminderMatching {
     /// - Parameters:
     ///   - programmes: the channel's programmes around the start, from `window(for:)`.
     ///   - coverage: the channel's whole schedule, nil when its guide has not loaded.
-    public static func match(_ reminder: Reminder, programmes: [Programme], coverage: DateInterval?) -> Reminder? {
+    ///   - locale: the language of "Untitled" for a programme with a blank title.
+    public static func match(
+        _ reminder: Reminder, programmes: [Programme], coverage: DateInterval?, locale: Locale = .autoupdatingCurrent
+    ) -> Reminder? {
         var updated = reminder
         if let same = programmes.first(where: { $0.start == reminder.start }) {
-            updated.title = GuidePanelText.title(same)
+            updated.title = GuidePanelText.title(same, locale: locale)
             updated.stop = same.stop
             updated.notListed = false
             if updated.movedFrom == same.start { updated.movedFrom = nil }
@@ -37,7 +40,7 @@ public enum ReminderMatching {
         let title = fold(reminder.title)
         let moved =
             programmes
-            .filter { fold(GuidePanelText.title($0)) == title && abs($0.start.timeIntervalSince(reminder.start)) <= reach }
+            .filter { fold(GuidePanelText.title($0, locale: locale)) == title && abs($0.start.timeIntervalSince(reminder.start)) <= reach }
             .min { lhs, rhs in
                 let left = abs(lhs.start.timeIntervalSince(reminder.start))
                 let right = abs(rhs.start.timeIntervalSince(reminder.start))
@@ -48,7 +51,7 @@ public enum ReminderMatching {
             if updated.movedFrom == moved.start { updated.movedFrom = nil }
             updated.start = moved.start
             updated.stop = moved.stop
-            updated.title = GuidePanelText.title(moved)
+            updated.title = GuidePanelText.title(moved, locale: locale)
             updated.notListed = false
             return updated
         }

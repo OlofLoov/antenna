@@ -37,17 +37,20 @@ public struct Reminder: Identifiable, Hashable, Sendable {
     }
 
     /// A reminder for `programme` on `channel`; nil when the channel has no guide key.
-    public init?(programme: Programme, channel: Channel, now: Date, id: UUID = UUID()) {
-        self.init(programme: programme, channel: channel, key: GuideKey(channel: channel), now: now, id: id)
+    public init?(programme: Programme, channel: Channel, now: Date, id: UUID = UUID(), locale: Locale = .autoupdatingCurrent) {
+        self.init(programme: programme, channel: channel, key: GuideKey(channel: channel), now: now, id: id, locale: locale)
     }
 
     /// A reminder for `programme` on `channel` under `key`, the channel's
-    /// key from `GuideIndex.key(for:)`; nil when it has none.
-    public init?(programme: Programme, channel: Channel, key: GuideKey?, now: Date, id: UUID = UUID()) {
+    /// key from `GuideIndex.key(for:)`; nil when it has none. A blank
+    /// title is stored as "Untitled" in `locale`.
+    public init?(
+        programme: Programme, channel: Channel, key: GuideKey?, now: Date, id: UUID = UUID(), locale: Locale = .autoupdatingCurrent
+    ) {
         guard let key else { return nil }
         self.init(
             id: id, sourceID: key.sourceID, guideID: key.epgID, start: programme.start, stop: programme.stop,
-            title: GuidePanelText.title(programme), channelName: channel.name, createdAt: now)
+            title: GuidePanelText.title(programme, locale: locale), channelName: channel.name, createdAt: now)
     }
 
     public var key: ReminderKey { ReminderKey(sourceID: sourceID, guideID: guideID, start: start) }

@@ -47,8 +47,8 @@ public struct TitleMetadata: Sendable, Hashable {
 
     /// What the page shows before the details arrive: the eyebrow, the name,
     /// and the cast and directors when the list row gave them.
-    public init(title: ShelfTitle) {
-        eyebrow = Self.eyebrow(title)
+    public init(title: ShelfTitle, locale: Locale = .autoupdatingCurrent) {
+        eyebrow = Self.eyebrow(title, locale: locale)
         name = title.name
         kind = title.kind
         badges = []
@@ -59,10 +59,10 @@ public struct TitleMetadata: Sendable, Hashable {
     /// A movie's page once `get_vod_info` answered. The rating is the info
     /// call's, else the list row's.
     public init(movie title: ShelfTitle, info: VODInfo, locale: Locale = .autoupdatingCurrent) {
-        self.init(title: title)
+        self.init(title: title, locale: locale)
         let rating = info.rating ?? title.rating
         year = info.year.map(String.init)
-        length = ShelfText.length(info.duration)
+        length = ShelfText.length(info.duration, locale: locale)
         genre = Self.present(info.genre)
         self.rating = rating.flatMap { Self.rating($0, locale: locale) }
         badges = [ShelfText.is4K(title.name) ? "4K" : nil, ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
@@ -76,10 +76,10 @@ public struct TitleMetadata: Sendable, Hashable {
     /// A series' page once `get_series_info` answered. The seasons count
     /// is the number of numbered season groups.
     public init(series title: ShelfTitle, info: SeriesInfo, groups: [SeasonGroup], locale: Locale = .autoupdatingCurrent) {
-        self.init(title: title)
+        self.init(title: title, locale: locale)
         let rating = info.rating ?? title.rating
         year = info.year.map(String.init)
-        length = ShelfText.seasons(SeasonGroup.seasonCount(groups))
+        length = ShelfText.seasons(SeasonGroup.seasonCount(groups), locale: locale)
         genre = Self.present(info.genre)
         self.rating = rating.flatMap { Self.rating($0, locale: locale) }
         badges = [ShelfText.ageBadge(info.ageRating)].compactMap(\.self)
@@ -94,12 +94,12 @@ public struct TitleMetadata: Sendable, Hashable {
     /// left out filled from `match`, and its scores. Provider fields win
     /// (title-metadata/details-the-provider-left-out-come-from-the-database).
     /// A series keeps its own seasons count. Nil leaves the page as it is.
-    public func merging(_ match: TitleMatch?) -> TitleMetadata {
+    public func merging(_ match: TitleMatch?, locale: Locale = .autoupdatingCurrent) -> TitleMetadata {
         guard let match else { return self }
         var merged = self
         let details = match.details
         merged.year = year ?? details.year.map(String.init)
-        if kind == .movie { merged.length = length ?? ShelfText.length(details.duration) }
+        if kind == .movie { merged.length = length ?? ShelfText.length(details.duration, locale: locale) }
         merged.genre = genre ?? Self.present(details.genre)
         merged.description = description ?? Self.present(details.plot)
         merged.cast = cast ?? Self.present(details.cast)

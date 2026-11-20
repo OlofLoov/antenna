@@ -112,8 +112,8 @@ extension BannerText {
     /// The banner's words for the Apple TV preview. The eyebrow is the
     /// category alone, empty without one: the row header above the poster
     /// already names the row.
-    public init(preview title: ShelfTitle, details: ShelfDetails?) {
-        self.init(title, details: details)
+    public init(preview title: ShelfTitle, details: ShelfDetails?, locale: Locale = .autoupdatingCurrent) {
+        self.init(title, details: details, locale: locale)
         eyebrow = title.category ?? ""
     }
 }
