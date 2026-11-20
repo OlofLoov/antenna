@@ -19,6 +19,8 @@
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
         @Environment(\.guideStore) private var guideStore
+        /// Where the highlight was last, to tell a move down from the tab bar.
+        @State private var highlight = ShellHighlight.page
 
         var body: some View {
             let page = library.top.flatMap { $0.origin == .search ? $0 : nil }
@@ -56,6 +58,25 @@
             .onDisappear {
                 if library.top?.origin == .search { library.closeAll() }
             }
+            // Back on Search the picked result has focus again
+            // (search/pick-a-channel-or-title-to-watch): Menu on its page or
+            // its movie, or down from the tab bar after a channel played.
+            .onChange(of: page == nil) { _, closed in
+                if closed { cameBack() }
+            }
+            .onChange(of: playback.playing == nil) { _, ended in
+                if ended, library.top == nil { cameBack() }
+            }
+            .modifier(
+                ShellBarFocus { now in
+                    defer { highlight = now }
+                    if highlight == .bar, now == .page, library.top == nil { cameBack() }
+                })
+        }
+
+        private func cameBack() {
+            guard shell.tab == .search else { return }
+            model.cameBack()
         }
 
         private var search: some View {

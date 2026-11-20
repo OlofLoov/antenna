@@ -173,10 +173,24 @@ final class SearchTVUITests: XCTestCase {
         press(.menu)
         expect(element("title.name"), "exists == false")
         expect(app.searchFields.firstMatch, "value BEGINSWITH 'long winter'")
-        XCTAssertTrue(element("search.result.title.0").exists)
+        // search/pick-a-channel-or-title-to-watch, back on the result on Apple TV
+        expectFocus("search.result.title.0")
+    }
+
+    // search/pick-a-channel-or-title-to-watch, back on the result on Apple TV
+    func testMenuOnAMovieComesBackToItsPoster() {
+        openSearchOnTheShelf()
+        type("quiet")
+        moveToResults("search.result.title.0")
+        XCTAssertTrue(element("search.result.title.0").label.contains("Quiet Engines"), element("search.result.title.0").label)
+        press(.select)
+        expect(element("shelf.debug.engine"), "value == 'playing 5.mp4 from 0'")
+        press(.menu)
+        expectFocus("search.result.title.0")
     }
 
     // search/recent-searches
+    // search/pick-a-channel-or-title-to-watch, back on the result on Apple TV
     func testRecentSearchesShowWithAnEmptyField() {
         openSearch()
         type("a2")
@@ -189,12 +203,11 @@ final class SearchTVUITests: XCTestCase {
         press(.menu)
         expectFocus("shell.tab.live")
         moveAlongTheBar(.right, to: "shell.tab.search")
-        press(.select)
-        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
-        // Select on the tab takes the highlight to the keyboard; one that lands
-        // while the page opens leaves it on the tab, and a swipe down goes on.
-        let tab = element("shell.tab.search")
-        if tab.exists, tab.hasFocus { press(.down) }
+        press(.down)
+        // The picked channel has focus; one swipe up is the keyboard.
+        expectFocus("search.result.channel.0")
+        press(.up)
+        expect(element("search.result.channel.0"), "hasFocus == false")
         let field = app.searchFields.firstMatch
         expect(field, "value BEGINSWITH 'a2'")
         field.typeText(XCUIKeyboardKey.delete.rawValue + XCUIKeyboardKey.delete.rawValue)
@@ -215,7 +228,25 @@ final class SearchTVUITests: XCTestCase {
 
     // browse-by-person/find-a-person-in-search
     // search/results-grouped-best-first, People last
+    // browse-by-person/a-person-s-page, going back from Search
+    // search/pick-a-channel-or-title-to-watch, back on the result on Apple TV
     func testTypingANamePicksThePerson() {
+        openSearchOnTheShelf()
+        type("mira h")
+        let person = element("search.person.0")
+        XCTAssertTrue(person.waitForExistence(timeout: 10))
+        XCTAssertTrue(person.label.hasPrefix("People, Mira Holt, Acting · "), person.label)
+        moveToResults("search.person.0")
+        press(.select)
+        XCTAssertTrue(element("person.header").waitForExistence(timeout: 5))
+        press(.menu)
+        expect(element("person.header"), "exists == false")
+        expect(app.searchFields.firstMatch, "value BEGINSWITH 'mira h'")
+        expectFocus("search.person.0")
+    }
+
+    /// Launches on the shelf's `titles` script and opens the Search tab.
+    func openSearchOnTheShelf() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
         app.launchInEnglish()
@@ -228,16 +259,5 @@ final class SearchTVUITests: XCTestCase {
         XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
         let tab = element("shell.tab.search")
         if tab.exists, tab.hasFocus { press(.down) }
-        type("mira h")
-        let person = element("search.person.0")
-        XCTAssertTrue(person.waitForExistence(timeout: 10))
-        XCTAssertTrue(person.label.hasPrefix("People, Mira Holt, Acting · "), person.label)
-        moveToResults("search.person.0")
-        press(.select)
-        XCTAssertTrue(element("person.header").waitForExistence(timeout: 5))
-        press(.menu)
-        expect(element("person.header"), "exists == false")
-        expect(app.searchFields.firstMatch, "value BEGINSWITH 'mira h'")
-        XCTAssertTrue(element("search.person.0").exists, "back on Search with the person listed")
     }
 }

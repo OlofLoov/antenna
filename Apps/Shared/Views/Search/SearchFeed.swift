@@ -103,6 +103,7 @@ struct SearchChannelResult: View {
             .accessibilityValue(feed.model.cursor == .channel(hit.id) ? "Keyboard focus" : "")
             .accessibilityIdentifier("search.result.channel.\(index)")
             .id(SearchItem.channel(hit.id))
+            .modifier(SearchReturnFocus(item: .channel(hit.id)))
         }
     }
 }
@@ -152,6 +153,7 @@ struct SearchProgrammeResult: View {
             .accessibilityValue(feed.model.cursor == .programme(hit.id) ? "Keyboard focus" : "")
             .accessibilityIdentifier("search.result.programme.\(index)")
             .id(SearchItem.programme(hit.id))
+            .modifier(SearchReturnFocus(item: .programme(hit.id)))
         }
     }
 }
@@ -175,6 +177,7 @@ struct SearchTitleResult: View {
             .accessibilityValue(feed.model.cursor == .title(hit.id) ? "Keyboard focus" : "")
             .accessibilityIdentifier("search.result.title.\(index)")
             .id(SearchItem.title(hit.id))
+            .modifier(SearchReturnFocus(item: .title(hit.id)))
         }
     }
 }
@@ -199,7 +202,32 @@ struct SearchPersonResult: View {
             .accessibilityValue(feed.model.cursor == .person(person.key) ? "Keyboard focus" : "")
             .accessibilityIdentifier("search.person.\(index)")
             .id(SearchItem.person(person.key))
+            .modifier(SearchReturnFocus(item: .person(person.key)))
         }
+    }
+}
+
+/// Takes focus back on Apple TV when the user comes back to the row they
+/// picked (search/pick-a-channel-or-title-to-watch). Elsewhere Search stays
+/// under the page with its scroll position, so the row is still in view.
+struct SearchReturnFocus: ViewModifier {
+    let item: SearchItem
+    @Environment(\.searchFeed) private var feed
+    @FocusState private var focused: Bool
+
+    func body(content: Content) -> some View {
+        #if os(tvOS)
+            content
+                .focused($focused)
+                .task(id: feed?.model.returning) {
+                    guard let model = feed?.model, model.returning == item else { return }
+                    await Task.yield()
+                    focused = true
+                    model.returned()
+                }
+        #else
+            content
+        #endif
     }
 }
 
