@@ -54,6 +54,38 @@ struct AntennaMark: View {
     }
 }
 
+/// An app icon as Settings shows it (`iPhone-Settings-AppIcon`): the mark
+/// in the icon's color on its ground, drawn here rather than loaded, so
+/// no extra images ship. `side` is the side of the tile.
+struct AppIconTile: View {
+    let icon: AppIconChoice
+    let side: CGFloat
+
+    var body: some View {
+        AntennaMark.Glyph()
+            .fill(Color(hex: icon.mark))
+            .padding(side * 0.12)
+            .frame(width: side, height: side)
+            .background(Color(hex: icon.ground), in: RoundedRectangle(cornerRadius: side * 0.225, style: .continuous))
+            .accessibilityHidden(true)
+    }
+}
+
+extension AppIconChoice {
+    /// The icon's name in Settings.
+    var title: LocalizedStringResource {
+        switch self {
+        case .standard: return "Antenna"
+        case .mono: return "Mono"
+        case .light: return "Light"
+        case .teal: return ProfileAccent.teal.title
+        case .amber: return ProfileAccent.amber.title
+        case .pink: return ProfileAccent.pink.title
+        case .violet: return ProfileAccent.violet.title
+        }
+    }
+}
+
 #Preview("Antenna mark") {
     HStack(spacing: Metrics.Spacing.xLarge) {
         AntennaMark(size: 112)
@@ -61,4 +93,14 @@ struct AntennaMark: View {
     }
     .padding(Metrics.Spacing.xLarge)
     .background(Palette.surface(0.1))
+}
+
+#Preview("App icons") {
+    HStack(spacing: Metrics.Spacing.small) {
+        ForEach(AppIconChoice.allCases) { icon in
+            AppIconTile(icon: icon, side: 44)
+        }
+    }
+    .padding(Metrics.Spacing.large)
+    .background(Palette.ground)
 }

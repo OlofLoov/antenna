@@ -1,3 +1,4 @@
+import AntennaCore
 import Foundation
 import Testing
 
@@ -85,5 +86,48 @@ import Testing
         let project = try String(contentsOf: Self.root.appending(path: "project.yml"), encoding: .utf8)
         #expect(project.contains("ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon\n"))
         #expect(project.contains("ASSETCATALOG_COMPILER_APPICON_NAME: App Icon & Top Shelf Image\n"))
+    }
+
+    @Test("app-release/alternate-icons-keep-the-mark: six alternates, each the mark in one color on a plain ground")
+    func alternates() throws {
+        let alternates = AppIconChoice.allCases.compactMap(\.alternateName)
+        #expect(
+            alternates == ["AppIcon-Mono", "AppIcon-Light", "AppIcon-Teal", "AppIcon-Amber", "AppIcon-Pink", "AppIcon-Violet"])
+        for icon in AppIconChoice.allCases {
+            guard let name = icon.alternateName else { continue }
+            let mark = String(format: "#%06X", icon.mark)
+            for layer in ["waves", "mast"] {
+                let svg = try String(contentsOf: Self.root.appending(path: "Apps/Mobile/\(name).icon/Assets/\(layer).svg"), encoding: .utf8)
+                let colors = Set(svg.matches(of: /#[0-9A-Fa-f]{6}\b/).map { $0.output.uppercased() })
+                #expect(colors == [mark], "\(name) \(layer).svg uses \(colors.sorted())")
+            }
+            let document = try json("Apps/Mobile/\(name).icon/icon.json")
+            let groups = try #require(document["groups"] as? [[String: Any]])
+            #expect(groups.count == 2, "\(name) keeps the mast and the waves")
+            let fill = try #require((document["fill"] as? [String: Any])?["solid"] as? String)
+            let ground = [16, 8, 0].map { String(format: "%.5f", Double((icon.ground >> UInt32($0)) & 0xFF) / 255) }
+            #expect(fill == "srgb:\(ground.joined(separator: ",")),1.00000", "\(name) ground")
+            for layer in ["back", "middle", "front"] {
+                for scale in [1, 2] {
+                    let folder = "Apps/TV/Assets.xcassets/\(name).imagestack/\(layer.capitalized).imagestacklayer"
+                    let path = "\(folder)/Content.imageset/\(layer)@\(scale)x.png"
+                    let size = try pngSize(path)
+                    #expect(size.width == 400 * scale && size.height == 240 * scale, "\(path)")
+                }
+            }
+        }
+        let project = try String(contentsOf: Self.root.appending(path: "project.yml"), encoding: .utf8)
+        let names = alternates.joined(separator: " ")
+        #expect(project.contains("ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphone*]: \(names)\n"), "iPhone and iPad")
+        #expect(project.contains("ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES: \(names)\n"), "Apple TV")
+    }
+
+    @Test("sources-and-settings/pick-the-app-icon-on-this-device: the system's icon name maps back to a choice")
+    func choiceFromTheSystem() {
+        #expect(AppIconChoice(alternateName: nil) == .standard)
+        #expect(AppIconChoice(alternateName: "AppIcon-Teal") == .teal)
+        #expect(AppIconChoice(alternateName: "AppIcon-Sepia") == .standard, "a name this build does not ship")
+        #expect(AppIconChoice.standard.alternateName == nil)
+        #expect(AppIconChoice.light.ground == 0xF2F4F8 && AppIconChoice.light.mark == 0x0B0E13)
     }
 }

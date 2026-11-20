@@ -25,4 +25,20 @@ extension ShellUITests {
         if !row.waitForExistence(timeout: 3) { press(.menu) }
         expect(row, "value == 'Teal'")
     }
+
+    // sources-and-settings/pick-the-app-icon-on-this-device, Apple TV
+    func testTheAppIconChoicesOnAppleTV() {
+        launchAsDad()
+        openSettingsOnProfiles()
+        let row = element("settings.appearance.icon")
+        let focusedRow = labelled("hasFocus == true AND label BEGINSWITH 'App icon'")
+        for _ in 0..<26 where !focusedRow.exists { press(.down) }
+        XCTAssertTrue(focusedRow.exists, "the App icon row never took focus: \(focusedElements())")
+        expect(row, "value == 'Antenna'")
+        press(.select)
+        XCTAssertTrue(labelled("hasFocus == true AND label == 'Antenna'").waitForExistence(timeout: 5), "no choices: \(focusedElements())")
+        for id in ["standard", "mono", "light", "teal", "amber", "pink", "violet"] {
+            XCTAssertTrue(element("settings.choice.\(id)").exists, "no \(id) icon")
+        }
+    }
 }
