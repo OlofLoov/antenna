@@ -39,6 +39,11 @@ The system SHALL show the Guide on iPad and Mac in the wide layout as a grid of 
 - **WHEN** the user opens the Guide and scrolls, in the grid or the iPhone rows
 - **THEN** it opens and scrolls without stalling
 
+#### Scenario: A short group
+- **GIVEN** a group with fewer channels than the grid has room for
+- **WHEN** the Guide shows it on iPad or Mac
+- **THEN** the first row starts right under the time labels and the space left over is below the last row
+
 ### Requirement: One row per channel on iPhone
 The system SHALL show the Guide on iPhone and in a narrow iPad Split View as one row per channel, each scrolling sideways through that channel's programmes from the one on now, under the same group button and Groups sheet as Live.
 
@@ -58,6 +63,11 @@ The system SHALL show the Guide on iPhone and in a narrow iPad Split View as one
 - **GIVEN** a gap between two programmes on a channel
 - **WHEN** its row shows
 - **THEN** the gap is a card with just the times
+
+#### Scenario: The group button and day chips sit at the top
+- **GIVEN** an iPhone
+- **WHEN** the user opens the Guide
+- **THEN** the group button sits at the top, with the day chips right under it
 
 ### Requirement: The same group as Live
 The system SHALL show the same current group in the Guide as in Live, so changing it in one changes it in the other.
