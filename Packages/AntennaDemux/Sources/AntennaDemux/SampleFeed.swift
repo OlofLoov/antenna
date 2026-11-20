@@ -8,6 +8,9 @@ import Foundation
 /// reads no further ahead than the renderer can take. The renderer pulls on
 /// its own queue whenever it is ready for more. `close` wakes a blocked
 /// `push`, drops what waits and flushes the renderer.
+///
+/// The queue runs at the demux thread's user-initiated priority: `push`
+/// waits on `drain`, so a lower-priority queue would be a priority inversion.
 final class SampleFeed: @unchecked Sendable {
     let renderer: any AVQueuedSampleBufferRendering
     private let limit: Int
@@ -23,7 +26,7 @@ final class SampleFeed: @unchecked Sendable {
     init(renderer: any AVQueuedSampleBufferRendering, label: String, limit: Int) {
         self.renderer = renderer
         self.limit = limit
-        queue = DispatchQueue(label: "se.codecrave.antenna.demux.\(label)")
+        queue = DispatchQueue(label: "se.codecrave.antenna.demux.\(label)", qos: .userInitiated)
     }
 
     /// Starts handing buffers to the renderer.

@@ -133,7 +133,7 @@ public final class DemuxEngine: PlaybackEngine {
     /// address and a reason. `display` and `hold` are shared with Apple's
     /// player engine when both play into one screen.
     public init(
-        session: URLSession = PlaybackNetwork.makeSession(),
+        session: URLSession = PlaybackNetwork.makeStreamingSession(),
         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) },
         firstFrameTimeout: Duration = DemuxEngine.firstFrameTimeout,
         display: DisplayMatcher = DisplayMatcher(),

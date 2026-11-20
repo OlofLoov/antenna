@@ -75,7 +75,7 @@ public enum PlaybackNetwork {
 
     /// An ephemeral session with no cache, no cookies and no credential
     /// store, so nothing about a stream address is kept on disk.
-    public static func makeSession() -> URLSession {
+    public static func makeSession(delegateQueue: OperationQueue? = nil) -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.urlCache = nil
         configuration.httpCookieStorage = nil
@@ -83,6 +83,18 @@ public enum PlaybackNetwork {
         configuration.urlCredentialStorage = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         configuration.timeoutIntervalForRequest = Double(connectTimeout.components.seconds)
-        return URLSession(configuration: configuration)
+        return URLSession(configuration: configuration, delegate: nil, delegateQueue: delegateQueue)
+    }
+
+    /// The same session with its callbacks on a serial user-initiated queue,
+    /// for the demux thread, which runs at that priority and waits on the
+    /// bytes those callbacks deliver. At the default priority the wait is a
+    /// priority inversion.
+    public static func makeStreamingSession() -> URLSession {
+        let queue = OperationQueue()
+        queue.name = "se.codecrave.antenna.stream"
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .userInitiated
+        return makeSession(delegateQueue: queue)
     }
 }
