@@ -19,13 +19,15 @@ struct GroupsScreen: View {
     @Query private var hidden: [HiddenGroupRecord]
     @Query private var passcodes: [PasscodeRecord]
     @Query(sort: SourceRecord.displayOrder) private var sources: [SourceRecord]
+    @State private var index = GroupsCatalogueIndex()
     @AppStorage(GroupDefaults.searchHidden) private var searchHidden = false
     @State private var naming = false
     @State private var newName = ""
     @State private var changing = false
 
     var body: some View {
-        let data = GroupsData(channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile)
+        let data = GroupsData(
+            channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile, index: index)
         Group {
             if needsPasscode(data) {
                 PasscodePrompt(flow: .unlock, message: "Groups has locked groups.") { opened in
