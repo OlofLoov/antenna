@@ -12,6 +12,9 @@ extension Browse {
                     .padding(EdgeInsets(top: 12, leading: 16, bottom: 6, trailing: 16))
             }
             .scrollIndicators(.hidden)
+            // A horizontal scroll view takes all the height it is offered;
+            // the row is only as tall as its chips.
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 

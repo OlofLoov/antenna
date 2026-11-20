@@ -29,6 +29,7 @@ enum FieldRow {
             LabeledContent {
                 TextField(label, text: $text, prompt: SwiftUI.Text(prompt))
                     .entry(entry)
+                    .labelsHidden()
                     .accessibilityLabel(label)
                     .accessibilityIdentifier(identifier)
             } label: {
@@ -58,6 +59,7 @@ enum FieldRow {
                             SecureField(label, text: $text, prompt: SwiftUI.Text(prompt))
                         }
                     }
+                    .labelsHidden()
                     .accessibilityLabel(label)
                     .accessibilityIdentifier(identifier)
                     if let reveals {

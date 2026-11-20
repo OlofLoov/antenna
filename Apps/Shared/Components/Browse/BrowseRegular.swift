@@ -14,21 +14,40 @@ extension Browse {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     leading
-                    Text(title)
-                        .font(.title.weight(.bold))
-                        .lineLimit(1)
-                        .accessibilityAddTraits(.isHeader)
-                        .accessibilityIdentifier("browse.header.title")
-                    Spacer(minLength: 8)
-                    Text(count)
-                        .font(.subheadline)
-                        .foregroundStyle(Palette.textMuted)
-                        .accessibilityIdentifier("browse.header.count")
+                    // A long group name keeps the count beside it while both
+                    // fit, and puts the count under it when they do not.
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            heading.fixedSize()
+                            Spacer(minLength: 0)
+                            countText.fixedSize()
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            heading.minimumScaleFactor(0.75)
+                            countText
+                        }
+                    }
                 }
                 filter
             }
             .foregroundStyle(Palette.text)
             .padding(EdgeInsets(top: 22, leading: 16, bottom: 10, trailing: 16))
+        }
+
+        private var heading: some View {
+            Text(title)
+                .font(.title.weight(.bold))
+                .lineLimit(1)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("browse.header.title")
+        }
+
+        private var countText: some View {
+            Text(count)
+                .font(.subheadline)
+                .foregroundStyle(Palette.textMuted)
+                .lineLimit(1)
+                .accessibilityIdentifier("browse.header.count")
         }
     }
 
@@ -134,16 +153,17 @@ extension Browse {
                         .clipShape(cornerShape(.small))
                         .environment(\.browseMetrics, .panel)
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: 12) {
-                            Text(now.title)
-                                .font(.title2.weight(.bold))
-                                .lineLimit(1)
-                            Spacer(minLength: 0)
-                            if let times = now.times {
-                                Text(times)
-                                    .font(.subheadline)
-                                    .foregroundStyle(Palette.textMuted)
-                                    .lineLimit(1)
+                        // The times sit beside the title while both fit and
+                        // move under it in a narrow panel, never cut short.
+                        ViewThatFits(in: .horizontal) {
+                            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                                nowTitle.lineLimit(1).fixedSize()
+                                Spacer(minLength: 0)
+                                nowTimes.fixedSize()
+                            }
+                            VStack(alignment: .leading, spacing: 4) {
+                                nowTitle.lineLimit(2)
+                                nowTimes.fixedSize()
                             }
                         }
                         Text(now.meta)
@@ -170,11 +190,18 @@ extension Browse {
                             .padding(.bottom, 8)
                         ForEach(next) { item in
                             HStack(alignment: .firstTextBaseline, spacing: 14) {
-                                Text(item.time)
-                                    .font(.subheadline)
-                                    .monospacedDigit()
-                                    .foregroundStyle(Palette.textMuted)
-                                    .frame(width: 52, alignment: .leading)
+                                // Every time column is as wide as the widest
+                                // time, on one line, so "6:00 PM" never wraps.
+                                ZStack(alignment: .leading) {
+                                    ForEach(next) { Text($0.time).hidden() }
+                                    Text(item.time)
+                                }
+                                .font(.subheadline)
+                                .monospacedDigit()
+                                .lineLimit(1)
+                                .fixedSize()
+                                .foregroundStyle(Palette.textMuted)
+                                .frame(minWidth: 52, alignment: .leading)
                                 Text(item.title)
                                     .font(.callout)
                                     .lineLimit(1)
@@ -194,6 +221,20 @@ extension Browse {
             .foregroundStyle(Palette.text)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("browse.panel")
+        }
+
+        private var nowTitle: some View {
+            Text(now.title)
+                .font(.title2.weight(.bold))
+        }
+
+        @ViewBuilder private var nowTimes: some View {
+            if let times = now.times {
+                Text(times)
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.textMuted)
+                    .lineLimit(1)
+            }
         }
     }
 }
