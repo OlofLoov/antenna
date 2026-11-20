@@ -18,14 +18,20 @@ public struct Profile: Sendable, Hashable, Identifiable {
     /// True when the profile shows adult content; a new profile starts
     /// with it off (adult-content/show-adult-content-with-the-passcode).
     public var showsAdult: Bool
+    /// What progress, links, badges and system controls draw in while this profile is current.
+    public var accent: ProfileAccent
 
-    public init(id: UUID, name: String, colorIndex: Int, sortOrder: Int, createdAt: Date, showsAdult: Bool = false) {
+    public init(
+        id: UUID, name: String, colorIndex: Int, sortOrder: Int, createdAt: Date, showsAdult: Bool = false,
+        accent: ProfileAccent = .blue
+    ) {
         self.showsAdult = showsAdult
         self.id = id
         self.name = name
         self.colorIndex = colorIndex
         self.sortOrder = sortOrder
         self.createdAt = createdAt
+        self.accent = accent
     }
 
     /// The implicit first profile before any profile is stored.
@@ -86,10 +92,12 @@ public struct ProfileList: Sendable, Equatable {
     /// The profiles to store to add `name` (profiles/adding-a-profile): Main
     /// first while it is not stored yet, then the new profile after the
     /// last. Nil for an invalid name or when eight profiles exist.
-    public func adding(name raw: String, colorIndex: Int, id: UUID = UUID(), now: Date = .now) -> [Profile]? {
+    public func adding(
+        name raw: String, colorIndex: Int, accent: ProfileAccent = .blue, id: UUID = UUID(), now: Date = .now
+    ) -> [Profile]? {
         guard canAdd, let name = Self.validName(raw) else { return nil }
         let next = (profiles.map(\.sortOrder).max() ?? 0) + 1
-        let added = Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: next, createdAt: now)
+        let added = Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: next, createdAt: now, accent: accent)
         return isImplicit ? [.main(createdAt: now), added] : [added]
     }
 

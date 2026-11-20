@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The pieces that show and move the time of a movie or episode
@@ -93,6 +94,7 @@ enum Transport {
         /// The bar's line: played in the accent up to the knob, and the
         /// target's knob with its time above while a slide moves it.
         struct Track: View {
+            @Environment(\.accent) private var accent
             let fraction: Double
             var target: (fraction: Double, time: String)?
 
@@ -101,7 +103,7 @@ enum Transport {
                     let width = proxy.size.width
                     ZStack(alignment: .leading) {
                         Capsule().fill(Palette.surface(0.25)).frame(height: 10)
-                        Capsule().fill(Palette.accent).frame(width: width * clamp(fraction), height: 10)
+                        Capsule().fill(accent.color).frame(width: width * clamp(fraction), height: 10)
                         Circle().fill(Palette.text)
                             .frame(width: 24, height: 24)
                             .offset(x: width * clamp(fraction) - 12)
@@ -158,6 +160,7 @@ enum Transport {
         /// anywhere on its 44 pt height and seeks once on release, as Live's
         /// timeshift scrubber does; VoiceOver swipes on it skip 10 seconds.
         struct Controls: View {
+            @Environment(\.accent) private var accent
             let times: Times
             let isPaused: Bool
             let playPause: () -> Void
@@ -210,7 +213,7 @@ enum Transport {
                     let at = width * min(1, max(0, fraction))
                     ZStack(alignment: .leading) {
                         Capsule().fill(Palette.surface(0.3)).frame(height: 4)
-                        Capsule().fill(Palette.accent).frame(width: at, height: 4)
+                        Capsule().fill(accent.color).frame(width: at, height: 4)
                         Circle().fill(Palette.text)
                             .shadow(color: .black.opacity(0.35), radius: 3, y: 2)
                             .frame(width: 18, height: 18)

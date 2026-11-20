@@ -11,6 +11,8 @@ enum SettingsFooter: Hashable {
     case autoplay
     /// What Show adult content does, on or off.
     case adultContent(shows: Bool)
+    /// Who the accent is for.
+    case appearance
 }
 
 extension FocusedValues {
@@ -40,6 +42,9 @@ struct SettingsLeadFooter: View {
         case .adultContent(let shows):
             Text(AdultContentRow.footer(shows: shows))
                 .accessibilityIdentifier("settings.adultContent.footer")
+        case .appearance:
+            Text(AppearanceSection.footer)
+                .accessibilityIdentifier("settings.appearance.footer")
         case nil:
             EmptyView()
         }

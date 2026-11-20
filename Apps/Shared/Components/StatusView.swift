@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The one layout for empty, unavailable and error states
@@ -15,6 +16,7 @@ struct StatusView<Message: View, Actions: View>: View {
     let identifier: String
     let message: Message
     let actions: Actions
+    @Environment(\.accent) private var accent
 
     /// A title the catalog translates, such as "No channels yet".
     init(
@@ -55,7 +57,7 @@ struct StatusView<Message: View, Actions: View>: View {
         } actions: {
             HStack(spacing: Metrics.Spacing.medium) { actions }
                 .buttonStyle(.bordered)
-                .tint(StatusActions.tint)
+                .tint(StatusActions.tint(accent))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .contain)
@@ -67,11 +69,11 @@ struct StatusView<Message: View, Actions: View>: View {
 /// platter, since the accent tint fills an unfocused bordered button with
 /// the same color as its label. Elsewhere the accent labels the buttons.
 enum StatusActions {
-    static var tint: Color? {
+    static func tint(_ accent: ProfileAccent) -> Color? {
         #if os(tvOS)
             nil
         #else
-            Palette.accent
+            accent.color
         #endif
     }
 }

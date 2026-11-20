@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// What Live shows on Apple TV before a channel plays (tvos-shell capability;
@@ -9,7 +10,7 @@ enum ShellLoading {
         enum Indicator: Equatable, Sendable {
             /// Still loading: a 44 pt ring with the accent arc.
             case working
-            /// Finished loading, with or without channels: an accent check (design-system/one-accent-color deviation in tvos-shell).
+            /// Finished loading, with or without channels: an accent check (design-system/one-accent-color-per-profile deviation in tvos-shell).
             case done
             /// Failed or waiting: the 44 pt slot stays empty so names line up.
             case none
@@ -46,6 +47,7 @@ enum ShellLoading {
     }
 
     struct RowView: View {
+        @Environment(\.accent) private var accent
         let row: Row
 
         var body: some View {
@@ -58,7 +60,7 @@ enum ShellLoading {
                         .font(.boardStyle(22, weight: .bold))
                         .foregroundStyle(Palette.ground)
                         .frame(width: 44, height: 44)
-                        .background(Palette.accent, in: Circle())
+                        .background(accent.color, in: Circle())
                 case .none:
                     Color.clear.frame(width: 44, height: 44)
                 }
@@ -83,6 +85,7 @@ enum ShellLoading {
 /// The board's indeterminate ring: 4 pt at 0.18 white with an accent arc
 /// that turns.
 private struct Spinner: View {
+    @Environment(\.accent) private var accent
     @State private var turning = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -91,7 +94,7 @@ private struct Spinner: View {
             Circle().stroke(Palette.surface(0.18), lineWidth: 4)
             Circle()
                 .trim(from: 0, to: 0.25)
-                .stroke(Palette.accent, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                .stroke(accent.color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 .rotationEffect(.degrees(turning ? 360 : 0))
         }
         .padding(2)

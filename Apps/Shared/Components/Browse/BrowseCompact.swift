@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension Browse {
@@ -77,6 +78,7 @@ extension Browse {
     /// The star next to the playing channel: 36 pt on iPhone, 40 on iPad
     /// and Mac, with a 44 pt hit area, filled while the channel is a favorite.
     struct FavoriteButton: View {
+        @Environment(\.accent) private var accent
         let isFavorite: Bool
         let toggle: () -> Void
         @Environment(\.browseMetrics) private var metrics
@@ -86,7 +88,7 @@ extension Browse {
             Button(action: toggle) {
                 Image(systemName: isFavorite ? "star.fill" : "star")
                     .font(.boardStyle(16, weight: .semibold))
-                    .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
+                    .foregroundStyle(isFavorite ? accent.color : Palette.text)
                     .frame(width: side, height: side)
                     .background(Palette.surface(0.1), in: cornerShape(.medium))
                     .frame(width: 44, height: 44)

@@ -1,4 +1,5 @@
 #if os(iOS) || os(macOS)
+    import AntennaCore
     import AVKit
     import SwiftUI
 
@@ -19,23 +20,27 @@
             func makeUIView(context: Context) -> AVRoutePickerView {
                 let view = AVRoutePickerView()
                 view.tintColor = UIColor(Palette.text)
-                view.activeTintColor = UIColor(Palette.accent)
+                view.activeTintColor = UIColor(context.environment.accent.color)
                 view.prioritizesVideoDevices = true
                 return view
             }
 
-            func updateUIView(_ view: AVRoutePickerView, context: Context) {}
+            func updateUIView(_ view: AVRoutePickerView, context: Context) {
+                view.activeTintColor = UIColor(context.environment.accent.color)
+            }
         }
     #else
         private struct RoutePicker: NSViewRepresentable {
             func makeNSView(context: Context) -> AVRoutePickerView {
                 let view = AVRoutePickerView()
                 view.setRoutePickerButtonColor(NSColor(Palette.text), for: .normal)
-                view.setRoutePickerButtonColor(NSColor(Palette.accent), for: .active)
+                view.setRoutePickerButtonColor(NSColor(context.environment.accent.color), for: .active)
                 return view
             }
 
-            func updateNSView(_ view: AVRoutePickerView, context: Context) {}
+            func updateNSView(_ view: AVRoutePickerView, context: Context) {
+                view.setRoutePickerButtonColor(NSColor(context.environment.accent.color), for: .active)
+            }
         }
     #endif
 #endif

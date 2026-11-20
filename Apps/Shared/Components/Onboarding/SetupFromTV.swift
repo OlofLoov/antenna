@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The iPhone, iPad and Mac side of setting up an Apple TV
@@ -10,6 +11,7 @@ enum SetupFromTV {
 
     /// "Opened from your Apple TV", with the count of sources already on this device.
     struct Banner: View {
+        @Environment(\.accent) private var accent
         let device: Device
         /// Sources with an address already on this device.
         let existing: Int
@@ -18,7 +20,7 @@ enum SetupFromTV {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 12) {
                     Image(systemName: "appletv")
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(accent.color)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Opened from your Apple TV")
@@ -31,7 +33,7 @@ enum SetupFromTV {
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 14)
-                .background(Palette.accent.opacity(0.12), in: cornerShape(.medium))
+                .background(accent.color.opacity(0.12), in: cornerShape(.medium))
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("onboarding.fromTV.banner")
                 if let line = Self.existing(existing, device: device) {
@@ -205,6 +207,7 @@ enum SetupFromTV {
     /// One row: a done check, a ring or "In progress" with Reduce Motion,
     /// or the error glyph; read by VoiceOver as state, title and detail.
     struct StatusRow: View {
+        @Environment(\.accent) private var accent
         enum State { case done, running, failed }
 
         let state: State
@@ -239,7 +242,7 @@ enum SetupFromTV {
         @ViewBuilder private var marker: some View {
             switch state {
             case .done:
-                Image(systemName: "checkmark.circle.fill").font(.boardStyle(22)).foregroundStyle(Palette.accent)
+                Image(systemName: "checkmark.circle.fill").font(.boardStyle(22)).foregroundStyle(accent.color)
             case .running where reduceMotion:
                 Text("In progress").font(.boardStyle(11)).foregroundStyle(Palette.textMuted).fixedSize()
             case .running:

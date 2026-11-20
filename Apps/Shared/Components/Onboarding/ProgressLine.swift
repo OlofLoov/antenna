@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// A status line with a spinning ring, or the words "In progress" when
@@ -5,6 +6,7 @@ import SwiftUI
 /// (apple-tv-login-from-iphone/the-sign-in-reads-well-without-sight-or-motion).
 /// Caption text on Apple TV, subheadline elsewhere.
 struct ProgressLine: View {
+    @Environment(\.accent) private var accent
     let text: LocalizedStringResource
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -23,7 +25,7 @@ struct ProgressLine: View {
             if reduceMotion {
                 Text(Self.inProgress)
                     .font(font.weight(.semibold))
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(accent.color)
             } else {
                 ProgressView()
                     .frame(width: ring, height: ring)

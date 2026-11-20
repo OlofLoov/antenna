@@ -7,13 +7,13 @@
 
 ## 2. Accent per profile
 
-- [ ] 2.1 `ProfileAccent` and `Contrast` in AntennaCore; `Profile.accent`, Blue by default and for unknown values; `ContrastTests` for the table in design.md (design-system/one-accent-color-per-profile)
-- [ ] 2.2 `ProfileRecord.accent`, `ProfileStore.add`, `edit` and `setAccent` (profiles/profiles-sync-between-devices)
-- [ ] 2.3 The `accent` environment value from `ProfileGate`, the tint on iPhone, iPad and Mac; every `Palette.accent` reader moves to it and `Palette.accent` goes; `scripts/check-rules.sh` guards it
-- [ ] 2.4 `SwatchChoiceRow` and `SwatchChoiceList`; `AppearanceSection` with Accent in Settings on every platform (sources-and-settings/pick-the-accent-for-your-profile)
-- [ ] 2.5 Accent swatches in `ProfileEditSheet` and the Apple TV `ProfileEdit` (profiles/adding-a-profile, profiles/editing-and-deleting-a-profile)
-- [ ] 2.6 Strings in every catalog language
-- [ ] 2.7 UI tests on iPhone and Apple TV: picking an accent changes the Accent row's value, which reads the environment; a journey step for Appearance
+- [x] 2.1 `ProfileAccent` and `Contrast` in AntennaCore; `Profile.accent`, Blue by default and for unknown values; `ProfileAccentTests` for the table in design.md (design-system/one-accent-color-per-profile)
+- [x] 2.2 `ProfileRecord.accent`, `ProfileStore.add`, `edit` and `setAccent` (profiles/profiles-sync-between-devices)
+- [x] 2.3 The `accent` environment value from `ProfileGate`, the tint on iPhone, iPad and Mac; every `Palette.accent` reader moves to it and `Palette.accent` goes; `scripts/check-rules.sh` guards it
+- [x] 2.4 `SwatchChoiceRow` and `SwatchChoiceList`; `AppearanceSection` with Accent in Settings on every platform (sources-and-settings/pick-the-accent-for-your-profile)
+- [x] 2.5 Accent swatches in `ProfileEditSheet` and the Apple TV `ProfileEdit` (profiles/adding-a-profile, profiles/editing-and-deleting-a-profile)
+- [x] 2.6 Strings in every catalog language
+- [x] 2.7 UI tests on iPhone and Apple TV: picking an accent changes the Accent row's value, which reads the environment; a journey step for Appearance
 
 ## 3. Alternate app icons
 

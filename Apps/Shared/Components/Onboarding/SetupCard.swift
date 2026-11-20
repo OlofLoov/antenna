@@ -46,11 +46,10 @@ enum SetupCard {
         kind == .stalker ? "The MAC address hasn't reached this Apple TV." : "The login hasn't reached this Apple TV."
     }
 
-    static let accent = Palette.accent
-
     /// The card. `action` sits under the status, for the "Sign in on this
     /// Apple TV" button after an arrival.
     struct Television<Action: View>: View {
+        @Environment(\.accent) private var accent
         let link: URL
         let status: Status
         @ViewBuilder var action: Action
@@ -96,7 +95,7 @@ enum SetupCard {
             case .waiting(let hint):
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: Metrics.Spacing.small) {
-                        Circle().fill(SetupCard.accent).frame(width: 12, height: 12).accessibilityHidden(true)
+                        Circle().fill(accent.color).frame(width: 12, height: 12).accessibilityHidden(true)
                         Text("Waiting for your iPhone")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -113,14 +112,14 @@ enum SetupCard {
                 }
             case .arrived(let name, let missing):
                 VStack(alignment: .leading, spacing: 12) {
-                    Row(symbol: "checkmark.circle.fill", color: SetupCard.accent, text: "\(name) arrived from your iPhone", state: "Done")
+                    Row(symbol: "checkmark.circle.fill", color: accent.color, text: "\(name) arrived from your iPhone", state: "Done")
                         .accessibilityIdentifier("onboarding.qr.status")
                     Row(symbol: "exclamationmark.circle.fill", color: OnboardingForm.errorColor, text: missing, state: "Missing")
                         .foregroundStyle(OnboardingForm.errorColor)
                 }
             case .awaitingLogin(let name, let progress):
                 VStack(alignment: .leading, spacing: 12) {
-                    Row(symbol: "checkmark.circle.fill", color: SetupCard.accent, text: "\(name) arrived from your iPhone", state: "Done")
+                    Row(symbol: "checkmark.circle.fill", color: accent.color, text: "\(name) arrived from your iPhone", state: "Done")
                         .accessibilityIdentifier("onboarding.qr.status")
                     ProgressLine(text: progress)
                         .accessibilityIdentifier("onboarding.qr.login")

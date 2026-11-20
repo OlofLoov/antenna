@@ -3,7 +3,7 @@ import SwiftUI
 /// The Apple TV summary over the first channel playing (`TV-Onboard-5`,
 /// `TV-Onboard-5-Two`): the source line, "You're set", the tiles, Start
 /// watching or Browse movies, and Add another source. The source line is
-/// secondary text, not an accent eyebrow (design-system/one-accent-color).
+/// secondary text, not an accent eyebrow (design-system/one-accent-color-per-profile).
 /// The picture is the caller's `background`.
 enum OnboardingSummary {
     /// One number and what it counts, such as "412" over "live channels · 18 groups".

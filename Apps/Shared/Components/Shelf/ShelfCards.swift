@@ -7,6 +7,7 @@ extension ShelfView {
     /// the SERIES badge, then the name and the caption under it
     /// (movies-and-series-browsing/continue-watching).
     struct ProgressCard: View {
+        @Environment(\.accent) private var accent
         let title: ShelfTitle
         /// "52 min left", "S2 E4" or "Next episode".
         let caption: String?
@@ -75,7 +76,7 @@ extension ShelfView {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Rectangle().fill(Palette.surface(0.22))
-                    Rectangle().fill(Palette.accent).frame(width: proxy.size.width * min(1, max(0, fraction)))
+                    Rectangle().fill(accent.color).frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }
             .frame(height: metrics.progress)

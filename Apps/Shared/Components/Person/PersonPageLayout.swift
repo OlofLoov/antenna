@@ -172,6 +172,7 @@ enum PersonPageLayout {
 
     /// "‹ The Long Harbor", a 44 pt target; Escape goes back too.
     struct Back: View {
+        @Environment(\.accent) private var accent
         let size: CGFloat
         @Environment(\.personPage) private var page
 
@@ -181,7 +182,7 @@ enum PersonPageLayout {
             } label: {
                 Label(page?.state.back ?? "Back", systemImage: "chevron.backward")
                     .font(.boardStyle(size, weight: .semibold))
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(accent.color)
                     .lineLimit(1)
                     .frame(minHeight: 44)
                     .contentShape(Rectangle())

@@ -80,6 +80,7 @@ enum GuideBoard {
     /// One programme, gap or placeholder, as wide as the layout says. Past
     /// programmes and placeholders are dimmer; the selected block is lighter.
     struct Block: View {
+        @Environment(\.accent) private var accent
         let content: BlockContent
         let width: Double
         let isSelected: Bool
@@ -112,7 +113,7 @@ enum GuideBoard {
             .background(fill, in: cornerShape(.small))
             .overlay {
                 if isSelected {
-                    cornerShape(.small).strokeBorder(Palette.accent, lineWidth: 2)
+                    cornerShape(.small).strokeBorder(accent.color, lineWidth: 2)
                 }
             }
             .clipped()
@@ -188,6 +189,7 @@ enum GuideBoard {
 
     /// The accent tag with the time, at the top of the now line.
     struct NowPill: View {
+        @Environment(\.accent) private var accent
         let time: String
 
         var body: some View {
@@ -198,15 +200,16 @@ enum GuideBoard {
                 .fixedSize()
                 .padding(.vertical, 3)
                 .padding(.horizontal, 7)
-                .background(Palette.accent, in: cornerShape(.small))
+                .background(accent.color, in: cornerShape(.small))
         }
     }
 
     /// The 2 pt accent line at the current time.
     struct NowLine: View {
+        @Environment(\.accent) private var accent
         var body: some View {
             cornerShape(.small)
-                .fill(Palette.accent)
+                .fill(accent.color)
                 .frame(width: 2)
                 .frame(maxHeight: .infinity)
                 .allowsHitTesting(false)

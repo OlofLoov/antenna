@@ -37,7 +37,7 @@ Not drawn: the pushed Accent page on iPhone, iPad and Mac, which is `iPhone-Sett
 | Pink | #F472B6 | 7.30 | 6.44 | 6.91 | 5.26 |
 | Violet | #C084FC | 7.32 | 6.45 | 6.92 | 5.27 |
 
-Ratios are WCAG 2.x relative luminance. Glass has no fixed color; #2C2C2E is the lightest dark system material and stands in for glass over the dark ground. A NOW or UP NEXT badge draws ground text on an accent fill, which is the Ground column. Text links need 4.5:1, progress and badges need 3:1, and every accent clears 4.5:1 everywhere, so a link may sit on any of these surfaces. `ContrastTests` computes the table and fails when an accent drops below 4.5:1 on any of them.
+Ratios are WCAG 2.x relative luminance. Glass has no fixed color; #2C2C2E is the lightest dark system material and stands in for glass over the dark ground. A NOW or UP NEXT badge draws ground text on an accent fill, which is the Ground column. Text links need 4.5:1, progress and badges need 3:1, and every accent clears 4.5:1 everywhere, so a link may sit on any of these surfaces. `ProfileAccentTests` computes the table and fails when an accent drops below 4.5:1 on any of them.
 
 The five hex values are five of the eight profile circle colors, so an accent never looks foreign next to the circles.
 

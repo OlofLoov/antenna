@@ -148,7 +148,8 @@ struct PaywallLinks: Equatable {
         for (words, url) in zip(names, [terms, privacy]) {
             guard let url, let range = text.range(of: words) else { continue }
             text[range].link = url
-            text[range].foregroundColor = Palette.accent
+            // The paywall shows before any profile, so its links are Blue.
+            text[range].foregroundColor = ProfileAccent.blue.color
         }
         return text
     }

@@ -25,6 +25,7 @@ struct ProfileGate<Content: View>: View {
             content
                 .environment(\.currentProfile, chosen)
                 .environment(\.showsAdultContent, ProfileStore.showsAdult(chosen, in: records))
+                .accent(profiles.profiles.first { $0.id == chosen }?.accent ?? .blue)
                 .environment(\.switchProfile, SwitchProfileAction { self.chosen = nil })
                 .id(chosen)
                 // A profile deleted on another device ends its session here.

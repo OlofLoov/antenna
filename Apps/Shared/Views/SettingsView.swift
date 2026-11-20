@@ -87,6 +87,7 @@ struct SettingsView: View {
             ) { changed in
                 PreferencesStore.save(changed, in: context)
             }
+            AppearanceSection()
             LookupsSection(preferences: PreferencesStore.current(preferenceRecords)) { changed in
                 PreferencesStore.save(changed, in: context)
             }

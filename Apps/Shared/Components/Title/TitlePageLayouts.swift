@@ -145,6 +145,7 @@
 
         /// "‹ Movies" in the iPad and Mac toolbar, a 44 pt target.
         struct ToolbarBack: View {
+            @Environment(\.accent) private var accent
             @Environment(\.titlePage) private var page
 
             var body: some View {
@@ -153,7 +154,7 @@
                 } label: {
                     Label(page?.state.section ?? "Back", systemImage: "chevron.backward")
                         .font(.boardStyle(17, weight: .semibold))
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(accent.color)
                         .frame(minHeight: 44)
                         .contentShape(Rectangle())
                 }

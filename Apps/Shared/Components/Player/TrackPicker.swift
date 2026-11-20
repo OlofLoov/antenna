@@ -161,6 +161,7 @@ enum TrackPicker {
     /// One 44 pt row, radius 10: a tick on the current track, the name and
     /// the sound format when known.
     struct Row: View {
+        @Environment(\.accent) private var accent
         let row: TrackRow
         let pick: () -> Void
 
@@ -169,7 +170,7 @@ enum TrackPicker {
                 HStack(spacing: 10) {
                     Image(systemName: "checkmark")
                         .font(.boardStyle(14, weight: .bold))
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(accent.color)
                         .frame(width: 18)
                         .opacity(row.isSelected ? 1 : 0)
                     Text(row.name)

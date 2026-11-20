@@ -280,6 +280,7 @@ enum ChannelOverlay {
 
     /// The 4 pt accent bar under a row's name (design-system/a-current-programme-always-shows-its-progress).
     struct ProgressBar: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
         @Environment(\.isFocused) private var isFocused
 
@@ -287,7 +288,7 @@ enum ChannelOverlay {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(isFocused ? Color.black.opacity(0.12) : Palette.surface(0.16))
-                    Capsule().fill(Palette.accent)
+                    Capsule().fill(accent.color)
                         .frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }

@@ -158,13 +158,14 @@ enum InfoPanel {
 
     /// The 6 pt accent bar (design-system/a-current-programme-always-shows-its-progress).
     private struct Progress: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
 
         var body: some View {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Palette.surface(0.16))
-                    Capsule().fill(Palette.accent).frame(width: proxy.size.width * min(1, max(0, fraction)))
+                    Capsule().fill(accent.color).frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }
             .frame(height: 6)

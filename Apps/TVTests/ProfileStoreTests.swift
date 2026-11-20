@@ -51,9 +51,9 @@ import Testing
     @Test("profiles/editing-and-deleting-a-profile rename, delete with favorites, keep the last")
     func editingAndDeleting() throws {
         let kids = try #require(ProfileStore.add(name: "Kids", colorIndex: 5, in: context))
-        #expect(ProfileStore.edit(kids.id, name: "Children", colorIndex: 2, in: context))
+        #expect(ProfileStore.edit(kids.id, name: "Children", colorIndex: 2, accent: .violet, in: context))
         #expect(try profiles().profiles.last?.name == "Children")
-        #expect(!ProfileStore.edit(kids.id, name: " ", colorIndex: 2, in: context))
+        #expect(!ProfileStore.edit(kids.id, name: " ", colorIndex: 2, accent: .blue, in: context))
 
         FavoriteRecord.toggle(channels[0], in: try catalogue(for: Profile.mainID), profile: Profile.mainID, context: context)
         FavoriteRecord.toggle(channels[1], in: try catalogue(for: kids.id), profile: kids.id, context: context)
@@ -62,6 +62,21 @@ import Testing
         let left = try context.fetch(FetchDescriptor<FavoriteRecord>())
         #expect(left.map(\.channelID) == ["a"], "the deleted profile's favorites go, Main's stay")
         #expect(!ProfileStore.delete(Profile.mainID, in: context), "the last profile cannot be deleted")
+    }
+
+    @Test("profiles/profiles-sync-between-devices each profile stores its own accent, Blue until picked")
+    func accents() throws {
+        #expect(ProfileStore.setAccent(.teal, of: Profile.mainID, in: context), "Main gets its record")
+        #expect(try profiles().profiles.map(\.accent) == [.teal])
+        #expect(try profiles().profiles[0].name == Profile.mainName)
+        let kids = try #require(ProfileStore.add(name: "Kids", colorIndex: 5, accent: .amber, in: context))
+        #expect(try profiles().profiles.map(\.accent) == [.teal, .amber])
+        #expect(ProfileStore.edit(kids.id, name: "Kids", colorIndex: 5, accent: .pink, in: context))
+        #expect(try profiles().profiles.map(\.accent) == [.teal, .pink], "Main is unchanged")
+        #expect(!ProfileStore.setAccent(.violet, of: UUID(), in: context), "an unknown profile")
+        let record = try #require(try context.fetch(FetchDescriptor<ProfileRecord>()).first { $0.id == kids.id })
+        record.accent = "chartreuse"
+        #expect(record.profile.accent == .blue, "a newer build's accent reads as Blue")
     }
 
     @Test("favorites/favorites-belong-to-a-profile each profile lists and adds its own favorites")

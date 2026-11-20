@@ -1,15 +1,17 @@
+import AntennaCore
 import SwiftUI
 
 /// The mark from the app icon artwork (`Apps/Mobile/AppIcon.icon`): the
-/// mast with its tip and two waves each side, in the accent on the icon's
-/// dark ground, so the only blue on screen is the accent
-/// (design-system/one-accent-color). `size` is the side of the tile.
+/// mast with its tip and two waves each side, in the profile's accent on
+/// the icon's dark ground (design-system/one-accent-color-per-profile).
+/// `size` is the side of the tile.
 struct AntennaMark: View {
+    @Environment(\.accent) private var accent
     let size: CGFloat
 
     var body: some View {
         Glyph()
-            .fill(Palette.accent)
+            .fill(accent.color)
             .padding(size * 0.12)
             .frame(width: size, height: size)
             .background(Palette.ground, in: Metrics.Corner.large.shape())

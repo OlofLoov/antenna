@@ -34,7 +34,7 @@ import Testing
         #expect(exists("scripts/render-icons.sh"))
     }
 
-    @Test("design-system/one-accent-color: the mark layers draw in the accent and nothing else")
+    @Test("design-system/one-accent-color-per-profile: the mark layers draw in the accent and nothing else")
     func markColor() throws {
         for name in ["waves", "mast", "tv-middle", "tv-front"] {
             let svg = try String(contentsOf: Self.root.appending(path: "design/icon/\(name).svg"), encoding: .utf8)

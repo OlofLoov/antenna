@@ -255,6 +255,7 @@ enum EpisodePicker {
     /// length or Watched, and one line of description. Missing parts are
     /// left out; with no picture the tile shows the number.
     struct EpisodeRow: View {
+        @Environment(\.accent) private var accent
         let type: Sizes
         let row: EpisodesContext.Row
         let play: () -> Void
@@ -293,7 +294,7 @@ enum EpisodePicker {
                                     .foregroundStyle(Palette.ground)
                                     .padding(.vertical, type.badge / 5)
                                     .padding(.horizontal, type.badge / 2)
-                                    .background(Palette.accent, in: cornerShape(.small))
+                                    .background(accent.color, in: cornerShape(.small))
                                     .fixedSize()
                                     .accessibilityIdentifier("episodes.row.\(episode.id).upNext")
                             }
@@ -367,6 +368,7 @@ enum EpisodePicker {
 
     /// A 0 to 1 progress bar in the accent color along the picture's foot.
     struct Bar: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
         let height: CGFloat
 
@@ -374,7 +376,7 @@ enum EpisodePicker {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Rectangle().fill(Palette.surface(0.22))
-                    Rectangle().fill(Palette.accent).frame(width: proxy.size.width * min(1, max(0, fraction)))
+                    Rectangle().fill(accent.color).frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }
             .frame(height: height)

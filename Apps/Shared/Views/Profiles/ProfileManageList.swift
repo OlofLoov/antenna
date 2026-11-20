@@ -99,12 +99,14 @@
         @Environment(\.dismiss) private var dismiss
         @State private var name: String
         @State private var colorIndex: Int
+        @State private var pickedAccent: ProfileAccent
         @State private var confirmingDelete = false
 
         init(profile: Profile?, profiles: ProfileList) {
             self.profile = profile
             self.profiles = profiles
             _name = State(initialValue: profile?.name ?? "")
+            _pickedAccent = State(initialValue: profile?.accent ?? .blue)
             let used = Set(profiles.profiles.map(\.colorIndex))
             _colorIndex = State(initialValue: profile?.colorIndex ?? (Profile.colors.indices.first { !used.contains($0) } ?? 0))
         }
@@ -128,6 +130,19 @@
                                 .accessibilityIdentifier("profiles.edit.name")
                         }
                         ProfileColorRow(selected: colorIndex) { colorIndex = $0 }
+                        VStack(spacing: 6) {
+                            Text("Accent")
+                                .font(.footnote.weight(.semibold))
+                                .textCase(.uppercase)
+                                .foregroundStyle(Palette.textMuted)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 4)
+                            ProfileAccentRow(selected: pickedAccent) { pickedAccent = $0 }
+                            Text(pickedAccent.title)
+                                .font(.footnote)
+                                .foregroundStyle(Palette.textMuted)
+                                .accessibilityHidden(true)
+                        }
                         if let profile, profiles.canDelete(profile.id) {
                             Button("Delete profile", role: .destructive) { confirmingDelete = true }
                                 .frame(maxWidth: .infinity, minHeight: 48)
@@ -175,9 +190,9 @@
 
         private func save() {
             if let profile {
-                ProfileStore.edit(profile.id, name: name, colorIndex: colorIndex, in: context)
+                ProfileStore.edit(profile.id, name: name, colorIndex: colorIndex, accent: pickedAccent, in: context)
             } else {
-                ProfileStore.add(name: name, colorIndex: colorIndex, in: context)
+                ProfileStore.add(name: name, colorIndex: colorIndex, accent: pickedAccent, in: context)
             }
             dismiss()
         }

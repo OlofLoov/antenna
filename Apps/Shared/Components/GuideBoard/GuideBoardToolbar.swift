@@ -79,12 +79,13 @@ extension GuideBoard {
 
     /// Now, with the accent dot: back to today around the current time.
     struct NowButton: View {
+        @Environment(\.accent) private var accent
         let action: () -> Void
 
         var body: some View {
             Button(action: action) {
                 HStack(spacing: 6) {
-                    Circle().fill(Palette.accent).frame(width: 8, height: 8)
+                    Circle().fill(accent.color).frame(width: 8, height: 8)
                     Text("Now")
                 }
                 .font(.boardStyle(14, weight: .semibold))
@@ -186,13 +187,14 @@ extension GuideBoard {
 
     /// A 3 pt accent bar on a faint track.
     struct ProgressTrack: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
 
         var body: some View {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Rectangle().fill(Palette.surface(0.16))
-                    Rectangle().fill(Palette.accent).frame(width: proxy.size.width * min(max(fraction, 0), 1))
+                    Rectangle().fill(accent.color).frame(width: proxy.size.width * min(max(fraction, 0), 1))
                 }
             }
             .frame(height: 3)

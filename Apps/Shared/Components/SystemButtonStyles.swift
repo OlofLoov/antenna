@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The system styles the app's buttons take (design-system/controls-use-system-styles).
@@ -73,5 +74,5 @@ enum ChipSurface: Sendable {
     .padding(Metrics.Spacing.large)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Palette.ground)
-    .tint(Palette.accent)
+    .accent(.blue)
 }

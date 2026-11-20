@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The loading checklist and the summary (`iPhone-Onboard-3`,
@@ -209,6 +210,7 @@ enum OnboardingChecklist {
 
     /// The marker, the title over the detail, and the guide's bar.
     struct LineRow: View {
+        @Environment(\.accent) private var accent
         let line: Line
         let metrics: LineMetrics
         var last = false
@@ -269,7 +271,7 @@ enum OnboardingChecklist {
                     .resizable()
                     .scaledToFit()
                     .padding(metrics.marker * 0.05)
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(accent.color)
                     .frame(width: metrics.marker, height: metrics.marker)
             case .running:
                 ProgressView()
@@ -295,6 +297,7 @@ enum OnboardingChecklist {
     /// The guide line's bar: a fixed accent segment while downloading, as
     /// on the boards, or a full bar once loaded.
     private struct GuideBar: View {
+        @Environment(\.accent) private var accent
         let bar: Line.Bar
         let height: CGFloat
 
@@ -304,9 +307,9 @@ enum OnboardingChecklist {
                     Capsule().fill(Palette.surface(0.16))
                     switch bar {
                     case .full:
-                        Capsule().fill(Palette.accent)
+                        Capsule().fill(accent.color)
                     case .indeterminate:
-                        Capsule().fill(Palette.accent)
+                        Capsule().fill(accent.color)
                             .frame(width: proxy.size.width * 0.3)
                             .offset(x: proxy.size.width * 0.35)
                     }

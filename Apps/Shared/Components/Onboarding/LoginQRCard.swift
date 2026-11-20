@@ -38,6 +38,7 @@
         }
 
         struct Television: View {
+            @Environment(\.accent) private var accent
             let link: URL
             let status: Status
 
@@ -76,7 +77,7 @@
                     switch status {
                     case .waiting(let count, let hint):
                         HStack(spacing: Metrics.Spacing.small) {
-                            Circle().fill(Palette.accent).frame(width: 12, height: 12).accessibilityHidden(true)
+                            Circle().fill(accent.color).frame(width: 12, height: 12).accessibilityHidden(true)
                             Text(LoginQRCard.waiting(count)).font(.caption)
                         }
                         .accessibilityElement(children: .combine)

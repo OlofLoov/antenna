@@ -86,6 +86,7 @@ enum SearchParts {
 
     /// "See all n" in the accent color.
     struct SeeAll: View {
+        @Environment(\.accent) private var accent
         let count: Int
         let select: () -> Void
         @Environment(\.searchMetrics) private var metrics
@@ -94,7 +95,7 @@ enum SearchParts {
             Button(action: select) {
                 Text("See all \(count)")
                     .font(.boardStyle(metrics.headerCount))
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(accent.color)
                     .frame(minHeight: 44)
                     .contentShape(Rectangle())
             }

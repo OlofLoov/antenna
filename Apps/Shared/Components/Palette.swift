@@ -6,7 +6,6 @@ enum Palette {
     static let tabBar = Color(red: 0x11 / 255, green: 0x15 / 255, blue: 0x1C / 255)
     static let text = Color(red: 0xF2 / 255, green: 0xF4 / 255, blue: 0xF8 / 255)
     static let textMuted = Color(red: 0xA7 / 255, green: 0xB0 / 255, blue: 0xBF / 255)
-    static let accent = Color(red: 0x5B / 255, green: 0xB8 / 255, blue: 0xFF / 255)
     /// The focused element's fill (design-system/focus-is-the-lifted-white-card); its text uses `ground`.
     static let focus = text
     static let focusShadow = Color.black.opacity(0.45)
