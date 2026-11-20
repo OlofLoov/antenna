@@ -79,12 +79,24 @@ Materials:
 |-------|----------|
 | Apple TV panels over live video: channel overlay, zap bar, info panel | `OverlayMaterial`: regular material under the overlay scrim at 0.72 |
 | Apple TV full-screen covers | `CoverBackdrop`: ultra thick material under the ground at 0.55 |
-| Tab bars, toolbars, controls floating over video, the iPhone Movies and Series switch | Liquid Glass, from the system or `.glassEffect` |
+| Tab bars, toolbars, controls floating over video or art, the iPhone Movies and Series switch, the reminder banner on iPhone, iPad and Mac | Liquid Glass, from the system or `.glassEffect` |
 | Forms and Settings on touch platforms | The system grouped background |
 | Content screens | Ground |
 
+Glass alone or a plain surface alone. A view on glass (`.glassEffect`,
+`.buttonStyle(.glass)`, `.glassProminent`) takes no background, border,
+shadow or stroked overlay; the system draws its edge and highlight. A
+surface that needs a fill, a hairline or a shadow does not take glass.
+Adjacent glass controls share a `GlassEffectContainer`. A round button over
+art or video is the glass button style with the circle shape, never a disc
+filled with the scrim tint. `scripts/check-rules.sh` fails on a glass view
+whose modifier chain also has `.background`, `.border`, `.shadow` or an
+`.overlay` that strokes; files it lets through are named in its exception
+list (today only `Apps/Shared/Debug/`).
+
 Controls take system styles: `primaryActionStyle()` (bordered on Apple TV,
-glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule),
+glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule on
+Apple TV, glass capsule elsewhere),
 `posterButtonStyle()` (card on Apple TV, borderless elsewhere) and
 `chipStyle(isPicked:on:)`. The parts the app draws itself share `FocusCard`
 and `FocusCardStyle`: guide programme blocks, channel overlay rows and
