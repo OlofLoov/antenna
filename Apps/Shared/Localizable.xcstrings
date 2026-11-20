@@ -2445,6 +2445,47 @@
         }
       }
     },
+    "ADULT" : {
+      "comment" : "Badge on a group row that holds adult content, in capitals like LOCKED and HIDDEN.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للبالغين"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERWACHSENE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ADULTOS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ADULTES"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ADULTO"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VUXEN"
+          }
+        }
+      }
+    },
     "About" : {
       "localizations" : {
         "ar" : {
@@ -3081,6 +3122,252 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägger till kanalen som spelas i favoriterna."
+          }
+        }
+      }
+    },
+    "Adult" : {
+      "comment" : "VoiceOver reading of the ADULT badge on a group row.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للبالغين"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erwachsene"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adultos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adultes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adulto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuxen"
+          }
+        }
+      }
+    },
+    "Adult content" : {
+      "comment" : "Switch on a group's settings that marks the group as adult content.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محتوى للبالغين"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inhalte für Erwachsene"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenido para adultos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenu pour adultes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conteúdo adulto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuxeninnehåll"
+          }
+        }
+      }
+    },
+    "Adult content shows in this profile until you turn this off." : {
+      "comment" : "Footer under Show adult content while it is on.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يظهر محتوى البالغين في هذا الملف الشخصي حتى توقف هذا الخيار."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inhalte für Erwachsene werden in diesem Profil gezeigt, bis du das ausschaltest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El contenido para adultos se muestra en este perfil hasta que lo desactives."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le contenu pour adultes s’affiche dans ce profil jusqu’à ce que vous le désactiviez."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O conteúdo adulto aparece neste perfil até você desativar isto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuxeninnehåll visas i den här profilen tills du stänger av det."
+          }
+        }
+      }
+    },
+    "Adult groups are hidden in this profile. Show adult content in Settings to see and mark them." : {
+      "comment" : "Note under the Groups list while the profile hides adult groups.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مجموعات البالغين مخفية في هذا الملف الشخصي. أظهر محتوى البالغين من الإعدادات لرؤيتها ووسمها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppen für Erwachsene sind in diesem Profil ausgeblendet. Zeige Inhalte für Erwachsene in den Einstellungen, um sie zu sehen und zu markieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los grupos para adultos están ocultos en este perfil. Muestra el contenido para adultos en Ajustes para verlos y marcarlos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les groupes pour adultes sont masqués dans ce profil. Affichez le contenu pour adultes dans les réglages pour les voir et les marquer."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os grupos adultos estão ocultos neste perfil. Mostre o conteúdo adulto nos Ajustes para vê-los e marcá-los."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuxengrupper är dolda i den här profilen. Visa vuxeninnehåll i Inställningar för att se och märka dem."
+          }
+        }
+      }
+    },
+    "Adult groups stay hidden in every profile that does not show adult content." : {
+      "comment" : "Footer under the Adult content switch on a group's settings.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى مجموعات البالغين مخفية في كل ملف شخصي لا يُظهر محتوى البالغين."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppen für Erwachsene bleiben in jedem Profil ausgeblendet, das keine Inhalte für Erwachsene zeigt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los grupos para adultos siguen ocultos en todos los perfiles que no muestran contenido para adultos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les groupes pour adultes restent masqués dans chaque profil qui n’affiche pas le contenu pour adultes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupos adultos continuam ocultos em todo perfil que não mostra conteúdo adulto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuxengrupper förblir dolda i alla profiler som inte visar vuxeninnehåll."
+          }
+        }
+      }
+    },
+    "Adult groups, channels, movies and series are hidden in this profile. Showing them needs the group passcode." : {
+      "comment" : "Footer under Show adult content while it is off.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المجموعات والقنوات والأفلام والمسلسلات المخصصة للبالغين مخفية في هذا الملف الشخصي. يتطلب إظهارها رمز المجموعات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppen, Sender, Filme und Serien für Erwachsene sind in diesem Profil ausgeblendet. Zum Anzeigen ist der Gruppencode nötig."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los grupos, canales, películas y series para adultos están ocultos en este perfil. Para mostrarlos se necesita el código de grupos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les groupes, chaînes, films et séries pour adultes sont masqués dans ce profil. Les afficher demande le code des groupes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupos, canais, filmes e séries adultos ficam ocultos neste perfil. Para mostrá-los, é preciso o código dos grupos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuxengrupper, kanaler, filmer och serier är dolda i den här profilen. Gruppkoden behövs för att visa dem."
           }
         }
       }
@@ -7231,6 +7518,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ange inloggningen för %@"
+          }
+        }
+      }
+    },
+    "Enter the passcode to show adult content in this profile." : {
+      "comment" : "Passcode prompt message before adult content shows.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أدخل الرمز لإظهار محتوى البالغين في هذا الملف الشخصي."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib den Code ein, um Inhalte für Erwachsene in diesem Profil zu zeigen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce el código para mostrar contenido para adultos en este perfil."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez le code pour afficher le contenu pour adultes dans ce profil."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite o código para mostrar conteúdo adulto neste perfil."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ange koden för att visa vuxeninnehåll i den här profilen."
           }
         }
       }
@@ -18511,6 +18839,47 @@
         }
       }
     },
+    "Set a passcode to show adult content. Locked groups use it too." : {
+      "comment" : "Passcode prompt message when the user turns on adult content and no passcode exists yet.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عيّن رمزًا لإظهار محتوى البالغين. تستخدمه المجموعات المقفلة أيضًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lege einen Code fest, um Inhalte für Erwachsene zu zeigen. Gesperrte Gruppen nutzen ihn auch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define un código para mostrar contenido para adultos. Los grupos bloqueados también lo usan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définissez un code pour afficher le contenu pour adultes. Les groupes verrouillés l’utilisent aussi."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defina um código para mostrar conteúdo adulto. Os grupos bloqueados também o usam."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj en kod för att visa vuxeninnehåll. Låsta grupper använder den också."
+          }
+        }
+      }
+    },
     "Set up Apple TV" : {
       "localizations" : {
         "ar" : {
@@ -18667,6 +19036,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inställningar"
+          }
+        }
+      }
+    },
+    "Show adult content" : {
+      "comment" : "Settings switch, per profile, that shows adult groups, channels, movies and series.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار محتوى البالغين"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inhalte für Erwachsene zeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar contenido para adultos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le contenu pour adultes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar conteúdo adulto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa vuxeninnehåll"
           }
         }
       }

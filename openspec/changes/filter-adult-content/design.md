@@ -16,6 +16,7 @@ The group passcode exists (`PasscodeRecord`, `GroupLocks`, `PasscodePrompt`), wi
 - `iPhone-Groups-Adult` (new): a provider group's settings with Hidden, Locked and "Adult content" on, and its footer.
 - `iPad-Groups-Adult` (new): the Groups split on iPad and Mac in a profile that hides adult content, with the list's note and a group's editor with "Adult content" off.
 - `TV-Groups-Adult` (new): the Apple TV Groups list with the ADULT badge on the focused row and the panel with the switch.
+- `TV-Groups-Locked` (changed): Cancel under the keypad.
 
 Design-system requirements followed: `design-system/controls-use-system-styles` (system `Toggle`s in the existing Forms and Lists), `design-system/forms-use-the-platform-form-style`, `design-system/modals-are-system-presentations` (the passcode prompt keeps its sheet and full-screen cover), `design-system/type-uses-text-styles`, `design-system/accessibility-identifiers-follow-the-board`, `design-system/copy-fits-in-every-language`, `design-system/layouts-mirror-in-right-to-left-languages`.
 
@@ -75,18 +76,22 @@ Movie and series categories have no screen to correct them, so their filter is t
 
 `GroupLockPrompt` learns a second reason to cover the picture: the playing channel is adult and hidden. It pauses, shows `PasscodePrompt` with "Adult content is hidden in this profile.", and the right passcode turns the switch on for the profile and resumes. Closing it plays the first channel the profile may watch, or stops, as for a locked channel. That one path covers the switch turning off on this device or another, a profile change, the channel restored at launch, Control Center, a reminder and a channel link from Top Shelf or Siri, since each of them tunes first.
 
-A title link (Top Shelf, Siri's Play) that names a title `withheldTitle(_:)` knows asks through `AdultGate`, an `@Observable` request the root presents with the same prompt. The right passcode turns the switch on; the link stays pending and plays once the index is rebuilt with the title in it. Closing the prompt drops the link. An adult movie or episode that plays when its title leaves the index closes the player.
+Titles take a shorter path. Siri and Shortcuts resolve a title before Antenna opens, and `IntentLookup.title` answers `adultHidden` for an adult title the profile hides, so Siri says so and nothing opens. Top Shelf only lists titles from the filtered index, so a tile for an adult title exists only from before the switch went off; selecting it finds no title and opens Antenna as it was, as for any tile that no longer matches. An adult movie or episode that plays when the switch goes off closes the player (`ShelfSync`).
 
 Options considered:
-- Drop such links silently (rejected): the owner asked for the passcode.
+- A passcode prompt for title links too, kept pending until the index is rebuilt (rejected for now): Siri refuses before the app opens, so only a stale Top Shelf tile would reach it, and it needs a second prompt host at the root on every platform.
 - A one-time pass that plays without turning the switch on (rejected): adult content would play in a profile that hides it, and Continue watching would then show a title the rest of the app hides.
+
+### Cancel under the keypad on Apple TV
+
+The Apple TV UI test for the switch found that focus stayed on Cancel in the prompt's top-left corner: pressing down from there never reached the keypad in the middle, so the passcode could not be typed with the remote. On Apple TV, Cancel now sits under the keypad, after Forgot passcode, while the prompt shows its keys; the waiting-for-iCloud prompt keeps it in the corner. This fixes the group lock prompt as well. `TV-Groups-Locked` draws Cancel under the keypad.
 
 ### Identifiers
 
 - `settings.adultContent`: the switch. `settings.adultContent.footer`: its footer.
 - `groups.adult`: the switch in a group's settings. `groups.adultHidden`: the Groups list's note. `groups.badge.adult`: the badge.
 - The prompt keeps `groups.passcode.*`.
-- Launch arguments for UI tests: `-ui-testing-adult` adds an adult group "XXX" with two channels and an adult movie to the scripted sources; `-ui-testing-groups-passcode <digits>` already sets a passcode.
+- Launch argument for UI tests: `-ui-testing-adult` adds "XXX Night", number 90, in the group "XXX" to the first scripted playlist on iPhone and Apple TV, and sets the passcode 2580.
 
 ### Data
 

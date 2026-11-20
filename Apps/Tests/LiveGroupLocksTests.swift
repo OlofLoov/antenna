@@ -59,6 +59,22 @@ import Testing
         #expect(live.playing == nil)
     }
 
+    @Test("adult-content/adult-content-that-is-playing-stops an adult channel playing is caught when the profile hides adult content again")
+    func adultWhilePlaying() async throws {
+        let live = await model()
+        let late = CatalogueGroup.named(home.id, "Movies")
+        live.rulesChanged(GroupRules(adultMarks: [late: true], showsAdult: true))
+        let film = try #require(live.channels.first { $0.id == "film" })
+        live.tune(film)
+        #expect(!live.playingIsAdult)
+
+        live.rulesChanged(GroupRules(adultMarks: [late: true]))
+        #expect(live.playingIsAdult)
+        #expect(!live.playingIsLocked, "it asks for the adult passcode, not the lock")
+        live.leaveLockedChannel()
+        #expect(live.playing?.id == "news")
+    }
+
     @Test("group-management/unlock-with-the-passcode an unlocked group shows once the locks open")
     func unlockedGroupShows() async {
         let live = await model()

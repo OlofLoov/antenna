@@ -18,6 +18,9 @@ final class GroupRecord {
     /// The user's name; required for an own group, optional otherwise.
     var customName: String?
     var locked: Bool = false
+    /// The user's mark: true for adult, false for not adult, nil to follow
+    /// the name rules and the provider's flag (adult-content/correct-a-group).
+    var adult: Bool?
     /// The group's place in the user's order; nil keeps the usual place.
     var sortOrder: Int?
     var createdAt: Date = Date.now

@@ -29,10 +29,10 @@ import Testing
             ], sourceID: source)
     }
 
-    private func rules(profile: UUID = Profile.mainID, locksOpen: Bool = false) throws -> GroupRules {
+    private func rules(profile: UUID = Profile.mainID, locksOpen: Bool = false, showsAdult: Bool = false) throws -> GroupRules {
         GroupStore.rules(
             groups: try context.fetch(FetchDescriptor<GroupRecord>()), members: try context.fetch(FetchDescriptor<GroupMemberRecord>()),
-            hidden: try context.fetch(FetchDescriptor<HiddenGroupRecord>()), profile: profile, locksOpen: locksOpen)
+            hidden: try context.fetch(FetchDescriptor<HiddenGroupRecord>()), profile: profile, locksOpen: locksOpen, showsAdult: showsAdult)
     }
 
     private func catalogue(profile: UUID = Profile.mainID, favorites: [FavoriteRecord] = []) throws -> Catalogue<PersistentIdentifier> {

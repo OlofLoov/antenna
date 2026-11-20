@@ -44,9 +44,9 @@ struct PasscodePrompt: View {
     var body: some View {
         content
             .overlay(alignment: .topLeading) {
-                Button("Cancel") { finished(false) }
-                    .padding(24)
-                    .accessibilityIdentifier("groups.passcode.cancel")
+                if !cancelUnderKeypad {
+                    cancel.padding(24)
+                }
             }
             .task(id: waitEnds) {
                 let wait = locks?.waitRemaining ?? 0
@@ -65,8 +65,25 @@ struct PasscodePrompt: View {
                 filled: typed.count, error: shownError, enabled: waitRemaining == 0, type: type, delete: delete
             ) {
                 if flow == .unlock { PasscodeForgot { finished(true) } }
+                if cancelUnderKeypad { cancel }
             }
         }
+    }
+
+    private var cancel: some View {
+        Button("Cancel") { finished(false) }
+            .accessibilityIdentifier("groups.passcode.cancel")
+    }
+
+    /// On Apple TV, Cancel sits under the keypad, so the remote moves
+    /// between them in a straight line. Elsewhere, and while the prompt
+    /// waits for iCloud, it sits in the corner.
+    private var cancelUnderKeypad: Bool {
+        #if os(tvOS)
+            return !(currentStep == .current && PasscodeStore.current(records) == nil)
+        #else
+            return false
+        #endif
     }
 
     private var currentStep: Step {

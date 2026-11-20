@@ -14,7 +14,23 @@
         static let argument = "-ui-testing-groups"
         static let passcode = "2580"
 
+        /// With this argument the first playlist adds "XXX Night", number 90,
+        /// in the group "XXX", and the passcode 2580 is set, for the adult
+        /// content UI tests (adult-content capability).
+        static let adultArgument = "-ui-testing-adult"
+
+        static func adultChannels(arguments: [String] = ProcessInfo.processInfo.arguments) -> [Channel] {
+            guard arguments.contains(adultArgument) else { return [] }
+            return [
+                Channel(
+                    id: "fixture/xxx-night", name: "XXX Night", streamURL: URL(fileURLWithPath: "/fixture/xxx-night.ts"), group: "XXX",
+                    epgID: "xxx-night", number: 90)
+            ]
+        }
+
         static func seed(_ context: ModelContext, locking group: CatalogueGroup, arguments: [String] = ProcessInfo.processInfo.arguments) {
+            let adultPasscode = PasscodeStore.record(for: passcode, now: .now)
+            if arguments.contains(adultArgument), !arguments.contains(argument), let adultPasscode { context.insert(adultPasscode) }
             guard let index = arguments.firstIndex(of: argument), arguments.indices.contains(index + 1) else { return }
             switch arguments[index + 1] {
             case "locked":

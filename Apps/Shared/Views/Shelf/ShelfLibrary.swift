@@ -21,6 +21,14 @@ final class ShelfLibrary {
     /// Which sections the sources offer, set by `ShelfSync`
     /// (m3u-playlists/playlist-titles-show-on-every-platform).
     var offer = TitleOffer.none
+    /// The current profile's adult content switch, set by `ShelfSync` and
+    /// passed to both sections (adult-content/hidden-everywhere-by-default).
+    var showsAdult = false {
+        didSet {
+            movies.showsAdult = showsAdult
+            series.showsAdult = showsAdult
+        }
+    }
     /// Names from every info answer, kept on the device
     /// (browse-by-person/names-the-provider-sent-are-kept).
     private(set) var learned = LearnedCredits()

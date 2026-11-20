@@ -24,6 +24,7 @@ struct ProfileGate<Content: View>: View {
         if let chosen {
             content
                 .environment(\.currentProfile, chosen)
+                .environment(\.showsAdultContent, ProfileStore.showsAdult(chosen, in: records))
                 .environment(\.switchProfile, SwitchProfileAction { self.chosen = nil })
                 .id(chosen)
                 // A profile deleted on another device ends its session here.
@@ -42,6 +43,12 @@ struct ProfileGate<Content: View>: View {
         store.write(id)
         chosen = id
     }
+}
+
+extension EnvironmentValues {
+    /// True when the current profile shows adult content, read from its
+    /// synced record (adult-content/show-adult-content-with-the-passcode).
+    @Entry var showsAdultContent = false
 }
 
 extension EnvironmentValues {
