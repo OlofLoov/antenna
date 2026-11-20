@@ -46,7 +46,7 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     /// header. `asksForRange` sends one from the start too, for a film:
     /// live TV leaves it out, since some servers refuse a range on a stream
     /// with no end.
-    public init(url: URL, session: URLSession = PlaybackNetwork.makeSession(), offset: Int = 0, asksForRange: Bool = false) {
+    public init(url: URL, session: URLSession = PlaybackNetwork.makeStreamingSession(), offset: Int = 0, asksForRange: Bool = false) {
         self.url = url
         self.session = session
         self.offset = offset
