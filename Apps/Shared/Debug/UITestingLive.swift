@@ -141,6 +141,11 @@
         /// When the app launched, so the scripted programmes are on now.
         @MainActor static let launched = Date.now
 
+        /// How long after launch Cabin's login arrives in the waiting
+        /// scenario: `UITESTING_LOGIN_AFTER` seconds, 6 by default. A test
+        /// that needs several screens before it reads the banner asks for more.
+        static let loginAfter = ProcessInfo.processInfo.environment["UITESTING_LOGIN_AFTER"].flatMap(TimeInterval.init) ?? 6
+
         /// The Live screen's dependencies for the launch scenario, or nil.
         @MainActor
         static func dependencies() -> LiveModel.Dependencies? {
@@ -207,7 +212,7 @@
                 guard source.id == cabinID else { return true }
                 switch scenario {
                 case .error, .empty: return false
-                case .waiting: return Date.now.timeIntervalSince(launched) > 6
+                case .waiting: return Date.now.timeIntervalSince(launched) > loginAfter
                 case .channels, .favorites, .loading, .offline, .failing: return true
                 }
             }
