@@ -40,6 +40,16 @@
             }
         }
 
+        /// Answers `guide-sources.web` with a web page and fails every other
+        /// host as unknown, so the form refuses the one and saves the rest.
+        static func probe(arguments: [String] = ProcessInfo.processInfo.arguments) -> GuideLinkProbe? {
+            guard arguments.contains(argument) else { return nil }
+            return GuideLinkProbe { url in
+                guard url.host() == "guide-sources.web" else { throw URLError(.cannotFindHost) }
+                return (200, Data("<!DOCTYPE html><html><body>Sign in</body></html>".utf8))
+            }
+        }
+
         static func playlistText(guide: URL) -> String {
             """
             #EXTM3U url-tvg="\(guide.absoluteString)"

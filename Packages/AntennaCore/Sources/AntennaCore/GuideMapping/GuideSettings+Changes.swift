@@ -89,6 +89,14 @@ public enum GuideLinkInput {
         case invalid
         /// "This guide is already in the list."
         case duplicate
+        /// The server answered 404 or 410.
+        case notFound
+        /// The server answered 401 or 403.
+        case unauthorized
+        /// The link opens an HTML page.
+        case webPage
+        /// The link answers with something other than XMLTV or gzip.
+        case notGuide
 
         public var message: String { message(.autoupdatingCurrent) }
 
@@ -97,6 +105,10 @@ public enum GuideLinkInput {
             return switch self {
             case .invalid: words("Enter a valid URL.")
             case .duplicate: words("This guide is already in the list.")
+            case .notFound: words("The server has nothing at this link.")
+            case .unauthorized: words("The server refused this link. Check its login or token.")
+            case .webPage: words("This link opens a web page, not a guide.")
+            case .notGuide: words("This link is not an XMLTV guide.")
             }
         }
     }
