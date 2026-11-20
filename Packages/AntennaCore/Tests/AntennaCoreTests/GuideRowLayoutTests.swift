@@ -22,8 +22,8 @@ import Testing
             show(march(22, 20), march(22, 20, 30), "Handball Weekly"),
             show(march(22, 20, 30), march(22, 23), "Handball: EHF Champions League"),
         ])
-        #expect(blocks.map(\.leading) == [0, 370])
-        #expect(blocks.map(\.width) == [366, 1106])
+        #expect(blocks.map(\.leading) == [0, 365])
+        #expect(blocks.map(\.width) == [361, 1091])
         #expect(blocks.map(\.timing) == [.past, .now])
         #expect(blocks.map(\.startedEarlier) == [false, false])
     }
@@ -34,8 +34,8 @@ import Testing
             show(march(22, 19), march(22, 21), "Snooker: UK Championship"),
             show(march(22, 21), march(22, 23), "Cycling: Tour Down Under, Stage 4"),
         ])
-        #expect(blocks.map(\.leading) == [0, 740])
-        #expect(blocks.map(\.width) == [736, 736])
+        #expect(blocks.map(\.leading) == [0, 730])
+        #expect(blocks.map(\.width) == [726, 726])
         #expect(blocks.map(\.startedEarlier) == [true, false])
         #expect(blocks[0].segment.start == march(22, 19))
         #expect(blocks.map(\.timing) == [.past, .now])
@@ -51,8 +51,8 @@ import Testing
         #expect(segments.last?.stop == march(30, 6))
 
         let blocks = GuideRowLayout.blocks(segments, in: window, now: now)
-        #expect(blocks.map(\.leading) == [0, 370, 740, 1110])
-        #expect(blocks.map(\.width) == [366, 366, 366, 366])
+        #expect(blocks.map(\.leading) == [0, 365, 730, 1095])
+        #expect(blocks.map(\.width) == [361, 361, 361, 361])
         #expect(blocks[0].startedEarlier)
         #expect(blocks[2].segment.programme == nil)
         #expect(GuideRowLayout.index(of: march(22, 21, 10), in: segments) == 2)
@@ -68,7 +68,7 @@ import Testing
         ])
         #expect(blocks[0].width == GuideRowLayout.minimumWidth)
         #expect(blocks[1].leading == 44)
-        #expect(blocks[1].leading + blocks[1].width == 366)
+        #expect(blocks[1].leading + blocks[1].width == 361)
         for (left, right) in zip(blocks, blocks.dropFirst()) {
             #expect(left.leading + left.width + GuideRowLayout.gap <= right.leading)
         }

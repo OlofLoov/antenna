@@ -18,7 +18,9 @@ enum GuideGrid {
     /// Muted text on the white focus card.
     static let mutedOnFocus = ChannelOverlay.mutedOnFocus
 
-    /// The picture and panel on top, the grid below.
+    /// The picture and panel on top, the grid below, 80 pt in from each
+    /// side (design-system/apple-tv-content-stays-in-the-safe-area): the
+    /// 300 pt channel column and the 1460 pt window fill the 1760 between.
     struct Screen<Picture: View, Panel: View, Grid: View>: View {
         @ViewBuilder var picture: Picture
         @ViewBuilder var panel: Panel
@@ -39,7 +41,8 @@ enum GuideGrid {
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding(.bottom, 40)
             }
-            .padding(.horizontal, 64)
+            .padding(.leading, Metrics.televisionSafeArea.leading)
+            .padding(.trailing, Metrics.televisionSafeArea.trailing)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .foregroundStyle(Palette.text)
         }

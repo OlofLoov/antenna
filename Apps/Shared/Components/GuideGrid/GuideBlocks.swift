@@ -160,7 +160,7 @@ private struct GridPreview: View {
                 } blocks: {
                     GuideGrid.HighlightedBlock(
                         content: .programme(title: "Premier League: Arsenal v Liverpool", timing: .now, startedEarlier: false),
-                        times: "\(time(20, 0)) – \(time(22, 0))", width: 1476)
+                        times: "\(time(20, 0)) – \(time(22, 0))", width: 1456)
                 }
             }
         }
@@ -199,7 +199,7 @@ private struct GridPreview: View {
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: 101, name: "Eurosport 1", look: .plain) { GuideGrid.Initials(text: "E1", look: .plain) }
         } blocks: {
-            GuideGrid.Block(content: .placeholder(GuideLine.loading()), width: 1476)
+            GuideGrid.Block(content: .placeholder(GuideLine.loading()), width: 1456)
         }
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: 106, name: "Arena HD", look: .plain) { GuideGrid.Initials(text: "AH", look: .plain) }
@@ -208,14 +208,14 @@ private struct GridPreview: View {
             GuideGrid.Block(
                 content: .programme(title: "Handball: EHF Champions League", timing: .past, startedEarlier: false), width: 366
             )
-            .offset(x: 370)
+            .offset(x: 365)
             GuideGrid.HighlightedBlock(content: .gap, times: "21:00 – 21:30", width: 366).offset(x: 740)
             GuideGrid.Block(content: .gap, width: 366).offset(x: 1110)
         }
         GuideGrid.Row {
             GuideGrid.ChannelCell(number: 108, name: "Golf Channel", look: .plain) { GuideGrid.Initials(text: "GC", look: .plain) }
         } blocks: {
-            GuideGrid.Block(content: .placeholder(ZapBarText.guideUnavailable()), width: 1476)
+            GuideGrid.Block(content: .placeholder(ZapBarText.guideUnavailable()), width: 1456)
         }
     }
     .padding(64)

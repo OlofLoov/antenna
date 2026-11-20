@@ -1,14 +1,16 @@
 import Foundation
 
 /// The time axis of the Apple TV guide grid (tv-guide-grid capability):
-/// half-hour columns across a 1480 pt window that shows the Guide window
+/// half-hour columns across a 1460 pt window that shows the Guide window
 /// preference's hours, between bounds set by the guide's horizon. Every
 /// answer is in `calendar`'s time zone, so a test fixes both the clock and
 /// the zone.
 public struct GuideTimeline: Sendable {
     /// One column covers half an hour.
     public static let column: TimeInterval = 30 * 60
-    /// The window's width on Apple TV: four 370 pt columns at two hours.
+    /// The window's width on Apple TV: four 365 pt columns at two hours.
+    /// With the 300 pt channel column it fills the 1760 pt between the
+    /// 80 pt safe edges (design-system/apple-tv-content-stays-in-the-safe-area).
     public static let windowWidth = GuideScale.television.columnWidth * 4
     /// The grid opens with this much of the past in view.
     public static let lookBack: TimeInterval = 90 * 60

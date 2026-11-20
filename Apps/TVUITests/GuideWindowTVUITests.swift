@@ -52,6 +52,6 @@ extension ShellUITests {
         XCTAssertEqual(guideColumns().count, 8, "four hours of half-hour columns")
         let first = guideColumns().element(boundBy: 0).frame.minX
         let second = guideColumns().element(boundBy: 1).frame.minX
-        XCTAssertEqual(second - first, 185, accuracy: 1, "the columns share the two-hour width")
+        XCTAssertEqual(second - first, 182.5, accuracy: 1, "the columns share the two-hour width")
     }
 }

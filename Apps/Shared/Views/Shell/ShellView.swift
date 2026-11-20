@@ -151,7 +151,7 @@
             )
             .frame(maxWidth: model.tab == .guide ? nil : .infinity, maxHeight: model.tab == .guide ? nil : .infinity)
             .clipShape(RoundedRectangle(cornerRadius: model.tab == .guide ? 14 : 0))
-            .padding(.leading, model.tab == .guide ? 64 : 0)
+            .padding(.leading, model.tab == .guide ? Metrics.televisionSafeArea.leading : 0)
             .padding(.top, model.tab == .guide ? GuideGrid.pictureTop : 0)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .opacity(model.tab.showsPicture && model.tuned != nil ? 1 : 0)
