@@ -29,6 +29,13 @@ final class Journey {
         app.launchArguments = arguments + Self.storeLanguage
         app.launchEnvironment = environment
         app.launchInEnglish()
+        #if os(macOS)
+            // A CI runner's Mac can start the app with no window open;
+            // File > New Window opens one, in any language.
+            if !app.windows.firstMatch.waitForExistence(timeout: 5) {
+                app.typeKey("n", modifierFlags: .command)
+            }
+        #endif
     }
 
     /// `-AppleLanguages` and `-AppleLocale` from the runner's `STORE_LANGUAGE`

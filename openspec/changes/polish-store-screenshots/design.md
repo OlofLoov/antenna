@@ -109,6 +109,12 @@ centered, which gives 2880 by 1800 on a Retina screen and 1440 by 900 on a
 iCloud) and runs it for every store language, English included, filing
 the pictures as `<locale>/mac/<nn>-<step>.png`.
 
+The hosted macOS runner starts with a 1024 by 768 screen and launches the
+app with no window open. The workflow sets the screen to 1920 by 1080 with
+`displayplacer` before the Mac walk, and `Journey` presses ⌘N when no
+window shows within 5 seconds of launch. The pictures come out at 1440 by
+900 pixels.
+
 Locally the Mac walk waits on the system's permission prompt for UI
 automation, so it was checked in CI only.
 
@@ -116,5 +122,5 @@ automation, so it was checked in CI only.
 
 - A `TZ` with a minute offset is unusual. Nothing in the app keys off the
   zone's name, and Xtream catch-up uses the server's own zone.
-- The Mac runner's screen size decides the pixel size; a screen under
-  900 points tall would shrink the window. The run shows which.
+- The Mac pictures depend on the runner image offering a 1920 by 1080
+  mode. If an image drops it, the resize step fails and the Mac set with it.
