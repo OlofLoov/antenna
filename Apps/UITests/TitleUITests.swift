@@ -21,12 +21,9 @@ final class TitleUITests: XCTestCase {
     }
 
     func openSection(_ app: XCUIApplication, _ kind: String) {
-        let tab = app.tabBars.buttons["Movies"]
+        let tab = app.tabBars.buttons[kind == "series" ? "Series" : "Movies"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         tab.tap()
-        if kind == "series" {
-            app.element("movies.kind.series").tap()
-        }
         XCTAssertTrue(app.element("\(kind).hero").waitForExistence(timeout: 10))
     }
 
@@ -116,7 +113,9 @@ final class TitleUITests: XCTestCase {
         XCTAssertTrue(score.waitForExistence(timeout: 5))
         XCTAssertEqual(score.label, shown, "the same title gets the same sample score")
 
-        app.tabBars.buttons["Settings"].tap()
+        // A title page has no profile button, so Settings opens from Live and the page waits in Movies.
+        app.tabBars.buttons["Live"].tap()
+        app.openSettings()
         let lookups = app.switches["settings.lookups"]
         for _ in 0..<6 where !lookups.exists { app.swipeUp() }
         XCTAssertTrue(lookups.waitForExistence(timeout: 5))
@@ -126,6 +125,7 @@ final class TitleUITests: XCTestCase {
         lookups.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
         expect(lookups, "value == '0'")
 
+        app.closeSettings()
         app.tabBars.buttons["Movies"].tap()
         XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
         expect(app.element("title.scores"), "exists == false")

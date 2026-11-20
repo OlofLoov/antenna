@@ -50,12 +50,20 @@ final class LiveUITests: XCTestCase {
         XCTAssertLessThanOrEqual(player.frame.maxY, nowPlaying.minY + 1)
         XCTAssertLessThanOrEqual(nowPlaying.maxY, groups.minY + 1)
         XCTAssertLessThanOrEqual(groups.maxY, list.minY + 1)
-        XCTAssertEqual(groups.width, window.width, accuracy: 1, "the group button spans the width")
+        // The group button spans the width up to the profile button at the row's trailing end.
+        let profile = app.element("profile.button").frame
+        XCTAssertEqual(groups.minX, window.minX, accuracy: 1)
+        XCTAssertEqual(groups.maxX, profile.minX, accuracy: 1, "the group button runs up to the profile button")
+        XCTAssertEqual(profile.midY, groups.midY, accuracy: 2, "one row")
+        XCTAssertLessThanOrEqual(profile.maxX, window.maxX)
         XCTAssertGreaterThanOrEqual(groups.height, 44)
         XCTAssertTrue(app.element("browse.groups").label.hasPrefix("All channels, 5 channels"), app.element("browse.groups").label)
-        for tab in ["Live", "Guide", "Movies", "Search", "Settings"] {
+        // live-tv-on-iphone-ipad-mac/the-iphone-tab-bar
+        for tab in ["Live", "Guide", "Movies", "Series", "Search"] {
             XCTAssertTrue(app.tabBars.buttons[tab].exists, "no \(tab) tab")
         }
+        XCTAssertFalse(app.tabBars.buttons["Settings"].exists, "Settings opens from the profile button")
+        XCTAssertGreaterThan(app.searchTab.frame.minX, app.tabBars.buttons["Series"].frame.maxX, "Search is last, at the trailing end")
         XCTAssertFalse(app.tabBars.buttons["Favorites"].exists)
         XCTAssertFalse(app.tabBars.buttons["Channels"].exists)
     }

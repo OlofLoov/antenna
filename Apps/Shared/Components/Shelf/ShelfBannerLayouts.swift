@@ -4,7 +4,7 @@ import SwiftUI
 #if os(iOS) || os(macOS)
     extension ShelfBanner {
         /// `iPhone-Movies`: the art fills the top 520 pt with `top` over it
-        /// (the Movies | Series switch, search and genre chips), and the copy
+        /// (the section name, the profile button and genre chips), and the copy
         /// and buttons sit on the hero foot scrim. A swipe pages it.
         struct Phone<Top: View>: View {
             @ViewBuilder var top: Top

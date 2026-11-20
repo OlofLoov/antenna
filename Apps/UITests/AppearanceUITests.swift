@@ -23,16 +23,9 @@ final class AppearanceUITests: XCTestCase {
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the channel list never appeared")
     }
 
-    /// Opens Settings from its tab, or from the profile button where Settings has no tab.
+    /// Opens Settings from the profile button.
     private func openSettings(_ app: XCUIApplication) {
-        let tab = app.tabBars.buttons["Settings"]
-        if tab.waitForExistence(timeout: 10) {
-            tab.tap()
-        } else {
-            app.element("profile.button").tap()
-            let item = app.buttons["profile.settings"]
-            if item.waitForExistence(timeout: 3) { item.tap() }
-        }
+        app.openSettings()
         XCTAssertTrue(app.element("settings.profile").waitForExistence(timeout: 10), "Settings never opened")
     }
 

@@ -38,16 +38,35 @@ final class ShelfUITests: XCTestCase {
     }
 
     // movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them
-    func testMoviesWithItsSeriesSwitchShowsForAnXtreamSource() throws {
+    // live-tv-on-iphone-ipad-mac/the-iphone-tab-bar
+    func testMoviesAndSeriesHaveATabEachForAnXtreamSource() throws {
         let app = try launch()
         openMovies(app)
-        XCTAssertTrue(app.element("movies.kind").exists)
-        XCTAssertFalse(app.tabBars.buttons["Series"].exists, "Series has no tab of its own on iPhone")
-        XCTAssertTrue(app.element("movies.kind.movies").isSelected)
+        XCTAssertEqual(app.element("movies.title").label, "Movies")
+        XCTAssertFalse(app.element("movies.kind").exists, "no Movies | Series switch")
+        XCTAssertFalse(app.tabBars.buttons["Settings"].exists, "Settings opens from the profile button")
+        XCTAssertTrue(app.searchTab.exists)
 
-        app.element("movies.kind.series").tap()
+        app.tabBars.buttons["Series"].tap()
         XCTAssertTrue(app.element("series.hero").waitForExistence(timeout: 10))
-        XCTAssertTrue(app.element("movies.kind.series").isSelected)
+        XCTAssertEqual(app.element("series.title").label, "Series")
+        XCTAssertTrue(app.tabBars.buttons["Series"].isSelected)
+    }
+
+    // live-tv-on-iphone-ipad-mac/the-iphone-tab-bar, each tab keeps its place
+    func testMoviesAndSeriesEachKeepTheirGenre() throws {
+        let app = try launch()
+        openMovies(app)
+        app.pickGenre("movies.genres.drama")
+        XCTAssertTrue(app.element("movies.grid").waitForExistence(timeout: 5))
+
+        app.tabBars.buttons["Series"].tap()
+        XCTAssertTrue(app.element("series.hero").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.genreButton("series").label.hasPrefix("All series"), "Series opens on its own rows")
+
+        app.tabBars.buttons["Movies"].tap()
+        XCTAssertTrue(app.element("movies.grid").waitForExistence(timeout: 5), "Movies kept its genre")
+        XCTAssertEqual(app.genreButton("movies").label, "Drama, 4 titles")
     }
 
     // movies-and-series-browsing/movies-and-series-appear-when-your-provider-has-them, no Xtream source
@@ -147,19 +166,38 @@ final class ShelfUITests: XCTestCase {
     }
 
     // movies-and-series-browsing/browse-a-genre-or-sort-the-lot
-    func testAGenreChipSwapsTheRowsForAGrid() throws {
+    // movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone
+    func testAGenrePickedFromTheSheetSwapsTheRowsForAGrid() throws {
         let app = try launch()
         openMovies(app)
+        let button = app.genreButton("movies")
+        XCTAssertTrue(button.label.hasPrefix("All movies"), button.label)
+        // No chips along the top: the drama genre is only in the sheet.
+        XCTAssertFalse(app.element("movies.genres.drama").exists, "a genre chip is drawn at the top")
+        XCTAssertLessThan(button.frame.maxY, app.element("movies.hero.title").frame.minY, "the button sits over the banner's copy")
+
+        button.tap()
+        let sheet = app.element("movies.genres.sheet")
+        XCTAssertTrue(sheet.waitForExistence(timeout: 5), "the button did not open the Genres sheet")
         XCTAssertTrue(app.element("movies.genres.all").isSelected)
+        XCTAssertTrue(app.element("movies.genres.myList").exists)
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.exists, "the sheet has a search field")
+        search.tap()
+        search.typeText("dram")
+        XCTAssertTrue(app.element("movies.genres.drama").waitForExistence(timeout: 5))
+        XCTAssertFalse(app.element("movies.genres.all").exists, "the search keeps only matching genres")
         app.element("movies.genres.drama").tap()
+
         let grid = app.element("movies.grid")
         XCTAssertTrue(grid.waitForExistence(timeout: 5))
+        XCTAssertFalse(sheet.exists, "the pick closes the sheet")
         XCTAssertTrue(grid.staticTexts["4 titles"].exists)
-        XCTAssertTrue(app.element("movies.genres.drama").isSelected)
+        XCTAssertEqual(button.label, "Drama, 4 titles")
         XCTAssertFalse(app.element("movies.row.recentlyAdded").exists)
         XCTAssertTrue(app.element("movies.hero").exists, "the banner stays over the grid")
 
-        app.element("movies.genres.all").tap()
+        app.pickGenre("movies.genres.all")
         XCTAssertTrue(app.element("movies.row.recentlyAdded").waitForExistence(timeout: 5))
         XCTAssertFalse(grid.exists)
     }

@@ -21,7 +21,7 @@
             case .live: "tv"
             case .guide: "list.bullet.rectangle"
             case .movies: "film"
-            case .series: "square.grid.2x2"
+            case .series: "play.rectangle.on.rectangle"
             case .search: "magnifyingglass"
             case .settings: "gearshape"
             }

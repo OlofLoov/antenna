@@ -16,9 +16,7 @@ final class GuideSourcesUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-guide-sources"]
         app.launchInEnglish()
-        let tab = app.tabBars.buttons["Settings"]
-        let button = tab.waitForExistence(timeout: 15) ? tab : app.buttons["Settings"].firstMatch
-        button.tap()
+        app.openSettings(timeout: 15)
         let source = element(app, Self.source)
         XCTAssertTrue(source.waitForExistence(timeout: 10))
         source.tap()

@@ -128,12 +128,17 @@
         }
     }
 
-    /// The tab bar on iPhone and in a narrow iPad window: Live, Guide, Movies, Search and Settings. Series
-    /// sits inside Movies, and Movies shows only when a source offers titles
-    /// (m3u-playlists/playlist-titles-show-on-every-platform).
+    /// The tab bar on iPhone and in a narrow iPad window: Live, Guide, Movies
+    /// and Series, with Search as the system's search button at the trailing
+    /// end (live-tv-on-iphone-ipad-mac/the-iphone-tab-bar). Movies and Series
+    /// each show only when a source offers them
+    /// (m3u-playlists/playlist-titles-show-on-every-platform). Settings opens
+    /// as a sheet from the profile button.
     private struct CompactTabs: View {
-        enum Tab: Hashable { case live, guide, movies, search, settings }
+        enum Tab: Hashable { case live, guide, movies, series, search }
         @State private var selection: Tab = .live
+        /// Settings over the open tab, from the profile button or a link.
+        @State private var settingsShown = false
         /// Taps on the tab that was already open, per tab.
         @State private var taps: [Tab: Int] = [:]
         /// The tab Search was opened from, where Cancel goes back to.
@@ -143,7 +148,6 @@
         @Environment(\.sourceRefresher) private var refresher
         @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
-        @Environment(SearchModel.self) private var search
         @Query private var records: [SourceRecord]
         /// The last session's tab was opened once, at the first appearance.
         @State private var restored = false
@@ -154,9 +158,9 @@
             @Environment(\.verticalSizeClass) private var verticalSizeClass
         #endif
 
-        /// Movies, with Series inside, shows when the sources offer either
+        /// Movies and Series each show when the sources offer them
         /// (m3u-playlists/playlist-titles-show-on-every-platform).
-        private var showsMovies: Bool { shelves.offer.any }
+        private var offer: TitleOffer { shelves.offer }
 
         /// The offer read straight from the store and the remembered counts,
         /// for the first appearance before `ShelfSync` has run.
@@ -173,33 +177,34 @@
                         .environment(\.guideBoardOpenLive, GuideOpenLiveAction { selection = .live })
                         .environment(\.tabTaps, taps[.guide, default: 0])
                 }
-                if showsMovies {
-                    SwiftUI.Tab("Movies", systemImage: "film", value: .movies) {
-                        ShelfCompactScreen()
-                            .environment(\.openSearch, opener)
-                            .environment(\.tabTaps, taps[.movies, default: 0])
-                            .overlay(alignment: .bottomLeading) {
-                                #if DEBUG
-                                    // The channel behind Movies, for the UI tests, out of the way of the header.
-                                    UITestingLive.Probe(engine: live.engine)
-                                        .frame(width: 60, height: 30)
-                                        .allowsHitTesting(false)
-                                #endif
-                            }
+                if offer.movies {
+                    SwiftUI.Tab("Movies", systemImage: LiveSection.movies.systemImage, value: .movies) {
+                        titles(.movie)
                     }
                 }
-                SwiftUI.Tab("Search", systemImage: "magnifyingglass", value: .search) {
+                if offer.series {
+                    SwiftUI.Tab("Series", systemImage: LiveSection.series.systemImage, value: .series) {
+                        titles(.series)
+                    }
+                }
+                // The system draws the search tab as its own round button at the trailing end.
+                SwiftUI.Tab(value: .search, role: .search) {
                     SearchCompactScreen { selection = beforeSearch }
                         .modifier(SearchSupply(picks: picks))
                         .environment(\.tabTaps, taps[.search, default: 0])
                 }
-                SwiftUI.Tab("Settings", systemImage: "gearshape", value: .settings) {
-                    SettingsView()
-                }
             }
-            // The Movies tab goes when no source offers titles.
-            .onChange(of: showsMovies) { _, has in
-                if !has, selection == .movies { selection = .live }
+            .environment(\.showSettings, ShowSettingsAction { settingsShown = true })
+            .sheet(isPresented: $settingsShown) {
+                SettingsView()
+                    .environment(\.closeSettings, ShowSettingsAction { settingsShown = false })
+                    // The banner shows over Settings too (programme-reminders/a-banner-while-antenna-is-open).
+                    .reminderBanner(live: live, watch: { watch($0) }, showLive: showLive)
+            }
+            // Movies or Series goes when no source offers it.
+            .onChange(of: offer) { _, offer in
+                if selection == .movies, !offer.movies { selection = .live }
+                if selection == .series, !offer.series { selection = .live }
             }
             .onChange(of: selection) { old, new in
                 if new == .search, old != .search { beforeSearch = old }
@@ -213,16 +218,17 @@
                 // Browse movies in onboarding opens Movies; otherwise the launch
                 // preference, when not Live, wins over the restored tab
                 // (sources-and-settings/choose-how-the-app-behaves).
-                if handoff?.takeMovies() == true { return selection = .movies }
+                let titles = Tab(LiveSection.titles(storedOffer))
+                if handoff?.takeMovies() == true { return selection = titles }
                 switch PreferencesStore.current(preferences).launchScreen(offersMovies: storedOffer.any) {
                 case .live: break
                 case .guide: selection = .guide
-                case .movies: selection = .movies
+                case .movies: selection = titles
                 }
             }
             .environment(\.shellNavigator, navigator)
             .modifier(IntentRequests(navigator: navigator))
-            .reminderBanner(live: live, watch: { watch($0) }, showLive: { selection = .live })
+            .reminderBanner(live: live, watch: { watch($0) }, showLive: showLive)
             // A movie that ends over Live, as one Siri started, brings Live
             // back as if it had just opened: the channel plays again
             // (live-tv-on-iphone-ipad-mac/sideways-on-iphone-fills-the-screen).
@@ -297,13 +303,25 @@
     }
 
     extension CompactTabs.Tab {
-        /// Series sits inside Movies; Movies with nothing offered opens Live.
-        init(_ tab: LiveSession.Tab, offer: TitleOffer) {
-            switch tab {
+        /// The tab the sidebar section maps to. Settings has no tab and opens Live.
+        init(_ section: LiveSection) {
+            switch section {
             case .guide: self = .guide
-            case .movies, .series: self = offer.any ? .movies : .live
-            case .live, .search, .settings: self = .live
+            case .movies: self = .movies
+            case .series: self = .series
+            case .search: self = .search
+            case .live, .settings: self = .live
             }
+        }
+
+        /// The tab a session left open. Movies or Series with nothing
+        /// offered, Search and Settings open Live, as in the sidebar.
+        init(_ tab: LiveSession.Tab, offer: TitleOffer) {
+            self.init(LiveSection(tab, offer: offer))
+        }
+
+        init(_ kind: ShelfTitle.Kind) {
+            self = kind == .movie ? .movies : .series
         }
 
         var session: LiveSession.Tab {
@@ -311,8 +329,8 @@
             case .live: .live
             case .guide: .guide
             case .movies: .movies
+            case .series: .series
             case .search: .search
-            case .settings: .settings
             }
         }
     }
@@ -338,23 +356,28 @@
 
         /// Opens Search, the Guide at a programme, or Live, and sets the
         /// group Live and the Guide share.
+        /// Settings opens as a sheet over the open tab; any other place closes
+        /// the sheet first.
         private var navigator: ShellNavigator {
             .window(live: live, guide: guide) { place in
-                switch place {
-                case .live: selection = .live
-                case .guide: selection = .guide
-                case .search: selection = .search
-                case .settings: selection = .settings
-                }
+                guard place != .settings else { return settingsShown = true }
+                settingsShown = false
+                selection = Tab(LiveSection(place))
             }
         }
 
-        /// The Movies tab's search button opens Search set to movies or series.
-        private var opener: SearchOpener {
-            SearchOpener { kind, text in
-                search.start(kind == .movie ? .movies : .series, text: text)
-                selection = .search
-            }
+        /// The Movies or Series tab's screen.
+        private func titles(_ kind: ShelfTitle.Kind) -> some View {
+            ShelfCompactScreen(kind: kind)
+                .environment(\.tabTaps, taps[Tab(kind), default: 0])
+                .overlay(alignment: .bottomLeading) {
+                    #if DEBUG
+                        // The channel behind the tab, for the UI tests, out of the way of the header.
+                        UITestingLive.Probe(engine: live.engine)
+                            .frame(width: 60, height: 30)
+                            .allowsHitTesting(false)
+                    #endif
+                }
         }
 
         /// Shows Live with `channel` playing, in All channels when the open
@@ -362,6 +385,12 @@
         private func watch(_ channel: Channel) {
             if let key = RowKey(channel), !live.catalogue.rows(in: live.group).contains(key) { live.show(.all, picked: false) }
             live.pick(channel)
+            showLive()
+        }
+
+        /// Closes Settings and opens Live.
+        private func showLive() {
+            settingsShown = false
             selection = .live
         }
     }

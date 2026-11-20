@@ -68,6 +68,7 @@ struct SettingsView: View {
                 #if os(iOS)
                     .toolbar { EditButton().accessibilityIdentifier("settings.edit") }
                 #endif
+                .modifier(SettingsSheetClose())
         #endif
     }
 

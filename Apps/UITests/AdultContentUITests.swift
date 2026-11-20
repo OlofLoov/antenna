@@ -24,15 +24,14 @@ final class AdultContentUITests: XCTestCase {
     }
 
     private func openSettings(_ app: XCUIApplication) -> XCUIElement {
-        let tab = app.tabBars.buttons["Settings"]
-        let button = tab.exists ? tab : app.buttons["Settings"].firstMatch
-        button.tap()
+        app.openSettings()
         let toggle = element(app, "settings.adultContent")
         XCTAssertTrue(toggle.waitForExistence(timeout: 10), "no Show adult content switch")
         return toggle.switches.firstMatch.exists ? toggle.switches.firstMatch : toggle
     }
 
     private func expectAllChannels(_ app: XCUIApplication, _ count: Int, file: StaticString = #filePath, line: UInt = #line) {
+        app.closeSettings()
         app.tabBars.buttons["Live"].tap()
         let groups = element(app, "browse.groups")
         expectation(for: NSPredicate(format: "label BEGINSWITH %@", "All channels, \(count) channels"), evaluatedWith: groups)

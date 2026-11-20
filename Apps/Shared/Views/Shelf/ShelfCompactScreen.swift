@@ -2,21 +2,22 @@
     import AntennaCore
     import SwiftUI
 
-    /// The Movies tab on iPhone and in a narrow iPad window (board
-    /// `iPhone-Movies`, `iPhone-Movies-Rows`): the Movies | Series switch
-    /// over a tall banner with the genre chips, then the rows or the
-    /// picked genre's grid (`iPhone-Movies-Grid`). Once the banner scrolls away the
-    /// switch stays pinned on the ground color.
+    /// The Movies tab or the Series tab on iPhone and in a narrow iPad
+    /// window (boards `iPhone-Movies`, `iPhone-Series`, `iPhone-Movies-Rows`):
+    /// the section's name and the profile button over a tall banner with the
+    /// genre button (the Genres sheet), then the rows or the picked genre's grid
+    /// (`iPhone-Movies-Grid`). Once the banner scrolls away the name and the
+    /// button stay pinned on the ground color. Each tab has its own screen,
+    /// so each keeps its own scroll position and genre.
     struct ShelfCompactScreen: View {
+        let kind: ShelfTitle.Kind
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfActivity.self) private var activity
-        @State private var kind: ShelfTitle.Kind = .movie
         @State private var pinned = false
         /// The grid in place of the rows; nil shows the rows.
         @State private var list: ShelfList?
 
         @Environment(ShelfPlayback.self) private var playback
-        @Environment(\.openSearch) private var openSearch
         @Environment(\.tabTaps) private var tabTaps
 
         /// Posters and the banner play through the playback, open pages through the library, and
@@ -44,7 +45,7 @@
                 }
             }
             .background(Palette.ground)
-            // Tapping Movies again closes an open page, as a pushed page goes
+            // Tapping Movies or Series again closes an open page, as a pushed page goes
             // back to its root (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).
             .onChange(of: tabTaps) { _, _ in
                 if library.top.map({ $0.section == kind && $0.origin != .search }) == true { library.closeAll() }
@@ -64,12 +65,7 @@
                                         topBar
                                             .opacity(pinned ? 0 : 1)
                                             .accessibilityHidden(pinned)
-                                        ShelfGenreChips(model: model, selection: list, select: { list = $0 }) {
-                                            ShelfView.Chip(title: "All", isSelected: list == nil) { list = nil }
-                                                .accessibilityIdentifier("\(kind.prefix).genres.all")
-                                            ShelfView.Chip(title: "My list", isSelected: list == .myList) { list = .myList }
-                                                .accessibilityIdentifier("\(kind.prefix).genres.myList")
-                                        }
+                                        ShelfGenreButton(model: model, selection: list) { list = $0 }
                                     }
                                     .padding(.top, proxy.safeAreaInsets.top)
                                 }
@@ -106,22 +102,24 @@
             .background(Palette.ground)
             .environment(\.shelfMetrics, .phone)
             .environment(\.shelfPrefix, kind.prefix)
-            .task(id: kind) { library.open() }
+            .task { library.open() }
         }
 
+        /// The section's name and the profile button. Search is the tab
+        /// bar's search button, so the bar has none of its own.
         private var topBar: some View {
             HStack {
-                ShelfView.KindSwitch(selection: kind) {
-                    kind = $0
-                    list = nil
-                }
+                Text(kind.sectionTitle)
+                    .font(.boardStyle(28, weight: .bold))
+                    .foregroundStyle(Palette.text)
+                    .lineLimit(1)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityIdentifier("\(kind.prefix).title")
                 Spacer()
-                if let openSearch {
-                    SearchParts.SectionButton { openSearch.open(kind, "") }
-                        .accessibilityIdentifier("\(kind.prefix).search")
-                }
+                ProfileMenuButton()
             }
-            .padding(.horizontal, 16)
+            .padding(.leading, 16)
+            .padding(.trailing, 12)
         }
     }
 #endif

@@ -116,6 +116,8 @@ extension ShellUITests {
             XCTAssertGreaterThan(item.frame.minX, previous, "\(identifier) is out of order")
             previous = item.frame.minX
         }
+        // Search is the system search tab, a magnifying glass that VoiceOver reads as Search.
+        XCTAssertEqual(element("shell.tab.search").label, "Search")
         XCTAssertFalse(element("shell.clock").exists, "the bar holds no clock")
     }
 

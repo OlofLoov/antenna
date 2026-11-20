@@ -129,7 +129,7 @@ extension Browse {
         Browse.SectionRow(title: "Live", systemImage: "tv", isSelected: true) {}
         Browse.SectionRow(title: "Guide", systemImage: "list.bullet.rectangle", isSelected: false) {}
         Browse.SectionRow(title: "Movies", systemImage: "film", isSelected: false) {}
-        Browse.SectionRow(title: "Series", systemImage: "square.grid.2x2", isSelected: false) {}
+        Browse.SectionRow(title: "Series", systemImage: "play.rectangle.on.rectangle", isSelected: false) {}
         Browse.SectionRow(title: "Search", systemImage: "magnifyingglass", isSelected: false) {}
     } groups: {
         Browse.GroupRow(title: "Favorites", systemImage: "star", count: 12, isSelected: false) {}

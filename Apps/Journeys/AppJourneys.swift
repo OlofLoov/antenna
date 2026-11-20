@@ -9,19 +9,22 @@ final class AppJourneys: XCTestCase {
     }
 
     /// Opens a tab: its `browse.section.<id>` row in the iPad sidebar, or
-    /// its place in the iPhone tab bar (Live, Guide, Movies when a source
-    /// offers titles, Search, Settings). Tab bar buttons take no identifier
-    /// from SwiftUI, and their labels are translated, so the place is the
-    /// handle that works in every language.
+    /// its place in the iPhone tab bar (Live, Guide, Movies and Series when
+    /// a source offers them, then the search button). Settings on iPhone
+    /// opens from the profile button, which has an identifier. Tab bar
+    /// buttons take no identifier from SwiftUI, and their labels are
+    /// translated, so the place is the handle that works in every language.
     private func open(_ id: String, label: String, in journey: Journey) {
         let button: XCUIElement
         if UIDevice.current.userInterfaceIdiom == .pad {
             button = journey.element("browse.section.\(id)")
+        } else if id == "settings" {
+            button = journey.element("profile.button")
         } else {
             let buttons = journey.app.tabBars.firstMatch.buttons
             XCTAssertTrue(buttons.firstMatch.waitForExistence(timeout: 10), "no tab bar")
             let count = buttons.count
-            let index = ["live": 0, "guide": 1, "movies": 2, "search": count - 2, "settings": count - 1][id] ?? 0
+            let index = ["live": 0, "guide": 1, "movies": 2, "search": count - 1][id] ?? 0
             button = buttons.element(boundBy: index)
         }
         XCTAssertTrue(button.waitForExistence(timeout: 10), "no \(label) tab")

@@ -10,10 +10,7 @@ final class SettingsUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchInEnglish()
 
-        let tab = app.tabBars.buttons["Settings"]
-        let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
-        XCTAssertTrue(button.exists, "no Settings tab button")
-        button.tap()
+        app.openSettings(timeout: 10)
 
         let notice = app.descendants(matching: .any)["settings.ffmpegNotice"].firstMatch
         if !notice.waitForExistence(timeout: 5) { app.swipeUp() }
@@ -26,6 +23,28 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["ffmpegNotice.source"].firstMatch.exists)
     }
 
+    // live-tv-on-iphone-ipad-mac/settings-from-the-profile-button
+    func testTheProfileButtonOpensSettingsOverTheTabAndCloseGoesBack() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
+        continueAfterFailure = false
+        let app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-live", "channels"]
+        app.launchInEnglish()
+        app.tabBars.buttons["Guide"].tap()
+        XCTAssertTrue(element(app, "guide.groups").waitForExistence(timeout: 10), "the Guide never showed its group row")
+        let button = try XCTUnwrap(app.profileButton, "no profile button on the Guide")
+        XCTAssertEqual(button.label, "Settings", "with one profile the button opens Settings")
+        XCTAssertEqual(button.frame.midY, element(app, "guide.groups").frame.midY, accuracy: 2, "on the group row")
+        button.tap()
+
+        XCTAssertTrue(element(app, "settings.profile").waitForExistence(timeout: 5), "Settings did not open")
+        XCTAssertTrue(app.navigationBars["Sources & Settings"].exists)
+        element(app, "settings.close").tap()
+        XCTAssertTrue(app.tabBars.buttons["Guide"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["Guide"].isSelected, "closing Settings goes back to the tab it opened over")
+        XCTAssertFalse(element(app, "settings.profile").exists)
+    }
+
     private static let home = "settings.source.00000000-0000-0000-0000-0000000000D1"
     private static let cabin = "settings.source.00000000-0000-0000-0000-0000000000D2"
 
@@ -34,9 +53,7 @@ final class SettingsUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", scenario]
         app.launchInEnglish()
-        let tab = app.tabBars.buttons["Settings"]
-        let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
-        button.tap()
+        app.openSettings(timeout: 10)
         return app
     }
 

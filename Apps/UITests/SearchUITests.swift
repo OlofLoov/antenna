@@ -289,24 +289,27 @@ final class SearchUITests: XCTestCase {
         XCTAssertTrue(app.element("search.result.channel.0").waitForExistence(timeout: 5))
     }
 
-    // movies-and-series-browsing/search-from-the-section
-    func testTheSearchButtonInMoviesOpensSearchSetToMovies() throws {
+    // movies-and-series-browsing/search-from-the-section, on iPhone
+    func testTheSearchButtonInTheTabBarOpensSearchFromMovies() throws {
         let app = try launch()
         let tab = app.tabBars.buttons["Movies"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         tab.tap()
-        let button = app.element("movies.search")
-        XCTAssertTrue(button.waitForExistence(timeout: 10))
-        button.tap()
+        XCTAssertTrue(app.element("movies.hero").waitForExistence(timeout: 10))
+        XCTAssertFalse(app.element("movies.search").exists, "Movies has no search button of its own")
+        app.searchTab.tap()
 
-        XCTAssertTrue(app.tabBars.buttons["Search"].isSelected)
+        XCTAssertTrue(app.searchTab.isSelected)
         let field = app.element("search.field")
         expect(field, "hasKeyboardFocus == true")
         field.typeText("harbor")
         XCTAssertTrue(app.element("search.result.title.0").waitForExistence(timeout: 10))
-        XCTAssertTrue(app.element("search.chip.movies").isSelected, "Search opens set to movies")
+        app.element("search.chip.movies").tap()
         XCTAssertEqual(app.element("search.result.title.0").label, "Movies & series, The Long Harbor")
         XCTAssertFalse(app.element("search.result.title.1").exists, "Harbor Watch is a series")
+
+        app.element("search.cancel").tap()
+        XCTAssertTrue(tab.isSelected, "Cancel goes back to Movies")
     }
 
     // browse-by-person/find-a-person-in-search

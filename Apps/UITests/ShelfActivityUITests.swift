@@ -75,7 +75,7 @@ final class ShelfActivityUITests: XCTestCase {
         XCTAssertLessThan(salt.frame.minX, second.frame.minX, "most recent first")
         XCTAssertTrue(row.staticTexts["2 titles"].exists)
 
-        app.element("movies.kind.series").tap()
+        app.tabBars.buttons["Series"].tap()
         let series = app.element("series.row.recentlyWatched")
         scroll(to: series, in: app)
         let harbor = series.descendants(matching: .any)["series.card.xtream#cabin#series#2"].firstMatch
@@ -105,7 +105,7 @@ final class ShelfActivityUITests: XCTestCase {
         let newest = grid.descendants(matching: .any)["movies.card.xtream#cabin#vod#1"].firstMatch
         let next = grid.descendants(matching: .any)["movies.card.xtream#office#vod#1"].firstMatch
         XCTAssertLessThan(newest.frame.minX, next.frame.minX)
-        app.element("movies.genres.all").tap()
+        app.pickGenre("movies.genres.all")
         expect(grid, "exists == false")
     }
 
@@ -157,7 +157,7 @@ final class ShelfActivityUITests: XCTestCase {
     // movies-and-series-browsing/keep-a-list-for-later, My list grid
     func testTheMyListChipShowsTheList() throws {
         let app = try launch()
-        app.element("movies.genres.myList").tap()
+        app.pickGenre("movies.genres.myList")
         let grid = app.element("movies.grid")
         XCTAssertTrue(grid.waitForExistence(timeout: 5))
         XCTAssertTrue(grid.staticTexts["2 titles"].exists)

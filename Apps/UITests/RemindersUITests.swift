@@ -24,7 +24,7 @@ final class RemindersUITests: XCTestCase {
             + ["-ui-testing-notifications", notifications] + extra
         app.launchEnvironment["UITESTING_REMINDER_LOG"] = log.path
         app.launchInEnglish()
-        XCTAssertTrue(app.tabBars.buttons["Settings"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.element("profile.button").waitForExistence(timeout: 10))
         return app
     }
 
@@ -44,7 +44,7 @@ final class RemindersUITests: XCTestCase {
     }
 
     private func openReminders(_ app: XCUIApplication) {
-        app.tabBars.buttons["Settings"].tap()
+        app.openSettings()
         let row = app.element("settings.reminders")
         if !row.waitForExistence(timeout: 5) { app.swipeUp() }
         XCTAssertTrue(row.waitForExistence(timeout: 5))
@@ -134,7 +134,7 @@ final class RemindersUITests: XCTestCase {
     // sources-and-settings/reach-your-reminders, the row with its count opens the page
     func testTheListShowsEachUpcomingReminderSoonestFirst() throws {
         let app = try launch("denied", extra: ["-ui-testing-reminders", "list"])
-        app.tabBars.buttons["Settings"].tap()
+        app.openSettings()
         expect(app.element("settings.reminders"), "label CONTAINS '3'")
         openReminders(app)
         expect(app.element("reminders.count"), "label == '3'")

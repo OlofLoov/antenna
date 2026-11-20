@@ -11,9 +11,7 @@ final class GroupsUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels"] + arguments
         app.launchInEnglish()
-        let tab = app.tabBars.buttons["Settings"]
-        let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
-        button.tap()
+        app.openSettings(timeout: 10)
         let row = element(app, "settings.groups")
         XCTAssertTrue(row.waitForExistence(timeout: 10))
         row.tap()

@@ -82,6 +82,18 @@ final class RestoreUITests: XCTestCase {
         app.expectOpenGroup("Sport", row: "browse.group.3")
     }
 
+    // session-restore-and-recently-watched/reopen-on-the-same-tab-and-group, Series has a tab of its own
+    func testSeriesOpensOnSeries() {
+        var app = launch()
+        let series = app.tabBars.buttons["Series"]
+        XCTAssertTrue(series.waitForExistence(timeout: 10))
+        series.tap()
+        app.terminate()
+
+        app = launch(keep: true)
+        expect(app.tabBars.buttons["Series"], "isSelected == true")
+    }
+
     // session-restore-and-recently-watched/reopen-on-the-same-tab-and-group, Search is not restored
     func testSearchOpensOnLive() {
         var app = launch()

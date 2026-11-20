@@ -21,7 +21,7 @@
             @Bindable var model = model
             Group {
                 if live.launched, live.sources.isEmpty {
-                    LiveNoSources()
+                    LiveNoSources().profileButtonInCorner()
                 } else {
                     TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                         content(now: context.date)
@@ -39,9 +39,12 @@
             .modifier(GuideBannerWatch())
             // Another group brings back the whole group.
             .onChange(of: live.group) { _, _ in model.filter = "" }
-            .overlay {
+            .overlay(alignment: .bottomLeading) {
                 #if DEBUG
+                    // Out of the way of the profile button at the top right.
                     UITestingLive.Probe(engine: live.engine)
+                        .frame(width: 60, height: 30)
+                        .allowsHitTesting(false)
                 #endif
             }
             .accessibilityElement(children: .contain)
@@ -53,7 +56,7 @@
             case .channels:
                 let data = reading.data(at: now, filtered: true)
                 VStack(spacing: 0) {
-                    LiveGroupButton(place: .guide)
+                    LiveGroupButton(place: .guide).withProfileButton()
                     days(data, now: now)
                     GuideBannerList(banners: reading.banners())
                         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
@@ -67,7 +70,7 @@
                     }
                 }
             case let status:
-                LiveStatusMessage(status: status)
+                LiveStatusMessage(status: status).profileButtonInCorner()
             }
         }
 

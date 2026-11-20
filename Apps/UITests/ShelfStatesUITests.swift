@@ -93,7 +93,7 @@ final class ShelfStatesUITests: XCTestCase {
     // movies-and-series-browsing/series-work-the-same-way
     func testSeriesOrderByLastChangeAndShowSeasons() throws {
         let app = try launch("titles")
-        app.element("movies.kind.series").tap()
+        app.tabBars.buttons["Series"].tap()
         let title = app.element("series.hero.title")
         XCTAssertTrue(title.waitForExistence(timeout: 10))
         XCTAssertEqual(title.label, "Harbor Watch", "the series changed last")
@@ -103,6 +103,7 @@ final class ShelfStatesUITests: XCTestCase {
         let seasons = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS '1 season'"), object: facts)
         XCTAssertEqual(XCTWaiter().wait(for: [seasons], timeout: 5), .completed, "facts read \(facts.label)")
         XCTAssertTrue(app.element("series.row.recentlyAdded").exists)
-        XCTAssertTrue(app.element("series.genres.crime").exists)
+        app.genreButton("series").tap()
+        XCTAssertTrue(app.element("series.genres.crime").waitForExistence(timeout: 5))
     }
 }
