@@ -39,7 +39,17 @@
 - [ ] 6.3 Add the TMDB row with logo and notice under About, citing `title-metadata/the-database-is-credited` and `design-system/nothing-fake-and-nothing-bundled`
 - [ ] 6.4 Update the Privacy Policy in `Web/privacy/` and `WebsiteTests`, citing `antenna-website/the-privacy-policy-rules-out-tracking`, and `docs/release/app-privacy.md`
 
-## 7. Verify
+## 7. Trending (moved from add-discover-rows)
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 7.2 `/opsx:verify` passes
+Moved here on 2026-11-20: the row needs the lookup service. Its boards are `iPhone-Movies-Discover`, `iPad-Movies-Discover` and `TV-Movies-Discover`.
+
+- [ ] 7.1 Add `/v1/trending` to the lookup service with a one-day cache
+- [ ] 7.2 Add `TrendingMatch.titles` in AntennaCore with fixtures of ids, tagged names, years and duplicates, citing `movies-and-series-browsing/trending-in-your-sources`
+- [ ] 7.3 Fetch, keep for seven days, and show the Trending row on every platform; no fetch and no row with lookups off
+- [ ] 7.4 UI tests on iPhone and Apple TV with a stubbed trending list: only matching titles show, focus lands on the first poster
+- [ ] 7.5 Add a journey step anchored on `movies.row.trending`
+
+## 8. Verify
+
+- [ ] 8.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [ ] 8.2 `/opsx:verify` passes

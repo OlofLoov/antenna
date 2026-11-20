@@ -18,15 +18,11 @@
 - [x] 3.3 UI tests on iPhone and Apple TV with a fixture source that gains a channel between two loads
 - [x] 3.4 Add a journey step for the New group anchored on `groups.new`
 
-## 4. Trending (needs add-title-metadata)
+## 4. Trending
 
-- [ ] 4.1 Add `/v1/trending` to the lookup service with a one-day cache
-- [ ] 4.2 Add `TrendingMatch.titles` in AntennaCore with fixtures of ids, tagged names, years and duplicates, citing `movies-and-series-browsing/trending-in-your-sources`
-- [ ] 4.3 Fetch, keep for seven days, and show the Trending row on every platform; no fetch and no row with lookups off
-- [ ] 4.4 UI tests on iPhone and Apple TV with a stubbed trending list: only matching titles show, focus lands on the first poster
-- [ ] 4.5 Add a journey step anchored on `movies.row.trending`
+Moved to `add-title-metadata` on 2026-11-20, with its requirement and design decision: the row needs the lookup service, which the owner put off on 2026-11-19.
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 5.2 `/opsx:verify` passes
+- [x] 5.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [x] 5.2 `/opsx:verify` passes

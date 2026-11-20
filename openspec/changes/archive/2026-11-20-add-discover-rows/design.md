@@ -11,7 +11,7 @@ See proposal.md for why. What exists on 2026-11-13:
 - `add-title-metadata` adds the lookup service, `TitleName.clean`, `TitleMatch.pick` and the lookups switch.
 
 Boards, under `openspec/specs/design-system/boards/`:
-- New: `iPhone-Movies-Discover.dc.html`, `iPad-Movies-Discover.dc.html` (iPad and Mac), `TV-Movies-Discover.dc.html`: the rows below the hero with Trending, Recently watched and Recently added with See all. `iPhone-Live-New.dc.html`, `iPad-Live-New.dc.html`, `TV-Overlay-New.dc.html`: the New group in the group chips, the sidebar and the overlay.
+- New: `iPhone-Movies-Discover.dc.html`, `iPad-Movies-Discover.dc.html` (iPad and Mac), `TV-Movies-Discover.dc.html`: the rows below the hero with Trending, Recently watched and Recently added with See all. The Trending row on them waits on `add-title-metadata`. `iPhone-Live-New.dc.html`, `iPad-Live-New.dc.html`, `TV-Overlay-New.dc.html`: the New group in the group chips, the sidebar and the overlay.
 - Follows: `iPhone-Movies-Rows`, `iPad-Movies-Rows`, `TV-Movies-Rows`, `iPhone-Movies-Grid`, `iPad-Movies-Grid`, `TV-Movies-Grid` (See all opens the existing grid), `iPhone-Recents`, `iPad`, `Main`.
 - Not drawn: the Series versions, which differ only in the kind switch and the tab; the See all grid, which is the existing grid titled "Recently added".
 
@@ -36,21 +36,9 @@ Options considered:
 
 Recently watched comes from `ProgressRecord`, so it is per profile and synced, and needs no new record type. `RecentlyWatched.list(progress:titles:kind:limit:)` in AntennaCore groups episodes by series, takes the newest `updatedAt` per title, drops titles not loaded, and caps at 20. Identifier `movies.row.recentlyWatched`.
 
-### 2. Trending: a list fetched, matched on the device
+### 2. Trending: moved
 
-The app asks the lookup service for `/v1/trending?kind=movie|tv&window=week`. The service fetches TMDB's `/3/trending/{movie|tv}/week` pages 1 to 5 (100 titles) with `append_to_response` for release year and the IMDb id, and caches the answer for a day at CloudFront. Every user gets the same answer, so the request says nothing about anyone and the service makes about two TMDB calls a day.
-
-The app matches the list against its loaded catalogue with `TrendingMatch.titles(trending:catalogue:sourceOrder:)`:
-1. A title whose provider gave a TMDB id matches by id.
-2. Else by `TitleName.clean` folded for case and accents, plus the year when the provider name holds one (within one year). A cleaned name that occurs more than once in a source without a year to tell them apart is skipped.
-3. One tile per trending entry, from the first source in the user's order. Trending order kept. At most 20; below three the row hides.
-
-The list is kept in `Caches/discover/trending-<kind>.json` with its fetch date and used for seven days offline. The row shows provider posters only. Identifier `movies.row.trending`.
-
-Options considered for the list:
-- TMDB trending (chosen): covered by the same agreement as `add-title-metadata`.
-- Trakt trending: its commercial terms could not be read, and its free limits tightened in 2025.
-- Most watched across Antenna users: would need the app to report what people watch, which ends "Data Not Collected".
+The Trending row needs the lookup service. The owner put the service off on 2026-11-19, so on 2026-11-20 the row's requirement, this decision and its tasks moved to `add-title-metadata`, and this change shipped without it.
 
 ### 3. New for movies and series: See all on Recently added
 
@@ -67,7 +55,7 @@ Options considered:
 
 ### 5. Order of the rows
 
-Continue watching, My list, Trending, Recently watched, Recently added, categories. What the user is in the middle of comes first, then what they chose to save, then what is popular, then their history, then the provider's order.
+Continue watching, My list, Trending (once `add-title-metadata` adds it), Recently watched, Recently added, categories. What the user is in the middle of comes first, then what they chose to save, then what is popular, then their history, then the provider's order.
 
 ## Risks / Trade-offs
 

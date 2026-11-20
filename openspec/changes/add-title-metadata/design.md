@@ -138,6 +138,26 @@ What was built:
 
 Previews do not use the mock. They feed fixed `TitleMatch` values, since a `#Preview` compiles into Release builds too.
 
+### 9. Trending: a list fetched, matched on the device
+
+Moved from `add-discover-rows` on 2026-11-20, which shipped Recently watched, See all and New channels without it.
+
+The app asks the lookup service for `/v1/trending?kind=movie|tv&window=week`. The service fetches TMDB's `/3/trending/{movie|tv}/week` pages 1 to 5 (100 titles) with `append_to_response` for release year and the IMDb id, and caches the answer for a day at CloudFront. Every user gets the same answer, so the request says nothing about anyone and the service makes about two TMDB calls a day.
+
+The app matches the list against its loaded catalogue with `TrendingMatch.titles(trending:catalogue:sourceOrder:)`:
+1. A title whose provider gave a TMDB id matches by id.
+2. Else by `TitleName.clean` folded for case and accents, plus the year when the provider name holds one (within one year). A cleaned name that occurs more than once in a source without a year to tell them apart is skipped.
+3. One tile per trending entry, from the first source in the user's order. Trending order kept. At most 20; below three the row hides.
+
+The list is kept in `Caches/discover/trending-<kind>.json` with its fetch date and used for seven days offline. The row shows provider posters only. Identifier `movies.row.trending`.
+
+Options considered for the list:
+- TMDB trending (chosen): covered by the same agreement as the title lookups.
+- Trakt trending: its commercial terms could not be read, and its free limits tightened in 2025.
+- Most watched across Antenna users: would need the app to report what people watch, which ends "Data Not Collected".
+
+The row sits after My list and before Recently watched: what the user is in the middle of, then what they saved, then what is popular, then their history, then the provider's order.
+
 ## Risks / Trade-offs
 
 - TMDB's commercial price is unknown until sales answers. If it is out of reach the change ships nothing user-visible; the id decoding is still useful to the next changes.
