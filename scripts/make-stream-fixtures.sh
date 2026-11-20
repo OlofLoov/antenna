@@ -128,6 +128,10 @@ ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
     -metadata:s:a:0 language=ger -metadata:s:s:0 language=ger -metadata:s:s:1 language=eng \
     -max_interleave_delta 0 -f mpegts "$out/dvb-subtitles.ts"
 
+# The same channel with six video packets lost in the middle of a GOP, as a
+# stream that lost data on the way arrives: FFmpeg marks the picture corrupt.
+python3 -I scripts/drop-ts-packets.py "$out/channel.ts" "$out/damaged.ts" 400 6
+
 # The same picture in Matroska and AVI.
 ff -i "$out/channel.ts" -c copy "$out/channel.mkv"
 # The same Matroska film with no index (Cues), as a muxer writing to a pipe

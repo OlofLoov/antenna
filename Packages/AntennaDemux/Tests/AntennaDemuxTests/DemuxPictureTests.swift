@@ -29,6 +29,57 @@ import Testing
         #expect(started.pictures.count == reference.pictures.filter { $0.time >= first.time }.count)
     }
 
+    @Test("playback-engine/undecodable-pictures-are-not-shown a channel that lost packets goes on from the next keyframe")
+    func lostPackets() async throws {
+        let reference = try await PictureCheck.run(try Self.fixture("channel.ts"))
+        let damaged = try await PictureCheck.run(try Self.fixture("damaged.ts"))
+        let broken = PictureCheck.damaged(damaged, against: reference)
+        #expect(broken.isEmpty, "damaged at \(broken.map(\.seconds))")
+        // The damaged picture and those after it up to the next keyframe
+        // are left out; the rest play.
+        #expect(damaged.pictures.count < reference.pictures.count)
+        #expect(damaged.pictures.count > reference.pictures.count - 25)
+        #expect(damaged.pictures.last?.time == reference.pictures.last?.time)
+    }
+
+    @Test(
+        "playback-engine/undecodable-pictures-are-not-shown after the video renderer is flushed, pictures start at a keyframe",
+        arguments: [0.3, 0.55, 0.75])
+    func restartsAtAKeyframe(fraction: Double) async throws {
+        let url = try Self.fixture("channel.ts")
+        let reference = try await PictureCheck.run(url)
+        let data = try Data(contentsOf: url)
+        let bytes = GatedBytes(data, gate: Int(Double(data.count) * fraction) / 188 * 188)
+        var timebase: CMTimebase?
+        CMTimebaseCreateWithSourceClock(allocator: nil, sourceClock: CMClockGetHostTimeClock(), timebaseOut: &timebase)
+        let clock = try #require(timebase)
+        let video = KeepingRenderer(timebase: clock)
+        let run = DemuxRun(
+            bytes: bytes, videoFeed: SampleFeed(renderer: video, label: "test.video", limit: 1000),
+            audioFeed: SampleFeed(renderer: KeepingRenderer(timebase: clock), label: "test.audio", limit: 1000))
+        let ended = Flag()
+        run.start(ready: { _ in }, ended: { _ in ended.set() })
+        #expect(await eventually { bytes.waiting })
+        try await Task.sleep(for: .milliseconds(200))
+        let before = video.buffers.count
+        run.restartPictures()
+        bytes.open()
+        #expect(await eventually { ended.value })
+        try await Task.sleep(for: .milliseconds(200))
+        run.cancel()
+        let after = Array(video.buffers.dropFirst(before))
+        let first = try #require(after.first)
+        #expect(!Self.isNotSync(first), "the first picture after the flush is a keyframe")
+        let damaged = PictureCheck.damaged(PictureCheck.decode(after), against: reference)
+        #expect(damaged.isEmpty)
+    }
+
+    private static func isNotSync(_ buffer: CMSampleBuffer) -> Bool {
+        guard let attachments = CMSampleBufferGetSampleAttachmentsArray(buffer, createIfNecessary: false) as? [[CFString: Any]]
+        else { return false }
+        return (attachments.first?[kCMSampleAttachmentKey_NotSync] as? Bool) == true
+    }
+
     @Test("playback-engine/undecodable-pictures-are-not-shown a Dolby Vision enhancement layer in MPEG-TS is left out")
     func enhancementLayerInAnnexB() throws {
         let (stream, base) = try Self.videoPackets("hdr10.ts")

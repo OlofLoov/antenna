@@ -24,6 +24,8 @@ final class DemuxRun: @unchecked Sendable {
     /// A sound switch `selectAudio` or `resendSound` asked for and the run
     /// has not made yet. A nil stream means the sound that plays.
     private var requestedSound: (stream: Int?, from: CMTime)?
+    /// Set by `restartPictures` until the run sees it.
+    private var keyframeRequested = false
     /// Wakes a run that read to the end for a sound request or `cancel`.
     private let soundRequested = DispatchSemaphore(value: 0)
 
@@ -35,6 +37,8 @@ final class DemuxRun: @unchecked Sendable {
     var cueFound: (@Sendable (TimedCue) -> Void)?
     /// Called when the picture changes size or dynamic range after the start.
     var pictureChanged: (@Sendable (PictureChange) -> Void)?
+    /// Called when pictures are dropped until the next keyframe, with why.
+    var pictureDropped: (@Sendable (String) -> Void)?
     /// Called once a sound switch is made, with the new sound's format, and
     /// when the sound that plays changes its channel count.
     var soundSwitched: (@Sendable (PresentationInfo.Audio) -> Void)?
@@ -89,6 +93,19 @@ final class DemuxRun: @unchecked Sendable {
     func resendSound(from time: CMTime) {
         lock.withLock { requestedSound = (nil, time) }
         soundRequested.signal()
+    }
+
+    /// Queues pictures again from the next keyframe on, as when the video
+    /// renderer was flushed after it stopped decoding.
+    func restartPictures() {
+        lock.withLock { keyframeRequested = true }
+    }
+
+    func takeKeyframeRequest() -> Bool {
+        lock.withLock {
+            defer { keyframeRequested = false }
+            return keyframeRequested
+        }
     }
 
     private func takeSoundRequest() -> (stream: Int?, from: CMTime)? {
@@ -229,7 +246,7 @@ final class DemuxRun: @unchecked Sendable {
     }
 
     /// What `pump` has seen so far.
-    private struct PumpState {
+    struct PumpState {
         var startTime: CMTime?
         var heldSound: [CMSampleBuffer] = []
         var announced = false
@@ -266,20 +283,7 @@ final class DemuxRun: @unchecked Sendable {
                 guard switchSound(to: request, prepared, &state) else { break reading }
             }
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
-                if !state.sawKeyframe, !packet.isKeyframe { continue }
-                if Self.isLeading(packet, &state) { continue }
-                state.sawKeyframe = true
-                if !state.fieldsDecided {
-                    state.fieldsDecided = true
-                    state.fields = Self.fieldPictures(for: builder, keyframe: packet)
-                }
-                for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
-                    let shown = (try? state.fields?.buffers(from: buffer)) ?? [buffer]
-                    for picture in shown {
-                        guard takePicture(picture, &state) else { break reading }
-                    }
-                }
-                if packet.isKeyframe, state.announced { notePicture(builder, at: packet.presentationTime, &state) }
+                guard takeVideo(packet, builder: builder, &state) else { break reading }
             } else if let builder = prepared.sounds[packet.streamIndex] {
                 keep(packet, in: &state)
                 guard packet.streamIndex == state.sound else { continue }
@@ -309,31 +313,6 @@ final class DemuxRun: @unchecked Sendable {
         return state.announced
     }
 
-    /// Whether `packet` is a picture that leads the keyframe the picture
-    /// started at: decoded after it but shown before it, as the RASL pictures
-    /// after an HEVC CRA and the B-frames after an open-GOP H.264 keyframe
-    /// are. They may refer to pictures before the keyframe, which were never
-    /// read, and decode to green or broken pictures
-    /// (playback-engine/undecodable-pictures-are-not-shown).
-    private static func isLeading(_ packet: DemuxedPacket, _ state: inout PumpState) -> Bool {
-        if packet.isKeyframe {
-            state.startKeyframe = state.sawKeyframe ? nil : packet.presentationTime
-            return false
-        }
-        guard let start = state.startKeyframe, start.isNumeric, packet.presentationTime.isNumeric else { return false }
-        return packet.presentationTime < start
-    }
-
-    /// Reports the picture's new size or dynamic range when a keyframe changes them.
-    private func notePicture(_ builder: SampleBuilder, at time: CMTime, _ state: inout PumpState) {
-        guard let format = builder.formatDescription, format.mediaType == .video else { return }
-        let size = CMVideoFormatDescriptionGetDimensions(format)
-        let range = SampleBuilder.dynamicRange(of: format)
-        if let last = state.picture, last.size.width == size.width, last.size.height == size.height, last.range == range { return }
-        state.picture = (size, range)
-        pictureChanged?(PictureChange(time: time, size: size, dynamicRange: range, format: format))
-    }
-
     /// Sends the line in a subtitle packet. A line with no length in the
     /// container stays four seconds.
     private func cue(from packet: DemuxedPacket, codec: String) {
@@ -348,7 +327,7 @@ final class DemuxRun: @unchecked Sendable {
     /// Queues a picture. The first one sets the start and lets through the
     /// sound held back for it; the next few tell the frame rate. Returns
     /// false once the feed is closed.
-    private func takePicture(_ buffer: CMSampleBuffer, _ state: inout PumpState) -> Bool {
+    func takePicture(_ buffer: CMSampleBuffer, _ state: inout PumpState) -> Bool {
         if state.startTime == nil {
             let first = sampleTime(buffer)
             state.startTime = first

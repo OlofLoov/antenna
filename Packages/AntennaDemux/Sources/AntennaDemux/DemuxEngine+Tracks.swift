@@ -74,6 +74,7 @@ extension DemuxEngine {
     func listen(to run: DemuxRun, url: URL, generation mine: Int) {
         let log = self.log
         run.seekFailed = { log("demux seek \(redacted(url)) failed, starting from the beginning") }
+        run.pictureDropped = { reason in log("demux \(redacted(url)) \(reason), pictures resume at the next keyframe") }
         run.cueFound = { [weak self] cue in
             Task { @MainActor in self?.cueFound(cue, generation: mine) }
         }
