@@ -347,6 +347,9 @@
         let now: Date
         let title: String
         let count: Int
+        /// The drawn width of each half-hour label's text and of the now pill.
+        @State private var labelWidths: [Date: Double] = [:]
+        @State private var pillWidth = 0.0
 
         var body: some View {
             HStack(spacing: 0) {
@@ -355,15 +358,21 @@
                 GeometryReader { proxy in
                     let start = scale.date(at: scroll.x, from: timeline.bounds.start)
                     let visible = DateInterval(start: start, duration: proxy.size.width / scale.columnWidth * GuideTimeline.column)
+                    let columns = timeline.columns(in: visible)
+                    let covered = covered(columns, from: start, showsNow: visible.contains(now))
                     ZStack(alignment: .topLeading) {
-                        ForEach(timeline.columns(in: visible), id: \.self) { column in
-                            GuideBoard.ColumnLabel(text: GuideText(locale: locale).time(column), width: scale.columnWidth)
-                                .offset(x: scale.offset(of: column, from: start))
-                                .accessibilityIdentifier("guide.column")
+                        ForEach(columns, id: \.self) { column in
+                            GuideBoard.ColumnLabel(
+                                text: GuideText(locale: locale).time(column), width: scale.columnWidth, isCovered: covered.contains(column)
+                            ) { labelWidths[column] = $0 }
+                            .offset(x: scale.offset(of: column, from: start))
+                            .accessibilityIdentifier("guide.column")
                         }
                         if visible.contains(now) {
+                            // Centered on the now line, as `iPad-Guide` draws it.
                             GuideBoard.NowPill(time: GuideText(locale: locale).time(now))
-                                .offset(x: scale.offset(of: now, from: start) - 24, y: 6)
+                                .onGeometryChange(for: Double.self, of: { $0.size.width }) { pillWidth = $0 }
+                                .offset(x: scale.offset(of: now, from: start) - pillWidth / 2, y: 6)
                                 .accessibilityIdentifier("guide.nowLine")
                         }
                     }
@@ -373,6 +382,17 @@
             .frame(height: GuideBoard.headerHeight)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("guide.header")
+        }
+
+        /// The labels the now pill covers, which the header leaves out as
+        /// the Apple TV guide does (tv-guide-grid/the-grid-opens-around-now-and-keeps-time).
+        private func covered(_ columns: [Date], from start: Date, showsNow: Bool) -> Set<Date> {
+            guard showsNow, pillWidth > 0, let first = columns.first else { return [] }
+            let edge = scale.offset(of: first, from: start)
+            let indices = GuideTimeline.labelsUnderTag(
+                line: scale.offset(of: now, from: start) - edge, tagWidth: pillWidth, columnWidth: scale.columnWidth,
+                labelWidths: columns.map { labelWidths[$0] ?? 0 }, inset: GuideBoard.ColumnLabel.inset, gap: Metrics.Spacing.xxSmall)
+            return Set(indices.map { columns[$0] })
         }
     }
 
