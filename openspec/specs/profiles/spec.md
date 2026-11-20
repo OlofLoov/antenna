@@ -103,7 +103,7 @@ The system SHALL show every source and use every login to every profile, and add
 - **THEN** Kids sees its channels too, without signing in again
 
 ### Requirement: What each profile keeps
-The system SHALL keep favorites, hidden groups, watch progress, My list, recent searches and recently watched per profile and sync them per profile, and SHALL keep the last channel and the sound and subtitle picks per channel per profile on each device.
+The system SHALL keep favorites, hidden groups, watch progress, My list, recent searches, recently watched and whether adult content shows per profile and sync them per profile, and SHALL keep the last channel and the sound and subtitle picks per channel per profile on each device. A new profile SHALL start with adult content hidden.
 
 #### Scenario: Favorites apart
 - **GIVEN** Dad favorited Sport One and Kids favorited Cartoon Club
@@ -124,6 +124,12 @@ The system SHALL keep favorites, hidden groups, watch progress, My list, recent 
 - **GIVEN** Dad picked German sound on Sport One on this device
 - **WHEN** Kids tunes Sport One on the same device
 - **THEN** it starts by Kids's preferences, not with German sound
+
+#### Scenario: Adult content apart
+- **GIVEN** Dad turned on Show adult content with the passcode
+- **WHEN** the Apple TV switches to Kids, or a new profile is added
+- **THEN** that profile hides adult content
+- **AND** Dad's other devices show adult content in Dad's profile without asking again
 
 ### Requirement: Profiles sync between devices
 The system SHALL sync profiles, their names, colors and order through the user's private iCloud account, and SHALL keep which profile is current on each device on that device only.
