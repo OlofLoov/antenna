@@ -168,14 +168,21 @@ public struct MediaTrack: Sendable, Equatable, Identifiable {
     /// True for subtitles that translate only foreign speech or signs
     /// (playback-engine/forced-subtitles-in-your-language-show).
     public var isForced: Bool
+    /// True for sound that describes the picture for blind and partially
+    /// sighted viewers (playback-engine/audio-description-is-not-the-default-sound).
+    public var isAudioDescription: Bool
 
-    public init(id: String, kind: Kind, languageCode: String?, name: String?, isDefault: Bool, isForced: Bool = false) {
+    public init(
+        id: String, kind: Kind, languageCode: String?, name: String?, isDefault: Bool, isForced: Bool = false,
+        isAudioDescription: Bool = false
+    ) {
         self.id = id
         self.kind = kind
         self.languageCode = languageCode
         self.name = name
         self.isDefault = isDefault
         self.isForced = isForced
+        self.isAudioDescription = isAudioDescription
     }
 }
 

@@ -35,6 +35,23 @@ import Testing
         #expect(noDefault.audio == "audio-0")
     }
 
+    @Test("playback-engine/audio-description-is-not-the-default-sound the main sound plays before the described one")
+    func audioDescriptionComesLast() {
+        let described = MediaTrack(
+            id: "audio-0", kind: .audio, languageCode: "eng", name: nil, isDefault: true, isAudioDescription: true)
+        let main = MediaTrack(id: "audio-1", kind: .audio, languageCode: "eng", name: nil, isDefault: false)
+        let german = MediaTrack(id: "audio-2", kind: .audio, languageCode: "ger", name: nil, isDefault: false)
+        let tracks = [described, main, german]
+        func pick(_ options: PlaybackOptions, _ tracks: [MediaTrack] = tracks) -> MediaTrack.ID? {
+            TrackChoice.initial(audio: tracks, subtitles: [], options: options).audio
+        }
+        #expect(pick(PlaybackOptions()) == "audio-1", "the described track is marked default, the main one plays")
+        #expect(pick(PlaybackOptions(preferredAudioLanguages: ["en"])) == "audio-1")
+        #expect(pick(PlaybackOptions(remembered: LanguagePick(audio: "eng", subtitle: nil))) == "audio-1")
+        #expect(pick(PlaybackOptions(preferredAudioLanguages: ["de"])) == "audio-2")
+        #expect(pick(PlaybackOptions(), [described]) == "audio-0", "with no other sound the described track plays")
+    }
+
     @Test("playback-engine/streams-start-with-sound-the-device-can-play an undecodable default gives way to playable sound")
     func playableFirst() {
         let english = choice(PlaybackOptions(), playable: ["audio-1"])

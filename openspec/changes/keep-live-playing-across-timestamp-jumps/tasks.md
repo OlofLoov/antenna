@@ -16,10 +16,10 @@
 
 ## 3. Audio description
 
-- [ ] 3.1 `MediaTrack.isAudioDescription` from FFmpeg's visual impaired disposition and from the AVFoundation characteristic; `TrackChoice` passes it over
-- [ ] 3.2 Fixture and tests: the choice in AntennaCore, a broadcast with a described track first
+- [x] 3.1 `MediaTrack.isAudioDescription` from FFmpeg's visual impaired disposition and from the AVFoundation characteristic; `TrackChoice` passes it over
+- [x] 3.2 Fixture and tests: the choice in AntennaCore, a broadcast with a described track first
 
 ## 4. Verify
 
-- [ ] 4.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 4.2 `/opsx:verify` passes
+- [x] 4.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 4.2 `/opsx:verify` passes

@@ -164,6 +164,14 @@ part sound-follows 2
 python3 -I scripts/splice-ts.py "$out/late-audio.ts" "$work/mute.ts" "$work/sound-follows.ts"
 python3 -I scripts/splice-ts.py "$out/audio-pid-change.ts" "$work/early.ts" "$work/sound-moved.ts"
 
+# A channel whose first sound is audio description (ISO 639 audio type 3)
+# and whose second is the main English sound. MPEG-TS has no default mark.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" -f lavfi -i "$(tone 660 2)" \
+    -map 0:v -map 1:a -map 2:a \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 48k -ac 2 -metadata:s:a:0 language=eng -metadata:s:a:1 language=eng \
+    -disposition:a:0 visual_impaired -disposition:a:1 0 -f mpegts "$out/audio-description.ts"
+
 # The same picture in Matroska and AVI.
 ff -i "$out/channel.ts" -c copy "$out/channel.mkv"
 # The same Matroska film with no index (Cues), as a muxer writing to a pipe

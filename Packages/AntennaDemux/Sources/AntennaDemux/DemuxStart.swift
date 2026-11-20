@@ -105,7 +105,7 @@ extension DemuxStart {
                 TrackStream(
                     track: MediaTrack(
                         id: "\(prefix)-\(number)", kind: kind, languageCode: stream.language, name: stream.title,
-                        isDefault: stream.isDefault, isForced: stream.isForced),
+                        isDefault: stream.isDefault, isForced: stream.isForced, isAudioDescription: stream.isAudioDescription),
                     stream: stream)
             }
         }
