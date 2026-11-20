@@ -84,6 +84,9 @@
                             }
                         }
                     }
+                    // Rows drop their vertical insets and stay 44 pt, so the
+                    // medium detent shows about eight groups.
+                    .environment(\.defaultMinListRowHeight, 44)
                     .accessibilityIdentifier("browse.groups.sheet")
                     .overlay {
                         if choices.isEmpty {
@@ -115,6 +118,7 @@
                 live.show(group)
                 dismiss()
             }
+            .listRowInsets(.vertical, 0)
             .id(group)
             .accessibilityIdentifier(place.row(group, index: choice.index ?? 0))
         }
@@ -124,6 +128,7 @@
                 pickLocked(group)
                 dismiss()
             }
+            .listRowInsets(.vertical, 0)
             .accessibilityIdentifier("browse.locked.\(group.storageKey)")
         }
     }
