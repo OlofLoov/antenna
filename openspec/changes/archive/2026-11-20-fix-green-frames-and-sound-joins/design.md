@@ -17,6 +17,8 @@ No owner stream was available. Each suspect was checked with a generated stream 
 | Start or skip at an HEVC CRA | leading pictures fail with a missing reference (-17694) | RASL pictures reference pictures before the keyframe, which were never read |
 | Start at an H.264 open-GOP keyframe | leading B-frames queued before the keyframe in time, decoded without damage | the run queued every picture after the first keyframe |
 | Dolby Vision layers in hvcC samples | no bug while the record lists the base layer first; no picture at all when it lists the enhancement layer's sets first | VideoToolbox ignores units of layer 1 and types 62 and 63 in a sample, but the format took the first VPS, SPS and PPS of each kind |
+| Lost TS packets in the middle of a GOP | the damaged picture and the 12 after it, to the next keyframe, decoded smeared | FFmpeg marks the packet corrupt; the run passed it on |
+| Video renderer failed or needs a flush | nothing recovered it; the picture would stay frozen | only the audio renderer's status was checked |
 | Dolby Vision layers in Annex B (MPEG-TS) | no picture at all | the format was built from the last VPS, SPS and PPS in the keyframe, which were the enhancement layer's |
 
 ## Decisions
@@ -53,6 +55,21 @@ Options considered:
 Options considered:
 - Read the NAL unit types and drop only RASL (rejected): HEVC only, and H.264 open GOPs, MPEG-2 and HEVC in other containers lead their keyframes the same way.
 - Mark leading pictures "do not display" and still decode them (rejected): a RASL picture fails with a missing reference whatever it is marked.
+
+### Damaged pictures wait for a keyframe
+
+`DemuxedPacket.isCorrupt` carries FFmpeg's corrupt flag, which its MPEG-TS demuxer sets when a continuity counter shows lost packets. `DemuxRun` drops a corrupt picture and every picture after it until the next keyframe, and the leading pictures of that keyframe as after a start. The last whole picture stays on screen meanwhile. Each time, the engine logs the address (redacted) and the reason.
+
+Options considered:
+- Pass corrupt pictures on (rejected): what made the green and smeared blocks.
+- Drop only the corrupt picture (rejected): every picture up to the next keyframe may refer to it.
+- Drop only when the corrupt H.264 picture is a reference (rejected for now): a lost start of a packet can merge two pictures into one, so the flag says little about which picture lost data.
+
+A stream that loses packets in every GOP will freeze for most of each GOP instead of playing with broken blocks. That is the trade asked for; the log line shows how often it happens.
+
+### A failed video renderer restarts at a keyframe
+
+On each tick `DemuxEngine.checkPicture` looks at the video renderer. When its status is `.failed` or it needs a flush to resume decoding, the engine asks the run to start pictures again at the next keyframe and flushes the renderer, keeping the last picture. It was not possible to make a renderer fail in a test; the run's half is tested, the engine's is read.
 
 ## Platforms
 

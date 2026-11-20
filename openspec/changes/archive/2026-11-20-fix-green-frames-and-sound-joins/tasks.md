@@ -13,7 +13,13 @@
 - [x] 2.2 After a start, a skip or a resume, pictures before the first keyframe's time are dropped until the next keyframe
 - [x] 2.3 Fixtures and tests: HEVC and H.264 films with open GOPs started between keyframes, Dolby Vision layers in hvcC and Annex B
 
-## 3. Verify
+## 3. Damage and decoder failures
 
-- [ ] 3.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 3.2 `/opsx:verify` passes
+- [x] 3.1 `Demuxer` reports packets FFmpeg marks corrupt; a run drops a corrupt picture and the pictures after it until the next keyframe
+- [x] 3.2 The engine flushes a video renderer that failed or needs a flush, and the run queues pictures again from the next keyframe
+- [x] 3.3 Fixture and tests: a channel with lost video packets, a restart after a flush
+
+## 4. Verify
+
+- [x] 4.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 4.2 `/opsx:verify` passes
