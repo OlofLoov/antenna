@@ -385,12 +385,7 @@ extension ShelfTVUITests {
         launchPlaying()
         press(.menu)
         expectFocus("shell.tab.live")
-        // Each tab opens as the highlight lands on it, which can swallow a quick second press.
-        for _ in 0..<4 where !element("shell.tab.movies").hasFocus {
-            press(.right)
-            Thread.sleep(forTimeInterval: 0.5)
-        }
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
     }
