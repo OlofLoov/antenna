@@ -21,7 +21,7 @@ final class ProfileUITests: XCTestCase {
     /// Opens Favorites and checks which of Sport One (Dad's) and Kids One (Kids's) it lists.
     func expectFavorites(dad: Bool, kids: Bool, in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the channel list never appeared", file: file, line: line)
-        app.element("browse.group.0").tap()
+        app.pickGroup("browse.group.0")
         let sportOne = app.row(2)
         let kidsOne = app.row(3)
         XCTAssertTrue((dad ? sportOne : kidsOne).waitForExistence(timeout: 5), file: file, line: line)

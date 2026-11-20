@@ -6,32 +6,18 @@
     /// (group-management/locked-channels-stay-out-of-reach): a lock, no
     /// channel count, and the passcode prompt when picked.
     struct LockedGroupRows: View {
+        /// The locked groups the sidebar's search matches.
+        let groups: [CatalogueGroup]
         @Environment(LiveModel.self) private var live
         @Environment(\.unlockGroup) private var unlock
 
         var body: some View {
-            ForEach(live.catalogue.lockedGroups, id: \.storageKey) { group in
+            ForEach(groups, id: \.storageKey) { group in
                 Browse.GroupRow(title: .verbatim(live.catalogue.label(of: group)), systemImage: "lock.fill", count: 0, isSelected: false) {
                     unlock?(group)
                 }
                 .accessibilityLabel("\(live.catalogue.label(of: group)), locked")
                 .accessibilityIdentifier("browse.locked.\(group.storageKey)")
-            }
-        }
-    }
-
-    /// Locked groups among the iPhone chips, opening the passcode prompt.
-    /// Keyed by storage key, apart from the open chips: with the same key,
-    /// the chip a passcode opened kept its "(locked)" title in the lazy row.
-    struct LockedGroupChips: View {
-        @Environment(LiveModel.self) private var live
-        @Environment(\.unlockGroup) private var unlock
-
-        var body: some View {
-            ForEach(live.catalogue.lockedGroups, id: \.storageKey) { group in
-                Browse.Chip(title: "\(live.catalogue.label(of: group)) (locked)", isSelected: false) { unlock?(group) }
-                    .accessibilityLabel("\(live.catalogue.label(of: group)), locked")
-                    .accessibilityIdentifier("browse.locked.\(group.storageKey)")
             }
         }
     }

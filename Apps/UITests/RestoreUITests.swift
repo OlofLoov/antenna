@@ -64,9 +64,8 @@ final class RestoreUITests: XCTestCase {
     func testTheTabGroupAndChannelComeBackAfterTheSystemClosesTheApp() {
         var app = launch()
         // Favorites, All channels, News, Sport, Ungrouped, Films.
-        let sport = app.element("browse.group.3")
-        XCTAssertTrue(sport.waitForExistence(timeout: 10))
-        sport.tap()
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        app.pickGroup("browse.group.3")
         app.element("browse.row.\(Self.home).2").tap()
         app.waitForEngine("playing loads=1")
         waitForLastChannel("sport-one")
@@ -79,7 +78,7 @@ final class RestoreUITests: XCTestCase {
         app.tabBars.buttons["Live"].tap()
         app.waitForEngine("playing loads=1")
         XCTAssertEqual(loaded, ["sport-one.ts", "sport-one.ts"])
-        expect(app.element("browse.group.3"), "isSelected == true")
+        app.expectOpenGroup("Sport", row: "browse.group.3")
     }
 
     // session-restore-and-recently-watched/reopen-on-the-same-tab-and-group, Search is not restored
@@ -112,17 +111,14 @@ final class RestoreUITests: XCTestCase {
     // session-restore-and-recently-watched/reopen-on-the-same-tab-and-group, a group that arrives later
     func testALateGroupIsSelectedWhenItArrives() {
         var app = launch()
-        let films = app.element("browse.group.5")
-        XCTAssertTrue(films.waitForExistence(timeout: 10))
-        // The chip sits past the screen edge until the chips scroll.
-        app.element("browse.group.3").swipeLeft()
-        films.tap()
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        app.pickGroup("browse.group.5")
         app.terminate()
 
         // Cabin's login arrives six seconds after launch.
         app = launch("waiting", keep: true)
-        expect(app.element("browse.group.1"), "isSelected == true")
-        expect(app.element("browse.group.5"), "isSelected == true")
+        app.expectOpenGroup("All channels", row: "browse.group.1")
+        app.expectOpenGroup("Films", row: "browse.group.5")
     }
 
     // session-restore-and-recently-watched/the-last-channel-plays-again, the channel cannot be played

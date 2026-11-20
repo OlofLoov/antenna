@@ -54,7 +54,7 @@ final class GuideUITests: XCTestCase {
     func testOneRowPerChannelFromTheProgrammeOnNow() throws {
         let app = try launch()
         openGuide(app)
-        XCTAssertTrue(app.element("guide.chips").exists)
+        XCTAssertTrue(app.element("guide.groups").exists)
         XCTAssertTrue(app.element("guide.days").exists)
         XCTAssertTrue(app.element("guide.list").exists)
         XCTAssertFalse(app.element("guide.filter").exists, "no iPad filter field on iPhone")
@@ -88,20 +88,21 @@ final class GuideUITests: XCTestCase {
     }
 
     // guide-on-iphone-ipad-and-mac/the-same-group-as-live
-    func testGroupChipsChangeLivesGroupToo() throws {
+    func testTheGroupSheetChangesLivesGroupToo() throws {
         let app = try launch()
-        app.element("browse.group.3").tap()
+        app.pickGroup("browse.group.3")
         app.row(2).tap()
         app.waitForEngine("playing loads=1")
         openGuide(app)
-        XCTAssertTrue(app.element("guide.group.3").isSelected, "the guide opens on Live's group")
+        // The guide opens on Live's group.
+        app.expectOpenGroup("Sport", row: "guide.group.3")
         XCTAssertEqual(app.element("guide.channel.\(key(2))").value as? String, "playing")
         XCTAssertFalse(app.element("guide.channel.\(key(0))").exists)
 
-        app.element("guide.group.2").tap()
+        app.pickGroup("guide.group.2")
         XCTAssertTrue(app.element("guide.channel.\(key(0))").waitForExistence(timeout: 5))
         app.tabBars.buttons["Live"].tap()
-        XCTAssertTrue(app.element("browse.group.2").isSelected)
+        app.expectOpenGroup("News", row: "browse.group.2")
         app.waitForEngine("playing loads=1")
     }
 
@@ -171,11 +172,12 @@ final class GuideUITests: XCTestCase {
     func testAnEmptyGroupSaysSo() throws {
         let app = try launch()
         openGuide(app)
-        app.element("guide.group.0").tap()
+        app.pickGroup("guide.group.0")
         let empty = app.element("guide.empty")
         XCTAssertTrue(empty.waitForExistence(timeout: 5))
         XCTAssertEqual(empty.label, "No channels in Favorites")
-        XCTAssertTrue(app.element("guide.day.0").exists, "the chips still work")
+        XCTAssertTrue(app.element("guide.day.0").exists, "the day chips still work")
+        XCTAssertTrue(app.element("guide.groups").exists, "the group button still works")
     }
 
     // guide-on-iphone-ipad-and-mac/nothing-to-show-yet, sources still loading
@@ -184,6 +186,7 @@ final class GuideUITests: XCTestCase {
         openGuide(app)
         XCTAssertTrue(app.element("browse.loading").waitForExistence(timeout: 5))
         XCTAssertFalse(app.element("guide.days").exists, "the chips hide while loading")
+        XCTAssertFalse(app.element("guide.groups").exists, "the group button hides while loading")
     }
 
     // guide-on-iphone-ipad-and-mac/channels-with-gaps-or-no-guide

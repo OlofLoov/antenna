@@ -34,7 +34,7 @@ final class FavoriteActionsUITests: XCTestCase {
 
     /// Opens Favorites and checks whether News Two is listed in it.
     private func expectNewsTwoInFavorites(_ app: XCUIApplication, _ listed: Bool, file: StaticString = #filePath, line: UInt = #line) {
-        app.element("browse.group.0").tap()
+        app.pickGroup("browse.group.0")
         if listed {
             XCTAssertTrue(app.row(1).waitForExistence(timeout: 5), "News Two is not in Favorites", file: file, line: line)
             XCTAssertFalse(app.row(0).exists, file: file, line: line)

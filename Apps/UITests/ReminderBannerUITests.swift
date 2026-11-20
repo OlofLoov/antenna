@@ -44,12 +44,12 @@ final class ReminderBannerUITests: XCTestCase {
     // programme-reminders/a-banner-while-antenna-is-open
     // programme-reminders/watch-plays-the-channel, a channel outside the current group
     func testTheBannerShowsOverAnyScreenAndWatchPlaysInAllChannels() throws {
-        let app = try launch()
+        // Picking Sport goes through the Groups sheet, so the banner stays up longer than its usual 20 seconds.
+        let app = try launch(environment: ["UITESTING_REMINDER_BANNER_SECONDS": "90"])
         // Sport, which lacks News One.
-        let sport = app.element("browse.group.3")
-        XCTAssertTrue(sport.waitForExistence(timeout: 10))
-        sport.tap()
-        expect(sport, "isSelected == true")
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        app.pickGroup("browse.group.3")
+        app.expectOpenGroup("Sport", row: "browse.group.3")
         app.tabBars.buttons["Settings"].tap()
         let banner = app.element("reminders.banner")
         XCTAssertTrue(banner.waitForExistence(timeout: 10), "no banner")
@@ -58,7 +58,7 @@ final class ReminderBannerUITests: XCTestCase {
         app.element("reminders.banner.watch").tap()
         XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
         expect(app.element("browse.nowPlaying"), "label CONTAINS 'News One'")
-        expect(app.element("browse.group.1"), "isSelected == true")
+        app.expectOpenGroup("All channels", row: "browse.group.1")
         XCTAssertFalse(banner.exists)
     }
 

@@ -36,6 +36,8 @@
         @State private var section: LiveSection = .live
         /// Movies' or Series' rows or grid; picking a section resets it.
         @State private var browse = ShelfBrowse()
+        /// What the user typed over the sidebar's groups; another section clears it.
+        @State private var groupQuery = ""
         /// A folded column the user opened over the others.
         @State private var shown: Folded?
         @Query private var records: [SourceRecord]
@@ -138,7 +140,10 @@
                 .onChange(of: shelves.offer) { _, offer in
                     if !section.isOffered(by: offer) { section = .live }
                 }
-                .onChange(of: section) { _, new in live.opened(new.session) }
+                .onChange(of: section) { _, new in
+                    live.opened(new.session)
+                    groupQuery = ""
+                }
                 // Opens on the section the user left (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
                 .onAppear {
                     guard !restored else { return }
@@ -218,8 +223,23 @@
             .accessibilityIdentifier("\(kind.prefix).genres.\(list.identifier)")
         }
 
+        /// The search field over the groups, then the groups it matches
+        /// (live-tv-on-iphone-ipad-mac/find-a-group-among-many, `iPad-Live-Groups-Search`).
         @ViewBuilder private func liveGroups(_ columns: LiveColumns) -> some View {
-            ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
+            let choices = GroupChoices(live.catalogue, query: groupQuery) { live.catalogue.label(of: $0) }
+            Browse.FilterField(text: $groupQuery, prompt: "Search groups", label: "Search groups", identifier: "browse.groups.search")
+                .padding(.bottom, 8)
+            if choices.isEmpty {
+                Text("No groups match")
+                    .font(.callout)
+                    .foregroundStyle(Palette.textMuted)
+                    .padding(.horizontal, 12)
+                    .frame(minHeight: 36)
+                    .accessibilityIdentifier("browse.groups.empty")
+            }
+            ForEach(choices.builtIn + choices.groups, id: \.self) { choice in
+                let group = choice.group
+                let index = choice.index ?? 0
                 Browse.GroupRow(
                     title: .verbatim(live.catalogue.label(of: group)), systemImage: group.systemImage,
                     count: live.catalogue.count(of: group),
@@ -232,7 +252,7 @@
                 .groupSpokenLabel(group, count: live.catalogue.count(of: group))
                 .accessibilityIdentifier(group == .new ? "groups.new" : "browse.group.\(index)")
             }
-            LockedGroupRows()
+            LockedGroupRows(groups: choices.locked.map(\.group))
             ForEach(live.sources.filter { $0.state == .waitingForLogin }) { source in
                 Text(source.waitingTag)
                     .font(.callout)
