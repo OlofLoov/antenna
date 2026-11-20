@@ -40,9 +40,9 @@ func clockText(_ date: Date, in calendar: Calendar = gridCalendar()) -> String {
         let timeline = GuideTimeline(horizon: horizon, now: march(22, 21, 34), calendar: calendar)
         let start = march(22, 20)
         let line = try #require(timeline.nowLine(at: march(22, 21, 34), windowStart: start))
-        #expect(abs(line - 94 * 370 / 30) < 0.001)
+        #expect(abs(line - 94 * 365 / 30) < 0.001)
         let later = try #require(timeline.nowLine(at: march(22, 21, 35), windowStart: start))
-        #expect(abs(later - line - 370 / 30) < 0.001)
+        #expect(abs(later - line - 365 / 30) < 0.001)
         #expect(timeline.nowLine(at: march(22, 21, 34), windowStart: march(22, 22)) == nil)
         #expect(timeline.nowLine(at: march(22, 22), windowStart: start) == nil)
         #expect(timeline.nowLine(at: march(22, 20), windowStart: start) == 0)
@@ -120,11 +120,11 @@ func clockText(_ date: Date, in calendar: Calendar = gridCalendar()) -> String {
             #expect(timeline.opening(at: march(22, 21, 34)) == start)
             #expect(timeline.columns(from: start).count == hours * 2)
             #expect(timeline.window(from: start) == DateInterval(start: start, duration: Double(hours) * 3600))
-            // The window keeps its 1480 pt width; the columns narrow.
-            #expect(timeline.scale.columnWidth * Double(hours * 2) == 1480)
+            // The window keeps its 1460 pt width; the columns narrow.
+            #expect(timeline.scale.columnWidth * Double(hours * 2) == 1460)
             #expect(timeline.scale.minimumBlockWidth == 40)
             let line = try #require(timeline.nowLine(at: march(22, 21, 34), windowStart: start))
-            #expect(abs(line - 94 * 1480 / Double(hours * 60)) < 0.001)
+            #expect(abs(line - 94 * 1460 / Double(hours * 60)) < 0.001)
             #expect(timeline.latestStart == march(30, 6).addingTimeInterval(-Double(hours) * 3600))
         }
         let four = GuideTimeline(horizon: horizon, now: march(22, 21, 34), calendar: calendar, hours: 4)

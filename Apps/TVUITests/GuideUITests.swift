@@ -61,6 +61,25 @@ extension ShellUITests {
         expectEngine("failed loads=2 file=a1.ts")
     }
 
+    // design-system/apple-tv-content-stays-in-the-safe-area
+    // The guide sat 64 pt from each side; the safe area is 80.
+    func testTheGuideKeepsTheSafeEdges() {
+        launchPlaying()
+        openGuide()
+        let channel = element("guide.channel.\(homeKey(0))")
+        expect(guideColumns().element(boundBy: 3), "exists == true")
+        XCTAssertEqual(element("shell.player").frame.minX, 80, accuracy: 1, "the small picture starts at the safe edge")
+        XCTAssertEqual(channel.frame.minX, 80, accuracy: 1, "the channel column starts at the safe edge")
+        XCTAssertGreaterThanOrEqual(element("guide.day.0").frame.minX, 80, "the day chips start inside the safe edge")
+        let frames = guideColumns().allElementsBoundByIndex.map(\.frame)
+        let starts = frames.map(\.minX).sorted()
+        XCTAssertEqual(starts.count, 4)
+        let pitch = (starts[3] - starts[0]) / 3
+        XCTAssertEqual(pitch, 365, accuracy: 1, "a half hour is 365 pt: \(frames)")
+        XCTAssertEqual(starts[0] - channel.frame.minX, 300, accuracy: 1, "the window starts after the 300 pt channel column")
+        XCTAssertEqual(channel.frame.minX + 300 + 4 * pitch, app.frame.width - 80, accuracy: 2, "the last column ends at the safe edge")
+    }
+
     // tv-guide-grid/one-row-per-channel-in-the-current-group
     func testOneRowPerChannelInTheCurrentGroup() {
         launchPlaying()

@@ -17,8 +17,8 @@ public struct GuideScale: Sendable, Equatable {
         self.channelColumn = channelColumn
     }
 
-    /// The Apple TV guide: 370 pt per half hour, 40 pt blocks, a 300 pt channel column.
-    public static let television = GuideScale(columnWidth: 370, minimumBlockWidth: 40, channelColumn: 300)
+    /// The Apple TV guide: 365 pt per half hour, 40 pt blocks, a 300 pt channel column.
+    public static let television = GuideScale(columnWidth: 365, minimumBlockWidth: 40, channelColumn: 300)
 
     /// Points from `start` to `date`.
     public func offset(of date: Date, from start: Date) -> Double {

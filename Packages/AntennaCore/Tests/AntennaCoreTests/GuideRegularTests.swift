@@ -42,9 +42,9 @@ import Testing
         #expect(blocks.map(\.timing) == [.now, .future, .future])
     }
 
-    @Test("guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac the Apple TV sizes stay 370, 40 and 300")
+    @Test("guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac the Apple TV sizes stay 365, 40 and 300")
     func televisionSizes() {
-        #expect(GuideScale.television == GuideScale(columnWidth: 370, minimumBlockWidth: 40, channelColumn: 300))
+        #expect(GuideScale.television == GuideScale(columnWidth: 365, minimumBlockWidth: 40, channelColumn: 300))
         #expect(GuideTimeline(horizon: nil, now: now, calendar: calendar).scale == .television)
         #expect(GuideRowLayout.minimumWidth == 40)
         #expect(GuideZoom.channelColumn == 200)
