@@ -326,8 +326,14 @@ flipped.
 
 #### Scenario: Group chips in Arabic
 - **GIVEN** the app is in Arabic on iPhone
-- **WHEN** the viewer looks at the group chips above the Live list
+- **WHEN** the viewer looks at the day chips in the Guide or the genre chips in Movies
 - **THEN** the first chip is at the right and the chips scroll toward the left
+
+#### Scenario: The group button and sheet in Arabic
+- **GIVEN** the app is in Arabic on iPhone
+- **WHEN** the viewer looks at the group button above the Live list and opens it
+- **THEN** the group's name starts at the right with the count and chevron to its left
+- **AND** in the Groups sheet each row reads from the right, with the checkmark at the right and the count at the left
 
 #### Scenario: A channel logo with text in it
 - **GIVEN** the app is in Arabic

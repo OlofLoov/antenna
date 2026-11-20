@@ -133,8 +133,8 @@ exactly as the source sends them, in every app language.
 
 #### Scenario: A provider group named in Arabic
 - **GIVEN** the app is in English and a group is named in Arabic
-- **WHEN** the group chips show it
-- **THEN** the name shows in Arabic, right to left within its chip
+- **WHEN** the group button, the Groups sheet or the sidebar shows it
+- **THEN** the name shows in Arabic, right to left, apart from the count beside it
 
 ### Requirement: Built-in names follow the language
 Names the app makes up itself, such as the Favorites and All channels
