@@ -34,7 +34,10 @@ enum ChannelOverlay {
                     panel
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
-                .frame(width: 1640)
+                // Leading, so the columns keep the safe edge while the panel
+                // is empty, as it is when a group is picked from the group column
+                // (tv-channel-overlay/the-columns-keep-the-safe-edge).
+                .frame(width: 1640, alignment: .leading)
                 .frame(maxHeight: .infinity)
                 .background { OverlayMaterial() }
                 clock

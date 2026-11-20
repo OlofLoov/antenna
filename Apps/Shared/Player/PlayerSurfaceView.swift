@@ -52,13 +52,13 @@ import SwiftUI
             /// the held picture above both.
             func host(_ sublayer: CALayer?, hold: CALayer?) {
                 if let sublayer, sublayer !== demuxLayer {
-                    demuxLayer?.removeFromSuperlayer()
+                    demuxLayer?.leave(playerLayer)
                     playerLayer.addSublayer(sublayer)
                     sublayer.frame = bounds
                     demuxLayer = sublayer
                 }
                 if let hold, hold !== holdLayer {
-                    holdLayer?.removeFromSuperlayer()
+                    holdLayer?.leave(playerLayer)
                     playerLayer.addSublayer(hold)
                     hold.frame = bounds
                     holdLayer = hold
@@ -106,7 +106,12 @@ import SwiftUI
             #endif
             AVPlayerEngine.resolve(engine)?.attach(to: layer)
             let demuxer = DemuxEngine.resolve(engine)
-            view.host(demuxer?.videoLayer, hold: demuxer?.hold.layer)
+            var picture: CALayer? = demuxer?.videoLayer
+            #if DEBUG && os(tvOS)
+                // The shell's UI tests check where the scripted engine's picture is.
+                picture = picture ?? UITestingShell.picture(of: engine)
+            #endif
+            view.host(picture, hold: demuxer?.hold.layer)
             demuxer?.enablePictureInPicture()
             #if os(tvOS)
                 // The TV's mode follows the stream once the picture is in a window.
@@ -144,13 +149,13 @@ import SwiftUI
             /// the held picture above both.
             func host(_ sublayer: CALayer?, hold: CALayer?) {
                 if let sublayer, sublayer !== demuxLayer {
-                    demuxLayer?.removeFromSuperlayer()
+                    demuxLayer?.leave(layer)
                     layer.addSublayer(sublayer)
                     sublayer.frame = bounds
                     demuxLayer = sublayer
                 }
                 if let hold, hold !== holdLayer {
-                    holdLayer?.removeFromSuperlayer()
+                    holdLayer?.leave(layer)
                     layer.addSublayer(hold)
                     hold.frame = bounds
                     holdLayer = hold
@@ -166,3 +171,16 @@ import SwiftUI
         }
     }
 #endif
+
+extension CALayer {
+    /// Takes this layer out of `host`, and leaves it where it is when
+    /// another surface has taken it since. A picture layer sits in one view
+    /// at a time. When multi-view ends, the kept tile's player moves to the
+    /// full-screen picture and the tile's view, still on screen while the
+    /// grid closes, switches to the tile's new empty player; it must not
+    /// pull the picture out of the full-screen view (multi-view/leave-multi-view).
+    fileprivate func leave(_ host: CALayer) {
+        guard superlayer === host else { return }
+        removeFromSuperlayer()
+    }
+}

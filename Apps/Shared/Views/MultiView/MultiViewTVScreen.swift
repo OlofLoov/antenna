@@ -100,8 +100,10 @@
             let identifier = "multiView.tile.\(number)"
             let shown = model.channel(of: tile.id)
             let highlighted = tileFocus == tile.id
-            return Button {
+            return HoldButton {
                 openPicker(for: tile.id)
+            } hold: {
+                openActions(for: tile.id)
             } label: {
                 ZStack(alignment: .bottomLeading) {
                     if let engine = model.engine(of: tile.id) {
@@ -135,7 +137,6 @@
                 }
             }
             .buttonStyle(FocusHolderStyle())
-            .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openActions(for: tile.id) })
             // While the picker is open only its tile can take focus, so focus goes
             // straight back to it; the actions menu holds focus until it closes.
             .disabled(model.picking.map { $0 != tile.id } ?? (model.actionsOpen != nil))

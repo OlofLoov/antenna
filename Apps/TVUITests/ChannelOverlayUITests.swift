@@ -64,6 +64,26 @@ extension ShellUITests {
         XCTAssertTrue(element("overlay.search").exists, "the column ends with Search")
     }
 
+    // tv-channel-overlay/the-columns-keep-the-safe-edge
+    // design-system/apple-tv-content-stays-in-the-safe-area
+    // Picking a group from the group column leaves the panel empty, and the
+    // columns used to move to the middle of the overlay.
+    func testTheColumnsKeepTheSafeEdgeWhileSwitchingGroups() {
+        launchPlaying()
+        openOverlay()
+        expectFocusedRow("Channel a1")
+        let group = element("overlay.group.1")
+        let header = element("overlay.channelsHeader")
+        let changingChannels = (group: group.frame.minX, header: header.frame.minX)
+        XCTAssertEqual(changingChannels.group, 80, "the group column starts at the safe edge")
+
+        press(.left, toFocus: element("overlay.group.2"), from: overlayRows().element(boundBy: 0))
+        press(.up, toFocus: group, from: element("overlay.group.2"))
+        expect(header, "label CONTAINS 'ALL CHANNELS'")
+        XCTAssertEqual(group.frame.minX, changingChannels.group, "groups move while switching groups")
+        XCTAssertEqual(header.frame.minX, changingChannels.header, "channels move while switching groups")
+    }
+
     // tv-channel-overlay/picking-a-group-shows-its-channels
     func testPickingAGroupShowsItsChannels() {
         launchPlaying()

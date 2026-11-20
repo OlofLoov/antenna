@@ -41,6 +41,8 @@ final class PlayerPanelTVUITests: XCTestCase {
         remote.press(.select, forDuration: 1)
         XCTAssertTrue(element("player.panel").waitForExistence(timeout: 5), "holding select opened no panel")
         expect(element("player.panel.segment.info"), "hasFocus == true")
+        // tvos-shell/one-press-does-one-thing: the release of the hold does not also open the channel list.
+        XCTAssertFalse(element("overlay.root").exists, "the hold also opened the channel list")
     }
 
     // player-controls-and-playback-errors/see-what-s-on-without-stopping-the-picture-on-apple-tv

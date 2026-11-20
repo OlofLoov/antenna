@@ -23,8 +23,8 @@
         }
     }
 
-    /// Shows the legend of the focused screen in its corner, inside the
-    /// safe area, when the highlight reaches a new place, and fades it after
+    /// Shows the legend of the focused screen in its one place, the same
+    /// on every screen, when the highlight reaches a new place, and fades it after
     /// a few seconds (control-hints/hints-fade-and-come-back-on-a-new-screen).
     /// Nothing shows while "Show remote hints" is off on this device
     /// (control-hints/turn-remote-hints-off).
@@ -46,9 +46,7 @@
             content
                 .overlay {
                     if Self.holds || hideAt != nil, shows, !Self.suppressed, let screen {
-                        ControlHints.Legend(screen: screen)
-                            .padding(Metrics.televisionSafeArea)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: screen.corner.alignment)
+                        ControlHints.Placed(screen: screen)
                             .ignoresSafeArea()
                             .transition(.opacity)
                     }
@@ -93,12 +91,4 @@
         }
     }
 
-    extension ControlHintScreen.Corner {
-        var alignment: Alignment {
-            switch self {
-            case .topTrailing: .topTrailing
-            case .bottomTrailing: .bottomTrailing
-            }
-        }
-    }
 #endif

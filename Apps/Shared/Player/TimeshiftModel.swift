@@ -281,18 +281,17 @@ final class TimeshiftModel {
     /// Play/pause held for half a second on Apple TV. The press's release
     /// then does not also pause; see `takeHeldPress`.
     func holdForLive() {
-        heldAt = .now
+        heldPress.held()
         goLive()
     }
 
-    /// True once after a hold for live, so the release of that press is ignored.
+    /// True once after a hold for live, so the release of that press is ignored
+    /// (tvos-shell/one-press-does-one-thing).
     func takeHeldPress() -> Bool {
-        guard let heldAt, ContinuousClock.now - heldAt < .milliseconds(1500) else { return false }
-        self.heldAt = nil
-        return true
+        heldPress.takeRelease()
     }
 
-    @ObservationIgnored private var heldAt: ContinuousClock.Instant?
+    @ObservationIgnored private var heldPress = HeldPress()
 
     /// Back to live, playing (timeshift-catch-up-and-start-over/back-to-live).
     func goLive() {
