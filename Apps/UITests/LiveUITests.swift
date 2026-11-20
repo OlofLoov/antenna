@@ -63,7 +63,8 @@ final class LiveUITests: XCTestCase {
             XCTAssertTrue(app.tabBars.buttons[tab].exists, "no \(tab) tab")
         }
         XCTAssertFalse(app.tabBars.buttons["Settings"].exists, "Settings opens from the profile button")
-        XCTAssertGreaterThan(app.searchTab.frame.minX, app.tabBars.buttons["Series"].frame.maxX, "Search is last, at the trailing end")
+        // With five tabs the bar's group and the search button can overlap by a few points.
+        XCTAssertGreaterThan(app.searchTab.frame.midX, app.tabBars.buttons["Series"].frame.maxX, "Search is last, at the trailing end")
         XCTAssertFalse(app.tabBars.buttons["Favorites"].exists)
         XCTAssertFalse(app.tabBars.buttons["Channels"].exists)
     }
