@@ -160,15 +160,25 @@ enum GuideBoard {
 
     /// A half-hour label in the header, with the column's left rule.
     struct ColumnLabel: View {
+        /// From the column's rule to the start of its text.
+        static let inset = 8.0
+
         let text: String
         let width: Double
+        /// The now pill sits over the text: the label keeps its place and
+        /// what VoiceOver reads, and draws no text.
+        var isCovered = false
+        /// The drawn width of the text, for working out what the pill covers.
+        var measured: (Double) -> Void = { _ in }
 
         var body: some View {
             Text(text)
                 .font(.boardStyle(13))
                 .monospacedDigit()
-                .foregroundStyle(Palette.textMuted)
-                .padding(.leading, 8)
+                .foregroundStyle(isCovered ? Color.clear : Palette.textMuted)
+                .lineLimit(1)
+                .onGeometryChange(for: Double.self, of: { $0.size.width }, action: measured)
+                .padding(.leading, Self.inset)
                 .frame(width: width, height: headerHeight, alignment: .leading)
                 .overlay(alignment: .leading) {
                     Rectangle().fill(Palette.surface(0.12)).frame(width: 1)

@@ -72,6 +72,11 @@ final class GuideRegularUITests: XCTestCase {
         XCTAssertEqual(columns[index].label, time(back))
         XCTAssertEqual(columnWidth(app), 180, accuracy: 1)
         XCTAssertEqual(app.element("guide.nowLine").label, time(Date.now))
+        // The time tag is centered on the now line, as iPad-Guide draws it.
+        let half = halfHour(atOrBefore: Date.now)
+        let halfColumn = try XCTUnwrap(columns.first { $0.label == time(half) })
+        let line = halfColumn.frame.minX + Date.now.timeIntervalSince(half) / 1800 * columnWidth(app)
+        XCTAssertEqual(app.element("guide.nowLine").frame.midX, line, accuracy: 4)
 
         let channels = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'guide.channel.'"))
             .allElementsBoundByIndex.sorted { $0.frame.minY < $1.frame.minY }
