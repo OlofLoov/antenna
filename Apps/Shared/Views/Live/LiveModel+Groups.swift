@@ -9,8 +9,8 @@ extension LiveModel {
     func rulesChanged(_ rules: GroupRules) {
         guard rules != groupRules else { return }
         groupRules = rules
+        // The name index does not depend on the rules, so it stays.
         catalogue = catalogue.replacingRules(rules)
-        names = ChannelNameIndex(catalogue)
         restoreGroup()
     }
 
