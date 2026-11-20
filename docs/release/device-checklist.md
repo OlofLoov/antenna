@@ -3,7 +3,8 @@
 Checks that no simulator, CI runner or `swift test` can make: a real iCloud
 account syncing between two devices, Siri, Picture in Picture, a receiver, a
 real purchase, timings on named hardware. Each item names the OpenSpec change
-and task it came from, what to do and what you should see. Run them in one
+and task, or the pull request, it came from, what to do and what you should
+see. Run them in one
 sitting per section, with the devices on the same Wi-Fi.
 
 ## The rule
@@ -32,6 +33,132 @@ and add the date and devices next to it.
   `Config/Local.xcconfig` set), or TestFlight for the purchase items.
 - An M3U playlist and an Xtream login you own. For the timing items, a source
   with about 20 000 channels and a seven-day guide.
+
+## Merged 19 to 21 November
+
+Checks from the pull requests merged on those days, one sitting per device.
+Each names the pull request. Use a profile "Dad" next to Main, a group
+passcode, an Xtream source with movies and series, the large source, and the
+4K HEVC film with Dolby TrueHD 7.1 that showed green flicker. The Xcode items
+need the device attached to Xcode with the console open.
+
+### iPhone
+
+- [ ] **#488, the tab bar.** Open Antenna with the Xtream source. Expect
+  Live, Guide, Movies and Series as tabs, Search as a round button at the
+  trailing end, and no Settings tab or Movies | Series switch.
+- [ ] **#488, the profile button.** Tap the profile circle at the top right of
+  Live, then of Movies. With one profile Settings opens as a sheet with Close;
+  with Dad added, a menu offers Switch profile and Settings.
+- [ ] **#488, genres.** On Movies tap the genre button, type two letters in
+  the Genres sheet with the keyboard up, pick one. Expect the sheet to stay
+  half height above the keyboard and the rows to turn into a grid.
+- [ ] **#486, My list.** On the Movies banner expect Play and Info on one row,
+  Trailer and Add to My list under them. Tap Add to My list: it reads Remove
+  from My list. Switch the iPhone to German and check no label is cut.
+- [ ] **#485 and #493, accent.** In Settings, Appearance pick Amber for Dad.
+  Expect the tint, progress bars and a picked genre chip in Amber, with dark
+  labels on Play, Connect and the picked chip. Switch to Main: Blue.
+- [ ] **#487, app icon.** In Settings, Appearance, App icon pick Teal and
+  accept the system alert. Expect the teal icon on the Home Screen. Set Home
+  Screen icons to Dark, then Tinted, and pick Light: in Dark it looks like
+  Mono, which design.md expects.
+- [ ] **#492, plural forms.** Switch the iPhone to Arabic and open Live's
+  group sheet. Expect counts in Arabic forms (one, two, a few, many), and
+  VoiceOver on a group row reads its count in Arabic, not English.
+- [ ] **#476, Picture in Picture.** From Xcode, play a channel and swipe home.
+  Expect no "_UIReplicantView ... UIHostingController.view" line in the
+  console when the window opens or closes.
+- [ ] **#474, picture after the background.** Play a raw `.ts` channel, lock
+  the iPhone for a minute with the sound on, then unlock. Expect the picture
+  moving again within two seconds, not frozen with the sound going.
+- [ ] **#472, skipping in the film.** Play the 4K HEVC film and skip forward
+  and back ten times. Expect no green flash after any skip.
+- [ ] **#495, typing with the large source.** Type a channel name letter by
+  letter in Live's filter, then in Search. Expect each letter to narrow the
+  list with no stall, and posters in Movies rows sharp, not soft.
+
+### iPad
+
+- [ ] **#488, narrow window.** In Split View, make Antenna the narrow side.
+  Expect the iPhone tab bar with Movies, Series and the search button; widen
+  it and the sidebar is back, Series with the stacked-rectangles symbol.
+- [ ] **#486, banner in German.** Set the iPad to German, open Movies in
+  portrait on an 11-inch iPad. Expect the banner's buttons on one line, past
+  the copy's width if needed, none cut.
+- [ ] **#487, app icon.** Pick Violet in Settings, Appearance, App icon.
+  Expect it on the iPad's Home Screen while the iPhone keeps Teal.
+- [ ] **#492, arrow keys right to left.** Switch the iPad to Arabic, attach a
+  keyboard, type in Search and press the right arrow on the results. Expect
+  the highlight to move to the item drawn to its right. Do the same on a
+  series' season row.
+
+### Mac
+
+- [ ] **#492, arrow keys right to left.** With the Mac in Arabic, type in
+  Search, press the left and right arrows on the results and on a series'
+  season row. Expect the highlight to move to the item drawn on that side.
+- [ ] **#493, Connect on the Mac.** Pick Pink for Dad and open Add a source.
+  Expect Connect in the bar with a dark label on pink, not white.
+- [ ] **#487, no app icon row.** Open Settings, Appearance. Expect Accent
+  and no App icon row.
+- [ ] **#495, guide filter.** With the large source, type in the guide's
+  filter letter by letter. Expect each letter to narrow the grid with no
+  spinning cursor.
+
+### Apple TV
+
+- [ ] **#482, passcode with the remote.** In Settings turn on Show adult
+  content. Expect focus on the keypad and Cancel under it; type the passcode
+  with the Siri Remote and the adult groups show. Open a locked group: the
+  same keypad, also typed with the remote.
+- [ ] **#482, an adult channel playing.** Turn Show adult content off while an adult
+  channel plays. Expect the passcode prompt over the paused picture, and
+  closing it plays the first channel the profile may watch.
+- [ ] **#486, no rim at rest.** Press select on the picture. Expect the
+  overlay's rows and Watch, favorite and Add to multi-view buttons with no
+  thin light edge until they take focus.
+- [ ] **#493, 80 pt edges.** Open Guide. Expect the channel column and the
+  last half hour clear of both screen sides by the same margin as the
+  overlay. In a source's settings, Save reads clearly, not white on white.
+- [ ] **#485, accent.** Pick Teal for Dad. Expect progress bars, the guide's
+  now line and badges in teal, and focus still the white lifted card.
+- [ ] **#487, app icon.** In Settings, Appearance, App icon pick Amber.
+  Expect the amber icon on the Home Screen with its parallax. Nobody has
+  tried this on a simulator or a device.
+- [ ] **#488, Search tab.** Expect Search as a magnifying glass tab, after
+  Series and before Settings.
+- [ ] **#458, back to the picked result.** In Search pick a series, then a
+  movie, pressing Menu after each. Expect focus back on the result you picked
+  each time, the query kept.
+- [ ] **#471, TrueHD 7.1 through a receiver.** Play the film for ten minutes
+  through a 7.1 receiver. Expect no clicks, and the receiver's speaker test
+  layout matching: side sound from the sides, back sound from the back.
+- [ ] **#472, green frames.** In the same film skip forward and back ten
+  times. Expect no green flash. Play a Dolby Vision film with a HDR10 base
+  layer: picture shows. A profile 5 film still shows wrong colors; note it.
+- [ ] **#474, damaged channels.** Play a raw `.ts` channel on weak Wi-Fi.
+  Expect short freezes on the last whole picture, not smeared blocks.
+- [ ] **#474, picture after Home.** Play a raw `.ts` channel, press the TV
+  button, wait a minute, open Antenna again. Expect the picture moving.
+- [ ] **#475, Thread Performance Checker.** From Xcode with the checker on,
+  play a raw `.ts` channel and the film. Expect no "waiting on a lower QoS
+  thread" warning.
+- [ ] **#495, posters and Search.** With the large source, move focus along a
+  Movies row and type in Search. Expect sharp posters when a card lifts and
+  results as you type without the keyboard lagging.
+
+### Two devices on one iCloud account
+
+- [ ] **#485, accent follows the profile.** Pick Teal for Dad on the iPhone.
+  On the Apple TV expect Dad in teal within a minute and Main still Blue.
+- [ ] **#482, the adult switch syncs.** Turn on Show adult content for Dad on
+  the iPhone. On the Apple TV expect Dad's adult groups; Main still hides
+  them. Turn it off on the iPhone while an adult channel plays on the Apple
+  TV: the TV covers it with the passcode prompt.
+- [ ] **#482, a group marked adult.** On the iPad mark a group Adult content
+  in its settings. On the Mac expect it gone from Live and the Groups list
+  saying how to show adult groups.
 
 ## One iPhone or iPad
 
@@ -80,6 +207,11 @@ and add the date and devices next to it.
   letters and press Escape. Expect the query cleared and the field closed. Open
   a movie from Movies, press Escape: back to Movies at the same scroll position.
   Open one from Search, press Escape: back to Search with the query kept.
+- [ ] **add-keyboard-shortcut-menus 1.3, iPad menu bar.** On an iPad with a
+  hardware keyboard, hold Command on Live, then pull the menu bar down from the
+  top edge. Expect Playback and Go between View and Window, Go listing Live to
+  Search on Command-1 to Command-5, and no Mute or volume items. Write what
+  holding Command shows into the change's design.md.
 
 ## One Mac
 
@@ -103,11 +235,6 @@ and add the date and devices next to it.
   leave multi-view: the remaining channel keeps playing in Live.
 - [ ] **add-search 2.5 and add-title-detail-and-episode-picker 6.1, Escape.** Do
   the iPad keyboard item above on the Mac.
-- [ ] **add-keyboard-shortcut-menus 1.3, iPad menu bar.** On an iPad with a
-  hardware keyboard, hold Command on Live, then pull the menu bar down from the
-  top edge. Expect Playback and Go between View and Window, Go listing Live to
-  Search on Command-1 to Command-5, and no Mute or volume items. Write what
-  holding Command shows into the change's design.md.
 - [ ] **add-keyboard-shortcut-menus 3.7, Mac menus.** Open every item in Edit,
   View, Playback and Go on Live, the Guide, Search, a movie and multi-view.
   Expect titles that follow the screen (Pause or Play, Back 15 or Back 10,
