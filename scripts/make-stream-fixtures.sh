@@ -132,6 +132,38 @@ ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
 # stream that lost data on the way arrives: FFmpeg marks the picture corrupt.
 python3 -I scripts/drop-ts-packets.py "$out/channel.ts" "$out/damaged.ts" 400 6
 
+# Live channels whose timestamps jump, as at an ad break, a feed switch or
+# an encoder restart. splice-ts.py joins two parts the way a splicer does,
+# with continuity counters that carry on, so only the timestamps change.
+# jump-forward: 2 seconds at 1.4 s, then 2 seconds at 61.4 s.
+# jump-back: 2 seconds at 31.4 s, then 2 seconds at 1.4 s.
+# pts-wrap: 5 seconds starting 2.3 s before the 33-bit PTS wraps.
+part() { # name, offset, extra arguments
+    local name=$1 offset=$2
+    shift 2
+    ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" "$@" \
+        -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+        -c:a aac -b:a 48k -ac 2 -output_ts_offset "$offset" -f mpegts "$work/$name.ts"
+}
+part early 0
+part late 60
+part back 30
+python3 -I scripts/splice-ts.py "$out/jump-forward.ts" "$work/early.ts" "$work/late.ts"
+python3 -I scripts/splice-ts.py "$out/jump-back.ts" "$work/back.ts" "$work/early.ts"
+ff -f lavfi -i "$(video 320x180 25 5)" -f lavfi -i "$(tone 440 5)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 48k -ac 2 -output_ts_offset 95440 -f mpegts "$out/pts-wrap.ts"
+
+# Live channels whose sound PID changes. late-audio: 2 seconds of picture
+# only, then picture and sound on a PID the first PMT did not list.
+# audio-pid-change: the sound moves from PID 0x101 to 0x102 after 2 seconds.
+ff -f lavfi -i "$(video 320x180 25 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k -f mpegts "$work/mute.ts"
+part sound-moved 2 -streamid 1:0x102
+part sound-follows 2
+python3 -I scripts/splice-ts.py "$out/late-audio.ts" "$work/mute.ts" "$work/sound-follows.ts"
+python3 -I scripts/splice-ts.py "$out/audio-pid-change.ts" "$work/early.ts" "$work/sound-moved.ts"
+
 # The same picture in Matroska and AVI.
 ff -i "$out/channel.ts" -c copy "$out/channel.mkv"
 # The same Matroska film with no index (Cues), as a muxer writing to a pipe

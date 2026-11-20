@@ -62,10 +62,10 @@ struct DemuxStart: Sendable {
     var soundChannels: Int
     /// False when the sound that plays cannot be decoded and the stream plays without it.
     var soundDecodable: Bool
-    /// "audio-n" in stream order.
-    let audioTracks: [TrackStream]
+    /// "audio-n" in stream order. A live stream can add tracks after the start.
+    var audioTracks: [TrackStream]
     /// "subtitle-n" in stream order, text subtitles only.
-    let subtitleTracks: [TrackStream]
+    var subtitleTracks: [TrackStream]
     var selectedAudio: MediaTrack.ID?
     var selectedSubtitle: MediaTrack.ID?
 }

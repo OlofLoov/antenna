@@ -84,6 +84,27 @@ extension DemuxEngine {
         run.soundSwitched = { [weak self] sound in
             Task { @MainActor in self?.soundSwitched(sound, generation: mine) }
         }
+        run.tracksChanged = { [weak self] update in
+            if let playing = update.playing { log("demux \(redacted(url)) sound moved to \(playing.track.id)") }
+            Task { @MainActor in self?.tracksChanged(update, generation: mine) }
+        }
+    }
+
+    /// Reports tracks that appeared after the start, and the sound the run
+    /// moved to on its own (playback-engine/sound-that-starts-late-is-played).
+    func tracksChanged(_ update: TrackUpdate, generation mine: Int) {
+        guard generation == mine, var start = current?.start else { return }
+        start.audioTracks = update.audioTracks
+        start.subtitleTracks = update.subtitleTracks
+        if let playing = update.playing {
+            start.audio = playing.stream
+            start.selectedAudio = playing.track.id
+            start.soundDecodable = true
+        }
+        current?.start = start
+        tracksCast.sendIfChanged(start.trackList)
+        guard !isScanning else { return }
+        presentationCast.sendIfChanged(start.presentation)
     }
 
     // MARK: Picture changes
