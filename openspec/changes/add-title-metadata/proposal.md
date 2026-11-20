@@ -22,9 +22,10 @@ After it, a user opening a movie sees "TMDB 74%" under the details line, a playl
 - Matches kept on the device for seven days, never synced, never longer than six months.
 - A synced "Movie info and scores" switch under Preferences, on by default.
 - The TMDB credit with its logo under About in Settings, and the Privacy Policy updated.
+- A Trending row in Movies and Series: TMDB's trending list for the week, matched on the device against the user's catalogue, at most 20, hidden below three matches or with lookups off. The request carries no title or anything about the user. Moved here from `add-discover-rows` on 2026-11-20.
 
 Out of scope:
-- Trending, New and Recents rows (`add-discover-rows`).
+- New and Recents rows (`add-discover-rows`, archived without Trending).
 - Cast you can select and a person's page (`add-browse-by-person`).
 - Scores on posters in rows (open question in design.md).
 - Matching the whole catalogue in the background.
@@ -43,10 +44,11 @@ Out of scope:
 - `sources-and-settings`: the lookup switch.
 - `antenna-website`: the Privacy Policy names the lookup service.
 - `design-system`: a credit logo a data licence requires is allowed in Settings, About.
+- `movies-and-series-browsing`: the Trending row and its place in the row order.
 
 ## Impact
 
-- AntennaCore: id decoding, a title name cleaner, a matcher, the lookup client and its cache rules.
+- AntennaCore: id decoding, a title name cleaner, a matcher, the lookup client and its cache rules, and matching a trending list against the catalogue.
 - Apps: title page score row, Settings switch and About credit, `PreferencesRecord` gains a defaulted field.
 - A new external system and container in `docs/architecture/` (the lookup service and TMDB).
 - Infrastructure outside the app: an AWS account with the lookup service, deployed from this repo.

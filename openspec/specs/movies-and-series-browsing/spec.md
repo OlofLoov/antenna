@@ -125,13 +125,18 @@ The system SHALL list movies and episodes stopped part-way through together in C
 - **THEN** it is not shown or counted, and it is kept
 
 ### Requirement: Rows in a predictable order
-The system SHALL show, after Continue watching and My list, Recently added newest first and one row per category that has titles in the provider's order, each headed with its name and number of titles.
+The system SHALL show, after Continue watching and My list, Recently watched, Recently added newest first and one row per category that has titles in the provider's order, each headed with its name and number of titles, leaving out a row with nothing in it.
 
 #### Scenario: Provider categories
 - **GIVEN** the provider's movies and categories
 - **WHEN** the user opens Movies
-- **THEN** after Continue watching and My list come Recently added, newest first, and one row per category that has titles, in the provider's order
+- **THEN** after Continue watching and My list come Recently watched, Recently added, newest first, and one row per category that has titles, in the provider's order
 - **AND** each row is headed with its name and number of titles
+
+#### Scenario: Rows with nothing in them
+- **GIVEN** a profile that has watched nothing
+- **WHEN** the user opens Movies
+- **THEN** there is no Recently watched row, and Recently added follows My list
 
 #### Scenario: Two sources with the same category
 - **GIVEN** two Xtream sources share a category name
@@ -469,3 +474,49 @@ The system SHALL show on iPhone, and in a narrow iPad window, one genre button o
 - **GIVEN** iPad or Mac in the wide layout, or Apple TV
 - **WHEN** the user browses Movies or Series
 - **THEN** the genres stay in the sidebar on iPad and Mac and in the chips row on Apple TV
+
+### Requirement: Recently watched
+The system SHALL show a Recently watched row in Movies listing the movies, and in Series the series, that the current profile played on any device, finished ones included, most recent first, each once, at most 20, and SHALL hide the row when there are none.
+
+#### Scenario: Movies and episodes watched
+- **GIVEN** the profile finished a movie yesterday, stopped one part-way today, and watched two episodes of one series
+- **WHEN** the user opens Movies and then Series
+- **THEN** Movies' Recently watched lists today's movie then yesterday's, and Series' lists the series once
+
+#### Scenario: Another profile
+- **GIVEN** Kids watched a cartoon movie and Dad did not
+- **WHEN** Dad opens Movies
+- **THEN** the cartoon is not in Dad's Recently watched
+
+#### Scenario: Watched on another device
+- **GIVEN** the profile watched a movie on the iPad
+- **WHEN** the user opens Movies on the Apple TV with the same iCloud account
+- **THEN** the movie is in Recently watched once its progress has arrived
+
+#### Scenario: Without movie info lookups
+- **GIVEN** lookups are off and the device is offline
+- **WHEN** the user opens Movies
+- **THEN** Recently watched shows as usual
+
+#### Scenario: A title no longer listed
+- **GIVEN** a watched movie its source no longer lists
+- **WHEN** the row fills
+- **THEN** it is left out and its progress is kept
+
+### Requirement: See everything new
+The system SHALL offer See all on the Recently added row, opening a poster grid of every title newest first with its count, as a genre opens.
+
+#### Scenario: See all on iPhone, iPad and Mac
+- **GIVEN** the Recently added row
+- **WHEN** the user picks See all
+- **THEN** a poster grid of every title, newest first, takes the rows' place with the count above it
+
+#### Scenario: See all on Apple TV
+- **GIVEN** the Recently added row on Apple TV
+- **WHEN** the user moves right past the last poster to See all and selects it
+- **THEN** the grid opens as its own screen that Menu closes
+
+#### Scenario: Titles without dates
+- **GIVEN** a source whose titles have no date added
+- **WHEN** the grid opens
+- **THEN** dated titles come first, newest first, and undated ones follow in the provider's order
