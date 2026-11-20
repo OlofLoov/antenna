@@ -18,4 +18,4 @@
 ## 3. Verify
 
 - [x] 3.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 3.2 `/opsx:verify` passes
+- [x] 3.2 `/opsx:verify` passes
