@@ -132,6 +132,18 @@ import Testing
         await playing(.fixture("a1"))
     }
 
+    // The nightly Apple TV UI tests played b1 instead of a1 once tagging moved off the main actor.
+    @Test("tvos-shell/back-to-the-last-channel-on-launch a source whose load returned first plays, however long its channels take to tag")
+    func firstToLandWins() async {
+        await launch()
+        let many = (0..<50_000).map { Channel.fixture("a\($0)") }
+        loader.finish(sourceA.id, with: many)
+        loader.finish(sourceB.id, with: [.fixture("b1")])
+        // Tagging 50 000 channels takes longer than the yields `wait` allows.
+        let deadline = ContinuousClock.now + .seconds(20)
+        while engine.loaded.isEmpty, ContinuousClock.now < deadline { try? await Task.sleep(for: .milliseconds(20)) }
+        #expect(engine.loaded == [Channel.fixture("a0").streamURL])
+    }
 }
 
 // MARK: tvos-shell/the-video-pauses-behind-movies-series-and-search
