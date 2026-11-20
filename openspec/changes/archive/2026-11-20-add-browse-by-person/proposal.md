@@ -15,7 +15,7 @@ After this change each name on a title page is a chip the user can select. It op
 On 2026-11-19 the owner decided not to run the title-info server (the TMDB proxy) for now. This change therefore ships in two parts:
 
 - **Provider names, built now.** People are matched by the cast and director names the provider sends, on the device, with no lookup service.
-- **Lookup service, later.** Photos, a department from TMDB, a whole filmography in one request, and people from TMDB in Search wait until the server exists. They stay in this change as open tasks.
+- **Lookup service, later.** Photos, a department from TMDB, a whole filmography in one request, and people from TMDB in Search wait until the server exists. They moved to `add-title-metadata` on 2026-11-20.
 
 ## What Changes
 
@@ -26,7 +26,7 @@ Built now:
 - The names learned from details answers stay on the device for 30 days, so the person pages fill out as the user browses.
 - A People section in Search, last, with up to three people from those names.
 
-Later, with the lookup service (kept as open tasks):
+Later, with the lookup service (moved to `add-title-metadata`):
 - A photo and TMDB's department on the person page, and the whole filmography matched against the catalogue in one request per person.
 - People from TMDB in Search, with what that sends named in the Privacy Policy and the Settings footer.
 

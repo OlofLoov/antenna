@@ -158,6 +158,17 @@ Options considered for the list:
 
 The row sits after My list and before Recently watched: what the user is in the middle of, then what they saved, then what is popular, then their history, then the provider's order.
 
+### 10. People from TMDB
+
+Moved from `add-browse-by-person` on 2026-11-20. That change shipped person pages built from the provider's cast and director names; this is the plan for TMDB filmographies on top of them.
+
+- `/v1/person/{id}` on the lookup service returns name, department, photo path and `combined_credits` reduced to `{tmdbID, kind, title, original title, year, role}`, newest first, capped at 500. The app matches it against the loaded catalogue with the Trending matcher from decision 9 (provider TMDB id first, else `TitleName.clean` plus year within one, ambiguous names skipped). A matched title's chips carry TMDB person ids and open the TMDB filmography; unmatched titles keep provider names.
+- Photo from TMDB's image CDN at `w185` through the poster cache, and "Filmography from TMDB" under the name.
+- Filmographies in `Caches/people/<tmdb id>.json` for seven days, at most 200 files, deleted when lookups are turned off; offline shows what was kept or "You're offline" with Retry; a failure shows "Could not load this filmography" with Retry.
+- `/v1/people?query=` calls TMDB `/3/search/person`, keeps the five most popular with their credits. The app sends the query after 500 ms without a keystroke and three characters, never with lookups off or offline, and merges those people with the provider-name ones.
+- What leaves the device is typed text. The Settings footer from `add-title-metadata` becomes "Titles and people you open, and names you search for, are looked up in TMDB.", and the Privacy Policy (`antenna-website/the-privacy-policy-rules-out-tracking`) names person pages and names typed in Search among what the movie info service receives. The service logs nothing, so "Data Not Collected" holds. The first version of this change already wrote that footer line on `iPhone-Settings-Lookups` and `TV-Settings-Lookups`; it stays, since the footer ships only with the lookup service.
+- Owner's open questions from the first design still apply then: People from TMDB in Search given it sends typed text (recommend yes, behind the switch), and no biography.
+
 ## Risks / Trade-offs
 
 - TMDB's commercial price is unknown until sales answers. If it is out of reach the change ships nothing user-visible; the id decoding is still useful to the next changes.
