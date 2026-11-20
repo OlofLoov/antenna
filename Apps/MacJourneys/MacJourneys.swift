@@ -18,6 +18,18 @@ final class MacJourneys: XCTestCase {
         row.click()
     }
 
+    /// The sidebar sits on the leading side: the right in Arabic, the left
+    /// otherwise (design-system/layouts-mirror-in-right-to-left-languages).
+    private func expectSidebarSide(in journey: Journey) {
+        let row = journey.element("browse.section.live").frame
+        let window = journey.app.windows.firstMatch.frame
+        if Journey.storeLanguageIsRightToLeft {
+            XCTAssertGreaterThan(row.midX, window.midX, "the sidebar is not on the right in a right-to-left language")
+        } else {
+            XCTAssertLessThan(row.midX, window.midX, "the sidebar is not on the left")
+        }
+    }
+
     /// Live with News One playing, the guide, Movies, a movie playing, and
     /// adding a source.
     func testStore() {
@@ -25,6 +37,7 @@ final class MacJourneys: XCTestCase {
         let journey = Journey(
             self, arguments: ["-ui-testing-live", "favorites"] + store, environment: ["UITESTING_CONTROLS_SECONDS": "1"])
         open("live", in: journey)
+        expectSidebarSide(in: journey)
         let newsOne = journey.element("browse.row.00000000-0000-0000-0000-0000000000D1.0")
         XCTAssertTrue(newsOne.waitForExistence(timeout: 10), "no News One")
         newsOne.click()
