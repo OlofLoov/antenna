@@ -112,6 +112,9 @@ final class SearchModel {
     var cursor: SearchItem?
     /// The recent search the arrow keys are on after Escape, nil otherwise.
     var recentCursor: Int?
+    /// The picked row on Apple TV, until it has focus again after the user
+    /// comes back to Search (search/pick-a-channel-or-title-to-watch).
+    private(set) var returning: SearchItem?
 
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var index = SearchIndex()
@@ -233,6 +236,16 @@ final class SearchModel {
         let next = index + step
         self.cursor = next < 0 ? nil : items[min(next, items.count - 1)]
         if next < 0 { focus() }
+    }
+
+    /// The user is back on Search: the row they picked takes focus.
+    func cameBack() {
+        returning = cursor
+    }
+
+    /// The picked row has focus again.
+    func returned() {
+        returning = nil
     }
 
     func expandGuide() {
