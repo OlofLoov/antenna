@@ -14,13 +14,13 @@ import Foundation
 final class DemuxRun: @unchecked Sendable {
     private let bytes: any DemuxBytes
     private let videoFeed: SampleFeed
-    private let audioFeed: SampleFeed
+    let audioFeed: SampleFeed
     private let lock = NSLock()
     private var cancelled = false
     private var answer: Once<Result<DemuxStart, any Error>>?
     private var rateFound: (@Sendable (Double) -> Void)?
     private var waitsForSound = true
-    private var options = PlaybackOptions()
+    private(set) var options = PlaybackOptions()
     /// A sound switch `selectAudio` or `resendSound` asked for and the run
     /// has not made yet. A nil stream means the sound that plays.
     private var requestedSound: (stream: Int?, from: CMTime)?
@@ -42,6 +42,9 @@ final class DemuxRun: @unchecked Sendable {
     /// Called once a sound switch is made, with the new sound's format, and
     /// when the sound that plays changes its channel count.
     var soundSwitched: (@Sendable (PresentationInfo.Audio) -> Void)?
+    /// Called when streams appear after the start, and when the run moves
+    /// to another sound because the one that played stopped.
+    var tracksChanged: (@Sendable (TrackUpdate) -> Void)?
 
     /// Where a film starts, counted from its beginning; nil from the start.
     private var startAt: CMTime?
@@ -149,15 +152,15 @@ final class DemuxRun: @unchecked Sendable {
 
     /// FFmpeg open on the stream, with a builder for the first video stream
     /// and for every sound stream it can build buffers for.
-    private struct Prepared {
+    struct Prepared {
         let demuxer: Demuxer
         let video: SampleBuilder?
         /// Builders by container stream index.
-        let sounds: [Int: SampleBuilder]
-        let audioTracks: [TrackStream]
-        let subtitleTracks: [TrackStream]
+        var sounds: [Int: SampleBuilder]
+        var audioTracks: [TrackStream]
+        var subtitleTracks: [TrackStream]
         /// DVB subtitle decoders by container stream index.
-        let pictureSubtitles: [Int: DVBSubtitleDecoder]
+        var pictureSubtitles: [Int: DVBSubtitleDecoder]
         /// The sound that plays first, decodable or not.
         let audio: TrackStream?
         let subtitle: TrackStream?
@@ -167,7 +170,7 @@ final class DemuxRun: @unchecked Sendable {
         ready: @escaping @Sendable (Result<DemuxStart, any Error>) -> Void,
         ended: @escaping @Sendable (PlaybackFailure?) -> Void
     ) {
-        let prepared: Prepared
+        var prepared: Prepared
         switch prepare() {
         case .success(let value):
             prepared = value
@@ -187,7 +190,10 @@ final class DemuxRun: @unchecked Sendable {
             }
         }
         var state = PumpState(rateKnown: prepared.video?.stream.frameRate != nil)
-        let announced = pump(prepared, &state, ready: ready)
+        if prepared.demuxer.duration == nil {
+            state.timeline = LiveTimeline(wrap: prepared.demuxer.format == "mpegts" ? LiveTimeline.mpegTSWrap : nil)
+        }
+        let announced = pump(&prepared, &state, ready: ready)
         guard !isCancelled else { return }
         if announced {
             let failure = bytes.failureReason
@@ -270,15 +276,30 @@ final class DemuxRun: @unchecked Sendable {
         var soundChannels: Int?
         /// The picture size and dynamic range last reported.
         var picture: (size: CMVideoDimensions, range: PresentationInfo.DynamicRange)?
+        /// Keeps a live stream's times running on across jumps; nil for films.
+        var timeline: LiveTimeline?
+        /// The container streams the run knows of.
+        var streamCount = 0
+        /// The codec of each text or DVB subtitle stream, by container stream index.
+        var subtitleCodecs: [Int: String] = [:]
+        /// Where the newest timed packet of each sound stream with a builder ends.
+        var soundEnds: [Int: CMTime] = [:]
+        /// Where the newest sound buffer queued ends.
+        var soundQueuedTo: CMTime?
     }
 
     /// Reads packets into the feeds until the end or `cancel`, calling
     /// `ready` once the first picture (and, within half a second of stream,
     /// the first sound) is queued. Returns whether it did.
-    private func pump(_ prepared: Prepared, _ state: inout PumpState, ready: @Sendable (Result<DemuxStart, any Error>) -> Void) -> Bool {
+    private func pump(
+        _ prepared: inout Prepared, _ state: inout PumpState, ready: @Sendable (Result<DemuxStart, any Error>) -> Void
+    ) -> Bool {
         state.sound = prepared.audio?.stream.index
-        let subtitleCodecs = Dictionary(uniqueKeysWithValues: prepared.subtitleTracks.map { ($0.stream.index, $0.stream.codec) })
-        reading: while !isCancelled, let packet = prepared.demuxer.nextPacket() {
+        state.streamCount = prepared.demuxer.streams.count
+        state.subtitleCodecs = Dictionary(uniqueKeysWithValues: prepared.subtitleTracks.map { ($0.stream.index, $0.stream.codec) })
+        reading: while !isCancelled, let read = prepared.demuxer.nextPacket() {
+            if prepared.demuxer.streams.count != state.streamCount { addStreams(&prepared, &state) }
+            let packet = place(read, prepared, &state)
             if let request = takeSoundRequest() {
                 guard switchSound(to: request, prepared, &state) else { break reading }
             }
@@ -286,6 +307,7 @@ final class DemuxRun: @unchecked Sendable {
                 guard takeVideo(packet, builder: builder, &state) else { break reading }
             } else if let builder = prepared.sounds[packet.streamIndex] {
                 keep(packet, in: &state)
+                guard followSound(packet, prepared, &state) else { break reading }
                 guard packet.streamIndex == state.sound else { continue }
                 for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
                     guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { break reading }
@@ -293,7 +315,7 @@ final class DemuxRun: @unchecked Sendable {
                 noteSoundFormat(builder, &state)
             } else if let decoder = prepared.pictureSubtitles[packet.streamIndex] {
                 pictureCues(from: packet, decoder: decoder)
-            } else if let codec = subtitleCodecs[packet.streamIndex] {
+            } else if let codec = state.subtitleCodecs[packet.streamIndex] {
                 cue(from: packet, codec: codec)
             }
             // In MPEG-TS the first sound can follow the first keyframe.
@@ -353,6 +375,7 @@ final class DemuxRun: @unchecked Sendable {
             return true
         }
         if state.startTime == nil { state.startTime = sampleTime(buffer) }
+        state.soundQueuedTo = CMTimeAdd(sampleTime(buffer), CMSampleBufferGetDuration(buffer))
         return audioFeed.push(buffer)
     }
 
@@ -425,11 +448,7 @@ extension DemuxRun {
             soundSwitched?(PresentationInfo.Audio(codec: track.stream.codec, channels: track.stream.channels, isDecodable: false))
             return true
         }
-        for packet in state.rings[stream]?.kept ?? [] where packet.presentationTime >= request.from {
-            for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
-                guard audioFeed.push(buffer) else { return false }
-            }
-        }
+        guard queueKept(stream, from: request.from, builder: builder, state) else { return false }
         let channels = Self.channels(builder) ?? track.stream.channels
         state.soundChannels = channels
         soundSwitched?(PresentationInfo.Audio(codec: builder.codecName, channels: channels, isDecodable: true))

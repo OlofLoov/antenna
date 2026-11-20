@@ -109,6 +109,23 @@ import Testing
         #expect(kept.last?.presentationTime == CMTime(value: 35_999, timescale: 1200))
     }
 
+    @Test("playback-engine/audio-and-subtitle-languages the ring keeps the MPEG-TS frames that come with no time")
+    func theRingKeepsFramesWithNoTime() {
+        var ring = SoundRing(length: CMTime(value: 10, timescale: 1))
+        ring.add(Self.packet(-1, timed: false))
+        for index in 0..<24_000 {
+            ring.add(Self.packet(index, timed: index.isMultiple(of: 16)))
+        }
+        let kept = ring.kept
+        // The newest timed packet is 23,984; the ring keeps ten seconds back
+        // from it and the untimed packets after each timed one.
+        #expect(kept.first?.presentationTime == CMTime(value: 23_984 - 12_000, timescale: 1200))
+        #expect(kept.count == 24_000 - 11_984)
+        let around = ring.kept(around: CMTime(value: 20_010, timescale: 1200))
+        #expect(around.first?.presentationTime == CMTime(value: 20_000, timescale: 1200))
+        #expect(around.count == 4000)
+    }
+
     @Test func theRingCostsTheSamePerPacketHoweverFullItIs() {
         guard ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1" else { return }
         var ring = SoundRing(length: CMTime(value: 10, timescale: 1))
@@ -118,9 +135,10 @@ import Testing
         #expect(ContinuousClock.now - started < .milliseconds(100))
     }
 
-    private static func packet(_ index: Int) -> DemuxedPacket {
+    private static func packet(_ index: Int, timed: Bool = true) -> DemuxedPacket {
         DemuxedPacket(
-            streamIndex: 1, data: Data(count: 300), presentationTime: CMTime(value: CMTimeValue(index), timescale: 1200),
+            streamIndex: 1, data: Data(count: 300),
+            presentationTime: timed ? CMTime(value: CMTimeValue(index), timescale: 1200) : .invalid,
             decodeTime: .invalid, duration: .invalid, isKeyframe: false)
     }
 

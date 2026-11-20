@@ -153,6 +153,7 @@ public final class Demuxer: @unchecked Sendable {
             guard av_read_frame(context, packet) >= 0 else { return nil }
             defer { av_packet_unref(packet) }
             let index = Int(packet.pointee.stream_index)
+            if timeBases[index] == nil { addStreams(context) }
             guard let timeBase = timeBases[index], let bytes = packet.pointee.data, packet.pointee.size > 0 else { continue }
             let data = Data(bytes: bytes, count: Int(packet.pointee.size))
             let pts = Self.time(packet.pointee.pts, timeBase)
@@ -163,6 +164,18 @@ public final class Demuxer: @unchecked Sendable {
                 duration: Self.time(packet.pointee.duration, timeBase),
                 isKeyframe: packet.pointee.flags & AV_PKT_FLAG_KEY != 0,
                 isCorrupt: packet.pointee.flags & AV_PKT_FLAG_CORRUPT != 0)
+        }
+    }
+
+    /// Takes in the streams FFmpeg found after the start, as when a
+    /// broadcast's program table lists a sound stream it did not list
+    /// before (playback-engine/sound-that-starts-late-is-played).
+    private func addStreams(_ context: UnsafeMutablePointer<AVFormatContext>) {
+        let known = streams.last.map { $0.index + 1 } ?? 0
+        for index in known..<max(known, Int(context.pointee.nb_streams)) {
+            guard let stream = context.pointee.streams[index], let parameters = stream.pointee.codecpar else { continue }
+            timeBases[index] = stream.pointee.time_base
+            streams.append(Self.describe(index: index, stream: stream, parameters: parameters.pointee))
         }
     }
 
