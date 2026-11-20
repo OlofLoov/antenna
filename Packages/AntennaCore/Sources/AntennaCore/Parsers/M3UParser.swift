@@ -37,8 +37,8 @@ public struct M3UParser: Sendable {
         var index = 0
         var ids = M3UChannelIDs(capacity: text.utf8.count / 120)
 
-        for rawLine in text.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) {
-            let line = rawLine.trimmingCharacters(in: .whitespaces)
+        for rawLine in Self.lines(text) {
+            let line = Self.trimmedLine(rawLine)
             if line.isEmpty { continue }
 
             if line.hasPrefix("#EXTM3U") {
@@ -81,7 +81,7 @@ public struct M3UParser: Sendable {
 
     // MARK: - Internals
 
-    struct PendingEntry {
+    struct PendingEntry: Equatable {
         var title: String
         var attributes: [String: String]
         var group: String?
@@ -146,6 +146,11 @@ public struct M3UParser: Sendable {
     }
 
     static func parseExtInf(_ body: Substring) -> PendingEntry {
+        body.utf8.allSatisfy({ $0 < 0x80 }) ? parseASCIIExtInf(body) : parseCharacterExtInf(body)
+    }
+
+    /// `parseExtInf` for any body, read Character by Character.
+    static func parseCharacterExtInf(_ body: Substring) -> PendingEntry {
         // Format: <duration> [key="value" ...],<title>
         // The title is everything after the first comma that follows the attribute block.
         var attrEnd = body.startIndex
@@ -199,5 +204,131 @@ public struct M3UParser: Sendable {
             result[key] = String(value)
         }
         return result
+    }
+
+    // MARK: - ASCII lines
+
+    // In ASCII text every byte is a Character, so these read bytes and give
+    // what `parseExtInf` and `attributes(in:)` give, without breaking the
+    // text into Characters. Character.isWhitespace holds for 0x09 to 0x0D
+    // and space, Character.isNumber for the digits, and
+    // CharacterSet.whitespaces for tab and space.
+
+    private static func isASCIIWhitespace(_ byte: UInt8) -> Bool { byte == 0x20 || (0x09...0x0D).contains(byte) }
+
+    private static func isASCIIDigit(_ byte: UInt8) -> Bool { (0x30...0x39).contains(byte) }
+
+    /// `parseExtInf` for a body that is all ASCII.
+    static func parseASCIIExtInf(_ body: Substring) -> PendingEntry {
+        let bytes = body.utf8
+        var attrEnd = bytes.startIndex
+        var inQuotes = false
+        var titleStart: Substring.Index?
+        var i = bytes.startIndex
+        while i < bytes.endIndex {
+            let byte = bytes[i]
+            if byte == UInt8(ascii: "\"") { inQuotes.toggle() }
+            if byte == UInt8(ascii: ","), !inQuotes {
+                attrEnd = i
+                titleStart = bytes.index(after: i)
+                break
+            }
+            bytes.formIndex(after: &i)
+        }
+        let attrPart = body[body.startIndex..<attrEnd]
+        let title = titleStart.map { trimmedASCII(body[$0...]) } ?? ""
+        let attrs = asciiAttributes(in: attrPart)
+        let digits = attrPart.utf8.drop(while: isASCIIWhitespace).prefix { !isASCIIWhitespace($0) && $0 != UInt8(ascii: ",") }
+        let number = attrPart[digits.startIndex..<digits.endIndex]
+        let duration = Double(number).flatMap { $0.isFinite ? $0 : nil }
+        return PendingEntry(title: title, attributes: attrs, group: attrs["group-title"], duration: duration)
+    }
+
+    /// `text` without leading and trailing tabs and spaces, as
+    /// `trimmingCharacters(in: .whitespaces)` gives for ASCII.
+    private static func trimmedASCII(_ text: Substring) -> String {
+        let bytes = text.utf8
+        guard let first = bytes.firstIndex(where: { $0 != 0x20 && $0 != 0x09 }) else { return "" }
+        let last = bytes.lastIndex { $0 != 0x20 && $0 != 0x09 } ?? first
+        return String(text[first...last])
+    }
+
+    /// `attributes(in:)` for text that is all ASCII.
+    static func asciiAttributes(in text: Substring) -> [String: String] {
+        let bytes = text.utf8
+        var result: [String: String] = [:]
+        var i = bytes.startIndex
+        while i < bytes.endIndex {
+            while i < bytes.endIndex, isASCIIWhitespace(bytes[i]) || isASCIIDigit(bytes[i]) || bytes[i] == UInt8(ascii: "-") {
+                bytes.formIndex(after: &i)
+            }
+            guard i < bytes.endIndex else { break }
+            let keyStart = i
+            while i < bytes.endIndex, bytes[i] != UInt8(ascii: "="), !isASCIIWhitespace(bytes[i]) { bytes.formIndex(after: &i) }
+            guard i < bytes.endIndex, bytes[i] == UInt8(ascii: "=") else { break }
+            let key = text[keyStart..<i].lowercased()
+            bytes.formIndex(after: &i)
+            guard i < bytes.endIndex else { break }
+            let value: Substring
+            if bytes[i] == UInt8(ascii: "\"") {
+                bytes.formIndex(after: &i)
+                let valueStart = i
+                while i < bytes.endIndex, bytes[i] != UInt8(ascii: "\"") { bytes.formIndex(after: &i) }
+                value = text[valueStart..<i]
+                if i < bytes.endIndex { bytes.formIndex(after: &i) }
+            } else {
+                let valueStart = i
+                while i < bytes.endIndex, !isASCIIWhitespace(bytes[i]) { bytes.formIndex(after: &i) }
+                value = text[valueStart..<i]
+            }
+            result[key] = String(value)
+        }
+        return result
+    }
+
+    /// The lines of `text`, empty ones left out, split where
+    /// `Character.isNewline` holds: LF, VT, FF, CR, CR LF, NEL, U+2028 and
+    /// U+2029. Each of those is a Character of its own, so splitting on
+    /// their bytes gives the lines splitting on Characters gives.
+    static func lines(_ text: Substring) -> [Substring] {
+        let bytes = text.utf8
+        var result: [Substring] = []
+        var lineStart = bytes.startIndex
+        var i = bytes.startIndex
+        while i < bytes.endIndex {
+            var width = 0
+            switch bytes[i] {
+            case 0x0A...0x0D:
+                width = 1
+            case 0xC2:
+                let next = bytes.index(after: i)
+                if next < bytes.endIndex, bytes[next] == 0x85 { width = 2 }
+            case 0xE2:
+                let second = bytes.index(after: i)
+                if second < bytes.endIndex, bytes[second] == 0x80 {
+                    let third = bytes.index(after: second)
+                    if third < bytes.endIndex, bytes[third] == 0xA8 || bytes[third] == 0xA9 { width = 3 }
+                }
+            default:
+                break
+            }
+            guard width > 0 else {
+                bytes.formIndex(after: &i)
+                continue
+            }
+            if lineStart < i { result.append(text[lineStart..<i]) }
+            i = bytes.index(i, offsetBy: width)
+            lineStart = i
+        }
+        if lineStart < bytes.endIndex { result.append(text[lineStart..<bytes.endIndex]) }
+        return result
+    }
+
+    /// `line.trimmingCharacters(in: .whitespaces)`, skipping Foundation
+    /// when the first and last bytes are ASCII other than tab and space,
+    /// so there is nothing to trim.
+    static func trimmedLine(_ line: Substring) -> String {
+        func kept(_ byte: UInt8?) -> Bool { byte.map { $0 < 0x80 && $0 != 0x20 && $0 != 0x09 } ?? false }
+        return kept(line.utf8.first) && kept(line.utf8.last) ? String(line) : line.trimmingCharacters(in: .whitespaces)
     }
 }
