@@ -12,9 +12,15 @@ cd "$(dirname "$0")/.."
 language=${1:-de-DE}
 locale=${2:-de_DE}
 home=$(mktemp -d)
-trap 'rm -rf "${home:?}"' EXIT
+# The build looks for downloaded toolchains, such as the Metal one it
+# mounts read-only, under the same home. Those stay in the real one, and
+# a cleanup that cannot delete something does not fail the run.
+trap 'rm -rf "${home:?}" 2>/dev/null || true' EXIT
 
 mkdir -p "$home/Library/Preferences"
+if [[ -d "$HOME/Library/Developer" ]]; then
+  ln -s "$HOME/Library/Developer" "$home/Library/Developer"
+fi
 defaults write "$home/Library/Preferences/.GlobalPreferences" AppleLanguages -array "$language"
 defaults write "$home/Library/Preferences/.GlobalPreferences" AppleLocale "$locale"
 
