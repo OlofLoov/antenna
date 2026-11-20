@@ -19,6 +19,10 @@ actor PosterCache {
     private let session: URLSession
     private let diskLimit: Int
     private var loading: [String: Task<Poster?, Never>] = [:]
+    /// The folder's size after the last trim plus every write since, nil
+    /// before the first write. It never counts less than the folder holds,
+    /// so the folder is listed again only when a write may cross the limit.
+    private var usage: Int?
 
     init(
         directory: URL = URL.cachesDirectory.appending(path: "Posters", directoryHint: .isDirectory), session: URLSession = .shared,
@@ -90,12 +94,17 @@ actor PosterCache {
     private func store(_ data: Data, at file: URL) {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         guard (try? data.write(to: file, options: .atomic)) != nil else { return }
-        trimDisk()
+        if let usage, usage + data.count <= diskLimit {
+            self.usage = usage + data.count
+        } else {
+            usage = trimDisk()
+        }
     }
 
     /// Deletes the least recently used files until the folder is under the
-    /// disk limit.
-    func trimDisk() {
+    /// disk limit. Returns the bytes left.
+    @discardableResult
+    func trimDisk() -> Int {
         let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
         let files = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: Array(keys))) ?? []
         struct Entry {
@@ -113,6 +122,7 @@ actor PosterCache {
             try? FileManager.default.removeItem(at: entry.file)
             total -= entry.size
         }
+        return total
     }
 
     /// The bytes on disk, for tests and the limit check.
