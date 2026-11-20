@@ -1,0 +1,4 @@
+[
+  {"series_id": 200, "name": "Cabin", "category_id": "5"},
+  {"series_id": 201, "name": "Flagged Show", "category_id": "5", "is_adult": 1}
+]

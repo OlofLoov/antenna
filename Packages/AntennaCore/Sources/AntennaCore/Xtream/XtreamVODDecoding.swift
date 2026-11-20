@@ -11,7 +11,8 @@ extension XtreamClient {
             let id = XtreamTitleID(host: host, kind: .vod, rawID: row.streamID).description
             return VODItem(
                 id: id, streamID: row.streamID, name: row.name, posterURL: row.posterURL, added: row.added, rating: row.rating,
-                containerExtension: row.containerExtension, categoryID: row.categoryID, cast: row.cast, director: row.director)
+                containerExtension: row.containerExtension, categoryID: row.categoryID, cast: row.cast, director: row.director,
+                isAdult: row.isAdult)
         }
     }
 
@@ -21,7 +22,7 @@ extension XtreamClient {
             let id = XtreamTitleID(host: host, kind: .series, rawID: row.seriesID).description
             return Series(
                 id: id, seriesID: row.seriesID, name: row.name, posterURL: row.posterURL, lastModified: row.lastModified,
-                rating: row.rating, categoryID: row.categoryID, cast: row.cast, director: row.director)
+                rating: row.rating, categoryID: row.categoryID, cast: row.cast, director: row.director, isAdult: row.isAdult)
         }
     }
 
@@ -314,6 +315,13 @@ extension KeyedDecodingContainer {
         if let value = try? decodeIfPresent(Int.self, forKey: key) { return String(value) }
         if let value = try? decodeIfPresent(Double.self, forKey: key), value.isFinite { return String(value) }
         return nil
+    }
+
+    /// A provider's yes-or-no flag such as `is_adult`: true for 1, "1" or
+    /// true, false for anything else or when it is missing.
+    func looseFlag(_ key: Key) -> Bool {
+        if let value = try? decodeIfPresent(Bool.self, forKey: key) { return value }
+        return looseInt(key, stringFirst: true) == 1
     }
 
     /// A JSON string that is not empty or only whitespace, or nil.

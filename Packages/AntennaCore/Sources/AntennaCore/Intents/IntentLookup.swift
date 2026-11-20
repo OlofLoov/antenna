@@ -34,7 +34,7 @@ public enum IntentLookup {
     public static let matches = 20
 
     /// The channel `key` names. Fails when its source is gone, when the
-    /// channel is locked, or, when it is not loaded, with the source's state:
+    /// channel is locked or adult content the profile hides, or, when it is not loaded, with the source's state:
     /// still loading, offline, failed, waiting for its login, or loaded
     /// without it.
     public static func channel<Token>(
@@ -42,17 +42,21 @@ public enum IntentLookup {
     ) -> Result<Channel, IntentFailure> {
         guard let source = sources.first(where: { $0.id == key.sourceID }) else { return .failure(.channelSourceGone) }
         if let row = catalogue.row(for: key), let channel = catalogue.channel(for: row) {
+            if catalogue.isAdultHidden(row) { return .failure(.adultHidden) }
             return catalogue.isLocked(row) ? .failure(.locked(channel: channel.name)) : .success(channel)
         }
         return .failure(missing(source) ?? .channelGone(channel: nil, source: source.name))
     }
 
     /// The title `reference` names among `titles`, failing as `channel` does.
-    public static func title(_ reference: TitleReference, in titles: [ShelfTitle], sources: [IntentSource]) -> Result<
-        ShelfTitle, IntentFailure
-    > {
+    /// An adult title fails unless `showsAdult` is set.
+    public static func title(
+        _ reference: TitleReference, in titles: [ShelfTitle], showsAdult: Bool, sources: [IntentSource]
+    ) -> Result<ShelfTitle, IntentFailure> {
         guard let source = sources.first(where: { $0.id == reference.sourceID }) else { return .failure(.titleSourceGone) }
-        if let title = titles.first(where: reference.matches) { return .success(title) }
+        if let title = titles.first(where: reference.matches) {
+            return !showsAdult && title.isAdultContent ? .failure(.adultHidden) : .success(title)
+        }
         return .failure(missing(source) ?? .titleGone(title: nil, source: source.name))
     }
 
@@ -82,10 +86,12 @@ public enum IntentLookup {
     }
 
     /// Titles in progress, most recent first, then My list in its order,
-    /// each once and only when loaded, at most `limit`.
+    /// each once and only when loaded, at most `limit`. Adult titles are
+    /// left out unless `showsAdult` is set.
     public static func suggestedTitles(
-        progress: [WatchProgress], myList: [ActivityKey], titles: [ShelfTitle], limit: Int = titleSuggestions
+        progress: [WatchProgress], myList: [ActivityKey], titles all: [ShelfTitle], showsAdult: Bool, limit: Int = titleSuggestions
     ) -> [ShelfTitle] {
+        let titles = all.visible(showsAdult: showsAdult)
         let loaded = Dictionary(titles.map { ($0.activityKey, $0) }, uniquingKeysWith: { first, _ in first })
         var seen: Set<ActivityKey> = []
         var result: [ShelfTitle] = []

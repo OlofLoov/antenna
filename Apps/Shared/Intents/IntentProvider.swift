@@ -23,6 +23,9 @@
         var sources: [IntentSource]
         var progress: [WatchProgress] = []
         var myList: [ActivityKey] = []
+        /// True when the current profile shows adult content
+        /// (adult-content/hidden-everywhere-by-default).
+        var showsAdult = false
 
         func sourceName(_ id: UUID) -> String {
             sources.first { $0.id == id }?.name ?? "your source"

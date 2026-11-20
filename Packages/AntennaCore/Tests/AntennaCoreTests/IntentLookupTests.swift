@@ -71,10 +71,12 @@ import Testing
     func titles() throws {
         let movie = ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: attic, name: "Harbor")
         let reference = TitleReference(movie)
-        #expect(try IntentLookup.title(reference, in: [movie], sources: sources()).get() == movie)
-        #expect(IntentLookup.title(reference, in: [], sources: sources()) == .failure(.titleGone(title: nil, source: "Attic")))
-        #expect(IntentLookup.title(reference, in: [], sources: sources(.loading)) == .failure(.stillLoading))
-        #expect(IntentLookup.title(reference, in: [movie], sources: []) == .failure(.titleSourceGone))
+        #expect(try IntentLookup.title(reference, in: [movie], showsAdult: false, sources: sources()).get() == movie)
+        #expect(
+            IntentLookup.title(reference, in: [], showsAdult: false, sources: sources())
+                == .failure(.titleGone(title: nil, source: "Attic")))
+        #expect(IntentLookup.title(reference, in: [], showsAdult: false, sources: sources(.loading)) == .failure(.stillLoading))
+        #expect(IntentLookup.title(reference, in: [movie], showsAdult: false, sources: []) == .failure(.titleSourceGone))
     }
 
     @Test("app-intents/shortcuts-suggests-what-you-watch favorites first, then other channels, locked and hidden left out")
@@ -95,8 +97,11 @@ import Testing
             WatchProgress(id: "b", titleID: "xtream#h#vod#99", sourceID: cabin, position: 10, duration: 100, updatedAt: now),
         ]
         let list = [titles[0].activityKey, titles[2].activityKey, ActivityKey(titleID: "xtream#h#vod#77", sourceID: cabin)]
-        let suggested = IntentLookup.suggestedTitles(progress: progress, myList: list, titles: titles)
+        let suggested = IntentLookup.suggestedTitles(progress: progress, myList: list, titles: titles, showsAdult: false)
         #expect(suggested.map(\.name) == ["Movie 3", "Movie 1"])
-        #expect(IntentLookup.suggestedTitles(progress: progress, myList: list, titles: titles, limit: 1).map(\.name) == ["Movie 3"])
+        #expect(
+            IntentLookup.suggestedTitles(progress: progress, myList: list, titles: titles, showsAdult: false, limit: 1).map(\.name) == [
+                "Movie 3"
+            ])
     }
 }

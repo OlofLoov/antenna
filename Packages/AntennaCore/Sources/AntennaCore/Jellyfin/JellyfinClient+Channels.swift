@@ -66,7 +66,8 @@ extension JellyfinClient {
                 JellyfinChannel(
                     id: id, name: name, number: JellyfinWire.wholeNumber(object["ChannelNumber"]),
                     isRadio: JellyfinWire.string(object["ChannelType"]) == "Radio",
-                    primaryImageTag: JellyfinWire.primaryTag(object)))
+                    primaryImageTag: JellyfinWire.primaryTag(object),
+                    isAdult: AdultContent.isAdultRating(JellyfinWire.string(object["OfficialRating"]))))
         }
         return (DecodedList(items: channels, skipped: skipped), total)
     }
@@ -75,6 +76,7 @@ extension JellyfinClient {
     /// "Radio" for a radio channel and none otherwise, a key-free logo, no
     /// catch-up, and an id built from the server's host alone
     /// (jellyfin-live-tv-source/channels-show-their-name-number-and-logo).
+    /// It is adult when the server rates it XXX or AO.
     /// The guide matches it by the server's channel id.
     public func channel(from row: JellyfinChannel, token: String) -> Channel {
         Channel(
@@ -84,7 +86,8 @@ extension JellyfinClient {
             group: row.isRadio ? "Radio" : nil,
             logoURL: row.primaryImageTag.map { logoURL(channelID: row.id, tag: $0) },
             epgID: row.id,
-            number: row.number)
+            number: row.number,
+            isAdult: row.isAdult)
     }
 
     /// `/Videos/<id>/stream?static=true&api_key=<key>`. It has no file

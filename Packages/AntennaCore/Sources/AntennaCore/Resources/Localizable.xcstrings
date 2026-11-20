@@ -21977,6 +21977,47 @@
         }
       }
     },
+    "This profile hides adult content. Show it in Antenna's Settings first." : {
+      "comment" : "Siri and Shortcuts reply when a channel or title is adult content the current profile hides.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا الملف الشخصي يخفي محتوى البالغين. أظهره من إعدادات Antenna أولًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Profil blendet Inhalte für Erwachsene aus. Blende sie zuerst in den Einstellungen von Antenna ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este perfil oculta el contenido para adultos. Muéstralo primero en los Ajustes de Antenna."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce profil masque le contenu pour adultes. Affichez-le d’abord dans les réglages d’Antenna."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este perfil oculta conteúdo adulto. Mostre-o primeiro nos Ajustes do Antenna."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den här profilen döljer vuxeninnehåll. Visa det i Antennas inställningar först."
+          }
+        }
+      }
+    },
     "This server asks for a username and password, which Antenna cannot send yet." : {
       "localizations" : {
         "ar" : {

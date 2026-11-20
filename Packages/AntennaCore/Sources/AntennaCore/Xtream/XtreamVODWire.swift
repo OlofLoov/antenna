@@ -15,12 +15,13 @@ struct VODRow: Decodable, ListRow {
     var categoryID: String?
     var cast: String?
     var director: String?
+    var isAdult: Bool
 
     var rawID: Int { streamID }
 
     enum CodingKeys: String, CodingKey {
         case streamID = "stream_id", name, streamIcon = "stream_icon", added, rating, rating5 = "rating_5based"
-        case containerExtension = "container_extension", categoryID = "category_id", cast, actors, director
+        case containerExtension = "container_extension", categoryID = "category_id", cast, actors, director, isAdult = "is_adult"
     }
 
     init(from decoder: any Decoder) throws {
@@ -34,6 +35,7 @@ struct VODRow: Decodable, ListRow {
         categoryID = c.looseString(.categoryID)
         cast = c.looseString(.cast) ?? c.looseString(.actors)
         director = c.looseString(.director)
+        isAdult = c.looseFlag(.isAdult)
     }
 }
 
@@ -46,12 +48,13 @@ struct SeriesRow: Decodable, ListRow {
     var categoryID: String?
     var cast: String?
     var director: String?
+    var isAdult: Bool
 
     var rawID: Int { seriesID }
 
     enum CodingKeys: String, CodingKey {
         case seriesID = "series_id", name, cover, lastModified = "last_modified", categoryID = "category_id"
-        case rating, rating5 = "rating_5based", cast, actors, director
+        case rating, rating5 = "rating_5based", cast, actors, director, isAdult = "is_adult"
     }
 
     init(from decoder: any Decoder) throws {
@@ -64,6 +67,7 @@ struct SeriesRow: Decodable, ListRow {
         categoryID = c.looseString(.categoryID)
         cast = c.looseString(.cast) ?? c.looseString(.actors)
         director = c.looseString(.director)
+        isAdult = c.looseFlag(.isAdult)
     }
 }
 

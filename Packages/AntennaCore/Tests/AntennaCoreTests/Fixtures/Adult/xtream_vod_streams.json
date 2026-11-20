@@ -1,0 +1,6 @@
+[
+  {"stream_id": 100, "name": "Long Winter", "category_id": "5"},
+  {"stream_id": 101, "name": "Flagged Film", "category_id": "5", "is_adult": "1"},
+  {"stream_id": 102, "name": "Night Film", "category_id": "6"},
+  {"stream_id": 103, "name": "Named Film", "category_id": "7"}
+]

@@ -5,8 +5,9 @@ import Foundation
 /// synced records; the catalogue applies it so every screen that lists
 /// groups follows it (group-management capability).
 ///
-/// `GroupRules()` changes nothing: every catalogue query gives the same
-/// result as a catalogue built without rules.
+/// `GroupRules()` hides adult content and changes nothing else. On channels
+/// with no adult group or flag, every catalogue query gives the same result
+/// as a catalogue built without rules.
 public struct GroupRules: Hashable, Sendable {
     /// A channel the user put in their own group, by its id and source.
     public struct Member: Hashable, Sendable {
@@ -48,11 +49,24 @@ public struct GroupRules: Hashable, Sendable {
     public var ownGroups: [OwnGroup]
     /// True while the locks are open on this device.
     public var locksOpen: Bool
+    /// The user's word on which groups hold adult content: true marks a
+    /// group adult, false clears a group the app found adult by its name or
+    /// the provider's flag. A group with no entry follows what the app
+    /// found (adult-content/correct-a-group). `.favorites`, `.recents`,
+    /// `.new` and `.all` are ignored.
+    public var adultMarks: [CatalogueGroup: Bool]
+    /// True when the profile shows adult content. False, the default,
+    /// leaves adult groups and channels out of every list, count, number
+    /// and search (adult-content/hidden-everywhere-by-default).
+    public var showsAdult: Bool
 
     public init(
         hidden: Set<CatalogueGroup> = [], locked: Set<CatalogueGroup> = [], names: [CatalogueGroup: String] = [:],
-        order: [CatalogueGroup: Int] = [:], ownGroups: [OwnGroup] = [], locksOpen: Bool = false
+        order: [CatalogueGroup: Int] = [:], ownGroups: [OwnGroup] = [], locksOpen: Bool = false,
+        adultMarks: [CatalogueGroup: Bool] = [:], showsAdult: Bool = false
     ) {
+        self.adultMarks = adultMarks
+        self.showsAdult = showsAdult
         self.hidden = hidden
         self.locked = locked
         self.names = names
@@ -61,10 +75,11 @@ public struct GroupRules: Hashable, Sendable {
         self.locksOpen = locksOpen
     }
 
-    /// True when these rules change no catalogue query.
+    /// True when these rules change no catalogue query on channels with no
+    /// adult group or flag.
     var isEmpty: Bool {
         hidden.subtracting([.favorites, .recents, .new]).isEmpty && effectiveLocks.isEmpty && names.isEmpty && order.isEmpty
-            && ownGroups.isEmpty
+            && ownGroups.isEmpty && adultMarks.isEmpty
     }
 
     /// The locks that apply now: none while open, and never on Favorites,

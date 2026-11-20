@@ -11,16 +11,29 @@ public struct ShelfCatalogue: Sendable, Hashable {
         self.categories = categories
     }
 
-    /// A source's movies. A category id the provider repeats keeps its first name.
+    /// A source's movies. A category id the provider repeats keeps its first
+    /// name. A movie in a category the provider marks adult is adult.
     public init(movies: [VODItem], categories: [XtreamCategory], sourceID: UUID) {
         let names = Self.names(categories)
-        self.init(titles: movies.map { ShelfTitle(movie: $0, sourceID: sourceID, categories: names) }, categories: Self.order(categories))
+        let adult = Set(categories.filter(\.isAdult).map(\.categoryID))
+        let titles = movies.map { movie in
+            var title = ShelfTitle(movie: movie, sourceID: sourceID, categories: names)
+            if movie.categoryID.map(adult.contains) == true { title.isAdult = true }
+            return title
+        }
+        self.init(titles: titles, categories: Self.order(categories))
     }
 
     /// A source's series, with the category rule of `init(movies:categories:sourceID:)`.
     public init(series: [Series], categories: [XtreamCategory], sourceID: UUID) {
         let names = Self.names(categories)
-        self.init(titles: series.map { ShelfTitle(series: $0, sourceID: sourceID, categories: names) }, categories: Self.order(categories))
+        let adult = Set(categories.filter(\.isAdult).map(\.categoryID))
+        let titles = series.map { series in
+            var title = ShelfTitle(series: series, sourceID: sourceID, categories: names)
+            if series.categoryID.map(adult.contains) == true { title.isAdult = true }
+            return title
+        }
+        self.init(titles: titles, categories: Self.order(categories))
     }
 
     private static func names(_ categories: [XtreamCategory]) -> [String: String] {

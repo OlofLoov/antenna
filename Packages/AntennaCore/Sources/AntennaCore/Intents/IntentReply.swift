@@ -24,6 +24,9 @@ public enum IntentFailure: Error, Equatable, Sendable, CustomStringConvertible, 
     case channelGone(channel: String?, source: String)
     case titleGone(title: String?, source: String)
     case locked(channel: String)
+    /// The channel or title is adult content the profile hides. The reply
+    /// names neither (adult-content/links-to-hidden-content-ask-first).
+    case adultHidden
     case nothingPlaying
     case alreadyFavorite(channel: String)
     case notFavorite(channel: String)
@@ -52,6 +55,7 @@ public enum IntentFailure: Error, Equatable, Sendable, CustomStringConvertible, 
         case .titleGone(let name?, let from): words("\(title(name)) is no longer available from \(source(from)).")
         case .titleGone(nil, let from): words("That title is no longer available from \(source(from)).")
         case .locked(let name): words("\(channel(name)) is in a locked group. Unlock it in Antenna first.")
+        case .adultHidden: words("This profile hides adult content. Show it in Antenna's Settings first.")
         case .nothingPlaying: words("Antenna isn't playing a channel right now. Say which channel instead.")
         case .alreadyFavorite(let name): words("\(channel(name)) is already a favorite.")
         case .notFavorite(let name): words("\(channel(name)) isn't a favorite.")

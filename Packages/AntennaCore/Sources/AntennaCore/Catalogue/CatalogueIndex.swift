@@ -30,6 +30,10 @@ struct CatalogueIndex: Sendable {
     let entryGroup: [CatalogueGroup]
     /// Entries per channel id, in entry order.
     let indicesByID: [String: [Int]]
+    /// Named groups whose name is adult (`AdultContent.isAdultName`).
+    let adultNamed: Set<CatalogueGroup>
+    /// True when any channel carries the provider's adult flag.
+    let hasAdultFlags: Bool
 
     private struct Entries {
         var channels: [Channel] = []
@@ -102,7 +106,16 @@ struct CatalogueIndex: Sendable {
         self.groupRank = groupRank
         self.entryGroup = entrySlot.map { groupSlots[$0] }
         self.indicesByID = indicesByID
+        self.adultNamed = Set(
+            groupSlots.filter { group in
+                if case .named(_, let name) = group { return AdultContent.isAdultName(name) }
+                return false
+            })
+        self.hasAdultFlags = channels.contains(where: \.isAdult)
     }
+
+    /// True when some group or channel may hold adult content.
+    var hasAdult: Bool { !adultNamed.isEmpty || hasAdultFlags }
 
     static func group(sourceID: UUID, name: String?) -> CatalogueGroup {
         guard let name, !name.allSatisfy(\.isWhitespace) else { return .ungrouped(sourceID) }

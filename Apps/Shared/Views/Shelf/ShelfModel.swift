@@ -284,7 +284,7 @@ final class ShelfModel {
         let loaded = sources.compactMap { catalogues[$0.id] }
         building = Task { [weak self] in
             let signpost = BrowseSignposts.signposter.beginInterval("shelf index")
-            let index = await ShelfIndex.build(loaded, now: .now)
+            let index = await ShelfIndex.build(loaded, showsAdult: false, now: .now)
             BrowseSignposts.signposter.endInterval("shelf index", signpost)
             guard let self, current == generation else { return }
             self.index = index

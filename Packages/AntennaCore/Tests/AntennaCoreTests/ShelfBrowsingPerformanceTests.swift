@@ -45,7 +45,7 @@ import Testing
     @Test("movies-and-series-browsing/browsing-stays-responsive the rows and banner of 50 000 movies build in under 400 ms")
     func indexBuild() {
         var index = ShelfIndex.empty
-        let elapsed = FastestRun.of { index = ShelfIndex(catalogues: [Self.movies], now: Self.base) }
+        let elapsed = FastestRun.of { index = ShelfIndex(catalogues: [Self.movies], showsAdult: false, now: Self.base) }
         #expect(index.titles.count == 50_000)
         #expect(index.rows == Shelf.rows(Self.movies.titles, categoryOrder: Self.movies.categories, now: Self.base))
         #expect(index.banner == Shelf.banner(Self.movies.titles))
@@ -65,8 +65,8 @@ import Testing
 
     @Test("movies-and-series-browsing/browsing-stays-responsive Continue watching and Recently watched read 200 positions in under 10 ms")
     func rowsFromSavedPositions() {
-        let movies = ShelfIndex(catalogues: [Self.movies], now: Self.base)
-        let series = ShelfIndex(catalogues: [Self.series], now: Self.base)
+        let movies = ShelfIndex(catalogues: [Self.movies], showsAdult: false, now: Self.base)
+        let series = ShelfIndex(catalogues: [Self.series], showsAdult: false, now: Self.base)
         let lookup: (ActivityKey) -> ShelfTitle? = { movies.title($0) ?? series.title($0) }
         var watching: [ContinueWatching.Item] = []
         var watched: [ShelfTitle] = []
@@ -89,7 +89,7 @@ import Testing
                 ShelfTitle(id: "xtream#o#vod#1", kind: .movie, sourceID: other, name: "Newest", added: Self.base.addingTimeInterval(1e8))
             ],
             categories: [])
-        let index = ShelfIndex(catalogues: [Self.movies, more], now: Self.base)
+        let index = ShelfIndex(catalogues: [Self.movies, more], showsAdult: false, now: Self.base)
         #expect(index.titles.count == 50_001)
         #expect(index.banner.first?.name == "Newest")
         #expect(index.title(ActivityKey(titleID: "xtream#o#vod#1", sourceID: other))?.name == "Newest")

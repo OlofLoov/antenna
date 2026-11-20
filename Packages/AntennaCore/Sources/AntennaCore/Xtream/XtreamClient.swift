@@ -72,8 +72,14 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
         async let streams = liveStreams()
         async let account = try? accountInfo()
         // Providers sometimes repeat a category id; the first name wins.
-        let names = Dictionary(try await categories.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
-        let channels = try await streams.map { channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] }) }
+        let loaded = try await categories
+        let names = Dictionary(loaded.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
+        let adult = Set(loaded.filter(\.isAdult).map(\.categoryID))
+        let channels = try await streams.map { stream in
+            channel(
+                from: stream, categoryName: stream.categoryID.flatMap { names[$0] },
+                categoryIsAdult: stream.categoryID.map(adult.contains) ?? false)
+        }
         return (channels, await account?.serverInfo?.timezone)
     }
 
@@ -125,8 +131,9 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
         url(path: ["series", credentials.username, credentials.password, "\(episodeID).\(Self.fileExtension(`extension`))"])
     }
 
-    /// Maps an Xtream live stream onto the app's `Channel` model.
-    public func channel(from stream: XtreamLiveStream, categoryName: String?) -> Channel {
+    /// Maps an Xtream live stream onto the app's `Channel` model. The
+    /// channel is adult when the stream or its category carries the flag.
+    public func channel(from stream: XtreamLiveStream, categoryName: String?, categoryIsAdult: Bool = false) -> Channel {
         Channel(
             id: XtreamTitleID(host: host, kind: .live, rawID: stream.streamID).description,
             name: stream.name,
@@ -137,7 +144,8 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
             number: stream.num,
             hasCatchup: (stream.tvArchive ?? 0) > 0,
             catchupDays: stream.tvArchiveDuration,
-            catchupMode: (stream.tvArchive ?? 0) > 0 ? .xc : nil
+            catchupMode: (stream.tvArchive ?? 0) > 0 ? .xc : nil,
+            isAdult: stream.isAdult || categoryIsAdult
         )
     }
 
@@ -223,13 +231,16 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
 public struct XtreamCategory: Decodable, Sendable, Hashable {
     public var categoryID: String
     public var categoryName: String
+    /// The panel's `is_adult` flag on the category, which some panels send.
+    public var isAdult: Bool
 
-    enum CodingKeys: String, CodingKey { case categoryID = "category_id", categoryName = "category_name" }
+    enum CodingKeys: String, CodingKey { case categoryID = "category_id", categoryName = "category_name", isAdult = "is_adult" }
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         categoryID = try c.decode(FlexibleString.self, forKey: .categoryID).value
         categoryName = try c.decode(String.self, forKey: .categoryName)
+        isAdult = c.looseFlag(.isAdult)
     }
 }
 
@@ -242,6 +253,8 @@ public struct XtreamLiveStream: Decodable, Sendable, Hashable {
     public var categoryID: String?
     public var tvArchive: Int?
     public var tvArchiveDuration: Int?
+    /// The stream's `is_adult` flag.
+    public var isAdult: Bool
 
     enum CodingKeys: String, CodingKey {
         case num, name
@@ -251,6 +264,7 @@ public struct XtreamLiveStream: Decodable, Sendable, Hashable {
         case categoryID = "category_id"
         case tvArchive = "tv_archive"
         case tvArchiveDuration = "tv_archive_duration"
+        case isAdult = "is_adult"
     }
 
     public init(from decoder: any Decoder) throws {
@@ -263,6 +277,7 @@ public struct XtreamLiveStream: Decodable, Sendable, Hashable {
         categoryID = (try? c.decodeIfPresent(FlexibleString.self, forKey: .categoryID))?.value
         tvArchive = c.looseInt(.tvArchive)
         tvArchiveDuration = c.looseInt(.tvArchiveDuration)
+        isAdult = c.looseFlag(.isAdult)
     }
 }
 

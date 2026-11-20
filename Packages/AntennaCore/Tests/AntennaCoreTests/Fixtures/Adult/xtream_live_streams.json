@@ -1,0 +1,9 @@
+[
+  {"stream_id": 10, "name": "News One", "category_id": "1"},
+  {"stream_id": 11, "name": "Late Channel", "category_id": "1", "is_adult": "1"},
+  {"stream_id": 20, "name": "Night One", "category_id": "2", "is_adult": "0"},
+  {"stream_id": 30, "name": "Sport One", "category_id": "3", "is_adult": "0"},
+  {"stream_id": 31, "name": "Sport Two", "category_id": "3", "is_adult": 1},
+  {"stream_id": 32, "name": "Sport Three", "category_id": "3", "is_adult": true},
+  {"stream_id": 33, "name": "Sport Four", "category_id": "3", "is_adult": "yes"}
+]

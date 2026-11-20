@@ -45,7 +45,7 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         self.init(
             index: index, favorites: CatalogueFavorites(snapshots: favorites, index: index),
             recents: recents.isEmpty ? .empty : CatalogueRecents(entries: recents, index: index), fresh: .empty,
-            policy: rules.isEmpty ? nil : CataloguePolicy(index: index, rules: rules))
+            policy: Self.policy(index: index, rules: rules))
     }
 
     private init(
@@ -67,7 +67,8 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
             [.favorites] + (shownRecents.rows.isEmpty ? [] : [.recents]) + (shownNew.rows.isEmpty ? [] : [.new]) + [.all]
         if let policy {
             self.listed =
-                top.filter { !policy.isHidden($0) } + policy.ordered.filter { !policy.isHidden($0) && !policy.isLocked($0) }
+                top.filter { !policy.isHidden($0) }
+                + policy.ordered.filter { !policy.isHidden($0) && !policy.isLocked($0) && !policy.isAdultHidden($0) }
         } else {
             self.listed = top + index.groups
         }
@@ -102,9 +103,11 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// With group rules, locked channels are left out of every group while
     /// locks are closed, channels of hidden groups are left out of `.all`,
     /// and a hidden or locked group has no rows. An `.own` group lists its
-    /// loaded members in the user's order.
+    /// loaded members in the user's order. Unless the profile shows adult
+    /// content, adult channels are left out of every group and an adult
+    /// group has no rows (adult-content/hidden-everywhere-by-default).
     public func rows(in group: CatalogueGroup) -> [RowKey] {
-        if let policy, policy.isLocked(group) || (policy.isHidden(group) && group != .all) { return [] }
+        if let policy, policy.isShut(group) { return [] }
         switch group {
         case .favorites: return shownFavorites.rows
         case .recents: return shownRecents.rows
@@ -151,7 +154,7 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// count, or nil when the group does not list `key`.
     public func position(of key: RowKey, in group: CatalogueGroup) -> (Int, Int)? {
         guard let entry = index.entry(for: key) else { return nil }
-        if let policy, policy.blocked[entry] || policy.isLocked(group) || (policy.isHidden(group) && group != .all) { return nil }
+        if let policy, policy.blocked[entry] || policy.isShut(group) { return nil }
         let rank: Int?
         switch group {
         case .favorites: rank = shownFavorites.rankByEntry[entry]
@@ -228,7 +231,15 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// This catalogue with `rules` in place of the current group rules.
     /// The channels are not indexed again.
     public func replacingRules(_ rules: GroupRules) -> Catalogue {
-        let policy = rules.isEmpty ? nil : CataloguePolicy(index: index, rules: rules)
-        return Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: policy)
+        Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: Self.policy(index: index, rules: rules))
+    }
+}
+
+extension Catalogue {
+    /// The policy for `rules` on `index`, nil when it would change nothing.
+    /// Adult content counts here, so a catalogue built with default rules
+    /// still hides it (adult-content/hidden-everywhere-by-default).
+    static func policy(index: CatalogueIndex, rules: GroupRules) -> CataloguePolicy? {
+        rules.isEmpty && !index.hasAdult ? nil : CataloguePolicy(index: index, rules: rules)
     }
 }

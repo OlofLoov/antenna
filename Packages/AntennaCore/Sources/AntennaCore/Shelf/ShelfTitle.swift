@@ -28,11 +28,16 @@ public struct ShelfTitle: Sendable, Hashable, Identifiable {
     public var cast: String?
     /// The directors as the list row gave them.
     public var director: String?
+    /// True when the provider marks the title or its category as adult
+    /// (adult-content/the-provider-s-adult-flag-counts).
+    public var isAdult: Bool
 
     public init(
         id: String, kind: Kind, sourceID: UUID, name: String, posterURL: URL? = nil, added: Date? = nil, category: String? = nil,
-        containerExtension: String? = nil, rating: Double? = nil, cast: String? = nil, director: String? = nil
+        containerExtension: String? = nil, rating: Double? = nil, cast: String? = nil, director: String? = nil,
+        isAdult: Bool = false
     ) {
+        self.isAdult = isAdult
         self.cast = cast
         self.director = director
         self.rating = rating
@@ -51,7 +56,7 @@ public struct ShelfTitle: Sendable, Hashable, Identifiable {
         self.init(
             id: movie.id, kind: .movie, sourceID: sourceID, name: movie.name, posterURL: movie.posterURL, added: movie.added,
             category: movie.categoryID.flatMap { categories[$0] }, containerExtension: movie.containerExtension, rating: movie.rating,
-            cast: movie.cast, director: movie.director)
+            cast: movie.cast, director: movie.director, isAdult: movie.isAdult)
     }
 
     /// A series row; series order by when they last changed
@@ -60,7 +65,7 @@ public struct ShelfTitle: Sendable, Hashable, Identifiable {
         self.init(
             id: series.id, kind: .series, sourceID: sourceID, name: series.name, posterURL: series.posterURL, added: series.lastModified,
             category: series.categoryID.flatMap { categories[$0] }, rating: series.rating, cast: series.cast,
-            director: series.director)
+            director: series.director, isAdult: series.isAdult)
     }
 
     /// The key progress and My list use for this title.
