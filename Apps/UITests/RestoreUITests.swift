@@ -11,9 +11,10 @@ final class RestoreUITests: XCTestCase {
     nonisolated let log = FileManager.default.temporaryDirectory.appending(path: "restore-engine-\(UUID().uuidString).log")
     nonisolated let lastChannel = FileManager.default.temporaryDirectory.appending(path: "restore-last-\(UUID().uuidString).txt")
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the tab bar tests run on an iPhone")
+        let idiom = await MainActor.run { UIDevice.current.userInterfaceIdiom }
+        try XCTSkipUnless(idiom == .phone, "the tab bar tests run on an iPhone")
     }
 
     override func tearDown() {
