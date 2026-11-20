@@ -245,11 +245,13 @@
                 }
             }
 
-            /// What each scenario's sources answer.
+            /// What each scenario's sources answer. Home answers before Cabin,
+            /// so the launch tunes a1 whatever order the two loads start in.
             @MainActor
             final class Script {
                 let scenario: Scenario
                 private var calls = 0
+                private var homeAnswered = false
 
                 init(scenario: Scenario) {
                     self.scenario = scenario
@@ -259,11 +261,13 @@
                     calls += 1
                     switch scenario {
                     case .channels, .failing:
-                        return source.id == playlistID
-                            ? Playlist(
-                                channels: ["a1", "a2", "a3"].map(channel) + UITestingShell.largeCatalogue()
-                                    + UITestingGroups.adultChannels())
-                            : Playlist(channels: [channel("b1")])
+                        guard source.id == playlistID else {
+                            for _ in 0..<500 where !homeAnswered { try await Task.sleep(for: .milliseconds(10)) }
+                            return Playlist(channels: [channel("b1")])
+                        }
+                        homeAnswered = true
+                        return Playlist(
+                            channels: ["a1", "a2", "a3"].map(channel) + UITestingShell.largeCatalogue() + UITestingGroups.adultChannels())
                     case .loading:
                         try await Task.sleep(for: .seconds(3600))
                         return Playlist(channels: [])
