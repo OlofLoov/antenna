@@ -54,6 +54,9 @@ public final class SampleBuilder {
     /// rate partway through gets a new format: an AudioSpecificConfig from
     /// ADTS, a Dolby header, or an MPEG audio header.
     private var soundHeader: SoundHeader?
+    /// The Annex B parameter sets `formatDescription` was made from, so a
+    /// keyframe that repeats them keeps the format instead of making it again.
+    private var videoParameterSets: [Data] = []
 
     private enum SoundHeader: Equatable {
         case aac(Data)
@@ -216,7 +219,10 @@ public final class SampleBuilder {
     ) throws -> CMSampleBuffer? {
         let units = Self.nalUnits(annexB: packet.data)
         let sets = parameterSets.compactMap { wanted in units.last { type($0) == wanted } }
-        if sets.count == parameterSets.count { formatDescription = try makeFormat(sets) }
+        if sets.count == parameterSets.count, sets != videoParameterSets || formatDescription == nil {
+            formatDescription = try makeFormat(sets)
+            videoParameterSets = sets
+        }
         guard let format = formatDescription else { return nil }
         let payload = units.filter { unit in type(unit).map { !dropped.contains($0) } ?? false }
         guard !payload.isEmpty else { return nil }
