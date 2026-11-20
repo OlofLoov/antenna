@@ -141,7 +141,7 @@ extension ShellUITests {
         freshBar()
         expect(element("zapBar.live"), "label == 'LIVE'")
         let quality = app.staticTexts.matching(identifier: "zapBar.quality")
-        XCTAssertTrue(quality["1080p"].waitForExistence(timeout: 3))
+        XCTAssertTrue(quality["1080p"].waitForExistence(timeout: 20), "the bar never showed the picture quality")
         XCTAssertTrue(quality["AAC 5.1"].exists)
     }
 

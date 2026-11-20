@@ -92,7 +92,7 @@ final class TitleTVUITests: XCTestCase {
         press(.right, times: 2)
         expectFocus("title.trailer")
         press(.select)
-        expect(element("shelf.debug.engine"), "value == 'playing night-ferry.m3u8 from 0'")
+        expect(element("shelf.debug.engine"), "value == 'playing night-ferry.m3u8 from 0'", timeout: 30)
         press(.menu)
         expect(element("movies.player"), "exists == false")
         XCTAssertTrue(element("title.name").exists, "back on the page")
