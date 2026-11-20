@@ -138,6 +138,8 @@ import Testing
         await launch()
         let many = (0..<50_000).map { Channel.fixture("a\($0)") }
         loader.finish(sourceA.id, with: many)
+        // A's load has returned and its 50 000 channels are still being tagged.
+        await settle()
         loader.finish(sourceB.id, with: [.fixture("b1")])
         // Tagging 50 000 channels takes longer than the yields `wait` allows.
         let deadline = ContinuousClock.now + .seconds(20)
