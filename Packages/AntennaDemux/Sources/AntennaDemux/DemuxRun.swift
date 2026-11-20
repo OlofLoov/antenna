@@ -244,7 +244,7 @@ final class DemuxRun: @unchecked Sendable {
         /// The container stream of the sound that plays.
         var sound: Int?
         /// The newest packets of each sound stream with a builder.
-        var rings: [Int: [DemuxedPacket]] = [:]
+        var rings: [Int: SoundRing] = [:]
         /// The channel count of the sound last reported.
         var soundChannels: Int?
         /// The picture size and dynamic range last reported.
@@ -394,12 +394,9 @@ final class DemuxRun: @unchecked Sendable {
 extension DemuxRun {
     /// Keeps `packet` in its sound stream's ring, dropping what is older than `soundRing`.
     private func keep(_ packet: DemuxedPacket, in state: inout PumpState) {
-        guard packet.presentationTime.isNumeric else { return }
-        var ring = state.rings[packet.streamIndex, default: []]
-        ring.append(packet)
-        let oldest = CMTimeSubtract(packet.presentationTime, Self.soundRing)
-        if let drop = ring.firstIndex(where: { $0.presentationTime >= oldest }), drop > 0 { ring.removeFirst(drop) }
-        state.rings[packet.streamIndex] = ring
+        // Changed in place: a copy out of the dictionary would copy every
+        // packet the ring holds.
+        state.rings[packet.streamIndex, default: SoundRing(length: Self.soundRing)].add(packet)
     }
 
     /// Waits for sound requests after the last packet and serves them,
@@ -429,7 +426,7 @@ extension DemuxRun {
             soundSwitched?(PresentationInfo.Audio(codec: track.stream.codec, channels: track.stream.channels, isDecodable: false))
             return true
         }
-        for packet in state.rings[stream] ?? [] where packet.presentationTime >= request.from {
+        for packet in state.rings[stream]?.kept ?? [] where packet.presentationTime >= request.from {
             for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
                 guard audioFeed.push(buffer) else { return false }
             }

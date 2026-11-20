@@ -77,11 +77,13 @@ extension SampleBuilder {
     }
 
     /// The speakers of each channel count in WAVE order, which FLAC and
-    /// uncompressed PCM use.
+    /// uncompressed PCM use. WAVE puts the back pair before the side pair in
+    /// 7.1 and the back center before the side pair in 6.1, so those take
+    /// Apple's WAVE layouts, not the MPEG ones that list the sides first.
     static let waveLayouts: [Int: AudioChannelLayoutTag] = [
         1: kAudioChannelLayoutTag_Mono, 2: kAudioChannelLayoutTag_Stereo, 3: kAudioChannelLayoutTag_MPEG_3_0_A,
         4: kAudioChannelLayoutTag_Quadraphonic, 5: kAudioChannelLayoutTag_MPEG_5_0_A, 6: kAudioChannelLayoutTag_MPEG_5_1_A,
-        7: kAudioChannelLayoutTag_MPEG_6_1_A, 8: kAudioChannelLayoutTag_MPEG_7_1_C,
+        7: kAudioChannelLayoutTag_WAVE_6_1, 8: kAudioChannelLayoutTag_WAVE_7_1,
     ]
 
     // MARK: PCM

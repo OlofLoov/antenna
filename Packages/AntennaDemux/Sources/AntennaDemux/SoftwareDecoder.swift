@@ -187,7 +187,7 @@ final class SoftwareDecoder: @unchecked Sendable {
         let shape = SoundShape(rate: rate, channels: channels, mask: layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0)
         // Sound frames the container gave no time follow the previous one,
         // as the frames FFmpeg's parser cuts from one packet do.
-        let start = time.value == Int64.min ? nextSoundTime : time
+        let start = SampleBuilder.soundStart(time.value == Int64.min ? .invalid : time, following: nextSoundTime)
         guard start.isValid else { return [] }
         nextSoundTime = CMTimeAdd(start, CMTime(value: CMTimeValue(samples), timescale: CMTimeScale(rate)))
         var buffers: [CMSampleBuffer] = []
@@ -292,6 +292,18 @@ final class SoftwareDecoder: @unchecked Sendable {
         return buffer
     }
 
+    /// Speaker masks whose bitmap names the wrong speakers. Core Audio's
+    /// bitmap reads the WAVE side pair as "surround direct" speakers, so
+    /// 5.1 from TrueHD or DTS, which FFmpeg gives with side speakers, had no
+    /// surround pair, and 7.1 and 6.1 swapped the side and back speakers.
+    /// These layouts name them as Apple's own WAVE and MPEG layouts do.
+    static let waveMasks: [UInt64: (channels: Int, tag: AudioChannelLayoutTag)] = [
+        0x607: (5, kAudioChannelLayoutTag_MPEG_5_0_A),
+        0x60F: (6, kAudioChannelLayoutTag_MPEG_5_1_A),
+        0x70F: (7, kAudioChannelLayoutTag_WAVE_6_1),
+        0x63F: (8, kAudioChannelLayoutTag_WAVE_7_1),
+    ]
+
     /// Interleaved 32-bit float PCM. `mask` names the speakers as FFmpeg
     /// does, one bit each in WAVE order, which is Core Audio's channel
     /// bitmap too. With no mask, the channels are taken in WAVE order for
@@ -303,11 +315,13 @@ final class SoftwareDecoder: @unchecked Sendable {
             mFramesPerPacket: 1, mBytesPerFrame: UInt32(4 * channels), mChannelsPerFrame: UInt32(channels),
             mBitsPerChannel: 32, mReserved: 0)
         let bitmap = AudioChannelBitmap(rawValue: UInt32(truncatingIfNeeded: mask & 0x3FFFF))
-        let named = mask != 0 && bitmap.rawValue.nonzeroBitCount == channels
+        let known = waveMasks[mask].flatMap { $0.channels == channels ? $0.tag : nil }
+        let named = known == nil && mask != 0 && bitmap.rawValue.nonzeroBitCount == channels
         let tag =
-            named
-            ? kAudioChannelLayoutTag_UseChannelBitmap
-            : SampleBuilder.waveLayouts[channels] ?? kAudioChannelLayoutTag_DiscreteInOrder | UInt32(channels)
+            known
+            ?? (named
+                ? kAudioChannelLayoutTag_UseChannelBitmap
+                : SampleBuilder.waveLayouts[channels] ?? kAudioChannelLayoutTag_DiscreteInOrder | UInt32(channels))
         var layout = AudioChannelLayout(
             mChannelLayoutTag: tag, mChannelBitmap: named ? bitmap : [], mNumberChannelDescriptions: 0,
             mChannelDescriptions: AudioChannelDescription())
