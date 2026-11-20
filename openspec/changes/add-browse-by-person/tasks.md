@@ -25,12 +25,12 @@
 - [x] 4.1 Add people search to `PeopleIndex`, citing `browse-by-person/find-a-person-in-search` and `search/results-grouped-best-first`
 - [x] 4.2 Add the People section to Search on iPhone, iPad, Mac and Apple TV, with previews and copy in every app language
 - [x] 4.3 UI tests on iPhone and Apple TV: type a name, pick the person
-- [ ] 4.4 On Apple TV, put focus back on the person's row in Search after Menu. Search on Apple TV puts focus back on no result today, titles included, so this needs a focus binding for every result row
+- [x] 4.4 On Apple TV, put focus back on the person's row in Search after Menu. Search on Apple TV puts focus back on no result today, titles included, so this needs a focus binding for every result row
 
 ## 5. Verify
 
 - [x] 5.1 Each requirement of the provider-names part has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [x] 5.2 `/opsx:verify` passes for groups 1 to 4, with one gap: the Apple TV focus after Back to Search, task 4.4
+- [x] 5.2 `/opsx:verify` passes for groups 1 to 4, with one gap, the Apple TV focus after Back to Search, closed by task 4.4
 
 ## 6. Later: with the lookup service (waits on the title-info server)
 
