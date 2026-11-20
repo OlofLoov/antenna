@@ -77,12 +77,12 @@ The system SHALL show the newest title in the banner with its name, category, ye
 - **AND** it is never enlarged to a strip of its middle
 
 ### Requirement: Keep a list for later
-The system SHALL add a title to My list from the banner button or the poster's menu, offer removal in both places once added, show it in the My list row latest first, and undo both on removal.
+The system SHALL add a title to My list from the banner button or the poster's menu, offer removal in both places once added, show it in the My list row latest first, and undo both on removal. The banner button SHALL read "Add to My list" or "Remove from My list", in words with no glyph.
 
 #### Scenario: Adding to My list
 - **GIVEN** a title that is not in My list
 - **WHEN** the user adds it with the banner's My list button or from the poster's menu
-- **THEN** the button and menu offer to remove it instead
+- **THEN** the button and menu offer to remove it instead, the button reading "Remove from My list"
 - **AND** the My list row appears or gains the title, latest additions first
 
 #### Scenario: Removing from My list
@@ -94,6 +94,10 @@ The system SHALL add a title to My list from the banner button or the poster's m
 - **GIVEN** the section is open
 - **WHEN** My list or a saved position changes on another device
 - **THEN** the open section shows the change without reopening it
+
+#### Scenario: Words on every platform
+- **WHEN** the banner shows on iPhone, iPad, Mac or Apple TV
+- **THEN** My list reads "Add to My list" in the same style as More info, with no plus or check
 
 ### Requirement: Continue watching
 The system SHALL list movies and episodes stopped part-way through together in Continue watching, most recent first, with progress and what is left, drop finished movies, show "Next episode" for a series until none is left, and hide the row when nothing is in progress.
@@ -321,7 +325,7 @@ The system SHALL show the provider's rating in the banner's facts line, written 
 
 #### Scenario: iPhone
 - **WHEN** the banner shows a title with a trailer on iPhone
-- **THEN** Trailer is a button with the trailer glyph and the spoken label "Trailer", between Info and My list, and the four buttons fit the screen width
+- **THEN** Play and Info take the first row, and Trailer, with its glyph and the word "Trailer", and My list take the second, all within the screen width
 
 ### Requirement: Preview of the focused title on Apple TV
 On Apple TV the system SHALL show, at the top of Movies and Series while the highlight is in a row, a preview of the title the highlight rests on: its picture, name, category, facts and up to three lines of its plot, with the focused row just below. The preview SHALL change only after the highlight has stayed on a poster for 0.8 seconds, and SHALL fade from one title to the next. iPhone, iPad and Mac SHALL show no preview.
