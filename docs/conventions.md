@@ -64,13 +64,17 @@
 - `testStore` in each walk-through file is the App Store set. The workflow
   runs it once per ready language with `TEST_RUNNER_STORE_LANGUAGE` and
   `TEST_RUNNER_STORE_REGION` (the walk reads them without the prefix) and
-  uploads `store-screenshots` as `<store-locale>/<nn>-<device>-<step>.png`
-  and `<store-locale>/appleTV/<nn>-<step>.png`. Its steps anchor on
+  uploads `store-screenshots` as `<store-locale>/<nn>-<device>-<step>.png`,
+  `<store-locale>/appleTV/<nn>-<step>.png` and `<store-locale>/mac/<nn>-<step>.png`.
+  The Mac walk is `Apps/MacJourneys`, in the `AntennaMac` scheme. Its steps anchor on
   identifiers only, never on a label, since the labels are translated. It
   launches with `-ui-testing-store-shots`, which fills every channel's
-  guide, plays `Apps/Shared/Debug/StorePicture.mp4` on the player surfaces
-  and hides the test probes and the Apple TV remote hints. The clip is drawn
-  by `scripts/make-store-picture.sh` and left out of Release builds. To
+  guide, sets the app's clock to 9:41 at launch, gives the scripted movies
+  and series posters and backdrops, plays `Apps/Shared/Debug/StorePicture.mp4`
+  on the player surfaces, opens the Mac window at 1440 by 900 points, and
+  hides the test probes and the Apple TV remote hints. The clip is drawn by
+  `scripts/make-store-picture.sh` and the art, `StoreArt-*.jpg`, by
+  `scripts/make-store-art.py`; both are left out of Release builds. To
   run it in German locally, set `TEST_RUNNER_STORE_LANGUAGE=de` and
   `TEST_RUNNER_STORE_REGION=de_DE` in front of `xcodebuild test`.
 

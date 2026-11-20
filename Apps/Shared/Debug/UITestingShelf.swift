@@ -242,17 +242,6 @@
                 }
             }
 
-            /// Seasons 1 to 15, two episodes each, ids 1011 to 1152.
-            private var fifteenSeasons: [Episode] {
-                (1...15).flatMap { season in
-                    (1...2).map { number in
-                        Episode(
-                            id: "xtream#cabin#episode#\(1000 + season * 10 + number)", episodeID: 1000 + season * 10 + number,
-                            season: season, number: number, title: "Episode \(number)", containerExtension: "mp4", duration: 2700)
-                    }
-                }
-            }
-
             private var northernLights: [Episode] {
                 func episode(_ id: Int, _ season: Int?, _ number: Int?, _ title: String, _ plot: String?) -> Episode {
                     Episode(
@@ -291,7 +280,9 @@
                                     + "until the water turns to choose a side, and every channel out of the harbour is watched. Her "
                                     + "brother runs the tug the buyers hired, the harbourmaster owes them money, and the one radio she "
                                     + "trusts is on a boat already past the breakwater.",
-                                year: 2024, duration: 7_680, genre: "Thriller", ageRating: "15", containerExtension: "mkv",
+                                year: 2024, duration: 7_680, genre: "Thriller", ageRating: "15",
+                                backdropURLs: [UITestingStoreShots.art(for: title.id, .backdrop)].compactMap(\.self),
+                                containerExtension: "mkv",
                                 cast: "Mira Holt, Jonas Reeve, Adaeze Okafor", director: "Sanna Weiss", rating: 7.4,
                                 trailerURL: URL(string: "https://trailers.example/long-harbor")))
                     case "xtream#cabin#vod#3":
@@ -304,7 +295,8 @@
                         return .movie(
                             VODInfo(
                                 plot: details.plot, year: details.year, duration: details.duration, genre: title.category,
-                                rating: details.rating, trailerURL: details.trailerURL))
+                                backdropURLs: [details.backdropURL].compactMap(\.self), rating: details.rating,
+                                trailerURL: details.trailerURL))
                     }
                 case .series:
                     // A series answers after half a second, so the page shows its name first.
@@ -327,6 +319,7 @@
                     ? ShelfDetails(
                         year: 2000 + number, duration: Double(90 + number) * 60, plot: "The story of \(title.name).", ageRating: "15")
                     : ShelfDetails(year: 2010 + number, seasons: number % 3 + 1, plot: "A series about \(title.name).")
+                details.backdropURL = UITestingStoreShots.art(for: title.id, .backdrop)
                 switch title.id {
                 case "xtream#cabin#vod#1":
                     details.rating = 7.4
@@ -345,8 +338,9 @@
                 func title(
                     _ number: Int, _ name: String, daysAgo: Double?, _ category: String?, cast: String? = nil, director: String? = nil
                 ) -> ShelfTitle {
-                    ShelfTitle(
-                        id: "xtream#\(host)#\(kind == .movie ? "vod" : "series")#\(number)", kind: kind, sourceID: source, name: name,
+                    let id = "xtream#\(host)#\(kind == .movie ? "vod" : "series")#\(number)"
+                    return ShelfTitle(
+                        id: id, kind: kind, sourceID: source, name: name, posterURL: UITestingStoreShots.art(for: id, .poster),
                         added: daysAgo.map { launched.addingTimeInterval(-$0 * 86_400) }, category: category,
                         containerExtension: "mp4", cast: cast, director: director)
                 }
@@ -389,6 +383,19 @@
         /// banner to move on by itself.
         static var holdsBanner: Bool {
             testing && !ProcessInfo.processInfo.arguments.contains(bannerRotatesArgument)
+        }
+    }
+
+    extension UITestingShelf.Script {
+        /// Seasons 1 to 15, two episodes each, ids 1011 to 1152.
+        fileprivate var fifteenSeasons: [Episode] {
+            (1...15).flatMap { season in
+                (1...2).map { number in
+                    Episode(
+                        id: "xtream#cabin#episode#\(1000 + season * 10 + number)", episodeID: 1000 + season * 10 + number,
+                        season: season, number: number, title: "Episode \(number)", containerExtension: "mp4", duration: 2700)
+                }
+            }
         }
     }
 #endif

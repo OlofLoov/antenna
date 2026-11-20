@@ -181,5 +181,16 @@ import Testing
         #expect(workflow.contains("export-screenshots.sh --store \"$stores\" store-screenshots"))
         #expect(workflow.contains("name: store-screenshots"))
         #expect(workflow.contains("iPhone [0-9]+ Pro Max"))
+        // store-listing/store-screenshots-in-every-ready-language, Mac pictures
+        #expect(workflow.contains("-only-testing:AntennaMacJourneys/MacJourneys/testStore"))
+        #expect(workflow.contains("store-mac-$code.xcresult"))
+    }
+
+    @Test("store-listing/store-screenshots-in-every-ready-language: the store clip and art stay out of Release builds")
+    func storeFixturesLeaveRelease() throws {
+        let config = try String(contentsOf: Self.root.appending(path: "Config/Shared.xcconfig"), encoding: .utf8)
+        let line = try #require(config.split(separator: "\n").first { $0.hasPrefix("EXCLUDED_SOURCE_FILE_NAMES[config=Release]") })
+        #expect(line.contains("StorePicture.mp4"))
+        #expect(line.contains("StoreArt-*.jpg"))
     }
 }

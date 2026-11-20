@@ -24,7 +24,7 @@ jobs:
     name: App screenshots
     runs-on: macos-26
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'screenshots')
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v7
         with:
@@ -150,6 +150,32 @@ jobs:
               -derivedDataPath dd-tv -resultBundlePath "store-tv-$code.xcresult" || failed=1
           done 3< store-languages.txt
           exit "$failed"
+      - name: Build for Mac
+        if: success() || failure()
+        run: |
+          xcodebuild build-for-testing -project Antenna.xcodeproj -scheme AntennaMac \
+            -destination "platform=macOS" -derivedDataPath dd-mac \
+            CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= ANTENNA_PAID_TEAM=NO
+      - name: Fit the Mac store window on the screen
+        if: success() || failure()
+        run: |
+          set -e
+          brew install displayplacer
+          id=$(displayplacer list | awk '/Persistent screen id/ {print $4; exit}')
+          displayplacer "id:$id res:1920x1080 scaling:off"
+      - name: Mac store sets
+        if: success() || failure()
+        run: |
+          failed=0
+          while read -r code region _ <&3; do
+            TEST_RUNNER_STORE_LANGUAGE="$code" TEST_RUNNER_STORE_REGION="$region" \
+              xcodebuild test-without-building -project Antenna.xcodeproj -scheme AntennaMac \
+              -destination "platform=macOS" \
+              -only-testing:AntennaMacJourneys/MacJourneys/testStore \
+              -retry-tests-on-failure -test-iterations 2 \
+              -derivedDataPath dd-mac -resultBundlePath "store-mac-$code.xcresult" || failed=1
+          done 3< store-languages.txt
+          exit "$failed"
       - name: Export screenshots
         if: always()
         run: |
@@ -170,6 +196,7 @@ jobs:
                 [ -d "$bundle" ] && set -- "$@" "$bundle"
               done
             fi
+            [ -d "store-mac-$code.xcresult" ] && set -- "$@" "store-mac-$code.xcresult"
             if [ "$#" -gt 0 ]; then
               bash scripts/export-screenshots.sh --store "$stores" store-screenshots "$@"
             fi
