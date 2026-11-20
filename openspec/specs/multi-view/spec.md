@@ -182,6 +182,11 @@ The system SHALL end multi-view by keeping the highlighted or selected tile's ch
 - **AND** this counts as one channel change to tile k's channel, which is remembered as the last channel
 - **AND** on Apple TV that Menu press does not also open the tab bar
 
+#### Scenario: Another channel after leaving
+- **GIVEN** the user left multi-view and tile k's channel plays on its own
+- **WHEN** the user picks another channel from the channel list, the guide or by changing channel
+- **THEN** that channel plays with its picture, as it would had multi-view never started
+
 #### Scenario: Close the app in multi-view
 - **GIVEN** multi-view with several tiles
 - **WHEN** the app is closed and opened again
