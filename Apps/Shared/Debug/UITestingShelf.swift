@@ -11,6 +11,9 @@
     /// reaches the network, iCloud or the Keychain. The Live and shell UI
     /// tests get the `titles` script too, so their Movies tab is filled.
     /// `-ui-testing-reduce-motion` makes the banner act as with Reduce Motion on.
+    /// Under any UI testing launch the banner holds its title, so a test
+    /// that reads it on a slow simulator reads the title it expects;
+    /// `-ui-testing-banner-rotates` lets it move on every 8 seconds again.
     enum UITestingShelf {
         static let argument = "-ui-testing-shelf"
         static let reduceMotionArgument = "-ui-testing-reduce-motion"
@@ -67,7 +70,7 @@
         }
 
         /// True when any UI testing launch argument is present.
-        private static var testing: Bool {
+        fileprivate static var testing: Bool {
             let arguments = ProcessInfo.processInfo.arguments
             return arguments.contains { $0.hasPrefix("-ui-testing-") }
         }
@@ -376,6 +379,16 @@
                     return ShelfCatalogue(titles: [title(1, "Long Winter", daysAgo: 2, "Drama")], categories: ["Drama"])
                 }
             }
+        }
+    }
+
+    extension UITestingShelf {
+        static let bannerRotatesArgument = "-ui-testing-banner-rotates"
+
+        /// True when a UI test launched the app without asking for the
+        /// banner to move on by itself.
+        static var holdsBanner: Bool {
+            testing && !ProcessInfo.processInfo.arguments.contains(bannerRotatesArgument)
         }
     }
 #endif

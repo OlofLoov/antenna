@@ -67,7 +67,7 @@ final class ShelfUITests: XCTestCase {
 
     // movies-and-series-browsing/new-titles-up-front
     func testTheBannerShowsTheNewestAndMovesOnByItself() throws {
-        let app = try launch()
+        let app = try launch(arguments: ["-ui-testing-banner-rotates"])
         openMovies(app)
         waitForHero(app, "The Long Harbor", timeout: 5)
         XCTAssertTrue(app.element("movies.hero").staticTexts["RECENTLY ADDED · ACTION"].exists)

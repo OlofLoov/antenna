@@ -77,7 +77,7 @@ struct ShelfBannerHost<Content: View>: View {
         let titles = model.banner
         let shown = titles.isEmpty ? nil : titles[min(index, titles.count - 1)]
         let rotates =
-            !paused
+            !paused && !Self.heldForTesting
             && BannerPager.rotates(count: titles.count, interacting: interacting, reduceMotion: reduceMotion, hold: Self.hold)
         content
             .environment(\.shelfBanner, shown.map { context($0, count: titles.count) })
@@ -125,6 +125,14 @@ struct ShelfBannerHost<Content: View>: View {
     private struct Shown: Hashable {
         var id: String?
         var paused: Bool
+    }
+
+    private static var heldForTesting: Bool {
+        #if DEBUG
+            UITestingShelf.holdsBanner
+        #else
+            false
+        #endif
     }
 
     private var reduceMotion: Bool {
