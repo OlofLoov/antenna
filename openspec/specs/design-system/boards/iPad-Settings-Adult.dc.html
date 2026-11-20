@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac settings, show adult content</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- filter-adult-content: Sources & Settings on iPad and on a Mac, the same grouped list as iPad-Settings, with the per-profile switch on after the passcode was entered. -->
+<div style="width: 1180px; height: 820px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <div style="margin-top: 24px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600">Sources &amp; Settings</div>
+  <!-- settings.root: the list keeps the readable width of iPad-Settings, centered -->
+  <div style="width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; padding-top: 16px">
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+      <!-- settings.profile -->
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 17px"><span>Profiles</span><span style="color: #A7B0BF">Dad ›</span></div>
+      <!-- settings.groups -->
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 17px"><span>Groups</span><span style="color: #A7B0BF">›</span></div>
+      <!-- settings.adultContent: a system Toggle, on. Turning it off never asks. On a Mac the same row is a checkbox-style switch in the Form. -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; box-sizing: border-box">
+        <span style="flex: 1 1 auto; font-size: 17px">Show adult content</span>
+        <span style="width: 51px; height: 31px; border-radius: 16px; background: #34C759; position: relative"><span style="position: absolute; right: 2px; top: 2px; width: 27px; height: 27px; border-radius: 14px; background: #FFFFFF"></span></span>
+      </div>
+    </div>
+    <!-- settings.adultContent.footer: secondary -->
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 8px">Adult content shows in this profile until you turn this off.</div>
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">Sources</div>
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); height: 60px; display: flex; align-items: center; padding: 0 16px; font-size: 17px">Home provider</div>
+  </div>
+  <!-- The passcode prompt for turning the switch on is the sheet of iPad-Groups-Locked, with the message "Enter the passcode to show adult content in this profile." -->
+</div>
+</x-dc>
+</body>
+</html>

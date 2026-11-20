@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV settings, show adult content</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- filter-adult-content: the TV-Settings split page with the per-profile switch focused. The lead column shows the focused row's footer, as for Subtitles. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+    <!-- settings.lead -->
+    <div style="width: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center">
+      <div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 150px; line-height: 1; color: #A7B0BF">⚙</div>
+      <div style="font-size: 48px; font-weight: 600">Sources &amp; Settings</div>
+      <!-- settings.adultContent.footer while the switch has focus -->
+      <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">Adult groups, channels, movies and series are hidden in this profile. Showing them needs the group passcode.</div>
+    </div>
+    <!-- settings.list -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+      <!-- settings.profile -->
+      <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08)"><span>Profiles</span><span style="color: #A7B0BF">Dad</span></div>
+      <!-- settings.groups -->
+      <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08)"><span>Groups</span><span style="color: #A7B0BF">›</span></div>
+      <!-- settings.adultContent: focused, the system platter. Selecting it while Off opens the full-screen passcode prompt of TV-Groups-Locked with the message "Enter the passcode to show adult content in this profile." and no reset; with no passcode yet it is the set-a-passcode flow. Selecting it while On turns it off at once. -->
+      <div style="height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 29px; border-radius: 20px; background: #F2F4F8; color: #0B0E13; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45)"><span>Show adult content</span><span style="color: #4B5563">Off</span></div>
+      <div style="font-size: 25px; font-weight: 600; color: #6B7280; padding: 12px 20px 0; letter-spacing: 0.5px">SOURCES</div>
+      <div style="height: 100px; display: flex; align-items: center; padding: 0 20px; border-radius: 20px; background: rgba(255,255,255,0.08); font-size: 29px; font-weight: 600">Home</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
