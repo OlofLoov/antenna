@@ -25,3 +25,23 @@ The system SHALL show results under Channels, In the guide, Movies & series and 
 - **GIVEN** the device is offline
 - **WHEN** the user searches
 - **THEN** search covers everything already loaded, and missing logos and posters get their stand-ins
+
+### Requirement: Pick a channel or title to watch
+The system SHALL play a picked channel full screen on Apple TV and in Live elsewhere, switching to All channels when it is outside the current group and keeping the search for later, and SHALL play a picked movie or series as the Movies section does. On Apple TV, coming back to Search SHALL put focus on the result the user picked.
+
+#### Scenario: Picking a channel
+- **GIVEN** a channel in the results
+- **WHEN** the user picks it
+- **THEN** it starts playing, full screen on Apple TV and in Live elsewhere
+- **AND** the current group becomes All channels if the channel is not in it
+- **AND** the search is kept for when the user comes back
+
+#### Scenario: Picking a movie or series
+- **GIVEN** a movie or series in the results
+- **WHEN** the user picks it
+- **THEN** it plays as it does from the Movies or Series section
+
+#### Scenario: Back on the result on Apple TV
+- **GIVEN** a channel, movie, series or person the user picked in Search on Apple TV
+- **WHEN** they come back with Menu from the series' or person's page or from the movie, or swipe down from the tab bar onto Search after the channel played
+- **THEN** the result they picked has focus, with the query and results as they left them
