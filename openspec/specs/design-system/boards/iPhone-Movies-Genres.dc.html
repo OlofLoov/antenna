@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone genre picker</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- split-movies-and-series-tabs (movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone): the Genres sheet over Movies on iPhone, built as Live's Groups sheet (iPhone-Live-Groups.dc.html) from the same group button and rows. Series is the same with series.* identifiers and "All series". iPad and Mac keep the genres in the sidebar, Apple TV keeps its chips. -->
+<!-- Right to left: in Arabic the sheet mirrors as any list does; provider genre names keep their own direction. -->
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- Movies behind the sheet, dimmed: the section name and profile button (iPhone-Movies.dc.html), then movies.genres reading "EN | Drama · 37" -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 520px; background: #22304A"></div>
+  <div style="position: absolute; left: 0; right: 0; top: 54px; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 16px">
+    <div style="font-size: 28px; font-weight: 700">Movies</div>
+    <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><span style="width: 32px; height: 32px; border-radius: 16px; background: #C084FC; color: #0B0E13; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">K</span></div>
+  </div>
+  <div role="button" aria-label="EN | Drama, 37 titles" style="position: absolute; left: 0; right: 0; top: 104px; height: 44px; display: flex; align-items: center; gap: 6px; padding: 0 16px"><bdi style="font-size: 16px; font-weight: 600">EN | Drama</bdi><span style="font-size: 15px; color: #D7DEE8">· 37</span></div>
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4)"></div>
+
+  <!-- movies.genres.sheet at the medium detent: All movies and My list first, then every genre in the rows' order with its count; the checkmark is on the open list. Picking a row closes the sheet: All movies brings the rows back, the rest show their grid (iPhone-Movies-Grid.dc.html). Rows are 44 pt with the name and count on one line. -->
+  <div style="position: absolute; left: 0; right: 0; top: 388px; bottom: 0; background: #14181F; border-radius: 22px 22px 0 0; display: flex; flex-direction: column; overflow: hidden">
+    <div style="display: flex; justify-content: center; padding: 6px 0 0"><span style="width: 36px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.3)"></span></div>
+    <!-- Title bar: movies.genres.close (the system close button) at the leading edge, "Genres" centred -->
+    <div style="display: flex; align-items: center; height: 44px; padding: 0 16px; position: relative">
+      <button type="button" aria-label="Close" style="font: inherit; width: 32px; height: 32px; border-radius: 16px; border: 0; background: rgba(255,255,255,0.1); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="position: absolute; left: 0; right: 0; text-align: center; font-size: 17px; font-weight: 600; pointer-events: none">Genres</div>
+    </div>
+    <!-- System search field (searchable, always shown), prompt "Search genres". Every typed word must be in the name, folded for case and accents; All movies and My list hide while a search is typed. -->
+    <label style="display: flex; align-items: center; gap: 8px; height: 36px; margin: 4px 16px 6px; padding: 0 10px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #A7B0BF; font-size: 17px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Search genres</span></label>
+    <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding-top: 8px">
+    <div style="margin: 0 16px; border-radius: 12px; background: #1C2129; overflow: hidden">
+      <!-- movies.genres.all --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">All movies</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">214</span></div>
+      <!-- movies.genres.myList --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">My list</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">6</span></div>
+    </div>
+    <div style="margin: 16px 16px 0; border-radius: 12px; background: #1C2129; overflow: hidden">
+      <!-- movies.genres.action --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">EN | Action</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">48</span></div>
+      <!-- movies.genres.drama --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">EN | Drama</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">37</span></div>
+      <!-- movies.genres.comedy --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">EN | Comedy</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">29</span></div>
+      <!-- movies.genres.thriller --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">EN | Thriller</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">22</span></div>
+      <!-- movies.genres.family --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Family</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">17</span></div>
+      <!-- movies.genres.de-action --><div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.06)"><span style="width: 18px; display: inline-flex; color: {{accent}}"></span><bdi style="flex: 1 1 auto; min-width: 0; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">DE | Action</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">12</span></div>
+    </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

@@ -54,6 +54,7 @@ The button lives in `Apps/Shared/Views/Profiles/ProfileMenuButton.swift` (it rea
 - Live and the Guide with a whole-screen message (no sources, loading, offline, failed, empty): over the top right corner of the message, since there is no group row. Every state keeps a way into Settings, which matters most for "No sources yet".
 - Movies and Series: at the trailing end of the bar over the banner, where the search button was, with the section's name ("Movies" or "Series") at the leading end in place of the switch. The bar pins to the top on the ground color once the banner scrolls away, as the switch did.
 - Search: none. Its top holds the field and Cancel, and every other tab is one tap away.
+- A title or person page over Movies, Series or Search: none. The page keeps its back button alone at the top, as pushed pages do in Apple's apps; the page stays open in its tab while the user opens Settings from another tab.
 
 ### 4. Search as the system search tab
 
@@ -90,6 +91,18 @@ Options considered for the Mac: a Settings window opened with Command-comma. Sou
 ### 9. Apple TV
 
 Settings stays the last tab (owner, 2026-11-19), with the profile button at its top. Movies and Series were already separate tabs and keep their rules (`tvos-shell/the-tabs-in-order`). Only Search's look changes.
+
+### 10. Genres behind one button on iPhone
+
+Added on 2026-11-20 at the owner's request: "on iPhones the switching between groups in Series and Movies might be suitable to be hidden and not displayed on the top." The genre chips over the Movies and Series banners give way to one button, built the way Live's group button and Groups sheet are (#448, #449): `ShelfGenreButton` draws `Browse.GroupButton` with the open list's name ("All movies", "My list" or the genre) and its count, and opens `ShelfGenreSheet`, a half-height sheet of `Browse.GroupChoiceRow`s with a search field and Close. All and My list come first, then the genres with their counts and a checkmark on the open one. Picking closes the sheet and sets the list the chips used to set, so the grid, the count and the banner behave as before.
+
+Options considered:
+- **Reuse `LiveGroupSheet` itself.** It reads `LiveModel`, `CatalogueGroup` and the group locks; genres have none of these. The shared parts are the components it draws (`Browse.GroupButton`, `Browse.GroupChoiceRow`), so those are what the genre sheet reuses, and the sheet keeps the same layout, detents and search placement.
+- **Reuse `GroupChoices` from Core.** It lists catalogue groups. The genre search is `Shelf.genres(_:matching:)`, which folds names the same way through `ChannelFilter`, so "en action" finds "EN | Action" in both sheets.
+
+iPad and Mac keep the genres in the sidebar under Genres, and Apple TV keeps its chips row: a sidebar is the norm there and the focus engine moves along the chips with one swipe. Only the narrow layout, where the chips scrolled off the edge, changes.
+
+Identifiers: the button `movies.genres` (`series.genres`), the sheet `movies.genres.sheet`, Close `movies.genres.close`, and the rows keep the chips' `movies.genres.all`, `movies.genres.myList` and `movies.genres.<slug>`. Board `iPhone-Movies-Genres`.
 
 ### Identifiers
 
