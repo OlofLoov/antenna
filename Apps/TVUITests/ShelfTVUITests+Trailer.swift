@@ -26,11 +26,7 @@ extension ShelfTVUITests {
         pressMenuOnceFocused()
         let tab = element("shell.tab.movies")
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
-        for _ in 0..<4 where !tab.hasFocus {
-            press(.right)
-            Thread.sleep(forTimeInterval: 0.5)
-        }
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         expect(element("movies.hero.title"), "label == 'The Long Harbor'")

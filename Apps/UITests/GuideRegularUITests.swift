@@ -55,9 +55,11 @@ final class GuideRegularUITests: XCTestCase {
 
     // guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac
     func testTheGridOpensHalfAnHourBackWithTheNowLine() throws {
+        // The app reads the clock somewhere between these two, so a minute or
+        // half hour can turn over in between; either side of it is right.
+        let opening = Date.now
         let app = try launch()
         openGuide(app)
-        let now = Date.now
         XCTAssertTrue(app.element("guide.toolbar").exists)
         XCTAssertTrue(app.element("guide.filter").exists)
         XCTAssertTrue(app.element("guide.zoomIn").exists)
@@ -67,16 +69,20 @@ final class GuideRegularUITests: XCTestCase {
 
         let columns = app.descendants(matching: .any).matching(identifier: "guide.column").allElementsBoundByIndex
             .sorted { $0.frame.minX < $1.frame.minX }
-        let back = halfHour(atOrBefore: now.addingTimeInterval(-1800))
         let index = try XCTUnwrap(columns.firstIndex { $0.frame.minX >= app.element("guide.groupTitle").frame.maxX - 1 })
-        XCTAssertEqual(columns[index].label, time(back))
+        let firstColumn = columns[index].label
         XCTAssertEqual(columnWidth(app), 180, accuracy: 1)
-        XCTAssertEqual(app.element("guide.nowLine").label, time(Date.now))
+        let nowLabel = app.element("guide.nowLine").label
+        let nowFrame = app.element("guide.nowLine").frame
+        let read = Date.now
+        let backs = [opening, read].map { time(halfHour(atOrBefore: $0.addingTimeInterval(-1800))) }
+        XCTAssertTrue(backs.contains(firstColumn), "\(firstColumn) is not half an hour back from now, \(backs)")
+        XCTAssertTrue(minutes(from: opening, to: read).contains(nowLabel), "the now line reads \(nowLabel)")
         // The time tag is centered on the now line, as iPad-Guide draws it.
-        let half = halfHour(atOrBefore: Date.now)
+        let half = halfHour(atOrBefore: read)
         let halfColumn = try XCTUnwrap(columns.first { $0.label == time(half) })
-        let line = halfColumn.frame.minX + Date.now.timeIntervalSince(half) / 1800 * columnWidth(app)
-        XCTAssertEqual(app.element("guide.nowLine").frame.midX, line, accuracy: 4)
+        let line = halfColumn.frame.minX + read.timeIntervalSince(half) / 1800 * columnWidth(app)
+        XCTAssertEqual(nowFrame.midX, line, accuracy: 4)
 
         let channels = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'guide.channel.'"))
             .allElementsBoundByIndex.sorted { $0.frame.minY < $1.frame.minY }
@@ -389,6 +395,14 @@ extension GuideRegularUITests {
             .map(\.frame.minX).sorted()
         guard columns.count > 2 else { return 0 }
         return columns[2] - columns[1]
+    }
+
+    /// Every minute from `start` to `end` as the app writes it.
+    private func minutes(from start: Date, to end: Date) -> Set<String> {
+        Set(
+            stride(from: start.timeIntervalSinceReferenceDate, through: end.timeIntervalSinceReferenceDate + 60, by: 60).map {
+                time(Date(timeIntervalSinceReferenceDate: min($0, end.timeIntervalSinceReferenceDate)))
+            })
     }
 
     private func halfHour(atOrBefore date: Date) -> Date {

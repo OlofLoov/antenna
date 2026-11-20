@@ -167,16 +167,21 @@ import Testing
         #expect(engine.loaded.count == 1)
     }
 
-    @Test("tvos-shell/the-video-pauses-behind-movies-series-and-search Settings opened from Movies keeps the hold")
-    func settingsKeepsTheHold() async {
+    // The system tab bar opens every tab the highlight passes, so reaching Settings
+    // from Live goes through Movies, Series and Search. Settings sits over the
+    // picture and ends their pause.
+    @Test("tvos-shell/open-settings Settings opened from Movies resumes the channel without a reload")
+    func settingsEndsTheHold() async {
         await playing()
         _ = await model.select(.movies)
+        #expect(engine.state == .paused)
         _ = await model.select(.settings)
         #expect(engine.pauses == 1)
-        #expect(engine.state == .paused, "Settings does not play the channel")
+        #expect(engine.state == .playing, "Settings plays the channel behind it")
+        #expect(model.heldByShell == nil)
 
         _ = await model.select(.live)
-        await wait { engine.state == .playing }
+        #expect(engine.state == .playing)
         #expect(engine.loaded.count == 1)
     }
 

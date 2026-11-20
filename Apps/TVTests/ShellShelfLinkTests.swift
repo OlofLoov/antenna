@@ -118,6 +118,8 @@ import Testing
         loader.finish(sourceA.id, with: [.fixture("a1"), .fixture("a2")])
         loader.finish(sourceB.id, with: [.fixture("b7")])
         await wait({ engine.loaded == [Channel.fixture("b7").streamURL] }, "the last channel plays")
+        // b7 can play while A's channels are still being tagged off the main actor.
+        await wait({ model.channels.count == 3 }, "A's channels are in")
         _ = await model.select(.settings)
         model.holdShelfItem(try item(.fixture("a2"), in: sourceA))
         guard case .tuned = model.resolveShelfItem(titles: [], titlesPending: false) else {
