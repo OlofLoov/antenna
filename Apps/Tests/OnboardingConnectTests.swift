@@ -162,11 +162,10 @@ import Testing
     @Test("first-run-onboarding/fill-the-form-from-a-copied-link: the clipboard is read only on Fill in")
     func fillIn() async throws {
         let reads = Counter()
-        var text = "http://tv.example.test:8080/get.php?username=anna&password=pw"
         let clipboard = Clipboard(
             hasLink: { true },
             read: {
-                reads.value += 1; return text
+                reads.value += 1; return "http://tv.example.test:8080/get.php?username=anna&password=pw"
             })
         let model = model(tag: "clipboard", clipboard: clipboard)
         await model.lookForLink()
@@ -179,8 +178,7 @@ import Testing
         #expect(model.fields.username == "anna")
         #expect(model.fields.password == "pw")
 
-        text = "not a link"
-        let second = self.model(tag: "clipboard-2", clipboard: Clipboard(hasLink: { true }, read: { text }))
+        let second = self.model(tag: "clipboard-2", clipboard: Clipboard(hasLink: { true }, read: { "not a link" }))
         await second.lookForLink()
         second.fillIn()
         #expect(second.clipboardOffer == .noLink)

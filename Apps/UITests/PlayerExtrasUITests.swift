@@ -9,8 +9,8 @@ final class PlayerExtrasUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    override func tearDown() {
-        XCUIDevice.shared.orientation = .portrait
+    override func tearDown() async throws {
+        await MainActor.run { XCUIDevice.shared.orientation = .portrait }
     }
 
     private func launchPlaying(hls: Bool) throws -> XCUIApplication {

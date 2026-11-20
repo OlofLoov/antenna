@@ -128,7 +128,7 @@ import Testing
                     published.pause = pause
                 })
             dependencies.nowPlayingInterval = .milliseconds(20)
-            dependencies.pictureInPicture = .none
+            dependencies.pictureInPicture = nil
             live = LiveModel(dependencies)
             live.sourcesChanged([SourceDescriptor(id: UUID(), name: "Home", kind: .m3u, url: URL(fileURLWithPath: "/home.m3u"))])
             await live.settled()

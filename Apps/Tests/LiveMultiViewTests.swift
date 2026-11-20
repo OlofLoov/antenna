@@ -34,7 +34,7 @@ import Testing
                 hasLogin: { _ in true }, guide: nil, programmes: UITestingLive.guide, network: .online)
             dependencies.nowPlaying = NowPlayingSink(publish: { published.infos.append($0) }, listen: { _, _ in })
             dependencies.nowPlayingInterval = .milliseconds(20)
-            dependencies.pictureInPicture = .none
+            dependencies.pictureInPicture = nil
             dependencies.multiView.cap = MultiViewCap(limit: 3)
             dependencies.multiView.tiles.make = {
                 let engine = PlayerTestEngine()

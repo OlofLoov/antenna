@@ -67,7 +67,7 @@ final class LockClock {
 
     @Test("group-management/guessing-the-passcode-is-slow wrong entries wait, and the wait survives a relaunch")
     func lockout() throws {
-        try #require(PasscodeStore.set("2580", in: context))
+        _ = try #require(PasscodeStore.set("2580", in: context))
         let locks = locks()
         for _ in 0..<4 { #expect(locks.enter("0000", records: records) == .wrong) }
         #expect(locks.enter("0000", records: records) == .waiting(30))
@@ -91,7 +91,7 @@ final class LockClock {
 
     @Test("group-management/locks-close-again-on-their-own Lock now, a relaunch, the background and idle time close the locks")
     func closing() throws {
-        try #require(PasscodeStore.set("2580", in: context))
+        _ = try #require(PasscodeStore.set("2580", in: context))
         let locks = locks()
         #expect(locks.enter("2580", records: records) == .right)
         locks.close()

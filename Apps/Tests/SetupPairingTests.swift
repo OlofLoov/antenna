@@ -84,12 +84,12 @@ import Testing
     }
 
     @Test("iphone-as-setup-device/the-apple-tv-offers-a-qr-code: signed in, the card shows a link and offers Handoff")
-    func showsCodeWhenSignedIn() async {
+    func showsCodeWhenSignedIn() async throws {
         let (model, pairing) = await onboarding()
-        let link = try? #require(pairing.link)
+        let link = try #require(pairing.link)
         #expect(activity.current == link)
         #expect(model.holdsApp)
-        #expect(link.map { SetupLink(userInfo: $0.userInfo) == $0 } == true)
+        #expect(SetupLink(userInfo: link.userInfo) == link)
     }
 
     @Test("iphone-as-setup-device/no-icloud-no-qr-code: not signed in, the keyboard card and no Handoff")

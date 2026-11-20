@@ -11,8 +11,8 @@ final class LivePlayerUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    override func tearDown() {
-        XCUIDevice.shared.orientation = .portrait
+    override func tearDown() async throws {
+        await MainActor.run { XCUIDevice.shared.orientation = .portrait }
         try? FileManager.default.removeItem(at: log)
         try? FileManager.default.removeItem(at: lastChannel)
     }
