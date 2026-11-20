@@ -35,6 +35,9 @@ struct AntennaApp: App {
     @State private var unlock: Unlock
 
     init() {
+        #if DEBUG
+            UITestingStoreShots.pinClock()
+        #endif
         let container = Self.makeContainer()
         self.container = container
         PlaylistFileStore.shared.container = container
@@ -129,6 +132,9 @@ struct AntennaApp: App {
             .modifier(GroupLockTimers(locks: locks))
             .modifier(ReminderRuntime(center: reminders))
             .modifier(LoginDropSweep())
+            #if DEBUG && os(macOS)
+                .modifier(UITestingStoreShots.WindowSize())
+            #endif
             // Behind the paywall no banner shows and Watch plays nothing
             // (programme-reminders/watch-plays-the-channel, the paid unlock has lapsed).
             .onChange(of: unlock.gate.applied.isUnlocked, initial: true) { _, unlocked in

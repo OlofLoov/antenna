@@ -29,6 +29,13 @@ final class Journey {
         app.launchArguments = arguments + Self.storeLanguage
         app.launchEnvironment = environment
         app.launchInEnglish()
+        #if os(macOS)
+            // A CI runner's Mac can start the app with no window open;
+            // File > New Window opens one, in any language.
+            if !app.windows.firstMatch.waitForExistence(timeout: 5) {
+                app.typeKey("n", modifierFlags: .command)
+            }
+        #endif
     }
 
     /// `-AppleLanguages` and `-AppleLocale` from the runner's `STORE_LANGUAGE`
@@ -49,20 +56,24 @@ final class Journey {
         _ = XCTWaiter().wait(for: [gone], timeout: timeout)
     }
 
-    /// Waits up to 10 seconds until the screen a quarter of the way across
+    /// Waits up to 10 seconds until the screenshot a quarter of the way across
     /// and halfway down is not black, so the store clip has drawn a frame
     /// on the player. Carries on either way.
     func waitForPicture() {
         for _ in 0..<20 {
-            if Self.brightness(at: CGPoint(x: 0.25, y: 0.5)) > 12 { return }
+            if brightness(at: CGPoint(x: 0.25, y: 0.5)) > 12 { return }
             RunLoop.current.run(until: Date().addingTimeInterval(0.5))
         }
     }
 
     /// The sum of red, green and blue, 0 to 765, of the screen's pixel at
     /// `point`, given as fractions of its width and height.
-    private static func brightness(at point: CGPoint) -> Int {
-        guard let image = XCUIScreen.main.screenshot().image.cgImage else { return 0 }
+    private func brightness(at point: CGPoint) -> Int {
+        #if os(macOS)
+            guard let image = screenshot().image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return 0 }
+        #else
+            guard let image = screenshot().image.cgImage else { return 0 }
+        #endif
         var pixel = [UInt8](repeating: 0, count: 4)
         let drawn = pixel.withUnsafeMutableBytes { bytes -> Bool in
             guard
@@ -76,6 +87,16 @@ final class Journey {
             return true
         }
         return drawn ? Int(pixel[0]) + Int(pixel[1]) + Int(pixel[2]) : 0
+    }
+
+    /// The whole screen on iPhone, iPad and Apple TV; the app's window on
+    /// a Mac, as the Mac App Store shows it.
+    private func screenshot() -> XCUIScreenshot {
+        #if os(macOS)
+            app.windows.firstMatch.screenshot()
+        #else
+            XCUIScreen.main.screenshot()
+        #endif
     }
 
     func element(_ identifier: String) -> XCUIElement {
@@ -95,7 +116,7 @@ final class Journey {
             return
         }
         steps += 1
-        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        let attachment = XCTAttachment(screenshot: screenshot())
         attachment.name = String(format: "%02d-%@", steps, step)
         attachment.lifetime = .keepAlways
         test.add(attachment)

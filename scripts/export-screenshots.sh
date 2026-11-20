@@ -3,7 +3,8 @@
 # <out>/<device>/<test>/<nn>-<step>.png (add-app-screenshots-ci).
 # With --store, exports only the testStore walk as the App Store set for
 # each listed store locale: <out>/<locale>/<nn>-<device>-<step>.png, and
-# <out>/<locale>/appleTV/<nn>-<step>.png for Apple TV (add-store-localization).
+# <out>/<locale>/appleTV/<nn>-<step>.png for Apple TV (add-store-localization)
+# and <out>/<locale>/mac/<nn>-<step>.png for the Mac (polish-store-screenshots).
 # Only attachments named <nn>-<step> are kept, so failure snapshots and
 # debug descriptions stay out. A test method testFirstRun becomes firstRun.
 #
@@ -46,6 +47,7 @@ for bundle in "$@"; do
             for locale in "${locales[@]}"; do
                 case "$test" in
                     TVJourneys/*) target="$out/$locale/appleTV/$step.png" ;;
+                    MacJourneys/*) target="$out/$locale/mac/$step.png" ;;
                     *) target="$out/$locale/${step:0:2}-$folder-${step:3}.png" ;;
                 esac
                 mkdir -p "$(dirname "$target")"

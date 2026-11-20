@@ -37,14 +37,14 @@ layout ships.
 
 The `App screenshots` workflow uploads a `store-screenshots` artifact with
 one folder per ready store locale: `<nn>-<device>-<step>.png` for the
-iPhone 6.9-inch and iPad 13-inch, and `appleTV/<nn>-<step>.png` for Apple
-TV. To photograph a held language, run it by hand with that language:
+iPhone 6.9-inch and iPad 13-inch, `appleTV/<nn>-<step>.png` for Apple TV,
+and `mac/<nn>-<step>.png` for the Mac app's window at 1440 by 900 points
+(2880 by 1800 pixels on a Retina screen). To photograph a held language,
+run it by hand with that language:
 
 ```sh
 gh workflow run screenshots.yml --ref main -f languages=ar
 ```
-
-Mac screenshots are not taken yet.
 
 ## Before the first upload
 
