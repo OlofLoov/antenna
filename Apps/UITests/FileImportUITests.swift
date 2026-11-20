@@ -9,14 +9,9 @@ final class FileImportUITests: XCTestCase {
         app.descendants(matching: .any)[identifier].firstMatch
     }
 
-    /// The Settings tab on iPhone, the sidebar's Sources & Settings on iPad.
+    /// The profile button's Settings on iPhone, the sidebar's Sources & Settings on iPad.
     private func tapSettings(_ app: XCUIApplication) {
-        let tab = app.tabBars.buttons["Settings"]
-        if tab.waitForExistence(timeout: 10) {
-            tab.tap()
-        } else {
-            element(app, "browse.section.settings").tap()
-        }
+        app.openSettings()
     }
 
     private func launch(_ arguments: [String]) -> XCUIApplication {

@@ -50,7 +50,7 @@ final class ReminderBannerUITests: XCTestCase {
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
         app.pickGroup("browse.group.3")
         app.expectOpenGroup("Sport", row: "browse.group.3")
-        app.tabBars.buttons["Settings"].tap()
+        app.openSettings()
         let banner = app.element("reminders.banner")
         XCTAssertTrue(banner.waitForExistence(timeout: 10), "no banner")
         XCTAssertEqual(app.element("reminders.banner.title").label, "Kick-off")
@@ -115,7 +115,7 @@ final class ReminderBannerUITests: XCTestCase {
     // programme-reminders/watch-plays-the-channel, from a notification
     func testTappingTheNotificationPlaysTheChannel() throws {
         let app = try launch("allowed", environment: ["UITESTING_REMINDER_OPEN": "4"])
-        app.tabBars.buttons["Settings"].tap()
+        app.openSettings()
         expect(app.element("browse.nowPlaying"), "label CONTAINS 'News One'")
         XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
     }

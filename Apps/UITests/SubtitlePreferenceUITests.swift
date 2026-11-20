@@ -40,9 +40,7 @@ final class SubtitlePreferenceUITests: XCTestCase {
     // playback-engine/subtitles-start-by-the-subtitle-setting, Always
     func testSettingAlwaysStartsSubtitlesInTheUsersLanguage() throws {
         let app = try launch()
-        let tab = app.tabBars.buttons["Settings"]
-        let button = tab.waitForExistence(timeout: 10) ? tab : app.buttons["Settings"].firstMatch
-        button.tap()
+        app.openSettings(timeout: 10)
         let row = app.element("settings.subtitles")
         for _ in 0..<4 where !row.isHittable { app.swipeUp() }
         XCTAssertTrue(row.waitForExistence(timeout: 5), "no Subtitles row")
@@ -57,6 +55,7 @@ final class SubtitlePreferenceUITests: XCTestCase {
             object: app.element("settings.subtitles.footer"))
         XCTAssertEqual(XCTWaiter().wait(for: [footer], timeout: 5), .completed, "the footer did not follow the choice")
 
+        app.closeSettings()
         app.tabBars.buttons["Live"].tap()
         openTracks(app)
         expectSelected(app.element("player.trackPicker.subtitles.0"))

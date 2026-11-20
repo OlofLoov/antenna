@@ -18,12 +18,9 @@ final class ShelfPlayerUITests: XCTestCase {
     }
 
     func open(_ app: XCUIApplication, _ kind: String) {
-        let tab = app.tabBars.buttons["Movies"]
+        let tab = app.tabBars.buttons[kind == "series" ? "Series" : "Movies"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         tab.tap()
-        if kind == "series" {
-            app.element("movies.kind.series").tap()
-        }
         XCTAssertTrue(app.element("\(kind).hero").waitForExistence(timeout: 10))
     }
 

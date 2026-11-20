@@ -68,6 +68,14 @@ extension Shelf {
         }
     }
 
+    /// The genres whose names hold every word of `query`, folded for case
+    /// and accents as the group search folds them, in rows' order. A blank
+    /// query keeps them all.
+    public static func genres(_ rows: [ShelfRow], matching query: String) -> [ShelfGenre] {
+        let filter = ChannelFilter(query)
+        return genres(rows).filter { filter.matches(name: $0.name, number: nil) }
+    }
+
     private static func byName(_ titles: [ShelfTitle]) -> [ShelfTitle] {
         let keyed = titles.map { ($0.name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil), $0) }
         return zip(keyed.indices, keyed).sorted { lhs, rhs in

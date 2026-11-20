@@ -45,4 +45,18 @@ import Testing
         #expect(Shelf.genres(rows) == [ShelfGenre(name: "Drama", count: 2), ShelfGenre(name: "Action", count: 1)])
         #expect(Shelf.titles(in: "Drama", of: titles).map(\.name) == ["One", "Three"])
     }
+
+    @Test("movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone the search keeps the genres holding every word")
+    func genreSearch() {
+        let titles = [
+            title(1, "One", category: "EN | Drama"), title(2, "Two", category: "Action"),
+            title(3, "Three", category: "DE | Komödie"), title(4, "Four", category: "EN | Action"),
+        ]
+        let rows = Shelf.rows(titles, categoryOrder: ["EN | Drama", "Action", "DE | Komödie", "EN | Action"], now: now)
+        #expect(Shelf.genres(rows, matching: "").map(\.name) == ["EN | Drama", "Action", "DE | Komödie", "EN | Action"])
+        #expect(Shelf.genres(rows, matching: "action").map(\.name) == ["Action", "EN | Action"])
+        #expect(Shelf.genres(rows, matching: "en action").map(\.name) == ["EN | Action"])
+        #expect(Shelf.genres(rows, matching: "komodie").map(\.name) == ["DE | Komödie"])
+        #expect(Shelf.genres(rows, matching: "western").isEmpty)
+    }
 }

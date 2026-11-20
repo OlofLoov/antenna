@@ -12,11 +12,11 @@
         var body: some View {
             Group {
                 if live.launched, live.sources.isEmpty {
-                    LiveNoSources()
+                    LiveNoSources().profileButtonInCorner()
                 } else if live.playing == nil, live.status.isMessage {
                     // One state on screen, with no picture placeholder over it
                     // (design-system/empty-and-error-states-share-one-layout).
-                    LiveStatusMessage(status: live.status)
+                    LiveStatusMessage(status: live.status).profileButtonInCorner()
                 } else {
                     VStack(spacing: 0) {
                         LivePicture()
@@ -49,11 +49,11 @@
             case .channels(let banner, let waiting):
                 VStack(spacing: 0) {
                     LiveBanners(banner: banner, waiting: waiting)
-                    LiveGroupButton(place: .live)
+                    LiveGroupButton(place: .live).withProfileButton()
                     LiveChannelList()
                 }
             case let status:
-                LiveStatusMessage(status: status)
+                LiveStatusMessage(status: status).profileButtonInCorner()
             }
         }
     }

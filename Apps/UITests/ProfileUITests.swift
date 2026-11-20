@@ -30,7 +30,7 @@ final class ProfileUITests: XCTestCase {
     }
 
     func openSettings(_ app: XCUIApplication) -> XCUIElement {
-        app.tabBars.buttons["Settings"].tap()
+        app.openSettings()
         let row = app.element("settings.profile")
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         return row
@@ -100,6 +100,30 @@ final class ProfileUITests: XCTestCase {
         app.element("profiles.tile.1").tap()
         expectFavorites(dad: false, kids: true, in: app)
         XCTAssertEqual(openSettings(app).value as? String, "Kids")
+    }
+
+    // profiles/switching-profile, from the profile button
+    // live-tv-on-iphone-ipad-mac/settings-from-the-profile-button
+    func testSwitchingProfileFromTheProfileButton() throws {
+        let app = try launch(profiles: true)
+        XCTAssertTrue(app.element("profiles.tile.1").waitForExistence(timeout: 10))
+        app.element("profiles.tile.1").tap()
+        expectFavorites(dad: false, kids: true, in: app)
+
+        let button = app.element("profile.button")
+        XCTAssertEqual(button.label, "Profile, Kids")
+        // The button sits at the trailing end of the group button's row, inside the screen.
+        let group = app.element("browse.groups")
+        XCTAssertEqual(button.frame.midY, group.frame.midY, accuracy: 2, "the button shares the group button's row")
+        XCTAssertGreaterThan(button.frame.minX, group.frame.maxX - 1, "the button follows the group button")
+        XCTAssertLessThanOrEqual(button.frame.maxX, app.windows.firstMatch.frame.maxX)
+        button.tap()
+        XCTAssertTrue(app.element("profile.settings").waitForExistence(timeout: 5))
+        app.element("profile.switch").tap()
+        XCTAssertTrue(app.element("profiles.picker").waitForExistence(timeout: 5))
+        app.element("profiles.tile.0").tap()
+        expectFavorites(dad: true, kids: false, in: app)
+        XCTAssertEqual(app.element("profile.button").label, "Profile, Dad")
     }
 
     // profiles/editing-and-deleting-a-profile

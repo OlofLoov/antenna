@@ -162,7 +162,8 @@
         private var tabView: some View {
             TabView(selection: Binding(get: { model.tab }, set: { model.choose($0) })) {
                 ForEach(model.tabs, id: \.self) { tab in
-                    Tab(value: tab) {
+                    // Search is the system's search tab, drawn as a magnifying glass.
+                    Tab(value: tab, role: tab == .search ? .search : nil) {
                         page(tab)
                             // Inside the page, where the focus engine lets it take the highlight.
                             .overlay {
@@ -173,9 +174,15 @@
                             .focusScope(pages)
                             .toolbarVisibility(barVisibility(on: tab), for: .tabBar)
                     } label: {
-                        Text(tab.title)
-                            .accessibilityIdentifier(tab.elementName)
-                            .accessibilityAddTraits(tab == model.tab ? .isSelected : [])
+                        Group {
+                            if tab == .search {
+                                Label(tab.title, systemImage: "magnifyingglass")
+                            } else {
+                                Text(tab.title)
+                            }
+                        }
+                        .accessibilityIdentifier(tab.elementName)
+                        .accessibilityAddTraits(tab == model.tab ? .isSelected : [])
                     }
                 }
             }
