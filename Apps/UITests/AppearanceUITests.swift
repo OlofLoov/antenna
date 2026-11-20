@@ -94,4 +94,33 @@ final class AppearanceUITests: XCTestCase {
         openSettings(app)
         XCTAssertEqual(accentRow(app).value as? String, "Amber")
     }
+
+    // sources-and-settings/pick-the-app-icon-on-this-device
+    // app-release/alternate-icons-keep-the-mark
+    func testTheAppIconPageListsTheIconsAndPicksOne() throws {
+        let app = try launch()
+        pick("profiles.tile.0", in: app)
+        openSettings(app)
+        _ = accentRow(app)
+        let row = app.element("settings.appearance.icon")
+        for _ in 0..<4 where !(row.exists && row.isHittable) { app.swipeUp() }
+        // The simulator keeps the icon a run before picked, so pick another one.
+        let (target, name) = row.value as? String == "Mono" ? ("teal", "Teal") : ("mono", "Mono")
+        row.tap()
+        for id in ["standard", "mono", "light", "teal", "amber", "pink", "violet"] {
+            XCTAssertTrue(app.element("settings.choice.\(id)").waitForExistence(timeout: 5), "no \(id) icon")
+        }
+        app.element("settings.choice.\(target)").tap()
+        // The system tells the user the icon changed, in an alert of its own.
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        for _ in 0..<10 {
+            if let alert = [app.alerts.firstMatch, springboard.alerts.firstMatch].first(where: \.exists) {
+                alert.buttons.firstMatch.tap()
+                break
+            }
+            _ = app.alerts.firstMatch.waitForExistence(timeout: 1)
+        }
+        expectation(for: NSPredicate(format: "value == %@", name), evaluatedWith: row)
+        waitForExpectations(timeout: 10)
+    }
 }

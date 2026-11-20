@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the app icons from the SVG sources in design/icon: the Icon Composer layers, the Apple TV asset catalog and the board previews.
+# Builds the app icons from the SVG sources in design/icon: the Icon Composer layers, the Apple TV asset catalog, the six alternates and the board previews.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -32,8 +32,8 @@ cat >"$brand/Contents.json" <<EOF
 EOF
 
 stack() {
-  local name=$1 width=$2 height=$3 scales=$4
-  local dir="$brand/$name.imagestack"
+  local name=$1 width=$2 height=$3 scales=$4 parent=${5:-$brand} from=${6:-$src}
+  local dir="$parent/$name.imagestack"
   mkdir -p "$dir"
   cat >"$dir/Contents.json" <<EOF
 {
@@ -53,7 +53,7 @@ EOF
     printf '{\n  %s\n}\n' "$info" >"$dir/$layer.imagestacklayer/Contents.json"
     for scale in $scales; do
       local file="$lower@${scale}x.png"
-      render "$src/tv-$lower.svg" "$dir/$layer.imagestacklayer/Content.imageset/$file" \
+      render "$from/tv-$lower.svg" "$dir/$layer.imagestacklayer/Content.imageset/$file" \
         $((width * scale)) $((height * scale)) $opaque
       images+="${images:+,
 }    { \"filename\" : \"$file\", \"idiom\" : \"tv\", \"scale\" : \"${scale}x\" }"
@@ -80,6 +80,52 @@ stack "App Icon" 400 240 "1 2"
 stack "App Icon - App Store" 1280 768 "1"
 shelf "Top Shelf Image" topshelf 1920 720
 shelf "Top Shelf Image Wide" topshelf-wide 2320 720
+
+alternates=(
+  "Mono F2F4F8 0B0E13"
+  "Light 0B0E13 F2F4F8"
+  "Teal 4FD1C5 0B0E13"
+  "Amber FFB454 0B0E13"
+  "Pink F472B6 0B0E13"
+  "Violet C084FC 0B0E13"
+)
+
+srgb() {
+  local hex=$1 parts=() at
+  for at in 0 2 4; do
+    parts+=("$(awk -v n="$((16#${hex:at:2}))" 'BEGIN { printf "%.5f", n / 255 }')")
+  done
+  printf 'srgb:%s,%s,%s,1.00000' "${parts[@]}"
+}
+
+rm -rf Apps/Mobile/AppIcon-*.icon
+scratch=$(mktemp -d)
+trap 'rm -rf "$scratch"' EXIT
+for entry in "${alternates[@]}"; do
+  read -r name mark ground <<<"$entry"
+  alt="Apps/Mobile/AppIcon-$name.icon"
+  mkdir -p "$alt/Assets" "$scratch/$name"
+  for layer in waves mast; do
+    sed "s/#5BB8FF/#$mark/" "$src/$layer.svg" >"$alt/Assets/$layer.svg"
+  done
+  fill=$(srgb "$ground")
+  if [[ $ground == 0B0E13 ]]; then
+    sed "s/\"solid\" : \"srgb:0.04314,0.05490,0.07451,1.00000\"/\"solid\" : \"$fill\"/" "$icon/icon.json" >"$alt/icon.json"
+    sed "s/#5BB8FF/#$mark/" "$src/tv-back.svg" >"$scratch/$name/tv-back.svg"
+  else
+    awk -v fill="$fill" '
+      /"fill-specializations"/ { skip = 1 }
+      skip && /^  \],/ { skip = 0; next }
+      skip { next }
+      { sub(/"solid" : "srgb:0.04314,0.05490,0.07451,1.00000"/, "\"solid\" : \"" fill "\""); print }
+    ' "$icon/icon.json" >"$alt/icon.json"
+    sed -e "s/#5BB8FF/#$mark/" -e "s/#1A2A44/#FFFFFF/" -e "s/#0B0E13/#$ground/" "$src/tv-back.svg" >"$scratch/$name/tv-back.svg"
+  fi
+  for layer in middle front; do
+    sed "s/#5BB8FF/#$mark/" "$src/tv-$layer.svg" >"$scratch/$name/tv-$layer.svg"
+  done
+  stack "AppIcon-$name" 400 240 "1 2" Apps/TV/Assets.xcassets "$scratch/$name"
+done
 
 mkdir -p "$src/previews"
 preview() {
