@@ -59,6 +59,17 @@ extension Browse {
         var prompt: LocalizedStringResource = "Search"
         var label: LocalizedStringResource = "Search channels"
         var identifier = "browse.filter"
+        /// False keeps the keyboard's focus from landing in the field by
+        /// itself, so the arrow keys stay with the list; a tap still edits it.
+        var takesKeyboardFocus = true
+
+        /// The search over the sidebar's groups. The keyboard's focus stays
+        /// out of it until a tap, or the first arrow key would land there and
+        /// the list's ring would never move (live-tv-on-iphone-ipad-mac/keyboard-shortcuts).
+        static func groupSearch(_ text: Binding<String>) -> FilterField {
+            FilterField(
+                text: text, prompt: "Search groups", label: "Search groups", identifier: "browse.groups.search", takesKeyboardFocus: false)
+        }
 
         var body: some View {
             HStack(spacing: 8) {
@@ -70,6 +81,7 @@ extension Browse {
                     .autocorrectionDisabled()
                     .accessibilityLabel(Text(label))
                     .accessibilityIdentifier(identifier)
+                    .modifier(KeyboardFocusable(isOn: takesKeyboardFocus))
                 if !text.isEmpty {
                     Button {
                         text = ""
@@ -90,6 +102,19 @@ extension Browse {
             .padding(.trailing, text.isEmpty ? 12 : 2)
             .frame(height: 36)
             .background(Palette.surface(0.08), in: cornerShape(.medium))
+        }
+    }
+
+    /// Leaves a view as it is, or takes it out of the keyboard's focus.
+    private struct KeyboardFocusable: ViewModifier {
+        let isOn: Bool
+
+        func body(content: Content) -> some View {
+            if isOn {
+                content
+            } else {
+                content.focusable(false)
+            }
         }
     }
 

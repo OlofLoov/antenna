@@ -227,7 +227,7 @@
         /// (live-tv-on-iphone-ipad-mac/find-a-group-among-many, `iPad-Live-Groups-Search`).
         @ViewBuilder private func liveGroups(_ columns: LiveColumns) -> some View {
             let choices = GroupChoices(live.catalogue, query: groupQuery) { live.catalogue.label(of: $0) }
-            Browse.FilterField(text: $groupQuery, prompt: "Search groups", label: "Search groups", identifier: "browse.groups.search")
+            Browse.FilterField.groupSearch($groupQuery)
                 .padding(.bottom, 8)
             if choices.isEmpty {
                 Text("No groups match")
@@ -398,7 +398,7 @@
                     Browse.ListHeader(title: live.catalogue.label(of: live.group), count: "\(count) channels") {
                         leading
                     } filter: {
-                        Browse.FilterField(text: $live.filter)
+                        Browse.FilterField(text: $live.filter, takesKeyboardFocus: false)
                             .focused($filterFocused)
                     }
                     LiveChannelList(
