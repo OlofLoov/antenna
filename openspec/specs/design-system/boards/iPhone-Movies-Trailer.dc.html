@@ -29,16 +29,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span style="width: 32px; height: 32px; border-radius: 16px; background: #C084FC; color: #0B0E13; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">K</span>
       </div>
     </div>
-    <!-- movies.genres: All, My list (movies.genres.myList), then one chip per category (movies.genres.<categoryID>). All is selected while the rows show -->
-    <div style="position: absolute; left: 0; right: 0; top: 108px; display: flex; gap: 8px; padding: 0 16px; overflow: hidden; white-space: nowrap">
-      <span style="font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 15px; background: #5BB8FF; color: #0B0E13; flex: 0 0 auto">All</span>
-      <span style="font-size: 13px; padding: 6px 12px; border-radius: 15px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; flex: 0 0 auto">My list</span>
-      <span style="font-size: 13px; padding: 6px 12px; border-radius: 15px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; flex: 0 0 auto">Action</span>
-      <span style="font-size: 13px; padding: 6px 12px; border-radius: 15px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; flex: 0 0 auto">Comedy</span>
-      <span style="font-size: 13px; padding: 6px 12px; border-radius: 15px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; flex: 0 0 auto">Drama</span>
-      <span style="font-size: 13px; padding: 6px 12px; border-radius: 15px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; flex: 0 0 auto">Thriller</span>
-      <span style="font-size: 13px; padding: 6px 12px; border-radius: 15px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; flex: 0 0 auto">Family</span>
-    </div>
+    <!-- movies.genres (movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone): the open list's name in its own text run, its count and a chevron, as Live's group button (browse.groups), plain with no fill over the art. Tapping it opens the Genres sheet (iPhone-Movies-Genres.dc.html). No genre chips at the top. -->
+    <div role="button" aria-label="All movies, 214 titles" style="position: absolute; left: 0; right: 0; top: 104px; height: 44px; display: flex; align-items: center; gap: 6px; padding: 0 16px; color: #F2F4F8"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap">All movies</bdi><span style="font-size: 15px; color: #D7DEE8; font-variant-numeric: tabular-nums">· 214</span><span style="color: #D7DEE8; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
     <!-- copy -->
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 74px 16px 16px; background: linear-gradient(to bottom, rgba(11,14,19,0) 0, rgba(11,14,19,0.78) 56px, rgba(11,14,19,0.86) 100%); display: flex; flex-direction: column; gap: 8px">
       <div style="font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: {{accent}}">Recently added · Thriller</div>

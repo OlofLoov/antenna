@@ -1,3 +1,29 @@
+## ADDED Requirements
+
+### Requirement: Pick a genre from a list on iPhone
+The system SHALL show on iPhone, and in a narrow iPad window, one genre button over the Movies and Series banners in place of a row of genre chips, reading the open list's name and count. The button SHALL open a half-height Genres sheet with a search field, listing All, My list and every genre with its count and a checkmark on the open one. Picking one SHALL close the sheet and show that list as the chips did.
+
+#### Scenario: Opening the sheet
+- **GIVEN** Movies is open on iPhone with the rows showing
+- **WHEN** the user looks at the top of the banner
+- **THEN** there are no genre chips, only the button reading "All movies" and the count
+- **AND** tapping it opens the Genres sheet at half height with the search field showing
+
+#### Scenario: Picking a genre
+- **GIVEN** the Genres sheet is open
+- **WHEN** the user picks Drama
+- **THEN** the sheet closes, the Drama grid takes the rows' place, and the button reads Drama and its count
+
+#### Scenario: Searching the genres
+- **GIVEN** a provider with the genres "EN | Action", "DE | Action" and "EN | Drama"
+- **WHEN** the user types "en action" in the sheet's search field
+- **THEN** only "EN | Action" is listed, matched without regard to case or accents
+
+#### Scenario: iPad, Mac and Apple TV
+- **GIVEN** iPad or Mac in the wide layout, or Apple TV
+- **WHEN** the user browses Movies or Series
+- **THEN** the genres stay in the sidebar on iPad and Mac and in the chips row on Apple TV
+
 ## MODIFIED Requirements
 
 ### Requirement: Movies and Series appear when your provider has them
