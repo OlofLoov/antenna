@@ -19,8 +19,8 @@ enum Gunzip {
             try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) throws in
                 var reader = Reader(bytes: raw.bindMemory(to: UInt8.self))
                 try reader.skipHeader()
-                var output = Output(limit: limit, write: write)
-                try inflate(&reader, into: &output)
+                let output = Output(limit: limit, write: write)
+                try inflate(&reader, into: output)
                 try output.flush(keepingWindow: false)
             }
         } catch let failure as Failure {
@@ -44,8 +44,8 @@ enum Gunzip {
             return bytes[position]
         }
 
-        /// The next `width` bits, least significant first. Fewer than 8 bits are
-        /// left in `buffer` afterwards, so a stored block can drop them.
+        /// The next `width` bits, least significant first. Reads another byte
+        /// only while `buffer` holds fewer than `width` bits.
         mutating func bits(_ width: Int) throws(Failure) -> Int {
             while count < width {
                 buffer |= UInt64(try byte()) << UInt64(count)
@@ -55,6 +55,24 @@ enum Gunzip {
             buffer >>= UInt64(width)
             count -= width
             return value
+        }
+
+        /// Reads whole bytes into `buffer` while they fit, without failing
+        /// at the end of the input.
+        mutating func refill() {
+            while count <= 56, position < bytes.count {
+                buffer |= UInt64(bytes[position]) << UInt64(count)
+                position += 1
+                count += 8
+            }
+        }
+
+        /// Drops the bits up to the next byte boundary and hands back whole
+        /// bytes `refill` read ahead, so `byte()` reads on from the boundary.
+        mutating func alignToByte() {
+            position -= count / 8
+            buffer = 0
+            count = 0
         }
 
         mutating func skipHeader() throws(Failure) {
@@ -73,46 +91,61 @@ enum Gunzip {
 
     // MARK: Output
 
-    private struct Output {
+    private final class Output {
         static let window = 32_768
         static let block = 65_536
+        /// `pending` is written out when it reaches this many bytes.
+        static let threshold = window + block
 
         let limit: Int64
         let write: (Data) throws -> Void
-        var pending: [UInt8] = []
+        let pending = UnsafeMutablePointer<UInt8>.allocate(capacity: threshold)
+        var count = 0
         var flushed: Int64 = 0
 
         init(limit: Int64, write: @escaping (Data) throws -> Void) {
             self.limit = limit
             self.write = write
-            pending.reserveCapacity(Self.window + Self.block + 258)
         }
 
-        var total: Int64 { flushed + Int64(pending.count) }
+        deinit { pending.deallocate() }
 
-        mutating func append(_ byte: UInt8) throws(Failure) {
-            pending.append(byte)
-            if pending.count >= Self.window + Self.block { try flush(keepingWindow: true) }
+        var total: Int64 { flushed + Int64(count) }
+
+        func append(_ byte: UInt8) throws(Failure) {
+            pending[count] = byte
+            count += 1
+            if count >= Self.threshold { try flush(keepingWindow: true) }
         }
 
-        /// Copies `length` bytes from `distance` back, overlapping as deflate allows.
-        mutating func copy(distance: Int, length: Int) throws(Failure) {
-            guard distance <= pending.count else { throw .malformed }
-            for _ in 0..<length { try append(pending[pending.count - distance]) }
+        /// Copies `length` bytes from `distance` back, overlapping as deflate
+        /// allows. Writes out at the same points as appending byte by byte.
+        func copy(distance: Int, length: Int) throws(Failure) {
+            guard distance <= count else { throw .malformed }
+            var left = length
+            while left > 0 {
+                let run = min(left, distance, Self.threshold - count)
+                let from = pending + (count - distance)
+                (pending + count).update(from: from, count: run)
+                count += run
+                left -= run
+                if count >= Self.threshold { try flush(keepingWindow: true) }
+            }
         }
 
         /// Writes all but the last 32 KiB, which later back references may need.
-        mutating func flush(keepingWindow: Bool) throws(Failure) {
+        func flush(keepingWindow: Bool) throws(Failure) {
             guard total <= limit else { throw .tooLarge }
-            let keep = keepingWindow ? min(Self.window, pending.count) : 0
-            let out = pending.count - keep
+            let keep = keepingWindow ? min(Self.window, count) : 0
+            let out = count - keep
             guard out > 0 else { return }
             do {
-                try write(Data(pending[0..<out]))
+                try write(Data(bytes: pending, count: out))
             } catch {
                 throw .write
             }
-            pending.removeFirst(out)
+            pending.update(from: pending + out, count: keep)
+            count = keep
             flushed += Int64(out)
         }
     }
@@ -121,8 +154,15 @@ enum Gunzip {
 
     /// A canonical Huffman code as counts per length and symbols in code order.
     private struct Code {
+        /// Codes this long or shorter are looked up in `fast`.
+        static let fastBits = 9
+
         var counts = [Int](repeating: 0, count: 16)
         var symbols: [Int]
+        /// By the next `fastBits` input bits: the symbol shifted left by 4
+        /// plus its code length, or 0 for a longer code or a pattern no code
+        /// starts with, which `decode` reads bit by bit instead.
+        var fast = [UInt16](repeating: 0, count: 1 << fastBits)
 
         init(lengths: [Int]) throws(Failure) {
             symbols = [Int](repeating: 0, count: lengths.count)
@@ -138,9 +178,36 @@ enum Gunzip {
                 symbols[offsets[length]] = symbol
                 offsets[length] += 1
             }
+            var first = 0
+            var index = 0
+            for length in 1...Self.fastBits {
+                for offset in 0..<counts[length] {
+                    // The first input bit is the code's top bit, so the table index holds the code reversed.
+                    var reversed = 0
+                    var code = first + offset
+                    for _ in 0..<length {
+                        reversed = reversed << 1 | code & 1
+                        code >>= 1
+                    }
+                    let entry = UInt16(symbols[index + offset] << 4 | length)
+                    for slot in stride(from: reversed, to: 1 << Self.fastBits, by: 1 << length) { fast[slot] = entry }
+                }
+                index += counts[length]
+                first = (first + counts[length]) << 1
+            }
         }
 
         func decode(_ reader: inout Reader) throws(Failure) -> Int {
+            if reader.count < Self.fastBits { reader.refill() }
+            if reader.count >= Self.fastBits {
+                let entry = Int(fast[Int(reader.buffer & (1 << UInt64(Self.fastBits) - 1))])
+                if entry != 0 {
+                    let length = entry & 15
+                    reader.buffer >>= UInt64(length)
+                    reader.count -= length
+                    return entry >> 4
+                }
+            }
             var code = 0
             var first = 0
             var index = 0
@@ -171,30 +238,32 @@ enum Gunzip {
         [Int](repeating: 8, count: 144) + [Int](repeating: 9, count: 112) + [Int](repeating: 7, count: 24) + [Int](repeating: 8, count: 8),
         [Int](repeating: 5, count: 30)
     )
+    /// The fixed codes, built once. Their lengths are valid, so neither is nil.
+    private static let fixedCodes = (literals: try? Code(lengths: fixed.literals), distances: try? Code(lengths: fixed.distances))
 
     // MARK: Blocks
 
-    private static func inflate(_ reader: inout Reader, into output: inout Output) throws(Failure) {
+    private static func inflate(_ reader: inout Reader, into output: Output) throws(Failure) {
         var last = false
         while !last {
             last = try reader.bits(1) == 1
             switch try reader.bits(2) {
             case 0:
-                try stored(&reader, into: &output)
+                try stored(&reader, into: output)
             case 1:
-                try codes(&reader, into: &output, literals: Code(lengths: fixed.literals), distances: Code(lengths: fixed.distances))
+                guard let literals = fixedCodes.literals, let distances = fixedCodes.distances else { throw .malformed }
+                try codes(&reader, into: output, literals: literals, distances: distances)
             case 2:
                 let (literals, distances) = try dynamicCodes(&reader)
-                try codes(&reader, into: &output, literals: literals, distances: distances)
+                try codes(&reader, into: output, literals: literals, distances: distances)
             default:
                 throw .malformed
             }
         }
     }
 
-    private static func stored(_ reader: inout Reader, into output: inout Output) throws(Failure) {
-        reader.buffer = 0
-        reader.count = 0
+    private static func stored(_ reader: inout Reader, into output: Output) throws(Failure) {
+        reader.alignToByte()
         let length = Int(try reader.byte()) | Int(try reader.byte()) << 8
         let complement = Int(try reader.byte()) | Int(try reader.byte()) << 8
         guard length == ~complement & 0xffff else { throw .malformed }
@@ -231,7 +300,7 @@ enum Gunzip {
         return (try Code(lengths: Array(lengths[0..<literalCount])), try Code(lengths: Array(lengths[literalCount...])))
     }
 
-    private static func codes(_ reader: inout Reader, into output: inout Output, literals: Code, distances: Code) throws(Failure) {
+    private static func codes(_ reader: inout Reader, into output: Output, literals: Code, distances: Code) throws(Failure) {
         while true {
             let symbol = try literals.decode(&reader)
             if symbol < 256 {
