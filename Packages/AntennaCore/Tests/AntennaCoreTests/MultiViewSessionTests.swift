@@ -272,36 +272,36 @@ private func started(_ count: Int = 2, cap: Int = 4) throws -> MultiViewSession 
         "multi-view/a-tile-that-fails-says-why a provider refusing another stream says so in plain words",
         arguments: [PlaybackFailure.serverBusy, .serverError])
     func providerRefused(failure: PlaybackFailure) {
-        let message = MultiViewFailureText.message(failure, sharesSource: true, source: "Acme TV", device: .appleTV)
+        let message = MultiViewFailureText.message(failure, sharesSource: true, source: "Acme TV", device: .appleTV, locale: .english)
         #expect(message.title == "Your provider refused another stream")
         #expect(message.explanation == "Many providers allow one or two streams per account at a time.")
     }
 
     @Test("multi-view/a-tile-that-fails-says-why a 403 adds a hint to check the login")
     func refused403() {
-        let tv = MultiViewFailureText.message(.notAllowed, sharesSource: true, source: "Acme TV", device: .appleTV)
+        let tv = MultiViewFailureText.message(.notAllowed, sharesSource: true, source: "Acme TV", device: .appleTV, locale: .english)
         #expect(tv.title == "Your provider refused another stream")
         #expect(tv.explanation.hasSuffix("If the login changed, sign in again on this Apple TV."))
-        let mac = MultiViewFailureText.message(.notAllowed, sharesSource: true, source: "Acme TV", device: .other)
+        let mac = MultiViewFailureText.message(.notAllowed, sharesSource: true, source: "Acme TV", device: .other, locale: .english)
         #expect(mac.explanation.hasSuffix("If the login changed, check it in Settings."))
     }
 
     @Test("multi-view/a-tile-that-fails-says-why a device that cannot decode another stream names itself")
     func decoderBusy() {
-        let tv = MultiViewFailureText.message(.noDecoderFree, sharesSource: false, source: "Acme TV", device: .appleTV)
+        let tv = MultiViewFailureText.message(.noDecoderFree, sharesSource: false, source: "Acme TV", device: .appleTV, locale: .english)
         #expect(
             tv
                 == FailureMessage(
                     title: "This Apple TV can't play another stream", explanation: "Remove a tile or pick a lower-resolution channel."))
-        let mac = MultiViewFailureText.message(.noDecoderFree, sharesSource: false, source: "Acme TV", device: .other)
+        let mac = MultiViewFailureText.message(.noDecoderFree, sharesSource: false, source: "Acme TV", device: .other, locale: .english)
         #expect(mac.title == "This Mac can't play another stream")
     }
 
     @Test("multi-view/a-tile-that-fails-says-why other failures, and a refusal with no other tile on the source, use the player's wording")
     func otherFailures() {
         for failure in [PlaybackFailure.offline, .notFound, .serverError] {
-            let message = MultiViewFailureText.message(failure, sharesSource: false, source: "Acme TV", device: .appleTV)
-            #expect(message == FailureMessage(failure, source: "Acme TV", device: .appleTV))
+            let message = MultiViewFailureText.message(failure, sharesSource: false, source: "Acme TV", device: .appleTV, locale: .english)
+            #expect(message == FailureMessage(failure, source: "Acme TV", device: .appleTV, locale: .english))
         }
     }
 
@@ -315,7 +315,7 @@ private func started(_ count: Int = 2, cap: Int = 4) throws -> MultiViewSession 
 
     @Test("multi-view/sound-follows-the-highlighted-tile each tile's spoken label says whether it has sound")
     func spokenLabel() {
-        #expect(MultiViewText.spokenLabel(number: 104, name: "Sport One", audible: true) == "104, Sport One, sound on")
-        #expect(MultiViewText.spokenLabel(number: nil, name: "Radio", audible: false) == "Radio, muted")
+        #expect(MultiViewText.spokenLabel(number: 104, name: "Sport One", audible: true, locale: .english) == "104, Sport One, sound on")
+        #expect(MultiViewText.spokenLabel(number: nil, name: "Radio", audible: false, locale: .english) == "Radio, muted")
     }
 }

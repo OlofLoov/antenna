@@ -35,7 +35,7 @@ struct PlaylistImportTests {
     func webPage() {
         let html = "<!DOCTYPE html>\n<html><head><title>Login</title></head>\n<body>http://example.com/a</body></html>\n"
         #expect(inspect(html) == .noChannels(sawEntries: false))
-        let problem = ImportText().problem(inspect(html), fileName: "home.m3u")
+        let problem = ImportText(locale: .english).problem(inspect(html), fileName: "home.m3u")
         #expect(problem?.title == "No channels found in home.m3u.")
     }
 
@@ -47,21 +47,22 @@ struct PlaylistImportTests {
         #expect(PlaylistImport.inspect(Data([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00])) == .noChannels(sawEntries: false))
         let noScheme = "#EXTM3U\n#EXTINF:-1,One\nchannel one\n#EXTINF:-1,Two\n/streams/2.ts\n"
         #expect(inspect(noScheme) == .noChannels(sawEntries: true))
-        #expect(ImportText().problem(inspect(noScheme), fileName: "a.m3u")?.body == "The entries in this file are not links.")
+        #expect(
+            ImportText(locale: .english).problem(inspect(noScheme), fileName: "a.m3u")?.body == "The entries in this file are not links.")
     }
 
     @Test("local-m3u-file-import/a-file-that-is-not-a-channel-list-is-explained: one link and a list of links")
     func links() throws {
         let one = inspect("http://example.com/list.m3u\n")
         #expect(one == .linkList([try #require(URL(string: "http://example.com/list.m3u"))]))
-        #expect(ImportText().problem(one, fileName: "a.txt")?.title == "This file is a link, not a playlist.")
+        #expect(ImportText(locale: .english).problem(one, fileName: "a.txt")?.title == "This file is a link, not a playlist.")
         let several = inspect("# my links\nhttps://a.example.com/1\n\nhttp://b.example.com/2\n")
         guard case .linkList(let urls) = several else {
             Issue.record("expected a link list, got \(several)")
             return
         }
         #expect(urls.map(\.host) == ["a.example.com", "b.example.com"])
-        #expect(ImportText().problem(several, fileName: "a.txt")?.title == "This file is a list of links, not a playlist.")
+        #expect(ImportText(locale: .english).problem(several, fileName: "a.txt")?.title == "This file is a list of links, not a playlist.")
         #expect(inspect("http://a.example.com/1\nnot a link\n") == .noChannels(sawEntries: false))
     }
 
@@ -76,7 +77,8 @@ struct PlaylistImportTests {
             Issue.record("session data alone is not a single stream")
             return
         }
-        #expect(ImportText().problem(.hlsStream, fileName: "a.m3u8")?.title == "This is a single stream, not a channel list.")
+        #expect(
+            ImportText(locale: .english).problem(.hlsStream, fileName: "a.m3u8")?.title == "This is a single stream, not a channel list.")
     }
 
     @Test("local-m3u-file-import/see-what-s-in-the-file-before-importing: an old Windows encoding imports with replacement characters")
@@ -135,8 +137,10 @@ struct PlaylistImportTests {
 
     @Test("local-m3u-file-import/a-file-that-is-not-a-channel-list-is-explained: an unreadable file")
     func unreadable() {
-        #expect(ImportText().unreadable(fileName: "a.m3u").title == "Could not read a.m3u. Make sure it is downloaded and try again.")
-        #expect(ImportText().unreadable(fileName: "a.m3u").body == nil)
+        #expect(
+            ImportText(locale: .english).unreadable(fileName: "a.m3u").title
+                == "Could not read a.m3u. Make sure it is downloaded and try again.")
+        #expect(ImportText(locale: .english).unreadable(fileName: "a.m3u").body == nil)
     }
 
     @Test("local-m3u-file-import/see-what-s-in-the-file-before-importing: the default name drops the extension")

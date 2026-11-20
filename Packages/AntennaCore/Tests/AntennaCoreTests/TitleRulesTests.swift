@@ -38,7 +38,7 @@ private let english = Locale(identifier: "en_US")
         let meta = TitleMetadata(movie: movie(), info: info, locale: english)
         #expect(meta.eyebrow == "Movie · Thriller")
         #expect(meta.name == "The Long Harbor 2160p")
-        #expect(meta.detailsLine == "2024 · 2 h 08 min · Thriller · ★ 7.4")
+        #expect(meta.detailsLine(.english) == "2024 · 2 h 08 min · Thriller · ★ 7.4")
         #expect(meta.badges == ["4K", "15"])
         #expect(meta.description == "A harbour pilot.")
         #expect(meta.cast == "Mira Holt")
@@ -49,21 +49,22 @@ private let english = Locale(identifier: "en_US")
 
     @Test("title-detail-and-episode-picker/what-the-title-is-about missing fields are left out, never Unknown")
     func missingFields() {
-        let meta = TitleMetadata(movie: movie(name: "Salt Road", category: nil), info: VODInfo(duration: 5_520, genre: " ", cast: ""))
+        let meta = TitleMetadata(
+            movie: movie(name: "Salt Road", category: nil), info: VODInfo(duration: 5_520, genre: " ", cast: ""), locale: .english)
         #expect(meta.eyebrow == "Movie")
-        #expect(meta.detailsLine == "1 h 32 min")
+        #expect(meta.detailsLine(.english) == "1 h 32 min")
         #expect(meta.badges.isEmpty)
         #expect(meta.description == nil && meta.cast == nil && meta.director == nil && meta.backdropURL == nil)
-        #expect(TitleMetadata(movie: movie(), info: VODInfo()).detailsLine == nil)
-        #expect(TitleMetadata(title: series(category: "  ")).eyebrow == "Series")
+        #expect(TitleMetadata(movie: movie(), info: VODInfo(), locale: .english).detailsLine == nil)
+        #expect(TitleMetadata(title: series(category: "  "), locale: .english).eyebrow == "Series")
     }
 
     @Test("title-detail-and-episode-picker/what-the-title-is-about the rating falls back to the list row, one decimal")
     func ratingFallback() {
         #expect(TitleMetadata(movie: movie(rating: 6.25), info: VODInfo(), locale: english).facts == ["★ 6.3"])
         #expect(TitleMetadata(movie: movie(rating: 6), info: VODInfo(rating: 8), locale: english).facts == ["★ 8.0"])
-        #expect(TitleMetadata.rating(0) == nil)
-        #expect(TitleMetadata.rating(.nan) == nil)
+        #expect(TitleMetadata.rating(0, locale: .english) == nil)
+        #expect(TitleMetadata.rating(.nan, locale: .english) == nil)
     }
 
     @Test("title-detail-and-episode-picker/what-the-title-is-about a series counts seasons from its episodes")
@@ -72,7 +73,7 @@ private let english = Locale(identifier: "en_US")
         let info = SeriesInfo(year: 2019, genre: "Drama", ageRating: "15", rating: 8.1, episodes: episodes)
         let meta = TitleMetadata(series: series(), info: info, groups: SeasonGroup.group(episodes), locale: english)
         #expect(meta.eyebrow == "Series · Drama")
-        #expect(meta.detailsLine == "2019 · 2 seasons · Drama · ★ 8.1")
+        #expect(meta.detailsLine(.english) == "2019 · 2 seasons · Drama · ★ 8.1")
         #expect(meta.badges == ["15"], "a series shows no 4K badge")
     }
 
@@ -86,12 +87,12 @@ private let english = Locale(identifier: "en_US")
             episode(7, season: -1, number: 1),
         ]
         let groups = SeasonGroup.group(episodes)
-        #expect(groups.map(\.title) == ["Season 1", "Season 2", "Season 3", "Specials", "Other"])
+        #expect(groups.map({ $0.title(.english) }) == ["Season 1", "Season 2", "Season 3", "Specials", "Other"])
         #expect(groups.map(\.id) == ["season-1", "season-2", "season-3", "specials", "other"])
         #expect(groups[0].episodes.map(\.id) == ["e3", "e4"])
         #expect(groups[4].episodes.map(\.id) == ["e1", "e7"])
-        #expect(groups[0].countLabel == "2 episodes")
-        #expect(groups[1].countLabel == "1 episode")
+        #expect(groups[0].countLabel(.english) == "2 episodes")
+        #expect(groups[1].countLabel(.english) == "1 episode")
         #expect(SeasonGroup.seasonCount(groups) == 3)
     }
 
@@ -121,7 +122,7 @@ private let english = Locale(identifier: "en_US")
         #expect(pick.episode.id == "e21")
         #expect(pick.resumes)
         #expect(pick.position == 30)
-        #expect(pick.label == "Resume S2 E1")
+        #expect(pick.label(.english) == "Resume S2 E1")
     }
 
     @Test("title-detail-and-episode-picker/play-starts-the-right-episode a tie goes to the earlier episode")
@@ -136,7 +137,7 @@ private let english = Locale(identifier: "en_US")
         #expect(pick.episode.id == "e21", "e12 is finished, e21 barely started counts as unwatched")
         #expect(!pick.resumes)
         #expect(pick.position == 0)
-        #expect(pick.label == "Play S2 E1")
+        #expect(pick.label(.english) == "Play S2 E1")
     }
 
     @Test("title-detail-and-episode-picker/play-starts-the-right-episode wraps to the start after the last episode")
@@ -151,7 +152,7 @@ private let english = Locale(identifier: "en_US")
     func nothingStarted() throws {
         let pick = try #require(target([progress("e12", at: 0.01, saved: 0), progress("e21", at: 0.5, saved: 0, length: nil)]))
         #expect(pick.episode.id == "e11", "not a special, and a record with no length counts as 0%")
-        #expect(pick.label == "Play S1 E1")
+        #expect(pick.label(.english) == "Play S1 E1")
     }
 
     @Test("title-detail-and-episode-picker/play-starts-the-right-episode everything watched plays the first episode")
@@ -168,12 +169,12 @@ private let english = Locale(identifier: "en_US")
 
     @Test("title-detail-and-episode-picker/play-starts-the-right-episode labels name the episode as far as it is numbered")
     func labels() {
-        #expect(PlayLabel.text(resumes: false) == "Play")
-        #expect(PlayLabel.text(resumes: true) == "Resume")
-        #expect(PlayLabel.text(resumes: false, episode: episode(1, season: 2, number: 3)) == "Play S2 E3")
-        #expect(PlayLabel.text(resumes: true, episode: episode(1, season: nil, number: 3)) == "Resume E3")
-        #expect(PlayLabel.text(resumes: false, episode: episode(1, season: 2, number: nil)) == "Play S2")
-        #expect(PlayLabel.text(resumes: false, episode: episode(1, season: nil, number: nil)) == "Play")
+        #expect(PlayLabel.text(resumes: false, locale: .english) == "Play")
+        #expect(PlayLabel.text(resumes: true, locale: .english) == "Resume")
+        #expect(PlayLabel.text(resumes: false, episode: episode(1, season: 2, number: 3), locale: .english) == "Play S2 E3")
+        #expect(PlayLabel.text(resumes: true, episode: episode(1, season: nil, number: 3), locale: .english) == "Resume E3")
+        #expect(PlayLabel.text(resumes: false, episode: episode(1, season: 2, number: nil), locale: .english) == "Play S2")
+        #expect(PlayLabel.text(resumes: false, episode: episode(1, season: nil, number: nil), locale: .english) == "Play")
     }
 
     // MARK: Episode rows
@@ -181,16 +182,16 @@ private let english = Locale(identifier: "en_US")
     @Test("title-detail-and-episode-picker/what-each-episode-shows watched, in progress, barely started and unwatched")
     func episodeStates() {
         let row = episode(4, season: 2, number: 4)
-        #expect(EpisodeText.status(row, progress: progress("e4", at: 0.99, saved: 0)) == "Watched")
+        #expect(EpisodeText.status(row, progress: progress("e4", at: 0.99, saved: 0), locale: .english) == "Watched")
         #expect(EpisodeText.fraction(progress("e4", at: 0.99, saved: 0)) == 1)
         let partway = WatchProgress(
             id: "e4", titleID: "e4", sourceID: source, position: 1_380, duration: 2_640, updatedAt: now)
-        #expect(EpisodeText.status(row, progress: partway) == "44 min · 21 min left")
+        #expect(EpisodeText.status(row, progress: partway, locale: .english) == "44 min · 21 min left")
         #expect(EpisodeText.fraction(partway).map { abs($0 - 1_380.0 / 2_640) < 0.001 } == true)
-        #expect(EpisodeText.status(row, progress: progress("e4", at: 0.01, saved: 0)) == "44 min")
+        #expect(EpisodeText.status(row, progress: progress("e4", at: 0.01, saved: 0), locale: .english) == "44 min")
         #expect(EpisodeText.fraction(progress("e4", at: 0.01, saved: 0)) == nil)
-        #expect(EpisodeText.status(row, progress: nil) == "44 min")
-        #expect(EpisodeText.status(Episode(id: "x", episodeID: 1, title: "Episode"), progress: nil) == nil)
+        #expect(EpisodeText.status(row, progress: nil, locale: .english) == "44 min")
+        #expect(EpisodeText.status(Episode(id: "x", episodeID: 1, title: "Episode"), progress: nil, locale: .english) == nil)
     }
 
     @Test("title-detail-and-episode-picker/what-each-episode-shows VoiceOver reads number, title, length, state and up next")
@@ -198,14 +199,17 @@ private let english = Locale(identifier: "en_US")
         let row = Episode(id: "e4", episodeID: 4, season: 2, number: 4, title: "Low Water", duration: 2_640)
         let partway = WatchProgress(id: "e4", titleID: "e4", sourceID: source, position: 1_380, duration: 2_640, updatedAt: now)
         #expect(
-            EpisodeText.accessibilityLabel(row, progress: partway, upNext: true) == "Episode 4, Low Water, 44 min, 21 min left, up next")
-        #expect(EpisodeText.accessibilityLabel(episode(6, season: 2, number: 6), progress: nil, upNext: false) == "Episode 6, 44 min")
+            EpisodeText.accessibilityLabel(row, progress: partway, upNext: true, locale: .english)
+                == "Episode 4, Low Water, 44 min, 21 min left, up next")
+        #expect(
+            EpisodeText.accessibilityLabel(episode(6, season: 2, number: 6), progress: nil, upNext: false, locale: .english)
+                == "Episode 6, 44 min")
     }
 
     @Test("title-detail-and-episode-picker/what-each-episode-shows unreadable episodes are counted")
     func skipped() {
-        #expect(EpisodeText.skipped(0) == nil)
-        #expect(EpisodeText.skipped(1) == "1 episode could not be read from the provider's list.")
-        #expect(EpisodeText.skipped(3) == "3 episodes could not be read from the provider's list.")
+        #expect(EpisodeText.skipped(0, locale: .english) == nil)
+        #expect(EpisodeText.skipped(1, locale: .english) == "1 episode could not be read from the provider's list.")
+        #expect(EpisodeText.skipped(3, locale: .english) == "3 episodes could not be read from the provider's list.")
     }
 }

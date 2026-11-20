@@ -103,7 +103,8 @@ enum ReminderFixture {
     @Test("programme-reminders/choose-how-early-reminders-go-off: five minutes until the user picks")
     func standard() {
         #expect(ReminderLeadTime.standard == .five)
-        #expect(ReminderLeadTime.allCases.map(\.title) == ["At start", "5 minutes", "10 minutes", "15 minutes", "30 minutes"])
+        #expect(
+            ReminderLeadTime.allCases.map({ $0.title(.english) }) == ["At start", "5 minutes", "10 minutes", "15 minutes", "30 minutes"])
     }
 
     @Test("programme-reminders/a-notification-before-the-programme-starts: set inside the lead time goes off at once")

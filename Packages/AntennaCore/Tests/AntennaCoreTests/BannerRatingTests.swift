@@ -83,7 +83,7 @@ private let english = Locale(identifier: "en_US")
 
     @Test("movies-and-series-browsing/rating-and-trailer-on-the-banner no rating, no star")
     func noRating() {
-        let text = BannerText(movie(rating: 0), details: ShelfDetails(year: 2024, rating: nil))
+        let text = BannerText(movie(rating: 0), details: ShelfDetails(year: 2024, rating: nil), locale: .english)
         #expect(text.facts == ["2024"])
         #expect(text.rating == nil && text.spokenRating == nil)
     }

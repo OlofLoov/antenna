@@ -56,6 +56,6 @@ import Testing
     func banner() {
         let title = ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: UUID(), name: "The Long Harbor", rating: 6.25)
         #expect(TitleMetadata.rating(6.25, locale: Locale(identifier: "de_DE")) == "★ 6,3")
-        #expect(BannerText(title, details: nil).rating == TitleMetadata.rating(6.25))
+        #expect(BannerText(title, details: nil, locale: .english).rating == TitleMetadata.rating(6.25, locale: .english))
     }
 }

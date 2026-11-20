@@ -65,7 +65,7 @@ import Testing
         for number in 1...4 {
             let command = KeyCommand.selectTile(number)
             #expect(command.combination == KeyCombination(.character(Character(String(number))), [.command, .option]))
-            #expect(command.title == "Select Tile \(number)")
+            #expect(command.title(.english) == "Select Tile \(number)")
             #expect(command.screens == [.multiView])
         }
     }
@@ -73,7 +73,7 @@ import Testing
     @Test("keyboard-commands/go-to-a-section Command-1 to 5 in the sidebar's order, Command-Comma for settings")
     func goMenu() {
         let go = KeyCommand.all.filter { $0.menu == .go }
-        #expect(go.map(\.title) == ["Live", "Guide", "Movies", "Series", "Search", "Sources & Settings"])
+        #expect(go.map({ $0.title(.english) }) == ["Live", "Guide", "Movies", "Series", "Search", "Sources & Settings"])
         #expect(go.map(\.combination.key) == ["1", "2", "3", "4", "5", ","].map { Key.character($0) })
         #expect(go.allSatisfy { $0.combination.modifiers == .command })
     }
@@ -86,13 +86,13 @@ import Testing
 
     @Test("keyboard-commands/menu-items-follow-the-screen-in-front titles name what the item does")
     func titles() {
-        #expect(KeyCommand.pauseTitle(paused: false) == "Pause")
-        #expect(KeyCommand.pauseTitle(paused: true) == "Play")
-        #expect(KeyCommand.skipTitle(forward: false, seconds: 15) == "Back 15 Seconds")
-        #expect(KeyCommand.skipTitle(forward: true, seconds: 10) == "Forward 10 Seconds")
-        #expect(KeyCommand.findTitle(on: .live) == "Find Channel")
-        #expect(KeyCommand.findTitle(on: .guide) == "Filter Channels")
-        #expect(KeyCommand.findTitle(on: .search) == "Search")
+        #expect(KeyCommand.pauseTitle(paused: false, locale: .english) == "Pause")
+        #expect(KeyCommand.pauseTitle(paused: true, locale: .english) == "Play")
+        #expect(KeyCommand.skipTitle(forward: false, seconds: 15, locale: .english) == "Back 15 Seconds")
+        #expect(KeyCommand.skipTitle(forward: true, seconds: 10, locale: .english) == "Forward 10 Seconds")
+        #expect(KeyCommand.findTitle(on: .live, locale: .english) == "Find Channel")
+        #expect(KeyCommand.findTitle(on: .guide, locale: .english) == "Filter Channels")
+        #expect(KeyCommand.findTitle(on: .search, locale: .english) == "Search")
     }
 
     @Test("keyboard-commands/moving-through-lists-stays-off-the-menus no item takes Up, Down, Return or Escape alone")

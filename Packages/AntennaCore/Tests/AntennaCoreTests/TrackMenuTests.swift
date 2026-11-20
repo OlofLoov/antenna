@@ -17,7 +17,7 @@ import Testing
 
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles audio rows name each track and tick the playing one")
     func audio() {
-        let rows = TrackMenu.audio(Self.tracks, presentation: StreamLineTests.broadcast)
+        let rows = TrackMenu.audio(Self.tracks, presentation: StreamLineTests.broadcast, locale: .english)
         #expect(rows.map(\.name) == ["English", "English (Commentary)", "Track 3"])
         #expect(rows.map(\.isSelected) == [false, true, false])
         #expect(rows.map(\.detail) == [nil, "AAC 5.1", nil])
@@ -25,18 +25,18 @@ import Testing
 
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles subtitles start with Off, ticked while off")
     func subtitles() {
-        let rows = TrackMenu.subtitles(Self.tracks)
+        let rows = TrackMenu.subtitles(Self.tracks, locale: .english)
         #expect(rows.map(\.name) == ["Off", "English", "Forced"])
         #expect(rows.map(\.isSelected) == [true, false, false])
         var on = Self.tracks
         on.selectedSubtitle = "subtitle-0"
-        #expect(TrackMenu.subtitles(on).map(\.isSelected) == [false, true, false])
+        #expect(TrackMenu.subtitles(on, locale: .english).map(\.isSelected) == [false, true, false])
     }
 
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles one sound and no subtitles leaves nothing to choose")
     func nothingToChoose() {
         let single = TrackList(audio: [Self.tracks.audio[0]], subtitles: [], selectedAudio: "audio-0", selectedSubtitle: nil)
-        #expect(TrackMenu.subtitles(single).isEmpty)
+        #expect(TrackMenu.subtitles(single, locale: .english).isEmpty)
         #expect(!TrackMenu.hasChoices(single))
         #expect(TrackMenu.hasChoices(Self.tracks))
     }

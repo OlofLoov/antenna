@@ -7,6 +7,7 @@ sources (M3U, Xtream, later Stalker / Jellyfin / Channels DVR). Ships no content
 
 ```sh
 swift test --build-system swiftbuild --package-path Packages/AntennaCore   # core tests; Swift Build compiles the String Catalog
+scripts/test-core-in-language.sh ar-SA ar_SA   # core tests as on a Mac set to Arabic; CI and pre-push run German
 swift format lint --strict --recursive --parallel Apps Packages   # formatting, ships with the toolchain
 swiftlint lint --strict                                  # conventions; brew install swiftlint
 scripts/check-rules.sh                                   # decision greps: layering, CloudKit, availability

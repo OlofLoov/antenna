@@ -38,9 +38,9 @@ import Testing
             (.unauthorized, "This server asks for a username and password, which Antenna cannot send yet."),
         ]
         for (error, sentence) in cases {
-            #expect(ConnectFailure(error, host: host).message == sentence)
+            #expect(ConnectFailure(error, host: host).message(.english) == sentence)
         }
-        #expect(ConnectFailure.invalidServer.message == "Enter a valid server address.")
+        #expect(ConnectFailure.invalidServer.message(.english) == "Enter a valid server address.")
     }
 
     @Test("first-run-onboarding/a-failed-connection-says-why-and-saves-nothing the local network hint follows the host")

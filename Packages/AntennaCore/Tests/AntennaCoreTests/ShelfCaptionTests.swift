@@ -16,21 +16,23 @@ import Testing
 
     @Test("movies-and-series-browsing/rows-in-a-predictable-order VoiceOver reads title, year and minutes left")
     func posterLabel() {
-        #expect(ShelfText.posterLabel(movie, progress: nil) == "Dune (2021), 2021")
-        #expect(ShelfText.posterLabel(movie, progress: progress("m", at: 1200)) == "Dune (2021), 2021, 30 min left")
-        #expect(ShelfText.posterLabel(series, progress: progress("m", at: 2990)) == "Northern Lights", "a finished title has none left")
+        #expect(ShelfText.posterLabel(movie, progress: nil, locale: .english) == "Dune (2021), 2021")
+        #expect(ShelfText.posterLabel(movie, progress: progress("m", at: 1200), locale: .english) == "Dune (2021), 2021, 30 min left")
+        #expect(
+            ShelfText.posterLabel(series, progress: progress("m", at: 2990), locale: .english) == "Northern Lights",
+            "a finished title has none left")
     }
 
     @Test("movies-and-series-browsing/continue-watching cards say the minutes left, or the season and episode")
     func captions() {
         let movieItem = ContinueWatching.Item(title: movie, progress: progress("m", at: 1200), isNextEpisode: false)
-        #expect(ShelfText.continueCaption(movieItem, episode: nil) == "30 min left")
+        #expect(ShelfText.continueCaption(movieItem, episode: nil, locale: .english) == "30 min left")
         let episode = Episode(id: "e", episodeID: 4, season: 2, number: 4, title: "Four")
         let partway = ContinueWatching.Item(title: series, progress: progress("e", at: 600), isNextEpisode: false)
-        #expect(ShelfText.continueCaption(partway, episode: episode) == "S2 E4")
-        #expect(ShelfText.continueCaption(partway, episode: nil) == "40 min left", "before the episodes are known")
+        #expect(ShelfText.continueCaption(partway, episode: episode, locale: .english) == "S2 E4")
+        #expect(ShelfText.continueCaption(partway, episode: nil, locale: .english) == "40 min left", "before the episodes are known")
         let next = ContinueWatching.Item(title: series, progress: progress("e", at: 2990), isNextEpisode: true)
-        #expect(ShelfText.continueCaption(next, episode: episode) == "Next episode")
+        #expect(ShelfText.continueCaption(next, episode: episode, locale: .english) == "Next episode")
         #expect(ShelfText.episodeCode(Episode(id: "x", episodeID: 1, number: 3, title: "Three")) == "E3")
         #expect(ShelfText.episodeCode(Episode(id: "x", episodeID: 1, season: 1, title: "Pilot")) == nil)
     }

@@ -10,8 +10,8 @@ import Testing
         #expect(SourceFields(kind: .xtream, url: "http://a.test").check() == .missingField(.username))
         #expect(SourceFields(kind: .xtream, url: "http://a.test", username: "u").check() == .missingField(.password))
         #expect(SourceFields(kind: .m3u, url: "  ").check() == .missingField(.playlist))
-        #expect(SourceFields(kind: .m3u).check()?.message == "Enter the playlist URL.")
-        #expect(SourceFields(kind: .xtream).check()?.message == "Enter the server address.")
+        #expect(SourceFields(kind: .m3u).check()?.message(.english) == "Enter the playlist URL.")
+        #expect(SourceFields(kind: .xtream).check()?.message(.english) == "Enter the server address.")
     }
 
     @Test("source-management/an-xtream-source-needs-a-username-and-password: blank fields stop Xtream, M3U needs neither")
@@ -25,7 +25,7 @@ import Testing
     func invalidLink() {
         let fields = SourceFields(kind: .m3u, url: "example.com/list.m3u")
         #expect(fields.check() == .invalidURL)
-        #expect(fields.check()?.message == "Enter a valid URL.")
+        #expect(fields.check()?.message(.english) == "Enter a valid URL.")
         #expect(SourceFields(kind: .m3u, url: " http://a.test/list.m3u\t").check() == nil)
         #expect(SourceFields(kind: .xtream, url: "http://a.test:8080", username: "u", password: "p").check() == nil)
     }
@@ -34,25 +34,25 @@ import Testing
     func failureMessages() {
         let host = "tv.example.test"
         #expect(
-            ConnectFailure(XtreamClient.XtreamError.unauthorized, host: host).message
+            ConnectFailure(XtreamClient.XtreamError.unauthorized, host: host).message(.english)
                 == "Could not sign in. Check the username and password.")
-        #expect(ConnectFailure.accountStatus("Expired")?.message == "This account is expired.")
+        #expect(ConnectFailure.accountStatus("Expired")?.message(.english) == "This account is expired.")
         #expect(ConnectFailure.accountStatus(nil) == nil)
         #expect(ConnectFailure.accountStatus("") == nil)
         #expect(ConnectFailure.accountStatus("active") == nil)
         #expect(
-            ConnectFailure(XtreamClient.XtreamError.transport(.notConnectedToInternet), host: host).message
+            ConnectFailure(XtreamClient.XtreamError.transport(.notConnectedToInternet), host: host).message(.english)
                 == "You're offline. Connect to the internet and try again.")
         #expect(ConnectFailure(URLError(.dataNotAllowed), host: host) == .offline)
         #expect(ConnectFailure(URLError(.networkConnectionLost), host: host) == .offline)
         #expect(
-            ConnectFailure(URLError(.cannotFindHost), host: host).message
+            ConnectFailure(URLError(.cannotFindHost), host: host).message(.english)
                 == "Could not reach tv.example.test. Check the address and try again.")
         #expect(
-            ConnectFailure(XtreamClient.XtreamError.badStatus(500), host: host).message
+            ConnectFailure(XtreamClient.XtreamError.badStatus(500), host: host).message(.english)
                 == "The server answered with an error (500). Check the address and try again.")
         #expect(
-            ConnectFailure(XtreamClient.XtreamError.decoding(path: ""), host: host).message
+            ConnectFailure(XtreamClient.XtreamError.decoding(path: ""), host: host).message(.english)
                 == "The server replied with something Antenna could not read.")
     }
 
@@ -110,13 +110,15 @@ import Testing
     func portalMistakes() {
         #expect(SourceFields(kind: .stalker, mac: "00:1A:79:12:34:56").check() == .missingField(.portal))
         #expect(SourceFields(kind: .stalker, url: "http://portal.example.test").check() == .missingField(.mac))
-        #expect(SourceFields(kind: .stalker).check()?.message == "Enter the portal address.")
-        #expect(SourceFields(kind: .stalker, url: "http://portal.example.test", mac: " ").check()?.message == "Enter the MAC address.")
+        #expect(SourceFields(kind: .stalker).check()?.message(.english) == "Enter the portal address.")
+        #expect(
+            SourceFields(kind: .stalker, url: "http://portal.example.test", mac: " ").check()?.message(.english) == "Enter the MAC address."
+        )
         #expect(SourceFields(kind: .stalker, url: "portal.example.test/c/", mac: "00:1A:79:12:34:56").check() == .invalidURL)
         #expect(SourceFields(kind: .stalker, url: "ftp://portal.example.test/c/", mac: "00:1A:79:12:34:56").check() == .invalidURL)
         let short = SourceFields(kind: .stalker, url: "http://portal.example.test", mac: "00:1A:79")
         #expect(short.check() == .invalidMAC)
-        #expect(short.check()?.message == "Enter a valid MAC address, like 00:1A:79:12:34:56.")
+        #expect(short.check()?.message(.english) == "Enter a valid MAC address, like 00:1A:79:12:34:56.")
         #expect(SourceFields(kind: .stalker, url: "http://portal.example.test", mac: "00:1A:79:12:34:5G").check() == .invalidMAC)
     }
 
@@ -124,13 +126,13 @@ import Testing
     func portalFailureMessages() {
         let host = "portal.example.test"
         #expect(
-            ConnectFailure(StalkerError.notAuthorized, host: host).message
+            ConnectFailure(StalkerError.notAuthorized, host: host).message(.english)
                 == "Could not sign in. Check the MAC address, and the login if you have one.")
         #expect(
-            ConnectFailure(StalkerError.noPortal, host: host).message
+            ConnectFailure(StalkerError.noPortal, host: host).message(.english)
                 == "No Stalker portal answered at portal.example.test. Check the address and try again.")
         #expect(
-            ConnectFailure(StalkerError.deviceRefused(message: "MAC … is not registered"), host: host).message
+            ConnectFailure(StalkerError.deviceRefused(message: "MAC … is not registered"), host: host).message(.english)
                 == "The portal refused this device with the message “MAC … is not registered”.")
         #expect(ConnectFailure(StalkerError.transport(.notConnectedToInternet), host: host) == .offline)
         #expect(ConnectFailure(StalkerError.serverError(status: 503), host: host) == .serverError(status: 503))
@@ -153,13 +155,14 @@ import Testing
         let host = "jf.local"
         #expect(ConnectFailure(JellyfinClient.JellyfinError.unauthorized, host: host) == .rejected)
         #expect(
-            ConnectFailure(JellyfinClient.JellyfinError.forbidden, host: host).message
+            ConnectFailure(JellyfinClient.JellyfinError.forbidden, host: host).message(.english)
                 == "This account is not allowed to sign in from this device.")
         #expect(
-            ConnectFailure(JellyfinClient.JellyfinError.untrustedCertificate, host: host).message
+            ConnectFailure(JellyfinClient.JellyfinError.untrustedCertificate, host: host).message(.english)
                 == "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate.")
         #expect(
-            ConnectFailure.noJellyfin(host: host).message == "No Jellyfin server answered at jf.local. Check the address and try again.")
+            ConnectFailure.noJellyfin(host: host).message(.english)
+                == "No Jellyfin server answered at jf.local. Check the address and try again.")
         #expect(ConnectFailure(JellyfinClient.JellyfinError.transport(.notConnectedToInternet), host: host) == .offline)
         #expect(ConnectFailure(JellyfinClient.JellyfinError.transport(.timedOut), host: host) == .unreachable(host: host))
         #expect(ConnectFailure(JellyfinClient.JellyfinError.badStatus(500), host: host) == .serverError(status: 500))

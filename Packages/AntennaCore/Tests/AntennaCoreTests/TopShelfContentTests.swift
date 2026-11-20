@@ -25,7 +25,7 @@ import Testing
     }
 
     private func content(_ snapshot: TopShelfSnapshot, at date: Date? = nil) -> TopShelfContent? {
-        TopShelfContent.make(from: TopShelfSnapshot(data: try? snapshot.encoded()), now: date ?? now)
+        TopShelfContent.make(from: TopShelfSnapshot(data: try? snapshot.encoded()), now: date ?? now, locale: .english)
     }
 
     private func sections(_ content: TopShelfContent?) -> [TopShelfContent.Section] {
@@ -94,7 +94,7 @@ import Testing
             now: now)
         let rows = sections(content(snapshot))
         #expect(rows.map(\.id) == ["topShelf.section.continueWatching"])
-        #expect(rows.first?.title == "Continue watching")
+        #expect(rows.first?.title(.english) == "Continue watching")
         #expect(rows.first?.items.map(\.title) == ["Northern Lights · S2 E4", "Dune"])
         #expect(rows.first?.items.map(\.progress) == [0.25, 0.4])
     }
@@ -141,7 +141,7 @@ import Testing
 
     @Test("top-shelf/the-shelf-keeps-up-with-the-app no snapshot, a damaged one or an older version gives a blank shelf")
     func damaged() throws {
-        #expect(TopShelfContent.make(from: TopShelfSnapshot(data: nil), now: now) == nil)
+        #expect(TopShelfContent.make(from: TopShelfSnapshot(data: nil), now: now, locale: .english) == nil)
         #expect(TopShelfSnapshot(data: Data("{\"version\":1".utf8)) == nil)
         #expect(TopShelfSnapshot(data: Data("[]".utf8)) == nil)
         var old = TopShelfSnapshot.cleared(now: now)

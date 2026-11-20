@@ -281,4 +281,22 @@ check "localization: Core never compares translated words" \
   '(==|!=)[[:space:]]*[Ww]ords(\([a-z]+\))?\("|[Ww]ords(\([a-z]+\))?\("[^"]*"\)[[:space:]]*(==|!=)' \
   Packages/AntennaCore/Sources
 
+# Core text takes the language, calendar and time zone as parameters. The
+# device's own settings come in only as a default argument, or as a
+# property that calls its locale-taking twin with `.autoupdatingCurrent`,
+# so a test passes a fixed locale and reads the same on a Mac set to any
+# language (scripts/test-core-in-language.sh runs the suite that way).
+device_settings=$(grep -rnE --include='*.swift' \
+  '(Locale|Calendar|TimeZone)\.(current|autoupdatingCurrent)|(^|[^A-Za-z0-9_)?!])\.(current|autoupdatingCurrent)([^A-Za-z0-9_]|$)' \
+  Packages/AntennaCore/Sources |
+  grep -vE '^[^:]+:[0-9]+:[[:space:]]*//' |
+  grep -vE '(Locale|Calendar|TimeZone)[[:space:]]*=[[:space:]]*\.(current|autoupdatingCurrent)([^A-Za-z0-9_]|$)' |
+  grep -vE 'var [A-Za-z]+: [^{]+\{ [A-Za-z]+\(\.autoupdatingCurrent\) \}' || true)
+if [[ -n "$device_settings" ]]; then
+  printf 'FAIL %s\n%s\n\n' "localization: Core reads the device's language, calendar and time zone only as defaults" "$device_settings"
+  status=1
+else
+  printf 'ok   %s\n' "localization: Core reads the device's language, calendar and time zone only as defaults"
+fi
+
 exit "$status"

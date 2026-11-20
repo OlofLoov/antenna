@@ -14,70 +14,71 @@ import Testing
     @Test("control-hints/remote-hints-show-what-the-buttons-do every screen lists between two and five controls, each once")
     func everyScreenHasALegend() {
         for screen in Self.screens {
-            let controls = screen.hints.map(\.control)
+            let controls = screen.hints(.english).map(\.control)
             #expect((2...5).contains(controls.count), "\(screen)")
             #expect(Set(controls).count == controls.count, "\(screen) names a control twice")
-            #expect(screen.hints.allSatisfy { !$0.action.isEmpty })
+            #expect(screen.hints(.english).allSatisfy { !$0.action.isEmpty })
         }
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions the overlay's groups and channels differ")
     func overlayColumns() {
-        #expect(ControlHintScreen.overlayGroups.hints.first == ControlHint(.swipeUpDown, "Choose a group"))
-        #expect(ControlHintScreen.overlayGroups.hints.contains(ControlHint(.back, "Close")))
-        #expect(ControlHintScreen.overlayChannels.hints.first == ControlHint(.click, "Watch"))
-        #expect(ControlHintScreen.overlayChannels.hints.contains(ControlHint(.hold, "Add to or remove from Favorites")))
+        #expect(ControlHintScreen.overlayGroups.hints(.english).first == ControlHint(.swipeUpDown, "Choose a group"))
+        #expect(ControlHintScreen.overlayGroups.hints(.english).contains(ControlHint(.back, "Close")))
+        #expect(ControlHintScreen.overlayChannels.hints(.english).first == ControlHint(.click, "Watch"))
+        #expect(ControlHintScreen.overlayChannels.hints(.english).contains(ControlHint(.hold, "Add to or remove from Favorites")))
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions the swipe preference decides what up and down say")
     func swipePreference() {
-        #expect(ControlHintScreen.livePicture(swipe: .changesChannel).hints.contains(ControlHint(.swipeUpDown, "Change channel")))
-        #expect(ControlHintScreen.livePicture(swipe: .showsZapBar).hints.contains(ControlHint(.swipeUpDown, "Info bar")))
-        #expect(ControlHintScreen.infoBar(swipe: .showsZapBar).hints.allSatisfy { $0.control != .swipeUpDown })
+        #expect(ControlHintScreen.livePicture(swipe: .changesChannel).hints(.english).contains(ControlHint(.swipeUpDown, "Change channel")))
+        #expect(ControlHintScreen.livePicture(swipe: .showsZapBar).hints(.english).contains(ControlHint(.swipeUpDown, "Info bar")))
+        #expect(ControlHintScreen.infoBar(swipe: .showsZapBar).hints(.english).allSatisfy { $0.control != .swipeUpDown })
         #expect(ControlHintScreen.live(swipe: .showsZapBar, infoBar: true) == .infoBar(swipe: .showsZapBar))
         #expect(ControlHintScreen.live(swipe: .changesChannel, infoBar: false) == .livePicture(swipe: .changesChannel))
-        #expect(ControlHintScreen.infoBar(swipe: .changesChannel).hints.contains(ControlHint(.back, "Hide the info bar")))
+        #expect(ControlHintScreen.infoBar(swipe: .changesChannel).hints(.english).contains(ControlHint(.back, "Hide the info bar")))
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions a movie poster plays and a series poster opens")
     func titleRows() {
-        #expect(ControlHintScreen.titleRows(.movie).hints.first == ControlHint(.click, "Play"))
-        #expect(ControlHintScreen.titleRows(.series).hints.first == ControlHint(.click, "Open"))
-        #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints.contains(ControlHint(.hold, "Audio and subtitles")))
-        #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints.first == ControlHint(.clickLeftRight, "Skip 10 seconds"))
-        #expect(ControlHintScreen.titlePlayer(scrubbing: true).hints.contains(ControlHint(.back, "Cancel")))
+        #expect(ControlHintScreen.titleRows(.movie).hints(.english).first == ControlHint(.click, "Play"))
+        #expect(ControlHintScreen.titleRows(.series).hints(.english).first == ControlHint(.click, "Open"))
+        #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).contains(ControlHint(.hold, "Audio and subtitles")))
+        #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).first == ControlHint(.clickLeftRight, "Skip 10 seconds"))
+        #expect(ControlHintScreen.titlePlayer(scrubbing: true).hints(.english).contains(ControlHint(.back, "Cancel")))
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions the end of an episode names the next one")
     func upNext() {
         // up-next/up-next-on-the-siri-remote
-        let near = ControlHintScreen.titlePlayer(scrubbing: false, nextEpisode: true).hints
+        let near = ControlHintScreen.titlePlayer(scrubbing: false, nextEpisode: true).hints(.english)
         #expect(near.contains(ControlHint(.swipeDown, "Next episode")))
         #expect(!near.contains { $0.control == .swipeLeftRight })
         #expect(
-            ControlHintScreen.nextEpisodeButton.hints == [
+            ControlHintScreen.nextEpisodeButton.hints(.english) == [
                 ControlHint(.click, "Play the next episode"), ControlHint(.back, "Keep watching"),
             ])
-        let card = ControlHintScreen.upNext(asking: false).hints
+        let card = ControlHintScreen.upNext(asking: false).hints(.english)
         #expect(card.first == ControlHint(.click, "Play now"))
         #expect(card.contains(ControlHint(.clickLeftRight, "Skip 10 seconds")))
         #expect(card.contains(ControlHint(.back, "Cancel")))
-        #expect(ControlHintScreen.upNext(asking: true).hints == [ControlHint(.click, "Keep watching"), ControlHint(.back, "Cancel")])
+        #expect(
+            ControlHintScreen.upNext(asking: true).hints(.english) == [ControlHint(.click, "Keep watching"), ControlHint(.back, "Cancel")])
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions Back reads Tab bar where it reaches the bar, Home Screen in the bar")
     func backToTheTabBar() {
         // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
         for screen in [ControlHintScreen.livePicture(swipe: .changesChannel), .guide, .titleRows(.movie), .titleRows(.series)] {
-            #expect(screen.hints.contains(ControlHint(.back, "Tab bar")), "\(screen)")
+            #expect(screen.hints(.english).contains(ControlHint(.back, "Tab bar")), "\(screen)")
         }
         // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
-        #expect(ControlHintScreen.tabBar.hints.contains(ControlHint(.back, "Home Screen")))
+        #expect(ControlHintScreen.tabBar.hints(.english).contains(ControlHint(.back, "Home Screen")))
     }
 
     @Test("control-hints/hints-stay-out-of-the-way VoiceOver hears the legend as one sentence")
     func spoken() {
-        #expect(ControlHintScreen.titlePage.spoken == "Remote: Click, Play or choose. Back, Back.")
+        #expect(ControlHintScreen.titlePage.spoken(.english) == "Remote: Click, Play or choose. Back, Back.")
     }
 
     @Test("control-hints/turn-remote-hints-off hints are on until switched off, and an unreadable value reads as on")

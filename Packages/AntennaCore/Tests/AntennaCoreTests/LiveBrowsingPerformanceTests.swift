@@ -105,7 +105,7 @@ import Testing
                     let line = GuideLine(
                         state: index.loadingState(for: channel),
                         current: index.key(for: channel).flatMap { index.current(for: $0, at: now) },
-                        now: now)
+                        now: now, locale: .english)
                     read += line.text.count
                 }
                 if let first = rows.first, let key = index.key(for: first) {

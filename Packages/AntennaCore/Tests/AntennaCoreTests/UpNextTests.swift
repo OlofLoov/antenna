@@ -170,13 +170,14 @@ import Testing
     @Test("up-next/up-next-counts-down the card's words and what VoiceOver reads")
     func text() {
         let next = Self.episode(5, season: 2, number: 5, title: "The Long Night")
-        #expect(UpNextText.title(next) == "S2 E5 · The Long Night")
-        #expect(UpNextText.title(Self.episode(9, season: nil, number: nil, title: "Pilot")) == "Pilot")
-        #expect(UpNextText.heading(.countdown(7)) == "Next episode in 7")
-        #expect(UpNextText.heading(.asking) == "Still watching?")
-        #expect(UpNextText.heading(.button) == nil)
+        #expect(UpNextText.title(next, locale: .english) == "S2 E5 · The Long Night")
+        #expect(UpNextText.title(Self.episode(9, season: nil, number: nil, title: "Pilot"), locale: .english) == "Pilot")
+        #expect(UpNextText.heading(.countdown(7), locale: .english) == "Next episode in 7")
+        #expect(UpNextText.heading(.asking, locale: .english) == "Still watching?")
+        #expect(UpNextText.heading(.button, locale: .english) == nil)
         #expect(
-            UpNextText.spoken(next, offer: .countdown(10)) == "Up next, Season 2 Episode 5, The Long Night, next episode in 10 seconds")
+            UpNextText.spoken(next, offer: .countdown(10), locale: .english)
+                == "Up next, Season 2 Episode 5, The Long Night, next episode in 10 seconds")
     }
 
     @Test("up-next/turn-autoplay-off on by default, kept as JSON, unreadable reads as on")
