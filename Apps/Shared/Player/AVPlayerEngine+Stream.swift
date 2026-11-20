@@ -46,7 +46,7 @@ extension AVPlayerEngine {
             // An item can stay unknown for good, for example when no segment
             // ever arrives; without a limit `load` would never return.
             guard ContinuousClock.now < deadline else { throw PlaybackFailure.timedOut }
-            try await Task.sleep(for: .milliseconds(50))
+            try await Self.statusChange(of: item, from: item.status, within: .milliseconds(50))
             guard generation == mine else { throw CancellationError() }
         }
         try await chooseTracks(for: item, options: options, generation: mine)
@@ -59,6 +59,27 @@ extension AVPlayerEngine {
             guard generation == mine else { throw CancellationError() }
         }
         return opened
+    }
+
+    /// Returns once `item`'s status is no longer `seen`, or after `limit`.
+    /// Throws `CancellationError` when the task is cancelled.
+    static func statusChange(of item: AVPlayerItem, from seen: AVPlayerItem.Status, within limit: Duration) async throws {
+        let (changes, continuation) = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
+        let observation = item.observe(\.status, options: [.initial, .new]) { @Sendable item, _ in
+            if item.status != seen { continuation.finish() }
+        }
+        let timer = Task {
+            try? await Task.sleep(for: limit)
+            continuation.finish()
+        }
+        await withTaskCancellationHandler {
+            for await _ in changes {}
+        } onCancel: {
+            continuation.finish()
+        }
+        observation.invalidate()
+        timer.cancel()
+        try Task.checkCancellation()
     }
 
     func observe(_ item: AVPlayerItem) {
