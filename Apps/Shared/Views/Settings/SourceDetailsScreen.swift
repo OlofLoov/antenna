@@ -74,7 +74,7 @@ struct SourceDetailsScreen: View {
                     // The primary action under the fields, as Connect is on the add-source page.
                     Section {
                         Button("Save") { save(editor) }
-                            .buttonStyle(.glassProminent)
+                            .primaryActionStyle()
                             .disabled(editor.saving)
                             .accessibilityIdentifier("settings.details.save")
                     }

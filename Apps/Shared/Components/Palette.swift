@@ -8,6 +8,10 @@ enum Palette {
     static let textMuted = Color(red: 0xA7 / 255, green: 0xB0 / 255, blue: 0xBF / 255)
     /// The focused element's fill (design-system/focus-is-the-lifted-white-card); its text uses `ground`.
     static let focus = text
+    /// Text and glyphs on an accent fill, a prominent button's label or a
+    /// NOW badge (design-system/text-on-the-accent-is-dark): the ground, as
+    /// `ProfileAccent.label` says.
+    static let onAccent = ground
     static let focusShadow = Color.black.opacity(0.45)
     static let scrimTint = Color(red: 8 / 255, green: 10 / 255, blue: 14 / 255)
 

@@ -47,7 +47,7 @@ enum ReminderBanner {
                     Text("Watch")
                         .font(.boardStyle(15, weight: .semibold))
                 }
-                .buttonStyle(.borderedProminent)
+                .prominentStyle(.bordered)
                 .buttonBorderShape(.capsule)
                 .accessibilityIdentifier("reminders.banner.watch")
                 Button(action: dismiss) {

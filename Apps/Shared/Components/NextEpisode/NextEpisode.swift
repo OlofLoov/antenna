@@ -119,7 +119,7 @@ enum NextEpisode {
                     .frame(maxWidth: .infinity)
             }
             #if !os(tvOS)
-                .buttonStyle(.glassProminent)
+                .prominentStyle(.glass)
                 .keyboardShortcut(.defaultAction)
             #endif
             .accessibilityIdentifier("upNext.playNow")

@@ -29,6 +29,19 @@ import Testing
         #expect(abs(Contrast.ratio(0xFFFFFF, 0x000000) - 21) < 0.001)
     }
 
+    @Test("design-system/text-on-the-accent-is-dark: a label on any accent fill reaches 4.5:1")
+    func labelOnTheAccent() {
+        for accent in ProfileAccent.allCases {
+            let ratio = Contrast.ratio(ProfileAccent.label, accent.rgb)
+            #expect(ratio >= 4.5, "the label on \(accent) is \(ratio)")
+            #expect(Contrast.ratio(0xFFFFFF, accent.rgb) < 4.5, "white on \(accent) fails, so the label stays dark")
+        }
+        #expect(ProfileAccent.label == 0x0B0E13, "the ground color")
+        // The table in the change's design.md.
+        #expect(abs(Contrast.ratio(ProfileAccent.label, ProfileAccent.pink.rgb) - 7.30) < 0.01)
+        #expect(abs(Contrast.ratio(0xFFFFFF, ProfileAccent.blue.rgb) - 2.15) < 0.01)
+    }
+
     @Test("profiles/profiles-sync-between-devices: a missing or unknown stored accent reads as Blue")
     func stored() {
         #expect(ProfileAccent(stored: nil) == .blue)

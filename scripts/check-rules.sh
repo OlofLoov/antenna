@@ -146,6 +146,14 @@ check_except "design-system/controls-use-system-styles: ButtonStyle types only i
   'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift|Apps/Shared/Components/FocusCard\.swift' \
   Apps
 
+# A prominent button is filled with the accent, and white on any of the
+# five accents is under 2.7:1. prominentStyle(_:) gives every one the dark
+# label (design-system/text-on-the-accent-is-dark).
+check_except "design-system/text-on-the-accent-is-dark: prominent button styles only through prominentStyle(_:)" \
+  '\.(borderedProminent|glassProminent)\b' \
+  'Apps/Shared/Components/PrimaryAction\.swift' \
+  Apps
+
 # Corners come from the scale through Metrics.Corner or cornerShape(_:), never
 # a literal radius (design-system/one-spacing-and-radius-scale). Metrics.swift
 # defines the radii.
@@ -174,7 +182,7 @@ read -r -d '' glass_alone_py <<'PY' || true
 import re
 import sys
 
-GLASS = re.compile(r"^\.(glassEffect\(|buttonStyle\(\.glass)")
+GLASS = re.compile(r"^\.(glassEffect\(|buttonStyle\(\.glass|prominentStyle\(\.glass)")
 DECOR = re.compile(r"^\.(background|border|shadow)\b")
 OVERLAY = re.compile(r"^\.overlay\b")
 STROKE = re.compile(r"\.(stroke|strokeBorder|border)\(")
