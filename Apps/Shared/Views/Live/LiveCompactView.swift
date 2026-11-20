@@ -5,7 +5,7 @@
     /// The Live tab on iPhone and in a narrow iPad Split View
     /// (live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone; board
     /// `iPhone`): the picture across the top, the now-playing line, the group
-    /// chips and the channel list. The tab bar is the shell's.
+    /// button and the channel list. The tab bar is the shell's.
     struct LiveCompactView: View {
         @Environment(LiveModel.self) private var live
 
@@ -49,7 +49,7 @@
             case .channels(let banner, let waiting):
                 VStack(spacing: 0) {
                     LiveBanners(banner: banner, waiting: waiting)
-                    LiveGroupChips()
+                    LiveGroupButton(place: .live)
                     LiveChannelList()
                 }
             case let status:
@@ -69,28 +69,6 @@
             #else
                 self
             #endif
-        }
-    }
-
-    /// Favorites, All channels and each group as chips; tapping one opens it.
-    struct LiveGroupChips: View {
-        @Environment(LiveModel.self) private var live
-
-        var body: some View {
-            ScrollViewReader { proxy in
-                Browse.Chips {
-                    ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                        Browse.Chip(title: .verbatim(live.catalogue.label(of: group)), isSelected: group == live.group) {
-                            live.show(group)
-                        }
-                        .id(group)
-                        .groupSpokenLabel(group, count: live.catalogue.count(of: group))
-                        .accessibilityIdentifier(group == .new ? "groups.new" : "browse.group.\(index)")
-                    }
-                    LockedGroupChips()
-                }
-                .task { proxy.scrollTo(live.group) }
-            }
         }
     }
 

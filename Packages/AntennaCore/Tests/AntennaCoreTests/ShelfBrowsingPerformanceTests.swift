@@ -4,7 +4,9 @@ import Testing
 @testable import AntennaCore
 
 /// What Movies and Series ask of a provider-sized library: 50 000 movies in
-/// 300 categories and 10 000 series, with 200 saved positions. The budgets
+/// 300 categories and 10 000 series, with 200 saved positions. Every run
+/// checks what the code builds; the time budgets are checked under
+/// `ANTENNA_BENCHMARKS=1`. The budgets
 /// are for a debug build on a loaded CI runner and still fail a return to
 /// sorting whole titles or to walking every title on each redraw. Each
 /// budget is on the fastest of a few runs.
@@ -48,7 +50,7 @@ import Testing
         #expect(index.rows == Shelf.rows(Self.movies.titles, categoryOrder: Self.movies.categories, now: Self.base))
         #expect(index.banner == Shelf.banner(Self.movies.titles))
         #expect(index.newest == ShelfTitle.newestFirst(Self.movies.titles))
-        #expect(Self.milliseconds(elapsed) < 400, "the index took \(Self.milliseconds(elapsed)) ms")
+        if Benchmarks.enabled { #expect(Self.milliseconds(elapsed) < 400, "the index took \(Self.milliseconds(elapsed)) ms") }
     }
 
     @Test("movies-and-series-browsing/browsing-stays-responsive newest first sorts 50 000 movies in under 300 ms")
@@ -58,7 +60,7 @@ import Testing
         #expect(sorted.count == 50_000)
         #expect(sorted.last?.added == nil, "undated titles go last")
         #expect(zip(sorted, sorted.dropFirst()).allSatisfy { ($0.added ?? .distantPast) >= ($1.added ?? .distantPast) })
-        #expect(Self.milliseconds(elapsed) < 300, "the sort took \(Self.milliseconds(elapsed)) ms")
+        if Benchmarks.enabled { #expect(Self.milliseconds(elapsed) < 300, "the sort took \(Self.milliseconds(elapsed)) ms") }
     }
 
     @Test("movies-and-series-browsing/browsing-stays-responsive Continue watching and Recently watched read 200 positions in under 10 ms")
@@ -73,8 +75,10 @@ import Testing
         #expect(watching == ContinueWatching.items(progress: Self.progress, titles: Self.movies.titles + Self.series.titles))
         #expect(watched == RecentlyWatched.list(progress: Self.progress, titles: Self.movies.titles, kind: .movie))
         #expect(watching.count == 200)
-        #expect(Self.milliseconds(continueTime) < 10, "Continue watching took \(Self.milliseconds(continueTime)) ms")
-        #expect(Self.milliseconds(recentTime) < 10, "Recently watched took \(Self.milliseconds(recentTime)) ms")
+        if Benchmarks.enabled {
+            #expect(Self.milliseconds(continueTime) < 10, "Continue watching took \(Self.milliseconds(continueTime)) ms")
+            #expect(Self.milliseconds(recentTime) < 10, "Recently watched took \(Self.milliseconds(recentTime)) ms")
+        }
     }
 
     @Test("movies-and-series-browsing/browsing-stays-responsive two sources build one index in source order")

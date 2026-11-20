@@ -30,7 +30,7 @@ struct ScoreRow: View {
                 Text(score.site.name)
                     .font(.boardStyle((size * 0.84).rounded()))
                     .foregroundStyle(Palette.textMuted)
-                Text(score.text ?? "")
+                Text(score.text(locale) ?? "")
                     .font(.boardStyle(size, weight: .bold))
                     .foregroundStyle(Palette.text)
             }

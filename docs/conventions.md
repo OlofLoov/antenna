@@ -44,6 +44,11 @@
   it.
 - Benchmarks run only with `ANTENNA_BENCHMARKS=1`. Gate them with
   `.enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1")`.
+  A test that checks a result and a time budget keeps the result check in
+  every run and puts the budget behind the same switch
+  (`if Benchmarks.enabled { #expect(elapsed < …) }` in AntennaCore). A test
+  that waits on the app or a player waits for the event it expects, with a
+  deadline only as a hang guard, never as the thing it checks.
 - UI tests use accessibility identifiers of the form `screen.element`
   (`channels.searchField`). Never match on display text.
 - Screenshot walk-throughs live in `Apps/Journeys` (iPhone and iPad) and

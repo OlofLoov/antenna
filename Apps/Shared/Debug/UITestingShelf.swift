@@ -14,6 +14,9 @@
     enum UITestingShelf {
         static let argument = "-ui-testing-shelf"
         static let reduceMotionArgument = "-ui-testing-reduce-motion"
+        /// `-ui-testing-many-seasons` gives Northern Lights fifteen seasons of
+        /// two episodes (title-detail-and-episode-picker/pick-a-season).
+        static let manySeasonsArgument = "-ui-testing-many-seasons"
 
         enum Scenario: String {
             /// Cabin: six movies in Action and Drama, three series. Office:
@@ -225,7 +228,10 @@
                     if officeEpisodeLoads <= 2 { throw URLError(.badServerResponse) }
                 }
                 if host == "cabin", number == 3 { return [] }
-                if host == "cabin", number == 1 { return northernLights }
+                if host == "cabin", number == 1 {
+                    return ProcessInfo.processInfo.arguments.contains(UITestingShelf.manySeasonsArgument)
+                        ? fifteenSeasons : northernLights
+                }
                 return (1...2).map { index in
                     Episode(
                         id: "xtream#\(host)#episode#\(number * 10 + index)", episodeID: number * 10 + index, season: 1,
@@ -362,6 +368,19 @@
                         categories: ["Drama", "Crime"])
                 case (.series, false):
                     return ShelfCatalogue(titles: [title(1, "Long Winter", daysAgo: 2, "Drama")], categories: ["Drama"])
+                }
+            }
+        }
+    }
+
+    extension UITestingShelf.Script {
+        /// Seasons 1 to 15, two episodes each, ids 1011 to 1152.
+        fileprivate var fifteenSeasons: [Episode] {
+            (1...15).flatMap { season in
+                (1...2).map { number in
+                    Episode(
+                        id: "xtream#cabin#episode#\(1000 + season * 10 + number)", episodeID: 1000 + season * 10 + number,
+                        season: season, number: number, title: "Episode \(number)", containerExtension: "mp4", duration: 2700)
                 }
             }
         }

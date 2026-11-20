@@ -102,9 +102,15 @@ written in the user's language with its unit words or abbreviations.
 - **THEN** the runtime is written with German units
 
 ### Requirement: Numbers use the region's digits and separators
-Counts, sizes and percentages MUST use the digits, grouping and decimal
-separators of the user's region. Channel numbers MUST use the same digits
-without grouping, and typing a channel number MUST accept them.
+Counts, sizes, percentages, ratings and scores MUST use the digits, grouping
+and decimal separators of the user's region, on screen and in what VoiceOver
+reads. Channel numbers MUST use the same digits without grouping, and typing
+a channel number MUST accept them.
+
+#### Scenario: A rating in Swedish
+- **GIVEN** the app is in Swedish with a Swedish region
+- **WHEN** a title rated 7.4 shows on the banner or its page
+- **THEN** the rating reads "★ 7,4" and VoiceOver reads "betyg 7,4 av 10"
 
 #### Scenario: A large count in German
 - **GIVEN** the app is in German with a German region
@@ -133,8 +139,8 @@ exactly as the source sends them, in every app language.
 
 #### Scenario: A provider group named in Arabic
 - **GIVEN** the app is in English and a group is named in Arabic
-- **WHEN** the group chips show it
-- **THEN** the name shows in Arabic, right to left within its chip
+- **WHEN** the group button, the Groups sheet or the sidebar shows it
+- **THEN** the name shows in Arabic, right to left, apart from the count beside it
 
 ### Requirement: Built-in names follow the language
 Names the app makes up itself, such as the Favorites and All channels

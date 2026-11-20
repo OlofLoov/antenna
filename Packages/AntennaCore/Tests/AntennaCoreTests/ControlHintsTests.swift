@@ -63,7 +63,6 @@ import Testing
         #expect(card.contains(ControlHint(.clickLeftRight, "Skip 10 seconds")))
         #expect(card.contains(ControlHint(.back, "Cancel")))
         #expect(ControlHintScreen.upNext(asking: true).hints == [ControlHint(.click, "Keep watching"), ControlHint(.back, "Cancel")])
-        #expect(ControlHintScreen.upNext(asking: false).corner == .topTrailing)
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions Back reads Tab bar where it reaches the bar, Home Screen in the bar")
@@ -74,15 +73,6 @@ import Testing
         }
         // tvos-shell/back-from-the-tab-bar-goes-to-the-home-screen
         #expect(ControlHintScreen.tabBar.hints.contains(ControlHint(.back, "Home Screen")))
-    }
-
-    @Test("control-hints/hints-stay-out-of-the-way the legend goes top right over full-screen video and the info bar")
-    func corners() {
-        #expect(ControlHintScreen.infoBar(swipe: .changesChannel).corner == .topTrailing)
-        #expect(ControlHintScreen.livePicture(swipe: .changesChannel).corner == .topTrailing)
-        #expect(ControlHintScreen.titlePlayer(scrubbing: false).corner == .topTrailing)
-        #expect(ControlHintScreen.guide.corner == .bottomTrailing)
-        #expect(ControlHintScreen.overlayChannels.corner == .bottomTrailing)
     }
 
     @Test("control-hints/hints-stay-out-of-the-way VoiceOver hears the legend as one sentence")

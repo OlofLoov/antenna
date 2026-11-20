@@ -17,7 +17,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 
   <!-- Hero backdrop (artwork placeholder, full bleed behind the top bar) -->
   <div style="position: absolute; left: 0; top: 0; width: 1920px; height: 640px; background: #22304A"></div>
-  <div style="position: absolute; left: 0; top: 0; width: 1100px; height: 640px; background: rgba(11, 14, 19, 0.72)"></div>
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 640px; background: linear-gradient(to right, rgba(11, 14, 19, 0.85) 0%, rgba(11, 14, 19, 0.72) 50%, rgba(11, 14, 19, 0.3) 75%, rgba(11, 14, 19, 0) 100%)"></div>
 
   <!-- shell.tabBar: tvOS tab bar, owned by tvos-shell -->
   <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; justify-content: space-between">
@@ -143,8 +143,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </div>
   </div>
 
-  <!-- hints.legend: caption (25 pt), scrimTint 0.82, large corner (20), padding 24, inside the 60/80 safe area. Never focusable; VoiceOver reads it as one sentence. Shows on arriving at a screen, fades after 6 s. Always shows on the first channel, movie or episode played since launch and on each switch between Live, Movies and Series. -->
-  <div style="position: absolute; right: 80px; bottom: 60px; padding: 24px; border-radius: 20px; background: rgba(8, 10, 14, 0.82); font-size: 25px; color: #F2F4F8; display: flex; flex-direction: column; gap: 12px">
+  <!-- hints.legend: caption (25 pt), scrimTint 0.82, large corner (20), padding 24, top right inside the safe area, 124 from the top under the clock row and 80 from the right, the same on every screen. Never focusable; VoiceOver reads it as one sentence. Shows on arriving at a screen, fades after 6 s. Always shows on the first channel, movie or episode played since launch and on each switch between Live, Movies and Series. -->
+  <div style="position: absolute; right: 80px; top: 124px; padding: 24px; border-radius: 20px; background: rgba(8, 10, 14, 0.82); font-size: 25px; color: #F2F4F8; display: flex; flex-direction: column; gap: 12px">
     <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #A7B0BF"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="20" rx="4"/><circle cx="12" cy="7" r="2.4"/><circle cx="12" cy="13" r="0.8"/><circle cx="12" cy="16.5" r="0.8"/></svg><span>Remote</span></div>
     <div style="display: grid; grid-template-columns: auto auto auto; column-gap: 12px; row-gap: 8px; align-items: center">
       <span style="display: flex; justify-content: center"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span><span style="font-weight: 600">Click</span><span style="color: #A7B0BF">Play</span>

@@ -24,7 +24,9 @@ struct ProfilePicker<Footer: View>: View {
                     } label: {
                         ProfileTileLabel(tile: tile)
                     }
-                    .buttonStyle(.borderless)
+                    // The circle shows focus itself. A system style lifts the whole
+                    // label on a platter cut to the label's frame.
+                    .buttonStyle(FocusHolderStyle())
                     .focused(focus, equals: tile.id)
                     .accessibilityLabel("\(tile.name), profile")
                     .accessibilityIdentifier("profiles.tile.\(index)")
@@ -83,8 +85,8 @@ extension ProfileTile {
 }
 
 /// A profile's color circle with its initial, and the name under it. On
-/// Apple TV the focused circle lifts and tilts with the highlight hover
-/// effect, with no ring (design-system/focus-is-the-lifted-white-card).
+/// Apple TV the focused circle lifts with a shadow and the name turns
+/// bold and white, with no ring and no platter.
 struct ProfileTileLabel: View {
     let tile: ProfileTile
     @Environment(\.isFocused) private var isFocused
@@ -108,7 +110,7 @@ struct ProfileTileLabel: View {
                     .foregroundStyle(Palette.ground)
             }
             .frame(width: size, height: size)
-            .circleHighlightOnTelevision()
+            .circleLiftOnTelevision(isFocused)
             Text(tile.name)
                 .font(.boardStyle(nameSize, weight: isFocused ? .semibold : .regular))
                 .foregroundStyle(isFocused ? Palette.text : ChannelOverlay.tileText)
@@ -118,10 +120,17 @@ struct ProfileTileLabel: View {
 }
 
 extension View {
-    /// The highlight hover effect on a circle on Apple TV; nothing elsewhere.
-    @ViewBuilder fileprivate func circleHighlightOnTelevision() -> some View {
+    /// On Apple TV the focused circle grows by a tenth and casts the focus
+    /// shadow; nothing elsewhere. The system hover effects draw a rounded
+    /// rectangle platter whatever the content shape, which cut the lifted
+    /// circle into a rounded square, so the circle lifts itself
+    /// (profiles/who-s-watching-at-launch, the focused circle shows whole).
+    @ViewBuilder func circleLiftOnTelevision(_ isFocused: Bool) -> some View {
         #if os(tvOS)
-            contentShape(.hoverEffect, Circle()).hoverEffect(.highlight)
+            scaleEffect(isFocused ? 1.1 : 1)
+                .compositingGroup()
+                .shadow(color: isFocused ? Palette.focusShadow : .clear, radius: 20, y: 14)
+                .animation(.easeOut(duration: 0.2), value: isFocused)
         #else
             self
         #endif

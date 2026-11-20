@@ -110,16 +110,20 @@ final class GroupsUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-ui-testing-live", "channels", "-ui-testing-groups", "locked"]
         app.launchInEnglish()
-        let locked = element(app, "browse.locked.named.00000000-0000-0000-0000-0000000000D1.Sport")
+        XCTAssertTrue(element(app, "browse.list").waitForExistence(timeout: 10))
+        let locked = app.groupRow("browse.locked.named.00000000-0000-0000-0000-0000000000D1.Sport")
         XCTAssertTrue(locked.waitForExistence(timeout: 10))
-        XCTAssertFalse(app.buttons["Sport"].exists)
-        // The chip row scrolls sideways; the locked chip comes after the open ones.
-        element(app, "browse.group.0").swipeLeft()
+        let sport = app.descendants(matching: .any).matching(
+            NSPredicate(format: "identifier BEGINSWITH 'browse.group.' AND label BEGINSWITH 'Sport'"))
+        XCTAssertFalse(sport.firstMatch.exists, "Sport is only offered locked")
         locked.tap()
         XCTAssertTrue(element(app, "groups.passcode").waitForExistence(timeout: 5))
         type(app, "2580")
-        let sport = app.descendants(matching: .any).matching(
-            NSPredicate(format: "identifier BEGINSWITH 'browse.group.' AND label == 'Sport'"))
+        if element(app, "browse.groups").exists {
+            // iPhone: the unlocked group opens, and the sheet lists it with the others.
+            app.expectOpenGroup("Sport", row: "browse.group.3")
+            app.groupRow("browse.group.3")
+        }
         XCTAssertTrue(sport.firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(locked.exists)
     }

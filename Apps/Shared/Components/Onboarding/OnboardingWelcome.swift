@@ -105,7 +105,7 @@ enum OnboardingWelcome {
                         .primaryActionStyle()
                         .accessibilityIdentifier("onboarding.addSource")
                     Button("What is a source?", action: actions.help)
-                        .buttonStyle(.glass)
+                        .secondaryActionStyle()
                         .accessibilityIdentifier("onboarding.help")
                 }
                 .padding(.top, Metrics.Spacing.small)

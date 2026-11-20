@@ -60,7 +60,7 @@
         }
 
         /// `iPad-Title` and `iPad-Series`: the toolbar's Back, the backdrop
-        /// card with the copy and buttons over a left scrim, then the
+        /// card with the copy and buttons over the hero scrim, then the
         /// description, cast and director and what the screen adds below.
         /// The sidebar is the window's.
         struct Pad<Below: View>: View {
@@ -80,9 +80,7 @@
                         VStack(alignment: .leading, spacing: 20) {
                             ZStack(alignment: .bottomLeading) {
                                 Backdrop(poster: CGSize(width: 160, height: 240))
-                                LinearGradient(
-                                    colors: [Palette.scrimTint.opacity(0.92), Palette.scrimTint.opacity(0)], startPoint: .leading,
-                                    endPoint: .trailing)
+                                HeroScrim(copyEnd: 0.6)
                                 VStack(alignment: .leading, spacing: type.spacing) {
                                     Eyebrow(type: type)
                                     Name(type: type)
@@ -123,7 +121,8 @@
     }
 
     extension TitlePage {
-        /// The chevron back to the section, a 44 pt target.
+        /// The chevron back to the section, a glass circle over the art
+        /// (design-system/liquid-glass-stays-on-the-navigation-layer).
         struct BackButton: View {
             @Environment(\.titlePage) private var page
 
@@ -134,12 +133,10 @@
                     Image(systemName: "chevron.backward")
                         .font(.boardStyle(18, weight: .bold))
                         .foregroundStyle(Palette.text)
-                        .frame(width: 36, height: 36)
-                        .background(Palette.scrimTint.opacity(0.55), in: Circle())
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
+                        .frame(width: 30, height: 30)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
                 .keyboardShortcut(.cancelAction)
                 .accessibilityLabel("Back to \(page?.state.section ?? "the section")")
                 .accessibilityIdentifier("title.back")

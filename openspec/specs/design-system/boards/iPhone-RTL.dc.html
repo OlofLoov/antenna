@@ -15,7 +15,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div dir="rtl" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
 
-  <!-- iPhone.dc.html in Arabic, ar_SA (design-system/layouts-mirror-in-right-to-left-languages, design-system/progress-runs-in-the-reading-direction). Everything mirrors: the tile sits at the right of each row, the number at the left end of the name line, chips and tabs start at the right, and every bar fills from the right. App copy comes from the catalogs; channel names, programme titles and group names are provider text, each isolated in its own direction (<bdi>, localization/mixed-scripts-keep-their-own-direction). Counts, channel numbers and times use Arabic-Indic digits, times on the 12-hour clock ar_SA uses. No letter spacing anywhere (letterSpacing drops it in right-to-left). Logos and the picture are not flipped. -->
+  <!-- iPhone.dc.html in Arabic, ar_SA (design-system/layouts-mirror-in-right-to-left-languages, design-system/progress-runs-in-the-reading-direction). Everything mirrors: the tile sits at the right of each row, the number at the left end of the name line, the group button and the tabs start at the right, and every bar fills from the right. App copy comes from the catalogs; channel names, programme titles and group names are provider text, each isolated in its own direction (<bdi>, localization/mixed-scripts-keep-their-own-direction). Counts, channel numbers and times use Arabic-Indic digits, times on the 12-hour clock ar_SA uses. No letter spacing anywhere (letterSpacing drops it in right-to-left). Logos and the picture are not flipped. -->
 
   <!-- Player, pinned at the top (safe area above) -->
   <div style="margin-top: 54px; width: 390px; height: 219px; background: #1A2535; position: relative; flex: 0 0 auto">
@@ -50,16 +50,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </button>
   </div>
 
-  <!-- Group chips: browse.group.0 is the rightmost and the row scrolls toward the left. Favorites and All channels are built-in names in Arabic (localization/built-in-names-follow-the-language); the provider's groups keep their own text. -->
-  <div style="display: flex; gap: 8px; padding: 12px 16px 6px; overflow: hidden; white-space: nowrap">
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">المفضلة</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">كل القنوات</span>
-    <span style="font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 16px; background: #F2F4F8; color: #0B0E13; flex: 0 0 auto"><bdi>Sport</bdi></span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto"><bdi>News</bdi></span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto"><bdi>Series</bdi></span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto"><bdi>Kids</bdi></span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto"><bdi>Documentary</bdi></span>
-  </div>
+  <!-- browse.groups (live-tv-on-iphone-ipad-mac/find-a-group-among-many): the open group's name in its own text run, its channel count and a chevron, full width and leading-aligned, 44 pt tall, plain system button with no fill. Tapping it opens the Groups sheet (iPhone-Live-Groups). -->
+  <button type="button" aria-label="كل القنوات، ١٬٢٤٠ قناة" style="font: inherit; display: flex; align-items: center; gap: 6px; width: 100%; height: 44px; padding: 0 16px; border: 0; background: transparent; color: #F2F4F8; text-align: start; cursor: pointer; flex: 0 0 auto"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">كل القنوات</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">· ١٬٢٤٠</span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
 
   <!-- Channel list. Each row from the right: tile, name, number at the line's left end; programme; bar filling from the right. A full swipe toward the left (the trailing side) runs browse.swipe.favorite. -->
   <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 4px 8px">

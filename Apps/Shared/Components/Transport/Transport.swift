@@ -169,13 +169,18 @@ enum Transport {
             var body: some View {
                 VStack {
                     Spacer()
-                    HStack(spacing: 36) {
-                        round("gobackward.10", label: "Back 10 seconds", id: "title.transport.skipBack", font: .title2) { skip(false) }
-                        round(
-                            isPaused ? "play.fill" : "pause.fill", label: isPaused ? "Play" : "Pause", id: "title.transport.playPause",
-                            font: .largeTitle, action: playPause)
-                        round("goforward.10", label: "Forward 10 seconds", id: "title.transport.skipForward", font: .title2) { skip(true) }
+                    GlassEffectContainer {
+                        HStack(spacing: 36) {
+                            round("gobackward.10", label: "Back 10 seconds", id: "title.transport.skipBack", font: .title2) { skip(false) }
+                            round(
+                                isPaused ? "play.fill" : "pause.fill", label: isPaused ? "Play" : "Pause", id: "title.transport.playPause",
+                                font: .largeTitle, action: playPause)
+                            round("goforward.10", label: "Forward 10 seconds", id: "title.transport.skipForward", font: .title2) {
+                                skip(true)
+                            }
+                        }
                     }
+                    .fixedSize()
                     Spacer()
                     HStack(spacing: 12) {
                         Text(times.elapsed)
@@ -238,6 +243,7 @@ enum Transport {
                 Button(action: action) {
                     Image(systemName: symbol)
                         .font(font)
+                        .foregroundStyle(Palette.text)
                         .frame(width: 44, height: 44)
                 }
                 .buttonStyle(.glass)

@@ -25,7 +25,7 @@ enum ShelfPreview {
     /// The preview's height. The focused row's header sits 16 pt under it.
     static let height: CGFloat = 520
 
-    /// The picture full width 520 pt tall, the banner's scrim on the left,
+    /// The picture full width 520 pt tall, the banner's hero scrim,
     /// a fade to the ground over the last 140 pt, and the copy from x 64,
     /// y 150.
     struct Television: View {
@@ -37,7 +37,7 @@ enum ShelfPreview {
                 Picture(art: preview?.art, bare: preview?.bare ?? false)
                     .frame(height: ShelfPreview.height)
                     .frame(maxWidth: .infinity)
-                Palette.ground.opacity(0.72).frame(width: 1100, height: ShelfPreview.height)
+                HeroScrim(copyEnd: 0.5).frame(height: ShelfPreview.height)
                 LinearGradient(colors: [.clear, Palette.ground], startPoint: .top, endPoint: .bottom)
                     .frame(height: 140)
                     .frame(maxHeight: .infinity, alignment: .bottom)

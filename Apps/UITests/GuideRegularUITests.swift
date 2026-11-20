@@ -290,7 +290,7 @@ final class GuideRegularUITests: XCTestCase {
         XCTAssertEqual(app.element("guide.panel.title").label, "Morning News")
         app.swipeDown(velocity: .fast)
         XCTAssertTrue(app.element("guide.list").waitForExistence(timeout: 5), "the rows replace the grid")
-        XCTAssertTrue(app.element("guide.group.2").isSelected)
+        app.expectOpenGroup("News", row: "guide.group.2")
     }
 
     // guide-on-iphone-ipad-and-mac/move-through-the-days

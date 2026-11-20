@@ -20,6 +20,7 @@ patterns and shared components the requirements point to.
 | Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar |
 | Overlay scrim | `rgba(8,10,14,0.72)` over the regular material | tvOS panels over live video (`OverlayMaterial`) |
 | Bar scrim | `rgba(8,10,14,0.55)` | Dims the tvOS picture or guide while the highlight is in the tab bar |
+| Hero scrim | Ground from `0.85` at the leading edge to `0.72` where the copy ends, `0.3` halfway to the trailing edge, `0` at it; on the iPhone hero, ground from `0` to `0.78` over the 56 pt above the copy | Banner, preview and title page art behind copy. It spans the whole picture with no edge and mirrors in right-to-left languages |
 | Surface | `rgba(255,255,255,0.06)` to `0.18` | Rows, cards, chips; `0.08` for dividers, `0.12` is the selected row on touch platforms and the selected-but-unfocused group or tab on tvOS, `0.18` the track of a loading ring |
 | Text | `#F2F4F8` | Primary |
 | Text secondary | `#D7DEE8` | Body copy and descriptions |
@@ -78,12 +79,24 @@ Materials:
 |-------|----------|
 | Apple TV panels over live video: channel overlay, zap bar, info panel | `OverlayMaterial`: regular material under the overlay scrim at 0.72 |
 | Apple TV full-screen covers | `CoverBackdrop`: ultra thick material under the ground at 0.55 |
-| Tab bars, toolbars, controls floating over video, the iPhone Movies and Series switch | Liquid Glass, from the system or `.glassEffect` |
+| Tab bars, toolbars, controls floating over video or art, the iPhone Movies and Series switch, the reminder banner on iPhone, iPad and Mac | Liquid Glass, from the system or `.glassEffect` |
 | Forms and Settings on touch platforms | The system grouped background |
 | Content screens | Ground |
 
+Glass alone or a plain surface alone. A view on glass (`.glassEffect`,
+`.buttonStyle(.glass)`, `.glassProminent`) takes no background, border,
+shadow or stroked overlay; the system draws its edge and highlight. A
+surface that needs a fill, a hairline or a shadow does not take glass.
+Adjacent glass controls share a `GlassEffectContainer`. A round button over
+art or video is the glass button style with the circle shape, never a disc
+filled with the scrim tint. `scripts/check-rules.sh` fails on a glass view
+whose modifier chain also has `.background`, `.border`, `.shadow` or an
+`.overlay` that strokes; files it lets through are named in its exception
+list (today only `Apps/Shared/Debug/`).
+
 Controls take system styles: `primaryActionStyle()` (bordered on Apple TV,
-glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule),
+glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule on
+Apple TV, glass capsule elsewhere),
 `posterButtonStyle()` (card on Apple TV, borderless elsewhere) and
 `chipStyle(isPicked:on:)`. The parts the app draws itself share `FocusCard`
 and `FocusCardStyle`: guide programme blocks, channel overlay rows and
@@ -114,8 +127,8 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
   (560) | rows. The profile button sits at the top of the lead column with
   two or more profiles.
 - Focus is the lifted white card. Nothing else is white-filled.
-- Title detail: no tab bar. Art full bleed behind a 1100 wide left scrim
-  with the copy column on the hero's left edge. On a series the art stops
+- Title detail: no tab bar. Art full bleed behind the hero scrim, darkest
+  at the leading edge, with the copy column on the hero's left edge. On a series the art stops
   at 520 and the season chips (64) and episode rows (128) sit below it.
 - Multi-view: two to four 16:9 tiles on Ground, margin 24 and gap 16, two
   side by side, three as two over one centered, four as a 2 by 2 grid. The
@@ -126,7 +139,9 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 
 - Three columns: sidebar (232) | list (352) | detail. The sidebar holds the
   sections and, below them, the context list (channel groups, genres,
-  recent searches). Sources and Settings sits at the bottom.
+  recent searches). Sources and Settings sits at the bottom. On Live and
+  the Guide a search field heads the channel groups and narrows them by
+  name (`iPad-Live-Groups-Search`).
 - Live: the detail column is the inline player (16:9) with now and next and
   the upcoming list under it.
 - Movies and Search put a toolbar on top of the detail column and scroll
@@ -143,14 +158,18 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 
 ### iPhone
 
-- Tab bar: Live, Guide, Movies, Search, Settings. Favorites is a group chip
+- Tab bar: Live, Guide, Movies, Search, Settings. Favorites is a group
   inside Live, not a tab.
-- Live: player pinned at the top (16:9), now playing row, scrolling group
-  chips, channel list.
-- Guide: group chips, day chips, then one row per channel with a header
+- Live: player pinned at the top (16:9), now playing row, the group button,
+  channel list. The group button shows the open group's name, its channel
+  count and a chevron, and opens the Groups sheet: medium and large
+  detents, a search field, the built-in groups first, then every group with
+  its count and a checkmark on the open one (`iPhone-Live-Groups`,
+  `iPhone-Live-Groups-Search`).
+- Guide: the same group button and sheet, day chips, then one row per channel with a header
   line and its own horizontal strip of programme cards. No time grid. Detail
   is a sheet. A now-playing mini bar sits above the tab bar.
-- Movies: tall portrait hero, chips laid over the art, copy on a solid scrim
+- Movies: tall portrait hero, chips laid over the art, copy on the hero scrim
   at the foot of the hero, then rows.
 - Title detail is pushed inside the Movies tab: 16:9 art with a round
   back button over it, copy, buttons, then season chips (30) and episode
@@ -258,7 +277,7 @@ mirrored, with these rules. Four boards are drawn in Arabic: `iPhone-RTL`,
   move to what is drawn on that side.
 - The boards this applies to most: `TV-Guide`, `TV-Guide-Future`,
   `iPad-Guide`, `iPhone-Guide` (time axis); `iPhone`, `iPad`, `Main` (Live
-  list and chips); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
+  list and group button); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
   `iPhone-Player`, `iPhone-Player-Timeshift`, `iPad-Player` (progress,
   scrubber and transport); `TV-Shell-TabView`, `TV-Movies-Rows` (tab bar and
   first focus).

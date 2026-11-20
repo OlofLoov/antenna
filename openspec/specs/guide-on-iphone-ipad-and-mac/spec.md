@@ -45,24 +45,29 @@ The system SHALL show the Guide on iPad and Mac in the wide layout as a grid of 
 - **THEN** the first row starts right under the time labels and the space left over is below the last row
 
 ### Requirement: One row per channel on iPhone
-The system SHALL show the Guide on iPhone and in a narrow iPad Split View as one row per channel, each scrolling sideways through that channel's programmes from the one on now.
+The system SHALL show the Guide on iPhone and in a narrow iPad Split View as one row per channel, each scrolling sideways through that channel's programmes from the one on now, under the same group button and Groups sheet as Live.
 
 #### Scenario: Open the Guide on iPhone
 - **GIVEN** an iPhone, or an iPad in a narrow Split View
 - **WHEN** the user opens the Guide
-- **THEN** group chips and day chips sit above a list with one row per channel, each showing that channel's programmes as cards from the one on now, with start time and title
+- **THEN** the group button and the day chips sit above a list with one row per channel, each showing that channel's programmes as cards from the one on now, with start time and title
 - **AND** the card on now is marked NOW with a progress bar
 - **AND** each row scrolls sideways on its own
+
+#### Scenario: Another group on iPhone
+- **GIVEN** the Guide open on iPhone, scrolled down
+- **WHEN** the user picks another group in the Groups sheet
+- **THEN** the sheet closes and the rows show that group's channels from the first
 
 #### Scenario: A gap on iPhone
 - **GIVEN** a gap between two programmes on a channel
 - **WHEN** its row shows
 - **THEN** the gap is a card with just the times
 
-#### Scenario: The chips take one row
+#### Scenario: The group button and day chips sit at the top
 - **GIVEN** an iPhone
 - **WHEN** the user opens the Guide
-- **THEN** the group chips sit at the top, one row tall, with the day chips right under them
+- **THEN** the group button sits at the top, with the day chips right under it
 
 ### Requirement: The same group as Live
 The system SHALL show the same current group in the Guide as in Live, so changing it in one changes it in the other.
@@ -169,8 +174,8 @@ The system SHALL replace the grid or list with Live's loading rows or error mess
 #### Scenario: Loading, failed or empty
 - **GIVEN** sources still loading, every source failed, or a group with no channels
 - **WHEN** the user opens the Guide
-- **THEN** the grid or list is replaced by the same loading rows or error message with Try again as Live, or by "No channels in <group>" with the toolbar or chips still working
-- **AND** while loading or failed, the toolbar and chips are hidden
+- **THEN** the grid or list is replaced by the same loading rows or error message with Try again as Live, or by "No channels in <group>" with the toolbar, or the group button and day chips, still working
+- **AND** while loading or failed, the toolbar, the group button and the day chips are hidden
 
 ### Requirement: Open at a programme
 The system SHALL open the guide at a programme another screen asks for, selecting its day, scrolling to it and opening its details, and SHALL open at now when the programme cannot be found.

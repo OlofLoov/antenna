@@ -34,7 +34,7 @@ final class LiveUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone
-    func testThePictureSitsAboveTheLineChipsAndList() throws {
+    func testThePictureSitsAboveTheLineGroupButtonAndList() throws {
         let app = try launch()
         let player = app.element("browse.player")
         XCTAssertTrue(app.element("browse.nothingSelected").exists)
@@ -42,17 +42,17 @@ final class LiveUITests: XCTestCase {
         XCTAssertTrue(app.element("browse.nowPlaying").waitForExistence(timeout: 5))
 
         let nowPlaying = app.element("browse.nowPlaying").frame
-        let chips = app.element("browse.group.0").frame
+        let groups = app.element("browse.groups").frame
         let list = app.element("browse.list").frame
         let window = app.windows.firstMatch.frame
         XCTAssertEqual(player.frame.width, window.width, accuracy: 1)
         XCTAssertEqual(player.frame.width / player.frame.height, 16 / 9, accuracy: 0.02)
         XCTAssertLessThanOrEqual(player.frame.maxY, nowPlaying.minY + 1)
-        XCTAssertLessThanOrEqual(nowPlaying.maxY, chips.minY + 1)
-        XCTAssertLessThanOrEqual(chips.maxY, list.minY + 1)
-        // live-tv-on-iphone-ipad-mac/picture-pinned-at-the-top-on-iphone, the chips sit under the line
-        XCTAssertLessThan(chips.minY - nowPlaying.maxY, 40, "no empty band above the chips")
-        XCTAssertLessThan(list.minY - chips.maxY, 40, "no empty band under the chips")
+        XCTAssertLessThanOrEqual(nowPlaying.maxY, groups.minY + 1)
+        XCTAssertLessThanOrEqual(groups.maxY, list.minY + 1)
+        XCTAssertEqual(groups.width, window.width, accuracy: 1, "the group button spans the width")
+        XCTAssertGreaterThanOrEqual(groups.height, 44)
+        XCTAssertTrue(app.element("browse.groups").label.hasPrefix("All channels, 5 channels"), app.element("browse.groups").label)
         for tab in ["Live", "Guide", "Movies", "Search", "Settings"] {
             XCTAssertTrue(app.tabBars.buttons[tab].exists, "no \(tab) tab")
         }
@@ -91,12 +91,12 @@ final class LiveUITests: XCTestCase {
         app.waitForEngine("playing loads=1")
 
         // Favorites, All channels, then Home's News, Sport and Ungrouped, then Cabin's Films.
-        app.element("browse.group.2").tap()
+        app.pickGroup("browse.group.2")
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 5))
         XCTAssertTrue(app.row(1).exists)
         XCTAssertFalse(app.row(2).exists)
         XCTAssertTrue(app.row(0).frame.minY < app.row(1).frame.minY, "News keeps the catalogue's order")
-        XCTAssertTrue(app.element("browse.group.2").isSelected)
+        app.expectOpenGroup("News", row: "browse.group.2")
 
         app.waitForEngine("playing loads=1")
         XCTAssertEqual(loaded, ["sport-one.ts"])
@@ -105,7 +105,7 @@ final class LiveUITests: XCTestCase {
     // live-tv-on-iphone-ipad-mac/pick-a-group, empty Favorites
     func testEmptyFavoritesSaysHowToAddOne() throws {
         let app = try launch()
-        app.element("browse.group.0").tap()
+        app.pickGroup("browse.group.0")
         XCTAssertTrue(app.element("browse.emptyGroup").waitForExistence(timeout: 5))
         XCTAssertEqual(app.element("browse.emptyGroup").label, "No favorites yet. Touch and hold a channel, or swipe it right, to add it.")
     }
@@ -197,7 +197,7 @@ final class LiveUITests: XCTestCase {
         star.tap()
         XCTAssertEqual(star.label, "Remove from favorites")
         XCTAssertTrue(star.isSelected)
-        app.element("browse.group.0").tap()
+        app.pickGroup("browse.group.0")
         XCTAssertTrue(app.row(1).waitForExistence(timeout: 2), "News Two is in Favorites")
         XCTAssertFalse(app.row(0).exists)
 
@@ -210,6 +210,50 @@ final class LiveUITests: XCTestCase {
 extension XCUIApplication {
     func element(_ identifier: String) -> XCUIElement {
         descendants(matching: .any)[identifier].firstMatch
+    }
+
+    /// The group row `identifier` (`browse.group.<n>`, `guide.group.<n>`,
+    /// `groups.new`, `browse.locked.<key>`). On iPhone the rows sit in the
+    /// Groups sheet, so the group button opens it first and the sheet grows
+    /// when the row is below its fold; on iPad and Mac the sidebar lists them.
+    @discardableResult func groupRow(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) -> XCUIElement {
+        let row = element(identifier)
+        let button = element(identifier.hasPrefix("guide.") ? "guide.groups" : "browse.groups")
+        if !row.exists, button.waitForExistence(timeout: 5) {
+            button.tap()
+            // The sheet opens at half height; the grabber grows it, then the list scrolls.
+            let grabber = buttons["Sheet Grabber"]
+            if !row.waitForExistence(timeout: 3), grabber.exists { grabber.tap() }
+            for _ in 0..<4 where !row.waitForExistence(timeout: 2) { element("browse.groups.sheet").swipeUp() }
+            XCTAssertTrue(row.waitForExistence(timeout: 5), "no \(identifier) in the Groups sheet", file: file, line: line)
+        }
+        return row
+    }
+
+    /// Opens the group row `identifier`, through the Groups sheet on iPhone.
+    func pickGroup(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
+        groupRow(identifier, file: file, line: line).tap()
+        let sheet = element("browse.groups.sheet")
+        if sheet.exists { XCTAssertTrue(sheet.waitForNonExistence(timeout: 5), "the Groups sheet stayed open", file: file, line: line) }
+    }
+
+    /// Closes the Groups sheet when it is open.
+    func closeGroups() {
+        let close = element("browse.groups.close")
+        if close.exists { close.tap() }
+        XCTAssertTrue(element("browse.groups.sheet").waitForNonExistence(timeout: 5), "the Groups sheet stayed open")
+    }
+
+    /// Waits until `name` is the open group: the group button reads it on
+    /// iPhone, the sidebar row `identifier` is selected on iPad and Mac.
+    func expectOpenGroup(_ name: String, row identifier: String, file: StaticString = #filePath, line: UInt = #line) {
+        let button = element(identifier.hasPrefix("guide.") ? "guide.groups" : "browse.groups")
+        let (object, predicate) =
+            button.exists
+            ? (button, NSPredicate(format: "label BEGINSWITH %@", "\(name),"))
+            : (element(identifier), NSPredicate(format: "isSelected == true"))
+        let wait = XCTNSPredicateExpectation(predicate: predicate, object: object)
+        XCTAssertEqual(XCTWaiter().wait(for: [wait], timeout: 10), .completed, "\(object.label) is not \(name)", file: file, line: line)
     }
 
     /// Home's row at `position` in its source.

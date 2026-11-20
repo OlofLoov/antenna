@@ -63,7 +63,8 @@ extension ShellUITests {
 
         // Far down the list, then back: left lands on Group 297 and the column stays put.
         press(.down, times: 30)
-        expectFocusedRow("Channel l9296,")
+        // A loaded simulator moves about three rows a second, so the 30 presses take a while to land.
+        expectFocusedRow("Channel l9296,", timeout: 30)
         press(.left)
         expect(overlayGroup("Group 297"), "hasFocus == true")
         expect(element("overlay.channelsHeader"), "label CONTAINS 'GROUP 297'")

@@ -237,6 +237,7 @@ targets:
       - Apps/TVUITests
       - Apps/UITests/Midday.swift
       - Apps/UITests/LaunchInEnglish.swift
+      - Apps/UITests/ScreenPixels.swift
     dependencies:
       - target: AntennaTV
     settings:

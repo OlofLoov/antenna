@@ -80,3 +80,11 @@ extension Sequence<String> {
         joined(separator: DetailSeparator.text(locale))
     }
 }
+
+extension Int {
+    /// This many tenths written with one decimal in `locale`: 74 is "7.4"
+    /// in English, "7,4" in Swedish and "٧٫٤" in Saudi Arabic.
+    func tenths(_ locale: Locale) -> String {
+        (Double(self) / 10).formatted(.number.precision(.fractionLength(1)).grouping(.never).locale(locale))
+    }
+}

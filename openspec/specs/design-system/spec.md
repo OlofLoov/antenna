@@ -326,8 +326,14 @@ flipped.
 
 #### Scenario: Group chips in Arabic
 - **GIVEN** the app is in Arabic on iPhone
-- **WHEN** the viewer looks at the group chips above the Live list
+- **WHEN** the viewer looks at the day chips in the Guide or the genre chips in Movies
 - **THEN** the first chip is at the right and the chips scroll toward the left
+
+#### Scenario: The group button and sheet in Arabic
+- **GIVEN** the app is in Arabic on iPhone
+- **WHEN** the viewer looks at the group button above the Live list and opens it
+- **THEN** the group's name starts at the right with the count and chevron to its left
+- **AND** in the Groups sheet each row reads from the right, with the checkmark at the right and the count at the left
 
 #### Scenario: A channel logo with text in it
 - **GIVEN** the app is in Arabic
@@ -507,7 +513,9 @@ Tab bars, toolbars, floating controls over video, and buttons in sheets MUST
 use Liquid Glass through the system components or the glass effect. Rows,
 cards, posters, the guide grid and other content MUST NOT use glass; panels
 in the content layer use the materials in the reference. Glass MUST NOT sit
-on glass.
+on glass. A glass element MUST NOT also have a fill, a stroke or border, or a
+shadow of its own; the system draws its edge and highlight. An element is
+either glass or a plain surface, never both.
 
 #### Scenario: The player controls over video
 - **WHEN** the player controls show over a playing picture on iPhone, iPad or Mac
@@ -516,6 +524,15 @@ on glass.
 #### Scenario: Glass on a content card
 - **WHEN** a reviewer finds the glass effect on a row, poster or guide block
 - **THEN** it fails this requirement
+
+#### Scenario: Glass is never combined with a fill or a stroke
+- **WHEN** a reviewer finds a glass button, capsule or card that also draws a background color, an outline or a drop shadow
+- **THEN** it fails this requirement
+
+#### Scenario: Round buttons over the picture look alike
+- **GIVEN** a title is playing full screen on iPhone, iPad or Mac with the controls shown
+- **WHEN** the viewer looks at Close, the track buttons and the skip and pause buttons
+- **THEN** each one sits on glass with the same edge, and none is a dark disc
 
 ### Requirement: One spacing and radius scale
 Padding and gaps MUST come from the spacing scale in the reference (4, 8,
@@ -594,3 +611,23 @@ A screen MUST show one such state at a time.
 #### Scenario: Two states at once
 - **WHEN** a reviewer finds an empty player placeholder and a separate error message on the same screen
 - **THEN** it fails this requirement
+
+### Requirement: The scrim blends into the art
+Where copy sits over a picture, on the Movies and Series banner, the Apple
+TV preview and the title pages, the darkening behind it MUST span the whole
+picture and change smoothly, darkest under the copy and lighter away from
+it, with no edge inside the picture. It MUST sit under the copy in
+right-to-left languages too.
+
+#### Scenario: The Apple TV banner
+- **WHEN** the viewer opens Movies or Series on Apple TV
+- **THEN** the banner art darkens gradually from the left edge toward the right, with no line where the darkening stops
+
+#### Scenario: The iPhone banner
+- **WHEN** the user opens Movies on iPhone
+- **THEN** the band under the copy fades into the art above it, with no line across the picture
+
+#### Scenario: A title page in Arabic
+- **GIVEN** the app is in Arabic
+- **WHEN** the viewer opens a title page on Apple TV, iPad or Mac
+- **THEN** the darkest part of the backdrop is at the right, under the copy

@@ -5,7 +5,7 @@ import SwiftUI
     extension ShelfBanner {
         /// `iPhone-Movies`: the art fills the top 520 pt with `top` over it
         /// (the Movies | Series switch, search and genre chips), and the copy
-        /// and buttons sit on a scrim at its foot. A swipe pages it.
+        /// and buttons sit on the hero foot scrim. A swipe pages it.
         struct Phone<Top: View>: View {
             @ViewBuilder var top: Top
             @Environment(\.shelfBanner) private var banner
@@ -37,7 +37,7 @@ import SwiftUI
                     .padding(EdgeInsets(top: 18, leading: 16, bottom: 4, trailing: 16))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .animation(ShelfBanner.crossfade, value: banner?.state.text)
-                    .background(Palette.ground.opacity(0.78))
+                    .background(HeroFootScrim(fade: 56))
                 }
                 .frame(height: 520)
                 .overlay(alignment: .top) { top }
@@ -48,8 +48,8 @@ import SwiftUI
             }
         }
 
-        /// `iPad-Movies`: a 330 pt rounded card with the copy on a scrim to the
-        /// left and the dots at the bottom right. The pointer over it or a
+        /// `iPad-Movies`: a 330 pt rounded card with the copy over the hero
+        /// scrim and the dots at the bottom right. The pointer over it or a
         /// finger on it holds the title; a swipe pages it.
         struct Pad: View {
             @Environment(\.shelfBanner) private var banner
@@ -59,7 +59,7 @@ import SwiftUI
             var body: some View {
                 ZStack(alignment: .topLeading) {
                     Art()
-                    Palette.ground.opacity(0.72).frame(width: 560)
+                    HeroScrim(copyEnd: 0.56)
                     VStack(alignment: .leading, spacing: Sizes.pad.spacing) {
                         Eyebrow(type: .pad)
                         Title(type: .pad)
@@ -116,7 +116,7 @@ import SwiftUI
 
 extension ShelfBanner {
     /// `TV-Movies`: the art full bleed 640 pt tall behind the tab bar, the
-    /// copy from 180 pt down on a scrim to the left, the dots at the right.
+    /// copy from 180 pt down over the hero scrim, the dots at the right.
     /// The screen passes the buttons so it can track their focus.
     struct Television<Buttons: View>: View {
         @ViewBuilder var buttons: Buttons
@@ -128,7 +128,7 @@ extension ShelfBanner {
                 Art()
                     .frame(height: 640)
                     .frame(maxWidth: .infinity)
-                Palette.ground.opacity(0.72).frame(width: 1100, height: 640)
+                HeroScrim(copyEnd: 0.5).frame(height: 640)
                 LinearGradient(colors: [.clear, Palette.ground], startPoint: .center, endPoint: .bottom)
                     .frame(height: 640)
                 VStack(alignment: .leading, spacing: Sizes.tv.spacing) {

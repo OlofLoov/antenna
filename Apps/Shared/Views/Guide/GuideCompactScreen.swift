@@ -5,7 +5,7 @@
     /// The Guide on iPhone and in a narrow iPad Split View
     /// (guide-on-iphone-ipad-and-mac/one-row-per-channel-on-iphone;
     /// `iPhone-Guide`, `iPhone-Guide-Placeholders`, `iPhone-Guide-Detail`):
-    /// group chips and day chips over one row per channel, each scrolling
+    /// the group button and day chips over one row per channel, each scrolling
     /// sideways through that channel's programmes from the one on now, and
     /// the now-playing bar above the tab bar. A filter field waits above the
     /// first row until the list is pulled down
@@ -53,7 +53,7 @@
             case .channels:
                 let data = reading.data(at: now, filtered: true)
                 VStack(spacing: 0) {
-                    groups
+                    LiveGroupButton(place: .guide)
                     days(data, now: now)
                     GuideBannerList(banners: reading.banners())
                         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
@@ -62,29 +62,13 @@
                             .accessibilityIdentifier("guide.empty")
                     } else {
                         GuideCompactList(data: data, now: now, anchor: model.time ?? now)
+                            // Another group opens at its first row.
+                            .id(live.group)
                     }
                 }
             case let status:
                 LiveStatusMessage(status: status)
             }
-        }
-
-        private var groups: some View {
-            ScrollViewReader { proxy in
-                Browse.Chips {
-                    ForEach(Array(live.catalogue.groups.enumerated()), id: \.element) { index, group in
-                        Browse.Chip(title: .verbatim(live.catalogue.label(of: group)), isSelected: group == live.group) {
-                            live.show(group)
-                        }
-                        .id(group)
-                        .accessibilityIdentifier("guide.group.\(index)")
-                    }
-                    LockedGroupChips()
-                }
-                .task { proxy.scrollTo(live.group) }
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("guide.chips")
         }
 
         private func days(_ data: GuideData, now: Date) -> some View {
@@ -300,7 +284,7 @@
                     let text = GuideNowPlaying.text(for: channel, live: live, at: context.date)
                     GuideBoard.Compact.NowPlayingBar(
                         title: text.title, detail: text.detail, isPlaying: live.playback == .playing, progress: text.progress,
-                        open: openLive
+                        open: openLive.perform
                     ) {
                         GuideCompactLogo(channel: channel, look: .playing)
                     }

@@ -81,6 +81,9 @@ final class PlayerErrorTVUITests: XCTestCase {
         expectEngine("playing loads=2 file=a1.ts")
         expect(element("player.error"), "exists == false")
         XCTAssertFalse(element("player.panel").exists, "no panel opens over the error")
+        // tvos-shell/one-press-does-one-thing: the hold tries again once, its release adds nothing.
+        sleep(2)
+        expectEngine("playing loads=2 file=a1.ts")
     }
 
     // player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong, swiping still changes channel

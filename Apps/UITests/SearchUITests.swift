@@ -128,9 +128,8 @@ final class SearchUITests: XCTestCase {
     // search/pick-a-channel-or-title-to-watch
     func testPickingAChannelPlaysItInLiveAndKeepsTheSearch() throws {
         let app = try launch()
-        let news = app.element("browse.group.2")
-        XCTAssertTrue(news.waitForExistence(timeout: 10))
-        news.tap()
+        XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10))
+        app.pickGroup("browse.group.2")
         search(app, "sport")
         let result = app.element("search.result.channel.0")
         XCTAssertTrue(result.waitForExistence(timeout: 5))
@@ -139,7 +138,8 @@ final class SearchUITests: XCTestCase {
         XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
         expect(app.element("browse.debug.engine"), "value == 'playing loads=1'")
         expect(app.element("browse.nowPlaying"), "label CONTAINS 'Sport One'")
-        XCTAssertTrue(app.element("browse.group.1").isSelected, "Sport One is not in News, so All channels shows")
+        // Sport One is not in News, so All channels shows.
+        app.expectOpenGroup("All channels", row: "browse.group.1")
         app.tabBars.buttons["Search"].tap()
         expect(app.element("search.field"), "value == 'sport'")
         XCTAssertTrue(app.element("search.result.channel.0").exists)

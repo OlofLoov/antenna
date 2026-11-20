@@ -223,6 +223,8 @@ final class MultiViewTVUITests: XCTestCase {
         XCTAssertTrue(element("multiView.actions").waitForExistence(timeout: 5))
         expectFocus("multiView.action.fullScreen")
         XCTAssertFalse(element("multiView.action.retry").exists)
+        // tvos-shell/one-press-does-one-thing: the release of the hold does not also open the picker.
+        XCTAssertFalse(element("overlay.root").exists, "the hold also opened the picker")
         remote.press(.menu)
         expectGone("multiView.actions")
         XCTAssertTrue(element("multiView.root").exists, "Menu only closed the actions")
@@ -266,6 +268,29 @@ final class MultiViewTVUITests: XCTestCase {
         XCTAssertTrue(element("zapBar.bar").waitForExistence(timeout: 5))
         XCTAssertFalse(element("shell.tab.live").isHittable, "that Menu press does not open the tab bar")
         expectFocus("shell.picture")
+    }
+
+    // multi-view/leave-multi-view
+    // The kept tile's picture moves to the full-screen view. The tile's view,
+    // still drawn while the grid closes, used to take it back out, so the
+    // picture stayed black for every channel picked after.
+    func testAfterLeavingAChannelPickedFromTheListPlaysWithItsPicture() {
+        startTwoTiles()
+        remote.press(.menu)
+        expectGone("multiView.root")
+        expectEngine("playing loads=1 file=a2.ts")
+        expect(element("shell.debug.picture"), "value == 'shown'")
+
+        remote.press(.select)
+        XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 10))
+        move(.down, to: overlayRow("Channel a3"))
+        remote.press(.select)
+        expectGone("overlay.root")
+        expectEngine("playing loads=2 file=a3.ts")
+        expect(element("shell.debug.picture"), "value == 'shown'")
+        // The grid's closing has long finished; the picture is still in place.
+        sleep(2)
+        expect(element("shell.debug.picture"), "value == 'shown'")
     }
 
     // MARK: Failures

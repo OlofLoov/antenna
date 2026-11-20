@@ -370,7 +370,10 @@
                 await holdBehindContent()
                 return false
             case .settings:
-                return false
+                // Settings sits over the picture, so the pause from passing Movies, Series
+                // or Search on the way ends here (tvos-shell/open-settings).
+                behindContent = false
+                return await resume()
             case .live, .guide:
                 behindContent = false
                 if await resume() { return true }

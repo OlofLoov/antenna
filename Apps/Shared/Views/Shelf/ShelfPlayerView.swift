@@ -147,7 +147,6 @@ extension TitleTransport {
         let transport: TitleTransport
         let title: String
         @FocusState private var focus: TitlePanelFocus?
-        @State private var panelOpenedAt: ContinuousClock.Instant?
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.locale) private var locale
         @Environment(\.layoutDirection) private var direction
@@ -157,13 +156,10 @@ extension TitleTransport {
             let upNext = panel == nil ? playback.upNext : nil
             let card = transport.isScrubbing ? nil : upNext?.card
             ZStack {
-                Button {
-                    select()
-                } label: {
+                HoldButton(click: transport.select, hold: openPanel) {
                     Color.clear
                 }
                 .buttonStyle(FocusHolderStyle())
-                .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
                 .disabled(panel != nil || card != nil)
                 .focused($focus, equals: .picture)
                 .controlHints(.titlePlayer(scrubbing: transport.isScrubbing, nextEpisode: upNext?.isButton == true))
@@ -267,13 +263,6 @@ extension TitleTransport {
             return (fraction, transport.timeline.elapsedText(at: time))
         }
 
-        /// A click of select plays from the target, or plays and pauses.
-        /// The release of a hold that opened the panel does nothing.
-        private func select() {
-            if let panelOpenedAt, ContinuousClock.now - panelOpenedAt < .milliseconds(1500) { return }
-            transport.select()
-        }
-
         private func menu() {
             if transport.isScrubbing { return transport.cancelScrub() }
             Task { await playback.close() }
@@ -283,7 +272,6 @@ extension TitleTransport {
         private func openPanel() {
             guard let tracks = playback.tracks else { return }
             playback.noteInput()
-            panelOpenedAt = .now
             tracks.panel = .audio
             focus = .segment(.audio)
         }
@@ -384,10 +372,11 @@ extension TitleTransport {
                 Image(systemName: "xmark")
                     .font(.boardStyle(17, weight: .semibold))
                     .foregroundStyle(Palette.text)
-                    .frame(width: 44, height: 44)
-                    .background(Palette.scrimTint.opacity(0.6), in: Circle())
+                    .frame(width: 30, height: 30)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .controlSize(.large)
             .padding(16)
             .accessibilityLabel("Close")
             .accessibilityIdentifier("\(kind).player.close")

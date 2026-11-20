@@ -100,8 +100,10 @@
             let identifier = "multiView.tile.\(number)"
             let shown = model.channel(of: tile.id)
             let highlighted = tileFocus == tile.id
-            return Button {
+            return HoldButton {
                 openPicker(for: tile.id)
+            } hold: {
+                openActions(for: tile.id)
             } label: {
                 ZStack(alignment: .bottomLeading) {
                     if let engine = model.engine(of: tile.id) {
@@ -126,16 +128,17 @@
                         number: shown?.channelNumber, name: shown?.name ?? "", audible: model.session.audible == tile.id,
                         highlighted: highlighted, identifier: identifier)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: model.session.enlarged == tile.id ? 0 : 14))
+                .clipShape(model.session.enlarged == tile.id ? AnyShape(Rectangle()) : AnyShape(cornerShape(.medium)))
                 .overlay {
                     if highlighted, model.session.enlarged != tile.id {
-                        cornerShape(.medium).stroke(Palette.focus, lineWidth: 5)
-                            .shadow(color: Palette.focusShadow, radius: 16, y: 12)
+                        cornerShape(.medium).strokeBorder(Palette.focus, lineWidth: 5)
                     }
                 }
+                .shadow(color: highlighted ? Palette.focusShadow : .clear, radius: 16, y: 12)
             }
             .buttonStyle(FocusHolderStyle())
-            .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openActions(for: tile.id) })
+            // The white ring is the focus look; the system draws none of its own.
+            .focusEffectDisabled()
             // While the picker is open only its tile can take focus, so focus goes
             // straight back to it; the actions menu holds focus until it closes.
             .disabled(model.picking.map { $0 != tile.id } ?? (model.actionsOpen != nil))

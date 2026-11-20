@@ -1,5 +1,12 @@
 import Foundation
 
+/// Whether timing budgets are checked: under `ANTENNA_BENCHMARKS=1 swift test`.
+/// A busy CI runner or laptop makes any budget fail now and then, so the
+/// normal run checks only what the timed code returns.
+enum Benchmarks {
+    static let enabled = ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"
+}
+
 /// Timing budgets read the fastest of a few runs. Other work on a loaded CI
 /// runner or laptop only ever adds time to a run, so the fastest one is the
 /// closest to what the code costs, and a budget on it still fails a change

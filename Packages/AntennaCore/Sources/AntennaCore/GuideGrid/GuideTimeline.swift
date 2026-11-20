@@ -116,4 +116,22 @@ public struct GuideTimeline: Sendable {
         guard now >= start, now < start.addingTimeInterval(windowLength) else { return nil }
         return offset(of: now, from: start)
     }
+
+    /// The half-hour labels the time tag on the now line covers, by column
+    /// index, so the header leaves them out
+    /// (tv-guide-grid/the-grid-opens-around-now-and-keeps-time). The tag is
+    /// `tagWidth` wide and centered on the line at `line`; label `i` starts
+    /// `inset` after its column's edge and is `labelWidths[i]` wide. A label
+    /// closer than `gap` to the tag counts as covered. Points run from the
+    /// window's leading edge, so the answer holds in either reading direction.
+    public static func labelsUnderTag(
+        line: Double, tagWidth: Double, columnWidth: Double, labelWidths: [Double], inset: Double, gap: Double
+    ) -> Set<Int> {
+        let tag = (line - tagWidth / 2 - gap)...(line + tagWidth / 2 + gap)
+        return Set(
+            labelWidths.indices.filter { index in
+                let start = columnWidth * Double(index) + inset
+                return (start...(start + max(0, labelWidths[index]))).overlaps(tag)
+            })
+    }
 }

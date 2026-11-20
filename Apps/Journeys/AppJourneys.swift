@@ -156,8 +156,10 @@ final class AppJourneys: XCTestCase {
     func testLiveNew() {
         let journey = Journey(
             self, arguments: ["-ui-testing-live", "channels"], environment: ["UITESTING_NEW_CHANNEL": "kids-one"])
+        // On iPhone New is a row of the Groups sheet (`iPhone-Live-Groups`); iPad lists it in the sidebar.
         let new = journey.element("groups.new")
+        if journey.element("browse.list").waitForExistence(timeout: 10), !new.exists { journey.element("browse.groups").tap() }
         if new.waitForExistence(timeout: 10) { new.tap() }
-        journey.snap("live-new", anchor: "groups.new")
+        journey.snap("live-new", anchor: "browse.list")
     }
 }

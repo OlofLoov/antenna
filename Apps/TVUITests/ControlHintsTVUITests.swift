@@ -35,6 +35,29 @@ extension ShellUITests {
         expect(legend, "label CONTAINS 'Choose a group'")
     }
 
+    // control-hints/hints-stay-out-of-the-way
+    // The legend sat top right on some screens and bottom right on others.
+    func testRemoteHintsSitInOnePlaceOnEveryScreen() {
+        launchWithHints()
+        func corner(_ screen: String) -> CGPoint {
+            XCTAssertTrue(legend.waitForExistence(timeout: 5), "no legend on \(screen)")
+            return CGPoint(x: legend.frame.maxX, y: legend.frame.minY)
+        }
+        let live = corner("Live")
+        XCTAssertEqual(live.x, 1840, "80 points from the right")
+        XCTAssertEqual(live.y, 124, "under the clock row")
+
+        press(.select)
+        expect(legend, "label CONTAINS 'Click, Watch.'")
+        XCTAssertEqual(corner("the overlay"), live)
+        press(.menu)
+        expectGone("overlay.root")
+        press(.menu)
+        expectFocus("shell.tab.live")
+        expect(legend, "label CONTAINS 'Back, Home Screen.'")
+        XCTAssertEqual(corner("the tab bar"), live)
+    }
+
     // control-hints/hints-fade-and-come-back-on-a-new-screen, switching sections
     // control-hints/each-screen-lists-its-own-actions
     func testRemoteHintsFollowTheSection() {

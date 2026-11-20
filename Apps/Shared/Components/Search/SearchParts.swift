@@ -141,7 +141,8 @@ enum SearchParts {
     }
 
     /// The round search button in the Movies and Series top bar on iPhone
-    /// (`iPhone-Movies`).
+    /// (`iPhone-Movies`), a glass circle over the art
+    /// (design-system/liquid-glass-stays-on-the-navigation-layer).
     struct SectionButton: View {
         let action: () -> Void
 
@@ -150,12 +151,10 @@ enum SearchParts {
                 Image(systemName: "magnifyingglass")
                     .font(.boardStyle(16, weight: .semibold))
                     .foregroundStyle(Palette.text)
-                    .frame(width: 36, height: 36)
-                    .background(Palette.scrimTint.opacity(0.6), in: Circle())
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+                    .frame(width: 30, height: 30)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
             .accessibilityLabel("Search")
         }
     }

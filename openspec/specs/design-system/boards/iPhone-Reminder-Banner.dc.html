@@ -17,7 +17,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 
 
   <!-- reminders.banner over the Live screen. Shown when a reminder fires while the app is in the foreground on iOS, iPadOS and macOS; the system notification is suppressed. Hides 20 seconds after it appears, on swipe up, or on dismiss. On iPad and Mac the same banner is 400 pt wide, top trailing, 16 pt from the edges. -->
-  <div style="position: absolute; left: 12px; right: 12px; top: 62px; z-index: 2; padding: 12px 12px 12px 16px; border-radius: 12px; background: #11151C; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 12px">
+  <div style="position: absolute; left: 12px; right: 12px; top: 62px; z-index: 2; padding: 12px 12px 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); display: flex; align-items: center; gap: 12px">
     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="#F2F4F8" style="flex: 0 0 auto"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
     <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
       <div style="font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Starts in 5 min</div>
@@ -26,8 +26,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <!-- reminders.banner.body -->
       <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">22:00 · 104 Sport One</div>
     </div>
-    <!-- reminders.banner.watch, 36 pt tall with a 44 pt hit area -->
-    <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 36px; padding: 0 16px; border-radius: 18px; border: 0; background: #F2F4F8; color: #0B0E13; cursor: pointer; flex: 0 0 auto">Watch</button>
+    <!-- reminders.banner.watch, the bordered prominent capsule in the accent. The banner is glass alone, with no fill, hairline or shadow (clean-up-glass) -->
+    <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 36px; padding: 0 16px; border-radius: 18px; border: 0; background: #5BB8FF; color: #0B0E13; cursor: pointer; flex: 0 0 auto">Watch</button>
     <!-- reminders.banner.dismiss, 44 pt target -->
     <button type="button" aria-label="Dismiss" style="font: inherit; width: 44px; height: 44px; margin: -4px -8px -4px -8px; border-radius: 22px; border: 0; background: transparent; color: #A7B0BF; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: 0 0 auto">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -60,15 +60,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </button>
   </div>
 
-  <!-- Group chips (scrolls horizontally) -->
-  <div style="display: flex; gap: 8px; padding: 12px 16px 6px; overflow: hidden; white-space: nowrap">
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Favorites</span>
-    <span style="font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 16px; background: #F2F4F8; color: #0B0E13; flex: 0 0 auto">Sport</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">News</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Series</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Kids</span>
-    <span style="font-size: 14px; padding: 7px 14px; border-radius: 16px; background: rgba(255,255,255,0.08); color: #F2F4F8; flex: 0 0 auto">Documentary</span>
-  </div>
+  <!-- browse.groups (live-tv-on-iphone-ipad-mac/find-a-group-among-many): the open group's name in its own text run, its channel count and a chevron, full width and leading-aligned, 44 pt tall, plain system button with no fill. Tapping it opens the Groups sheet (iPhone-Live-Groups). -->
+  <button type="button" aria-label="Sport, 42 channels" style="font: inherit; display: flex; align-items: center; gap: 6px; width: 100%; height: 44px; padding: 0 16px; border: 0; background: transparent; color: #F2F4F8; text-align: start; cursor: pointer; flex: 0 0 auto"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport</bdi><span style="font-size: 15px; color: #A7B0BF; font-variant-numeric: tabular-nums">· 42</span><span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
 
   <!-- Channel list -->
   <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 4px 8px">
