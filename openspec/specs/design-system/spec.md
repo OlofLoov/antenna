@@ -100,15 +100,20 @@ as Movies and Series do.
 On Apple TV the focused element MUST use the system focus effect for its
 control: the light platter with dark text, the lift, the shadow and the
 motion that follows the remote. The parts the reference lists as drawn by
-the app use the same light card with the highlight hover effect. Text in a
-focused row MUST stay readable. Accent borders, white rings and focus shown
-by scale alone are not allowed, and nothing other than the focused element
-is filled white.
+the app use the same light card, with the highlight hover effect on the
+focused one only. Text in a focused row MUST stay readable. Borders, rings
+and focus shown by scale alone are not allowed, and nothing at rest is
+white or outlined.
 
 #### Scenario: Moving focus down a list
 - **WHEN** the viewer moves focus to a row on Apple TV
 - **THEN** that row becomes a light card with dark text and a shadow, and it tilts slightly as the viewer rests a thumb on the remote
 - **AND** no other element on screen is filled white
+
+#### Scenario: Rows at rest
+- **GIVEN** the channel overlay is open on Apple TV with the highlight on a channel
+- **WHEN** the viewer looks at the other channels, the groups, the programmes coming next and the buttons under them
+- **THEN** none of them has a line around it
 
 #### Scenario: Focus without the card
 - **WHEN** a reviewer finds a focused element shown only by a colored border, a white ring or a size change
@@ -439,6 +444,18 @@ bar sections, multi-view tiles and the passcode digits.
 #### Scenario: A custom-drawn button
 - **WHEN** a reviewer finds a button whose fill, border, scale or shadow is drawn by the app and it is not on the reference's exception list
 - **THEN** it fails this requirement
+
+#### Scenario: The channel overlay's buttons
+- **WHEN** the channel overlay shows Watch, the favorite star and Add to multi-view on Apple TV
+- **THEN** Watch looks like Watch in the Guide, and the star and Add to multi-view like More info on the Movies banner
+
+#### Scenario: A glyph whose meaning is unclear
+- **WHEN** a reviewer finds a button shown only by a glyph not everyone reads the same way, such as a plus for My list
+- **THEN** it fails this requirement; the button says what it does in words
+
+#### Scenario: An outlined button
+- **WHEN** a reviewer finds a button drawn as a line around its label, such as LIVE while behind live
+- **THEN** it fails this requirement; the button is a system style or a plain surface instead
 
 #### Scenario: A poster on Apple TV
 - **WHEN** the viewer moves focus to a poster in a Movies or Series row
