@@ -25,14 +25,33 @@ final class LiveKeyboardUITests: XCTestCase {
         return app
     }
 
-    /// Presses the down arrow until the ring is on the first row. The
-    /// simulator sometimes drops the first key press after launch.
-    private func ringOnFirstRow(_ app: XCUIApplication) {
+    /// Presses the down arrow until the ring is on the first row.
+    private func ringOnFirstRow(_ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        ring(onto: app.row(0), app, file: file, line: line)
+    }
+
+    /// Presses the down arrow until `row` has the ring. The simulator drops
+    /// a key press now and then, so each press gets two seconds to show
+    /// before the next; a press that was only slow would otherwise carry the
+    /// ring past `row`. The sidebar's group search once took the first arrow
+    /// key and kept every later one, so a failure names what holds the keyboard.
+    private func ring(onto row: XCUIElement, _ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let ringed = NSPredicate(format: "value == 'Keyboard focus'")
         for _ in 0..<3 {
             app.typeKey(.downArrow, modifierFlags: [])
-            if app.row(0).value as? String == "Keyboard focus" { return }
+            let shown = XCTNSPredicateExpectation(predicate: ringed, object: row)
+            if XCTWaiter().wait(for: [shown], timeout: 2) == .completed { return }
         }
-        XCTFail("the arrow keys never reached the list")
+        XCTFail("the arrow keys never moved the ring to \(row.identifier); \(ringState(app))", file: file, line: line)
+    }
+
+    /// Which row has the ring and what holds the keyboard, for failure messages.
+    private func ringState(_ app: XCUIApplication) -> String {
+        let rows = (0..<4).map { app.row($0) } + [app.element(cabinFilm)]
+        let ring = rows.firstIndex { $0.value as? String == "Keyboard focus" }
+        let holder = app.descendants(matching: .any).matching(NSPredicate(format: "hasKeyboardFocus == true"))
+            .allElementsBoundByIndex.map(\.identifier)
+        return "ring on row \(ring.map(String.init) ?? "none"), keyboard in \(holder)"
     }
 
     private var cabinFilm: String { "browse.row.00000000-0000-0000-0000-0000000000D2.0" }
@@ -100,8 +119,7 @@ final class LiveKeyboardUITests: XCTestCase {
         let app = try launch()
 
         ringOnFirstRow(app)
-        app.typeKey(.downArrow, modifierFlags: [])
-        XCTAssertEqual(app.row(1).value as? String, "Keyboard focus")
+        ring(onto: app.row(1), app)
         app.waitForEngine("idle loads=0")
 
         // XCUITest sends the Return key for "\n"; `.return` reaches no key command.
@@ -120,8 +138,9 @@ final class LiveKeyboardUITests: XCTestCase {
         let app = try launch()
         ringOnFirstRow(app)
         for _ in 0..<8 { app.typeKey(.downArrow, modifierFlags: []) }
-
-        XCTAssertEqual(app.element(cabinFilm).value as? String, "Keyboard focus")
+        // Five rows, so eight presses run past the end even when one is dropped.
+        let last = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Keyboard focus'"), object: app.element(cabinFilm))
+        XCTAssertEqual(XCTWaiter().wait(for: [last], timeout: 3), .completed, "the ring is not on the last row; \(ringState(app))")
         app.waitForEngine("idle loads=0")
     }
 
