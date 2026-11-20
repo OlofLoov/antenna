@@ -88,7 +88,12 @@ final class TimeshiftUITests: XCTestCase {
         let start = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.0, dy: 0.5))
         let middle = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5))
         middle.press(forDuration: 0.1, thenDragTo: start)
-        label(app, "timeshift.behindLive", is: "21 min behind")
+        // The buffer holds 20 minutes at load and grows while the test runs, so
+        // the start reads 20 or 21 minutes behind depending on the runner's pace.
+        let behind = app.element("timeshift.behindLive")
+        let atStart = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label IN %@", ["20 min behind", "21 min behind"]), object: behind)
+        XCTAssertEqual(XCTWaiter().wait(for: [atStart], timeout: 10), .completed, "timeshift.behindLive is \(behind.label)")
         app.waitForEngine("playing loads=1")
     }
 
