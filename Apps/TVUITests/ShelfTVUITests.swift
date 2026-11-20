@@ -354,6 +354,28 @@ final class ShelfTVUITests: XCTestCase {
 }
 
 extension ShelfTVUITests {
+    // movies-and-series-browsing/continue-watching, on Apple TV: the card
+    // is the 16:9 art alone, with its name under it as TV-Movies draws it,
+    // not inside the card's platter.
+    func testAContinueWatchingCardIsTheArtAlone() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"]
+        app.launchInEnglish()
+        pressMenuOnceFocused()
+        let tab = element("shell.tab.movies")
+        XCTAssertTrue(tab.waitForExistence(timeout: 10))
+        for _ in 0..<4 where !tab.hasFocus {
+            press(.right)
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        expectFocus("shell.tab.movies")
+        press(.select)
+        expectFocus("movies.hero.play")
+        let card = element("movies.row.continueWatching").descendants(matching: .any)["movies.card.xtream#cabin#vod#2"].firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        XCTAssertEqual(card.frame.height / card.frame.width, 9 / 16, accuracy: 0.02, "\(card.frame)")
+    }
+
     /// Movies open from the bar, with focus on the banner's Play button.
     func openMovies() {
         launchPlaying()

@@ -18,31 +18,57 @@ extension ShelfView {
         @Environment(\.locale) private var locale
 
         var body: some View {
-            Button(action: select) {
+            #if os(tvOS)
+                // The card style draws its platter behind the whole label,
+                // so the name sits under the button, as `TV-Movies` draws it.
                 VStack(alignment: .leading, spacing: metrics.headerSpacing * 0.6) {
-                    LandscapeArt(name: title.name, url: title.posterURL)
-                        .frame(width: metrics.card.width, height: metrics.card.height)
-                        .overlay(alignment: .bottom) { bar }
-                        .overlay(alignment: .topLeading) {
-                            if title.kind == .series {
-                                ShelfBanner.Badge(text: "SERIES", size: max(10, metrics.count - 3))
-                                    .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
-                                    .padding(metrics.corner * 0.7)
-                                    .accessibilityIdentifier("\(prefix).card.\(title.id).badge")
-                            }
-                        }
-                        .clipShape(RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
-                    Text([title.name, caption].compactMap(\.self).joinedAsDetail(locale))
-                        .font(.boardStyle(metrics.caption))
-                        .foregroundStyle(Browse.textSecondary)
-                        .lineLimit(1)
-                        .frame(width: metrics.card.width, alignment: .leading)
+                    Button(action: select) { art }
+                        .posterButtonStyle()
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(spokenLabel)
+                        .accessibilityIdentifier("\(prefix).card.\(title.id)")
+                    name
+                        .accessibilityHidden(true)
                 }
-            }
-            .posterButtonStyle()
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel([title.name, caption].compactMap(\.self).joined(separator: ", "))
-            .accessibilityIdentifier("\(prefix).card.\(title.id)")
+            #else
+                Button(action: select) {
+                    VStack(alignment: .leading, spacing: metrics.headerSpacing * 0.6) {
+                        art
+                        name
+                    }
+                }
+                .posterButtonStyle()
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(spokenLabel)
+                .accessibilityIdentifier("\(prefix).card.\(title.id)")
+            #endif
+        }
+
+        private var spokenLabel: String {
+            [title.name, caption].compactMap(\.self).joined(separator: ", ")
+        }
+
+        private var art: some View {
+            LandscapeArt(name: title.name, url: title.posterURL)
+                .frame(width: metrics.card.width, height: metrics.card.height)
+                .overlay(alignment: .bottom) { bar }
+                .overlay(alignment: .topLeading) {
+                    if title.kind == .series {
+                        ShelfBanner.Badge(text: "SERIES", size: max(10, metrics.count - 3))
+                            .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
+                            .padding(metrics.corner * 0.7)
+                            .accessibilityIdentifier("\(prefix).card.\(title.id).badge")
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
+        }
+
+        private var name: some View {
+            Text([title.name, caption].compactMap(\.self).joinedAsDetail(locale))
+                .font(.boardStyle(metrics.caption))
+                .foregroundStyle(Browse.textSecondary)
+                .lineLimit(1)
+                .frame(width: metrics.card.width, alignment: .leading)
         }
 
         private var bar: some View {
