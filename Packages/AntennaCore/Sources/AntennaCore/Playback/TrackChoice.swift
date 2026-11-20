@@ -45,6 +45,8 @@ public enum SubtitleMode: String, Sendable, CaseIterable, Codable {
 /// subtitles on, a forced track in the first preferred language that has
 /// one shows.
 ///
+/// Audio description is passed over while the stream has other sound.
+///
 /// With `playable` given, sound the device cannot decode is passed over
 /// while the stream has sound it can: the same rules pick among the
 /// playable tracks (playback-engine/streams-start-with-sound-the-device-can-play).
@@ -64,7 +66,11 @@ public enum TrackChoice {
         return (sound, subtitle)
     }
 
-    static func audio(_ tracks: [MediaTrack], preferred: [String], remembered: LanguagePick?) -> MediaTrack.ID? {
+    static func audio(_ all: [MediaTrack], preferred: [String], remembered: LanguagePick?) -> MediaTrack.ID? {
+        // Audio description is passed over while the stream has other sound
+        // (playback-engine/audio-description-is-not-the-default-sound).
+        let main = all.filter { !$0.isAudioDescription }
+        let tracks = main.isEmpty ? all : main
         if let code = remembered?.audio, let track = tracks.first(where: { sameLanguage($0.languageCode, code) }) {
             return track.id
         }

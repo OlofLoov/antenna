@@ -119,7 +119,8 @@ extension AVPlayerEngine {
         let title = try? await item?.load(.stringValue)
         return MediaTrack(
             id: id, kind: kind, languageCode: option.extendedLanguageTag ?? option.locale?.identifier, name: title,
-            isDefault: group?.defaultOption == option, isForced: option.hasMediaCharacteristic(.containsOnlyForcedSubtitles))
+            isDefault: group?.defaultOption == option, isForced: option.hasMediaCharacteristic(.containsOnlyForcedSubtitles),
+            isAudioDescription: option.hasMediaCharacteristic(.describesVideoForAccessibility))
     }
 
     /// Takes the item's subtitle lines as text and keeps Apple's player

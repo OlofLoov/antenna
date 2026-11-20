@@ -44,6 +44,15 @@ import Testing
         await finish(server2, swedish)
     }
 
+    @Test("playback-engine/audio-description-is-not-the-default-sound a broadcast's described sound is listed and passed over")
+    func audioDescriptionPassedOver() async throws {
+        let (server, engine) = try await playing("audio-description.ts")
+        let tracks = try #require(await current(engine.tracks()))
+        #expect(tracks.audio.map(\.isAudioDescription) == [true, false])
+        #expect(tracks.selectedAudio == "audio-1")
+        await finish(server, engine)
+    }
+
     @Test("playback-engine/audio-and-subtitle-languages provider track names")
     func providerNames() async throws {
         let (server, engine) = try await playing("film.mkv")

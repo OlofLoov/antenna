@@ -38,6 +38,9 @@ public struct DemuxedStream: Sendable, Equatable {
     /// The speakers the container names, one bit each in WAVE order, 0
     /// when it names none.
     public var channelMask: UInt64 = 0
+    /// True for sound the container marks as describing the picture for
+    /// blind and partially sighted viewers.
+    public var isAudioDescription = false
 }
 
 /// One compressed packet with its timing.
@@ -287,7 +290,8 @@ public final class Demuxer: @unchecked Sendable {
             frameRate: rate.den > 0 && rate.num > 0 ? Double(rate.num) / Double(rate.den) : nil,
             isDefault: stream.pointee.disposition & AV_DISPOSITION_DEFAULT != 0, title: title,
             isForced: stream.pointee.disposition & AV_DISPOSITION_FORCED != 0,
-            channelMask: parameters.ch_layout.order == AV_CHANNEL_ORDER_NATIVE ? parameters.ch_layout.u.mask : 0)
+            channelMask: parameters.ch_layout.order == AV_CHANNEL_ORDER_NATIVE ? parameters.ch_layout.u.mask : 0,
+            isAudioDescription: stream.pointee.disposition & AV_DISPOSITION_VISUAL_IMPAIRED != 0)
     }
 }
 
