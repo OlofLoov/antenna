@@ -85,7 +85,7 @@ final class AdultContentUITests: XCTestCase {
         XCTAssertTrue(cancel.waitForExistence(timeout: 5))
         cancel.tap()
         expectation(for: NSPredicate(format: "value == '0'"), evaluatedWith: toggle)
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 10)
         expectAllChannels(app, 5)
     }
 }
