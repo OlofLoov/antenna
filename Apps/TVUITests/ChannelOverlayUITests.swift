@@ -10,9 +10,9 @@ extension ShellUITests {
         XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 10))
     }
 
-    func expectFocusedRow(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
+    func expectFocusedRow(_ name: String, timeout: TimeInterval = 10, file: StaticString = #filePath, line: UInt = #line) {
         let row = overlayRows().matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch
-        expect(row, "hasFocus == true", file: file, line: line)
+        expect(row, "hasFocus == true", timeout: timeout, file: file, line: line)
     }
 
     // tv-channel-overlay/the-picture-keeps-playing
