@@ -283,19 +283,20 @@
         /// overlay, holding select opens the info panel.
         @ViewBuilder private var pictureHolder: some View {
             if model.tuned != nil, model.player.failure == nil {
-                Button {
+                // Holding select opens the info panel; a swipe down already changes channel.
+                HoldButton {
                     if numbers.isOpen { return numbers.commit() }
                     // Select while the info bar shows hides it, then opens the list.
                     zapBar.dismiss()
                     let target = overlay.open(catalogue, playing: model.tuned)
                     model.openPicker()
                     focus = .overlay(target)
+                } hold: {
+                    openPanel()
                 } label: {
                     Color.clear
                 }
                 .buttonStyle(FocusHolderStyle())
-                // Holding select opens the info panel; a swipe down already changes channel.
-                .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
                 .disabled(model.pickerOpen || model.player.panel != nil)
                 .accessibilityLabel("Live picture")
                 .accessibilityIdentifier("shell.picture")

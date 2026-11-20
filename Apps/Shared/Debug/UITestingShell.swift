@@ -289,6 +289,9 @@
 
                 /// True for a multi-view tile's engine.
                 let isTile: Bool
+                /// Stands in for the demuxing engine's picture, which one view
+                /// at a time can show; `shell.debug.picture` says whether a view has it.
+                @ObservationIgnored let picture = CALayer()
 
                 init(failing: Bool, isTile: Bool = false) {
                     self.failing = failing
@@ -390,8 +393,24 @@
                             .accessibilityValue(engine.summary)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                             .allowsHitTesting(false)
+                        // Read twice a second: nothing observable says when a layer moves.
+                        TimelineView(.periodic(from: .now, by: 0.5)) { _ in
+                            let picture = engine.picture.superlayer == nil ? "missing" : "shown"
+                            Text(verbatim: picture)
+                                .font(.system(size: 18))
+                                .foregroundStyle(Palette.textMuted)
+                                .accessibilityIdentifier("shell.debug.picture")
+                                .accessibilityValue(picture)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                        .allowsHitTesting(false)
                     }
                 }
+            }
+
+            /// The scripted engine's stand-in picture, nil for any other engine.
+            @MainActor static func picture(of engine: any PlaybackEngine) -> CALayer? {
+                ((engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine))?.picture
             }
         }
     #endif

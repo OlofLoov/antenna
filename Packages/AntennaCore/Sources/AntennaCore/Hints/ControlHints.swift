@@ -70,20 +70,6 @@ public enum ControlHintScreen: Hashable, Sendable {
         infoBar ? .infoBar(swipe: swipe) : .livePicture(swipe: swipe)
     }
 
-    /// Where the legend sits. The info bar and the players keep the bottom
-    /// for the picture and the bar, so their legend goes top right
-    /// (control-hints/hints-stay-out-of-the-way).
-    public enum Corner: Sendable {
-        case topTrailing, bottomTrailing
-    }
-
-    public var corner: Corner {
-        switch self {
-        case .livePicture, .infoBar, .titlePlayer, .nextEpisodeButton, .upNext: .topTrailing
-        case .overlayGroups, .overlayChannels, .guide, .tabBar, .titleRows, .titlePage, .settings: .bottomTrailing
-        }
-    }
-
     /// The controls that do something here, most useful first, at most five.
     public var hints: [ControlHint] { hints(.autoupdatingCurrent) }
 

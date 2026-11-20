@@ -174,6 +174,14 @@ check_except "localization: views never compare text with English copy" \
   'Apps/Shared/Views/Import/ImportModel\.swift' \
   Apps/Shared/Views Apps/Shared/Components Apps/Mobile Apps/TV
 
+# On Apple TV the release of a held select reaches a button as a click, so a
+# button with its own long press does both. HoldButton swallows that click
+# (tvos-shell/one-press-does-one-thing).
+check_except "tvos-shell/one-press-does-one-thing: a long press on a button only through HoldButton" \
+  '(onLongPressGesture|LongPressGesture\()' \
+  'Apps/Shared/Components/HoldButton\.swift' \
+  Apps/Shared Apps/TV
+
 check "localization: Core never compares translated words" \
   '(==|!=)[[:space:]]*[Ww]ords(\([a-z]+\))?\("|[Ww]ords(\([a-z]+\))?\("[^"]*"\)[[:space:]]*(==|!=)' \
   Packages/AntennaCore/Sources

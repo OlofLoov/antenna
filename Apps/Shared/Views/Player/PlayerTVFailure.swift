@@ -19,11 +19,12 @@
                 title: message.title, explanation: message.explanation, detail: detail,
                 hint: .verbatim(PlayerStatusText.changeChannelHint(locale))
             ) {
-                Button(PlayerStatusText.tryAgain(locale)) { player.retry() }
-                    // Holding select on the error is Try again too.
-                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in player.retry() })
-                    .focused(focus, equals: .retry)
-                    .accessibilityIdentifier("player.retry")
+                // Holding select on the error is Try again too, once.
+                HoldButton(click: player.retry, hold: player.retry) {
+                    Text(PlayerStatusText.tryAgain(locale))
+                }
+                .focused(focus, equals: .retry)
+                .accessibilityIdentifier("player.retry")
                 if let signIn {
                     Button(PlayerStatusText.signIn(locale), action: signIn)
                         .focused(focus, equals: .signIn)
