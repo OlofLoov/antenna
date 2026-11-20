@@ -29,6 +29,11 @@ public enum ProfileAccent: String, CaseIterable, Sendable, Hashable, Identifiabl
     /// row at 6% white, the tab bar and the lightest dark system material,
     /// which stands in for glass.
     public static let surfaces: [UInt32] = [0x0B0E13, 0x1A1C21, 0x11151C, 0x2C2C2E]
+
+    /// The color of text and glyphs on an accent fill, such as a prominent
+    /// button's label or a NOW badge: the dark ground. White on the five
+    /// accents is 1.76 to 2.65:1; this is 7.30:1 or more.
+    public static let label: UInt32 = 0x0B0E13
 }
 
 /// WCAG 2.x contrast between two RGB hex colors.

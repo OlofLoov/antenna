@@ -12,7 +12,24 @@ extension View {
         #if os(tvOS)
             buttonStyle(.bordered)
         #else
-            buttonStyle(.glassProminent)
+            prominentStyle(.glass)
         #endif
     }
+
+    /// A prominent system button filled with the accent, its label in the
+    /// dark ground color (design-system/text-on-the-accent-is-dark). White
+    /// on the five accents is under 2.7:1. Every prominent button goes
+    /// through here, and `scripts/check-rules.sh` fails on one that does not.
+    @ViewBuilder func prominentStyle(_ material: ProminentMaterial) -> some View {
+        switch material {
+        case .glass: buttonStyle(.glassProminent).foregroundStyle(Palette.onAccent)
+        case .bordered: buttonStyle(.borderedProminent).foregroundStyle(Palette.onAccent)
+        }
+    }
+}
+
+/// What a prominent button is drawn in: glass over art and beside glass
+/// buttons, a plain fill on the page.
+enum ProminentMaterial: Sendable {
+    case glass, bordered
 }

@@ -31,7 +31,8 @@ extension View {
     }
 
     /// A chip in a row of choices, such as a season or a genre. On iPhone,
-    /// iPad and Mac the picked chip is prominent in the accent tint, on
+    /// iPad and Mac the picked chip is prominent in the accent tint, with a
+    /// dark label (design-system/text-on-the-accent-is-dark), on
     /// glass when `floating` over art (design-system/liquid-glass-stays-on-the-navigation-layer).
     /// On Apple TV every chip is bordered, so nothing but the focused chip is
     /// white, and the picked one reads semibold; one style for both keeps
@@ -42,9 +43,9 @@ extension View {
                 .buttonBorderShape(.capsule)
         #else
             switch (surface, isPicked) {
-            case (.content, true): buttonStyle(.borderedProminent).buttonBorderShape(.capsule)
+            case (.content, true): prominentStyle(.bordered).buttonBorderShape(.capsule)
             case (.content, false): buttonStyle(.bordered).buttonBorderShape(.capsule)
-            case (.art, true): buttonStyle(.glassProminent).buttonBorderShape(.capsule)
+            case (.art, true): prominentStyle(.glass).buttonBorderShape(.capsule)
             case (.art, false): buttonStyle(.glass).buttonBorderShape(.capsule)
             }
         #endif

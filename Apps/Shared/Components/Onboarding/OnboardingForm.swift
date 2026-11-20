@@ -130,7 +130,9 @@ enum OnboardingForm {
                             ProgressView()
                                 .accessibilityLabel("Connecting")
                         } else {
-                            Text("Connect")
+                            // The bar draws its confirmation action prominent and ignores
+                            // the button's foreground, so the label carries its own.
+                            Text("Connect").foregroundStyle(Palette.onAccent)
                         }
                     }
                     .primaryActionStyle()
