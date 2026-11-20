@@ -34,8 +34,11 @@ import Testing
         TestCatalogue(channels: channels(), groupOrder: [:], favorites: favorites, recents: recents, rules: rules)
     }
 
+    /// The row of fixture channel `id`; every id the tests name exists.
     static func key(_ id: String) -> RowKey {
-        RowKey(Self.channels().first { $0.id == id }!)!
+        let keys = channels().compactMap(RowKey.init)
+        guard let key = keys.first(where: { $0.id == id }) else { preconditionFailure("no fixture channel \(id)") }
+        return key
     }
 
     static func ids(_ rows: [RowKey]) -> [String] { rows.map(\.id) }
@@ -64,7 +67,7 @@ import Testing
         #expect(catalogue.match(digits: "2") == nil)
         #expect(catalogue.match(digits: "302") == nil)
         #expect(catalogue.position(of: Self.key("x1"), in: .all) == nil)
-        #expect(catalogue.position(of: Self.key("s1"), in: Self.sport)! == (1, 1))
+        #expect(catalogue.position(of: Self.key("s1"), in: Self.sport).map { $0 == (1, 1) } == true)
     }
 
     @Test("adult-content/hidden-everywhere-by-default favorites, recents and New leave adult channels out")
