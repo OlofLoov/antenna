@@ -102,7 +102,7 @@ final class AVPlayerEngine: PlaybackEngine {
     nonisolated static let logger = Logger(subsystem: "se.codecrave.antenna", category: "playback")
 
     /// `sleep` waits between retries and times the stall budget; tests pass
-    /// a faster one, and a shorter `readyTimeout`. `log` gets every line the
+    /// a faster one, and a shorter or longer `readyTimeout`. `log` gets every line the
     /// engine logs, each made only of the redacted address and a reason.
     init(
         session: URLSession = PlaybackNetwork.makeSession(),

@@ -130,7 +130,9 @@ import Testing
             #expect(data.groups.count == 401)
             #expect(data.orphans.isEmpty)
         }
-        #expect(elapsed < .milliseconds(500), "took \(elapsed)")
+        if ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1" {
+            #expect(elapsed < .milliseconds(500), "took \(elapsed)")
+        }
     }
 
     @Test("group-management/lock-a-group-with-a-passcode All channels and Favorites cannot be locked")

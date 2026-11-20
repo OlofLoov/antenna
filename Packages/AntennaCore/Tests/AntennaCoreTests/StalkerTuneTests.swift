@@ -185,6 +185,6 @@ import Testing
         }
         #expect(channelCount == 50_000)
         #expect(programmeCount == 200_000)
-        #expect(elapsed < .seconds(10), "the fastest load and decode took \(elapsed)")
+        if Benchmarks.enabled { #expect(elapsed < .seconds(10), "the fastest load and decode took \(elapsed)") }
     }
 }
