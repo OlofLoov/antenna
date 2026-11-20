@@ -54,6 +54,7 @@ final class GroupPickerUITests: XCTestCase {
         let all = app.element("browse.group.1")
         XCTAssertTrue(all.isSelected, "All channels has the checkmark")
         XCTAssertEqual(all.label, "All channels, 5 channels")
+        XCTAssertEqual(all.frame.height, 44, accuracy: 4, "one line per group, so the medium detent shows about eight")
         XCTAssertEqual(app.element("browse.group.3").label, "Sport, 1 channel")
         XCTAssertFalse(app.element("browse.group.3").isSelected)
 
