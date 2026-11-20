@@ -14,6 +14,31 @@ extension ShellUITests {
         expectGone("zapBar.bar", timeout: 10)
     }
 
+    /// Presses Down `rows` times at remote speed, then one row at a time
+    /// until channel l`target` has focus. A loaded runner drops some of a
+    /// fast burst of presses, and one at a time cannot overshoot.
+    func pressDown(rows: Int, toChannel target: Int, file: StaticString = #filePath, line: UInt = #line) {
+        press(.down, times: rows)
+        let focused = overlayRows().matching(NSPredicate(format: "hasFocus == true")).firstMatch
+        func current() -> Int? {
+            guard focused.exists, let range = focused.label.range(of: #"Channel l(\d+)"#, options: .regularExpression) else { return nil }
+            return Int(focused.label[range].dropFirst("Channel l".count))
+        }
+        var last = current()
+        for _ in 0..<60 {
+            Thread.sleep(forTimeInterval: 1)
+            let now = current()
+            if now == target { return }
+            // Still moving: let the burst land before pressing again.
+            if now != last {
+                last = now
+                continue
+            }
+            if let now, now < target { press(.down) }
+        }
+        expectFocusedRow("Channel l\(target),", timeout: 1, file: file, line: line)
+    }
+
     /// The group row whose label holds `name`.
     func overlayGroup(_ name: String) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'overlay.group.' AND label CONTAINS %@", name)).firstMatch
@@ -62,9 +87,7 @@ extension ShellUITests {
         let neighbour = overlayGroup("Group 293").frame
 
         // Far down the list, then back: left lands on Group 297 and the column stays put.
-        press(.down, times: 30)
-        // A loaded simulator moves about three rows a second, so the 30 presses take a while to land.
-        expectFocusedRow("Channel l9296,", timeout: 30)
+        pressDown(rows: 30, toChannel: 9296)
         press(.left)
         expect(overlayGroup("Group 297"), "hasFocus == true")
         expect(element("overlay.channelsHeader"), "label CONTAINS 'GROUP 297'")
