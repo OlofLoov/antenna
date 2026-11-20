@@ -44,7 +44,7 @@ Apple TV keeps the system tint, and its primary actions are bordered, so no Appl
 
 ### The guide keeps 80 pt sides; the half-hour column gives up 5 pt
 
-80 + 300 + 4 x 370 + 80 is 1940, 20 pt wider than the screen. The half-hour column goes from 370 to 365 pt (`GuideScale.television`), so 80 + 300 + 1460 + 80 = 1920. `GuideGrid.Screen` pads with `Metrics.televisionSafeArea.leading` and `.trailing`. Top and bottom stay as they are: the picture starts at 120 pt under the tab bar's band and the grid ends 40 pt above the bottom of a region that already clears 60 pt.
+80 + 300 + 4 x 370 + 80 is 1940, 20 pt wider than the screen. The half-hour column goes from 370 to 365 pt (`GuideScale.television`), so 80 + 300 + 1460 + 80 = 1920. `GuideGrid.Screen` pads with `Metrics.televisionSafeArea.leading` and `.trailing`. The playing picture is the shell's, drawn over the guide at its own place, so `ShellView` takes the same leading inset; the frame test caught it at 64. Top and bottom stay as they are: the picture starts at 120 pt under the tab bar's band and the grid ends 40 pt above the bottom of a region that already clears 60 pt.
 
 Options considered:
 - Narrow the channel column to 280 pt (rejected): the channel name loses 20 of its 140 pt and truncates sooner, and names are what the viewer scans.
