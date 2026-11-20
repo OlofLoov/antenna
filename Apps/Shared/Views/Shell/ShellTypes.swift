@@ -6,11 +6,13 @@
 
     /// The tabs of the Apple TV shell, in bar order.
     enum ShellTab: Hashable, CaseIterable, Sendable {
-        case live, guide, movies, series, search
+        case live, guide, movies, series, search, settings
 
-        /// Movies, Series and Search: the bar always shows and the video
-        /// pauses after a while behind them.
+        /// Movies, Series and Search: the video pauses behind them, then stops.
         var isContent: Bool { self == .movies || self == .series || self == .search }
+
+        /// Live and the Guide show the picture and end a hold.
+        var showsPicture: Bool { self == .live || self == .guide }
     }
 
     /// Where focus goes after the shell handles an input.
@@ -25,21 +27,9 @@
         case panel(PanelFocus)
         /// The loading screen's holder or the empty screen's Open Settings.
         case liveScreen
-        case tab(ShellTab)
-        case settings
-        /// The profile button, with two or more profiles.
-        case profile
         case content
         /// A group, channel or the Search entry in the channel overlay.
         case overlay(OverlayFocus)
-    }
-
-    /// Where Menu was pressed.
-    enum MenuOrigin: Equatable {
-        /// Full-screen Live, or its loading or empty screen.
-        case picture
-        /// The top level of an open tab.
-        case content
     }
 
     /// One source as the loading and empty screens list it.

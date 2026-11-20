@@ -7,9 +7,10 @@
     /// the `LiveHold` iPhone, iPad and Mac share.
     extension ShellModel {
         /// Pauses a channel that plays, loads or reconnects, at once, and
-        /// stops it 30 seconds later while a content tab is still open.
+        /// stops it 30 seconds later while Movies, Series, Search or a
+        /// Settings opened from them is still open.
         func holdBehindContent() async {
-            await hold.begin { [weak self] in self?.tab.isContent == true }
+            await hold.begin { [weak self] in self?.behindContent == true }
         }
 
         /// Ends the shell's hold. A paused channel plays on from where it
@@ -24,7 +25,7 @@
         /// A load that finished while Movies, Series or Search is open stays
         /// paused, as if it had been playing when the tab opened.
         func holdLoadedBehindContent() {
-            guard tab.isContent else { return }
+            guard behindContent else { return }
             hold.loadLanded()
         }
     }

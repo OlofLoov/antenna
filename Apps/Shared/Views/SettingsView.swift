@@ -50,8 +50,13 @@ struct SettingsView: View {
     @ViewBuilder private var page: some View {
         #if os(tvOS)
             SettingsPage.Split {
+                // The profile button left the tab bar for the top of Settings (tvos-shell/the-tabs-in-order).
                 SettingsPage.Lead(symbol: "gearshape", title: "Sources & Settings") {
                     SettingsLeadFooter(iCloud: iCloudFooter, subtitles: PreferencesStore.current(preferenceRecords).subtitles.explanation)
+                }
+                .overlay(alignment: .top) {
+                    ProfileSwitchButton()
+                        .padding(.top, Metrics.Spacing.large)
                 }
             } content: {
                 list

@@ -17,9 +17,9 @@ patterns and shared components the requirements point to.
 | Token | Value | Use |
 |-------|-------|-----|
 | Ground | `#0B0E13` | App background on every platform |
-| Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar, the pill group of the tvOS tab bar |
+| Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar |
 | Overlay scrim | `rgba(8,10,14,0.72)` over the regular material | tvOS panels over live video (`OverlayMaterial`) |
-| Bar scrim | `rgba(8,10,14,0.55)` | Dims the tvOS picture or guide under the raised tab bar |
+| Bar scrim | `rgba(8,10,14,0.55)` | Dims the tvOS picture or guide while the highlight is in the tab bar |
 | Surface | `rgba(255,255,255,0.06)` to `0.18` | Rows, cards, chips; `0.08` for dividers, `0.12` is the selected row on touch platforms and the selected-but-unfocused group or tab on tvOS, `0.18` the track of a loading ring |
 | Text | `#F2F4F8` | Primary |
 | Text secondary | `#D7DEE8` | Body copy and descriptions |
@@ -88,8 +88,7 @@ glass prominent elsewhere), `secondaryActionStyle()` (bordered capsule),
 `chipStyle(isPicked:on:)`. The parts the app draws itself share `FocusCard`
 and `FocusCardStyle`: guide programme blocks, channel overlay rows and
 groups, zap bar sections, multi-view tiles and their actions, passcode
-digits, episode rows and, until `adopt-tvos-tab-view`, the Apple TV tab bar
-pills. A button that only holds focus uses `FocusHolderStyle`.
+digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 `scripts/check-rules.sh` fails on a `ButtonStyle` type outside those files.
 
 ## 2. Layout patterns
@@ -104,14 +103,16 @@ pills. A button that only holds focus uses `FocusHolderStyle`.
   badges. Channel digits typed on a hardware keyboard appear top left.
 - Guide: PiP player (480 by 270) and programme detail on top, grid below
   with a 300 wide channel column, 370 per 30 minutes, accent now line.
-- Non-live sections (Movies, Series, Search) use the tvOS top tab bar,
-  104 tall with 64 at each side: the Antenna mark, then Live, Guide,
-  Movies, Series, Search, then the settings gear. Clock top right; on the
-  Guide the bar keeps the clock's slot empty and the guide draws its own.
-  The `tvos-shell` capability owns the bar and its Menu behavior.
-- Sources and Settings: full-screen panel over the current tab, list
-  (640, from x 64) | detail (1088, from x 768), title top left. Rows on
-  the left, the selected row's detail on the right.
+- The shell is the system `TabView`: its glass tab bar, 68 tall and 46
+  from the top, holds Live, Guide, Movies, Series, Search and Settings.
+  It hides over the full-screen picture and shows on Menu. The bar has no
+  mark and no clock; the info bar, the channel overlay, the Guide's header
+  and the Movies and Series hero draw the clock top right. The
+  `tvos-shell` capability owns the bar and its Menu behavior
+  (`TV-Shell-TabView`).
+- Sources and Settings: the last tab, an opaque split page, lead column
+  (560) | rows. The profile button sits at the top of the lead column with
+  two or more profiles.
 - Focus is the lifted white card. Nothing else is white-filled.
 - Title detail: no tab bar. Art full bleed behind a 1100 wide left scrim
   with the copy column on the hero's left edge. On a series the art stops
@@ -259,5 +260,5 @@ mirrored, with these rules. Four boards are drawn in Arabic: `iPhone-RTL`,
   `iPad-Guide`, `iPhone-Guide` (time axis); `iPhone`, `iPad`, `Main` (Live
   list and chips); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
   `iPhone-Player`, `iPhone-Player-Timeshift`, `iPad-Player` (progress,
-  scrubber and transport); `TV-Shell-Menu`, `TV-Movies-Rows` (tab bar and
+  scrubber and transport); `TV-Shell-TabView`, `TV-Movies-Rows` (tab bar and
   first focus).

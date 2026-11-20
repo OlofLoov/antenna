@@ -18,7 +18,7 @@ enum Palette {
 }
 
 /// The 0.55 scrim the Apple TV shell lays over the picture or the guide
-/// under its tab bar (`TV-Shell-Menu`).
+/// while the highlight is in the system tab bar (`TV-Shell-TabView`).
 struct ShellScrim: View {
     var body: some View {
         Palette.scrimTint.opacity(0.55)

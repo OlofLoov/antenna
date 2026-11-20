@@ -39,9 +39,9 @@ import Testing
     func episodesOnly() async {
         let model = model()
         model.sourcesChanged([playlist])
-        #expect(model.tabs == [.live, .guide, .search])
+        #expect(model.tabs == [.live, .guide, .search, .settings])
         await loaded(model, movies: 0, episodes: 3)
-        #expect(model.tabs == [.live, .guide, .series, .search])
+        #expect(model.tabs == [.live, .guide, .series, .search, .settings])
         #expect(ShellTab.titles(model.titleOffer) == .series)
     }
 
@@ -50,7 +50,7 @@ import Testing
         let model = model()
         model.sourcesChanged([playlist])
         await loaded(model, movies: 2, episodes: 0)
-        #expect(model.tabs == [.live, .guide, .movies, .search])
+        #expect(model.tabs == [.live, .guide, .movies, .search, .settings])
         #expect(ShellTab.titles(model.titleOffer) == .movies)
     }
 
@@ -58,14 +58,14 @@ import Testing
     func xtream() {
         let model = model()
         model.sourcesChanged([SourceDescriptor(name: "X", kind: .xtream, url: URL(fileURLWithPath: "/x"), credentialKey: "k")])
-        #expect(model.tabs == [.live, .guide, .movies, .series, .search])
+        #expect(model.tabs == [.live, .guide, .movies, .series, .search, .settings])
     }
 
     @Test("m3u-playlists/what-a-playlist-offered-is-remembered: the tabs show from the stored counts before the playlist loads")
     func remembered() {
         let model = model(stored: TitleCounts(movies: 0, episodes: 4))
         model.sourcesChanged([playlist])
-        #expect(model.tabs == [.live, .guide, .series, .search])
+        #expect(model.tabs == [.live, .guide, .series, .search, .settings])
     }
 
     @Test("m3u-playlists/movies-and-series-show-by-what-the-sources-offer: Series open when the playlist loses its episodes shows Live")

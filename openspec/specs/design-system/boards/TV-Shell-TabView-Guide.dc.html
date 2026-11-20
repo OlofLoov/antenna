@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV system tab bar over the Guide</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- adopt-tvos-tab-view: Menu from the grid moves the highlight to Guide in the system bar. The guide dims under the 0.55 bar scrim and keeps its highlighted programme. The small picture starts 136 from the top, below the bar's foot at 114 (tvos-shell/the-tab-bar-sits-in-the-same-place-on-every-tab). The guide's own clock stays in its header, since the bar holds none. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- shell.player in the 480 by 270 box -->
+  <div style="position: absolute; top: 136px; left: 64px; width: 480px; height: 270px; border-radius: 14px; background: #1A2535"></div>
+  <!-- guide.panel with guide.clock -->
+  <div style="position: absolute; top: 142px; left: 584px; right: 64px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <div style="font-size: 20px; font-weight: 600; letter-spacing: 1.5px; color: #5BB8FF">NOW · SPORT ONE</div>
+      <div style="font-size: 34px; font-weight: 600; letter-spacing: 0.5px">21:34</div>
+    </div>
+    <div style="font-size: 40px; font-weight: 700; margin-top: 14px">Premier League: Arsenal v Liverpool</div>
+    <div style="font-size: 24px; color: #A7B0BF; margin-top: 14px">20:00 – 22:00 · 2 h · Football · HD</div>
+  </div>
+  <!-- guide.grid -->
+  <div style="position: absolute; top: 470px; left: 64px; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 8px">
+    <div style="height: 96px; border-radius: 12px; background: rgba(255,255,255,0.06)"></div>
+    <div style="height: 96px; border-radius: 12px; background: rgba(255,255,255,0.06)"></div>
+    <div style="height: 96px; border-radius: 12px; background: rgba(255,255,255,0.06)"></div>
+    <div style="height: 96px; border-radius: 12px; background: rgba(255,255,255,0.06)"></div>
+  </div>
+  <!-- shell.scrim under the bar -->
+  <div style="position: absolute; inset: 0; background: rgba(8,10,14,0.55)"></div>
+  <!-- System tab bar, Guide highlighted -->
+  <div style="position: absolute; top: 46px; left: 50%; transform: translateX(-50%); height: 68px; padding: 0 8px; border-radius: 999px; background: rgba(255,255,255,0.16); backdrop-filter: blur(30px); display: flex; align-items: center; gap: 4px; font-size: 29px">
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Live</div>
+    <div style="height: 56px; padding: 0 28px; border-radius: 999px; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; font-weight: 600">Guide</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Movies</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Series</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Search</div>
+    <div style="height: 56px; padding: 0 28px; display: flex; align-items: center">Settings</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

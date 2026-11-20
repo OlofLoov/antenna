@@ -45,7 +45,6 @@
             guard launched else { return .waiting }
             if let channel = channels.first(where: { TopShelfItemID.channel($0) == id }) {
                 shelfItem = nil
-                settingsOpen = false
                 // Tuned now, so no launch tune slips in before it.
                 if channel != tuned { tune(channel) }
                 Task { await showLive() }

@@ -76,7 +76,7 @@
                 }
             } clock: {
                 TimelineView(.everyMinute) { context in
-                    ShellTabBar.Clock(date: context.date, identifier: "overlay.clock")
+                    TVClock(date: context.date, identifier: "overlay.clock")
                 }
             }
         }

@@ -55,12 +55,13 @@ final class SearchTVUITests: XCTestCase {
         expect(element("zapBar.bar"), "exists == false")
         press(.menu)
         expectFocus("shell.tab.live")
-        press(.right, times: 4)
-        expectFocus("shell.tab.search")
+        moveAlongTheBar(.right, to: "shell.tab.search")
         press(.select)
         XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
-        expectFocus("shell.tab.search")
-        press(.down)
+        // Select on the tab takes the highlight to the keyboard; one that lands
+        // while the page opens leaves it on the tab, and a swipe down goes on.
+        let tab = element("shell.tab.search")
+        if tab.exists, tab.hasFocus { press(.down) }
     }
 
     /// Types `text` with the search keyboard.
@@ -113,7 +114,9 @@ final class SearchTVUITests: XCTestCase {
         moveToResults("search.result.channel.0")
         press(.up)
         expect(element("search.result.channel.0"), "hasFocus == false")
-        XCTAssertFalse(element("shell.tab.search").hasFocus, "one swipe up lands on the keyboard: \(focusedElements())")
+        XCTAssertFalse(
+            element("shell.tab.search").exists && element("shell.tab.search").hasFocus,
+            "one swipe up lands on the keyboard: \(focusedElements())")
         app.searchFields.firstMatch.typeText("x")
         expect(app.searchFields.firstMatch, "value == 'a2x'")
     }
@@ -185,13 +188,13 @@ final class SearchTVUITests: XCTestCase {
 
         press(.menu)
         expectFocus("shell.tab.live")
-        press(.right, times: 4)
-        expectFocus("shell.tab.search")
+        moveAlongTheBar(.right, to: "shell.tab.search")
         press(.select)
-        // Down before Search has opened leaves the field without the keyboard.
         XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
-        expectFocus("shell.tab.search")
-        press(.down)
+        // Select on the tab takes the highlight to the keyboard; one that lands
+        // while the page opens leaves it on the tab, and a swipe down goes on.
+        let tab = element("shell.tab.search")
+        if tab.exists, tab.hasFocus { press(.down) }
         let field = app.searchFields.firstMatch
         expect(field, "value BEGINSWITH 'a2'")
         field.typeText(XCUIKeyboardKey.delete.rawValue + XCUIKeyboardKey.delete.rawValue)
@@ -204,8 +207,7 @@ final class SearchTVUITests: XCTestCase {
     func testMoviesHasNoSearchButtonOnAppleTV() {
         openSearch()
         press(.menu)
-        press(.left, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.left, to: "shell.tab.movies")
         press(.select)
         XCTAssertTrue(element("movies.hero").waitForExistence(timeout: 10))
         XCTAssertFalse(element("movies.search").exists, "the Search tab is the way to search")
@@ -217,13 +219,15 @@ final class SearchTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
         app.launchInEnglish()
+        // The system bar takes Menu only once something on the page has focus.
+        _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
         press(.menu)
         XCTAssertTrue(element("shell.tab.search").waitForExistence(timeout: 10))
-        press(.right, times: 4)
-        expectFocus("shell.tab.search")
+        moveAlongTheBar(.right, to: "shell.tab.search")
         press(.select)
         XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
-        press(.down)
+        let tab = element("shell.tab.search")
+        if tab.exists, tab.hasFocus { press(.down) }
         type("mira h")
         let person = element("search.person.0")
         XCTAssertTrue(person.waitForExistence(timeout: 10))

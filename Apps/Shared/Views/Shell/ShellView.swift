@@ -17,10 +17,10 @@
         @Query private var preferences: [PreferencesRecord]
         @Environment(\.modelContext) private var context
         @Environment(\.currentProfile) private var profile
-        @Environment(\.switchProfile) private var switchProfile
+        @Environment(\.switchProfile) var switchProfile
         @State var zapBar = ZapBarModel(hideAfter: ZapBarModel.hideAfterAtLaunch)
         @State var numbers = NumberEntryModel()
-        /// When the tab bar last went down; the press that lowered it does not also change channel.
+        /// When focus last came down from the tab bar; the press that brought it does not also change channel.
         @State private var barLowered = ContinuousClock.now - .seconds(10)
         @State private var overlay = ChannelOverlayModel()
         @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
@@ -32,6 +32,7 @@
         @Environment(ShelfLibrary.self) private var shelves
         /// Search keeps its query while the app runs.
         @State private var search = SearchModel()
+        @Namespace private var pages
 
         init(model: ShellModel) {
             self.model = model
@@ -40,52 +41,13 @@
         var body: some View {
             ZStack(alignment: .topLeading) {
                 picture
-                ShellLiveLayer(model: model, focus: $focus)
-                tabContent
-                if zapBarShows, let channel = zapBar.channel {
-                    ZapBarView(
-                        channel: channel, catalogue: catalogue, list: overlay.currentList(catalogue, for: channel), guide: overlayGuide,
-                        engine: model.engine, timeshift: model.player.timeshift
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
-                }
-                if model.tab == .live, !model.barVisible, model.player.panel != nil, let channel = model.tuned {
-                    PlayerTVPanel(player: model.player, channel: channel, catalogue: catalogue, guide: overlayGuide, focus: $focus)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        .transition(reduceMotion ? .identity : .move(edge: .top))
-                }
-                if model.dimmed { ShellScrim() }
-                // A title page hides the bar and clock, so swiping up from it reaches nothing
-                // (tvos-shell/the-tab-bar-stays-hidden-on-a-title-page).
-                if model.barVisible, shelves.top == nil {
-                    ShellBarLayer(model: model, focus: $focus, barHasFocus: barHasFocus)
-                }
-                if model.pickerOpen {
-                    ChannelOverlayView(
-                        catalogue: catalogue, playing: model.tuned, guide: overlayGuide, model: overlay, focus: $focus,
-                        pick: { channel, group in
-                            overlay.tuned(from: group)
-                            Task {
-                                await model.pickFromOverlay(channel)
-                                focus = .picture
-                            }
-                        },
-                        toggleFavorite: toggleFavorite,
-                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer,
-                        startOver: overlayStartOver
-                    )
-                    .transition(reduceMotion ? .opacity : .move(edge: .leading))
-                }
-                ShellReminderBanner(model: model, catalogue: catalogue, overlay: overlay, focus: $focus)
+                tabView
                 #if DEBUG
                     UITestingShell.Probe(engine: model.engine).id(model.multiViewEnds)
                 #endif
             }
             .ignoresSafeArea()
-            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.barVisible)
-            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.tab)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: model.dimmed)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: zapBarShows)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.pickerOpen)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.player.panel != nil)
@@ -93,10 +55,9 @@
                 numbers, enabled: numbersEnabled,
                 catalogue: catalogue, typing: { zapBar.dismiss() }, tune: { channel in Task { await model.pick(channel) } }
             )
-            .modifier(ShellBack(barFocused: barHasFocus, menu: menu))
             .onPlayPauseCommand {
                 // Play/pause does nothing while the info panel is open.
-                guard model.tab == .live, !model.barVisible, model.player.panel == nil else { return }
+                guard model.liveInFront, model.player.panel == nil else { return }
                 // Play/pause on the error is Try again (player-controls-and-playback-errors/try-again-or-recover-on-its-own).
                 // It still shows the info bar, as play/pause in full-screen live TV does.
                 if model.player.failure != nil, !model.pickerOpen {
@@ -125,18 +86,13 @@
             .onChange(of: model.tuned, initial: true) { _, channel in zapBar.channelChanged(to: channel) }
             // Watch on the channel already in the Guide's small picture shows the info bar as a tune does.
             .onChange(of: model.guidePicks) { _, _ in zapBar.channelChanged(to: model.tuned) }
-            .onChange(of: model.barVisible) { _, raised in
-                if raised { zapBar.dismiss() }
+            .onChange(of: model.barFocused) { _, focused in
+                if focused { zapBar.dismiss() }
             }
-            .onMoveCommand(perform: move)
             .modifier(ShellTimeshift(timeshift: model.player.timeshift, zapBar: zapBar, active: fullScreenLive))
             .environment(\.shellNavigator, model.navigator.settingGroup { overlay.tuned(from: $0) })
-            .fullScreenCover(isPresented: $model.settingsOpen, onDismiss: { focus = .settings }) {
-                SettingsView()
-                    .environment(\.loadedChannels, model.channels)
-                    // Playback stops before "Who's watching?" (profiles/switching-profile).
-                    .environment(\.switchProfile, stoppingFirst)
-            }
+            .controlHintsLegend()
+            .environment(\.shellBarFocused, model.barFocused)
             .fullScreenCover(item: $model.signInRequest, onDismiss: { focus = model.liveFocus }) { request in
                 SignInView(request: request) { username, password in
                     try model.saveLogin(for: request, username: username, password: password)
@@ -165,7 +121,7 @@
                 refresher?.refreshDue(interval: PreferencesStore.current(preferences).refresh.duration)
             }
             .onChange(of: model.liveScreen, initial: true) { _, _ in
-                guard model.tab == .live, !model.barVisible, !model.pickerOpen else { return }
+                guard model.liveInFront, !model.pickerOpen else { return }
                 focus = model.liveFocus
             }
             .onChange(of: focus) { old, new in
@@ -176,80 +132,187 @@
 
         // MARK: Layers
 
-        /// The same surface in every tab, so the player is never rebuilt (design-system/live-video-keeps-playing-under-overlays):
-        /// full screen on Live, the 480 by 270 box on Guide, hidden behind
-        /// Movies, Series and Search.
+        /// The same surface behind every tab, so the player is never rebuilt (design-system/live-video-keeps-playing-under-overlays):
+        /// full screen behind Live's clear page, the 480 by 270 box on Guide,
+        /// hidden behind Movies, Series, Search and Settings.
         private var picture: some View {
             ZStack {
-                ZStack {
-                    PlayerSurfaceView(engine: model.engine).id(model.multiViewEnds)
-                        .overlay { PlayerSubtitles(engine: model.engine) }
-                        .accessibilityElement()
-                        .accessibilityLabel("Picture")
-                        .accessibilityValue(model.dimmed ? "dimmed" : "full")
-                        .accessibilityIdentifier("shell.player")
-                    pictureStatus
-                }
-                .frame(
-                    width: model.tab == .guide ? 480 : nil,
-                    height: model.tab == .guide ? 270 : nil
-                )
-                .frame(maxWidth: model.tab == .guide ? nil : .infinity, maxHeight: model.tab == .guide ? nil : .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: model.tab == .guide ? 14 : 0))
-                .padding(.leading, model.tab == .guide ? 64 : 0)
-                .padding(.top, model.tab == .guide ? GuideGrid.pictureTop : 0)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .opacity(model.tab.isContent || model.tuned == nil ? 0 : 1)
-                if model.tab == .live, model.tuned != nil, model.player.failure == nil {
-                    // Stays focusable under the raised bar, so swiping down from the
-                    // bar lands here and `move` lowers the bar.
-                    Button {
-                        guard !model.barVisible else { return }
-                        if numbers.isOpen { return numbers.commit() }
-                        // Select while the info bar shows hides it, then opens the list.
-                        zapBar.dismiss()
-                        let target = overlay.open(catalogue, playing: model.tuned)
-                        model.openPicker()
-                        focus = .overlay(target)
+                PlayerSurfaceView(engine: model.engine).id(model.multiViewEnds)
+                    .overlay { PlayerSubtitles(engine: model.engine) }
+                    .accessibilityElement()
+                    .accessibilityLabel("Picture")
+                    .accessibilityValue(model.dimmed ? "dimmed" : "full")
+                    .accessibilityIdentifier("shell.player")
+                pictureStatus
+            }
+            .frame(
+                width: model.tab == .guide ? 480 : nil,
+                height: model.tab == .guide ? 270 : nil
+            )
+            .frame(maxWidth: model.tab == .guide ? nil : .infinity, maxHeight: model.tab == .guide ? nil : .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: model.tab == .guide ? 14 : 0))
+            .padding(.leading, model.tab == .guide ? 64 : 0)
+            .padding(.top, model.tab == .guide ? GuideGrid.pictureTop : 0)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .opacity(model.tab.showsPicture && model.tuned != nil ? 1 : 0)
+        }
+
+        /// The system tab bar over the pages (tvos-shell/the-tabs-in-order; `TV-Shell-TabView`).
+        /// Live's page is clear, so the picture shows through it.
+        private var tabView: some View {
+            TabView(selection: Binding(get: { model.tab }, set: { model.choose($0) })) {
+                ForEach(model.tabs, id: \.self) { tab in
+                    Tab(value: tab) {
+                        page(tab)
+                            // Inside the page, where the focus engine lets it take the highlight.
+                            .overlay {
+                                if tab == model.tab {
+                                    ShellReminderBanner(model: model, catalogue: catalogue, overlay: overlay, focus: $focus)
+                                }
+                            }
+                            .focusScope(pages)
+                            .toolbarVisibility(barVisibility(on: tab), for: .tabBar)
                     } label: {
-                        Color.clear
+                        Text(tab.title)
+                            .accessibilityIdentifier(tab.elementName)
+                            .accessibilityAddTraits(tab == model.tab ? .isSelected : [])
                     }
-                    .buttonStyle(FocusHolderStyle())
-                    // Holding select opens the info panel; a swipe down already changes channel.
-                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
-                    .disabled(model.pickerOpen || model.player.panel != nil)
-                    .accessibilityLabel("Live picture")
-                    .accessibilityIdentifier("shell.picture")
-                    .focused($focus, equals: .picture)
-                    .controlHints(.live(swipe: PreferencesStore.current(preferences).swipe, infoBar: zapBarShows))
                 }
+            }
+            .modifier(ShellFocusKeeper(model: model, focus: $focus, pages: pages))
+        }
+
+        /// The bar stays out of the way over the picture and the guide until
+        /// Menu brings the highlight to it, and while a title page is open
+        /// (tvos-shell/the-tab-bar-stays-hidden-on-a-title-page). Elsewhere
+        /// the system shows it while it has the highlight.
+        private func barVisibility(on tab: ShellTab) -> Visibility {
+            switch tab {
+            case .live, .guide: model.barFocused ? .visible : .hidden
+            case .movies, .series, .search: shelves.top == nil ? .automatic : .hidden
+            case .settings: .automatic
             }
         }
 
-        @ViewBuilder private var tabContent: some View {
-            switch model.tab {
+        @ViewBuilder private func page(_ tab: ShellTab) -> some View {
+            switch tab {
             case .live:
-                EmptyView()
+                livePage
             case .guide:
                 GuideScreen(
                     shell: model, catalogue: catalogue, overlay: overlay, guide: overlayGuide, focus: $focus,
                     toggleFavorite: { _ = FavoriteRecord.toggle($0, in: catalogue, profile: profile, context: context) }
                 )
+                .overlay { if model.dimmed { ShellScrim() } }
+                .ignoresSafeArea()
             case .movies:
-                ShelfTVScreen(kind: .movie, focus: $focus)
+                ShelfTVScreen(kind: .movie, focus: $focus).ignoresSafeArea()
             case .series:
-                ShelfTVScreen(kind: .series, focus: $focus)
+                ShelfTVScreen(kind: .series, focus: $focus).ignoresSafeArea()
             case .search:
                 SearchTVScreen(shell: model, catalogue: catalogue, overlayGuide: overlayGuide) { focus = .picture }
                     .environment(search)
+                    .ignoresSafeArea()
+            case .settings:
+                SettingsView()
+                    .environment(\.loadedChannels, model.channels)
+                    // Playback stops before "Who's watching?" (profiles/switching-profile).
+                    .environment(\.switchProfile, stoppingFirst)
             }
         }
 
-        // MARK: Input
+        /// Live's page: clear over the picture, with the loading and empty
+        /// screens, the error, the info bar, the info panel and the channel overlay.
+        private var livePage: some View {
+            ZStack(alignment: .topLeading) {
+                ShellLiveLayer(model: model, focus: $focus)
+                if model.dimmed { ShellScrim() }
+                if model.tuned != nil, let message = model.player.message {
+                    PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn)
+                }
+                pictureHolder
+                if zapBarShows, let channel = zapBar.channel {
+                    ZapBarView(
+                        channel: channel, catalogue: catalogue, list: overlay.currentList(catalogue, for: channel), guide: overlayGuide,
+                        engine: model.engine, timeshift: model.player.timeshift
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+                    // The system tab bar holds no clock, so the info bar shows it top right (`TV-Shell-TabView`).
+                    TimelineView(.everyMinute) { context in
+                        TVClock(date: context.date, identifier: "zapBar.clock")
+                    }
+                    .padding(.top, 58)
+                    .padding(.trailing, 80)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+                }
+                if model.player.panel != nil, let channel = model.tuned {
+                    PlayerTVPanel(player: model.player, channel: channel, catalogue: catalogue, guide: overlayGuide, focus: $focus)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .transition(reduceMotion ? .identity : .move(edge: .top))
+                }
+                if model.pickerOpen {
+                    ChannelOverlayView(
+                        catalogue: catalogue, playing: model.tuned, guide: overlayGuide, model: overlay, focus: $focus,
+                        pick: { channel, group in
+                            overlay.tuned(from: group)
+                            Task {
+                                await model.pickFromOverlay(channel)
+                                focus = .picture
+                            }
+                        },
+                        toggleFavorite: toggleFavorite,
+                        openSearch: { Task { await model.show(.search) } }, multiView: model.multiViewOffer,
+                        startOver: overlayStartOver
+                    )
+                    .transition(reduceMotion ? .opacity : .move(edge: .leading))
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+            // Menu closes what is open over the picture; with nothing open the
+            // system takes it to the tab bar (tvos-shell/menu-shows-the-tab-bar-over-the-picture).
+            .onExitCommand(perform: liveMenu)
+            .onMoveCommand(perform: move)
+        }
+
+        /// The full-screen picture's focus holder: select opens the channel
+        /// overlay, holding select opens the info panel.
+        @ViewBuilder private var pictureHolder: some View {
+            if model.tuned != nil, model.player.failure == nil {
+                Button {
+                    if numbers.isOpen { return numbers.commit() }
+                    // Select while the info bar shows hides it, then opens the list.
+                    zapBar.dismiss()
+                    let target = overlay.open(catalogue, playing: model.tuned)
+                    model.openPicker()
+                    focus = .overlay(target)
+                } label: {
+                    Color.clear
+                }
+                .buttonStyle(FocusHolderStyle())
+                // Holding select opens the info panel; a swipe down already changes channel.
+                .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in openPanel() })
+                .disabled(model.pickerOpen || model.player.panel != nil)
+                .accessibilityLabel("Live picture")
+                .accessibilityIdentifier("shell.picture")
+                .focused($focus, equals: .picture)
+                .controlHints(.live(swipe: PreferencesStore.current(preferences).swipe, infoBar: zapBarShows))
+            }
+        }
+
+    }
+
+    // MARK: Input
+
+    extension ShellScreen {
 
         /// Digits change channel on full-screen Live with nothing over the picture.
         private var numbersEnabled: Bool {
-            model.tab == .live && !model.barVisible && !model.pickerOpen && model.tuned != nil && model.player.panel == nil
+            model.liveInFront && !model.pickerOpen && model.tuned != nil && model.player.panel == nil
         }
 
         private var catalogueInputs: ShellCatalogueInputs {
@@ -267,7 +330,13 @@
 
         /// The info bar shows on full-screen Live with nothing else over the picture.
         private var zapBarShows: Bool {
-            zapBar.isVisible && model.tab == .live && !model.barVisible && !model.pickerOpen
+            zapBar.isVisible && model.liveInFront && !model.pickerOpen
+        }
+
+        /// Menu while something is open over the picture; nil leaves Menu to the system.
+        private var liveMenu: (() -> Void)? {
+            guard model.player.panel != nil || numbers.isOpen || model.pickerOpen || zapBarShows else { return nil }
+            return menu
         }
 
         private func menu() {
@@ -284,22 +353,10 @@
                 return
             }
             // Menu hides the info bar and goes no further.
-            if zapBarShows {
-                zapBar.dismiss()
-                return
-            }
-            let origin: MenuOrigin =
-                switch focus {
-                case .content, .tab, .settings, .profile: .content
-                case .picture, .retry, .signIn, .panel, .liveScreen, .overlay, nil: model.tab == .live ? .picture : .content
-                }
-            focus = model.menu(from: origin)
+            if zapBarShows { zapBar.dismiss() }
         }
 
-        /// Swiping up from a tab's content lands on the open tab, not the
-        /// nearest pill. Focus leaving the raised bar downwards for the
-        /// picture, a Live screen or the guide lowers the bar, whichever of
-        /// this and `move` runs first.
+        /// Moves focus inside the overlay and the info panel by their rules.
         private func focusMoved(from old: ShellFocus?, to new: ShellFocus?) {
             switch (old, new) {
             case (_, .panel(.segment(let tab))):
@@ -328,31 +385,20 @@
             case (.overlay(.channel), .overlay(.favorite)), (.overlay(.channel), .overlay(.next)):
                 // Right from a channel reaches Watch first; up from Watch reaches the programmes that follow.
                 focus = .overlay(.watch)
-            case (.content, .tab(let target)) where target != model.tab && model.tab.isContent:
-                focus = .tab(model.tab)
-            case (.content, .settings) where model.tab.isContent:
-                focus = .tab(model.tab)
-            case (.tab, .picture), (.tab, .retry), (.tab, .signIn), (.tab, .liveScreen), (.tab, .content), (.settings, .picture),
-                (.settings, .retry), (.settings, .signIn), (.settings, .liveScreen), (.settings, .content):
-                if model.barRaised, let target = model.swipeDown() {
-                    focus = target
-                    barLowered = .now
-                }
+            case (nil, .picture), (nil, .retry), (nil, .signIn):
+                // Swiping down from the tab bar onto the picture does not also change channel.
+                if model.tab == .live { barLowered = .now }
             default:
                 break
             }
         }
 
         private func move(_ direction: MoveCommandDirection) {
-            if focus == .picture || focus == .retry || focus == .signIn, model.tab == .live, !model.barVisible, !model.pickerOpen {
-                guard ContinuousClock.now - barLowered > .milliseconds(500) else { return }
-                // The swipe preference (sources-and-settings/choose-how-the-app-behaves).
-                guard PreferencesStore.current(preferences).swipe == .changesChannel else { return zapBar.playPause() }
-                return zap(direction)
-            }
-            guard direction == .down, barHasFocus, let target = model.swipeDown() else { return }
-            focus = target
-            barLowered = .now
+            guard focus == .picture || focus == .retry || focus == .signIn, model.liveInFront, !model.pickerOpen else { return }
+            guard ContinuousClock.now - barLowered > .milliseconds(500) else { return }
+            // The swipe preference (sources-and-settings/choose-how-the-app-behaves).
+            guard PreferencesStore.current(preferences).swipe == .changesChannel else { return zapBar.playPause() }
+            zap(direction)
         }
 
     }
@@ -402,7 +448,11 @@
             let before = catalogue
             let isFavorite = FavoriteRecord.toggle(channel, in: catalogue, profile: profile, context: context)
             guard !isFavorite, let next = overlay.removedFromFavorites(key, before: before) else { return }
-            focus = .overlay(next)
+            // After the removed row has left the list, or the focus engine puts the highlight nowhere.
+            Task {
+                try? await Task.sleep(for: .milliseconds(100))
+                focus = .overlay(next)
+            }
         }
 
         /// Multi-view over Live; the channel it hands back shows the info bar.
@@ -426,75 +476,4 @@
         }
     }
 
-    /// The player's layers and inputs: the spinner, the error, the info panel.
-    extension ShellScreen {
-        private var barHasFocus: Bool {
-            switch focus {
-            case .tab, .settings, .profile: true
-            case .picture, .retry, .signIn, .panel, .liveScreen, .content, .overlay, nil: false
-            }
-        }
-
-        private var overlayFocus: OverlayFocus? {
-            if case .overlay(let target) = focus { return target }
-            return nil
-        }
-
-        /// `switchProfile` after the engine stops; nil outside a profile gate.
-        fileprivate var stoppingFirst: (@MainActor () -> Void)? {
-            guard let switchProfile else { return nil }
-            return { [model] in
-                Task {
-                    await model.engine.stop()
-                    switchProfile()
-                }
-            }
-        }
-
-        /// The spinner or the error over the picture, sized to it: the full
-        /// error with its buttons on Live, the short one in the Guide's box
-        /// (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong).
-        @ViewBuilder private var pictureStatus: some View {
-            if model.tuned != nil {
-                if let message = model.player.message {
-                    if model.tab == .live {
-                        PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn)
-                    } else {
-                        PlayerStatus.Failure(channel: nil, title: message.title, explanation: message.explanation) { EmptyView() }
-                    }
-                } else {
-                    PlayerWaitingLayer(player: model.player)
-                        .environment(\.playerStatusMetrics, model.tab == .live ? .television : .compact)
-                }
-            }
-        }
-
-        /// Sign in on the error, nil when the failure is not about the login
-        /// or the source has no login, as a playlist has none.
-        private var signIn: (() -> Void)? {
-            guard let failure = model.player.failure, failure == .loginNotOnDevice || failure == .notAllowed,
-                let source = model.tuned?.sourceID, model.descriptors[source]?.credentialKey != nil
-            else { return nil }
-            return { model.signIn(to: source) }
-        }
-
-        /// Opens the info panel on Info with focus on its tab.
-        private func openPanel() {
-            guard !model.barVisible, !model.pickerOpen else { return }
-            numbers.cancel()
-            zapBar.dismiss()
-            model.player.openPanel()
-            if model.player.panel != nil { focus = .panel(.segment(.info)) }
-        }
-
-        /// The error takes focus from the picture; once it goes, focus is
-        /// back on the picture.
-        private func failureChanged(_ failed: Bool) {
-            switch focus {
-            case .picture where failed: focus = .retry
-            case .retry where !failed, .signIn where !failed: focus = model.liveFocus
-            default: break
-            }
-        }
-    }
 #endif

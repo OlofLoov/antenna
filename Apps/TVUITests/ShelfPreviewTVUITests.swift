@@ -53,8 +53,7 @@ final class ShelfPreviewTVUITests: XCTestCase {
         expectFocus("shell.picture")
         expect(element("zapBar.bar"), "exists == false")
         press(.menu)
-        press(.right, times: 2)
-        expectFocus("shell.tab.movies")
+        moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
         // Play takes focus a second time once the titles have loaded.
@@ -66,6 +65,8 @@ final class ShelfPreviewTVUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shelf", "titles"]
         app.launchInEnglish()
+        // The system bar takes Menu only once something on the page has focus.
+        _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
         press(.menu)
         XCTAssertTrue(element("shell.tab.\(tab)").waitForExistence(timeout: 10))
         expectFocus("shell.tab.live")
@@ -85,12 +86,12 @@ final class ShelfPreviewTVUITests: XCTestCase {
         expect(element("movies.preview"), "exists == true")
         XCTAssertTrue(focused.hasPrefix("movies.card."), focused)
         expect(element("movies.preview.title"), "label == 'Night Ferry'")
-        // The row comes up just under the preview's 520 pt.
+        // The row comes up at the preview's 520 pt foot; under the system tab bar it lands a point higher.
         let row = element("movies.row.recentlyAdded")
-        for _ in 0..<10 where !(520...590).contains(row.frame.minY) {
+        for _ in 0..<10 where !(518...590).contains(row.frame.minY) {
             Thread.sleep(forTimeInterval: 0.3)
         }
-        XCTAssertTrue((520...590).contains(row.frame.minY), "the row's top is at \(row.frame.minY)")
+        XCTAssertTrue((518...590).contains(row.frame.minY), "the row's top is at \(row.frame.minY)")
 
         press(.right)
         expect(element("movies.preview.title"), "label == 'Snow Day'", timeout: 5)
