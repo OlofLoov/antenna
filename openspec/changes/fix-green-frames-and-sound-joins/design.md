@@ -15,8 +15,8 @@ No owner stream was available. Each suspect was checked with a generated stream 
 | CPU of TrueHD | keeping 30 s of packets cost 4.6 s of CPU in a release build on an M-series Mac, 15% of a core | the 10 s ring copied all 12,000 packets for every new one |
 | TrueHD started between major syncs | no bug | FFmpeg's decoder gives nothing until a major sync, and that frame starts at its own time |
 | Start or skip at an HEVC CRA | leading pictures fail with a missing reference (-17694) | RASL pictures reference pictures before the keyframe, which were never read |
-| Start at an H.264 open-GOP keyframe | no bug | VideoToolbox decoded the leading B-frames without damage |
-| Dolby Vision layers in hvcC samples | no bug | VideoToolbox ignores units of layer 1 and unit types 62 and 63 |
+| Start at an H.264 open-GOP keyframe | leading B-frames queued before the keyframe in time, decoded without damage | the run queued every picture after the first keyframe |
+| Dolby Vision layers in hvcC samples | no bug while the record lists the base layer first; no picture at all when it lists the enhancement layer's sets first | VideoToolbox ignores units of layer 1 and types 62 and 63 in a sample, but the format took the first VPS, SPS and PPS of each kind |
 | Dolby Vision layers in Annex B (MPEG-TS) | no picture at all | the format was built from the last VPS, SPS and PPS in the keyframe, which were the enhancement layer's |
 
 ## Decisions
@@ -37,6 +37,22 @@ Options considered:
 ### A ring that does not copy
 
 `SoundRing` holds a stream's packets in an array with a head index and is changed in place in the run's dictionary. Dropping the oldest moves the head; the spent front is cleared once it is half the array. A copy out of the dictionary is what made each append copy the whole ring.
+
+### Base layer only for HEVC
+
+`SampleBuilder.isHEVCBaseLayer` turns down units with a layer id above 0 and units of type 62 and 63 (Dolby Vision RPU and enhancement-layer data). Annex B packets drop them before the parameter sets are picked and before the sample is built. Length-prefixed samples (Matroska, MP4) drop them too, and come back as they are when nothing is dropped, so ordinary films pay one scan of their unit headers. `hevcParameterSets` takes the first base-layer VPS, SPS and PPS of the hvcC record.
+
+Options considered:
+- Declare Dolby Vision to the renderer (`dvh1` with the `dvcC` record) (rejected for now): it is the only way to show profile 5 with the right colors, but it needs an Apple TV and a Dolby Vision TV to check, and profile 7 and 8 films already have an HDR10 base.
+- Leave the samples alone and fix only the parameter sets (rejected): VideoToolbox ignored the extra units in the tests, but a decoder that reads an SPS of layer 1 with id 0 would replace the base layer's.
+
+### Leading pictures dropped after a start
+
+`DemuxRun` remembers the time of the keyframe a run started at, after a start, a resume or a skip, until the next keyframe. A picture before that time is dropped before it reaches `SampleBuilder`. Those are the RASL pictures of an HEVC CRA and the leading B-frames of an open-GOP H.264 keyframe; both may refer to pictures before the keyframe. RADL pictures, which decode, go too; they come before the first picture shown, so nothing on screen is lost.
+
+Options considered:
+- Read the NAL unit types and drop only RASL (rejected): HEVC only, and H.264 open GOPs, MPEG-2 and HEVC in other containers lead their keyframes the same way.
+- Mark leading pictures "do not display" and still decode them (rejected): a RASL picture fails with a missing reference whatever it is marked.
 
 ## Platforms
 

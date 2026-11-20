@@ -141,11 +141,13 @@ public final class SampleBuilder {
                 try Self.h264Format(sps: $0[0], pps: $0[1])
             }
         case .hevcAnnexB:
-            return try annexB(packet, parameterSets: [32, 33, 34], dropped: [32, 33, 34, 35], type: Self.hevcType) {
+            return try annexB(
+                packet, parameterSets: [32, 33, 34], dropped: [32, 33, 34, 35], type: Self.hevcType, keep: Self.isHEVCBaseLayer
+            ) {
                 try Self.hevcFormat(parameterSets: $0)
             }
         case .h264AVCC, .hevcHVCC:
-            return try formatDescription.map { try Self.videoBuffer(packet.data, format: $0, packet: packet) }
+            return try formatDescription.map { try Self.videoBuffer(lengthPrefixedSample(packet), format: $0, packet: packet) }
         case .mpeg4Video:
             // No configuration in the header: AVI often carries it in front
             // of the first frame.
@@ -196,6 +198,13 @@ public final class SampleBuilder {
         }
     }
 
+    /// The bytes of a length-prefixed video packet as the decoder gets
+    /// them: HEVC keeps only its base layer.
+    private func lengthPrefixedSample(_ packet: DemuxedPacket) -> Data {
+        guard case .hevcHVCC = codec else { return packet.data }
+        return Self.hevcBaseLayer(lengthPrefixed: packet.data)
+    }
+
     /// Picks the path for MPEG audio from its first frame header: layer III
     /// is MP3, which Apple decodes; layers I and II go to the software
     /// decoder.
@@ -212,12 +221,13 @@ public final class SampleBuilder {
 
     /// A video buffer from Annex B bytes: the format is taken from the
     /// parameter sets when a packet carries all of them, and the units of
-    /// the `dropped` types are left out of the sample.
+    /// the `dropped` types, and those `keep` turns down, are left out of
+    /// the sample.
     private func annexB(
         _ packet: DemuxedPacket, parameterSets: [Int], dropped: Set<Int>, type: (Data) -> Int?,
-        format makeFormat: ([Data]) throws -> CMFormatDescription
+        keep: (Data) -> Bool = { _ in true }, format makeFormat: ([Data]) throws -> CMFormatDescription
     ) throws -> CMSampleBuffer? {
-        let units = Self.nalUnits(annexB: packet.data)
+        let units = Self.nalUnits(annexB: packet.data).filter(keep)
         let sets = parameterSets.compactMap { wanted in units.last { type($0) == wanted } }
         if sets.count == parameterSets.count, sets != videoParameterSets || formatDescription == nil {
             formatDescription = try makeFormat(sets)

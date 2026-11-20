@@ -241,6 +241,10 @@ final class DemuxRun: @unchecked Sendable {
         /// Video before the first keyframe is dropped; after it, everything
         /// goes to the builder, even while a decoder holds pictures back.
         var sawKeyframe = false
+        /// The time of the keyframe the picture started at, until the next
+        /// keyframe. Pictures before it in time lead it and may refer to
+        /// pictures that were never read.
+        var startKeyframe: CMTime?
         /// The container stream of the sound that plays.
         var sound: Int?
         /// The newest packets of each sound stream with a builder.
@@ -263,6 +267,7 @@ final class DemuxRun: @unchecked Sendable {
             }
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
                 if !state.sawKeyframe, !packet.isKeyframe { continue }
+                if Self.isLeading(packet, &state) { continue }
                 state.sawKeyframe = true
                 if !state.fieldsDecided {
                     state.fieldsDecided = true
@@ -302,6 +307,21 @@ final class DemuxRun: @unchecked Sendable {
             }
         }
         return state.announced
+    }
+
+    /// Whether `packet` is a picture that leads the keyframe the picture
+    /// started at: decoded after it but shown before it, as the RASL pictures
+    /// after an HEVC CRA and the B-frames after an open-GOP H.264 keyframe
+    /// are. They may refer to pictures before the keyframe, which were never
+    /// read, and decode to green or broken pictures
+    /// (playback-engine/undecodable-pictures-are-not-shown).
+    private static func isLeading(_ packet: DemuxedPacket, _ state: inout PumpState) -> Bool {
+        if packet.isKeyframe {
+            state.startKeyframe = state.sawKeyframe ? nil : packet.presentationTime
+            return false
+        }
+        guard let start = state.startKeyframe, start.isNumeric, packet.presentationTime.isNumeric else { return false }
+        return packet.presentationTime < start
     }
 
     /// Reports the picture's new size or dynamic range when a keyframe changes them.

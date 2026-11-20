@@ -158,6 +158,45 @@ extension SampleBuilder {
         unit.first.map { Int(($0 >> 1) & 0x3F) }
     }
 
+    /// Whether an HEVC NAL unit belongs to the base layer and is not Dolby
+    /// Vision metadata. A Dolby Vision profile 7 film carries its
+    /// enhancement layer in the same track, with its own VPS, SPS and PPS
+    /// under layer id 1, and its metadata in units of type 62 and 63. Only
+    /// the base layer is decoded; a format made from the enhancement
+    /// layer's parameter sets decodes nothing.
+    static func isHEVCBaseLayer(_ unit: Data) -> Bool {
+        guard unit.count >= 2, let type = hevcType(unit) else { return false }
+        let first = unit[unit.startIndex]
+        let second = unit[unit.startIndex + 1]
+        let layer = Int(first & 0x01) << 5 | Int(second >> 3)
+        return layer == 0 && type != 62 && type != 63
+    }
+
+    /// HEVC sample bytes with 4-byte lengths, without the units
+    /// `isHEVCBaseLayer` turns down. The bytes come back as they are when
+    /// every unit is kept, as in all but Dolby Vision films.
+    static func hevcBaseLayer(lengthPrefixed data: Data) -> Data {
+        var kept: [Range<Int>] = []
+        var dropped = false
+        var index = data.startIndex
+        while index + 4 <= data.endIndex {
+            let length = data[index..<(index + 4)].reduce(0) { $0 << 8 | Int($1) }
+            let end = index + 4 + length
+            guard length > 0, end <= data.endIndex else { return data }
+            if isHEVCBaseLayer(data[(index + 4)..<end]) {
+                kept.append(index..<end)
+            } else {
+                dropped = true
+            }
+            index = end
+        }
+        guard dropped else { return data }
+        var out = Data()
+        out.reserveCapacity(data.count)
+        for range in kept { out.append(data[range]) }
+        return out
+    }
+
     /// The VPS, SPS and PPS listed in an hvcC configuration record.
     static func hevcParameterSets(hvcC: Data) throws -> [Data] {
         let bytes = [UInt8](hvcC)
@@ -174,7 +213,8 @@ extension SampleBuilder {
                 let length = Int(bytes[index]) << 8 | Int(bytes[index + 1])
                 index += 2
                 guard index + length <= bytes.count else { throw BuildError.malformed }
-                if found[type] == nil { found[type] = Data(bytes[index..<(index + length)]) }
+                let unit = Data(bytes[index..<(index + length)])
+                if found[type] == nil, isHEVCBaseLayer(unit) { found[type] = unit }
                 index += length
             }
         }
