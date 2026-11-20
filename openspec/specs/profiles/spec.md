@@ -26,6 +26,11 @@ The system SHALL open a "Who's watching?" screen at launch when the user has two
 - **THEN** focus is on the profile last used on this Apple TV, or the first profile when none was
 - **AND** Back on this screen goes to the Apple TV Home Screen, since there is nothing behind it
 
+#### Scenario: The focused circle shows whole
+- **GIVEN** the "Who's watching?" screen, or the profile button at the top of Settings, on Apple TV
+- **WHEN** a profile circle has focus and lifts
+- **THEN** the whole circle and its shadow show, with nothing cut from its sides
+
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
 - **WHEN** a profile tile is focused
