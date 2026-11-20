@@ -14,6 +14,7 @@ struct ShelfSync: ViewModifier {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
     @Environment(\.currentProfile) private var profile
+    @Environment(\.showsAdultContent) private var showsAdult
     @Environment(\.sourceRefresher) private var refresher
     @State private var activity = ShelfActivity()
     #if !os(tvOS)
@@ -63,6 +64,13 @@ struct ShelfSync: ViewModifier {
             }
             .onChange(of: TitleOffer(records: records, refresher: refresher), initial: true) { _, offer in
                 library.offer = offer
+            }
+            // adult-content/adult-content-that-is-playing-stops
+            .onChange(of: showsAdult, initial: true) { _, shows in
+                library.showsAdult = shows
+                if !shows, let playing = playback.playing, playing.title.isAdultContent {
+                    Task { await playback.close() }
+                }
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { library.becameActive() }

@@ -8,15 +8,19 @@ import SwiftData
 @MainActor
 enum GroupStore {
     /// The rules the catalogue applies for `profile`, from every record.
+    /// `showsAdult` is the profile's switch; there is no default, so no
+    /// caller can forget it (adult-content/hidden-everywhere-by-default).
     static func rules(
-        groups: [GroupRecord], members: [GroupMemberRecord], hidden: [HiddenGroupRecord], profile: UUID, locksOpen: Bool
+        groups: [GroupRecord], members: [GroupMemberRecord], hidden: [HiddenGroupRecord], profile: UUID, locksOpen: Bool,
+        showsAdult: Bool
     ) -> GroupRules {
-        var rules = GroupRules(locksOpen: locksOpen)
+        var rules = GroupRules(locksOpen: locksOpen, showsAdult: showsAdult)
         let winners = winners(groups)
         let membersByGroup = Dictionary(grouping: members.filter { $0.groupID != nil }, by: \.groupID)
         for record in winners {
             guard let group = record.group else { continue }
             if record.locked { rules.locked.insert(group) }
+            if let adult = record.adult, group != .all { rules.adultMarks[group] = adult }
             if let order = record.sortOrder { rules.order[group] = order }
             if case .own(let id) = group {
                 let stored = (membersByGroup[id] ?? []).sorted { ($0.sortOrder, $0.addedAt) < ($1.sortOrder, $1.addedAt) }
@@ -73,6 +77,15 @@ enum GroupStore {
     static func setLocked(_ group: CatalogueGroup, _ locked: Bool, in context: ModelContext) {
         guard group != .all, group != .favorites, group != .recents, group != .new else { return }
         record(for: group, in: context).locked = locked
+        try? context.save()
+    }
+
+    /// Marks `group` adult or not adult on every device, or with nil goes
+    /// back to what the app finds (adult-content/correct-a-group). All
+    /// channels and the built-in groups take no mark.
+    static func setAdult(_ group: CatalogueGroup, _ adult: Bool?, in context: ModelContext) {
+        guard group != .all, group != .favorites, group != .recents, group != .new else { return }
+        record(for: group, in: context).adult = adult
         try? context.save()
     }
 

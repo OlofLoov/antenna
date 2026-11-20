@@ -13,6 +13,7 @@ struct GroupDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.loadedChannels) private var channels
     @Environment(\.currentProfile) private var profile
+    @Environment(\.showsAdultContent) private var showsAdult
     @Environment(GroupLocks.self) private var locks: GroupLocks?
     @Query private var groups: [GroupRecord]
     @Query private var members: [GroupMemberRecord]
@@ -27,7 +28,9 @@ struct GroupDetailScreen: View {
 
     var body: some View {
         let data = GroupsData(
-            channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile, index: index)
+            channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile,
+            showsAdult: showsAdult,
+            index: index)
         Form {
             if group != .all {
                 Section("Name") {
@@ -45,6 +48,12 @@ struct GroupDetailScreen: View {
                 Toggle("Hidden", isOn: hiddenBinding(data)).accessibilityIdentifier("groups.hide")
                 if group != .all {
                     Toggle("Locked", isOn: lockedBinding(data)).accessibilityIdentifier("groups.lock")
+                    Toggle("Adult content", isOn: adultBinding(data)).accessibilityIdentifier("groups.adult")
+                }
+            } footer: {
+                if group != .all {
+                    Text("Adult groups stay hidden in every profile that does not show adult content.")
+                        .accessibilityIdentifier("groups.adult.footer")
                 }
             }
             if group != .all { moves(data) }
@@ -78,6 +87,18 @@ struct GroupDetailScreen: View {
 
     private func hiddenBinding(_ data: GroupsData) -> Binding<Bool> {
         Binding(get: { data.isHidden(group) }, set: { GroupStore.setHidden(group, $0, profile: profile, in: context) })
+    }
+
+    /// Marks the group adult or not for every device. A group marked adult
+    /// in a profile that hides adult content leaves the list, so the
+    /// screen goes back to it (adult-content/correct-a-group).
+    private func adultBinding(_ data: GroupsData) -> Binding<Bool> {
+        Binding(
+            get: { data.isAdult(group) },
+            set: { adult in
+                GroupStore.setAdult(group, adult, in: context)
+                if adult, !showsAdult { dismiss() }
+            })
     }
 
     /// Locking asks for a new passcode the first time, and for the current

@@ -128,7 +128,7 @@ final class LockClock {
         func catalogue(open: Bool) throws -> Catalogue<PersistentIdentifier> {
             let rules = GroupStore.rules(
                 groups: try context.fetch(FetchDescriptor<GroupRecord>()), members: [], hidden: [], profile: Profile.mainID,
-                locksOpen: open)
+                locksOpen: open, showsAdult: false)
             return .shell(channels: channels, favorites: [], rules: rules)
         }
         #expect(try catalogue(open: false).count(of: .all) == 0)

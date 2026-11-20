@@ -23,9 +23,10 @@ struct GroupsData {
     /// every redraw, and only the rules are applied again.
     init(
         channels: [Channel], groups: [GroupRecord], members: [GroupMemberRecord], hidden: [HiddenGroupRecord], sources: [SourceRecord],
-        profile: UUID, index: GroupsCatalogueIndex? = nil
+        profile: UUID, showsAdult: Bool = false, index: GroupsCatalogueIndex? = nil
     ) {
-        let rules = GroupStore.rules(groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: true)
+        let rules = GroupStore.rules(
+            groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: true, showsAdult: showsAdult)
         self.rules = rules
         catalogue = index?.catalogue(channels, rules: rules) ?? Catalogue(channels: channels, groupOrder: [:], favorites: [], rules: rules)
         records = groups
@@ -37,6 +38,9 @@ struct GroupsData {
 
     func isLocked(_ group: CatalogueGroup) -> Bool { rules.locked.contains(group) }
     func isHidden(_ group: CatalogueGroup) -> Bool { rules.hidden.contains(group) }
+    /// True when the group holds adult content, found or marked
+    /// (adult-content/correct-a-group).
+    func isAdult(_ group: CatalogueGroup) -> Bool { catalogue.isAdult(group) }
 
     /// Settings for groups no loaded playlist has, and duplicate records,
     /// each with its group (group-management/settings-for-groups-that-are-gone).

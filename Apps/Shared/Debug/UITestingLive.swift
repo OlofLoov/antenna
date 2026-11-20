@@ -224,7 +224,7 @@
                 if !isHome { cabinLoads += 1 }
                 switch scenario {
                 case .channels, .favorites, .waiting:
-                    return Playlist(channels: isHome ? home + manyGroups : cabin)
+                    return Playlist(channels: isHome ? home + manyGroups + UITestingGroups.adultChannels() : cabin)
                 case .loading:
                     if !isHome { try await Task.sleep(for: .seconds(3600)) }
                     return Playlist(channels: home)

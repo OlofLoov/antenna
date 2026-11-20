@@ -13,6 +13,7 @@ struct GroupsScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.loadedChannels) private var channels
     @Environment(\.currentProfile) private var profile
+    @Environment(\.showsAdultContent) private var showsAdult
     @Environment(GroupLocks.self) private var locks: GroupLocks?
     @Query private var groups: [GroupRecord]
     @Query private var members: [GroupMemberRecord]
@@ -27,7 +28,9 @@ struct GroupsScreen: View {
 
     var body: some View {
         let data = GroupsData(
-            channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile, index: index)
+            channels: channels, groups: groups, members: members, hidden: hidden, sources: sources, profile: profile,
+            showsAdult: showsAdult,
+            index: index)
         Group {
             if needsPasscode(data) {
                 PasscodePrompt(flow: .unlock, message: "Groups has locked groups.") { opened in
@@ -85,7 +88,14 @@ struct GroupsScreen: View {
             } header: {
                 Text("Groups · \(data.groups.count)").accessibilityIdentifier("groups.list")
             } footer: {
-                Text("Hide, lock, rename and reorder. Changes reach every device signed into your iCloud.")
+                VStack(alignment: .leading, spacing: Metrics.Spacing.small) {
+                    Text("Hide, lock, rename and reorder. Changes reach every device signed into your iCloud.")
+                    // adult-content/correct-a-group
+                    if data.catalogue.hidesAdultGroups {
+                        Text("Adult groups are hidden in this profile. Show adult content in Settings to see and mark them.")
+                            .accessibilityIdentifier("groups.adultHidden")
+                    }
+                }
             }
             orphans(data)
             passcodeSection
@@ -133,6 +143,7 @@ struct GroupsScreen: View {
         var badges: [GroupRow.Badge] = []
         if data.isLocked(group) { badges.append(.locked) }
         if data.isHidden(group) { badges.append(.hidden) }
+        if group != .all, data.isAdult(group) { badges.append(.adult) }
         if case .own = group { badges.append(.custom) }
         return badges
     }

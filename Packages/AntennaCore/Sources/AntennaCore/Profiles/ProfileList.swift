@@ -15,8 +15,12 @@ public struct Profile: Sendable, Hashable, Identifiable {
     public var colorIndex: Int
     public var sortOrder: Int
     public var createdAt: Date
+    /// True when the profile shows adult content; a new profile starts
+    /// with it off (adult-content/show-adult-content-with-the-passcode).
+    public var showsAdult: Bool
 
-    public init(id: UUID, name: String, colorIndex: Int, sortOrder: Int, createdAt: Date) {
+    public init(id: UUID, name: String, colorIndex: Int, sortOrder: Int, createdAt: Date, showsAdult: Bool = false) {
+        self.showsAdult = showsAdult
         self.id = id
         self.name = name
         self.colorIndex = colorIndex

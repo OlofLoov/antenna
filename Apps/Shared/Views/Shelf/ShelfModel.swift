@@ -35,6 +35,12 @@ final class ShelfModel {
     private(set) var details: [String: ShelfDetails] = [:]
     /// Titles whose info call has answered or failed.
     private(set) var answered: Set<String> = []
+    /// True when the current profile shows adult content. Unless it is set
+    /// the index leaves adult titles out; a change builds it again
+    /// (adult-content/hidden-everywhere-by-default).
+    var showsAdult = false {
+        didSet { if showsAdult != oldValue { rebuild() } }
+    }
     /// False until the section first opens; nothing loads before.
     private(set) var opened = false
     /// Failed sources whose banner the user dismissed.
@@ -71,6 +77,7 @@ final class ShelfModel {
     private struct IndexKey: Equatable {
         var sources: [UUID]
         var revision: Int
+        var showsAdult: Bool
     }
 
     private struct SortedList: Hashable {
@@ -86,16 +93,6 @@ final class ShelfModel {
     /// What the section shows for the sources as they stand.
     var status: ShelfStatus {
         ShelfStatus(sources: sources, kind: kind, dismissed: dismissed)
-    }
-
-    /// Every source's titles, in source order and each source's order.
-    var titles: [ShelfTitle] { index.titles }
-    var rows: [ShelfRow] { index.rows }
-    var banner: [ShelfTitle] { index.banner }
-
-    /// The loaded title with this key, or nil.
-    func title(_ key: ActivityKey) -> ShelfTitle? {
-        index.title(key)
     }
 
     /// The section's titles, or one genre's, in `sort` order. Sorted once
@@ -273,7 +270,8 @@ final class ShelfModel {
     /// they changed, then shows it with the sources' loaded states. Only
     /// the newest build is shown.
     private func rebuild() {
-        let key = IndexKey(sources: sources.compactMap { catalogues[$0.id] == nil ? nil : $0.id }, revision: revision)
+        let key = IndexKey(
+            sources: sources.compactMap { catalogues[$0.id] == nil ? nil : $0.id }, revision: revision, showsAdult: showsAdult)
         guard key != requested else {
             if building == nil { showPendingStates() }
             return
@@ -284,7 +282,7 @@ final class ShelfModel {
         let loaded = sources.compactMap { catalogues[$0.id] }
         building = Task { [weak self] in
             let signpost = BrowseSignposts.signposter.beginInterval("shelf index")
-            let index = await ShelfIndex.build(loaded, showsAdult: false, now: .now)
+            let index = await ShelfIndex.build(loaded, showsAdult: key.showsAdult, now: .now)
             BrowseSignposts.signposter.endInterval("shelf index", signpost)
             guard let self, current == generation else { return }
             self.index = index
@@ -418,5 +416,17 @@ final class ShelfModel {
     /// Loads a series' episodes for its Continue watching caption, ignoring failures.
     func prefetchEpisodes(_ series: ShelfTitle) async {
         _ = try? await loadEpisodes(series)
+    }
+}
+
+extension ShelfModel {
+    /// Every source's titles, in source order and each source's order.
+    var titles: [ShelfTitle] { index.titles }
+    var rows: [ShelfRow] { index.rows }
+    var banner: [ShelfTitle] { index.banner }
+
+    /// The loaded title with this key, or nil.
+    func title(_ key: ActivityKey) -> ShelfTitle? {
+        index.title(key)
     }
 }

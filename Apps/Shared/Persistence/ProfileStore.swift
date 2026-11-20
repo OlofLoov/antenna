@@ -55,6 +55,28 @@ enum ProfileStore {
         return true
     }
 
+    /// Whether `id` shows adult content, false for a profile with no record
+    /// (adult-content/show-adult-content-with-the-passcode).
+    static func showsAdult(_ id: UUID, in records: [ProfileRecord]) -> Bool {
+        list(records).profiles.first { $0.id == id }?.showsAdult ?? false
+    }
+
+    /// Turns adult content on or off for `id` on every device. Main gets
+    /// its record when it had none, as a rename does. The caller asks for
+    /// the passcode before turning it on.
+    static func setShowsAdult(_ id: UUID, _ shows: Bool, in context: ModelContext) {
+        let records = fetch(context)
+        let matching = records.filter { $0.id == id }
+        if !matching.isEmpty {
+            matching.forEach { $0.showsAdult = shows }
+        } else if id == Profile.mainID {
+            var main = Profile.main(createdAt: .now)
+            main.showsAdult = shows
+            context.insert(ProfileRecord(main))
+        }
+        save(context, resolving: records)
+    }
+
     private static func fetch(_ context: ModelContext) -> [ProfileRecord] {
         (try? context.fetch(FetchDescriptor<ProfileRecord>())) ?? []
     }

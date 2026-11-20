@@ -120,7 +120,7 @@ The system SHALL let the user mark any provider group or own group as adult or n
 - **THEN** adult groups are not listed, and a note says how to show them in Settings
 
 ### Requirement: Links to hidden content ask first
-The system SHALL ask for the passcode when a link, the channel restored at launch, a reminder, Top Shelf or Siri asks to play adult content that the profile hides, and the right passcode SHALL turn on Show adult content for the profile and play it.
+The system SHALL ask for the passcode when a link, the channel restored at launch, a reminder, Top Shelf or Siri tunes an adult channel that the profile hides, and the right passcode SHALL turn on Show adult content for the profile and play it. Siri and Shortcuts SHALL refuse an adult movie or series the profile hides, without naming it.
 
 #### Scenario: The channel restored at launch
 - **GIVEN** the last channel watched was an adult channel and the profile hides adult content
@@ -128,10 +128,10 @@ The system SHALL ask for the passcode when a link, the channel restored at launc
 - **THEN** the passcode prompt covers the paused channel
 - **AND** the right passcode turns on Show adult content and plays it, while closing the prompt plays the first channel the profile may watch
 
-#### Scenario: A title link
-- **GIVEN** a link to an adult movie and a profile that hides adult content
-- **WHEN** the link opens
-- **THEN** the passcode prompt shows before the movie's page, and closing it opens nothing
+#### Scenario: A title from Siri
+- **GIVEN** a profile that hides adult content
+- **WHEN** Siri or a Shortcut asks to play an adult movie
+- **THEN** Siri says the profile hides adult content, names no title, and nothing opens
 
 ### Requirement: Adult content that is playing stops
 The system SHALL pause adult content that is playing when the profile stops showing it, from this device or another, and cover it with the passcode prompt, as a channel that gets locked does; a movie or episode SHALL close.

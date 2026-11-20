@@ -13,13 +13,15 @@ struct GroupRulesFeed: ViewModifier {
     @Query private var members: [GroupMemberRecord]
     @Query private var hidden: [HiddenGroupRecord]
     @Environment(\.currentProfile) private var profile
+    @Environment(\.showsAdultContent) private var showsAdult
 
     func body(content: Content) -> some View {
         content.onChange(of: rules, initial: true) { _, rules in changed(rules) }
     }
 
     private var rules: GroupRules {
-        GroupStore.rules(groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: locks?.isOpen ?? false)
+        GroupStore.rules(
+            groups: groups, members: members, hidden: hidden, profile: profile, locksOpen: locks?.isOpen ?? false, showsAdult: showsAdult)
     }
 }
 

@@ -114,7 +114,7 @@
                 shelves.open()
                 return IntentTitles(
                     titles: shelves.movies.titles + shelves.series.titles, sources: Self.states(shelves), progress: store.allProgress(),
-                    myList: myList)
+                    myList: myList, showsAdult: showsAdult(profile))
             }
             // Playlists count as Xtream sources do (m3u-playlists/playlist-titles-show-on-every-platform).
             let all = descriptors.filter { $0.kind == .xtream || $0.isPlaylist }
@@ -122,7 +122,8 @@
             await waitForDeadline(wanted.map(startCatalogueLoad))
             let titles = all.flatMap { catalogues[$0.id] ?? [] }
             let states = all.map { IntentSource(id: $0.id, name: $0.name, state: catalogueStates[$0.id] ?? .loading) }
-            return IntentTitles(titles: titles, sources: states, progress: store.allProgress(), myList: myList)
+            return IntentTitles(
+                titles: titles, sources: states, progress: store.allProgress(), myList: myList, showsAdult: showsAdult(profile))
         }
 
         func setFavorite(_ channel: Channel, to favorite: Bool, in catalogue: Catalogue<PersistentIdentifier>) {
@@ -193,7 +194,13 @@
                 groups: (try? context.fetch(FetchDescriptor<GroupRecord>())) ?? [],
                 members: (try? context.fetch(FetchDescriptor<GroupMemberRecord>())) ?? [],
                 hidden: (try? context.fetch(FetchDescriptor<HiddenGroupRecord>())) ?? [], profile: profile,
-                locksOpen: dependencies.locksOpen())
+                locksOpen: dependencies.locksOpen(), showsAdult: showsAdult(profile))
+        }
+
+        /// The profile's adult content switch, read from the store each time
+        /// (adult-content/hidden-everywhere-by-default).
+        private func showsAdult(_ profile: UUID) -> Bool {
+            ProfileStore.showsAdult(profile, in: (try? context.fetch(FetchDescriptor<ProfileRecord>())) ?? [])
         }
 
         /// The source's load, started once per run and shared by every

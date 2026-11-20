@@ -14,26 +14,26 @@
 
 ## 3. Storage and the switch
 
-- [ ] 3.1 `ProfileRecord.showsAdult`, `Profile.showsAdult`, `ProfileStore.setShowsAdult`; `showsAdultContent` in the environment from `ProfileGate`
-- [ ] 3.2 `GroupRecord.adult`, `GroupStore.setAdult`, `GroupStore.rules` reads marks and the switch; `GroupRulesFeed` and the intents host pass them
-- [ ] 3.3 "Show adult content" in Settings on every platform, asking for the passcode to turn on, or to set one
+- [x] 3.1 `ProfileRecord.showsAdult`, `Profile.showsAdult`, `ProfileStore.setShowsAdult`; `showsAdultContent` in the environment from `ProfileGate`
+- [x] 3.2 `GroupRecord.adult`, `GroupStore.setAdult`, `GroupStore.rules` reads marks and the switch; `GroupRulesFeed` and the intents host pass them
+- [x] 3.3 "Show adult content" in Settings on every platform, asking for the passcode to turn on, or to set one
 
 ## 4. Every screen follows
 
-- [ ] 4.1 `ShelfModel` rebuilds the index when the switch changes; an adult movie or episode playing closes when it leaves the index
-- [ ] 4.2 The Groups screen: the "Adult content" switch, the ADULT badge, adult groups listed only while shown, the note while hidden
-- [ ] 4.3 `GroupLockPrompt` covers a hidden adult channel that plays; the right passcode turns the switch on
-- [ ] 4.4 `AdultGate` for title links from Top Shelf and Siri
-- [ ] 4.5 Siri's background titles and suggestions go through `visible(showsAdult:)`; Top Shelf follows the filtered catalogue and index
-- [ ] 4.6 Strings in sv, de, es, fr, pt-BR and ar
+- [x] 4.1 `ShelfModel` rebuilds the index when the switch changes; an adult movie or episode playing closes when it leaves the index
+- [x] 4.2 The Groups screen: the "Adult content" switch, the ADULT badge, adult groups listed only while shown, the note while hidden
+- [x] 4.3 `GroupLockPrompt` covers a hidden adult channel that plays; the right passcode turns the switch on
+- [x] 4.4 Siri refuses an adult title the profile hides; a stale Top Shelf tile for one opens Antenna as it was
+- [x] 4.5 Siri's background titles and suggestions go through `visible(showsAdult:)`; Top Shelf follows the filtered catalogue and index
+- [x] 4.6 Strings in sv, de, es, fr, pt-BR and ar
 
 ## 5. Tests
 
-- [ ] 5.1 App unit tests for `GroupStore` marks and `ProfileStore.setShowsAdult`
-- [ ] 5.2 `-ui-testing-adult` scripted sources; `AdultContentUITests` on iPhone and Apple TV: hidden by default, the passcode to show, hidden again when switched off
+- [x] 5.1 `AdultContentStoreTests`: `GroupStore` marks and `ProfileStore.setShowsAdult`
+- [x] 5.2 `-ui-testing-adult` scripted sources; `AdultContentUITests` on iPhone and `AdultContentTVUITests` on Apple TV: hidden by default, the passcode to show, hidden again when switched off
 
 ## 6. Verify
 
-- [ ] 6.1 Each requirement has a test citing `adult-content/<requirement-slug>`, `profiles/what-each-profile-keeps` or `group-management/changes-follow-you-to-every-device`
-- [ ] 6.2 The UI test classes touched pass on local iPhone and Apple TV simulators with `-testLanguage en -testRegion US`
+- [x] 6.1 Each requirement has a test citing `adult-content/<requirement-slug>`, `profiles/what-each-profile-keeps` or `group-management/changes-follow-you-to-every-device`
+- [x] 6.2 The UI test classes touched pass on local iPhone and Apple TV simulators with `-testLanguage en -testRegion US`
 - [ ] 6.3 `/opsx:verify` passes

@@ -28,6 +28,12 @@ extension LiveModel {
         playing.flatMap(RowKey.init).map(catalogue.isLocked) ?? false
     }
 
+    /// True while the playing channel is adult content the profile hides
+    /// (adult-content/adult-content-that-is-playing-stops).
+    var playingIsAdult: Bool {
+        playing.flatMap(RowKey.init).map(catalogue.isAdultHidden) ?? false
+    }
+
     /// The prompt over a locked channel closed without the passcode: the
     /// first channel the user may watch plays, else the player stops.
     func leaveLockedChannel() {

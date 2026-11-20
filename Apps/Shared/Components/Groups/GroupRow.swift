@@ -8,6 +8,7 @@ struct GroupRow: View {
     enum Badge: String, CaseIterable {
         case locked
         case hidden
+        case adult
         case custom
 
         /// The badge as the row shows it.
@@ -15,6 +16,7 @@ struct GroupRow: View {
             switch self {
             case .locked: "LOCKED"
             case .hidden: "HIDDEN"
+            case .adult: "ADULT"
             case .custom: "CUSTOM"
             }
         }
@@ -24,6 +26,7 @@ struct GroupRow: View {
             switch self {
             case .locked: "Locked"
             case .hidden: "Hidden"
+            case .adult: "Adult"
             case .custom: "Custom"
             }
         }
@@ -67,7 +70,8 @@ struct GroupRow: View {
     List {
         GroupRow(name: "All channels", count: 412, badges: [])
         GroupRow(name: "Movies", count: 58, badges: [.locked])
-        GroupRow(name: "Adult", count: 36, badges: [.hidden])
+        GroupRow(name: "Late Night", count: 36, badges: [.hidden])
+        GroupRow(name: "XXX Movies", count: 22, badges: [.adult])
         GroupRow(name: "Weekend sports", count: 6, badges: [.custom])
     }
 }

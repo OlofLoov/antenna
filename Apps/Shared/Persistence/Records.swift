@@ -86,8 +86,11 @@ final class ProfileRecord {
     var colorIndex: Int = 0
     var sortOrder: Int = 0
     var createdAt: Date = Date.now
+    /// adult-content/show-adult-content-with-the-passcode
+    var showsAdult: Bool = false
 
     init(_ profile: Profile) {
+        showsAdult = profile.showsAdult
         id = profile.id
         name = profile.name
         colorIndex = profile.colorIndex
@@ -96,6 +99,6 @@ final class ProfileRecord {
     }
 
     var profile: Profile {
-        Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: sortOrder, createdAt: createdAt)
+        Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: sortOrder, createdAt: createdAt, showsAdult: showsAdult)
     }
 }

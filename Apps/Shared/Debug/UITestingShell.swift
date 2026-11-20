@@ -260,7 +260,9 @@
                     switch scenario {
                     case .channels, .failing:
                         return source.id == playlistID
-                            ? Playlist(channels: ["a1", "a2", "a3"].map(channel) + UITestingShell.largeCatalogue())
+                            ? Playlist(
+                                channels: ["a1", "a2", "a3"].map(channel) + UITestingShell.largeCatalogue()
+                                    + UITestingGroups.adultChannels())
                             : Playlist(channels: [channel("b1")])
                     case .loading:
                         try await Task.sleep(for: .seconds(3600))
