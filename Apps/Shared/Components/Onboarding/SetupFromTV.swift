@@ -47,19 +47,11 @@ enum SetupFromTV {
         }
 
         static func existing(_ count: Int, device: Device) -> LocalizedStringResource? {
-            switch count {
-            case 0: return nil
-            case 1:
-                return """
-                    This \(device) already has 1 source. \
-                    It appears on the Apple TV on its own when both use the same iCloud account.
-                    """
-            default:
-                return """
-                    This \(device) already has \(count) sources. \
-                    They appear on the Apple TV on their own when both use the same iCloud account.
-                    """
-            }
+            guard count > 0 else { return nil }
+            return """
+                This \(device) already has \(count) sources. \
+                They appear on the Apple TV on their own when both use the same iCloud account.
+                """
         }
     }
 

@@ -40,12 +40,6 @@
         /// "1 source the Apple TV asked for isn't on this iPhone yet. …"
         static func missing(_ count: Int, device: String) -> LocalizedStringResource? {
             guard count > 0 else { return nil }
-            if count == 1 {
-                return """
-                    1 source the Apple TV asked for isn't on this \(device) yet. \
-                    New sources can take a minute to arrive through iCloud.
-                    """
-            }
             return """
                 \(count) sources the Apple TV asked for aren't on this \(device) yet. \
                 New sources can take a minute to arrive through iCloud.

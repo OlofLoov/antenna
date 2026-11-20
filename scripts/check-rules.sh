@@ -79,6 +79,14 @@ check "localization: no arrows drawn as text" \
   'Text\("[^"]*[◂▸◀▶←→]' \
   Apps
 
+# A sideways arrow that moves through a row picks layoutDirection's
+# leadingArrow or trailingArrow, so in Arabic the right arrow goes to the
+# item drawn on the right. The player's skip keys keep the physical arrows.
+check_except "design-system/focus-moves-where-the-remote-points: sideways arrow keys follow the reading direction" \
+  'keyboardShortcut\(\.(left|right)Arrow' \
+  'Apps/Shared/Views/(Shelf/ShelfPlayerView|Live/LiveTimeshift)\.swift' \
+  Apps
+
 check_except "localization: no fixed date format outside the parsers and test fixtures" \
   'dateFormat[[:space:]]*=' \
   'Packages/AntennaCore/Sources/AntennaCore/(Parsers|Stalker|Xtream)/[A-Za-z+]+\.swift|Apps/Shared/Debug/[A-Za-z+]+\.swift|Apps/(Tests|TVTests)/[A-Za-z+]+\.swift' \

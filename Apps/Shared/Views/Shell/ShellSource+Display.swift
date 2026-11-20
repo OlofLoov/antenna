@@ -7,7 +7,7 @@
             let detail: LocalizedStringResource =
                 switch state {
                 case .loading: "Loading channels"
-                case .loaded(let count): count == 1 ? "1 channel" : "\(count) channels"
+                case .loaded(let count): "\(count) channels"
                 case .offline: "Offline"
                 case .failed: "Could not load channels"
                 case .waitingForLogin where waitsForICloud: "Waiting for its playlist to sync from iCloud"

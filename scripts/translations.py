@@ -5,6 +5,10 @@ check [catalog ...]
     Fails when a key that should be translated has no text, or an incomplete
     plural set, in a language listed in Config/languages, or when a key is
     marked stale. LANGUAGES="en ar" overrides the list. Needs no Xcode.
+    Counts get their own rules: a number before a noun is an Int with
+    plural forms in English and so in every language, never text (%@) and
+    never a separate "1 <noun>" key. Without catalog arguments it also reads
+    the Swift sources, where a count sentence must resolve to such a key.
 
 sync EXPORT_DIR
     Copies the catalogs Xcode synced into an exported .xcloc back into the
@@ -32,6 +36,26 @@ DEFAULT_PLURALS = {"one", "other"}
 
 # Info.plist keys that name the app. The name is "Antenna" in every language.
 UNTRANSLATED_KEYS = {"CFBundleName", "CFBundleDisplayName"}
+
+# Nouns a count stands before. A key with "%@ <noun>" or "1 <noun>" fails;
+# "%lld <noun>" needs plural forms.
+COUNT_NOUNS = {
+    "channel", "favorite", "source", "group", "title", "episode", "season", "day", "hour", "minute", "second",
+    "login", "connection", "programme", "guide", "entry", "movie", "reminder", "tile", "profile", "result", "item",
+}
+COUNT_PLURALS = {"entry": "entries"}
+COUNT_WORDS = {COUNT_PLURALS.get(n, n + "s") for n in COUNT_NOUNS}
+
+# Keys whose count is never one, so English has a single form. The code
+# names the one-item case with a different sentence.
+COUNT_NEVER_ONE = {
+    "Guide id “%@” is not in any of the %lld guides",
+    "None of the %lld guides for %@ lists “%@”. Pick an entry below.",
+}
+
+INT_BEFORE_NOUN = re.compile(r"%(\d+\$)?(lld|ld|d)\s+(more\s+)?([A-Za-z]{3,})\b")
+TEXT_BEFORE_NOUN = re.compile(r"%(\d+\$)?@\s+(more\s+)?([A-Za-z]+)\b")
+ONE_BEFORE_NOUN = re.compile(r"(?<![\d.,])\b1\s+(more\s+)?([A-Za-z]+)\b")
 
 FORMAT = re.compile(r"%(\d+\$)?[-+ #0']*\d*(\.\d+)?(ll|l|h|hh|q|z|t|j)?[@dDiuUxXoOfeEgGcCsSpaAF%]|\$\{[^}]*\}")
 
@@ -97,6 +121,24 @@ def unit_problems(node, required, where):
     return problems
 
 
+def count_problems(key, entry, source):
+    """Names a count that cannot pick the language's plural form
+    (localization/counts-use-the-language-s-plural-forms)."""
+    problems = []
+    text = TEXT_BEFORE_NOUN.search(key)
+    if text and text.group(3).lower() in COUNT_WORDS:
+        problems.append("a count passed as text (%@) cannot pick a plural form, pass the Int")
+    one = ONE_BEFORE_NOUN.search(key)
+    if one and one.group(2).lower() in COUNT_NOUNS:
+        problems.append('a separate "1 <noun>" key misses the other plural forms, use the %lld key\'s plural variations')
+    number = INT_BEFORE_NOUN.search(key)
+    if number and number.group(4).lower().endswith("s") and key not in COUNT_NEVER_ONE:
+        english = entry.get("localizations", {}).get(source)
+        if english is None or "plural" not in json.dumps(english):
+            problems.append("a count before a noun needs plural forms in English, and so in every language")
+    return problems
+
+
 def check_catalog(path, langs):
     data = json.loads(path.read_text())
     source = data.get("sourceLanguage", "en")
@@ -108,6 +150,7 @@ def check_catalog(path, langs):
             continue
         if not should_translate(key, entry):
             continue
+        problems += [f"{rel}: {key!r}: {p}" for p in count_problems(key, entry, source)]
         localizations = entry.get("localizations", {})
         for lang in langs:
             required = REQUIRED_PLURALS.get(lang, DEFAULT_PLURALS)
@@ -127,12 +170,181 @@ def check_catalog(path, langs):
     return problems
 
 
+# Swift sources whose copy resolves in a catalog, and the catalogs it may
+# resolve in. App code reaches the Core catalog through Words.
+SOURCE_SCOPES = [
+    (["Apps/Shared", "Apps/Mobile", "Apps/TV"], ["Apps/Shared", "Packages/AntennaCore/Sources"]),
+    (["Packages/AntennaCore/Sources"], ["Packages/AntennaCore/Sources"]),
+]
+# Lines that never reach the screen: logs and debug descriptions.
+NOT_COPY = re.compile(r"\b(log|logger|Logger|print|debugPrint|NSLog|description|debugDescription)\b")
+# A count formatted to a String before it reaches the sentence, such as
+# `text.count(n)` or `n.formatted()`. The catalog key then holds %@.
+TEXT_COUNT = re.compile(r"\bformatted\(|\bString\(|\btext\.count\(|\.description\b")
+# Where a file's preview code starts: a #Preview, or a fixture named preview….
+PREVIEW_START = re.compile(r"#Preview|PreviewFixtures|\b(let|var)\s+preview\w*")
+
+
+def swift_literals(text):
+    """Yields (line, column, parts) for each string literal. Parts alternate
+    literal text and interpolated code, and start and end with text."""
+    i, line, n = 0, 1, len(text)
+    while i < n:
+        if text.startswith("//", i):
+            end = text.find("\n", i)
+            i = n if end < 0 else end
+            continue
+        if text.startswith("/*", i):
+            end = text.find("*/", i)
+            end = n if end < 0 else end
+            line += text.count("\n", i, end)
+            i = end + 2
+            continue
+        if text[i] == "\n":
+            line += 1
+        if text[i] != '"':
+            i += 1
+            continue
+        start_line, column = line, i - (text.rfind("\n", 0, i) + 1)
+        multi = text.startswith('"""', i)
+        i += 3 if multi else 1
+        parts, buf = [], []
+        while i < n:
+            if multi and text.startswith('"""', i):
+                i += 3
+                break
+            if not multi and text[i] in '"\n':
+                line += text[i] == "\n"
+                i += 1
+                break
+            if text[i] == "\\" and i + 1 < n:
+                nxt = text[i + 1]
+                if nxt == "(":
+                    depth, j = 1, i + 2
+                    while j < n and depth:
+                        if text[j] == "(":
+                            depth += 1
+                        elif text[j] == ")":
+                            depth -= 1
+                        elif text[j] == '"':
+                            close = text.find('"', j + 1)
+                            j = n - 1 if close < 0 else close
+                        j += 1
+                    parts += ["".join(buf), text[i + 2 : j - 1]]
+                    buf = []
+                    i = j
+                    continue
+                if nxt == "\n":
+                    line += 1
+                    i += 2
+                    while i < n and text[i] in " \t":
+                        i += 1
+                    continue
+                buf.append(text[i : i + 2])
+                i += 2
+                continue
+            if text[i] == "\n":
+                line += 1
+                buf.append(" ")
+                i += 1
+                while i < n and text[i] in " \t":
+                    i += 1
+                continue
+            buf.append(text[i])
+            i += 1
+        parts.append("".join(buf))
+        if multi:
+            parts[0] = parts[0].lstrip()
+            parts[-1] = parts[-1].rstrip()
+        yield start_line, column, parts
+
+
+def catalog_keys(dirs):
+    """Every key in the catalogs under `dirs`, and whether English varies it by plural."""
+    keys = {}
+    for top in dirs:
+        for path in sorted((ROOT / top).rglob("*.xcstrings")):
+            if any(part.startswith(".") for part in path.relative_to(ROOT).parts):
+                continue
+            data = json.loads(path.read_text())
+            source = data.get("sourceLanguage", "en")
+            for key, entry in data.get("strings", {}).items():
+                english = entry.get("localizations", {}).get(source)
+                keys[key] = english is not None and "plural" in json.dumps(english)
+    return keys
+
+
+def counted(parts):
+    """The indexes of the interpolations that stand before a count noun."""
+    found = []
+    for index in range(1, len(parts), 2):
+        after = re.match(r"\s+(more\s+)?([A-Za-z]+)\b", parts[index + 1])
+        if after and after.group(2).lower() in COUNT_WORDS:
+            found.append(index)
+    return found
+
+
+def literal_problem(parts, verbatim, keys):
+    literal = "".join(p if i % 2 == 0 else "\\(…)" for i, p in enumerate(parts))
+    for i in range(0, len(parts), 2):
+        one = ONE_BEFORE_NOUN.search(parts[i])
+        if one and one.group(2).lower() in COUNT_NOUNS:
+            return f'"{literal}": pass the count to the plural key instead of spelling 1'
+    counts = counted(parts)
+    if not counts:
+        return None
+    if any(TEXT_COUNT.search(parts[i]) for i in counts):
+        return f'"{literal}": the count arrives formatted as text, which cannot pick a plural form, pass the Int'
+    pattern = ""
+    for i, part in enumerate(parts):
+        if i % 2 == 0:
+            pattern += re.escape(part)
+        else:
+            pattern += "%lld" if i in counts else "%(lld|@|lf|f|\\.\\d+f)"
+    regex = re.compile(pattern + r"\Z")
+    matches = [k for k in keys if regex.match(k)]
+    if verbatim or not matches:
+        return f'"{literal}": a count sentence outside the catalog, make it a LocalizedStringResource (or Words) with the Int'
+    if not all(keys[k] or k in COUNT_NEVER_ONE for k in matches):
+        return f'"{literal}": its key has no English plural forms'
+    return None
+
+
+def source_problems():
+    """Count sentences in Swift that do not resolve to a catalog key with an
+    Int count: built as plain text, passed as text, or spelled "1 <noun>".
+    Previews and everything after the first #Preview in a file are skipped."""
+    problems = []
+    for dirs, catalog_dirs in SOURCE_SCOPES:
+        keys = catalog_keys(catalog_dirs)
+        for top in dirs:
+            for path in sorted((ROOT / top).rglob("*.swift")):
+                rel = path.relative_to(ROOT)
+                text = path.read_text()
+                lines = text.splitlines()
+                preview = next((n for n, l in enumerate(lines, 1) if PREVIEW_START.search(l) and "@Environment" not in l), None)
+                for line, column, parts in swift_literals(text):
+                    if preview is not None and line >= preview:
+                        continue
+                    code = lines[line - 1] if line <= len(lines) else ""
+                    before = lines[line - 2] if line >= 2 else ""
+                    if NOT_COPY.search(code) or NOT_COPY.search(before):
+                        continue
+                    verbatim = re.search(r"verbatim(\(|:\s*)$", code[:column])
+                    problem = literal_problem(parts, verbatim is not None, keys)
+                    if problem:
+                        problems.append(f"{rel}:{line}: {problem}")
+    return problems
+
+
 def check(paths):
     langs = languages()
     targets = [pathlib.Path(p).resolve() for p in paths] if paths else catalogs()
     problems = []
     for path in targets:
         problems += check_catalog(path, langs)
+    if not paths:
+        problems += source_problems()
     for problem in problems:
         print(f"FAIL {problem}")
     print(f"{'FAIL' if problems else 'ok  '} translations: {len(targets)} catalogs, languages {' '.join(langs)}")

@@ -100,7 +100,7 @@ extension Browse {
 extension Browse {
     /// What VoiceOver reads for a group: "Sport, 42 channels", or "Sport, 1 channel".
     static func spokenGroup(_ name: String, count: Int) -> LocalizedStringResource {
-        count == 1 ? "\(name), 1 channel" : "\(name), \(count) channels"
+        "\(name), \(count) channels"
     }
 }
 

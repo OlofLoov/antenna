@@ -11,7 +11,6 @@ enum OnboardingSignIn {
     static func remaining(_ names: [String]) -> LocalizedStringResource? {
         guard !names.isEmpty else { return nil }
         let list = names.joined(separator: ", ")
-        if names.count == 1 { return "1 more source to sign in after this one: \(list)" }
         return "\(names.count) more sources to sign in after this one: \(list)"
     }
 

@@ -15,6 +15,7 @@
         @Environment(ShelfActivity.self) private var activity
         @Environment(\.searchFeed) private var feed
         @FocusState private var focused: Bool
+        @Environment(\.layoutDirection) private var layoutDirection
 
         var body: some View {
             let page = library.top.flatMap { $0.origin == .search ? $0 : nil }
@@ -94,7 +95,8 @@
 
         /// The arrows, Return and Escape as key commands, so they work
         /// wherever focus is (search/search-with-a-keyboard). Command-F is
-        /// Search in the Edit menu.
+        /// Search in the Edit menu. The sideways arrows follow the reading
+        /// direction: in Arabic the next result is drawn to the left.
         private var keys: some View {
             ZStack {
                 FindKey { model.focus() }
@@ -113,9 +115,9 @@
                     Button("Previous result") { move(-1) }
                         .keyboardShortcut(.upArrow, modifiers: [])
                     Button("Next result across") { move(1) }
-                        .keyboardShortcut(.rightArrow, modifiers: [])
+                        .keyboardShortcut(layoutDirection.trailingArrow, modifiers: [])
                     Button("Previous result across") { move(-1) }
-                        .keyboardShortcut(.leftArrow, modifiers: [])
+                        .keyboardShortcut(layoutDirection.leadingArrow, modifiers: [])
                 }
                 .disabled(focused)
             }

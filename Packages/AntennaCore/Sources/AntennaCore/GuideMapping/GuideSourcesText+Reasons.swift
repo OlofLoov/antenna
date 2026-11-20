@@ -169,9 +169,7 @@ extension GuideSourcesText {
         if counts.failed > 0 {
             lines.append(words("\(counts.failed) of \(total) guides could not be downloaded."))
         }
-        if counts.downloading == 1 {
-            lines.append(words("1 guide is still downloading."))
-        } else if counts.downloading > 1 {
+        if counts.downloading > 0 {
             lines.append(words("\(counts.downloading) guides are still downloading."))
         }
         return lines
