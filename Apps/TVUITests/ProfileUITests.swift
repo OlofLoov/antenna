@@ -33,6 +33,69 @@ extension ShellUITests {
         expectEngine("playing loads=1 file=a1.ts")
     }
 
+    // profiles/who-s-watching-at-launch, the focused circle shows whole
+    func testTheFocusedCircleShowsWhole() throws {
+        launchWithProfiles()
+        XCTAssertTrue(element("profiles.picker").waitForExistence(timeout: 10))
+        expectFocus("profiles.tile.0")
+        try expectWholeCircle(atTopOf: element("profiles.tile.0").frame)
+    }
+
+    // profiles/who-s-watching-at-launch, the focused circle shows whole
+    // profiles/switching-profile
+    func testTheFocusedProfileButtonShowsWhole() throws {
+        launchAsDad()
+        openSettingsOnProfiles()
+        for _ in 0..<4 where !element("shell.profile").hasFocus { press(.up) }
+        for _ in 0..<4 where !element("shell.profile").hasFocus { press(.left) }
+        expectFocus("shell.profile")
+        try expectWholeCircle(atTopOf: element("shell.profile").frame)
+    }
+
+    /// Once the lift settles, the focused circle at the top of `frame` is
+    /// as tall as it is wide, and past it there is only the color found
+    /// above and to the left of it, and its shadow below: no platter.
+    func expectWholeCircle(atTopOf frame: CGRect, file: StaticString = #filePath, line: UInt = #line) throws {
+        _ = XCTWaiter().wait(for: [XCTestExpectation(description: "the lift settles")], timeout: 1.5)
+        let pixels = try ScreenPixels(app)
+        let resting = CGPoint(x: frame.midX, y: frame.minY + frame.width / 2)
+        let ground = try XCTUnwrap(pixels.color(at: CGPoint(x: resting.x - frame.width, y: resting.y - frame.width / 2)))
+        let circle = try XCTUnwrap(circleFrame(frame, pixels))
+        XCTAssertEqual(circle.width, circle.height, accuracy: 4, "a round circle, not cut at the sides: \(circle)", file: file, line: line)
+        let radius = circle.width / 2
+        let center = CGPoint(x: circle.midX, y: circle.midY)
+        for degrees in stride(from: 0.0, to: 360, by: 15) where !(30...150).contains(degrees) {
+            let angle = degrees * .pi / 180
+            let point = CGPoint(x: center.x + cos(angle) * radius * 1.25, y: center.y + sin(angle) * radius * 1.25)
+            let color = try XCTUnwrap(pixels.color(at: point))
+            XCTAssertLessThanOrEqual(
+                color.distance(to: ground), 16, "something drawn at \(degrees) degrees around the circle: \(color)", file: file,
+                line: line)
+        }
+    }
+
+    /// The bounding box of the circle's color around the tile's top. Its
+    /// sides are found along the middle row from points either side of the
+    /// initial, its top up the middle column from a point above it.
+    func circleFrame(_ tile: CGRect, _ pixels: ScreenPixels) -> CGRect? {
+        let center = CGPoint(x: tile.midX, y: tile.minY + tile.width / 2)
+        let inset = tile.width * 0.35
+        guard let fill = pixels.color(at: CGPoint(x: center.x, y: center.y - inset)) else { return nil }
+        func edge(from start: CGPoint, _ dx: CGFloat, _ dy: CGFloat) -> CGPoint {
+            var point = start
+            for _ in 0..<Int(tile.width) {
+                let next = CGPoint(x: point.x + dx, y: point.y + dy)
+                guard let color = pixels.color(at: next), color.distance(to: fill) <= 48 else { break }
+                point = next
+            }
+            return point
+        }
+        let left = edge(from: CGPoint(x: center.x - inset, y: center.y), -1, 0).x
+        let right = edge(from: CGPoint(x: center.x + inset, y: center.y), 1, 0).x
+        let top = edge(from: CGPoint(x: center.x, y: center.y - inset), 0, -1).y
+        return CGRect(x: left, y: top, width: right - left, height: (center.y - top) * 2)
+    }
+
     // profiles/who-s-watching-at-launch
     func testOneProfileOpensStraightAway() {
         launch("channels")

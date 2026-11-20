@@ -100,9 +100,9 @@ final class TitleTVUITests: XCTestCase {
 
     /// Series from the bar with the shelf's `titles` script, then Northern
     /// Lights, the third poster in Recently added.
-    func openNorthernLights() {
+    func openNorthernLights(extra: [String] = []) {
         app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shelf", "titles"]
+        app.launchArguments = ["-ui-testing-shelf", "titles"] + extra
         app.launchInEnglish()
         // The system bar takes Menu only once something on the page has focus.
         _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
@@ -110,6 +110,9 @@ final class TitleTVUITests: XCTestCase {
         XCTAssertTrue(element("shell.tab.series").waitForExistence(timeout: 10))
         moveAlongTheBar(.right, to: "shell.tab.series")
         press(.select)
+        // Office's Long Winter joins Recently added after Cabin's titles;
+        // a press while the row rebuilds can be lost.
+        XCTAssertTrue(element("series.card.xtream#office#series#1").waitForExistence(timeout: 10))
         expectFocus("series.hero.play")
         press(.down)
         expectFocus("series.card.xtream#cabin#series#2")
@@ -135,6 +138,33 @@ final class TitleTVUITests: XCTestCase {
         press(.down)
         expectFocus("episodes.row.xtream#cabin#episode#11")
         XCTAssertEqual(element("episodes.row.xtream#cabin#episode#11").label, "Episode 1, The Weir, 45 min")
+    }
+
+    // title-detail-and-episode-picker/pick-a-season, many seasons
+    func testFifteenSeasonsScrollClearOfTheCount() throws {
+        openNorthernLights(extra: ["-ui-testing-many-seasons"])
+        let count = element("episodes.count")
+        XCTAssertTrue(count.waitForExistence(timeout: 5))
+        XCTAssertEqual(count.label, "2 episodes")
+        try expectNothingOver(count)
+        press(.down)
+        expectFocus("episodes.season.season-1")
+        for number in 2...15 {
+            press(.right)
+            expectFocus("episodes.season.season-\(number)")
+        }
+        _ = XCTWaiter().wait(for: [XCTestExpectation(description: "the row scrolls")], timeout: 1)
+        XCTAssertLessThanOrEqual(element("episodes.season.season-15").frame.maxX, count.frame.minX, "the last chip stops before the count")
+        try expectNothingOver(count)
+    }
+
+    /// The count shows on the page's ground color with only its own text:
+    /// no chip is drawn under or over it.
+    func expectNothingOver(_ count: XCUIElement, file: StaticString = #filePath, line: UInt = #line) throws {
+        let pixels = try ScreenPixels(app)
+        let frame = count.frame
+        let share = pixels.share(of: .ground, in: frame)
+        XCTAssertGreaterThan(share, 0.5, "\(Int(share * 100))% of the count is the ground color", file: file, line: line)
     }
 
     // title-detail-and-episode-picker/what-the-title-is-about, More on Apple TV

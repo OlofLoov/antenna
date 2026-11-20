@@ -140,10 +140,20 @@ enum EpisodePicker {
 
     /// One chip per group, the picked one on the 0.12 surface at weight
     /// 600, and the picked group's count at the trailing edge. Hidden with
-    /// one group.
+    /// one group. The chips scroll inside their own row and are cut to it,
+    /// so with many seasons none draws over the count
+    /// (title-detail-and-episode-picker/pick-a-season, many seasons).
     struct Seasons: View {
         let type: Sizes
         @Environment(\.episodes) private var episodes
+
+        /// Room above and below the chips for a focused chip's lift and
+        /// shadow on Apple TV.
+        #if os(tvOS)
+            static let liftRoom: CGFloat = 24
+        #else
+            static let liftRoom: CGFloat = 6
+        #endif
 
         var body: some View {
             if let episodes, episodes.state.seasons.count > 1 {
@@ -160,10 +170,9 @@ enum EpisodePicker {
                             }
                         }
                         .padding(.horizontal, type.gutter)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, Self.liftRoom)
                     }
                     .scrollIndicators(.hidden)
-                    .scrollClipDisabled()
                     if let count = episodes.state.seasons.first(where: { $0.id == episodes.state.picked })?.count {
                         Text(count)
                             .font(.boardStyle(type.line))

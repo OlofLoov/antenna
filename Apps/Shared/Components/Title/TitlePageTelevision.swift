@@ -26,11 +26,7 @@
                     Backdrop(poster: CGSize(width: 300, height: 450))
                         .frame(maxWidth: .infinity)
                         .frame(height: artHeight)
-                        .overlay {
-                            LinearGradient(
-                                colors: [Palette.ground.opacity(0.95), Palette.ground.opacity(0.4), .clear], startPoint: .leading,
-                                endPoint: .trailing)
-                        }
+                        .overlay { HeroScrim(copyEnd: 0.57) }
                         .overlay(alignment: .bottom) {
                             LinearGradient(colors: [.clear, Palette.ground], startPoint: .top, endPoint: .bottom).frame(height: 240)
                         }
