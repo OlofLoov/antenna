@@ -88,6 +88,7 @@ struct AppBrowsingBenchmarkTests {
         live.filter = "channel 12"
         let filtered = median { _ = live.rows.count }
         print("benchmark live rows: filtered \(filtered)")
+        #expect(filtered < .milliseconds(15), "the name index filters bytes and keeps the last result")
     }
 
     @Test("live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list loading a 50 000 channel source")
@@ -102,7 +103,7 @@ struct AppBrowsingBenchmarkTests {
         print("benchmark live load: \(runs.sorted()[2])")
     }
 
-    @Test("new-channels/a-new-group-lists-channels-added-lately a 50 000 channel load holds the main actor under 150 ms at a time")
+    @Test("new-channels/a-new-group-lists-channels-added-lately a 50 000 channel load holds the main actor under 60 ms at a time")
     func loadStall() async {
         let clock = ContinuousClock()
         var stalls: [Duration] = []
@@ -123,7 +124,7 @@ struct AppBrowsingBenchmarkTests {
         }
         let stall = stalls.sorted()[2]
         print("benchmark live load longest main-actor stall: \(stall)")
-        #expect(stall < .milliseconds(150))
+        #expect(stall < .milliseconds(60), "the catalogue builds away from the main actor")
     }
 
     @Test("search/find-things-the-way-you-type-them a settled query over 50 000 channels")

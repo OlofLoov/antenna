@@ -44,8 +44,11 @@ struct GroupPicker: View {
         }
         .onAppear {
             guard names == nil else { return }
-            names = ChannelNameIndex(catalogue)
             picked = catalogue.members(of: id)
+        }
+        .task {
+            guard names == nil else { return }
+            names = await ChannelNameIndex.build(catalogue)
         }
     }
 
@@ -53,8 +56,8 @@ struct GroupPicker: View {
         catalogue.searchRows(includingHidden: true).filter { GroupRules.canSave(channelID: $0.id) }
     }
 
-    /// The offered rows the filter matches. The name index is built once
-    /// when the picker opens, so a keystroke only filters.
+    /// The offered rows the filter matches. The name index is built once,
+    /// away from the main actor, when the picker opens, so a keystroke only filters.
     private var rows: [RowKey] {
         names?.filter(offered, by: ChannelFilter(filter)) ?? offered
     }

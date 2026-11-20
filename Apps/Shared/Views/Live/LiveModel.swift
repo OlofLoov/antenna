@@ -49,6 +49,11 @@ final class LiveModel {
         var catchup = CatchupAddresses()
         /// True for a file source whose playlist has not synced yet.
         var waitsForICloud: @MainActor (SourceDescriptor) -> Bool = { _ in false }
+        /// Builds the catalogue and its name index away from the main actor.
+        /// Tests hold it to land builds out of order.
+        var buildCatalogue: @Sendable (CatalogueInputs<PersistentIdentifier>) async -> BuiltCatalogue<PersistentIdentifier> = {
+            await $0.indexed()
+        }
     }
 
     /// Thrown by a loader for a source whose login is not on this device.
@@ -99,12 +104,12 @@ final class LiveModel {
     /// Stores the last channel and counts a channel as watched.
     @ObservationIgnored let session: SessionTracker
     @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]
-    @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
+    @ObservationIgnored private(set) var loads: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
     @ObservationIgnored private var failures: [UUID: String] = [:]
     /// Each loaded source's memory of its channels (new-channels).
-    @ObservationIgnored private var seen: [UUID: SeenChannels] = [:]
-    @ObservationIgnored private var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
+    @ObservationIgnored private(set) var seen: [UUID: SeenChannels] = [:]
+    @ObservationIgnored private(set) var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
     /// The recents the catalogue lists. While Recents is on screen a newer
     /// list waits in `latestRecents` (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
     @ObservationIgnored var shownRecents: [LastChannelKey] = []
@@ -114,6 +119,10 @@ final class LiveModel {
     @ObservationIgnored private var tuning: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
     @ObservationIgnored var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
+    /// The catalogue being built away from the main actor.
+    @ObservationIgnored var building: Task<Void, Never>?
+    /// Counts the builds started; only the newest one's catalogue shows.
+    @ObservationIgnored var builds = 0
     @ObservationIgnored private var hiding: Task<Void, Never>?
     @ObservationIgnored private var lastInput = ControlsTimer.Input.touch
     @ObservationIgnored private(set) var suspended = false
@@ -209,13 +218,6 @@ final class LiveModel {
         }
     }
 
-    /// Waits until no source is loading. For tests.
-    func settled() async {
-        while let next = loads.values.first {
-            await next.value
-        }
-    }
-
     /// A source with channels keeps them while it loads again and when that
     /// load fails (sources-and-settings/a-failed-refresh-keeps-your-channels).
     private func startLoad(_ source: SourceDescriptor) {
@@ -268,12 +270,8 @@ final class LiveModel {
         guard all != channels else { return }
         if multiView != nil { Task { await multiViewChannelsChanged() } }
         channels = all
-        let interval = BrowseSignposts.signposter.beginInterval("catalogue")
-        let built = Catalogue(channels: all, groupOrder: [:], favorites: favorites, recents: shownRecents, rules: groupRules)
-        catalogue = NewChannels.group(built, seen: seen, now: .now)
-        BrowseSignposts.signposter.endInterval("catalogue", interval)
-        names = ChannelNameIndex(catalogue)
-        restoreGroup()
+        startCatalogueBuild(
+            CatalogueInputs(channels: all, favorites: favorites, recents: shownRecents, rules: groupRules, seen: seen, now: .now))
     }
 
     // MARK: Favorites and groups

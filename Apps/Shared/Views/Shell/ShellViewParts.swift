@@ -71,11 +71,4 @@
             return .live(loader: loader, guide: guideStore, profile: profile, refresher: refresher)
         }
     }
-
-    /// What the overlay's catalogue is built from; it is rebuilt when either changes.
-    struct CatalogueInputs: Equatable {
-        let channels: [Channel]
-        let favorites: [PersistentIdentifier]
-        let profile: UUID
-    }
 #endif

@@ -28,6 +28,7 @@
         /// (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
         @State private var shownRecents: [LastChannelKey] = []
         @State private var groupRules = GroupRules()
+        @State private var catalogueBuilds = ShellCatalogueBuilds()
         @Environment(GroupLocks.self) private var locks: GroupLocks?
         @Environment(ShelfLibrary.self) private var shelves
         /// Search keeps its query while the app runs.
@@ -77,8 +78,16 @@
                 Task { await model.togglePlayback() }
             }
             .onChange(of: catalogueInputs, initial: true) { old, new in
-                catalogue = new.catalogue(after: old, current: catalogue, favorites: favorites, recents: shownRecents)
-                overlayCatalogueChanged()
+                // A favorite alone swaps in at once; anything else builds away from the main actor.
+                if !catalogueBuilds.isBuilding, let swapped = new.swapped(after: old, current: catalogue, favorites: favorites) {
+                    catalogue = swapped
+                    return overlayCatalogueChanged()
+                }
+                let starred = FavoriteRecord.snapshots(favorites, profile: new.profile)
+                catalogueBuilds.start(new, favorites: starred, recents: shownRecents, latestRecents: { shownRecents }) { built in
+                    catalogue = built
+                    overlayCatalogueChanged()
+                }
             }
             .onChange(of: model.recents) { _, _ in showLatestRecents() }
             .followsSubtitlePreference { model.languages.subtitles = $0 }

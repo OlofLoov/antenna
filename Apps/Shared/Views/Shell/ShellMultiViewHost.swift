@@ -51,17 +51,50 @@
         let rules: GroupRules
         let seen: [UUID: SeenChannels]
 
-        /// The catalogue for these inputs after `old`. When only the
-        /// favorites changed they are swapped into `current`, which keeps
-        /// the channels indexed as they are; anything else builds it again.
-        func catalogue(
-            after old: Self, current: Catalogue<PersistentIdentifier>, favorites: [FavoriteRecord], recents: [LastChannelKey]
-        ) -> Catalogue<PersistentIdentifier> {
-            if old != self, channels == old.channels, profile == old.profile, rules == old.rules, seen == old.seen {
-                return current.replacingFavorites(FavoriteRecord.snapshots(favorites, profile: profile))
+        /// When only the favorites changed since `old`, `current` with them
+        /// swapped in, which keeps the channels indexed as they are; nil
+        /// when the catalogue has to be built again.
+        func swapped(
+            after old: Self, current: Catalogue<PersistentIdentifier>, favorites: [FavoriteRecord]
+        ) -> Catalogue<PersistentIdentifier>? {
+            guard old != self, channels == old.channels, profile == old.profile, rules == old.rules, seen == old.seen else {
+                return nil
             }
-            let built = Catalogue.shell(channels: channels, favorites: favorites, profile: profile, recents: recents, rules: rules)
-            return NewChannels.group(built, seen: seen, now: .now)
+            return current.replacingFavorites(FavoriteRecord.snapshots(favorites, profile: profile))
+        }
+
+    }
+
+    /// The shell's catalogue builds, away from the main actor. Only the
+    /// newest build lands, with the recents of that moment.
+    @MainActor final class ShellCatalogueBuilds {
+        private var started = 0
+        private var landed = 0
+
+        /// True while a build has not landed, so a favorite changed now
+        /// starts a new build instead of swapping into a catalogue about to be replaced.
+        var isBuilding: Bool { landed < started }
+
+        /// Builds the catalogue for `inputs`. `latestRecents` gives the
+        /// recents when the build is done; `land` gets the catalogue.
+        func start(
+            _ inputs: ShellCatalogueInputs, favorites: [FavoriteSnapshot<PersistentIdentifier>], recents: [LastChannelKey],
+            latestRecents: @escaping @MainActor () -> [LastChannelKey], land: @escaping @MainActor (Catalogue<PersistentIdentifier>) -> Void
+        ) {
+            started += 1
+            let ticket = started
+            let request = CatalogueInputs(
+                channels: inputs.channels, favorites: favorites, recents: recents, rules: inputs.rules, seen: inputs.seen, now: .now)
+            Task { [weak self] in
+                let interval = BrowseSignposts.signposter.beginInterval("catalogue")
+                var built = await request.catalogue()
+                BrowseSignposts.signposter.endInterval("catalogue", interval)
+                guard let self, ticket == started else { return }
+                landed = ticket
+                let recentsNow = latestRecents()
+                if recentsNow != recents { built = built.replacingRecents(recentsNow) }
+                land(built)
+            }
         }
     }
 #endif
