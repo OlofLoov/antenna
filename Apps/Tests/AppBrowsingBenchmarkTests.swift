@@ -135,10 +135,19 @@ struct AppBrowsingBenchmarkTests {
             SearchCorpus(
                 catalogue: live.catalogue, sourceOrder: [Self.source: 0], guide: GuideIndex(programmes: [:]), titles: [],
                 hasTitles: false, sources: .loaded))
-        let settle = median {
+        let onMain = median {
             model.run("channel 12")
             model.run("channel 1")
         }
-        print("benchmark search settle (two queries): \(settle)")
+        let clock = ContinuousClock()
+        var answers: [Duration] = []
+        for _ in 0..<5 {
+            let start = clock.now
+            model.run("channel 12")
+            await model.searched()
+            answers.append(clock.now - start)
+        }
+        print("benchmark search: two queries hold the main actor \(onMain), an answer arrives in \(answers.sorted()[2])")
+        #expect(onMain < .milliseconds(5), "the query runs away from the main actor")
     }
 }
