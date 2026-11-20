@@ -80,6 +80,9 @@
         @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]
         @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
         @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
+        /// Sources in the order their loads returned, before the channels are
+        /// tagged off the main actor, so a source that tags faster cannot
+        /// overtake one that landed first.
         @ObservationIgnored private var finishOrder: [UUID] = []
         /// The channel to tune at launch, read once.
         @ObservationIgnored var stored: LastChannelKey?
@@ -237,6 +240,7 @@
                     do {
                         let playlist = try await dependencies.load(source)
                         guard !Task.isCancelled else { return }
+                        if !finishOrder.contains(source.id) { finishOrder.append(source.id) }
                         result = .success(await dependencies.seen.tagging(playlist, of: source.id))
                     } catch {
                         result = .failure(error)
@@ -297,8 +301,14 @@
                     return
                 }
             }
-            guard let first = finishOrder.first, let channel = channelsBySource[first]?.first else { return }
-            tune(channel)
+            for id in finishOrder {
+                // Still tagging: wait for it rather than let a later source win.
+                guard let channels = channelsBySource[id] else { return }
+                if let channel = channels.first {
+                    tune(channel)
+                    return
+                }
+            }
         }
 
         /// Plays `channel` full screen. A successful load writes the last
@@ -458,7 +468,6 @@
                 channelsBySource[source.id] = tagged
                 seen[source.id] = loaded.memory
                 setState(.loaded(channels: tagged.count), for: source.id)
-                if !tagged.isEmpty { finishOrder.append(source.id) }
                 rebuildChannels()
                 considerTune()
                 if let guide = dependencies.guide {
