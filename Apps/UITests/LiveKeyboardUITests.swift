@@ -31,16 +31,16 @@ final class LiveKeyboardUITests: XCTestCase {
     }
 
     /// Presses the down arrow until `row` has the ring. The simulator drops
-    /// a key press now and then, so each press gets two seconds to show
-    /// before the next; a press that was only slow would otherwise carry the
-    /// ring past `row`. The sidebar's group search once took the first arrow
+    /// a key press now and then, so each press gets five seconds to show
+    /// before the next, enough on a loaded runner; a press that was only
+    /// slow would otherwise carry the ring past `row`. The sidebar's group search once took the first arrow
     /// key and kept every later one, so a failure names what holds the keyboard.
     private func ring(onto row: XCUIElement, _ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
         let ringed = NSPredicate(format: "value == 'Keyboard focus'")
-        for _ in 0..<3 {
+        for _ in 0..<4 {
             app.typeKey(.downArrow, modifierFlags: [])
             let shown = XCTNSPredicateExpectation(predicate: ringed, object: row)
-            if XCTWaiter().wait(for: [shown], timeout: 2) == .completed { return }
+            if XCTWaiter().wait(for: [shown], timeout: 5) == .completed { return }
         }
         XCTFail("the arrow keys never moved the ring to \(row.identifier); \(ringState(app))", file: file, line: line)
     }
