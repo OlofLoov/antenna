@@ -88,7 +88,7 @@ extension ShelfView {
     struct LandscapeArt: View {
         let name: String
         let url: URL?
-        @Environment(\.posterLoader) private var loader
+
         @Environment(\.shelfMetrics) private var metrics
         @State private var poster: Poster?
 
@@ -101,11 +101,7 @@ extension ShelfView {
                     .lineLimit(2)
                     .padding(10)
             }
-            .task(id: url) {
-                poster = nil
-                guard let url, let loader else { return }
-                poster = await loader.load(url)
-            }
+            .loadsPoster(url, into: $poster)
         }
     }
 

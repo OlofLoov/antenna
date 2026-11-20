@@ -147,7 +147,7 @@ enum NextEpisode {
         let url: URL?
         let number: Int?
         let sizes: Sizes
-        @Environment(\.posterLoader) private var loader
+
         @State private var poster: Poster?
 
         var body: some View {
@@ -161,11 +161,7 @@ enum NextEpisode {
             .frame(width: sizes.picture.width, height: sizes.picture.height)
             .clipShape(RoundedRectangle(cornerRadius: sizes.pictureCorner, style: .continuous))
             .accessibilityHidden(true)
-            .task(id: url) {
-                poster = nil
-                guard let url, let loader else { return }
-                poster = await loader.load(url)
-            }
+            .loadsPoster(url, into: $poster)
         }
     }
 }

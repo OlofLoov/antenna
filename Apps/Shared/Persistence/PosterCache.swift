@@ -1,3 +1,4 @@
+import AntennaCore
 import CoreGraphics
 import CryptoKit
 import Foundation
@@ -39,16 +40,19 @@ actor PosterCache {
         SHA256.hash(data: Data(url.absoluteString.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 
-    /// The poster from memory, else disk, else the network. Two calls for one
-    /// address while it loads share one download.
-    func poster(for url: URL) async -> Poster? {
+    /// The poster from memory, else disk, else the network, decoded to
+    /// cover `fit`, or at full size without one. Memory keeps one picture
+    /// per address and frame; disk keeps the file as it came. Two calls
+    /// for one address and frame while it loads share one download.
+    func poster(for url: URL, fitting fit: PosterFit? = nil) async -> Poster? {
         let key = Self.key(url)
-        if let kept = memory.object(forKey: key as NSString) { return kept }
-        if let running = loading[key] { return await running.value }
-        let task = Task { await load(url, key: key) }
-        loading[key] = task
+        let memoryKey = fit.map { "\(key)@\($0.key)" } ?? key
+        if let kept = memory.object(forKey: memoryKey as NSString) { return kept }
+        if let running = loading[memoryKey] { return await running.value }
+        let task = Task { await load(url, key: key, memoryKey: memoryKey, fit: fit) }
+        loading[memoryKey] = task
         let poster = await task.value
-        loading[key] = nil
+        loading[memoryKey] = nil
         return poster
     }
 
@@ -62,20 +66,20 @@ actor PosterCache {
         return poster
     }
 
-    private func load(_ url: URL, key: String) async -> Poster? {
+    private func load(_ url: URL, key: String, memoryKey: String, fit: PosterFit?) async -> Poster? {
         let file = directory.appending(path: key)
-        if let data = try? Data(contentsOf: file), let poster = await Self.decode(data) {
+        if let data = try? Data(contentsOf: file), let poster = await Self.decode(data, fit: fit) {
             try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: file.path)
-            remember(poster, key: key)
+            remember(poster, key: memoryKey)
             return poster
         }
         let signpost = BrowseSignposts.signposter.beginInterval("poster")
         defer { BrowseSignposts.signposter.endInterval("poster", signpost) }
         guard let (data, response) = try? await session.data(from: url),
             (response as? HTTPURLResponse).map({ (200..<300).contains($0.statusCode) }) ?? true,
-            let poster = await Self.decode(data)
+            let poster = await Self.decode(data, fit: fit)
         else { return nil }
-        remember(poster, key: key)
+        remember(poster, key: memoryKey)
         store(data, at: file)
         return poster
     }
@@ -83,8 +87,8 @@ actor PosterCache {
     /// Decodes away from the cache's actor, so posters decode in parallel
     /// instead of one at a time (movies-and-series-browsing/browsing-stays-responsive).
     @concurrent
-    private static func decode(_ data: Data) async -> Poster? {
-        Poster(data: data)
+    private static func decode(_ data: Data, fit: PosterFit?) async -> Poster? {
+        Poster(data: data, fitting: fit)
     }
 
     private func remember(_ poster: Poster, key: String) {
@@ -136,11 +140,30 @@ actor PosterCache {
 final class Poster: @unchecked Sendable {
     let image: CGImage
 
-    init?(data: Data) {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
-            let image = CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary)
+    /// Decodes `data` at full size, or with `fit` scaled down to cover that
+    /// frame. A picture already that small or smaller decodes as it is.
+    init?(data: Data, fitting fit: PosterFit? = nil) {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+        if let fit, let side = Self.pixels(of: source).flatMap({ fit.longestSide(pictureWidth: $0.width, pictureHeight: $0.height) }) {
+            let options: [CFString: Any] = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: side,
+                kCGImageSourceShouldCacheImmediately: true,
+            ]
+            guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+            self.image = image
+            return
+        }
+        guard let image = CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary)
         else { return nil }
         self.image = image
+    }
+
+    /// The picture's size in pixels as stored, read from its header.
+    private static func pixels(of source: CGImageSource) -> (width: Int, height: Int)? {
+        guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+            let width = properties[kCGImagePropertyPixelWidth] as? Int, let height = properties[kCGImagePropertyPixelHeight] as? Int
+        else { return nil }
+        return (width, height)
     }
 
     init(image: CGImage) {

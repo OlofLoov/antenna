@@ -59,7 +59,7 @@ enum PreviewArt {
     /// A loader that hands back `image` for every address, for previews
     /// that show artwork.
     static func loader(_ image: CGImage?) -> ShelfView.PosterLoader {
-        ShelfView.PosterLoader { _ in image.map(Poster.init(image:)) }
+        ShelfView.PosterLoader { _, _ in image.map(Poster.init(image:)) }
     }
 }
 

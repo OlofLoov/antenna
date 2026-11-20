@@ -119,7 +119,7 @@ enum ShelfPreview {
                         return
                     }
                     guard let art, art != shown?.art else { return }
-                    let image = await loader?.load(art.url)?.image
+                    let image = await loader?.load(art.url, nil)?.image
                     guard !Task.isCancelled else { return }
                     withAnimation(ShelfBanner.crossfade) { shown = .init(art: art, image: image) }
                 }

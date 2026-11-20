@@ -45,7 +45,7 @@ enum ShelfView {
     /// Fetches a poster image. The screen provides the app's poster cache;
     /// previews leave it out and show the name tiles.
     struct PosterLoader: Sendable {
-        var load: @Sendable (URL) async -> Poster?
+        var load: @Sendable (URL, PosterFit?) async -> Poster?
     }
 
     /// The poster, or the name tile while it is missing, loading or broken.
@@ -53,17 +53,13 @@ enum ShelfView {
     struct PosterArt: View {
         let name: String
         let url: URL?
-        @Environment(\.posterLoader) private var loader
+
         @Environment(\.shelfMetrics) private var metrics
         @State private var poster: Poster?
 
         var body: some View {
             PosterTile(name: name, image: poster?.image, cornerRadius: metrics.corner, nameSize: metrics.caption + 2)
-                .task(id: url) {
-                    poster = nil
-                    guard let url, let loader else { return }
-                    poster = await loader.load(url)
-                }
+                .loadsPoster(url, into: $poster)
         }
     }
 
