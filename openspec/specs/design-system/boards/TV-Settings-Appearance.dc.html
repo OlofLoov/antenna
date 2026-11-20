@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TV settings, appearance</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- add-accent-and-app-icons: the Apple TV Settings split page at the Appearance section, App icon focused. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+    <!-- settings.lead -->
+    <div style="width: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center">
+      <div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 150px; line-height: 1; color: #A7B0BF">⚙</div>
+      <div style="font-size: 48px; font-weight: 600">Sources &amp; Settings</div>
+      <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">The accent is for this profile on every device. The app icon is for this device only.</div>
+    </div>
+    <!-- settings.list scrolled to Appearance; the lead column shows the section's footer while one of its rows has focus -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center">
+      <div style="font-size: 25px; font-weight: 600; color: #6B7280; padding: 12px 20px 0; letter-spacing: 0.5px">PREFERENCES</div>
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="flex: 1">Subtitles</span><span style="color: #A7B0BF">Auto</span></div>
+      <div style="font-size: 25px; font-weight: 600; color: #6B7280; padding: 12px 20px 0; letter-spacing: 0.5px">APPEARANCE</div>
+      <!-- settings.appearance.accent: pushes TV-Settings-Accent -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="flex: 1">Accent</span><span style="width: 22px; height: 22px; border-radius: 11px; background: {{accent}}; flex: 0 0 auto; display: inline-block"></span><span style="color: #A7B0BF">Blue</span></div>
+      <!-- settings.appearance.icon: focused, the system platter. Pushes the icon choices, TV-Settings-Accent with icon thumbnails. -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: #F2F4F8; color: #0B0E13; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45); box-sizing: border-box"><span style="flex: 1">App icon</span><svg width="40" height="40" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 8px; background: #0B0E13"><g fill="none" stroke="#5BB8FF" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#5BB8FF"/><path d="M512 486V790" stroke="#5BB8FF" stroke-width="64" stroke-linecap="round"/></svg><span style="color: #4B5563">Antenna</span></div>
+      <div style="font-size: 25px; font-weight: 600; color: #6B7280; padding: 12px 20px 0; letter-spacing: 0.5px">ABOUT</div>
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="flex: 1">Version</span><span style="color: #A7B0BF">1.4 (52)</span></div>
+    </div>
+  </div>
+  <!-- A progress bar elsewhere on Apple TV draws in the accent; focus never does. -->
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#4FD1C5","#FFB454","#F472B6","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
