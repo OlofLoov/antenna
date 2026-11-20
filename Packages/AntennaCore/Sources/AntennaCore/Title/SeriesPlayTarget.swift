@@ -17,8 +17,10 @@ public struct SeriesPlayTarget: Sendable, Hashable {
     }
 
     /// "Resume S2 E4", "Play E3", "Play S2" or "Play".
-    public var label: String {
-        PlayLabel.text(resumes: resumes, episode: episode)
+    public var label: String { label(.autoupdatingCurrent) }
+
+    public func label(_ locale: Locale) -> String {
+        PlayLabel.text(resumes: resumes, episode: episode, locale: locale)
     }
 
     /// Picks the episode. `progress` holds the series' saved positions by

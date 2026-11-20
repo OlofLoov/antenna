@@ -122,22 +122,25 @@ public enum PaywallCopy {
         let period = offer.unit.phrase(offer.value * offer.periodCount, words)
         switch offer.payment {
         case .freeTrial:
-            return Line(.lineFreeTrial, words("First \(period) free, then \(displayPrice) per year"))
+            return Line(.lineFreeTrial, words("First \(period) free, then \(displayPrice) per year"), locale: locale)
         case .payUpFront:
-            return Line(.lineIntroPrice, words("\(offer.displayPrice) for the first \(period), then \(displayPrice) per year"))
+            return Line(
+                .lineIntroPrice, words("\(offer.displayPrice) for the first \(period), then \(displayPrice) per year"), locale: locale)
         case .payAsYouGo:
             let unit = offer.unit.phrase(offer.value, words)
             return Line(
-                .lineIntroPerPeriod, words("\(offer.displayPrice) per \(unit) for the first \(period), then \(displayPrice) per year"))
+                .lineIntroPerPeriod, words("\(offer.displayPrice) per \(unit) for the first \(period), then \(displayPrice) per year"),
+                locale: locale)
         }
     }
 
-    /// The note under "Welcome back".
-    public static func restoredNote(_ grant: Grant, locale: Locale = .current) -> Line {
+    /// The note under "Welcome back". The renewal date is written in
+    /// `locale`'s calendar, on the day it falls in `timeZone`.
+    public static func restoredNote(_ grant: Grant, locale: Locale = .current, timeZone: TimeZone = .current) -> Line {
         guard grant.kind == .yearly, let end = grant.expiresAt else { return Line(.restoredLifetime, locale: locale) }
+        let date = longDate(end, locale: locale, timeZone: timeZone)
         return Line(
-            .restoredYearly,
-            Words(locale)("Renews on \(longDate(end, locale: locale)). Your sources and favorites are where you left them."))
+            .restoredYearly, Words(locale)("Renews on \(date). Your sources and favorites are where you left them."), locale: locale)
     }
 
     /// What was found, such as "Lifetime · Family Sharing". `sharedSuffix`
@@ -147,22 +150,22 @@ public enum PaywallCopy {
         return grant.familyShared ? name + text(sharedSuffix, locale: locale) : name
     }
 
-    /// The reason line on a paywall after a lapse; nil for a user who never bought.
-    public static func lapsedNote(_ lapse: Lapse, locale: Locale = .current) -> Line? {
+    /// The reason line on a paywall after a lapse; nil for a user who never
+    /// bought. The date reads as in `restoredNote`.
+    public static func lapsedNote(_ lapse: Lapse, locale: Locale = .current, timeZone: TimeZone = .current) -> Line? {
         switch lapse {
         case .neverPurchased: nil
         case .expired(let date):
             Line(
                 .lapsedExpired,
-                Words(locale)("Your yearly subscription ended on \(longDate(date, locale: locale))."))
+                Words(locale)("Your yearly subscription ended on \(longDate(date, locale: locale, timeZone: timeZone))."),
+                locale: locale)
         case .revoked: Line(.lapsedRevoked, locale: locale)
         }
     }
 
-    private static func longDate(_ date: Date, locale: Locale) -> String {
-        var style = Date.FormatStyle(date: .long, time: .omitted)
-        style.locale = locale
-        return date.formatted(style)
+    private static func longDate(_ date: Date, locale: Locale, timeZone: TimeZone) -> String {
+        date.formatted(Date.FormatStyle(date: .long, time: .omitted, locale: locale, calendar: locale.calendar, timeZone: timeZone))
     }
 }
 

@@ -65,9 +65,12 @@ public struct BannerText: Sendable, Hashable {
     public var description: String?
 
     public init(_ title: ShelfTitle, details: ShelfDetails?, locale: Locale = .autoupdatingCurrent) {
-        eyebrow = ([ShelfSort.recentlyAdded.name] + [title.category].compactMap(\.self)).joinedAsDetail()
+        eyebrow = ([ShelfSort.recentlyAdded.name(locale)] + [title.category].compactMap(\.self)).joinedAsDetail(locale)
         self.title = title.name
-        let span = title.kind == .movie ? ShelfText.length(details?.duration) : details?.seasons.flatMap { ShelfText.seasons($0) }
+        let span =
+            title.kind == .movie
+            ? ShelfText.length(details?.duration, locale: locale)
+            : details?.seasons.flatMap { ShelfText.seasons($0, locale: locale) }
         let score = details?.rating ?? title.rating
         rating = score.flatMap { TitleMetadata.rating($0, locale: locale) }
         spokenRating = score.flatMap { TitleMetadata.spokenRating($0, locale: locale) }

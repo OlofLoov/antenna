@@ -26,14 +26,14 @@ public struct ChannelTally: Equatable, Sendable {
     }
 
     /// Counts `channels`, already tagged with one source's id, in
-    /// `channel-catalogue` order.
-    public init(tagged channels: [Channel]) {
+    /// `channel-catalogue` order. The ungrouped group is named in `locale`.
+    public init(tagged channels: [Channel], locale: Locale = .autoupdatingCurrent) {
         let catalogue = Catalogue<Int>(channels: channels, groupOrder: [:], favorites: [])
         let groups = catalogue.groups.filter { $0 != .favorites && $0 != .all }
         self.channels = catalogue.count(of: .all)
         self.groups = groups.map { group in
             if case .named(_, let name) = group { return name }
-            return group.label()
+            return group.label(locale)
         }
         let catchUp = channels.filter(\.hasCatchup)
         catchUpChannels = catchUp.count
@@ -64,10 +64,9 @@ public struct SetupText: Sendable {
 
     /// The line under "Signed in", from `user_info`: "Account active until
     /// <date>" and the connections, whichever exist, joined by " · ". Nil
-    /// when the server gave neither.
+    /// when the server gave neither. The date is in `locale`'s calendar.
     public func account(expiry: String?, connections: String?) -> String? {
-        var style = Date.FormatStyle(date: .long, time: .omitted).locale(locale)
-        style.timeZone = timeZone
+        let style = Date.FormatStyle(date: .long, time: .omitted, locale: locale, calendar: locale.calendar, timeZone: timeZone)
         let date = expiry.flatMap(Self.positive).map { Date(timeIntervalSince1970: TimeInterval($0)).formatted(style) }
         switch (date, connections.flatMap(Self.positive)) {
         case (let date?, let count?): return words("Account active until \(date) · \(count) connections")

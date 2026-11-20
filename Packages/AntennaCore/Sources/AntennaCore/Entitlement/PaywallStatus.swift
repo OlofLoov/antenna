@@ -23,7 +23,9 @@ public enum PaywallStatus: Equatable, Sendable, CaseIterable {
         }
     }
 
-    public var text: String { PaywallCopy.text(key) }
+    public var text: String { text(.autoupdatingCurrent) }
+
+    public func text(_ locale: Locale) -> String { PaywallCopy.text(key, locale: locale) }
 
     /// Shown in the error style; the rest are muted.
     public var isError: Bool {
