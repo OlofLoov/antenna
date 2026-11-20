@@ -229,6 +229,25 @@ public final class SampleBuilder {
         return try Self.videoBuffer(Self.lengthPrefixed(payload), format: format, packet: packet)
     }
 
+    /// How far a sound packet's time may be from the end of the sound
+    /// before it and still follow on from it. Matroska times sound to the
+    /// millisecond, so a 40-sample TrueHD frame or a 32 ms AC-3 frame starts
+    /// up to half a millisecond off; some broadcast muxers are a few
+    /// milliseconds off. Buffers that overlap or leave a gap by that much
+    /// click at every join.
+    static let soundJitter = CMTime(value: 10, timescale: 1000)
+
+    /// Where sound timed `time` starts: right after the sound before it
+    /// when `time` is within `soundJitter` of `previousEnd` or has no time,
+    /// otherwise at `time`, as after a jump or when sound is queued again
+    /// from the ring.
+    static func soundStart(_ time: CMTime, following previousEnd: CMTime) -> CMTime {
+        guard time.isNumeric else { return previousEnd }
+        guard previousEnd.isNumeric else { return time }
+        let offset = CMTimeAbsoluteValue(CMTimeSubtract(time, previousEnd))
+        return offset <= soundJitter ? previousEnd : time
+    }
+
     /// A float PCM buffer from uncompressed samples, timed like
     /// `soundBuffer`.
     private func pcmBuffer(_ packet: DemuxedPacket, sample: PCMSample) throws -> CMSampleBuffer? {
@@ -237,7 +256,7 @@ public final class SampleBuilder {
         let channels = Int(description.mChannelsPerFrame)
         let pcm = sample.floats(packet.data)
         let samples = pcm.count / channels
-        let time = packet.presentationTime.isValid ? packet.presentationTime : nextSoundTime
+        let time = Self.soundStart(packet.presentationTime, following: nextSoundTime)
         guard samples > 0, time.isValid else { return nil }
         nextSoundTime = CMTimeAdd(time, CMTime(value: CMTimeValue(samples), timescale: CMTimeScale(description.mSampleRate)))
         return try SoftwareDecoder.pcmBuffer(Array(pcm.prefix(samples * channels)), format: format, samples: samples, time: time)
@@ -249,7 +268,7 @@ public final class SampleBuilder {
     private func soundBuffer(
         _ frames: [Data], format: CMFormatDescription, packet: DemuxedPacket, samples lengths: [Int]? = nil
     ) throws -> CMSampleBuffer? {
-        let time = packet.presentationTime.isValid ? packet.presentationTime : nextSoundTime
+        let time = Self.soundStart(packet.presentationTime, following: nextSoundTime)
         guard time.isValid, let description = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
             description.mSampleRate > 0
         else { return nil }
