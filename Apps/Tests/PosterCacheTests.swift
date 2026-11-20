@@ -88,4 +88,22 @@ import UniformTypeIdentifiers
         #expect(kept.contains(PosterCache.key(urls[4])))
         #expect(!kept.contains(PosterCache.key(urls[0])))
     }
+
+    @Test(
+        "movies-and-series-browsing/browsing-stays-responsive thirty new posters into a folder of 3 000 load in under a second",
+        .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"))
+    func manyFilesOnDisk() async throws {
+        try FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
+        let filler = Data(count: 1_024)
+        for index in 0..<3_000 {
+            try filler.write(to: cacheFolder.appending(path: "filler-\(index)"))
+        }
+        let urls = try (0..<30).map { try poster("new\($0)") }
+        let cache = PosterCache(directory: cacheFolder)
+        let elapsed = await ContinuousClock().measure {
+            for url in urls { _ = await cache.poster(for: url) }
+        }
+        print("benchmark posters: thirty into 3 000 files \(elapsed)")
+        #expect(elapsed < .seconds(1))
+    }
 }
