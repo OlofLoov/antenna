@@ -23,10 +23,10 @@
 ## 3. Apple TV search tab
 
 - [x] 3.1 Give the Apple TV Search tab the search role with a magnifying glass label, keeping `shell.tab.search`
-- [ ] 3.2 Run the Apple TV shell and search UI tests citing `tvos-shell/the-tabs-in-order`
+- [x] 3.2 Run the Apple TV shell and search UI tests citing `tvos-shell/the-tabs-in-order`
 
 ## 4. Verify
 
-- [ ] 4.1 Run the touched UI test classes on iPhone, iPad and Apple TV simulators with `-testLanguage en -testRegion US`
-- [ ] 4.2 Each requirement in the delta specs has a test citing `<capability>/<requirement-slug>`
-- [ ] 4.3 `/opsx:verify` passes
+- [x] 4.1 Run the touched UI test classes on iPhone, iPad and Apple TV simulators with `-testLanguage en -testRegion US`
+- [x] 4.2 Each requirement in the delta specs has a test citing `<capability>/<requirement-slug>`
+- [x] 4.3 `/opsx:verify` passes

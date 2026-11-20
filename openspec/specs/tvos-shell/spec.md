@@ -6,12 +6,17 @@ The frame every other Apple TV screen sits in. Opening the app goes straight to 
 ## Requirements
 
 ### Requirement: The tabs, in order
-The system SHALL show the system tab bar holding, from left to right, Live, Guide, Movies, Series, Search and Settings, with exactly one tab marked as the current one. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
+The system SHALL show the system tab bar holding, from left to right, Live, Guide, Movies, Series, Search and Settings, with exactly one tab marked as the current one and Search drawn as the system's search tab, a magnifying glass. Movies and Series SHALL appear whenever the user has at least one Xtream source, whether or not its login has reached this device or it has answered yet, and for a playlist with movies or episodes as the M3U playlist capability describes.
 
 #### Scenario: Sources with movies
 - **GIVEN** the user has at least one Xtream source
 - **WHEN** the tab bar shows
 - **THEN** it holds Live, Guide, Movies, Series, Search and Settings, in that order, with exactly one tab marked current
+
+#### Scenario: Search is the search tab
+- **GIVEN** the tab bar shows
+- **WHEN** the user looks at the tab after Series
+- **THEN** it is drawn as a magnifying glass, and selecting it opens Search ready to type
 
 #### Scenario: No Xtream source
 - **GIVEN** the user has no Xtream source and no playlist whose last load had movies or episodes
@@ -32,7 +37,7 @@ The system SHALL show the system tab bar holding, from left to right, Live, Guid
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
 - **WHEN** the tab bar shows
-- **THEN** it is read as the system tab bar, one tab per item
+- **THEN** it is read as the system tab bar, one tab per item, and the search tab reads "Search"
 
 ### Requirement: Back to the last channel on launch
 The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one, once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
