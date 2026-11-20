@@ -17,6 +17,17 @@ import Testing
         #expect(text.account(expiry: "1773446400", connections: nil) == "Kontot är aktivt till 14 mars 2026")
     }
 
+    @Test("first-run-onboarding/the-checklist-shows-real-progress: the account date uses the locale's calendar, not the Mac's")
+    func accountCalendar() {
+        // On a Mac set to Saudi Arabic the device calendar is Hijri; the date
+        // follows the locale passed in, whatever the device uses.
+        let japanese = SetupText(locale: Locale(identifier: "en_US@calendar=japanese"), timeZone: .gmt)
+        let line = japanese.account(expiry: "1773446400", connections: nil) ?? ""
+        #expect(line.contains("Reiwa") && !line.contains("2026"))
+        let english = SetupText(locale: .english, timeZone: .gmt)
+        #expect(english.account(expiry: "1773446400", connections: nil) == "Account active until March 14, 2026")
+    }
+
     @Test("first-run-onboarding/the-checklist-shows-real-progress: channels, groups, movies and guide with real numbers")
     func numbers() {
         let tally = ChannelTally(channels: 1412, groups: (1...10).map { "G\($0)" })
@@ -39,13 +50,13 @@ import Testing
                 Channel(id: "c", name: "News", streamURL: url, group: "News", number: 1, hasCatchup: true, catchupDays: 3),
                 Channel(id: "d", name: "Loose", streamURL: url),
             ], sourceID: source)
-        let tally = ChannelTally(tagged: channels)
+        let tally = ChannelTally(tagged: channels, locale: .english)
         #expect(tally.channels == 4)
         #expect(tally.groups == ["Sport", "News", "Ungrouped"])
         #expect(tally.catchUpChannels == 3)
         #expect(tally.catchUpDays == 7)
         #expect(tally.firstChannel?.name == "Sport 1")
         #expect(tally.firstNumber == 101)
-        #expect(ChannelTally(tagged: []).firstChannel == nil)
+        #expect(ChannelTally(tagged: [], locale: .english).firstChannel == nil)
     }
 }

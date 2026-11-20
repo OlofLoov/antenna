@@ -17,13 +17,13 @@ import Testing
     @Test("movies-and-series-browsing/new-titles-up-front the banner shows name, category, year, length and description")
     func bannerText() {
         let details = ShelfDetails(year: 2024, duration: 128 * 60, plot: " A harbour pilot. ", ageRating: "15")
-        let text = BannerText(movie("The Long Harbor 4K"), details: details)
+        let text = BannerText(movie("The Long Harbor 4K"), details: details, locale: .english)
         #expect(text.eyebrow == "Recently added · Thriller")
         #expect(text.title == "The Long Harbor 4K")
         #expect(text.facts == ["2024", "2 h 08 min"])
         #expect(text.badges == ["4K", "15"])
         #expect(text.description == "A harbour pilot.")
-        let bare = BannerText(movie("Salt Road", category: nil), details: nil)
+        let bare = BannerText(movie("Salt Road", category: nil), details: nil, locale: .english)
         #expect(bare.eyebrow == "Recently added")
         #expect(bare.facts.isEmpty && bare.badges.isEmpty && bare.description == nil)
     }
@@ -31,7 +31,7 @@ import Testing
     @Test("movies-and-series-browsing/series-work-the-same-way a series banner shows seasons, never badges")
     func seriesBanner() {
         let series = ShelfTitle(id: "xtream#h#series#1", kind: .series, sourceID: one, name: "Northern Lights 4K")
-        let text = BannerText(series, details: ShelfDetails(year: 2021, seasons: 3, ageRating: "15"))
+        let text = BannerText(series, details: ShelfDetails(year: 2021, seasons: 3, ageRating: "15"), locale: .english)
         #expect(text.facts == ["2021", "3 seasons"])
         #expect(text.badges.isEmpty)
     }
@@ -90,8 +90,8 @@ import Testing
         #expect(ShelfText.slug("Kids & Family") == "kids-family")
         #expect(ShelfText.slug("  Action ") == "action")
         #expect(ShelfText.slug("Sci-Fi/Fantasy 4K") == "sci-fi-fantasy-4k")
-        #expect(ShelfText.titles(1) == "1 title")
-        #expect(ShelfText.titles(187) == "187 titles")
+        #expect(ShelfText.titles(1, locale: .english) == "1 title")
+        #expect(ShelfText.titles(187, locale: .english) == "187 titles")
     }
 
     // MARK: Sources
@@ -103,35 +103,37 @@ import Testing
     @Test("movies-and-series-browsing/when-sources-fail titles show under a banner naming each failed source")
     func someFailed() {
         let sources = [source(one, "Home", .loaded(titles: 3)), source(two, "Cabin", .failed)]
-        #expect(ShelfStatus(sources: sources, kind: .movie) == .titles(banner: "Could not load Cabin", waiting: []))
-        #expect(ShelfStatus(sources: sources, kind: .movie, dismissed: [two]) == .titles(banner: nil, waiting: []))
+        #expect(ShelfStatus(sources: sources, kind: .movie, locale: .english) == .titles(banner: "Could not load Cabin", waiting: []))
+        #expect(ShelfStatus(sources: sources, kind: .movie, dismissed: [two], locale: .english) == .titles(banner: nil, waiting: []))
     }
 
     @Test("movies-and-series-browsing/when-sources-fail no source with titles says why")
     func noneLoaded() {
         let offline = [source(one, "Home", .offline), source(two, "Cabin", .offline)]
-        #expect(ShelfStatus(sources: offline, kind: .movie) == .offline(waiting: []))
+        #expect(ShelfStatus(sources: offline, kind: .movie, locale: .english) == .offline(waiting: []))
         let failed = [source(one, "Home", .failed), source(two, "Cabin", .waitingForLogin)]
-        #expect(ShelfStatus(sources: failed, kind: .movie) == .failed(waiting: ["Cabin: waiting for its login to sync from iCloud"]))
-        #expect(ShelfStatus.failedTitle(.movie) == "Could not load movies")
-        #expect(ShelfStatus.failedTitle(.series) == "Could not load series")
+        #expect(
+            ShelfStatus(sources: failed, kind: .movie, locale: .english)
+                == .failed(waiting: ["Cabin: waiting for its login to sync from iCloud"]))
+        #expect(ShelfStatus.failedTitle(.movie, locale: .english) == "Could not load movies")
+        #expect(ShelfStatus.failedTitle(.series, locale: .english) == "Could not load series")
     }
 
     @Test("movies-and-series-browsing/when-sources-fail every source with nothing gets a line")
     func nothing() {
         let sources = [source(one, "Home", .loaded(titles: 0)), source(two, "Cabin", .waitingForLogin)]
         #expect(
-            ShelfStatus(sources: sources, kind: .series)
+            ShelfStatus(sources: sources, kind: .series, locale: .english)
                 == .empty(lines: ["Home: no series", "Cabin: waiting for its login to sync from iCloud"]))
     }
 
     @Test("movies-and-series-browsing/when-sources-fail loading until a source answers with titles")
     func loading() {
         let sources = [source(one, "Home", .loading), source(two, "Cabin", .failed)]
-        #expect(ShelfStatus(sources: sources, kind: .movie) == .loading(sources))
+        #expect(ShelfStatus(sources: sources, kind: .movie, locale: .english) == .loading(sources))
         let waiting = source(two, "Cabin", .waitingForLogin)
         #expect(
-            ShelfStatus(sources: [source(one, "Home", .loaded(titles: 1)), waiting], kind: .movie)
+            ShelfStatus(sources: [source(one, "Home", .loaded(titles: 1)), waiting], kind: .movie, locale: .english)
                 == .titles(banner: nil, waiting: [waiting]))
     }
 }

@@ -87,8 +87,8 @@ private let english = Locale(identifier: "en_US")
                 plot: "A film.", year: 2024, duration: 7_680, genre: "Drama", backdropURL: URL(string: "https://img.example/b.jpg"),
                 cast: "A, B", director: "C"),
             scores: [Score(site: .tmdb, value: 7.4, scale: 10)])
-        let meta = TitleMetadata(movie: movie("Salt Road"), info: VODInfo()).merging(match)
-        #expect(meta.detailsLine == "2024 · 2 h 08 min · Drama")
+        let meta = TitleMetadata(movie: movie("Salt Road"), info: VODInfo(), locale: .english).merging(match, locale: .english)
+        #expect(meta.detailsLine(.english) == "2024 · 2 h 08 min · Drama")
         #expect(meta.description == "A film.")
         #expect(meta.cast == "A, B")
         #expect(meta.director == "C")
@@ -100,7 +100,8 @@ private let english = Locale(identifier: "en_US")
     @Test("title-metadata/details-the-provider-left-out-come-from-the-database: the provider's description wins")
     func providerWins() {
         let match = TitleMatch(tmdbID: 1, details: TitleDetails(plot: "Theirs.", year: 1999, cast: "From TMDB"))
-        let meta = TitleMetadata(movie: movie("Heat"), info: VODInfo(plot: "Ours.", year: 1995)).merging(match)
+        let meta = TitleMetadata(movie: movie("Heat"), info: VODInfo(plot: "Ours.", year: 1995), locale: .english).merging(
+            match, locale: .english)
         #expect(meta.description == "Ours.")
         #expect(meta.year == "1995")
         #expect(meta.cast == "From TMDB")
@@ -109,12 +110,12 @@ private let english = Locale(identifier: "en_US")
     @Test("title-detail-and-episode-picker/what-the-title-is-about: scores replace the provider's rating")
     func scoresReplaceRating() {
         let base = TitleMetadata(movie: movie("Heat"), info: VODInfo(year: 1995, rating: 7.4), locale: english)
-        #expect(base.detailsLine == "1995 · ★ 7.4")
-        let scored = base.merging(TitleMatch(tmdbID: 1, scores: [Score(site: .tmdb, value: 7.9, scale: 10)]))
-        #expect(scored.detailsLine == "1995")
-        let unscored = base.merging(TitleMatch(tmdbID: 1, scores: [Score(site: .tmdb, value: 0, scale: 10)]))
-        #expect(unscored.detailsLine == "1995 · ★ 7.4", "with no usable score the rating stays")
-        #expect(base.merging(nil) == base)
+        #expect(base.detailsLine(.english) == "1995 · ★ 7.4")
+        let scored = base.merging(TitleMatch(tmdbID: 1, scores: [Score(site: .tmdb, value: 7.9, scale: 10)]), locale: .english)
+        #expect(scored.detailsLine(.english) == "1995")
+        let unscored = base.merging(TitleMatch(tmdbID: 1, scores: [Score(site: .tmdb, value: 0, scale: 10)]), locale: .english)
+        #expect(unscored.detailsLine(.english) == "1995 · ★ 7.4", "with no usable score the rating stays")
+        #expect(base.merging(nil, locale: .english) == base)
     }
 
     // MARK: Kept matches

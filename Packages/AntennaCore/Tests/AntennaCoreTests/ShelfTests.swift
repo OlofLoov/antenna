@@ -42,7 +42,7 @@ import Testing
             movie(4, daysAgo: 10), movie(5, source: two, daysAgo: 1, category: "Drama"),
         ]
         let rows = Shelf.rows(titles, categoryOrder: ["Action", "Empty", "Drama"], now: now)
-        #expect(rows.map(\.name) == ["Recently added", "Action", "Drama"], "a category without titles has no row")
+        #expect(rows.map({ $0.name(.english) }) == ["Recently added", "Action", "Drama"], "a category without titles has no row")
         #expect(rows[0].titles.map(\.id).prefix(4) == ["xtream#h#vod#5", "xtream#h#vod#2", "xtream#h#vod#4", "xtream#h#vod#1"])
         #expect(rows[0].titles.last?.id == "xtream#h#vod#3", "undated titles follow dated ones")
         #expect(rows[0].count == 3, "added in the last 30 days")
@@ -74,9 +74,9 @@ import Testing
         let newer = try XtreamClient.decodeSeriesList(Data(body.utf8), host: "h").items
         let titles = newer.map { ShelfTitle(series: $0, sourceID: one, categories: [:]) }
         #expect(Shelf.banner(titles).map(\.name) == ["New", "Old"])
-        #expect(ShelfText.seasons(1) == "1 season")
-        #expect(ShelfText.seasons(3) == "3 seasons")
-        #expect(ShelfText.seasons(0) == nil)
+        #expect(ShelfText.seasons(1, locale: .english) == "1 season")
+        #expect(ShelfText.seasons(3, locale: .english) == "3 seasons")
+        #expect(ShelfText.seasons(0, locale: .english) == nil)
     }
 
     // MARK: Continue watching
@@ -138,15 +138,15 @@ import Testing
 
     @Test("movies-and-series-browsing/continue-watching minutes left and lengths")
     func words() {
-        #expect(ShelfText.length(128 * 60) == "2 h 08 min")
-        #expect(ShelfText.length(60 * 60) == "1 h 00 min")
-        #expect(ShelfText.length(47 * 60 + 10) == "47 min")
-        #expect(ShelfText.length(20) == "1 min")
-        #expect(ShelfText.length(nil) == nil)
-        #expect(ShelfText.length(0) == nil)
-        #expect(ShelfText.left(progress("m", at: 1200, of: 3000, saved: 0)) == "30 min left")
-        #expect(ShelfText.left(progress("m", at: 1201, of: 3000, saved: 0)) == "30 min left", "rounded up")
-        #expect(ShelfText.left(progress("m", at: 10, of: nil, saved: 0)) == nil)
+        #expect(ShelfText.length(128 * 60, locale: .english) == "2 h 08 min")
+        #expect(ShelfText.length(60 * 60, locale: .english) == "1 h 00 min")
+        #expect(ShelfText.length(47 * 60 + 10, locale: .english) == "47 min")
+        #expect(ShelfText.length(20, locale: .english) == "1 min")
+        #expect(ShelfText.length(nil, locale: .english) == nil)
+        #expect(ShelfText.length(0, locale: .english) == nil)
+        #expect(ShelfText.left(progress("m", at: 1200, of: 3000, saved: 0), locale: .english) == "30 min left")
+        #expect(ShelfText.left(progress("m", at: 1201, of: 3000, saved: 0), locale: .english) == "30 min left", "rounded up")
+        #expect(ShelfText.left(progress("m", at: 10, of: nil, saved: 0), locale: .english) == nil)
     }
 
     @Test("movies-and-series-browsing/new-titles-up-front 4K and age badges follow the badge rules")

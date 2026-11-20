@@ -84,8 +84,8 @@ import Testing
     @Test("browse-by-person/pick-someone-in-the-cast a title page shows the row's names until its info call answers")
     func pageNames() {
         let title = movie(1, "Salt Road", cast: "Mira Holt", director: "Sanna Weiss")
-        #expect(TitleMetadata(title: title).cast == "Mira Holt")
-        let answered = TitleMetadata(movie: title, info: VODInfo(cast: "Jonas Reeve"))
+        #expect(TitleMetadata(title: title, locale: .english).cast == "Mira Holt")
+        let answered = TitleMetadata(movie: title, info: VODInfo(cast: "Jonas Reeve"), locale: .english)
         #expect(answered.cast == "Jonas Reeve")
         #expect(answered.director == "Sanna Weiss")
     }

@@ -33,6 +33,14 @@
 ## Tests
 
 - AntennaCore: swift-testing, fixtures in `Tests/AntennaCoreTests/Fixtures`.
+- Core text takes `locale:` (and `calendar:` or `timeZone:` where a date
+  needs them), defaulting to the device's setting. A test always passes one,
+  `.english` or the locale it checks, never the default. CI and the pre-push
+  checks run the Core suite with the Mac's preferences set to German
+  (`scripts/test-core-in-language.sh`), so a test that leans on the device
+  language fails there, and `scripts/check-rules.sh` fails when Core reads
+  `Locale.current`, `Calendar.current` or `TimeZone.current` anywhere but a
+  default argument.
 - Every requirement a change adds has at least one test that names it as
   `<capability>/<requirement-slug>`:
   `@Test("m3u-playlists/empty-tvg-id-is-not-a-guide-id: ...")`. In an

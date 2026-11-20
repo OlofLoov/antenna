@@ -25,8 +25,10 @@ core_tests() {
       -Xlinker -F"$fw" -Xlinker -rpath -Xlinker "$fw"
   else
     # Swift Build compiles the String Catalog; the native build system
-    # copies it as it is and plural entries fall back to their keys.
-    swift test --build-system swiftbuild --package-path Packages/AntennaCore
+    # copies it as it is and plural entries fall back to their keys. The
+    # run reads German preferences, as CI does, so a test that depends on
+    # the Mac's language fails here first.
+    bash scripts/test-core-in-language.sh de-DE de_DE
   fi
 }
 

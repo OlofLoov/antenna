@@ -46,9 +46,9 @@ import Testing
         let catalogue = TestCatalogue(channels: input, groupOrder: [:], favorites: [])
         let key = try #require(catalogue.rows(in: .all).first)
         let number = catalogue.channelNumber(for: key)
-        let playing = GuideNowPlaying(channel: "KGW", number: number, state: .loaded, current: nil, now: .now)
+        let playing = GuideNowPlaying(channel: "KGW", number: number, state: .loaded, current: nil, now: .now, locale: .english)
         #expect(playing.channel == "6.1 KGW")
-        #expect(MultiViewText.spokenLabel(number: number, name: "KGW", audible: true) == "6.1, KGW, sound on")
+        #expect(MultiViewText.spokenLabel(number: number, name: "KGW", audible: true, locale: .english) == "6.1, KGW, sound on")
         #expect(input[0].channelNumber?.description == "6.1")
     }
 

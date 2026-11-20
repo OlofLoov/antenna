@@ -87,8 +87,8 @@ import Testing
         #expect(
             GuideLinkInput.check("http://epg.example/g.xml?key=2", existing: existing)
                 == .success(try #require(URL(string: "http://epg.example/g.xml?key=2"))))
-        #expect(GuideLinkInput.Problem.invalid.message == "Enter a valid URL.")
-        #expect(GuideLinkInput.Problem.duplicate.message == "This guide is already in the list.")
+        #expect(GuideLinkInput.Problem.invalid.message(.english) == "Enter a valid URL.")
+        #expect(GuideLinkInput.Problem.duplicate.message(.english) == "This guide is already in the list.")
     }
 
     @Test func decodesWhatItCanAndDropsLinks() throws {

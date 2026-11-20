@@ -8,7 +8,9 @@ import Testing
 
     @Test("tv-zap-bar-and-number-entry/what-is-on-and-what-is-next time left rounds minutes up")
     func remainingTime() {
-        func left(_ seconds: TimeInterval) -> String { RemainingTime.text(until: now.addingTimeInterval(seconds), now: now) }
+        func left(_ seconds: TimeInterval) -> String {
+            RemainingTime.text(until: now.addingTimeInterval(seconds), now: now, locale: .english)
+        }
         #expect(left(26 * 60) == "26 min left")
         #expect(left(25 * 60 + 1) == "26 min left")
         #expect(left(94 * 60) == "1 h 34 min left")
@@ -44,7 +46,7 @@ import Testing
     @Test("tv-zap-bar-and-number-entry/picture-and-sound-quality sound badges")
     func soundBadge() {
         func badge(_ codec: String, _ channels: Int, decodable: Bool = true) -> String? {
-            QualityBadge.sound(PresentationInfo.Audio(codec: codec, channels: channels, isDecodable: decodable))
+            QualityBadge.sound(PresentationInfo.Audio(codec: codec, channels: channels, isDecodable: decodable), locale: .english)
         }
         #expect(badge("aac", 6) == "AAC 5.1")
         #expect(badge("eac3", 8) == "E-AC-3 7.1")
@@ -65,18 +67,18 @@ import Testing
     func guideWording() {
         let on = Programme(channelID: "s", start: now.addingTimeInterval(-600), stop: now.addingTimeInterval(1560), title: "Match")
         #expect(
-            ZapBarText.line(state: .loaded, current: on, now: now)
+            ZapBarText.line(state: .loaded, current: on, now: now, locale: .english)
                 == .programme(title: "Match", progress: 600.0 / 2160, remaining: "26 min left"))
-        #expect(ZapBarText.line(state: .loaded, current: nil, now: now) == .message("No programme information"))
-        #expect(ZapBarText.line(state: .noData, current: nil, now: now) == .message("No programme information"))
-        #expect(ZapBarText.line(state: .loading, current: nil, now: now) == .message("Loading guide…"))
-        #expect(ZapBarText.line(state: .failed(.timeout), current: nil, now: now) == .message("Guide unavailable"))
+        #expect(ZapBarText.line(state: .loaded, current: nil, now: now, locale: .english) == .message("No programme information"))
+        #expect(ZapBarText.line(state: .noData, current: nil, now: now, locale: .english) == .message("No programme information"))
+        #expect(ZapBarText.line(state: .loading, current: nil, now: now, locale: .english) == .message("Loading guide…"))
+        #expect(ZapBarText.line(state: .failed(.timeout), current: nil, now: now, locale: .english) == .message("Guide unavailable"))
     }
 
     @Test("tv-zap-bar-and-number-entry/which-channel-this-is the list and the place in it")
     func position() {
-        #expect(ZapBarText.position(list: "Sport", index: 4, count: 42) == "Sport · 4 of 42")
-        #expect(ZapBarText.position(list: "All channels", index: 131, count: 1312) == "All channels · 131 of 1312")
+        #expect(ZapBarText.position(list: "Sport", index: 4, count: 42, locale: .english) == "Sport · 4 of 42")
+        #expect(ZapBarText.position(list: "All channels", index: 131, count: 1312, locale: .english) == "All channels · 131 of 1312")
     }
 
     @Test("tv-zap-bar-and-number-entry/picture-and-sound-quality LIVE and quality only while playing")
@@ -85,30 +87,32 @@ import Testing
             video: .init(width: 1920, height: 1080, frameRate: 25, dynamicRange: .sdr, codec: "h264"),
             audio: .init(codec: "aac", channels: 6, isDecodable: true))
         #expect(
-            ZapBarText.badges(state: .playing, presentation: format)
+            ZapBarText.badges(state: .playing, presentation: format, locale: .english)
                 == [.init(kind: .live, text: "LIVE"), .init(kind: .quality, text: "1080p"), .init(kind: .quality, text: "AAC 5.1")])
         #expect(
-            ZapBarText.badges(state: .playing, presentation: nil) == [.init(kind: .live, text: "LIVE")],
+            ZapBarText.badges(state: .playing, presentation: nil, locale: .english) == [.init(kind: .live, text: "LIVE")],
             "before the player reports the format")
-        #expect(ZapBarText.badges(state: .buffering, presentation: format) == [])
-        #expect(ZapBarText.badges(state: .failed(.unreadable), presentation: format) == [])
-        #expect(ZapBarText.badges(state: .loading, presentation: nil) == [])
+        #expect(ZapBarText.badges(state: .buffering, presentation: format, locale: .english) == [])
+        #expect(ZapBarText.badges(state: .failed(.unreadable), presentation: format, locale: .english) == [])
+        #expect(ZapBarText.badges(state: .loading, presentation: nil, locale: .english) == [])
     }
 
     @Test("timeshift-catch-up-and-start-over/start-the-programme-from-the-beginning CATCH-UP takes LIVE's place")
     func catchUpBadge() {
         #expect(
-            ZapBarText.badges(state: .playing, presentation: nil, catchUp: true) == [.init(kind: .catchUp, text: "CATCH-UP")])
-        #expect(ZapBarText.badges(state: .buffering, presentation: nil, catchUp: true) == [])
+            ZapBarText.badges(state: .playing, presentation: nil, catchUp: true, locale: .english) == [
+                .init(kind: .catchUp, text: "CATCH-UP")
+            ])
+        #expect(ZapBarText.badges(state: .buffering, presentation: nil, catchUp: true, locale: .english) == [])
     }
 
     @Test("tv-zap-bar-and-number-entry/catch-up-hint the footer names the days")
     func footer() {
         let link = URL(fileURLWithPath: "/a.ts")
-        #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true, catchupDays: 7).catchUpFooter == "Catch-up 7 days")
-        #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true, catchupDays: 1).catchUpFooter == "Catch-up 1 day")
-        #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true).catchUpFooter == "Catch-up")
+        #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true, catchupDays: 7).catchUpFooter(.english) == "Catch-up 7 days")
+        #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true, catchupDays: 1).catchUpFooter(.english) == "Catch-up 1 day")
+        #expect(Channel(id: "a", name: "A", streamURL: link, hasCatchup: true).catchUpFooter(.english) == "Catch-up")
         #expect(Channel(id: "a", name: "A", streamURL: link).catchUpFooter == nil)
-        #expect(ZapBarText.browseHint() == "Press to browse channels")
+        #expect(ZapBarText.browseHint(.english) == "Press to browse channels")
     }
 }

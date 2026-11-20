@@ -12,24 +12,29 @@ import Testing
     )
     func streamLine() {
         #expect(
-            StreamLine.text(container: "MPEG-TS", presentation: Self.broadcast, route: .demuxer)
+            StreamLine.text(container: "MPEG-TS", presentation: Self.broadcast, route: .demuxer, locale: .english)
                 == "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player")
         let interlaced = PresentationInfo(
             video: .init(width: 720, height: 576, frameRate: 50, dynamicRange: .sdr, codec: "mpeg2video", isInterlaced: true),
             audio: .init(codec: "mp2", channels: 2, isDecodable: true))
         #expect(
-            StreamLine.text(container: "MPEG-TS", presentation: interlaced, route: .demuxer)
+            StreamLine.text(container: "MPEG-TS", presentation: interlaced, route: .demuxer, locale: .english)
                 == "MPEG-TS · MPEG-2 576i · MP2 Stereo · Antenna player")
         let radio = PresentationInfo(video: nil, audio: .init(codec: "mp4a", channels: 2, isDecodable: true))
-        #expect(StreamLine.text(container: "HLS", presentation: radio, route: .system) == "HLS · AAC Stereo · Apple player")
-        #expect(StreamLine.text(container: nil, presentation: Self.broadcast, route: .system) == "H.264 1080p · AAC 5.1 · Apple player")
+        #expect(
+            StreamLine.text(container: "HLS", presentation: radio, route: .system, locale: .english) == "HLS · AAC Stereo · Apple player")
+        #expect(
+            StreamLine.text(container: nil, presentation: Self.broadcast, route: .system, locale: .english)
+                == "H.264 1080p · AAC 5.1 · Apple player")
     }
 
     @Test(
         "player-controls-and-playback-errors/see-what-s-on-without-stopping-the-picture-on-apple-tv before the first frame the line says details are not available"
     )
     func loading() {
-        #expect(StreamLine.text(container: "MPEG-TS", presentation: nil, route: .demuxer) == "Stream details not available yet")
+        #expect(
+            StreamLine.text(container: "MPEG-TS", presentation: nil, route: .demuxer, locale: .english)
+                == "Stream details not available yet")
     }
 
     @Test(
@@ -49,21 +54,23 @@ import Testing
         "player-controls-and-playback-errors/choose-audio-and-subtitles sound formats read codec then layout",
         arguments: [(1, "AAC Mono"), (2, "AAC Stereo"), (6, "AAC 5.1"), (8, "AAC 7.1"), (4, "AAC 4 channels"), (0, "AAC")])
     func soundFormats(channels: Int, display: String) {
-        #expect(SoundFormat.display(codec: "aac", channels: channels) == display)
+        #expect(SoundFormat.display(codec: "aac", channels: channels, locale: .english) == display)
     }
 
     @Test("playback-engine/streams-start-with-sound-the-device-can-play sound the device cannot decode says so")
     func undecodableSound() {
         let vorbis = PresentationInfo.Audio(codec: "vorbis", channels: 6, isDecodable: false)
-        #expect(SoundFormat.display(vorbis) == "Vorbis 5.1 (not supported)")
-        #expect(SoundFormat.display(PresentationInfo.Audio(codec: "dts", channels: 6, isDecodable: true)) == "DTS 5.1")
-        let line = StreamLine.text(container: "Matroska", presentation: PresentationInfo(video: nil, audio: vorbis), route: .demuxer)
+        #expect(SoundFormat.display(vorbis, locale: .english) == "Vorbis 5.1 (not supported)")
+        #expect(SoundFormat.display(PresentationInfo.Audio(codec: "dts", channels: 6, isDecodable: true), locale: .english) == "DTS 5.1")
+        let line = StreamLine.text(
+            container: "Matroska", presentation: PresentationInfo(video: nil, audio: vorbis), route: .demuxer, locale: .english)
         #expect(line == "Matroska · Vorbis 5.1 (not supported) · Antenna player")
         let tracks = TrackList(
             audio: [MediaTrack(id: "audio-0", kind: .audio, languageCode: "eng", name: nil, isDefault: true)], subtitles: [],
             selectedAudio: "audio-0", selectedSubtitle: nil)
         #expect(
-            TrackMenu.audio(tracks, presentation: PresentationInfo(video: nil, audio: vorbis)).first?.detail == "Vorbis 5.1 (not supported)"
+            TrackMenu.audio(tracks, presentation: PresentationInfo(video: nil, audio: vorbis), locale: .english).first?.detail
+                == "Vorbis 5.1 (not supported)"
         )
     }
 }
@@ -77,29 +84,30 @@ import Testing
         "player-controls-and-playback-errors/choose-audio-and-subtitles tracks read as their language",
         arguments: [("en", "English"), ("eng", "English"), ("swe", "Swedish"), ("sv", "Swedish"), ("pt-BR", "Portuguese (Brazil)")])
     func languages(code: String, display: String) {
-        #expect(TrackName.display(track(code), position: 0) == display)
+        #expect(TrackName.display(track(code), position: 0, locale: .english) == display)
     }
 
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles a provider name that says more goes in brackets")
     func providerName() {
-        #expect(TrackName.display(track("en", "Commentary"), position: 0) == "English (Commentary)")
-        #expect(TrackName.display(track("en", "audio description"), position: 1) == "English (audio description)")
-        #expect(TrackName.display(track("en", "English"), position: 0) == "English")
-        #expect(TrackName.display(track("en", "  "), position: 0) == "English")
+        #expect(TrackName.display(track("en", "Commentary"), position: 0, locale: .english) == "English (Commentary)")
+        #expect(TrackName.display(track("en", "audio description"), position: 1, locale: .english) == "English (audio description)")
+        #expect(TrackName.display(track("en", "English"), position: 0, locale: .english) == "English")
+        #expect(TrackName.display(track("en", "  "), position: 0, locale: .english) == "English")
     }
 
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles a track with no language reads Track n")
     func noLanguage() {
-        #expect(TrackName.display(track(nil), position: 3) == "Track 4")
-        #expect(TrackName.display(track("und"), position: 0) == "Track 1")
-        #expect(TrackName.display(track(nil, "Director"), position: 2) == "Director")
+        #expect(TrackName.display(track(nil), position: 3, locale: .english) == "Track 4")
+        #expect(TrackName.display(track("und"), position: 0, locale: .english) == "Track 1")
+        #expect(TrackName.display(track(nil, "Director"), position: 2, locale: .english) == "Director")
     }
 
     @Test("player-controls-and-playback-errors/choose-audio-and-subtitles forced subtitles with no language read Forced")
     func forced() {
-        #expect(TrackName.display(track(nil, kind: .subtitle), position: 0, isForced: true) == "Forced")
-        #expect(TrackName.display(track("en", "Forced", kind: .subtitle), position: 0, isForced: true) == "English (Forced)")
-        #expect(TrackName.display(track(nil), position: 0, isForced: true) == "Track 1")
+        #expect(TrackName.display(track(nil, kind: .subtitle), position: 0, isForced: true, locale: .english) == "Forced")
+        #expect(
+            TrackName.display(track("en", "Forced", kind: .subtitle), position: 0, isForced: true, locale: .english) == "English (Forced)")
+        #expect(TrackName.display(track(nil), position: 0, isForced: true, locale: .english) == "Track 1")
     }
 }
 
@@ -111,7 +119,7 @@ import Testing
     ]
 
     func message(_ failure: PlaybackFailure, _ device: FailureMessage.Device = .other) -> FailureMessage {
-        FailureMessage(failure, source: "Acme TV", device: device)
+        FailureMessage(failure, source: "Acme TV", device: device, locale: .english)
     }
 
     @Test("player-controls-and-playback-errors/error-messages-for-each-reason offline")
@@ -128,7 +136,8 @@ import Testing
         #expect(message(.unreachable).title == "Could not reach Acme TV")
         #expect(message(.unreachable).explanation == "The connection failed. Check the network, or a VPN if one is on.")
         #expect(
-            FailureMessage(.unreachable, source: "Acme TV", device: .other, connectionDetail: "server not found").explanation
+            FailureMessage(.unreachable, source: "Acme TV", device: .other, connectionDetail: "server not found", locale: .english)
+                .explanation
                 == "The connection failed (server not found). Check the network, or a VPN if one is on.")
         #expect(message(.secureConnectionFailed).title == "Could not reach Acme TV")
         #expect(message(.secureConnectionFailed).explanation == "The secure connection failed. Check the network, or a VPN if one is on.")
@@ -178,7 +187,7 @@ import Testing
     func stopped() {
         #expect(message(.timedOut) == FailureMessage(title: "Stream stopped", explanation: "Acme TV did not send any data for 8 seconds."))
         #expect(
-            FailureMessage(.timedOut, source: "Acme TV", device: .other, silentSeconds: 15).explanation
+            FailureMessage(.timedOut, source: "Acme TV", device: .other, silentSeconds: 15, locale: .english).explanation
                 == "Acme TV did not send any data for 15 seconds.")
         #expect(message(.stoppedSendingData) == FailureMessage(title: "Stream stopped", explanation: "Acme TV stopped sending data."))
     }
@@ -218,8 +227,8 @@ import Testing
         let url = URL(string: "https://olof77:hunter2pw@panel.acme-iptv.example:8443/live/olof77/hunter2pw/12345.ts?token=abc987")!
         let secrets = [url.absoluteString, "panel.acme-iptv.example", "acme-iptv", "olof77", "hunter2pw", "12345", "abc987"]
         var strings: [String] = [
-            PlayerStatusText.slowSource("Acme TV"), PlayerStatusText.reconnecting(attempt: 2, of: 8),
-            PlayerStatusText.attempted(source: "Acme TV", at: "21:34"), PlayerStatusText.changeChannelHint(),
+            PlayerStatusText.slowSource("Acme TV", locale: .english), PlayerStatusText.reconnecting(attempt: 2, of: 8, locale: .english),
+            PlayerStatusText.attempted(source: "Acme TV", at: "21:34", locale: .english), PlayerStatusText.changeChannelHint(.english),
         ]
         for reason in Self.reasons {
             for device in [FailureMessage.Device.appleTV, .other] {
@@ -227,7 +236,7 @@ import Testing
                 strings += [text.title, text.explanation]
             }
         }
-        strings.append(StreamLine.text(container: "MPEG-TS", presentation: StreamLineTests.broadcast, route: .demuxer))
+        strings.append(StreamLine.text(container: "MPEG-TS", presentation: StreamLineTests.broadcast, route: .demuxer, locale: .english))
         for string in strings {
             for secret in secrets {
                 #expect(!string.contains(secret), "\(string) contains \(secret)")

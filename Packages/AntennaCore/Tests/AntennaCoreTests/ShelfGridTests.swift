@@ -32,7 +32,7 @@ import Testing
         #expect(Shelf.sorted(titles, by: .title).map(\.name) == ["Alpha", "beta (1999)", "Delta (2020)", "Émile (2020)"])
         #expect(Shelf.sorted(titles, by: .year).map(\.name) == ["Delta (2020)", "Émile (2020)", "beta (1999)", "Alpha"])
         #expect(Shelf.sorted(titles, by: .recentlyAdded).map(\.name) == ["Alpha", "Delta (2020)", "beta (1999)", "Émile (2020)"])
-        #expect(ShelfSort.allCases.map(\.name) == ["Recently added", "Title", "Year"])
+        #expect(ShelfSort.allCases.map({ $0.name(.english) }) == ["Recently added", "Title", "Year"])
     }
 
     @Test("movies-and-series-browsing/browse-a-genre-or-sort-the-lot a genre holds every source's titles with its count")

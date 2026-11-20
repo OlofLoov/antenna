@@ -7,9 +7,9 @@ import Testing
     @Test("sources-and-settings/choose-when-subtitles-show a new user starts on Auto, and each choice says what it does")
     func defaultsAndWords() {
         #expect(AppPreferences().subtitles == .auto)
-        #expect(SubtitleMode.allCases.map(\.title) == ["Off", "Auto", "Always"])
-        #expect(SubtitleMode.auto.explanation == "Subtitles show when the sound is not in one of your languages.")
-        #expect(Set(SubtitleMode.allCases.map(\.explanation)).count == 3)
+        #expect(SubtitleMode.allCases.map({ $0.title(.english) }) == ["Off", "Auto", "Always"])
+        #expect(SubtitleMode.auto.explanation(.english) == "Subtitles show when the sound is not in one of your languages.")
+        #expect(Set(SubtitleMode.allCases.map({ $0.explanation(.english) })).count == 3)
         #expect(AppPreferences(subtitles: .always).subtitles == .always)
     }
 }

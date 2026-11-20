@@ -116,10 +116,10 @@ import Testing
 
     @Test("playback-engine/forced-subtitles-in-your-language-show forced subtitles in the list")
     func forcedNames() {
-        #expect(TrackName.display(subtitle("eng", 0, forced: true), position: 0, isForced: true) == "English (Forced)")
-        #expect(TrackName.display(subtitle(nil, 0, forced: true), position: 0, isForced: true) == "Forced")
+        #expect(TrackName.display(subtitle("eng", 0, forced: true), position: 0, isForced: true, locale: .english) == "English (Forced)")
+        #expect(TrackName.display(subtitle(nil, 0, forced: true), position: 0, isForced: true, locale: .english) == "Forced")
         let list = TrackList(audio: [], subtitles: [subtitle("eng", 0, forced: true)], selectedAudio: nil, selectedSubtitle: nil)
-        #expect(TrackMenu.subtitles(list).map(\.name) == ["Off", "English (Forced)"])
+        #expect(TrackMenu.subtitles(list, locale: .english).map(\.name) == ["Off", "English (Forced)"])
     }
 
     @Test("player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step one press turns subtitles on or off")

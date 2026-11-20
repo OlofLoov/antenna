@@ -92,9 +92,11 @@ struct SearchIndexTests {
         let results = north.results(for: SearchQuery("north"), now: Fixture.now)
         let nordic = try #require(results.channels.first { $0.channel.name == "Nordic One" })
         #expect(nordic.match == .group)
-        #expect(SearchText.channelLine(nordic, now: nil) == "301 · Matches Northern Report")
+        #expect(SearchText.channelLine(nordic, now: nil, locale: .english) == "301 · Matches Northern Report")
         #expect(results.channels.first?.match == .name)
-        #expect(SearchText.channelLine(try #require(results.channels.first), now: "Late Edition") == "201 · Now: Late Edition")
+        #expect(
+            SearchText.channelLine(try #require(results.channels.first), now: "Late Edition", locale: .english) == "201 · Now: Late Edition"
+        )
     }
 
     @Test("search/find-things-the-way-you-type-them one letter shows nothing yet")
@@ -311,7 +313,7 @@ struct SearchIndexTests {
         #expect(hits.count == 4)
         #expect(text.lead(hits[0], now: Fixture.now) == nil)
         #expect(text.detail(hits[0], now: Fixture.now) == "Docu HD · 21:00 – 22:00")
-        #expect(SearchText.programmeTitle(hits[0].programme) == "Northern Lights · S2 E4")
+        #expect(SearchText.programmeTitle(hits[0].programme, locale: .english) == "Northern Lights · S2 E4")
         #expect(hits[0].hasCatchup)
         #expect(text.lead(hits[1], now: Fixture.now) == "22:30")
         #expect(text.detail(hits[1], now: Fixture.now) == "Music Box · Today")
@@ -334,17 +336,17 @@ struct SearchIndexTests {
         #expect(results.count(.channels) == 600)
         #expect(results.shownChannels.count == 500)
         #expect(results.isChannelListCapped)
-        #expect(SearchText.showing(results.shownChannels.count, of: results.count(.channels)) == "Showing 500 of 600")
+        #expect(SearchText.showing(results.shownChannels.count, of: results.count(.channels), locale: .english) == "Showing 500 of 600")
         #expect(results.shownProgrammes(.all, expanded: false).count == 4)
         #expect(results.shownProgrammes(.all, expanded: true).count == 6)
         #expect(results.shownProgrammes(.guide, expanded: false).count == 6)
-        #expect(SearchText.seeAll(results.count(.guide)) == "See all 6")
+        #expect(SearchText.seeAll(results.count(.guide), locale: .english) == "See all 6")
     }
 
     @Test("search/nothing-found the message names the query")
     func nothingFound() {
         let query = SearchQuery("norhtern")
         #expect(north.results(for: query, now: Fixture.now).isEmpty)
-        #expect(SearchText.noResults(query) == "No results for “norhtern”")
+        #expect(SearchText.noResults(query, locale: .english) == "No results for “norhtern”")
     }
 }

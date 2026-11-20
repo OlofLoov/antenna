@@ -17,7 +17,7 @@ import Testing
     }
 
     private func text(state: GuideLoadingState = .loaded, current: Programme?, next: [Programme]) -> LiveNowText {
-        LiveNowText(channel: "Sport One", number: 104, state: state, current: current, next: next, now: now, time: time)
+        LiveNowText(channel: "Sport One", number: 104, state: state, current: current, next: next, now: now, time: time, locale: .english)
     }
 
     @Test("live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next a programme on now with its times, progress and what follows")
@@ -61,7 +61,8 @@ import Testing
 
     @Test("live-tv-on-iphone-ipad-mac/see-what-is-on-now-and-next a channel without a number")
     func noNumber() {
-        let line = LiveNowText(channel: "Sport One", number: nil, state: .loaded, current: nil, next: [], now: now, time: time)
+        let line = LiveNowText(
+            channel: "Sport One", number: nil, state: .loaded, current: nil, next: [], now: now, time: time, locale: .english)
         #expect(line.meta == "Sport One")
         #expect(line.compact == "Sport One")
     }

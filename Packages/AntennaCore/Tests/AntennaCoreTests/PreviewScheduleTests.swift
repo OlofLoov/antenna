@@ -79,11 +79,11 @@ import Testing
     @Test("movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv the eyebrow is the category alone")
     func eyebrow() {
         let title = ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: UUID(), name: "The Long Harbor", category: "Thriller")
-        let text = BannerText(preview: title, details: ShelfDetails(year: 2024, plot: "A harbour pilot."))
+        let text = BannerText(preview: title, details: ShelfDetails(year: 2024, plot: "A harbour pilot."), locale: .english)
         #expect(text.eyebrow == "Thriller")
         #expect(text.facts == ["2024"])
         #expect(text.description == "A harbour pilot.")
         let bare = ShelfTitle(id: "xtream#h#vod#2", kind: .movie, sourceID: UUID(), name: "Salt Road")
-        #expect(BannerText(preview: bare, details: nil).eyebrow.isEmpty)
+        #expect(BannerText(preview: bare, details: nil, locale: .english).eyebrow.isEmpty)
     }
 }
