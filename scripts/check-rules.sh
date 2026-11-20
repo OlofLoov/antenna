@@ -143,12 +143,93 @@ check_except "design-system/one-spacing-and-radius-scale: corner radii from the 
   Apps
 
 # Glass belongs to the navigation layer: the tab bar, controls over video
-# (the player strip and the Picture in Picture and AirPlay pair)
-# and floating switches (design-system/liquid-glass-stays-on-the-navigation-layer).
+# (the live strips, the Picture in Picture and AirPlay pair, the title
+# player's track buttons) and the reminder banner that floats over every
+# screen (design-system/liquid-glass-stays-on-the-navigation-layer).
 # Buttons take glass through the system .glass and .glassProminent styles.
 check_except "design-system/liquid-glass-stays-on-the-navigation-layer: the glass effect only on the navigation layer" \
   '\.glassEffect\(' \
-  'Apps/Shared/Components/Shelf/ShelfControls\.swift|Apps/Shared/Components/Browse/BrowseControls\.swift|Apps/Shared/Views/Live/LivePicture\.swift' \
+  'Apps/Shared/Components/Browse/Browse(Timeshift)?Controls\.swift|Apps/Shared/Views/Live/LivePicture\.swift|Apps/Shared/Views/Shelf/TitleTrackControls\.swift|Apps/Shared/Components/Reminders/ReminderBanner\.swift' \
+  Apps
+
+# Glass alone or a plain surface alone: a view whose modifier chain applies
+# glass (.glassEffect or a .glass button style) takes no .background,
+# .border or .shadow, and no .overlay that strokes. The system draws the
+# edge and the highlight (design-system/liquid-glass-stays-on-the-navigation-layer).
+# A view's chain is the run of modifier lines at one indent. Files matching
+# $2 are the named exceptions.
+read -r -d '' glass_alone_py <<'PY' || true
+import re
+import sys
+
+GLASS = re.compile(r"^\.(glassEffect\(|buttonStyle\(\.glass)")
+DECOR = re.compile(r"^\.(background|border|shadow)\b")
+OVERLAY = re.compile(r"^\.overlay\b")
+STROKE = re.compile(r"\.(stroke|strokeBorder|border)\(")
+
+
+def indent(line):
+    return len(line) - len(line.lstrip(" "))
+
+
+def skip(line, depth):
+    text = line.strip()
+    if not text or text.startswith(("//", "#")):
+        return True
+    return indent(line) > depth or (indent(line) == depth and text[0] in "})]")
+
+
+def heads(lines, at):
+    depth = indent(lines[at])
+    found = []
+    for step in (-1, 1):
+        i = at + step
+        while 0 <= i < len(lines):
+            if skip(lines[i], depth):
+                i += step
+            elif indent(lines[i]) == depth and lines[i].strip().startswith("."):
+                found.append(i)
+                i += step
+            else:
+                break
+    for head in found:
+        end = head + 1
+        while end < len(lines) and (not lines[end].strip() or indent(lines[end]) > depth):
+            end += 1
+        yield head, lines[head:end]
+
+
+def hits(path):
+    with open(path, encoding="utf-8") as handle:
+        lines = handle.read().split("\n")
+    found = set()
+    for at, line in enumerate(lines):
+        if GLASS.match(line.strip()):
+            for head, body in heads(lines, at):
+                text = lines[head].strip()
+                if DECOR.match(text) or (OVERLAY.match(text) and any(STROKE.search(b) for b in body)):
+                    found.add(head)
+    return [f"{path}:{n + 1}:{lines[n]}" for n in sorted(found)]
+
+
+print("\n".join(hit for path in sys.argv[1:] for hit in hits(path)))
+PY
+
+glass_alone() {
+  local name="$1" allowed="$2"
+  shift 2
+  local hits
+  hits=$(find "$@" -name '*.swift' -print0 | xargs -0 python3 -c "$glass_alone_py" | grep -vE "^($allowed):" || true)
+  if [[ -n "$hits" ]]; then
+    printf 'FAIL %s\n%s\n\n' "$name" "$hits"
+    status=1
+  else
+    printf 'ok   %s\n' "$name"
+  fi
+}
+
+glass_alone "design-system/liquid-glass-stays-on-the-navigation-layer: no fill, stroke, border or shadow on a glass view" \
+  'Apps/Shared/Debug/[A-Za-z]+\.swift' \
   Apps
 
 # A flat block of the ground color over art leaves an edge across the

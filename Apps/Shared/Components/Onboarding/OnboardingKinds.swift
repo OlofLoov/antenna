@@ -59,7 +59,7 @@ enum OnboardingKinds {
                     }
                 }
                 Button("Cancel", action: cancel)
-                    .buttonStyle(.glass)
+                    .secondaryActionStyle()
                     .accessibilityIdentifier("onboarding.back")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

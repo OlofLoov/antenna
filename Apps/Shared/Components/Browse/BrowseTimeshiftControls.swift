@@ -6,7 +6,9 @@
         /// Row one: the time on screen, the scrubber, how far behind live and
         /// the clock. Row two: back 15 seconds, play or pause, forward 30, the
         /// Start over slot, the programme's progress, LIVE, the platform's
-        /// extras and full screen. Glyphs are 32 pt in 44 pt hit areas.
+        /// extras and full screen. Glyphs are 32 pt in 44 pt hit areas. The
+        /// strip floats on glass like the live strip
+        /// (design-system/liquid-glass-stays-on-the-navigation-layer).
         struct TimeshiftControls<StartOver: View, Extras: View>: View {
             struct Scrub {
                 let time: String
@@ -101,8 +103,11 @@
                     .padding(.horizontal, regular ? 12 : 6)
                 }
                 .foregroundStyle(Palette.text)
-                .padding(.vertical, 2)
-                .background(Palette.scrimTint.opacity(0.72))
+                .tint(Palette.text)
+                .padding(.vertical, 4)
+                .glassEffect(.regular, in: cornerShape(.large))
+                .padding(.horizontal, 4)
+                .padding(.vertical, 8)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("browse.player.controls")
             }

@@ -14,8 +14,10 @@ enum ReminderBanner {
         let body: String
     }
 
-    /// iPhone, iPad and Mac: a card at the top. Watch is 36 pt tall with a
-    /// 44 pt hit area (design.md deviation); Dismiss is a 44 pt cross.
+    /// iPhone, iPad and Mac: a glass card at the top, since it floats over
+    /// any screen, with no fill, stroke or shadow of its own
+    /// (design-system/liquid-glass-stays-on-the-navigation-layer). Watch is
+    /// the bordered prominent capsule; Dismiss is a 44 pt cross.
     struct Touch: View {
         let content: Content
         let watch: () -> Void
@@ -44,14 +46,9 @@ enum ReminderBanner {
                 Button(action: watch) {
                     Text("Watch")
                         .font(.boardStyle(15, weight: .semibold))
-                        .foregroundStyle(Palette.ground)
-                        .padding(.horizontal, 16)
-                        .frame(height: 36)
-                        .background(Palette.text, in: Capsule())
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
                 .accessibilityIdentifier("reminders.banner.watch")
                 Button(action: dismiss) {
                     Image(systemName: "xmark")
@@ -68,9 +65,7 @@ enum ReminderBanner {
             }
             .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 12))
             .foregroundStyle(Palette.text)
-            .background(Palette.tabBar, in: cornerShape(.medium))
-            .overlay(cornerShape(.medium).stroke(Palette.surface(0.08), lineWidth: 1))
-            .shadow(color: Palette.focusShadow, radius: 16, y: 12)
+            .glassEffect(.regular, in: cornerShape(.medium))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("reminders.banner")
         }

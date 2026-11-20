@@ -60,7 +60,7 @@ extension OnboardingForm {
             }
             .padding(Metrics.Spacing.xLarge)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.regularMaterial, in: Metrics.Corner.large.shape())
+            .background(Palette.surface(0.06), in: Metrics.Corner.large.shape())
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("onboarding.keyboardCard")
         }

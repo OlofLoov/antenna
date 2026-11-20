@@ -3,12 +3,19 @@ import SwiftUI
 /// The system styles the app's buttons take (design-system/controls-use-system-styles).
 /// `primaryActionStyle()` is the screen's main action; these are the rest.
 extension View {
-    /// An action beside the primary one, such as More info, My list or Try
-    /// again: a bordered capsule. On Apple TV it rests translucent and takes
-    /// the light platter with dark text when focused.
-    func secondaryActionStyle() -> some View {
-        buttonStyle(.bordered)
-            .buttonBorderShape(.capsule)
+    /// An action beside the primary one, such as More info, My list, Cancel
+    /// or Try again: a capsule in the primary's family, so a row of actions
+    /// shares one edge. Glass on iPhone, iPad and Mac beside the glass
+    /// prominent primary; bordered on Apple TV, where it rests translucent
+    /// and takes the light platter with dark text when focused.
+    @ViewBuilder func secondaryActionStyle() -> some View {
+        #if os(tvOS)
+            buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+        #else
+            buttonStyle(.glass)
+                .buttonBorderShape(.capsule)
+        #endif
     }
 
     /// A poster or card that is a button. On Apple TV the card style lifts
