@@ -90,7 +90,7 @@ enum ShelfBanner {
                 .accessibilityHidden(true)
                 .task(id: banner?.state.art) {
                     guard let art = banner?.state.art, art != shown?.art else { return }
-                    let image = await loader?.load(art.url)?.image
+                    let image = await loader?.load(art.url, nil)?.image
                     guard !Task.isCancelled else { return }
                     withAnimation(ShelfBanner.crossfade) { shown = Shown(art: art, image: image) }
                 }

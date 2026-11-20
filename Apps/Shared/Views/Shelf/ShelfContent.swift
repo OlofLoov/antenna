@@ -101,7 +101,7 @@ struct ShelfBannerHost<Content: View>: View {
                 // The next title's details and picture are ready before it shows.
                 let next = titles[((titles.firstIndex(of: shown) ?? 0) + 1) % titles.count]
                 await model.loadDetails(next)
-                if let art = art(next), let loader { _ = await loader.load(art.url) }
+                if let art = art(next), let loader { _ = await loader.load(art.url, nil) }
             }
     }
 

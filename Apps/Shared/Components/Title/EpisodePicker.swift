@@ -345,7 +345,7 @@ enum EpisodePicker {
         let type: Sizes
         let url: URL?
         let number: Int?
-        @Environment(\.posterLoader) private var loader
+
         @State private var poster: Poster?
 
         var body: some View {
@@ -358,11 +358,7 @@ enum EpisodePicker {
             }
             .frame(width: type.thumbnail.width, height: type.thumbnail.height)
             .accessibilityHidden(true)
-            .task(id: url) {
-                poster = nil
-                guard let url, let loader else { return }
-                poster = await loader.load(url)
-            }
+            .loadsPoster(url, into: $poster)
         }
     }
 

@@ -1,3 +1,4 @@
+import AntennaCore
 import CoreGraphics
 import Foundation
 import ImageIO
@@ -12,15 +13,15 @@ import UniformTypeIdentifiers
     let root = FileManager.default.temporaryDirectory.appending(path: "posters-\(UUID().uuidString)", directoryHint: .isDirectory)
     var cacheFolder: URL { root.appending(path: "cache", directoryHint: .isDirectory) }
 
-    /// Writes a `side` by `side` PNG and returns its address.
-    private func poster(_ name: String, side: Int = 64) throws -> URL {
+    /// Writes a `side` wide PNG, square unless `height` says, and returns its address.
+    private func poster(_ name: String, side: Int = 64, height: Int? = nil) throws -> URL {
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         let context = try #require(
             CGContext(
-                data: nil, width: side, height: side, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(),
+                data: nil, width: side, height: height ?? side, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(),
                 bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
         context.setFillColor(CGColor(red: 0.2, green: 0.4, blue: 0.8, alpha: 1))
-        context.fill(CGRect(x: 0, y: 0, width: side, height: side))
+        context.fill(CGRect(x: 0, y: 0, width: side, height: height ?? side))
         let image = try #require(context.makeImage())
         let url = root.appending(path: "\(name).png")
         let destination = try #require(CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil))
@@ -105,5 +106,22 @@ import UniformTypeIdentifiers
         }
         print("benchmark posters: thirty into 3 000 files \(elapsed)")
         #expect(elapsed < .seconds(1))
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a poster decodes at the size of its frame, the file stays whole")
+    func decodedForTheFrame() async throws {
+        let url = try poster("large", side: 1_000, height: 1_500)
+        let cache = PosterCache(directory: cacheFolder)
+        let card = try #require(PosterFit(width: 110, height: 165, scale: 2))
+        let small = try #require(await cache.poster(for: url, fitting: card))
+        #expect(small.image.width >= card.width - 1 && small.image.width < 1_000, "covers the frame, far below 1 000")
+        #expect(small.image.height >= card.height - 1)
+        #expect(await cache.poster(for: url, fitting: card) === small, "kept in memory per frame")
+        #expect(await cache.poster(for: url)?.image.width == 1_000, "whole for a caller that needs it whole")
+        let stored = try Data(contentsOf: cacheFolder.appending(path: PosterCache.key(url)))
+        #expect(Poster(data: stored)?.image.width == 1_000, "the file on disk is the poster as it came")
+
+        let tiny = try poster("tiny", side: 40, height: 60)
+        #expect(await cache.poster(for: tiny, fitting: card)?.image.width == 40, "a small poster is never enlarged")
     }
 }

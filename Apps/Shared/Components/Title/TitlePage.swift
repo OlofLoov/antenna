@@ -129,7 +129,7 @@ enum TitlePage {
             .task(id: backdrop) {
                 image = nil
                 guard let backdrop, let loader else { return }
-                image = await loader.load(backdrop)
+                image = await loader.load(backdrop, nil)
             }
         }
     }
