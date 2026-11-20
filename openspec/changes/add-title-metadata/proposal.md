@@ -26,7 +26,7 @@ After it, a user opening a movie sees "TMDB 74%" under the details line, a playl
 
 Out of scope:
 - New and Recents rows (`add-discover-rows`, archived without Trending).
-- Cast you can select and a person's page (`add-browse-by-person`).
+- Cast you can select and a person's page from provider names (`add-browse-by-person`, archived). Filmographies and people from TMDB on top of them are in scope here, moved from that change on 2026-11-20.
 - Scores on posters in rows (open question in design.md).
 - Matching the whole catalogue in the background.
 - Merging provider categories into common genres.

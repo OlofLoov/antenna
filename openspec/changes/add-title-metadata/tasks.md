@@ -49,7 +49,19 @@ Moved here on 2026-11-20: the row needs the lookup service. Its boards are `iPho
 - [ ] 7.4 UI tests on iPhone and Apple TV with a stubbed trending list: only matching titles show, focus lands on the first poster
 - [ ] 7.5 Add a journey step anchored on `movies.row.trending`
 
-## 8. Verify
+## 8. People from TMDB (moved from add-browse-by-person)
 
-- [ ] 8.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 8.2 `/opsx:verify` passes
+Moved here on 2026-11-20. `add-browse-by-person` shipped person pages from the provider's own names; these tasks add TMDB filmographies once the lookup service exists. Decision 10 has the plan.
+
+- [ ] 8.1 Add `/v1/person/{id}` to the lookup service, credits reduced and capped at 500
+- [ ] 8.2 Generalize the Trending matcher from group 7 to any list of database entries and match filmographies against the catalogue
+- [ ] 8.3 Keep filmographies in `Caches/people/` for seven days, at most 200, deleted with lookups off, with the offline and failure states and their boards
+- [ ] 8.4 Show TMDB credits as chips on matched titles, a photo and "Filmography from TMDB" on the person page
+- [ ] 8.5 Add `/v1/people` to the lookup service and People from TMDB in Search, after three letters and a pause, only online with lookups on
+- [ ] 8.6 Update the Settings lookups footer, its boards, the Privacy Policy and `WebsiteTests`, citing `antenna-website/the-privacy-policy-rules-out-tracking`
+- [ ] 8.7 UI tests with a stubbed service, and `/opsx:verify` for the whole change
+
+## 9. Verify
+
+- [ ] 9.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [ ] 9.2 `/opsx:verify` passes

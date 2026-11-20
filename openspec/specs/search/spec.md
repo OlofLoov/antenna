@@ -48,12 +48,12 @@ The system SHALL find channels whose number starts with typed digits, ignoring l
 - **AND** the programme "104" is found by its title
 
 ### Requirement: Results grouped, best first
-The system SHALL show results under Channels, In the guide, and Movies & series in that order, each with its count, leave out empty sections, put names starting with the query first, order programmes by start, and highlight the matched letters.
+The system SHALL show results under Channels, In the guide, Movies & series and People in that order, each with its count, leave out empty sections, put names starting with the query first, order programmes by start, and highlight the matched letters.
 
 #### Scenario: Results of every kind
 - **GIVEN** results of every kind
 - **WHEN** the user looks at them
-- **THEN** they appear under Channels, In the guide, and Movies & series, in that order, each with its count, and a section with nothing in it is left out
+- **THEN** they appear under Channels, In the guide, Movies & series and People, in that order, each with its count, and a section with nothing in it is left out
 - **AND** channels whose names start with what was typed come first, programmes run in start order so what is on now leads, and titles starting with what was typed come first
 - **AND** the matched letters are highlighted in every row
 
@@ -74,7 +74,7 @@ The system SHALL show results under Channels, In the guide, and Movies & series 
 - **THEN** search covers everything already loaded, and missing logos and posters get their stand-ins
 
 ### Requirement: Pick a channel or title to watch
-The system SHALL play a picked channel full screen on Apple TV and in Live elsewhere, switching to All channels when it is outside the current group and keeping the search for later, and SHALL play a picked movie or series as the Movies section does.
+The system SHALL play a picked channel full screen on Apple TV and in Live elsewhere, switching to All channels when it is outside the current group and keeping the search for later, and SHALL play a picked movie or series as the Movies section does. On Apple TV, coming back to Search SHALL put focus on the result the user picked.
 
 #### Scenario: Picking a channel
 - **GIVEN** a channel in the results
@@ -87,6 +87,11 @@ The system SHALL play a picked channel full screen on Apple TV and in Live elsew
 - **GIVEN** a movie or series in the results
 - **WHEN** the user picks it
 - **THEN** it plays as it does from the Movies or Series section
+
+#### Scenario: Back on the result on Apple TV
+- **GIVEN** a channel, movie, series or person the user picked in Search on Apple TV
+- **WHEN** they come back with Menu from the series' or person's page or from the movie, or swipe down from the tab bar onto Search after the channel played
+- **THEN** the result they picked has focus, with the query and results as they left them
 
 ### Requirement: Pick a programme
 The system SHALL play the channel of a picked programme that is on now and open the guide at a picked later programme on every device. Watching a later programme from there on iPhone, iPad or Mac SHALL play its channel and show the programme as "Later" under what is on next until the channel changes or the programme ends. On iPhone, iPad and Mac a later programme's row SHALL carry a bell that sets or removes a reminder without opening anything.

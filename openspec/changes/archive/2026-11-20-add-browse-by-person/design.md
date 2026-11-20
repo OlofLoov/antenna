@@ -98,14 +98,7 @@ Back on Search, Apple TV puts focus on the result the user picked, of every kind
 
 ## Later: with the lookup service
 
-Waits on the title-info server; kept here from the first design so the work is not lost.
-
-- `/v1/person/{id}` on the lookup service returns name, department, photo path and `combined_credits` reduced to `{tmdbID, kind, title, original title, year, role}`, newest first, capped at 500. The app matches it against the loaded catalogue with the Trending matcher from `add-discover-rows` (provider TMDB id first, else `TitleName.clean` plus year within one, ambiguous names skipped). A matched title's chips carry TMDB person ids and open the TMDB filmography; unmatched titles keep provider names.
-- Photo from TMDB's image CDN at `w185` through the poster cache, and "Filmography from TMDB" under the name.
-- Filmographies in `Caches/people/<tmdb id>.json` for seven days, at most 200 files, deleted when lookups are turned off; offline shows what was kept or "You're offline" with Retry; a failure shows "Could not load this filmography" with Retry.
-- `/v1/people?query=` calls TMDB `/3/search/person`, keeps the five most popular with their credits. The app sends the query after 500 ms without a keystroke and three characters, never with lookups off or offline, and merges those people with the provider-name ones.
-- What leaves the device is typed text. The Settings footer from `add-title-metadata` becomes "Titles and people you open, and names you search for, are looked up in TMDB.", and the Privacy Policy (`antenna-website/the-privacy-policy-rules-out-tracking`) names person pages and names typed in Search among what the movie info service receives. The service logs nothing, so "Data Not Collected" holds. The first version of this change already wrote that footer line on `iPhone-Settings-Lookups` and `TV-Settings-Lookups`; it stays, since the footer ships only with the lookup service.
-- Owner's open questions from the first design still apply then: People from TMDB in Search given it sends typed text (recommend yes, behind the switch), and no biography.
+Moved to `add-title-metadata` (decision 10 and task group 8) on 2026-11-20, so the plan waits with the server it needs.
 
 ## Risks / Trade-offs
 

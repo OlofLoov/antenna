@@ -32,14 +32,6 @@
 - [x] 5.1 Each requirement of the provider-names part has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
 - [x] 5.2 `/opsx:verify` passes for groups 1 to 4, with one gap, the Apple TV focus after Back to Search, closed by task 4.4
 
-## 6. Later: with the lookup service (waits on the title-info server)
+## 6. Later: with the lookup service
 
-Not started. The owner decided on 2026-11-19 not to run the server for now; design.md "Later" has the plan. The change is not archived while these are open.
-
-- [ ] 6.1 Add `/v1/person/{id}` to the lookup service, credits reduced and capped at 500
-- [ ] 6.2 Generalize the Trending matcher from `add-discover-rows` to any list of database entries and match filmographies against the catalogue
-- [ ] 6.3 Keep filmographies in `Caches/people/` for seven days, at most 200, deleted with lookups off, with the offline and failure states and their boards
-- [ ] 6.4 Show TMDB credits as chips on matched titles, a photo and "Filmography from TMDB" on the person page
-- [ ] 6.5 Add `/v1/people` to the lookup service and People from TMDB in Search, after three letters and a pause, only online with lookups on
-- [ ] 6.6 Update the Settings lookups footer, its boards, the Privacy Policy and `WebsiteTests`, citing `antenna-website/the-privacy-policy-rules-out-tracking`
-- [ ] 6.7 UI tests with a stubbed service, and `/opsx:verify` for the whole change
+Moved to `add-title-metadata` on 2026-11-20 with the plan from design.md "Later". The owner decided on 2026-11-19 not to run the server for now, and the provider-names part above is complete.
