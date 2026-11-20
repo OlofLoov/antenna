@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TV settings, accent choices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- add-accent-and-app-icons: the pushed Accent choices on Apple TV, Blue current, Teal focused. The swatches show each accent; the platter stays light. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <div style="position: absolute; left: 80px; right: 80px; top: 60px; bottom: 60px; display: flex; gap: 80px">
+    <!-- settings.lead -->
+    <div style="width: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center">
+      <div style="width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 150px; line-height: 1; color: #A7B0BF">⚙</div>
+      <div style="font-size: 48px; font-weight: 600">Accent</div>
+      <div style="font-size: 25px; color: #A7B0BF; line-height: 32px">The accent is for this profile on every device.</div>
+    </div>
+    <!-- settings.choices: one row per accent with a 36 pt swatch, the checkmark on the current one. Select picks and goes back. -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center">
+      <!-- settings.choice.blue -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="width: 36px; height: 36px; border-radius: 18px; background: #5BB8FF; flex: 0 0 auto; display: inline-block"></span><span style="flex: 1">Blue</span><span style="font-weight: 600">✓</span></div>
+      <!-- settings.choice.teal: focused -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: #F2F4F8; color: #0B0E13; transform: scale(1.03); box-shadow: 0 12px 32px rgba(0,0,0,.45); box-sizing: border-box"><span style="width: 36px; height: 36px; border-radius: 18px; background: #4FD1C5; flex: 0 0 auto; display: inline-block"></span><span style="flex: 1">Teal</span></div>
+      <!-- settings.choice.amber -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="width: 36px; height: 36px; border-radius: 18px; background: #FFB454; flex: 0 0 auto; display: inline-block"></span><span style="flex: 1">Amber</span></div>
+      <!-- settings.choice.pink -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="width: 36px; height: 36px; border-radius: 18px; background: #F472B6; flex: 0 0 auto; display: inline-block"></span><span style="flex: 1">Pink</span></div>
+      <!-- settings.choice.violet -->
+      <div style="height: 66px; display: flex; align-items: center; gap: 16px; padding: 0 20px; font-size: 29px; border-radius: 20px; background: rgba(255,255,255,0.08); box-sizing: border-box"><span style="width: 36px; height: 36px; border-radius: 18px; background: #C084FC; flex: 0 0 auto; display: inline-block"></span><span style="flex: 1">Violet</span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#4FD1C5","#FFB454","#F472B6","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

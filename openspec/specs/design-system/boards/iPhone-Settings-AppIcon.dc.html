@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone settings, app icon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- add-accent-and-app-icons: the pushed App icon page with the seven icons, Mono current. Thumbnails are drawn from the mark, not images. -->
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <div style="margin-top: 54px; height: 44px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+    <span style="font-size: 17px; color: {{accent}}; width: 90px">‹ Settings</span>
+    <span style="font-size: 17px; font-weight: 600">App icon</span>
+    <span style="width: 90px"></span>
+  </div>
+  <!-- settings.choices: a system List. Picking a row calls setAlternateIconName, the system shows its alert, and the page goes back. The checkmark is on the icon the Home Screen shows. The Accent page is this list with a 28 pt swatch in a 60 pt slot and the accent names. -->
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 0">
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+      <!-- settings.choice.standard -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #0B0E13"><g fill="none" stroke="#5BB8FF" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#5BB8FF"/><path d="M512 486V790" stroke="#5BB8FF" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Antenna</span></div>
+      <!-- settings.choice.mono -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #0B0E13"><g fill="none" stroke="#F2F4F8" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#F2F4F8"/><path d="M512 486V790" stroke="#F2F4F8" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Mono</span><span style="color: {{accent}}; font-weight: 600">✓</span></div>
+      <!-- settings.choice.light -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #F2F4F8"><g fill="none" stroke="#0B0E13" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#0B0E13"/><path d="M512 486V790" stroke="#0B0E13" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Light</span></div>
+      <!-- settings.choice.teal -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #0B0E13"><g fill="none" stroke="#4FD1C5" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#4FD1C5"/><path d="M512 486V790" stroke="#4FD1C5" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Teal</span></div>
+      <!-- settings.choice.amber -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #0B0E13"><g fill="none" stroke="#FFB454" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#FFB454"/><path d="M512 486V790" stroke="#FFB454" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Amber</span></div>
+      <!-- settings.choice.pink -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #0B0E13"><g fill="none" stroke="#F472B6" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#F472B6"/><path d="M512 486V790" stroke="#F472B6" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Pink</span></div>
+      <!-- settings.choice.violet -->
+      <div style="display: flex; align-items: center; gap: 14px; height: 76px; padding: 0 14px; box-sizing: border-box; font-size: 17px"><svg width="60" height="60" viewBox="192 194 640 640" style="display: block; flex: 0 0 auto; border-radius: 14px; background: #0B0E13"><g fill="none" stroke="#C084FC" stroke-width="60" stroke-linecap="round"><path d="M397.1 313.6A150 150 0 0 0 397.1 506.4"/><path d="M626.9 313.6A150 150 0 0 1 626.9 506.4"/><path d="M305.2 236.4A270 270 0 0 0 305.2 583.6"/><path d="M718.8 236.4A270 270 0 0 1 718.8 583.6"/></g><circle cx="512" cy="410" r="56" fill="#C084FC"/><path d="M512 486V790" stroke="#C084FC" stroke-width="64" stroke-linecap="round"/></svg><span style="flex: 1 1 auto">Violet</span></div>
+    </div>
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 8px">The app icon is for this device only.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#4FD1C5","#FFB454","#F472B6","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

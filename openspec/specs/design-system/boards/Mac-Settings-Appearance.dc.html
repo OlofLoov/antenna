@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mac settings, appearance</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- add-accent-and-app-icons: Settings, Appearance on a Mac: Accent only. -->
+<div style="width: 1000px; height: 420px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <div style="height: 52px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #A7B0BF">Sources &amp; Settings</div>
+  <!-- settings.root in the Mac grouped Form. No App icon row: AppKit has no alternate icon API, see design.md. -->
+  <div style="width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; padding-top: 16px; font-size: 13px">
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px; font-size: 11px">Appearance</div>
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column; border-radius: 8px">
+      <!-- settings.appearance.accent: a NavigationLink row, pushing the accent choices with swatches -->
+      <div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px"><span style="flex: 1 1 auto">Accent</span><span style="width: 12px; height: 12px; border-radius: 6px; background: {{accent}}; flex: 0 0 auto; display: inline-block"></span><span style="color: #A7B0BF">Blue ›</span></div>
+    </div>
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 8px; font-size: 11px">The accent is for this profile on every device.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#4FD1C5","#FFB454","#F472B6","#C084FC"]},"$preview":{"width":1000,"height":420}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
