@@ -22,7 +22,7 @@ The system SHALL show on iPhone, and on iPad in a narrow Split View, the picture
 - **THEN** the rows grow and the picture keeps its shape
 
 ### Requirement: Pick a group
-The system SHALL list the picked group's channels in channel-list order from the top, keep the playing channel playing, and clear the filter, and on iPad and Mac SHALL head the list with the group's name and channel count. On iPhone the group button SHALL open a Groups sheet listing Favorites, Recents and New when they show, and All channels, then every other group in the order group management sets, each with its channel count and a checkmark on the open group. Empty Favorites SHALL say how a channel becomes a favorite on that device.
+The system SHALL list the picked group's channels in order from the top, keep the playing channel playing and clear the filter. On iPad and Mac the list SHALL be headed by the group's name and count; on iPhone the group button SHALL open a Groups sheet with the built-in groups first, then every other group with its count and a checkmark on the open one. Empty Favorites SHALL say how to add a favorite.
 
 #### Scenario: Picking Sport
 - **GIVEN** a group "Sport" with 42 channels
