@@ -307,21 +307,32 @@ final class TitleUITests: XCTestCase {
         openSection(app, "movies")
         expect(app.element("movies.hero.title"), "label == 'The Long Harbor'")
         XCTAssertEqual(app.element("movies.hero.myList").label, "Add to My list")
+        expectWords(app.element("movies.hero.myList"))
         app.element("movies.hero.info").tap()
         let button = app.element("title.myList")
         XCTAssertTrue(button.waitForExistence(timeout: 5))
-        XCTAssertEqual(button.label, "Add to my list")
+        XCTAssertEqual(button.label, "Add to My list")
+        expectWords(button)
+        // Play spans the width, My list and Trailer sit under it.
+        XCTAssertGreaterThan(button.frame.minY, app.element("title.play").frame.maxY)
         button.tap()
-        expect(button, "label == 'Remove from my list'")
+        expect(button, "label == 'Remove from My list'")
+        expectWords(button)
 
         app.element("title.back").tap()
         expect(app.element("movies.hero.myList"), "label == 'Remove from My list'")
         app.element("movies.hero.info").tap()
-        expect(button, "label == 'Remove from my list'")
+        expect(button, "label == 'Remove from My list'")
         button.tap()
-        expect(button, "label == 'Add to my list'")
+        expect(button, "label == 'Add to My list'")
         app.element("title.back").tap()
         expect(app.element("movies.hero.myList"), "label == 'Add to My list'")
+    }
+
+    /// The button shows its words: wider than a glyph's square, with no image.
+    private func expectWords(_ button: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertGreaterThan(button.frame.width, button.frame.height * 2, "\(button.identifier) is a glyph", file: file, line: line)
+        XCTAssertEqual(button.images.count, 0, "\(button.identifier) shows a glyph", file: file, line: line)
     }
 
     // title-detail-and-episode-picker/back-to-where-you-were

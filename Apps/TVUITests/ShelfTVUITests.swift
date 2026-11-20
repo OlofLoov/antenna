@@ -222,8 +222,12 @@ final class ShelfTVUITests: XCTestCase {
         expectFocus("movies.hero.myList")
         let button = element("movies.hero.myList")
         expect(button, "value == 'Not on My list'")
+        // Words, not a plus in a square.
+        XCTAssertEqual(button.label, "Add to My list")
+        XCTAssertGreaterThan(button.frame.width, button.frame.height * 2)
         press(.select)
         expect(button, "value == 'On My list'")
+        expect(button, "label == 'Remove from My list'")
         XCTAssertTrue(element("movies.row.myList").waitForExistence(timeout: 5))
         press(.select)
         expect(button, "value == 'Not on My list'")

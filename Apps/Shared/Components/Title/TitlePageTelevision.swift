@@ -42,6 +42,7 @@
                                         .fixedSize()
                                         .focused($focused, equals: .play)
                                     MyListButton(type: type)
+                                        .fixedSize()
                                         .focused($focused, equals: .myList)
                                     TrailerButton(type: type)
                                         .fixedSize()

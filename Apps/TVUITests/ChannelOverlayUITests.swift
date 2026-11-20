@@ -300,4 +300,25 @@ extension ShellUITests {
         XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5) || app.searchFields.firstMatch.exists)
         XCTAssertFalse(element("overlay.root").exists, "the overlay stays closed")
     }
+
+    // design-system/focus-is-the-lifted-white-card
+    // The highlight hover effect drew a thin rim around every row at rest,
+    // so the overlay's rows read as outlined buttons.
+    func testRowsAtRestHaveNoOutline() throws {
+        launchPlaying()
+        openOverlay()
+        expectFocusedRow("Channel a1")
+        sleep(1)
+        let pixels = try ScreenPixels(app)
+        // The reported frame is the card's or its content's, which starts the
+        // card's padding in, so the scan covers both places the edge can be.
+        for (part, padding) in [(overlayRows().element(boundBy: 1), 21.0), (element("overlay.group.0"), 17.0)] {
+            let frame = part.frame
+            let line = CGRect(x: frame.minX - padding, y: frame.midY, width: padding + 0.5, height: 0.5)
+            let colors = pixels.colors(in: line)
+            let ground = try XCTUnwrap(colors.first, part.identifier)
+            let brightest = colors.map { $0.distance(to: ground) }.max() ?? 0
+            XCTAssertLessThanOrEqual(brightest, 12, "\(part.identifier) has an edge at rest")
+        }
+    }
 }

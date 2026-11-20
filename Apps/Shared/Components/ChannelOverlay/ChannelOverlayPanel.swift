@@ -236,14 +236,16 @@ extension ChannelOverlay {
     }
 
     /// Watch: tunes the highlighted channel. Multi-view's picker names the
-    /// tile instead, "Show in tile 2".
+    /// tile instead, "Show in tile 2". The primary system style, as Watch
+    /// in the Guide (design-system/controls-use-system-styles).
     struct WatchButton: View {
         var title: LocalizedStringResource = "Watch"
         let watch: () -> Void
 
         var body: some View {
             Button(title, action: watch)
-                .buttonStyle(PanelButtonStyle(width: nil))
+                .font(.boardStyle(24, weight: .semibold))
+                .primaryActionStyle()
         }
     }
 
@@ -256,8 +258,9 @@ extension ChannelOverlay {
             Button(action: add) {
                 Label(title, systemImage: "square.grid.2x2")
                     .labelStyle(.titleAndIcon)
+                    .font(.boardStyle(24, weight: .semibold))
             }
-            .buttonStyle(PanelButtonStyle(width: nil))
+            .secondaryActionStyle()
         }
     }
 
@@ -272,29 +275,9 @@ extension ChannelOverlay {
                 Image(systemName: isFavorite ? "star.fill" : "star")
                     .font(.boardStyle(26))
             }
-            .buttonStyle(PanelButtonStyle(width: 64))
+            .secondaryActionStyle()
+            .buttonBorderShape(.circle)
             .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
-        }
-    }
-
-    private struct PanelButtonStyle: ButtonStyle {
-        let width: CGFloat?
-
-        func makeBody(configuration: Configuration) -> some View {
-            PanelButtonLabel(label: configuration.label, width: width)
-        }
-    }
-
-    private struct PanelButtonLabel<Label: View>: View {
-        let label: Label
-        let width: CGFloat?
-
-        var body: some View {
-            label
-                .font(.boardStyle(24, weight: .semibold))
-                .padding(.horizontal, width == nil ? 28 : 0)
-                .frame(width: width, height: 64)
-                .focusCard(.capsule, resting: Palette.surface(0.12))
         }
     }
 }

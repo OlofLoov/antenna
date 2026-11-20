@@ -17,8 +17,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
 
   <!-- movies-and-series-browsing/rating-and-trailer-on-the-banner: iPhone-Movies with the provider rating after the length and
-       a 44 x 44 Trailer glyph button between Info and My list, spoken label "Trailer". Play takes the remaining width,
-       about 180 pt. Trailer opens the link outside the app. -->
+       the buttons in two rows: Play, taking the remaining width, and Info; then Trailer, with its glyph and the word,
+       and My list in words. Trailer opens the link outside the app. -->
 
   <!-- Hero: portrait key art fills the top, copy sits over the hero scrim at its foot, which fades in over the 56 pt above the copy -->
   <div style="position: relative; width: 390px; height: 520px; background: #22304A; flex: 0 0 auto; overflow: hidden">
@@ -54,13 +54,15 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
           <span>Play</span>
         </button>
         <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; cursor: pointer">Info</button>
-        <!-- movies.hero.trailer -->
-        <button type="button" aria-label="Trailer" style="font: inherit; width: 44px; height: 44px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
-          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.2v5.6l4.6-2.8z" fill="currentColor"/></svg>
+      </div>
+      <!-- Second row: Trailer when there is one, then My list in words, so every label fits in German too -->
+      <div style="display: flex; gap: 8px">
+        <!-- movies.hero.trailer: the glyph and the word, as on iPad -->
+        <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; gap: 8px; white-space: nowrap; cursor: pointer">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.2v5.6l4.6-2.8z" fill="currentColor"/></svg>
+          <span>Trailer</span>
         </button>
-        <button type="button" aria-label="Add to my list" style="font: inherit; width: 44px; height: 44px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
-          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
+        <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; white-space: nowrap; cursor: pointer">Add to My list</button>
       </div>
     </div>
   </div>

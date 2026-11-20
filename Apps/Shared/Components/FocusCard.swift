@@ -27,7 +27,7 @@ struct FocusCard: ViewModifier {
     func body(content: Content) -> some View {
         content
             .modifier(Look(isFocused: isFocused, corner: corner, resting: resting, restingText: restingText, radii: radii))
-            .highlightHoverOnTelevision()
+            .highlightHoverOnTelevision(isFocused: isFocused, shape: corner.shape(radii))
     }
 
     /// The card for a known focus state, so a preview can draw it focused.
@@ -86,10 +86,15 @@ extension View {
     }
 
     /// `hoverEffect(.highlight)` on Apple TV, where it lifts and tilts the
-    /// focused view; nothing elsewhere.
-    @ViewBuilder fileprivate func highlightHoverOnTelevision() -> some View {
+    /// focused view in the card's shape; nothing elsewhere. The effect is on
+    /// only while focused: at rest it draws a thin rim around the view,
+    /// which reads as an outlined button. The card's shape is also the
+    /// accessibility shape, which would otherwise shrink to the text while
+    /// the effect is off.
+    @ViewBuilder fileprivate func highlightHoverOnTelevision(isFocused: Bool, shape: some Shape) -> some View {
         #if os(tvOS)
-            hoverEffect(.highlight)
+            contentShape([.hoverEffect, .accessibility], shape)
+                .hoverEffect(.highlight, isEnabled: isFocused)
         #else
             self
         #endif
