@@ -33,7 +33,7 @@ final class TimeshiftUITests: XCTestCase {
         XCTAssertTrue(app.element("browse.player.controls").waitForExistence(timeout: 3), "no controls")
     }
 
-    private func label(_ app: XCUIApplication, _ id: String, is expected: String, timeout: TimeInterval = 5) {
+    private func label(_ app: XCUIApplication, _ id: String, is expected: String, timeout: TimeInterval = 10) {
         let element = app.element(id)
         let matches = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == %@", expected), object: element)
         XCTAssertEqual(XCTWaiter().wait(for: [matches], timeout: timeout), .completed, "\(id) is \(element.label), expected \(expected)")

@@ -67,11 +67,15 @@ final class TitleRegularUITests: XCTestCase {
         let first = app.element("episodes.season.season-1")
         XCTAssertTrue(first.waitForExistence(timeout: 5))
         XCTAssertTrue(first.isSelected)
-        for _ in 0..<3 where !app.element("episodes.season.season-2").isSelected {
-            // The simulator sometimes drops the first key press.
+        let second = app.element("episodes.season.season-2")
+        for _ in 0..<3 where !second.isSelected {
+            // The simulator sometimes drops the first key press. Waiting for the
+            // pick before pressing again keeps a slow redraw from skipping a season.
             app.typeKey(.rightArrow, modifierFlags: [])
+            _ = XCTWaiter().wait(
+                for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "isSelected == true"), object: second)], timeout: 2)
         }
-        expect(app.element("episodes.season.season-2"), "isSelected == true")
+        expect(second, "isSelected == true")
         XCTAssertTrue(app.element("episodes.row.xtream#cabin#episode#11").exists)
         app.typeKey(.leftArrow, modifierFlags: [])
         expect(app.element("episodes.season.season-1"), "isSelected == true")
