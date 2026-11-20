@@ -83,5 +83,35 @@ import Testing
             model.failedSourcesChanged(to: [source])
             #expect(!model.dismissedBanners.contains(source))
         }
+
+        @Test("guide-on-iphone-ipad-and-mac/filter-channels-by-typing the guide narrows by name or number as Live's list does")
+        func filterMatchesLive() async throws {
+            let channels = ["News One", "Sport One", "Sport Two"].enumerated().map { index, name in
+                Channel(id: "c\(index)", name: name, streamURL: URL(filePath: "/\(index).ts"), group: "G", number: index + 1)
+            }
+            let live = LiveModel(
+                .init(
+                    engine: UITestingLive.Engine(log: nil), load: { _ in Playlist(channels: channels) }, hasLogin: { _ in true },
+                    guide: nil, programmes: UITestingLive.guide))
+            live.sourcesChanged([SourceDescriptor(id: source, name: "Home", kind: .m3u, url: URL(filePath: "/home.m3u"))])
+            await live.settled()
+            let model = GuideBoardModel(store: GuideZoomStore(defaults: defaults()))
+            let reading = GuideBoardReading(live: live, model: model)
+            func names(filtered: Bool = true) -> [String] {
+                reading.data(at: start, filtered: filtered).rows.compactMap { live.catalogue.channel(for: $0)?.name }
+            }
+            model.filter = "SPORT"
+            #expect(names() == ["Sport One", "Sport Two"])
+            #expect(names(filtered: false) == ["News One", "Sport One", "Sport Two"])
+            model.filter = "3"
+            #expect(names() == ["Sport Two"])
+            live.filter = "3"
+            #expect(reading.data(at: start, filtered: true).rows == live.rows)
+            let sport = try #require(live.channels.first { $0.name == "Sport One" })
+            live.favoritesChanged([FavoriteSnapshot(channelID: sport.id, sourceID: source, sortOrder: 0)])
+            live.show(.favorites)
+            model.filter = "one"
+            #expect(names() == ["Sport One"], "a favorite added after loading is found too")
+        }
     }
 #endif

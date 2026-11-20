@@ -27,8 +27,9 @@
         /// The current group's rows, narrowed by the filter when `filtered`.
         func data(at now: Date, filtered: Bool) -> GuideData {
             let filter = ChannelFilter(filtered ? model.filter : "")
-            // Matched as Live's list and Search match (guide-on-iphone-ipad-and-mac/filter-channels-by-typing).
-            let rows = filter.isEmpty ? live.catalogue.rows(in: live.group) : live.catalogue.rows(in: live.group, matching: filter)
+            // Matched as Live's list and Search match (guide-on-iphone-ipad-and-mac/filter-channels-by-typing),
+            // through Live's name index, so a keystroke does not fold every name again.
+            let rows = live.names.filter(live.catalogue.rows(in: live.group), by: filter)
             return .live(rows: rows, channel: live.catalogue.channel(for:), guide: live.programmes, now: now)
         }
 

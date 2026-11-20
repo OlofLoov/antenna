@@ -54,6 +54,9 @@ struct AppBrowsingBenchmarkTests {
         model.filter = ""
         let whole = median { _ = reading.data(at: .now, filtered: true).rows.count }
         print("benchmark guide data: filtered \(filtered), unfiltered \(whole)")
+        live.filter = "channel 12"
+        let liveFiltered = median { _ = live.rows.count }
+        #expect(filtered < liveFiltered * 1.5, "about as fast as Live's list, which keeps its name index")
     }
 
     @Test("live-tv-on-iphone-ipad-mac/type-to-narrow-the-list Live's rows for a typed filter")
