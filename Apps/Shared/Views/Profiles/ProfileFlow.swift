@@ -220,6 +220,10 @@ struct ProfileFlow: View {
                             .accessibilityIdentifier("profiles.edit.delete")
                     }
                 }
+                // A lone Save sits mostly to the right of the accents above it, and
+                // Down from Teal never reached it. One section across the screen does.
+                .frame(maxWidth: .infinity)
+                .focusSection()
                 Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
