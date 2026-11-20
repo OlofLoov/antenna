@@ -436,6 +436,7 @@ extension DemuxEngine {
         publishTimeshift()
         guard current?.start != nil else { return }
         checkSound()
+        checkPicture()
         guard var current, let start = current.start else { return }
         watchClock(synchronizer.currentTime())
         let now = synchronizer.currentTime()

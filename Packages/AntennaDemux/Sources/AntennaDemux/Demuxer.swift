@@ -48,6 +48,9 @@ public struct DemuxedPacket: Sendable {
     public let decodeTime: CMTime
     public let duration: CMTime
     public let isKeyframe: Bool
+    /// True when FFmpeg found data missing from the packet, as when a
+    /// broadcast stream lost packets on the way.
+    public var isCorrupt = false
 }
 
 /// FFmpeg's demuxer over a byte source, read through a custom AVIO callback.
@@ -158,7 +161,8 @@ public final class Demuxer: @unchecked Sendable {
                 streamIndex: index, data: data,
                 presentationTime: pts.isValid ? pts : dts, decodeTime: dts,
                 duration: Self.time(packet.pointee.duration, timeBase),
-                isKeyframe: packet.pointee.flags & AV_PKT_FLAG_KEY != 0)
+                isKeyframe: packet.pointee.flags & AV_PKT_FLAG_KEY != 0,
+                isCorrupt: packet.pointee.flags & AV_PKT_FLAG_CORRUPT != 0)
         }
     }
 

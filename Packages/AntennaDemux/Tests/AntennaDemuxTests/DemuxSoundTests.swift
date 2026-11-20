@@ -183,7 +183,7 @@ import Testing
 
 /// Bytes from memory that stop at `gate` until `open`, as a live stream
 /// waits for the next bytes.
-private final class GatedBytes: DemuxBytes, @unchecked Sendable {
+final class GatedBytes: DemuxBytes, @unchecked Sendable {
     private let data: Data
     private let condition = NSCondition()
     private var gate: Int
