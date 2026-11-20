@@ -20,13 +20,23 @@
                 Button {
                     switchProfile?()
                 } label: {
-                    ProfileBadge(tile: tile, size: 56)
-                        .contentShape(.hoverEffect, Circle())
-                        .hoverEffect(.highlight)
+                    Badge(tile: tile)
                 }
-                .buttonStyle(.borderless)
+                // The circle shows focus itself; a system style or hover effect
+                // lifts it on a platter that cuts it (profiles/who-s-watching-at-launch).
+                .buttonStyle(FocusHolderStyle())
                 .accessibilityLabel("Profile, \(tile.name)")
                 .accessibilityIdentifier("shell.profile")
+            }
+        }
+
+        /// The 56 pt circle, lifted with a shadow while focused.
+        private struct Badge: View {
+            let tile: ProfileTile
+            @Environment(\.isFocused) private var isFocused
+
+            var body: some View {
+                ProfileBadge(tile: tile, size: 56).circleLiftOnTelevision(isFocused)
             }
         }
     }

@@ -9,12 +9,13 @@ final class TitleUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch(_ scenario: String = "titles", sampleScores: Bool = false) throws -> XCUIApplication {
+    func launch(_ scenario: String = "titles", sampleScores: Bool = false, extra: [String] = []) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
         let app = XCUIApplication()
-        app.launchArguments = [
-            "-ui-testing-shelf", scenario, "-ui-testing-reduce-motion", "-mock-title-scores", sampleScores ? "YES" : "NO",
-        ]
+        app.launchArguments =
+            [
+                "-ui-testing-shelf", scenario, "-ui-testing-reduce-motion", "-mock-title-scores", sampleScores ? "YES" : "NO",
+            ] + extra
         app.launchInEnglish()
         return app
     }
@@ -195,6 +196,32 @@ final class TitleUITests: XCTestCase {
         XCTAssertFalse(row(app, 11).exists)
         XCTAssertEqual(app.element("episodes.count").label, "1 episode")
         XCTAssertTrue(app.element("episodes.season.season-3").isSelected)
+    }
+
+    // title-detail-and-episode-picker/pick-a-season, many seasons
+    func testFifteenSeasonsScrollClearOfTheCount() throws {
+        let app = try launch(extra: ["-ui-testing-many-seasons"])
+        openNorthernLights(app)
+        let count = app.element("episodes.count")
+        XCTAssertTrue(count.waitForExistence(timeout: 5))
+        XCTAssertEqual(count.label, "2 episodes")
+        try expectNothingOver(count, app)
+
+        let seasons = app.element("episodes.seasons")
+        for _ in 0..<4 { seasons.swipeLeft() }
+        let last = app.element("episodes.season.season-15")
+        expect(last, "isHittable == true")
+        XCTAssertLessThanOrEqual(last.frame.maxX, count.frame.minX, "the last chip stops before the count")
+        try expectNothingOver(count, app)
+    }
+
+    /// The count shows on the page's ground color with only its own text:
+    /// no chip is drawn under or over it.
+    func expectNothingOver(_ count: XCUIElement, _ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) throws {
+        let pixels = try ScreenPixels(app)
+        let frame = count.frame
+        let share = pixels.share(of: .ground, in: frame)
+        XCTAssertGreaterThan(share, 0.5, "\(Int(share * 100))% of the count is the ground color", file: file, line: line)
     }
 
     // title-detail-and-episode-picker/what-each-episode-shows

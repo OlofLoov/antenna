@@ -151,6 +151,20 @@ check_except "design-system/liquid-glass-stays-on-the-navigation-layer: the glas
   'Apps/Shared/Components/Shelf/ShelfControls\.swift|Apps/Shared/Components/Browse/BrowseControls\.swift|Apps/Shared/Views/Live/LivePicture\.swift' \
   Apps
 
+# A flat block of the ground color over art leaves an edge across the
+# picture. Copy over art sits on HeroScrim, which spans the whole picture
+# (design-system/the-scrim-blends-into-the-art).
+check "design-system/the-scrim-blends-into-the-art: no flat scrim block over art" \
+  'Palette\.(ground|scrimTint)\.opacity\([0-9.]+\)\.frame\((width|maxWidth):' \
+  Apps/Shared
+
+# On Apple TV the system hover effects lift a circle on a rounded square
+# platter and cut it. A focusable circle lifts itself with
+# circleLiftOnTelevision (profiles/who-s-watching-at-launch).
+check "profiles/who-s-watching-at-launch: no system hover effect on a circle" \
+  'contentShape\(\.hoverEffect, Circle\(\)\)' \
+  Apps/Shared
+
 # Copy kept in a String constant skips the String Catalog. Copy is a
 # LocalizedStringResource (the swiftui-composition skill, rule 9).
 check_except "localization: copy in views and components is not a plain String constant" \

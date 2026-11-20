@@ -20,6 +20,7 @@ patterns and shared components the requirements point to.
 | Sidebar / tab bar | `#11151C` | iPad and Mac sidebar, iPhone tab bar |
 | Overlay scrim | `rgba(8,10,14,0.72)` over the regular material | tvOS panels over live video (`OverlayMaterial`) |
 | Bar scrim | `rgba(8,10,14,0.55)` | Dims the tvOS picture or guide while the highlight is in the tab bar |
+| Hero scrim | Ground from `0.85` at the leading edge to `0.72` where the copy ends, `0.3` halfway to the trailing edge, `0` at it; on the iPhone hero, ground from `0` to `0.78` over the 56 pt above the copy | Banner, preview and title page art behind copy. It spans the whole picture with no edge and mirrors in right-to-left languages |
 | Surface | `rgba(255,255,255,0.06)` to `0.18` | Rows, cards, chips; `0.08` for dividers, `0.12` is the selected row on touch platforms and the selected-but-unfocused group or tab on tvOS, `0.18` the track of a loading ring |
 | Text | `#F2F4F8` | Primary |
 | Text secondary | `#D7DEE8` | Body copy and descriptions |
@@ -114,8 +115,8 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
   (560) | rows. The profile button sits at the top of the lead column with
   two or more profiles.
 - Focus is the lifted white card. Nothing else is white-filled.
-- Title detail: no tab bar. Art full bleed behind a 1100 wide left scrim
-  with the copy column on the hero's left edge. On a series the art stops
+- Title detail: no tab bar. Art full bleed behind the hero scrim, darkest
+  at the leading edge, with the copy column on the hero's left edge. On a series the art stops
   at 520 and the season chips (64) and episode rows (128) sit below it.
 - Multi-view: two to four 16:9 tiles on Ground, margin 24 and gap 16, two
   side by side, three as two over one centered, four as a 2 by 2 grid. The
@@ -150,7 +151,7 @@ digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
 - Guide: group chips, day chips, then one row per channel with a header
   line and its own horizontal strip of programme cards. No time grid. Detail
   is a sheet. A now-playing mini bar sits above the tab bar.
-- Movies: tall portrait hero, chips laid over the art, copy on a solid scrim
+- Movies: tall portrait hero, chips laid over the art, copy on the hero scrim
   at the foot of the hero, then rows.
 - Title detail is pushed inside the Movies tab: 16:9 art with a round
   back button over it, copy, buttons, then season chips (30) and episode

@@ -97,6 +97,15 @@ extension EpisodesContext {
                 skipped: "1 episode could not be read from the provider's list."),
             actions: Actions(pick: { _ in }, play: { _ in }, retry: {}))
     }
+
+    /// The preview episodes in a series of fifteen seasons, the most the
+    /// season row has to scroll through in the previews.
+    static var manySeasons: EpisodesContext {
+        var context = preview
+        context.state.seasons = (1...15).map { Season(id: "Season \($0)", title: "Season \($0)", count: "8 episodes") }
+        context.state.skipped = nil
+        return context
+    }
 }
 
 #Preview("Episodes, iPhone", traits: .fixedLayout(width: 390, height: 560)) {
@@ -115,6 +124,28 @@ extension EpisodesContext {
 #Preview("Episodes, Apple TV", traits: .fixedLayout(width: 1920, height: 900)) {
     EpisodePicker.Section(type: .tv)
         .environment(\.episodes, .preview)
+        .environment(\.shelfMetrics, .tv)
+        .background(Palette.ground)
+}
+
+// Fifteen seasons scroll in their row and stop short of "8 episodes"
+// (title-detail-and-episode-picker/pick-a-season, many seasons).
+#Preview("Episodes, fifteen seasons, iPhone", traits: .fixedLayout(width: 390, height: 320)) {
+    EpisodePicker.Section(type: .phone)
+        .environment(\.episodes, .manySeasons)
+        .background(Palette.ground)
+}
+
+#Preview("Episodes, fifteen seasons, iPad", traits: .fixedLayout(width: 914, height: 360)) {
+    EpisodePicker.Section(type: .pad)
+        .environment(\.episodes, .manySeasons)
+        .environment(\.shelfMetrics, .pad)
+        .background(Palette.ground)
+}
+
+#Preview("Episodes, fifteen seasons, Apple TV", traits: .fixedLayout(width: 1920, height: 600)) {
+    EpisodePicker.Section(type: .tv)
+        .environment(\.episodes, .manySeasons)
         .environment(\.shelfMetrics, .tv)
         .background(Palette.ground)
 }

@@ -60,7 +60,7 @@
         }
 
         /// `iPad-Title` and `iPad-Series`: the toolbar's Back, the backdrop
-        /// card with the copy and buttons over a left scrim, then the
+        /// card with the copy and buttons over the hero scrim, then the
         /// description, cast and director and what the screen adds below.
         /// The sidebar is the window's.
         struct Pad<Below: View>: View {
@@ -80,9 +80,7 @@
                         VStack(alignment: .leading, spacing: 20) {
                             ZStack(alignment: .bottomLeading) {
                                 Backdrop(poster: CGSize(width: 160, height: 240))
-                                LinearGradient(
-                                    colors: [Palette.scrimTint.opacity(0.92), Palette.scrimTint.opacity(0)], startPoint: .leading,
-                                    endPoint: .trailing)
+                                HeroScrim(copyEnd: 0.6)
                                 VStack(alignment: .leading, spacing: type.spacing) {
                                     Eyebrow(type: type)
                                     Name(type: type)
