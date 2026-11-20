@@ -77,6 +77,9 @@ final class GuideRegularUITests: XCTestCase {
             .allElementsBoundByIndex.sorted { $0.frame.minY < $1.frame.minY }
         XCTAssertEqual(channels.count, 5)
         XCTAssertEqual(channels.first?.label, "1 News One")
+        // guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac, a short group
+        let header = app.element("guide.groupTitle").frame
+        XCTAssertLessThan((channels.first?.frame.minY ?? .infinity) - header.maxY, 30, "the first row sits under the time labels")
         XCTAssertTrue(blocks(app, "block", row: 0).firstMatch.exists, "Morning News is in the grid")
         XCTAssertTrue(app.element("guide.loading.\(key(1))").exists, "News Two's guide is loading")
         XCTAssertTrue(app.element("guide.noGuide.\(key(3))").exists, "Kids One has no guide")

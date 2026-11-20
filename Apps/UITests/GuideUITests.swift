@@ -58,6 +58,9 @@ final class GuideUITests: XCTestCase {
         XCTAssertTrue(app.element("guide.days").exists)
         XCTAssertTrue(app.element("guide.list").exists)
         XCTAssertFalse(app.element("guide.filter").exists, "no iPad filter field on iPhone")
+        // guide-on-iphone-ipad-and-mac/one-row-per-channel-on-iphone, the group button sits at the top
+        let groups = app.element("guide.groups").frame
+        XCTAssertLessThan(app.element("guide.days").frame.minY - groups.maxY, 40, "no empty band under the group button")
 
         let news = cards(app, row: 0)
         XCTAssertGreaterThanOrEqual(news.count, 2)
