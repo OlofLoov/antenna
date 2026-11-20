@@ -88,14 +88,14 @@ import SwiftUI
     struct PlayerSurfaceView: UIViewRepresentable {
         let engine: any PlaybackEngine
 
-        func makeUIView(context: Context) -> PlayerLayerView {
-            let view = PlayerLayerView()
-            attach(view)
-            return view
+        func makeUIView(context: Context) -> Container {
+            let container = Container()
+            attach(container.surface)
+            return container
         }
 
-        func updateUIView(_ view: PlayerLayerView, context: Context) {
-            attach(view)
+        func updateUIView(_ container: Container, context: Context) {
+            attach(container.surface)
         }
 
         private func attach(_ view: PlayerLayerView) {
@@ -118,6 +118,27 @@ import SwiftUI
                 view.onWindow = { window in demuxer?.display.displayManager = window?.avDisplayManager }
                 demuxer?.display.displayManager = view.window?.avDisplayManager
             #endif
+        }
+
+        /// Holds the picture's view one level below SwiftUI's view. Picture
+        /// in Picture puts a stand-in view next to the picture's view while
+        /// it starts and stops, and UIKit does not support views added
+        /// straight to a hosting controller's view.
+        final class Container: UIView {
+            let surface = PlayerLayerView()
+
+            override init(frame: CGRect) {
+                super.init(frame: frame)
+                backgroundColor = .black
+                surface.frame = bounds
+                surface.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                addSubview(surface)
+            }
+
+            @available(*, unavailable)
+            required init?(coder: NSCoder) {
+                nil
+            }
         }
 
         final class PlayerLayerView: UIView {
