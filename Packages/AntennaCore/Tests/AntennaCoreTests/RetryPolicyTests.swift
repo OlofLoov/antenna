@@ -64,7 +64,7 @@ private actor Attempts {
         let base = try await server.start()
         defer { Task { await server.stop() } }
         await server.always("/live/u/p/42.ts", .status(401))
-        let session = PlaybackNetwork.makeSession()
+        let session = PlaybackNetwork.makeFixtureSession()
         let url = base.appending(path: "live/u/p/42.ts")
         await #expect(throws: PlaybackFailure.notAllowed) {
             try await RetryPolicy.tune.run(sleep: { _ in }) { try await StreamProbe.run(url, session: session) }
@@ -78,7 +78,7 @@ private actor Attempts {
         let base = try await server.start()
         defer { Task { await server.stop() } }
         await server.script("/channel.ts", .status(503), .status(429))
-        let session = PlaybackNetwork.makeSession()
+        let session = PlaybackNetwork.makeFixtureSession()
         let url = base.appending(path: "channel.ts")
         let probe = try await RetryPolicy.tune.run(sleep: { _ in }) { try await StreamProbe.run(url, session: session) }
         #expect(probe.sniff == .mpegTS)
@@ -162,7 +162,7 @@ private actor Attempts {
         defer { Task { await server.stop() } }
         await server.always("/channel.ts", .status(status))
         await #expect(throws: reason) {
-            try await StreamProbe.run(base.appending(path: "channel.ts"), session: PlaybackNetwork.makeSession())
+            try await StreamProbe.run(base.appending(path: "channel.ts"), session: PlaybackNetwork.makeFixtureSession())
         }
     }
 
@@ -170,7 +170,7 @@ private actor Attempts {
         let server = try FixtureServer()
         let base = try await server.start()
         defer { Task { await server.stop() } }
-        let session = PlaybackNetwork.makeSession()
+        let session = PlaybackNetwork.makeFixtureSession()
         let film = try await StreamProbe.run(base.appending(path: "film.mp4"), session: session)
         #expect(film.acceptsRanges)
         #expect(film.status == 206)
@@ -191,7 +191,7 @@ private actor Attempts {
         defer { Task { await server.stop() } }
         await server.always("/channel.ts", .refuse)
         await #expect(throws: PlaybackFailure.stoppedSendingData) {
-            try await StreamProbe.run(base.appending(path: "channel.ts"), session: PlaybackNetwork.makeSession())
+            try await StreamProbe.run(base.appending(path: "channel.ts"), session: PlaybackNetwork.makeFixtureSession())
         }
     }
 }

@@ -109,7 +109,7 @@ import Testing
         let base = try await server.start()
         await server.stop()
         await #expect(throws: PlaybackFailure.unreachable) {
-            try await StreamProbe.run(base.appending(path: "channel.ts"), session: PlaybackNetwork.makeSession())
+            try await StreamProbe.run(base.appending(path: "channel.ts"), session: PlaybackNetwork.makeFixtureSession())
         }
     }
 }
