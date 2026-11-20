@@ -56,11 +56,13 @@ import Testing
             picks: SearchPicks(channel: { played.append($0.name) }, programme: { _, _ in }, title: { _ in }, person: { _ in }),
             remember: { activity.recordSearch($0) }, text: SearchText())
         model.run("  Arena  ")
+        await model.searched()
         try feed.pick(#require(model.results.channels.first))
 
         #expect(played == ["Arena"])
         #expect(activity.searches == ["Arena"], "kept tidy")
         model.run("zzz")
+        await model.searched()
         #expect(activity.searches == ["Arena"], "a search without a pick is not kept")
     }
 }

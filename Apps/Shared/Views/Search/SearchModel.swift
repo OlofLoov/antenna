@@ -86,6 +86,15 @@ final class SearchModel {
         var debounce = Duration.milliseconds(300)
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
         var now: @MainActor () -> Date = { .now }
+        /// Answers one query away from the main actor. Tests hold it to
+        /// finish queries out of order.
+        var answer: @Sendable (SearchIndex, PeopleIndex, SearchQuery, Date) async -> Answer = SearchModel.answer
+    }
+
+    /// What one query found.
+    struct Answer: Sendable {
+        var results: SearchResults
+        var people: [PeopleIndex.Person]
     }
 
     /// What the field holds.
@@ -120,6 +129,10 @@ final class SearchModel {
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private var peopleIndex = PeopleIndex.empty
     @ObservationIgnored private var typing: Task<Void, Never>?
+    /// The query being answered away from the main actor.
+    @ObservationIgnored private var searching: Task<Void, Never>?
+    /// Counts the queries sent; only the newest one's answer shows.
+    @ObservationIgnored private var sent = 0
 
     init(_ dependencies: Dependencies = Dependencies()) {
         self.dependencies = dependencies
@@ -281,15 +294,55 @@ final class SearchModel {
         hasTitles = corpus.hasTitles
         if !hasTitles, scope == .movies || scope == .series { scope = .all }
         settle()
+        await searched()
     }
 
+    /// Waits until the last query sent has its results on screen.
+    func searched() async {
+        while let searching {
+            await searching.value
+            if self.searching == searching { break }
+        }
+    }
+
+    /// Answers the field's query. A query too short to search clears the
+    /// results at once; any other is answered away from the main actor,
+    /// and an answer that arrives after a newer query was sent is dropped
+    /// (search/find-things-the-way-you-type-them).
     private func settle() {
         typing = nil
         let parsed = SearchQuery(query)
-        if parsed.text != results.query.text { guideExpanded = false }
-        searchedAt = dependencies.now()
-        results = index.results(for: parsed, now: searchedAt)
-        people = peopleIndex.search(parsed)
+        let now = dependencies.now()
+        sent += 1
+        let ticket = sent
+        searching?.cancel()
+        guard parsed.isSearchable else {
+            searching = nil
+            return show(Answer(results: .none(parsed), people: peopleIndex.search(parsed)), at: now)
+        }
+        let index = index
+        let people = peopleIndex
+        let answer = dependencies.answer
+        searching = Task { [weak self] in
+            let found = await answer(index, people, parsed, now)
+            guard let self, ticket == sent else { return }
+            show(found, at: now)
+            searching = nil
+        }
+    }
+
+    private func show(_ answer: Answer, at now: Date) {
+        if answer.results.query.text != results.query.text { guideExpanded = false }
+        searchedAt = now
+        results = answer.results
+        people = answer.people
         if let cursor, !items.contains(cursor) { self.cursor = nil }
+    }
+
+    /// Searches the index and the people for `query` off the main actor,
+    /// so typing stays smooth over a large catalogue.
+    @concurrent
+    nonisolated static func answer(_ index: SearchIndex, _ people: PeopleIndex, _ query: SearchQuery, _ now: Date) async -> Answer {
+        Answer(results: index.results(for: query, now: now), people: people.search(query))
     }
 }

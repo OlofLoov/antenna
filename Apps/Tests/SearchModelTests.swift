@@ -81,6 +81,7 @@ import Testing
         let model = model(gate: gate, clock: Clock(start))
         await model.load(corpus([], sources: .loading))
         model.run("arena")
+        await model.searched()
         #expect(model.results.isEmpty)
         #expect(model.sources == .loading)
         #expect(searchMessage(model)?.title == SearchText.channelsLoading())
@@ -89,6 +90,8 @@ import Testing
         #expect(model.results.channels.map(\.channel.name) == ["Arena"])
 
         model.run("zzz")
+
+        await model.searched()
         #expect(searchMessage(model)?.lines == [SearchText.hint(), SearchText.someStillLoading()])
     }
 
@@ -101,10 +104,12 @@ import Testing
         let next = Programme(channelID: "d", start: start.addingTimeInterval(60), stop: start.addingTimeInterval(3600), title: "Wild North")
         await model.load(corpus([channel("Docu", epg: "d")], programmes: [show, next]))
         model.run("wild")
+        await model.searched()
         #expect(model.results.programmes.map(\.isOnNow) == [true, false])
 
         clock.now = start.addingTimeInterval(61)
         model.refresh()
+        await model.searched()
         #expect(model.results.programmes.map(\.isOnNow) == [true])
         #expect(model.results.programmes.first?.programme.start == next.start)
     }
@@ -115,6 +120,7 @@ import Testing
         let model = model(gate: gate, clock: Clock(start))
         await model.load(corpus([channel("Arena")]))
         model.run("arena")
+        await model.searched()
         let requests = model.focusRequests
         model.clear()
         #expect(model.query.isEmpty)
@@ -128,6 +134,7 @@ import Testing
         let model = model(gate: gate, clock: Clock(start))
         await model.load(corpus([channel("Arena One"), channel("Arena Two")]))
         model.run("arena")
+        await model.searched()
         model.moveCursor(1)
         #expect(model.cursor == model.items.first)
         model.moveCursor(1)
@@ -149,15 +156,69 @@ import Testing
         let titles = [ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: source, name: "Salt Road", cast: "Mira Holt")]
         model.peopleChanged(PeopleIndex(titles: titles, learned: LearnedCredits()))
         model.run("mira")
+        await model.searched()
         #expect(model.people.map(\.name) == ["Mira Holt"])
         #expect(model.items.last == .person(PersonName.key("Mira Holt")), "People comes after every other section")
         model.scope = .channels
         #expect(model.shownPeople.isEmpty, "no People in a narrowed view")
         model.scope = .all
         model.run("holt")
+        await model.searched()
         #expect(model.results.isEmpty)
         #expect(!model.foundNothing, "a person alone is a result")
         model.run("zz")
+        await model.searched()
         #expect(model.people.isEmpty)
+    }
+
+    /// Holds the answer to one query until the test lets it through.
+    actor HeldAnswer {
+        private var waiting: [CheckedContinuation<Void, Never>] = []
+        private(set) var released = 0
+
+        func wait() async {
+            await withCheckedContinuation { waiting.append($0) }
+            released += 1
+        }
+
+        func open() {
+            waiting.forEach { $0.resume() }
+            waiting = []
+        }
+
+        var isWaiting: Bool { !waiting.isEmpty }
+    }
+
+    @Test("search/find-things-the-way-you-type-them an answer that arrives after a newer query never replaces it")
+    func lateAnswer() async {
+        let held = HeldAnswer()
+        let model = SearchModel(
+            .init(
+                debounce: .zero, sleep: { _ in }, now: { [start] in start },
+                answer: { index, people, query, now in
+                    if query.text == "arena" { await held.wait() }
+                    return await SearchModel.answer(index, people, query, now)
+                }))
+        await model.load(corpus([channel("Arena One"), channel("Arena Two"), channel("Nordic")]))
+
+        model.run("arena")
+        while await !held.isWaiting { await Task.yield() }
+        model.run("nordic")
+        await model.searched()
+        #expect(model.results.channels.map(\.channel.name) == ["Nordic"])
+        await held.open()
+        while await held.released < 1 { await Task.yield() }
+        for _ in 0..<20 { await Task.yield() }
+        #expect(model.results.channels.map(\.channel.name) == ["Nordic"], "the late answer is dropped")
+
+        model.run("arena")
+        while await !held.isWaiting { await Task.yield() }
+        model.type("a")
+        #expect(model.results.isEmpty, "one letter clears at once")
+        await held.open()
+        while await held.released < 2 { await Task.yield() }
+        for _ in 0..<20 { await Task.yield() }
+        #expect(model.results.isEmpty, "the late answer does not come back")
+        #expect(model.query == "a")
     }
 }
