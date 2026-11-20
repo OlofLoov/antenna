@@ -36,4 +36,4 @@
 
 - [x] 6.1 Each requirement has a test citing `adult-content/<requirement-slug>`, `profiles/what-each-profile-keeps` or `group-management/changes-follow-you-to-every-device`
 - [x] 6.2 The UI test classes touched pass on local iPhone and Apple TV simulators with `-testLanguage en -testRegion US`
-- [ ] 6.3 `/opsx:verify` passes
+- [x] 6.3 `/opsx:verify` passes
