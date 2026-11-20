@@ -50,7 +50,7 @@ final class GuideRegularUITests: XCTestCase {
     }
 
     private func time(_ date: Date) -> String {
-        date.formatted(date: .omitted, time: .shortened)
+        UITestLocale.time(date)
     }
 
     // guide-on-iphone-ipad-and-mac/a-time-grid-on-ipad-and-mac
@@ -343,13 +343,15 @@ extension GuideRegularUITests {
 
     // guide-on-iphone-ipad-and-mac/channels-with-gaps-or-no-guide, a login still to sync
     func testALoginStillToSyncGetsAWaitingBanner() throws {
-        let app = try launch("waiting")
+        // A cold launch on a busy Mac can take most of a minute to reach the
+        // guide, so the login arrives a minute after launch, not after six seconds.
+        let app = try launch("waiting", environment: ["UITESTING_LOGIN_AFTER": "60"])
         openGuide(app)
         let banner = app.element("guide.banner.waiting.\(LiveStatesUITests.cabin)")
         XCTAssertTrue(banner.waitForExistence(timeout: 5))
         XCTAssertEqual(banner.label, "Cabin: waiting for its login to sync from iCloud")
         let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: banner)
-        XCTAssertEqual(XCTWaiter().wait(for: [gone], timeout: 20), .completed, "the banner clears once the login arrives")
+        XCTAssertEqual(XCTWaiter().wait(for: [gone], timeout: 80), .completed, "the banner clears once the login arrives")
     }
 
     // guide-on-iphone-ipad-and-mac/nothing-to-show-yet
