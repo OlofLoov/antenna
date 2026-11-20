@@ -56,8 +56,25 @@ struct SeenChannelsStore: Sendable {
         return memory
     }
 
+    /// `playlist`'s channels tagged with `source`, and the memory after
+    /// recording them, worked out off the main actor: for 50 000 channels
+    /// the file alone takes about 180 ms to read and write.
+    @concurrent
+    func tagging(_ playlist: Playlist, of source: UUID) async -> TaggedPlaylist {
+        let channels = Channel.tagged(playlist.channels, sourceID: source)
+        return TaggedPlaylist(playlist: playlist, channels: channels, memory: record(source, channelIDs: channels.map(\.id)))
+    }
+
     /// Forgets `source`'s channels, when the source is deleted.
     func remove(_ source: UUID) {
         try? FileManager.default.removeItem(at: file(source))
     }
+}
+
+/// A loaded playlist, its channels tagged with their source, and the
+/// source's seen memory after the load.
+struct TaggedPlaylist: Sendable {
+    let playlist: Playlist
+    let channels: [Channel]
+    let memory: SeenChannels
 }

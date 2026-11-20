@@ -228,18 +228,7 @@ final class LiveModel {
         }
         rebuild()
         loads[source.id] = Task { [weak self] in
-            guard let self else { return }
-            let result: Result<Playlist, any Error>
-            if !dependencies.hasLogin(source) {
-                result = .failure(LoadFailure.waitingForLogin)
-            } else {
-                do {
-                    result = .success(try await dependencies.load(source))
-                } catch {
-                    result = .failure(error)
-                }
-            }
-            guard !Task.isCancelled else { return }
+            guard let self, let result = await loaded(source), !Task.isCancelled else { return }
             loads[source.id] = nil
             await finish(source, with: result)
         }
@@ -456,12 +445,26 @@ extension LiveModel {
 }
 
 extension LiveModel {
-    private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
+    /// `source`'s channels and what the device has seen of them, or why it
+    /// did not load; nil once the load was cancelled.
+    private func loaded(_ source: SourceDescriptor) async -> Result<TaggedPlaylist, any Error>? {
+        guard dependencies.hasLogin(source) else { return .failure(LoadFailure.waitingForLogin) }
+        do {
+            let playlist = try await dependencies.load(source)
+            guard !Task.isCancelled else { return nil }
+            return .success(await dependencies.seen.tagging(playlist, of: source.id))
+        } catch {
+            return .failure(error)
+        }
+    }
+
+    private func finish(_ source: SourceDescriptor, with result: Result<TaggedPlaylist, any Error>) async {
         switch result {
-        case .success(let playlist):
-            let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
+        case .success(let loaded):
+            let playlist = loaded.playlist
+            let tagged = loaded.channels
             channelsBySource[source.id] = tagged
-            seen[source.id] = dependencies.seen.record(source.id, channelIDs: tagged.map(\.id))
+            seen[source.id] = loaded.memory
             setState(.loaded(channels: tagged.count), for: source.id)
             rebuild()
             replay()

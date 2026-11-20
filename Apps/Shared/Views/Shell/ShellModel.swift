@@ -230,12 +230,14 @@
             rebuildChannels()
             loads[source.id] = Task { [weak self] in
                 guard let self else { return }
-                let result: Result<Playlist, any Error>
+                let result: Result<TaggedPlaylist, any Error>
                 if !dependencies.hasLogin(source) {
                     result = .failure(LoadFailure.waitingForLogin)
                 } else {
                     do {
-                        result = .success(try await dependencies.load(source))
+                        let playlist = try await dependencies.load(source)
+                        guard !Task.isCancelled else { return }
+                        result = .success(await dependencies.seen.tagging(playlist, of: source.id))
                     } catch {
                         result = .failure(error)
                     }
@@ -445,15 +447,16 @@
             Task { await showLive() }
         }
 
-        private func finish(_ source: SourceDescriptor, with result: Result<Playlist, any Error>) async {
+        private func finish(_ source: SourceDescriptor, with result: Result<TaggedPlaylist, any Error>) async {
             loads[source.id] = nil
             switch result {
-            case .success(let playlist):
-                let tagged = Channel.tagged(playlist.channels, sourceID: source.id)
+            case .success(let loaded):
+                let playlist = loaded.playlist
+                let tagged = loaded.channels
                 titleCounts[source.id] = TitleCounts(movies: playlist.movies.count, episodes: playlist.episodes.count)
                 leaveUnofferedTab()
                 channelsBySource[source.id] = tagged
-                seen[source.id] = dependencies.seen.record(source.id, channelIDs: tagged.map(\.id))
+                seen[source.id] = loaded.memory
                 setState(.loaded(channels: tagged.count), for: source.id)
                 if !tagged.isEmpty { finishOrder.append(source.id) }
                 rebuildChannels()
