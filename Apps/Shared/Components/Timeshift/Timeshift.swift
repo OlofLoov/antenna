@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The pieces that show where live TV is in the local buffer
@@ -7,6 +8,7 @@ enum Timeshift {
     /// The track from the start of the buffer to now: played up to the
     /// marker in the accent, buffered after it, gaps cut out, and the knob.
     struct Track: View {
+        @Environment(\.accent) private var accent
         /// Where the marker is, 0 to 1.
         let marker: Double
         var gaps: [ClosedRange<Double>] = []
@@ -23,7 +25,7 @@ enum Timeshift {
                     Capsule().fill(Palette.buffered)
                         .padding(.leading, at)
                         .accessibilityIdentifier("timeshift.buffered")
-                    Capsule().fill(Palette.accent)
+                    Capsule().fill(accent.color)
                         .frame(width: at)
                         .accessibilityIdentifier("timeshift.played")
                     ForEach(Array(gaps.enumerated()), id: \.offset) { _, gap in
@@ -31,7 +33,7 @@ enum Timeshift {
                             .frame(width: max(2, width * (gap.upperBound - gap.lowerBound)))
                             .offset(x: width * gap.lowerBound)
                     }
-                    Circle().fill(Palette.accent)
+                    Circle().fill(accent.color)
                         .overlay(Circle().strokeBorder(Palette.ground, lineWidth: 2))
                         .frame(width: knob, height: knob)
                         .offset(x: at - knob / 2)

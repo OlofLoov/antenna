@@ -24,6 +24,7 @@ extension ChannelOverlay {
     /// three programmes that follow, each drawn by `nextRow`; then Watch
     /// and the favorite button.
     struct Panel<Logo: View, NextRow: View, Buttons: View>: View {
+        @Environment(\.accent) private var accent
         let name: String
         /// The channel number and the catch-up badge, in that order.
         let badges: [String]
@@ -99,7 +100,7 @@ extension ChannelOverlay {
                         Text("NOW")
                             .font(.boardStyle(20, weight: .semibold))
                             .letterSpacing(1.5)
-                            .foregroundStyle(Palette.accent)
+                            .foregroundStyle(accent.color)
                         Spacer(minLength: 12)
                         Text(now.times)
                             .font(.boardStyle(22))
@@ -218,13 +219,14 @@ extension ChannelOverlay {
     }
 
     private struct PanelProgress: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
 
         var body: some View {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Palette.surface(0.16))
-                    Capsule().fill(Palette.accent).frame(width: proxy.size.width * min(1, max(0, fraction)))
+                    Capsule().fill(accent.color).frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }
             .frame(height: 6)

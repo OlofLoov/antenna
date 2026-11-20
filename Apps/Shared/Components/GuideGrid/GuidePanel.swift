@@ -30,6 +30,7 @@ enum GuidePanel {
 
     /// The full panel, with the buttons in a row under the text.
     struct Panel<Buttons: View>: View {
+        @Environment(\.accent) private var accent
         let date: Date
         let details: Details
         @ViewBuilder var buttons: Buttons
@@ -42,7 +43,7 @@ enum GuidePanel {
                         .letterSpacing(1.5)
                         .textCase(.uppercase)
                         .lineLimit(1)
-                        .foregroundStyle(details.look == .now ? Palette.accent : Palette.textMuted)
+                        .foregroundStyle(details.look == .now ? accent.color : Palette.textMuted)
                         .accessibilityIdentifier("guide.panel.eyebrow")
                     Spacer(minLength: 0)
                     Clock(date: date)
@@ -104,13 +105,14 @@ enum GuidePanel {
 
     /// The 4 pt accent bar, at most 1100 pt wide.
     private struct Progress: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
 
         var body: some View {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Palette.surface(0.12))
-                    Capsule().fill(Palette.accent).frame(width: proxy.size.width * min(1, max(0, fraction)))
+                    Capsule().fill(accent.color).frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }
             .frame(maxWidth: 1100)

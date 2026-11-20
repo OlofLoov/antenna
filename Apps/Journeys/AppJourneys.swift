@@ -109,6 +109,19 @@ final class AppJourneys: XCTestCase {
         journey.snap("source-details", anchor: "settings.details.status")
     }
 
+    /// Settings, Appearance and the accent choices (add-accent-and-app-icons,
+    /// `iPhone-Settings-Appearance`, `iPad-Settings-Appearance`).
+    func testSettingsAppearance() {
+        let journey = Journey(self, scenario: "full")
+        open("settings", label: "Settings", in: journey)
+        let accent = journey.element("settings.appearance.accent")
+        XCTAssertTrue(journey.element("settings.addSource").waitForExistence(timeout: 10), "Settings never opened")
+        for _ in 0..<8 where !(accent.exists && accent.isHittable) { journey.app.swipeUp() }
+        journey.snap("settings-appearance", anchor: "settings.appearance.accent")
+        accent.tap()
+        journey.snap("accent-choices", anchor: "settings.choice.teal")
+    }
+
     /// Live when every source loaded without channels (`iPhone-Live-Empty`).
     func testLiveEmpty() {
         let journey = Journey(self, arguments: ["-ui-testing-live", "empty"])

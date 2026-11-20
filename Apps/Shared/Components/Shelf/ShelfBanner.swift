@@ -108,7 +108,7 @@ enum ShelfBanner {
         }
     }
 
-    /// "Recently added · Thriller" in the muted color, uppercase (design-system/one-accent-color).
+    /// "Recently added · Thriller" in the muted color, uppercase (design-system/one-accent-color-per-profile).
     struct Eyebrow: View {
         let type: Sizes
         @Environment(\.shelfBanner) private var banner

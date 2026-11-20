@@ -59,6 +59,7 @@ extension GuideBoard {
         /// A programme card: the start time, NOW on the card that is on, the
         /// title, and a progress bar along the bottom of the card on now.
         struct Card: View {
+            @Environment(\.accent) private var accent
             let time: String
             let title: String
             let timing: GuideTiming
@@ -78,7 +79,7 @@ extension GuideBoard {
                                 .foregroundStyle(Palette.ground)
                                 .padding(.vertical, 1)
                                 .padding(.horizontal, 5)
-                                .background(Palette.accent, in: cornerShape(.small))
+                                .background(accent.color, in: cornerShape(.small))
                         }
                     }
                     Text(title)

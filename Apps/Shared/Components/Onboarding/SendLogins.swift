@@ -142,6 +142,7 @@
         /// A source's name and type, and on the right its state or Enter.
         /// VoiceOver reads it as state, name, type.
         struct RowView: View {
+            @Environment(\.accent) private var accent
             let row: Row
             let device: String
             let enter: () -> Void
@@ -175,7 +176,7 @@
                 switch row.state {
                 case .ready:
                     HStack(spacing: 6) {
-                        Image(systemName: "checkmark.circle.fill").font(.boardStyle(22)).foregroundStyle(Palette.accent)
+                        Image(systemName: "checkmark.circle.fill").font(.boardStyle(22)).foregroundStyle(accent.color)
                         Text(stateText).font(.boardStyle(13)).foregroundStyle(Palette.textMuted)
                     }
                     .accessibilityHidden(true)

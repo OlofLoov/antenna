@@ -1,4 +1,5 @@
 #if os(iOS) || os(macOS)
+    import AntennaCore
     import SwiftUI
 
     extension Browse {
@@ -10,6 +11,7 @@
         /// strip floats on glass like the live strip
         /// (design-system/liquid-glass-stays-on-the-navigation-layer).
         struct TimeshiftControls<StartOver: View, Extras: View>: View {
+            @Environment(\.accent) private var accent
             struct Scrub {
                 let time: String
                 /// Where the marker is, 0 to 1.
@@ -50,7 +52,7 @@
                                 .foregroundStyle(Palette.ground)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(Palette.accent, in: cornerShape(.small))
+                                .background(accent.color, in: cornerShape(.small))
                                 .accessibilityIdentifier("timeshift.catchupBadge")
                         }
                         Text(scrub.time)

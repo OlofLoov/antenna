@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The spacing and radius scale (design-system/one-spacing-and-radius-scale).
@@ -94,6 +95,7 @@ func cornerShape(_ corner: Metrics.Corner) -> Metrics.CornerShape {
 }
 
 private struct ScaleSample: View {
+    @Environment(\.accent) private var accent
     let radii: Metrics.Radii
     let unit: CGFloat
 
@@ -102,7 +104,7 @@ private struct ScaleSample: View {
             HStack(alignment: .bottom, spacing: Metrics.Spacing.medium) {
                 ForEach(Metrics.Spacing.scale, id: \.self) { step in
                     VStack(spacing: Metrics.Spacing.xSmall) {
-                        Palette.accent.frame(width: step, height: step)
+                        accent.color.frame(width: step, height: step)
                         Text("\(Int(step))").foregroundStyle(Palette.textMuted)
                     }
                 }

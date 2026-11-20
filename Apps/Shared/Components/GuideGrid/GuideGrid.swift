@@ -129,6 +129,7 @@ enum GuideGrid {
 
     /// The 3 pt accent line with the time on a tag at its top.
     private struct NowLine: View {
+        @Environment(\.accent) private var accent
         static let width = 3.0
 
         let time: String
@@ -137,7 +138,7 @@ enum GuideGrid {
         var body: some View {
             ZStack(alignment: .top) {
                 cornerShape(.small)
-                    .fill(Palette.accent)
+                    .fill(accent.color)
                     .frame(width: Self.width)
                     .frame(maxHeight: .infinity)
                 Text(time)
@@ -147,7 +148,7 @@ enum GuideGrid {
                     .fixedSize()
                     .padding(.vertical, 4)
                     .padding(.horizontal, 10)
-                    .background(Palette.accent, in: cornerShape(.small))
+                    .background(accent.color, in: cornerShape(.small))
                     .onGeometryChange(for: Double.self, of: { $0.size.width }, action: measured)
                     .padding(.top, 8)
             }

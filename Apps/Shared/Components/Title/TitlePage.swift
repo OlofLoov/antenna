@@ -134,7 +134,7 @@ enum TitlePage {
         }
     }
 
-    /// "MOVIE · THRILLER" in the muted color (design-system/one-accent-color).
+    /// "MOVIE · THRILLER" in the muted color (design-system/one-accent-color-per-profile).
     struct Eyebrow: View {
         let type: Sizes
         @Environment(\.titlePage) private var page
@@ -364,6 +364,7 @@ enum TitlePage {
 
     /// The bar and "52 min left", shown only while Play reads Resume.
     struct Progress: View {
+        @Environment(\.accent) private var accent
         let type: Sizes
         @Environment(\.titlePage) private var page
 
@@ -373,7 +374,7 @@ enum TitlePage {
                     GeometryReader { proxy in
                         ZStack(alignment: .leading) {
                             Capsule().fill(Palette.surface(0.22))
-                            Capsule().fill(Palette.accent).frame(width: proxy.size.width * min(1, max(0, fraction)))
+                            Capsule().fill(accent.color).frame(width: proxy.size.width * min(1, max(0, fraction)))
                         }
                     }
                     .frame(width: type.buttonHeight * 3, height: type.progress)

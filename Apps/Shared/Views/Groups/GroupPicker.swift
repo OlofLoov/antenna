@@ -8,6 +8,7 @@ import SwiftUI
 /// order they were added. Channels whose id holds a link, M3U channels
 /// today, are not offered.
 struct GroupPicker: View {
+    @Environment(\.accent) private var accent
     let id: UUID
     let catalogue: Catalogue<PersistentIdentifier>
     let sourceNames: [UUID: String]
@@ -61,7 +62,7 @@ struct GroupPicker: View {
     private func row(_ key: RowKey) -> some View {
         HStack(spacing: 12) {
             Image(systemName: picked.contains(key) ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(picked.contains(key) ? AnyShapeStyle(Palette.accent) : AnyShapeStyle(.secondary))
+                .foregroundStyle(picked.contains(key) ? AnyShapeStyle(accent.color) : AnyShapeStyle(.secondary))
                 .accessibilityHidden(true)
             Text(catalogue.channelNumber(for: key).map(\.description) ?? "").monospacedDigit().foregroundStyle(.secondary)
             Text(catalogue.channel(for: key)?.name ?? "")

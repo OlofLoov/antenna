@@ -137,6 +137,7 @@
     /// an action. A Mac list has no swipe, so there the row gets a named
     /// VoiceOver action instead.
     struct LiveFavoriteSwipe: ViewModifier {
+        @Environment(\.accent) private var accent
         let channel: Channel
         @Environment(LiveModel.self) private var live
         @Environment(\.modelContext) private var context
@@ -147,7 +148,7 @@
                 let toggle = LiveFavoriteToggle(live: live, context: context, profile: profile)
                 content.swipeActions(edge: .leading, allowsFullSwipe: true) {
                     Browse.FavoriteMenuButton(isFavorite: live.catalogue.isFavorite(channel)) { toggle(channel) }
-                        .tint(Palette.accent)
+                        .tint(accent.color)
                         .accessibilityIdentifier("browse.swipe.favorite")
                 }
             #else

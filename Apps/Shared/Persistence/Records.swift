@@ -88,6 +88,8 @@ final class ProfileRecord {
     var createdAt: Date = Date.now
     /// adult-content/show-adult-content-with-the-passcode
     var showsAdult: Bool = false
+    /// `ProfileAccent.rawValue`; nil and unknown values read as Blue.
+    var accent: String?
 
     init(_ profile: Profile) {
         showsAdult = profile.showsAdult
@@ -96,9 +98,12 @@ final class ProfileRecord {
         colorIndex = profile.colorIndex
         sortOrder = profile.sortOrder
         createdAt = profile.createdAt
+        accent = profile.accent == .blue ? nil : profile.accent.rawValue
     }
 
     var profile: Profile {
-        Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: sortOrder, createdAt: createdAt, showsAdult: showsAdult)
+        Profile(
+            id: id, name: name, colorIndex: colorIndex, sortOrder: sortOrder, createdAt: createdAt,
+            showsAdult: showsAdult, accent: ProfileAccent(stored: accent))
     }
 }

@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension Browse {
@@ -182,6 +183,7 @@ extension Browse {
     /// The star among the full-screen controls (favorites/favorite-from-full-screen),
     /// filled in the accent while the playing channel is a favorite.
     struct PlayerFavoriteButton: View {
+        @Environment(\.accent) private var accent
         let isFavorite: Bool
         let toggle: () -> Void
 
@@ -189,7 +191,7 @@ extension Browse {
             Button(action: toggle) {
                 Image(systemName: isFavorite ? "star.fill" : "star")
                     .font(.boardStyle(16, weight: .semibold))
-                    .foregroundStyle(isFavorite ? Palette.accent : Palette.text)
+                    .foregroundStyle(isFavorite ? accent.color : Palette.text)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -201,6 +203,7 @@ extension Browse {
     }
 
     struct ProgressTrack: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
         let height: CGFloat
 
@@ -208,7 +211,7 @@ extension Browse {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Palette.surface(0.2))
-                    Capsule().fill(Palette.accent)
+                    Capsule().fill(accent.color)
                         .frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
                 .frame(maxHeight: .infinity)

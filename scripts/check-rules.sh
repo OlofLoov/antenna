@@ -26,6 +26,10 @@ check "no @Attribute(.unique) in SwiftData models" \
   '@Attribute\(([^)]*\.unique)' \
   Apps
 
+check "design-system/one-accent-color-per-profile: the accent only from the profile's accent value" \
+  '(Palette\.accent|\.accentColor\b|\.(tint|foregroundStyle|fill|background)\(\.(blue|cyan|teal|mint|green|yellow|orange|pink|purple|indigo)\b)' \
+  Apps
+
 check "no availability checks below 26" \
   '(@available|#available|#unavailable)\([^)]*\b(iOS|tvOS|macOS|macCatalyst|visionOS)[[:space:]]+([0-9]|1[0-9]|2[0-5])(\.[0-9]+)?\b' \
   Apps Packages/AntennaCore/Sources

@@ -86,6 +86,7 @@ extension GuideBoard {
 
         /// "Now · Sport One" in the accent, otherwise "Tue 20:00 · Sport One" muted.
         struct Eyebrow: View {
+            @Environment(\.accent) private var accent
             let details: GuidePanel.Details
 
             var body: some View {
@@ -93,7 +94,7 @@ extension GuideBoard {
                     .font(.boardStyle(12, weight: .semibold))
                     .letterSpacing(1.2)
                     .textCase(.uppercase)
-                    .foregroundStyle(details.look == .now ? Palette.accent : Palette.textMuted)
+                    .foregroundStyle(details.look == .now ? accent.color : Palette.textMuted)
                     .lineLimit(2)
                     .accessibilityIdentifier("guide.panel.eyebrow")
             }

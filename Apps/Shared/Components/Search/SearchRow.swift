@@ -43,18 +43,19 @@ enum SearchRow {
     struct Highlighted: View {
         let text: String
         let ranges: [Range<String.Index>]
+        @Environment(\.accent) private var accent
 
         var body: some View {
-            Text(Self.attributed(text, ranges))
+            Text(Self.attributed(text, ranges, accent: accent.color))
         }
 
-        static func attributed(_ text: String, _ ranges: [Range<String.Index>]) -> AttributedString {
+        static func attributed(_ text: String, _ ranges: [Range<String.Index>], accent: Color) -> AttributedString {
             var attributed = AttributedString(text)
             for range in ranges {
                 guard let lower = AttributedString.Index(range.lowerBound, within: attributed),
                     let upper = AttributedString.Index(range.upperBound, within: attributed)
                 else { continue }
-                attributed[lower..<upper].backgroundColor = Palette.accent.opacity(0.35)
+                attributed[lower..<upper].backgroundColor = accent.opacity(0.35)
             }
             return attributed
         }
@@ -192,6 +193,7 @@ enum SearchRow {
         @Environment(\.searchMetrics) private var metrics
         /// Grows with the text size, so rows and highlights follow large text.
         @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
+        @Environment(\.accent) private var accent
 
         var body: some View {
             Text("NOW")
@@ -200,7 +202,7 @@ enum SearchRow {
                 .foregroundStyle(Palette.ground)
                 .padding(.horizontal, metrics.badge * 0.6)
                 .padding(.vertical, 3)
-                .background(Palette.accent, in: cornerShape(.small))
+                .background(accent.color, in: cornerShape(.small))
         }
     }
 

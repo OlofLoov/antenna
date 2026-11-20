@@ -157,6 +157,7 @@ struct ProfileFlow: View {
         @Environment(\.modelContext) private var context
         @State private var name: String
         @State private var colorIndex: Int
+        @State private var pickedAccent: ProfileAccent
         @State private var confirmingDelete = false
 
         init(profile: Profile?, profiles: ProfileList, finish: @escaping () -> Void) {
@@ -164,12 +165,13 @@ struct ProfileFlow: View {
             self.profiles = profiles
             self.finish = finish
             _name = State(initialValue: profile?.name ?? "")
+            _pickedAccent = State(initialValue: profile?.accent ?? .blue)
             let used = Set(profiles.profiles.map(\.colorIndex))
             _colorIndex = State(initialValue: profile?.colorIndex ?? (Profile.colors.indices.first { !used.contains($0) } ?? 0))
         }
 
         var body: some View {
-            VStack(spacing: 44) {
+            VStack(spacing: 36) {
                 Spacer(minLength: 0)
                 ProfileTileLabel(
                     tile: ProfileTile(id: profile?.id ?? UUID(), name: " ", initial: initial, color: Profile.colors[colorIndex])
@@ -200,6 +202,14 @@ struct ProfileFlow: View {
                         .accessibilityAddTraits(index == colorIndex ? .isSelected : [])
                         .accessibilityIdentifier("profiles.edit.color.\(index)")
                     }
+                }
+                VStack(spacing: 12) {
+                    Text("ACCENT")
+                        .font(.boardStyle(22, weight: .semibold))
+                        .letterSpacing(1.5)
+                        .foregroundStyle(Palette.textMuted)
+                        .frame(width: 760, alignment: .leading)
+                    ProfileAccentRow(selected: pickedAccent) { pickedAccent = $0 }
                 }
                 HStack(spacing: 24) {
                     ProfileButton(title: "Save", action: save)
@@ -235,9 +245,9 @@ struct ProfileFlow: View {
 
         private func save() {
             if let profile {
-                ProfileStore.edit(profile.id, name: name, colorIndex: colorIndex, in: context)
+                ProfileStore.edit(profile.id, name: name, colorIndex: colorIndex, accent: pickedAccent, in: context)
             } else {
-                ProfileStore.add(name: name, colorIndex: colorIndex, in: context)
+                ProfileStore.add(name: name, colorIndex: colorIndex, accent: pickedAccent, in: context)
             }
             finish()
         }

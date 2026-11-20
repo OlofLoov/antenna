@@ -69,6 +69,7 @@
     /// with an empty field, or a message. A series picked here opens its
     /// page over Search.
     struct SearchCompactScreen: View {
+        @Environment(\.accent) private var accent
         /// Cancel: back to the tab the user came from.
         let cancel: () -> Void
         @Environment(SearchModel.self) private var model
@@ -111,7 +112,7 @@
                             cancel()
                         }
                         .font(.boardStyle(16))
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(accent.color)
                         .frame(minHeight: 44)
                         .accessibilityIdentifier("search.cancel")
                     }

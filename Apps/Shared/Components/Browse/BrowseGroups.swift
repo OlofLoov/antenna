@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension Browse {
@@ -43,6 +44,7 @@ extension Browse {
     /// built-in group's glyph, the name, and the count at the trailing edge.
     /// A locked group has a lock and no count.
     struct GroupChoiceRow: View {
+        @Environment(\.accent) private var accent
         let name: String
         let systemImage: String?
         /// The channel count; nil for a locked group.
@@ -55,7 +57,7 @@ extension Browse {
                 HStack(spacing: 10) {
                     Image(systemName: "checkmark")
                         .font(.body.weight(.semibold))
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(accent.color)
                         .opacity(isSelected ? 1 : 0)
                         .accessibilityHidden(true)
                     if let systemImage {

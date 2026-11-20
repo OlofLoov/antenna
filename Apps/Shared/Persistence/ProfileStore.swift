@@ -15,24 +15,44 @@ enum ProfileStore {
     /// Adds a profile named `name`; adding the second also stores Main.
     /// Returns the new profile, or nil for an invalid name or a full list.
     @discardableResult
-    static func add(name: String, colorIndex: Int, in context: ModelContext) -> Profile? {
+    static func add(name: String, colorIndex: Int, accent: ProfileAccent = .blue, in context: ModelContext) -> Profile? {
         let records = fetch(context)
-        guard let added = list(records).adding(name: name, colorIndex: colorIndex) else { return nil }
+        guard let added = list(records).adding(name: name, colorIndex: colorIndex, accent: accent) else { return nil }
         added.forEach { context.insert(ProfileRecord($0)) }
         save(context, resolving: records)
         return added.last
     }
 
-    /// Renames and recolors `id`. Main gets its record when it had none.
+    /// Renames, recolors and sets the accent of `id`. Main gets its record when it had none.
     @discardableResult
-    static func edit(_ id: UUID, name: String, colorIndex: Int, in context: ModelContext) -> Bool {
+    static func edit(_ id: UUID, name: String, colorIndex: Int, accent: ProfileAccent, in context: ModelContext) -> Bool {
         guard let name = ProfileList.validName(name) else { return false }
         let records = fetch(context)
         if let record = records.first(where: { $0.id == id }) {
             record.name = name
             record.colorIndex = colorIndex
+            record.accent = accent.rawValue
         } else if id == Profile.mainID {
-            context.insert(ProfileRecord(Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: 0, createdAt: .now)))
+            context.insert(
+                ProfileRecord(Profile(id: id, name: name, colorIndex: colorIndex, sortOrder: 0, createdAt: .now, accent: accent)))
+        } else {
+            return false
+        }
+        save(context, resolving: records)
+        return true
+    }
+
+    /// Sets the accent of `id` from Settings (sources-and-settings/pick-the-accent-for-your-profile).
+    /// Main gets its record when it had none, keeping the name and color it shows.
+    @discardableResult
+    static func setAccent(_ accent: ProfileAccent, of id: UUID, in context: ModelContext) -> Bool {
+        let records = fetch(context)
+        if let record = records.first(where: { $0.id == id }) {
+            record.accent = accent.rawValue
+        } else if id == Profile.mainID {
+            var main = Profile.main(createdAt: .now)
+            main.accent = accent
+            context.insert(ProfileRecord(main))
         } else {
             return false
         }

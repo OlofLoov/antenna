@@ -121,6 +121,20 @@ final class TVJourneys: XCTestCase {
         journey.snap("guide-window-choices", anchor: "settings.choices")
     }
 
+    /// Settings, Appearance and the accent choices (add-accent-and-app-icons,
+    /// `TV-Settings-Appearance`, `TV-Settings-Accent`).
+    func testSettingsAppearance() {
+        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels"])
+        openSettings(in: journey)
+        moveDown(toLabel: "Accent", in: journey, limit: 24)
+        journey.snap("settings-appearance", anchor: "settings.appearance.accent")
+        remote.press(.select)
+        let choice = journey.app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true AND label == 'Blue'"))
+            .firstMatch
+        XCTAssertTrue(choice.waitForExistence(timeout: 10), "the choices never opened")
+        journey.snap("accent-choices", anchor: "settings.choices")
+    }
+
     /// Movies with focus on a poster in the first row (refresh-visual-design, `TV-Movies`):
     /// the card style lifts the poster with no ring (design-system/focus-is-the-lifted-white-card).
     func testMoviesFocus() {

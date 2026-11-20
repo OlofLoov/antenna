@@ -124,7 +124,7 @@ enum PasscodePad {
         title: "Enter passcode", message: "Movies is locked.", filled: 2, error: "Wrong passcode", enabled: true, type: { _ in },
         delete: {}
     ) {
-        Text("Forgot passcode?").foregroundStyle(Palette.accent)
+        Text("Forgot passcode?").foregroundStyle(ProfileAccent.blue.color)
     }
 }
 

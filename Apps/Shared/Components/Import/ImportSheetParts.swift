@@ -65,6 +65,7 @@
 
         /// `import.summary`: channels and groups, the guide link, the skipped entries.
         struct Summary: View {
+            @Environment(\.accent) private var accent
             let summary: ImportText.Summary
 
             var body: some View {
@@ -102,7 +103,7 @@
                                 .font(.boardStyle(12, weight: .heavy))
                                 .foregroundStyle(Palette.ground)
                                 .frame(width: 26, height: 26)
-                                .background(Palette.accent, in: Circle())
+                                .background(accent.color, in: Circle())
                         case .count(let number):
                             Text(number)
                                 .font(.boardStyle(13, weight: .bold))
@@ -260,6 +261,7 @@
 
         /// An accent text button: "Choose another file", "Add the link as a source".
         struct Quiet: View {
+            @Environment(\.accent) private var accent
             let title: LocalizedStringResource
             let id: String
             let action: () -> Void
@@ -267,7 +269,7 @@
             var body: some View {
                 Button(title, action: action)
                     .font(.boardStyle(17))
-                    .foregroundStyle(Palette.accent)
+                    .foregroundStyle(accent.color)
                     .frame(maxWidth: .infinity, minHeight: 44)
                     .buttonStyle(.plain)
                     .accessibilityIdentifier(id)

@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The Live screen's parts on iPhone, iPad and Mac (live-tv-on-iphone-ipad-mac
@@ -59,13 +60,14 @@ enum Browse {
     /// The 3 pt accent bar of a programme on now
     /// (design-system/a-current-programme-always-shows-its-progress).
     struct ProgressBar: View {
+        @Environment(\.accent) private var accent
         let fraction: Double
 
         var body: some View {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Palette.surface(0.16))
-                    Capsule().fill(Palette.accent)
+                    Capsule().fill(accent.color)
                         .frame(width: proxy.size.width * min(1, max(0, fraction)))
                 }
             }
