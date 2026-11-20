@@ -35,9 +35,11 @@ enum PictureCheck {
 
     /// Plays `file` through a run into recording renderers and decodes what
     /// reached the video one.
-    static func run(_ file: URL) async throws -> Outcome {
+    /// With `startAt`, the file is read as a film that can skip and starts
+    /// there, as when it resumes.
+    static func run(_ file: URL, startAt: CMTime? = nil) async throws -> Outcome {
         let data = try Data(contentsOf: file)
-        let bytes = MemoryBytes(data)
+        let bytes = MemoryBytes(data, canSeek: startAt != nil)
         var timebase: CMTimebase?
         CMTimebaseCreateWithSourceClock(allocator: nil, sourceClock: CMClockGetHostTimeClock(), timebaseOut: &timebase)
         guard let clock = timebase else { throw CheckFailed() }
@@ -47,7 +49,9 @@ enum PictureCheck {
             bytes: bytes, videoFeed: SampleFeed(renderer: video, label: "check.video", limit: 100_000),
             audioFeed: SampleFeed(renderer: audio, label: "check.audio", limit: 100_000))
         let ended = Flag()
-        run.start(ready: { _ in }, ended: { _ in ended.set() })
+        run.start(
+            ready: { _ in }, startAt: startAt, options: PlaybackOptions(isLive: startAt == nil ? nil : false),
+            ended: { _ in ended.set() })
         let deadline = ContinuousClock.now + .seconds(30)
         while !ended.value, ContinuousClock.now < deadline { try await Task.sleep(for: .milliseconds(20)) }
         // The feeds hand buffers over on their own queues.
@@ -167,8 +171,11 @@ final class MemoryBytes: DemuxBytes, @unchecked Sendable {
     private var offset = 0
     private var cancelled = false
 
-    init(_ data: Data) {
+    let canSeek: Bool
+
+    init(_ data: Data, canSeek: Bool = false) {
         self.data = data
+        self.canSeek = canSeek
     }
 
     func read(into destination: UnsafeMutablePointer<UInt8>, count: Int) -> Int {
@@ -186,10 +193,14 @@ final class MemoryBytes: DemuxBytes, @unchecked Sendable {
 
     func peek(_ count: Int) -> Data { data.prefix(count) }
     var failureReason: PlaybackFailure? { nil }
-    var canSeek: Bool { false }
-    var length: Int? { nil }
+    var length: Int? { canSeek ? data.count : nil }
     var position: Int { lock.withLock { offset } }
-    func seek(to target: Int) -> Bool { false }
+
+    func seek(to target: Int) -> Bool {
+        guard canSeek, (0...data.count).contains(target) else { return false }
+        lock.withLock { offset = target }
+        return true
+    }
     func cancel() { lock.withLock { cancelled = true } }
 }
 

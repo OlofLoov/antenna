@@ -12,7 +12,8 @@ import Testing
             "radio.aac", "radio.mp3", "page.html", "garbage.bin", "dvb-subtitles.ts", "sound-change-aac.ts", "sound-change-ac3.ts",
             "sound-change-mp2.ts", "he-aac.ts", "aac-7.1.mkv", "dts-and-ac3.mkv",
             "vorbis-and-ac3.mkv", "dts-5.1.m2ts", "truehd-5.1.mkv", "opus-5.1.mkv", "opus.ts", "flac-5.1.mkv", "flac.mp4", "s302m.ts",
-            "pcm.mkv", "pcm.mov", "aac-pce.ts", "aac-pce.mkv", "he-aac-v2.ts", "latm.ts",
+            "pcm.mkv", "pcm.mov", "aac-pce.ts", "aac-pce.mkv", "he-aac-v2.ts", "latm.ts", "open-gop-hevc.mkv", "open-gop-h264.mkv",
+            "hevc-640x360.ts",
             "hls-tracks/index.m3u8", "hls-tracks/video.m3u8", "hls-tracks/audio-en.m3u8", "hls-tracks/audio-de.m3u8",
             "hls-tracks/subs-en.m3u8", "hls-tracks/subs-sv.m3u8", "hls-tracks/subs-en.vtt", "hls-tracks/subs-sv.vtt",
         ] + (0..<3).map { "hls-tracks/video\($0).ts" }

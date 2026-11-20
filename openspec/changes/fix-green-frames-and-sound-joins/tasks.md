@@ -9,9 +9,9 @@
 
 ## 2. Pictures
 
-- [ ] 2.1 HEVC samples and formats keep the base layer only: no units of a higher layer, no Dolby Vision metadata units
-- [ ] 2.2 After a start, a skip or a resume, pictures before the first keyframe's time are dropped until the next keyframe
-- [ ] 2.3 Fixtures and tests: HEVC with open GOPs started at a CRA, Dolby Vision layers in hvcC and Annex B
+- [x] 2.1 HEVC samples and formats keep the base layer only: no units of a higher layer, no Dolby Vision metadata units
+- [x] 2.2 After a start, a skip or a resume, pictures before the first keyframe's time are dropped until the next keyframe
+- [x] 2.3 Fixtures and tests: HEVC and H.264 films with open GOPs started between keyframes, Dolby Vision layers in hvcC and Annex B
 
 ## 3. Verify
 

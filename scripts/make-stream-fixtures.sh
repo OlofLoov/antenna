@@ -252,6 +252,22 @@ ff -f lavfi -i "$(video 720x576 50 1)" -f lavfi -i "$(tone 440 1)" \
     -vf "interlace=scan=tff,setfield=tff" \
     -c:v mpeg2video -flags +ildct+ilme -b:v 1M -g 12 -c:a mp2 -b:a 128k -f mpegts "$out/interlaced-576i.ts"
 
+# Films encoded with open GOPs, as UHD films are: HEVC whose keyframes after
+# the first are CRAs led by RASL pictures, and H.264 whose keyframes after the
+# first are led by B-frames. 3 seconds, a keyframe every 0.96 seconds.
+ff -f lavfi -i "$(video 320x180 25 3)" \
+    -c:v libx265 -preset fast -tag:v hvc1 \
+    -x265-params "log-level=error:open-gop=1:b-adapt=0:bframes=3:keyint=24:min-keyint=24" "$out/open-gop-hevc.mkv"
+ff -f lavfi -i "$(video 320x180 25 3)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -bf 2 -b:v 150k \
+    -x264-params "open-gop=1:keyint=24:min-keyint=24:scenecut=0" "$out/open-gop-h264.mkv"
+
+# A second HEVC picture at another size, which the Dolby Vision tests put
+# into the hdr10 stream as an enhancement layer: ffmpeg cannot encode Dolby
+# Vision.
+ff -f lavfi -i "$(video 640x360 25 2)" \
+    -c:v libx265 -preset ultrafast -x265-params "log-level=error:bframes=0" -b:v 100k -f mpegts "$out/hevc-640x360.ts"
+
 # Radio: sound with no picture.
 ff -f lavfi -i "$(tone 440 6)" -c:a aac -b:a 48k -f adts "$out/radio.aac"
 ff -f lavfi -i "$(tone 440 6)" -c:a libmp3lame -b:a 48k "$out/radio.mp3"
