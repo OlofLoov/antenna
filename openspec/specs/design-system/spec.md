@@ -128,24 +128,42 @@ white or outlined.
 - **WHEN** it has focus on Apple TV
 - **THEN** it shows no card and no other focus effect, because there is nothing on it to lift
 
-### Requirement: One accent color
-The accent blue from the reference MUST be the only accent color and MUST be
-the app's tint, so system controls draw with it. It SHALL appear only on
-progress fills, the guide's now line, the NOW and UP NEXT badges, links, the
-selected iPhone tab, the app icon, and system controls that tint by
-default (the prominent button on iPhone, iPad and Mac, switches, and
-selected picker values). Eyebrows, titles, icons and decoration are not tinted.
+### Requirement: One accent color per profile
+Each profile MUST have one accent color from a fixed set of five, Blue by default, and it MUST be the app's tint, so system controls draw with it. It SHALL appear only on progress fills, the guide's now line, the NOW and UP NEXT badges, links, the selected iPhone tab, the app icon, and system controls that tint by default. Eyebrows, titles, icons and decoration are not tinted.
+
+#### Scenario: The five accents
+- **WHEN** a reviewer opens the accent choices
+- **THEN** they are Blue, Teal, Amber, Pink and Violet, and a profile that never picked one shows Blue
 
 #### Scenario: A tinted icon
-- **WHEN** a reviewer finds an icon or label tinted in a color other than the accent
+- **WHEN** a reviewer finds an icon or label tinted in a color other than the current profile's accent
 - **THEN** it fails this requirement
 
 #### Scenario: Accent on a decorative element
 - **WHEN** the accent appears on something that is not progress, the now line, a NOW or UP NEXT badge, a link, the selected iPhone tab, the app icon or a system control's tint
 - **THEN** it fails this requirement
 
+#### Scenario: Two accents on one screen
+- **GIVEN** the current profile's accent is Teal
+- **WHEN** a reviewer finds Blue, or any accent but Teal, on a progress bar, badge, link or system control
+- **THEN** it fails this requirement
+
+#### Scenario: The whole app follows the profile
+- **GIVEN** Dad's accent is Blue and Kids's is Amber
+- **WHEN** the device switches from Dad to Kids
+- **THEN** progress bars, the now line, the badges, links, switches, the prominent button and the selected iPhone tab all show Amber
+
+#### Scenario: Contrast of every accent
+- **WHEN** a reviewer measures any of the five accents against the app background, a raised row or glass
+- **THEN** the contrast is at least 4.5:1
+
+#### Scenario: Focus on Apple TV
+- **GIVEN** an Apple TV on a profile whose accent is Pink
+- **WHEN** a row or button has focus
+- **THEN** it is the light platter with dark text, with no pink ring or pink fill
+
 #### Scenario: The app icon
-- **WHEN** a reviewer checks the app icon
+- **WHEN** a reviewer checks the standard app icon
 - **THEN** its mark is in the accent blue on the dark ground, and the mark uses no other color
 
 #### Scenario: An eyebrow over a title
@@ -154,7 +172,7 @@ selected picker values). Eyebrows, titles, icons and decoration are not tinted.
 
 #### Scenario: Connect on iPhone
 - **WHEN** the add-source sheet shows on iPhone
-- **THEN** Connect is the prominent system button in the accent tint
+- **THEN** Connect is the prominent system button in the current profile's accent
 
 ### Requirement: Text stays above the platform caption floor
 Text MUST never be smaller than the platform's caption minimum in the

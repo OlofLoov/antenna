@@ -13,7 +13,7 @@ Antenna on iPhone, iPad and Apple TV MUST ship six alternate icons, Mono, Light,
 #### Scenario: The Light icon in dark mode
 - **GIVEN** the Light icon and Home Screen icons set to dark
 - **WHEN** the user looks at the Home Screen
-- **THEN** the icon keeps its light ground and dark mark
+- **THEN** the system draws it dark like every other icon, with a light mark on a black ground
 
 #### Scenario: Tinted icons
 - **GIVEN** any alternate icon

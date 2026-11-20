@@ -75,11 +75,13 @@ Options considered:
 |---|---|---|---|
 | Antenna (standard) | #5BB8FF | #0B0E13 | black ground |
 | Mono | #F2F4F8 | #0B0E13 | black ground |
-| Light | #0B0E13 | #F2F4F8 | stays light |
+| Light | #0B0E13 | #F2F4F8 | the system's dark rendition |
 | Teal | #4FD1C5 | #0B0E13 | black ground |
 | Amber | #FFB454 | #0B0E13 | black ground |
 | Pink | #F472B6 | #0B0E13 | black ground |
 | Violet | #C084FC | #0B0E13 | black ground |
+
+The Light icon has no dark fill of its own. Icon Composer's dark rendition draws a light mark on black whatever fill the file sets for dark (tried with a dark fill equal to the light ground), so Light looks like Mono when Home Screen icons are dark.
 
 `scripts/render-icons.sh` writes `Apps/Mobile/AppIcon-<Name>.icon` for each from `design/icon/waves.svg` and `mast.svg` with the mark color swapped, and an Apple TV image stack `Apps/TV/Assets.xcassets/AppIcon-<Name>.imagestack` (400 x 240, 1x and 2x) from the `tv-*` layers. `project.yml` lists the names in `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES` for iOS and tvOS. `actool` puts them under `CFBundleAlternateIcons` for both; that was tried with a scratch catalog before this was written. `AppIconChoice` in AntennaCore names each icon, its alternate name and its colors, and `AppIconTests` checks every file the script writes.
 
