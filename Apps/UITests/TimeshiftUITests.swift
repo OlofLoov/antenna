@@ -141,7 +141,11 @@ final class TimeshiftUITests: XCTestCase {
         app.waitForEngine("paused loads=1")
         label(app, "timeshift.notice", is: "Buffer full. Playing from the earliest point", timeout: 10)
         app.waitForEngine("playing loads=1")
-        label(app, "timeshift.behindLive", is: "21 min behind")
+        // The earliest point of a buffer that held 20 minutes at load and grows while the test runs.
+        let behind = app.element("timeshift.behindLive")
+        let atStart = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label IN %@", ["20 min behind", "21 min behind"]), object: behind)
+        XCTAssertEqual(XCTWaiter().wait(for: [atStart], timeout: 10), .completed, "timeshift.behindLive is \(behind.label)")
     }
 
     // live-tv-on-iphone-ipad-mac/double-tap-to-skip
