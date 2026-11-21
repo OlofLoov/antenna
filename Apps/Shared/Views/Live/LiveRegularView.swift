@@ -421,12 +421,12 @@
             .onChange(of: filterFocused) { _, focused in live.typing = focused }
         }
 
-        /// The list's keys as key commands, so they work wherever focus is.
-        /// Outside the filter field, the arrows move the ring and Return
-        /// plays its channel. Command-F, Space and Command-Shift-M are menu
-        /// items (keyboard-commands capability).
+        /// The list's keys as key commands. Outside the filter field, the arrows
+        /// move the ring and Return plays its channel. Command-F, Space and
+        /// Command-Shift-M are menu items (keyboard-commands capability).
         private var shortcuts: some View {
             ZStack {
+                KeyboardAnchor(isActive: !filterFocused)
                 FindKey { filterFocused = true }
                 Group {
                     Button("Next channel") { move(1) }
