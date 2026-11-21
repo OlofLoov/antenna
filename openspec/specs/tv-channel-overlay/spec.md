@@ -273,3 +273,11 @@ The system SHALL start the group column at the left edge of the TV safe area, 80
 - **GIVEN** the highlight is on a group with no channels, so the panel is empty
 - **WHEN** the overlay draws
 - **THEN** the group column still starts 80 points from the left edge
+
+### Requirement: A large group stays light
+The system SHALL move each channel row on to the next programme at the minute it starts without walking every row of the group.
+
+#### Scenario: The minute passes in a large group
+- **GIVEN** the overlay shows a group of 50 000 channels
+- **WHEN** a minute passes
+- **THEN** the rows on screen show the programme on now, and the rows off screen are not built
