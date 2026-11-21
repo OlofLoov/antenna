@@ -41,6 +41,22 @@ public struct DemuxedStream: Sendable, Equatable {
     /// True for sound the container marks as describing the picture for
     /// blind and partially sighted viewers.
     public var isAudioDescription = false
+    /// FFmpeg's profile, level, sample layout and colors of a video stream.
+    public var video = VideoParameters()
+
+    /// A video stream's parameters as FFmpeg read them from the container.
+    /// The colors are ISO/IEC 23091-2 code points, 2 when unspecified.
+    public struct VideoParameters: Sendable, Equatable {
+        public var profile = 0
+        public var level = 0
+        public var bitDepth = 0
+        /// As vpcC counts it: 0 or 1 for 4:2:0, 2 for 4:2:2, 3 for 4:4:4.
+        public var chromaSubsampling = 1
+        public var fullRange = false
+        public var primaries = 2
+        public var transfer = 2
+        public var matrix = 2
+    }
 }
 
 /// One compressed packet with its timing.
@@ -282,7 +298,7 @@ public final class Demuxer: @unchecked Sendable {
         }
         let interlaced = [AV_FIELD_TT, AV_FIELD_BB, AV_FIELD_TB, AV_FIELD_BT].contains(parameters.field_order)
         let rate = stream.pointee.avg_frame_rate
-        return DemuxedStream(
+        var described = DemuxedStream(
             index: index, kind: kind, codec: String(cString: avcodec_get_name(parameters.codec_id)),
             extradata: extradata, width: Int(parameters.width), height: Int(parameters.height),
             sampleRate: Int(parameters.sample_rate), channels: Int(parameters.ch_layout.nb_channels),
@@ -292,6 +308,28 @@ public final class Demuxer: @unchecked Sendable {
             isForced: stream.pointee.disposition & AV_DISPOSITION_FORCED != 0,
             channelMask: parameters.ch_layout.order == AV_CHANNEL_ORDER_NATIVE ? parameters.ch_layout.u.mask : 0,
             isAudioDescription: stream.pointee.disposition & AV_DISPOSITION_VISUAL_IMPAIRED != 0)
+        if kind == .video { described.video = videoParameters(parameters) }
+        return described
+    }
+
+    private static func videoParameters(_ parameters: AVCodecParameters) -> DemuxedStream.VideoParameters {
+        var video = DemuxedStream.VideoParameters()
+        video.profile = Int(parameters.profile)
+        video.level = Int(parameters.level)
+        if let layout = av_pix_fmt_desc_get(AVPixelFormat(rawValue: parameters.format)) {
+            video.bitDepth = Int(layout.pointee.comp.0.depth)
+            switch (layout.pointee.log2_chroma_w, layout.pointee.log2_chroma_h) {
+            case (1, 1): video.chromaSubsampling = parameters.chroma_location == AVCHROMA_LOC_TOPLEFT ? 1 : 0
+            case (1, 0): video.chromaSubsampling = 2
+            case (0, 0): video.chromaSubsampling = 3
+            default: break
+            }
+        }
+        video.fullRange = parameters.color_range == AVCOL_RANGE_JPEG
+        video.primaries = Int(parameters.color_primaries.rawValue)
+        video.transfer = Int(parameters.color_trc.rawValue)
+        video.matrix = Int(parameters.color_space.rawValue)
+        return video
     }
 }
 

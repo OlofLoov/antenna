@@ -255,17 +255,30 @@ ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" -f lavfi -i "
     -metadata:s:a:0 language=eng -metadata:s:a:1 language=ger \
     -disposition:a:0 default -disposition:a:1 0 "$out/dts-and-ac3.mkv"
 
-# The same choice with a default no device decodes: Vorbis, then Dolby
-# Digital in another language. And a picture with only Vorbis sound.
+# The same choice with a default no device decodes: Windows Media Audio,
+# then Dolby Digital in another language. A picture with only Windows
+# Media Audio sound. And a picture with Vorbis sound.
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" -f lavfi -i "$(tone 660 2)" \
     -map 0:v -map 1:a -map 2:a \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
-    -c:a:0 vorbis -strict -2 -ac:a:0 2 -c:a:1 ac3 -b:a:1 128k -ac:a:1 2 \
+    -c:a:0 wmav2 -b:a:0 64k -ac:a:0 2 -c:a:1 ac3 -b:a:1 128k -ac:a:1 2 \
     -metadata:s:a:0 language=eng -metadata:s:a:1 language=ger \
-    -disposition:a:0 default -disposition:a:1 0 "$out/vorbis-and-ac3.mkv"
+    -disposition:a:0 default -disposition:a:1 0 "$out/wma-and-ac3.mkv"
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
-    -c:a vorbis -strict -2 -ac 2 "$out/undecodable-sound.mkv"
+    -c:a wmav2 -b:a 64k -ac 2 "$out/undecodable-sound.mkv"
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a vorbis -strict -2 -ac 2 "$out/vorbis.mkv"
+
+# AV1 and VP9 films, which decode only where the device has the hardware:
+# VP9 in WebM and MP4, AV1 in Matroska and MP4.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libvpx-vp9 -b:v 150k -deadline realtime -cpu-used 8 -g 25 -c:a libopus -b:a 48k "$out/vp9.webm"
+ff -i "$out/vp9.webm" -c copy -movflags +faststart "$out/vp9.mp4"
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libsvtav1 -preset 12 -b:v 150k -g 25 -svtav1-params "verbosity=0" -c:a aac -b:a 48k -ac 2 "$out/av1.mkv"
+ff -i "$out/av1.mkv" -c copy -movflags +faststart "$out/av1.mp4"
 
 # Sound only, 2 seconds of tone each, in the formats films and channels
 # carry beyond AAC and Dolby: 5.1 DTS in Blu-ray MPEG-TS (m2ts mode writes

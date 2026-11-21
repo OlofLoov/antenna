@@ -107,7 +107,7 @@ import Testing
         let (server, engine) = try await playing("undecodable-sound.mkv")
         let format = try #require(await current(engine.presentation()).flatMap { $0 })
         #expect(format.video?.width == 320)
-        #expect(format.audio?.codec == "vorbis")
+        #expect(format.audio?.codec == "wmav2")
         #expect(format.audio?.isDecodable == false)
         await finish(server, engine)
     }

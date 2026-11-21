@@ -17,7 +17,7 @@ import Testing
 
     @Test(
         "playback-engine/film-sound-plays-without-clicks each sound buffer starts where the one before it ends",
-        arguments: ["truehd-5.1.mkv", "dts-and-ac3.mkv", "vorbis-and-ac3.mkv", "surround-ac3.ts", "channel.ts"])
+        arguments: ["truehd-5.1.mkv", "dts-and-ac3.mkv", "wma-and-ac3.mkv", "surround-ac3.ts", "channel.ts"])
     func buffersFollowOn(file: String) async throws {
         let outcome = try await PictureCheck.run(try Self.fixture(file))
         #expect(outcome.sound.count > 10)

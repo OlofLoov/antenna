@@ -95,7 +95,7 @@ import VideoToolbox
 }
 
 /// A fixture file opened with `Demuxer` from memory.
-private struct FileDemuxer {
+struct FileDemuxer {
     let demuxer: Demuxer
 
     init(_ file: String) throws {
@@ -111,7 +111,7 @@ private struct FileDemuxer {
     }
 }
 
-private final class MemoryReader: @unchecked Sendable {
+final class MemoryReader: @unchecked Sendable {
     let data: Data
     var offset = 0
 

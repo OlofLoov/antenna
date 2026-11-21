@@ -1,5 +1,6 @@
 import AVFoundation
 import AntennaCore
+import AntennaDemux
 import Foundation
 
 extension AVPlayerEngine {
@@ -55,6 +56,12 @@ extension AVPlayerEngine {
         // plays black or silent. The demuxer decodes it. HLS stays here.
         if probe.sniff != .hls, !isHLSAddress, await !Self.canDecode(item.asset) {
             guard generation == mine else { throw CancellationError() }
+            // AV1 or VP9 the FFmpeg path has no hardware decoder for either
+            // fails here, so the two paths never hand it back and forth
+            // (playback-engine/av1-and-vp9-play-where-the-device-decodes-them).
+            if let codec = await Self.hardwareOnlyCodec(of: item.asset), !DemuxEngine.decodesInHardware(codec: codec) {
+                throw PlaybackFailure.cannotDecode(codec: codec)
+            }
             throw EngineHandoff.toDemuxer
         }
         guard generation == mine else { throw CancellationError() }
@@ -84,6 +91,19 @@ extension AVPlayerEngine {
             return true
         }
         return false
+    }
+
+    /// "av1" or "vp9" when the asset's first video track is in that codec,
+    /// which decodes only in hardware on either path.
+    static func hardwareOnlyCodec(of asset: AVAsset) async -> String? {
+        guard let video = try? await asset.load(.tracks).first(where: { $0.mediaType == .video }),
+            let format = try? await video.load(.formatDescriptions).first
+        else { return nil }
+        switch format.mediaSubType.rawValue {
+        case kCMVideoCodecType_AV1: return "av1"
+        case kCMVideoCodecType_VP9: return "vp9"
+        default: return nil
+        }
     }
 
     /// Returns once `item`'s status is no longer `seen`, or after `limit`.

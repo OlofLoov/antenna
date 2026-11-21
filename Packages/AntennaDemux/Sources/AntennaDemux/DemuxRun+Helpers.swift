@@ -13,6 +13,15 @@ extension DemuxRun {
             isForced: stream.isForced, isAudioDescription: stream.isAudioDescription)
     }
 
+    /// Why a stream whose video has no builder cannot play here. AV1 or VP9
+    /// with no hardware decoder in MP4 or QuickTime goes to Apple's player,
+    /// which fails with the codec named when it cannot decode it either
+    /// (playback-engine/av1-and-vp9-play-where-the-device-decodes-them).
+    static func undecodable(video codec: String, format: String) -> any Error {
+        if SampleBuilder.hardwareOnlyCodecs.contains(codec), format.contains("mp4") { return EngineHandoff.toSystemPlayer }
+        return PlaybackFailure.cannotDecode(codec: codec)
+    }
+
     /// Channel count from the sound buffers built so far.
     static func channels(_ builder: SampleBuilder) -> Int? {
         builder.formatDescription.flatMap(CMAudioFormatDescriptionGetStreamBasicDescription).map { Int($0.pointee.mChannelsPerFrame) }

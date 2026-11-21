@@ -64,12 +64,12 @@ import Testing
         await server.stop()
     }
 
-    @Test("playback-engine/streams-start-with-sound-the-device-can-play a Vorbis default starts on the Dolby Digital track")
+    @Test("playback-engine/streams-start-with-sound-the-device-can-play a Windows Media Audio default starts on the Dolby Digital track")
     func skipsUndecodableDefault() async throws {
         let server = try FixtureServer()
         let base = try await server.start()
         let engine = DemuxEngine(sleep: { _ in }, log: { _ in })
-        try await engine.load(base.appending(path: "vorbis-and-ac3.mkv"))
+        try await engine.load(base.appending(path: "wma-and-ac3.mkv"))
         await engine.play()
         #expect(await eventually { engine.state == .playing })
         let tracks = try #require(await current(engine.tracks()))
