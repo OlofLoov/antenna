@@ -2,10 +2,10 @@
 
 ## 1. Picture shape and colors
 
-- [ ] 1.1 `SoftwareDecoder` sets the pixel aspect and color attachments from the FFmpeg frame
-- [ ] 1.2 `Deinterlacer` carries the source attachments and marks its output progressive
-- [ ] 1.3 SD with no color tags is tagged BT.601
-- [ ] 1.4 Fixtures and tests: 720x576 16:9 MPEG-2 and interlaced H.264 reach the renderer at 64:45 with SD colors
+- [x] 1.1 `SoftwareDecoder` sets the pixel aspect and color attachments from the FFmpeg frame
+- [x] 1.2 `Deinterlacer` carries the source attachments and marks its output progressive
+- [x] 1.3 SD with no color tags is tagged BT.601
+- [x] 1.4 Fixtures and tests: 720x576 16:9 MPEG-2 and interlaced H.264 reach the renderer at 64:45 with SD colors
 
 ## 2. Handoffs in Apple's player
 

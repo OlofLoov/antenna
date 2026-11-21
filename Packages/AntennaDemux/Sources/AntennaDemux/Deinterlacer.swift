@@ -79,6 +79,11 @@ final class Deinterlacer: @unchecked Sendable {
             CVPixelBufferCreate(nil, width, height, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, attributes as CFDictionary, &output)
                 == kCVReturnSuccess, let output, let buffer = queue.makeCommandBuffer()
         else { throw DeinterlaceError.failed }
+        // The source's pixel shape and colors, on a picture that is now progressive.
+        CVBufferPropagateAttachments(frame, output)
+        CVBufferSetAttachment(output, kCVImageBufferFieldCountKey, 1 as CFNumber, .shouldPropagate)
+        CVBufferRemoveAttachment(output, kCVImageBufferFieldDetailKey)
+        PictureTags.fillMissingColors(output)
         for (plane, format) in [(0, MTLPixelFormat.r8Unorm), (1, .rg8Unorm)] {
             guard let current = texture(frame, plane: plane, format: format),
                 let earlier = texture(previous, plane: plane, format: format),

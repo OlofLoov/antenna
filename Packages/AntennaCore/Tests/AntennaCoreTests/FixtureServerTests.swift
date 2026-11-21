@@ -8,7 +8,8 @@ import Testing
         [
             "film.mp4", "hls/index.m3u8", "hls/segment0.ts", "hls/segment1.ts", "hls/segment2.ts", "channel.ts", "channel.mkv",
             "channel.avi", "mpeg2.ts", "hdr10.mp4", "hlg.mp4", "hdr10.ts", "hlg.ts", "surround-ac3.ts", "surround-eac3.ts",
-            "interlaced-1080i.ts", "interlaced-576i.ts", "film.mkv", "film-no-index.mkv", "undecodable-sound.mkv", "resize.ts",
+            "interlaced-1080i.ts", "interlaced-576i.ts", "anamorphic-576.ts", "anamorphic-576i.ts", "film.mkv", "film-no-index.mkv",
+            "undecodable-sound.mkv", "resize.ts",
             "radio.aac", "radio.mp3", "page.html", "garbage.bin", "dvb-subtitles.ts", "sound-change-aac.ts", "sound-change-ac3.ts",
             "sound-change-mp2.ts", "he-aac.ts", "aac-7.1.mkv", "dts-and-ac3.mkv",
             "vorbis-and-ac3.mkv", "dts-5.1.m2ts", "truehd-5.1.mkv", "opus-5.1.mkv", "opus.ts", "flac-5.1.mkv", "flac.mp4", "s302m.ts",

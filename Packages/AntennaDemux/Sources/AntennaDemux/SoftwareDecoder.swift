@@ -148,6 +148,7 @@ final class SoftwareDecoder: @unchecked Sendable {
                 pixels, kCVImageBufferFieldDetailKey,
                 topFirst ? kCVImageBufferFieldDetailTemporalTopFirst : kCVImageBufferFieldDetailTemporalBottomFirst, .shouldPropagate)
         }
+        PictureTags.apply(from: frame, to: pixels)
         if pixelFormat.map({ !CMVideoFormatDescriptionMatchesImageBuffer($0, imageBuffer: pixels) }) ?? true {
             var format: CMVideoFormatDescription?
             CMVideoFormatDescriptionCreateForImageBuffer(allocator: nil, imageBuffer: pixels, formatDescriptionOut: &format)

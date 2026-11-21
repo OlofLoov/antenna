@@ -31,6 +31,8 @@ enum PictureCheck {
         var queued: [CMTime] = []
         /// Sound buffers queued, with their times and lengths.
         var sound: [(time: CMTime, duration: CMTime)] = []
+        /// The video buffers as queued.
+        var buffers: [CMSampleBuffer] = []
     }
 
     /// Plays `file` through a run into recording renderers and decodes what
@@ -58,6 +60,7 @@ enum PictureCheck {
         try await Task.sleep(for: .milliseconds(300))
         run.cancel()
         var outcome = decode(video.buffers)
+        outcome.buffers = video.buffers
         outcome.sound = audio.buffers.map { (CMSampleBufferGetPresentationTimeStamp($0), CMSampleBufferGetDuration($0)) }
         return outcome
     }
