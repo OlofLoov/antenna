@@ -151,10 +151,20 @@ actor PosterCache {
         }
     }
 
-    /// Deletes the least recently used files until the folder is under the
-    /// disk limit. Returns the bytes left.
+    /// Trimming stops at this share of the limit, so the writes after a
+    /// trim fit without listing the folder again
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    static let trimmedShare = 0.8
+
+    /// How many times the folder was trimmed. For tests.
+    private(set) var trims = 0
+
+    /// Deletes the least recently used files until the folder holds at most
+    /// `trimmedShare` of the disk limit. Returns the bytes left.
     @discardableResult
     func trimDisk() -> Int {
+        trims += 1
+        let target = Int(Double(diskLimit) * Self.trimmedShare)
         let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
         let files = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: Array(keys))) ?? []
         struct Entry {
@@ -168,7 +178,7 @@ actor PosterCache {
         }
         var total = entries.reduce(0) { $0 + $1.size }
         entries.sort { $0.used < $1.used }
-        for entry in entries where total > diskLimit {
+        for entry in entries where total > target {
             try? FileManager.default.removeItem(at: entry.file)
             total -= entry.size
         }

@@ -33,6 +33,9 @@ final class ShelfModel {
     private(set) var indexRevision = 0
     /// Details by title id, once the banner, the preview or a page has asked.
     private(set) var details: [String: ShelfDetails] = [:]
+    /// Each title's description by title id, for the Apple TV poster's
+    /// VoiceOver hint, where each poster redraws only for its own.
+    @ObservationIgnored let hints = KeyedValues<String, String>()
     /// Titles whose info call has answered or failed.
     private(set) var answered: Set<String> = []
     /// True when the current profile shows adult content. Unless it is set
@@ -363,6 +366,7 @@ final class ShelfModel {
         keptOrder.append(key)
         while keptOrder.count > Self.keptLimit { kept[keptOrder.removeFirst()] = nil }
         details[title.id] = ShelfDetails(answer)
+        hints.set(details[title.id]?.plot, for: title.id)
         heard(title, answer)
         asked.insert(title.id)
         answered.insert(title.id)

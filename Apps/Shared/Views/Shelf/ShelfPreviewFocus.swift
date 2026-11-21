@@ -72,7 +72,9 @@ extension EnvironmentValues {
         @Environment(ShelfLibrary.self) private var library
 
         func body(content: Content) -> some View {
-            let plot = library.model(title.kind).details[title.id]?.plot ?? ""
+            // Only this title's hint, so an answer for another title does
+            // not redraw this poster (movies-and-series-browsing/browsing-stays-responsive).
+            let plot = library.model(title.kind).hints.value(title.id) ?? ""
             content
                 .focusedValue(\.shelfFocusedTitle, title)
                 .accessibilityHint(plot)

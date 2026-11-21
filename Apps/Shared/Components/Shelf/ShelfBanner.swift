@@ -70,6 +70,7 @@ enum ShelfBanner {
     struct Art: View {
         @Environment(\.shelfBanner) private var banner
         @Environment(\.posterLoader) private var loader
+        @Environment(\.artFit) private var fit
         @State private var shown: Shown?
 
         struct Shown: Equatable {
@@ -90,7 +91,7 @@ enum ShelfBanner {
                 .accessibilityHidden(true)
                 .task(id: banner?.state.art) {
                     guard let art = banner?.state.art, art != shown?.art else { return }
-                    let image = await loader?.load(art.url, nil)?.image
+                    let image = await loader?.load(art.url, fit)?.image
                     guard !Task.isCancelled else { return }
                     withAnimation(ShelfBanner.crossfade) { shown = Shown(art: art, image: image) }
                 }

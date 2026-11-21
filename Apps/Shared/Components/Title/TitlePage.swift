@@ -113,6 +113,7 @@ enum TitlePage {
         let poster: CGSize
         @Environment(\.titlePage) private var page
         @Environment(\.posterLoader) private var loader
+        @Environment(\.artFit) private var fit
         @State private var image: Poster?
 
         var body: some View {
@@ -129,7 +130,7 @@ enum TitlePage {
             .task(id: backdrop) {
                 image = nil
                 guard let backdrop, let loader else { return }
-                image = await loader.load(backdrop, nil)
+                image = await loader.load(backdrop, fit)
             }
         }
     }

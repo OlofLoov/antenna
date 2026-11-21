@@ -152,6 +152,10 @@ extension EnvironmentValues {
     @Entry var shelfPrefix = "movies"
     /// Set by the screens to the app's poster cache.
     @Entry var posterLoader: ShelfView.PosterLoader?
+    /// The frame banner, preview and title page pictures decode for: the
+    /// largest the window has been. Nil, as in previews, decodes them whole
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    @Entry var artFit: PosterFit?
     /// The row or grid a poster sits in, `recentlyAdded` or a category's
     /// slug, so a page can return to the poster that opened it.
     @Entry var shelfRow = ""

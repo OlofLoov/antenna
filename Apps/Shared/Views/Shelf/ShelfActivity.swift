@@ -17,8 +17,10 @@ final class ShelfActivity {
     private(set) var searches: [String] = []
     @ObservationIgnored private var store: ActivityStore?
     private var listed: Set<ActivityKey> = []
-    /// Saved positions by title id, in `progress` order, for posters' labels.
-    private var progressByTitle: [String: [WatchProgress]] = [:]
+    /// Each title's saved position, for posters' labels. A poster reads
+    /// only its own, so a save redraws only the posters whose position
+    /// changed (movies-and-series-browsing/browsing-stays-responsive).
+    @ObservationIgnored private let positions = KeyedValues<ActivityKey, WatchProgress>()
 
     /// How long a change waits before the read, so a burst of changes,
     /// such as one iCloud import, makes one read.
@@ -67,7 +69,9 @@ final class ShelfActivity {
         let progress = store.allProgress()
         if progress != self.progress {
             self.progress = progress
-            progressByTitle = Dictionary(grouping: progress, by: \.titleID)
+            var latest: [ActivityKey: WatchProgress] = [:]
+            for saved in progress where latest[saved.key] == nil { latest[saved.key] = saved }
+            positions.replace(with: latest)
         }
         let movies = store.myList(.movie)
         let series = store.myList(.series)
@@ -130,6 +134,10 @@ final class ShelfActivity {
 
     /// The saved position of a movie, for its poster's label.
     func progress(of title: ShelfTitle) -> WatchProgress? {
-        progressByTitle[title.id]?.first { $0.sourceID == title.sourceID }
+        positions.value(title.activityKey)
     }
+}
+
+extension WatchProgress {
+    fileprivate var key: ActivityKey { ActivityKey(titleID: titleID, sourceID: sourceID) }
 }

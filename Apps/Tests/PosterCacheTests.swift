@@ -91,6 +91,20 @@ import UniformTypeIdentifiers
         #expect(!kept.contains(PosterCache.key(urls[0])))
     }
 
+    @Test("movies-and-series-browsing/browsing-stays-responsive a full folder trims to 80% of its limit, not on every new poster")
+    func trimsInBatches() async throws {
+        let urls = try (0..<30).map { try poster("t\($0)", side: 128) }
+        let size = try #require(try urls[0].resourceValues(forKeys: [.fileSizeKey]).fileSize)
+        let cache = PosterCache(directory: cacheFolder, diskLimit: size * 10)
+        for url in urls { _ = await cache.poster(for: url) }
+        #expect(await cache.diskUsage() <= size * 10)
+        // One trim on the first write, then one each time two or three
+        // posters fill the fifth that was freed. A trim per poster past
+        // the limit would be 21.
+        let trims = await cache.trims
+        #expect(trims < 12, "the folder was trimmed \(trims) times for 30 posters")
+    }
+
     @Test(
         "movies-and-series-browsing/browsing-stays-responsive thirty new posters into a folder of 3 000 load in under a second",
         .enabled(if: ProcessInfo.processInfo.environment["ANTENNA_BENCHMARKS"] == "1"))
