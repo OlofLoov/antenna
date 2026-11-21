@@ -20,25 +20,63 @@ final class ShelfActivity {
     /// Saved positions by title id, in `progress` order, for posters' labels.
     private var progressByTitle: [String: [WatchProgress]] = [:]
 
-    /// Reads `store` now and after every save to its container, until the
-    /// calling task ends.
+    /// How long a change waits before the read, so a burst of changes,
+    /// such as one iCloud import, makes one read.
+    static let settle = Duration.milliseconds(250)
+
+    /// When the last read started, and the store's history then.
+    @ObservationIgnored private var readAt = ContinuousClock.now
+    @ObservationIgnored private var historyMark: DefaultHistoryToken?
+    /// How many times the store was read. For tests.
+    @ObservationIgnored private(set) var reads = 0
+
+    /// Reads `store` now and after every change to its progress, My list
+    /// or recent searches, on this device or from iCloud, until the calling
+    /// task ends. A change that a read since has already seen, such as the
+    /// one this object's own save just read, and a change to the history
+    /// that touched no activity record, such as a favorite, read nothing
+    /// (movies-and-series-browsing/browsing-stays-responsive).
     func follow(_ store: ActivityStore) async {
         self.store = store
         reload()
-        for await _ in ActivityStore.changes(in: store.context.container) {
+        for await change in ActivityStore.changes(in: store.context.container) {
             guard !Task.isCancelled else { break }
+            guard isUnread(change) else { continue }
+            try? await Task.sleep(for: Self.settle)
+            guard !Task.isCancelled else { break }
+            guard isUnread(change) else { continue }
             reload()
         }
     }
 
+    private func isUnread(_ change: ActivityChange) -> Bool {
+        guard change.at > readAt else { return false }
+        switch change.kind {
+        case .saved: return true
+        case .history: return store?.activityChanged(after: historyMark) ?? false
+        }
+    }
+
+    /// Reads the store. Only the lists that changed are handed on, so a
+    /// save of one title's position redraws only what shows it.
     func reload() {
         guard let store else { return }
-        progress = store.allProgress()
-        progressByTitle = Dictionary(grouping: progress, by: \.titleID)
-        movies = store.myList(.movie)
-        series = store.myList(.series)
-        searches = store.recentSearches().map(\.query)
-        listed = Set((movies + series).map { ActivityKey(titleID: $0.titleID, sourceID: $0.sourceID) })
+        readAt = .now
+        historyMark = store.historyMark()
+        reads += 1
+        let progress = store.allProgress()
+        if progress != self.progress {
+            self.progress = progress
+            progressByTitle = Dictionary(grouping: progress, by: \.titleID)
+        }
+        let movies = store.myList(.movie)
+        let series = store.myList(.series)
+        if movies != self.movies { self.movies = movies }
+        if series != self.series { self.series = series }
+        let searches = store.recentSearches().map(\.query)
+        if searches != self.searches { self.searches = searches }
+        let listed = Set((movies + series).map { ActivityKey(titleID: $0.titleID, sourceID: $0.sourceID) })
+        if listed != self.listed { self.listed = listed }
     }
 
     func isOnMyList(_ title: ShelfTitle) -> Bool {

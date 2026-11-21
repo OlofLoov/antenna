@@ -39,19 +39,27 @@ struct ActivityStore {
         return WatchProgress.episodes(of: seriesID, in: WatchProgress.resolve(owned(records).map(\.value)).winners)
     }
 
-    /// Saves where the user is in a title. A title id that could carry a link
-    /// or login is refused.
+    /// Saves where the user is in a title. The copy that wins is updated in
+    /// place, so iCloud sends one change per save rather than a new record
+    /// and a deletion, and the other copies are deleted
+    /// (watch-progress-sync/progress-is-saved-and-read-back). A title id
+    /// that could carry a link or login is refused.
     func saveProgress(titleID: String, seriesID: String? = nil, source: UUID, position: Double, duration: Double?, now: Date = .now) {
         guard WatchProgress.isStorable(titleID: titleID), position.isFinite, position >= 0 else { return }
         let records = progressRecords(titleID: titleID).filter { $0.sourceID == source }
-        let survivor = WatchProgress.resolve(records.map(\.value)).winners.first
-        let value = WatchProgress(
-            id: "", titleID: titleID, seriesID: seriesID, sourceID: source, position: position, duration: duration,
-            updatedAt: WatchProgress.stamp(now: now, replacing: survivor?.updatedAt))
-        let saved = ProgressRecord(value, profileID: storedProfile)
-        context.insert(saved)
-        let all = records + [saved]
-        WatchProgress.resolve(all.map(\.value)).losers.forEach { context.delete(all[$0]) }
+        let resolution = WatchProgress.resolve(records.map(\.value))
+        if let winner = resolution.winnerIndices.first {
+            let survivor = records[winner]
+            survivor.seriesID = seriesID
+            survivor.position = position
+            survivor.duration = duration
+            survivor.updatedAt = WatchProgress.stamp(now: now, replacing: survivor.updatedAt)
+            resolution.losers.forEach { context.delete(records[$0]) }
+        } else {
+            let value = WatchProgress(
+                id: "", titleID: titleID, seriesID: seriesID, sourceID: source, position: position, duration: duration, updatedAt: now)
+            context.insert(ProgressRecord(value, profileID: storedProfile))
+        }
         commit()
     }
 

@@ -28,23 +28,79 @@ extension ActivityStore {
         }
     }
 
-    /// Yields after every save to `container`, from this device or arriving
-    /// from iCloud, so a screen reads again
+    /// Yields after every save to `container` that touches progress, My list
+    /// or recent searches, and after every change to the store's history,
+    /// which is how iCloud imports arrive, so a screen reads again
     /// (watch-progress-sync/changes-from-another-device-show-up-without-reopening-the-screen).
     /// Each call makes its own stream, and nothing is yielded on creation.
-    static func changes(in container: ModelContainer) -> AsyncStream<Void> {
-        AsyncStream { continuation in
+    /// Only the newest change waits while the reader is busy, so a burst of
+    /// saves makes one read.
+    static func changes(in container: ModelContainer) -> AsyncStream<ActivityChange> {
+        AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let center = NotificationCenter.default
             let mine = ObjectIdentifier(container)
             let saved = center.addObserver(forName: ModelContext.didSave, object: nil, queue: nil) { note in
-                guard let context = note.object as? ModelContext, ObjectIdentifier(context.container) == mine else { return }
-                continuation.yield()
+                guard let context = note.object as? ModelContext, ObjectIdentifier(context.container) == mine,
+                    touchesActivity(note.userInfo)
+                else { return }
+                continuation.yield(ActivityChange(kind: .saved, at: .now))
             }
             let imported = center.addObserver(forName: .NSPersistentStoreRemoteChange, object: nil, queue: nil) { _ in
-                continuation.yield()
+                continuation.yield(ActivityChange(kind: .history, at: .now))
             }
             let observers = Observers(tokens: [saved, imported])
             continuation.onTermination = { _ in observers.tokens.forEach(center.removeObserver) }
+        }
+    }
+
+    /// The records `ShelfActivity` reads.
+    nonisolated static let activityEntities: Set<String> = [
+        String(describing: ProgressRecord.self), String(describing: ListEntryRecord.self),
+        String(describing: RecentSearchRecord.self),
+    ]
+
+    /// True when a save's notification names a progress, My list or recent
+    /// search record, or names nothing it can be told from.
+    nonisolated private static func touchesActivity(_ info: [AnyHashable: Any]?) -> Bool {
+        let keys: [ModelContext.NotificationKey] = [.insertedIdentifiers, .updatedIdentifiers, .deletedIdentifiers]
+        let named = keys.compactMap { info?[$0.rawValue] as? [PersistentIdentifier] }
+        guard !named.isEmpty else { return true }
+        return named.joined().contains { activityEntities.contains($0.entityName) }
+    }
+}
+
+/// A change `ActivityStore.changes` reports.
+struct ActivityChange: Sendable {
+    enum Kind: Sendable {
+        /// A save on this device that names an activity record.
+        case saved
+        /// A change to the store's history, from iCloud or from any save,
+        /// which names no records; `ActivityStore.activityChanged(after:)`
+        /// tells whether it touched activity.
+        case history
+    }
+
+    let kind: Kind
+    /// When it was posted.
+    let at: ContinuousClock.Instant
+}
+
+extension ActivityStore {
+    /// The newest transaction in the store's history, nil when it keeps none.
+    func historyMark() -> DefaultHistoryToken? {
+        var newest = HistoryDescriptor<DefaultHistoryTransaction>(sortBy: [SortDescriptor(\.transactionIdentifier, order: .reverse)])
+        newest.fetchLimit = 1
+        return (try? context.fetchHistory(newest))?.first?.token
+    }
+
+    /// True when a transaction after `mark` touched a progress, My list or
+    /// recent search record, and true when that cannot be told.
+    func activityChanged(after mark: DefaultHistoryToken?) -> Bool {
+        guard let mark else { return true }
+        let later = HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate<DefaultHistoryTransaction> { $0.token > mark })
+        guard let transactions = try? context.fetchHistory(later) else { return true }
+        return transactions.contains { transaction in
+            transaction.changes.contains { Self.activityEntities.contains($0.changedPersistentIdentifier.entityName) }
         }
     }
 }
