@@ -91,10 +91,14 @@ does not mark the logo as failed, so the next row asks again.
 
 A channel counting as watched replaced the catalogue, which changed
 `LiveModel.rows`, so the open group's `List` compared all its ids again.
-`Catalogue` gains a content revision that only a new index or new rules
-change. The Live model keeps the open group's rows as stored state and
-replaces them only when the group's rows can have changed. The Apple TV
-overlay compares the same way.
+`Catalogue` now keeps an id for each thing its row lists come from: the
+index and rules, the favorites, the recents and the New group. A replace
+keeps the ids it leaves alone, and `sameRows(in:as:)` answers from them
+without comparing rows. The Live model keeps the open group's rows as
+stored state and works them out again only when `sameRows` says no, the
+group or filter changed, or a new name index arrived. The Apple TV
+overlay's list compares the same way, and also needs the favorites
+unchanged, since its rows draw the star.
 
 ### HLS zaps
 

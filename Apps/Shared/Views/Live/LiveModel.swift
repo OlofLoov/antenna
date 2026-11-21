@@ -61,12 +61,12 @@ final class LiveModel {
 
     private(set) var sources: [LiveSource] = []
     private(set) var channels: [Channel] = []
-    var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+    var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []) { didSet { refreshRows() } }
     var groupRules = GroupRules()
     /// The group whose channels the list shows.
-    var group: CatalogueGroup = .all
+    var group: CatalogueGroup = .all { didSet { refreshRows() } }
     /// What the user typed into the filter field on iPad and Mac.
-    var filter = ""
+    var filter = "" { didSet { refreshRows() } }
     /// The filter field has the keyboard, so single-key shortcuts stay off.
     var typing = false
     /// The channel playing in place, nil until the user picks one.
@@ -123,7 +123,11 @@ final class LiveModel {
     @ObservationIgnored var restore = LiveRestore()
     @ObservationIgnored private var tuning: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
-    @ObservationIgnored var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []))
+    @ObservationIgnored var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])) {
+        didSet { refreshRows(namesChanged: true) }
+    }
+    /// What `rows` was worked out from.
+    @ObservationIgnored var rowsFrom: RowsSource?
     /// The catalogue being built away from the main actor.
     @ObservationIgnored var building: Task<Void, Never>?
     /// Counts the builds started; only the newest one's catalogue shows.
@@ -289,10 +293,8 @@ final class LiveModel {
     }
 
     /// The open group's rows in catalogue order, narrowed by the filter
-    /// (live-tv-on-iphone-ipad-mac/type-to-narrow-the-list).
-    var rows: [RowKey] {
-        names.filter(catalogue.rows(in: group), by: ChannelFilter(filter))
-    }
+    /// (live-tv-on-iphone-ipad-mac/type-to-narrow-the-list). Set by `refreshRows`.
+    var rows: [RowKey] = []
 
     // MARK: Playback
 

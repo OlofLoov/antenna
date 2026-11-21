@@ -22,9 +22,11 @@
         let pick: (Channel) -> Void
         let toggleFavorite: (Channel, RowKey) -> Void
 
+        /// A new Recents or New group leaves another group's rows, numbers
+        /// and stars as drawn (live-tv-on-iphone-ipad-mac/a-very-large-source-stays-responsive).
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.catalogue.revision == rhs.catalogue.revision && lhs.group == rhs.group && lhs.entry == rhs.entry
-                && lhs.multiView == nil && rhs.multiView == nil
+            lhs.group == rhs.group && lhs.entry == rhs.entry && lhs.multiView == nil && rhs.multiView == nil
+                && lhs.catalogue.sameRows(in: lhs.group, as: rhs.catalogue) && lhs.catalogue.sameRows(in: .favorites, as: rhs.catalogue)
         }
 
         var body: some View {

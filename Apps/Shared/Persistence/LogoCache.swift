@@ -18,9 +18,16 @@ final class LogoCache: @unchecked Sendable {
     /// How long a logo that failed stays failed before the next row asks again.
     static let retryAfter: TimeInterval = 300
 
+    /// A download in flight: the work and the rows waiting for it.
+    private struct Load {
+        let id: UUID
+        var task: Task<Void, Never>?
+        var waiters: [UUID: CheckedContinuation<DecodedLogo?, Never>]
+    }
+
     private let memory = NSCache<NSURL, DecodedLogo>()
     private let failed = Mutex<[URL: Date]>([:])
-    private let loading = Mutex<[URL: Task<DecodedLogo?, Never>]>([:])
+    private let loading = Mutex<[URL: Load]>([:])
     private let session: URLSession
 
     init(session: URLSession = .shared, memoryLimit: Int = LogoCache.memoryLimit) {
@@ -35,18 +42,72 @@ final class LogoCache: @unchecked Sendable {
 
     /// The logo from memory, else the network. Rows asking for one address
     /// while it loads share one download and one decode.
+    ///
+    /// A row that is cancelled, such as one scrolled off screen, stops
+    /// waiting at once, and once no row waits the download stops too, so
+    /// the logos on screen do not queue behind rows already gone
+    /// (live-tv-on-iphone-ipad-mac/a-very-large-source-stays-responsive).
     func logo(for url: URL) async -> DecodedLogo? {
         if let kept = cached(url) { return kept }
         if let since = failed.withLock({ $0[url] }), Date.now.timeIntervalSince(since) < Self.retryAfter { return nil }
-        let task = loading.withLock { running in
-            if let task = running[url] { return task }
-            let task = Task.detached(priority: .utility) { [self] in await download(url) }
-            running[url] = task
-            return task
+        guard !Task.isCancelled else { return nil }
+        let waiter = UUID()
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                let started: UUID? = loading.withLock { running in
+                    if running[url] != nil {
+                        running[url]?.waiters[waiter] = continuation
+                        return nil
+                    }
+                    let id = UUID()
+                    running[url] = Load(id: id, waiters: [waiter: continuation])
+                    return id
+                }
+                guard let id = started else { return }
+                let task = Task.detached(priority: .utility) { [self] in
+                    let logo = await download(url)
+                    finish(url, id: id, with: logo)
+                }
+                let kept = loading.withLock { running in
+                    guard running[url]?.id == id else { return false }
+                    running[url]?.task = task
+                    return true
+                }
+                // Every row left before the download was stored.
+                if !kept { task.cancel() }
+            }
+        } onCancel: {
+            leave(url, waiter: waiter)
         }
-        let logo = await task.value
-        loading.withLock { $0[url] = nil }
-        return logo
+    }
+
+    /// The rows waiting for a download, over every download in flight. For tests.
+    var waiting: Int {
+        loading.withLock { $0.values.reduce(0) { $0 + $1.waiters.count } }
+    }
+
+    /// Hands the download's logo to every row still waiting.
+    private func finish(_ url: URL, id: UUID, with logo: DecodedLogo?) {
+        let waiters = loading.withLock { running -> [CheckedContinuation<DecodedLogo?, Never>] in
+            guard running[url]?.id == id, let done = running.removeValue(forKey: url) else { return [] }
+            return Array(done.waiters.values)
+        }
+        for waiter in waiters { waiter.resume(returning: logo) }
+    }
+
+    /// A cancelled row stops waiting with nothing; the last one out cancels the download.
+    private func leave(_ url: URL, waiter: UUID) {
+        let (continuation, stop) = loading.withLock { running -> (CheckedContinuation<DecodedLogo?, Never>?, Task<Void, Never>?) in
+            guard var load = running[url], let continuation = load.waiters.removeValue(forKey: waiter) else { return (nil, nil) }
+            if load.waiters.isEmpty {
+                running[url] = nil
+                return (continuation, load.task)
+            }
+            running[url] = load
+            return (continuation, nil)
+        }
+        continuation?.resume(returning: nil)
+        stop?.cancel()
     }
 
     private func download(_ url: URL) async -> DecodedLogo? {
@@ -56,7 +117,8 @@ final class LogoCache: @unchecked Sendable {
             (response as? HTTPURLResponse).map({ (200..<300).contains($0.statusCode) }) ?? true,
             let logo = DecodedLogo(data: data, maxPixels: Self.maxPixels)
         else {
-            failed.withLock { $0[url] = .now }
+            // A download stopped because no row waits is not a broken logo.
+            if !Task.isCancelled { failed.withLock { $0[url] = .now } }
             return nil
         }
         memory.setObject(logo, forKey: url as NSURL, cost: logo.cost)
