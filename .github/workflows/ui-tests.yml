@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        n: [1, 2, 3]
+        n: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/simulator
@@ -44,8 +44,7 @@ jobs:
             -destination "platform=iOS Simulator,name=$name" \
             -only-testing:AntennaUITests/LivePlayerUITests \
             -only-testing:AntennaUITests/PlayerExtrasUITests \
-            -only-testing:AntennaUITests/FavoriteActionsUITests \
-            -test-iterations 6 \
+            -test-iterations 8 \
             -resultBundlePath ui-tests.xcresult \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee run.log | grep -E "Test Case.*(passed|failed)|notification not received|Restarting"
           kill $watcher
@@ -58,37 +57,4 @@ jobs:
           path: |
             diag
             ui-tests.xcresult
-          if-no-files-found: ignore
-
-  ipad:
-    name: iPad keys
-    runs-on: macos-26
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/simulator
-        with:
-          platform: iOS
-      - name: Run keyboard tests
-        run: |
-          set +e
-          device=$(xcrun simctl list devices available | grep -E 'iPad Pro 13' | head -1)
-          id=$(echo "$device" | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
-          start=$(date "+%Y-%m-%d %H:%M:%S")
-          xcodebuild test -project Antenna.xcodeproj -scheme Antenna \
-            -destination "platform=iOS Simulator,id=$id" \
-            -only-testing:AntennaUITests/LiveKeyboardUITests \
-            -test-iterations 3 \
-            -resultBundlePath ipad-ui-tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee run.log | grep -E "Test Case.*(passed|failed)|error:|Type '"
-          mkdir -p diag
-          xcrun simctl spawn "$id" log show --start "$start" --style compact --predicate 'eventMessage CONTAINS "N2DEBUG"' > diag/keys.txt 2>&1
-          cp run.log diag/
-          exit 0
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: ipad-keys
-          path: |
-            diag
-            ipad-ui-tests.xcresult
           if-no-files-found: ignore
