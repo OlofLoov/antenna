@@ -39,7 +39,7 @@ The system SHALL read the guide links named by the `url-tvg`, `x-tvg-url` and `t
 - **THEN** the guide links are `http://u`, `http://x` and `http://t`, in that order
 
 ### Requirement: Standard attributes map to the channel
-The system SHALL map the `#EXTINF` attributes `tvg-id`, `tvg-name`, `tvg-logo`, `group-title` and `tvg-chno` to the channel's guide id, name, logo, group and number. Attribute names SHALL be matched without regard to case, quoted and unquoted values SHALL both be read, values SHALL be kept as written without trimming, and the last duplicate attribute SHALL win. An unquoted value SHALL end at the first space.
+The system SHALL map the `#EXTINF` attributes `tvg-id`, `tvg-name`, `tvg-logo`, `group-title` and `tvg-chno` to the channel's guide id, name, logo, group and number. Names SHALL match without regard to case, quoted and unquoted values SHALL be read as written, and the last duplicate SHALL win. An unquoted value SHALL end at the first space, and a word with no `=` SHALL be skipped.
 
 #### Scenario: All standard attributes present
 - **GIVEN** an entry with `tvg-id="x.uk" tvg-name="X" tvg-logo="http://l/x.png" group-title="UK" tvg-chno="12"`
@@ -57,9 +57,9 @@ The system SHALL map the `#EXTINF` attributes `tvg-id`, `tvg-name`, `tvg-logo`, 
 - **THEN** the logo is kept as the relative link `not%20a%20url`, and an empty `tvg-logo` gives no logo
 
 #### Scenario: Attribute reading stops at a bare word
-- **GIVEN** an entry `#EXTINF:-1 foo tvg-id="x",T`, or `#EXTINF:-1 tvg-name=Two Words tvg-id="x",T`
+- **GIVEN** an entry `#EXTINF:-1 catchup tvg-id="b" group-title="G",B`, or `#EXTINF:-1 tvg-name=Two Words tvg-id="x",T`
 - **WHEN** the playlist is parsed
-- **THEN** reading stops at the first word that has no `=`, so the first channel has no guide id, and the second is named "Two" with no guide id
+- **THEN** reading stops at the bare word only to skip it, so the first channel has guide id "b" and group "G", and the second is named "Two" with guide id "x"
 
 ### Requirement: Title fallback
 The system SHALL use the text after the attribute block's closing comma, with spaces around it trimmed, as the channel name when `tvg-name` is absent or empty. A `tvg-name` holding only spaces SHALL be used as it is.
@@ -577,3 +577,21 @@ The system SHALL read a season and episode marker in a playlist entry name writt
 - **GIVEN** entries named "Show S01E01", "Show 1x02" and "Show Season 2 Episode 1"
 - **WHEN** the playlist loads
 - **THEN** there is one series "Show" with season 1 episodes 1 and 2 and season 2 episode 1
+
+### Requirement: Playlist text in older encodings
+The system SHALL read a playlist from a link or a file as UTF-8, as UTF-16 when it starts with a UTF-16 byte-order mark, and each byte that is not part of valid UTF-8 as Windows-1252, so names saved in Latin-1 or Windows-1252 show their letters.
+
+#### Scenario: A Latin-1 playlist link
+- **GIVEN** a playlist link whose text is in Latin-1, with a channel named "München"
+- **WHEN** the source loads
+- **THEN** the channel is named "München"
+
+#### Scenario: UTF-8 with a few Latin-1 names
+- **GIVEN** a playlist in UTF-8 with one channel named "Zürich" in UTF-8 and one named "Málaga" in Latin-1
+- **WHEN** the playlist is read
+- **THEN** both names read as written
+
+#### Scenario: A UTF-16 playlist link
+- **GIVEN** a playlist link whose text is UTF-16 with a byte-order mark
+- **WHEN** the source loads
+- **THEN** its channels load as from the same text in UTF-8

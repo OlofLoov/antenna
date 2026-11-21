@@ -17,9 +17,9 @@
 
 ## 4. M3U attributes
 
-- [ ] 4.1 Both attribute readers skip a bare word and read on, with a core test
+- [x] 4.1 Both attribute readers skip a bare word and read on, with a core test
 
 ## 5. Verify
 
-- [ ] 5.1 Each requirement this change adds or modifies has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.2 /opsx:verify passes
+- [x] 5.1 Each requirement this change adds or modifies has a test citing `<capability>/<requirement-slug>`
+- [x] 5.2 /opsx:verify passes

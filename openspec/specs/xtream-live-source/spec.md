@@ -52,7 +52,7 @@ The system SHALL decode numeric fields of a live stream whether they arrive as J
 - **THEN** the list is empty, and any other body that is not an array fails as a decoding failure at path ""
 
 ### Requirement: Category id as number or string
-The system SHALL read a category id given as a number or a string into the same string form. A category list SHALL fail whole, as a decoding failure naming the row and field, when any row lacks `category_id` or `category_name`.
+The system SHALL read a category id given as a number or a string into the same string form. A category row that lacks `category_id` or `category_name`, or has either null, SHALL be dropped and the other rows kept.
 
 #### Scenario: Mixed category ids
 - **GIVEN** categories with `category_id` 7 in one item, "8" in another and 3.5 in a third
@@ -60,9 +60,9 @@ The system SHALL read a category id given as a number or a string into the same 
 - **THEN** the category ids are "7", "8" and "3.5"
 
 #### Scenario: Category missing its name or id
-- **GIVEN** a category list whose first item lacks `category_name`, or lacks `category_id`
+- **GIVEN** a category list whose first item lacks `category_name`, and whose second lacks `category_id`, followed by a valid item
 - **WHEN** it is decoded
-- **THEN** the whole category list fails to decode, at path "[0].category_name" or "[0].category_id"
+- **THEN** only the valid item is returned
 
 #### Scenario: Repeated category id
 - **GIVEN** categories with ids `7` and `"7"`
@@ -185,3 +185,16 @@ The system SHALL read the server's time zone from the account information once p
 - **GIVEN** the time zone was not known after the load
 - **WHEN** a catch-up address is first needed
 - **THEN** the account information is asked for again
+
+### Requirement: Channels load without categories
+The system SHALL load a provider's live channels when the category call fails or returns no usable rows, leaving every channel without a group. A channel whose category row was dropped SHALL have no group, and the other channels SHALL keep theirs.
+
+#### Scenario: The category call fails
+- **GIVEN** a panel whose live category call answers with status 500 or an HTML page, and whose stream list answers normally
+- **WHEN** the provider's channels are loaded
+- **THEN** every channel loads with no group
+
+#### Scenario: One category row is broken
+- **GIVEN** categories "1" named "News" and "2" with a null name, and a stream in each
+- **WHEN** the provider's channels are loaded
+- **THEN** the first channel is in "News" and the second has no group

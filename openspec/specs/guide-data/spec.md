@@ -67,12 +67,27 @@ The system SHALL download nothing for an Xtream source without its own guide lin
 - **THEN** callers hear that the login is missing, and the loaded guide keeps answering
 
 ### Requirement: Programmes land on the right channels
-The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids and otherwise matching exactly, case included, whichever of the guide and the channel list loads first. A guide entry the user picked by hand for a channel SHALL take the place of the channel's own guide id, and a channel with no guide id SHALL use the entry matched by its name when there is one.
+The system SHALL match programmes to channels within each source by guide id, ignoring spaces and newlines around the ids, whichever of the guide and the channel list loads first. An exact match SHALL win, then an id that differs only by letter case. A guide entry the user picked by hand for a channel SHALL take the place of the channel's own guide id, and a channel with no guide id SHALL use the entry matched by its name when there is one.
 
 #### Scenario: Ids with spaces, a channel without an id, two sources
 - **GIVEN** a channel and a programme whose guide ids differ only by spaces around them, a channel with no guide id, and two sources whose guides both use the id "one"
 - **WHEN** the guide and the channel list have both loaded, in either order
 - **THEN** the first channel gets its programme, the channel without an id gets none and reports no data, and each source's channels get programmes only from that source's guide
+
+#### Scenario: Ids that differ by case
+- **GIVEN** a channel with guide id "BBCOne.uk" and a guide whose programmes use "bbcone.uk"
+- **WHEN** the guide and the channel list have both loaded
+- **THEN** the channel gets those programmes
+
+#### Scenario: An exact id beats one that differs by case
+- **GIVEN** a channel with guide id "One", a guide with programmes for "one", and a lower guide of the same source with programmes for "One"
+- **WHEN** both guides have loaded
+- **THEN** the channel gets the programmes for "One"
+
+#### Scenario: A numeric Xtream guide id
+- **GIVEN** an Xtream stream whose `epg_channel_id` is the number 1234, and a guide with programmes for "1234"
+- **WHEN** the guide and the channel list have both loaded
+- **THEN** the channel gets those programmes
 
 #### Scenario: Stalker source with a guide link
 - **GIVEN** a Stalker source with its own guide link
