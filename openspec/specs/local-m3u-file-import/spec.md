@@ -49,9 +49,9 @@ The system SHALL read a file before importing it and show how many channels and 
 - **THEN** it asks whether to replace that source or import it as new
 
 #### Scenario: An old Windows encoding
-- **GIVEN** a file whose text is in an old Windows encoding
+- **GIVEN** a file whose text is in Latin-1 or Windows-1252, with a channel named "München" and a group "Españoles"
 - **WHEN** the sheet reads it
-- **THEN** it imports, and names may show a replacement character
+- **THEN** it imports, and the name and group read "München" and "Españoles"
 
 ### Requirement: Import and watch
 The system SHALL save an imported file's contents as a source whose channels appear in Live without a relaunch, matching the summary's count, with no network request for the playlist itself.
