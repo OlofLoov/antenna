@@ -88,49 +88,52 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
   <!-- Results -->
   <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 28px; padding: 30px 80px 0">
 
-    <!-- Channels -->
+    <!-- Channels: the channel list's rows (ChannelOverlay.ChannelRow, design-system/channel-rows-share-one-anatomy): number, 76 by 50 logo tile, name 29 pt with what is on now trailing in 22 pt, the 4 pt progress bar, the catch-up mark. 92 tall at rest, 100 on the white focus card. Two across, 12 apart, like the programmes below. -->
     <div style="display: flex; flex-direction: column; gap: 14px">
       <div style="display: flex; gap: 14px; align-items: baseline"><span style="font-size: 26px; font-weight: 700">Channels</span><span style="font-size: 20px; color: #A7B0BF">3</span></div>
-      <div style="display: flex; gap: 20px">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; align-items: center">
         <!-- focused -->
-        <div style="width: 340px; height: 112px; border-radius: 14px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 18px; padding: 0 20px; box-sizing: border-box">
-          <div style="width: 84px; height: 56px; border-radius: 8px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #F2F4F8; flex: 0 0 auto">NN</div>
-          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
-            <div style="font-size: 24px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern News</div>
-            <div style="font-size: 18px; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">201 · Now: Late Edition</div>
+        <div style="display: flex; align-items: center; gap: 20px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); height: 100px; font-weight: 600; padding: 0 20px; border-radius: 16px; box-sizing: border-box">
+          <span style="width: 52px; font-size: 24px; color: #4B5563; font-variant-numeric: tabular-nums; flex: 0 0 auto">201</span>
+          <div style="width: 76px; height: 50px; border-radius: 8px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NN</div>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; gap: 16px"><span style="font-size: 29px; white-space: nowrap"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern News</span><span style="flex: 1 1 auto"></span><span style="font-size: 22px; font-weight: 400; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Late Edition</span></div>
+            <div style="height: 4px; border-radius: 2px; background: rgba(0,0,0,0.12)"><div style="height: 4px; width: 62%; border-radius: 2px; background: {{accent}}"></div></div>
           </div>
         </div>
-        <div style="width: 340px; height: 112px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; gap: 18px; padding: 0 20px; box-sizing: border-box">
-          <div style="width: 84px; height: 56px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NS</div>
-          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
-            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sport</div>
-            <div style="font-size: 18px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">118 · Now: Ice Hockey</div>
+        <div style="display: flex; align-items: center; gap: 20px; height: 92px; padding: 0 20px; border-radius: 16px; box-sizing: border-box">
+          <span style="width: 52px; font-size: 24px; color: #A7B0BF; font-variant-numeric: tabular-nums; flex: 0 0 auto">118</span>
+          <div style="width: 76px; height: 50px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NS</div>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; gap: 16px"><span style="font-size: 29px; white-space: nowrap"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sport</span><span style="flex: 1 1 auto"></span><span style="font-size: 22px; font-weight: 400; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Ice Hockey</span></div>
+            <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.16)"><div style="height: 4px; width: 30%; border-radius: 2px; background: {{accent}}"></div></div>
           </div>
         </div>
-        <div style="width: 340px; height: 112px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; gap: 18px; padding: 0 20px; box-sizing: border-box">
-          <div style="width: 84px; height: 56px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NO1</div>
-          <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
-            <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Nordic One</div>
-            <div style="font-size: 18px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">301 · Matches <span style="background: rgba(91,184,255,0.35); border-radius: 3px; color: #F2F4F8">North</span>ern Report</div>
+        <div style="display: flex; align-items: center; gap: 20px; height: 92px; padding: 0 20px; border-radius: 16px; box-sizing: border-box">
+          <span style="width: 52px; font-size: 24px; color: #A7B0BF; font-variant-numeric: tabular-nums; flex: 0 0 auto">301</span>
+          <div style="width: 76px; height: 50px; border-radius: 8px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NO1</div>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; align-items: baseline; gap: 16px"><span style="font-size: 29px; white-space: nowrap">Nordic One</span><span style="flex: 1 1 auto"></span><span style="font-size: 22px; font-weight: 400; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Matches <span style="background: rgba(91,184,255,0.35); border-radius: 3px; color: #F2F4F8">North</span>ern Report</span></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- In the guide -->
+    <!-- In the guide: programmes as the guide's blocks draw them, 0.08 surface, 8 pt corner, 92 tall, title 24 pt over an 18 pt line, the white focus card when focused, and the 3 pt progress bar along the foot of the one on now. -->
     <div style="display: flex; flex-direction: column; gap: 14px">
       <div style="display: flex; gap: 14px; align-items: baseline"><span style="font-size: 26px; font-weight: 700">In the guide</span><span style="font-size: 20px; color: #A7B0BF">Next 7 days · 12</span></div>
       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px">
-        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
-          <span style="font-size: 18px; font-weight: 700; letter-spacing: 1px; padding: 5px 10px; border-radius: 6px; background: {{accent}}; color: #0B0E13">NOW</span>
+        <div style="display: flex; align-items: center; gap: 18px; height: 92px; padding: 0 16px; border-radius: 8px; background: rgba(255,255,255,0.08); position: relative; overflow: hidden">
+          <span style="width: 120px; flex: 0 0 auto"><span style="font-size: 18px; font-weight: 700; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; background: {{accent}}; color: #0B0E13">NOW</span></span>
           <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
             <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sea Patrol</div>
             <div style="font-size: 18px; color: #A7B0BF">Docu HD · 21:00 – 22:00</div>
           </div>
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.16)"><div style="height: 3px; width: 40%; background: {{accent}}"></div></div>
           <svg role="img" aria-label="Catch-up available" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
         </div>
-        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
-          <span style="width: 92px; font-size: 20px; color: #D7DEE8; font-variant-numeric: tabular-nums">22:00</span>
+        <div style="display: flex; align-items: center; gap: 18px; height: 92px; padding: 0 16px; border-radius: 8px; background: rgba(255,255,255,0.08); position: relative; overflow: hidden">
+          <span style="width: 120px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">22:00</span>
           <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
             <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Lights · S2 E4</div>
             <div style="font-size: 18px; color: #A7B0BF">Drama One · Today</div>
@@ -138,8 +141,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
           <!-- search.result.programme.<n>.remind: the bell after a later programme, its own focus stop to the right of the row (programme-reminders/remind-me-appears-only-before-a-programme-starts) -->
           <svg role="img" aria-label="Remind me" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         </div>
-        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
-          <span style="width: 92px; font-size: 20px; color: #D7DEE8; font-variant-numeric: tabular-nums">Tue 20:00</span>
+        <div style="display: flex; align-items: center; gap: 18px; height: 92px; padding: 0 16px; border-radius: 8px; background: rgba(255,255,255,0.08); position: relative; overflow: hidden">
+          <span style="width: 120px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">Tue 20:00</span>
           <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
             <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Soul Night</div>
             <div style="font-size: 18px; color: #A7B0BF">Music Box · Tomorrow</div>
@@ -147,8 +150,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
           <!-- search.result.programme.<n>.remind: the bell after a later programme, its own focus stop to the right of the row (programme-reminders/remind-me-appears-only-before-a-programme-starts) -->
           <svg role="img" aria-label="Remind me" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         </div>
-        <div style="display: flex; align-items: center; gap: 18px; height: 76px; padding: 0 18px; border-radius: 12px; background: rgba(255,255,255,0.06)">
-          <span style="width: 92px; font-size: 20px; color: #D7DEE8; font-variant-numeric: tabular-nums">Wed 18:30</span>
+        <div style="display: flex; align-items: center; gap: 18px; height: 92px; padding: 0 16px; border-radius: 8px; background: rgba(255,255,255,0.08); position: relative; overflow: hidden">
+          <span style="width: 120px; font-size: 20px; color: #A7B0BF; font-variant-numeric: tabular-nums">Wed 18:30</span>
           <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
             <div style="font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Weather: The <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span></div>
             <div style="font-size: 18px; color: #A7B0BF">Northern News · Wednesday</div>
@@ -157,37 +160,37 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       </div>
     </div>
 
-    <!-- Movies & series -->
+    <!-- Movies & series: the Movies tab's poster cards (ShelfView.PosterCard), 212 by 318, 12 pt corner, the system card focus, SERIES on a series, and the Movies menu on a held Select (More info on a movie, My list). The name sits under the poster in 22 pt #D7DEE8. The row runs past the right edge. People follow as the title page's cast chips in one line. -->
     <div style="display: flex; flex-direction: column; gap: 14px">
       <div style="display: flex; gap: 14px; align-items: baseline"><span style="font-size: 26px; font-weight: 700">Movies &amp; series</span><span style="font-size: 20px; color: #A7B0BF">6</span></div>
       <div style="display: flex; gap: 20px">
-        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
-          <div style="width: 180px; height: 270px; border-radius: 12px; background: #2F4A3B; position: relative">
-            <span style="position: absolute; left: 10px; top: 10px; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 5px; background: rgba(8,10,14,0.72)">SERIES</span>
+        <div style="width: 212px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 212px; height: 318px; border-radius: 12px; background: #2F4A3B; position: relative">
+            <span style="position: absolute; left: 8px; top: 8px; font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 8px; border: 1.5px solid #A7B0BF; background: rgba(8,10,14,0.72)">SERIES</span>
           </div>
-          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Lights</div>
+          <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Lights</div>
         </div>
-        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
-          <div style="width: 180px; height: 270px; border-radius: 12px; background: #4A3A2F"></div>
-          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">True <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span></div>
+        <div style="width: 212px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A3A2F"></div>
+          <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">True <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span></div>
         </div>
-        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
-          <div style="width: 180px; height: 270px; border-radius: 12px; background: #334155"></div>
-          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>bound</div>
+        <div style="width: 212px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 212px; height: 318px; border-radius: 12px; background: #334155"></div>
+          <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>bound</div>
         </div>
-        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
-          <div style="width: 180px; height: 270px; border-radius: 12px; background: #3B2F4A"></div>
-          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Country Diaries</div>
+        <div style="width: 212px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 212px; height: 318px; border-radius: 12px; background: #3B2F4A"></div>
+          <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Country Diaries</div>
         </div>
-        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
-          <div style="width: 180px; height: 270px; border-radius: 12px; background: #2A3A52; position: relative">
-            <span style="position: absolute; left: 10px; top: 10px; font-size: 14px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 5px; background: rgba(8,10,14,0.72)">SERIES</span>
+        <div style="width: 212px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 212px; height: 318px; border-radius: 12px; background: #2A3A52; position: relative">
+            <span style="position: absolute; left: 8px; top: 8px; font-size: 17px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 8px; border: 1.5px solid #A7B0BF; background: rgba(8,10,14,0.72)">SERIES</span>
           </div>
-          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Water</div>
+          <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">The <span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Water</div>
         </div>
-        <div style="width: 180px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px">
-          <div style="width: 180px; height: 270px; border-radius: 12px; background: #4A2F3A"></div>
-          <div style="font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Exposure</div>
+        <div style="width: 212px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px">
+          <div style="width: 212px; height: 318px; border-radius: 12px; background: #4A2F3A"></div>
+          <div style="font-size: 22px; color: #D7DEE8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern Exposure</div>
         </div>
       </div>
     </div>

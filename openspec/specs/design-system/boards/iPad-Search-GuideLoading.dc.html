@@ -78,29 +78,31 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       </div>
     </div>
 
-    <!-- Channels -->
+    <!-- Channels: the Live list's rows (Browse.ChannelRow at its iPad size, design-system/channel-rows-share-one-anatomy), 64 tall, no surface, three across. -->
     <div style="display: flex; flex-direction: column; gap: 10px">
       <div style="font-size: 17px; font-weight: 700">Channels</div>
       <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
-        <div style="display: flex; align-items: center; gap: 12px; height: 66px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.06)">
+        <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 8px; border-radius: 12px">
           <span style="width: 56px; height: 36px; border-radius: 6px; background: #1E3A5F; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 1px; flex: 0 0 auto">NN</span>
-          <div style="min-width: 0; display: flex; flex-direction: column; gap: 3px">
-            <div style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern News</div>
-            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">201 · Now: Late Edition</div>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 16px"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span>ern News</span><span style="color: #A7B0BF; font-size: 13px; font-variant-numeric: tabular-nums">201</span></div>
+            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Late Edition</div>
+            <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.16)"><div style="height: 4px; width: 45%; border-radius: 2px; background: {{accent}}"></div></div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px; height: 66px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.06)">
+        <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 8px; border-radius: 12px">
           <span style="width: 56px; height: 36px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NS</span>
-          <div style="min-width: 0; display: flex; flex-direction: column; gap: 3px">
-            <div style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sport</div>
-            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">118 · Now: Ice Hockey</div>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 16px"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="background: rgba(91,184,255,0.35); border-radius: 3px">North</span> Sport</span><span style="color: #A7B0BF; font-size: 13px; font-variant-numeric: tabular-nums">118</span></div>
+            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Ice Hockey</div>
+            <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.16)"><div style="height: 4px; width: 45%; border-radius: 2px; background: {{accent}}"></div></div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px; height: 66px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.06)">
+        <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 8px; border-radius: 12px">
           <span style="width: 56px; height: 36px; border-radius: 6px; background: #26344A; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #D7DEE8; flex: 0 0 auto">NO1</span>
-          <div style="min-width: 0; display: flex; flex-direction: column; gap: 3px">
-            <div style="font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Nordic One</div>
-            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">301 · Matches <span style="background: rgba(91,184,255,0.35); border-radius: 3px; color: #F2F4F8">North</span>ern Report</div>
+          <div style="min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 16px"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Nordic One</span><span style="color: #A7B0BF; font-size: 13px; font-variant-numeric: tabular-nums">301</span></div>
+            <div style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Matches <span style="background: rgba(91,184,255,0.35); border-radius: 3px; color: #F2F4F8">North</span>ern Report</div>
           </div>
         </div>
       </div>
@@ -111,7 +113,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="font-size: 17px; font-weight: 700">In the guide <span style="font-weight: 400; color: #A7B0BF">· loading</span></div>
     </div>
 
-    <!-- Movies & series -->
+    <!-- Movies & series: the Movies tab's poster cards (ShelfView.PosterCard), 132 by 198, 10 pt corner, SERIES on a series, the Movies menu (More info on a movie, My list). The name sits under the poster in 14 pt #D7DEE8. -->
     <div style="display: flex; flex-direction: column; gap: 10px">
       <div style="font-size: 17px; font-weight: 700">Movies &amp; series</div>
       <div style="display: flex; gap: 12px; overflow: hidden">
