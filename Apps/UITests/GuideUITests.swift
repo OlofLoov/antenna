@@ -73,6 +73,25 @@ final class GuideUITests: XCTestCase {
         XCTAssertEqual(app.element("guide.loading.\(key(1))").label, "Loading guide…")
     }
 
+    // guide-on-iphone-ipad-and-mac/the-clock-redraws-only-what-shows-the-time
+    func testTheClockMovesRowsWithoutRebuildingTheList() throws {
+        let app = try launch()
+        openGuide(app)
+        let list = app.element("guide.list")
+        let builds = list.value as? String
+        // Two ticks of the five-second clock.
+        Thread.sleep(forTimeInterval: 11)
+        let secondHalf = app.descendants(matching: .any)
+            .matching(
+                NSPredicate(
+                    format: "identifier BEGINSWITH %@ AND label CONTAINS 'Second Half' AND label ENDSWITH 'on now'",
+                    "guide.block.\(key(2)).")
+            )
+            .firstMatch
+        XCTAssertTrue(secondHalf.waitForExistence(timeout: 30), "Sport One moved on to the second half with the clock")
+        XCTAssertEqual(list.value as? String, builds, "the clock ticks did not build the list again")
+    }
+
     // guide-on-iphone-ipad-and-mac/one-row-per-channel-on-iphone, a row scrolls on its own
     func testEachRowScrollsSideways() throws {
         let app = try launch()

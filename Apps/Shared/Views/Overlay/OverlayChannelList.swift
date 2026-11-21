@@ -32,13 +32,16 @@
         var body: some View {
             ScrollViewReader { proxy in
                 ScrollView {
-                    // Rows move on to the next programme at the minute it starts.
-                    TimelineView(.everyMinute) { context in
-                        LazyVStack(alignment: .leading, spacing: 4) {
-                            ForEach(catalogue.rows(in: group), id: \.self) { key in
-                                if let channel = catalogue.channel(for: key) {
+                    LazyVStack(alignment: .leading, spacing: 4) {
+                        ForEach(catalogue.rows(in: group), id: \.self) { key in
+                            if let channel = catalogue.channel(for: key) {
+                                // Each row built moves on to the next programme at
+                                // the minute it starts, without the minute walking
+                                // the whole group (tv-channel-overlay/a-large-group-stays-light).
+                                TimelineView(.everyMinute) { context in
                                     row(key, channel, line: guide.line(for: channel, at: context.date))
                                 }
+                                .id(key)
                             }
                         }
                     }
@@ -78,7 +81,6 @@
                 Browse.FavoriteMenuButton(isFavorite: catalogue.isFavorite(channel)) { toggleFavorite(channel, key) }
                     .accessibilityIdentifier("overlay.menu.favorite")
             }
-            .id(key)
             .accessibilityIdentifier(identifier)
             .accessibilityLabel([number.map(String.init), channel.name, line.text, remaining].compactMap(\.self).joined(separator: ", "))
             .accessibilityActions([
