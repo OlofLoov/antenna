@@ -53,6 +53,23 @@ import Testing
         #expect(calls.value == 1, "building the page asks the provider nothing")
     }
 
+    @Test("movies-and-series-browsing/browsing-stays-responsive new answers reach the people index without reading every row again")
+    func answersOnTopOfRows() async throws {
+        let library = await library(calls: Counter())
+        let name = try #require(PersonName("Jonas Reeve"))
+        #expect(await library.people().page(name).isEmpty)
+        for title in [harbor, engines] {
+            library.openPage(title, from: .poster(row: "recentlyAdded"), in: .movie)
+            await library.page?.model.load()
+        }
+        async let first = library.people()
+        async let second = library.people()
+        let (one, two) = await (first, second)
+        #expect(one.page(name).movies.count == 2)
+        #expect(two.page(name).movies.count == 2)
+        #expect(library.rowBuilds == 1, "the titles did not change, so their rows are read once")
+    }
+
     @Test("browse-by-person/a-person-s-page a person's page opens over the title page, and Back returns to its chip")
     func stack() async throws {
         let calls = Counter()

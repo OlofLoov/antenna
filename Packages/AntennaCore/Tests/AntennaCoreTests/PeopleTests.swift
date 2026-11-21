@@ -188,6 +188,67 @@ import Testing
         #expect(clock.now - started < .seconds(5))
     }
 
+    @Test("browse-by-person/a-person-s-page-never-asks-the-provider an answer's cast replaces the row's, and its directors the row's")
+    func answersOnTop() throws {
+        let both = movie(1, "Salt Road", cast: "Mira Holt", director: "Sanna Weiss")
+        let castOnly = movie(2, "Night Ferry", cast: "Mira Holt", director: "Sanna Weiss")
+        var learned = LearnedCredits()
+        learned.record(both, credits: TitleCredits(cast: "Jonas Reeve", director: "Ole Dahl"), year: 2024, now: .now)
+        learned.record(castOnly, credits: TitleCredits(cast: "jonas reeve, Mira Holt", director: nil), year: nil, now: .now)
+        let rows = PeopleIndex.Rows(libraries: [ShelfIndex(lookingUp: [both, castOnly])], isCancelled: { false })
+        let index = PeopleIndex(rows: try #require(rows), learned: learned)
+        func page(_ name: String) throws -> PersonPage { index.page(try #require(PersonName(name))) }
+        #expect(try page("Mira Holt").movies.map(\.name) == ["Night Ferry"])
+        #expect(try page("Sanna Weiss").directed.map(\.name) == ["Night Ferry"], "an answer with no directors keeps the row's")
+        #expect(try page("Ole Dahl").directed.map(\.name) == ["Salt Road"])
+        #expect(try page("Jonas Reeve").movies.map(\.name) == ["Salt Road", "Night Ferry"], "the answer's year puts it first")
+        #expect(try page("Jonas Reeve").name == "Jonas Reeve", "the spelling of the first title in source order")
+        #expect(index.search(SearchQuery("jonas")).first?.titleCount == 2)
+        #expect(index.search(SearchQuery("sanna")).first?.titleCount == 1)
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a cancelled build of the row names stops and returns nothing")
+    func cancelledRows() {
+        var asked = 0
+        let titles = (0..<2_000).map { movie($0, "Movie \($0)", cast: "Mira Holt") }
+        let rows = PeopleIndex.Rows(
+            libraries: [ShelfIndex(lookingUp: titles)],
+            isCancelled: {
+                asked += 1
+                return asked > 1
+            })
+        #expect(rows == nil)
+        #expect(asked == 2, "it stops at the second check, 1 024 titles in")
+    }
+
+    /// 100 000 movies and 30 000 series, each row naming five of 15 000
+    /// people and a director: the review's worst case. Timed, so it runs
+    /// with the benchmarks under `ANTENNA_BENCHMARKS=1 swift test`.
+    @Test(
+        "movies-and-series-browsing/browsing-stays-responsive the row names of 130 000 titles with cast build in 8 s, an answer goes on top in 500 ms",
+        .enabled(if: Benchmarks.enabled))
+    func castHeavyLibrary() throws {
+        let people = (0..<15_000).map { "Given\($0 % 3_000) Family\($0 / 3_000)" }
+        func names(_ seed: Int) -> String { (0..<5).map { people[(seed * 13 + $0 * 4_391) % people.count] }.joined(separator: ", ") }
+        let movies = (0..<100_000).map { movie($0, "Movie \($0)", cast: names($0), director: people[$0 * 3 % people.count]) }
+        let shows = (0..<30_000).map { series($0, "Series \($0)", cast: names($0 + 200_000), director: people[$0 * 5 % people.count]) }
+        var rows: PeopleIndex.Rows?
+        let rowTime = FastestRun.of(1) {
+            rows = PeopleIndex.Rows(libraries: [ShelfIndex(lookingUp: movies), ShelfIndex(lookingUp: shows)], isCancelled: { false })
+        }
+        var learned = LearnedCredits()
+        for seed in 0..<20_000 {
+            learned.record(movies[seed * 5], credits: TitleCredits(cast: names(seed + 500_000), director: nil), year: 2000, now: .now)
+        }
+        let built = try #require(rows)
+        var index = PeopleIndex.empty
+        let answerTime = FastestRun.of { index = PeopleIndex(rows: built, learned: learned) }
+        #expect(index.person(PersonName.key(people[0])) != nil)
+        #expect(!index.hasUnknownTitles)
+        #expect(answerTime < .milliseconds(500), "the answers took \(answerTime)")
+        #expect(rowTime < .seconds(8), "the rows took \(rowTime)")
+    }
+
     private func largeCatalogue() -> [ShelfTitle] {
         (0..<40_000).map { movie($0, "Movie \($0)", cast: "Actor \($0 % 500), Mira Holt", director: "Director \($0 % 90)") }
     }

@@ -1,9 +1,9 @@
 ## 1. People index
 
-- [ ] 1.1 `PeopleIndex.Rows` reads the row names once per change of titles, caches each cleaned name part, and points at titles by position; `PersonName.split` reads the field's bytes
-- [ ] 1.2 `PeopleIndex(rows:learned:)` puts the info answers' names on top, with core tests that the answer's cast and directors replace the row's and that a cancelled build returns nothing
-- [ ] 1.3 `ShelfLibrary.people()` shares one row build per change of titles and cancels the one for old titles, with an app test that answers do not read the rows again
-- [ ] 1.4 A benchmark pins the build of 130 000 titles with five names each
+- [x] 1.1 `PeopleIndex.Rows` reads the row names once per change of titles, caches each cleaned name part, and points at titles by position; `PersonName.split` reads the field's bytes
+- [x] 1.2 `PeopleIndex(rows:learned:)` puts the info answers' names on top, with core tests that the answer's cast and directors replace the row's and that a cancelled build returns nothing
+- [x] 1.3 `ShelfLibrary.people()` shares one row build per change of titles and cancels the one for old titles, with an app test that answers do not read the rows again
+- [x] 1.4 A benchmark pins the build of 130 000 titles with five names each
 
 ## 2. Sorted grids
 

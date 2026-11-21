@@ -32,6 +32,9 @@ public struct LearnedCredits: Sendable, Hashable {
     public init() {}
 
     public var count: Int { entries.count }
+
+    /// Every entry, in no order.
+    var all: Dictionary<ActivityKey, Entry>.Values { entries.values }
     public var isEmpty: Bool { entries.isEmpty }
 
     /// The names learned for a title, nil when no info answer has arrived for it.
