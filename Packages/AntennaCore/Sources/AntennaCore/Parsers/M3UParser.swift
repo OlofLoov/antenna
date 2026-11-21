@@ -175,7 +175,8 @@ public struct M3UParser: Sendable {
         return PendingEntry(title: title, attributes: attrs, group: attrs["group-title"], duration: duration)
     }
 
-    /// Parses `key="value"` and `key=value` pairs. Keys are lower-cased.
+    /// Parses `key="value"` and `key=value` pairs, skipping words without
+    /// `=`. Keys are lower-cased.
     static func attributes(in text: Substring) -> [String: String] {
         var result: [String: String] = [:]
         var i = text.startIndex
@@ -185,7 +186,9 @@ public struct M3UParser: Sendable {
             guard i < text.endIndex else { break }
             let keyStart = i
             while i < text.endIndex, text[i] != "=", !text[i].isWhitespace { i = text.index(after: i) }
-            guard i < text.endIndex, text[i] == "=" else { break }
+            // A word with no `=` is skipped (m3u-playlists/standard-attributes-map-to-the-channel).
+            guard i < text.endIndex else { break }
+            guard text[i] == "=" else { continue }
             let key = text[keyStart..<i].lowercased()
             i = text.index(after: i)
             guard i < text.endIndex else { break }
@@ -265,7 +268,8 @@ public struct M3UParser: Sendable {
             guard i < bytes.endIndex else { break }
             let keyStart = i
             while i < bytes.endIndex, bytes[i] != UInt8(ascii: "="), !isASCIIWhitespace(bytes[i]) { bytes.formIndex(after: &i) }
-            guard i < bytes.endIndex, bytes[i] == UInt8(ascii: "=") else { break }
+            guard i < bytes.endIndex else { break }
+            guard bytes[i] == UInt8(ascii: "=") else { continue }
             let key = text[keyStart..<i].lowercased()
             bytes.formIndex(after: &i)
             guard i < bytes.endIndex else { break }
