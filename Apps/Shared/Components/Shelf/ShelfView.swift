@@ -65,10 +65,15 @@ enum ShelfView {
     }
 
     /// A poster in a row or grid. VoiceOver reads `label`
-    /// (movies-and-series-browsing/rows-in-a-predictable-order).
+    /// (movies-and-series-browsing/rows-in-a-predictable-order). A title
+    /// whose kind is in `badged` wears SERIES at the top corner, as on a
+    /// Continue watching card, where a row mixes movies and series.
+    /// `identifier` defaults to `<prefix>.card.<id>`.
     struct PosterCard: View {
         let title: ShelfTitle
         let label: String
+        var badged: Set<ShelfTitle.Kind> = []
+        var identifier: String?
         let select: () -> Void
         @Environment(\.shelfMetrics) private var metrics
         @Environment(\.shelfPrefix) private var prefix
@@ -77,10 +82,17 @@ enum ShelfView {
             Button(action: select) {
                 PosterArt(name: title.name, url: title.posterURL)
                     .frame(width: metrics.poster.width, height: metrics.poster.height)
+                    .overlay(alignment: .topLeading) {
+                        if title.kind == .series, badged.contains(.series) {
+                            ShelfBanner.Badge(text: "SERIES", size: max(10, metrics.count - 3))
+                                .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
+                                .padding(metrics.corner * 0.7)
+                        }
+                    }
             }
             .posterButtonStyle()
             .accessibilityLabel(label)
-            .accessibilityIdentifier("\(prefix).card.\(title.id)")
+            .accessibilityIdentifier(identifier ?? "\(prefix).card.\(title.id)")
         }
     }
 

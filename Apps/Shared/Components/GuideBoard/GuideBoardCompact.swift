@@ -5,6 +5,23 @@ extension GuideBoard {
     /// The iPhone guide's rows (guide-on-iphone-ipad-and-mac/one-row-per-channel-on-iphone;
     /// `iPhone-Guide`, `iPhone-Guide-Placeholders`): a header line per
     /// channel over a strip of 168 by 54 pt cards.
+    /// The accent NOW badge on the programme that is on, in the guide and
+    /// in Search's In the guide.
+    struct NowBadge: View {
+        let size: CGFloat
+        @Environment(\.accent) private var accent
+
+        var body: some View {
+            Text("NOW")
+                .font(.boardStyle(size, weight: .bold))
+                .letterSpacing(1)
+                .foregroundStyle(Palette.ground)
+                .padding(.vertical, size / 11)
+                .padding(.horizontal, size * 5 / 11)
+                .background(accent.color, in: cornerShape(.small))
+        }
+    }
+
     enum Compact {
         /// Tile, number and name on one line. A tap plays the channel.
         struct RowHeader<Logo: View>: View {
@@ -59,7 +76,6 @@ extension GuideBoard {
         /// A programme card: the start time, NOW on the card that is on, the
         /// title, and a progress bar along the bottom of the card on now.
         struct Card: View {
-            @Environment(\.accent) private var accent
             let time: String
             let title: String
             let timing: GuideTiming
@@ -73,13 +89,7 @@ extension GuideBoard {
                             .monospacedDigit()
                             .foregroundStyle(Palette.textMuted)
                         if timing == .now {
-                            Text("NOW")
-                                .font(.boardStyle(11, weight: .bold))
-                                .letterSpacing(1)
-                                .foregroundStyle(Palette.ground)
-                                .padding(.vertical, 1)
-                                .padding(.horizontal, 5)
-                                .background(accent.color, in: cornerShape(.small))
+                            GuideBoard.NowBadge(size: 11)
                         }
                     }
                     Text(title)

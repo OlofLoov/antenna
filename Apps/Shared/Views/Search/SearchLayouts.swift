@@ -17,31 +17,39 @@ enum SearchLayout {
                 LazyVStack(alignment: .leading, spacing: 14) {
                     if showsChannels(model) {
                         section(.channels, model: model) {
-                            ForEach(Array(results.shownChannels.enumerated()), id: \.element.id) { index, hit in
-                                SearchChannelResult(hit: hit, index: index)
+                            // The Live list's rows, 2 pt apart as there.
+                            VStack(spacing: 2) {
+                                ForEach(Array(results.shownChannels.enumerated()), id: \.element.id) { index, hit in
+                                    SearchChannelResult(hit: hit, index: index)
+                                }
                             }
                             capNote(results)
                         }
                     }
                     if showsGuide(model) {
                         section(.guide, model: model) {
-                            ForEach(results.shownProgrammes(model.scope, expanded: model.guideExpanded), id: \.self) { index in
-                                SearchProgrammeResult(hit: results.programmes[index], index: index)
+                            VStack(spacing: 6) {
+                                ForEach(results.shownProgrammes(model.scope, expanded: model.guideExpanded), id: \.self) { index in
+                                    SearchProgrammeResult(hit: results.programmes[index], index: index)
+                                }
                             }
                         }
                     }
                     if showsTitles(model) {
                         section(.titles, model: model) {
                             ScrollView(.horizontal) {
-                                LazyHStack(alignment: .top, spacing: 12) { titles(results.shownTitles(model.scope)) }
-                                    .padding(.horizontal, 8)
+                                LazyHStack(alignment: .top, spacing: ShelfView.Metrics.phone.gap) {
+                                    titles(results.shownTitles(model.scope))
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, ShelfView.Metrics.phone.corner)
                             }
                             .scrollIndicators(.hidden)
                         }
                     }
                     if !model.shownPeople.isEmpty {
                         section(.people, model: model) {
-                            people(model.shownPeople)
+                            peopleRow(model.shownPeople, type: .phone, inset: 8)
                         }
                     }
                 }
@@ -85,7 +93,7 @@ enum SearchLayout {
                     }
                     if showsGuide(model) {
                         section(.guide, model: model) {
-                            LazyVGrid(columns: columns(2), spacing: 8) {
+                            LazyVGrid(columns: columns(2), spacing: 10) {
                                 ForEach(results.shownProgrammes(model.scope, expanded: model.guideExpanded), id: \.self) { index in
                                     SearchProgrammeResult(hit: results.programmes[index], index: index)
                                 }
@@ -96,11 +104,21 @@ enum SearchLayout {
                         section(.titles, model: model) {
                             if model.scope == .all {
                                 ScrollView(.horizontal) {
-                                    LazyHStack(alignment: .top, spacing: 12) { titles(results.shownTitles(model.scope)) }
+                                    LazyHStack(alignment: .top, spacing: ShelfView.Metrics.pad.gap) {
+                                        titles(results.shownTitles(model.scope))
+                                    }
+                                    .padding(.vertical, ShelfView.Metrics.pad.corner)
                                 }
                                 .scrollIndicators(.hidden)
+                                .scrollClipDisabled()
                             } else {
-                                LazyVGrid(columns: [GridItem(.adaptive(minimum: 132), spacing: 12, alignment: .top)], spacing: 16) {
+                                LazyVGrid(
+                                    columns: [
+                                        GridItem(
+                                            .adaptive(minimum: ShelfView.Metrics.pad.poster.width), spacing: ShelfView.Metrics.pad.gap,
+                                            alignment: .top)
+                                    ], spacing: 16
+                                ) {
                                     titles(results.shownTitles(model.scope))
                                 }
                             }
@@ -108,7 +126,7 @@ enum SearchLayout {
                     }
                     if !model.shownPeople.isEmpty {
                         section(.people, model: model) {
-                            LazyVGrid(columns: columns(3), spacing: 10) { people(model.shownPeople) }
+                            peopleRow(model.shownPeople, type: .pad, inset: 0)
                         }
                     }
                 }
@@ -243,11 +261,22 @@ private func capNote(_ results: SearchResults) -> some View {
     }
 }
 
-@MainActor @ViewBuilder
-func people(_ people: [PeopleIndex.Person]) -> some View {
-    ForEach(Array(people.enumerated()), id: \.element.id) { index, person in
-        SearchPersonResult(person: person, index: index)
+/// People as the title page's cast row: chips in one line that scrolls
+/// sideways, spaced as on the title page at `type`, `inset` in from the
+/// section's edges.
+@MainActor
+func peopleRow(_ people: [PeopleIndex.Person], type: TitlePage.Sizes, inset: CGFloat) -> some View {
+    ScrollView(.horizontal) {
+        HStack(spacing: type.spacing * 0.8) {
+            ForEach(Array(people.enumerated()), id: \.element.id) { index, person in
+                SearchPersonResult(person: person, index: index)
+            }
+        }
+        .padding(.horizontal, inset)
+        .padding(.vertical, type.spacing / 2)
     }
+    .scrollIndicators(.hidden)
+    .scrollClipDisabled()
 }
 
 @MainActor @ViewBuilder

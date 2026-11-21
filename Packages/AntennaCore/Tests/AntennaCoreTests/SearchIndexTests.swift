@@ -99,6 +99,15 @@ struct SearchIndexTests {
         )
     }
 
+    @Test("search/results-grouped-best-first a channel row says what is on, or the group it matched")
+    func channelRowLine() throws {
+        let results = north.results(for: SearchQuery("north"), now: Fixture.now)
+        let nordic = try #require(results.channels.first { $0.channel.name == "Nordic One" })
+        #expect(SearchText.channelRowLine(nordic, line: "Loading guide…", locale: .english) == "Matches Northern Report")
+        let news = try #require(results.channels.first)
+        #expect(SearchText.channelRowLine(news, line: "Late Edition", locale: .english) == "Late Edition")
+    }
+
     @Test("search/find-things-the-way-you-type-them one letter shows nothing yet")
     func oneLetter() {
         #expect(north.results(for: SearchQuery("n"), now: Fixture.now).isEmpty)

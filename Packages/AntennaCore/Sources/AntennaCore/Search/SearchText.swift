@@ -80,6 +80,17 @@ public struct SearchText: Sendable {
         return [number, detail].compactMap(\.self).joinedAsDetail(locale)
     }
 
+    /// A channel row's programme line, which the Live list's row draws
+    /// after the name and number: "Matches Northern Report" for a group
+    /// match, else `line`, what the Live list says is on now.
+    public static func channelRowLine(
+        _ hit: SearchResults.ChannelHit, line: String, locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        guard hit.match == .group, let group = hit.channel.group else { return line }
+        let words = Words(locale)
+        return words("Matches \(words.source(group))")
+    }
+
     /// The programme's line: its title, then " · " and its episode title when it has one.
     public static func programmeTitle(_ programme: Programme, locale: Locale = .autoupdatingCurrent) -> String {
         guard let subtitle = programme.subtitle, !subtitle.isEmpty else { return programme.title }

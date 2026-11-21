@@ -226,6 +226,9 @@ enum ChannelOverlay {
         let identifier: String
         /// "TILE 1" on a channel already in a multi-view tile.
         var badge: String?
+        /// The letters Search matched, on the accent tint; none in the overlay.
+        var nameRanges: [Range<String.Index>] = []
+        var detailRanges: [Range<String.Index>] = []
         let select: () -> Void
         @ViewBuilder var logo: Logo
 
@@ -239,12 +242,12 @@ enum ChannelOverlay {
                         .accessibilityIdentifier("\(identifier).logo")
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .firstTextBaseline, spacing: 16) {
-                            Text(name)
+                            MatchedText(text: name, ranges: nameRanges)
                                 .font(.boardStyle(29))
                                 .lineLimit(1)
                                 .layoutPriority(1)
                             Spacer(minLength: 0)
-                            DetailText(text: detail)
+                            DetailText(text: detail, ranges: detailRanges)
                         }
                         if let progress {
                             ProgressBar(fraction: progress)
@@ -268,10 +271,11 @@ enum ChannelOverlay {
 
     private struct DetailText: View {
         let text: String
+        let ranges: [Range<String.Index>]
         @Environment(\.isFocused) private var isFocused
 
         var body: some View {
-            Text(text)
+            MatchedText(text: text, ranges: ranges)
                 .font(.boardStyle(22))
                 .lineLimit(1)
                 .foregroundStyle(isFocused ? ChannelOverlay.mutedOnFocus : Palette.textMuted)
@@ -442,3 +446,6 @@ private struct OverlayPreview: View {
         }
     }
 }
+
+/// Search's highlighted text, named here because `ChannelOverlay` has a `SearchRow` of its own.
+private typealias MatchedText = SearchRow.Highlighted

@@ -312,6 +312,40 @@ final class SearchUITests: XCTestCase {
         XCTAssertTrue(tab.isSelected, "Cancel goes back to Movies")
     }
 
+    // search/results-grouped-best-first, results look like the rest of the app
+    // Search drew its own 108 by 162 posters and 56 pt channel rows on a gray
+    // surface; the owner asked for the cards the rest of the app uses.
+    func testPostersAndChannelRowsMatchMoviesAndLive() throws {
+        let app = try launch()
+        let liveRows = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'browse.row.'"))
+        XCTAssertTrue(liveRows.element(boundBy: 1).waitForExistence(timeout: 10))
+        // A Live row's frame takes in the list's 1 pt above and below.
+        let liveHeight = liveRows.element(boundBy: 0).frame.height - 2
+        let livePitch = liveRows.element(boundBy: 1).frame.minY - liveRows.element(boundBy: 0).frame.minY
+
+        app.tabBars.buttons["Movies"].tap()
+        let shelfRow = app.element("movies.row.recentlyAdded")
+        XCTAssertTrue(shelfRow.waitForExistence(timeout: 10))
+        let shelfPoster = shelfRow.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'movies.card.'"))
+            .firstMatch
+        XCTAssertTrue(shelfPoster.waitForExistence(timeout: 5))
+        let posterSize = shelfPoster.frame.size
+
+        search(app, "harbor")
+        let poster = app.element("search.result.title.0")
+        XCTAssertTrue(poster.waitForExistence(timeout: 10))
+        XCTAssertEqual(poster.frame.width, posterSize.width, accuracy: 0.5, "a poster in Search is as wide as in Movies")
+        XCTAssertEqual(poster.frame.height, posterSize.height, accuracy: 0.5, "and as tall")
+
+        app.element("search.clear").tap()
+        app.element("search.field").typeText("news")
+        let channel = app.element("search.result.channel.0")
+        XCTAssertTrue(channel.waitForExistence(timeout: 5))
+        XCTAssertEqual(channel.frame.height, liveHeight, accuracy: 0.5, "a channel row in Search is as tall as in Live")
+        let next = app.element("search.result.channel.1")
+        XCTAssertEqual(next.frame.minY - channel.frame.minY, livePitch, accuracy: 0.5, "and as far from the next")
+    }
+
     // browse-by-person/find-a-person-in-search
     // search/results-grouped-best-first, People last
     func testTypingANameListsThePersonAndPickingOpensTheirPage() throws {

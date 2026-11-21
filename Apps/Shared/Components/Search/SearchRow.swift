@@ -1,41 +1,38 @@
 import AntennaCore
 import SwiftUI
 
-/// Search's result rows, recent searches and section parts (boards
-/// `iPhone-Search`, `iPad-Search`, `TV-Search`). Each takes values and a
-/// closure; the screen decides what picking does.
+/// Search's own parts (boards `iPhone-Search`, `iPad-Search`, `TV-Search`):
+/// the programme row, the bell, recent searches and the keyboard cursor.
+/// Channels, posters and people are the rest of the app's components:
+/// the Live list's row, the shelf's poster card and the title page's cast
+/// chip. Each takes values and a closure; the screen decides what picking does.
 enum SearchRow {
-    /// Sizes per platform, read from the boards.
+    /// Sizes per platform, read from the boards: the programme rows,
+    /// headers and recent searches, and the chip sizes people take.
     struct Metrics: Sendable {
         var title: CGFloat
         var detail: CGFloat
         var lead: CGFloat
         var leadWidth: CGFloat
         var badge: CGFloat
-        var logo: CGSize
-        var initials: CGFloat
-        var channelHeight: CGFloat
         var programmeHeight: CGFloat
         var spacing: CGFloat
         var padding: CGFloat
         var corner: CGFloat
-        var poster: CGSize
-        var posterName: CGFloat
         var header: CGFloat
         var headerCount: CGFloat
+        /// The cast chips a person result is drawn as.
+        var chips: TitlePage.Sizes
 
         static let phone = Metrics(
-            title: 15, detail: 12, lead: 12, leadWidth: 52, badge: 10, logo: CGSize(width: 52, height: 34), initials: 11,
-            channelHeight: 56, programmeHeight: 56, spacing: 12, padding: 8, corner: 10, poster: CGSize(width: 108, height: 162),
-            posterName: 13, header: 13, headerCount: 13)
+            title: 14, detail: 12, lead: 12, leadWidth: 52, badge: 11, programmeHeight: 56, spacing: 12, padding: 10, corner: 10,
+            header: 13, headerCount: 13, chips: .phone)
         static let pad = Metrics(
-            title: 16, detail: 13, lead: 13, leadWidth: 64, badge: 11, logo: CGSize(width: 56, height: 36), initials: 12,
-            channelHeight: 66, programmeHeight: 54, spacing: 12, padding: 12, corner: 10, poster: CGSize(width: 132, height: 198),
-            posterName: 14, header: 17, headerCount: 13)
+            title: 16, detail: 13, lead: 13, leadWidth: 64, badge: 11, programmeHeight: 56, spacing: 12, padding: 12, corner: 10,
+            header: 17, headerCount: 13, chips: .pad)
         static let tv = Metrics(
-            title: 24, detail: 18, lead: 20, leadWidth: 120, badge: 18, logo: CGSize(width: 84, height: 56), initials: 18,
-            channelHeight: 112, programmeHeight: 76, spacing: 18, padding: 20, corner: 14, poster: CGSize(width: 180, height: 270),
-            posterName: 20, header: 26, headerCount: 20)
+            title: 24, detail: 18, lead: 20, leadWidth: 120, badge: 18, programmeHeight: 92, spacing: 18, padding: 16, corner: 14,
+            header: 26, headerCount: 20, chips: .tv)
     }
 
     /// Text with the matched letters on the accent tint
@@ -61,50 +58,11 @@ enum SearchRow {
         }
     }
 
-    /// A channel: logo or initials, the name with its highlight, and a
-    /// muted line with the number and what is on, or the group it matched.
-    struct Channel: View {
-        let name: String
-        let nameRanges: [Range<String.Index>]
-        let detail: String
-        let detailRanges: [Range<String.Index>]
-        let initials: String
-        let logo: URL?
-        let select: () -> Void
-        @Environment(\.searchMetrics) private var metrics
-        /// Grows with the text size, so rows and highlights follow large text.
-        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
-
-        var body: some View {
-            Button(action: select) {
-                HStack(spacing: metrics.spacing) {
-                    Browse.Logo(url: logo, initials: initials, isSelected: false)
-                        .frame(width: metrics.logo.width, height: metrics.logo.height)
-                        .clipShape(cornerShape(.small))
-                    VStack(alignment: .leading, spacing: 3) {
-                        Highlighted(text: name, ranges: nameRanges)
-                            .font(.boardStyle(metrics.title))
-                            .lineLimit(1)
-                        Highlighted(text: detail, ranges: detailRanges)
-                            .font(.boardStyle(metrics.detail))
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                    Spacer(minLength: 0)
-                }
-                .padding(.horizontal, metrics.padding)
-                .frame(minHeight: metrics.channelHeight * scale)
-                .contentShape(Rectangle())
-            }
-            .modifier(RowLook())
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Channels, \(name), \(detail)")
-            .accessibilityAddTraits(.isButton)
-        }
-    }
-
-    /// A programme: NOW or its start, its title with the highlight, and its
-    /// channel with the times or the day; a clock arrow when it has catch-up.
+    /// A programme as the guide draws one (`iPhone-Guide`, `TV-Guide`): the
+    /// guide's surface and small corner, NOW or its start, its title with
+    /// the highlight, its channel with the times or the day, a clock arrow
+    /// when it has catch-up, and the guide's progress bar along the foot of
+    /// a programme on now. On Apple TV it takes the white focus card.
     struct Programme: View {
         /// The start time or day and time; nil shows the NOW badge.
         let lead: String?
@@ -112,6 +70,8 @@ enum SearchRow {
         let ranges: [Range<String.Index>]
         let detail: String
         let hasCatchup: Bool
+        /// How far into a programme on now, 0 to 1; nil draws no bar.
+        var progress: Double?
         let select: () -> Void
         @Environment(\.searchMetrics) private var metrics
         /// Grows with the text size, so rows and highlights follow large text.
@@ -128,7 +88,7 @@ enum SearchRow {
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
                         } else {
-                            NowBadge()
+                            GuideBoard.NowBadge(size: metrics.badge)
                         }
                     }
                     .frame(width: metrics.leadWidth, alignment: .leading)
@@ -150,10 +110,17 @@ enum SearchRow {
                     }
                 }
                 .padding(.horizontal, metrics.padding)
-                .frame(minHeight: metrics.programmeHeight * scale)
-                .contentShape(Rectangle())
+                .frame(maxWidth: .infinity, minHeight: metrics.programmeHeight * scale, alignment: .leading)
+                .overlay(alignment: .bottom) {
+                    if let progress {
+                        GuideBoard.ProgressTrack(fraction: progress)
+                    }
+                }
+                .clipShape(cornerShape(.small))
+                .contentShape(cornerShape(.small))
             }
-            .modifier(RowLook())
+            .buttonStyle(FocusCardStyle(.small, resting: Palette.surface(0.08)))
+            .modifier(CursorRing(shape: cornerShape(.small)))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(spoken)
             .accessibilityAddTraits(.isButton)
@@ -188,68 +155,6 @@ enum SearchRow {
         }
     }
 
-    /// The accent NOW badge.
-    struct NowBadge: View {
-        @Environment(\.searchMetrics) private var metrics
-        /// Grows with the text size, so rows and highlights follow large text.
-        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
-        @Environment(\.accent) private var accent
-
-        var body: some View {
-            Text("NOW")
-                .font(.boardStyle(metrics.badge, weight: .bold))
-                .letterSpacing(1)
-                .foregroundStyle(Palette.ground)
-                .padding(.horizontal, metrics.badge * 0.6)
-                .padding(.vertical, 3)
-                .background(accent.color, in: cornerShape(.small))
-        }
-    }
-
-    /// A movie or series: the poster, or its name on a tile, SERIES on a
-    /// series, and the name with its highlight underneath.
-    struct Title<Poster: View>: View {
-        let name: String
-        let ranges: [Range<String.Index>]
-        let isSeries: Bool
-        let select: () -> Void
-        @ViewBuilder var poster: Poster
-        @Environment(\.searchMetrics) private var metrics
-        /// Grows with the text size, so rows and highlights follow large text.
-        @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
-
-        var body: some View {
-            Button(action: select) {
-                VStack(alignment: .leading, spacing: 6) {
-                    poster
-                        .frame(width: metrics.poster.width, height: metrics.poster.height)
-                        .overlay(alignment: .topLeading) {
-                            if isSeries {
-                                Text("SERIES")
-                                    .font(.boardStyle(metrics.badge, weight: .bold))
-                                    .letterSpacing(1)
-                                    .foregroundStyle(Palette.text)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
-                                    .padding(8)
-                            }
-                        }
-                    Highlighted(text: name, ranges: ranges)
-                        .font(.boardStyle(metrics.posterName))
-                        .lineLimit(1)
-                        .frame(width: metrics.poster.width, alignment: .leading)
-                }
-                .contentShape(Rectangle())
-            }
-            .posterButtonStyle()
-            .modifier(PosterCursor())
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(isSeries ? "Movies & series, \(name), series" : "Movies & series, \(name)")
-            .accessibilityAddTraits(.isButton)
-        }
-    }
-
     /// One recent search; picking it runs it again (search/recent-searches).
     struct Recent: View {
         let text: String
@@ -279,7 +184,7 @@ enum SearchRow {
         }
     }
 
-    /// A result row's look (design-system/controls-use-system-styles). On
+    /// A recent search's look (design-system/controls-use-system-styles). On
     /// Apple TV the row is a bordered button, which rests translucent and
     /// takes the light platter with dark text when focused. Elsewhere it is
     /// borderless on the row surface, brighter under the keyboard cursor.
@@ -298,6 +203,23 @@ enum SearchRow {
                     .tint(Palette.text)
                     .background(Palette.surface(cursor ? 0.12 : 0.06), in: RoundedRectangle(cornerRadius: metrics.corner))
             #endif
+        }
+    }
+
+    /// The keyboard cursor on iPad and Mac (search/search-with-a-keyboard):
+    /// the Live list's 2 pt ring in the Text color with no fill
+    /// (`iPad-Focus`), in the result's own shape.
+    struct CursorRing<RingShape: InsettableShape>: ViewModifier {
+        let shape: RingShape
+        @Environment(\.searchCursor) private var cursor
+
+        func body(content: Content) -> some View {
+            content
+                .overlay {
+                    if cursor {
+                        shape.strokeBorder(Palette.text, lineWidth: 2)
+                    }
+                }
         }
     }
 
