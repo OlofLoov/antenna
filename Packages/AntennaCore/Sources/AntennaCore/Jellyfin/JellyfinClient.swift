@@ -20,7 +20,7 @@ public struct JellyfinClient: Sendable, CustomStringConvertible, CustomDebugStri
     let session: URLSession
 
     public init(
-        credentials: JellyfinCredentials, device: JellyfinDevice, sessionStore: any JellyfinSessionStore, session: URLSession = .shared
+        credentials: JellyfinCredentials, device: JellyfinDevice, sessionStore: any JellyfinSessionStore, session: URLSession = .provider
     ) {
         self.credentials = credentials
         self.device = device

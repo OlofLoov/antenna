@@ -198,7 +198,7 @@ extension AppGuideStore: SetupGuide {}
 extension SourceSetup.Dependencies {
     /// The app's: Xtream through `XtreamClient` on `session`, the guide
     /// through the app's store.
-    static func live(session: URLSession = .shared, guide: AppGuideStore?) -> Self {
+    static func live(session: URLSession = .provider, guide: AppGuideStore?) -> Self {
         .init(
             channels: { connection in
                 switch connection.reply {

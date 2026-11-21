@@ -33,7 +33,7 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
     private let credentials: XtreamCredentials
     private let session: URLSession
 
-    public init(credentials: XtreamCredentials, session: URLSession = .shared) {
+    public init(credentials: XtreamCredentials, session: URLSession = .provider) {
         self.credentials = credentials
         self.session = session
     }

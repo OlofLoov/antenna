@@ -16,7 +16,7 @@ final class JellyfinClients: Sendable {
     private let clients = Mutex<[UUID: JellyfinClient]>([:])
 
     /// Tests pass a stub session and a fixed device.
-    init(session: URLSession = .shared, device: JellyfinDevice = JellyfinClients.thisDevice()) {
+    init(session: URLSession = .provider, device: JellyfinDevice = JellyfinClients.thisDevice()) {
         self.session = session
         self.device = device
     }

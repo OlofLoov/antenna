@@ -9,7 +9,7 @@ import Foundation
 struct CatchupAddresses: Sendable {
     var credentials: any CredentialStoring = CredentialStore()
     var timeZones: XtreamTimeZones = SourceLoader.sharedTimeZones
-    var session: URLSession = .shared
+    var session: URLSession = .provider
     /// Answers in place of building, for UI tests.
     var scripted: (@Sendable (Channel, CatchupRequest) -> URL?)?
 

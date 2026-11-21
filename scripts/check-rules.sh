@@ -338,6 +338,15 @@ check_except "tvos-shell/one-press-does-one-thing: a long press on a button only
   'Apps/Shared/Components/HoldButton\.swift' \
   Apps/Shared Apps/TV
 
+# The shared session keeps replies in a URL cache on disk, keyed by the
+# full address. Only posters and logos may use it; a request that can
+# carry a login goes through `URLSession.provider` or another session
+# with no cache (source-management/provider-replies-are-not-kept-on-disk).
+check_except "source-management/provider-replies-are-not-kept-on-disk: the shared URL session only for posters and logos" \
+  '(URLSession\.shared|URLSession[[:space:]]*=[[:space:]]*\.shared|session:[[:space:]]*\.shared)([^A-Za-z0-9_]|$)' \
+  'Apps/Shared/Persistence/(PosterCache|LogoCache)\.swift' \
+  Apps/Shared Apps/Mobile Apps/TV Apps/TopShelf Packages/AntennaCore/Sources Packages/AntennaDemux/Sources
+
 check "localization: Core never compares translated words" \
   '(==|!=)[[:space:]]*[Ww]ords(\([a-z]+\))?\("|[Ww]ords(\([a-z]+\))?\("[^"]*"\)[[:space:]]*(==|!=)' \
   Packages/AntennaCore/Sources

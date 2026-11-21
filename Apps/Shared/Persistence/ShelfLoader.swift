@@ -7,7 +7,7 @@ import Synchronization
 /// needs the Keychain; the client and decoders are in AntennaCore. Playable
 /// addresses are built on demand from the credential and never stored or logged.
 struct ShelfLoader: Sendable {
-    var session: URLSession = .shared
+    var session: URLSession = .provider
     var credentials: any CredentialStoring = CredentialStore()
     /// Loads a playlist whose movies are not in memory yet. Nil leaves playlists without movies.
     var playlists: SourceLoader?

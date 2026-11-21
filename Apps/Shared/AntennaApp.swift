@@ -48,6 +48,7 @@ struct AntennaApp: App {
         // Buffers from an earlier run are deleted unread
         // (timeshift-catch-up-and-start-over/changing-channel-starts-fresh).
         TimeshiftStore.standard.clearLeftovers()
+        ProviderCachePurge.run()
         let guideStore = AppGuideStore.live(container: container)
         _guideStore = State(initialValue: guideStore)
         _refresher = State(initialValue: SourceRefresher(Self.refresherDependencies(guide: guideStore, container: container)))
