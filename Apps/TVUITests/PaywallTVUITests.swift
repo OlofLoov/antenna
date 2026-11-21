@@ -37,6 +37,17 @@ final class PaywallTVUITests: XCTestCase {
         XCTAssertFalse(element("shell.debug.engine").exists, "the shell did not open")
     }
 
+    // design-system/apple-tv-content-stays-in-the-safe-area
+    // The legal line sat 56 pt over the safe area's own 60; it ends at the 60 pt foot.
+    func testThePaywallKeepsTheSafeEdges() {
+        launch(entitlement: "locked")
+        let legal = element("paywall.legal")
+        XCTAssertTrue(legal.waitForExistence(timeout: 10))
+        XCTAssertEqual(legal.frame.maxY, app.frame.height - 60, accuracy: 2, "the legal line ends at the safe foot")
+        XCTAssertGreaterThanOrEqual(legal.frame.minX, 80, "the legal line stays inside the safe edge")
+        XCTAssertGreaterThanOrEqual(element("paywall.title").frame.minY, 60)
+    }
+
     // tvos-shell/the-shell-waits-for-the-unlock
     // paywall-and-entitlement/buy-once-and-you-re-in
     func testBuyingWithTheRemoteOpensTheShell() {

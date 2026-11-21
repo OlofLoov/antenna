@@ -51,11 +51,12 @@ extension Paywall {
             }
             .foregroundStyle(Palette.text)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // The wordmark and the legal line sit on the safe area's 80 pt
+            // sides and 60 pt top and foot
+            // (design-system/apple-tv-content-stays-in-the-safe-area).
             .overlay(alignment: .topLeading) {
                 Label("Antenna", systemImage: Paywall.mark)
                     .font(.boardStyle(26, weight: .bold))
-                    .padding(.leading, 64)
-                    .padding(.top, 44)
                     .accessibilityHidden(true)
             }
             .overlay(alignment: .bottom) {
@@ -64,12 +65,13 @@ extension Paywall {
                         .font(.boardStyle(20))
                         .foregroundStyle(Palette.textMuted)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 160)
-                        .padding(.bottom, 56)
+                        .padding(.horizontal, 80)
                         .accessibilityIdentifier("paywall.legal")
                 }
             }
+            .padding(Metrics.televisionSafeArea)
             .background(Palette.ground)
+            .ignoresSafeArea()
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywall.root")
         }

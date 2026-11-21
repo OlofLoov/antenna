@@ -99,6 +99,25 @@ final class ShelfPreviewTVUITests: XCTestCase {
         expect(element("movies.preview.plot"), "label == 'The story of Snow Day.'")
     }
 
+    // design-system/apple-tv-content-stays-in-the-safe-area
+    // The hero copy, the preview copy and the rows started 64 pt from the side; the safe area is 80.
+    func testMoviesKeepsTheSafeEdges() {
+        openMovies()
+        XCTAssertEqual(element("movies.hero.title").frame.minX, 80, accuracy: 1, "the hero copy starts at the safe edge")
+        // Play has focus, and its platter grows a few points past its place at the margin.
+        XCTAssertGreaterThanOrEqual(element("movies.hero.play").frame.minX, 72, "Play starts at the safe edge")
+        press(.down)
+        expect(element("movies.preview.title"), "label == 'Night Ferry'")
+        XCTAssertEqual(element("movies.preview.title").frame.minX, 80, accuracy: 1, "the preview copy starts at the safe edge")
+        let row = element("movies.row.recentlyAdded")
+        let cards = row.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'movies.card.'"))
+        guard let frame = cards.allElementsBoundByIndex.map(\.frame).min(by: { $0.minX < $1.minX }) else {
+            return XCTFail("the row has no cards")
+        }
+        // The focused poster grows about its middle; its 212 pt resting frame starts at the margin.
+        XCTAssertEqual(frame.midX - 106, 80, accuracy: 1, "the first card starts at the safe edge: \(frame)")
+    }
+
     // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving quickly along a row
     // movies-and-series-browsing/title-details-are-asked-once-per-title
     func testAFastSwipeAsksNothingOnTheWay() {

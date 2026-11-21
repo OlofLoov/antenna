@@ -97,6 +97,17 @@ final class SearchTVUITests: XCTestCase {
         XCTAssertFalse(element("search.section.channels").exists)
     }
 
+    // design-system/apple-tv-content-stays-in-the-safe-area
+    // The results sat 144 pt from the side: 64 pt of padding inside the system's own 80.
+    func testTheResultsKeepTheSafeEdges() {
+        openSearch()
+        type("film")
+        let first = element("search.result.programme.0")
+        XCTAssertTrue(first.waitForExistence(timeout: 10))
+        XCTAssertEqual(first.frame.minX, 80, accuracy: 1, "the results start at the safe edge")
+        XCTAssertLessThanOrEqual(first.frame.maxX, app.frame.width - 79, "the results end inside the safe edge")
+    }
+
     // search/pick-a-channel-or-title-to-watch
     func testPickingAChannelPlaysItFullScreen() {
         openSearch()

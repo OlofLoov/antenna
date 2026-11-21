@@ -80,7 +80,7 @@
             SearchSample.titles
             SearchRow.Recent(text: "snooker") {}
         }
-        .padding(64)
+        .padding(Metrics.televisionSafeArea)
         .frame(maxHeight: .infinity, alignment: .top)
         .background(Palette.ground)
         .environment(\.searchMetrics, .tv)

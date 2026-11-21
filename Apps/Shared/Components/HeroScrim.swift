@@ -53,7 +53,7 @@ struct HeroFootScrim: View {
         Text(verbatim: "The Long Harbor")
             .font(.largeTitle.bold())
             .foregroundStyle(Palette.text)
-            .padding(.leading, 64)
+            .padding(.leading, Metrics.televisionSafeArea.leading)
             .padding(.top, 180)
     }
 }
@@ -65,7 +65,7 @@ struct HeroFootScrim: View {
         Text(verbatim: "الميناء الطويل")
             .font(.largeTitle.bold())
             .foregroundStyle(Palette.text)
-            .padding(.leading, 64)
+            .padding(.leading, Metrics.televisionSafeArea.leading)
             .padding(.top, 180)
     }
     .environment(\.layoutDirection, .rightToLeft)
