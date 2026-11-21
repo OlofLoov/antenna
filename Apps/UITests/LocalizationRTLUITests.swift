@@ -88,7 +88,11 @@ final class LocalizationRTLUITests: XCTestCase {
         let start = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 1.0, dy: 0.5))
         let near = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5))
         near.press(forDuration: 0.1, thenDragTo: start)
-        label(app, "timeshift.behindLive", is: "متأخر بـ ٢١ د")
+        // The 20-minute buffer grows while the test runs, so its start reads 20 or 21 minutes behind.
+        let behind = app.element("timeshift.behindLive")
+        let atStart = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label IN %@", ["متأخر بـ ٢٠ د", "متأخر بـ ٢١ د"]), object: behind)
+        XCTAssertEqual(XCTWaiter().wait(for: [atStart], timeout: 10), .completed, "timeshift.behindLive is \(behind.label)")
         snap("player-behind")
     }
 
