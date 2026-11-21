@@ -37,6 +37,9 @@ struct AntennaApp: App {
     init() {
         #if DEBUG
             UITestingStoreShots.pinClock()
+            #if os(iOS)
+                N2AnimationProbe.start()
+            #endif
         #endif
         let container = Self.makeContainer()
         self.container = container
