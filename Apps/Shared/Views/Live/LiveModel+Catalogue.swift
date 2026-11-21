@@ -11,6 +11,7 @@ extension LiveModel {
     func startCatalogueBuild(_ inputs: CatalogueInputs<PersistentIdentifier>) {
         builds += 1
         let ticket = builds
+        let seenAt = seenChanges
         let build = dependencies.buildCatalogue
         building = Task { [weak self] in
             let interval = BrowseSignposts.signposter.beginInterval("catalogue")
@@ -25,7 +26,30 @@ extension LiveModel {
             names = built.names
             restoreGroup()
             building = nil
+            if seenChanges != seenAt { await showNew() }
         }
+    }
+
+    /// Lists the New group again from `seen`, away from the main actor. A
+    /// catalogue replaced meanwhile is worked on again; a build in flight
+    /// does it when it lands.
+    func showNew() async {
+        while building == nil {
+            let current = catalogue
+            let updated = await Self.withNew(current, seen: seen, now: .now)
+            guard building == nil else { return }
+            if catalogue.revision == current.revision {
+                if updated.rows(in: .new) != current.rows(in: .new) { catalogue = updated }
+                return
+            }
+        }
+    }
+
+    @concurrent
+    private static func withNew(
+        _ catalogue: Catalogue<PersistentIdentifier>, seen: [UUID: SeenChannels], now: Date
+    ) async -> Catalogue<PersistentIdentifier> {
+        NewChannels.group(catalogue, seen: seen, now: now)
     }
 
     /// Waits until no source is loading and the catalogue is built. For tests.
@@ -33,6 +57,8 @@ extension LiveModel {
         while true {
             if let next = loads.values.first {
                 await next.value
+            } else if let next = records.values.first {
+                await next.task.value
             } else if let building {
                 await building.value
                 if self.building == building { self.building = nil }

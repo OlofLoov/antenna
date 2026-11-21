@@ -116,4 +116,13 @@ Before, at 50 000 / 100 000 channels:
 | Name matching against 5 000 guide names | guide actor, every 250 ms while a guide downloads | 198 ms | |
 | A 620 MB guide, 4 000 channels, 14 days | | fails as too large after 1.9 s | |
 
-After: filled in as each part lands.
+After:
+
+- The seen file no longer sits before the tune; it runs in its own task
+  once the channels show. The New group is worked out off the main actor
+  when it lands, and the catalogue is replaced only when New changed.
+- The unchanged check runs during tagging, off the main actor. An
+  unchanged refresh stores nothing, so neither the flat list nor the
+  catalogue is rebuilt and the guide is not told about the same channels
+  again. The restored channel is looked for in its own source only.
+

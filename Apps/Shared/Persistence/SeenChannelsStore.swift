@@ -27,6 +27,8 @@ struct SeenChannelsStore: Sendable {
         /// Set by UI tests: a channel id the source's first load in this
         /// launch counts as gained since a load the day before.
         var gained: String?
+        /// Set by tests: awaited before each record is read and written.
+        var beforeRecord: (@Sendable () async -> Void)?
     #endif
 
     private func file(_ source: UUID) -> URL {
@@ -56,13 +58,25 @@ struct SeenChannelsStore: Sendable {
         return memory
     }
 
-    /// `playlist`'s channels tagged with `source`, and the memory after
-    /// recording them, worked out off the main actor: for 50 000 channels
-    /// the file alone takes about 180 ms to read and write.
+    /// `playlist`'s channels tagged with `source`, worked out off the main
+    /// actor, and whether they equal `previous`, the source's channels
+    /// before this load.
     @concurrent
-    func tagging(_ playlist: Playlist, of source: UUID) async -> TaggedPlaylist {
+    func tagging(_ playlist: Playlist, of source: UUID, previous: [Channel]?) async -> TaggedPlaylist {
         let channels = Channel.tagged(playlist.channels, sourceID: source)
-        return TaggedPlaylist(playlist: playlist, channels: channels, memory: record(source, channelIDs: channels.map(\.id)))
+        return TaggedPlaylist(playlist: playlist, channels: channels, unchanged: previous == channels)
+    }
+
+    /// Records a load of `source` with `channels` off the main actor and
+    /// returns the memory after it. For 50 000 channels the file takes
+    /// about 230 ms to read and write, so it runs once the channels are in
+    /// use (session-restore-and-recently-watched/the-last-channel-does-not-wait-for-bookkeeping).
+    @concurrent
+    func recording(_ source: UUID, channels: [Channel]) async -> SeenChannels {
+        #if DEBUG
+            await beforeRecord?()
+        #endif
+        return record(source, channelIDs: channels.map(\.id))
     }
 
     /// Forgets `source`'s channels, when the source is deleted.
@@ -71,10 +85,10 @@ struct SeenChannelsStore: Sendable {
     }
 }
 
-/// A loaded playlist, its channels tagged with their source, and the
-/// source's seen memory after the load.
+/// A loaded playlist and its channels tagged with their source.
 struct TaggedPlaylist: Sendable {
     let playlist: Playlist
     let channels: [Channel]
-    let memory: SeenChannels
+    /// The channels equal the source's channels before this load.
+    let unchanged: Bool
 }

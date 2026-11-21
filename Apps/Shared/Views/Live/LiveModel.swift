@@ -105,10 +105,15 @@ final class LiveModel {
     @ObservationIgnored let session: SessionTracker
     @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]
     @ObservationIgnored private(set) var loads: [UUID: Task<Void, Never>] = [:]
-    @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
+    @ObservationIgnored var channelsBySource = SourceChannels()
     @ObservationIgnored private var failures: [UUID: String] = [:]
     /// Each loaded source's memory of its channels (new-channels).
-    @ObservationIgnored private(set) var seen: [UUID: SeenChannels] = [:]
+    @ObservationIgnored var seen: [UUID: SeenChannels] = [:]
+    /// Counts changes to `seen`, so a catalogue build can tell it missed one.
+    @ObservationIgnored var seenChanges = 0
+    /// Each source's seen-channel record, written after its channels show.
+    @ObservationIgnored var records: [UUID: (ticket: Int, task: Task<Void, Never>)] = [:]
+    @ObservationIgnored var recordTickets = 0
     @ObservationIgnored private(set) var favorites: [FavoriteSnapshot<PersistentIdentifier>] = []
     /// The recents the catalogue lists. While Recents is on screen a newer
     /// list waits in `latestRecents` (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
@@ -173,6 +178,7 @@ final class LiveModel {
         for id in descriptors.keys where !ids.contains(id) {
             loads[id]?.cancel()
             loads[id] = nil
+            records.removeValue(forKey: id)?.task.cancel()
             descriptors[id] = nil
             channelsBySource[id] = nil
             failures[id] = nil
@@ -265,9 +271,8 @@ final class LiveModel {
 
     /// Rebuilds the channels and the catalogue from the sources that loaded.
     private func rebuild() {
-        let all = sources.flatMap { channelsBySource[$0.id] ?? [] }
         error = sources.last { failures[$0.id] != nil }.flatMap { failures[$0.id] }
-        guard all != channels else { return }
+        guard let all = channelsBySource.changed(order: sources.map(\.id)) else { return }
         if multiView != nil { Task { await multiViewChannelsChanged() } }
         channels = all
         startCatalogueBuild(
@@ -450,7 +455,7 @@ extension LiveModel {
         do {
             let playlist = try await dependencies.load(source)
             guard !Task.isCancelled else { return nil }
-            return .success(await dependencies.seen.tagging(playlist, of: source.id))
+            return .success(await dependencies.seen.tagging(playlist, of: source.id, previous: channelsBySource[source.id]))
         } catch {
             return .failure(error)
         }
@@ -461,14 +466,14 @@ extension LiveModel {
         case .success(let loaded):
             let playlist = loaded.playlist
             let tagged = loaded.channels
-            channelsBySource[source.id] = tagged
-            seen[source.id] = loaded.memory
+            if !loaded.unchanged { channelsBySource[source.id] = tagged }
             setState(.loaded(channels: tagged.count), for: source.id)
             rebuild()
             replay()
+            record(source.id, tagged)
             if let guide = dependencies.guide {
                 await guide.register(epgURLs: playlist.epgURLs, for: source.id)
-                await guide.update(channels: tagged)
+                if !loaded.unchanged { await guide.update(channels: tagged) }
                 await guide.refreshIfStale(now: .now)
             }
         case .failure(let failure):

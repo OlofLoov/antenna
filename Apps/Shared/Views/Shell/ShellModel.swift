@@ -51,7 +51,7 @@
         /// The channels watched lately on this Apple TV, newest first.
         var recents: [LastChannelKey] = []
         /// Each loaded source's memory of its channels (new-channels).
-        private(set) var seen: [UUID: SeenChannels] = [:]
+        var seen: [UUID: SeenChannels] = [:]
         /// The programme Search asked the Guide to show; the Guide clears it once shown.
         var guideRequest: ProgrammeKey?
         private(set) var pickerOpen = false
@@ -79,7 +79,10 @@
         @ObservationIgnored let dependencies: Dependencies
         @ObservationIgnored private(set) var descriptors: [UUID: SourceDescriptor] = [:]
         @ObservationIgnored private var loads: [UUID: Task<Void, Never>] = [:]
-        @ObservationIgnored private var channelsBySource: [UUID: [Channel]] = [:]
+        @ObservationIgnored private var channelsBySource = SourceChannels()
+        /// Each source's seen-channel record, written after its channels show.
+        @ObservationIgnored var records: [UUID: (ticket: Int, task: Task<Void, Never>)] = [:]
+        @ObservationIgnored var recordTickets = 0
         /// Sources in the order their loads returned, before the channels are
         /// tagged off the main actor, so a source that tags faster cannot
         /// overtake one that landed first.
@@ -172,6 +175,7 @@
             for id in descriptors.keys where !ids.contains(id) {
                 loads[id]?.cancel()
                 loads[id] = nil
+                records.removeValue(forKey: id)?.task.cancel()
                 descriptors[id] = nil
                 channelsBySource[id] = nil
                 self.seen[id] = nil
@@ -241,7 +245,8 @@
                         let playlist = try await dependencies.load(source)
                         guard !Task.isCancelled else { return }
                         if !finishOrder.contains(source.id) { finishOrder.append(source.id) }
-                        result = .success(await dependencies.seen.tagging(playlist, of: source.id))
+                        let previous = channelsBySource[source.id]
+                        result = .success(await dependencies.seen.tagging(playlist, of: source.id, previous: previous))
                     } catch {
                         result = .failure(error)
                     }
@@ -267,8 +272,7 @@
         /// Leaves `channels` alone when a reload brought the same list, so
         /// the screens reading it do not redraw.
         private func rebuildChannels() {
-            let all = sources.flatMap { channelsBySource[$0.id] ?? [] }
-            if all != channels { channels = all }
+            if let all = channelsBySource.changed(order: sources.map(\.id)) { channels = all }
         }
 
         // MARK: Launch tune
@@ -461,14 +465,14 @@
                 let tagged = loaded.channels
                 titleCounts[source.id] = TitleCounts(movies: playlist.movies.count, episodes: playlist.episodes.count)
                 leaveUnofferedTab()
-                channelsBySource[source.id] = tagged
-                seen[source.id] = loaded.memory
+                if !loaded.unchanged { channelsBySource[source.id] = tagged }
                 setState(.loaded(channels: tagged.count), for: source.id)
                 rebuildChannels()
                 considerTune()
+                record(source.id, tagged)
                 if let guide = dependencies.guide {
                     await guide.register(epgURLs: playlist.epgURLs, for: source.id)
-                    await guide.update(channels: tagged)
+                    if !loaded.unchanged { await guide.update(channels: tagged) }
                     await guide.refreshIfStale(now: .now)
                 }
             case .failure(let error):
