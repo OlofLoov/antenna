@@ -71,7 +71,10 @@ radius fails `scripts/check-rules.sh`.
 
 Apple TV safe area: 60 pt top and bottom, 80 pt at the sides
 (`Metrics.televisionSafeArea`). Full-bleed art, video and scrims may run to
-the edge.
+the edge. Pages that ignore the system safe area (Movies, Series, the Guide,
+the paywall, the person page) pad with it themselves. The Movies and Series
+copy and rows, Search's results and the paywall's wordmark start at x 80,
+and the typed channel number sits at 80, 60.
 
 Materials:
 
@@ -274,9 +277,10 @@ mirrored, with these rules. Four boards are drawn in Arabic: `iPhone-RTL`,
 - Uppercase labels and badges use `.letterSpacing(_:)`, which drops the
   spacing in a right-to-left layout: Arabic letters join, and spacing pulls
   them apart.
-- The skip keys on a keyboard (left arrow back, right arrow forward) and the
-  Mac menu items stay as they are in every language. The guide's arrow keys
-  move to what is drawn on that side.
+- The skip keys on a keyboard and in the Playback menu point where the bar
+  runs: Left Arrow back and Right Arrow forward in a left-to-right language,
+  Right Arrow back and Left Arrow forward in a right-to-left one, as the Siri
+  Remote does. The guide's arrow keys move to what is drawn on that side.
 - The boards this applies to most: `TV-Guide`, `TV-Guide-Future`,
   `iPad-Guide`, `iPhone-Guide` (time axis); `iPhone`, `iPad`, `Main` (Live
   list and group button); `TV-ZapBar`, `TV-ZapBar-Timeshift`, `TV-Player`,
