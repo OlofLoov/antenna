@@ -15,7 +15,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </style>
 </helmet>
 <div style="width: 844px; height: 390px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
-  <!-- browse.player fills the screen (live-tv-on-iphone-ipad-mac). add-subtitle-preferences adds player.subtitles after player.tracks and draws the subtitle cue. -->
+  <!-- browse.player fills the screen (live-tv-on-iphone-ipad-mac). add-subtitle-preferences draws the subtitle cue. one-tracks-button: the one player.tracks button shows captions.bubble.fill while full subtitles are on, as here. -->
 
   <!-- player.subtitles.cue: text cues centered near the bottom of the picture's rect, white semibold on a 0.6 black backdrop, 4 percent of the picture height with the caption floor as minimum. Raised above the controls while they show. -->
   <div style="position: absolute; left: 0; right: 0; bottom: 74px; display: flex; justify-content: center">
@@ -29,12 +29,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
       <div style="flex: 1 1 auto; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2)"><div style="height: 3px; width: 78%; border-radius: 2px; background: {{accent}}"></div></div>
       <span style="font-size: 13px; color: #D7DEE8; font-variant-numeric: tabular-nums">21:34</span>
       <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: 1px; padding: 3px 7px; border-radius: 5px; background: rgba(255,255,255,0.14)"><span style="width: 6px; height: 6px; border-radius: 3px; background: #FF5F57; display: inline-block"></span>LIVE</span>
-      <!-- player.tracks: text.bubble -->
-      <button type="button" aria-label="Audio and subtitles" style="font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
-        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>
-      </button>
-      <!-- player.subtitles, on: captions.bubble.fill, accessibility value "On" -->
-      <button type="button" aria-label="Subtitles" aria-pressed="true" style="font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+      <!-- player.tracks (one-tracks-button): captions.bubble.fill while full subtitles are on, accessibility value "Subtitles On". It opens the system menu of audio, subtitles and the stream line. -->
+      <button type="button" aria-label="Audio and Subtitles" aria-pressed="true" style="font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="13" rx="3" fill="currentColor"/><path d="M10.5 10a2 2 0 1 0 0 3M16.5 10a2 2 0 1 0 0 3" fill="none" stroke="#0B0E13" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
       <!-- player.airplay: full screen at compact width, while the engine route is .system -->
