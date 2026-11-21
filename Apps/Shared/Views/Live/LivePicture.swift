@@ -135,22 +135,16 @@
             }
         }
 
-        /// The audio-and-subtitles button with its list: a sheet at compact
-        /// width, a popover above the button otherwise
-        /// (player-controls-and-playback-errors/choose-audio-and-subtitles).
+        /// The audio-and-subtitles button and its menu
+        /// (player-controls-and-playback-errors/one-button-for-audio-and-subtitles).
         private var tracksButton: some View {
-            @Bindable var player = live.player
-            return TrackPicker.OpenButton(isAvailable: player.hasTrackChoices) { player.openPicker() }
-                .popover(isPresented: $player.pickerOpen, arrowEdge: .bottom) {
-                    if isCompact {
-                        TrackPicker.Sheet(lists: trackLists) { player.closePicker() }
-                            .presentationDetents([.medium, .large])
-                            .presentationDragIndicator(.visible)
-                    } else {
-                        TrackPicker.Popover(lists: trackLists)
-                            .presentationCompactAdaptation(.popover)
-                    }
-                }
+            let player = live.player
+            return TrackPicker.MenuButton(
+                audio: player.audioRows, subtitles: player.subtitleRows,
+                footer: [.verbatim(player.streamLine)] + (player.route == .demuxer ? [Self.noAirPlay] : []),
+                subtitlesOn: player.subtitlesOn, isAvailable: player.hasTrackChoices,
+                pickAudio: { player.selectAudio($0) }, pickSubtitle: { player.selectSubtitle($0) },
+                shown: { $0 ? player.openPicker() : player.closePicker() })
         }
 
         /// True at compact width on iPhone and iPad, never on a Mac.
@@ -160,14 +154,6 @@
             #else
                 false
             #endif
-        }
-
-        private var trackLists: TrackPicker.Lists {
-            let player = live.player
-            return TrackPicker.Lists(
-                audio: player.audioRows, subtitles: player.subtitleRows,
-                footer: [.verbatim(player.streamLine)] + (player.route == .demuxer ? [Self.noAirPlay] : []),
-                pickAudio: { player.selectAudio($0) }, pickSubtitle: { player.selectSubtitle($0) })
         }
 
         /// Antenna reads this stream itself, so it cannot go to AirPlay.
@@ -212,13 +198,6 @@
                 live.showControls(after: .touch)
             }
             tracksButton
-            // The subtitles switch shows where AirPlay can: full screen, regular width and Mac.
-            if live.fullScreen || !isCompact {
-                TrackPicker.SubtitlesButton(isOn: live.player.subtitlesOn, isAvailable: live.player.canSwitchSubtitles) {
-                    live.player.switchSubtitles()
-                    live.showControls(after: .touch)
-                }
-            }
             #if os(macOS)
                 PlayerVolumeControls.MuteButton(isMuted: live.player.muted, level: live.player.volume) {
                     live.player.toggleMute()

@@ -1,8 +1,9 @@
 import XCTest
 
-/// The subtitles switch next to the audio-and-subtitles button and the
-/// subtitles over the picture, on the scripted launch of `LiveUITests`. The
-/// device's language is fixed to English by `launchInEnglish()`.
+/// Subtitles on and off from the one audio-and-subtitles button on iPhone,
+/// in the small player and in full screen, on the scripted launch of
+/// `LiveUITests`. The device's language is fixed to English by
+/// `launchInEnglish()`.
 @MainActor
 final class SubtitleSwitchUITests: XCTestCase {
     override func setUp() {
@@ -26,67 +27,58 @@ final class SubtitleSwitchUITests: XCTestCase {
 
     /// Turns the iPhone sideways, which fills the screen with the picture,
     /// and shows the controls.
-    private func fullScreenSubtitlesButton(_ app: XCUIApplication) -> XCUIElement {
+    private func fullScreenTracksButton(_ app: XCUIApplication) -> XCUIElement {
         XCUIDevice.shared.orientation = .landscapeLeft
-        expect(app.element("browse.list"), "exists == false")
-        let button = app.element("player.subtitles")
+        app.expectTracks(app.element("browse.list"), "exists == false", "the picture did not fill the screen")
+        let button = app.element("player.tracks")
         if !button.waitForExistence(timeout: 2) { app.element("browse.player.surface").tap() }
-        XCTAssertTrue(button.waitForExistence(timeout: 3), "no subtitles button in full screen")
+        XCTAssertTrue(button.waitForExistence(timeout: 3), "no tracks button in full screen")
         return button
     }
 
-    private func expect(_ element: XCUIElement, _ predicate: String, file: StaticString = #filePath, line: UInt = #line) {
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicate), object: element)
-        let result = XCTWaiter().wait(for: [expectation], timeout: 5)
-        XCTAssertEqual(result, .completed, "\(element) never matched \(predicate)", file: file, line: line)
-    }
-
     // player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step, the narrow player on iPhone
-    func testTheNarrowPlayerHasNoSubtitlesButton() throws {
+    func testTheNarrowPlayerHasOneTracksButton() throws {
         let app = try launchPlaying()
         app.element("browse.player.surface").tap()
         XCTAssertTrue(app.element("player.tracks").waitForExistence(timeout: 3), "no tracks button")
         XCTAssertFalse(app.element("player.subtitles").exists)
     }
 
+    // player-controls-and-playback-errors/one-button-for-audio-and-subtitles, turning subtitles on in full screen on iphone
     // player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step, turning subtitles on on iPhone in full screen
-    func testOnePressTurnsSubtitlesOnAndOffInFullScreen() throws {
+    func testTheMenuTurnsSubtitlesOnAndOffInFullScreen() throws {
         let app = try launchPlaying()
-        let button = fullScreenSubtitlesButton(app)
-        XCTAssertEqual(button.label, "Subtitles")
-        XCTAssertEqual(button.value as? String, "Off")
+        let button = fullScreenTracksButton(app)
+        XCTAssertEqual(button.label, "Audio and Subtitles")
+        XCTAssertEqual(button.value as? String, "Subtitles Off")
+        XCTAssertFalse(app.element("player.subtitles").exists, "no second subtitles button")
         XCTAssertFalse(app.element("player.subtitles.cue").exists)
 
-        button.tap()
+        app.openTracksMenu()
+        app.pickTrack("English", in: .subtitles)
 
-        expect(button, "value == 'On'")
-        expect(app.element("player.subtitles.cue"), "exists == true")
-        XCTAssertEqual(app.element("player.subtitles.cue").label, "Subtitle subtitle-0")
-        XCTAssertFalse(app.element("player.trackPicker").exists, "no list opens")
+        app.expectTracks(button, "value == 'Subtitles On'", "the bubble is not filled")
+        app.expectTracks(app.element("player.subtitles.cue"), "label == 'Subtitle subtitle-0'", "no subtitles")
 
-        button.tap()
+        app.openTracksMenu()
+        app.pickTrack("Off")
 
-        expect(button, "value == 'Off'")
-        expect(app.element("player.subtitles.cue"), "exists == false")
+        app.expectTracks(button, "value == 'Subtitles Off'", "the bubble stays filled")
+        app.expectTracks(app.element("player.subtitles.cue"), "exists == false", "the subtitles stay")
     }
 
-    // player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step, only forced subtitles on
+    // player-controls-and-playback-errors/one-button-for-audio-and-subtitles, only forced subtitles on
     func testForcedSubtitlesAloneReadAsOff() throws {
         let app = try launchPlaying(tracks: "foreign", subtitles: "off")
-        let button = fullScreenSubtitlesButton(app)
+        let button = fullScreenTracksButton(app)
         XCTAssertEqual(app.element("player.subtitles.cue").label, "Subtitle subtitle-2", "forced English shows")
-        XCTAssertEqual(button.value as? String, "Off")
+        XCTAssertEqual(button.value as? String, "Subtitles Off")
 
-        button.tap()
+        app.openTracksMenu()
+        app.expectChecked("English (Forced)")
+        app.pickTrack("English", in: .subtitles)
 
-        expect(button, "value == 'On'")
-        expect(app.element("player.subtitles.cue"), "label == 'Subtitle subtitle-1'")
-    }
-
-    // player-controls-and-playback-errors/turn-subtitles-on-or-off-in-one-step, no subtitles in the stream
-    func testNoSubtitlesGraysTheButtonOut() throws {
-        let app = try launchPlaying(tracks: "single")
-        let button = fullScreenSubtitlesButton(app)
-        XCTAssertFalse(button.isEnabled)
+        app.expectTracks(button, "value == 'Subtitles On'", "the bubble is not filled")
+        app.expectTracks(app.element("player.subtitles.cue"), "label == 'Subtitle subtitle-1'", "no full subtitles")
     }
 }

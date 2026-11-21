@@ -4684,47 +4684,7 @@
         }
       }
     },
-    "Audio & Subtitles" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الصوت والترجمة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Audio & Untertitel"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Audio y subtítulos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Audio et sous-titres"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Áudio e legendas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ljud och undertexter"
-          }
-        }
-      }
-    },
-    "Audio and subtitles" : {
+    "Audio and Subtitles" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
