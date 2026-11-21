@@ -401,7 +401,7 @@ The system SHALL scroll Live's channel list, the Guide's channels, Movies, Serie
 - **THEN** Movies opens where it was left, without scrolling
 
 ### Requirement: The channel pauses behind Movies, Series and Search
-The system SHALL pause the channel as soon as Movies, Series or Search opens on iPhone, iPad or Mac, and SHALL stop the stream after 30 seconds there. Going back to Live or the Guide SHALL play a paused channel on, and SHALL tune a stopped one again at live. A channel in Picture in Picture or on AirPlay SHALL keep playing.
+The system SHALL pause the channel as soon as Movies, Series, Search or Settings opens on iPhone, iPad or Mac, and SHALL stop the stream after 30 seconds there. Going back to Live or the Guide SHALL play a paused channel on, and SHALL tune a stopped one again at live. A channel in Picture in Picture or on AirPlay SHALL keep playing.
 
 #### Scenario: Opening Movies
 - **GIVEN** a channel is playing on Live
@@ -425,8 +425,9 @@ The system SHALL pause the channel as soon as Movies, Series or Search opens on 
 
 #### Scenario: Guide and Settings
 - **GIVEN** a channel is playing on Live
-- **WHEN** the user opens the Guide or Settings
-- **THEN** the channel plays on, as before
+- **WHEN** the user opens the Guide, or Settings from the sidebar or the Go menu on iPad or Mac
+- **THEN** the Guide plays the channel on, as before
+- **AND** Settings pauses it at once, so no sound plays behind Settings, and going back to Live plays it on, or tunes it again at live after 30 seconds
 
 #### Scenario: Picture in Picture
 - **GIVEN** a channel plays in the Picture in Picture window
@@ -526,12 +527,38 @@ The system SHALL show on iPhone, and on iPad in a narrow window, a tab bar holdi
 - **THEN** Live is the rightmost tab and the search button sits at the left end
 
 ### Requirement: Settings from the profile button
-The system SHALL show a profile button at the top right of Live, the Guide, Movies and Series on iPhone and in a narrow iPad window, and SHALL open Settings from it as a sheet over the open tab. With two or more profiles the button SHALL show the current profile and open a menu with Switch profile and Settings.
+The system SHALL show a profile button at the top right of Live, the Guide, Movies and Series on iPhone and in a narrow iPad window, and SHALL open Settings from it as a sheet over the open tab. With two or more profiles the button SHALL show the current profile and open a menu with Switch profile and Settings. No channel SHALL play behind the sheet: it pauses the channel as the Settings section does, and closing the sheet SHALL treat the tab under it as opened again.
 
 #### Scenario: Settings with one profile
 - **GIVEN** one profile
 - **WHEN** the user taps the profile button, a person glyph, on any of Live, the Guide, Movies or Series
 - **THEN** Sources & Settings opens as a sheet over that tab, and Close goes back to the tab as it was
+
+#### Scenario: Settings over Live
+- **GIVEN** a channel is playing on Live
+- **WHEN** the user opens Settings from the profile button
+- **THEN** the channel pauses at once and no sound plays behind the sheet
+- **AND** closing the sheet within 30 seconds plays the channel on without loading it again
+
+#### Scenario: Settings left open
+- **GIVEN** Settings has been open over Live or the Guide for 30 seconds
+- **WHEN** the user closes it
+- **THEN** the stream was stopped meanwhile, and the channel tunes again at live
+
+#### Scenario: Settings over Movies
+- **GIVEN** the channel is paused behind Movies
+- **WHEN** the user opens Settings and closes it again
+- **THEN** the channel stays paused, and the 30 seconds keep counting from when Movies opened
+
+#### Scenario: Picture in Picture or AirPlay behind Settings
+- **GIVEN** a channel plays in the Picture in Picture window or on an AirPlay device
+- **WHEN** the user opens Settings
+- **THEN** the channel keeps playing there and is not stopped after 30 seconds
+
+#### Scenario: Settings does not change the tab the app opens on
+- **GIVEN** the Guide is open
+- **WHEN** the user opens Settings and leaves the app
+- **THEN** the next launch opens on the Guide
 
 #### Scenario: Settings with two or more profiles
 - **GIVEN** the profiles Dad and Kids, with Kids current
