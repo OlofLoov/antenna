@@ -132,13 +132,20 @@
             /// picking it in Search will.
             static let guideRequestArgument = "-ui-testing-guide-request"
 
-            /// With `-ui-testing-guide-request`, waits for the launch tune and
-            /// sends the shell to the Guide at b1's programme on now.
+            /// With `-ui-testing-guide-request`, waits for the launch tune and for
+            /// Cabin's channels, then sends the shell to the Guide at b1's
+            /// programme on now. Cabin answers after Home, and the catalogue the
+            /// Guide reads is built off the main actor a moment after the
+            /// channels land, so the request waits half a second more; a pick
+            /// in Search always comes well after both.
             @MainActor
             static func requestGuide(from model: ShellModel) {
                 guard scenario() != nil, ProcessInfo.processInfo.arguments.contains(guideRequestArgument) else { return }
                 Task {
-                    while model.tuned == nil { try? await Task.sleep(for: .milliseconds(100)) }
+                    while model.tuned == nil || !model.channels.contains(where: { $0.streamURL.lastPathComponent == "b1.ts" }) {
+                        try? await Task.sleep(for: .milliseconds(100))
+                    }
+                    try? await Task.sleep(for: .milliseconds(500))
                     let key = GuideKey(sourceID: xtreamID, epgID: "b1")
                     await model.show(.guide(programmeKey: ProgrammeKey(guideKey: key, start: launched.addingTimeInterval(-1800))))
                 }
