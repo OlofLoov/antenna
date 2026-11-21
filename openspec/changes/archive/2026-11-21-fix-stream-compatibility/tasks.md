@@ -32,10 +32,10 @@
 
 ## 6. Mac display
 
-- [ ] 6.1 The FFmpeg path keeps the Mac display awake while playing or buffering
-- [ ] 6.2 Test: the layer's setting follows play, pause and stop
+- [x] 6.1 The FFmpeg path keeps the Mac display awake while playing or buffering
+- [x] 6.2 Test: the layer's setting follows play, pause and stop
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 7.2 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 7.2 `/opsx:verify` passes
