@@ -429,7 +429,7 @@ The system SHALL ask the provider for a title's details at most once per launch 
 - **THEN** the provider is asked again
 
 ### Requirement: Browsing stays responsive
-The system SHALL keep Movies and Series responding to the remote, touch and pointer while a library of 50 000 movies and 10 000 series loads, while its rows redraw, and while a grid of all of it opens. Building the rows and the banner SHALL happen away from the screen, and redrawing the rows or a grid SHALL not walk every title.
+The system SHALL keep Movies and Series responding to the remote, touch and pointer while a library of 50 000 movies and 10 000 series loads, while its rows redraw, and while a grid of all of it opens. Building the rows and the banner SHALL happen away from the screen, and redrawing the rows or a grid SHALL not walk every title. A poster that scrolls off screen SHALL stop loading once nothing on screen waits for it, and a finger moving on the banner SHALL not redraw it on every move.
 
 #### Scenario: A large library loads
 - **GIVEN** a source with 50 000 movies
@@ -450,6 +450,16 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 - **GIVEN** a playlist source whose kept load lacks a series the banner or a page asks about
 - **WHEN** several such series are asked about within five minutes
 - **THEN** the playlist is fetched again at most once in those five minutes
+
+#### Scenario: A fast scroll past many posters
+- **GIVEN** Movies is open on a large library whose posters load slowly
+- **WHEN** the user flicks quickly through rows or a grid
+- **THEN** posters that scrolled away stop downloading, and the posters on screen load next
+
+#### Scenario: A drag that starts on the banner
+- **GIVEN** Movies or Series is open on iPhone or iPad
+- **WHEN** the user drags up from the banner to scroll the rows
+- **THEN** the screen follows the finger, and the banner holds its title until the finger lifts
 
 ### Requirement: Pick a genre from a list on iPhone
 The system SHALL show on iPhone, and in a narrow iPad window, one genre button over the Movies and Series banners in place of a row of genre chips, reading the open list's name and count. The button SHALL open a half-height Genres sheet with a search field, listing All, My list and every genre with its count and a checkmark on the open one. Picking one SHALL close the sheet and show that list as the chips did.
