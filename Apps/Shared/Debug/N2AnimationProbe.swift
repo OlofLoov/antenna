@@ -1,11 +1,17 @@
 #if DEBUG && os(iOS)
+    import ObjectiveC
     import QuartzCore
     import UIKit
 
     @MainActor
     enum N2AnimationProbe {
+        nonisolated(unsafe) static var open: [ObjectIdentifier: String] = [:]
+        nonisolated(unsafe) static var started = 0
+        nonisolated(unsafe) static var stopped = 0
+
         static func start() {
             guard ProcessInfo.processInfo.arguments.contains("-ui-testing-live") else { return }
+            hook()
             Task { @MainActor in
                 while true {
                     try? await Task.sleep(for: .seconds(4))
@@ -14,29 +20,47 @@
             }
         }
 
-        private static func report() {
-            var lines: [String] = []
-            for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
-                for window in scene.windows {
-                    walk(window.layer, depth: 0, window: window, into: &lines)
-                }
+        private static func describe(_ animation: CAAnimation) -> String {
+            var text = "\(type(of: animation))"
+            if let property = animation as? CAPropertyAnimation { text += " key=\(property.keyPath ?? "-")" }
+            if let basic = animation as? CABasicAnimation {
+                text += " from=\(String(describing: basic.fromValue)) to=\(String(describing: basic.toValue))"
             }
-            if !lines.isEmpty { NSLog("N2ANIM \(lines.count) layers\n\(lines.prefix(40).joined(separator: "\n"))") }
+            text += " dur=\(animation.duration)"
+            return text
         }
 
-        private static func walk(_ layer: CALayer, depth: Int, window: UIWindow, into lines: inout [String]) {
-            if let keys = layer.animationKeys(), !keys.isEmpty {
-                let details = keys.map { key -> String in
-                    guard let animation = layer.animation(forKey: key) else { return key }
-                    let timing = "dur=\(animation.duration) rep=\(animation.repeatCount) speed=\(animation.speed)"
-                    let delegate = animation.delegate.map { String(describing: type(of: $0)) } ?? "none"
-                    return "\(key)[\(type(of: animation)) \(timing) delegate=\(delegate)]"
-                }
-                let owner = layer.delegate.map { String(describing: type(of: $0)) } ?? String(describing: type(of: layer))
-                let state = "hidden=\(layer.isHidden) op=\(layer.opacity) speed=\(layer.speed)"
-                lines.append("d\(depth) \(owner) win=\(type(of: window)) \(state) \(layer.frame) \(details)")
+        private static func hook() {
+            guard let cls = NSClassFromString("UIViewAnimationState") else { return NSLog("N2ANIM no class") }
+            let startSel = NSSelectorFromString("animationDidStart:")
+            let stopSel = NSSelectorFromString("animationDidStop:finished:")
+            guard let startMethod = class_getInstanceMethod(cls, startSel),
+                let stopMethod = class_getInstanceMethod(cls, stopSel)
+            else { return NSLog("N2ANIM no methods") }
+            typealias StartFn = @convention(c) (AnyObject, Selector, CAAnimation?) -> Void
+            typealias StopFn = @convention(c) (AnyObject, Selector, CAAnimation?, Bool) -> Void
+            let originalStart = unsafeBitCast(method_getImplementation(startMethod), to: StartFn.self)
+            let originalStop = unsafeBitCast(method_getImplementation(stopMethod), to: StopFn.self)
+            let newStart: @convention(block) (AnyObject, CAAnimation?) -> Void = { state, animation in
+                started += 1
+                let key = animation.map { ObjectIdentifier($0) } ?? ObjectIdentifier(state)
+                open[key] = (animation.map(describe) ?? "nil animation") + " state=\(ObjectIdentifier(state))"
+                originalStart(state, startSel, animation)
             }
-            for sub in layer.sublayers ?? [] { walk(sub, depth: depth + 1, window: window, into: &lines) }
+            let newStop: @convention(block) (AnyObject, CAAnimation?, Bool) -> Void = { state, animation, finished in
+                stopped += 1
+                open[animation.map { ObjectIdentifier($0) } ?? ObjectIdentifier(state)] = nil
+                originalStop(state, stopSel, animation, finished)
+            }
+            method_setImplementation(startMethod, imp_implementationWithBlock(newStart))
+            method_setImplementation(stopMethod, imp_implementationWithBlock(newStop))
+            NSLog("N2ANIM hooked")
+        }
+
+        private static func report() {
+            guard !open.isEmpty else { return }
+            let list = open.values.sorted().prefix(30).joined(separator: "\n")
+            NSLog("N2ANIM open=\(open.count) started=\(started) stopped=\(stopped)\n\(list)")
         }
     }
 #endif
