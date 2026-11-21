@@ -37,8 +37,14 @@ public struct TopShelfFolder: TopShelfStoring {
     /// The folder in the shared App Group container; nil when the app is not
     /// signed with the App Group, as in a simulator build without signing.
     public static func shared() -> TopShelfFolder? {
-        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)
-            .map { TopShelfFolder(directory: $0.appending(path: "TopShelf", directoryHint: .isDirectory)) }
+        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup).map(inContainer)
+    }
+
+    /// The folder inside a shared container. An Apple TV lets an app write
+    /// only under `Library/Caches` there; at the container's top level the
+    /// folder cannot be created and every write failed as `unavailable`.
+    public static func inContainer(_ container: URL) -> TopShelfFolder {
+        TopShelfFolder(directory: container.appending(path: "Library/Caches/TopShelf", directoryHint: .isDirectory))
     }
 
     public func read() -> TopShelfSnapshot? {
