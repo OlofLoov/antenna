@@ -96,6 +96,7 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     /// `offset` on when it is past the start or the stream asks for one.
     private var request: URLRequest {
         var request = URLRequest(url: url)
+        StreamHeaderBook.shared.apply(to: &request)
         if offset > 0 || asksForRange { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
         return request
     }

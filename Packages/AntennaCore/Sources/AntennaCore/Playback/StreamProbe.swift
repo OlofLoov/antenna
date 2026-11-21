@@ -33,6 +33,7 @@ public struct StreamProbe: Sendable, Equatable {
         request.setValue("bytes=0-\(headSize - 1)", forHTTPHeaderField: "Range")
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.httpShouldHandleCookies = false
+        StreamHeaderBook.shared.apply(to: &request)
         let bytes: URLSession.AsyncBytes
         let response: URLResponse
         do {
