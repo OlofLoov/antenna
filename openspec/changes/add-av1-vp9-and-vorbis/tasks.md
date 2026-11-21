@@ -1,0 +1,22 @@
+# Tasks
+
+## 1. AV1 and VP9 in hardware
+
+- [ ] 1.1 `DemuxedStream.VideoParameters` from FFmpeg's codec parameters
+- [ ] 1.2 `SampleBuilder` builds AV1 from av1C and VP9 with a written vpcC, gated on `hardwareDecodes`
+- [ ] 1.3 `DemuxRun.prepare` hands AV1 or VP9 in MP4 or QuickTime without the decoder to Apple's player, and fails the rest as "can't decode"
+- [ ] 1.4 `AVPlayerEngine` fails an undecodable AV1 or VP9 track as "can't decode" instead of handing it back
+- [ ] 1.5 Fixtures and tests: VP9 in WebM and MP4 plays on a Mac with the decoder; AV1 in Matroska fails as "can't decode av1" and AV1 in MP4 goes to Apple's player on a device without it
+
+## 2. Vorbis
+
+- [ ] 2.1 `scripts/build-ffmpeg.sh` builds the `vorbis` decoder
+- [ ] 2.2 `SampleBuilder` sends Vorbis to `SoftwareDecoder`
+- [ ] 2.3 The undecodable-sound fixtures and tests use Windows Media Audio
+- [ ] 2.4 A test that Vorbis plays, run once the decoder is in the build
+- [ ] 2.5 Publish the FFmpeg release and point `Packages/FFmpeg/Package.swift` at it (owner or coordinator: needs an `ffmpeg-*` tag)
+
+## 3. Verify
+
+- [ ] 3.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [ ] 3.2 `/opsx:verify` passes
