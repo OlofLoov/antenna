@@ -4,6 +4,33 @@ import Foundation
 // MARK: Pictures
 
 extension DemuxRun {
+    /// Sound held this long with not one packet of the listed picture
+    /// starts the stream with sound only, as an off-air channel or a radio
+    /// channel that lists a picture needs
+    /// (playback-engine/every-common-stream-type-plays).
+    static let pictureWait = CMTime(value: 2, timescale: 1)
+
+    /// Drops the picture stream and queues the sound held for it, when the
+    /// sound held spans `pictureWait` and the picture stream has sent
+    /// nothing. A picture stream that sends packets but no keyframe yet is
+    /// waited for. Returns false once the feed is closed.
+    func startWithoutPicture(_ prepared: inout Prepared, _ state: inout PumpState) -> Bool {
+        guard prepared.video != nil, state.startTime == nil, !state.sawVideoPacket, let first = state.heldSound.first,
+            let last = state.heldSound.last,
+            CMTimeSubtract(CMSampleBufferGetPresentationTimeStamp(last), CMSampleBufferGetPresentationTimeStamp(first)) >= Self.pictureWait
+        else { return true }
+        prepared.video = nil
+        state.fields = nil
+        state.startTime = CMSampleBufferGetPresentationTimeStamp(first)
+        let held = state.heldSound
+        state.heldSound = []
+        for buffer in held {
+            state.soundQueuedTo = CMTimeAdd(CMSampleBufferGetPresentationTimeStamp(buffer), CMSampleBufferGetDuration(buffer))
+            guard audioFeed.push(buffer) else { return false }
+        }
+        return true
+    }
+
     /// Queues the pictures of one video packet, or drops it: while the run
     /// waits for a keyframe, when FFmpeg marks it damaged, and when it leads
     /// the keyframe the pictures started at. Returns false once the feed is
