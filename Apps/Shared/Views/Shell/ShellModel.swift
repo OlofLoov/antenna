@@ -94,8 +94,8 @@
         @ObservationIgnored private var deadline: Task<Void, Never>?
         /// The pause, then stop, behind Movies, Series and Search.
         @ObservationIgnored let hold: LiveHold
-        /// True from opening Movies, Series or Search until Live or the
-        /// Guide opens; Settings in between keeps it.
+        /// True from opening Movies, Series, Search or Settings until Live
+        /// or the Guide opens.
         @ObservationIgnored var behindContent = false
         /// The last tab change's work on the video; the next one waits for it.
         @ObservationIgnored private(set) var tabChange: Task<Void, Never>?
@@ -353,9 +353,9 @@
         }
 
         /// Shows `target` now and queues what the video does behind it after
-        /// any earlier tab change. Movies, Series and Search hold the video;
-        /// Live and the Guide end the hold, resuming a paused video and
-        /// tuning a stopped one again; Settings leaves it as it is. Live
+        /// any earlier tab change. Movies, Series, Search and Settings hold
+        /// the video; Live and the Guide end the hold, resuming a paused
+        /// video and tuning a stopped one again. Live
         /// `picked` by the user also loads a failed stream again. True when
         /// the channel loads again.
         @discardableResult
@@ -376,16 +376,12 @@
         private func opened(_ target: ShellTab, from: ShellTab, picked: Bool) async -> Bool {
             if from == .guide, target != .guide { await leaveGuide() }
             switch target {
-            case .movies, .series, .search:
+            case .movies, .series, .search, .settings:
+                // No channel plays behind Settings either (tvos-shell/open-settings).
                 guard !behindContent else { return false }
                 behindContent = true
                 await holdBehindContent()
                 return false
-            case .settings:
-                // Settings sits over the picture, so the pause from passing Movies, Series
-                // or Search on the way ends here (tvos-shell/open-settings).
-                behindContent = false
-                return await resume()
             case .live, .guide:
                 behindContent = false
                 if await resume() { return true }
