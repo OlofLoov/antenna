@@ -5,12 +5,12 @@
 
 ## 2. Large guides
 
-- [ ] 2.1 `GuideLimits` gains the window and the kept caps, and the byte limits rise; `SourceGuide.Builder` drops programmes outside the window and past the caps, other ids first, with core tests
-- [ ] 2.2 `GuideEngine` hands the source's named guide ids to the fetch, with a test that a guide past the old limit loads
+- [x] 2.1 `GuideLimits` gains the window and the kept caps, and the byte limits rise; `SourceGuide.Builder` drops programmes outside the window and past the caps, other ids first, with core tests
+- [x] 2.2 `GuideEngine` hands the source's named guide ids to the fetch, with a test that a guide past the old limit loads
 
 ## 3. Name matching
 
-- [ ] 3.1 `GuideEngine` matches by name only when the channels, the guides or the hand-picked entries change, not on each progress event, with a test
+- [x] 3.1 `GuideEngine` matches by name only when the channels, the guides or the hand-picked entries change, not on each progress event, with a test
 
 ## 4. Clock ticks
 

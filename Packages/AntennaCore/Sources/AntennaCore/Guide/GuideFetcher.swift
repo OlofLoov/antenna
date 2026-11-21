@@ -61,7 +61,8 @@ struct GuideFetcher: Sendable {
     /// `headers` go on the request, such as a source's proxy login.
     @concurrent
     func fetch(
-        _ url: URL, sourceID: UUID, loginURL: Bool, headers: [String: String] = [:], progress: @Sendable (GuideProgress) -> Void
+        _ url: URL, sourceID: UUID, loginURL: Bool, headers: [String: String] = [:], named: Set<String>? = nil, now: Date? = nil,
+        progress: @Sendable (GuideProgress) -> Void
     ) async -> Outcome {
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         for (name, value) in headers { request.setValue(value, forHTTPHeaderField: name) }
@@ -90,7 +91,8 @@ struct GuideFetcher: Sendable {
                 return .failed(refused ? .unauthorized : .httpStatus(http.statusCode))
             }
             expected = response.expectedContentLength >= 0 ? response.expectedContentLength : nil
-            let sink = try GuideDecoder(limits: limits, expectedLength: expected, directory: directory, sourceID: sourceID)
+            let keep = GuideKeep(limits: limits, now: now, named: named)
+            let sink = try GuideDecoder(limits: limits, keep: keep, expectedLength: expected, directory: directory, sourceID: sourceID)
             decoder = sink
             var buffer: [UInt8] = []
             buffer.reserveCapacity(chunkSize)

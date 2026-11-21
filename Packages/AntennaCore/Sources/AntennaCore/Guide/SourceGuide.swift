@@ -149,14 +149,26 @@ struct SourceGuide: Sendable {
         private var grouped: [String: [Slot]] = [:]
         private var text: [UInt8] = []
         private var interned: [Int: TextRef] = [:]
+        private let keep: GuideKeep
+        private var kept = 0
 
+        init(keep: GuideKeep = .everything) {
+            self.keep = keep
+        }
+
+        /// Keeps `programme` when it is inside the window and the caps
+        /// leave room for its id (guide-data/a-large-guide-keeps-what-the-channels-can-use).
         mutating func add(_ programme: Programme) {
-            guard programme.start < programme.stop else { return }
+            guard programme.start < programme.stop, programme.stop > keep.from, programme.start < keep.until else { return }
+            let id = programme.channelID.trimmingCharacters(in: .whitespacesAndNewlines)
+            let named = keep.named?.contains(id) ?? true
+            guard kept < (named ? keep.slots : keep.slots / 2), text.count < (named ? keep.text : keep.text / 2) else { return }
+            kept += 1
             let slot = Slot(
                 start: programme.start, stop: programme.stop, title: store(programme.title),
                 subtitle: store(programme.subtitle), summary: store(programme.summary), category: store(programme.category),
                 icon: store(programme.iconURL?.absoluteString))
-            grouped[programme.channelID.trimmingCharacters(in: .whitespacesAndNewlines), default: []].append(slot)
+            grouped[id, default: []].append(slot)
         }
 
         private mutating func store(_ value: String?) -> TextRef {

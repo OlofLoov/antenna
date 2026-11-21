@@ -38,7 +38,18 @@ extension GuideEngine {
         }
         if entries[id]?.hasGuide == true, layers.isEmpty { hub.forget(id) }
         entries[id] = GuideIndex.SourceEntry(layers: layers, state: state(of: source, enabled: enabled), matches: matches(of: source))
+        rebuildRows(id, list: list)
+    }
 
+    /// Works out the source's guide rows from its statuses alone. Publishes nothing.
+    func rebuildRows(_ id: UUID) {
+        guard let source = descriptors[id], !removed.contains(id) else { return }
+        rebuildRows(id, list: guideList(source))
+    }
+
+    private func rebuildRows(_ id: UUID, list: [GuideListEntry]) {
+        guard let source = descriptors[id] else { return }
+        let kept = loaded[id] ?? [:]
         let rows = list.map { entry in
             GuideRow(
                 reference: entry.reference, enabled: entry.enabled,
@@ -80,10 +91,17 @@ extension GuideEngine {
         return waitsForPlaylist(source) ? .loading : .unavailable
     }
 
-    /// Works out the source's matches by name again. True when they changed.
+    /// Works out the source's matches by name again when its channels, its
+    /// loaded guides, the guides turned on or the hand-picked channels
+    /// changed since the last time. True when the matches changed
+    /// (live-tv-on-iphone-ipad-mac/a-very-large-source-stays-responsive).
     func updateNameMatches(_ id: UUID) -> Bool {
         guard let source = descriptors[id] else { return false }
         let enabled = Set(guideList(source).filter(\.enabled).map(\.reference))
+        let inputs = NameMatchInputs(stamp: matchStamps[id] ?? 0, enabled: enabled, excluding: Set(source.settings.activeMatches.keys))
+        guard nameMatchInputs[id] != inputs else { return false }
+        nameMatchInputs[id] = inputs
+        nameMatchRuns += 1
         let guides = guideList(source).compactMap { entry in
             enabled.contains(entry.reference) ? loaded[id]?[entry.reference]?.guide : nil
         }
@@ -115,4 +133,11 @@ extension GuideEngine {
     private static func summarize(_ index: GuideIndex, sourceID: UUID, channels: [Channel], now: Date) async -> SourceGuide.Summary {
         index.summary(sourceID: sourceID, channels: channels, now: now)
     }
+}
+
+/// What a source's name matches are worked out from.
+struct NameMatchInputs: Equatable {
+    var stamp: Int
+    var enabled: Set<GuideReference>
+    var excluding: Set<String>
 }
