@@ -2,6 +2,7 @@ import AntennaCore
 import CoreGraphics
 import Foundation
 import ImageIO
+import Synchronization
 import Testing
 import UniformTypeIdentifiers
 
@@ -124,4 +125,52 @@ import UniformTypeIdentifiers
         let tiny = try poster("tiny", side: 40, height: 60)
         #expect(await cache.poster(for: tiny, fitting: card)?.image.width == 40, "a small poster is never enlarged")
     }
+
+    // Owner-found: fast scrolling left every scrolled-past card's download
+    // running, so the posters on screen queued behind them.
+    @Test("movies-and-series-browsing/browsing-stays-responsive a card scrolled away stops its download once nobody waits for it")
+    func cancelledCardsStopTheirLoad() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [SilentURLProtocol.self]
+        let cache = PosterCache(directory: cacheFolder, session: URLSession(configuration: configuration))
+        let url = try #require(URL(string: "https://silent.example/poster-\(UUID().uuidString).jpg"))
+        let first = Task { await cache.poster(for: url) }
+        let second = Task { await cache.poster(for: url) }
+        try await eventually { await cache.waiting == 2 && SilentURLProtocol.started(url) }
+        first.cancel()
+        #expect(await first.value == nil, "the cancelled card stops waiting at once")
+        try await eventually { await cache.waiting == 1 }
+        #expect(!SilentURLProtocol.stopped(url), "another card still waits")
+        second.cancel()
+        #expect(await second.value == nil)
+        try await eventually { SilentURLProtocol.stopped(url) }
+        #expect(SilentURLProtocol.stopped(url), "the download stopped")
+        #expect(await cache.waiting == 0)
+    }
+
+    private func eventually(_ condition: () async -> Bool) async throws {
+        let deadline = ContinuousClock.now + .seconds(5)
+        while await !condition(), ContinuousClock.now < deadline { try await Task.sleep(for: .milliseconds(10)) }
+    }
+}
+
+/// Never answers; records which requests started and which were stopped.
+final class SilentURLProtocol: URLProtocol, @unchecked Sendable {
+    private static let state = Mutex<(started: Set<URL>, stopped: Set<URL>)>(([], []))
+
+    override static func canInit(with request: URLRequest) -> Bool { true }
+    override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        guard let url = request.url else { return }
+        Self.state.withLock { _ = $0.started.insert(url) }
+    }
+
+    override func stopLoading() {
+        guard let url = request.url else { return }
+        Self.state.withLock { _ = $0.stopped.insert(url) }
+    }
+
+    static func started(_ url: URL) -> Bool { state.withLock { $0.started.contains(url) } }
+    static func stopped(_ url: URL) -> Bool { state.withLock { $0.stopped.contains(url) } }
 }

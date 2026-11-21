@@ -50,8 +50,8 @@ struct ShelfSync: ViewModifier {
             .task(id: profile) {
                 await activity.follow(ActivityStore(context: context, profile: profile))
             }
-            .environment(\.posterLoader, ShelfView.PosterLoader { await PosterCache.shared.poster(for: $0, fitting: $1) })
-            .environment(\.logoLoader, LogoLoader(cached: { LogoCache.shared.cached($0) }, load: { await LogoCache.shared.logo(for: $0) }))
+            .environment(\.posterLoader, Self.posters)
+            .environment(\.logoLoader, Self.logos)
             .modifier(TrailerOpener())
             .task(id: records.compactMap(\.descriptor)) {
                 library.sourcesChanged(records.compactMap(\.descriptor))
@@ -77,6 +77,12 @@ struct ShelfSync: ViewModifier {
                 if phase == .background { playback.background() }
             }
     }
+
+    /// One loader each for the app's life. A loader made in `body` is a new
+    /// closure on every redraw, which SwiftUI reads as a changed environment
+    /// and redraws every poster and logo for.
+    private static let posters = ShelfView.PosterLoader { await PosterCache.shared.poster(for: $0, fitting: $1) }
+    private static let logos = LogoLoader(cached: { LogoCache.shared.cached($0) }, load: { await LogoCache.shared.logo(for: $0) })
 
     private var showsProblem: Binding<Bool> {
         Binding(get: { playback.problem != nil }, set: { if !$0 { playback.problem = nil } })
