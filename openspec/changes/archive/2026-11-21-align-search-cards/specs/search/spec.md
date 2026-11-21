@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Results grouped, best first
-The system SHALL show results under Channels, In the guide, Movies & series and People in that order, each with its count, leave out empty sections, put names starting with the query first, order programmes by start, and highlight the matched letters. Each kind of result SHALL look the way the rest of the app shows it: a channel as a row of the channel list, a programme as the guide shows programmes, a movie or series as its poster in Movies or Series with the same menu, and a person as a name in a title's cast.
+The system SHALL show results under Channels, In the guide, Movies & series and People in that order, each with its count, leave out empty sections, put names starting with the query first, order programmes by start, and highlight the matched letters. Each result SHALL look as the rest of the app shows that kind of thing.
 
 #### Scenario: Results of every kind
 - **GIVEN** results of every kind
