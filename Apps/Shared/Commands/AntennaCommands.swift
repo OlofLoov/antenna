@@ -64,17 +64,18 @@
             modifier(MenuCommandPublisher(key: key, value: value))
         }
 
-        /// The key and modifiers the catalogue gives `command`, none on
-        /// iPad for a key iPadOS's own menus hold.
+        /// The key and modifiers the catalogue gives `command` in the app's
+        /// reading direction, none on iPad for a key iPadOS's own menus hold.
         @ViewBuilder func keyboardShortcut(_ command: KeyCommand) -> some View {
+            let combination = command.combination(rightToLeft: LayoutDirection.ofApp == .rightToLeft)
             #if os(iOS)
                 if command.isHeldByIPadOS {
                     self
                 } else {
-                    keyboardShortcut(command.combination.equivalent, modifiers: command.combination.eventModifiers)
+                    keyboardShortcut(combination.equivalent, modifiers: combination.eventModifiers)
                 }
             #else
-                keyboardShortcut(command.combination.equivalent, modifiers: command.combination.eventModifiers)
+                keyboardShortcut(combination.equivalent, modifiers: combination.eventModifiers)
             #endif
         }
     }

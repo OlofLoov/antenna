@@ -51,19 +51,21 @@
     }
 
     /// Left and Right skip back 15 and forward 30 seconds while the player
-    /// can rewind and the filter field does not have the keyboard. On iPad
-    /// and Mac columns the Playback menu has them instead.
+    /// can rewind and the filter field does not have the keyboard, swapped
+    /// in a right-to-left language where the bar runs from the right. On
+    /// iPad and Mac columns the Playback menu has them instead.
     struct LiveSkipKeys: View {
         let live: LiveModel
         @Environment(\.publishesMenuCommands) private var inMenus
+        @Environment(\.layoutDirection) private var direction
 
         var body: some View {
             if !inMenus, live.playing != nil, live.player.timeshift.canRewind {
                 ZStack {
                     Button("Back 15 seconds") { live.player.timeshift.skip(forward: false) }
-                        .keyboardShortcut(.leftArrow, modifiers: [])
+                        .keyboardShortcut(direction.leadingArrow, modifiers: [])
                     Button("Forward 30 seconds") { live.player.timeshift.skip(forward: true) }
-                        .keyboardShortcut(.rightArrow, modifiers: [])
+                        .keyboardShortcut(direction.trailingArrow, modifiers: [])
                 }
                 .disabled(live.typing)
                 .frame(width: 0, height: 0)

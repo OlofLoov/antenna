@@ -110,6 +110,38 @@ final class LocalizationRTLUITests: XCTestCase {
         snap("guide")
     }
 
+    // design-system/progress-runs-in-the-reading-direction
+    // The bar ran from the right while Left Arrow still skipped back.
+    func testTheMovieBarRunsFromTheRightAndLeftArrowSkipsForward() throws {
+        let app = try launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
+        let tab = app.tabBars.buttons["الأفلام"]
+        XCTAssertTrue(tab.waitForExistence(timeout: 10), "no Movies tab")
+        tab.tap()
+        let poster = app.element("movies.row.continueWatching").descendants(matching: .any)["movies.card.xtream#cabin#vod#2"].firstMatch
+        XCTAssertTrue(poster.waitForExistence(timeout: 10), "no Continue watching poster")
+        poster.tap()
+        let engine = app.element("shelf.debug.engine")
+        let playing = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'playing 2.mp4 from 2160'"), object: engine)
+        XCTAssertEqual(XCTWaiter().wait(for: [playing], timeout: 10), .completed, "the movie never played")
+        XCTAssertTrue(app.element("title.transport").waitForExistence(timeout: 5), "no controls")
+        let elapsed = app.element("title.transport.elapsed").frame
+        let remaining = app.element("title.transport.remaining").frame
+        XCTAssertGreaterThan(elapsed.minX, remaining.maxX, "the elapsed time is at the right, where the bar starts")
+        XCTAssertGreaterThan(
+            app.element("title.transport.skipBack").frame.minX, app.element("title.transport.skipForward").frame.maxX,
+            "skip back sits at the right")
+        snap("movie-player")
+
+        let position = app.element("shelf.debug.position")
+        app.typeKey(XCUIKeyboardKey.leftArrow.rawValue, modifierFlags: [])
+        let forward = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'at 2170'"), object: position)
+        XCTAssertEqual(XCTWaiter().wait(for: [forward], timeout: 5), .completed, "Left Arrow went to \((position.value as? String) ?? "")")
+        app.typeKey(XCUIKeyboardKey.rightArrow.rawValue, modifierFlags: [])
+        app.typeKey(XCUIKeyboardKey.rightArrow.rawValue, modifierFlags: [])
+        let back = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'at 2150'"), object: position)
+        XCTAssertEqual(XCTWaiter().wait(for: [back], timeout: 5), .completed, "Right Arrow went to \((position.value as? String) ?? "")")
+    }
+
     func testMoviesInArabic() throws {
         let app = try launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
         let tab = app.tabBars.buttons["الأفلام"]
