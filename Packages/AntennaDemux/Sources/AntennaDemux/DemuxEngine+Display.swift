@@ -43,6 +43,11 @@ extension DemuxEngine {
         #if os(iOS) || os(tvOS) || os(macOS)
             pictureInPictureChanged()
         #endif
+        #if os(macOS)
+            // The layer keeps the display awake by default everywhere but
+            // macOS (playback-engine/the-display-stays-on-while-a-stream-plays).
+            videoLayer.preventsDisplaySleepDuringVideoPlayback = new == .playing || new == .buffering
+        #endif
     }
 
     func publishFormat(_ start: DemuxStart) {
