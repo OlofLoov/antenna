@@ -5,7 +5,11 @@ import Foundation
 /// a `&` that starts no valid XML reference becomes `&amp;`, and a known HTML
 /// named entity such as `&nbsp;` becomes a numeric character reference.
 ///
-/// Input that needs neither rewrite is returned unchanged, byte for byte.
+/// In a document whose XML declaration names no encoding or names UTF-8,
+/// each byte that is not part of valid UTF-8 is rewritten as its Windows-1252
+/// character in UTF-8 (xmltv-guide-parsing/guide-text-in-latin-1).
+///
+/// Input that needs no rewrite is returned unchanged, byte for byte.
 /// CDATA sections, comments, processing instructions and the DOCTYPE are
 /// copied as they are. A document whose DOCTYPE declares entities
 /// (`<!ENTITY`) or that starts with a UTF-16 byte order mark is returned
@@ -32,6 +36,7 @@ enum XMLEntitySanitizer {
             var rewritten = false
             var copiedUpTo = 0
             var i = 0
+            let repairsText = readsAsUTF8(bytes)
 
             func flush() {
                 guard !pending.isEmpty else { return }
@@ -76,7 +81,17 @@ enum XMLEntitySanitizer {
                         i += 1
                     }
                 default:
-                    i += 1
+                    guard repairsText, bytes[i] >= 0x80 else {
+                        i += 1
+                        continue
+                    }
+                    let length = TextEncoding.utf8Length(bytes, at: i)
+                    if length > 0 {
+                        i += length
+                    } else {
+                        replace(upTo: i, resumeAt: i + 1, with: String(decoding: TextEncoding.windows1252(bytes[i]), as: UTF8.self))
+                        i += 1
+                    }
                 }
             }
 
@@ -213,6 +228,23 @@ enum XMLEntitySanitizer {
             index += 1
         }
         return bytes.count
+    }
+
+    /// True when the XML declaration, if any, names no encoding or names
+    /// UTF-8. Leading whitespace and a UTF-8 byte order mark are skipped.
+    private static func readsAsUTF8(_ bytes: UnsafeBufferPointer<UInt8>) -> Bool {
+        var start = 0
+        if hasPrefix(bytes, at: 0, [0xEF, 0xBB, 0xBF]) { start = 3 }
+        while start < bytes.count, isXMLSpace(bytes[start]) { start += 1 }
+        guard hasPrefix(bytes, at: start, Array("<?xml".utf8)) else { return true }
+        let limit = min(bytes.count, start + 256)
+        var end = start
+        while end + 1 < limit, !(bytes[end] == ascii("?") && bytes[end + 1] == ascii(">")) { end += 1 }
+        let declaration = String(decoding: UnsafeBufferPointer(rebasing: bytes[start..<end]), as: UTF8.self).lowercased()
+        guard let key = declaration.range(of: "encoding") else { return true }
+        let value = declaration[key.upperBound...].drop { $0 == " " || $0 == "=" || $0 == "\"" || $0 == "'" }
+        let name = value.prefix { $0 != "\"" && $0 != "'" && $0 != " " }
+        return name == "utf-8" || name == "utf8"
     }
 
     private static func startsWithUTF16BOM(_ data: Data) -> Bool {

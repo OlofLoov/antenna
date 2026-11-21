@@ -119,7 +119,7 @@ struct SourceLoader: Sendable {
             if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
                 throw LoadError.badStatus(http.statusCode)
             }
-            let text = String(decoding: data, as: UTF8.self)
+            let text = TextEncoding.text(data)
             return keepMovies(M3UParser().parse(text), of: source)
         case .xtream:
             guard let key = source.credentialKey,

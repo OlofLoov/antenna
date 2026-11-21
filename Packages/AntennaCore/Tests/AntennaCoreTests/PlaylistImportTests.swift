@@ -81,7 +81,7 @@ struct PlaylistImportTests {
             ImportText(locale: .english).problem(.hlsStream, fileName: "a.m3u8")?.title == "This is a single stream, not a channel list.")
     }
 
-    @Test("local-m3u-file-import/see-what-s-in-the-file-before-importing: an old Windows encoding imports with replacement characters")
+    @Test("local-m3u-file-import/see-what-s-in-the-file-before-importing: an old Windows encoding imports with its letters")
     func windowsEncoding() {
         var data = Data("#EXTM3U\n#EXTINF:-1,Caf".utf8)
         data.append(0xE9)
@@ -90,7 +90,7 @@ struct PlaylistImportTests {
             Issue.record("expected a playlist")
             return
         }
-        #expect(inspected.playlist.channels.first?.name == "Caf\u{FFFD}")
+        #expect(inspected.playlist.channels.first?.name == "Café")
     }
 
     @Test("local-m3u-file-import/see-what-s-in-the-file-before-importing: byte-order marks and UTF-16")

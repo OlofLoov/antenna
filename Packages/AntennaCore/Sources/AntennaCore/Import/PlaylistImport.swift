@@ -76,27 +76,9 @@ public enum PlaylistImport {
     /// Tags that only a single HLS stream carries.
     static let hlsTags = ["#EXT-X-TARGETDURATION", "#EXT-X-MEDIA-SEQUENCE", "#EXT-X-STREAM-INF"]
 
-    /// UTF-8, with a leading byte-order mark dropped and each invalid byte
-    /// replaced by U+FFFD; UTF-16 when the file starts with its mark.
+    /// The file's text, read as `TextEncoding.text` reads it.
     public static func decode(_ data: Data) -> String {
-        let bytes = [UInt8](data)
-        if bytes.starts(with: [0xEF, 0xBB, 0xBF]) { return String(decoding: bytes.dropFirst(3), as: UTF8.self) }
-        if bytes.starts(with: [0xFF, 0xFE]) { return utf16(bytes.dropFirst(2), littleEndian: true) }
-        if bytes.starts(with: [0xFE, 0xFF]) { return utf16(bytes.dropFirst(2), littleEndian: false) }
-        return String(decoding: bytes, as: UTF8.self)
-    }
-
-    private static func utf16(_ bytes: ArraySlice<UInt8>, littleEndian: Bool) -> String {
-        var units: [UInt16] = []
-        units.reserveCapacity(bytes.count / 2)
-        var index = bytes.startIndex
-        while index + 1 < bytes.endIndex {
-            let first = UInt16(bytes[index])
-            let second = UInt16(bytes[index + 1])
-            units.append(littleEndian ? first | second << 8 : first << 8 | second)
-            index += 2
-        }
-        return String(decoding: units, as: UTF16.self)
+        TextEncoding.text(data)
     }
 
     /// The channels in `text` whose link has a scheme, and how many entries
