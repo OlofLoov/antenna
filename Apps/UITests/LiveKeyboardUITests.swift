@@ -133,6 +133,22 @@ final class LiveKeyboardUITests: XCTestCase {
         app.waitForEngine("playing loads=1")
     }
 
+    // live-tv-on-iphone-ipad-mac/keyboard-shortcuts. On iPadOS 26 nothing
+    // held first responder after launch, so the list's shortcuts missed
+    // presses and in some launches every press until a tap. The simulator
+    // spends the first key after launch on attaching its keyboard, so two
+    // presses must reach the list without a tap.
+    func testTheArrowsReachTheListWithoutATap() throws {
+        let app = try launch()
+        app.waitForEngine("idle loads=0")
+        app.typeKey(.downArrow, modifierFlags: [])
+        app.typeKey(.downArrow, modifierFlags: [])
+        let deadline = Date.now.addingTimeInterval(5)
+        func ringed() -> Bool { [app.row(0), app.row(1)].contains { $0.value as? String == "Keyboard focus" } }
+        while !ringed(), Date.now < deadline { RunLoop.current.run(until: .now.addingTimeInterval(0.5)) }
+        XCTAssertTrue(ringed(), "two arrow presses did nothing; \(ringState(app))")
+    }
+
     // live-tv-on-iphone-ipad-mac/keyboard-shortcuts, holding an arrow key
     func testArrowsStopAtTheEndsWithoutSwitchingChannel() throws {
         let app = try launch()
