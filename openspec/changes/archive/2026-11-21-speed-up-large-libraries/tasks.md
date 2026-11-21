@@ -33,7 +33,7 @@
 
 ## 7. Verify
 
-- [ ] 7.1 Each scenario this change adds has a test citing its requirement
-- [ ] 7.2 Before and after numbers for 100 000 movies and 30 000 series with cast are in design.md
-- [ ] 7.3 The touched UI test classes pass on a local simulator
-- [ ] 7.4 /opsx:verify passes
+- [x] 7.1 Each scenario this change adds has a test citing its requirement
+- [x] 7.2 Before and after numbers for 100 000 movies and 30 000 series with cast are in design.md
+- [x] 7.3 The touched UI test classes pass on a local simulator
+- [x] 7.4 /opsx:verify passes
