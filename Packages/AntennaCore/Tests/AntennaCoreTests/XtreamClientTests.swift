@@ -106,7 +106,7 @@ import Testing
         }
     }
 
-    /// xtream-vod-client/category-lists-fail-whole supersedes `DecodingError`: the call throws `XtreamError.decoding(path: "")`.
+    /// xtream-vod-client/broken-category-rows-are-skipped supersedes `DecodingError`: the call throws `XtreamError.decoding(path: "")`.
     @Test("xtream-live-source/malformed-json-is-an-error-not-a-crash malformed JSON is a decoding error, not a crash")
     func malformedJSON() async throws {
         let client = try stubbedClient(host: "ac8.panel", status: 200, body: "<html><body>Please log in</body></html>")
@@ -148,7 +148,8 @@ import Testing
         #expect(stream.num == nil)
         #expect(stream.tvArchive == nil)
         #expect(stream.tvArchiveDuration == nil)
-        #expect(stream.epgChannelID == nil)
+        // guide-data/programmes-land-on-the-right-channels reads a numeric guide id as text.
+        #expect(stream.epgChannelID == "5")
     }
 
     @Test("xtream-live-source/account-info-decodes-loose-types account info decodes loose types")

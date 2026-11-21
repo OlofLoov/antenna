@@ -206,10 +206,10 @@ extension SourceSetup.Dependencies {
                     return playlist
                 case .account:
                     let client = try Self.client(for: connection, session: session)
-                    async let categories = client.liveCategories()
+                    async let categories = try? client.liveCategories()
                     async let streams = client.liveStreams()
                     let names = Dictionary(
-                        try await categories.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
+                        (await categories ?? []).map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
                     return Playlist(
                         channels: try await streams.map { client.channel(from: $0, categoryName: $0.categoryID.flatMap { names[$0] }) })
                 }

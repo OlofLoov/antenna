@@ -83,15 +83,8 @@ enum XtreamCall: String, CaseIterable, Sendable {
     }
 
     @Test(
-        "xtream-vod-client/category-lists-fail-whole category lists fail whole with the coding path",
-        arguments: [XtreamCall.vodCategories, .seriesCategories, .liveCategories])
-    func categoryListFailsWhole(call: XtreamCall) async throws {
-        let body = #"[{"category_id":1,"category_name":"A"},{"category_id":2},{"category_id":3,"category_name":"C"}]"#
-        let client = try client(host: "ac4b-\(call.rawValue.lowercased()).panel", reply: .http(200, Data(body.utf8)))
-        await #expect(throws: XtreamClient.XtreamError.decoding(path: "[1].category_name")) { try await call.run(on: client) }
-    }
-
-    @Test("xtream-vod-client/category-lists-fail-whole no call lets DecodingError escape on an HTML body", arguments: XtreamCall.allCases)
+        "xtream-vod-client/broken-category-rows-are-skipped no call lets DecodingError escape on an HTML body",
+        arguments: XtreamCall.allCases)
     func htmlBody(call: XtreamCall) async throws {
         let client = try client(
             host: "ac4b-html-\(call.rawValue.lowercased()).panel", reply: .http(200, try xtreamFixture("html_login.html")))

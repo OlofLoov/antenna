@@ -41,13 +41,11 @@ struct ShelfLoader: Sendable {
         let client = try client(for: source)
         switch kind {
         case .movie:
-            async let categories = client.vodCategories()
-            async let movies = client.vodStreams()
-            return ShelfCatalogue(movies: try await movies.items, categories: try await categories, sourceID: source.id)
+            let loaded = try await client.vodLoad()
+            return ShelfCatalogue(movies: loaded.titles.items, categories: loaded.categories, sourceID: source.id)
         case .series:
-            async let categories = client.seriesCategories()
-            async let series = client.series()
-            return ShelfCatalogue(series: try await series.items, categories: try await categories, sourceID: source.id)
+            let loaded = try await client.seriesLoad()
+            return ShelfCatalogue(series: loaded.titles.items, categories: loaded.categories, sourceID: source.id)
         }
     }
 
