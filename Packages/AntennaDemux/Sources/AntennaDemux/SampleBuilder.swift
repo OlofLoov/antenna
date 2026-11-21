@@ -25,6 +25,8 @@ public final class SampleBuilder {
         case aacADTS
         case aacRaw(config: Data)
         case mpeg4Video
+        /// AV1 or VP9 packets as they are, with the format made at the start.
+        case compressedVideo
         case mp3
         case hevcAnnexB
         case hevcHVCC
@@ -104,6 +106,12 @@ public final class SampleBuilder {
             formatDescription = try SoftwareDecoder.pcmFormat(rate: stream.sampleRate, channels: stream.channels, mask: stream.channelMask)
         case "mp2", "mp3":
             codec = .mpegAudio
+        case "av1", "vp9":
+            guard Self.hardwareDecodes(stream.codec) else { throw BuildError.unsupportedCodec(stream.codec) }
+            codec = .compressedVideo
+            formatDescription = try stream.codec == "av1" ? Self.av1Format(stream) : Self.vp9Format(stream)
+        case "vorbis":
+            codec = .software(try SoftwareDecoder(codec: stream.codec, extradata: stream.extradata))
         case "mpeg4":
             codec = .mpeg4Video
             if !stream.extradata.isEmpty {
@@ -146,7 +154,7 @@ public final class SampleBuilder {
             ) {
                 try Self.hevcFormat(parameterSets: $0)
             }
-        case .h264AVCC, .hevcHVCC:
+        case .h264AVCC, .hevcHVCC, .compressedVideo:
             return try formatDescription.map { try Self.videoBuffer(lengthPrefixedSample(packet), format: $0, packet: packet) }
         case .mpeg4Video:
             // No configuration in the header: AVI often carries it in front
@@ -198,8 +206,8 @@ public final class SampleBuilder {
         }
     }
 
-    /// The bytes of a length-prefixed video packet as the decoder gets
-    /// them: HEVC keeps only its base layer.
+    /// The bytes of a video packet as the decoder gets them: HEVC keeps
+    /// only its base layer, the others go as they are.
     private func lengthPrefixedSample(_ packet: DemuxedPacket) -> Data {
         guard case .hevcHVCC = codec else { return packet.data }
         return Self.hevcBaseLayer(lengthPrefixed: packet.data)

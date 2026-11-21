@@ -90,7 +90,7 @@ build() {
             --enable-avformat --enable-avcodec --enable-avutil --enable-swresample \
             --enable-demuxer=mpegts,matroska,avi,mov,flv \
             --enable-parser=h264,hevc,mpegvideo,aac,aac_latm,ac3,mpegaudio,dca,mlp,opus,flac \
-            --enable-decoder=mpeg2video,mp2,dvbsub,dca,truehd,mlp,aac_latm,opus,s302m \
+            --enable-decoder=mpeg2video,mp2,dvbsub,dca,truehd,mlp,aac_latm,opus,s302m,vorbis \
             --enable-bsf=extract_extradata \
             >configure.log
         grep -q "License: LGPL version 2.1 or later" configure.log ||

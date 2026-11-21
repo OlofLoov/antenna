@@ -228,7 +228,7 @@ final class DemuxRun: @unchecked Sendable {
         let video = demuxer.streams.first { $0.kind == .video }
         guard let videoBuilder = Result(catching: { try video.map(SampleBuilder.init) }).success else {
             demuxer.close()
-            return .failure(PlaybackFailure.cannotDecode(codec: video?.codec ?? "video"))
+            return .failure(Self.undecodable(video: video?.codec ?? "video", format: demuxer.format))
         }
         let tracks = DemuxStart.tracks(of: demuxer.streams)
         var sounds: [Int: SampleBuilder] = [:]
