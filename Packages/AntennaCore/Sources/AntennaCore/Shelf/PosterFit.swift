@@ -19,11 +19,13 @@ public struct PosterFit: Sendable, Hashable {
     public let height: Int
 
     /// The frame of `width` by `height` points on a screen of `scale`
-    /// pixels per point; nil for an empty frame, which loads nothing yet.
-    public init?(width: Double, height: Double, scale: Double) {
-        guard width > 0, height > 0, scale > 0 else { return nil }
-        self.width = Self.rounded(width * scale * Self.headroom)
-        self.height = Self.rounded(height * scale * Self.headroom)
+    /// pixels per point, with `headroom` over it; nil for an empty frame,
+    /// which loads nothing yet. A backdrop sized to the window passes a
+    /// headroom of 1, since nothing it fills grows on focus.
+    public init?(width: Double, height: Double, scale: Double, headroom: Double = PosterFit.headroom) {
+        guard width > 0, height > 0, scale > 0, headroom > 0 else { return nil }
+        self.width = Self.rounded(width * scale * headroom)
+        self.height = Self.rounded(height * scale * headroom)
     }
 
     /// The longest side, in pixels, to decode a picture of

@@ -22,9 +22,9 @@
 
 ## 5. Pictures and posters
 
-- [ ] 5.1 `PosterCache` trims the folder to 80% of its limit, with a test
-- [ ] 5.2 The banner, the Apple TV preview, the title page and the banner prefetch decode backdrops at the window's size
-- [ ] 5.3 Each Apple TV poster reads only its own description hint and progress
+- [x] 5.1 `PosterCache` trims the folder to 80% of its limit, with a test
+- [x] 5.2 The banner, the Apple TV preview, the title page and the banner prefetch decode backdrops at the window's size
+- [x] 5.3 Each Apple TV poster reads only its own description hint and progress
 
 ## 6. Memory and asks
 

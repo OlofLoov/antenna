@@ -63,13 +63,13 @@ struct ShelfBannerHost<Content: View>: View {
     var showing: (ShelfTitle) -> Void = { _ in }
     @ViewBuilder var content: Content
     @State private var index = 0
-    /// Hands on the banner, written only when the timer would act on the
-    /// change (movies-and-series-browsing/browsing-stays-responsive).
+    /// Hands on the banner, written only when the timer acts on it (movies-and-series-browsing/browsing-stays-responsive).
     @State private var touch = BannerTouch()
     /// Titles shown for longer than `BannerArt.patience`.
     @State private var waited: Set<String> = []
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     @Environment(\.posterLoader) private var loader
+    @Environment(\.artFit) private var fit
     @Environment(ShelfPlayback.self) private var playback
     @Environment(\.openURL) private var openURL
 
@@ -101,7 +101,7 @@ struct ShelfBannerHost<Content: View>: View {
                 // The next title's details and picture are ready before it shows.
                 let next = titles[((titles.firstIndex(of: shown) ?? 0) + 1) % titles.count]
                 await model.loadDetails(next)
-                if let art = art(next), let loader { _ = await loader.load(art.url, nil) }
+                if let art = art(next), let loader { _ = await loader.load(art.url, fit) }
             }
     }
 

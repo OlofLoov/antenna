@@ -16,6 +16,14 @@ import Testing
         #expect(PosterFit(width: 100, height: 100, scale: 0) == nil)
     }
 
+    @Test("movies-and-series-browsing/browsing-stays-responsive a 4K backdrop decodes at the size of a 1080p window")
+    func backdropForTheWindow() throws {
+        let window = try #require(PosterFit(width: 1_920, height: 1_080, scale: 1, headroom: 1))
+        #expect(window.width == 1_920 && window.height == 1_088)
+        #expect(window.longestSide(pictureWidth: 3_840, pictureHeight: 2_160) == 1_935, "a quarter of the pixels")
+        #expect(window.longestSide(pictureWidth: 1_280, pictureHeight: 720) == nil, "a w1280 backdrop decodes as it is")
+    }
+
     @Test("movies-and-series-browsing/browsing-stays-responsive a large poster decodes to cover the frame on both sides")
     func covers() throws {
         let card = try #require(PosterFit(width: 212, height: 318, scale: 1))

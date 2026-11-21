@@ -122,6 +122,24 @@ Reads after a save:
 
 ### Pictures and posters
 
+- `PosterCache.trimDisk` deletes down to 80% of the limit. A full folder
+  now lists and sorts itself once per fifth of the limit written, not once
+  per poster.
+- Backdrops decode for the window. Options: measure each picture's frame
+  as posters do, or use one fit for the window. Chosen: the window,
+  because the banner prefetch in `ShelfContent` has no frame to measure
+  and has to warm the same cache key the banner reads. `ShelfSync` keeps
+  the largest size the window has had and sets `\.artFit` with a headroom
+  of 1, so a Mac window being resized does not reload every picture at
+  each step. A 4K backdrop on a 1080p Apple TV decodes at 1935 pixels
+  wide, about 8 MB instead of 33 MB. Previews set no fit and decode whole.
+- `KeyedValues` gives each key its own observable cell. Apple TV posters
+  read their VoiceOver hint from `ShelfModel.hints` and every poster reads
+  its progress from `ShelfActivity`'s cells, so an info answer or a save
+  redraws only the posters whose value changed. `details` stays a
+  dictionary for the banner, the preview and the page, which show one
+  title at a time.
+
 ### Memory and asks
 
 ## Measurements

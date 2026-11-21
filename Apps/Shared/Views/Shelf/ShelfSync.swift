@@ -17,6 +17,9 @@ struct ShelfSync: ViewModifier {
     @Environment(\.showsAdultContent) private var showsAdult
     @Environment(\.sourceRefresher) private var refresher
     @State private var activity = ShelfActivity()
+    @Environment(\.displayScale) private var scale
+    /// The largest the window has been, which every backdrop decodes for.
+    @State private var window = CGSize.zero
     #if !os(tvOS)
         @Environment(\.publishesMenuCommands) private var publishesMenuCommands
     #endif
@@ -51,6 +54,15 @@ struct ShelfSync: ViewModifier {
                 await activity.follow(ActivityStore(context: context, profile: profile))
             }
             .environment(\.posterLoader, Self.posters)
+            .environment(\.artFit, PosterFit(width: window.width, height: window.height, scale: scale, headroom: 1))
+            // Only growing changes it, so a window being resized does not
+            // load every picture again at each step.
+            .onGeometryChange(for: CGSize.self) {
+                $0.size
+            } action: { size in
+                let grown = CGSize(width: max(window.width, size.width), height: max(window.height, size.height))
+                if grown != window { window = grown }
+            }
             .environment(\.logoLoader, Self.logos)
             .modifier(TrailerOpener())
             .task(id: records.compactMap(\.descriptor)) {
