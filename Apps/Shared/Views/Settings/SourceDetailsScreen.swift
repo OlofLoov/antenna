@@ -245,6 +245,12 @@ private struct SourceFieldsSection: View {
                     label: "Guide", text: $editor.guideLink, prompt: "Optional XMLTV link", entry: .link,
                     identifier: "settings.details.guide")
             }
+            if editor.kind == .m3u || editor.kind == .m3uFile || editor.kind == .xtream {
+                // sources-and-settings/a-user-agent-per-source
+                SourceField(
+                    label: "User-Agent", text: $editor.userAgent, prompt: "Default", entry: .login,
+                    identifier: "settings.details.userAgent")
+            }
         }
         if editor.xtreamPanel != nil {
             // source-management/a-playlist-source-switches-to-xtream-in-place

@@ -7,11 +7,11 @@
 
 ## 2. A User-Agent per source
 
-- [ ] 2.1 `SourceRecord.userAgent` and `SourceDescriptor.userAgent`, optional and synced
-- [ ] 2.2 `XtreamClient(userAgent:)` and the playlist download send it; the book gets it by server origin, with a core test
-- [ ] 2.3 The source details on iPhone, iPad, Mac and Apple TV edit it, with the boards updated and a UI test
+- [x] 2.1 `SourceRecord.userAgent` and `SourceDescriptor.userAgent`, optional and synced
+- [x] 2.2 `XtreamClient(userAgent:)` and the playlist download send it; the book gets it by server origin, with a core test
+- [x] 2.3 The source details on iPhone, iPad, Mac and Apple TV edit it, with the boards updated and a UI test
 
 ## 3. Verify
 
-- [ ] 3.1 Each requirement this change adds has a test citing `<capability>/<requirement-slug>`
-- [ ] 3.2 /opsx:verify passes
+- [x] 3.1 Each requirement this change adds has a test citing `<capability>/<requirement-slug>`
+- [x] 3.2 /opsx:verify passes

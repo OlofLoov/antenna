@@ -100,7 +100,26 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(password.waitForExistence(timeout: 5))
         XCTAssertNotEqual(password.value as? String, "fixture")
         XCTAssertTrue(element(app, "settings.details.username").exists)
-        XCTAssertTrue(element(app, "settings.details.delete").exists)
+        let delete = element(app, "settings.details.delete")
+        // Delete sits below the fields, past the bottom of an iPhone screen.
+        if !delete.exists { app.swipeUp() }
+        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+    }
+
+    // sources-and-settings/a-user-agent-per-source
+    func testAPlaylistSourceTakesAUserAgent() {
+        let app = openSettings()
+        let home = element(app, Self.home)
+        XCTAssertTrue(home.waitForExistence(timeout: 10))
+        home.tap()
+        let agent = element(app, "settings.details.userAgent")
+        XCTAssertTrue(agent.waitForExistence(timeout: 5))
+        agent.tap()
+        agent.typeText("Box/1")
+        let save = element(app, "settings.details.save")
+        XCTAssertTrue(save.waitForExistence(timeout: 5))
+        save.tap()
+        XCTAssertEqual(agent.value as? String, "Box/1")
     }
 
     // sources-and-settings/delete-a-source-and-everything-that-came-with-it
@@ -111,6 +130,8 @@ final class SettingsUITests: XCTestCase {
             XCTAssertTrue(row.waitForExistence(timeout: 10))
             row.tap()
             let delete = element(app, "settings.details.delete")
+            // A playlist's details are taller than the screen; Delete sits below the fields.
+            if !delete.waitForExistence(timeout: 5) { app.swipeUp() }
             XCTAssertTrue(delete.waitForExistence(timeout: 5))
             delete.tap()
             let confirm = app.alerts.buttons["Delete"].firstMatch

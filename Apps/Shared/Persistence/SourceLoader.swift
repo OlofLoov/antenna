@@ -110,7 +110,9 @@ struct SourceLoader: Sendable {
     func load(_ source: SourceDescriptor) async throws -> Playlist {
         switch source.kind {
         case .m3u:
-            let (data, response) = try await session.data(from: source.url)
+            var request = URLRequest(url: source.url)
+            source.headers.apply(to: &request)
+            let (data, response) = try await session.data(for: request)
             if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
                 throw LoadError.badStatus(http.statusCode)
             }
@@ -121,7 +123,8 @@ struct SourceLoader: Sendable {
             else { return Playlist(channels: []) }
             let client = XtreamClient(
                 credentials: .init(server: source.url, username: cred.username, password: cred.password),
-                session: session)
+                session: session, userAgent: source.userAgent)
+            StreamHeaderBook.shared.register(source.headers, server: source.url, source: source.id)
             let live = try await client.liveLoad()
             await timeZones.loaded(source.id, timeZoneName: live.timeZoneName)
             return Playlist(channels: live.channels, serverTimeZone: live.timeZoneName)
@@ -151,7 +154,7 @@ struct SourceLoader: Sendable {
     /// Its stream headers go to the book the players read
     /// (playback-engine/streams-are-asked-for-with-their-headers).
     private func keepMovies(_ playlist: Playlist, of source: SourceDescriptor) -> Playlist {
-        StreamHeaderBook.shared.register(playlist.channels, source: source.id)
+        StreamHeaderBook.shared.register(playlist.channels, source: source.id, base: source.headers)
         let separated = playlist.separatingOnDemand()
         playlistMovies.loaded(source.id, movies: separated.movies, episodes: separated.episodes)
         return separated
