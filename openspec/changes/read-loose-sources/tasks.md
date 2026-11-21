@@ -6,9 +6,9 @@
 
 ## 2. Encodings
 
-- [ ] 2.1 `TextEncoding` holds the UTF-8 check and the Windows-1252 table; `XtreamBody` uses it
-- [ ] 2.2 `TextEncoding.text` reads the marks, UTF-8 and Windows-1252 per byte; `PlaylistImport`, `SourceLoader` and `SourceConnector` call it, with a core test
-- [ ] 2.3 `XMLEntitySanitizer` reads invalid bytes as Windows-1252 in a guide with no declared encoding or UTF-8, with a core test for both parse paths
+- [x] 2.1 `TextEncoding` holds the UTF-8 check and the Windows-1252 table; `XtreamBody` uses it
+- [x] 2.2 `TextEncoding.text` reads the marks, UTF-8 and Windows-1252 per byte; `PlaylistImport`, `SourceLoader` and `SourceConnector` call it, with a core test
+- [x] 2.3 `XMLEntitySanitizer` reads invalid bytes as Windows-1252 in a guide with no declared encoding or UTF-8, with a core test for both parse paths
 
 ## 3. Guide matching
 

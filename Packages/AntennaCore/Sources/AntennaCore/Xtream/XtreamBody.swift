@@ -72,12 +72,12 @@ enum XtreamBody {
         while index < bytes.count {
             let byte = bytes[index]
             if byte >= 0x80 {
-                let length = utf8Length(bytes, at: index)
+                let length = TextEncoding.utf8Length(bytes, at: index)
                 if length > 0 {
                     writer.keep(index, count: length)
                     index += length
                 } else {
-                    writer.change(at: index, to: windows1252(byte))
+                    writer.change(at: index, to: TextEncoding.windows1252(byte))
                     index += 1
                 }
                 escaped = false
@@ -123,40 +123,5 @@ enum XtreamBody {
             }
         }
         return bytes.count
-    }
-
-    /// The length of the well-formed UTF-8 sequence at `index`, 0 when it is not one.
-    private static func utf8Length(_ bytes: UnsafeBufferPointer<UInt8>, at index: Int) -> Int {
-        let lead = bytes[index]
-        let length: Int
-        var low: UInt8 = 0x80
-        var high: UInt8 = 0xBF
-        switch lead {
-        case 0xC2...0xDF: length = 2
-        case 0xE0: (length, low) = (3, 0xA0)
-        case 0xE1...0xEC, 0xEE...0xEF: length = 3
-        case 0xED: (length, high) = (3, 0x9F)
-        case 0xF0: (length, low) = (4, 0x90)
-        case 0xF1...0xF3: length = 4
-        case 0xF4: (length, high) = (4, 0x8F)
-        default: return 0
-        }
-        guard index + length <= bytes.count else { return 0 }
-        guard (low...high).contains(bytes[index + 1]) else { return 0 }
-        for offset in 2..<length where !(0x80...0xBF).contains(bytes[index + offset]) { return 0 }
-        return length
-    }
-
-    /// Windows-1252 code points for 0x80 to 0x9F; 0 where the code page has none.
-    private static let windows1252High: [UInt32] = [
-        0x20AC, 0, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021, 0x02C6, 0x2030, 0x0160, 0x2039, 0x0152, 0, 0x017D, 0,
-        0, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014, 0x02DC, 0x2122, 0x0161, 0x203A, 0x0153, 0, 0x017E, 0x0178,
-    ]
-
-    /// The UTF-8 bytes of `byte` read as Windows-1252, U+FFFD where the code page has no character.
-    private static func windows1252(_ byte: UInt8) -> [UInt8] {
-        let value = byte < 0xA0 ? windows1252High[Int(byte - 0x80)] : UInt32(byte)
-        let scalar = Unicode.Scalar(value == 0 ? 0xFFFD : value) ?? "\u{FFFD}"
-        return Array(String(Character(scalar)).utf8)
     }
 }
