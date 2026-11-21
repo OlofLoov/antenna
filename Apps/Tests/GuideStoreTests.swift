@@ -16,9 +16,19 @@ import Testing
 @Suite(.timeLimit(.minutes(1))) struct GuideStoreTests {
     let container: ModelContainer
 
-    static let guide = """
-        <tv><programme start="20261103180000 +0000" stop="20261103190000 +0000" channel="news.se"><title>News</title></programme></tv>
-        """
+    /// One programme on now. The guide keeps a window around the current day, so
+    /// a fixed date would be dropped once it falls out of that window.
+    static var guide: String {
+        let format = DateFormatter()
+        format.locale = Locale(identifier: "en_US_POSIX")
+        format.timeZone = .gmt
+        format.dateFormat = "yyyyMMddHHmmss Z"
+        let start = format.string(from: Date.now.addingTimeInterval(-1800))
+        let stop = format.string(from: Date.now.addingTimeInterval(1800))
+        return """
+            <tv><programme start="\(start)" stop="\(stop)" channel="news.se"><title>News</title></programme></tv>
+            """
+    }
 
     init() throws {
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
