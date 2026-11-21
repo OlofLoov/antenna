@@ -10,7 +10,6 @@ import SwiftUI
             @ViewBuilder var top: Top
             @Environment(\.shelfBanner) private var banner
             @Environment(\.shelfPrefix) private var prefix
-            @Environment(\.layoutDirection) private var direction
 
             var body: some View {
                 ZStack(alignment: .bottom) {
@@ -50,7 +49,7 @@ import SwiftUI
                 .frame(height: 520)
                 .overlay(alignment: .top) { top }
                 .contentShape(Rectangle())
-                .gesture(Swipe.gesture(banner, direction: direction))
+                .modifier(Swipe(banner: banner))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).hero")
             }
@@ -62,7 +61,6 @@ import SwiftUI
         struct Pad: View {
             @Environment(\.shelfBanner) private var banner
             @Environment(\.shelfPrefix) private var prefix
-            @Environment(\.layoutDirection) private var direction
 
             var body: some View {
                 ZStack(alignment: .topLeading) {
@@ -101,26 +99,37 @@ import SwiftUI
                 .clipShape(cornerShape(.large))
                 .contentShape(Rectangle())
                 .onHover { inside in banner?.actions.interacting(inside) }
-                .gesture(Swipe.gesture(banner, direction: direction))
+                .modifier(Swipe(banner: banner))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).hero")
             }
         }
 
         /// A sideways swipe of 40 pt or more pages the banner; while the finger
-        /// is down the banner holds still.
-        enum Swipe {
+        /// is down the banner holds still. The banner hears once when the
+        /// finger lands and once when it lifts or the scroll view takes the
+        /// drag, not on every move (movies-and-series-browsing/browsing-stays-responsive).
+        struct Swipe: ViewModifier {
+            let banner: BannerContext?
+            @GestureState private var dragging = false
+            @Environment(\.layoutDirection) private var direction
+
+            func body(content: Content) -> some View {
+                content
+                    .gesture(gesture)
+                    .onChange(of: dragging) { _, down in banner?.actions.interacting(down) }
+            }
+
             /// A swipe toward the leading edge shows the next page, which
             /// the mirrored layout draws on the trailing side.
-            @MainActor static func gesture(_ banner: BannerContext?, direction: LayoutDirection) -> some Gesture {
+            private var gesture: some Gesture {
                 DragGesture(minimumDistance: 20)
-                    .onChanged { _ in banner?.actions.interacting(true) }
+                    .updating($dragging) { _, down, _ in down = true }
                     .onEnded { value in
                         let distance = direction.towardTrailing(value.translation.width)
                         if abs(distance) >= 40, abs(distance) > abs(value.translation.height) {
                             banner?.actions.page(distance < 0 ? 1 : -1)
                         }
-                        banner?.actions.interacting(false)
                     }
             }
         }

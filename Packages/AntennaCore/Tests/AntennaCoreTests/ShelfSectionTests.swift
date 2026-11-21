@@ -55,6 +55,29 @@ import Testing
         #expect(!BannerPager.rotates(count: 1, interacting: false, reduceMotion: false))
     }
 
+    // Owner-found: a drag on the iPhone banner reported every touch move and
+    // restarted the banner's timer task several times a frame
+    // ("onChange(of: Rotation) action tried to update multiple times per frame").
+    @Test("movies-and-series-browsing/browsing-stays-responsive a drag's moves change the banner's timer once, Apple TV's inputs each time")
+    func bannerTouch() {
+        var touch = BannerTouch()
+        var changes = 0
+        for _ in 0..<240 {
+            let before = touch
+            touch.report(true, hold: .whileInteracting)
+            if touch != before { changes += 1 }
+        }
+        #expect(changes == 1, "one change for the finger landing, none for its moves")
+        touch.report(false, hold: .whileInteracting)
+        #expect(!touch.interacting)
+        #expect(touch.inputs == 0)
+
+        var television = BannerTouch()
+        television.report(true, hold: .restartsOnInput)
+        television.report(true, hold: .restartsOnInput)
+        #expect(television.inputs == 2, "each focus move on Apple TV starts the wait again")
+    }
+
     @Test("movies-and-series-browsing/new-titles-up-front the banner waits for the backdrop before it settles for the poster")
     func bannerArt() throws {
         let poster = try #require(URL(string: "http://h/poster.jpg"))

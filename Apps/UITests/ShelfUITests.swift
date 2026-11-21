@@ -99,6 +99,24 @@ final class ShelfUITests: XCTestCase {
         waitForHero(app, "Night Ferry", timeout: 12)
     }
 
+    // movies-and-series-browsing/browsing-stays-responsive, a drag that starts on the banner.
+    // Owner-found: a drag there restarted the banner's timer on every touch move.
+    func testAScrollThatStartsOnTheBannerLetsItMoveOnAgain() throws {
+        let app = try launch(arguments: ["-ui-testing-banner-rotates"])
+        openMovies(app)
+        waitForHero(app, "The Long Harbor", timeout: 5)
+        let hero = app.element("movies.hero")
+        let start = hero.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let up = hero.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: -0.2))
+        start.press(forDuration: 0.05, thenDragTo: up, withVelocity: 1500, thenHoldForDuration: 0.3)
+        let top = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3))
+        top.press(
+            forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9)), withVelocity: 1500,
+            thenHoldForDuration: 0)
+        XCTAssertTrue(app.tabBars.buttons["Movies"].isHittable, "the app still answers")
+        waitForHero(app, "Night Ferry", timeout: 12)
+    }
+
     // movies-and-series-browsing/new-titles-up-front, Reduce Motion
     func testWithReduceMotionTheBannerStaysAndPagingWraps() throws {
         let app = try launch(arguments: ["-ui-testing-reduce-motion"])

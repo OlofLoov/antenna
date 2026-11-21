@@ -63,9 +63,9 @@ struct ShelfBannerHost<Content: View>: View {
     var showing: (ShelfTitle) -> Void = { _ in }
     @ViewBuilder var content: Content
     @State private var index = 0
-    @State private var interacting = false
-    /// Inputs on the banner on Apple TV; each one starts the wait again.
-    @State private var inputs = 0
+    /// Hands on the banner, written only when the timer would act on the
+    /// change (movies-and-series-browsing/browsing-stays-responsive).
+    @State private var touch = BannerTouch()
     /// Titles shown for longer than `BannerArt.patience`.
     @State private var waited: Set<String> = []
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
@@ -78,13 +78,13 @@ struct ShelfBannerHost<Content: View>: View {
         let shown = titles.isEmpty ? nil : titles[min(index, titles.count - 1)]
         let rotates =
             !paused && !Self.heldForTesting
-            && BannerPager.rotates(count: titles.count, interacting: interacting, reduceMotion: reduceMotion, hold: Self.hold)
+            && BannerPager.rotates(count: titles.count, interacting: touch.interacting, reduceMotion: reduceMotion, hold: Self.hold)
         content
             .environment(\.shelfBanner, shown.map { context($0, count: titles.count) })
             .onChange(of: shown, initial: true) { _, title in
                 if let title { showing(title) }
             }
-            .task(id: Rotation(index: index, rotates: rotates, inputs: inputs)) {
+            .task(id: Rotation(index: index, rotates: rotates, inputs: touch.inputs)) {
                 guard rotates else { return }
                 try? await Task.sleep(for: BannerPager.interval)
                 guard !Task.isCancelled else { return }
@@ -172,8 +172,8 @@ struct ShelfBannerHost<Content: View>: View {
                     withAnimation(ShelfBanner.crossfade) { index = pager.index }
                 },
                 interacting: { inside in
-                    interacting = inside
-                    inputs += 1
+                    let next = touch.reporting(inside, hold: Self.hold)
+                    if next != touch { touch = next }
                 }))
     }
 }

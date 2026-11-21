@@ -19,7 +19,7 @@ actor PosterCache {
     private let directory: URL
     private let session: URLSession
     private let diskLimit: Int
-    private var loading: [String: Task<Poster?, Never>] = [:]
+    private var loading: [String: Load] = [:]
     /// The folder's size after the last trim plus every write since, nil
     /// before the first write. It never counts less than the folder holds,
     /// so the folder is listed again only when a write may cross the limit.
@@ -44,17 +44,63 @@ actor PosterCache {
     /// cover `fit`, or at full size without one. Memory keeps one picture
     /// per address and frame; disk keeps the file as it came. Two calls
     /// for one address and frame while it loads share one download.
+    ///
+    /// A caller that is cancelled, such as a card scrolled off screen,
+    /// stops waiting at once, and once no caller waits the download and
+    /// decode stop too, so a fast scroll does not leave a queue of posters
+    /// nobody sees (movies-and-series-browsing/browsing-stays-responsive).
     func poster(for url: URL, fitting fit: PosterFit? = nil) async -> Poster? {
         let key = Self.key(url)
         let memoryKey = fit.map { "\(key)@\($0.key)" } ?? key
         if let kept = memory.object(forKey: memoryKey as NSString) { return kept }
-        if let running = loading[memoryKey] { return await running.value }
-        let task = Task { await load(url, key: key, memoryKey: memoryKey, fit: fit) }
-        loading[memoryKey] = task
-        let poster = await task.value
-        loading[memoryKey] = nil
-        return poster
+        guard !Task.isCancelled else { return nil }
+        let waiter = UUID()
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                if loading[memoryKey] != nil {
+                    loading[memoryKey]?.waiters[waiter] = continuation
+                } else {
+                    let id = UUID()
+                    let task = Task {
+                        let poster = await load(url, key: key, memoryKey: memoryKey, fit: fit)
+                        finish(memoryKey, id: id, with: poster)
+                    }
+                    loading[memoryKey] = Load(id: id, task: task, waiters: [waiter: continuation])
+                }
+            }
+        } onCancel: {
+            Task { await self.leave(memoryKey, waiter: waiter) }
+        }
     }
+
+    /// A load in flight: the work and the callers waiting for it.
+    private struct Load {
+        let id: UUID
+        let task: Task<Void, Never>
+        var waiters: [UUID: CheckedContinuation<Poster?, Never>]
+    }
+
+    /// Hands the load's poster to everyone still waiting.
+    private func finish(_ memoryKey: String, id: UUID, with poster: Poster?) {
+        guard loading[memoryKey]?.id == id, let done = loading.removeValue(forKey: memoryKey) else { return }
+        for waiter in done.waiters.values { waiter.resume(returning: poster) }
+    }
+
+    /// A cancelled caller stops waiting with nothing; the last one out
+    /// cancels the load.
+    private func leave(_ memoryKey: String, waiter: UUID) {
+        guard var running = loading[memoryKey], let continuation = running.waiters.removeValue(forKey: waiter) else { return }
+        continuation.resume(returning: nil)
+        if running.waiters.isEmpty {
+            running.task.cancel()
+            loading[memoryKey] = nil
+        } else {
+            loading[memoryKey] = running
+        }
+    }
+
+    /// The callers waiting for a load, over every load in flight. For tests.
+    var waiting: Int { loading.values.reduce(0) { $0 + $1.waiters.count } }
 
     /// The poster from memory or disk, never the network; nil when it was
     /// never loaded or has been trimmed. The Top Shelf tiles use it.

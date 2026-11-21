@@ -135,6 +135,32 @@ public struct BannerPager: Sendable, Hashable {
     }
 }
 
+/// The hands on the banner as its timer reads them
+/// (movies-and-series-browsing/browsing-stays-responsive). A drag reports
+/// many times a frame; only a change the timer acts on changes this value,
+/// so the timer restarts once per touch, not once per report.
+public struct BannerTouch: Sendable, Hashable {
+    /// True while a finger, the pointer or focus is on the banner.
+    public private(set) var interacting = false
+    /// Counts the inputs that start the wait again, with `.restartsOnInput` only.
+    public private(set) var inputs = 0
+
+    public init() {}
+
+    /// A finger, the pointer or focus arrived on the banner (`true`) or left it.
+    public mutating func report(_ inside: Bool, hold: BannerPager.Hold) {
+        interacting = inside
+        if hold == .restartsOnInput { inputs += 1 }
+    }
+
+    /// This state after `report(_:hold:)`.
+    public func reporting(_ inside: Bool, hold: BannerPager.Hold) -> BannerTouch {
+        var next = self
+        next.report(inside, hold: hold)
+        return next
+    }
+}
+
 /// The picture behind a banner title
 /// (movies-and-series-browsing/new-titles-up-front).
 public enum BannerArt: Sendable, Hashable {
