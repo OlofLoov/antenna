@@ -256,6 +256,58 @@ final class SearchTVUITests: XCTestCase {
         expectFocus("search.person.0")
     }
 
+    // search/results-grouped-best-first, results look like the rest of the app
+    // Search drew 180 by 270 posters where Movies draws 212 by 318.
+    func testPostersMatchMovies() {
+        openSearchOnTheShelf()
+        type("harbor")
+        let poster = element("search.result.title.0")
+        XCTAssertTrue(poster.waitForExistence(timeout: 10))
+        let size = poster.frame.size
+
+        press(.menu)
+        moveAlongTheBar(.left, to: "shell.tab.movies")
+        press(.select)
+        let row = element("movies.row.recentlyAdded")
+        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        let shelfPoster = row.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'movies.card.'")).firstMatch
+        XCTAssertTrue(shelfPoster.waitForExistence(timeout: 5))
+        XCTAssertEqual(size.width, shelfPoster.frame.width, accuracy: 0.5, "a poster in Search is as wide as in Movies")
+        XCTAssertEqual(size.height, shelfPoster.frame.height, accuracy: 0.5, "and as tall")
+    }
+
+    // search/results-grouped-best-first, results look like the rest of the app
+    // design-system/channel-rows-share-one-anatomy
+    // Search drew channels as 112 pt cards in a sideways row.
+    func testChannelRowsMatchTheChannelList() {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launchInEnglish()
+        expectEngine("playing loads=1 file=a1.ts")
+        expectFocus("shell.picture")
+        expect(element("zapBar.bar"), "exists == false")
+        press(.select)
+        XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 10))
+        // The second row, at rest; the focused first row grows to 100.
+        let listRow = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'overlay.channel.'")).element(boundBy: 1)
+        XCTAssertTrue(listRow.waitForExistence(timeout: 5))
+        let listHeight = listRow.frame.height
+        press(.menu)
+        expect(element("overlay.root"), "exists == false")
+
+        press(.menu)
+        expectFocus("shell.tab.live")
+        moveAlongTheBar(.right, to: "shell.tab.search")
+        press(.select)
+        XCTAssertTrue(element("search.results").waitForExistence(timeout: 10))
+        let tab = element("shell.tab.search")
+        if tab.exists, tab.hasFocus { press(.down) }
+        type("channel")
+        let row = element("search.result.channel.1")
+        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        XCTAssertEqual(row.frame.height, listHeight, accuracy: 0.5, "a channel row in Search is as tall as in the channel list")
+    }
+
     /// Launches on the shelf's `titles` script and opens the Search tab.
     func openSearchOnTheShelf() {
         app = XCUIApplication()

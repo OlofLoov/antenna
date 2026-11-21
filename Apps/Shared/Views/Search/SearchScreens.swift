@@ -40,7 +40,7 @@
             let live = live
             let activity = activity
             return SearchFeed(
-                model: model, channel: { live.catalogue.channel(for: $0) }, onNow: { live.programmes.current($0, $1)?.title },
+                model: model, channel: { live.catalogue.channel(for: $0) }, line: { live.programmes.line(for: $0, at: $1) },
                 picks: picks, remember: { activity.recordSearch($0) }, text: SearchText())
         }
 
@@ -98,6 +98,8 @@
             }
             .background(Palette.ground)
             .environment(\.searchMetrics, .phone)
+            .environment(\.shelfMetrics, .phone)
+            .environment(\.browseMetrics, .compact)
         }
 
         private var search: some View {

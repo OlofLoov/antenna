@@ -23,10 +23,17 @@ extension TitlePage {
                         ScrollView(.horizontal) {
                             HStack(spacing: type.spacing * 0.8) {
                                 ForEach(Array(page.state.chips.enumerated()), id: \.element.id) { index, chip in
-                                    Chip(type: type, chip: chip) { page.actions.openPerson(chip) }
-                                        .focused($focused, equals: chip.id)
-                                        .id(chip.id)
-                                        .accessibilityIdentifier("title.cast.\(index)")
+                                    Chip(type: type, name: chip.name.display) {
+                                        page.actions.openPerson(chip)
+                                    } trailing: {
+                                        if chip.role == .director { Text("Director") }
+                                    }
+                                    .accessibilityLabel(
+                                        chip.role == .director ? Text("\(chip.name.display), Director") : Text(verbatim: chip.name.display)
+                                    )
+                                    .focused($focused, equals: chip.id)
+                                    .id(chip.id)
+                                    .accessibilityIdentifier("title.cast.\(index)")
                                 }
                             }
                             .padding(.vertical, type.spacing / 2)
@@ -52,23 +59,26 @@ extension TitlePage {
         }
     }
 
-    /// One name on a bordered capsule, at least 44 pt tall (design-system/controls-use-system-styles).
-    struct Chip: View {
+    /// One name on a bordered capsule, at least 44 pt tall
+    /// (design-system/controls-use-system-styles), with anything muted after
+    /// it, such as "Director". Search passes the matched letters and the
+    /// person's count line. The caller sets what VoiceOver reads.
+    struct Chip<Trailing: View>: View {
         let type: Sizes
-        let chip: CastChip
+        /// Provider text: never translated, laid out in its own script's direction.
+        let name: String
+        var nameRanges: [Range<String.Index>] = []
         let select: () -> Void
+        @ViewBuilder var trailing: Trailing
 
         var body: some View {
             Button(action: select) {
                 HStack(spacing: type.chipGap) {
-                    // Provider text: never translated, laid out in its own script's direction.
-                    Text(verbatim: chip.name.display)
+                    SearchRow.Highlighted(text: name, ranges: nameRanges)
                         .lineLimit(1)
-                    if chip.role == .director {
-                        Text("Director")
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
+                    trailing
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
                 .font(.boardStyle(type.chip))
                 .castChipPadding(type.chip)
@@ -76,7 +86,6 @@ extension TitlePage {
             }
             .castChipStyle()
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(chip.role == .director ? Text("\(chip.name.display), Director") : Text(verbatim: chip.name.display))
             .accessibilityAddTraits(.isButton)
         }
     }

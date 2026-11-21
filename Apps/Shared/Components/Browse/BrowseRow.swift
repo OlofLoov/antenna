@@ -40,6 +40,9 @@ extension Browse {
         let progress: Double?
         let hasCatchUp: Bool
         let isPlaying: Bool
+        /// The letters Search matched, on the accent tint; none in Live.
+        var nameRanges: [Range<String.Index>] = []
+        var detailRanges: [Range<String.Index>] = []
         let select: () -> Void
         @ViewBuilder var logo: Logo
         @Environment(\.browseMetrics) private var metrics
@@ -54,7 +57,7 @@ extension Browse {
                         .clipShape(cornerShape(.small))
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
-                            Text(name)
+                            SearchRow.Highlighted(text: name, ranges: nameRanges)
                                 .font(.boardStyle(metrics.name, weight: isPlaying ? .semibold : .regular))
                                 .lineLimit(1)
                             Spacer(minLength: 0)
@@ -65,7 +68,7 @@ extension Browse {
                                     .foregroundStyle(Palette.textMuted)
                             }
                         }
-                        Text(detail)
+                        SearchRow.Highlighted(text: detail, ranges: detailRanges)
                             .font(.boardStyle(metrics.detail))
                             .lineLimit(1)
                             .foregroundStyle(isPlaying ? Browse.textSecondary : Palette.textMuted)

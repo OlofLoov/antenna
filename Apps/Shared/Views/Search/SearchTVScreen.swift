@@ -45,6 +45,7 @@
                 }
             }
             .environment(\.searchMetrics, .tv)
+            .environment(\.shelfMetrics, .tv)
             .environment(\.searchFeed, feed)
             .task(id: corpus.signature(now: .now)) { await model.load(corpus) }
             .task(id: library.peopleRevision) { model.peopleChanged(await library.people()) }
@@ -136,7 +137,7 @@
             let overlayGuide = overlayGuide
             let activity = activity
             return SearchFeed(
-                model: model, channel: { catalogue.channel(for: $0) }, onNow: { overlayGuide.current($0, $1)?.title },
+                model: model, channel: { catalogue.channel(for: $0) }, line: { overlayGuide.line(for: $0, at: $1) },
                 picks: .shell(shell, library: library, activity: activity, playback: playback, watching: watching),
                 remember: { activity.recordSearch($0) }, text: SearchText())
         }
@@ -193,8 +194,9 @@
     }
 
     extension SearchLayout {
-        /// Apple TV: channels as a row of cards, every programme two across,
-        /// then posters (`TV-Search`). No chips; every section shows.
+        /// Apple TV: channels and every programme two across, then posters
+        /// and people in rows that scroll sideways (`TV-Search`). No chips;
+        /// every section shows.
         struct Television: View {
             @Environment(\.searchFeed) private var feed
 
@@ -204,16 +206,11 @@
                     LazyVStack(alignment: .leading, spacing: 28) {
                         if !results.channels.isEmpty {
                             section(.channels, count: .verbatim("\(results.count(.channels))")) {
-                                ScrollView(.horizontal) {
-                                    LazyHStack(spacing: 20) {
-                                        ForEach(Array(results.shownChannels.enumerated()), id: \.element.id) { index, hit in
-                                            SearchChannelResult(hit: hit, index: index)
-                                                .frame(width: 340)
-                                        }
+                                LazyVGrid(columns: columns, spacing: 12) {
+                                    ForEach(Array(results.shownChannels.enumerated()), id: \.element.id) { index, hit in
+                                        SearchChannelResult(hit: hit, index: index)
                                     }
-                                    .padding(.vertical, 20)
                                 }
-                                .scrollClipDisabled()
                             }
                         }
                         if !results.programmes.isEmpty || feed.model.guideLoading {
@@ -221,7 +218,7 @@
                                 results.programmes.isEmpty
                                 ? "loading" : .verbatim([SearchText.nextSevenDays(), "\(results.count(.guide))"].joinedAsDetail())
                             section(.guide, count: count) {
-                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 20), GridItem(.flexible(), spacing: 20)], spacing: 12) {
+                                LazyVGrid(columns: columns, spacing: 12) {
                                     // Apple TV lists every programme (search/very-long-result-lists).
                                     ForEach(results.programmes.indices, id: \.self) { index in
                                         SearchProgrammeResult(hit: results.programmes[index], index: index)
@@ -232,7 +229,7 @@
                         if !results.titles.isEmpty {
                             section(.titles, count: .verbatim("\(results.titles.count)")) {
                                 ScrollView(.horizontal) {
-                                    LazyHStack(alignment: .top, spacing: 20) {
+                                    LazyHStack(alignment: .top, spacing: ShelfView.Metrics.tv.gap) {
                                         ForEach(Array(results.titles.enumerated()), id: \.element.id) { index, hit in
                                             SearchTitleResult(hit: hit, index: index)
                                         }
@@ -244,14 +241,17 @@
                         }
                         if !feed.model.people.isEmpty {
                             section(.people, count: .verbatim("\(feed.model.people.count)")) {
-                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 20), GridItem(.flexible(), spacing: 20)], spacing: 12) {
-                                    people(feed.model.people)
-                                }
+                                peopleRow(feed.model.people, type: .tv, inset: 0)
+                                    .focusSection()
                             }
                         }
                     }
                     .padding(.top, 30)
                 }
+            }
+
+            private var columns: [GridItem] {
+                [GridItem(.flexible(), spacing: 20), GridItem(.flexible(), spacing: 20)]
             }
 
             private func section<Content: View>(

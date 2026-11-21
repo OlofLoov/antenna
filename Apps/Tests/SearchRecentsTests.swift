@@ -52,7 +52,7 @@ import Testing
                 titles: [], hasTitles: false, sources: .loaded))
         var played: [String] = []
         let feed = SearchFeed(
-            model: model, channel: { key in tagged.first { RowKey($0) == key } }, onNow: { _, _ in nil },
+            model: model, channel: { key in tagged.first { RowKey($0) == key } }, line: { _, _ in .message("") },
             picks: SearchPicks(channel: { played.append($0.name) }, programme: { _, _ in }, title: { _ in }, person: { _ in }),
             remember: { activity.recordSearch($0) }, text: SearchText())
         model.run("  Arena  ")

@@ -36,6 +36,8 @@
             }
             .background(Palette.ground)
             .environment(\.searchMetrics, .pad)
+            .environment(\.shelfMetrics, .pad)
+            .environment(\.browseMetrics, .regular)
         }
 
         private var search: some View {

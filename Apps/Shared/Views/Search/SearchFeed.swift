@@ -16,8 +16,8 @@ struct SearchFeed {
     let model: SearchModel
     /// The loaded channel behind a result, nil once its source is gone.
     let channel: @MainActor (RowKey) -> Channel?
-    /// The title of what is on a channel now, for its row's second line.
-    let onNow: @MainActor (Channel, Date) -> String?
+    /// What the Live list says is on a channel at a time, for its row.
+    let line: @MainActor (Channel, Date) -> GuideLine
     let picks: SearchPicks
     /// Records the query as a recent search before a pick acts.
     let remember: @MainActor (String) -> Void
@@ -81,34 +81,88 @@ struct SearchOpener {
     let open: @MainActor (ShelfTitle.Kind, String) -> Void
 }
 
-/// A channel result with its logo, highlight and what is on now.
+/// A channel result as the channel list draws it: the Live list's row on
+/// iPhone, iPad and Mac, the channel list's row on Apple TV, with the
+/// highlight, the number after the name, what is on now and its progress
+/// (search/results-grouped-best-first, design-system/channel-rows-share-one-anatomy).
 struct SearchChannelResult: View {
     let hit: SearchResults.ChannelHit
     let index: Int
     @Environment(\.searchFeed) private var feed
+    @Environment(\.locale) private var locale
 
     var body: some View {
         if let feed {
             let query = feed.model.results.query
             let channel = feed.channel(hit.id)
-            let detail = SearchText.channelLine(hit, now: channel.flatMap { feed.onNow($0, feed.model.searchedAt) })
-            SearchRow.Channel(
-                name: hit.channel.name, nameRanges: query.highlights(in: hit.channel.name), detail: detail,
-                detailRanges: hit.match == .group ? query.highlights(in: detail) : [], initials: Channel.initials(for: hit.channel.name),
-                logo: channel?.logoURL
+            let line = channel.map { feed.line($0, feed.model.searchedAt) }
+            let detail = SearchText.channelRowLine(hit, line: line?.text ?? GuideLine.noProgramme(locale), locale: locale)
+            let cursor = feed.model.cursor == .channel(hit.id)
+            row(
+                channel: channel, detail: detail, detailRanges: hit.match == .group ? query.highlights(in: detail) : [],
+                progress: hit.match == .group ? nil : line?.progress, nameRanges: query.highlights(in: hit.channel.name)
             ) {
                 feed.pick(hit)
             }
-            .environment(\.searchCursor, feed.model.cursor == .channel(hit.id))
-            .accessibilityValue(feed.model.cursor == .channel(hit.id) ? "Keyboard focus" : "")
+            .environment(\.searchCursor, cursor)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(
+                "Channels, \(hit.channel.name), \(SearchText.channelLine(hit, now: line?.programmeTitle, locale: locale))"
+            )
+            .accessibilityAddTraits(.isButton)
+            .accessibilityValue(cursor ? "Keyboard focus" : "")
             .accessibilityIdentifier("search.result.channel.\(index)")
             .id(SearchItem.channel(hit.id))
             .modifier(SearchReturnFocus(item: .channel(hit.id)))
         }
     }
+
+    private var number: ChannelNumber? {
+        hit.channel.number.map { ChannelNumber(major: $0, minor: hit.channel.minorNumber) }
+    }
+
+    private func row(
+        channel: Channel?, detail: String, detailRanges: [Range<String.Index>], progress: Double?,
+        nameRanges: [Range<String.Index>], select: @escaping () -> Void
+    ) -> some View {
+        let initials = Channel.initials(for: hit.channel.name)
+        #if os(tvOS)
+            return ChannelOverlay.ChannelRow(
+                number: number, name: hit.channel.name, detail: detail, progress: progress,
+                hasCatchUp: channel?.catchUpBadge != nil, identifier: "search.result.channel.\(index)", nameRanges: nameRanges,
+                detailRanges: detailRanges, select: select
+            ) {
+                LogoImage(url: channel?.logoURL) { ChannelOverlay.Initials(text: initials) }
+            }
+        #else
+            return Browse.ChannelRow(
+                number: number, name: hit.channel.name, detail: detail, progress: progress,
+                hasCatchUp: channel?.catchUpBadge != nil, isPlaying: false, nameRanges: nameRanges, detailRanges: detailRanges,
+                select: select
+            ) {
+                Browse.Logo(url: channel?.logoURL, initials: initials, isSelected: false)
+            }
+            .modifier(SearchRow.CursorRing(shape: cornerShape(.medium)))
+        #endif
+    }
 }
 
-/// A programme result: NOW or its start, title and channel line.
+extension GuideLine {
+    /// The bar's fraction while a programme is on, nil for a message.
+    fileprivate var progress: Double? {
+        if case .programme(_, let fraction, _) = self { return fraction }
+        return nil
+    }
+
+    /// The programme's title, nil for a message.
+    fileprivate var programmeTitle: String? {
+        if case .programme(let title, _, _) = self { return title }
+        return nil
+    }
+}
+
+/// A programme result as the guide draws one: NOW or its start, title,
+/// channel line and, on now, its progress.
 struct SearchProgrammeResult: View {
     let hit: SearchResults.ProgrammeHit
     let index: Int
@@ -142,10 +196,11 @@ struct SearchProgrammeResult: View {
     @ViewBuilder private var row: some View {
         if let feed {
             let title = SearchText.programmeTitle(hit.programme)
+            let now = feed.model.searchedAt
             SearchRow.Programme(
-                lead: feed.text.lead(hit, now: feed.model.searchedAt), title: title,
-                ranges: feed.model.results.query.highlights(in: title), detail: feed.text.detail(hit, now: feed.model.searchedAt),
-                hasCatchup: hit.hasCatchup
+                lead: feed.text.lead(hit, now: now), title: title, ranges: feed.model.results.query.highlights(in: title),
+                detail: feed.text.detail(hit, now: now), hasCatchup: hit.hasCatchup,
+                progress: hit.isOnNow ? ProgrammeProgress.fraction(start: hit.programme.start, end: hit.programme.stop, now: now) : nil
             ) {
                 feed.pick(hit)
             }
@@ -158,48 +213,80 @@ struct SearchProgrammeResult: View {
     }
 }
 
-/// A movie or series result with its poster.
+/// A movie or series result: the Movies tab's poster card with its menu
+/// (More info on a movie, My list), SERIES on a series, and the name with
+/// its highlight under it, as under a Continue watching card.
 struct SearchTitleResult: View {
     let hit: SearchResults.TitleHit
     let index: Int
     @Environment(\.searchFeed) private var feed
+    @Environment(\.shelfMetrics) private var metrics
+    @Environment(ShelfLibrary.self) private var library
+    @Environment(ShelfActivity.self) private var activity
 
     var body: some View {
         if let feed {
-            SearchRow.Title(
-                name: hit.title.name, ranges: feed.model.results.query.highlights(in: hit.title.name), isSeries: hit.title.kind == .series
-            ) {
-                feed.pick(hit)
-            } poster: {
-                ShelfView.PosterArt(name: hit.title.name, url: hit.title.posterURL)
+            let title = hit.title
+            let cursor = feed.model.cursor == .title(hit.id)
+            VStack(alignment: .leading, spacing: metrics.headerSpacing * 0.6) {
+                ShelfView.PosterCard(
+                    title: title, label: spoken, badged: [.series], identifier: "search.result.title.\(index)"
+                ) {
+                    feed.pick(hit)
+                }
+                .contextMenu {
+                    if title.kind == .movie {
+                        ShelfView.MoreInfoMenuItem { library.openPage(title, from: .search, in: title.kind) }
+                    }
+                    ShelfView.MyListMenuItem(isOnMyList: activity.isOnMyList(title)) { activity.toggleMyList(title) }
+                }
+                .environment(\.searchCursor, cursor)
+                .modifier(SearchRow.PosterCursor())
+                .accessibilityValue(cursor ? "Keyboard focus" : "")
+                .modifier(SearchReturnFocus(item: .title(hit.id)))
+                SearchRow.Highlighted(text: title.name, ranges: feed.model.results.query.highlights(in: title.name))
+                    .font(.boardStyle(metrics.caption))
+                    .foregroundStyle(Browse.textSecondary)
+                    .lineLimit(1)
+                    .frame(width: metrics.poster.width, alignment: .leading)
+                    .accessibilityHidden(true)
             }
-            .environment(\.searchCursor, feed.model.cursor == .title(hit.id))
-            .accessibilityValue(feed.model.cursor == .title(hit.id) ? "Keyboard focus" : "")
-            .accessibilityIdentifier("search.result.title.\(index)")
+            .environment(\.shelfPrefix, "search")
             .id(SearchItem.title(hit.id))
-            .modifier(SearchReturnFocus(item: .title(hit.id)))
         }
+    }
+
+    private var spoken: String {
+        let name = hit.title.name
+        return hit.title.kind == .series
+            ? String(localized: "Movies & series, \(name), series") : String(localized: "Movies & series, \(name)")
     }
 }
 
-/// A person with their initials, name and count line.
+/// A person as a name in a title's cast: the title page's chip with the
+/// highlight and "Acting · 9 in your sources" muted inside it.
 struct SearchPersonResult: View {
     let person: PeopleIndex.Person
     let index: Int
     @Environment(\.searchFeed) private var feed
+    @Environment(\.searchMetrics) private var metrics
     @Environment(\.locale) private var locale
 
     var body: some View {
         if let feed {
-            let page = person.page
-            SearchRow.Person(
-                name: person.name, nameRanges: feed.model.results.query.highlights(in: person.name),
-                detail: page.countLine(locale: locale), initials: page.initials
+            let detail = person.page.countLine(locale: locale)
+            let cursor = feed.model.cursor == .person(person.key)
+            TitlePage.Chip(
+                type: metrics.chips, name: person.name, nameRanges: feed.model.results.query.highlights(in: person.name)
             ) {
                 feed.pick(person)
+            } trailing: {
+                Text(verbatim: detail)
             }
-            .environment(\.searchCursor, feed.model.cursor == .person(person.key))
-            .accessibilityValue(feed.model.cursor == .person(person.key) ? "Keyboard focus" : "")
+            .environment(\.searchCursor, cursor)
+            .modifier(SearchRow.CursorRing(shape: Capsule()))
+            .accessibilityLabel("People, \(person.name), \(detail)")
+            .accessibilityValue(cursor ? "Keyboard focus" : "")
             .accessibilityIdentifier("search.person.\(index)")
             .id(SearchItem.person(person.key))
             .modifier(SearchReturnFocus(item: .person(person.key)))
