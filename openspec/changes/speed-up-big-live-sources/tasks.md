@@ -25,13 +25,13 @@
 
 - [x] 6.1 A change to Recents or Favorites leaves the open group's rows alone unless the group is Recents or Favorites, with a test
 
-## 7. HLS zaps
+## 7. Groups count
 
-- [ ] 7.1 `AVPlayerEngine` opens an `.m3u8` address without the probe and runs the probe only to explain a failure, with a test
+- [x] 7.1 `SourceRefresher` counts a playlist's groups off the main actor
 
 ## 8. Verify
 
-- [ ] 8.1 Each requirement this change adds or modifies has a test citing `<capability>/<requirement-slug>`
-- [ ] 8.2 Before and after figures at 50 000 and 100 000 channels are recorded in design.md
-- [ ] 8.3 The touched UI test classes pass on a local simulator
-- [ ] 8.4 /opsx:verify passes
+- [x] 8.1 Each requirement this change adds or modifies has a test citing `<capability>/<requirement-slug>`
+- [x] 8.2 Before and after figures at 50 000 and 100 000 channels are recorded in design.md
+- [x] 8.3 The touched UI test classes pass on a local simulator
+- [x] 8.4 /opsx:verify passes

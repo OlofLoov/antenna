@@ -105,12 +105,15 @@ group or filter changed, or a new name index arrived. The Apple TV
 overlay's list compares the same way, and also needs the favorites
 unchanged, since its rows draw the star.
 
-### HLS zaps
+### HLS zaps, not taken
 
-`AVPlayerEngine.open` probed every address before handing it to
-AVPlayer. For an `.m3u8` address the probe is skipped. When AVPlayer then
-fails, the probe runs to map the failure the same way as before (a web
-page or raw video at an HLS address reads as unreadable).
+The review suspected an extra round trip before each HLS zap, because
+`AVPlayerEngine.open` probes every address first. Since the review, the
+probe also decides when MPEG-TS sent from an `.m3u8` address goes to the
+demuxer, and the engine checks that Apple's player can decode a file.
+Skipping the probe for `.m3u8` would make those links wait for Apple's
+player to fail first, and the engine is being changed in other work. The
+change leaves the probe alone; the finding goes to that work.
 
 ## Figures
 
