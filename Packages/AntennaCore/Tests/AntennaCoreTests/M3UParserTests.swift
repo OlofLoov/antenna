@@ -48,6 +48,23 @@ import Testing
         #expect(channel.number == 12)
     }
 
+    @Test("m3u-playlists/standard-attributes-map-to-the-channel a bare word is skipped and the attributes after it are read")
+    func bareWord() {
+        let text = """
+            #EXTM3U
+            #EXTINF:-1 catchup tvg-id="b" group-title="G",B
+            http://s/b.ts
+            #EXTINF:-1 tvg-name=Two Words tvg-id="x",T
+            http://s/t.ts
+            #EXTINF:-1 tvg-id="ü" flag group-title="Grüße" trailing,Ü
+            http://s/u.ts
+            """
+        let channels = parse(text).channels
+        #expect(channels.map(\.epgID) == ["b", "x", "ü"])
+        #expect(channels.map(\.group) == ["G", nil, "Grüße"])
+        #expect(channels.map(\.name) == ["B", "Two", "Ü"])
+    }
+
     @Test("m3u-playlists/title-fallback title fallback when tvg-name is missing or empty")
     func titleFallback() {
         let playlist = parse(

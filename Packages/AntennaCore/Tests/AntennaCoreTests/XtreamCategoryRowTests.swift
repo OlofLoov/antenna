@@ -12,6 +12,7 @@ import Testing
     @Test(
         "xtream-vod-client/broken-category-rows-are-skipped rows without an id or a name are dropped and a number name is kept",
         arguments: ["get_live_categories", "get_vod_categories", "get_series_categories"])
+    // The live list also proves xtream-live-source/category-id-as-number-or-string.
     func brokenRowsDropped(action: String) async throws {
         let host = "cat-rows-\(action.replacingOccurrences(of: "_", with: "-")).panel"
         XtreamActionStub.register(host: host, action: action, body: Self.brokenRows)
