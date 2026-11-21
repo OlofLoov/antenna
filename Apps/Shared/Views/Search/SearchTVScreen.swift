@@ -147,7 +147,7 @@
             let shelfSources = library.movies.opened ? library.movies.sources + library.series.sources : []
             let finished = shell.sources.map { $0.state != .loading } + shelfSources.map { $0.state != .loading }
             return SearchCorpus(
-                catalogue: catalogue, sourceOrder: order, guide: guide, titles: library.movies.titles + library.series.titles,
+                catalogue: catalogue, sourceOrder: order, guide: guide, titles: library.searchTitles,
                 hasTitles: shell.titleOffer.any, sources: SearchSources(finished: finished), includeHidden: searchHidden)
         }
 

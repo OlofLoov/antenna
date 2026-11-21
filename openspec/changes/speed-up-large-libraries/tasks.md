@@ -17,8 +17,8 @@
 
 ## 4. Search
 
-- [ ] 4.1 `ShelfLibrary` keeps one list of movies and series per change of titles for Search, and the Search screens key the corpus by revision
-- [ ] 4.2 `SearchModel` skips results equal to those on screen and searches people off the main actor, with app tests
+- [x] 4.1 `ShelfLibrary` keeps one list of movies and series per change of titles for Search, and the Search screens key the corpus by revision
+- [x] 4.2 `SearchModel` skips results equal to those on screen and searches people off the main actor, with app tests
 
 ## 5. Pictures and posters
 

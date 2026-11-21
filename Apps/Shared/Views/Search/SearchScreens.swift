@@ -49,7 +49,7 @@
             let shelfSources = shelves.movies.opened ? shelves.movies.sources + shelves.series.sources : []
             let finished = live.sources.map { $0.state != .loading } + shelfSources.map { $0.state != .loading }
             return SearchCorpus(
-                catalogue: live.catalogue, sourceOrder: order, guide: guide, titles: shelves.movies.titles + shelves.series.titles,
+                catalogue: live.catalogue, sourceOrder: order, guide: guide, titles: shelves.searchTitles,
                 hasTitles: shelves.offer.any, sources: SearchSources(finished: finished), includeHidden: searchHidden)
         }
 

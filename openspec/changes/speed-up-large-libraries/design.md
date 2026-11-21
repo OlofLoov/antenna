@@ -109,6 +109,17 @@ Reads after a save:
 
 ### Search
 
+- `ShelfLibrary.searchTitles` joins movies and series once per pair of
+  index revisions. Both Search screens pass it to the corpus instead of
+  joining 130 000 titles in every `body`.
+- `SearchModel.show` keeps `results` and `people` when the new answer
+  equals them. `searchedAt` still moves on every refresh, so the NOW
+  labels and the programme progress bars stay current; only the rows that
+  read the time redraw.
+- `peopleChanged` searches the new index in an `@concurrent` function and
+  assigns People only when the answer differs and the query is still the
+  one on screen.
+
 ### Pictures and posters
 
 ### Memory and asks

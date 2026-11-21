@@ -40,6 +40,7 @@ final class ShelfLibrary {
     @ObservationIgnored private var peopleRows: (key: [Int], task: Task<PeopleIndex.Rows?, Never>)?
     /// How many times the row names were read. For tests.
     @ObservationIgnored private(set) var rowBuilds = 0
+    @ObservationIgnored private var joined: (key: [Int], titles: [ShelfTitle])?
     @ObservationIgnored private var saving: Task<Void, Never>?
     @ObservationIgnored private var loadingPeople: Task<Void, Never>?
 
@@ -70,6 +71,16 @@ final class ShelfLibrary {
     var person: PersonRoute? {
         if case .person(let route)? = stack.last { return route }
         return nil
+    }
+
+    /// Movies then series, joined once per change of titles, so Search's
+    /// redraws do not copy every title (search/typing-keeps-up-with-a-large-library).
+    var searchTitles: [ShelfTitle] {
+        let key = [movies.indexRevision, series.indexRevision]
+        if let joined, joined.key == key { return joined.titles }
+        let titles = movies.titles + series.titles
+        joined = (key, titles)
+        return titles
     }
 
     func model(_ kind: ShelfTitle.Kind) -> ShelfModel {

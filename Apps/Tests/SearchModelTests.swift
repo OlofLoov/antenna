@@ -1,5 +1,6 @@
 import AntennaCore
 import Foundation
+import Observation
 import SwiftData
 import Testing
 
@@ -169,6 +170,50 @@ import Testing
         model.run("zz")
         await model.searched()
         #expect(model.people.isEmpty)
+    }
+
+    @Test("search/typing-keeps-up-with-a-large-library a refresh that finds the same answer leaves the results untouched")
+    func sameAnswer() async {
+        let gate = Gate()
+        let clock = Clock(start)
+        let model = model(gate: gate, clock: clock)
+        await model.load(corpus([channel("Mira TV")]))
+        let titles = [ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: source, name: "Salt Road", cast: "Mira Holt")]
+        model.peopleChanged(PeopleIndex(titles: titles, learned: LearnedCredits()))
+        model.run("mira")
+        await model.searched()
+        #expect(model.people.map(\.name) == ["Mira Holt"])
+        let touched = Touched()
+        withObservationTracking {
+            _ = model.results
+            _ = model.people
+        } onChange: {
+            touched.value = true
+        }
+        clock.now = start.addingTimeInterval(5)
+        model.refresh()
+        await model.searched()
+        #expect(model.searchedAt == start.addingTimeInterval(5), "the time still moves for the NOW labels")
+        #expect(!touched.value, "the same channels and people are not handed to the screen again")
+    }
+
+    @Test("search/typing-keeps-up-with-a-large-library new names reach People without a search on the main actor")
+    func namesArrive() async {
+        let gate = Gate()
+        let model = model(gate: gate, clock: Clock(start))
+        await model.load(corpus([channel("Northern News")]))
+        model.run("mira")
+        await model.searched()
+        #expect(model.people.isEmpty)
+        let titles = [ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: source, name: "Salt Road", cast: "Mira Holt")]
+        model.peopleChanged(PeopleIndex(titles: titles, learned: LearnedCredits()))
+        await model.peopleSearched()
+        #expect(model.people.map(\.name) == ["Mira Holt"])
+    }
+
+    /// Set when an observed value changes.
+    final class Touched: @unchecked Sendable {
+        var value = false
     }
 
     /// Holds the answer to one query until the test lets it through.
