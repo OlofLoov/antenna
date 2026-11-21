@@ -112,6 +112,20 @@ public enum KeyCommand: Hashable, Sendable {
         }
     }
 
+    /// The combination in a language that reads `rightToLeft`. The bar and
+    /// the skip buttons mirror there, so Skip Back takes the arrow that
+    /// points at the start of the bar, Right Arrow, and Skip Forward takes
+    /// Left Arrow (design-system/progress-runs-in-the-reading-direction).
+    /// Every other command keeps its key.
+    public func combination(rightToLeft: Bool) -> KeyCombination {
+        guard rightToLeft else { return combination }
+        switch self {
+        case .skipBack: return KeyCombination(.rightArrow)
+        case .skipForward: return KeyCombination(.leftArrow)
+        default: return combination
+        }
+    }
+
     /// The title with nothing in front that can use the item.
     public var title: String { title(.autoupdatingCurrent) }
 

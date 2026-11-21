@@ -412,7 +412,9 @@ extension TitleTransport {
                 })
         }
 
-        /// Left and right skip, Space plays and pauses, Escape closes. They
+        /// Left and right skip, Space plays and pauses, Escape closes. In a
+        /// right-to-left language the arrows swap with the mirrored bar:
+        /// Right goes back, Left forward. They
         /// work while the controls are hidden. While the Up next card shows,
         /// Escape is the card's Cancel instead. Where the menus have the
         /// first three, only Escape is here.
@@ -421,9 +423,9 @@ extension TitleTransport {
                 if !inMenus {
                     Group {
                         Button("Back 10 seconds") { transport.skip(forward: false) }
-                            .keyboardShortcut(.leftArrow, modifiers: [])
+                            .keyboardShortcut(direction.leadingArrow, modifiers: [])
                         Button("Forward 10 seconds") { transport.skip(forward: true) }
-                            .keyboardShortcut(.rightArrow, modifiers: [])
+                            .keyboardShortcut(direction.trailingArrow, modifiers: [])
                         Button("Play or pause") { transport.playPause() }
                             .keyboardShortcut(.space, modifiers: [])
                     }

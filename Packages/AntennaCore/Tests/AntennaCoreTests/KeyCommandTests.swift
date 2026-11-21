@@ -103,4 +103,15 @@ import Testing
         #expect(KeyCommand.all.allSatisfy { !listKeys.contains($0.combination) })
         #expect(KeyCommand.skipBack.screens.isDisjoint(with: [.guide, .search]), "the guide and search keep Left and Right")
     }
+
+    @Test("design-system/progress-runs-in-the-reading-direction the skip keys point where the mirrored bar runs")
+    func skipKeysFollowTheReadingDirection() {
+        #expect(KeyCommand.skipBack.combination(rightToLeft: false) == KeyCombination(.leftArrow))
+        #expect(KeyCommand.skipForward.combination(rightToLeft: false) == KeyCombination(.rightArrow))
+        #expect(KeyCommand.skipBack.combination(rightToLeft: true) == KeyCombination(.rightArrow), "the bar starts at the right")
+        #expect(KeyCommand.skipForward.combination(rightToLeft: true) == KeyCombination(.leftArrow))
+        for command in KeyCommand.all where command != .skipBack && command != .skipForward {
+            #expect(command.combination(rightToLeft: true) == command.combination, "\(command)")
+        }
+    }
 }

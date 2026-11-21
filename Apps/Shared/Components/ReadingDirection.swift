@@ -24,6 +24,13 @@ extension LayoutDirection {
         right != (self == .rightToLeft)
     }
 
+    /// The direction of the language the app runs in, for the menus, which
+    /// sit outside every view's environment.
+    static var ofApp: LayoutDirection {
+        let language = Locale.Language(identifier: Bundle.main.preferredLocalizations.first ?? "en")
+        return language.characterDirection == .rightToLeft ? .rightToLeft : .leftToRight
+    }
+
     /// The arrow key that points toward the leading edge.
     var leadingArrow: KeyEquivalent { self == .rightToLeft ? .rightArrow : .leftArrow }
 
