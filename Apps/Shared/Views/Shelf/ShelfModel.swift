@@ -71,8 +71,13 @@ final class ShelfModel {
     @ObservationIgnored private var building: Task<Void, Never>?
     /// Loaded states that show with the index holding their titles.
     @ObservationIgnored private var pendingStates: [UUID: ShelfSourceState] = [:]
-    /// Grid lists in their order, kept until the index changes.
-    @ObservationIgnored private var sortedLists: [SortedList: [ShelfTitle]] = [:]
+    /// Grid lists in their order and the index they were sorted from.
+    @ObservationIgnored private var sortedLists: [SortedList: Sorted] = [:]
+    @ObservationIgnored private var sorting: [SortedList: (revision: Int, task: Task<[ShelfTitle], Never>)] = [:]
+    /// Bumped when a list sorted away from the main actor is ready.
+    private(set) var sortedReady = 0
+    /// How many lists were sorted away from the main actor. For tests.
+    @ObservationIgnored private(set) var sortedAway = 0
 
     private struct IndexKey: Equatable {
         var sources: [UUID]
@@ -85,6 +90,11 @@ final class ShelfModel {
         var sort: ShelfSort
     }
 
+    private struct Sorted {
+        var revision: Int
+        var titles: [ShelfTitle]
+    }
+
     init(kind: ShelfTitle.Kind, _ dependencies: Dependencies) {
         self.kind = kind
         self.dependencies = dependencies
@@ -93,22 +103,6 @@ final class ShelfModel {
     /// What the section shows for the sources as they stand.
     var status: ShelfStatus {
         ShelfStatus(sources: sources, kind: kind, dismissed: dismissed)
-    }
-
-    /// The section's titles, or one genre's, in `sort` order. Sorted once
-    /// per index, so a grid's redraws do not sort again
-    /// (movies-and-series-browsing/browsing-stays-responsive).
-    func titles(in genre: String? = nil, sortedBy sort: ShelfSort) -> [ShelfTitle] {
-        let key = SortedList(genre: genre, sort: sort)
-        if let kept = sortedLists[key] { return kept }
-        let list: [ShelfTitle] =
-            switch (genre, sort) {
-            case (nil, .recentlyAdded): index.newest
-            case (nil, _): Shelf.sorted(index.titles, by: sort)
-            case (let genre?, _): Shelf.sorted(Shelf.titles(in: genre, of: index.titles), by: sort)
-            }
-        sortedLists[key] = list
-        return list
     }
 
     /// The source a title came from, or nil once it is gone.
@@ -287,7 +281,6 @@ final class ShelfModel {
             guard let self, current == generation else { return }
             self.index = index
             indexRevision += 1
-            sortedLists = [:]
             showPendingStates()
             building = nil
         }
@@ -428,5 +421,58 @@ extension ShelfModel {
     /// The loaded title with this key, or nil.
     func title(_ key: ActivityKey) -> ShelfTitle? {
         index.title(key)
+    }
+}
+
+// MARK: Grid lists
+
+extension ShelfModel {
+    /// The section's titles, or one genre's, in `sort` order, or nil while
+    /// that order is worked out. Sorted once per index, so a grid's
+    /// redraws do not sort again. A list of more than `sortsInPlace`
+    /// titles is sorted away from the main actor by `sort(in:by:)`, and
+    /// until it is ready the order from before the titles last changed
+    /// shows (movies-and-series-browsing/browsing-stays-responsive).
+    func titles(in genre: String? = nil, sortedBy sort: ShelfSort) -> [ShelfTitle]? {
+        _ = sortedReady
+        if genre == nil, sort == .recentlyAdded { return index.newest }
+        let key = SortedList(genre: genre, sort: sort)
+        if let kept = sortedLists[key], kept.revision == indexRevision { return kept.titles }
+        let members = genre.map { Shelf.titles(in: $0, of: index.titles) } ?? index.titles
+        guard members.count > Self.sortsInPlace else {
+            let list = Shelf.sorted(members, by: sort)
+            sortedLists[key] = Sorted(revision: indexRevision, titles: list)
+            return list
+        }
+        return sortedLists[key]?.titles
+    }
+
+    /// Lists up to this long sort on the caller's actor, in a few milliseconds.
+    static let sortsInPlace = 2_000
+
+    /// Sorts the list `titles(in:sortedBy:)` has no order for yet, away
+    /// from the main actor. Callers asking for the same list share one sort.
+    func sort(in genre: String?, by sort: ShelfSort) async {
+        let key = SortedList(genre: genre, sort: sort)
+        let revision = indexRevision
+        guard sortedLists[key]?.revision != revision, !(genre == nil && sort == .recentlyAdded) else { return }
+        if let running = sorting[key], running.revision == revision {
+            await running.task.value
+            return
+        }
+        let all = index.titles
+        let task = Task { await Self.sorted(all, genre: genre, by: sort) }
+        sorting[key] = (revision, task)
+        let list = await task.value
+        guard revision == indexRevision else { return }
+        sorting[key] = nil
+        sortedLists[key] = Sorted(revision: revision, titles: list)
+        sortedReady += 1
+        sortedAway += 1
+    }
+
+    @concurrent
+    private static func sorted(_ titles: [ShelfTitle], genre: String?, by sort: ShelfSort) async -> [ShelfTitle] {
+        Shelf.sorted(genre.map { Shelf.titles(in: $0, of: titles) } ?? titles, by: sort)
     }
 }

@@ -7,8 +7,8 @@
 
 ## 2. Sorted grids
 
-- [ ] 2.1 `Shelf.sorted` sorts by keys computed once per title, with a benchmark at 100 000 movies
-- [ ] 2.2 `ShelfModel` builds Title and Year lists off the main actor and the grid shows when its list is ready, with an app test
+- [x] 2.1 `Shelf.sorted` sorts by keys computed once per title, with a benchmark at 100 000 movies
+- [x] 2.2 `ShelfModel` builds Title and Year lists off the main actor and the grid shows when its list is ready, with an app test
 
 ## 3. Progress saves
 

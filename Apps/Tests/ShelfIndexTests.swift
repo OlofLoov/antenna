@@ -51,8 +51,24 @@ import Testing
         await model.settled()
         let byTitle = model.titles(sortedBy: .title)
         #expect(byTitle == Shelf.sorted(model.titles, by: .title))
-        #expect(model.titles(sortedBy: .recentlyAdded).first?.name == "Movie 499")
-        #expect(model.titles(in: "C3", sortedBy: .recentlyAdded).allSatisfy { $0.category == "C3" })
+        #expect(model.titles(sortedBy: .recentlyAdded)?.first?.name == "Movie 499")
+        #expect(model.titles(in: "C3", sortedBy: .recentlyAdded)?.allSatisfy { $0.category == "C3" } == true)
         #expect(model.title(ActivityKey(titleID: "xtream#h#vod#7", sourceID: source))?.name == "Movie 7")
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a long list in Title or Year order sorts away from the main actor, once")
+    func longListsSortAway() async {
+        let model = model(count: 5_000)
+        model.open()
+        await model.settled()
+        #expect(model.titles(sortedBy: .title) == nil, "the grid waits for the order")
+        async let first: Void = model.sort(in: nil, by: .title)
+        async let second: Void = model.sort(in: nil, by: .title)
+        _ = await (first, second)
+        #expect(model.titles(sortedBy: .title) == Shelf.sorted(model.titles, by: .title))
+        #expect(model.sortedAway == 1, "two grids asking share one sort")
+        await model.sort(in: nil, by: .title)
+        #expect(model.sortedAway == 1, "a kept order is not sorted again")
+        #expect(model.titles(sortedBy: .recentlyAdded)?.count == 5_000, "newest first needs no sort")
     }
 }

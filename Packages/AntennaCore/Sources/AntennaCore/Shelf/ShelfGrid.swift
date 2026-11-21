@@ -44,14 +44,13 @@ extension Shelf {
         case .title:
             return byName(titles)
         case .year:
-            let named = byName(titles).map { (year: $0.year, title: $0) }
-            let dated = named.filter { $0.year != nil }
-            let ordered = zip(dated.indices, dated).sorted { lhs, rhs in
-                let left = lhs.1.year ?? 0
-                let right = rhs.1.year ?? 0
-                return left != right ? left > right : lhs.0 < rhs.0
+            // Undated titles count as year 0, so they go after every dated one.
+            var keyed = titles.enumerated().map { (year: $1.year ?? 0, key: sortKey($1.name), index: $0) }
+            keyed.sort { lhs, rhs in
+                if lhs.year != rhs.year { return lhs.year > rhs.year }
+                return lhs.key != rhs.key ? lhs.key < rhs.key : lhs.index < rhs.index
             }
-            return ordered.map(\.1.title) + named.filter { $0.year == nil }.map(\.title)
+            return keyed.map { titles[$0.index] }
         }
     }
 
@@ -76,13 +75,44 @@ extension Shelf {
         return genres(rows).filter { filter.matches(name: $0.name, number: nil) }
     }
 
+    /// By `sortKey`, then in the order given. Each key is worked out once,
+    /// so 100 000 titles sort without 1.7 million locale-aware compares
+    /// (movies-and-series-browsing/browsing-stays-responsive).
     private static func byName(_ titles: [ShelfTitle]) -> [ShelfTitle] {
-        let keyed = titles.map { ($0.name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil), $0) }
-        return zip(keyed.indices, keyed).sorted { lhs, rhs in
-            let order = lhs.1.0.localizedStandardCompare(rhs.1.0)
-            return order != .orderedSame ? order == .orderedAscending : lhs.0 < rhs.0
-        }.map(\.1.1)
+        var keyed = titles.enumerated().map { (key: sortKey($1.name), index: $0) }
+        keyed.sort { $0.key != $1.key ? $0.key < $1.key : $0.index < $1.index }
+        return keyed.map { titles[$0.index] }
     }
+
+    /// The name folded for case and accents, with each run of digits
+    /// padded to `digitRun` places so "Movie 2" sorts before "Movie 10".
+    static func sortKey(_ name: String) -> String {
+        let folded = name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+        var key: [UInt8] = []
+        key.reserveCapacity(folded.utf8.count + digitRun)
+        var digits = 0
+        for byte in folded.utf8 {
+            if byte >= UInt8(ascii: "0"), byte <= UInt8(ascii: "9") {
+                digits += 1
+                key.append(byte)
+                continue
+            }
+            if digits > 0 { pad(&key, digits) }
+            digits = 0
+            key.append(byte)
+        }
+        if digits > 0 { pad(&key, digits) }
+        return String(decoding: key, as: UTF8.self)
+    }
+
+    /// Puts zeros in front of the `count` digits that end `key`.
+    private static func pad(_ key: inout [UInt8], _ count: Int) {
+        guard count < digitRun else { return }
+        key.insert(contentsOf: [UInt8](repeating: UInt8(ascii: "0"), count: digitRun - count), at: key.count - count)
+    }
+
+    /// Numbers up to this many digits sort by value.
+    static let digitRun = 8
 }
 
 extension ShelfTitle {
@@ -91,15 +121,20 @@ extension ShelfTitle {
     /// number wins. Nil without one.
     public var year: Int? {
         var found: Int?
-        var digits = ""
-        for character in name + " " {
-            if character.isASCII, character.isNumber {
-                digits.append(character)
+        var value = 0
+        var digits = 0
+        // Bytes, not characters: a digit is one ASCII byte, and anything else ends a number.
+        for byte in name.utf8 {
+            if byte >= UInt8(ascii: "0"), byte <= UInt8(ascii: "9") {
+                value = digits < 5 ? value * 10 + Int(byte - UInt8(ascii: "0")) : value
+                digits += 1
                 continue
             }
-            if digits.count == 4, let value = Int(digits), (1900...2099).contains(value) { found = value }
-            digits = ""
+            if digits == 4, (1900...2099).contains(value) { found = value }
+            value = 0
+            digits = 0
         }
+        if digits == 4, (1900...2099).contains(value) { found = value }
         return found
     }
 }

@@ -50,6 +50,32 @@ answers' credits, merged in source order when a page or Search asks.
 
 ### Sorted grids
 
+Options:
+1. Keep `localizedStandardCompare` and only move the sort off the main
+   actor.
+2. Work out a sort key per title once (the name folded for case and
+   accents, each run of digits padded to eight places) and compare keys
+   with `<`, off the main actor for long lists.
+
+Chosen: 2. The 1.7 million locale-aware compares were most of the cost;
+with keys a sort of 100 000 takes about a quarter of a second, and that
+still runs away from the screen. Padding keeps "Movie 2" before
+"Movie 10", as the Finder-style compare did. Names in scripts other than
+Latin now sort by code point after folding instead of by the device's
+collation; the spec asks only for case and accents to be ignored.
+
+- `ShelfModel.titles(in:sortedBy:)` returns nil while a list of more than
+  2 000 titles has no order for the current index. Shorter lists, such as
+  most genres and every preview and UI test fixture, sort in place as
+  before. `sort(in:by:)` sorts the long ones in an `@concurrent` function;
+  two grids asking for one list share the sort.
+- Until the new order is ready the grid keeps the order sorted before the
+  titles last changed, so a second source finishing does not empty the
+  grid. With no earlier order it shows a spinner, `<prefix>.grid.sorting`,
+  under the header with the count from the rows.
+- Sorted lists stay arrays of titles. They exist only for orders the user
+  opened, on iPad and Mac.
+
 ### Progress saves
 
 ### Search
@@ -68,5 +94,5 @@ director per row from 15 000 people, 20 000 learned answers.
 | --- | --- | --- |
 | People index, rows | 7.4 s, +256 MB | 0.64 s, +15 MB, once per change of titles |
 | People index, a new answer | 7.4 s (full build) | 46 ms |
-| Sort 100 000 by Title | 1.51 s on main | |
-| Sort 100 000 by Year | 1.81 s on main | |
+| Sort 100 000 by Title | 1.51 s on main | 0.24 s off main |
+| Sort 100 000 by Year | 1.81 s on main | 0.25 s off main |
