@@ -119,8 +119,7 @@ struct SourceLoader: Sendable {
             if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
                 throw LoadError.badStatus(http.statusCode)
             }
-            let text = TextEncoding.text(data)
-            return keepMovies(M3UParser().parse(text), of: source)
+            return keepMovies(M3UParser().parse(TextEncoding.text(data)), of: source)
         case .xtream:
             guard let key = source.credentialKey,
                 let cred = try credentials.load(for: key)
@@ -154,7 +153,10 @@ struct SourceLoader: Sendable {
     /// The playlist with its movies and episodes moved out of the channels
     /// and kept for the Movies and Series sections
     /// (m3u-playlists/playlist-movies-stay-out-of-live-channels).
+    /// Its stream headers go to the book the players read
+    /// (playback-engine/streams-are-asked-for-with-their-headers).
     private func keepMovies(_ playlist: Playlist, of source: SourceDescriptor) -> Playlist {
+        StreamHeaderBook.shared.register(playlist.channels, source: source.id)
         let separated = playlist.separatingOnDemand()
         playlistMovies.loaded(source.id, movies: separated.movies, episodes: separated.episodes)
         return separated

@@ -129,6 +129,7 @@ final class SourceSetup {
         }
         guard !Task.isCancelled else { return }
         loaded = Channel.tagged(playlist.channels, sourceID: id)
+        StreamHeaderBook.shared.register(loaded, source: id)
         channels = .done(ChannelTally(tagged: loaded))
         await followGuide(playlist)
     }

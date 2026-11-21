@@ -37,6 +37,10 @@ public struct Channel: Identifiable, Hashable, Sendable, Codable {
     /// True when the provider marks the channel or its category as adult
     /// (adult-content/the-provider-s-adult-flag-counts). Kept in memory only.
     public var isAdult = false
+    /// HTTP headers the playlist asks for on this stream, nil when it asks
+    /// for none (m3u-playlists/stream-headers-from-the-playlist). A Referer
+    /// can carry a token, so this is kept in memory only and never logged.
+    public var headers: StreamHeaders?
 
     public init(
         id: String,

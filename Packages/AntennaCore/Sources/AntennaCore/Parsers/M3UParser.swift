@@ -3,7 +3,8 @@ import Foundation
 /// Parses extended M3U playlists as emitted by IPTV providers.
 ///
 /// Handles `#EXTM3U` header attributes (`url-tvg`, `x-tvg-url`, `tvg-url`), `#EXTINF`
-/// attributes with quoted values, `#EXTGRP`, and the common catch-up tags.
+/// attributes with quoted values, `#EXTGRP`, the common catch-up tags, and the
+/// stream headers of `#EXTVLCOPT`, `#EXTHTTP`, `#KODIPROP` and Kodi's `link|headers`.
 /// Unknown directives are ignored. Parsing is line-based and allocation-light,
 /// so playlists with tens of thousands of entries stay fast.
 public struct M3UParser: Sendable {
@@ -34,6 +35,7 @@ public struct M3UParser: Sendable {
         var epgURLs: [URL] = []
         var pending: PendingEntry?
         var groupOverride: String?
+        var headers = StreamHeaders()
         var index = 0
         var ids = M3UChannelIDs(capacity: text.utf8.count / 120)
 
@@ -61,15 +63,22 @@ public struct M3UParser: Sendable {
                 continue
             }
 
-            if line.hasPrefix("#") { continue }
+            if line.hasPrefix("#") {
+                Self.readHeaders(line, into: &headers)
+                continue
+            }
 
-            guard var entry = pending, let url = URL(string: line) else {
+            let link = Self.splitLink(line)
+            defer { headers = StreamHeaders() }
+            guard var entry = pending, let url = URL(string: link.address) else {
                 pending = nil
                 continue
             }
             if entry.group == nil { entry.group = groupOverride }
             index += 1
             var channel = entry.channel(url: url, nameSource: nameSource)
+            let streamHeaders = entry.headers.merging(headers).merging(link.headers)
+            channel.headers = streamHeaders.isEmpty ? nil : streamHeaders
             channel.id = ids.next(for: channel, formerID: Self.formerID(channel, position: index))
             channels.append(channel)
             pending = nil
@@ -87,6 +96,15 @@ public struct M3UParser: Sendable {
         var group: String?
         /// The number before the attributes, nil when it is not one.
         var duration: Double?
+
+        /// The `user-agent` and `http-user-agent` attributes as headers.
+        var headers: StreamHeaders {
+            var headers = StreamHeaders()
+            for name in ["http-user-agent", "user-agent"] {
+                if let value = attributes[name] { headers.set("User-Agent", value) }
+            }
+            return headers
+        }
 
         /// The channel with an empty id; `parse` gives it one.
         func channel(url: URL, nameSource: NameSource = .tvgName) -> Channel {

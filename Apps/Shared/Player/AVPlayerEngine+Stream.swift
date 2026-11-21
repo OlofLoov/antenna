@@ -29,6 +29,7 @@ extension AVPlayerEngine {
         if probe.sniff == .hls, !isHLSAddress {
             assetOptions[AVURLAssetOverrideMIMETypeKey] = "application/vnd.apple.mpegurl"
         }
+        assetOptions.merge(Self.headerOptions(StreamHeaderBook.shared.headers(for: url))) { _, header in header }
         let item = AVPlayerItem(asset: AVURLAsset(url: url, options: assetOptions))
         item.preferredForwardBufferDuration = 8
         applyMaximumVideoHeight(to: item)
@@ -311,6 +312,18 @@ extension AVPlayerEngine {
             break
         }
         stateCast.sendIfChanged(new)
+    }
+
+    /// Asset options that send `headers` on every request of the stream
+    /// (playback-engine/streams-are-asked-for-with-their-headers): the
+    /// User-Agent through its own key, the rest through the header-fields
+    /// key, which AVFoundation reads but does not document.
+    nonisolated static func headerOptions(_ headers: StreamHeaders) -> [String: Any] {
+        var options: [String: Any] = [:]
+        var others = headers.fields
+        if let agent = others.removeValue(forKey: "User-Agent") { options[AVURLAssetHTTPUserAgentKey] = agent }
+        if !others.isEmpty { options["AVURLAssetHTTPHeaderFieldsKey"] = others }
+        return options
     }
 
     /// The reason for an error Apple's player reports. The error itself,
