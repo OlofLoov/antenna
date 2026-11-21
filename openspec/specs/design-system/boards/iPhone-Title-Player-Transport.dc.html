@@ -26,10 +26,9 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </div>
 
-  <!-- player.tracks and player.subtitles, top right, on one glass capsule as Live's Picture in Picture and AirPlay pair (clean-up-glass). Shows and hides with the controls. -->
-  <div style="position: absolute; right: 16px; top: 62px; height: 44px; padding: 0 4px; border-radius: 22px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); display: flex; align-items: center">
-    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>
-    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h3M13 10h3M8 13h5"/></svg></span>
+  <!-- player.tracks, top right, alone on a 44 pt glass circle (clean-up-glass, one-tracks-button). Shows and hides with the controls. -->
+  <div style="position: absolute; right: 16px; top: 62px; height: 44px; width: 44px; border-radius: 22px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); display: flex; align-items: center">
+    <span role="button" aria-label="Audio and Subtitles" aria-pressed="false" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="13" rx="3"/><path d="M10.5 10a2 2 0 1 0 0 3M16.5 10a2 2 0 1 0 0 3"/></svg></span>
   </div>
 
   <!-- title.transport, middle row centered on the screen, 36 pt apart: title.transport.skipBack (gobackward.10, title 2), title.transport.playPause (pause.fill or play.fill, large title), title.transport.skipForward (goforward.10, title 2). Glass button style, circle border shape, 44 pt glyph frames. -->
