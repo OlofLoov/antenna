@@ -68,6 +68,7 @@ extension ShellUITests {
     }
 
     // tv-channel-overlay/picking-a-group-shows-its-channels
+    // tv-channel-overlay/a-large-group-stays-light, each row keeps its own minute tick
     func testMovingBetweenTheColumnsInALargeCatalogue() {
         launchPlayingLarge()
         openOverlay()

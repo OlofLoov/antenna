@@ -76,9 +76,14 @@ the hand-picked entries changed. `rebuild` reads the stored matches.
 
 The iPhone and iPad Guide wrapped the whole screen in a five-second
 `TimelineView`, so each tick built `GuideData` and walked every row id.
-The tick moves into each row, the day chips and the now line, as the Live
-list does. On Apple TV the overlay's one-minute `TimelineView` around the
-`LazyVStack` moves into each row for the same reason.
+In the one-row-per-channel layout the tick moves into each row and the
+day chips, as the Live list does, and the list itself is built only when
+the group, the filter or the guide changes. The iPad and Mac grid keeps
+its screen-wide tick: it draws only the rows in view, and its now line,
+header and scroll position all read the same clock, so splitting it buys
+little for a wide rewrite. On Apple TV the overlay's one-minute
+`TimelineView` around the `LazyVStack` moves into each row for the same
+reason as on iPhone.
 
 ### Logos
 
@@ -142,4 +147,16 @@ After:
   every progress event was only half right: progress rebuilt the index
   entry and its 50 000-entry match table every 250 ms, while the matcher
   itself ran at the start and end of each load.
+- The iPhone Guide list is no longer built on each five-second tick; a UI
+  test reads a build count off the list across two ticks while Sport One
+  moves on to its second half.
+- Apple TV overlay: the 17 overlay UI tests pass on a tvOS 27.2 simulator
+  with the per-row minute tick, including the two that move through the
+  20 000-channel catalogue. The app's footprint peaked at 81 MB in those
+  two and 41 MB in the others. The suspected memory growth of the
+  `LazyVStack` while holding down through thousands of rows in All
+  channels was not measured at 50 000 channels: the shared machine ran at
+  a load average of 300 to 800, which made a long remote-press run
+  meaningless. The container stays a `LazyVStack`; a recycling list is
+  left until a device measurement shows growth.
 

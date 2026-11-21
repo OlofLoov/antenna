@@ -14,8 +14,8 @@
 
 ## 4. Clock ticks
 
-- [ ] 4.1 The iPhone and iPad Guide ticks per row and per header, with a test that a tick does not rebuild the row list
-- [ ] 4.2 The Apple TV overlay ticks per row; check memory and the opening scroll on a tvOS simulator with 50 000 channels and record it here
+- [x] 4.1 The one-row-per-channel Guide ticks per row and per header, with a test that a tick does not rebuild the row list
+- [x] 4.2 The Apple TV overlay ticks per row; check memory and the opening scroll on a tvOS simulator and record it in design.md
 
 ## 5. Logos
 

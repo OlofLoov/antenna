@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: The clock redraws only what shows the time
-The system SHALL move the Guide's now marks, progress and day chips with the clock without building the list of rows again, on iPhone, iPad and Mac.
+The system SHALL move the Guide's now marks, progress and day chips with the clock without building the list of rows again in the one-row-per-channel layout, on iPhone and in a narrow iPad or Mac window. The time grid on iPad and Mac draws only the rows in view on each tick.
 
 #### Scenario: The clock ticks in a large group
 - **GIVEN** the Guide shows a group of 50 000 channels on iPhone

@@ -23,9 +23,10 @@
                 if live.launched, live.sources.isEmpty {
                     LiveNoSources().profileButtonInCorner()
                 } else {
-                    TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
-                        content(now: context.date)
-                    }
+                    // The clock ticks in the header and in each row, not here,
+                    // so a tick never walks the group's rows
+                    // (guide-on-iphone-ipad-and-mac/the-clock-redraws-only-what-shows-the-time).
+                    content
                 }
             }
             .background(Palette.ground)
@@ -51,20 +52,22 @@
             .accessibilityIdentifier("guide.root")
         }
 
-        @ViewBuilder private func content(now: Date) -> some View {
+        @ViewBuilder private var content: some View {
             switch live.status {
             case .channels:
-                let data = reading.data(at: now, filtered: true)
+                let data = reading.data(at: .now, filtered: true)
                 VStack(spacing: 0) {
                     LiveGroupButton(place: .guide).withProfileButton()
-                    days(data, now: now)
+                    TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                        days(reading.data(at: context.date, filtered: false).timeline, now: context.date)
+                    }
                     GuideBannerList(banners: reading.banners())
                         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
                     if data.rows.isEmpty, model.filter.isEmpty {
                         GuideBoard.Empty(text: "No channels in \(live.catalogue.label(of: live.group))")
                             .accessibilityIdentifier("guide.empty")
                     } else {
-                        GuideCompactList(data: data, now: now, anchor: model.time ?? now)
+                        GuideCompactList(data: data, time: model.time)
                             // Another group opens at its first row.
                             .id(live.group)
                     }
@@ -74,17 +77,17 @@
             }
         }
 
-        private func days(_ data: GuideData, now: Date) -> some View {
-            let days = data.timeline.days(at: now)
-            let selected = model.selectedDay(data.timeline, now: now)
+        private func days(_ timeline: GuideTimeline, now: Date) -> some View {
+            let days = timeline.days(at: now)
+            let selected = model.selectedDay(timeline, now: now)
             return HStack(spacing: 6) {
                 GuideBoard.Days {
                     ForEach(Array(days.enumerated()), id: \.offset) { index, day in
-                        GuideBoard.DayChip(title: data.timeline.dayLabel(day, today: now), isSelected: index == selected) {
+                        GuideBoard.DayChip(title: timeline.dayLabel(day, today: now), isSelected: index == selected) {
                             if index == 0 {
                                 model.showNow(playing: nil)
                             } else {
-                                model.pick(day: index, timeline: data.timeline, now: now)
+                                model.pick(day: index, timeline: timeline, now: now)
                             }
                         }
                         .accessibilityIdentifier("guide.day.\(index)")
@@ -102,8 +105,8 @@
     /// One row per channel, built as they scroll into view.
     private struct GuideCompactList: View {
         let data: GuideData
-        let now: Date
-        let anchor: Date
+        /// The time the user moved to, nil while the rows follow now.
+        let time: Date?
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
         @Environment(\.tabTaps) private var tabTaps
@@ -121,8 +124,11 @@
                             .padding(EdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 16))
                             .id(Self.filterID)
                         ForEach(data.rows, id: \.self) { key in
-                            GuideCompactRow(key: key, now: now, anchor: anchor)
-                                .id(key)
+                            // Each row on screen moves on with the clock by itself.
+                            TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
+                                GuideCompactRow(key: key, now: context.date, anchor: time ?? context.date)
+                            }
+                            .id(key)
                         }
                     }
                     .padding(.vertical, 4)
@@ -149,6 +155,11 @@
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("guide.list")
+            #if DEBUG
+                // How often the list was built, for the UI test that pins
+                // the clock tick to the rows.
+                .accessibilityValue("builds=\(UITestingLive.Counts.guideListBuilds())")
+            #endif
         }
     }
 
