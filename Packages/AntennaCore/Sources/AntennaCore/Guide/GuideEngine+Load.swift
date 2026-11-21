@@ -140,13 +140,23 @@ extension GuideEngine {
         let hub = hub
         let order = source.sortOrder
         let outcome = await fetcher.fetch(
-            url, sourceID: id, loginURL: loginURL, headers: headers,
+            url, sourceID: id, loginURL: loginURL, headers: headers, named: namedIDs(source), now: configuration.now(),
             progress: { [weak self] event in
                 hub.emit(event, order: order, generation: generation)
                 Task { await self?.progressed(event, id, reference, generation: generation) }
             })
         return await complete(
             source, reference, outcome: outcome, fingerprint: fingerprint(url), generation: generation, from: redacted(url))
+    }
+
+    /// The guide ids the source's channels name, by their own guide id or
+    /// a hand-picked entry; empty before the source's channels arrive
+    /// (guide-data/a-large-guide-keeps-what-the-channels-can-use).
+    private func namedIDs(_ source: GuideSourceDescriptor) -> Set<String> {
+        guard let list = channels[source.sourceID], !list.isEmpty else { return [] }
+        var ids = Set(list.compactMap { GuideKey(channel: $0)?.epgID })
+        for case let entry? in source.settings.activeMatches.values where !entry.isEmpty { ids.insert(entry) }
+        return ids
     }
 
     /// Moves a guide's status along while it downloads.
@@ -158,7 +168,10 @@ extension GuideEngine {
         }
         let finished = expected.map { received >= $0 && $0 > 0 } ?? false
         guideStatuses[id, default: [:]][reference] = finished ? .reading : .downloading(bytes: received)
-        rebuild(id)
+        // Downloading and reading are both in flight, so the index entry and
+        // its matches stay as they are; only the status rows move
+        // (live-tv-on-iphone-ipad-mac/a-very-large-source-stays-responsive).
+        rebuildRows(id)
         publishStatuses()
     }
 
@@ -224,6 +237,7 @@ extension GuideEngine {
         case .loaded(let guide):
             let now = configuration.now()
             loaded[id, default: [:]][reference] = LoadedGuide(guide: guide, fingerprint: fingerprint, completedAt: now)
+            matchStamps[id, default: 0] += 1
             guideStatuses[id, default: [:]][reference] = .loaded(now)
             _ = updateNameMatches(id)
             rebuild(id)

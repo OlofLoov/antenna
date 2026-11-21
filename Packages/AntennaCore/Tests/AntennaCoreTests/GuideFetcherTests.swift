@@ -209,9 +209,14 @@ final class SteppingUptime: @unchecked Sendable {
         #expect(configuration.httpCookieStorage == nil)
 
         #if os(tvOS)
-            #expect(GuideLimits.platform == GuideLimits(compressedBytes: 32_000_000, unpackedBytes: 96_000_000))
+            #expect(
+                GuideLimits.platform
+                    == GuideLimits(compressedBytes: 128_000_000, unpackedBytes: 512_000_000, keptSlots: 1_000_000, keptText: 64_000_000))
         #else
-            #expect(GuideLimits.platform == GuideLimits(compressedBytes: 96_000_000, unpackedBytes: 256_000_000))
+            #expect(
+                GuideLimits.platform
+                    == GuideLimits(
+                        compressedBytes: 256_000_000, unpackedBytes: 1_000_000_000, keptSlots: 3_000_000, keptText: 192_000_000))
         #endif
     }
 }

@@ -125,4 +125,17 @@ After:
   unchanged refresh stores nothing, so neither the flat list nor the
   catalogue is rebuilt and the guide is not told about the same channels
   again. The restored channel is looked for in its own source only.
+- The 620 MB guide (2 688 000 programmes, 4 000 channels, 3 days back to
+  11 ahead) now loads with the Mac and iPhone caps: 1 889 604 programmes
+  kept for 2 812 channels in 84 s on a heavily loaded Mac, peak 476 MB above
+  the baseline. The 192 MB text cap is what stopped it, so the later
+  channels in the file have no programmes. Apple TV's caps keep about a
+  third of that.
+- Name matching no longer reruns at the start of a load or for a channel
+  list equal to the last one; it runs when the channels, a loaded guide,
+  the guides turned on or the hand-picked channels change. Progress events
+  update the status rows only. The review's claim that matching ran on
+  every progress event was only half right: progress rebuilt the index
+  entry and its 50 000-entry match table every 250 ms, while the matcher
+  itself ran at the start and end of each load.
 

@@ -129,6 +129,13 @@ public actor GuideEngine {
     var guideStatuses: [UUID: [GuideReference: GuideStatus]] = [:]
     /// Matches by name per source and channel id, worked out from the loaded guides.
     var nameMatches: [UUID: [String: String]] = [:]
+    /// Counts changes to a source's channels and loaded guides, what the
+    /// name matches are worked out from.
+    var matchStamps: [UUID: Int] = [:]
+    /// What each source's name matches were last worked out from.
+    var nameMatchInputs: [UUID: NameMatchInputs] = [:]
+    /// How many times names were matched, over every source. For tests.
+    var nameMatchRuns = 0
     var removed: Set<UUID> = []
     /// Sources an explicit refresh restarted; they stay ahead of the queue.
     private var restarted: Set<UUID> = []
@@ -246,7 +253,10 @@ public actor GuideEngine {
             }
         }
         for (id, list) in groups where !removed.contains(id) {
-            channels[id] = list
+            if channels[id] != list {
+                channels[id] = list
+                matchStamps[id, default: 0] += 1
+            }
             if updateNameMatches(id) {
                 rebuild(id)
                 publish()
@@ -285,6 +295,8 @@ public actor GuideEngine {
         playlistLinks[sourceID] = nil
         channels[sourceID] = nil
         loaded[sourceID] = nil
+        matchStamps[sourceID] = nil
+        nameMatchInputs[sourceID] = nil
         guideStatuses[sourceID] = nil
         nameMatches[sourceID] = nil
         sourceStatuses[sourceID] = nil

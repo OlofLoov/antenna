@@ -24,7 +24,7 @@ import Testing
         let engine = GuideEngine(
             GuideEngine.Configuration(
                 session: URLSession(configuration: configuration), directory: temporaryGuideDirectory(), limits: limits,
-                sources: { [source] }, credential: { _ in lookup }, log: { _ in }))
+                sources: { [source] }, credential: { _ in lookup }, log: { _ in }, now: { Self.window.start }))
         let channels = try ChannelsDVRClient.channels(fromPlaylist: FakeChannelsDVR.fixture("channels.m3u")).map {
             var tagged = $0
             tagged.sourceID = source.sourceID

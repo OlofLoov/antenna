@@ -1,26 +1,73 @@
 import Foundation
 
-/// How large a guide may be before it fails as `.tooLarge`. MB here means
-/// 1 000 000 bytes.
+/// How large a guide may be before it fails as `.tooLarge`, and how much
+/// of it is kept (guide-data/download-limits-and-timeouts,
+/// guide-data/a-large-guide-keeps-what-the-channels-can-use). MB here means
+/// 1 000 000 bytes. The byte limits guard disk and time; what is kept
+/// bounds memory.
 public struct GuideLimits: Sendable, Equatable {
     /// The most bytes a gzip body may send.
     public var compressedBytes: Int64
     /// The most bytes of XML, sent plain or unpacked from gzip.
     public var unpackedBytes: Int64
+    /// The most programmes kept.
+    public var keptSlots: Int
+    /// The most bytes of programme text kept.
+    public var keptText: Int
 
-    public init(compressedBytes: Int64, unpackedBytes: Int64) {
+    public init(compressedBytes: Int64, unpackedBytes: Int64, keptSlots: Int = 3_000_000, keptText: Int = 192_000_000) {
         self.compressedBytes = compressedBytes
         self.unpackedBytes = unpackedBytes
+        self.keptSlots = keptSlots
+        self.keptText = keptText
     }
 
-    /// tvOS 32 MB compressed and 96 MB unpacked; elsewhere 96 MB and 256 MB.
+    /// tvOS 128 MB compressed and 512 MB unpacked, keeping 1 000 000
+    /// programmes and 64 MB of text; elsewhere 256 MB and 1000 MB, keeping
+    /// 3 000 000 programmes and 192 MB of text.
     public static let platform: GuideLimits = {
         #if os(tvOS)
-            GuideLimits(compressedBytes: 32_000_000, unpackedBytes: 96_000_000)
+            GuideLimits(compressedBytes: 128_000_000, unpackedBytes: 512_000_000, keptSlots: 1_000_000, keptText: 64_000_000)
         #else
-            GuideLimits(compressedBytes: 96_000_000, unpackedBytes: 256_000_000)
+            GuideLimits(compressedBytes: 256_000_000, unpackedBytes: 1_000_000_000, keptSlots: 3_000_000, keptText: 192_000_000)
         #endif
     }()
+}
+
+/// Which programmes one guide keeps while it is read
+/// (guide-data/a-large-guide-keeps-what-the-channels-can-use): those from
+/// `pastDays` before the download to `futureDays` after it, up to the caps.
+/// Ids in `named` fill the caps; any other id stops at half of either cap.
+/// With `named` nil every id counts as named, and with no `now` there is
+/// no window.
+public struct GuideKeep: Sendable, Equatable {
+    public static let pastDays = 7
+    public static let futureDays = 14
+
+    var from: Date
+    var until: Date
+    var slots: Int
+    var text: Int
+    var named: Set<String>?
+
+    init(limits: GuideLimits, now: Date?, named: Set<String>?) {
+        from = now?.addingTimeInterval(-Double(Self.pastDays) * 86_400) ?? .distantPast
+        until = now?.addingTimeInterval(Double(Self.futureDays) * 86_400) ?? .distantFuture
+        slots = limits.keptSlots
+        text = limits.keptText
+        self.named = named
+    }
+
+    /// Everything, for callers with no window or caps.
+    static let everything = GuideKeep(from: .distantPast, until: .distantFuture, slots: .max, text: .max, named: nil)
+
+    private init(from: Date, until: Date, slots: Int, text: Int, named: Set<String>?) {
+        self.from = from
+        self.until = until
+        self.slots = slots
+        self.text = text
+        self.named = named
+    }
 }
 
 /// Takes one guide body as it arrives, writes it to a file named after the
@@ -40,6 +87,7 @@ final class GuideDecoder {
     }
 
     private let limits: GuideLimits
+    private let keep: GuideKeep
     private let expectedLength: Int64?
     private let rawFile: URL
     private let xmlFile: URL
@@ -50,8 +98,11 @@ final class GuideDecoder {
     private(set) var bytesReceived: Int64 = 0
 
     /// Creates or empties `<directory>/<sourceID>.download`.
-    init(limits: GuideLimits, expectedLength: Int64?, directory: URL, sourceID: UUID) throws(GuideError) {
+    init(
+        limits: GuideLimits, keep: GuideKeep = .everything, expectedLength: Int64?, directory: URL, sourceID: UUID
+    ) throws(GuideError) {
         self.limits = limits
+        self.keep = keep
         self.expectedLength = expectedLength
         rawFile = directory.appending(path: "\(sourceID.uuidString).download")
         xmlFile = directory.appending(path: "\(sourceID.uuidString).xml")
@@ -114,7 +165,7 @@ final class GuideDecoder {
             try unpack()
             file = xmlFile
         }
-        var builder = SourceGuide.Builder()
+        var builder = SourceGuide.Builder(keep: keep)
         let names = try parse(file, verifyXML: kind == .gzip) { builder.add($0) }
         builder.names = names
         let guide = builder.build()
