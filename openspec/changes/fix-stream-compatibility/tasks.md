@@ -26,9 +26,9 @@
 
 ## 5. Zapping on one-connection accounts
 
-- [ ] 5.1 `RetryPolicy.tune(afterSwitch:)` and `retriesOnce`
-- [ ] 5.2 Both engines note their last close and use the switch policy within 3 s on the same host
-- [ ] 5.3 Tests: the policy, a 403 after a switch that then plays, a first start that fails at once
+- [x] 5.1 `RetryPolicy.tuneAfterSwitch`, `tune(host:lastClosed:)` and `retriesOnce`
+- [x] 5.2 Both engines note their last close and use the switch policy within 3 s on the same host
+- [x] 5.3 Tests: the policy, a 403 after a switch that then plays, a first start that fails at once
 
 ## 6. Mac display
 

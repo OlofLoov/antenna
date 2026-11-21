@@ -84,6 +84,9 @@ public final class DemuxEngine: PlaybackEngine {
 
     /// True while the user scans through channels; see `setScanning(_:)`.
     public internal(set) var isScanning = false
+    /// The server and time of the last stream let go, for the tune retry
+    /// after a switch (playback-engine/a-channel-that-won-t-start-is-retried-briefly).
+    var lastClosed: (host: String?, at: ContinuousClock.Instant)?
     /// The connection of a load still waiting for its response.
     private var connecting: Task<HTTPByteStream, any Error>?
     var reconnect: Task<Void, Never>?
@@ -211,7 +214,7 @@ public final class DemuxEngine: PlaybackEngine {
     func open(_ url: URL, options: PlaybackOptions, origin: CMTime? = nil, generation mine: Int) async throws {
         let session = self.session
         let sleep = self.sleep
-        let tune = RetryPolicy.tune.refusals(final: refusalsAreFinal)
+        let tune = RetryPolicy.tune(host: url.host(), lastClosed: lastClosed).refusals(final: refusalsAreFinal)
         let ahead = standby.removeValue(forKey: url)
         let connect = Task {
             if let ahead, let bytes = try? await ahead.value {
@@ -302,6 +305,7 @@ public final class DemuxEngine: PlaybackEngine {
         reconnect = nil
         ticker?.cancel()
         ticker = nil
+        if current != nil { lastClosed = (request?.url.host(), .now) }
         // Stop feeding and flush before stopping the clock: setting the rate
         // while the renderers still take buffers blocked for seconds.
         current?.run.cancel()
