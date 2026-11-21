@@ -50,55 +50,25 @@ import SwiftUI
         }
     }
 #else
-    /// The audio-and-subtitles button and the subtitles switch over the top
-    /// right of the playing title, on a glass capsule as in Live
-    /// (design-system/liquid-glass-stays-on-the-navigation-layer). The list
-    /// opens as a sheet at compact width and as a popover above the button
-    /// otherwise.
+    /// The audio-and-subtitles button over the top right of the playing
+    /// title, on a glass capsule as in Live
+    /// (design-system/liquid-glass-stays-on-the-navigation-layer;
+    /// player-controls-and-playback-errors/one-button-for-audio-and-subtitles).
     struct TitleTrackButtons: View {
         let tracks: TitleTracks
-        #if os(iOS)
-            @Environment(\.horizontalSizeClass) private var sizeClass
-        #endif
 
         var body: some View {
-            @Bindable var tracks = tracks
-            HStack(spacing: 0) {
-                TrackPicker.OpenButton(isAvailable: tracks.hasTrackChoices) { tracks.openPicker() }
-                    .popover(isPresented: $tracks.pickerOpen, arrowEdge: .bottom) {
-                        if isCompact {
-                            TrackPicker.Sheet(lists: lists) { tracks.closePicker() }
-                                .presentationDetents([.medium, .large])
-                                .presentationDragIndicator(.visible)
-                        } else {
-                            TrackPicker.Popover(lists: lists)
-                                .presentationCompactAdaptation(.popover)
-                        }
-                    }
-                TrackPicker.SubtitlesButton(isOn: tracks.subtitlesOn, isAvailable: tracks.canSwitchSubtitles) {
-                    tracks.switchSubtitles()
-                }
-            }
+            TrackPicker.MenuButton(
+                audio: tracks.audioRows, subtitles: tracks.subtitleRows,
+                footer: [.verbatim(tracks.streamLine)] + (tracks.route == .demuxer ? [LivePicture.noAirPlay] : []),
+                subtitlesOn: tracks.subtitlesOn, isAvailable: tracks.hasTrackChoices,
+                pickAudio: { tracks.selectAudio($0) }, pickSubtitle: { tracks.selectSubtitle($0) },
+                shown: { $0 ? tracks.openPicker() : tracks.closePicker() }
+            )
             .foregroundStyle(Palette.text)
             .tint(Palette.text)
             .padding(.horizontal, 4)
             .glassEffect(.regular, in: Capsule())
-        }
-
-        /// True at compact width on iPhone and iPad, never on a Mac.
-        private var isCompact: Bool {
-            #if os(iOS)
-                sizeClass == .compact
-            #else
-                false
-            #endif
-        }
-
-        private var lists: TrackPicker.Lists {
-            TrackPicker.Lists(
-                audio: tracks.audioRows, subtitles: tracks.subtitleRows,
-                footer: [.verbatim(tracks.streamLine)] + (tracks.route == .demuxer ? [LivePicture.noAirPlay] : []),
-                pickAudio: { tracks.selectAudio($0) }, pickSubtitle: { tracks.selectSubtitle($0) })
         }
     }
 #endif

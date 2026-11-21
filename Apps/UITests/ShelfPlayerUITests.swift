@@ -214,22 +214,17 @@ final class ShelfPlayerUITests: XCTestCase {
         let tracks = app.element("player.tracks")
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: tracks)
         XCTAssertEqual(XCTWaiter().wait(for: [enabled], timeout: 5), .completed, "the tracks button stays grayed out")
-        tracks.tap()
-        XCTAssertTrue(app.element("player.trackPicker").waitForExistence(timeout: 3), "no list")
-        XCTAssertEqual(app.element("player.trackPicker.audio.1").label, "English (Commentary)")
-        XCTAssertEqual(app.element("player.trackPicker.subtitles.off").value as? String, "Selected")
+        XCTAssertFalse(app.element("player.subtitles").exists, "no second subtitles button")
+        app.openTracksMenu(picture: "movies.player")
+        XCTAssertTrue(app.tracksRow("English (Commentary)").exists)
+        app.expectChecked("Off")
 
-        app.element("player.trackPicker.audio.1").tap()
-        let picked = XCTNSPredicateExpectation(
-            predicate: NSPredicate(format: "value == 'Selected'"), object: app.element("player.trackPicker.audio.1"))
-        XCTAssertEqual(XCTWaiter().wait(for: [picked], timeout: 3), .completed)
-        XCTAssertTrue(app.element("player.trackPicker").exists, "the list stays open")
-        app.element("player.trackPicker.done").tap()
+        app.pickTrack("English (Commentary)")
+        app.openTracksMenu(picture: "movies.player")
+        app.expectChecked("English (Commentary)")
+        app.pickTrack("English", in: .subtitles)
 
-        XCTAssertTrue(app.element("player.subtitles").isEnabled)
-        app.element("player.subtitles").tap()
-        let on = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'On'"), object: app.element("player.subtitles"))
-        XCTAssertEqual(XCTWaiter().wait(for: [on], timeout: 3), .completed)
+        app.expectTracks(tracks, "value == 'Subtitles On'", "the bubble is not filled")
     }
 
     // up-next/next-episode-near-the-end

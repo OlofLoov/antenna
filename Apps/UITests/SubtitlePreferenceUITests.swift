@@ -20,20 +20,14 @@ final class SubtitlePreferenceUITests: XCTestCase {
         return app
     }
 
-    /// Plays the first channel and opens the audio and subtitle list.
+    /// Plays the first channel and opens the audio-and-subtitles menu.
     private func openTracks(_ app: XCUIApplication) {
         XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
         app.row(0).tap()
         app.waitForEngine("playing loads=1")
         app.element("browse.player.surface").tap()
         XCTAssertTrue(app.element("player.tracks").waitForExistence(timeout: 3), "no tracks button")
-        app.element("player.tracks").tap()
-        XCTAssertTrue(app.element("player.trackPicker").waitForExistence(timeout: 3), "no list")
-    }
-
-    private func expectSelected(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
-        let selected = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Selected'"), object: element)
-        XCTAssertEqual(XCTWaiter().wait(for: [selected], timeout: 5), .completed, "\(element) is not selected", file: file, line: line)
+        app.openTracksMenu()
     }
 
     // sources-and-settings/choose-when-subtitles-show
@@ -58,28 +52,28 @@ final class SubtitlePreferenceUITests: XCTestCase {
         app.closeSettings()
         app.tabBars.buttons["Live"].tap()
         openTracks(app)
-        expectSelected(app.element("player.trackPicker.subtitles.0"))
+        app.expectChecked("English", in: .subtitles)
     }
 
     // playback-engine/subtitles-start-by-the-subtitle-setting, Auto with sound the user understands
     func testAutoWithEnglishSoundStartsWithSubtitlesOff() throws {
         let app = try launch()
         openTracks(app)
-        expectSelected(app.element("player.trackPicker.subtitles.off"))
+        app.expectChecked("Off")
     }
 
     // playback-engine/subtitles-start-by-the-subtitle-setting, Auto with sound in another language
     func testAutoWithGermanSoundStartsEnglishSubtitles() throws {
         let app = try launch(tracks: "foreign")
         openTracks(app)
-        expectSelected(app.element("player.trackPicker.subtitles.1"))
-        XCTAssertEqual(app.element("player.trackPicker.subtitles.2").label, "English (Forced)")
+        app.expectChecked("English", in: .subtitles)
+        XCTAssertTrue(app.tracksRow("English (Forced)").exists)
     }
 
     // playback-engine/forced-subtitles-in-your-language-show, forced subtitles with subtitles off
     func testOffStillShowsForcedSubtitles() throws {
         let app = try launch(tracks: "foreign", subtitles: "off")
         openTracks(app)
-        expectSelected(app.element("player.trackPicker.subtitles.2"))
+        app.expectChecked("English (Forced)")
     }
 }

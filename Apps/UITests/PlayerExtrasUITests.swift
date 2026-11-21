@@ -37,10 +37,11 @@ final class PlayerExtrasUITests: XCTestCase {
         showControls(app)
         XCTAssertFalse(app.element("player.airplay").exists)
 
-        app.element("player.tracks").tap()
+        app.openTracksMenu()
 
-        XCTAssertTrue(app.element("player.trackPicker").waitForExistence(timeout: 3))
-        XCTAssertTrue(app.element("player.trackPicker.stream").label.contains("AirPlay not available for this stream"))
+        let line = app.tracksRow("AirPlay not available for this stream")
+        XCTAssertTrue(line.exists, "no AirPlay line in the menu")
+        XCTAssertFalse(line.isEnabled)
     }
 
     // player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac
@@ -55,6 +56,6 @@ final class PlayerExtrasUITests: XCTestCase {
         let airPlay = app.element("player.airplay")
         XCTAssertTrue(airPlay.waitForExistence(timeout: 3), "no AirPlay button in full screen")
         XCTAssertEqual(airPlay.label, "AirPlay")
-        XCTAssertEqual(app.element("player.tracks").label, "Audio and subtitles")
+        XCTAssertEqual(app.element("player.tracks").label, "Audio and Subtitles")
     }
 }
