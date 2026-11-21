@@ -19,6 +19,10 @@ final class VideoDecoder: @unchecked Sendable {
     private var pending: [DecodedPicture] = []
     /// Pictures held back to put B-frames in order before one is released.
     private let reorderDepth = 4
+    /// False when the stream names no colors. VideoToolbox then tags its
+    /// pictures BT.709 whatever their size, and the tags are left off so
+    /// SD gets SD colors (playback-engine/pictures-show-at-their-shape-and-in-their-colors).
+    private let namesColors: Bool
 
     enum DecodeError: Error, Equatable {
         case cannotCreate(OSStatus)
@@ -36,6 +40,7 @@ final class VideoDecoder: @unchecked Sendable {
             imageBufferAttributes: attributes as CFDictionary, outputCallback: nil, decompressionSessionOut: &session)
         guard status == noErr, let session else { throw DecodeError.cannotCreate(status) }
         self.session = session
+        namesColors = CMFormatDescriptionGetExtension(format, extensionKey: kCMFormatDescriptionExtension_YCbCrMatrix) != nil
     }
 
     deinit {
@@ -46,9 +51,15 @@ final class VideoDecoder: @unchecked Sendable {
     /// order. A failed frame is skipped.
     func decode(_ sample: CMSampleBuffer) -> [DecodedPicture] {
         let duration = CMSampleBufferGetDuration(sample)
+        let namesColors = self.namesColors
         nonisolated(unsafe) var decoded: [DecodedPicture] = []
         let handler: VTDecompressionOutputHandler = { status, _, image, time, frameDuration in
             guard status == noErr, let image else { return }
+            if !namesColors {
+                for key in [kCVImageBufferYCbCrMatrixKey, kCVImageBufferColorPrimariesKey, kCVImageBufferTransferFunctionKey] {
+                    CVBufferRemoveAttachment(image, key)
+                }
+            }
             decoded.append(DecodedPicture(pixels: image, time: time, duration: frameDuration.isValid ? frameDuration : duration))
         }
         VTDecompressionSessionDecodeFrame(session, sampleBuffer: sample, flags: [], infoFlagsOut: nil, outputHandler: handler)

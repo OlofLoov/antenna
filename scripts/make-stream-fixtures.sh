@@ -296,6 +296,15 @@ ff -f lavfi -i "$(video 720x576 50 1)" -f lavfi -i "$(tone 440 1)" \
     -vf "interlace=scan=tff,setfield=tff" \
     -c:v mpeg2video -flags +ildct+ilme -b:v 1M -g 12 -c:a mp2 -b:a 128k -f mpegts "$out/interlaced-576i.ts"
 
+# Widescreen SD as DVB sends it: 720x576 pictures marked 16:9 (pixels 64:45
+# wide) and no color tags, progressive in MPEG-2 and interlaced in H.264.
+ff -f lavfi -i "$(video 720x576 25 1)" -f lavfi -i "$(tone 440 1)" \
+    -aspect 16:9 -c:v mpeg2video -b:v 400k -g 12 -c:a mp2 -b:a 64k -f mpegts "$out/anamorphic-576.ts"
+ff -f lavfi -i "$(video 720x576 50 1)" -f lavfi -i "$(tone 440 1)" \
+    -vf "interlace=scan=tff,setfield=tff" -aspect 16:9 \
+    -c:v libx264 -preset veryfast -profile:v high -pix_fmt yuv420p -flags +ildct+ilme -x264opts tff=1 -g 25 -b:v 400k \
+    -c:a aac -b:a 48k -ac 2 -f mpegts "$out/anamorphic-576i.ts"
+
 # Films encoded with open GOPs, as UHD films are: HEVC whose keyframes after
 # the first are CRAs led by RASL pictures, and H.264 whose keyframes after the
 # first are led by B-frames. 3 seconds, a keyframe every 0.96 seconds.

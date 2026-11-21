@@ -16,6 +16,8 @@ Pictures reach the video renderer three ways. Progressive H.264 and HEVC go comp
 - `Deinterlacer.render` copies the source picture's attachments with `CVBufferPropagateAttachments`, then sets the field count to 1 and removes the field detail, since the output is progressive.
 - A picture with no matrix after that is tagged by size: up to 576 lines gets BT.601 (primaries EBU 3213 at 576 lines, SMPTE C below) and anything larger BT.709. That is what broadcast SD uses when it says nothing, and what VLC and FFmpeg's own players assume.
 - Attachments are set before the format description is made from the buffer, so the description carries them as extensions too.
+- VideoToolbox tags the pictures of a stream that names no colors BT.709 whatever their size. `VideoDecoder`, which decodes interlaced H.264 for the deinterlacer, removes those tags when the stream's format names no YCbCr matrix, so the size rule above applies. A Matroska film's H.264 format comes from its avcC with no color extensions, so an interlaced SD film there that names BT.709 is shown in BT.601; that is rare enough to leave.
+- Progressive H.264 and HEVC that name no colors still reach the renderer compressed, and the renderer picks their colors. Tagging their format descriptions is left out: whether the renderer prefers the description or the stream's own VUI was not tested.
 
 Options considered: scaling the picture to its display shape on the GPU (rejected; it costs a copy per frame and the renderer already honors the pixel aspect), and setting only the format description's extensions (rejected; the renderer reads the image buffer's attachments).
 
