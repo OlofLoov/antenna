@@ -25,7 +25,7 @@ The system SHALL ask the provider for a title's details at most once per launch 
 - **AND** a card whose episodes failed to load does not ask again each time it scrolls back into view
 
 ### Requirement: Browsing stays responsive
-The system SHALL keep Movies and Series responding to the remote, touch and pointer while a library of 100 000 movies and 30 000 series whose rows name the cast loads, while its rows redraw, while a grid of all of it opens in any order, and while details and saved positions arrive. Building the rows, the banner, the sorted grids and the people the titles name SHALL happen away from the screen, and redrawing the rows or a grid SHALL not walk every title. A poster that scrolls off screen SHALL stop loading once nothing on screen waits for it, and a finger moving on the banner SHALL not redraw it on every move. What the app keeps in memory for a long session SHALL stay within fixed limits.
+The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. What a long session keeps in memory SHALL stay within fixed limits.
 
 #### Scenario: A large library loads
 - **GIVEN** a source with 100 000 movies

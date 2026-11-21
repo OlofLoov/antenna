@@ -172,3 +172,12 @@ director per row from 15 000 people, 20 000 learned answers.
 | People index, a new answer | 7.4 s (full build) | 46 ms |
 | Sort 100 000 by Title | 1.51 s on main | 0.24 s off main |
 | Sort 100 000 by Year | 1.81 s on main | 0.25 s off main |
+| Progress save, store reads | 2 to 4 full reads on main | 1 direct read; history echoes read nothing |
+| Progress save, CloudKit | 1 create and 1 delete | 1 update of the same record |
+| Search corpus per body run | 13.9 ms join (review) | none, joined once per change of titles |
+| Full poster folder, per new poster | list, stat and sort the folder | one trim per fifth of the limit |
+| 4K backdrop on a 1080p screen | 33 MB decoded | about 8 MB (1935 by 1088) |
+
+The progress, Search and poster rows are counts the tests pin, not
+timings; they were not timed on an Apple TV.
+
