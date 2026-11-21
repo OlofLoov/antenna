@@ -12,8 +12,8 @@
 
 ## 3. Progress saves
 
-- [ ] 3.1 `ActivityStore.saveProgress` updates the surviving record in place and deletes the other copies, with an app test that the record keeps its id
-- [ ] 3.2 `ActivityStore.changes` yields only for saves of activity records and coalesces bursts; `ShelfActivity` assigns only what changed, with app tests
+- [x] 3.1 `ActivityStore.saveProgress` updates the surviving record in place and deletes the other copies, with an app test that the record keeps its id
+- [x] 3.2 `ActivityStore.changes` yields only for saves of activity records and coalesces bursts; `ShelfActivity` assigns only what changed, with app tests
 
 ## 4. Search
 
