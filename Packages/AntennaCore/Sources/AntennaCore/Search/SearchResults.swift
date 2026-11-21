@@ -117,8 +117,12 @@ public struct SearchResults: Sendable, Equatable {
             store.hit(offsets[position], now: now)
         }
 
+        /// Equal when they list the same programmes as of the same time. No
+        /// programmes at two times are equal, so a refresh that finds the
+        /// same channels and titles and no programmes is the same answer
+        /// (search/typing-keeps-up-with-a-large-library).
         public static func == (lhs: Programmes, rhs: Programmes) -> Bool {
-            lhs.store === rhs.store && lhs.offsets == rhs.offsets && lhs.now == rhs.now
+            lhs.offsets == rhs.offsets && (lhs.offsets.isEmpty || (lhs.store === rhs.store && lhs.now == rhs.now))
         }
 
         static let empty = Programmes(store: .empty, offsets: [], now: .distantPast)

@@ -128,6 +128,7 @@ final class SearchModel {
     @ObservationIgnored private let dependencies: Dependencies
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private var peopleIndex = PeopleIndex.empty
+    @ObservationIgnored private var peopleSearch: Task<Void, Never>?
     @ObservationIgnored private var typing: Task<Void, Never>?
     /// The query being answered away from the main actor.
     @ObservationIgnored private var searching: Task<Void, Never>?
@@ -232,10 +233,30 @@ final class SearchModel {
         results.isEmpty && people.isEmpty
     }
 
-    /// The people index changed: titles loaded or names arrived.
+    /// The people index changed: titles loaded or names arrived. The
+    /// settled query is searched against it away from the main actor, and
+    /// People changes only when the answer does
+    /// (search/typing-keeps-up-with-a-large-library).
     func peopleChanged(_ index: PeopleIndex) {
         peopleIndex = index
-        people = index.search(results.query)
+        peopleSearch?.cancel()
+        let query = results.query
+        guard query.isSearchable else { return }
+        peopleSearch = Task { [weak self] in
+            let found = await Self.people(in: index, query)
+            guard let self, !Task.isCancelled, results.query == query, found != people else { return }
+            people = found
+        }
+    }
+
+    /// Waits until the last people search has its answer on screen. For tests.
+    func peopleSearched() async {
+        await peopleSearch?.value
+    }
+
+    @concurrent
+    private nonisolated static func people(in index: PeopleIndex, _ query: SearchQuery) async -> [PeopleIndex.Person] {
+        index.search(query)
     }
 
     /// Moves the cursor by `step` rows, from the field into the first row.
@@ -334,8 +355,10 @@ final class SearchModel {
     private func show(_ answer: Answer, at now: Date) {
         if answer.results.query.text != results.query.text { guideExpanded = false }
         searchedAt = now
-        results = answer.results
-        people = answer.people
+        // The same answer again, as the five-second refresh mostly finds,
+        // leaves the rows that do not show the time as they are.
+        if answer.results != results { results = answer.results }
+        if answer.people != people { people = answer.people }
         if let cursor, !items.contains(cursor) { self.cursor = nil }
     }
 

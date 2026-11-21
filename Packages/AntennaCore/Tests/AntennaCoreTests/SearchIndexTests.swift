@@ -359,3 +359,18 @@ struct SearchIndexTests {
         #expect(SearchText.noResults(query, locale: .english) == "No results for “norhtern”")
     }
 }
+
+@Suite struct SearchAnswerTests {
+    @Test("search/typing-keeps-up-with-a-large-library the same titles and no programmes at a later time are the same answer")
+    func sameAnswerLater() {
+        let title = SearchResults.TitleHit(title: ShelfTitle(id: "m1", kind: .movie, sourceID: SearchFixture.home, name: "Salt Road"))
+        let earlier = SearchResults(
+            query: SearchQuery("salt"), programmes: .init(store: .empty, offsets: [], now: SearchFixture.now), titles: [title])
+        var later = earlier
+        later.programmes = .init(store: .empty, offsets: [], now: SearchFixture.now.addingTimeInterval(5))
+        #expect(earlier == later)
+        let listed = SearchResults.Programmes(store: .empty, offsets: [0], now: SearchFixture.now)
+        let listedLater = SearchResults.Programmes(store: .empty, offsets: [0], now: SearchFixture.now.addingTimeInterval(5))
+        #expect(listed != listedLater, "a listed programme may have started, so the time counts")
+    }
+}
