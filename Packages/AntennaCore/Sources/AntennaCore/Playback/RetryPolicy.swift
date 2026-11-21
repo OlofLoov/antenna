@@ -6,9 +6,15 @@ public struct RetryPolicy: Sendable {
     public var delays: [Duration]
     /// Whether a failure is worth another try under this policy.
     public var retries: @Sendable (PlaybackFailure) -> Bool
+    /// Failures `retries` turns down that get one more try all the same.
+    public var retriesOnce: @Sendable (PlaybackFailure) -> Bool
 
-    public init(delays: [Duration], retries: @escaping @Sendable (PlaybackFailure) -> Bool) {
+    public init(
+        delays: [Duration], retriesOnce: @escaping @Sendable (PlaybackFailure) -> Bool = { _ in false },
+        retries: @escaping @Sendable (PlaybackFailure) -> Bool
+    ) {
         self.delays = delays
+        self.retriesOnce = retriesOnce
         self.retries = retries
     }
 
@@ -21,6 +27,34 @@ public struct RetryPolicy: Sendable {
         case .serverBusy, .serverError, .stoppedSendingData: true
         default: false
         }
+    }
+
+    /// A channel started within `switchWindow` of another channel from the
+    /// same server closing. A provider that allows one connection can still
+    /// hold the old one and refuse the new one, answer with an unusual code
+    /// or not answer in time. Those get one more try a second later; the
+    /// rest is as `tune`.
+    public static let tuneAfterSwitch = RetryPolicy(
+        delays: [.seconds(1), .seconds(1)],
+        retriesOnce: { failure in
+            switch failure {
+            case .notAllowed, .timedOut: true
+            case .refused(let status): (400..<500).contains(status)
+            default: false
+            }
+        },
+        retries: tune.retries)
+
+    /// How soon after a close on the same server a start counts as a switch.
+    public static let switchWindow = Duration.seconds(3)
+
+    /// `tuneAfterSwitch` when a stream from `host` closed less than
+    /// `switchWindow` before `now`, otherwise `tune`.
+    public static func tune(
+        host: String?, lastClosed: (host: String?, at: ContinuousClock.Instant)?, now: ContinuousClock.Instant = .now
+    ) -> RetryPolicy {
+        guard let lastClosed, lastClosed.host == host, now - lastClosed.at < switchWindow else { return tune }
+        return tuneAfterSwitch
     }
 
     /// A channel that dropped after it played: 8 reconnects over about 45
@@ -42,7 +76,7 @@ public struct RetryPolicy: Sendable {
     public func refusals(final: Bool) -> RetryPolicy {
         guard final else { return self }
         let retries = self.retries
-        return RetryPolicy(delays: delays) { failure in
+        return RetryPolicy(delays: delays, retriesOnce: retriesOnce) { failure in
             failure != .serverBusy && failure != .serverError && retries(failure)
         }
     }
@@ -61,11 +95,14 @@ public struct RetryPolicy: Sendable {
         _ attempt: @Sendable () async throws -> Value
     ) async throws -> Value {
         var retry = 0
+        var triedOnce = false
         while true {
             do {
                 return try await attempt()
             } catch let failure as PlaybackFailure {
-                guard retry < delays.count, retries(failure) else { throw failure }
+                let again = retries(failure) || (!triedOnce && retriesOnce(failure))
+                guard retry < delays.count, again else { throw failure }
+                if !retries(failure) { triedOnce = true }
                 try await sleep(delays[retry])
                 try Task.checkCancellation()
                 retry += 1

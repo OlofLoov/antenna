@@ -177,6 +177,7 @@ final class AVPlayerEngine: PlaybackEngine {
         generation += 1
         let mine = generation
         let hadItem = player.currentItem != nil
+        let lastClosed = hadItem ? (host: request?.url.host(), at: ContinuousClock.now) : nil
         closeStream()
         request = (url, options)
         stream = nil
@@ -196,7 +197,8 @@ final class AVPlayerEngine: PlaybackEngine {
         let refusals = refusalsAreFinal
         let task = Task { [weak self, sleep] in
             if hadItem { try await Task.sleep(for: Self.releaseGrace) }
-            return try await RetryPolicy.tune.refusals(final: refusals).run(sleep: sleep) { [weak self] in
+            let tune = RetryPolicy.tune(host: url.host(), lastClosed: lastClosed)
+            return try await tune.refusals(final: refusals).run(sleep: sleep) { [weak self] in
                 guard let self else { throw CancellationError() }
                 return try await self.open(url, options: options, startAt: options.startPosition, generation: mine)
             }

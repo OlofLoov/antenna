@@ -43,7 +43,7 @@ Options considered: building FFmpeg's LGPL `mp3` and `aac` demuxers (rejected fo
 
 ### Retrying a refusal right after a switch
 
-`RetryPolicy` gains `retriesOnce`, failures tried once more on top of `retries`, and `RetryPolicy.tune(afterSwitch:)`. With `afterSwitch` true, `retriesOnce` takes "not allowed", any other refusal except "not found", and "timed out", and the first wait is 1 s. Each engine notes when it last closed a stream that had started, and on which host. A load on the same host within `RetryPolicy.switchWindow` (3 s) uses the switch policy. A first start, or a start on another server, keeps the old policy, so a revoked password still fails at once there and after one retry at most during zapping.
+`RetryPolicy` gains `retriesOnce`, failures tried once more on top of `retries`, and `RetryPolicy.tuneAfterSwitch`, picked by `RetryPolicy.tune(host:lastClosed:)`. Its `retriesOnce` takes "not allowed", any other refusal except "not found", and "timed out", and the first wait is 1 s. The FFmpeg path notes when it last let a stream go, and on which host. Apple's player counts a load that replaces an item as a switch from the old item's host. A load on the same host within `RetryPolicy.switchWindow` (3 s) uses the switch policy. A first start, or a start on another server, keeps the old policy, so a revoked password still fails at once there and after one retry at most during zapping.
 
 Options considered: retrying every 403 (rejected; a revoked password would spin), and waiting before every connect after a switch (rejected; it slows every zap for the few accounts with one connection). A switch between the two paths is not counted, since each engine only knows its own streams; Xtream live goes through the FFmpeg path for both channels.
 
