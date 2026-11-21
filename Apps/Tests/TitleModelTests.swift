@@ -25,7 +25,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? [title] : [], categories: ["Drama"]) },
             hasLogin: { _ in login },
-            episodes: { _, _ in [] },
             info: { _, _ in
                 calls.value += 1
                 if let gate { await gate.wait() }
@@ -129,7 +128,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles : [], categories: []) },
             hasLogin: { _ in true },
-            episodes: { _, _ in [] },
             info: { _, title in
                 calls.value += 1
                 asked.append(title.id)
@@ -156,7 +154,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles : [], categories: []) },
             hasLogin: { _ in true },
-            episodes: { _, _ in [] },
             info: { _, _ in .movie(VODInfo(year: 2024)) })
         let shelf = ShelfModel(kind: .movie, dependencies)
         shelf.sourcesChanged([descriptor])
@@ -223,7 +220,7 @@ import Testing
         for (list, skipped) in [(episodes, 2), ([], 0)] {
             let dependencies = ShelfModel.Dependencies(
                 load: { _, kind in ShelfCatalogue(titles: kind == .series ? [series] : [], categories: ["Drama"]) },
-                hasLogin: { _ in true }, episodes: { _, _ in [] },
+                hasLogin: { _ in true },
                 info: { _, _ in .series(SeriesInfo(episodes: list, skippedEpisodes: skipped)) })
             let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
             library.sourcesChanged([descriptor])

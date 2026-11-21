@@ -28,8 +28,8 @@
 
 ## 6. Memory and asks
 
-- [ ] 6.1 `loadEpisodes` goes through the once-per-title fetch, and a failed prefetch is not asked again, with app tests
-- [ ] 6.2 Episode lists past the kept limit are dropped except for series with progress, with an app test
+- [x] 6.1 `loadEpisodes` goes through the once-per-title fetch, and a failed prefetch is not asked again, with app tests
+- [x] 6.2 Episode lists past the kept limit are dropped except for series with progress, with an app test
 
 ## 7. Verify
 

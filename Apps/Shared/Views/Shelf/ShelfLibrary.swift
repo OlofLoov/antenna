@@ -282,7 +282,6 @@ extension ShelfLibrary {
         let dependencies = ShelfModel.Dependencies(
             load: { try await loader.load($0, kind: $1) },
             hasLogin: { loader.hasLogin($0) },
-            episodes: { try await loader.episodes($0, series: $1) },
             info: { try await loader.info($0, title: $1) })
         return ShelfLibrary(
             movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies), people: .live)

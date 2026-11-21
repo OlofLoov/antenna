@@ -23,7 +23,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, kind in ShelfCatalogue(titles: kind == .movie ? titles : [], categories: []) },
             hasLogin: { _ in true },
-            episodes: { _, _ in [] },
             info: { _, _ in
                 calls.value += 1
                 return .movie(VODInfo(year: 2024, cast: "Mira Holt, Jonas Reeve", director: "Sanna Weiss"))

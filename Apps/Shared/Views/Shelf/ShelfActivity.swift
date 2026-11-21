@@ -29,6 +29,8 @@ final class ShelfActivity {
     /// When the last read started, and the store's history then.
     @ObservationIgnored private var readAt = ContinuousClock.now
     @ObservationIgnored private var historyMark: DefaultHistoryToken?
+    /// Series with a saved episode, whose episode lists the library keeps.
+    @ObservationIgnored private(set) var seriesWithProgress: Set<String> = []
     /// How many times the store was read. For tests.
     @ObservationIgnored private(set) var reads = 0
 
@@ -72,6 +74,7 @@ final class ShelfActivity {
             var latest: [ActivityKey: WatchProgress] = [:]
             for saved in progress where latest[saved.key] == nil { latest[saved.key] = saved }
             positions.replace(with: latest)
+            seriesWithProgress = Set(progress.compactMap(\.seriesID))
         }
         let movies = store.myList(.movie)
         let series = store.myList(.series)
