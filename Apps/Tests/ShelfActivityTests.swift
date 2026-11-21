@@ -94,6 +94,21 @@ import Testing
         #expect(activity.myList(library.movies).map(\.id) == [movie(3).id])
     }
 
+    @Test("movies-and-series-browsing/browsing-stays-responsive a progress save reads the store once, and other saves read nothing")
+    func oneReadPerSave() async throws {
+        let (activity, task) = await following()
+        defer { task.cancel() }
+        let before = activity.reads
+        activity.saveProgress(titleID: movie(1).id, seriesID: nil, source: source, position: 600, duration: 5_400)
+        #expect(activity.reads == before + 1)
+        let elsewhere = ModelContext(container)
+        elsewhere.insert(FavoriteRecord(channelID: "c1", sourceID: source))
+        try elsewhere.save()
+        try await Task.sleep(for: ShelfActivity.settle * 3)
+        #expect(activity.reads == before + 1, "the save's own change and a favorite read nothing more")
+        #expect(activity.progress(of: movie(1))?.position == 600)
+    }
+
     @Test("movies-and-series-browsing/keep-a-list-for-later an entry for a title not loaded is not shown and kept")
     func notLoaded() async {
         let library = await library()

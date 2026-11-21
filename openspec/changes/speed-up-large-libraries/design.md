@@ -78,6 +78,35 @@ collation; the spec asks only for case and accents to be ignored.
 
 ### Progress saves
 
+Options:
+1. Keep inserting a new record per save and deleting the old one.
+2. Update the winning copy in place and delete only the other copies.
+
+Chosen: 2. Nothing in the records needs a fresh row per save; the insert
+and delete came from writing every save the way a first save is written.
+Duplicates from two devices still resolve as before: the save stamps the
+survivor later than every copy it read, so the other copies lose and are
+deleted in the same save, and a damaged copy is still never touched. A
+two-hour movie now sends about 240 updates to one CloudKit record instead
+of 240 creates and 240 deletes. No schema change.
+
+Reads after a save:
+- `ActivityStore.changes` yields for saves that name a progress, My list
+  or recent search record, and for every change to the store's history.
+  It buffers only the newest change, so a burst becomes one.
+- The store's history posts a change for every save, local ones included,
+  and names no records. A test on the simulator showed it: a favorite
+  saved from another context read the store again. So each read keeps the
+  newest history token, and a history change reads only when a
+  transaction after that token touched an activity record. An iCloud
+  import of progress still reads; the echo of a save this device already
+  read, and a favorite or a guide setting, read nothing.
+- Each change carries the time it was posted. `ShelfActivity` skips a
+  change that a read since has seen, waits 250 ms, and checks again before
+  reading. Its own save reads once, directly, as before, so playback and
+  tests see the new position at once.
+- `reload()` assigns only the lists that changed.
+
 ### Search
 
 ### Pictures and posters

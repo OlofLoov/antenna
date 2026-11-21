@@ -51,6 +51,19 @@ import Testing
         #expect(store.progress(of: movie, source: UUID()) == nil, "another source's copy of the title is its own")
     }
 
+    @Test("watch-progress-sync/progress-is-saved-and-read-back a new position updates the title's one entry in place")
+    func updatesInPlace() throws {
+        store.saveProgress(titleID: movie, source: source, position: 30, duration: 100, now: start)
+        let first = try #require(try container.mainContext.fetch(FetchDescriptor<ProgressRecord>()).first?.id)
+        for step in 1...240 {
+            store.saveProgress(
+                titleID: movie, source: source, position: Double(30 + step * 30), duration: 7_200, now: start + Double(step) * 30)
+        }
+        let records = try container.mainContext.fetch(FetchDescriptor<ProgressRecord>())
+        #expect(records.map(\.id) == [first], "240 saves, as a two-hour movie makes, keep the record they started with")
+        #expect(store.progress(of: movie, source: source)?.position == 7_230)
+    }
+
     @Test("watch-progress-sync/progress-is-saved-and-read-back no link, username or password is stored")
     func nothingSecret() throws {
         store.saveProgress(titleID: "http://host.tv/movie/user/pass/55.mkv", source: source, position: 30, duration: 100)
@@ -249,8 +262,8 @@ import Testing
     func changes() async throws {
         let first = ActivityStore.changes(in: container)
         let second = ActivityStore.changes(in: container)
-        async let heardFirst: Void? = first.first { _ in true }
-        async let heardSecond: Void? = second.first { _ in true }
+        async let heardFirst: ActivityChange? = first.first { _ in true }
+        async let heardSecond: ActivityChange? = second.first { _ in true }
         try await Task.sleep(for: .milliseconds(50))
         store.saveProgress(titleID: movie, source: source, position: 10, duration: 100)
         #expect(await heardFirst != nil)
