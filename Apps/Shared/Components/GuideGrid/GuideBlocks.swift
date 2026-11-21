@@ -218,7 +218,7 @@ private struct GridPreview: View {
             GuideGrid.Block(content: .placeholder(ZapBarText.guideUnavailable()), width: 1456)
         }
     }
-    .padding(64)
+    .padding(Metrics.televisionSafeArea)
     .background(Palette.ground)
 }
 

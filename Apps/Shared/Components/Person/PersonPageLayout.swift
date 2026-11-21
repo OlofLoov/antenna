@@ -66,7 +66,8 @@ enum PersonPageLayout {
 
         static let phone = Sizes(circle: 88, initials: 28, name: 28, count: 13, note: 12, gutter: 16, spacing: 18)
         static let pad = Sizes(circle: 112, initials: 34, name: 36, count: 14, note: 13, gutter: 24, spacing: 22)
-        static let tv = Sizes(circle: 200, initials: 64, name: 76, count: 24, note: 22, gutter: 64, spacing: 36)
+        static let tv = Sizes(
+            circle: 200, initials: 64, name: 76, count: 24, note: 22, gutter: Metrics.televisionSafeArea.leading, spacing: 36)
     }
 
     /// The initials circle, the name and the count line. Not focusable.

@@ -83,8 +83,10 @@
             NavigationStack {
                 ScrollView {
                     content
-                        .padding(.horizontal, 64)
-                        .padding(.bottom, 64)
+                        // The stack keeps the system safe area, 80 pt at the
+                        // sides, so the results take no side padding of their
+                        // own (design-system/apple-tv-content-stays-in-the-safe-area).
+                        .padding(.bottom, Metrics.televisionSafeArea.bottom)
                 }
                 .scrollsToTopFromTabBar()
                 .searchable(text: query, prompt: SearchText.placeholder())

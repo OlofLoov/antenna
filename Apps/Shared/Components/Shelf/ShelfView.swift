@@ -36,9 +36,10 @@ enum ShelfView {
         static let pad = Metrics(
             poster: CGSize(width: 132, height: 198), card: CGSize(width: 212, height: 119), corner: 10, gutter: 24, gap: 12,
             rowSpacing: 22, headerSpacing: 10, header: 18, count: 13, caption: 14, progress: 4, columns: 5)
-        /// `TV-Movies`: 212 by 318 posters, 352 by 198 cards.
+        /// `TV-Movies`: 212 by 318 posters, 352 by 198 cards, and the 80 pt
+        /// side margin of the safe area (design-system/apple-tv-content-stays-in-the-safe-area).
         static let tv = Metrics(
-            poster: CGSize(width: 212, height: 318), card: CGSize(width: 352, height: 198), corner: 12, gutter: 64, gap: 20,
+            poster: CGSize(width: 212, height: 318), card: CGSize(width: 352, height: 198), corner: 12, gutter: 80, gap: 20,
             rowSpacing: 40, headerSpacing: 16, header: 28, count: 20, caption: 22, progress: 6, columns: 6)
     }
 

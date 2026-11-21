@@ -55,8 +55,8 @@ extension ZapBar {
     ZStack(alignment: .topLeading) {
         Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255)
         ZapBar.NumberBox(content: .typing(digits: "10", name: "Sport Two"))
-            .padding(.leading, 64)
-            .padding(.top, 44)
+            .padding(.leading, Metrics.televisionSafeArea.leading)
+            .padding(.top, Metrics.televisionSafeArea.top)
     }
 }
 
@@ -64,7 +64,7 @@ extension ZapBar {
     ZStack(alignment: .topLeading) {
         Color(red: 0x1A / 255, green: 0x25 / 255, blue: 0x35 / 255)
         ZapBar.NumberBox(content: .noChannel("999"))
-            .padding(.leading, 64)
-            .padding(.top, 44)
+            .padding(.leading, Metrics.televisionSafeArea.leading)
+            .padding(.top, Metrics.televisionSafeArea.top)
     }
 }

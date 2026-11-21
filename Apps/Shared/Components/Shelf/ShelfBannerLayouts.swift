@@ -154,13 +154,13 @@ extension ShelfBanner {
                         .padding(.top, 8)
                 }
                 .frame(width: 880, alignment: .leading)
-                .padding(.leading, 64)
+                .padding(.leading, Metrics.televisionSafeArea.leading)
                 .padding(.top, 180)
                 .animation(ShelfBanner.crossfade, value: banner?.state.text)
             }
             .frame(height: 640, alignment: .top)
             .overlay(alignment: .bottomTrailing) {
-                Dots(size: 6).padding(.trailing, 64).padding(.bottom, 20)
+                Dots(size: 6).padding(.trailing, Metrics.televisionSafeArea.trailing).padding(.bottom, 20)
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).hero")

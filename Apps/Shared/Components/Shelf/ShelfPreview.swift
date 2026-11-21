@@ -26,7 +26,7 @@ enum ShelfPreview {
     static let height: CGFloat = 520
 
     /// The picture full width 520 pt tall, the banner's hero scrim,
-    /// a fade to the ground over the last 140 pt, and the copy from x 64,
+    /// a fade to the ground over the last 140 pt, and the copy from x 80 (the safe edge),
     /// y 150.
     struct Television: View {
         @Environment(\.shelfPreview) private var preview
@@ -44,7 +44,7 @@ enum ShelfPreview {
                 if let text = preview?.text {
                     Copy(text: text)
                         .frame(width: 880, alignment: .leading)
-                        .padding(.leading, 64)
+                        .padding(.leading, Metrics.televisionSafeArea.leading)
                         .padding(.top, 150)
                         .animation(ShelfBanner.crossfade, value: text)
                 }
