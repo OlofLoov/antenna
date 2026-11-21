@@ -154,7 +154,7 @@ final class DemuxRun: @unchecked Sendable {
     /// and for every sound stream it can build buffers for.
     struct Prepared {
         let demuxer: Demuxer
-        let video: SampleBuilder?
+        var video: SampleBuilder?
         /// Builders by container stream index.
         var sounds: [Int: SampleBuilder]
         var audioTracks: [TrackStream]
@@ -262,6 +262,8 @@ final class DemuxRun: @unchecked Sendable {
         var rateKnown: Bool
         /// Set for a stream whose pictures may be interlaced.
         var fields: FieldPictures?
+        /// True once any packet of the picture stream arrived.
+        var sawVideoPacket = false
         var fieldsDecided = false
         /// Video before the first keyframe is dropped; after it, everything
         /// goes to the builder, even while a decoder holds pictures back.
@@ -306,6 +308,7 @@ final class DemuxRun: @unchecked Sendable {
                 guard switchSound(to: request, prepared, &state) else { break reading }
             }
             if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
+                state.sawVideoPacket = true
                 guard takeVideo(packet, builder: builder, &state) else { break reading }
             } else if let builder = prepared.sounds[packet.streamIndex] {
                 keep(packet, in: &state)
@@ -315,6 +318,7 @@ final class DemuxRun: @unchecked Sendable {
                     guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { break reading }
                 }
                 noteSoundFormat(builder, &state)
+                guard startWithoutPicture(&prepared, &state) else { break reading }
             } else if let decoder = prepared.pictureSubtitles[packet.streamIndex] {
                 pictureCues(from: packet, decoder: decoder)
             } else if let codec = state.subtitleCodecs[packet.streamIndex] {

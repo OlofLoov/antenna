@@ -131,6 +131,12 @@ ff -f lavfi -i "$(video 320x180 25 6)" -f lavfi -i "$(tone 440 6)" \
 # The same channel with six video packets lost in the middle of a GOP, as a
 # stream that lost data on the way arrives: FFmpeg marks the picture corrupt.
 python3 -I scripts/drop-ts-packets.py "$out/channel.ts" "$out/damaged.ts" 400 6
+# An off-air channel: the program lists H.264 video but only its sound
+# arrives, 4 seconds of it.
+ff -f lavfi -i "$(video 320x180 25 4)" -f lavfi -i "$(tone 440 4)" \
+    -c:v libx264 -preset veryfast -profile:v main -pix_fmt yuv420p -g 25 -b:v 150k \
+    -c:a aac -b:a 48k -ac 2 -f mpegts "$work/with-picture.ts"
+python3 -I scripts/drop-ts-packets.py "$work/with-picture.ts" "$out/no-picture.ts" 0 1000000
 
 # Live channels whose timestamps jump, as at an ad break, a feed switch or
 # an encoder restart. splice-ts.py joins two parts the way a splicer does,

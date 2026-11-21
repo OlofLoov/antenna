@@ -21,8 +21,8 @@
 
 ## 4. A channel with no picture
 
-- [ ] 4.1 `DemuxRun` starts with sound only after 2 s of sound and no video packet
-- [ ] 4.2 Fixture and test: a broadcast whose video PID sends nothing
+- [x] 4.1 `DemuxRun` starts with sound only after 2 s of sound and no video packet
+- [x] 4.2 Fixture and test: a broadcast whose video PID sends nothing
 
 ## 5. Zapping on one-connection accounts
 
