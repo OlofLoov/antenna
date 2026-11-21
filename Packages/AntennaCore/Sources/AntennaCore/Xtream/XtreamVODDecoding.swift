@@ -84,7 +84,7 @@ extension XtreamClient {
         return DecodedList(items: items, skipped: skipped)
     }
 
-    /// Decodes a list that fails whole on any broken row, as categories and live streams do.
+    /// Decodes a list that fails whole on any broken row. The lossy lists read their rows through it.
     /// `[]`, `{}`, `false` and `null` give an empty list.
     static func decodeWholeList<Row: Decodable>(_ data: Data) throws -> [Row] {
         let data = XtreamBody.readable(data)
@@ -96,7 +96,8 @@ extension XtreamClient {
         return try decode([Row].self, from: data)
     }
 
-    /// Decodes a list that drops rows failing to decode, as `liveStreams()` does. The empty shapes give `[]`.
+    /// Decodes a list that drops rows failing to decode, as `liveStreams()` and the category calls do.
+    /// The empty shapes give `[]`.
     static func decodeLossyList<Row: Decodable>(_ data: Data) throws -> [Row] {
         let rows: [Lossy<Row>] = try decodeWholeList(data)
         return rows.compactMap(\.value)

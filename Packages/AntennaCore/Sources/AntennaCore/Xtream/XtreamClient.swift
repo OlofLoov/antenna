@@ -47,8 +47,10 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
 
     // MARK: Live endpoints
 
+    /// Drops rows without a usable id or name and keeps the rest
+    /// (xtream-vod-client/broken-category-rows-are-skipped).
     public func liveCategories() async throws -> [XtreamCategory] {
-        try Self.decodeWholeList(try await fetch(action: "get_live_categories"))
+        try Self.decodeLossyList(try await fetch(action: "get_live_categories"))
     }
 
     /// Drops rows that are not objects, lack `name` or `stream_id`, or whose `stream_id` is not a whole
@@ -66,13 +68,14 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
 
     /// Every live channel with its category name, and the panel's time zone name from the account
     /// information, asked for once (xtream-live-source/server-time-zone). A failed account call
-    /// leaves the zone nil and the channels load anyway.
+    /// leaves the zone nil and the channels load anyway. A failed category call leaves
+    /// them without group names (xtream-live-source/channels-load-without-categories).
     public func liveLoad() async throws -> (channels: [Channel], timeZoneName: String?) {
-        async let categories = liveCategories()
+        async let categories = try? liveCategories()
         async let streams = liveStreams()
         async let account = try? accountInfo()
         // Providers sometimes repeat a category id; the first name wins.
-        let loaded = try await categories
+        let loaded = await categories ?? []
         let names = Dictionary(loaded.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
         let adult = Set(loaded.filter(\.isAdult).map(\.categoryID))
         let channels = try await streams.map { stream in
@@ -86,7 +89,16 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
     // MARK: VOD and series endpoints
 
     public func vodCategories() async throws -> [XtreamCategory] {
-        try Self.decodeWholeList(try await fetch(action: "get_vod_categories"))
+        try Self.decodeLossyList(try await fetch(action: "get_vod_categories"))
+    }
+
+    /// Every movie and the movie categories. A failed category call gives no
+    /// categories and the movies load anyway
+    /// (xtream-vod-client/broken-category-rows-are-skipped).
+    public func vodLoad() async throws -> (titles: DecodedList<VODItem>, categories: [XtreamCategory]) {
+        async let categories = try? vodCategories()
+        async let titles = vodStreams()
+        return (try await titles, await categories ?? [])
     }
 
     public func vodStreams(categoryID: String? = nil) async throws -> DecodedList<VODItem> {
@@ -98,7 +110,15 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
     }
 
     public func seriesCategories() async throws -> [XtreamCategory] {
-        try Self.decodeWholeList(try await fetch(action: "get_series_categories"))
+        try Self.decodeLossyList(try await fetch(action: "get_series_categories"))
+    }
+
+    /// Every series and the series categories, with the rule of `vodLoad()`
+    /// for a failed category call.
+    public func seriesLoad() async throws -> (titles: DecodedList<Series>, categories: [XtreamCategory]) {
+        async let categories = try? seriesCategories()
+        async let titles = series()
+        return (try await titles, await categories ?? [])
     }
 
     public func series(categoryID: String? = nil) async throws -> DecodedList<Series> {
@@ -228,6 +248,9 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
 
 // MARK: - Wire models
 
+/// A category row. `category_id` and `category_name` may each be a string or
+/// a number. A row where either is missing or null does not decode, and the
+/// category calls drop it.
 public struct XtreamCategory: Decodable, Sendable, Hashable {
     public var categoryID: String
     public var categoryName: String
@@ -239,7 +262,7 @@ public struct XtreamCategory: Decodable, Sendable, Hashable {
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         categoryID = try c.decode(FlexibleString.self, forKey: .categoryID).value
-        categoryName = try c.decode(String.self, forKey: .categoryName)
+        categoryName = try c.decode(FlexibleString.self, forKey: .categoryName).value
         isAdult = c.looseFlag(.isAdult)
     }
 }
@@ -273,7 +296,7 @@ public struct XtreamLiveStream: Decodable, Sendable, Hashable {
         streamID = try c.decode(FlexibleInt.self, forKey: .streamID).value
         num = c.looseInt(.num)
         streamIcon = try? c.decodeIfPresent(String.self, forKey: .streamIcon)
-        epgChannelID = try? c.decodeIfPresent(String.self, forKey: .epgChannelID)
+        epgChannelID = (try? c.decodeIfPresent(FlexibleString.self, forKey: .epgChannelID))?.value
         categoryID = (try? c.decodeIfPresent(FlexibleString.self, forKey: .categoryID))?.value
         tvArchive = c.looseInt(.tvArchive)
         tvArchiveDuration = c.looseInt(.tvArchiveDuration)
