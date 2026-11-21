@@ -1,7 +1,7 @@
 ## 1. The last channel first
 
-- [ ] 1.1 `SeenChannelsStore.tagging` only tags; `LiveModel` and `ShellModel` tune, then record the seen memory in a following task and rebuild the catalogue when it lands, with a test that the replay runs before the record
-- [ ] 1.2 A source whose channels did not change since the last load keeps its list and skips the rebuild; the restored channel is found through a dictionary, with a test
+- [x] 1.1 `SeenChannelsStore.tagging` only tags; `LiveModel` and `ShellModel` tune, then record the seen memory in a following task and rebuild the catalogue when it lands, with a test that the replay runs before the record
+- [x] 1.2 A source whose channels did not change since the last load keeps its list and skips the rebuild; the restored channel is found through a dictionary, with a test
 
 ## 2. Large guides
 

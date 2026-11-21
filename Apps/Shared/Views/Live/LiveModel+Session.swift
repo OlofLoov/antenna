@@ -77,7 +77,7 @@ extension LiveModel {
     /// the channel is loaded. Otherwise it waits for the next source to load.
     func replay() {
         guard restore.liveShown, playing == nil, let key = restore.channel,
-            let channel = channels.first(where: key.matches)
+            let channel = loadedChannels(of: key.sourceID)?.first(where: key.matches)
         else { return }
         restore.channel = nil
         tune(channel)
