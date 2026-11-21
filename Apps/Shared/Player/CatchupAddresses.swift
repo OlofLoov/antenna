@@ -20,8 +20,9 @@ struct CatchupAddresses: Sendable {
         if let source, source.kind == .xtream, let key = source.credentialKey, let login = try? credentials.load(for: key) {
             let credentials = XtreamCredentials(server: source.url, username: login.username, password: login.password)
             let session = self.session
+            let agent = source.userAgent
             let zone = await timeZones.timeZone(for: source.id) {
-                try? await XtreamClient(credentials: credentials, session: session).accountInfo().serverInfo?.timezone
+                try? await XtreamClient(credentials: credentials, session: session, userAgent: agent).accountInfo().serverInfo?.timezone
             }
             context = XtreamCatchupContext(credentials: credentials, timeZone: zone)
         }

@@ -36,6 +36,9 @@ final class SourceRecord {
     var importedAt: Date?
     /// The value inside this list's login placeholders, kept across re-imports.
     var playlistToken: String?
+    /// The User-Agent the source's requests carry; nil for the default
+    /// (sources-and-settings/a-user-agent-per-source).
+    var userAgent: String?
 
     init(descriptor: SourceDescriptor, sortOrder: Int = 0) {
         self.id = descriptor.id
@@ -44,6 +47,7 @@ final class SourceRecord {
         self.url = descriptor.url
         self.epgURL = descriptor.epgURL
         self.credentialKey = descriptor.credentialKey
+        self.userAgent = descriptor.userAgent
         self.sortOrder = sortOrder
     }
 
@@ -56,7 +60,8 @@ final class SourceRecord {
     /// no link and gets a stand-in that changes with each import.
     var descriptor: SourceDescriptor? {
         guard let url = url ?? (kind == .m3uFile ? PlaylistFileStore.standIn(id: id, importedAt: importedAt) : nil) else { return nil }
-        return SourceDescriptor(id: id, name: name, kind: kind, url: url, epgURL: epgURL, credentialKey: credentialKey)
+        return SourceDescriptor(
+            id: id, name: name, kind: kind, url: url, epgURL: epgURL, credentialKey: credentialKey, userAgent: userAgent)
     }
 }
 

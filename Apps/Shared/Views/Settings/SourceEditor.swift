@@ -15,6 +15,9 @@ final class SourceEditor {
     var name: String
     var link: String
     var guideLink: String
+    /// The source's User-Agent; empty for the default
+    /// (sources-and-settings/a-user-agent-per-source).
+    var userAgent: String
     /// The Xtream username, or a portal's optional login.
     var username: String
     /// A portal's MAC address. Other kinds leave it empty.
@@ -43,6 +46,7 @@ final class SourceEditor {
         name = descriptor.name
         link = descriptor.url.absoluteString
         guideLink = descriptor.epgURL?.absoluteString ?? ""
+        userAgent = descriptor.userAgent ?? ""
         let saved = descriptor.credentialKey.flatMap { try? connector.credentials.load(for: $0) }
         if descriptor.kind == .stalker {
             mac = saved?.username ?? ""
@@ -226,6 +230,8 @@ final class SourceEditor {
         record.url = url
         let guide = guideLink.trimmingCharacters(in: .whitespacesAndNewlines)
         record.epgURL = guide.isEmpty ? nil : URL(string: guide)
+        let agent = userAgent.trimmingCharacters(in: .whitespacesAndNewlines)
+        record.userAgent = agent.isEmpty ? nil : agent
         try? context.save()
         if let descriptor = record.descriptor { original = descriptor }
         link = url.absoluteString

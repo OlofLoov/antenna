@@ -32,10 +32,13 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
 
     private let credentials: XtreamCredentials
     private let session: URLSession
+    /// Sent on every call when set (sources-and-settings/a-user-agent-per-source).
+    private let userAgent: String?
 
-    public init(credentials: XtreamCredentials, session: URLSession = .provider) {
+    public init(credentials: XtreamCredentials, session: URLSession = .provider, userAgent: String? = nil) {
         self.credentials = credentials
         self.session = session
+        self.userAgent = userAgent
     }
 
     public var description: String { credentials.description }
@@ -211,12 +214,13 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
         var query = [("username", credentials.username), ("password", credentials.password)]
         if let action { query.append(("action", action)) }
         if let id { query.append(id) }
-        let request = url(path: ["player_api.php"], query: query)
+        var request = URLRequest(url: url(path: ["player_api.php"], query: query))
+        StreamHeaders(userAgent.map { ["User-Agent": $0] } ?? [:]).apply(to: &request)
 
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await session.data(from: request)
+            (data, response) = try await session.data(for: request)
         } catch let error as URLError {
             if Task.isCancelled { throw CancellationError() }
             throw XtreamError.transport(error.code)

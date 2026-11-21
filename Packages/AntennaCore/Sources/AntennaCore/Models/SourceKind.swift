@@ -28,6 +28,9 @@ public struct SourceDescriptor: Identifiable, Hashable, Sendable, Codable {
     public var epgURL: URL?
     /// Keychain lookup key for username/password or MAC.
     public var credentialKey: String?
+    /// The User-Agent the source's requests and streams carry, nil for the
+    /// default (sources-and-settings/a-user-agent-per-source).
+    public var userAgent: String?
 
     public init(
         id: UUID = UUID(),
@@ -35,7 +38,8 @@ public struct SourceDescriptor: Identifiable, Hashable, Sendable, Codable {
         kind: SourceKind,
         url: URL,
         epgURL: URL? = nil,
-        credentialKey: String? = nil
+        credentialKey: String? = nil,
+        userAgent: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -43,5 +47,13 @@ public struct SourceDescriptor: Identifiable, Hashable, Sendable, Codable {
         self.url = url
         self.epgURL = epgURL
         self.credentialKey = credentialKey
+        self.userAgent = userAgent
+    }
+
+    /// `userAgent` as headers, empty when it is nil or blank.
+    public var headers: StreamHeaders {
+        var headers = StreamHeaders()
+        if let userAgent { headers.set("User-Agent", userAgent) }
+        return headers
     }
 }

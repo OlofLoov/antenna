@@ -119,7 +119,8 @@ struct ShelfLoader: Sendable {
     private func client(for source: SourceDescriptor) throws -> XtreamClient {
         guard let key = source.credentialKey, let login = try credentials.load(for: key) else { throw LoadError.noLogin }
         return XtreamClient(
-            credentials: .init(server: source.url, username: login.username, password: login.password), session: session)
+            credentials: .init(server: source.url, username: login.username, password: login.password), session: session,
+            userAgent: source.userAgent)
     }
 
     private func rawID(_ titleID: String) throws -> Int {

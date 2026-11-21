@@ -68,11 +68,13 @@ public final class StreamHeaderBook: @unchecked Sendable {
 
     public init() {}
 
-    /// Replaces the source's stream headers with those of `channels`.
-    public func register(_ channels: [Channel], source: UUID) {
+    /// Replaces the source's stream headers with those of `channels`, each
+    /// on top of `base`, the source's own.
+    public func register(_ channels: [Channel], source: UUID, base: StreamHeaders = StreamHeaders()) {
         var table: [String: StreamHeaders] = [:]
         for channel in channels {
-            guard let headers = channel.headers, !headers.isEmpty else { continue }
+            let headers = base.merging(channel.headers ?? StreamHeaders())
+            guard !headers.isEmpty else { continue }
             table[channel.streamURL.absoluteString] = headers
         }
         lock.withLock { addresses[source] = table.isEmpty ? nil : table }
