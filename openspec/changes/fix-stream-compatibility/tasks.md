@@ -9,9 +9,9 @@
 
 ## 2. Handoffs in Apple's player
 
-- [ ] 2.1 A ready file whose picture or sound cannot be decoded hands over to the FFmpeg path; HLS does not
-- [ ] 2.2 Raw MPEG-TS at an `.m3u8` address hands over instead of failing
-- [ ] 2.3 Fixture and tests: an `hev1` MP4, TS at an `.m3u8` address
+- [x] 2.1 A ready file whose picture or sound cannot be decoded hands over to the FFmpeg path; HLS does not
+- [x] 2.2 Raw MPEG-TS at an `.m3u8` address hands over instead of failing
+- [x] 2.3 Fixture and tests: an `hev1` MP4, TS at an `.m3u8` address
 
 ## 3. Radio
 

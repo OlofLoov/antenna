@@ -41,6 +41,26 @@ import Testing
         #expect(await eventually { harness.engine.state == .playing })
         await harness.stop()
     }
+
+    @Test(
+        "playback-engine/every-common-stream-type-plays an MP4 whose HEVC Apple's player cannot decode goes to the demuxer",
+        .progressiveHTTP)
+    func undecodableFileHandsOver() async throws {
+        let harness = try await PlayerHarness()
+        await #expect(throws: EngineHandoff.toDemuxer) { try await harness.engine.load(harness.url("hev1.mp4")) }
+        #expect(harness.engine.state == .idle)
+        await harness.stop()
+    }
+
+    @Test("playback-engine/every-common-stream-type-plays raw MPEG-TS at an HLS address goes to the demuxer")
+    func transportStreamAtHLSAddressHandsOver() async throws {
+        let harness = try await PlayerHarness()
+        let body = try Data(contentsOf: harness.server.root.appending(path: "channel.ts"))
+        await harness.server.always("/live.m3u8", .body(body, contentType: "application/octet-stream"))
+        await #expect(throws: EngineHandoff.toDemuxer) { try await harness.engine.load(harness.url("live.m3u8")) }
+        #expect(harness.engine.state == .idle)
+        await harness.stop()
+    }
 }
 
 @MainActor
