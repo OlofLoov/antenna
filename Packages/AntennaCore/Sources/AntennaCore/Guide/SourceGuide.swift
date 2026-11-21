@@ -33,6 +33,9 @@ struct SourceGuide: Sendable {
     /// with programmes and no channel element is missing here.
     let names: [String: String]
     private let text: [UInt8]
+    /// Each id in `schedules` or `names` that is not all lowercase, by its
+    /// lowercased form. Of ids that fold the same, the smallest is kept.
+    private let folded: [String: String]
     /// Earliest start to latest stop over every programme; nil when there are none.
     let span: DateInterval?
     let count: Int
@@ -64,9 +67,52 @@ struct SourceGuide: Sendable {
             if trimmed[key] == nil, !key.isEmpty { trimmed[key] = name }
         }
         self.names = trimmed
+        var folded: [String: String] = [:]
+        for id in Set(schedules.keys).union(trimmed.keys) {
+            let lower = id.lowercased()
+            guard lower != id else { continue }
+            if let kept = folded[lower], kept < id { continue }
+            folded[lower] = id
+        }
+        self.folded = folded
         self.text = text
         self.count = count
         if let earliest, let latest { span = DateInterval(start: earliest, end: latest) } else { span = nil }
+    }
+
+    /// The schedule stored under `id` exactly, or, when that has no
+    /// programmes, under an id that differs from it only by letter case
+    /// (guide-data/programmes-land-on-the-right-channels).
+    func slots(for id: String) -> [Slot]? {
+        if let slots = schedules[id], !slots.isEmpty { return slots }
+        return foldedSlots(for: id)
+    }
+
+    /// The schedule of an id that differs from `id` only by letter case, nil
+    /// when there is none with programmes.
+    func foldedSlots(for id: String) -> [Slot]? {
+        guard let stored = storedID(ignoringCase: id), let slots = schedules[stored], !slots.isEmpty else { return nil }
+        return slots
+    }
+
+    /// The display name stored under `id`, or under an id that differs from
+    /// it only by letter case.
+    func name(for id: String) -> String? {
+        names[id] ?? storedID(ignoringCase: id).flatMap { names[$0] }
+    }
+
+    /// True when `id`, or an id that differs from it only by letter case, is
+    /// a channel element or has a schedule.
+    func lists(_ id: String) -> Bool {
+        names[id] != nil || schedules[id] != nil || storedID(ignoringCase: id) != nil
+    }
+
+    /// Another stored id equal to `id` ignoring letter case, nil when there is none.
+    private func storedID(ignoringCase id: String) -> String? {
+        let lower = id.lowercased()
+        if lower != id, schedules[lower] != nil || names[lower] != nil { return lower }
+        guard let stored = folded[lower], stored != id else { return nil }
+        return stored
     }
 
     /// The programme in `slot`, stored under channel id `id`.
@@ -178,9 +224,9 @@ struct SourceGuide: Sendable {
         for channel in channels {
             guard let key = GuideKey(channel: channel) else { continue }
             used.insert(key.epgID)
-            if schedules[key.epgID]?.isEmpty == false { withGuide += 1 }
+            if slots(for: key.epgID) != nil { withGuide += 1 }
         }
-        let matched = used.reduce(0) { $0 + (schedules[$1]?.count ?? 0) }
+        let matched = used.reduce(0) { $0 + (slots(for: $1)?.count ?? 0) }
         return Summary(channelsWithGuide: withGuide, channelsTotal: channels.count, days: days(from: now), unmatched: count - matched)
     }
 

@@ -31,9 +31,10 @@ func programme(_ channel: String, _ start: Date, _ stop: Date, _ title: String =
         #expect(index.current(for: key, at: guideTime(20, 30))?.channelID == "sport1.se")
         #expect(index.loadingState(for: padded) == .loaded)
 
-        let otherCase = GuideKey(sourceID: source, epgID: "Sport1.se")
-        #expect(index.current(for: otherCase, at: guideTime(20, 30)) == nil)
-        #expect(index.loadingState(for: otherCase) == .noData)
+        // An id that differs only by case matches once the exact id misses.
+        let otherCase = GuideKey(sourceID: source, epgID: "Sport1.SE")
+        #expect(index.current(for: otherCase, at: guideTime(20, 30))?.title == "match")
+        #expect(index.loadingState(for: otherCase) == .loaded)
 
         let noID = Channel(id: "b", name: "B", streamURL: URL(filePath: "/b"), sourceID: source)
         #expect(GuideKey(channel: noID) == nil)
