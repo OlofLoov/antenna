@@ -33,13 +33,14 @@ channels can use, and browsing a big group stays smooth on every platform.
   does not make the open group's list compare every row again, and the
   guide's name matching runs when the channels or the guide change, not on
   each download progress step.
-- An HLS address opens on Apple's player without the extra probe request;
-  the probe runs only to explain a failure.
 
 Out of scope:
 - Keeping channels and guides on disk across launches. It changes what is
   stored and how logins are stripped, and waits for an owner decision.
 - Keychain reads on the main thread, which another change handles.
+- Skipping the stream probe before an HLS zap. The probe now also decides
+  the hand-over of MPEG-TS at an `.m3u8` address and the decode check, and
+  the playback engine is being changed in other work; left to that work.
 - XMLTV parsing quirks (encodings, missing stop times).
 
 ## Capabilities
@@ -54,12 +55,11 @@ Out of scope:
   with a very large source.
 - `guide-on-iphone-ipad-and-mac`: a new requirement for the clock tick.
 - `tv-channel-overlay`: a new requirement for the minute tick in a large group.
-- `playback-engine`: Channel switching is fast gains an HLS scenario.
 
 ## Impact
 
 - AntennaCore: `GuideLimits`, `GuideDecoder`, `SourceGuide.Builder`,
   `GuideFetcher`, `GuideEngine` name matching.
 - Apps/Shared: `SeenChannelsStore`, `LiveModel`, `ShellModel`, `LogoCache`,
-  the Guide screens, `OverlayChannelList`, `AVPlayerEngine+Stream`.
+  the Guide screens, `OverlayChannelList`, `SourceRefresher`.
 - No data model, sync or dependency change. Depends on nothing open.
