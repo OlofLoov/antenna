@@ -1,5 +1,6 @@
 import AntennaCore
 import Foundation
+import Observation
 import Testing
 
 @testable import Antenna
@@ -109,6 +110,38 @@ import Testing
             live.reload([home.id])
             await live.settled()
             #expect(live.catalogue.count(of: .all) == 51, "a changed list still shows")
+        }
+
+        /// True when reading `rows` saw a change while `change` ran.
+        private func rowsChanged(_ live: LiveModel, during change: () -> Void) -> Bool {
+            let changed = Flag()
+            withObservationTracking {
+                _ = live.rows
+            } onChange: {
+                changed.set()
+            }
+            change()
+            return changed.value
+        }
+
+        final class Flag: @unchecked Sendable {
+            private(set) var value = false
+            func set() { value = true }
+        }
+
+        @Test("live-tv-on-iphone-ipad-mac/a-very-large-source-stays-responsive joining Recents leaves the open group's list alone")
+        func recentsLeaveTheList() async {
+            let sources = Sources()
+            sources.channels = (0..<50).map { channel("c\($0)") }
+            let live = model(sources)
+            live.sourcesChanged([home])
+            await live.settled()
+            let key = LastChannelKey(sourceID: home.id, channelID: "c3")
+            #expect(!rowsChanged(live) { live.recentsChanged([key]) }, "All channels did not change")
+            #expect(live.catalogue.rows(in: .recents).map(\.id) == ["c3"])
+            #expect(rowsChanged(live) { live.show(.recents) })
+            #expect(live.rows.map(\.id) == ["c3"])
+            #expect(!rowsChanged(live) { live.favoritesChanged([FavoriteSnapshot(channelID: "c1", sourceID: home.id, sortOrder: 0)]) })
         }
     }
 #endif

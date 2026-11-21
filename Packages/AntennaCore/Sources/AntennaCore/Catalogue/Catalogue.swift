@@ -27,6 +27,10 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// is the same for copies of one value. Screens compare it to tell
     /// whether a list can stay as drawn.
     public let revision: UUID
+    /// What each kind of row list was built from: the index and rules, the
+    /// favorites, the recents and the New group. A replace keeps the ones
+    /// it leaves alone.
+    private let sources: RowSources
 
     /// - Parameters:
     ///   - channels: every source's output of `Channel.tagged(_:sourceID:)`,
@@ -45,13 +49,14 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
         self.init(
             index: index, favorites: CatalogueFavorites(snapshots: favorites, index: index),
             recents: recents.isEmpty ? .empty : CatalogueRecents(entries: recents, index: index), fresh: .empty,
-            policy: Self.policy(index: index, rules: rules))
+            policy: Self.policy(index: index, rules: rules), sources: RowSources())
     }
 
     private init(
         index: CatalogueIndex, favorites: CatalogueFavorites<Token>, recents: CatalogueRecents, fresh: CatalogueRecents,
-        policy: CataloguePolicy?
+        policy: CataloguePolicy?, sources: RowSources
     ) {
+        self.sources = sources
         self.index = index
         self.favorites = favorites
         self.recents = recents
@@ -210,7 +215,7 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     public func replacingFavorites(_ favorites: [FavoriteSnapshot<Token>]) -> Catalogue {
         Catalogue(
             index: index, favorites: CatalogueFavorites(snapshots: favorites, index: index), recents: recents, fresh: fresh,
-            policy: policy)
+            policy: policy, sources: sources.with(favorites: UUID()))
     }
 
     /// This catalogue with `recents`, newest first, in place of the current
@@ -218,28 +223,62 @@ public struct Catalogue<Token: Hashable & Sendable>: Sendable {
     /// and the channels are not indexed again.
     public func replacingRecents(_ recents: [LastChannelKey]) -> Catalogue {
         Catalogue(
-            index: index, favorites: favorites, recents: CatalogueRecents(entries: recents, index: index), fresh: fresh, policy: policy)
+            index: index, favorites: favorites, recents: CatalogueRecents(entries: recents, index: index), fresh: fresh, policy: policy,
+            sources: sources.with(recents: UUID()))
     }
 
     /// This catalogue with `fresh` as its New group, built by
     /// `NewChannels.group(_:seen:now:)`. The channels are not indexed again
     /// (channel-catalogue/recents-replaced-without-rebuild is the model).
     func replacingNew(_ fresh: CatalogueRecents) -> Catalogue {
-        Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: policy)
+        Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: policy, sources: sources.with(new: UUID()))
     }
 
     /// This catalogue with `rules` in place of the current group rules.
     /// The channels are not indexed again.
     public func replacingRules(_ rules: GroupRules) -> Catalogue {
-        Catalogue(index: index, favorites: favorites, recents: recents, fresh: fresh, policy: Self.policy(index: index, rules: rules))
+        Catalogue(
+            index: index, favorites: favorites, recents: recents, fresh: fresh, policy: Self.policy(index: index, rules: rules),
+            sources: RowSources())
     }
 }
 
 extension Catalogue {
+    /// True when `group` has the same rows here as in `other` because
+    /// neither the channels, the rules nor the list `group` reads were
+    /// replaced between them. False says nothing; compare the rows then.
+    /// A screen uses it to leave a long list alone when Recents or
+    /// Favorites change (live-tv-on-iphone-ipad-mac/a-very-large-source-stays-responsive).
+    public func sameRows(in group: CatalogueGroup, as other: Catalogue) -> Bool {
+        guard sources.index == other.sources.index else { return false }
+        switch group {
+        case .favorites: return sources.favorites == other.sources.favorites
+        case .recents: return sources.recents == other.sources.recents
+        case .new: return sources.new == other.sources.new
+        case .all, .named, .ungrouped, .own: return true
+        }
+    }
+
     /// The policy for `rules` on `index`, nil when it would change nothing.
     /// Adult content counts here, so a catalogue built with default rules
     /// still hides it (adult-content/hidden-everywhere-by-default).
     static func policy(index: CatalogueIndex, rules: GroupRules) -> CataloguePolicy? {
         rules.isEmpty && !index.hasAdult ? nil : CataloguePolicy(index: index, rules: rules)
+    }
+}
+
+/// Ids for what a catalogue's row lists were built from.
+private struct RowSources: Sendable, Equatable {
+    var index = UUID()
+    var favorites = UUID()
+    var recents = UUID()
+    var new = UUID()
+
+    func with(favorites: UUID? = nil, recents: UUID? = nil, new: UUID? = nil) -> RowSources {
+        var copy = self
+        if let favorites { copy.favorites = favorites }
+        if let recents { copy.recents = recents }
+        if let new { copy.new = new }
+        return copy
     }
 }

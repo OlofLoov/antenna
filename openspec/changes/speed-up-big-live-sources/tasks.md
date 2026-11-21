@@ -19,11 +19,11 @@
 
 ## 5. Logos
 
-- [ ] 5.1 `LogoCache` lets a cancelled row return at once and cancels the download when no row waits, without marking the logo failed, with a test
+- [x] 5.1 `LogoCache` lets a cancelled row return at once and cancels the download when no row waits, without marking the logo failed, with a test
 
 ## 6. Recents and the Live list
 
-- [ ] 6.1 A change to Recents or Favorites leaves the open group's rows alone unless the group is Recents or Favorites, with a test
+- [x] 6.1 A change to Recents or Favorites leaves the open group's rows alone unless the group is Recents or Favorites, with a test
 
 ## 7. HLS zaps
 
