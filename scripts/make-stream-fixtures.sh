@@ -203,6 +203,12 @@ for kind in hdr10 hlg; do
     ff -i "$out/$kind.mp4" -c copy -f mpegts "$out/$kind.ts"
 done
 
+# HEVC in MP4 tagged hev1, ffmpeg's default, which Apple's player opens but
+# cannot decode.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx265 -preset ultrafast -tag:v hev1 -x265-params "log-level=error:bframes=0" -b:v 100k \
+    -c:a aac -b:a 48k -ac 2 -movflags +faststart "$out/hev1.mp4"
+
 # Surround sound: 5.1 Dolby Digital and Dolby Digital Plus under the same picture.
 # ffmpeg cannot encode Atmos; that is checked on a receiver.
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \

@@ -34,8 +34,8 @@ final class LogLines: Sendable {
     }
 
     @Test(
-        "playback-engine/streams-that-cannot-play-fail-with-a-clear-reason a web page, garbage or TS at an HLS address is unreadable",
-        arguments: [("page.mp4", "page.html"), ("clip.mp4", "garbage.bin"), ("live.m3u8", "channel.ts")])
+        "playback-engine/streams-that-cannot-play-fail-with-a-clear-reason a web page or garbage is unreadable",
+        arguments: [("page.mp4", "page.html"), ("clip.mp4", "garbage.bin")])
     func notVideo(path: String, fixture: String) async throws {
         let harness = try await PlayerHarness()
         let body = try Data(contentsOf: harness.server.root.appending(path: fixture))

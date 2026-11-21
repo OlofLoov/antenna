@@ -14,11 +14,11 @@ extension AVPlayerEngine {
         let probe = try await StreamProbe.run(url, session: session)
         guard generation == mine else { throw CancellationError() }
         let isHLSAddress = url.pathExtension.lowercased() == "m3u8"
-        // A web page, or raw video at an HLS address, is not a stream Apple's player can read.
+        // A web page is not a stream Apple's player can read.
         if probe.sniff == .html { throw PlaybackFailure.unreadable }
-        if probe.sniff == .mpegTS, isHLSAddress { throw PlaybackFailure.unreadable }
-        // Raw video, Matroska or AVI at a file address, such as an episode
-        // the panel lists as mp4: the demuxer reads it.
+        // Raw video, Matroska or AVI at a file or HLS address, such as an
+        // episode the panel lists as mp4 or a restreamer's .m3u8 link that
+        // sends MPEG-TS: the demuxer reads it.
         if probe.sniff.needsDemuxer { throw EngineHandoff.toDemuxer }
         // A file of known length whose server cannot skip: Apple's player
         // cannot read it. Endless radio has no length and plays.
@@ -49,6 +49,14 @@ extension AVPlayerEngine {
             try await Self.statusChange(of: item, from: item.status, within: .milliseconds(50))
             guard generation == mine else { throw CancellationError() }
         }
+        // A file whose picture or sound Apple's player cannot decode, such
+        // as HEVC tagged hev1 or MP2 sound in MP4, reaches ready and then
+        // plays black or silent. The demuxer decodes it. HLS stays here.
+        if probe.sniff != .hls, !isHLSAddress, await !Self.canDecode(item.asset) {
+            guard generation == mine else { throw CancellationError() }
+            throw EngineHandoff.toDemuxer
+        }
+        guard generation == mine else { throw CancellationError() }
         try await chooseTracks(for: item, options: options, generation: mine)
         let isLive = options.isLive ?? item.duration.isIndefinite
         let opened = Stream(url: url, options: options, isLive: isLive, canSeek: probe.sniff == .hls || probe.acceptsRanges)
@@ -59,6 +67,22 @@ extension AVPlayerEngine {
             guard generation == mine else { throw CancellationError() }
         }
         return opened
+    }
+
+    /// False when the asset's first video track, or every one of its sound
+    /// tracks, is one Apple's player cannot decode. A track that does not
+    /// load counts as decodable.
+    static func canDecode(_ asset: AVAsset) async -> Bool {
+        guard let tracks = try? await asset.load(.tracks) else { return true }
+        if let video = tracks.first(where: { $0.mediaType == .video }), (try? await video.load(.isDecodable)) == false {
+            return false
+        }
+        let sounds = tracks.filter { $0.mediaType == .audio }
+        guard !sounds.isEmpty else { return true }
+        for sound in sounds where (try? await sound.load(.isDecodable)) != false {
+            return true
+        }
+        return false
     }
 
     /// Returns once `item`'s status is no longer `seen`, or after `limit`.

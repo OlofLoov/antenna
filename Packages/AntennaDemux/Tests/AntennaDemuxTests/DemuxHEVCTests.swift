@@ -11,6 +11,22 @@ import VideoToolbox
 /// Matroska, and Annex B as raw broadcast streams carry it.
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(1))) struct DemuxHEVCTests {
+    @Test("playback-engine/every-common-stream-type-plays an MP4 whose HEVC is tagged hev1 plays on the FFmpeg path")
+    func hev1Plays() async throws {
+        let server = try FixtureServer()
+        let base = try await server.start()
+        let engine = DemuxEngine(sleep: { _ in }, log: { _ in })
+        try await engine.load(base.appending(path: "hev1.mp4"))
+        let presented = await current(engine.presentation())
+        let format = try #require(presented.flatMap { $0 })
+        #expect(format.video?.codec == "hevc")
+        #expect(format.audio?.codec == "aac")
+        await engine.play()
+        #expect(await eventually { engine.state == .playing })
+        await engine.stop()
+        await server.stop()
+    }
+
     @Test(
         "playback-engine/the-screen-learns-the-picture-and-sound-format HEVC reports its dynamic range on the FFmpeg path",
         arguments: [("hdr10.mp4", PresentationInfo.DynamicRange.hdr10), ("hlg.mp4", .hlg)])
