@@ -7,7 +7,7 @@ import SwiftData
 /// (first-run-onboarding/a-working-provider-is-saved-once). The reply feeds
 /// the loading checklist, so nothing is fetched twice.
 struct SourceConnector: Sendable {
-    var session: URLSession = .shared
+    var session: URLSession = .provider
     var credentials: any CredentialStoring = CredentialStore()
     /// Stalker portals are asked with no cookies and no cache.
     var portalSession: URLSession = SourceConnector.portalSession

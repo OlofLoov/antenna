@@ -10,7 +10,7 @@ extension EnvironmentValues {
 /// Turns a stored source into channels. Lives in the app layer because it
 /// needs the Keychain; the parsers themselves are in AntennaCore.
 struct SourceLoader: Sendable {
-    var session: URLSession = .shared
+    var session: URLSession = .provider
     var credentials: any CredentialStoring = CredentialStore()
     /// Where each load leaves its Xtream panel's time zone, for catch-up.
     var timeZones: XtreamTimeZones = SourceLoader.sharedTimeZones
