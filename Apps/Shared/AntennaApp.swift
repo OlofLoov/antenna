@@ -31,6 +31,10 @@ struct AntennaApp: App {
         /// Siri and Shortcuts actions read and act through this (app-intents capability).
         @State private var intents: AppIntentHost
     #endif
+    #if os(macOS)
+        /// The open windows, so File > New Window works only while none is.
+        @State private var windows = OpenWindows()
+    #endif
     /// Whether the app is unlocked, read before anything else (paywall-and-entitlement capability).
     @State private var unlock: Unlock
 
@@ -67,6 +71,9 @@ struct AntennaApp: App {
             _intents = State(initialValue: intents)
         #endif
     }
+
+    /// The one window group's id, which File > New Window opens.
+    static let windowID = "main"
 
     private static func reminderCenter(container: ModelContainer) -> ReminderCenter {
         #if DEBUG
@@ -123,7 +130,7 @@ struct AntennaApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: Self.windowID) {
             AppRootView(unlock: unlock) {
                 PlatformRoot()
             }
@@ -133,6 +140,13 @@ struct AntennaApp: App {
             .modifier(GroupLockTimers(locks: locks))
             .modifier(ReminderRuntime(center: reminders))
             .modifier(LoginDropSweep())
+            #if os(macOS)
+                // A file, link or Handoff that arrives goes to the open
+                // window instead of opening another
+                // (live-tv-on-iphone-ipad-mac/one-window-on-the-mac).
+                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
+                .modifier(CountedWindow(windows: windows))
+            #endif
             #if DEBUG && os(macOS)
                 .modifier(UITestingStoreShots.WindowSize())
             #endif
@@ -153,7 +167,12 @@ struct AntennaApp: App {
         .modelContainer(container)
         #if !os(tvOS)
             // keyboard-commands/shortcuts-are-listed-in-the-menus
-            .commands { AntennaCommands() }
+            .commands {
+                AntennaCommands()
+                #if os(macOS)
+                    OneWindowCommands(windows: windows)
+                #endif
+            }
         #endif
     }
 }

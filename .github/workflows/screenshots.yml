@@ -156,6 +156,14 @@ jobs:
           xcodebuild build-for-testing -project Antenna.xcodeproj -scheme AntennaMac \
             -destination "platform=macOS" -derivedDataPath dd-mac \
             CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= ANTENNA_PAID_TEAM=NO
+      - name: Mac keeps one window
+        if: success() || failure()
+        run: |
+          xcodebuild test-without-building -project Antenna.xcodeproj -scheme AntennaMac \
+            -destination "platform=macOS" \
+            -only-testing:AntennaMacJourneys/OneWindowTests \
+            -retry-tests-on-failure -test-iterations 2 \
+            -derivedDataPath dd-mac -resultBundlePath one-window-mac.xcresult
       - name: Fit the Mac store window on the screen
         if: success() || failure()
         run: |
