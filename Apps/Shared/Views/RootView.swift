@@ -241,28 +241,13 @@
                 // to the list (live-tv-on-iphone-ipad-mac/sideways-on-iphone-fills-the-screen).
                 .onChange(of: sidewaysLive, initial: true) { old, new in
                     if new.sideways, new.channel != nil {
-                        setFullScreenAfterRotation(true)
+                        live.setFullScreen(true)
                     } else if old.sideways, !new.sideways {
-                        setFullScreenAfterRotation(false)
+                        live.setFullScreen(false)
                     }
                 }
             #endif
         }
-
-        #if os(iOS)
-            /// Changes full screen once UIKit's rotation animation block has
-            /// closed, without animation. Inside the block, removing the list
-            /// and hiding the tab bar animated views on their way out; on
-            /// iOS 26 one of those animations sometimes never finished, and
-            /// the app never reported idle to UI tests again.
-            private func setFullScreenAfterRotation(_ on: Bool) {
-                Task { @MainActor in
-                    var transaction = Transaction()
-                    transaction.disablesAnimations = true
-                    withTransaction(transaction) { live.setFullScreen(on) }
-                }
-            }
-        #endif
 
         /// The selection, counting a tap on the tab already open
         /// (live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top).

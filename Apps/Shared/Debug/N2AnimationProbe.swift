@@ -29,7 +29,8 @@
                 let details = keys.map { key -> String in
                     guard let animation = layer.animation(forKey: key) else { return key }
                     let timing = "dur=\(animation.duration) rep=\(animation.repeatCount) speed=\(animation.speed)"
-                    return "\(key)[\(type(of: animation)) \(timing) begin=\(animation.beginTime)]"
+                    let delegate = animation.delegate.map { String(describing: type(of: $0)) } ?? "none"
+                    return "\(key)[\(type(of: animation)) \(timing) delegate=\(delegate)]"
                 }
                 let owner = layer.delegate.map { String(describing: type(of: $0)) } ?? String(describing: type(of: layer))
                 let state = "hidden=\(layer.isHidden) op=\(layer.opacity) speed=\(layer.speed)"
