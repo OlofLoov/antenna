@@ -45,11 +45,10 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { [series] _, kind in ShelfCatalogue(titles: kind == .series ? [series] : [], categories: ["Drama"]) },
             hasLogin: { _ in true },
-            episodes: { _, _ in
+            info: { _, _ in
                 loads.value += 1
-                return list
-            },
-            info: { _, _ in .series(SeriesInfo(episodes: list)) })
+                return .series(SeriesInfo(episodes: list))
+            })
         let library = ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
         library.sourcesChanged([SourceDescriptor(id: source, name: "Cabin", kind: .xtream, url: URL(fileURLWithPath: "/cabin"))])
         library.open()
@@ -251,7 +250,7 @@ import Testing
         #expect(model.pickedSeason == "season-2")
         #expect(model.lastPlayed == episode(2, 1).id)
         #expect(try await library.series.loadEpisodes(series).count == episodes.count, "the page's list is kept")
-        #expect(episodeLoads.value == 0, "no extra call for the episode list")
+        #expect(episodeLoads.value == 1, "the page's info call is the only one; the list comes from its answer")
     }
 
     @Test("up-next/still-watching an input starts the run again")

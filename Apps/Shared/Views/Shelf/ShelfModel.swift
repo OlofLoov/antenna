@@ -11,8 +11,6 @@ final class ShelfModel {
     struct Dependencies {
         var load: @MainActor (SourceDescriptor, ShelfTitle.Kind) async throws -> ShelfCatalogue
         var hasLogin: @MainActor (SourceDescriptor) -> Bool
-        /// A series' episodes in the client's order.
-        var episodes: @MainActor (SourceDescriptor, ShelfTitle) async throws -> [Episode]
         /// A title's info call, for the banner, the Apple TV preview and the
         /// title page.
         var info: @MainActor (SourceDescriptor, ShelfTitle) async throws -> TitleInfo
@@ -48,8 +46,15 @@ final class ShelfModel {
     private(set) var opened = false
     /// Failed sources whose banner the user dismissed.
     private(set) var dismissed: Set<UUID> = []
-    /// Series' episode lists by series id, once loaded.
+    /// Series' episode lists by series id, once loaded. Kept for the
+    /// `keptLimit` latest answers and for series `keepsEpisodes` names
+    /// (movies-and-series-browsing/browsing-stays-responsive).
     private(set) var episodes: [String: [Episode]] = [:]
+    /// True for a series whose episodes stay past `keptLimit`: one with
+    /// saved progress, which Continue watching and Up Next read.
+    @ObservationIgnored var keepsEpisodes: (String) -> Bool = { _ in false }
+    /// Series whose episode list failed to load, until one loads.
+    @ObservationIgnored private var episodesFailed: Set<String> = []
 
     @ObservationIgnored private let dependencies: Dependencies
     /// Hears every info answer, whichever screen asked, so the names in it
@@ -74,28 +79,19 @@ final class ShelfModel {
     @ObservationIgnored private var building: Task<Void, Never>?
     /// Loaded states that show with the index holding their titles.
     @ObservationIgnored private var pendingStates: [UUID: ShelfSourceState] = [:]
-    /// Grid lists in their order and the index they were sorted from.
-    @ObservationIgnored private var sortedLists: [SortedList: Sorted] = [:]
-    @ObservationIgnored private var sorting: [SortedList: (revision: Int, task: Task<[ShelfTitle], Never>)] = [:]
+    /// Grid lists in their order and the index they were sorted from,
+    /// kept by `ShelfModel+Grids.swift`.
+    @ObservationIgnored var sortedLists: [SortedList: SortedTitles] = [:]
+    @ObservationIgnored var sorting: [SortedList: (revision: Int, task: Task<[ShelfTitle], Never>)] = [:]
     /// Bumped when a list sorted away from the main actor is ready.
-    private(set) var sortedReady = 0
+    var sortedReady = 0
     /// How many lists were sorted away from the main actor. For tests.
-    @ObservationIgnored private(set) var sortedAway = 0
+    @ObservationIgnored var sortedAway = 0
 
     private struct IndexKey: Equatable {
         var sources: [UUID]
         var revision: Int
         var showsAdult: Bool
-    }
-
-    private struct SortedList: Hashable {
-        var genre: String?
-        var sort: ShelfSort
-    }
-
-    private struct Sorted {
-        var revision: Int
-        var titles: [ShelfTitle]
     }
 
     init(kind: ShelfTitle.Kind, _ dependencies: Dependencies) {
@@ -364,25 +360,17 @@ final class ShelfModel {
         let key = title.activityKey
         if kept.updateValue(answer, forKey: key) != nil { keptOrder.removeAll { $0 == key } }
         keptOrder.append(key)
-        while keptOrder.count > Self.keptLimit { kept[keptOrder.removeFirst()] = nil }
+        while keptOrder.count > Self.keptLimit {
+            let gone = keptOrder.removeFirst()
+            kept[gone] = nil
+            if episodes[gone.titleID] != nil, !keepsEpisodes(gone.titleID) { episodes[gone.titleID] = nil }
+        }
         details[title.id] = ShelfDetails(answer)
         hints.set(details[title.id]?.plot, for: title.id)
         heard(title, answer)
         asked.insert(title.id)
         answered.insert(title.id)
         if case .series(let series) = answer { episodes[title.id] = series.episodes }
-    }
-
-    // MARK: Episodes
-
-    /// A series' episodes, from memory once loaded. Throws when the list
-    /// fails to load, so the caller can offer Retry.
-    func loadEpisodes(_ series: ShelfTitle) async throws -> [Episode] {
-        if let known = episodes[series.id] { return known }
-        guard let source = descriptors[series.sourceID] else { throw ShelfLoader.LoadError.unknownTitle }
-        let list = try await dependencies.episodes(source, series)
-        episodes[series.id] = list
-        return list
     }
 
     /// The info call for a title page: the answer kept from the banner, the
@@ -409,11 +397,6 @@ final class ShelfModel {
     func hasSource(_ title: ShelfTitle) -> Bool {
         sources.contains { $0.id == title.sourceID }
     }
-
-    /// Loads a series' episodes for its Continue watching caption, ignoring failures.
-    func prefetchEpisodes(_ series: ShelfTitle) async {
-        _ = try? await loadEpisodes(series)
-    }
 }
 
 extension ShelfModel {
@@ -428,55 +411,32 @@ extension ShelfModel {
     }
 }
 
-// MARK: Grid lists
+// MARK: Episodes
 
 extension ShelfModel {
-    /// The section's titles, or one genre's, in `sort` order, or nil while
-    /// that order is worked out. Sorted once per index, so a grid's
-    /// redraws do not sort again. A list of more than `sortsInPlace`
-    /// titles is sorted away from the main actor by `sort(in:by:)`, and
-    /// until it is ready the order from before the titles last changed
-    /// shows (movies-and-series-browsing/browsing-stays-responsive).
-    func titles(in genre: String? = nil, sortedBy sort: ShelfSort) -> [ShelfTitle]? {
-        _ = sortedReady
-        if genre == nil, sort == .recentlyAdded { return index.newest }
-        let key = SortedList(genre: genre, sort: sort)
-        if let kept = sortedLists[key], kept.revision == indexRevision { return kept.titles }
-        let members = genre.map { Shelf.titles(in: $0, of: index.titles) } ?? index.titles
-        guard members.count > Self.sortsInPlace else {
-            let list = Shelf.sorted(members, by: sort)
-            sortedLists[key] = Sorted(revision: indexRevision, titles: list)
-            return list
+    /// A series' episodes, from memory once loaded, else from its info
+    /// call, shared with the banner, the preview and the page
+    /// (movies-and-series-browsing/title-details-are-asked-once-per-title). Throws when the list
+    /// fails to load, so the caller can offer Retry.
+    func loadEpisodes(_ series: ShelfTitle) async throws -> [Episode] {
+        if let known = episodes[series.id] { return known }
+        let answer: TitleInfo
+        do {
+            answer = try await fetch(series)
+        } catch {
+            episodesFailed.insert(series.id)
+            throw error
         }
-        return sortedLists[key]?.titles
+        episodesFailed.remove(series.id)
+        guard case .series(let info) = answer else { return [] }
+        return info.episodes
     }
 
-    /// Lists up to this long sort on the caller's actor, in a few milliseconds.
-    static let sortsInPlace = 2_000
-
-    /// Sorts the list `titles(in:sortedBy:)` has no order for yet, away
-    /// from the main actor. Callers asking for the same list share one sort.
-    func sort(in genre: String?, by sort: ShelfSort) async {
-        let key = SortedList(genre: genre, sort: sort)
-        let revision = indexRevision
-        guard sortedLists[key]?.revision != revision, !(genre == nil && sort == .recentlyAdded) else { return }
-        if let running = sorting[key], running.revision == revision {
-            await running.task.value
-            return
-        }
-        let all = index.titles
-        let task = Task { await Self.sorted(all, genre: genre, by: sort) }
-        sorting[key] = (revision, task)
-        let list = await task.value
-        guard revision == indexRevision else { return }
-        sorting[key] = nil
-        sortedLists[key] = Sorted(revision: revision, titles: list)
-        sortedReady += 1
-        sortedAway += 1
-    }
-
-    @concurrent
-    private static func sorted(_ titles: [ShelfTitle], genre: String?, by sort: ShelfSort) async -> [ShelfTitle] {
-        Shelf.sorted(genre.map { Shelf.titles(in: $0, of: titles) } ?? titles, by: sort)
+    /// Loads a series' episodes for its Continue watching caption, ignoring
+    /// failures. A series whose list failed is not asked again here, so its
+    /// card does not ask each time it scrolls back; Play and Retry still ask.
+    func prefetchEpisodes(_ series: ShelfTitle) async {
+        guard episodes[series.id] == nil, !episodesFailed.contains(series.id) else { return }
+        _ = try? await loadEpisodes(series)
     }
 }

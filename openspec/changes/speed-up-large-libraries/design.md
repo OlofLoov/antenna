@@ -142,6 +142,24 @@ Reads after a save:
 
 ### Memory and asks
 
+- `loadEpisodes` goes through `fetch`, the once-per-title path the banner,
+  the preview and the page share, and reads the episodes from the answer.
+  The separate `episodes` dependency is gone. A failed list is remembered,
+  and the Continue watching prefetch does not ask again for it; Play and
+  Retry still do.
+- Episode lists go with their info answer once it falls out of the 100
+  kept, unless `keepsEpisodes` says the series has saved progress.
+  `ShelfSync` points that at `ShelfActivity`'s set of series with
+  progress. `details` is not capped: it is text, a few hundred bytes per
+  title, and the banner and preview are promised one ask per launch.
+- The catalogue copies the review listed for Apple TV memory: the people
+  index no longer copies titles (slice 1). `ShelfModel.catalogues` stays.
+  Its arrays share their strings with the index, so the second copy is the
+  array of 176-byte values, about 18 MB per 100 000 titles when adult
+  titles are filtered or two sources are joined, and a rebuild after the
+  adult switch or a source change needs it. Moving `newest`, the rows and
+  the Search index to positions is a larger change left for later.
+
 ## Measurements
 
 Release build on this Mac (Apple silicon, other builds running), 100 000

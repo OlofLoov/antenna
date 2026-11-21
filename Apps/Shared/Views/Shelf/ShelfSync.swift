@@ -51,6 +51,9 @@ struct ShelfSync: ViewModifier {
             .environment(playback)
             .environment(activity)
             .task(id: profile) {
+                // Continue watching and Up Next read these series' episodes
+                // (movies-and-series-browsing/browsing-stays-responsive).
+                library.series.keepsEpisodes = { [activity] in activity.seriesWithProgress.contains($0) }
                 await activity.follow(ActivityStore(context: context, profile: profile))
             }
             .environment(\.posterLoader, Self.posters)

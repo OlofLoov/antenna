@@ -147,7 +147,6 @@
             let dependencies = ShelfModel.Dependencies(
                 load: { try await script.load($0, kind: $1) },
                 hasLogin: { script.hasLogin($0) },
-                episodes: { _, series in try await script.episodes(series) },
                 info: { _, title in try await script.info(title) })
             return ShelfLibrary(movies: ShelfModel(kind: .movie, dependencies), series: ShelfModel(kind: .series, dependencies))
         }

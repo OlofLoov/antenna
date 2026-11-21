@@ -20,7 +20,6 @@ import Testing
         let dependencies = ShelfModel.Dependencies(
             load: { _, _ in ShelfCatalogue(titles: titles, categories: (0..<20).map { "C\($0)" }) },
             hasLogin: { _ in true },
-            episodes: { _, _ in [] },
             info: { _, _ in .movie(VODInfo()) })
         let model = ShelfModel(kind: .movie, dependencies)
         model.sourcesChanged([SourceDescriptor(id: source, name: "Cabin", kind: .xtream, url: URL(fileURLWithPath: "/cabin"))])
