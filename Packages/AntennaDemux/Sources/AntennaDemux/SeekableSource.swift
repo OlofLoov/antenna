@@ -43,6 +43,10 @@ final class SeekableSource: DemuxBytes, @unchecked Sendable {
         current.peek(count)
     }
 
+    var contentType: String? {
+        current.contentType
+    }
+
     var failureReason: PlaybackFailure? {
         current.failureReason
     }

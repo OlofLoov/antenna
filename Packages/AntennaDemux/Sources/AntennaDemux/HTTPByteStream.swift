@@ -149,6 +149,13 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         return Data(buffer.prefix(count))
     }
 
+    /// The answer's Content-Type, once it came.
+    public var contentType: String? {
+        condition.lock()
+        defer { condition.unlock() }
+        return response?.value(forHTTPHeaderField: "Content-Type")
+    }
+
     /// Why the stream ended early, if it did.
     public var failureReason: PlaybackFailure? {
         condition.lock()
