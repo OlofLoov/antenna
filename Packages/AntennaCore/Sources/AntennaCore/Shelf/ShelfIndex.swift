@@ -28,17 +28,24 @@ public struct ShelfIndex: Sendable {
         var withheld: [ActivityKey: ShelfTitle] = [:]
         let titles = showsAdult ? loaded : AdultTitles.split(loaded, withheld: &withheld)
         let newest = ShelfTitle.newestFirst(titles)
-        var positions: [ActivityKey: Int] = [:]
-        positions.reserveCapacity(titles.count)
-        for (position, title) in titles.enumerated() where positions[title.activityKey] == nil {
-            positions[title.activityKey] = position
-        }
+        let positions = Self.positions(titles)
         self.titles = titles
         self.newest = newest
         self.positions = positions
         self.withheld = withheld
         rows = Shelf.rows(titles, newest: newest, categoryOrder: Shelf.categoryOrder(catalogues.map(\.categories)), now: now)
         banner = Array(newest.prefix(Shelf.bannerCount))
+    }
+
+    /// Only the lookups of `titles`, for an index that shows no rows.
+    init(lookingUp titles: [ShelfTitle]) {
+        let positions = Self.positions(titles)
+        self.titles = titles
+        self.positions = positions
+        newest = []
+        rows = []
+        banner = []
+        withheld = [:]
     }
 
     /// Builds the index away from the caller's actor, so a main-actor
@@ -51,6 +58,20 @@ public struct ShelfIndex: Sendable {
     /// The first loaded title with this key, or nil.
     public func title(_ key: ActivityKey) -> ShelfTitle? {
         positions[key].map { titles[$0] }
+    }
+
+    private static func positions(_ titles: [ShelfTitle]) -> [ActivityKey: Int] {
+        var positions: [ActivityKey: Int] = [:]
+        positions.reserveCapacity(titles.count)
+        for (position, title) in titles.enumerated() where positions[title.activityKey] == nil {
+            positions[title.activityKey] = position
+        }
+        return positions
+    }
+
+    /// Where the first loaded title with this key sits in `titles`, or nil.
+    func position(_ key: ActivityKey) -> Int? {
+        positions[key]
     }
 
     /// The adult title with this key that the index leaves out, or nil.

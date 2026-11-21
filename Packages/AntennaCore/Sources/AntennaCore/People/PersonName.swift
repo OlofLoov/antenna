@@ -36,16 +36,64 @@ public struct PersonName: Sendable, Hashable, Codable {
     /// dots and line breaks. "Last, First" is not put back together: in a
     /// comma list it cannot be told from two people.
     public static func split(_ field: String?) -> [PersonName] {
-        guard var field else { return [] }
+        var cache = Cache()
+        return split(field, cache: &cache)
+    }
+
+    /// The cleaned names of field parts already seen, so a name that many
+    /// titles carry is cleaned once per index build.
+    struct Cache {
+        var names: [String: PersonName?] = [:]
+    }
+
+    /// `split(_:)`, reading and filling `cache`. Reads the field's bytes:
+    /// every separator but the middle dot is one ASCII byte.
+    static func split(_ field: String?, cache: inout Cache) -> [PersonName] {
+        guard var field, !field.isEmpty else { return [] }
         // "N/A" holds a slash, so it goes before the split.
-        if field.contains("/") {
+        if field.utf8.contains(UInt8(ascii: "/")) {
             field = field.replacingOccurrences(of: #"(?i)(?<!\p{L})n/a(?!\p{L})"#, with: ",", options: .regularExpression)
         }
-        var seen: Set<String> = []
-        return field.split(whereSeparator: { separators.contains($0) }).compactMap { part in
-            guard let name = PersonName(String(part)), seen.insert(name.key).inserted else { return nil }
-            return name
+        field.makeContiguousUTF8()
+        var names: [PersonName] = []
+        func add(_ part: Slice<UnsafeBufferPointer<UInt8>>) {
+            let trimmed = part.drop { $0 == UInt8(ascii: " ") }
+            guard !trimmed.isEmpty else { return }
+            let raw = String(decoding: UnsafeBufferPointer(rebasing: trimmed), as: UTF8.self)
+            let name: PersonName?
+            if let known = cache.names[raw] {
+                name = known
+            } else {
+                name = PersonName(raw)
+                cache.names[raw] = name
+            }
+            guard let name, !names.contains(where: { $0.key == name.key }) else { return }
+            names.append(name)
         }
+        _ = field.utf8.withContiguousStorageIfAvailable { bytes in
+            var start = 0
+            var index = 0
+            while index < bytes.count {
+                let width = separatorWidth(bytes, at: index)
+                guard width > 0 else {
+                    index += 1
+                    continue
+                }
+                add(bytes[start..<index])
+                index += width
+                start = index
+            }
+            add(bytes[start..<bytes.count])
+        }
+        return names
+    }
+
+    /// The bytes of the separator at `index`, 0 when none starts there.
+    private static func separatorWidth(_ bytes: UnsafeBufferPointer<UInt8>, at index: Int) -> Int {
+        let byte = bytes[index]
+        if separatorBytes.contains(byte) { return 1 }
+        // The middle dot, U+00B7.
+        return byte == 0xC2 && index + 1 < bytes.count && bytes[index + 1] == 0xB7 ? 2 : 0
     }
 
     /// The matching key of `name`.
@@ -61,7 +109,8 @@ public struct PersonName: Sendable, Hashable, Codable {
     /// Longer than this is a description pasted into the field, not a name.
     static let longest = 60
     private static let posix = Locale(identifier: "en_US_POSIX")
-    private static let separators: Set<Character> = [",", "/", "|", ";", "·", "\n", "\r", "\r\n"]
+    /// Commas, slashes, vertical bars, semicolons and line breaks.
+    private static let separatorBytes = Set(",/|;\n\r".utf8)
     private static let dropped: Set<Unicode.Scalar> = [".", "'", "\u{2019}", "`"]
     private static let placeholders: Set<String> = [
         "n/a", "na", "n a", "none", "null", "nil", "unknown", "tba", "tbd", "various", "various artists", "not available",

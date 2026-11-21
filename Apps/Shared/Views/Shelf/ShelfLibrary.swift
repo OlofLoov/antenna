@@ -37,6 +37,9 @@ final class ShelfLibrary {
 
     @ObservationIgnored private let peopleStore: PeopleStore?
     @ObservationIgnored private var peopleBuilt: (key: [Int], index: PeopleIndex)?
+    @ObservationIgnored private var peopleRows: (key: [Int], task: Task<PeopleIndex.Rows?, Never>)?
+    /// How many times the row names were read. For tests.
+    @ObservationIgnored private(set) var rowBuilds = 0
     @ObservationIgnored private var saving: Task<Void, Never>?
     @ObservationIgnored private var loadingPeople: Task<Void, Never>?
 
@@ -159,13 +162,33 @@ final class ShelfLibrary {
     }
 
     /// Everyone the loaded titles name, built off the main actor when the
-    /// titles or the learned names changed since the last build.
+    /// titles or the learned names changed since the last build. The row
+    /// names are read once per change of titles and shared by every caller;
+    /// a change of titles cancels a build still running for the old ones,
+    /// and a new info answer only puts the learned names on top again.
     func people() async -> PeopleIndex {
         let key = peopleRevision
         if let built = peopleBuilt, built.key == key { return built.index }
-        let index = await PeopleIndex.build(titles: movies.titles + series.titles, learned: learned)
+        // A build cancelled because the titles changed hands over to the next one.
+        var rows = await rowNames().value
+        while rows == nil, !Task.isCancelled { rows = await rowNames().value }
+        guard let rows else { return peopleBuilt?.index ?? .empty }
+        let index = await PeopleIndex.build(rows: rows, learned: learned)
         if key == peopleRevision { peopleBuilt = (key, index) }
         return index
+    }
+
+    /// The build of the current titles' row names, started when the titles
+    /// changed since the last one.
+    private func rowNames() -> Task<PeopleIndex.Rows?, Never> {
+        let key = [movies.indexRevision, series.indexRevision]
+        if let names = peopleRows, names.key == key { return names.task }
+        peopleRows?.task.cancel()
+        let libraries = [movies.index, series.index]
+        let task = Task { await PeopleIndex.Rows.build(libraries) }
+        peopleRows = (key, task)
+        rowBuilds += 1
+        return task
     }
 
     /// Waits for the names kept on the device to load. For tests.
