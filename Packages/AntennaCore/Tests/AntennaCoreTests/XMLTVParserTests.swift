@@ -107,8 +107,8 @@ import Testing
         arguments: [
             #"channel="a" start="20261103210000" stop="20261103200000""#,
             #"channel="a" start="20261103200000" stop="20261103200000""#,
+            #"channel="a" start="20261103200000" stop="2026XX03210000""#,
             #"channel="a" stop="20261103210000""#,
-            #"channel="a" start="20261103200000""#,
             #"start="20261103200000" stop="20261103210000""#,
             #"channel="a" start="2026XX03200000" stop="20261103210000""#,
         ])

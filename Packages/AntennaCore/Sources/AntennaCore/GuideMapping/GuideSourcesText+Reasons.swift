@@ -117,7 +117,7 @@ extension GuideSourcesText {
                 title: Line(words("Guide id “\(id)” is not in the guide")),
                 body: [words("“\(guide)” does not list “\(id)”. Pick an entry below.")])
         case .noProgrammes(let id):
-            let lister = finished.first { $0.guide.names[id] != nil || $0.guide.schedules[id] != nil }
+            let lister = finished.first { $0.guide.lists(id) }
             let guide = lister.map { context.guideName($0.reference) } ?? words("The guide")
             return Card(
                 title: Line(words("The guide lists “\(id)” but has no programmes for it")),
@@ -141,8 +141,8 @@ extension GuideSourcesText {
                     )
                 ])
         case .hasGuide(let id):
-            let layer = finished.first { $0.guide.schedules[id]?.isEmpty == false }
-            let name = layer?.guide.names[id] ?? context.channel.name
+            let layer = finished.first { $0.guide.slots(for: id) != nil }
+            let name = layer?.guide.name(for: id) ?? context.channel.name
             let days = layer.map { setup.days($0.guide.days(from: context.now)) } ?? setup.days(0)
             let how =
                 switch context.index.match(for: context.channel)?.origin {
@@ -158,7 +158,7 @@ extension GuideSourcesText {
 
     private func winner(_ id: String, _ context: CardContext) -> String {
         let layers = context.index.sources[context.channel.sourceID ?? UUID()]?.layers ?? []
-        return layers.first { $0.guide.schedules[id]?.isEmpty == false }.map { context.guideName($0.reference) } ?? words("The guide")
+        return layers.first { $0.guide.slots(for: id) != nil }.map { context.guideName($0.reference) } ?? words("The guide")
     }
 
     /// "1 of 3 guides could not be downloaded." and "1 guide is still downloading."

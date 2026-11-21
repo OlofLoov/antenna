@@ -12,8 +12,8 @@
 
 ## 3. Guide matching
 
-- [ ] 3.1 `XMLTVParser` keeps stopless programmes, ending each at the next start on its channel or after two hours, with a core test
-- [ ] 3.2 `SourceGuide.slots(for:)` and `GuideIndex.located` retry a missed id ignoring case, exact matches first across layers, with a core test
+- [x] 3.1 `XMLTVParser` keeps stopless programmes, ending each at the next start on its channel or after two hours, with a core test
+- [x] 3.2 `SourceGuide.slots(for:)` and `GuideIndex.located` retry a missed id ignoring case, exact matches first across layers, with a core test
 
 ## 4. M3U attributes
 

@@ -155,10 +155,18 @@ public struct GuideIndex: Sendable {
         var layer: Int
     }
 
+    /// Every layer is tried with the exact id before any is tried ignoring
+    /// letter case, so an exact match in a lower guide wins
+    /// (guide-data/programmes-land-on-the-right-channels).
     func located(_ key: GuideKey) -> Located? {
         guard let layers = sources[key.sourceID]?.layers else { return nil }
         for (position, layer) in layers.enumerated() {
             if let slots = layer.guide.schedules[key.epgID], !slots.isEmpty {
+                return Located(guide: layer.guide, slots: slots, layer: position)
+            }
+        }
+        for (position, layer) in layers.enumerated() {
+            if let slots = layer.guide.foldedSlots(for: key.epgID) {
                 return Located(guide: layer.guide, slots: slots, layer: position)
             }
         }

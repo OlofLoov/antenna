@@ -48,7 +48,7 @@ public enum GuideDiagnosis {
         if match?.origin == .user, slots == nil { return .matchNotFound(id: key.epgID) }
         guard let slots else {
             let layers = index.sources[key.sourceID]?.layers ?? []
-            let listed = layers.contains { $0.guide.names[key.epgID] != nil || $0.guide.schedules[key.epgID] != nil }
+            let listed = layers.contains { $0.guide.lists(key.epgID) }
             return listed ? .noProgrammes(id: key.epgID) : .idNotFound(id: key.epgID)
         }
         guard let last = slots.last, last.stop > now else { return .guideEnded(id: key.epgID) }
@@ -102,7 +102,7 @@ extension GuideIndex {
         guard let layer = sources[sourceID]?.layers.first(where: { $0.reference == reference }) else { return nil }
         var count = 0
         for channel in channels {
-            guard let key = key(for: channel), let last = layer.guide.schedules[key.epgID]?.last, last.stop > now else { continue }
+            guard let key = key(for: channel), let last = layer.guide.slots(for: key.epgID)?.last, last.stop > now else { continue }
             count += 1
         }
         return (count, layer.guide.days(from: now))

@@ -22,7 +22,7 @@ extension GuideIndex {
         var days = 0
         for layer in entry.layers {
             total += layer.guide.count
-            matched += used.reduce(0) { $0 + (layer.guide.schedules[$1]?.count ?? 0) }
+            matched += used.reduce(0) { $0 + (layer.guide.slots(for: $1)?.count ?? 0) }
             days = max(days, layer.guide.days(from: now))
         }
         return SourceGuide.Summary(channelsWithGuide: withGuide, channelsTotal: channels.count, days: days, unmatched: total - matched)

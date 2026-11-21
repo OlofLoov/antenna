@@ -15,6 +15,10 @@ public struct XMLTVParser: Sendable {
 
     public init() {}
 
+    /// How long a programme without a `stop` lasts when no later programme
+    /// of its channel follows it (xmltv-guide-parsing/programmes-without-a-stop).
+    public static let stoplessLength: TimeInterval = 2 * 60 * 60
+
     /// Parses a whole XMLTV document. A bare `&` and common HTML named
     /// entities such as `&nbsp;` are read as text. Any other well-formedness
     /// error throws `XMLTVError.malformed` and returns nothing.
@@ -26,6 +30,7 @@ public struct XMLTVParser: Sendable {
         guard parser.parse() else {
             throw .malformed(line: parser.lineNumber, column: parser.columnNumber)
         }
+        delegate.finish()
         return Result(channelNames: delegate.channelNames, programmes: delegate.programmes)
     }
 
@@ -46,7 +51,9 @@ public struct XMLTVParser: Sendable {
                 delegate.each = nil
                 parser.delegate = nil
             }
-            return parser.parse()
+            guard parser.parse() else { return false }
+            delegate.finish()
+            return true
         }
         guard succeeded else {
             throw .malformed(line: parser.lineNumber, column: parser.columnNumber)
@@ -131,6 +138,11 @@ public struct XMLTVParser: Sendable {
         private var progChannel: String?
         private var progStart: Date?
         private var progStop: Date?
+        private var progHasStop = false
+        /// Per channel id as written, the programme without a `stop` that
+        /// waits for the next start on its channel: the programme itself when
+        /// handed to `each`, else its index in `programmes`.
+        private var waiting: [String: (programme: Programme, index: Int?)] = [:]
         private var title = ""
         private var subtitle = ""
         private var desc = ""
@@ -189,6 +201,7 @@ public struct XMLTVParser: Sendable {
                 progChannel = attributes["channel"]
                 progStart = Self.date(attributes["start"])
                 progStop = Self.date(attributes["stop"])
+                progHasStop = attributes["stop"] != nil
                 title = ""; subtitle = ""; desc = ""; category = ""; icon = nil
             case "icon":
                 if progChannel != nil, let src = attributes["src"] { icon = URL(string: src) }
@@ -222,20 +235,52 @@ public struct XMLTVParser: Sendable {
                 inChannel = false
                 currentChannelID = nil
             case "programme":
-                if let ch = progChannel, let start = progStart, let stop = progStop, stop > start {
-                    let programme = Programme(
-                        channelID: ch, start: start, stop: stop, title: title,
-                        subtitle: subtitle.isEmpty ? nil : subtitle,
-                        summary: desc.isEmpty ? nil : desc,
-                        category: category.isEmpty ? nil : category,
-                        iconURL: icon
-                    )
-                    if let each { each(programme) } else { programmes.append(programme) }
+                if let ch = progChannel, let start = progStart {
+                    let stop = progHasStop ? progStop : start.addingTimeInterval(XMLTVParser.stoplessLength)
+                    if let stop, stop > start {
+                        let programme = Programme(
+                            channelID: ch, start: start, stop: stop, title: title,
+                            subtitle: subtitle.isEmpty ? nil : subtitle,
+                            summary: desc.isEmpty ? nil : desc,
+                            category: category.isEmpty ? nil : category,
+                            iconURL: icon
+                        )
+                        settle(ch, nextStart: start)
+                        add(programme, waits: !progHasStop)
+                    }
                 }
                 progChannel = nil
             default:
                 break
             }
+        }
+
+        /// Hands `programme` on, or holds it as its channel's waiting one.
+        /// Without `each`, a waiting programme is stored at once with the
+        /// fixed length and ended later, so `programmes` keeps document order.
+        private func add(_ programme: Programme, waits: Bool) {
+            if let each {
+                if waits { waiting[programme.channelID] = (programme, nil) } else { each(programme) }
+                return
+            }
+            if waits { waiting[programme.channelID] = (programme, programmes.count) }
+            programmes.append(programme)
+        }
+
+        /// Ends the channel's waiting programme at `nextStart` when that is
+        /// later than its start; otherwise it keeps the fixed length.
+        private func settle(_ channel: String, nextStart: Date) {
+            guard let (programme, index) = waiting.removeValue(forKey: channel) else { return }
+            var settled = programme
+            if nextStart > programme.start { settled.stop = nextStart }
+            if let index { programmes[index] = settled } else { each?(settled) }
+        }
+
+        /// Hands on every programme still waiting, with the fixed length.
+        func finish() {
+            let left = waiting
+            waiting = [:]
+            if let each { for (programme, _) in left.values { each(programme) } }
         }
     }
 }
