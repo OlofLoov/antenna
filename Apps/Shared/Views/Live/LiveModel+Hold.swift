@@ -31,11 +31,11 @@ extension LiveModel {
         hold.cancel()
     }
 
-    /// Movies, Series and Search hold the channel; Live and the Guide end
-    /// the hold; Settings leaves it as it is.
+    /// Movies, Series, Search and Settings hold the channel; Live and the
+    /// Guide end the hold.
     func tabOpened(_ tab: LiveSession.Tab) async {
         switch tab {
-        case .movies, .series, .search:
+        case .movies, .series, .search, .settings:
             guard !behindContent else { return }
             behindContent = true
             await holdBehindContent()
@@ -43,9 +43,16 @@ extension LiveModel {
             guard behindContent else { return }
             behindContent = false
             await endHold()
-        case .settings:
-            break
         }
+    }
+
+    /// The Settings sheet over `tab` opened or closed. Open, it holds the
+    /// channel as the Settings section does; closed, `tab` opens again, so
+    /// over Live or the Guide the channel plays on and over Movies, Series
+    /// or Search it stays held (live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search).
+    /// The tab the next launch opens on stays `tab`.
+    func settingsSheet(shown: Bool, over tab: LiveSession.Tab) {
+        queue { await $0.tabOpened(shown ? .settings : tab) }
     }
 
     /// The Picture in Picture window ended. Brought back into the app

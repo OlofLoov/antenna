@@ -101,16 +101,88 @@ import Testing
     }
 
     @Test(
-        "live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search the Guide and Settings leave the channel playing"
+        "live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search the Guide leaves the channel playing"
     )
-    func guideAndSettingsPlayOn() async {
+    func guidePlaysOn() async {
         await playing()
         await open(.guide)
-        await open(.settings)
         await open(.live)
         await clock.advance(by: .seconds(60))
         #expect(engine.pauses == 0)
         #expect(engine.state == .playing)
+    }
+
+    // The owner heard Live behind Settings once Settings became a sheet; these keep it quiet.
+    @Test(
+        "live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search the Settings section pauses, Live plays on"
+    )
+    func settingsSectionPauses() async {
+        await playing()
+        await open(.settings)
+        #expect(engine.state == .paused, "no sound behind Settings")
+        #expect(engine.pauses == 1)
+        await open(.live)
+        #expect(await eventually { engine.state == .playing })
+        #expect(engine.loaded.count == 1, "playing on does not load the channel again")
+    }
+
+    /// Opens or closes the Settings sheet over `tab` and waits for the change to finish.
+    private func sheet(_ shown: Bool, over tab: LiveSession.Tab) async {
+        live.settingsSheet(shown: shown, over: tab)
+        await live.tabChange?.value
+    }
+
+    @Test("live-tv-on-iphone-ipad-mac/settings-from-the-profile-button the sheet over Live pauses the channel and Close plays it on")
+    func settingsSheetOverLive() async {
+        await playing()
+        await sheet(true, over: .live)
+        #expect(engine.state == .paused, "no sound behind the sheet")
+        await clock.advance(by: .seconds(10))
+        await sheet(false, over: .live)
+        #expect(await eventually { engine.state == .playing })
+        #expect(engine.loaded.count == 1)
+    }
+
+    @Test("live-tv-on-iphone-ipad-mac/settings-from-the-profile-button 30 seconds behind the sheet stop the stream, Close tunes it again")
+    func settingsSheetStops() async {
+        await playing()
+        await sheet(true, over: .guide)
+        await clock.advance(by: .seconds(30))
+        #expect(await eventually { engine.state == .idle }, "the provider's connection is free")
+        await sheet(false, over: .guide)
+        #expect(await eventually { engine.loaded.count == 2 })
+        #expect(await eventually { engine.state == .playing })
+    }
+
+    @Test("live-tv-on-iphone-ipad-mac/settings-from-the-profile-button the sheet over Movies leaves the channel paused after Close")
+    func settingsSheetOverMovies() async {
+        await playing()
+        await open(.movies)
+        await sheet(true, over: .movies)
+        await sheet(false, over: .movies)
+        #expect(engine.pauses == 1)
+        #expect(engine.state == .paused, "Movies still holds it")
+        await clock.advance(by: .seconds(30))
+        #expect(await eventually { engine.state == .idle })
+    }
+
+    @Test("live-tv-on-iphone-ipad-mac/settings-from-the-profile-button Picture in Picture keeps playing behind Settings")
+    func settingsSheetKeepsPictureInPicture() async {
+        await playing()
+        pictureInPicture.send(true)
+        #expect(await eventually { live.player.pictureInPictureActive })
+        await sheet(true, over: .live)
+        await clock.advance(by: .seconds(30))
+        #expect(engine.pauses == 0)
+        #expect(engine.state == .playing)
+    }
+
+    @Test("live-tv-on-iphone-ipad-mac/settings-from-the-profile-button the sheet leaves the tab the next launch opens on")
+    func settingsSheetKeepsTheTab() async {
+        await playing()
+        await open(.guide)
+        await sheet(true, over: .guide)
+        #expect(live.restore.tab == .guide)
     }
 
     @Test(

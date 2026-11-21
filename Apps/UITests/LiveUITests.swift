@@ -145,6 +145,21 @@ final class LiveUITests: XCTestCase {
         XCTAssertTrue(app.row(0).isSelected)
     }
 
+    // live-tv-on-iphone-ipad-mac/settings-from-the-profile-button
+    // The owner heard Live's sound behind the Settings sheet.
+    func testSettingsPausesTheChannelAndClosePlaysItOn() throws {
+        let app = try launch()
+        app.row(0).tap()
+        app.waitForEngine("playing loads=1")
+
+        app.openSettings()
+        app.waitForEngine("paused loads=1")
+
+        app.closeSettings()
+        app.waitForEngine("playing loads=1")
+        XCTAssertEqual(loaded, ["news-one.ts"], "Close plays the channel on without loading it again")
+    }
+
     // live-tv-on-iphone-ipad-mac/watch-without-leaving-the-list, picking the playing channel
     func testPickingThePlayingChannelDoesNotRestartIt() throws {
         let app = try launch()

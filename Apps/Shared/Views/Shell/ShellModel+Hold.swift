@@ -2,13 +2,13 @@
     import AntennaCore
     import Foundation
 
-    /// The pause, then stop, behind Movies, Series and Search
+    /// The pause, then stop, behind Movies, Series, Search and Settings
     /// (tvos-shell/the-video-pauses-behind-movies-series-and-search), run by
     /// the `LiveHold` iPhone, iPad and Mac share.
     extension ShellModel {
         /// Pauses a channel that plays, loads or reconnects, at once, and
-        /// stops it 30 seconds later while Movies, Series, Search or a
-        /// Settings opened from them is still open.
+        /// stops it 30 seconds later while Movies, Series, Search or
+        /// Settings is still open.
         func holdBehindContent() async {
             await hold.begin { [weak self] in self?.behindContent == true }
         }
@@ -22,7 +22,7 @@
             return true
         }
 
-        /// A load that finished while Movies, Series or Search is open stays
+        /// A load that finished while Movies, Series, Search or Settings is open stays
         /// paused, as if it had been playing when the tab opened.
         func holdLoadedBehindContent() {
             guard behindContent else { return }

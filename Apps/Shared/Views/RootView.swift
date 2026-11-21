@@ -200,7 +200,20 @@
                     .environment(\.closeSettings, ShowSettingsAction { settingsShown = false })
                     // The banner shows over Settings too (programme-reminders/a-banner-while-antenna-is-open).
                     .reminderBanner(live: live, watch: { watch($0) }, showLive: showLive)
+                    .overlay(alignment: .bottomLeading) {
+                        #if DEBUG
+                            // The channel behind the sheet, for the UI tests.
+                            UITestingLive.Probe(engine: live.engine)
+                                .frame(width: 60, height: 30)
+                                .allowsHitTesting(false)
+                        #endif
+                    }
             }
+            // No channel plays behind Settings; closing it goes back to the tab as it was
+            // (live-tv-on-iphone-ipad-mac/settings-from-the-profile-button).
+            .onChange(of: settingsShown) { _, shown in live.settingsSheet(shown: shown, over: selection.session) }
+            // A narrow iPad window that widens drops the sheet with the tab bar.
+            .onDisappear { if settingsShown { live.settingsSheet(shown: false, over: selection.session) } }
             // Movies or Series goes when no source offers it.
             .onChange(of: offer) { _, offer in
                 if selection == .movies, !offer.movies { selection = .live }

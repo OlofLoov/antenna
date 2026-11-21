@@ -1,8 +1,8 @@
 import AntennaCore
 import Foundation
 
-/// The pause, then stop, of a channel behind Movies, Series and Search on
-/// every platform (tvos-shell/the-video-pauses-behind-movies-series-and-search,
+/// The pause, then stop, of a channel behind Movies, Series, Search and
+/// Settings on every platform (tvos-shell/the-video-pauses-behind-movies-series-and-search,
 /// live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search).
 /// The screen that owns the engine says when one of those tabs opens, when
 /// a load lands and when Live or the Guide opens again.

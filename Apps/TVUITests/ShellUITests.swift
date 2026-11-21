@@ -240,6 +240,8 @@ extension ShellUITests {
         moveAlongTheBar(.right, to: "shell.settings")
         press(.select)
         XCTAssertTrue(element("settings.addSource").waitForExistence(timeout: 10))
+        // No channel plays while Settings shows.
+        expectEngine("paused loads=1 file=a1.ts")
         let title = element("settings.title")
         XCTAssertTrue(title.exists, "no Settings title")
         for bar in ["shell.tab.live", "shell.settings", "shell.clock"] where element(bar).exists {
@@ -251,6 +253,17 @@ extension ShellUITests {
         XCTAssertTrue(footer.waitForExistence(timeout: 2), "no iCloud note beside the Sources rows")
         press(.menu)
         expectFocus("shell.settings")
+    }
+
+    // tvos-shell/open-settings
+    // The owner heard the channel behind Settings; it pauses there and Live plays it on.
+    func testSettingsPausesTheChannelAndLivePlaysItOn() {
+        launchPlaying()
+        press(.menu)
+        expectFocus("shell.tab.live")
+        moveAlongTheBar(.right, to: "shell.settings")
+        expectEngine("paused loads=1 file=a1.ts")
+        moveAlongTheBar(.left, to: "shell.tab.live")
         expectEngine("playing loads=1 file=a1.ts")
     }
 }

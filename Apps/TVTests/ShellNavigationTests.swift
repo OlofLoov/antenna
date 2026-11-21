@@ -152,37 +152,51 @@ import Testing
         #expect(!model.dimmed, "Movies hides the picture, so there is nothing to dim")
     }
 
-    @Test("tvos-shell/open-settings Settings is the last tab and leaves the video alone")
+    // No channel plays while Settings shows, as the owner asked; Live plays it on.
+    @Test("tvos-shell/open-settings Settings is the last tab and pauses the channel until Live")
     func settingsTab() async {
         await playing()
         #expect(model.tabs.last == .settings)
-        let plays = engine.plays
         _ = await model.select(.settings)
         #expect(model.tab == .settings)
-        #expect(engine.pauses == 0)
-        #expect(engine.state == .playing)
+        #expect(engine.pauses == 1)
+        #expect(engine.state == .paused, "no sound behind Settings")
+        #expect(model.heldByShell == .paused)
 
         _ = await model.select(.live)
-        #expect(engine.plays == plays)
-        #expect(engine.loaded.count == 1)
+        #expect(engine.state == .playing)
+        #expect(engine.loaded.count == 1, "playing on does not load the channel again")
     }
 
     // The system tab bar opens every tab the highlight passes, so reaching Settings
-    // from Live goes through Movies, Series and Search. Settings sits over the
-    // picture and ends their pause.
-    @Test("tvos-shell/open-settings Settings opened from Movies resumes the channel without a reload")
-    func settingsEndsTheHold() async {
+    // from Live goes through Movies, Series and Search. Settings keeps their pause.
+    @Test("tvos-shell/open-settings Settings opened from Movies keeps the channel paused")
+    func settingsKeepsTheHold() async {
         await playing()
         _ = await model.select(.movies)
         #expect(engine.state == .paused)
         _ = await model.select(.settings)
         #expect(engine.pauses == 1)
-        #expect(engine.state == .playing, "Settings plays the channel behind it")
-        #expect(model.heldByShell == nil)
+        #expect(engine.state == .paused, "Settings plays nothing")
+        #expect(model.heldByShell == .paused)
 
         _ = await model.select(.live)
         #expect(engine.state == .playing)
         #expect(engine.loaded.count == 1)
+    }
+
+    @Test("tvos-shell/open-settings 30 seconds on Settings stop the stream and Live tunes it again")
+    func settingsStops() async {
+        await playing()
+        _ = await model.select(.settings)
+        await wait { clock.requested.last == .seconds(30) }
+        clock.advance(by: .seconds(30))
+        await wait { engine.stops == 1 }
+        #expect(engine.state == .idle, "the provider's connection is free")
+
+        _ = await model.select(.live)
+        await wait { engine.loaded.count == 2 }
+        await wait { engine.state == .playing }
     }
 
     @Test("tvos-shell/back-to-full-screen-from-the-tab-bar the bar changes tab at once and the video follows in order")
