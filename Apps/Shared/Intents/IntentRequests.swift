@@ -33,7 +33,7 @@
 
         private var inputs: Inputs {
             Inputs(
-                request: host?.inbox.pending, channels: live.channels.count,
+                request: host?.inbox.pending, channels: live.catalogue.count(of: .all),
                 loadingChannels: live.sources.count { $0.state == .loading }, titles: titles.count,
                 loadingTitles: (shelves.movies.sources + shelves.series.sources).count { $0.state == .loading })
         }
@@ -77,7 +77,9 @@
                 if !live.catalogue.rows(in: live.group).contains(row) { live.show(.all, picked: false) }
                 live.pick(channel)
                 navigator.showLive()
-            } else if finished(live.sources.first { $0.id == key.sourceID }.map { $0.state == .loading }) {
+            } else if live.building == nil, finished(live.sources.first { $0.id == key.sourceID }.map { $0.state == .loading }) {
+                // The catalogue is built off the main actor after the channels land; a
+                // request that comes in between waits for it rather than being dropped.
                 host.inbox.take()
             }
         }
