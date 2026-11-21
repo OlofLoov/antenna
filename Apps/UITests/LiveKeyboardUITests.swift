@@ -51,7 +51,9 @@ final class LiveKeyboardUITests: XCTestCase {
         let ring = rows.firstIndex { $0.value as? String == "Keyboard focus" }
         let holder = app.descendants(matching: .any).matching(NSPredicate(format: "hasKeyboardFocus == true"))
             .allElementsBoundByIndex.map(\.identifier)
-        return "ring on row \(ring.map(String.init) ?? "none"), keyboard in \(holder)"
+        let focused = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true"))
+            .allElementsBoundByIndex.map { "\($0.elementType.rawValue):\($0.identifier):\($0.label)" }
+        return "ring on row \(ring.map(String.init) ?? "none"), keyboard in \(holder), focus on \(focused)"
     }
 
     private var cabinFilm: String { "browse.row.00000000-0000-0000-0000-0000000000D2.0" }

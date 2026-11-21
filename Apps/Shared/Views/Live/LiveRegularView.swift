@@ -450,10 +450,10 @@
         }
 
         /// Moves the focus ring by `step` rows without switching channel,
-        /// starting from the playing row or the top.
         private func move(_ step: Int) {
             let rows = live.rows
-            guard !rows.isEmpty else { return }
+            guard !rows.isEmpty else { return NSLog("N2DEBUG move \(step) empty") }
+            NSLog("N2DEBUG move \(step) cursor=\(String(describing: cursor))")
             let start = cursor ?? live.playing.flatMap(RowKey.init)
             guard let start, let index = rows.firstIndex(of: start) else {
                 cursor = rows[step > 0 ? 0 : rows.count - 1]
