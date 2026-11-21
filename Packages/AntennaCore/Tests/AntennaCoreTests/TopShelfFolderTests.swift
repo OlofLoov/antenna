@@ -51,4 +51,11 @@ import Testing
         }
         #expect(folder.read() == nil)
     }
+
+    // An Apple TV logged "Top Shelf write failed: unavailable" while the folder sat at the container's top level.
+    @Test("top-shelf/the-shelf-keeps-up-with-the-app the shared folder sits under the container's Library/Caches")
+    func sharedFolderInCaches() {
+        let container = URL(fileURLWithPath: "/group", isDirectory: true)
+        #expect(TopShelfFolder.inContainer(container).directory.path == "/group/Library/Caches/TopShelf")
+    }
 }
