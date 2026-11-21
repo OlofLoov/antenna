@@ -15,9 +15,9 @@
 
 ## 3. Radio
 
-- [ ] 3.1 `StreamSniff.audio` from ID3 or two MPEG audio or ADTS frames
-- [ ] 3.2 The FFmpeg path hands `.audio` and `audio/*` content to Apple's player
-- [ ] 3.3 Tests: the sniff, and MP3 and AAC radio at addresses with no extension
+- [x] 3.1 `StreamSniff.audio` from ID3 or two MPEG audio or ADTS frames
+- [x] 3.2 The FFmpeg path hands `.audio` and `audio/*` content to Apple's player
+- [x] 3.3 Tests: the sniff, and MP3 and AAC radio at addresses with no extension
 
 ## 4. A channel with no picture
 

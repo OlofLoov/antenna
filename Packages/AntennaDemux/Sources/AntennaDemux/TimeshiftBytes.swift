@@ -13,6 +13,12 @@ protocol DemuxBytes: AnyObject, Sendable {
     var position: Int { get }
     func seek(to target: Int) -> Bool
     func cancel()
+    /// The response's Content-Type, when the bytes come straight from a server.
+    var contentType: String? { get }
+}
+
+extension DemuxBytes {
+    var contentType: String? { nil }
 }
 
 /// A buffer reader as the bytes of a run. It cannot seek; the engine moves

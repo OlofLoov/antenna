@@ -208,13 +208,15 @@ final class DemuxRun: @unchecked Sendable {
     }
 
     /// Looks at the first bytes, opens FFmpeg and picks the streams. HLS at
-    /// a raw-looking address goes to Apple's player; a web page is not a
-    /// stream.
+    /// a raw-looking address, and MP3 or AAC radio, go to Apple's player; a
+    /// web page is not a stream.
     private func prepare() -> Result<Prepared, any Error> {
         let bytes = self.bytes
-        switch StreamSniff(bytes.peek(512)) {
-        case .hls: return .failure(EngineHandoff.toSystemPlayer)
+        switch StreamSniff(bytes.peek(StreamProbe.headSize)) {
+        case .hls, .audio: return .failure(EngineHandoff.toSystemPlayer)
         case .html: return .failure(PlaybackFailure.unreadable)
+        case .other where bytes.contentType?.lowercased().hasPrefix("audio/") == true:
+            return .failure(EngineHandoff.toSystemPlayer)
         case .mpegTS, .matroska, .avi, .other: break
         }
         let demuxer: Demuxer

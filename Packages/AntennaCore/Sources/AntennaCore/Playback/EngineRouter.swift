@@ -37,6 +37,9 @@ public enum StreamSniff: Sendable, Equatable {
     /// A RIFF AVI file.
     case avi
     case html
+    /// MP3, MP2 or AAC in ADTS, as internet radio sends it, from an ID3 tag
+    /// or two frame headers in a row.
+    case audio
     case other
 
     /// True for the containers only the demuxer reads.
@@ -61,6 +64,8 @@ public enum StreamSniff: Sendable, Equatable {
             self = .avi
         } else if text.hasPrefix("<!doctype html") || text.hasPrefix("<html") || text.hasPrefix("<head") {
             self = .html
+        } else if AudioFrames.found(in: [UInt8](head.prefix(StreamProbe.headSize))) {
+            self = .audio
         } else {
             self = .other
         }
