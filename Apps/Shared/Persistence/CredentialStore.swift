@@ -7,6 +7,21 @@ protocol CredentialStoring: Sendable {
     func save(_ credential: CredentialStore.Credential, for key: String) throws
     func load(for key: String) throws -> CredentialStore.Credential?
     func delete(for key: String) throws
+    /// True when a login for `key` is on this device and `accepts` it. A
+    /// login that cannot be read, such as while the Keychain is locked,
+    /// counts as here.
+    func hasLogin(for key: String, accepts: (CredentialStore.Credential) -> Bool) -> Bool
+}
+
+extension CredentialStoring {
+    func hasLogin(for key: String, accepts: (CredentialStore.Credential) -> Bool) -> Bool {
+        do {
+            guard let found = try load(for: key) else { return false }
+            return accepts(found)
+        } catch {
+            return true
+        }
+    }
 }
 
 /// Keychain wrapper for source credentials. Items are marked synchronizable so
@@ -50,19 +65,40 @@ struct CredentialStore: CredentialStoring {
     /// The access group logins are written to, or nil for the app's default group.
     let sharedGroup: String?
     let keychain: any KeychainItems
+    /// The logins found so far, so `hasLogin` asks the Keychain once per login.
+    let presence: LoginPresence
 
     init(
         service: String = CredentialStore.sourcesService, sharedGroup: String? = CredentialStore.appSharedGroup,
-        keychain: any KeychainItems = SystemKeychain()
+        keychain: any KeychainItems = SystemKeychain(), presence: LoginPresence = .shared
     ) {
         self.service = service
         self.sharedGroup = sharedGroup
         self.keychain = keychain
+        self.presence = presence
+    }
+
+    /// Answers from `presence` once a login was found, and asks the Keychain
+    /// otherwise. Only a login found, or one that cannot be read, is
+    /// remembered, so a missing one that arrives later is seen on the next
+    /// ask. Each key belongs to one source, so `accepts` is the same rule
+    /// every time a key is asked about.
+    func hasLogin(for key: String, accepts: (Credential) -> Bool) -> Bool {
+        if presence.isKnown(service: service, account: key) { return true }
+        let here: Bool
+        do {
+            here = try load(for: key).map(accepts) ?? false
+        } catch {
+            here = true
+        }
+        if here { presence.remember(service: service, account: key) }
+        return here
     }
 
     /// Writes to the shared group and removes copies in other groups. When
     /// the app lacks the shared group's entitlement, writes to its default group.
     func save(_ credential: Credential, for key: String) throws {
+        presence.forget(service: service, account: key)
         let data = try JSONEncoder().encode(credential)
         if let sharedGroup {
             do {
@@ -98,6 +134,7 @@ struct CredentialStore: CredentialStoring {
 
     /// Removes the login from every group this app can open.
     func delete(for key: String) throws {
+        presence.forget(service: service, account: key)
         try keychain.delete(service: service, account: key, group: nil)
     }
 

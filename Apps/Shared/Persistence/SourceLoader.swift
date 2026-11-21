@@ -97,12 +97,7 @@ struct SourceLoader: Sendable {
             guard source.credentialKey != nil else { return true }
         }
         guard let key = source.credentialKey else { return false }
-        do {
-            guard let found = try credentials.load(for: key) else { return false }
-            return source.kind != .stalker || MACAddress(found.username) != nil
-        } catch {
-            return true
-        }
+        return credentials.hasLogin(for: key) { source.kind != .stalker || MACAddress($0.username) != nil }
     }
 
     /// True for a file source whose text is not on this device yet; it
