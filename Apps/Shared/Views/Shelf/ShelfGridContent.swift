@@ -71,6 +71,7 @@ struct ShelfGridContent: View {
     @Environment(ShelfLibrary.self) private var library
     @Environment(ShelfActivity.self) private var activity
     @Environment(\.shelfMetrics) private var metrics
+    @Environment(\.shelfPrefix) private var prefix
 
     var body: some View {
         switch list {
@@ -84,22 +85,53 @@ struct ShelfGridContent: View {
             .environment(\.shelfRow, "grid")
         case .all, .genre, .myList, .recentlyAdded:
             let titles = titles(of: list)
-            ShelfView.Grid(title: list.name(model.kind), count: ShelfText.titles(titles.count)) {
-                ForEach(titles) { title in
+            ShelfView.Grid(title: list.name(model.kind), count: ShelfText.titles(titles?.count ?? count(of: list))) {
+                ForEach(titles ?? []) { title in
                     ShelfPoster(title: title, actions: actions)
                 }
             }
+            .overlay {
+                if titles == nil {
+                    ProgressView()
+                        .controlSize(.large)
+                        .accessibilityIdentifier("\(prefix).grid.sorting")
+                }
+            }
             .environment(\.shelfRow, "grid")
+            // A long list in Title or Year order is sorted away from the
+            // main actor (movies-and-series-browsing/browsing-stays-responsive).
+            .task(id: SortRequest(list: list, sort: sort, revision: model.indexRevision)) {
+                switch list {
+                case .all: await model.sort(in: nil, by: sort)
+                case .genre(let name): await model.sort(in: name, by: sort)
+                case .myList, .recentlyAdded, .continueWatching: break
+                }
+            }
         }
     }
 
-    private func titles(of list: ShelfList) -> [ShelfTitle] {
+    private struct SortRequest: Hashable {
+        var list: ShelfList
+        var sort: ShelfSort
+        var revision: Int
+    }
+
+    /// Nil while the list's order is worked out.
+    private func titles(of list: ShelfList) -> [ShelfTitle]? {
         switch list {
         case .all: model.titles(sortedBy: sort)
         case .genre(let name): model.titles(in: name, sortedBy: sort)
         case .myList: activity.myList(model)
         case .recentlyAdded: model.titles(sortedBy: .recentlyAdded)
         case .continueWatching: []
+        }
+    }
+
+    /// The list's length before its order is ready.
+    private func count(of list: ShelfList) -> Int {
+        switch list {
+        case .genre(let name): Shelf.genres(model.rows).first { $0.name == name }?.count ?? 0
+        case .all, .myList, .recentlyAdded, .continueWatching: model.titles.count
         }
     }
 }

@@ -63,6 +63,27 @@ import Testing
         if Benchmarks.enabled { #expect(Self.milliseconds(elapsed) < 300, "the sort took \(Self.milliseconds(elapsed)) ms") }
     }
 
+    @Test("movies-and-series-browsing/browsing-stays-responsive 100 000 movies sort by title or year in under 1.5 s each")
+    func titleAndYearOrders() {
+        let words = ["Harbor", "Engines", "Salt", "Road", "Quiet", "Night", "Ferry", "Émile", "zone", "Arrival"]
+        let titles = (0..<100_000).map { index in
+            ShelfTitle(
+                id: "xtream#h#vod#\(index)", kind: .movie, sourceID: Self.source,
+                name: "\(words[index % 10]) \(words[index / 10 % 10]) \(index % 997) (\(1950 + index % 75))")
+        }
+        var byTitle: [ShelfTitle] = []
+        var byYear: [ShelfTitle] = []
+        let titleTime = FastestRun.of(1) { byTitle = Shelf.sorted(titles, by: .title) }
+        let yearTime = FastestRun.of(1) { byYear = Shelf.sorted(titles, by: .year) }
+        #expect(byTitle.count == 100_000)
+        #expect(byTitle.first?.name.hasPrefix("Arrival Arrival 0 ") == true)
+        #expect(zip(byYear, byYear.dropFirst()).allSatisfy { ($0.year ?? 0) >= ($1.year ?? 0) })
+        if Benchmarks.enabled {
+            #expect(Self.milliseconds(titleTime) < 1_500, "Title took \(Self.milliseconds(titleTime)) ms")
+            #expect(Self.milliseconds(yearTime) < 1_500, "Year took \(Self.milliseconds(yearTime)) ms")
+        }
+    }
+
     @Test("movies-and-series-browsing/browsing-stays-responsive Continue watching and Recently watched read 200 positions in under 10 ms")
     func rowsFromSavedPositions() {
         let movies = ShelfIndex(catalogues: [Self.movies], showsAdult: false, now: Self.base)

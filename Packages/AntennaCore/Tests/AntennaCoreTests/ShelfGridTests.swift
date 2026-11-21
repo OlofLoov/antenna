@@ -35,6 +35,15 @@ import Testing
         #expect(ShelfSort.allCases.map({ $0.name(.english) }) == ["Recently added", "Title", "Year"])
     }
 
+    @Test("movies-and-series-browsing/browse-a-genre-or-sort-the-lot numbers sort by value, and equal names keep the providers' order")
+    func numbersAndTies() {
+        let titles = [
+            title(1, "Movie 10"), title(2, "movie 2"), title(3, "Movie 2"), title(4, "Movie 1 (2001)"), title(5, "Movie 1 (1999)"),
+        ]
+        #expect(Shelf.sorted(titles, by: .title).map(\.id) == [5, 4, 2, 3, 1].map { "xtream#h#vod#\($0)" })
+        #expect(Shelf.sorted(titles, by: .year).map(\.name) == ["Movie 1 (2001)", "Movie 1 (1999)", "movie 2", "Movie 2", "Movie 10"])
+    }
+
     @Test("movies-and-series-browsing/browse-a-genre-or-sort-the-lot a genre holds every source's titles with its count")
     func genres() {
         let titles = [
