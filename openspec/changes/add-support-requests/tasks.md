@@ -15,11 +15,11 @@
 
 ## 3. Support endpoint and infrastructure
 
-Blocked on `add-title-metadata` tasks 3.1 to 3.3 and on open question 1.
+Blocked on `add-aws-hosting` task group 6, `add-title-metadata` task 3.2 and open question 1.
 
 - [ ] 3.1 Create the private repository and the GitHub App installed only on it, and put its key in Secrets Manager (owner, outside the repo)
 - [ ] 3.2 Add `GET /v1/support/challenge` and `POST /v1/support` under `Services/lookup/src/support/`: schema check, 256 KB cap, App Attest and DeviceCheck verification, scrubbing from the shared fixtures, duplicate check by reference, issue creation, with unit tests citing `support-requests/only-antenna-can-send-reports` and `support-requests/reports-reach-the-developer-privately`
-- [ ] 3.3 Add the routes, the support Lambda, its secrets and a WAF rate rule of 10 per IP per 5 minutes to the CDK stack, with every request log off
+- [ ] 3.3 Add the routes, the support Lambda, its secrets and a WAF rate rule of 10 per IP per 5 minutes to the `AntennaApi` and `AntennaEdge` stacks in `Infra/` from `add-aws-hosting`, with every request log off
 - [ ] 3.4 Amend the "no server of our own" line in `openspec/config.yaml` and CLAUDE.md to say the service also passes problem reports to the private repository and keeps nothing itself
 - [ ] 3.5 Add GitHub to `docs/architecture/c4-context.drawio.svg` and `c4-container.drawio.svg`
 

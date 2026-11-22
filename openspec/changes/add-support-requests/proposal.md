@@ -47,7 +47,7 @@ Out of scope:
 
 ## Impact
 
-- Depends on `add-title-metadata`: the lookup service under `Services/lookup/`, its CDK stack, the OIDC deploy role and the amendment to the "no server of our own" rule. That service does not exist yet; its tasks 3.1 to 3.3 are open. This change adds an endpoint to it and cannot ship before it.
+- Depends on `add-aws-hosting` for the AWS account, the CDK app in `Infra/`, the `AntennaApi` stack (HTTP API, CloudFront, WAF web ACL), the OIDC deploy role and the amendment to the "no server of our own" rule, and on `add-title-metadata` for the lookup service package under `Services/lookup/`. None of it exists yet. This change adds an endpoint and cannot ship before them.
 - The `antenna-website` delta is written on top of `add-title-metadata`'s version of "The Privacy Policy rules out tracking". Archive that change first, or merge the two texts when archiving this one.
 - Infrastructure outside the app: a private GitHub repository for reports, a GitHub App installed only on it with Issues read and write, its private key in Secrets Manager, and Apple's App Attest and DeviceCheck keys for the team.
 - AntennaCore: the report builder, the text scrubber, the request encoding and the reference code.

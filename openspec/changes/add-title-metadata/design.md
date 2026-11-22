@@ -64,9 +64,9 @@ Options considered:
 
 Cost of B, estimated from AWS list prices and not measured: HTTP API about $1 per million requests, Lambda within the free tier at this size, CloudFront about $0.0075 to $0.01 per 10,000 requests plus transfer. At 1,000 daily users opening ten titles a day, about 300,000 requests a month, the bill is a few dollars a month before TMDB's fee.
 
-This amends the hard constraint "with no server of our own" in `openspec/config.yaml`. The amendment, in the PR that builds the service: sync stays CloudKit with no server; the one server Code Crave runs is the lookup service, which receives a title's name, year and ids, keeps no record of requests, and holds no user data. The C4 context and container diagrams gain the lookup service and TMDB.
+This amends the hard constraint "with no server of our own" in `openspec/config.yaml`. `add-aws-hosting` decision 10 words the amendment once for every Code Crave service, in the PR that adds its API stack. The C4 context and container diagrams gain the lookup service and TMDB.
 
-The service lives in this repo under `Services/lookup/` (a TypeScript Lambda and a CDK stack) and deploys from a workflow with an AWS role through OIDC, no stored AWS keys. Endpoints, all `GET`, all cacheable:
+The service runs on the infrastructure from `add-aws-hosting`, which this change depends on: the CDK app in `Infra/`, the `AntennaApi` stack (HTTP API in eu-north-1 behind CloudFront at `api.<antenna-domain>`, the WAF web ACL, the origin header check), the `infra.yml` workflow and its OIDC roles, and no request logs. This change adds the lookup Lambda (code in `Services/lookup/`, a TypeScript package), its routes, its Secrets Manager key and a CloudFront cache behavior for its routes to that stack; it builds no stack, workflow or role of its own. Endpoints, all `GET`, all cacheable:
 - `/v1/match?kind=movie|tv&name=&year=` and `/v1/match?kind=&tmdb=` and `/v1/match?kind=&imdb=` return one match or none: TMDB id, name, year, details, credits (top 15 cast, directors), scores.
 - `/v1/trending?kind=&window=week` and `/v1/person/{id}` are reserved for the next two changes.
 
