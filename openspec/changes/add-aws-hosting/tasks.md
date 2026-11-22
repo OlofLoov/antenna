@@ -1,21 +1,24 @@
 ## 1. Proposal and owner setup
 
-- [x] 1.1 Write the proposal, delta specs, design and tasks, and validate with `openspec validate add-aws-hosting --strict`
-- [ ] 1.2 Get the owner's answers to the open questions in design.md, above all the domain name (1), and replace `<antenna-domain>` in this change and its dependents
-- [ ] 1.3 Owner, outside the repo: create the AWS account, register the domain, bootstrap CDK in eu-north-1 and us-east-1, deploy `AntennaCi` by hand, set `AWS_ACCOUNT_ID`, `ANTENNA_DOMAIN` and the `production` environment (design.md decision 9)
+- [ ] 1.1 Owner: pick the exact name, a short `.app` name containing "antenna", register it in Route 53 Domains, and replace `<antenna-domain>` in this change, `add-support-requests` and `add-feature-website`. Every task after this group waits for it
+- [x] 1.2 Write the proposal, delta specs, design and tasks, and validate with `openspec validate add-aws-hosting --strict`
+- [x] 1.3 Fold in the owner's 2026-11-22 decisions on the open questions, and the single-page site from `add-feature-website`
+- [ ] 1.4 Owner, outside the repo: create the AWS account, bootstrap CDK in eu-north-1 and us-east-1, deploy `AntennaCi` by hand, set `AWS_ACCOUNT_ID`, `ANTENNA_DOMAIN` and the `production` environment with the owner as required reviewer (design.md decision 9)
 
 ## 2. CDK app and CI roles
 
 - [ ] 2.1 Add `Infra/` (TypeScript CDK app, pinned `aws-cdk-lib`, Jest) with `AntennaCi`: the GitHub OIDC provider and the `antenna-diff`, `antenna-deploy` and `antenna-site` roles, with assertion tests for each trust subject, citing `hosting/deploys-come-only-from-main`
 - [ ] 2.2 Add `.github/workflows/infra.yml`: test, synth and a `cdk diff` comment on pull requests; deploy in the `production` environment on main
 - [ ] 2.3 Add the `scripts/check-rules.sh` grep that fails on access log settings in `Infra/lib/`, citing `hosting/nothing-keeps-a-record-of-requests`
+- [ ] 2.4 Make `scripts/check-spec-refs.sh` also read citations in `Infra/` TypeScript tests
 
 ## 3. Edge and site stacks
 
 - [ ] 3.1 Add `AntennaEdge`: hosted zone, certificates, CAA, SPF `-all` and DMARC reject records and no MX, the Budgets alarm and the anomaly monitor, citing `hosting/the-domain-receives-no-email` and `hosting/the-owner-hears-about-cost-before-it-grows`
-- [ ] 3.2 Add `AntennaSite`: the private bucket, the distribution with Origin Access Control, the address function, the response headers policy and `Web/404.html`, with assertion tests for no public access and no logs, citing `hosting/the-site-is-served-over-https-on-antenna-s-domain` and `hosting/the-site-s-files-cannot-be-read-around-it`
-- [ ] 3.3 Add the site job to `infra.yml`: `scripts/publish-web.sh`, `aws s3 sync --delete` with the JSON content type on the association file, and the invalidation, citing `antenna-website/the-site-publishes-from-main`
-- [ ] 3.4 After the first deploy, check the site, the association file and HTTPS on `<antenna-domain>` with the device checklist
+- [ ] 3.2 Add `AntennaSite`: the private bucket, the distribution with Origin Access Control, the address function with the `www` redirect, 403 and 404 answered by `/404.html` with status 404 and no fallback to `index.html`, and `Web/404.html`, with assertion tests for no public access, no logs and the error responses, citing `hosting/the-site-is-served-over-https-on-antenna-s-domain` and `hosting/the-site-s-files-cannot-be-read-around-it`
+- [ ] 3.3 Add the two response headers policies from design.md decision 3, the site's and the stricter one on `/setup*`, with assertion tests that compare each Content-Security-Policy with the decided string and fail on `'unsafe-inline'` or `'unsafe-eval'` in `script-src`, citing `hosting/pages-run-only-the-site-s-own-code`
+- [ ] 3.4 Add the site job to `infra.yml`: Node 22, `npm ci` and `npm run build` in `Web/site/` once it exists, `scripts/publish-web.sh` with the build folder, the two-step `aws s3 sync` with the JSON content type on the association file and the year-long cache on `/_app/immutable/`, and the invalidation, citing `antenna-website/the-site-publishes-from-main`
+- [ ] 3.5 After the first deploy, check the site, the association file, HTTPS, the `www` redirect, a 404 status on a made-up address and the CSP header on `<antenna-domain>` with the device checklist
 
 ## 4. Retire GitHub Pages
 
@@ -24,7 +27,7 @@
 
 ## 5. Rename the domain
 
-Waits for 3.4: the site answers on the new domain.
+Waits for 1.1 and 3.5: the name is picked and the site answers on it.
 
 - [ ] 5.1 Change `SetupLink.host`, the two entitlements, the Terms and Privacy addresses in `project.yml`, both `Info.plist` files and the paywall previews; make the link tests and setup UI tests use `SetupLink.host`, citing `antenna-website/the-site-answers-every-address-the-app-uses`
 - [ ] 5.2 Change `Web/review/antenna-review.m3u`, `docs/release/app-review-notes.md` and the `scripts/check-rules.sh` review pattern, citing `app-release/app-review-gets-a-test-source-outside-the-app`
