@@ -1,19 +1,36 @@
 #!/usr/bin/env bash
-# Copies Web/ to the folder given as $1 for GitHub Pages, and fills the Apple
-# team id into the association file from $APPLE_TEAM_ID while the committed
-# file still holds the placeholder. Exits non-zero when the id is missing or
-# malformed, so the placeholder never reaches the site. Also writes the App
-# Review guide for the review playlist, from yesterday (UTC) for 36 days, or
-# from $REVIEW_GUIDE_START (YYYY-MM-DD) when set.
+# Writes the site's final file tree into the folder given as $1.
+#
+# Copies the plain files in Web/ (everything but the Web/site app), fills the
+# Apple team id into the association file from $APPLE_TEAM_ID while the
+# committed file still holds the placeholder, and writes the App Review guide
+# for the review playlist, from yesterday (UTC) for 36 days, or from
+# $REVIEW_GUIDE_START (YYYY-MM-DD) when set. Exits non-zero when the id is
+# missing or malformed, so the placeholder never reaches the site.
+#
+# With $2, the built SvelteKit app (Web/site/build after `npm run build`), it
+# copies the app's pages in too, and fails when a plain file and a built file
+# have the same path. Without $2 only the plain files are written, which is
+# what swift test checks without Node.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-out=${1:?usage: publish-web.sh <output folder>}
+out=${1:?usage: publish-web.sh <output folder> [site build folder]}
+site=${2:-}
 placeholder=TEAMID_PLACEHOLDER
 aasa=.well-known/apple-app-site-association
 
+if [[ -n "$site" && ! -f "$site/index.html" ]]; then
+  echo "$site holds no index.html; run npm run build in Web/site first" >&2
+  exit 1
+fi
+
 mkdir -p "$out"
-cp -R Web/. "$out"
+for entry in Web/* Web/.[!.]*; do
+  [[ -e "$entry" ]] || continue
+  [[ "$entry" == Web/site ]] && continue
+  cp -R "$entry" "$out/"
+done
 
 if grep -q "$placeholder" "$out/$aasa"; then
   team=${APPLE_TEAM_ID:-}
@@ -37,3 +54,16 @@ fi
 yesterday='import datetime; print(datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(days=1))'
 start=${REVIEW_GUIDE_START:-$(python3 -c "$yesterday")}
 python3 scripts/make-review-guide.py Web/review/antenna-review.m3u "$start" 36 >"$out/review/guide.xml"
+
+if [[ -n "$site" ]]; then
+  clashes=""
+  while IFS= read -r path; do
+    if [[ -e "$out/$path" ]]; then clashes+="$path"$'\n'; fi
+  done < <(find "$site" -type f | sed "s|^${site%/}/||")
+  if [[ -n "$clashes" ]]; then
+    echo "These paths are both plain files in Web/ and built pages of the site:" >&2
+    printf '%s\n' "$clashes" >&2
+    exit 1
+  fi
+  cp -R "$site/." "$out"
+fi

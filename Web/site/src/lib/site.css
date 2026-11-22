@@ -1,0 +1,231 @@
+:root {
+	--bg: #0b0e13;
+	--surface: #151a22;
+	--text: #f2f4f8;
+	--secondary: #d7dee8;
+	--muted: #b4becc;
+	--rule: #1e2530;
+	--link: #5bb8ff;
+	--link-hover: #8ecdff;
+	--frame: #4a5566;
+	--gutter: 64px;
+	--measure: 760px;
+	--wide: 1280px;
+	--radius-card: 18px;
+	--radius-shot: 14px;
+	color-scheme: dark light;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--bg: #ffffff;
+		--surface: #f2f4f7;
+		--text: #0b0e13;
+		--secondary: #333b47;
+		--muted: #5a6472;
+		--rule: #e3e7ec;
+		--link: #0066cc;
+		--link-hover: #004c99;
+		--frame: #c5ccd6;
+	}
+}
+
+@media (max-width: 720px) {
+	:root {
+		--gutter: 16px;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	background: var(--bg);
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font:
+		17px/1.5 -apple-system,
+		system-ui,
+		'Helvetica Neue',
+		sans-serif;
+	overflow-wrap: break-word;
+}
+
+.app {
+	min-block-size: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	flex: 1 0 auto;
+	inline-size: 100%;
+	max-inline-size: var(--wide);
+	margin-inline: auto;
+	padding-block: 56px 48px;
+	padding-inline: var(--gutter);
+}
+
+main:focus {
+	outline: none;
+}
+
+a {
+	color: var(--link);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+a:hover {
+	color: var(--link-hover);
+}
+
+a:focus-visible {
+	outline: 2px solid var(--link);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+h1 {
+	font-size: 44px;
+	line-height: 1.1;
+	font-weight: 800;
+	margin-block: 0 12px;
+}
+
+h2 {
+	font-size: 26px;
+	line-height: 1.25;
+	margin-block: 40px 8px;
+}
+
+h3 {
+	font-size: 20px;
+	line-height: 1.3;
+	margin-block: 0 6px;
+}
+
+p,
+ul,
+ol {
+	margin-block: 0 16px;
+}
+
+ul,
+ol {
+	padding-inline-start: 24px;
+}
+
+li {
+	margin-block-end: 8px;
+}
+
+img {
+	display: block;
+	max-inline-size: 100%;
+	block-size: auto;
+}
+
+.lead {
+	font-size: 19px;
+	color: var(--secondary);
+	max-inline-size: var(--measure);
+}
+
+.muted {
+	color: var(--muted);
+}
+
+.prose {
+	max-inline-size: var(--measure);
+}
+
+.prose h2 {
+	font-size: 20px;
+	line-height: 1.3;
+	margin-block: 32px 8px;
+}
+
+.prose h1 {
+	font-size: 34px;
+	line-height: 1.2;
+	margin-block-end: 8px;
+}
+
+.prose .updated {
+	color: var(--muted);
+	margin-block-end: 32px;
+}
+
+.prose .across {
+	margin-block-start: 48px;
+	padding-block-start: 16px;
+	border-block-start: 1px solid var(--rule);
+	color: var(--muted);
+}
+
+.card {
+	background: var(--surface);
+	border-radius: var(--radius-card);
+	padding: 24px;
+}
+
+.shot {
+	border-radius: var(--radius-shot);
+	background: var(--surface);
+}
+
+/* SvelteKit's route announcer carries its hiding in a style attribute, which
+   the site's Content-Security-Policy blocks. This rule hides it instead. */
+#svelte-announcer {
+	position: absolute;
+	inset-inline-start: 0;
+	inset-block-start: 0;
+	clip-path: inset(50%);
+	overflow: hidden;
+	white-space: nowrap;
+	inline-size: 1px;
+	block-size: 1px;
+}
+
+.skip {
+	position: absolute;
+	inset-inline-start: 16px;
+	inset-block-start: -48px;
+	padding: 8px 12px;
+	background: var(--surface);
+	border-radius: 8px;
+	z-index: 1;
+}
+
+.skip:focus {
+	inset-block-start: 8px;
+}
+
+@media (max-width: 720px) {
+	main {
+		padding-block: 32px 32px;
+	}
+
+	h1 {
+		font-size: 34px;
+		line-height: 1.15;
+	}
+
+	h2 {
+		font-size: 22px;
+	}
+
+	.lead {
+		font-size: 17px;
+	}
+}

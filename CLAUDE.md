@@ -20,6 +20,9 @@ swift test --disable-keychain --package-path Packages/FFmpeg   # the published F
 swift test --disable-keychain --package-path Packages/AntennaDemux   # the FFmpeg playback path, decoded by VideoToolbox
 scripts/make-review-guide.py Web/review/antenna-review.m3u 2026-01-01 36   # the App Review guide for a start day and length
 actionlint                                               # workflow files, including release.yml; brew install actionlint
+(cd Web/site && npm ci && npm run lint && npm run check)  # the website: Prettier, ESLint, svelte-check; Node 22 from Web/site/.nvmrc
+(cd Web/site && npm run build && npm test)                # prerender every page, then the link, route, policy and budget check
+scripts/publish-web.sh /tmp/site Web/site/build           # the final file tree: plain files in Web/ plus the built app
 scripts/render-icons.sh                                  # app icons and Apple TV brand assets from design/icon/*.svg
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
@@ -46,16 +49,23 @@ associated domains, and the app runs without sync.
 - `Apps/Shared/` SwiftUI shared by every platform. SwiftData records and the
   Keychain `CredentialStore` live in `Persistence/`.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
-- `Web/` the static site at antenna.code-crave.se, published by
-  `.github/workflows/pages.yml` through `scripts/publish-web.sh`: the setup
-  page, the Terms of Use and Privacy Policy the paywall links to, and the
-  association file whose Apple team id the publish step fills from the
-  `APPLE_TEAM_ID` repository variable. No scripts, images or third-party
-  content. `review/` holds the App Review playlist of Apple's sample streams,
-  and the publish step writes its guide with `scripts/make-review-guide.py`;
-  these data files are the one place the site names outside addresses, and
-  the app never names them. `WebsiteTests`, `SetupPageTests` and
-  `ReleaseTests` in AntennaCore check it.
+- `Web/` the site at antenna.code-crave.se, published by
+  `.github/workflows/pages.yml` through `scripts/publish-web.sh <out>
+  <site build>`. `Web/site/` is a SvelteKit app with every page prerendered
+  (home, Terms of Use and Privacy Policy the paywall links to, 404), built
+  with Node 22 from its committed lockfile. It runs only its own bundled
+  JavaScript and shows only its own images: no third-party scripts, fonts,
+  trackers or analytics, no cookies, no inline scripts or styles, and no
+  requests to other origins. `Web/site/scripts/check-site.js` enforces that on
+  the build. The plain files outside the app stay as they are: the setup page
+  (no script, no image, no stylesheet), the association file whose Apple team
+  id the publish step fills from the `APPLE_TEAM_ID` repository variable, and
+  `review/`, the App Review playlist of Apple's sample streams, whose guide
+  the publish step writes with `scripts/make-review-guide.py`; these data
+  files are the one place the site names outside addresses, and the app never
+  names them. `WebsiteTests`, `SetupPageTests` and `ReleaseTests` in
+  AntennaCore check the plain files and the legal text, the site's Vitest
+  checks the built pages.
 - `docs/release/` the App Review notes and the App Store Connect privacy answers.
 - `design/icon/` the SVG sources of the app icons. `scripts/render-icons.sh`
   copies them into `Apps/Mobile/AppIcon.icon` (Icon Composer, iPhone, iPad

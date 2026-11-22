@@ -1,0 +1,30 @@
+{
+	"site": {
+		"name": "Antenna",
+		"skip": "Skip to content",
+		"publisher": "Antenna is published by Code Crave.",
+		"navLabel": "Main",
+		"footerLabel": "About this site"
+	},
+	"nav": {
+		"terms": "Terms of Use",
+		"privacy": "Privacy Policy"
+	},
+	"appStore": {
+		"comingSoon": "Coming soon to the App Store",
+		"get": "Download on the App Store"
+	},
+	"home": {
+		"title": "Antenna",
+		"description": "Antenna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels.",
+		"hero": "Your TV sources, on every Apple screen.",
+		"lead": "Antenna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels. A purchase unlocks it on all your devices.",
+		"platforms": "iPhone, iPad, Mac, Apple TV"
+	},
+	"notFound": {
+		"title": "Page not found",
+		"description": "There is no page at this address.",
+		"body": "There is no page at this address.",
+		"home": "Go to the home page"
+	}
+}

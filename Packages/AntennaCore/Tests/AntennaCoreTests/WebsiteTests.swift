@@ -3,13 +3,16 @@ import Foundation
 import Testing
 
 /// The site under `Web/` at the repository root, published to `SetupLink.host`
-/// by `.github/workflows/pages.yml`.
+/// by `.github/workflows/pages.yml`: the plain files in `Web/` and the
+/// SvelteKit app in `Web/site/`, whose built pages `Web/site/tests` checks.
 @Suite struct WebsiteTests {
     static let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         .deletingLastPathComponent().deletingLastPathComponent()
     static let web = root.appending(path: "Web")
     static let associationPath = ".well-known/apple-app-site-association"
-    static let legalPages = ["terms/index.html", "privacy/index.html"]
+    static let terms = "site/src/routes/terms/+page.svelte"
+    static let privacy = "site/src/routes/privacy/+page.svelte"
+    static let legalPages = [terms, privacy]
 
     private func read(_ path: String, in folder: URL = WebsiteTests.web) throws -> String {
         try String(contentsOf: folder.appending(path: path), encoding: .utf8)
@@ -44,7 +47,7 @@ import Testing
 
     @Test("antenna-website/the-site-answers-every-address-the-app-uses: a file for each address, under the app's domain")
     func everyAddress() throws {
-        for path in ["setup/index.html", "terms/index.html", "privacy/index.html", Self.associationPath, ".nojekyll"] {
+        for path in ["setup/index.html", Self.terms, Self.privacy, Self.associationPath, ".nojekyll"] {
             #expect(FileManager.default.fileExists(atPath: Self.web.appending(path: path).path), "\(path) missing")
         }
         #expect(try read("CNAME").trimmingCharacters(in: .whitespacesAndNewlines) == SetupLink.host)
@@ -76,11 +79,11 @@ import Testing
     }
 
     #if os(macOS)
-        private func publish(teamID: String?) throws -> (status: Int32, folder: URL) {
+        private func publish(teamID: String?, site: URL? = nil) throws -> (status: Int32, folder: URL) {
             let folder = FileManager.default.temporaryDirectory.appending(path: "web-\(UUID().uuidString)")
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/bin/bash")
-            process.arguments = [Self.root.appending(path: "scripts/publish-web.sh").path, folder.path]
+            process.arguments = [Self.root.appending(path: "scripts/publish-web.sh").path, folder.path] + (site.map { [$0.path] } ?? [])
             var environment = ProcessInfo.processInfo.environment
             environment["APPLE_TEAM_ID"] = teamID
             process.environment = environment
@@ -107,15 +110,41 @@ import Testing
             defer { try? FileManager.default.removeItem(at: published.folder) }
             let data = try Data(contentsOf: published.folder.appending(path: Self.associationPath))
             #expect(try appIDs(data) == (placeholder ? ["ABCDE12345.se.codecrave.antenna"] : committed))
-            for path in ["setup/index.html", "terms/index.html", "privacy/index.html", "CNAME", ".nojekyll"] {
+            for path in ["setup/index.html", "review/antenna-review.m3u", "review/guide.xml", "CNAME", ".nojekyll"] {
                 #expect(FileManager.default.fileExists(atPath: published.folder.appending(path: path).path), "\(path) not published")
             }
+            #expect(!FileManager.default.fileExists(atPath: published.folder.appending(path: "site").path), "the app's source is published")
+        }
+
+        @Test("antenna-website/the-site-answers-every-address-the-app-uses: the built app joins the plain files, a shared path fails")
+        func publishWithSite() throws {
+            let site = FileManager.default.temporaryDirectory.appending(path: "site-\(UUID().uuidString)")
+            defer { try? FileManager.default.removeItem(at: site) }
+            func write(_ path: String) throws {
+                let file = site.appending(path: path)
+                try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try Data("<h1>\(path)</h1>".utf8).write(to: file)
+            }
+            for path in ["index.html", "terms/index.html", "privacy/index.html", "404.html"] {
+                try write(path)
+            }
+            let published = try publish(teamID: "ABCDE12345", site: site)
+            defer { try? FileManager.default.removeItem(at: published.folder) }
+            #expect(published.status == 0)
+            for path in ["index.html", "terms/index.html", "privacy/index.html", "404.html", "setup/index.html", Self.associationPath] {
+                #expect(FileManager.default.fileExists(atPath: published.folder.appending(path: path).path), "\(path) not published")
+            }
+
+            try write("setup/index.html")
+            let refused = try publish(teamID: "ABCDE12345", site: site)
+            defer { try? FileManager.default.removeItem(at: refused.folder) }
+            #expect(refused.status != 0)
         }
     #endif
 
     @Test("antenna-website/the-terms-of-use-put-the-streams-on-the-user: the sections and who answers for a stream")
     func termsSections() throws {
-        let html = try read("terms/index.html")
+        let html = try read(Self.terms)
         #expect(
             headings(html) == [
                 "What Antenna is", "Your sources", "Purchases", "Apple's license agreement", "No warranty", "Limits on liability",
@@ -133,7 +162,7 @@ import Testing
 
     @Test("antenna-website/the-terms-of-use-explain-the-purchases: renewal, canceling, lifetime, Family Sharing and refunds")
     func termsPurchases() throws {
-        let body = text(try read("terms/index.html"))
+        let body = text(try read(Self.terms))
         for phrase in [
             "Yearly subscription", "until you cancel", "at least 24 hours before the current year ends", "Lifetime unlock",
             "It does not renew", "Family Sharing", "Apple takes the payment", "Refunds are requested from Apple",
@@ -144,7 +173,7 @@ import Testing
 
     @Test("antenna-website/the-privacy-policy-says-where-data-is-kept: iCloud, the Keychain and the ten-minute exception")
     func privacyStorage() throws {
-        let html = try read("privacy/index.html")
+        let html = try read(Self.privacy)
         #expect(
             headings(html) == [
                 "What Antenna stores", "Logins", "Network connections", "Analytics and tracking", "Purchases", "Deleting your data",
@@ -162,7 +191,7 @@ import Testing
 
     @Test("antenna-website/the-privacy-policy-rules-out-tracking: no analytics, no SDK, connections only to sources and Apple")
     func privacyTracking() throws {
-        let body = text(try read("privacy/index.html"))
+        let body = text(try read(Self.privacy))
         for phrase in [
             "Antenna collects nothing about you", "Code Crave runs no server that receives it",
             "no analytics, crash reporting, advertising or tracking", "no third-party SDK", "Antenna connects only to",
@@ -174,7 +203,7 @@ import Testing
 
     @Test("antenna-website/the-legal-pages-are-dated-and-link-to-each-other: a date under the title and a link across")
     func datedAndLinked() throws {
-        for (page, other) in [("terms/index.html", "/privacy/"), ("privacy/index.html", "/terms/")] {
+        for (page, other) in [(Self.terms, "/privacy/"), (Self.privacy, "/terms/")] {
             let html = try read(page)
             let afterTitle = try #require(matches("</h1>\\s*(<p[^>]*>[^<]*</p>)", in: html).first, "\(page)")
             #expect(afterTitle.range(of: #"Last updated: [A-Z][a-z]+ \d{1,2}, \d{4}"#, options: .regularExpression) != nil, "\(page)")
@@ -182,20 +211,25 @@ import Testing
         }
     }
 
-    @Test("antenna-website/the-pages-read-on-a-phone-and-in-dark-mode: viewport, both appearances, nothing loaded")
+    /// The tag check on the built pages is in `Web/site/tests`, which reads the
+    /// HTML the app writes. This one reads the sources every page is built from.
+    @Test("antenna-website/the-pages-read-on-a-phone-and-in-dark-mode: viewport, both appearances, a reading width")
     func phoneAndDarkMode() throws {
-        for page in ["setup/index.html"] + Self.legalPages {
-            let html = try read(page).lowercased()
-            #expect(html.contains("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"), "\(page)")
-            for tag in ["<script", "<iframe", "<img", "<link", "<object", "<embed", "@import", "url("] {
-                #expect(!html.contains(tag), "\(tag) on \(page)")
-            }
-        }
+        let setup = try read("setup/index.html").lowercased()
+        #expect(setup.contains("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"))
+        let template = try read("site/src/app.html")
+        #expect(template.contains("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />"))
+        #expect(template.contains("<meta name=\"color-scheme\" content=\"dark light\" />"))
+        let css = try read("site/src/lib/site.css")
+        #expect(css.contains("@media (prefers-color-scheme: light)"))
+        #expect(css.contains("background: var(--bg)"))
+        #expect(css.contains("--measure: 760px"))
         for page in Self.legalPages {
             let html = try read(page)
-            #expect(html.contains("@media (prefers-color-scheme: light)"), "\(page)")
-            #expect(html.contains("background: var(--bg)"), "\(page)")
-            #expect(html.contains("max-width: 40em"), "\(page)")
+            #expect(html.contains("<article class=\"prose\">"), "\(page)")
+            for tag in ["<script src", "<iframe", "<img", "<link", "<style", "style=\"", "@import", "url("] {
+                #expect(!html.contains(tag), "\(tag) on \(page)")
+            }
         }
     }
 
