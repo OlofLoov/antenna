@@ -150,6 +150,16 @@ enum PersonPageLayout {
                     focused = returning
                     page.actions.restored()
                 }
+                #if os(tvOS)
+                    .task(id: page.state.rows.first?.titles.first?.activityKey) {
+                        // The rows come after the page opens, and tvOS leaves focus
+                        // nowhere until asked, so Menu had nothing to go back from
+                        // (browse-by-person/a-person-s-page, Apple TV focus).
+                        guard page.state.returning == nil, let first = page.state.rows.first?.titles.first else { return }
+                        await Task.yield()
+                        if focused == nil { focused = first.activityKey }
+                    }
+                #endif
             }
         }
     }
