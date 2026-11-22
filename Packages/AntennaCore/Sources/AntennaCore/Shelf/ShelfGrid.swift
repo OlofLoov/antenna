@@ -36,16 +36,21 @@ public struct ShelfGenre: Sendable, Hashable, Identifiable {
 }
 
 extension Shelf {
-    /// `titles` in `sort` order.
-    public static func sorted(_ titles: [ShelfTitle], by sort: ShelfSort) -> [ShelfTitle] {
+    /// `titles` in `sort` order, by the alphabet of `locale`'s language.
+    public static func sorted(
+        _ titles: [ShelfTitle], by sort: ShelfSort, locale: Locale = .current
+    ) -> [ShelfTitle] {
+        let alphabet = SortAlphabet(locale)
         switch sort {
         case .recentlyAdded:
             return ShelfTitle.newestFirst(titles)
         case .title:
-            return byName(titles)
+            return byName(titles, alphabet: alphabet)
         case .year:
             // Undated titles count as year 0, so they go after every dated one.
-            var keyed = titles.enumerated().map { (year: $1.year ?? 0, key: sortKey($1.name), index: $0) }
+            var keyed = titles.enumerated().map {
+                (year: $1.year ?? 0, key: sortKey($1.name, alphabet: alphabet), index: $0)
+            }
             keyed.sort { lhs, rhs in
                 if lhs.year != rhs.year { return lhs.year > rhs.year }
                 return lhs.key != rhs.key ? lhs.key < rhs.key : lhs.index < rhs.index
@@ -78,16 +83,18 @@ extension Shelf {
     /// By `sortKey`, then in the order given. Each key is worked out once,
     /// so 100 000 titles sort without 1.7 million locale-aware compares
     /// (movies-and-series-browsing/browsing-stays-responsive).
-    private static func byName(_ titles: [ShelfTitle]) -> [ShelfTitle] {
-        var keyed = titles.enumerated().map { (key: sortKey($1.name), index: $0) }
+    private static func byName(_ titles: [ShelfTitle], alphabet: SortAlphabet) -> [ShelfTitle] {
+        var keyed = titles.enumerated().map { (key: sortKey($1.name, alphabet: alphabet), index: $0) }
         keyed.sort { $0.key != $1.key ? $0.key < $1.key : $0.index < $1.index }
         return keyed.map { titles[$0.index] }
     }
 
     /// The name folded for case and accents, with each run of digits
     /// padded to `digitRun` places so "Movie 2" sorts before "Movie 10".
-    static func sortKey(_ name: String) -> String {
-        let folded = name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+    /// The letters `alphabet` adds after z become the bytes after "z" first,
+    /// so folding keeps them apart (movies-and-series-browsing/browse-a-genre-or-sort-the-lot).
+    static func sortKey(_ name: String, alphabet: SortAlphabet = .plain) -> String {
+        let folded = alphabet.mark(name).folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
         var key: [UInt8] = []
         key.reserveCapacity(folded.utf8.count + digitRun)
         var digits = 0
@@ -113,6 +120,52 @@ extension Shelf {
 
     /// Numbers up to this many digits sort by value.
     static let digitRun = 8
+}
+
+/// The letters a language puts after z, in its order.
+enum SortAlphabet: Sendable {
+    /// Accented letters sort with their plain letter, Æ as "ae" and Ø as "o".
+    case plain
+    /// Å, Ä, Ö after z: Swedish and Finnish, with Æ as Ä and Ø as Ö.
+    case swedish
+    /// Æ, Ø, Å after z: Danish and Norwegian, with Ä as Æ and Ö as Ø.
+    case danish
+
+    /// The alphabet of `locale`'s language.
+    init(_ locale: Locale) {
+        switch locale.language.languageCode?.identifier {
+        case "sv", "fi": self = .swedish
+        case "da", "nb", "nn", "no": self = .danish
+        default: self = .plain
+        }
+    }
+
+    /// What each letter sorts as. "{", "|" and "}" are the bytes after "z".
+    private var spellings: [Character: String] {
+        switch self {
+        case .plain: ["æ": "ae", "Æ": "ae", "ø": "o", "Ø": "o"]
+        case .swedish:
+            ["å": "{", "Å": "{", "ä": "|", "Ä": "|", "æ": "|", "Æ": "|", "ö": "}", "Ö": "}", "ø": "}", "Ø": "}"]
+        case .danish:
+            ["æ": "{", "Æ": "{", "ä": "{", "Ä": "{", "ø": "|", "Ø": "|", "ö": "|", "Ö": "|", "å": "}", "Å": "}"]
+        }
+    }
+
+    /// `name` with each letter of `spellings` swapped for what it sorts as.
+    func mark(_ name: String) -> String {
+        let spellings = spellings
+        guard name.utf8.contains(where: { $0 >= 0x80 }) else { return name }
+        var marked = ""
+        marked.reserveCapacity(name.utf8.count)
+        for character in name {
+            if let spelling = spellings[character] {
+                marked += spelling
+            } else {
+                marked.append(character)
+            }
+        }
+        return marked
+    }
 }
 
 extension ShelfTitle {

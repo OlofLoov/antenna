@@ -44,6 +44,27 @@ import Testing
         #expect(Shelf.sorted(titles, by: .year).map(\.name) == ["Movie 1 (2001)", "Movie 1 (1999)", "movie 2", "Movie 2", "Movie 10"])
     }
 
+    @Test("movies-and-series-browsing/browse-a-genre-or-sort-the-lot letters after z follow the language")
+    func lettersAfterZ() {
+        let names = ["Öga", "Zorro", "Ängel", "Émile", "Åsa", "Ærø", "Øst", "Adam"]
+        let titles = names.enumerated().map { title($0 + 1, $1) }
+        #expect(
+            Shelf.sorted(titles, by: .title, locale: Locale(identifier: "sv_SE")).map(\.name) == [
+                "Adam", "Émile", "Zorro", "Åsa", "Ängel", "Ærø", "Öga", "Øst",
+            ])
+        #expect(
+            Shelf.sorted(titles, by: .title, locale: Locale(identifier: "da_DK")).map(\.name) == [
+                "Adam", "Émile", "Zorro", "Ängel", "Ærø", "Öga", "Øst", "Åsa",
+            ])
+        #expect(
+            Shelf.sorted(titles, by: .title, locale: Locale(identifier: "en_SE")).map(\.name) == [
+                "Adam", "Ærø", "Ängel", "Åsa", "Émile", "Öga", "Øst", "Zorro",
+            ])
+        // A decomposed Ä (A plus a combining diaeresis) sorts as the composed one.
+        let decomposed = [title(1, "A\u{308}ngel"), title(2, "Zorro")]
+        #expect(Shelf.sorted(decomposed, by: .title, locale: Locale(identifier: "sv_SE")).map(\.id) == [2, 1].map { "xtream#h#vod#\($0)" })
+    }
+
     @Test("movies-and-series-browsing/browse-a-genre-or-sort-the-lot a genre holds every source's titles with its count")
     func genres() {
         let titles = [
