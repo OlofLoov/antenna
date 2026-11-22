@@ -250,6 +250,8 @@ final class SearchTVUITests: XCTestCase {
         moveToResults("search.person.0")
         press(.select)
         XCTAssertTrue(element("person.header").waitForExistence(timeout: 5))
+        // browse-by-person/a-person-s-page, Apple TV focus: the posters arrive after the page, and Menu needs focus on it.
+        expectFocus("person.row.movies.card.xtream#cabin#vod#1")
         press(.menu)
         expect(element("person.header"), "exists == false")
         expect(app.searchFields.firstMatch, "value BEGINSWITH 'mira h'")
