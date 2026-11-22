@@ -11,9 +11,11 @@
 
 ## 3. The lookup service
 
-- [ ] 3.1 Amend the "no server of our own" line in `openspec/config.yaml` and CLAUDE.md's hard constraints as design.md decision 1 words it, after the owner's answer to open question 1
+Blocked on `add-aws-hosting` task group 6: the account, the API stack, the WAF web ACL and the deploy workflow.
+
+- [ ] 3.1 Confirm `add-aws-hosting` task 6.2 amended the "no server of our own" line in `openspec/config.yaml` and CLAUDE.md, after the owner's answer to open question 1
 - [ ] 3.2 Add `Services/lookup/`: the Lambda with `/v1/match`, the matching rule from 2.3 run on the same fixtures, and unit tests
-- [ ] 3.3 Add the CDK stack (HTTP API, Lambda, Secrets Manager key, CloudFront with a one-day cache, WAF rate rule, every log of request content off) and a deploy workflow using OIDC
+- [ ] 3.3 Add the lookup Lambda, its routes, its Secrets Manager key and a one-day CloudFront cache behavior for `/v1/match*` and `/v1/trending*` to the `AntennaApi` stack in `Infra/` from `add-aws-hosting`, with the handler logging no query, body or caller
 - [ ] 3.4 Add the lookup service and TMDB to `docs/architecture/c4-context.drawio.svg` and `c4-container.drawio.svg`
 
 ## 4. Lookup client and cache
