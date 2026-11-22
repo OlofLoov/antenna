@@ -209,4 +209,37 @@ import Testing
         #expect(workflow.contains("bash scripts/publish-web.sh"))
         #expect(workflow.contains("include-hidden-files: true"))
     }
+
+    @Test("antenna-website/the-site-publishes-from-main: the CloudFront upload runs from main and removes deleted pages")
+    func uploadsFromMain() throws {
+        let workflow = try read(".github/workflows/infra.yml", in: Self.root)
+        let push = try #require(matches("\\n  push:\\n(.*?)\\n  [a-z_]+:", in: workflow).first)
+        #expect(push.contains("branches: [main]"))
+        #expect(push.contains("\"Web/**\""))
+        let site = try #require(workflow.components(separatedBy: "\n  site:\n").last)
+        #expect(site.contains("github.event_name != 'pull_request' && github.ref == 'refs/heads/main'"))
+        #expect(site.contains("bash scripts/publish-web.sh"))
+        #expect(site.contains("--delete"))
+        #expect(site.contains("--cache-control \"public, max-age=31536000, immutable\""))
+        #expect(site.contains("create-invalidation"))
+    }
+
+    @Test("antenna-website/the-site-answers-every-address-the-app-uses: the association file is uploaded as JSON")
+    func associationFileIsJSON() throws {
+        let workflow = try read(".github/workflows/infra.yml", in: Self.root)
+        #expect(workflow.contains("aasa=\(Self.associationPath)"))
+        #expect(workflow.contains("--exclude \"$aasa\""))
+        #expect(workflow.contains("aws s3 cp \"$SITE/$aasa\" \"s3://$BUCKET/$aasa\" \\\n            --content-type application/json"))
+    }
+
+    @Test("hosting/the-site-is-served-over-https-on-antenna-s-domain: an unknown address gets a short not-found page")
+    func notFoundPage() throws {
+        let html = try read("404.html")
+        #expect(html.contains("<h1>Page not found</h1>"))
+        #expect(matches("<a\\s[^>]*href=\"([^\"]+)\"", in: html) == ["/"])
+        #expect(html.contains("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"))
+        for tag in ["<script", "<iframe", "<img", "<link", "<object", "<embed", "@import", "url("] {
+            #expect(!html.lowercased().contains(tag), "\(tag) on 404.html")
+        }
+    }
 }
