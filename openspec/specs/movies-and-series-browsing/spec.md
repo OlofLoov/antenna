@@ -181,6 +181,11 @@ The system SHALL replace the rows with a poster grid and count when the user pic
 - **WHEN** the user picks All on iPhone, the section in the sidebar on iPad and Mac, or "Recently added" in the sort menu
 - **THEN** the rows come back
 
+#### Scenario: Letters after Z
+- **GIVEN** the device language is Swedish, and titles "Zorro", "Ängel", "Åsa", "Öga" and "Émile"
+- **WHEN** the user sorts by Title
+- **THEN** the order is "Émile", "Zorro", "Åsa", "Ängel", "Öga"; in Danish or Norwegian Æ, Ø and Å come after Z in that order, and in other languages accented letters sort with their plain letter
+
 ### Requirement: Play a series from the next episode
 The system SHALL show that a series poster is working while its episode list loads and then start the episode Play on its title page starts: the one last in progress, else the first unwatched one after the last one finished. It SHALL say when a series has no episodes or its list fails.
 
