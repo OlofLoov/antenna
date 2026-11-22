@@ -57,6 +57,32 @@ jobs:
       - name: Tests cite existing requirements
         run: bash scripts/check-spec-refs.sh
 
+  site:
+    name: Website
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Web/site
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: Web/site/.nvmrc
+          cache: npm
+          cache-dependency-path: Web/site/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type-check
+        run: npm run check
+      - name: Build
+        run: npm run build
+      - name: Link, route and policy check
+        run: npm test
+      - name: Script size per page
+        run: node scripts/check-site.js
+
   core:
     name: AntennaCore tests
     runs-on: macos-26
