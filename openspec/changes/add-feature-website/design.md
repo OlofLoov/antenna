@@ -94,6 +94,16 @@ Options considered:
 
 The sizes are typical figures from each project's documentation and published comparisons as last read, not measured here; task 2.1 measures the real bundle and the site check holds it under the budget in decision 3.
 
+Measured on 2026-11-23, SvelteKit 3.1.1 and Svelte 5.57.3, gzip level 6 over every script a page loads before it is interactive (its start file and each `modulepreload`): 35.7 KB on the home page and `/404.html`, 36.8 KB on the Terms of Use, 37.1 KB on the Privacy Policy. Two chunks, Svelte's runtime and SvelteKit's router, are 29.6 KB of that on every page; the rest is the layout and the page. `node Web/site/scripts/check-site.js` prints the figure per page, and the site check fails a page over 60 KB.
+
+What the build settles in SvelteKit 3:
+- The configuration is passed to the `sveltekit()` plugin in `vite.config.ts`; SvelteKit 3 no longer reads `svelte.config.js`.
+- `$lib` is gone. Components import from `#lib/...` through the `imports` field of `package.json`, with the `.ts` extension on TypeScript modules.
+- `version.pollInterval` is 0, so the app never asks for `/_app/version.json` on a timer. A visitor on an old version gets a full page load when a moved script fails, as before.
+- SvelteKit's router keeps scroll positions in `sessionStorage`, so the back button returns to the same place. The site's own code stores nothing; the site check fails on `localStorage`, `sessionStorage`, `indexedDB` or `document.cookie` in `src/`.
+- The router's announcer, the hidden element that reads the new title to a screen reader after a navigation, carries its hiding in a `style` attribute. The CSP blocks that attribute and the browser logs one violation on the first navigation; `site.css` hides the announcer with an `#svelte-announcer` rule instead, so it reads the same and never shows. Adding `'unsafe-hashes'` and the attribute's hash to `style-src` in `add-aws-hosting` would silence the log line; nothing else needs it.
+- Plain links to other addresses, such as Apple's license agreement in the Terms of Use, are allowed for the hosts in `LINK_HOSTS` in the site check. Nothing on a page loads from them.
+
 SvelteKit's prerendered pages start the app with an inline `<script>` that differs per page. The site's CSP (`add-aws-hosting` decision 3) is one fixed header with `script-src 'self'`, which blocks inline scripts. Options considered:
 - **Allow `'unsafe-inline'` for scripts.** Throws away most of what the CSP is for. Ruled out.
 - **SvelteKit's `kit.csp` in hash mode, which writes a `<meta>` policy with each page's hashes.** The header still has to allow inline scripts for the meta policy to matter, and a meta policy cannot set `frame-ancestors`.
