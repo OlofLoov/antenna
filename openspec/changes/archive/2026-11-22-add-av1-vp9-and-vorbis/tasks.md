@@ -14,9 +14,9 @@
 - [x] 2.2 `SampleBuilder` sends Vorbis to `SoftwareDecoder`
 - [x] 2.3 The undecodable-sound fixtures and tests use Windows Media Audio
 - [x] 2.4 A test that Vorbis plays, run once the decoder is in the build
-- [ ] 2.5 Publish the FFmpeg release and point `Packages/FFmpeg/Package.swift` at it (owner or coordinator: needs an `ffmpeg-*` tag)
+- [x] 2.5 Publish the FFmpeg release and point `Packages/FFmpeg/Package.swift` at it (owner or coordinator: needs an `ffmpeg-*` tag)
 
 ## 3. Verify
 
-- [ ] 3.1 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 3.2 `/opsx:verify` passes
+- [x] 3.1 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 3.2 `/opsx:verify` passes
