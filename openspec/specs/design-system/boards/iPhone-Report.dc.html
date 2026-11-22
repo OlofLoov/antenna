@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone report a problem, filled in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- Draft for add-support-requests. Pushed inside the Settings sheet from settings.report; presented as a sheet with Cancel in place of the back button when opened from player.report or paywall.report. -->
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <!-- Nav -->
+  <div style="margin-top: 54px; height: 44px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
+    <span style="width: 80px; font-size: 17px; color: {{accent}}">‹ Settings</span>
+    <span style="font-size: 17px; font-weight: 600">Report a problem</span>
+    <!-- report.send: dimmed while the text is empty or the email does not look like one -->
+    <span style="width: 80px; text-align: right; font-size: 17px; font-weight: 600; color: {{accent}}">Send</span>
+  </div>
+  <!-- report.root -->
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 0">
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">What happened?</div>
+    <!-- report.text: at most 4,000 characters -->
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); padding: 12px 14px; min-height: 96px; box-sizing: border-box; font-size: 17px; line-height: 1.35">The guide is empty since this morning. I tried http://example.net:8080/xmltv.php and it loads in Safari.</div>
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
+      <!-- report.topic: Playback, Channels and guide, Movies and series, Sources and sign-in, Purchase, Something else -->
+      <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,0.08)">
+        <span style="flex: 1 1 auto; font-size: 17px">Topic</span>
+        <span style="font-size: 15px; color: {{accent}}">Channels and guide</span>
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
+      </div>
+      <!-- report.email -->
+      <div style="display: flex; align-items: center; height: 48px; padding: 0 14px; box-sizing: border-box; font-size: 17px; color: #A7B0BF">Email for a reply (optional)</div>
+    </div>
+    <!-- report.email.footer -->
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 4px">Without an email, we can read your report but cannot answer it.</div>
+    <!-- report.diagnostic: iPhone, iPad and Mac only, only when the system delivered a report, off each time the form opens -->
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 12px; padding: 8px 14px; box-sizing: border-box">
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 17px">Attach the latest crash or hang report</span>
+        <span style="font-size: 13px; color: #A7B0BF">Crash report from yesterday</span>
+      </div>
+      <span style="width: 51px; height: 31px; border-radius: 16px; background: rgba(255,255,255,0.16); position: relative; flex: 0 0 auto"><span style="position: absolute; left: 2px; top: 2px; width: 27px; height: 27px; border-radius: 14px; background: #FFFFFF"></span></span>
+    </div>
+    <div style="height: 4px"></div>
+    <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">What will be sent</div>
+    <!-- report.preview: one row per value, updated as the user types -->
+    <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column; font-size: 15px">
+      <!-- report.preview.text: the text as it leaves the device -->
+      <div style="padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); line-height: 1.35; color: #D7DEE8">The guide is empty since this morning. I tried [link removed] and it loads in Safari.</div>
+      <div style="display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">Topic</span><span>Channels and guide</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">App</span><span>Antenna 1.4 (52) · English</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">System</span><span>iOS 26.1 · iPhone17,3</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">Purchase</span><span>Unlocked</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">Sources</span><span>Xtream, M3U</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 9px 14px"><span style="color: #A7B0BF">Last playback error</span><span>None</span></div>
+    </div>
+    <!-- report.preview.footer -->
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 8px">Links and logins are removed from your text. Source addresses, names, logins and channels are never sent.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
