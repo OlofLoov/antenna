@@ -16,3 +16,9 @@ Packages/*/.build/
 
 # Secrets / local config
 Config/Local.xcconfig
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan

@@ -1,0 +1,180 @@
+name: Infra
+
+on:
+  pull_request:
+    paths:
+      - "Infra/**"
+      - .github/workflows/infra.yml
+  push:
+    branches: [main]
+    paths:
+      - "Infra/**"
+      - .github/workflows/infra.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  TERRAFORM_VERSION: 1.17.2
+  AWS_REGION: eu-north-1
+  TF_IN_AUTOMATION: "1"
+  TF_INPUT: "0"
+
+jobs:
+  check:
+    name: Terraform checks
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - name: Format
+        run: terraform fmt -check -recursive -diff Infra
+      - name: Validate and test
+        run: |
+          for root in Infra/bootstrap Infra/ci; do
+            echo "::group::$root"
+            terraform -chdir="$root" init -backend=false -lockfile=readonly
+            terraform -chdir="$root" validate
+            if [ -d "$root/tests" ]; then
+              terraform -chdir="$root" test
+            fi
+            echo "::endgroup::"
+          done
+
+  plan:
+    name: Terraform plan
+    needs: check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    steps:
+      - name: Check the AWS setup
+        id: gate
+        env:
+          ACCOUNT: ${{ vars.AWS_ACCOUNT_ID }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          if [ -z "$ACCOUNT" ]; then
+            echo "::notice title=Plan skipped::AWS_ACCOUNT_ID is not set, so nothing is planned against AWS."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          elif [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ]; then
+            echo "::notice title=Plan skipped::Pull requests from forks get no AWS token."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.gate.outputs.ready == 'true'
+        uses: actions/checkout@v7
+      - if: steps.gate.outputs.ready == 'true'
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - if: steps.gate.outputs.ready == 'true'
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antenna-diff
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Plan
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          STATE_BUCKET: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          TF_VAR_github_repository: ${{ github.repository }}
+          TF_VAR_state_bucket: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+        run: |
+          body="$RUNNER_TEMP/plan.md"
+          printf '<!-- infra-plan -->\n### Terraform plan\n\n' > "$body"
+          for root in Infra/ci; do
+            terraform -chdir="$root" init -backend-config="bucket=$STATE_BUCKET" -lockfile=readonly
+            terraform -chdir="$root" plan -no-color -lock-timeout=120s -out=pr.tfplan
+            terraform -chdir="$root" show -no-color pr.tfplan > "$RUNNER_TEMP/plan.txt"
+            summary=$(grep -m1 -E '^(Plan:|No changes\.)' "$RUNNER_TEMP/plan.txt" || echo "see the run log")
+            {
+              printf '<details><summary><code>%s</code>: %s</summary>\n\n```\n' "$root" "$summary"
+              head -c 30000 "$RUNNER_TEMP/plan.txt"
+              printf '\n```\n\n</details>\n\n'
+            } >> "$body"
+          done
+      - name: Comment
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          body="$RUNNER_TEMP/plan.md"
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq '.[] | select(.body | startswith("<!-- infra-plan -->")) | .id' | head -n1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F "body=@$body" > /dev/null
+          else
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$body"
+          fi
+
+  changes:
+    name: What changed
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      infra: ${{ steps.diff.outputs.infra }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Compare with the previous push
+        id: diff
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA")
+          else
+            changed=$(git ls-files)
+          fi
+          if grep -qE '^(Infra/|\.github/workflows/infra\.yml$)' <<< "$changed"; then
+            echo "infra=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "infra=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  apply:
+    name: Terraform apply
+    needs: changes
+    if: needs.changes.outputs.infra == 'true' && vars.AWS_ACCOUNT_ID != '' && vars.ANTENNA_DOMAIN != '' && vars.AWS_ALERT_EMAIL != ''
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antenna-deploy
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Apply
+        env:
+          STATE_BUCKET: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          TF_VAR_github_repository: ${{ github.repository }}
+          TF_VAR_state_bucket: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+        run: |
+          for root in Infra/ci; do
+            echo "::group::$root"
+            terraform -chdir="$root" init -backend-config="bucket=$STATE_BUCKET" -lockfile=readonly
+            terraform -chdir="$root" apply -auto-approve -lock-timeout=300s
+            echo "::endgroup::"
+          done
