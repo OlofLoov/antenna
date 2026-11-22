@@ -382,4 +382,12 @@ else
   printf 'ok   %s\n' "hosting/nothing-keeps-a-record-of-requests: no request logging in Infra"
 fi
 
+tf_mx=$(grep -rnE --include='*.tf' 'type[[:space:]]*=[[:space:]]*"MX"' Infra 2>/dev/null | grep -vE '^[^:]+:[0-9]+:[[:space:]]*(#|//)' || true)
+if [[ -n "$tf_mx" ]]; then
+  printf 'FAIL %s\n%s\n\n' "hosting/the-domain-receives-no-email: no MX record in Infra" "$tf_mx"
+  status=1
+else
+  printf 'ok   %s\n' "hosting/the-domain-receives-no-email: no MX record in Infra"
+fi
+
 exit "$status"
