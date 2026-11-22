@@ -6,6 +6,7 @@ import {
 	BUILD,
 	BUDGET,
 	checkBudgets,
+	checkEmails,
 	checkLinks,
 	checkPolicy,
 	checkProviders,
@@ -70,6 +71,123 @@ describe('the built site', () => {
 		expect(privacy).toMatch(/Last updated: [A-Z][a-z]+ \d{1,2}, \d{4}/);
 		const terms = textOf(readFileSync(join(BUILD, 'terms/index.html'), 'utf8'));
 		expect(terms).toContain('You are responsible for having the right to watch everything you add');
+	});
+});
+
+describe('the pages', () => {
+	/** @param {string} path */
+	const html = (path) => readFileSync(join(BUILD, path), 'utf8');
+	const areaSlugs = [
+		'sources',
+		'live-tv',
+		'guide',
+		'movies-and-series',
+		'multi-view',
+		'apple-tv',
+		'setup-from-iphone',
+		'sync-and-profiles',
+		'privacy'
+	];
+
+	// feature-website/the-home-page-says-what-antenna-is
+	test('the home page says what Antenna is before its first screenshot', () => {
+		const home = html('index.html');
+		const beforeImage = textOf(home.slice(0, home.indexOf('<img')));
+		expect(beforeImage).toContain('Your TV sources, on every Apple screen.');
+		expect(beforeImage).toContain('iPhone, iPad, Mac and Apple TV');
+		expect(beforeImage).toContain('It includes no channels.');
+		expect(beforeImage).toContain('A purchase unlocks it');
+		expect(beforeImage).toContain('Coming soon to the App Store');
+	});
+
+	// feature-website/every-feature-area-has-a-section-and-a-page
+	test('every area has a home section with a link, and a page that leads on', () => {
+		const home = html('index.html');
+		areaSlugs.forEach((slug, index) => {
+			expect(home).toContain(`<section class="area`);
+			expect(home).toMatch(new RegExp(`id="${slug}"`));
+			expect(home).toContain(`href="/features/${slug}/"`);
+			const page = html(`features/${slug}/index.html`);
+			const next = areaSlugs[(index + 1) % areaSlugs.length];
+			expect(page, slug).toContain(`href="/features/${next}/"`);
+			expect(page, slug).toContain('href="/"');
+			expect(textOf(page), slug).toMatch(/On (iPhone|Apple TV)/);
+			expect(page.match(/<h2[^>]*>/g)?.length ?? 0, slug).toBeGreaterThan(2);
+			for (const image of page.match(/<img[^>]*>/g) ?? []) expect(image).toMatch(/alt="[^"]{20,}"/);
+		});
+		const features = html('features/index.html');
+		for (const slug of areaSlugs) expect(features).toContain(`href="/features/${slug}/"`);
+	});
+
+	// feature-website/every-feature-area-has-a-section-and-a-page
+	test('multi-view says four channels, which one is heard, and not on iPhone', () => {
+		const text = textOf(html('features/multi-view/index.html'));
+		expect(text).toContain('up to four');
+		expect(text).toContain('Only the highlighted tile plays its sound.');
+		expect(text).toContain('On Apple TV, iPad and Mac. Not on iPhone.');
+	});
+
+	// feature-website/the-site-shows-only-what-the-app-does
+	test('nothing from a change that has not shipped', () => {
+		const movies = textOf(html('features/movies-and-series/index.html')).toLowerCase();
+		for (const word of ['score', 'trending', 'tmdb']) expect(movies).not.toContain(word);
+	});
+
+	// feature-website/pricing-says-how-buying-works
+	test('pricing names both purchases, Family Sharing and the region, and no amount', () => {
+		const page = html('pricing/index.html');
+		const text = textOf(page);
+		for (const phrase of [
+			'free to download',
+			'Yearly',
+			'Renews every year until you cancel.',
+			'Lifetime',
+			'Family Sharing',
+			'One purchase covers the family',
+			'The App Store shows the price for your region',
+			"cancel in your Apple Account's subscription settings"
+		])
+			expect(text).toContain(phrase);
+		expect(page).toContain('href="/terms/"');
+		expect(text).not.toMatch(/[$€£¥]\s?\d|\d\s?(kr|sek|usd|eur)\b|\d+[.,]\d{2}/i);
+	});
+
+	// feature-website/support-answers-questions-and-points-to-the-app
+	test('support answers the common questions and names Report a problem', () => {
+		const page = html('support/index.html');
+		for (const id of [
+			'does-antenna-include-channels',
+			'a-channel-will-not-play',
+			'the-guide-is-empty-or-wrong',
+			'unlocking-on-a-new-device',
+			'family-sharing',
+			'canceling-the-yearly-subscription',
+			'deleting-your-data'
+		])
+			expect(page).toMatch(new RegExp(`<h2 id="${id}"`));
+		const text = textOf(page);
+		expect(text).toContain('Report a problem');
+		expect(text).toContain('Restore purchase');
+		expect(text).toContain('Format not supported');
+	});
+
+	// feature-website/support-answers-questions-and-points-to-the-app
+	test('no page shows an email address, and the legal pages point to support', () => {
+		expect(checkEmails()).toEqual([]);
+		for (const page of ['terms/index.html', 'privacy/index.html'])
+			expect(html(page)).toMatch(/see the <a href="\/support\/"/);
+	});
+
+	// feature-website/every-page-shares-one-header-and-footer
+	test('the header links Features, Pricing and Support, the footer Support and the legal pages', () => {
+		for (const page of pages()) {
+			const header = page.html.match(/<header[\s\S]*?<\/header>/)?.[0] ?? '';
+			for (const href of ['/', '/features/', '/pricing/', '/support/'])
+				expect(header, page.name).toContain(`href="${href}"`);
+			const footer = page.html.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? '';
+			for (const href of ['/support/', '/terms/', '/privacy/'])
+				expect(footer, page.name).toContain(`href="${href}"`);
+		}
 	});
 });
 
