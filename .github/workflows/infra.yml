@@ -9,7 +9,11 @@ on:
     branches: [main]
     paths:
       - "Infra/**"
+      - "Web/**"
+      - scripts/publish-web.sh
+      - scripts/make-review-guide.py
       - .github/workflows/infra.yml
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,7 +43,7 @@ jobs:
         run: terraform fmt -check -recursive -diff Infra
       - name: Validate and test
         run: |
-          for root in Infra/bootstrap Infra/ci; do
+          for root in Infra/bootstrap Infra/ci Infra/antenna; do
             echo "::group::$root"
             terraform -chdir="$root" init -backend=false -lockfile=readonly
             terraform -chdir="$root" validate
@@ -63,6 +67,8 @@ jobs:
         id: gate
         env:
           ACCOUNT: ${{ vars.AWS_ACCOUNT_ID }}
+          DOMAIN: ${{ vars.ANTENNA_DOMAIN }}
+          ALERT_EMAIL: ${{ vars.AWS_ALERT_EMAIL }}
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
           if [ -z "$ACCOUNT" ]; then
@@ -73,6 +79,13 @@ jobs:
             echo "ready=false" >> "$GITHUB_OUTPUT"
           else
             echo "ready=true" >> "$GITHUB_OUTPUT"
+            roots=Infra/ci
+            if [ -n "$DOMAIN" ] && [ -n "$ALERT_EMAIL" ]; then
+              roots="$roots Infra/antenna"
+            else
+              echo "::notice title=Infra/antenna not planned::ANTENNA_DOMAIN or AWS_ALERT_EMAIL is not set."
+            fi
+            echo "roots=$roots" >> "$GITHUB_OUTPUT"
           fi
       - if: steps.gate.outputs.ready == 'true'
         uses: actions/checkout@v7
@@ -92,10 +105,13 @@ jobs:
           STATE_BUCKET: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
           TF_VAR_github_repository: ${{ github.repository }}
           TF_VAR_state_bucket: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          TF_VAR_domain: ${{ vars.ANTENNA_DOMAIN }}
+          TF_VAR_alert_email: ${{ vars.AWS_ALERT_EMAIL }}
+          ROOTS: ${{ steps.gate.outputs.roots }}
         run: |
           body="$RUNNER_TEMP/plan.md"
           printf '<!-- infra-plan -->\n### Terraform plan\n\n' > "$body"
-          for root in Infra/ci; do
+          for root in $ROOTS; do
             terraform -chdir="$root" init -backend-config="bucket=$STATE_BUCKET" -lockfile=readonly
             terraform -chdir="$root" plan -no-color -lock-timeout=120s -out=pr.tfplan
             terraform -chdir="$root" show -no-color pr.tfplan > "$RUNNER_TEMP/plan.txt"
@@ -171,10 +187,78 @@ jobs:
           STATE_BUCKET: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
           TF_VAR_github_repository: ${{ github.repository }}
           TF_VAR_state_bucket: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          TF_VAR_domain: ${{ vars.ANTENNA_DOMAIN }}
+          TF_VAR_alert_email: ${{ vars.AWS_ALERT_EMAIL }}
         run: |
-          for root in Infra/ci; do
+          for root in Infra/ci Infra/antenna; do
             echo "::group::$root"
             terraform -chdir="$root" init -backend-config="bucket=$STATE_BUCKET" -lockfile=readonly
             terraform -chdir="$root" apply -auto-approve -lock-timeout=300s
             echo "::endgroup::"
           done
+
+  site:
+    name: Upload site
+    needs: [changes, apply]
+    if: >-
+      !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' &&
+      needs.apply.result != 'failure' &&
+      vars.AWS_ACCOUNT_ID != '' && vars.SITE_BUCKET != '' && vars.SITE_DISTRIBUTION_ID != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Look for the site app
+        id: app
+        run: |
+          if [ -f Web/site/package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.app.outputs.present == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: Web/site/.nvmrc
+          cache: npm
+          cache-dependency-path: Web/site/package-lock.json
+      - name: Build the site app
+        if: steps.app.outputs.present == 'true'
+        working-directory: Web/site
+        run: |
+          npm ci
+          npm run build
+      - name: Assemble the site
+        env:
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          PRESENT: ${{ steps.app.outputs.present }}
+        run: |
+          if [ "$PRESENT" = "true" ]; then
+            bash scripts/publish-web.sh "$RUNNER_TEMP/site" Web/site/build
+          else
+            bash scripts/publish-web.sh "$RUNNER_TEMP/site"
+          fi
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antenna-site
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload
+        env:
+          BUCKET: ${{ vars.SITE_BUCKET }}
+          SITE: ${{ runner.temp }}/site
+        run: |
+          aasa=.well-known/apple-app-site-association
+          if [ -d "$SITE/_app/immutable" ]; then
+            aws s3 sync "$SITE/_app/immutable" "s3://$BUCKET/_app/immutable" \
+              --cache-control "public, max-age=31536000, immutable" --only-show-errors
+          fi
+          aws s3 sync "$SITE" "s3://$BUCKET" --delete \
+            --exclude "_app/immutable/*" --exclude "$aasa" --only-show-errors
+          aws s3 cp "$SITE/$aasa" "s3://$BUCKET/$aasa" \
+            --content-type application/json --only-show-errors
+      - name: Invalidate the cache
+        env:
+          DISTRIBUTION: ${{ vars.SITE_DISTRIBUTION_ID }}
+        run: aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION" --paths "/*" --query Invalidation.Id --output text

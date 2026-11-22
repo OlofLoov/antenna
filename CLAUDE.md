@@ -24,6 +24,8 @@ actionlint                                               # workflow files, inclu
 (cd Web/site && npm run build && npm test)                # prerender every page, then the link, route, policy and budget check
 scripts/publish-web.sh /tmp/site Web/site/build           # the final file tree: plain files in Web/ plus the built app
 scripts/site-screenshots.sh en                           # the site's pictures from the newest store-screenshots artifact, with gh and sips
+terraform fmt -check -recursive Infra                    # Terraform 1.17.2, pinned in each root
+terraform -chdir=Infra/antenna init -backend=false && terraform -chdir=Infra/antenna test   # infra plans against a mocked AWS; Infra/ci too
 scripts/render-icons.sh                                  # app icons and Apple TV brand assets from design/icon/*.svg
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
@@ -68,6 +70,10 @@ associated domains, and the app runs without sync.
   names them. `WebsiteTests`, `SetupPageTests` and `ReleaseTests` in
   AntennaCore check the plain files and the legal text, the site's Vitest
   checks the built pages.
+- `Infra/` the Terraform for AWS: `bootstrap/` (state bucket), the `ci` and
+  `antenna` roots, and `modules/`. `.github/workflows/infra.yml` plans on PRs,
+  applies on main and uploads the site. Nothing runs until the owner sets the
+  AWS repository variables (add-aws-hosting design.md decision 9).
 - `docs/release/` the App Review notes and the App Store Connect privacy answers.
 - `design/icon/` the SVG sources of the app icons. `scripts/render-icons.sh`
   copies them into `Apps/Mobile/AppIcon.icon` (Icon Composer, iPhone, iPad
