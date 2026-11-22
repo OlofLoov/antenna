@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Fails when a Swift test or a site test cites a requirement that does not exist.
+# Fails when a Swift test, a site test or a Terraform test cites a requirement that does not exist.
 # A citation is <capability>/<requirement-slug>, where the slug is the
 # requirement name lowercased with each run of other characters turned into
 # one hyphen. A requirement exists when it is in openspec/specs, or in the
@@ -39,6 +39,7 @@ fi
 {
     grep -rhoE "(^|[^a-z0-9/-])($capabilities)/[a-z0-9][a-z0-9-]*" Apps Packages --include='*.swift' || true
     grep -rhoE "(^|[^a-z0-9/-])($capabilities)/[a-z0-9][a-z0-9-]*" Web/site/tests Web/site/scripts --include='*.js' || true
+    grep -rhoE "(^|[^a-z0-9/-])($capabilities)/[a-z0-9][a-z0-9-]*" Infra --include='*.tftest.hcl' || true
 } | sed -E 's/^[^a-z]*//' | sort -u >"$cited"
 
 missing=$(comm -23 "$cited" "$valid")

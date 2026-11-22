@@ -369,4 +369,17 @@ else
   printf 'ok   %s\n' "localization: Core reads the device's language, calendar and time zone only as defaults"
 fi
 
+# Terraform configures no request log: no CloudFront standard or real-time
+# logs, no S3 server access logs, no API Gateway access logs, no WAF logging
+# or sampled requests (hosting/nothing-keeps-a-record-of-requests).
+tf_logging=$(grep -rnE --include='*.tf' \
+  '(^|[^A-Za-z0-9_])(logging_config|access_log_settings|aws_s3_bucket_logging|aws_cloudfront_realtime_log_config|aws_wafv2_web_acl_logging_configuration|realtime_log_config_arn)([^A-Za-z0-9_]|$)|sampled_requests_enabled[[:space:]]*=[[:space:]]*true' \
+  Infra 2>/dev/null | grep -vE '^[^:]+:[0-9]+:[[:space:]]*(#|//)' || true)
+if [[ -n "$tf_logging" ]]; then
+  printf 'FAIL %s\n%s\n\n' "hosting/nothing-keeps-a-record-of-requests: no request logging in Infra" "$tf_logging"
+  status=1
+else
+  printf 'ok   %s\n' "hosting/nothing-keeps-a-record-of-requests: no request logging in Infra"
+fi
+
 exit "$status"
