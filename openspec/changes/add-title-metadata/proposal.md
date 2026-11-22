@@ -51,7 +51,8 @@ Out of scope:
 - AntennaCore: id decoding, a title name cleaner, a matcher, the lookup client and its cache rules, and matching a trending list against the catalogue.
 - Apps: title page score row, Settings switch and About credit, `PreferencesRecord` gains a defaulted field.
 - A new external system and container in `docs/architecture/` (the lookup service and TMDB).
-- Infrastructure outside the app: an AWS account with the lookup service, deployed from this repo.
+- Infrastructure outside the app: the lookup service on the AWS account, API and deploy workflow from `add-aws-hosting`, deployed from this repo.
+- Depends on `add-aws-hosting` for the CDK app in `Infra/`, the API stack, CloudFront, WAF and the OIDC deploy role.
 - Web: Privacy Policy. Docs: `docs/release/app-privacy.md` keeps "Data Not Collected" with the reason updated.
 - Boards: new `iPhone-Title-Scores`, `iPad-Title-Scores`, `TV-Title-Scores`, `iPhone-Settings-Lookups`, `TV-Settings-Lookups`.
 - Depends on the archived `add-title-detail-and-episode-picker`, `add-sources-and-settings`, `add-m3u-vod-fallback` and `add-xtream-panel-links` work.
