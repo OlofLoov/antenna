@@ -243,6 +243,7 @@ extension ShellUITests {
     }
 
     // profiles/adding-a-profile
+    // tvos-shell/open-settings: Settings holds the channel paused, so it is still paused back on the Profiles row.
     func testOneProfileAddsFromSettings() {
         launch("channels")
         expectEngine("playing loads=1 file=a1.ts")
@@ -254,6 +255,6 @@ extension ShellUITests {
         expectFocus("profiles.tile.0")
         press(.menu)
         expectProfilesRowFocused()
-        expectEngine("playing loads=1 file=a1.ts")
+        expectEngine("paused loads=1 file=a1.ts")
     }
 }
