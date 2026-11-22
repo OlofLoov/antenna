@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV report a problem</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<!-- Draft for add-support-requests. Full screen over Settings, the player error or the paywall. Fields on the left, the list of what will be sent on the right. No crash report box on Apple TV: MetricKit is not on tvOS. -->
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+  <div style="position: absolute; left: 80px; top: 44px; font-size: 52px; font-weight: 800; letter-spacing: -0.5px">Report a problem</div>
+
+  <!-- report.root: field column. Focus order: text, Topic, Email, Send, then right to report.preview -->
+  <div style="position: absolute; left: 80px; top: 150px; width: 860px; display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">What happened?</div>
+    <!-- report.text: focused. Select opens the system keyboard; an iPhone nearby gets the Apple TV Keyboard notification. -->
+    <div style="border-radius: 16px; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,.45); padding: 24px 28px; min-height: 200px; box-sizing: border-box; font-size: 29px; line-height: 1.35">Channels from one source show a black picture with sound since the last update.</div>
+    <!-- report.text.hint -->
+    <div style="font-size: 23px; color: #A7B0BF; padding: 0 4px">Press select to type, or type on an iPhone nearby.</div>
+    <!-- report.topic: opens the choices list, as TV-Settings-Preferences-Choices -->
+    <div style="height: 80px; border-radius: 16px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 28px; box-sizing: border-box; font-size: 29px">
+      <span style="flex: 1 1 auto">Topic</span><span style="color: #A7B0BF">Playback ›</span>
+    </div>
+    <!-- report.email -->
+    <div style="height: 80px; border-radius: 16px; background: rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 28px; box-sizing: border-box; font-size: 29px; color: #A7B0BF">Email for a reply (optional)</div>
+    <!-- report.email.footer -->
+    <div style="font-size: 23px; line-height: 1.4; color: #A7B0BF; padding: 0 4px">Without an email, we can read your report but cannot answer it.</div>
+    <!-- report.send -->
+    <div style="display: flex; gap: 24px; padding-top: 8px">
+      <div style="height: 72px; padding: 0 56px; border-radius: 36px; background: rgba(255,255,255,0.12); font-size: 29px; font-weight: 600; display: flex; align-items: center">Send</div>
+    </div>
+  </div>
+
+  <!-- report.preview: scrolls with focus when it is longer than the screen -->
+  <div style="position: absolute; left: 1020px; top: 150px; width: 820px; display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF; padding: 0 4px">What will be sent</div>
+    <div style="border-radius: 20px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column; font-size: 25px">
+      <div style="padding: 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.08); line-height: 1.4; color: #D7DEE8">Channels from one source show a black picture with sound since the last update.</div>
+      <div style="display: flex; justify-content: space-between; padding: 16px 28px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">Topic</span><span>Playback</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 16px 28px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">App</span><span>Antenna 1.4 (52) · English</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 16px 28px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">System</span><span>tvOS 26.1 · AppleTV14,1</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 16px 28px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">Purchase</span><span>Unlocked</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 16px 28px; border-bottom: 1px solid rgba(255,255,255,0.08)"><span style="color: #A7B0BF">Sources</span><span>Xtream, M3U, Jellyfin</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 16px 28px"><span style="color: #A7B0BF">Last playback error</span><span>None</span></div>
+    </div>
+    <!-- report.preview.footer -->
+    <div style="font-size: 23px; line-height: 1.4; color: #A7B0BF; padding: 0 4px">Links and logins are removed from your text. Source addresses, names, logins and channels are never sent.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
