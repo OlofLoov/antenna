@@ -8,7 +8,8 @@ See proposal.md for why. What exists on 2026-11-22:
 - `Web/CNAME` holds antenna.code-crave.se. The code-crave.se DNS has an `antenna` record pointing at GitHub Pages; that zone is not in this repo.
 - No AWS account, no server, no CDK. `add-title-metadata` decision 1 planned `Services/lookup/` with "a TypeScript Lambda and a CDK stack", an OIDC deploy workflow, Secrets Manager, CloudFront with a one-day cache, a WAF rate rule and every request log off. `add-support-requests` decision 1 puts `/v1/support` on the same stack. Both are proposed; neither has built any of it.
 - The app is not published. Nothing has been uploaded to App Store Connect or TestFlight (`app-release/merging-the-release-pull-request-publishes-the-release`), so no installed build, listing or user's link holds the old domain. The move is a rename.
-- The owner wants no email (2026-11-22). `add-support-requests` is being changed by another agent to drop the email field and the support address.
+- The owner wants no email (2026-11-22). `add-support-requests` has dropped the email field and the support address.
+- The owner took every recommendation below on 2026-11-22, and asked for the website to be a single-page app. `add-feature-website` decision 2 picks SvelteKit, prerendered to one HTML file per address, so the bucket still holds plain files; decision 3 here covers what that changes for hosting.
 
 No screens. This change draws no boards; it edits the address text on three existing ones.
 
@@ -60,7 +61,9 @@ The specs name no domain; they say "the app's domain". The `antenna-website` Pur
 
 ## Decisions
 
-### 1. Where the infrastructure lives: one CDK app in `Infra/`
+### 1. Where the infrastructure lives: one CDK app in `Infra/` (decided)
+
+The owner chose option A on 2026-11-22.
 
 Options considered:
 - **A. One CDK app in `Infra/`, Lambda code in `Services/<name>/` (chosen).** `Infra/` is a TypeScript CDK app (`bin/antenna.ts`, `lib/*-stack.ts`, `test/`), with Jest snapshot and assertion tests. Each service's handler code lives in its own package under `Services/` and the API stack bundles it with `NodejsFunction` (esbuild). The domain, the certificates, the WAF web ACL and the roles exist once.
@@ -70,7 +73,7 @@ Options considered:
 
 `Infra/` uses Node 22 and a pinned `aws-cdk-lib`. Its tests and `cdk synth` run in PR CI (`infra.yml`), so the Swift jobs stay as they are. `scripts/check-rules.sh` gains a grep that fails on `accessLog`, `enableLogging: true`, `logBucket` or `serverAccessLogs` in `Infra/lib/` (decision 5).
 
-### 2. Stacks and regions
+### 2. Stacks and regions (decided)
 
 The API runs in eu-north-1 (Stockholm): the owner is in Sweden, every service the API needs exists there, and it is among the cheaper EU regions. us-east-1 only where AWS requires it: ACM certificates used by CloudFront and WAF web ACLs with CloudFront scope.
 
@@ -83,7 +86,7 @@ The API runs in eu-north-1 (Stockholm): the owner is in Sweden, every service th
 
 Cross-region values (certificate and web ACL ARNs) pass with `crossRegionReferences: true`. `AntennaCi` is deployed once by hand by the owner (decision 9) and then by the workflow like the rest.
 
-### 3. The site: private S3 and CloudFront with Origin Access Control
+### 3. The site: private S3 and CloudFront with Origin Access Control (decided)
 
 Options considered:
 - **S3 static website hosting alone.** The website endpoint is HTTP only; a custom domain gets no HTTPS. Ruled out.
@@ -92,19 +95,23 @@ Options considered:
 - **Keep GitHub Pages and use AWS only for the API.** No work for the site, but two hosts, two DNS paths and no response headers policy; Pages also cannot send a Content-Security-Policy.
 
 Details:
-- A viewer-request CloudFront Function maps `/terms` and `/terms/` to `/terms/index.html`, `/` to `/index.html`, and `www.<antenna-domain>` to a 301 on the apex. The S3 REST origin has no index documents of its own.
-- `/404.html` is the error page for 403 and 404 from the origin, answered with 404.
+- A viewer-request CloudFront Function maps `/terms` and `/terms/` to `/terms/index.html`, `/` to `/index.html`, and `www.<antenna-domain>` to a 301 on the apex. The S3 REST origin has no index documents of its own. Paths with a file extension, such as `/_app/immutable/...js` or `/review/antenna-review.m3u`, and `/.well-known/apple-app-site-association` pass unchanged.
+- `/404.html` is the error page for 403 and 404 from the origin, answered with status 404. Every route of the single-page app is prerendered to its own `index.html` (`add-feature-website` decision 2), so no address needs the usual single-page fallback of `index.html` with status 200. That fallback is ruled out: it would answer every mistyped or removed address with the home page and a success status, which search engines index and link checkers miss (`hosting/the-site-is-served-over-https-on-antenna-s-domain`). Until `add-feature-website` ships, `Web/404.html` is a hand-written page; after it, the build writes `/404.html`.
 - Viewer protocol policy: redirect HTTP to HTTPS. TLS 1.2 minimum (`TLSv1.2_2021`).
-- Response headers policy: `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`, `Content-Security-Policy: default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`, `Referrer-Policy: no-referrer`, `X-Content-Type-Options: nosniff`. With the CSP, the browser enforces "nothing loads from another address" (`antenna-website/the-pages-read-on-a-phone-and-in-dark-mode`) on top of the test.
-- Caching: the managed CachingOptimized policy, a one-hour default TTL for HTML and a day for images, and an invalidation of `/*` after each upload (the first 1,000 paths a month are free).
+- Response headers policy for the site: `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`, `Referrer-Policy: no-referrer`, `X-Content-Type-Options: nosniff`, and `Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`. With it the browser refuses any script, stylesheet, image, font, frame or request from another address, any inline script or style, and any form, on top of the site's own checks (`hosting/pages-run-only-the-site-s-own-code`, `antenna-website/the-pages-read-on-a-phone-and-in-dark-mode`). `connect-src 'self'` covers the app's own fetches, such as its version file. The value is one fixed string in `AntennaSite`; a page edit never changes it, so site uploads need no `cdk deploy`.
+- A second response headers policy on a `/setup*` cache behavior, for the setup page that stays outside the app: the same headers with `Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`. It allows the page's inline style attributes and no script at all (`iphone-as-setup-device/an-iphone-without-antenna-gets-a-plain-page`).
+- Before `add-feature-website` ships, the legal pages carry inline `<style>` blocks and the site has no script. If this change deploys first, the site policy starts as `default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`, and the single-page app's first PR sets the policy above (`add-feature-website` task 2.4).
+- Options considered for the CSP: a `<meta http-equiv>` tag in each page, which SvelteKit can write with per-page script hashes, but a meta policy cannot set `frame-ancestors` and is only as strict as the page that carries it; a header with per-page hashes from a CloudFront KeyValueStore and a viewer-response function, which needs the store updated on every site upload; and one fixed header (chosen), which works because the site build moves SvelteKit's inline start script into a file (`add-feature-website` decision 2).
+- Caching: the managed CachingOptimized policy, a one-hour default TTL for HTML and a day for images, a year with `Cache-Control: public, max-age=31536000, immutable` for the app's hashed files under `/_app/immutable/`, and an invalidation of `/*` after each upload (the first 1,000 paths a month are free).
+- The upload runs in two steps: `aws s3 sync` of `/_app/immutable/` without `--delete`, then everything else with `--delete`. A visitor who loaded the previous version can still fetch its scripts when they move to another page. The old hashed files stay in the bucket; they are a few hundred KB a release.
 - The association file has no extension, so the upload sets `Content-Type: application/json` on it explicitly. A test in `WebsiteTests` reads the workflow and checks for it.
 - `.nojekyll` and `CNAME` were for GitHub Pages and are removed.
 
-### 4. Deploy: GitHub Actions, OIDC, one environment
+### 4. Deploy: GitHub Actions, OIDC, one environment (decided)
 
 A new workflow, `.github/workflows/infra.yml`:
 - On a pull request touching `Infra/**`, `Services/**` or the workflow: install, test, `cdk synth`, and `cdk diff` with the read-only `antenna-diff` role, posted as one sticky PR comment. Pull requests from forks get no OIDC token and skip the diff.
-- On push to main touching those paths or `Web/**`, `scripts/publish-web.sh`, `scripts/make-review-guide.py`: a `deploy` job in the `production` environment runs `cdk deploy --all --require-approval never` with `antenna-deploy`, then a `site` job builds the folder with `scripts/publish-web.sh` and runs `aws s3 sync --delete` and the invalidation with `antenna-site`.
+- On push to main touching those paths or `Web/**`, `scripts/publish-web.sh`, `scripts/make-review-guide.py`: a `deploy` job in the `production` environment runs `cdk deploy --all --require-approval never` with `antenna-deploy`, then a `site` job sets up Node 22, runs `npm ci` and `npm run build` in `Web/site/`, builds the folder with `scripts/publish-web.sh <folder> Web/site/build`, and runs the two-step `aws s3 sync` and the invalidation from decision 3 with `antenna-site`. The site job also runs on pushes touching `Web/site/**`.
 - `workflow_dispatch` for the site job, which `release.yml` calls after a release instead of `gh workflow run pages.yml`.
 
 Roles in `AntennaCi`, each trusting `token.actions.githubusercontent.com` with audience `sts.amazonaws.com`:
@@ -117,11 +124,11 @@ Roles in `AntennaCi`, each trusting `token.actions.githubusercontent.com` with a
 
 The `production` environment allows only the main branch. Who approves:
 - Options considered: no reviewer (the merge is the approval, as for the site), the owner as required reviewer on every infrastructure deploy, or the owner only for changes to IAM, DNS or WAF.
-- Recommended: the owner as required reviewer on `production`, which gates `cdk deploy`. Site uploads use `antenna-site` without the environment, so a page edit is live within minutes of the merge, the way Pages works today. Infrastructure changes are rare, and the PR's diff comment tells the owner what he is approving. The third option needs a script that reads the diff, which is more to get wrong than one click.
+- Chosen by the owner on 2026-11-22: the owner as required reviewer on `production`, which gates `cdk deploy`. Site uploads use `antenna-site` without the environment, so a page edit is live within minutes of the merge, the way Pages works today. Infrastructure changes are rare, and the PR's diff comment tells the owner what he is approving. The third option needs a script that reads the diff, which is more to get wrong than one click.
 
-Environments: one, `production`, in one AWS account. A staging account is added when a service has users who would notice a bad deploy; the stacks take the account and domain from context, so a second set is a second `cdk deploy` with other values.
+Environments: one, `production`, in one AWS account, decided by the owner on 2026-11-22. The other option was a staging account next to it, at twice the fixed cost and a second set of roles. A staging account is added when a service has users who would notice a bad deploy; the stacks take the account and domain from context, so a second set is a second `cdk deploy` with other values.
 
-### 5. No request logs
+### 5. No request logs (decided)
 
 The Privacy Policy says Code Crave keeps nothing about the user, and both later services promise to keep no record of requests. So, by configuration in the stacks, checked by assertion tests in `Infra/test/`:
 - CloudFront standard logs off and no real-time log config, on every distribution.
@@ -131,12 +138,13 @@ The Privacy Policy says Code Crave keeps nothing about the user, and both later 
 - Lambda: a log group per function created by the stack with 14 days' retention. The handlers log the route, the status and the error class, never the query, body, headers or source IP. Each later service adds a test for its handler.
 - CloudTrail's default event history (90 days of management events, the AWS API calls the deploy role makes) stays. It records deploys, not visitors.
 
-### 6. The API: HTTP API behind CloudFront and WAF
+### 6. The API: HTTP API behind CloudFront and WAF (decided)
 
 AWS WAF cannot attach to an API Gateway HTTP API, only to REST APIs, CloudFront, ALB and a few others. `add-title-metadata` also wants CloudFront's cache in front. So:
 - The HTTP API in eu-north-1 with its default `execute-api` endpoint as the origin of a CloudFront distribution at `api.<antenna-domain>`. No regional custom domain, so no eu-north-1 certificate.
 - CloudFront adds an `x-antenna-origin` header with a random value from Secrets Manager (`antenna/api/origin-secret`). A Lambda authorizer would cost a call per request; instead each handler checks the header with a shared helper in `Services/shared/` and answers 403 without it. That is how `hosting/the-api-answers-on-its-own-address` refuses calls to the `execute-api` address.
 - Cache policy: by default none (`CachingDisabled`) and all query strings forwarded; a route that wants caching, such as `/v1/match`, sets its own behavior in the change that adds it.
+- The WAF web ACL is created with `AntennaApi` when the first route ships, not with the site, as the owner decided on 2026-11-22; that saves about $6 a month until then. The other option, creating it with the site in task group 3, protects nothing while the API has no routes.
 - WAF web ACL with the AWS managed IP reputation list and a rate rule of 300 requests per IP per five minutes on `/v1/*`. `add-support-requests` adds its own tighter rule on `/v1/support*`.
 - Unknown routes answer API Gateway's 404 with the body `{"message":"Not Found"}`, which names no version or server. A response headers policy removes `x-amzn-*` and `apigw-requestid` headers.
 
@@ -144,15 +152,23 @@ What this means for the two services, written into their designs in this PR:
 - `add-title-metadata`: the lookup Lambda and its routes are added to `AntennaApi`; its code stays in `Services/lookup/`. Its planned CDK stack, deploy workflow and OIDC role are this change's. It adds a cache behavior for `/v1/match*` and `/v1/trending*` with a one-day TTL.
 - `add-support-requests`: its Lambda, secrets and WAF rule are added to `AntennaApi` and `AntennaEdge`.
 
-### 7. The domain
+### 7. The domain (decided, exact name open)
 
-Registration is not something CDK or CloudFormation does. The owner registers `<antenna-domain>` by hand, in Route 53 Domains if it sells the top-level domain (then the name servers point at the hosted zone with no extra step), otherwise at another registrar with its name servers set to the hosted zone's four. `.app` is HTTPS-only by HSTS preload, which matches the site, and Route 53 sells it; `.tv` and `.se` are the other names the owner might want (open question 1).
+The owner decided on 2026-11-22: a short `.app` name containing "antenna" (for example `antenna<word>.app`), registered in Route 53 Domains, so the name servers point at the hosted zone with no extra step. The exact name is the one open question (task 1.1). Registration is not something CDK or CloudFormation does; the owner registers it by hand.
+
+Options considered:
+- **A short `.app` name in Route 53 Domains (chosen).** `.app` is HTTPS-only by HSTS preload, which matches the site, and Route 53 sells it.
+- **`.tv`.** Fits a TV app, but costs more a year and has no HTTPS preload.
+- **`.se`.** Matches the company's country; Route 53 Domains does not sell it, so the name servers are set by hand at another registrar.
+- **Another registrar for any of these.** Works, with the hosted zone's four name servers set there by hand.
+
+`www` and the bare domain, decided by the owner on 2026-11-22. Options considered: serve the bare domain and redirect `www` to it (chosen), serve `www` and redirect the bare domain, or serve both. One address keeps links and search results on one name; the certificate covers both names.
 
 Records in the zone: apex and `www` A/AAAA aliases to the site distribution, `api` aliases to the API distribution, the ACM validation CNAMEs, and a CAA record allowing only `amazon.com`. No MX record, an SPF record `v=spf1 -all` and a DMARC record `v=DMARC1; p=reject` so nobody can send mail as the domain.
 
 Old domain: the `antenna` CNAME in the code-crave.se zone is deleted once the new site serves, and the Pages site is switched off in the repository settings (an owner step; this change touches no repo settings from automation).
 
-### 8. No email
+### 8. No email (decided)
 
 The owner wants none. The domain gets no MX record (decision 7), so mail to it bounces. Contact goes through the app's Report a problem form (`add-support-requests`) and the site's support page (`add-feature-website`).
 
@@ -190,7 +206,7 @@ AWS list prices as read on 2026-11-22 for us-east-1 and eu-north-1; not measured
 
 About $8 a month with the API's WAF, about $2 before it. The web ACL is created with the API stack, so it can wait until the first route ships. CloudFront also sells flat-rate plans that bundle WAF and Route 53 (a free plan was announced in late 2025); not checked, and worth a look when the API ships.
 
-Budget: $20 a month in AWS Budgets, alerting the owner's AWS account address at 50% actual, 100% actual and 100% forecast, plus a Cost Anomaly Detection monitor on all services. Alerts use the AWS account's email, which is not on the new domain.
+Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the options were $10, which the WAF alone nearly reaches once the API ships, $20, and $50), alerting the owner's AWS account address at 50% actual, 100% actual and 100% forecast, plus a Cost Anomaly Detection monitor on all services. Alerts use the AWS account's email, which is not on the new domain.
 
 ## Risks / Trade-offs
 
@@ -213,12 +229,6 @@ No data moves. Rollback for steps 2 and 3 is reverting the PRs while Pages still
 
 ## Open Questions
 
-Open questions for the owner, each with a recommendation:
+The owner decided the rest on 2026-11-22, each as recommended: who approves deploys (decision 4), one environment (decision 4), `Infra/` and `Services/` (decision 1), the $20 budget (Cost), when the WAF web ACL is created (decision 6), `www` (decision 7) and the kind of domain (decision 7).
 
-1. **The domain name.** Recommend a short `.app` name containing "antenna" (for example `antenna<word>.app`), registered in Route 53 Domains so the zone needs no name server step. `.app` is HTTPS-only, which matches the site. Every task after group 1 waits for this.
-2. **Who approves infrastructure deploys?** Recommend the owner as required reviewer on the `production` environment for `cdk deploy`, and no approval for site uploads (decision 4).
-3. **One environment or two?** Recommend one, `production`, until a service has users; the stacks are parameterized so a staging account is a later deploy.
-4. **`Infra/` or `Services/` for the CDK app?** Recommend `Infra/` for the CDK app and `Services/<name>/` for each Lambda's code, so a service PR touches its own folder and one stack file.
-5. **Budget amount.** Recommend $20 a month, with alerts at 50% and 100% and a forecast alert.
-6. **When the WAF web ACL is created.** Recommend with `AntennaApi`, when the first route ships, not with the site, which saves about $6 a month until then.
-7. **www.** Recommend serving the apex and redirecting `www` to it, with one certificate covering both.
+1. **Which exact name.** A short `.app` name containing "antenna", such as `antenna<word>.app`, that Route 53 Domains has free to register. Task 1.1; every task after group 1 waits for it, and so do `add-support-requests` and `add-feature-website`.
