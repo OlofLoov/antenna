@@ -8,10 +8,10 @@
 
 ## 2. Terraform and CI roles
 
-- [ ] 2.1 Add `Infra/bootstrap/` (the state bucket, local state) and the `Infra/ci/` root (the GitHub OIDC provider and the `antenna-diff`, `antenna-deploy` and `antenna-site` roles), with Terraform 1.17.2 and `hashicorp/aws` 6.73.0 pinned, the lock files committed, and `terraform test` files for each trust subject, citing `hosting/deploys-come-only-from-main`
-- [ ] 2.2 Add `.github/workflows/infra.yml`: `terraform fmt`, `validate` and `test` on pull requests, a plan comment through `antenna-diff` when `AWS_ACCOUNT_ID` is set, apply in the `production` environment on main; every AWS job skips while the variables are unset
-- [ ] 2.3 Add the `scripts/check-rules.sh` grep that fails on logging blocks in `Infra/**/*.tf`, citing `hosting/nothing-keeps-a-record-of-requests`
-- [ ] 2.4 Make `scripts/check-spec-refs.sh` also read citations in `Infra/**/*.tftest.hcl`
+- [x] 2.1 Add `Infra/bootstrap/` (the state bucket, local state) and the `Infra/ci/` root (the GitHub OIDC provider and the `antenna-diff`, `antenna-deploy` and `antenna-site` roles), with Terraform 1.17.2 and `hashicorp/aws` 6.73.0 pinned, the lock files committed, and `terraform test` files for each trust subject, citing `hosting/deploys-come-only-from-main`
+- [x] 2.2 Add `.github/workflows/infra.yml`: `terraform fmt`, `validate` and `test` on pull requests, a plan comment through `antenna-diff` when `AWS_ACCOUNT_ID` is set, apply in the `production` environment on main; every AWS job skips while the variables are unset
+- [x] 2.3 Add the `scripts/check-rules.sh` grep that fails on logging blocks in `Infra/**/*.tf`, citing `hosting/nothing-keeps-a-record-of-requests`
+- [x] 2.4 Make `scripts/check-spec-refs.sh` also read citations in `Infra/**/*.tftest.hcl`
 
 ## 3. Edge and site modules
 
