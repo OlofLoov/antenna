@@ -1,0 +1,38 @@
+{
+	"apple-tv-live.jpg": {
+		"width": 1200,
+		"height": 675
+	},
+	"guide-apple-tv.jpg": {
+		"width": 1200,
+		"height": 675
+	},
+	"movies-apple-tv.jpg": {
+		"width": 1200,
+		"height": 675
+	},
+	"sources-apple-tv.jpg": {
+		"width": 1200,
+		"height": 675
+	},
+	"live-tv-mac.jpg": {
+		"width": 1200,
+		"height": 750
+	},
+	"movies-mac.jpg": {
+		"width": 1200,
+		"height": 750
+	},
+	"guide-iphone.jpg": {
+		"width": 600,
+		"height": 1303
+	},
+	"add-source-iphone.jpg": {
+		"width": 600,
+		"height": 1303
+	},
+	"live-tv-ipad.jpg": {
+		"width": 900,
+		"height": 1200
+	}
+}

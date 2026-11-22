@@ -1,0 +1,9 @@
+appleTV 01-live.png apple-tv-live.jpg
+appleTV 02-guide.png guide-apple-tv.jpg
+appleTV 03-movies.png movies-apple-tv.jpg
+appleTV 05-add-source.png sources-apple-tv.jpg
+mac 01-live.png live-tv-mac.jpg
+mac 03-movies.png movies-mac.jpg
+iPhone 02-iPhone-17-Pro-Max-guide.png guide-iphone.jpg
+iPhone 05-iPhone-17-Pro-Max-add-source.png add-source-iphone.jpg
+iPad 01-iPad-Pro-13-inch-M5-live.png live-tv-ipad.jpg
