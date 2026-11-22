@@ -33,6 +33,7 @@ import Testing
         library.sourcesChanged([SourceDescriptor(id: source, name: "Cabin", kind: .xtream, url: URL(fileURLWithPath: "/cabin"))])
         library.open()
         await library.movies.settled()
+        await library.series.settled()
         return library
     }
 
