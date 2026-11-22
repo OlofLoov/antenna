@@ -84,9 +84,13 @@ final class TimeshiftUITests: XCTestCase {
     // timeshift-catch-up-and-start-over/skip-scan-and-drag
     func testDraggingToTheStartSeeksOnceOnRelease() throws {
         let app = try launch("buffer")
-        let scrubber = app.element("timeshift.scrubber")
-        let start = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.0, dy: 0.5))
-        let middle = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5))
+        // Points on the screen, read once. A coordinate on the scrubber makes
+        // XCTest look the scrubber up again between the touch and each move;
+        // on a slow runner those lookups held the finger still for 50 seconds.
+        let frame = app.element("timeshift.scrubber").frame
+        let screen = app.coordinate(withNormalizedOffset: .zero)
+        let start = screen.withOffset(CGVector(dx: frame.minX, dy: frame.midY))
+        let middle = screen.withOffset(CGVector(dx: frame.minX + frame.width * 0.9, dy: frame.midY))
         middle.press(forDuration: 0.1, thenDragTo: start)
         // The buffer holds 20 minutes at load and grows while the test runs, so
         // the start reads 20 or 21 minutes behind depending on the runner's pace.
