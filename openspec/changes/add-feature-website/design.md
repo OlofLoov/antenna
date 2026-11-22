@@ -34,6 +34,8 @@ Not drawn yet:
 - "Coming soon to the App Store" in place of the badge.
 - A home page section with two screenshots (iPhone and Apple TV side by side), if the screenshot set calls for it.
 
+The store set has five screens per platform: live, guide, movies, player and adding a source. Multi-view has no picture in it, so its home section and page show text only until the App screenshots workflow takes a multi-view screen. Setup from iPhone and Privacy use the iPhone's add-source screen, whose note says the login stays in the iCloud Keychain; Sync and profiles uses the iPad channel list. The sizes the pages use are in `Web/site/src/lib/screenshots.en.json`, which `scripts/site-screenshots.sh` writes with the pictures.
+
 Design-system requirements that apply: "Text meets contrast minimums", "One accent color per profile" (the site uses the default accent, `#5BB8FF`), "One spacing and radius scale", "Nothing fake and nothing bundled" (the screenshots show fixture content only, and copy names platforms, never the visitor's device), "Copy fits in every language", "Layouts mirror in right-to-left languages" (for when Arabic is added). The app-only rules (focus, tab bar, safe area, Liquid Glass, accessibility identifiers) do not apply to the site; its "identifiers" are the HTML ids in decision 7.
 
 ## Feature inventory
@@ -94,7 +96,7 @@ Options considered:
 
 The sizes are typical figures from each project's documentation and published comparisons as last read, not measured here; task 2.1 measures the real bundle and the site check holds it under the budget in decision 3.
 
-Measured on 2026-11-23, SvelteKit 3.1.1 and Svelte 5.57.3, gzip level 6 over every script a page loads before it is interactive (its start file and each `modulepreload`): 35.7 KB on the home page and `/404.html`, 36.8 KB on the Terms of Use, 37.1 KB on the Privacy Policy. Two chunks, Svelte's runtime and SvelteKit's router, are 29.6 KB of that on every page; the rest is the layout and the page. `node Web/site/scripts/check-site.js` prints the figure per page, and the site check fails a page over 60 KB.
+Measured on 2026-11-23, SvelteKit 3.1.1 and Svelte 5.57.3, gzip level 6 over every script a page loads before it is interactive (its start file and each `modulepreload`): 35.7 KB on the home page and `/404.html`, 36.8 KB on the Terms of Use, 37.1 KB on the Privacy Policy. Two chunks, Svelte's runtime and SvelteKit's router, are 29.6 KB of that on every page; the rest is the layout and the page. With all sixteen pages and the English text of the feature, pricing and support pages, every page loads 43.5 to 45.0 KB: 44.7 KB on the home page, 44.6 KB on a feature page, 45.0 KB on the Privacy Policy. The text sits in one shared chunk, so later pages load almost nothing new. `node Web/site/scripts/check-site.js` prints the figure per page, and the site check fails a page over 60 KB.
 
 What the build settles in SvelteKit 3:
 - The configuration is passed to the `sveltekit()` plugin in `vite.config.ts`; SvelteKit 3 no longer reads `svelte.config.js`.
