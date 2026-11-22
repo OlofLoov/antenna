@@ -19,7 +19,7 @@ a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
   <div style="margin-top: 54px; height: 44px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
     <span style="width: 80px; font-size: 17px; color: {{accent}}">‹ Settings</span>
     <span style="font-size: 17px; font-weight: 600">Report a problem</span>
-    <!-- report.send: dimmed while the text is empty or the email does not look like one -->
+    <!-- report.send: dimmed while the text is empty -->
     <span style="width: 80px; text-align: right; font-size: 17px; font-weight: 600; color: {{accent}}">Send</span>
   </div>
   <!-- report.root -->
@@ -29,16 +29,14 @@ a{color:#5BB8FF;text-decoration:none}a:hover{color:#8ECDFF}
     <div style="border-radius: 12px; background: rgba(255,255,255,0.06); padding: 12px 14px; min-height: 96px; box-sizing: border-box; font-size: 17px; line-height: 1.35">The guide is empty since this morning. I tried http://example.net:8080/xmltv.php and it loads in Safari.</div>
     <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; flex-direction: column">
       <!-- report.topic: Playback, Channels and guide, Movies and series, Sources and sign-in, Purchase, Something else -->
-      <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,0.08)">
+      <div style="display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; box-sizing: border-box">
         <span style="flex: 1 1 auto; font-size: 17px">Topic</span>
         <span style="font-size: 15px; color: {{accent}}">Channels and guide</span>
         <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
       </div>
-      <!-- report.email -->
-      <div style="display: flex; align-items: center; height: 48px; padding: 0 14px; box-sizing: border-box; font-size: 17px; color: #A7B0BF">Email for a reply (optional)</div>
     </div>
-    <!-- report.email.footer -->
-    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 4px">Without an email, we can read your report but cannot answer it.</div>
+    <!-- report.oneway: no email, name or phone field; reports are one-way -->
+    <div style="font-size: 13px; line-height: 1.4; color: #A7B0BF; padding: 0 4px 4px">We can't reply to reports. Nothing in a report says who sent it.</div>
     <!-- report.diagnostic: iPhone, iPad and Mac only, only when the system delivered a report, off each time the form opens -->
     <div style="border-radius: 12px; background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 12px; padding: 8px 14px; box-sizing: border-box">
       <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px">
