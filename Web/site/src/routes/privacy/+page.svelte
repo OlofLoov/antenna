@@ -9,7 +9,7 @@
 
 <article class="prose">
 	<h1>Privacy Policy</h1>
-	<p class="updated">Last updated: November 12, 2026</p>
+	<p class="updated">Last updated: November 23, 2026</p>
 
 	<p>
 		This policy covers Antenna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
@@ -119,7 +119,7 @@
 
 	<h2>Contact</h2>
 	<p>
-		Questions about this policy: <a href="mailto:support@code-crave.se">support@code-crave.se</a>.
+		For questions about this policy, see the <a href="/support/">Support</a> page.
 	</p>
 
 	<p class="across">Read the <a href="/terms/">Terms of Use</a>.</p>

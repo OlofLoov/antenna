@@ -7,6 +7,9 @@
 		"footerLabel": "About this site"
 	},
 	"nav": {
+		"features": "Features",
+		"pricing": "Pricing",
+		"support": "Support",
 		"terms": "Terms of Use",
 		"privacy": "Privacy Policy"
 	},
@@ -19,7 +22,556 @@
 		"description": "Antenna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels.",
 		"hero": "Your TV sources, on every Apple screen.",
 		"lead": "Antenna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels. A purchase unlocks it on all your devices.",
-		"platforms": "iPhone, iPad, Mac, Apple TV"
+		"platforms": "iPhone, iPad, Mac, Apple TV",
+		"heroAlt": "Live TV on Apple TV: a made-up news channel playing full screen, with the programme on now and next in the bar below."
+	},
+	"features": {
+		"title": "Features",
+		"description": "What Antenna does on iPhone, iPad, Mac and Apple TV, in nine areas, with the platforms that have each feature.",
+		"lead": "Antenna in nine areas. Each page says which of iPhone, iPad, Mac and Apple TV have each feature.",
+		"all": "All features",
+		"home": "Home",
+		"next": "Next:",
+		"moreLabel": "More features"
+	},
+	"areas": [
+		{
+			"slug": "sources",
+			"name": "Sources",
+			"summary": "M3U playlists from a link or a file, Xtream Codes logins, Stalker portals, Jellyfin and Channels DVR servers. Antenna plays sources you already have and names none.",
+			"line": "Add the sources you already have: a playlist, an Xtream Codes login, a Stalker portal, or a Jellyfin or Channels DVR server.",
+			"platforms": "On iPhone, iPad, Mac and Apple TV.",
+			"more": "More about sources",
+			"image": "sources-apple-tv.jpg",
+			"alt": "Adding a source on Apple TV: five cards for an M3U playlist, an Xtream login, a Stalker portal, Jellyfin and Channels DVR.",
+			"features": [
+				{
+					"id": "m3u-playlists",
+					"title": "M3U playlists",
+					"body": "Paste a playlist link. Antenna reads the guide links, catch-up details and any movies and episodes in it, and a playlist of 50,000 entries loads in a few seconds.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "playlist-files",
+					"title": "Playlist files",
+					"body": "Import a playlist file, share it to Antenna or open it from Finder. A preview shows how many channels and groups it holds before you import, and the channels then reach your Apple TV too. Drag and drop works on iPad and Mac.",
+					"platforms": "Import on iPhone, iPad and Mac. Not on Apple TV, which plays the imported channels."
+				},
+				{
+					"id": "xtream-codes",
+					"title": "Xtream Codes",
+					"body": "Sign in with a server, username and password to get live channels, the guide, catch-up, movies and series. A playlist that turns out to be an Xtream login can switch over and keep its favorites.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "stalker-portals",
+					"title": "Stalker portals",
+					"body": "Enter the portal address and the MAC address your provider registered, with or without colons. Channels come grouped by genre, with the portal's own guide.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "jellyfin",
+					"title": "Jellyfin Live TV",
+					"body": "Sign in to your own Jellyfin server for its live channels, radio and a week of guide. Antenna checks the server is Jellyfin before it sends your password.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "channels-dvr",
+					"title": "Channels DVR",
+					"body": "Type the server's address and Antenna fills in the rest. Your channel names, numbers and seven days of guide come over as the server has them.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "first-run",
+					"title": "From install to a channel",
+					"body": "The first screens ask what kind of source you have, check it with the server, and show what loaded. Start watching before the guide has finished.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "manage-sources",
+					"title": "Keep sources in order",
+					"body": "Fix a link or login, reorder sources, refresh one or all, or set how often they refresh. A refresh that fails keeps the channels you had.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				}
+			]
+		},
+		{
+			"slug": "live-tv",
+			"name": "Live TV",
+			"summary": "What is on now and next, pause and rewind up to an hour, start over, favorites and groups your way.",
+			"line": "Browse while the channel keeps playing, pause and rewind, and keep the channels you watch close at hand.",
+			"platforms": "On iPhone, iPad, Mac and Apple TV.",
+			"more": "More about live TV",
+			"image": "live-tv-mac.jpg",
+			"alt": "Live TV on a Mac: groups on the left, a list of made-up channels with what is on now, and the playing channel with the next three programmes.",
+			"features": [
+				{
+					"id": "browse-while-playing",
+					"title": "Browse while it plays",
+					"body": "The channel plays next to the list, with what is on now and next. Swipe on the picture to change channel, or go back to the previous one.",
+					"platforms": "On iPhone, iPad and Mac. Apple TV has its own channel list over the picture."
+				},
+				{
+					"id": "pause-and-rewind",
+					"title": "Pause and rewind",
+					"body": "Pause live TV and rewind up to an hour, then jump back to live. Start over plays the programme on now from its start, from the provider's catch-up when it has it.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "favorites",
+					"title": "Favorites",
+					"body": "Add a channel from its menu, with a swipe, or with the star while it plays. Favorites sync to your other devices.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV. Swipe on iPhone and iPad."
+				},
+				{
+					"id": "groups",
+					"title": "Groups your way",
+					"body": "Hide, rename and reorder groups, build your own from several sources, and lock a group with a passcode. Adult groups stay hidden until you turn them on with the passcode.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "recents-and-new",
+					"title": "Recents and New",
+					"body": "Recents keeps the last 20 channels you watched. New shows channels that appeared on this device in the last seven days.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "search",
+					"title": "One search",
+					"body": "Find channels by name or number, programmes in the coming week, movies, series and people, all in one place.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "reminders",
+					"title": "Reminders",
+					"body": "Set a reminder on a programme and get a notification before it starts, with a button that plays the channel.",
+					"platforms": "Notifications on iPhone, iPad and Mac. On Apple TV a reminder shows while Antenna is open."
+				},
+				{
+					"id": "picture-and-sound",
+					"title": "Picture and sound",
+					"body": "HDR10 and HLG, Dolby Digital, Dolby Digital Plus and Dolby Atmos passed to your receiver, subtitles and audio languages. Apple TV matches the TV's frame rate and dynamic range when you have that on.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV. Frame rate and dynamic range matching on Apple TV."
+				},
+				{
+					"id": "plain-errors",
+					"title": "Errors in plain words",
+					"body": "When a channel will not play, the message says why: you are offline, the source refused the login, the channel moved, or the device cannot play its format.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "siri-and-keyboard",
+					"title": "Siri, Shortcuts and the keyboard",
+					"body": "Ask Siri to tune a channel or build a Shortcut that does. On a Mac or an iPad with a keyboard, menus and shortcuts control playback.",
+					"platforms": "Siri and Shortcuts on iPhone, iPad and Mac. Keyboard menus on Mac and iPad."
+				}
+			]
+		},
+		{
+			"slug": "guide",
+			"name": "Guide",
+			"summary": "A TV guide for the coming days, with the channel you were watching still playing.",
+			"line": "Programmes for the coming days in a grid or per channel, from every guide your sources offer.",
+			"platforms": "On iPhone, iPad, Mac and Apple TV.",
+			"more": "More about the guide",
+			"image": "guide-apple-tv.jpg",
+			"alt": "The guide on Apple TV: four made-up channels in a time grid, with the playing channel in a small picture at the top.",
+			"features": [
+				{
+					"id": "grid",
+					"title": "A grid of the coming days",
+					"body": "Move through the hours and days with a line at the current time. Pick a programme to watch its channel or set a reminder.",
+					"platforms": "A grid on iPad, Mac and Apple TV. One row per channel on iPhone."
+				},
+				{
+					"id": "keeps-playing",
+					"title": "The channel keeps playing",
+					"body": "On Apple TV the channel you were watching stays in a small picture while you browse the guide. On the other devices it keeps playing out of sight.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "guide-sources",
+					"title": "Every guide your sources offer",
+					"body": "Antenna uses the guide links in a playlist, the guide of an Xtream, Stalker, Jellyfin or Channels DVR source, and guide links you add. It keeps a week back and two weeks ahead.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "match-by-hand",
+					"title": "Fix a missing guide",
+					"body": "Choose which guides a playlist uses and in what order. When a channel has no programmes, Antenna says why, and you can pick its guide entry by hand. The fix syncs to your other devices.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				}
+			]
+		},
+		{
+			"slug": "movies-and-series",
+			"name": "Movies and series",
+			"summary": "Your source's library as rows of posters, resume on any device, the next episode on its own.",
+			"line": "The movies and series in your Xtream source or playlist, as rows of posters with a page for each title.",
+			"platforms": "On iPhone, iPad, Mac and Apple TV, with an Xtream source or a playlist that has movies or episodes.",
+			"more": "More about movies and series",
+			"image": "movies-apple-tv.jpg",
+			"alt": "Movies on Apple TV: a banner for a made-up film, then rows of made-up titles to continue watching.",
+			"features": [
+				{
+					"id": "rows-of-posters",
+					"title": "Rows of posters",
+					"body": "A banner of new titles, Continue watching, Recently added, a row per category and a grid per genre.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "my-list",
+					"title": "My list",
+					"body": "Save a movie or series for later from its banner or its page.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "title-pages",
+					"title": "A page for each title",
+					"body": "Cast, director and details, seasons and episodes with the ones you watched marked, and Resume where you left off.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "next-episode",
+					"title": "The next episode on its own",
+					"body": "When an episode ends, the next one counts down and starts. After three in a row Antenna asks if you are still watching. Turn autoplay off in Settings.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "people",
+					"title": "Browse by person",
+					"body": "Pick an actor or director to see everything with them in your sources.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "resume-anywhere",
+					"title": "Resume on any device",
+					"body": "Stop a movie on the iPad and pick it up on the Apple TV. Progress and My list sync through your iCloud.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				}
+			]
+		},
+		{
+			"slug": "multi-view",
+			"name": "Multi-view",
+			"summary": "Up to four live channels at once on Apple TV, iPad and Mac.",
+			"line": "Watch up to four live channels side by side and hear the one you highlight.",
+			"platforms": "On Apple TV, iPad and Mac. Not on iPhone.",
+			"more": "More about multi-view",
+			"features": [
+				{
+					"id": "four-at-once",
+					"title": "Up to four channels",
+					"body": "Add a channel to the one playing and the screen splits into tiles, up to four. Apple TV HD and Macs with Intel take two.",
+					"platforms": "On Apple TV, iPad and Mac. On iPad in the full-width layout."
+				},
+				{
+					"id": "hear-one",
+					"title": "Hear one, see four",
+					"body": "Only the highlighted tile plays its sound. Move the highlight to switch.",
+					"platforms": "On Apple TV, iPad and Mac."
+				},
+				{
+					"id": "change-a-tile",
+					"title": "Change a tile",
+					"body": "Swap a tile's channel, make it full screen, try it again or remove it without stopping the others.",
+					"platforms": "On Apple TV, iPad and Mac."
+				},
+				{
+					"id": "stream-limits",
+					"title": "When the source says no",
+					"body": "Many sources allow one or two streams per account at a time. When a tile is refused, Antenna says so in that tile.",
+					"platforms": "On Apple TV, iPad and Mac."
+				}
+			]
+		},
+		{
+			"slug": "apple-tv",
+			"name": "Apple TV",
+			"summary": "Opens on your last channel, full screen. Change channel with the remote, browse without stopping the picture.",
+			"line": "Made for the Siri Remote: it opens on your last channel and stays out of the way.",
+			"platforms": "On Apple TV.",
+			"more": "More about Apple TV",
+			"image": "apple-tv-live.jpg",
+			"alt": "Live TV on Apple TV: a made-up news channel full screen, with its number, the programme on now and its sound format in the bar.",
+			"features": [
+				{
+					"id": "last-channel",
+					"title": "Straight to your last channel",
+					"body": "Antenna opens full screen on the channel you watched last, after asking who is watching when there is more than one profile.",
+					"platforms": "On Apple TV."
+				},
+				{
+					"id": "channel-list",
+					"title": "The channel list over the picture",
+					"body": "Press select to see groups and channels with what is on now. The picture keeps playing behind it.",
+					"platforms": "On Apple TV."
+				},
+				{
+					"id": "change-channel",
+					"title": "Up and down to change channel",
+					"body": "Swipe to the next channel and an info bar shows its number, programme, picture size and sound. Type a number on a keyboard to jump to it.",
+					"platforms": "On Apple TV."
+				},
+				{
+					"id": "remote-hints",
+					"title": "Hints for the remote",
+					"body": "A short legend says what each button does on the screen you are on. Turn it off in Settings.",
+					"platforms": "On Apple TV."
+				},
+				{
+					"id": "top-shelf",
+					"title": "Top Shelf",
+					"body": "Your favorite channels with what is on now, and the titles you are watching, on the Apple TV Home Screen.",
+					"platforms": "On Apple TV."
+				}
+			]
+		},
+		{
+			"slug": "setup-from-iphone",
+			"name": "Setup from iPhone",
+			"summary": "Set up the Apple TV from your iPhone and sign it in without typing a password with the remote.",
+			"line": "Scan the code on the TV, fill in the source on your phone, and the Apple TV gets it.",
+			"platforms": "On Apple TV with an iPhone, iPad or Mac.",
+			"more": "More about setup from iPhone",
+			"image": "add-source-iphone.jpg",
+			"alt": "Adding a source on iPhone, with fields for a server, a username and a password.",
+			"features": [
+				{
+					"id": "scan-the-code",
+					"title": "Scan the code on the TV",
+					"body": "The Apple TV shows a code. Scan it with the iPhone camera, or accept Handoff, and Antenna opens on the phone ready to set up the TV.",
+					"platforms": "Apple TV with an iPhone, iPad or Mac on the same iCloud account."
+				},
+				{
+					"id": "fill-in-on-the-phone",
+					"title": "Type on the phone",
+					"body": "Fill in the source with the phone's keyboard and the Apple TV receives it through your iCloud.",
+					"platforms": "Apple TV with an iPhone, iPad or Mac."
+				},
+				{
+					"id": "send-a-login",
+					"title": "Send a login to the TV",
+					"body": "When an Apple TV needs a password, send it from the phone. It is sealed so only that Apple TV can read it, travels through your own iCloud and is deleted within ten minutes.",
+					"platforms": "For Xtream, Stalker, Jellyfin and Channels DVR sources."
+				},
+				{
+					"id": "without-antenna",
+					"title": "No Antenna on the phone yet",
+					"body": "A phone without Antenna that scans the code gets a plain page with a link to the App Store.",
+					"platforms": "On iPhone."
+				}
+			]
+		},
+		{
+			"slug": "sync-and-profiles",
+			"name": "Sync and profiles",
+			"summary": "Add a source once and it reaches every device. A profile for each person.",
+			"line": "Sources, favorites and progress follow you through your own iCloud, and each person in the house gets a profile.",
+			"platforms": "On iPhone, iPad, Mac and Apple TV.",
+			"more": "More about sync and profiles",
+			"image": "live-tv-ipad.jpg",
+			"alt": "The channel list on iPad, with groups, made-up channels and the playing channel.",
+			"features": [
+				{
+					"id": "add-once",
+					"title": "Add a source once",
+					"body": "A source you add on one device reaches every device on the same Apple Account. Logins travel in your iCloud Keychain.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "what-syncs",
+					"title": "What follows you",
+					"body": "Favorites, groups, guide choices, reminders, watch progress, My list and recent searches.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "profiles",
+					"title": "A profile for each person",
+					"body": "Up to eight profiles, each with its own favorites, history, My list and color. Antenna asks who is watching when it opens. Sources and logins are shared.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "without-icloud",
+					"title": "Without iCloud",
+					"body": "Antenna works on a device that is not signed in to iCloud. What you set up stays on that device.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				}
+			]
+		},
+		{
+			"slug": "privacy",
+			"name": "Privacy",
+			"summary": "No account, no ads, no analytics. Your passwords stay in your iCloud Keychain.",
+			"line": "Antenna collects nothing about you and connects only to your sources and Apple.",
+			"platforms": "On iPhone, iPad, Mac and Apple TV.",
+			"more": "More about privacy",
+			"image": "add-source-iphone.jpg",
+			"alt": "Adding a source on iPhone. A note under the form says the login is saved in your iCloud Keychain only.",
+			"features": [
+				{
+					"id": "no-account",
+					"title": "No account, no tracking",
+					"body": "There is nothing to sign up for. Antenna has no analytics, ads or third-party code, and Code Crave runs no server that receives your data.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "your-icloud",
+					"title": "Your data in your iCloud",
+					"body": "Sources, favorites and progress sync through your private iCloud database, which Code Crave cannot read.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "keychain",
+					"title": "Passwords in the Keychain",
+					"body": "Passwords and MAC addresses stay in your iCloud Keychain. They never show on screen, in logs or in Shortcuts.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				},
+				{
+					"id": "connections",
+					"title": "Where it connects",
+					"body": "Only to the sources and guides you add, the addresses they list, and Apple for iCloud and the App Store. The Privacy Policy has the details.",
+					"platforms": "On iPhone, iPad, Mac and Apple TV."
+				}
+			]
+		}
+	],
+	"pricing": {
+		"title": "Pricing",
+		"description": "Antenna is free to download and needs a purchase to use: a yearly subscription or a lifetime unlock, shared with your family.",
+		"lead": "Antenna is free to download and needs a purchase to use. Either purchase unlocks every feature on every iPhone, iPad, Mac and Apple TV on your Apple Account.",
+		"plans": [
+			{
+				"id": "yearly",
+				"name": "Yearly",
+				"lines": [
+					"Renews every year until you cancel.",
+					"Cancel in your Apple Account's subscription settings."
+				]
+			},
+			{
+				"id": "lifetime",
+				"name": "Lifetime",
+				"lines": ["Pay once. It does not renew.", "Unlocks Antenna for good on your Apple Account."]
+			}
+		],
+		"sections": [
+			{
+				"id": "family-sharing",
+				"title": "Family Sharing",
+				"body": "Both purchases work for everyone in your Family Sharing group. One purchase covers the family, and nothing counts devices or members."
+			},
+			{
+				"id": "what-it-costs",
+				"title": "What it costs",
+				"body": "The App Store shows the price for your region before you buy, and Antenna shows the same price on its purchase screen. Antenna includes no channels; your sources come from your provider."
+			},
+			{
+				"id": "new-device",
+				"title": "On a new device",
+				"body": "Antenna unlocks on its own on a device signed in to the same Apple Account. If it does not, choose Restore purchase on the purchase screen."
+			},
+			{
+				"id": "if-it-ends",
+				"title": "If your subscription ends",
+				"body": "Antenna shows the purchase screen again and keeps your sources, favorites and settings. Buy again or restore, and everything is back."
+			}
+		],
+		"cancelBefore": "To stop the yearly subscription, cancel in your Apple Account's subscription settings at least 24 hours before it renews. The",
+		"cancelAfter": " explain renewals and refunds."
+	},
+	"support": {
+		"title": "Support",
+		"description": "Answers to common questions about Antenna, and how to report a problem from the app.",
+		"reportTitle": "Report a problem from the app",
+		"reportSoon": "Report a problem is coming to Antenna's Settings. It will show you everything it sends before you send it, and give you a reference code. Until then, the answers below cover the common questions.",
+		"questionsTitle": "Questions",
+		"faq": [
+			{
+				"id": "does-antenna-include-channels",
+				"question": "Does Antenna include channels?",
+				"answer": [
+					"No. Antenna plays sources you already have: a playlist link or file, an Xtream Codes login, a Stalker portal, or a Jellyfin or Channels DVR server. Code Crave does not sell or recommend TV subscriptions."
+				]
+			},
+			{
+				"id": "which-sources-work",
+				"question": "Which sources work?",
+				"answer": [
+					"M3U and M3U8 playlists by link on every device, and as a file on iPhone, iPad and Mac. Xtream Codes logins, Stalker portals with a MAC address, Jellyfin servers with Live TV, and Channels DVR servers. Guides come from the source or from XMLTV links you add."
+				]
+			},
+			{
+				"id": "a-channel-will-not-play",
+				"question": "A channel will not play",
+				"answer": [
+					"The message on screen says why, and Try again is always there.",
+					"You're offline: the device has no internet. Playback resumes on its own when the connection returns.",
+					"Could not reach the source: the server did not answer. Check the network, or a VPN if one is on.",
+					"Sign-in refused: the source rejected the login. Check the username and password in Settings, or ask your provider whether the account has expired.",
+					"Stream not found: the channel moved or the provider removed it. Refresh the source in Settings.",
+					"Provider busy or Provider error: the source's server is having trouble. Try again in a moment.",
+					"Format not supported: the device cannot play this stream's format, and trying again will not help. Pick another channel or ask your provider for another format.",
+					"Can't play another stream: the device is playing as many streams as it can. Close a multi-view tile."
+				]
+			},
+			{
+				"id": "the-guide-is-empty-or-wrong",
+				"question": "The guide is empty or wrong",
+				"answer": [
+					"A channel that reads No programme information has no guide entry yet. Open the source in Settings and choose Guide sources: select the channel to see why it has no guide, add a guide link, change the order of the guides, or pick the channel's guide entry by hand. A hand-picked match syncs to your other devices."
+				]
+			},
+			{
+				"id": "a-source-will-not-load",
+				"question": "A source will not load",
+				"answer": [
+					"Settings shows a status line under each source. Check the address and login there; Antenna checks a change with the server before it saves it. A refresh that fails keeps the channels you had. For Channels DVR on iPhone, iPad or Mac, allow local network access for Antenna in the device's settings."
+				]
+			},
+			{
+				"id": "setting-up-an-apple-tv",
+				"question": "Setting up an Apple TV from an iPhone",
+				"answer": [
+					"Open Antenna on the Apple TV and scan the code it shows with your iPhone's camera, or accept the Handoff suggestion. Fill in the source on the phone and the Apple TV receives it through your iCloud. Both need to be signed in to the same iCloud account. When the Apple TV asks for a password, send it from the phone the same way."
+				]
+			},
+			{
+				"id": "unlocking-on-a-new-device",
+				"question": "Unlocking Antenna on a new device",
+				"answer": [
+					"Antenna unlocks on its own on any iPhone, iPad, Mac or Apple TV signed in to the same Apple Account. If it does not, choose Restore purchase on the purchase screen. It says what it found and opens the app."
+				]
+			},
+			{
+				"id": "family-sharing",
+				"question": "Family Sharing",
+				"answer": [
+					"Both purchases work for everyone in your Family Sharing group. If a family member's Antenna stays locked, they can choose Restore purchase, and the organizer can check that purchase sharing is on in Family Sharing."
+				]
+			},
+			{
+				"id": "canceling-the-yearly-subscription",
+				"question": "Canceling the yearly subscription",
+				"answer": [
+					"Cancel in your Apple Account's subscription settings at least 24 hours before it renews. You keep Antenna until the end of the year you paid for."
+				]
+			},
+			{
+				"id": "refunds",
+				"question": "Refunds",
+				"answer": [
+					"Apple takes the payment and decides refunds. Request one from Apple's Report a Problem page for your purchases."
+				]
+			},
+			{
+				"id": "deleting-your-data",
+				"question": "Deleting your data",
+				"answer": [
+					"Removing a source in Settings deletes it, its login, and its favorites, guide and progress on every device on your iCloud account. To delete everything Antenna keeps in iCloud, open Settings on your iPhone, tap your name, then iCloud, then Manage Storage, and delete Antenna's data."
+				]
+			}
+		]
 	},
 	"notFound": {
 		"title": "Page not found",

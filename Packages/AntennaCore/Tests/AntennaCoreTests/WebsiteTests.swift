@@ -154,7 +154,7 @@ import Testing
         for phrase in [
             "published by Code Crave", "comes with no channels, playlists, provider addresses or other content",
             "You are responsible for having the right to watch everything you add", "provided as is",
-            "Licensed Application End User License Agreement", "These terms add to it", "support@code-crave.se",
+            "Licensed Application End User License Agreement", "These terms add to it", "see the Support page",
         ] {
             #expect(body.contains(phrase), "\(phrase)")
         }
@@ -183,7 +183,7 @@ import Testing
         for phrase in [
             "published by Code Crave", "private iCloud database", "Code Crave cannot read it", "favorites", "preferences",
             "programme reminders", "channel groups", "watch progress", "iCloud Keychain", "at most ten minutes", "Removing a source",
-            "support@code-crave.se",
+            "see the Support page",
         ] {
             #expect(body.contains(phrase), "\(phrase)")
         }

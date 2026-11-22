@@ -361,7 +361,26 @@ export function checkProviders(build = BUILD) {
 	return problems;
 }
 
-export const checks = { checkRoutes, checkLinks, checkPolicy, checkBudgets, checkProviders };
+/** No page shows an email address or links to one. */
+export function checkEmails(build = BUILD) {
+	const problems = [];
+	for (const page of pages(build)) {
+		const address = addressOf(page.name);
+		if (/mailto:/i.test(page.html)) problems.push(`${address}: a mailto: link`);
+		for (const match of textOf(page.html).matchAll(/[\w.+-]+@[\w-]+\.[\w.-]+/g))
+			problems.push(`${address}: shows the email address ${match[0]}`);
+	}
+	return problems;
+}
+
+export const checks = {
+	checkRoutes,
+	checkLinks,
+	checkPolicy,
+	checkBudgets,
+	checkProviders,
+	checkEmails
+};
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
 	const build = process.argv[2] ?? BUILD;

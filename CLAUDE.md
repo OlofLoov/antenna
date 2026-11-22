@@ -23,6 +23,7 @@ actionlint                                               # workflow files, inclu
 (cd Web/site && npm ci && npm run lint && npm run check)  # the website: Prettier, ESLint, svelte-check; Node 22 from Web/site/.nvmrc
 (cd Web/site && npm run build && npm test)                # prerender every page, then the link, route, policy and budget check
 scripts/publish-web.sh /tmp/site Web/site/build           # the final file tree: plain files in Web/ plus the built app
+scripts/site-screenshots.sh en                           # the site's pictures from the newest store-screenshots artifact, with gh and sips
 scripts/render-icons.sh                                  # app icons and Apple TV brand assets from design/icon/*.svg
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
@@ -52,7 +53,8 @@ associated domains, and the app runs without sync.
 - `Web/` the site at antenna.code-crave.se, published by
   `.github/workflows/pages.yml` through `scripts/publish-web.sh <out>
   <site build>`. `Web/site/` is a SvelteKit app with every page prerendered
-  (home, Terms of Use and Privacy Policy the paywall links to, 404), built
+  (home, nine feature pages, pricing, support, the Terms of Use and Privacy
+  Policy the paywall links to, 404), built
   with Node 22 from its committed lockfile. It runs only its own bundled
   JavaScript and shows only its own images: no third-party scripts, fonts,
   trackers or analytics, no cookies, no inline scripts or styles, and no

@@ -9,7 +9,7 @@
 
 <article class="prose">
 	<h1>Terms of Use</h1>
-	<p class="updated">Last updated: November 12, 2026</p>
+	<p class="updated">Last updated: November 23, 2026</p>
 
 	<p>
 		These terms cover Antenna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
@@ -90,7 +90,7 @@
 
 	<h2>Contact</h2>
 	<p>
-		Questions about these terms: <a href="mailto:support@code-crave.se">support@code-crave.se</a>.
+		For questions about these terms, see the <a href="/support/">Support</a> page.
 	</p>
 
 	<p class="across">Read the <a href="/privacy/">Privacy Policy</a>.</p>
