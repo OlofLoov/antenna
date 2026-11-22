@@ -55,6 +55,11 @@ final class SubtitleSwitchUITests: XCTestCase {
         XCTAssertFalse(app.element("player.subtitles.cue").exists)
 
         app.openTracksMenu()
+        // Opened from the bottom edge, the menu keeps Audio above Subtitles.
+        let audio = app.tracksMenu.staticTexts["Audio"].frame
+        let subtitles = app.tracksMenu.staticTexts["Subtitles"].frame
+        XCTAssertLessThan(audio.minY, subtitles.minY, "the sounds come first")
+        XCTAssertLessThan(app.tracksRow("Off").frame.minY, app.tracksRow("English", in: .subtitles).frame.minY, "Off comes first")
         app.pickTrack("English", in: .subtitles)
 
         app.expectTracks(button, "value == 'Subtitles On'", "the bubble is not filled")

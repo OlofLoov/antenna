@@ -8,8 +8,10 @@ enum TrackPicker {
     /// The captions bubble, filled while full subtitles are on, opening a
     /// system menu: Audio, Subtitles with Off first or a line saying there
     /// are none, then the stream line. Grayed out when the stream has one
-    /// sound and no subtitles. The system menu drops SwiftUI identifiers on
-    /// its rows; UI tests find them by label.
+    /// sound and no subtitles. The order is fixed: opened near the bottom
+    /// of the screen, iOS 26 otherwise reverses it, Subtitles above Audio
+    /// and Off under the tracks. The system menu drops SwiftUI identifiers
+    /// on its rows; UI tests find them by label.
     struct MenuButton: View {
         let audio: [TrackRow]
         let subtitles: [TrackRow]
@@ -53,6 +55,7 @@ enum TrackPicker {
                     .contentShape(Rectangle())
             }
             .menuStyle(.button)
+            .menuOrder(.fixed)
             .buttonStyle(.plain)
             .menuIndicator(.hidden)
             .foregroundStyle(Palette.text)
