@@ -5,7 +5,7 @@
 See proposal.md for why. What exists on 2026-11-22:
 
 - No way to contact Code Crave from the app. A support email address appears only on the Terms of Use and the Privacy Policy pages.
-- The owner decided on 2026-11-22: no email in this change, AWS for the service, and a new domain for Antenna in place of code-crave.se, written here as `<antenna-domain>`. `add-aws-hosting` sets up that domain and the shared API Gateway and Lambda infrastructure.
+- The owner decided on 2026-11-22: no email in this change, AWS for the service, and a new domain for Antenna in place of code-crave.se, written here as `<antenna-domain>` until `add-aws-hosting` task 1.1 picks the exact name. Later the same day the owner took the recommendation on every remaining open question; decisions 2, 3, 4, 6, 9, 10 and 12 record them. `add-aws-hosting` sets up that domain and the shared API Gateway and Lambda infrastructure.
 - `add-title-metadata` plans the first Code Crave server: `Services/lookup/`, a TypeScript Lambda behind an API Gateway HTTP API and CloudFront, with a CDK stack, a deploy workflow using an AWS role through OIDC, Secrets Manager for the TMDB key, every request log off, a static app header and a per-IP AWS WAF rate rule. None of it is built (its tasks 3.1 to 3.3 are open). That change also amends the "no server of our own" rule in `openspec/config.yaml`.
 - `PlaybackFailure` in AntennaCore names every reason a stream fails (`offline`, `notFound`, `refused(status:)`, `cannotDecode(codec:)` and the rest) and carries no address. `SourceKind` lists `m3u`, `xtream`, `stalker`, `jellyfin`, `channelsDVR` and `m3uFile`.
 - `docs/release/app-privacy.md` answers "Data Not Collected". Its "When this changes" section already says that sending crash or performance reports adds Crash Data and Performance Data. The three `PrivacyInfo.xcprivacy` files declare no collected data.
@@ -79,7 +79,9 @@ Options considered:
 
 The endpoint contract below does not depend on AWS, and the app reads its base address, `https://api.<antenna-domain>`, from one place, so a later move to B changes the service and not the app.
 
-### 2. Where reports land: issues in a private repository
+### 2. Where reports land: issues in a private repository (decided)
+
+The owner chose `OlofLoov/antenna-support` on 2026-11-22.
 
 Options considered:
 - **Issues in this public repository.** Users will paste provider addresses and logins, and the scrubber will miss some. Ruled out.
@@ -95,7 +97,9 @@ Each report is one issue:
 - Body: the scrubbed text, then a table of the values.
 - The diagnostic, when attached, as the first comment in a `json` block, cut to 60,000 characters with a note when longer.
 
-### 3. Proving a report comes from Antenna
+### 3. Proving a report comes from Antenna (decided)
+
+The owner chose the recommendation on 2026-11-22: App Attest per report, DeviceCheck where App Attest is not supported, and a device test first on Apple TV.
 
 Options considered:
 - **App Attest once per install, then an assertion per request.** Apple's recommended flow. Needs a store on the service for each key's public key and counter, which is a per-install identifier Code Crave would keep.
@@ -103,7 +107,7 @@ Options considered:
 - **A DeviceCheck token per report.** Stateless; the service checks the token with Apple. Weaker than App Attest (it proves the device and the team, not the binary), and needs Apple's API on every report.
 - **The static header only**, as the lookups use. Enough for cached reads, not for writes into the owner's tracker.
 
-Chosen: App Attest per report where `DCAppAttestService.isSupported` is true, and a DeviceCheck token where it is not. Expected per platform: iPhone and iPad App Attest; Mac App Attest from macOS 27, DeviceCheck or neither on macOS 26; Apple TV unknown until tried on a device (open question 2).
+Chosen: App Attest per report where `DCAppAttestService.isSupported` is true, and a DeviceCheck token where it is not. Expected per platform: iPhone and iPad App Attest; Mac App Attest from macOS 27, DeviceCheck or neither on macOS 26; Apple TV unknown until tried on a device: try App Attest on an Apple TV 4K first (task 5.4), and ship with DeviceCheck as the fallback if `isSupported` is false there.
 
 A device with neither proof, options considered:
 - **Say reporting is not available (chosen).** The form opens, reads "Reports can't be sent from this device." above the fields, and Send stays dimmed. It names no address and opens no mail. This reaches a Mac on macOS 26 if `DCDevice.isSupported` is false there, an Apple TV if it has neither, and builds signed with a personal team, which have no App Attest or DeviceCheck key and use the Debug stub instead.
@@ -115,7 +119,7 @@ The challenge is stateless: `GET /v1/support/challenge` returns a random value, 
 
 Rate limits: a WAF rate rule on `/v1/support*` at 10 requests per IP per 5 minutes, separate from the lookup rule. Bodies over 256 KB are refused by the Lambda before parsing. The service validates the body against a strict schema and refuses unknown fields.
 
-### 4. What a report carries
+### 4. What a report carries (decided)
 
 The app builds the body in AntennaCore from values the screens hand it, so the allowlist is in one tested place:
 
@@ -133,7 +137,7 @@ The app builds the body in AntennaCore from values the screens hand it, so the a
 }
 ```
 
-- `model` is the hardware identifier (`utsname.machine`), the same one the Xcode Organizer groups by. Decoder support differs by chip, so "Apple TV" alone would not tell an Apple TV HD from a 4K. Open question 4. It is not a device ID under Apple's definition (decision 13).
+- `model` is the hardware identifier (`utsname.machine`), the same one the Xcode Organizer groups by. Decoder support differs by chip, so "Apple TV" alone would not tell an Apple TV HD from a 4K. The owner chose the identifier over a class such as "Apple TV 4K" on 2026-11-22. It is not a device ID under Apple's definition (decision 13).
 - `sources` lists each kind once, from the sources on this device, with `m3uFile` reported as `m3u`.
 - `lastError` comes from a small per-device value the player writes when an error screen shows: the reason, status or codec, the engine, and the time. It lives in `UserDefaults` under `support.lastPlaybackError`, holds no link, and is cleared after 24 hours. Opening the form from the error screen uses that error.
 - The source name, channel, title, profile, server address, username, password, MAC address, stream link, device name, iCloud identifiers and the entitlement's product or receipt are never inputs to the builder, so they cannot reach the body. A test builds a report from a fixture with all of them set and checks the encoded body for each.
@@ -152,18 +156,25 @@ The service runs rules 2 to 6 again (it cannot know the user's secrets). Both re
 
 Channel names the user types stay. The user wrote them and sees them in the list; removing them would make many reports unreadable.
 
-### 6. One-way reports and deleting them
+### 6. One-way reports, deleting them and how long they are kept (decided)
 
 The form asks for no email, name or phone number, and a line under Topic reads "We can't reply to reports. Nothing in a report says who sent it." The owner reads reports and does not answer them.
 
 The reference stays so the user has something to point to, and it is the key for deletion. Options considered for deleting a report without email:
-- **Delete from Sent reports in the app (chosen).** After a report is kept, the app adds `{reference, sentAt, topic}` to `support.sentReports` in `UserDefaults`, never the text, and drops entries older than 12 months (the keeping period in open question 6). The form shows a "Sent reports" row at the bottom when the list is not empty. Delete asks "Delete report R-4F7K2Q?", then calls `POST /v1/support/delete` with the reference and a fresh proof, through the same challenge as a report. The reference is not a secret under the `UserDefaults` rule: it is shown on screen, holds nothing about the user, and lets its holder delete that one report and only with Apple's proof. Guessing one of about a billion references at 10 requests per IP per 5 minutes is not practical. The list is per device and not synced, so a report sent from an iPhone is deleted from that iPhone, and a reinstall loses the list.
-- **A form on a support page of the site.** Works from any device and after a reinstall. But the site is static with no scripts, a web form cannot carry App Attest or DeviceCheck proof, so the reference alone would authorize a delete and anyone could try references. Ruled out.
+- **Delete from Sent reports in the app (chosen).** After a report is kept, the app adds `{reference, sentAt, topic}` to `support.sentReports` in `UserDefaults`, never the text, and drops entries older than 12 months, the keeping period below. The form shows a "Sent reports" row at the bottom when the list is not empty. Delete asks "Delete report R-4F7K2Q?", then calls `POST /v1/support/delete` with the reference and a fresh proof, through the same challenge as a report. The reference is not a secret under the `UserDefaults` rule: it is shown on screen, holds nothing about the user, and lets its holder delete that one report and only with Apple's proof. Guessing one of about a billion references at 10 requests per IP per 5 minutes is not practical. The list is per device and not synced, so a report sent from an iPhone is deleted from that iPhone, and a reinstall loses the list.
+- **A form on a support page of the site.** Works from any device and after a reinstall. But a web page, even with the site's own scripts from `add-feature-website`, cannot carry App Attest or DeviceCheck proof, so the reference alone would authorize a delete and anyone could try references. Ruled out.
 - **Write in and quote the reference.** Needs an email address. Ruled out by the owner.
 
 On the service, delete looks the reference up with GitHub's issue search (a deletion comes long after the issue was made, so search lag does not matter) and deletes the issue with the GraphQL `deleteIssue` mutation. If the GitHub App cannot be given that right (Research), the service labels the issue `delete-requested` and closes it without editing the body, since an edit keeps the old text in the issue's history, and the owner deletes labeled issues by hand. The Privacy Policy promises seven days, which covers either path. A reference that matches no issue answers as deleted, so a report already removed at the end of the keeping period leaves the list too.
 
 Statuses: deleted, offline ("Couldn't delete. You're offline."), and unreachable and refused as for Send.
+
+How long reports are kept, decided by the owner on 2026-11-22. Options considered:
+- **12 months, open or closed (chosen).** A scheduled workflow in `OlofLoov/antenna-support` deletes report issues 12 months after they were made, and Sent reports on the device drops entries at the same age.
+- **Until the owner closes the issue.** Shorter for most reports, but the Privacy Policy could not name a period, and an issue left open is never deleted.
+- **Forever.** Old reports help with regressions, but a report that holds a missed secret would stay in the tracker for good.
+
+The Privacy Policy states the 12 months, and the seven days for a delete from Sent reports.
 
 ### 7. Crash and hang reports
 
@@ -180,17 +191,17 @@ App-wide analytics and automatic crash upload stay out. The Organizer and App St
 
 `ReportProblemScreen` in `Apps/Shared/Views/Support/` owns the draft, the model and sending. The components (`ReportPreviewList`, `ReportStatusBanner`, `ReportSentView`, `SentReportsList`) take values and closures. The Apple TV arrangement is `ReportProblemScreenTV`, a separately named view, not a flag.
 
-### 9. Apple TV text entry
+### 9. Apple TV text entry (decided)
 
 The text field uses the system keyboard. tvOS sends the Apple TV Keyboard notification to iPhones on the same account nearby, so a long text can be typed there.
 
-A QR hand-off like the sign-in (the TV shows a code, the iPhone opens the form with the TV's values and sends on its behalf) was considered. It would reuse a known pattern, but the report would then come from the iPhone's proof and network, the TV's values would travel in the link, and the keyboard notification already covers typing. Not in this change; open question 3.
+A QR hand-off like the sign-in (the TV shows a code, the iPhone opens the form with the TV's values and sends on its behalf) was considered. It would reuse a known pattern, but the report would then come from the iPhone's proof and network, the TV's values would travel in the link, and the keyboard notification already covers typing. Not in this change, as the owner decided on 2026-11-22.
 
-### 10. When sending fails
+### 10. When sending fails (decided)
 
 The draft lives in the screen's model only. It survives leaving and reopening the form while the app runs, and is gone when the app quits. It is not written to `UserDefaults` or disk, because the user's text may hold a secret the scrubber missed, and per-device storage must hold no secret.
 
-No background queue. A report sent later on its own would surprise a user who closed the form believing it failed, and would need the text on disk. The status says why it failed, and Send works again.
+No background queue, as the owner decided on 2026-11-22. The options were a queue that sends when the network returns, and the draft kept in memory with the reason shown (chosen). A report sent later on its own would surprise a user who closed the form believing it failed, and would need the text on disk. The status says why it failed, and Send works again.
 
 Timeout 20 seconds. Answers map to statuses: no network, `offline`; timeout or 5xx, "Couldn't reach Antenna support"; 429, too many; 400, 401 and 413, refused.
 
@@ -200,9 +211,13 @@ The app makes the reference when the form opens: `R-` and six characters from Cr
 
 A retry after a timeout sends the same reference. Before creating an issue the service lists the repository's issues labeled `report` updated in the last hour and looks for the reference in their titles. When it finds one it answers with that reference and creates nothing. The list endpoint is used because GitHub's search lags behind new issues.
 
-### 12. Reporting before purchase (needs the owner's OK)
+### 12. Reporting before purchase (decided)
 
-A user who cannot buy, or whose purchase does not restore, is the one most likely to need help, and has only the paywall. The form contacts only the support service and no source, so `paywall-and-entitlement/nothing-works-before-the-app-is-unlocked` keeps its promise about sources; the "shows only the paywall" wording changes. The PR that builds it amends `openspec/config.yaml`'s line "The app is free to download and shows only the paywall until an entitlement is present" to add "and the Report a problem form it links to". It is not a feature gate and changes nothing about entitlement.
+The owner approved reporting before purchase on 2026-11-22, with the paywall link and the amendment of the hard constraint described below. Options considered:
+- **A "Report a problem" link on the paywall (chosen).** Reaches the user who cannot buy or restore.
+- **Reporting only after purchase.** Keeps the paywall line as it is, and leaves a user with a purchase problem no way to say so.
+
+A user who cannot buy, or whose purchase does not restore, is the one most likely to need help, and has only the paywall. The form contacts only the support service and no source, so `paywall-and-entitlement/nothing-works-before-the-app-is-unlocked` keeps its promise about sources; the "shows only the paywall" wording changes. The PR that builds the link (task 6.1) amends the line "The app is free to download and shows only the paywall until an entitlement is present" in `openspec/config.yaml` to add "and the Report a problem form it links to", and adds the same exception to the "Paid unlock only" hard constraint in CLAUDE.md. It is not a feature gate and changes nothing about entitlement.
 
 ### 13. Privacy label and policy
 
@@ -227,7 +242,7 @@ The user's own text could still make a report personal data, if they write their
 
 The manifests gain `NSPrivacyCollectedDataTypes` with the same types (`NSPrivacyCollectedDataTypeCustomerSupport`, `OtherDiagnosticData`, and on iOS `CrashData` and `PerformanceData`), `Linked` false, `Tracking` false, purpose `AppFunctionality`. The Top Shelf manifest stays empty of collected data.
 
-The Privacy Policy changes its opening ("collects nothing about you" becomes "collects nothing unless you send a problem report"), adds a Problem reports section, adds the support service and GitHub to network connections, says reports cannot be answered and how to delete one from Sent reports, and states the retention from open question 6. `docs/release/app-privacy.md` changes its answer, its "Why" section and the "When this changes" note.
+The Privacy Policy changes its opening ("collects nothing about you" becomes "collects nothing unless you send a problem report"), adds a Problem reports section, adds the support service and GitHub to network connections, says reports cannot be answered and how to delete one from Sent reports, and states the 12-month keeping period from decision 6. `docs/release/app-privacy.md` changes its answer, its "Why" section and the "When this changes" note.
 
 ### 14. Identifiers
 
@@ -255,12 +270,4 @@ Additive. Two per-device `UserDefaults` keys (`support.lastPlaybackError`, `supp
 
 ## Open Questions
 
-Open questions for the owner, each with a recommendation. Hosting (AWS), the "Linked to you" answer (no) and devices with neither proof (reporting not available) were settled on 2026-11-22 and are in decisions 1, 13 and 3.
-
-1. **Repository name and owner.** Recommend `OlofLoov/antenna-support`, private, with the "Antenna Support" GitHub App installed on it only.
-2. **Apple TV proof.** Recommend trying App Attest on an Apple TV 4K first, and shipping with DeviceCheck as the fallback if `isSupported` is false there.
-3. **Write the report on an iPhone from the Apple TV?** Recommend not in this change: the system keyboard notification covers long text, and a hand-off moves the report to the iPhone's network and proof.
-4. **Device model detail.** Recommend the hardware identifier (`AppleTV14,1`) over a class ("Apple TV 4K"), since decoder bugs follow the chip and millions of devices share each identifier.
-5. **Reporting before purchase.** Recommend yes, with the paywall link and the `openspec/config.yaml` amendment in decision 12. Purchase problems happen before purchase.
-6. **How long reports are kept.** Recommend deleting report issues 12 months after they were made, open or closed, with a scheduled workflow in the private repository, and within seven days when deleted from Sent reports. Sent reports on the device drops entries at the same age. The Privacy Policy states the period.
-7. **Queue a failed report?** Recommend no (decision 10): keep the draft in memory and say why it failed.
+None in this change. The owner decided every question on 2026-11-22, each as recommended: hosting, "Linked to you" and devices with neither proof first, then the repository, the Apple TV proof, the iPhone hand-off, the device model, reporting before purchase, the keeping period and the queue. Decisions 1 to 4, 6, 9, 10, 12 and 13 hold them. The exact `<antenna-domain>` name is open in `add-aws-hosting` task 1.1, and the service waits for it.

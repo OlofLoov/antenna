@@ -20,12 +20,12 @@ After this change a user opens Settings, chooses Report a problem, writes what h
 - A "Report a problem" row in Settings on every platform, and a "Report this problem" action on the player's error screen for channels, movies and episodes that fills in the error.
 - What a report carries: the user's text, the topic, the app version and build, platform and OS version, device model, app language, whether the app is unlocked, the kinds of sources set up (M3U, Xtream and so on), and the last playback error's reason, engine and age. Never a source address, source name, username, password, MAC address, channel name or stream link. Links and login-looking strings are removed from the user's text on the device, and again on the service.
 - A `POST /v1/support` endpoint on the Code Crave service planned in `add-title-metadata` (API Gateway, Lambda, CloudFront, AWS WAF). It checks that the request comes from Antenna (App Attest where the device supports it, a DeviceCheck token otherwise), rate-limits by IP, rejects oversized or malformed bodies, scrubs the text again, and creates the issue with a GitHub App installation token held in Secrets Manager. The app holds no GitHub credential.
-- Issues go to a separate private repository. This repository is public.
+- Issues go to the private repository `OlofLoov/antenna-support`. This repository is public. A scheduled workflow there deletes report issues 12 months after they were made.
 - A reference code on the confirmation screen instead of an issue number.
 - Sent reports at the bottom of the form: the reference, date and topic of each report sent from this device in the last 12 months, kept on the device without the text, each with Delete. Deleting asks the service, with the same proof as a report, to remove the issue within seven days.
 - No email anywhere: no reply field, no mail fallback, and no support address in the app. A device that can prove neither App Attest nor DeviceCheck reads "Reports can't be sent from this device."
 - A report that cannot be sent stays in the form with the reason. Nothing is queued in the background.
-- Report a problem works before purchase, from a link on the paywall. This amends the "shows only the paywall until an entitlement is present" constraint and needs the owner's OK (design.md, open question 5).
+- Report a problem works before purchase, from a link on the paywall. This amends the "shows only the paywall until an entitlement is present" constraint in `openspec/config.yaml` and CLAUDE.md, which the owner approved on 2026-11-22 (design.md decision 12).
 - The App Privacy answers change from "Data Not Collected" to User Content and Diagnostics, for App Functionality, not linked to the user and not used for tracking. `docs/release/app-privacy.md`, the three privacy manifests and the Privacy Policy change in the same change.
 
 Out of scope:
@@ -46,7 +46,7 @@ Out of scope:
 ### Modified Capabilities
 - `sources-and-settings`: the Report a problem row.
 - `player-controls-and-playback-errors`: Report this problem on the error screen.
-- `paywall-and-entitlement`: reporting works before the app is unlocked (pending the owner's OK).
+- `paywall-and-entitlement`: reporting works before the app is unlocked, from a link on the paywall.
 - `antenna-website`: the Privacy Policy names the support service, what a report holds, GitHub as where it is kept, that reports cannot be answered, and how to delete one from the device that sent it.
 - `app-release`: the privacy manifests declare the data a report collects.
 
@@ -58,6 +58,6 @@ Out of scope:
 - AntennaCore: the report builder, the text scrubber, the request encoding, the reference code and the Sent reports record.
 - Apps: the report form on every platform, the Settings row, the error screen action, the paywall link, the MetricKit subscriber on iPhone, iPad and Mac, and the App Attest entitlement.
 - `docs/architecture/`: GitHub becomes an external system in the context and container diagrams.
-- Web: Privacy Policy and `WebsiteTests`. Docs: `docs/release/app-privacy.md`. Manifests: `Apps/Mobile`, `Apps/TV` and `Apps/TopShelf` `PrivacyInfo.xcprivacy`.
+- Web: the Privacy Policy, wherever `add-feature-website` has put it by then, and `WebsiteTests`. Docs: `docs/release/app-privacy.md`. Manifests: `Apps/Mobile`, `Apps/TV` and `Apps/TopShelf` `PrivacyInfo.xcprivacy`.
 - Boards: new draft boards `iPhone-Report`, `iPhone-Report-Failed`, `iPhone-Report-Sent`, `TV-Report` and `TV-Report-Sent`. The rest are listed in design.md as not drawn yet.
-- Blocked on: the owner's answers to the open questions in design.md, above all the paywall amendment (5), and on `add-aws-hosting` and `add-title-metadata` for the service.
+- Blocked on: `add-aws-hosting` and `add-title-metadata` for the service, and through them on the exact `<antenna-domain>` name (`add-aws-hosting` task 1.1). The owner decided this change's open questions on 2026-11-22.
