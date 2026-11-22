@@ -174,7 +174,7 @@ The system SHALL keep the text, topic and box in the form when a report cannot b
 - **THEN** the form is empty and nothing was sent
 
 ### Requirement: Reports reach the developer privately
-The system SHALL keep each report as an issue in a private repository that only Code Crave can read, SHALL hold no request log with a report's content or the sender's IP address, and SHALL keep the credential that creates issues on the service only, never in the app.
+The system SHALL keep each report as an issue in a private repository that only Code Crave can read, SHALL hold no request log with a report's content or the sender's IP address, and SHALL keep the credential that creates issues on the service only, never in the app. Each report SHALL be deleted 12 months after it was sent, open or closed.
 
 #### Scenario: Where a report lands
 - **WHEN** the service accepts a report
@@ -188,6 +188,11 @@ The system SHALL keep each report as an issue in a private repository that only 
 #### Scenario: Looking at the service logs
 - **WHEN** the service logs are read after a report
 - **THEN** they hold counts and error kinds only, with no text, reference or IP address
+
+#### Scenario: A year after a report
+- **GIVEN** a report sent 12 months ago and never deleted from Sent reports
+- **WHEN** the scheduled clean-up in the private repository runs
+- **THEN** the report's issue is gone, whether it was open or closed
 
 ### Requirement: Only Antenna can send reports
 The support service SHALL accept a report only with proof from Apple that it comes from Antenna on a genuine device, App Attest where the device supports it and a DeviceCheck token otherwise, SHALL limit how many reports one network can send, and SHALL refuse a body over its size limit.
