@@ -5,7 +5,7 @@ The system SHALL publish a home page that says in its first screen that Antenna 
 
 #### Scenario: A first visit on a laptop
 - **WHEN** someone opens the home page on a laptop
-- **THEN** without scrolling they read what Antenna does, the four platforms, that no channels are included, and see the App Store link
+- **THEN** without scrolling they read "Your TV sources, on every Apple screen.", the four platforms, that no channels are included, and see the App Store link
 
 #### Scenario: A first visit on a phone
 - **WHEN** someone opens the home page on an iPhone
@@ -89,6 +89,48 @@ The system SHALL publish a support page with answers to common questions and a s
 - **WHEN** someone reads how to unlock Antenna on a new device
 - **THEN** an answer says it unlocks on its own with the same Apple Account and how to use Restore Purchases on the paywall
 
+### Requirement: Every page reads without scripts
+The system SHALL deliver every page's full text, headings, links and images in the first answer for its address, so the page reads the same with scripts turned off, in a link preview, and to a search engine. A script MAY make moving between pages faster, and SHALL NOT be needed to read any page or follow any link.
+
+#### Scenario: Scripts turned off
+- **GIVEN** a browser with JavaScript turned off
+- **WHEN** someone opens the Privacy Policy, then follows Pricing in the header
+- **THEN** both pages show in full, and the link works as a plain link
+
+#### Scenario: The App Store's privacy link
+- **WHEN** App Review or a buyer follows the privacy address from the App Store listing
+- **THEN** the first answer for that address holds the whole Privacy Policy
+
+#### Scenario: Sharing a page
+- **WHEN** someone pastes the multi-view page's address into a message
+- **THEN** the preview shows that page's own title and description, not the home page's
+
+### Requirement: Moving between pages needs no reload
+The system SHALL, once a page has loaded with scripts on, open other pages of the site in place without a full reload, keep the header and footer in place, update the address and title, and let the browser's back and forward buttons move between them. A screen reader SHALL announce the new page.
+
+#### Scenario: From a feature page to pricing
+- **GIVEN** the multi-view page is open
+- **WHEN** the visitor follows Pricing in the header
+- **THEN** the pricing page shows without a full reload, the address ends in `/pricing/`, and the title names Pricing
+
+#### Scenario: Going back
+- **GIVEN** the visitor moved from the home page to the guide page
+- **WHEN** they press the browser's back button
+- **THEN** the home page shows again, scrolled to where they left it
+
+#### Scenario: VoiceOver
+- **GIVEN** VoiceOver on an iPhone
+- **WHEN** the visitor follows a link to another page of the site
+- **THEN** VoiceOver reads the new page's title or main heading
+
+#### Scenario: A link to the setup page
+- **WHEN** a page of the site links to the setup page and the visitor follows it
+- **THEN** the setup page loads as a page of its own, as it does from a setup link
+
+#### Scenario: A mistyped address inside the site
+- **WHEN** the visitor follows a link to an address the site has no page for
+- **THEN** "Page not found" shows with a link to the home page, as it does when the address is typed
+
 ### Requirement: Every page shares one header and footer
 The system SHALL show the same header on every page, with Antenna's name linking home and links to Features, Pricing and Support, and the same footer with links to Support, the Terms of Use and the Privacy Policy.
 
@@ -112,7 +154,12 @@ The system SHALL publish the site in English, and SHALL publish another language
 #### Scenario: Swedish is added
 - **GIVEN** the Swedish store listing is ready and the Swedish site is published
 - **WHEN** a visitor picks Svenska in the language switch
-- **THEN** the same page shows in Swedish with Swedish screenshots
+- **THEN** the same page shows in Swedish with Swedish screenshots, at an address that starts with `/sv/`
+
+#### Scenario: A language not yet published
+- **GIVEN** only English and Swedish are published
+- **WHEN** someone opens an address that starts with `/de/`
+- **THEN** "Page not found" shows with a not-found status
 
 #### Scenario: Arabic is added
 - **GIVEN** the Arabic site is published
