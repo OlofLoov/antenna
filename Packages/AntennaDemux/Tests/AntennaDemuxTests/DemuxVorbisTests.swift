@@ -9,7 +9,7 @@ import Testing
 /// (playback-engine/vorbis-sound-plays).
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(1))) struct DemuxVorbisTests {
-    nonisolated static var buildDecodesVorbis: Bool { (try? SoftwareDecoder(codec: "vorbis")) != nil }
+    nonisolated static var buildDecodesVorbis: Bool { SoftwareDecoder.isAvailable("vorbis") }
 
     @Test("playback-engine/vorbis-sound-plays a film with Vorbis sound plays it", .enabled(if: buildDecodesVorbis))
     func vorbisPlays() async throws {

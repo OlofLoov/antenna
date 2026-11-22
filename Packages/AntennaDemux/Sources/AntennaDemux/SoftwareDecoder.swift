@@ -5,7 +5,8 @@ import Foundation
 
 /// FFmpeg's decoder for the codecs no Apple device decodes: MPEG-2 video
 /// and MP2 sound from old SD broadcast channels, DTS, Dolby TrueHD and MLP
-/// from films, AAC in LATM framing, multichannel Opus and SMPTE 302M PCM.
+/// from films, AAC in LATM framing, multichannel Opus, Vorbis and SMPTE
+/// 302M PCM.
 /// Pictures come out as NV12 pixel buffers and sound as interleaved 32-bit
 /// float PCM on the speakers the decoder names, both as `CMSampleBuffer`s
 /// the sample-buffer renderers take.
@@ -31,6 +32,14 @@ final class SoftwareDecoder: @unchecked Sendable {
     /// Where the next sound frame starts, for frames that arrive untimed.
     private var nextSoundTime: CMTime = .invalid
     private var heldSound: HeldSound?
+
+    /// Whether this FFmpeg build has a decoder for the stream FFmpeg names
+    /// `name`. It does not open the decoder, since Vorbis and others refuse
+    /// to open without the container's extradata.
+    static func isAvailable(_ name: String) -> Bool {
+        guard let descriptor = avcodec_descriptor_get_by_name(name) else { return false }
+        return avcodec_find_decoder(descriptor.pointee.id) != nil
+    }
 
     /// A decoder for the stream FFmpeg names `name`, such as "mpeg2video",
     /// "mp2" or "dts", set up with the container's `extradata`.
