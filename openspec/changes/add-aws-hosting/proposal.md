@@ -10,12 +10,12 @@ The owner, on 2026-11-22: AWS for now, "most straightforward, we can always chan
 
 Today the site is `Web/`, published to GitHub Pages at antenna.code-crave.se by `.github/workflows/pages.yml`. The app has no server. `add-title-metadata` plans a lookup service with its own CDK stack and deploy role, and `add-support-requests` plans a `/v1/support` route on it. Neither is built. The app is not published, so no installed build, App Store listing or link in a user's hands names the old domain.
 
-After this change Code Crave has one AWS account defined by one CDK app in this repo. The site, a single-page app prerendered to HTML by `add-feature-website`, is served from a private S3 bucket through CloudFront at `https://<antenna-domain>` with a strict Content-Security-Policy, and the API answers at `https://api.<antenna-domain>` with no routes of its own until those two changes add them. Every deploy runs from main through GitHub Actions with a role assumed through OIDC, and nothing keeps a log of who asked for what. The domain is renamed everywhere the repo names antenna.code-crave.se, and the GitHub Pages site is retired.
+After this change Code Crave has one AWS account defined by Terraform in this repo. The site, a single-page app prerendered to HTML by `add-feature-website`, is served from a private S3 bucket through CloudFront at `https://<antenna-domain>` with a strict Content-Security-Policy, and the API answers at `https://api.<antenna-domain>` with no routes of its own until those two changes add them. Every deploy runs from main through GitHub Actions with a role assumed through OIDC, and nothing keeps a log of who asked for what. The domain is renamed everywhere the repo names antenna.code-crave.se, and the GitHub Pages site is retired.
 
 ## What Changes
 
-- A CDK app in TypeScript under `Infra/`: a Route 53 hosted zone for `<antenna-domain>`, ACM certificates in us-east-1 for CloudFront, a private S3 bucket and a CloudFront distribution with Origin Access Control for the site, an empty API (API Gateway HTTP API in eu-north-1 behind its own CloudFront distribution and an AWS WAF web ACL) that later changes add routes and Lambdas to, the GitHub OIDC provider and deploy roles, and an AWS Budgets alarm at $20 a month.
-- A deploy workflow: `cdk diff` posted on pull requests that touch `Infra/` or `Services/`, `cdk deploy` and the site upload on merge to main, through roles assumed with GitHub's OIDC token. No AWS keys are stored in GitHub.
+- Terraform under `Infra/`, owner-decided on 2026-11-22 in place of a CDK app: a Route 53 hosted zone for `<antenna-domain>`, ACM certificates in us-east-1 for CloudFront, a private S3 bucket and a CloudFront distribution with Origin Access Control for the site, an empty API (API Gateway HTTP API in eu-north-1 behind its own CloudFront distribution and an AWS WAF web ACL) that later changes add routes and Lambdas to, the GitHub OIDC provider and deploy roles, and an AWS Budgets alarm at $20 a month.
+- A deploy workflow: `terraform test` and a `terraform plan` comment on pull requests that touch `Infra/`, `terraform apply` and the site upload on merge to main, through roles assumed with GitHub's OIDC token. No AWS keys are stored in GitHub.
 - One environment, production, and no other. The owner approves each infrastructure deploy; site uploads need no approval.
 - No request logs anywhere: CloudFront standard and real-time logs off, API Gateway access logs off, S3 server access logs off, WAF logging and sampled requests off, Lambda logs limited to counts and errors with a 14-day retention.
 - The site moves from GitHub Pages to CloudFront at `<antenna-domain>`. `.github/workflows/pages.yml`, `Web/CNAME` and `Web/.nojekyll` are removed, and the Pages site is switched off.
@@ -45,7 +45,7 @@ Out of scope:
 
 ## Impact
 
-- New: `Infra/` (CDK app, its tests), `.github/workflows/infra.yml`. Removed: `.github/workflows/pages.yml`, `Web/CNAME`, `Web/.nojekyll`.
+- New: `Infra/` (Terraform roots and modules, their `terraform test` files), `.github/workflows/infra.yml`. Removed: `.github/workflows/pages.yml`, `Web/CNAME`, `Web/.nojekyll`.
 - `scripts/publish-web.sh` keeps building the folder, and copies in the single-page app's build when it is given one; the upload moves to the new workflow, which builds the app with Node 22 first.
 - App: `Config/Antenna.entitlements`, `Config/AntennaMac.entitlements`, `project.yml` (Terms and Privacy addresses), `Apps/Mobile/Info.plist`, `Apps/TV/Info.plist`, `Apps/Shared/Components/Paywall/Paywall.swift` (preview addresses), `SetupLink.host` in AntennaCore.
 - Store and release: `fastlane/metadata/*/support_url.txt` and `privacy_url.txt`, `scripts/store_metadata.py`, `docs/release/app-review-notes.md`, `docs/release/app-privacy.md`, `docs/release/device-checklist.md`, `Web/review/antenna-review.m3u`, `scripts/check-rules.sh`.
