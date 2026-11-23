@@ -184,19 +184,6 @@ img {
 	background: var(--surface);
 }
 
-/* SvelteKit's route announcer carries its hiding in a style attribute, which
-   the site's Content-Security-Policy blocks. This rule hides it instead. */
-#svelte-announcer {
-	position: absolute;
-	inset-inline-start: 0;
-	inset-block-start: 0;
-	clip-path: inset(50%);
-	overflow: hidden;
-	white-space: nowrap;
-	inline-size: 1px;
-	block-size: 1px;
-}
-
 .skip {
 	position: absolute;
 	inset-inline-start: 16px;

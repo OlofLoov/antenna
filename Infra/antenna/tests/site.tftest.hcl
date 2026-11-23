@@ -202,8 +202,13 @@ run "pages_run_only_the_site_s_own_code" {
   }
 
   assert {
-    condition     = one(one(aws_cloudfront_response_headers_policy.site.security_headers_config).content_security_policy).content_security_policy == "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    condition     = one(one(aws_cloudfront_response_headers_policy.site.security_headers_config).content_security_policy).content_security_policy == "default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-hashes' 'sha256-S8qMpvofolR8Mpjy4kQvEm7m1q8clzU4dfDH0AmvZjo='; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
     error_message = "the site's CSP must be the string decided in design.md decision 3"
+  }
+
+  assert {
+    condition     = length(regexall("style-src[^;]*'unsafe-inline'", one(one(aws_cloudfront_response_headers_policy.site.security_headers_config).content_security_policy).content_security_policy)) == 0
+    error_message = "the site's style-src and style-src-attr must never allow inline styles"
   }
 
   assert {
