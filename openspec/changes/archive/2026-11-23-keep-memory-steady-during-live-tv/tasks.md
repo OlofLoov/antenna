@@ -5,7 +5,7 @@
 - [x] 1.3 Read and handle each packet of a run in an autorelease pool of its own in `DemuxRun.pump`
 - [x] 1.4 `DiskTimeshiftFilesTests`: 300 reads of 1 MB on a thread of their own leave the footprint within 32 MB
 - [x] 1.5 `DemuxMemoryTests`: 200 MB through a connection, taken or kept as a stream opened ahead, leaves malloc within 16 MB
-- [x] 1.6 `DemuxMemoryTests`: 5,000 deinterlaced pictures of 576i and 1080i live TV leave malloc within 256 bytes a picture
+- [x] 1.6 `DemuxMemoryTests`: of 3,000 objects autoreleased by reads during a live run, fewer than a quarter are still alive
 
 ## 2. Verify
 
