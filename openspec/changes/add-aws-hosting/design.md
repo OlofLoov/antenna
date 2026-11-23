@@ -109,7 +109,7 @@ Infra/
 Inputs, from repository variables in the workflow and from `-var` on the owner's machine:
 - `domain`, from the `ANTUNA_DOMAIN` repository variable, which the owner sets to `antuna.app`. The tests plan against `antuna.example`.
 - `alert_email`, from `AWS_ALERT_EMAIL`: where the budget and anomaly alerts go. AWS has no way to read the account's own address into a budget.
-- `github_repository`, the workflow's `github.repository`, for the trust subjects.
+- `github_subject`, the repository part of GitHub's OIDC subject, for the trust subjects. The repository uses GitHub's immutable subjects, which name the owner and repository with their numeric ids (`repo:<owner>@<owner id>/<name>@<repository id>`), so a later rename or a new repository under an old name cannot assume the roles. The workflow builds it from `github.repository_owner_id` and `github.repository_id`; the owner reads it with `gh api repos/<owner>/<name>/actions/oidc/customization/sub`.
 - `state_bucket`, built from `AWS_ACCOUNT_ID`, for the diff role's lock file permission.
 
 Earlier changes name the stacks of the CDK plan. They map onto this layout: `AntennaEdge` is `modules/edge`, `AntennaSite` is `modules/site`, `AntennaApi` is `modules/api` and `AntennaCi` is the `ci` root.
@@ -149,9 +149,9 @@ Roles in the `ci` root, each trusting `token.actions.githubusercontent.com` with
 
 | Role | Subject it trusts | Can |
 |------|-------------------|-----|
-| `antuna-diff` | `repo:<owner>/antuna:pull_request` | the AWS managed `ReadOnlyAccess` policy, and writing and deleting the lock files (`*.tflock`) in the state bucket; nothing else that writes |
-| `antuna-deploy` | `repo:<owner>/antuna:environment:production` | `AdministratorAccess`. Terraform creates roles, DNS records, certificates and distributions, so a narrower policy would list most of IAM, Route 53, ACM, S3, CloudFront, Budgets and Cost Explorer anyway; the CDK plan's execution role had the same policy. The trust subject and the environment's reviewer limit it. |
-| `antuna-site` | `repo:<owner>/antuna:ref:refs/heads/main` | `s3:PutObject`, `s3:DeleteObject`, `s3:ListBucket` on the site bucket and `cloudfront:CreateInvalidation` on the site distribution, attached by `modules/site` |
+| `antuna-diff` | `<subject>:pull_request` | the AWS managed `ReadOnlyAccess` policy, and writing and deleting the lock files (`*.tflock`) in the state bucket; nothing else that writes |
+| `antuna-deploy` | `<subject>:environment:production` | `AdministratorAccess`. Terraform creates roles, DNS records, certificates and distributions, so a narrower policy would list most of IAM, Route 53, ACM, S3, CloudFront, Budgets and Cost Explorer anyway; the CDK plan's execution role had the same policy. The trust subject and the environment's reviewer limit it. |
+| `antuna-site` | `<subject>:ref:refs/heads/main` | `s3:PutObject`, `s3:DeleteObject`, `s3:ListBucket` on the site bucket and `cloudfront:CreateInvalidation` on the site distribution, attached by `modules/site` |
 
 The `production` environment allows only the main branch. Who approves:
 - Options considered: no reviewer (the merge is the approval, as for the site), the owner as required reviewer on every infrastructure deploy, or the owner only for changes to IAM, DNS or WAF.
@@ -213,7 +213,7 @@ Outside the repo, in this order. No agent or workflow runs these. The state buck
 2. Register `antuna.app` in Route 53 Domains (task 1.1). Note the id of the hosted zone it creates.
 3. Install Terraform 1.17.2.
 4. Create the state bucket: `cd Infra/bootstrap && terraform init && terraform apply`.
-5. Apply the CI roles: `cd Infra/ci && terraform init -backend-config=bucket=antuna-terraform-state-<account id> && terraform apply -var github_repository=<owner>/<repository> -var state_bucket=antuna-terraform-state-<account id>`.
+5. Apply the CI roles: `cd Infra/ci && terraform init -backend-config=bucket=antuna-terraform-state-<account id> && terraform apply -var github_subject=<subject> -var state_bucket=antuna-terraform-state-<account id>`.
 6. Import the zone and apply the rest: in `Infra/antuna`, `terraform init -backend-config=bucket=antuna-terraform-state-<account id>`, then `terraform import -var domain=antuna.app -var alert_email=<address> module.edge.aws_route53_zone.this <zone id>`, then `terraform apply` with the same two `-var`. If Cost Anomaly Detection already has a services monitor in the account, import it as `module.edge.aws_ce_anomaly_monitor.services` before the apply. AWS emails `<address>` once to confirm the anomaly subscription.
 7. Set the repository variables `AWS_ACCOUNT_ID`, `ANTUNA_DOMAIN`, `AWS_ALERT_EMAIL`, and from `terraform output` in `Infra/antuna`, `SITE_BUCKET` and `SITE_DISTRIBUTION_ID`. `APPLE_TEAM_ID` is already set.
 8. Create the `production` environment, limited to the main branch, with the owner as required reviewer.

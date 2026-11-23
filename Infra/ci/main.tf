@@ -27,13 +27,13 @@ provider "aws" {
   }
 }
 
-variable "github_repository" {
-  description = "The repository whose workflows may assume the roles, as owner/name."
+variable "github_subject" {
+  description = "The repository part of GitHub's immutable OIDC subject, as repo:<owner>@<owner id>/<name>@<repository id>."
   type        = string
 
   validation {
-    condition     = can(regex("^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$", var.github_repository))
-    error_message = "github_repository must be owner/name."
+    condition     = can(regex("^repo:[A-Za-z0-9-]+@[0-9]+/[A-Za-z0-9._-]+@[0-9]+$", var.github_subject))
+    error_message = "github_subject must be repo:<owner>@<owner id>/<name>@<repository id>."
   }
 }
 
@@ -46,9 +46,9 @@ locals {
   issuer = "token.actions.githubusercontent.com"
 
   subjects = {
-    diff   = "repo:${var.github_repository}:pull_request"
-    deploy = "repo:${var.github_repository}:environment:production"
-    site   = "repo:${var.github_repository}:ref:refs/heads/main"
+    diff   = "${var.github_subject}:pull_request"
+    deploy = "${var.github_subject}:environment:production"
+    site   = "${var.github_subject}:ref:refs/heads/main"
   }
 
   trust = {
