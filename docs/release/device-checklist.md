@@ -369,9 +369,9 @@ platform exists.
 ## Owner setup, no device
 
 - [ ] **add-iphone-as-setup-device 1.2, publish the site.** Set the repository
-  variable `APPLE_TEAM_ID` to the ten-character team id, point the DNS name
-  `antenna.code-crave.se` at GitHub Pages, and rerun the Pages workflow. Expect
-  `https://antenna.code-crave.se/.well-known/apple-app-site-association` to serve
+  variable `APPLE_TEAM_ID` to the ten-character team id, finish the AWS setup
+  in `add-aws-hosting` task 1.4, and run the Infra workflow by hand. Expect
+  `https://<antenna-domain>/.well-known/apple-app-site-association` to serve
   the association file with the team id, and `/setup` to show the plain fallback
   page with no scripts, images or third-party content.
 - [ ] **add-signing-capabilities 5.2, capabilities in the Developer portal.**

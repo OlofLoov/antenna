@@ -30,7 +30,7 @@ export const LINK_HOSTS = [
 	'www.apple.com',
 	'reportaproblem.apple.com',
 	'support.apple.com',
-	'docs.github.com'
+	'aws.amazon.com'
 ];
 
 /** Folders of Web/ that publish-web.sh copies as they are. */

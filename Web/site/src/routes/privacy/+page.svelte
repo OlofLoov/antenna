@@ -70,11 +70,12 @@
 		opens outside Antenna.
 	</p>
 	<p>
-		This website is hosted on GitHub Pages. When you open a page here, including the setup page your
-		iPhone opens when Antenna is not installed, GitHub receives the request under its own <a
-			href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement"
-			>privacy statement</a
-		>.
+		This website is served by Amazon CloudFront, part of Amazon Web Services. When you open a page
+		here, including the setup page your iPhone opens when Antenna is not installed, Amazon's servers
+		receive the request and your IP address under Amazon's <a href="https://aws.amazon.com/privacy/"
+			>privacy notice</a
+		>. The site's request logs are turned off, so no record is kept of who opened which page. Code
+		Crave sees only how many requests the site answered.
 	</p>
 
 	<h2>Analytics and tracking</h2>

@@ -2,9 +2,10 @@ import AntennaCore
 import Foundation
 import Testing
 
-/// The site under `Web/` at the repository root, published to `SetupLink.host`
-/// by `.github/workflows/pages.yml`: the plain files in `Web/` and the
-/// SvelteKit app in `Web/site/`, whose built pages `Web/site/tests` checks.
+/// The site under `Web/` at the repository root, uploaded to CloudFront at
+/// `SetupLink.host` by the site job in `.github/workflows/infra.yml`: the
+/// plain files in `Web/` and the SvelteKit app in `Web/site/`, whose built
+/// pages `Web/site/tests` checks.
 @Suite struct WebsiteTests {
     static let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         .deletingLastPathComponent().deletingLastPathComponent()
@@ -47,10 +48,9 @@ import Testing
 
     @Test("antenna-website/the-site-answers-every-address-the-app-uses: a file for each address, under the app's domain")
     func everyAddress() throws {
-        for path in ["setup/index.html", Self.terms, Self.privacy, Self.associationPath, ".nojekyll"] {
+        for path in ["setup/index.html", Self.terms, Self.privacy, Self.associationPath] {
             #expect(FileManager.default.fileExists(atPath: Self.web.appending(path: path).path), "\(path) missing")
         }
-        #expect(try read("CNAME").trimmingCharacters(in: .whitespacesAndNewlines) == SetupLink.host)
         for plist in ["Apps/Mobile/Info.plist", "Apps/TV/Info.plist"] {
             let data = try Data(contentsOf: Self.root.appending(path: plist))
             let info = try #require(try PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any])
@@ -110,7 +110,7 @@ import Testing
             defer { try? FileManager.default.removeItem(at: published.folder) }
             let data = try Data(contentsOf: published.folder.appending(path: Self.associationPath))
             #expect(try appIDs(data) == (placeholder ? ["ABCDE12345.se.codecrave.antenna"] : committed))
-            for path in ["setup/index.html", "review/antenna-review.m3u", "review/guide.xml", "CNAME", ".nojekyll"] {
+            for path in ["setup/index.html", "review/antenna-review.m3u", "review/guide.xml"] {
                 #expect(FileManager.default.fileExists(atPath: published.folder.appending(path: path).path), "\(path) not published")
             }
             #expect(!FileManager.default.fileExists(atPath: published.folder.appending(path: "site").path), "the app's source is published")
@@ -196,9 +196,11 @@ import Testing
             "Antenna collects nothing about you", "Code Crave runs no server that receives it",
             "no analytics, crash reporting, advertising or tracking", "no third-party SDK", "Antenna connects only to",
             "the sources and guide sources you add, and the addresses they list", "Apple handles every purchase",
+            "served by Amazon CloudFront", "no record is kept of who opened which page",
         ] {
             #expect(body.contains(phrase), "\(phrase)")
         }
+        #expect(!body.contains("GitHub"))
     }
 
     @Test("antenna-website/the-legal-pages-are-dated-and-link-to-each-other: a date under the title and a link across")
@@ -233,23 +235,15 @@ import Testing
         }
     }
 
-    @Test("antenna-website/the-site-publishes-from-main: pushes to main that touch the site, and nothing else")
-    func publishesFromMain() throws {
-        let workflow = try read(".github/workflows/pages.yml", in: Self.root)
-        let trigger = try #require(matches("\\non:\\n(.*?)\\n\\S", in: workflow).first)
-        #expect(trigger.contains("branches: [main]"))
-        #expect(trigger.contains("\"Web/**\""))
-        #expect(!trigger.contains("pull_request"))
-        #expect(workflow.contains("bash scripts/publish-web.sh"))
-        #expect(workflow.contains("include-hidden-files: true"))
-    }
-
     @Test("antenna-website/the-site-publishes-from-main: the CloudFront upload runs from main and removes deleted pages")
     func uploadsFromMain() throws {
         let workflow = try read(".github/workflows/infra.yml", in: Self.root)
         let push = try #require(matches("\\n  push:\\n(.*?)\\n  [a-z_]+:", in: workflow).first)
         #expect(push.contains("branches: [main]"))
-        #expect(push.contains("\"Web/**\""))
+        for path in ["\"Web/**\"", "scripts/publish-web.sh", "scripts/make-review-guide.py"] {
+            #expect(push.contains(path), "\(path)")
+        }
+        #expect(!FileManager.default.fileExists(atPath: Self.root.appending(path: ".github/workflows/pages.yml").path))
         let site = try #require(workflow.components(separatedBy: "\n  site:\n").last)
         #expect(site.contains("github.event_name != 'pull_request' && github.ref == 'refs/heads/main'"))
         #expect(site.contains("bash scripts/publish-web.sh"))

@@ -38,7 +38,7 @@ jobs:
     permissions:
       actions: write
     steps:
-      - name: Dispatch Pages
+      - name: Dispatch the site upload
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
+        run: gh workflow run infra.yml --repo "$GITHUB_REPOSITORY" --ref main
