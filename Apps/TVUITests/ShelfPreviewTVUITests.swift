@@ -86,7 +86,7 @@ final class ShelfPreviewTVUITests: XCTestCase {
         expect(element("movies.preview"), "exists == true")
         XCTAssertTrue(focused.hasPrefix("movies.card."), focused)
         expect(element("movies.preview.title"), "label == 'Night Ferry'")
-        // The row comes up at the preview's 520 pt foot; under the system tab bar it lands a point higher.
+        // The row comes to rest 16 pt under the preview's 520 pt foot.
         let row = element("movies.row.recentlyAdded")
         for _ in 0..<10 where !(518...590).contains(row.frame.minY) {
             Thread.sleep(forTimeInterval: 0.3)

@@ -95,13 +95,12 @@
             let previewing = previewing
             return ScrollViewReader { proxy in
                 rowsScroll(model, previewing: previewing)
-                    // After the focus engine's own scroll has settled, so the
-                    // two never move the rows at once.
                     // Nothing moves until the highlight has been in a row, so
                     // the banner's buttons take presses as soon as they show.
                     .task(id: focusedRow) {
                         guard focusedRow != nil || placedRow != nil else { return }
-                        try? await Task.sleep(for: Self.settle)
+                        let wait = ShelfRowPlacement.wait(top: focusedRow.flatMap { rowHeights.tops[$0] })
+                        if wait > .zero { try? await Task.sleep(for: wait) }
                         guard !Task.isCancelled else { return }
                         placedRow = focusedRow
                         if let row = focusedRow { bringUp(row, proxy) } else { backToTop() }
@@ -239,12 +238,11 @@
         }
 
         /// Scrolls the focused row so its header sits just under the
-        /// preview. The anchor is the point of the row that lands on the same
-        /// point of the screen, so it follows from the row's height.
+        /// preview (`ShelfRowPlacement.anchor`).
         private func bringUp(_ row: String, _ proxy: ScrollViewProxy) {
             guard library.top == nil, list == nil else { return }
             let height = rowHeights.heights[row] ?? 392
-            let anchor = UnitPoint(x: 0, y: Self.rowTop / max(1, Self.screenHeight - height))
+            let anchor = UnitPoint(x: 0, y: ShelfRowPlacement.anchor(rowHeight: height))
             withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
                 proxy.scrollTo(ShelfRowAnchor.id(row), anchor: anchor)
             }
@@ -291,15 +289,11 @@
         }
 
         /// The tab bar's height; rows scroll to just under it.
-        static let barHeight: CGFloat = SystemTabBar.bottom
+        static let barHeight: CGFloat = ShelfRowPlacement.barHeight
         /// The clock's top, level with the system tab bar.
         static let clockTop: CGFloat = 58
-        /// Where the focused row's header aims while the preview shows. On the
-        /// simulator under the system tab bar it lands a point above the preview's foot.
-        static let rowTop: CGFloat = ShelfPreview.height + 16
-        static let screenHeight: CGFloat = 1080
-        /// How long a focus move takes to scroll before the rows are placed.
-        static let settle = Duration.milliseconds(350)
+        static let rowTop: CGFloat = ShelfRowPlacement.rowTop
+        static let screenHeight: CGFloat = ShelfRowPlacement.screenHeight
 
         /// The Genres row after the last category (`TV-Movies-Rows`): My list,
         /// All movies, then a chip per genre.
@@ -425,6 +419,35 @@
                     .focusEffectDisabled()
                     .focused(focus, equals: .content)
             }
+        }
+    }
+
+    /// Where and when the focused row of Movies or Series comes to rest
+    /// under the Apple TV preview
+    /// (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
+    enum ShelfRowPlacement {
+        /// The tab bar's height, the top inset of the rows' scroll view.
+        static let barHeight: CGFloat = SystemTabBar.bottom
+        /// Where the focused row's header aims while the preview shows.
+        static let rowTop: CGFloat = ShelfPreview.height + 16
+        static let screenHeight: CGFloat = 1080
+        /// How long a move down takes the focus engine to scroll before the rows are placed.
+        static let settle = Duration.milliseconds(350)
+
+        /// How long to wait before placing a row whose top is at `top` on
+        /// screen. A row below the preview waits for the focus engine's
+        /// scroll to settle, so the two never move the rows at once. A row
+        /// under the preview, as after moving up, comes down at once. The
+        /// focus engine counts it as on screen and leaves it there, hidden.
+        static func wait(top: CGFloat?) -> Duration {
+            guard let top, top < ShelfPreview.height else { return settle }
+            return .zero
+        }
+
+        /// The anchor that puts a row of `rowHeight` at `rowTop`. The scroll
+        /// view lines anchors up within its frame less the tab bar's inset.
+        static func anchor(rowHeight: CGFloat) -> CGFloat {
+            (rowTop - barHeight) / max(1, screenHeight - barHeight - rowHeight)
         }
     }
 
