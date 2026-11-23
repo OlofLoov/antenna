@@ -4,7 +4,8 @@ import Foundation
 /// The recents, the session and the last channel of one profile on this
 /// device, in `UserDefaults` and never synced
 /// (session-restore-and-recently-watched capability). Keys are
-/// `recents.list`, `recents.session` and `shell.lastChannel`, each with
+/// `recents.list`, `recents.session`, `shell.lastChannel` and
+/// `shell.lastWatched`, each with
 /// `.<profile id>` appended for every profile but Main. A value that cannot
 /// be read counts as absent. The channel saved for launch, with its link,
 /// is a file in `launch`, outside `UserDefaults`.
@@ -12,7 +13,8 @@ struct RecentsStore: Sendable {
     static let lastChannelKey = "shell.lastChannel"
     static let listKey = "recents.list"
     static let sessionKey = "recents.session"
-    static let bases = [lastChannelKey, listKey, sessionKey]
+    static let lastWatchedKey = "shell.lastWatched"
+    static let bases = [lastChannelKey, listKey, sessionKey, lastWatchedKey]
 
     nonisolated(unsafe) let defaults: UserDefaults
     let profile: UUID
@@ -69,6 +71,19 @@ struct RecentsStore: Sendable {
         launch.write(logins.flatMap { SavedChannel(channel, logins: $0) })
     }
 
+    // MARK: Last watched
+
+    /// Whether a channel or a title was watched last; nil when nothing is
+    /// stored or it cannot be read (session-restore-and-recently-watched/what-was-watched-last).
+    func readLastWatched() -> LastWatched? {
+        LastWatched(data: defaults.data(forKey: key(Self.lastWatchedKey)))
+    }
+
+    func write(_ watched: LastWatched) {
+        guard let data = watched.data, LastWatched(data: data) != nil else { return }
+        defaults.set(data, forKey: key(Self.lastWatchedKey))
+    }
+
     // MARK: Recents
 
     var recents: RecentChannels {
@@ -100,8 +115,10 @@ struct RecentsStore: Sendable {
     // MARK: Deleted sources
 
     /// Removes `source`'s channels from the recents, the session group and
-    /// the last channel of every profile on this device
-    /// (session-restore-and-recently-watched/deleting-a-source-clears-its-channels).
+    /// the last channel, and its title from what was watched last, of every
+    /// profile on this device
+    /// (session-restore-and-recently-watched/deleting-a-source-clears-its-channels,
+    /// session-restore-and-recently-watched/what-was-watched-last).
     static func remove(source: UUID, from defaults: UserDefaults = .standard, launchDirectory: URL = LaunchChannelStore.appDirectory) {
         for profile in profiles(in: defaults) {
             RecentsStore(defaults: defaults, profile: profile, launchDirectory: launchDirectory).remove(source: source)
@@ -116,6 +133,7 @@ struct RecentsStore: Sendable {
         session.remove(source: source)
         write(session)
         if read()?.sourceID == source { defaults.removeObject(forKey: key(Self.lastChannelKey)) }
+        if readLastWatched()?.title?.sourceID == source { defaults.removeObject(forKey: key(Self.lastWatchedKey)) }
         launch.remove(source: source)
     }
 

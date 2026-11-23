@@ -3,6 +3,24 @@
     import Foundation
 
     extension ShellModel {
+        /// When the profile's last watch on this Apple TV was a movie or an
+        /// episode, the launch tune waits for its page, at most until the
+        /// launch deadline. A held shelf link wins
+        /// (tvos-shell/back-to-the-last-channel-on-launch).
+        func reopenLastTitle() {
+            guard shelfItem == nil, let title = dependencies.recents.readLastWatched()?.title else { return }
+            launchTitle.wait(for: title)
+            launchTitle.start(sleep: dependencies.sleep)
+        }
+
+        /// The page of the title watched last opened over `tab`: once the tab
+        /// holds the channel, the launch tune goes ahead behind it.
+        func launchTitleOpened(in tab: ShellTab) async {
+            _ = await select(tab)
+            launchTitle.opened()
+            considerTune()
+        }
+
         /// The saved channel with its logins put back, when it is `key`'s and
         /// its source has a login here. Its source's User-Agent goes with it
         /// (session-restore-and-recently-watched/the-last-channel-starts-before-its-source-loads).

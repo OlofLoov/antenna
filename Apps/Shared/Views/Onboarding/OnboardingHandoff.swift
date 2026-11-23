@@ -44,12 +44,13 @@ extension EnvironmentValues {
         /// Opens Guide or Movies at launch when the preference says so; the
         /// launch tune picks the channel as before. Movies opens Series when
         /// only series are offered (m3u-playlists/what-a-playlist-offered-is-remembered).
+        /// With Live, the title watched last waits for its page.
         func openOnLaunch(in context: ModelContext) {
             let sources = (try? context.fetch(FetchDescriptor<SourceRecord>())) ?? []
             let offer = TitleOffer(sources.map { ($0.id, $0.kind) }, counts: dependencies.storedTitles)
             let preferences = PreferencesStore.current(in: context)
             switch preferences.launchScreen(offersMovies: offer.any) {
-            case .live: break
+            case .live: reopenLastTitle()
             case .guide: Task { _ = await select(.guide) }
             case .movies: Task { _ = await select(.titles(offer)) }
             }

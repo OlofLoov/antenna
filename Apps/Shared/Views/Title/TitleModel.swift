@@ -45,6 +45,8 @@ final class TitleModel {
     @ObservationIgnored private let lookup: KeptTitleLookup?
     /// The provider's year, sent with the name.
     @ObservationIgnored private var year: Int?
+    /// The episode the page reopened on at launch, until its season is picked.
+    @ObservationIgnored private var reopening: String?
 
     init(title: ShelfTitle, shelf: ShelfModel, lookup: KeptTitleLookup? = nil) {
         self.title = title
@@ -145,6 +147,20 @@ final class TitleModel {
         lastPlayed = episode.id
     }
 
+    /// The page opened at launch on the episode watched last: its season is
+    /// picked once the episodes are known
+    /// (session-restore-and-recently-watched/reopen-on-the-title-watched-last).
+    func reopen(at episodeID: String) {
+        reopening = episodeID
+        pickReopened()
+    }
+
+    private func pickReopened() {
+        guard let id = reopening, let group = groups.first(where: { $0.episodes.contains { $0.id == id } }) else { return }
+        reopening = nil
+        pickedSeason = group.id
+    }
+
     /// True while the title's source is still in the library.
     var sourceExists: Bool {
         shelf.hasSource(title)
@@ -165,6 +181,7 @@ final class TitleModel {
             skipped = series.skippedEpisodes
             provided = TitleMetadata(series: title, info: series, groups: groups)
             year = series.year
+            pickReopened()
         }
     }
 

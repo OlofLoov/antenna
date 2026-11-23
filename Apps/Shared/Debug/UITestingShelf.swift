@@ -152,6 +152,8 @@
         }
 
         /// Live's sources for the shelf tests: Home's channels, nothing else.
+        /// The recents, the session and what was watched last come from
+        /// `UITestingRecents`, so `-ui-testing-keep-session` keeps them.
         @MainActor
         static func liveDependencies() -> LiveModel.Dependencies? {
             guard scenario() != nil else { return nil }
@@ -160,7 +162,9 @@
                 load: { $0.id == homeID ? Playlist(channels: UITestingLive.home + UITestingLive.harbour) : Playlist(channels: []) },
                 hasLogin: { _ in true },
                 guide: nil,
-                programmes: UITestingLive.guide)
+                programmes: UITestingLive.guide,
+                recents: UITestingRecents.store { _ in homeID },
+                sleep: UITestingRecents.sleep)
         }
 
         /// When the app launched; the titles' dates count back from it.

@@ -21,6 +21,7 @@
         /// the last channel waits, so a link at launch loads one channel.
         func holdShelfItem(_ id: UUID) {
             shelfItem = id
+            launchTitle.drop()
             let sleep = dependencies.sleep
             Task { [weak self] in
                 do {

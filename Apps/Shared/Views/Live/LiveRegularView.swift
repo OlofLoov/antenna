@@ -148,9 +148,9 @@
                     guard !restored else { return }
                     restored = true
                     let offer = TitleOffer(records: records, refresher: refresher)
-                    section = LiveSection(live.restoredTab, offer: offer)
-                    section = handoff?.takeMovies() == true ? .titles(offer) : .launch(preferences, offer: offer) ?? section
-                    live.screenRestored(onLive: section == .live)
+                    let picked: LiveSection? = handoff?.takeMovies() == true ? .titles(offer) : .launch(preferences, offer: offer)
+                    section = live.launchWins(picked) ?? LiveSection(live.restoredTab, offer: offer)
+                    live.screenRestored(section.session)
                 }
             }
             .background(Palette.ground)

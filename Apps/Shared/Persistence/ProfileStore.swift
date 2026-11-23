@@ -131,7 +131,7 @@ struct CurrentProfileStore: Sendable {
 /// keeps each key as it is, other profiles add `.<profile id>`.
 enum ProfileKeys {
     /// The keys that hold one value per profile.
-    static let bases = ["shell.lastChannel", "player.languages", "recents.list", "recents.session"]
+    static let bases = ["shell.lastChannel", "player.languages", "recents.list", "recents.session", "shell.lastWatched"]
 
     static func key(_ base: String, for profile: UUID) -> String {
         profile == Profile.mainID ? base : "\(base).\(profile.uuidString)"

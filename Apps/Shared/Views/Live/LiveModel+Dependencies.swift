@@ -32,6 +32,8 @@ extension LiveModel {
         var launchLogins: (@MainActor (SourceDescriptor) -> [SavedChannel.Login]?)?
         /// How the ten-second count waits.
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+        /// How the title watched last waits for its section at launch.
+        var launchSleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
         /// The lock screen and Control Center; nil uses the system's.
         var nowPlaying: NowPlayingSink?
         /// How often the lock screen catches up with the programme.

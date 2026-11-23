@@ -158,10 +158,32 @@ extension LiveModel {
         Task { [weak self] in self?.replay() }
     }
 
-    /// The tab to open on: Search, Settings and an unknown tab open Live
+    /// The screen switched to `tab`, the one it restores. The title watched
+    /// last waits for its section to list it when `tab` is that section, and
+    /// gives way otherwise (session-restore-and-recently-watched/a-title-that-cannot-open-gives-way).
+    func screenRestored(_ tab: LiveSession.Tab) {
+        if launchTitle.waiting?.tab == tab {
+            launchTitle.start(sleep: dependencies.launchSleep)
+        } else {
+            launchTitle.drop()
+        }
+        screenRestored(onLive: tab == .live)
+    }
+
+    /// `chosen`, the screen onboarding's Browse movies or a launch screen
+    /// other than Live opens, wins over the title watched last
+    /// (session-restore-and-recently-watched/a-title-that-cannot-open-gives-way).
+    func launchWins<Screen>(_ chosen: Screen?) -> Screen? {
+        if chosen != nil { launchTitle.drop() }
+        return chosen
+    }
+
+    /// The tab to open on: the section of the title watched last, else the
+    /// stored tab, where Search, Settings and an unknown tab open Live
     /// (session-restore-and-recently-watched/reopen-on-the-same-tab-and-group).
     var restoredTab: LiveSession.Tab {
-        switch restore.tab {
+        if let title = launchTitle.waiting { return title.tab }
+        return switch restore.tab {
         case .guide: .guide
         case .movies: .movies
         case .series: .series
@@ -173,6 +195,7 @@ extension LiveModel {
     /// pauses behind Movies, Series and Search
     /// (live-tv-on-iphone-ipad-mac/the-channel-pauses-behind-movies-series-and-search).
     func opened(_ tab: LiveSession.Tab) {
+        if let title = launchTitle.waiting, title.tab != tab { launchTitle.drop() }
         restore.opened(tab)
         if tab == .live { replay() }
         queue { await $0.tabOpened(tab) }

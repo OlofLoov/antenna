@@ -27,6 +27,10 @@
                     ShellScreen(model: model)
                         .modifier(TopShelfLinks(model: model, library: shelves, playback: playback))
                         .modifier(ShelfSync(library: shelves, playback: playback))
+                        .modifier(
+                            LaunchTitleRestore(launch: model.launchTitle, library: shelves) { title, key in
+                                reopen(title, key, model, shelves, playback)
+                            })
                 }
             }
             .guideRefreshTriggers()
@@ -55,15 +59,35 @@
                 }
                 refresher?.attach { [weak model] in model?.reload($0) }
                 self.shelves = .app(loader)
-                self.playback = .app(loader) { await engine.stop() }
+                let playback = ShelfPlayback.app(loader) { await engine.stop() }
+                playback.recordsWatched(in: model.session.store)
+                self.playback = playback
                 self.lifecycle = lifecycle
             }
+        }
+
+        /// Opens the page of the title watched last over its tab, unless a
+        /// page or a title is already up
+        /// (session-restore-and-recently-watched/reopen-on-the-title-watched-last).
+        private func reopen(
+            _ title: ShelfTitle, _ key: LastWatched.Title, _ model: ShellModel, _ shelves: ShelfLibrary, _ playback: ShelfPlayback
+        ) {
+            guard shelves.top == nil, playback.playing == nil else { return model.launchTitle.drop() }
+            shelves.reopen(title, episode: key.episodeID)
+            Task { await model.launchTitleOpened(in: title.kind == .movie ? .movies : .series) }
         }
 
         private func dependencies() -> ShellModel.Dependencies {
             #if DEBUG
                 if let scripted = UITestingShell.dependencies() { return scripted }
                 if let seeded = UITestingScreenshots.dependencies() { return seeded }
+                if UITestingShelf.scenario() != nil {
+                    // What was watched last survives a relaunch only with -ui-testing-keep-session.
+                    var shelf = ShellModel.Dependencies.live(loader: loader, guide: guideStore, profile: profile, refresher: refresher)
+                    shelf.recents = UITestingRecents.store { _ in UITestingShelf.homeID }
+                    shelf.watchSleep = UITestingRecents.sleep
+                    return shelf
+                }
                 if let scripted = UITestingOnboarding.loader() {
                     return .live(loader: scripted, guide: nil, profile: profile, refresher: refresher)
                 }
