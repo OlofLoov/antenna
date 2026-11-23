@@ -17,7 +17,7 @@ Naming the platform is allowed.
 - **THEN** it fails this requirement
 
 #### Scenario: Copy that names the platform
-- **WHEN** copy says "this Apple TV" or "Antenna on iPhone"
+- **WHEN** copy says "this Apple TV" or "Antuna on iPhone"
 - **THEN** it passes
 
 #### Scenario: A credit logo

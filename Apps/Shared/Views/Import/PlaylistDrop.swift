@@ -39,7 +39,7 @@
     extension View {
         /// Shows `import.dropTarget` while a playlist file is dragged over
         /// the view, and hands the first one dropped to `open`, copied to a
-        /// file of Antenna's own.
+        /// file of Antuna's own.
         func playlistDropTarget(open: @escaping @MainActor (URL) -> Void) -> some View {
             modifier(PlaylistDropModifier(open: open))
         }

@@ -13,13 +13,13 @@ import Testing
     func streamLine() {
         #expect(
             StreamLine.text(container: "MPEG-TS", presentation: Self.broadcast, route: .demuxer, locale: .english)
-                == "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player")
+                == "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player")
         let interlaced = PresentationInfo(
             video: .init(width: 720, height: 576, frameRate: 50, dynamicRange: .sdr, codec: "mpeg2video", isInterlaced: true),
             audio: .init(codec: "mp2", channels: 2, isDecodable: true))
         #expect(
             StreamLine.text(container: "MPEG-TS", presentation: interlaced, route: .demuxer, locale: .english)
-                == "MPEG-TS · MPEG-2 576i · MP2 Stereo · Antenna player")
+                == "MPEG-TS · MPEG-2 576i · MP2 Stereo · Antuna player")
         let radio = PresentationInfo(video: nil, audio: .init(codec: "mp4a", channels: 2, isDecodable: true))
         #expect(
             StreamLine.text(container: "HLS", presentation: radio, route: .system, locale: .english) == "HLS · AAC Stereo · Apple player")
@@ -64,7 +64,7 @@ import Testing
         #expect(SoundFormat.display(PresentationInfo.Audio(codec: "dts", channels: 6, isDecodable: true), locale: .english) == "DTS 5.1")
         let line = StreamLine.text(
             container: "Matroska", presentation: PresentationInfo(video: nil, audio: vorbis), route: .demuxer, locale: .english)
-        #expect(line == "Matroska · Vorbis 5.1 (not supported) · Antenna player")
+        #expect(line == "Matroska · Vorbis 5.1 (not supported) · Antuna player")
         let tracks = TrackList(
             audio: [MediaTrack(id: "audio-0", kind: .audio, languageCode: "eng", name: nil, isDefault: true)], subtitles: [],
             selectedAudio: "audio-0", selectedSubtitle: nil)

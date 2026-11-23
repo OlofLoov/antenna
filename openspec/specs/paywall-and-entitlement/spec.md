@@ -1,7 +1,7 @@
 # paywall-and-entitlement Specification
 
 ## Purpose
-Lets anyone who installs Antenna unlock it with one App Store purchase that works on every device on their Apple Account and for their Family Sharing group, restore it on a new device, and keep their data when access ends.
+Lets anyone who installs Antuna unlock it with one App Store purchase that works on every device on their Apple Account and for their Family Sharing group, restore it on a new device, and keep their data when access ends.
 
 ## Requirements
 
@@ -118,7 +118,7 @@ The system SHALL tell the user when the App Store cannot be reached and nothing 
 - **AND** a late answer replaces the panel with the products
 
 #### Scenario: Not sold in this region
-- **WHEN** Antenna is not sold in the user's region
+- **WHEN** Antuna is not sold in the user's region
 - **THEN** the panel says so and offers no Try again
 
 ### Requirement: When access ends, the app locks and keeps your data
@@ -127,7 +127,7 @@ The system SHALL lock the app at the next open or return after a subscription en
 #### Scenario: Access ended
 - **GIVEN** an unlocked app with sources, favorites and saved logins, and the App Store has reported that the subscription ended, the purchase was refunded, or Family Sharing stopped sharing it
 - **WHEN** the app is opened or brought back to the front
-- **THEN** playback does not resume, no source is contacted any more, and the paywall says "Antenna is locked again" with the reason and date
+- **THEN** playback does not resume, no source is contacted any more, and the paywall says "Antuna is locked again" with the reason and date
 - **AND** it stays that way across relaunches and offline
 - **AND** buying or restoring brings back everything as it was
 
@@ -146,26 +146,26 @@ The system SHALL lock the app at the next open or return after a subscription en
 - **THEN** it may take one more launch before the app locks
 
 ### Requirement: Honest paywall wording
-The system SHALL name no provider, channel count or content on the paywall, SHALL say Antenna includes no channels, and SHALL link to the Terms of Use and Privacy Policy.
+The system SHALL name no provider, channel count or content on the paywall, SHALL say Antuna includes no channels, and SHALL link to the Terms of Use and Privacy Policy.
 
 #### Scenario: Read the paywall
 - **GIVEN** the paywall on any platform
 - **WHEN** the user reads it
-- **THEN** it names no provider, channel count or content, says Antenna includes no channels, and links to the Terms of Use and Privacy Policy
+- **THEN** it names no provider, channel count or content, says Antuna includes no channels, and links to the Terms of Use and Privacy Policy
 - **AND** on Apple TV, where there is no browser, the addresses are shown as text
 
 ### Requirement: One purchase on every device
-The system SHALL unlock Antenna on every iPhone, iPad, Mac and Apple TV on the same Apple Account after one purchase, without buying or restoring again.
+The system SHALL unlock Antuna on every iPhone, iPad, Mac and Apple TV on the same Apple Account after one purchase, without buying or restoring again.
 
 #### Scenario: Open on another device
 - **GIVEN** a purchase on an iPhone
-- **WHEN** the same Apple Account opens Antenna on an iPad, Mac or Apple TV
+- **WHEN** the same Apple Account opens Antuna on an iPad, Mac or Apple TV
 - **THEN** the app opens there without buying or restoring
 
 ### Requirement: Family members unlock without buying
-The system SHALL unlock Antenna for every member of the buyer's Family Sharing group and SHALL never count devices or members.
+The system SHALL unlock Antuna for every member of the buyer's Family Sharing group and SHALL never count devices or members.
 
-#### Scenario: A family member opens Antenna
+#### Scenario: A family member opens Antuna
 - **GIVEN** a purchase by the organizer of a Family Sharing group
-- **WHEN** another member of the group opens Antenna
+- **WHEN** another member of the group opens Antuna
 - **THEN** the app opens without a purchase, and nothing in the app counts devices or members

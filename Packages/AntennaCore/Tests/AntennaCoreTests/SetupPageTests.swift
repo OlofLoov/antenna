@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-/// The page Safari shows for a setup link on an iPhone without Antenna,
+/// The page Safari shows for a setup link on an iPhone without Antuna,
 /// `Web/setup/index.html` at the repository root.
 @Suite struct SetupPageTests {
     let html: String
@@ -22,19 +22,19 @@ import Testing
         }
     }
 
-    @Test("iphone-as-setup-device/an-iphone-without-antenna-gets-a-plain-page: what Antenna does and one App Store link")
+    @Test("iphone-as-setup-device/an-iphone-without-antuna-gets-a-plain-page: what Antuna does and one App Store link")
     func plainPage() throws {
         let body = try #require(matches("<body[^>]*>(.*)</body>", in: html).first)
         let text = body.replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
             .trimmingCharacters(in: .whitespaces)
-        #expect(text == "Antenna sets up your Apple TV from your iPhone. Get Antenna on the App Store")
+        #expect(text == "Antuna sets up your Apple TV from your iPhone. Get Antuna on the App Store")
         let links = matches("<a\\s[^>]*href=\"([^\"]+)\"", in: html)
         #expect(links.count == 1)
         #expect(links.first.flatMap { URL(string: $0)?.host() } == "apps.apple.com")
     }
 
-    @Test("iphone-as-setup-device/an-iphone-without-antenna-gets-a-plain-page: no scripts, images or third-party content")
+    @Test("iphone-as-setup-device/an-iphone-without-antuna-gets-a-plain-page: no scripts, images or third-party content")
     func nothingLoaded() throws {
         for tag in ["<script", "<iframe", "<img", "<link"] {
             #expect(!html.lowercased().contains(tag), "\(tag) on the page")

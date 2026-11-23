@@ -11,7 +11,7 @@ final class SetupDelivery {
     enum State: Equatable {
         /// "Sending to your Apple TV…"
         case sending
-        /// "Handed to iCloud. Open Antenna on your Apple TV."
+        /// "Handed to iCloud. Open Antuna on your Apple TV."
         case sent
         /// "Not sent yet" after 30 seconds without a confirmation.
         case notSent

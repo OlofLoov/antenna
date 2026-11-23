@@ -8,7 +8,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         }
       },
@@ -21,7 +21,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         }
       },
@@ -34,43 +34,43 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يتصل Antenna بخوادم التلفزيون على شبكتك المنزلية عندما يشير أحد مصادرك إليها."
+            "value" : "يتصل Antuna بخوادم التلفزيون على شبكتك المنزلية عندما يشير أحد مصادرك إليها."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna verbindet sich mit TV-Servern in deinem Heimnetzwerk, wenn eine deiner Quellen dorthin zeigt."
+            "value" : "Antuna verbindet sich mit TV-Servern in deinem Heimnetzwerk, wenn eine deiner Quellen dorthin zeigt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Antenna connects to TV servers on your home network when one of your sources points there."
+            "value" : "Antuna connects to TV servers on your home network when one of your sources points there."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna se conecta a servidores de TV de tu red doméstica cuando una de tus fuentes apunta allí."
+            "value" : "Antuna se conecta a servidores de TV de tu red doméstica cuando una de tus fuentes apunta allí."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna se connecte aux serveurs TV de votre réseau domestique quand l’une de vos sources y renvoie."
+            "value" : "Antuna se connecte aux serveurs TV de votre réseau domestique quand l’une de vos sources y renvoie."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna se conecta a servidores de TV na sua rede doméstica quando uma das suas fontes aponta para lá."
+            "value" : "O Antuna se conecta a servidores de TV na sua rede doméstica quando uma das suas fontes aponta para lá."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ansluter till TV-servrar i ditt hemnätverk när någon av dina källor pekar dit."
+            "value" : "Antuna ansluter till TV-servrar i ditt hemnätverk när någon av dina källor pekar dit."
           }
         }
       }

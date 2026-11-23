@@ -10,13 +10,13 @@ The system SHALL open a "Who's watching?" screen at launch when the user has two
 
 #### Scenario: Two or more profiles
 - **GIVEN** the profiles Dad, Mum and Kids
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** the "Who's watching?" screen lists Dad, Mum and Kids, each with its color and initial, before any channel plays
-- **AND** choosing Kids opens Antenna on Kids's favorites, last channel and history
+- **AND** choosing Kids opens Antuna on Kids's favorites, last channel and history
 
 #### Scenario: One profile
 - **GIVEN** a single profile
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** no "Who's watching?" screen appears and no profile name or button is shown
 - **AND** Settings lists Profiles with "Add a profile"
 
@@ -156,7 +156,7 @@ The system SHALL sync profiles, their names, colors, accents and order through t
 
 #### Scenario: A new device before profiles arrive
 - **GIVEN** a device signed into iCloud whose profiles have not synced yet
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** it opens as with one profile, and shows the "Who's watching?" screen at the next launch after the profiles arrive
 
 #### Scenario: The same profile made on two devices
@@ -171,5 +171,5 @@ The system SHALL sync profiles, their names, colors, accents and order through t
 
 #### Scenario: Profiles from before accents
 - **GIVEN** profiles made before accents existed
-- **WHEN** the user updates Antenna
+- **WHEN** the user updates Antuna
 - **THEN** every profile shows Blue until someone picks another accent

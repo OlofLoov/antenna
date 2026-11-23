@@ -1,7 +1,7 @@
 schema: spec-driven
 
 context: |
-  Antenna is a native IPTV player for iPhone, iPad, Mac and Apple TV. It plays
+  Antuna is a native IPTV player for iPhone, iPad, Mac and Apple TV. It plays
   the user's own sources (M3U, Xtream, later Stalker, Jellyfin and Channels DVR)
   and ships no content, no bundled playlists and no provider links.
 

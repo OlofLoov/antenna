@@ -42,9 +42,9 @@ import Testing
         #expect(try SetupLink(url: link.url) == link)
         let token = link.token.text
         let variants = [
-            "https://ANTENNA.code-crave.se/setup?t=\(token)&v=1",
-            "https://antenna.code-crave.se/setup/?v=1&t=\(token)",
-            "https://antenna.code-crave.se/setup?v=1&utm=x&t=\(token)",
+            "https://ANTUNA.APP/setup?t=\(token)&v=1",
+            "https://antuna.app/setup/?v=1&t=\(token)",
+            "https://antuna.app/setup?v=1&utm=x&t=\(token)",
         ]
         for variant in variants {
             #expect(try SetupLink(url: #require(URL(string: variant))) == link)
@@ -59,18 +59,18 @@ import Testing
         let token = PairingToken().text
         let cases: [(String, SetupLink.Error)] = [
             ("https://example.com/setup?v=1&t=\(token)", .notASetupLink),
-            ("http://antenna.code-crave.se/setup?v=1&t=\(token)", .notASetupLink),
-            ("https://antenna.code-crave.se/other?v=1&t=\(token)", .notASetupLink),
-            ("https://antenna.code-crave.se/setup?v=1&v=1&t=\(token)", .notASetupLink),
-            ("https://antenna.code-crave.se/setup?v=1&t=\(token)&t=\(token)", .notASetupLink),
-            ("https://antenna.code-crave.se/setup?t=\(token)", .missingVersion),
-            ("https://antenna.code-crave.se/setup?v=3&t=\(token)", .unsupportedVersion("3")),
-            ("https://antenna.code-crave.se/setup?v=1", .missingToken),
-            ("https://antenna.code-crave.se/setup?v=1&t=abc", .malformedToken),
-            ("https://antenna.code-crave.se/setup?v=1&t=\(token.dropLast())B", .malformedToken),
-            ("https://antenna.code-crave.se/setup?v=1&t=\(token.dropLast())+", .malformedToken),
+            ("http://antuna.app/setup?v=1&t=\(token)", .notASetupLink),
+            ("https://antuna.app/other?v=1&t=\(token)", .notASetupLink),
+            ("https://antuna.app/setup?v=1&v=1&t=\(token)", .notASetupLink),
+            ("https://antuna.app/setup?v=1&t=\(token)&t=\(token)", .notASetupLink),
+            ("https://antuna.app/setup?t=\(token)", .missingVersion),
+            ("https://antuna.app/setup?v=3&t=\(token)", .unsupportedVersion("3")),
+            ("https://antuna.app/setup?v=1", .missingToken),
+            ("https://antuna.app/setup?v=1&t=abc", .malformedToken),
+            ("https://antuna.app/setup?v=1&t=\(token.dropLast())B", .malformedToken),
+            ("https://antuna.app/setup?v=1&t=\(token.dropLast())+", .malformedToken),
             // A newer version wins over a damaged code: the user is asked to update.
-            ("https://antenna.code-crave.se/setup?v=9&t=abc", .unsupportedVersion("9")),
+            ("https://antuna.app/setup?v=9&t=abc", .unsupportedVersion("9")),
         ]
         for (text, expected) in cases {
             let url = try #require(URL(string: text))

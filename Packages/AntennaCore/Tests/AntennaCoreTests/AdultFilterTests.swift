@@ -177,7 +177,7 @@ import Testing
     @Test("adult-content/links-to-hidden-content-ask-first the reply about a hidden adult item names nothing")
     func reply() {
         let english = IntentFailure.adultHidden.description(Locale(identifier: "en_US"))
-        #expect(english == "This profile hides adult content. Show it in Antenna's Settings first.")
+        #expect(english == "This profile hides adult content. Show it in Antuna's Settings first.")
     }
 
     // MARK: Movies and series

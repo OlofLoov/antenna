@@ -103,7 +103,7 @@ The system SHALL credit the movie database in Settings, under About, with its lo
 
 #### Scenario: About in Settings
 - **WHEN** the user opens About in Settings on any device
-- **THEN** a row names the movie database with its logo and says Antenna uses its API but is not endorsed or certified by it
+- **THEN** a row names the movie database with its logo and says Antuna uses its API but is not endorsed or certified by it
 
 #### Scenario: A score on a page
 - **WHEN** a title page shows a score

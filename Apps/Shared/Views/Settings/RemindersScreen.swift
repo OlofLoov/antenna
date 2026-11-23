@@ -55,7 +55,7 @@ struct RemindersScreen: View {
         }
     }
 
-    /// Why this device shows reminders only while Antenna is open, with a way
+    /// Why this device shows reminders only while Antuna is open, with a way
     /// to allow notifications where there is one
     /// (programme-reminders/the-app-says-when-reminders-cannot-notify).
     @ViewBuilder

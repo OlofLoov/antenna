@@ -87,7 +87,7 @@ final class LoginFromPhoneTVUITests: XCTestCase {
         let unreadable = NSPredicate(format: "label CONTAINS %@", "can't read")
         expectation(for: unreadable, evaluatedWith: status)
         waitForExpectations(timeout: 10)
-        XCTAssertTrue(element(app, "signIn.qr.hint").label.contains("Update Antenna on both"))
+        XCTAssertTrue(element(app, "signIn.qr.hint").label.contains("Update Antuna on both"))
     }
 
     // apple-tv-login-from-iphone/the-apple-tv-checks-a-login-before-keeping-it
@@ -95,7 +95,7 @@ final class LoginFromPhoneTVUITests: XCTestCase {
         let app = launch("connect", sources: 1, drops: "silent", environment: ["UITESTING_SETUP_HINT_SECONDS": "2"])
         let hint = element(app, "signIn.qr.hint")
         XCTAssertTrue(hint.waitForExistence(timeout: 10))
-        XCTAssertTrue(hint.label.hasPrefix("Nothing yet? Your iPhone needs Antenna installed"))
+        XCTAssertTrue(hint.label.hasPrefix("Nothing yet? Your iPhone needs Antuna installed"))
     }
 
     // iphone-as-setup-device/a-login-source-sent-from-the-iphone-needs-only-its-login-on-the-tv

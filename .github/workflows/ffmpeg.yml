@@ -108,6 +108,6 @@ jobs:
         run: |
           set -e
           checksum=$(cat dist/FFmpeg.xcframework.zip.checksum)
-          notes="LGPL 2.1 build of FFmpeg for Antenna, made by build-ffmpeg.sh (attached) from the attached FFmpeg source. Swift package checksum: $checksum"
+          notes="LGPL 2.1 build of FFmpeg for Antuna, made by build-ffmpeg.sh (attached) from the attached FFmpeg source. Swift package checksum: $checksum"
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" --notes "$notes" dist/*

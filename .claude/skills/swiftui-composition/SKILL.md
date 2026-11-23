@@ -290,7 +290,7 @@ Xcode puts a literal in the String Catalog only when its type is
 `String.LocalizationValue`. A literal typed `String` is shown verbatim and
 never translated.
 
-- A parameter that carries words Antenna wrote (a title, a button, an empty
+- A parameter that carries words Antuna wrote (a title, a button, an empty
   state, a VoiceOver label) is a `LocalizedStringResource`. The call site
   passes a literal, one sentence with its arguments, and `Text(title)`
   resolves it with the environment's locale.

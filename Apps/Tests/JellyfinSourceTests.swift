@@ -113,7 +113,7 @@ import Testing
         second.fields.username = "anna"
         second.fields.password = "s3cret"
         await second.connect(into: context)
-        #expect(second.error == "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate.")
+        #expect(second.error == "Antuna can't verify this server's certificate. Use http on your network or a trusted certificate.")
 
         let wrong = "ob-jf-wrong.local"
         serve(wrong, authStatus: 401)

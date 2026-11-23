@@ -11,8 +11,8 @@ extension ShellUITests {
         XCTAssertTrue(element("reminders.banner").waitForExistence(timeout: 10), "no banner")
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open
-    // programme-reminders/a-banner-while-antenna-is-open, close the banner with Menu
+    // programme-reminders/a-banner-while-antuna-is-open
+    // programme-reminders/a-banner-while-antuna-is-open, close the banner with Menu
     func testTheBannerTakesFocusAndMenuPutsItBack() {
         launchWithDueReminder()
         expect(element("reminders.banner.title"), "label == 'Kick-off'")

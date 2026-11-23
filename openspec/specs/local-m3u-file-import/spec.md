@@ -1,16 +1,16 @@
 # local-m3u-file-import Specification
 
 ## Purpose
-Lets people whose provider sends a playlist file instead of a link, or who build their own, bring that file into Antenna on iPhone, iPad or Mac and watch its channels on every device, Apple TV included.
+Lets people whose provider sends a playlist file instead of a link, or who build their own, bring that file into Antuna on iPhone, iPad or Mac and watch its channels on every device, Apple TV included.
 
 ## Requirements
 
 ### Requirement: Bring a file in
-The system SHALL open the import sheet for a playlist file the user picks with "Import a file", shares to Antenna, or opens with Antenna from Finder, on iPhone, iPad and Mac.
+The system SHALL open the import sheet for a playlist file the user picks with "Import a file", shares to Antuna, or opens with Antuna from Finder, on iPhone, iPad and Mac.
 
 #### Scenario: Pick, share or open a file
 - **GIVEN** Settings or onboarding on iPhone, iPad or Mac, or a playlist file in another app
-- **WHEN** the user picks a file with "Import a file", or shares it to Antenna, or opens it with Antenna from Finder
+- **WHEN** the user picks a file with "Import a file", or shares it to Antuna, or opens it with Antuna from Finder
 - **THEN** the import sheet opens for that file
 
 #### Scenario: A second file while the sheet is open
@@ -20,7 +20,7 @@ The system SHALL open the import sheet for a playlist file the user picks with "
 
 #### Scenario: Shared while the paywall is up
 - **GIVEN** the paywall is up
-- **WHEN** a file is shared to Antenna
+- **WHEN** a file is shared to Antuna
 - **THEN** the sheet waits until the app is unlocked
 
 ### Requirement: Drop a file on the window
@@ -131,7 +131,7 @@ The system SHALL sync an imported file's contents to every device on the same iC
 #### Scenario: A file with logins on Apple TV
 - **GIVEN** a file whose links carry a login
 - **WHEN** its source reaches an Apple TV
-- **THEN** the source shows as waiting for its login and its channels do not play there, until Antenna offers a way to sign in on Apple TV
+- **THEN** the source shows as waiting for its login and its channels do not play there, until Antuna offers a way to sign in on Apple TV
 
 #### Scenario: A login not yet synced
 - **GIVEN** a login from the links that has not reached another iPhone, iPad or Mac yet
@@ -139,7 +139,7 @@ The system SHALL sync an imported file's contents to every device on the same iC
 - **THEN** it shows as waiting for its login
 
 #### Scenario: An older app version
-- **GIVEN** an older version of Antenna on another device
+- **GIVEN** an older version of Antuna on another device
 - **WHEN** the file source syncs to it
 - **THEN** it shows the source in Settings with no channels and does not crash
 

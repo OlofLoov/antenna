@@ -25,10 +25,10 @@ struct PlaylistImportTests {
     func tooLargeText() {
         let text = ImportText(locale: Locale(identifier: "en_US"))
         let known = text.problem(.tooLarge(bytes: 41_700_000), fileName: "big.m3u")
-        #expect(known?.title == "This file is 41.7 MB. Antenna imports playlists up to 16 MB.")
+        #expect(known?.title == "This file is 41.7 MB. Antuna imports playlists up to 16 MB.")
         #expect(known?.body == "Split the file, or host it and add the link as an M3U source instead.")
         let unknown = text.problem(.tooLarge(bytes: nil), fileName: "big.m3u")
-        #expect(unknown?.title == "This file is larger than 16 MB. Antenna imports playlists up to 16 MB.")
+        #expect(unknown?.title == "This file is larger than 16 MB. Antuna imports playlists up to 16 MB.")
     }
 
     @Test("local-m3u-file-import/a-file-that-is-not-a-channel-list-is-explained: a web page named .m3u has no channels")

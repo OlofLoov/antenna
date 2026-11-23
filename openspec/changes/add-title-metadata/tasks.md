@@ -39,7 +39,7 @@ Blocked on `add-aws-hosting` task group 6: the account, the API stack, the WAF w
 - [x] 6.1 Add `lookupsEnabled` to `PreferencesRecord` and `AppPreferences`, the switch and footer under Preferences, citing `sources-and-settings/a-switch-for-movie-database-lookups`
 - [x] 6.2 Turning lookups off stops requests and deletes the cache, citing `title-metadata/lookups-can-be-turned-off`
 - [ ] 6.3 Add the TMDB row with logo and notice under About, citing `title-metadata/the-database-is-credited` and `design-system/nothing-fake-and-nothing-bundled`
-- [ ] 6.4 Update the Privacy Policy in `Web/privacy/` and `WebsiteTests`, citing `antenna-website/the-privacy-policy-rules-out-tracking`, and `docs/release/app-privacy.md`
+- [ ] 6.4 Update the Privacy Policy in `Web/privacy/` and `WebsiteTests`, citing `antuna-website/the-privacy-policy-rules-out-tracking`, and `docs/release/app-privacy.md`
 
 ## 7. Trending (moved from add-discover-rows)
 
@@ -60,7 +60,7 @@ Moved here on 2026-11-20. `add-browse-by-person` shipped person pages from the p
 - [ ] 8.3 Keep filmographies in `Caches/people/` for seven days, at most 200, deleted with lookups off, with the offline and failure states and their boards
 - [ ] 8.4 Show TMDB credits as chips on matched titles, a photo and "Filmography from TMDB" on the person page
 - [ ] 8.5 Add `/v1/people` to the lookup service and People from TMDB in Search, after three letters and a pause, only online with lookups on
-- [ ] 8.6 Update the Settings lookups footer, its boards, the Privacy Policy and `WebsiteTests`, citing `antenna-website/the-privacy-policy-rules-out-tracking`
+- [ ] 8.6 Update the Settings lookups footer, its boards, the Privacy Policy and `WebsiteTests`, citing `antuna-website/the-privacy-policy-rules-out-tracking`
 - [ ] 8.7 UI tests with a stubbed service, and `/opsx:verify` for the whole change
 
 ## 9. Verify

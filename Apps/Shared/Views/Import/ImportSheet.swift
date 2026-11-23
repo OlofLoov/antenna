@@ -173,7 +173,7 @@
 
     // MARK: Inbox
 
-    /// Files shared to Antenna, opened with it from Finder or Files, wait
+    /// Files shared to Antuna, opened with it from Finder or Files, wait
     /// here until a screen can show the import sheet
     /// (local-m3u-file-import/bring-a-file-in). A file that arrives while a
     /// sheet is open or another file waits is ignored.

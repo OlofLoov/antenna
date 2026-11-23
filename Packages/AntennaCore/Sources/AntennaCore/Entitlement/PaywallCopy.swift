@@ -51,10 +51,10 @@ public enum PaywallCopy {
     }
 
     private static let texts: [Key: String.LocalizationValue] = [
-        .titleDefault: "Unlock Antenna",
-        .titleLapsed: "Antenna is locked again",
+        .titleDefault: "Unlock Antuna",
+        .titleLapsed: "Antuna is locked again",
         .body: """
-        Antenna plays the TV sources you already have and includes no channels. \
+        Antuna plays the TV sources you already have and includes no channels. \
         One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for \
         everyone in your Family Sharing group.
         """,
@@ -74,16 +74,16 @@ public enum PaywallCopy {
         .legalRenewal: "Yearly renews automatically until canceled in Settings. Payment is charged to your Apple Account.",
         .termsOfUse: "Terms of Use",
         .privacyPolicy: "Privacy Policy",
-        .statusPending: "Waiting for approval. Antenna unlocks as soon as the purchase is approved.",
+        .statusPending: "Waiting for approval. Antuna unlocks as soon as the purchase is approved.",
         .statusFailed: "The purchase did not go through. Try again.",
         .statusRestoreFailed: "Restore did not go through. Try again.",
         .statusNothingFound: """
-        No purchase found for this Apple Account. If a family member bought Antenna, \
+        No purchase found for this Apple Account. If a family member bought Antuna, \
         check that purchase sharing is on in Family Sharing.
         """,
         .statusOffline: "You're offline. Connect to the internet and try again.",
         .statusNotAllowed: "Purchases are turned off on this device. Check Screen Time, or ask the family organizer.",
-        .statusNotInStorefront: "Antenna can't be bought in this App Store region yet.",
+        .statusNotInStorefront: "Antuna can't be bought in this App Store region yet.",
         .restoredLifetime: "Nothing more to pay. Your sources and favorites are where you left them.",
         .restoredYearly: "Renews on <expiresAt>. Your sources and favorites are where you left them.",
         .lapsedExpired: "Your yearly subscription ended on <date>.",
@@ -98,7 +98,7 @@ public enum PaywallCopy {
         .restoredSharedTV: " · Shared with you through Family Sharing",
         .restoredSharedTouch: " · Family Sharing",
         .unavailableBody: """
-        Check the connection and try again. If you already bought Antenna, Restore \
+        Check the connection and try again. If you already bought Antuna, Restore \
         purchase finds it once the connection is back.
         """,
     ]

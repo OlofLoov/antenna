@@ -59,7 +59,7 @@ enum LoginSeal {
     enum OpenError: Error, Equatable {
         /// Sealed to another key or code, or damaged on the way.
         case unreadable
-        /// From a newer Antenna.
+        /// From a newer Antuna.
         case unknownVersion
     }
 

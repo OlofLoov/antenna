@@ -125,7 +125,7 @@ import Testing
         #expect(try await server.client.channels().count == 5)
     }
 
-    @Test("channels-dvr-source/an-empty-or-wrong-lineup-is-handled an older Antenna reads the server page as an empty playlist")
+    @Test("channels-dvr-source/an-empty-or-wrong-lineup-is-handled an older Antuna reads the server page as an empty playlist")
     func olderAntenna() {
         #expect(M3UParser().parse("<!doctype html><html><body>Channels DVR</body></html>").channels.isEmpty)
     }

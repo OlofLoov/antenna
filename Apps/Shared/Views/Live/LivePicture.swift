@@ -156,7 +156,7 @@
             #endif
         }
 
-        /// Antenna reads this stream itself, so it cannot go to AirPlay.
+        /// Antuna reads this stream itself, so it cannot go to AirPlay.
         static let noAirPlay: LocalizedStringResource = "AirPlay not available for this stream"
 
         @ViewBuilder private var controls: some View {

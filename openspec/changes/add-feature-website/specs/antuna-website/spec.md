@@ -27,7 +27,7 @@ The system SHALL lay out every page at the width of the device without zooming, 
 - **THEN** the browser requests only pages, stylesheets, scripts and images from the site itself, and stores no cookie
 
 #### Scenario: The setup page
-- **WHEN** an iPhone without Antenna opens a setup link
+- **WHEN** an iPhone without Antuna opens a setup link
 - **THEN** the page loads no script, image or stylesheet, as before
 
 #### Scenario: A slow connection

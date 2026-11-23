@@ -21,7 +21,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      project    = "antenna"
+      project    = "antuna"
       managed-by = "terraform"
     }
   }
@@ -75,7 +75,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 resource "aws_iam_role" "diff" {
-  name               = "antenna-diff"
+  name               = "antuna-diff"
   assume_role_policy = local.trust.diff
 }
 
@@ -98,7 +98,7 @@ resource "aws_iam_role_policy" "diff_lock" {
 }
 
 resource "aws_iam_role" "deploy" {
-  name               = "antenna-deploy"
+  name               = "antuna-deploy"
   assume_role_policy = local.trust.deploy
 }
 
@@ -108,7 +108,7 @@ resource "aws_iam_role_policy_attachment" "deploy_admin" {
 }
 
 resource "aws_iam_role" "site" {
-  name               = "antenna-site"
+  name               = "antuna-site"
   assume_role_policy = local.trust.site
 }
 

@@ -44,7 +44,7 @@ public struct LoginPayload: Codable, Equatable, Sendable, CustomStringConvertibl
 
     /// Why sealed bytes did not read as a payload.
     public enum Error: Swift.Error, Equatable, Sendable {
-        /// From a newer Antenna.
+        /// From a newer Antuna.
         case unknownVersion(Int)
         /// Not a payload at all.
         case damaged

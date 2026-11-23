@@ -199,7 +199,7 @@
             .sheet(isPresented: $settingsShown) {
                 SettingsView()
                     .environment(\.closeSettings, ShowSettingsAction { settingsShown = false })
-                    // The banner shows over Settings too (programme-reminders/a-banner-while-antenna-is-open).
+                    // The banner shows over Settings too (programme-reminders/a-banner-while-antuna-is-open).
                     .reminderBanner(live: live, watch: { watch($0) }, showLive: showLive)
                     .overlay(alignment: .bottomLeading) {
                         #if DEBUG

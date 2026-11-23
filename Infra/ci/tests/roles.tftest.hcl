@@ -3,8 +3,8 @@ mock_provider "aws" {
 }
 
 variables {
-  github_repository = "example/antenna"
-  state_bucket      = "antenna-terraform-state-123456789012"
+  github_repository = "example/antuna"
+  state_bucket      = "antuna-terraform-state-123456789012"
 }
 
 override_resource {
@@ -30,18 +30,18 @@ run "each_role_trusts_one_subject" {
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antenna:environment:production"
-    error_message = "antenna-deploy must trust only the production environment"
+    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antuna:environment:production"
+    error_message = "antuna-deploy must trust only the production environment"
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.site.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antenna:ref:refs/heads/main"
-    error_message = "antenna-site must trust only the main branch"
+    condition     = jsondecode(aws_iam_role.site.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antuna:ref:refs/heads/main"
+    error_message = "antuna-site must trust only the main branch"
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.diff.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antenna:pull_request"
-    error_message = "antenna-diff must trust only pull requests"
+    condition     = jsondecode(aws_iam_role.diff.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antuna:pull_request"
+    error_message = "antuna-diff must trust only pull requests"
   }
 
   assert {
@@ -68,17 +68,17 @@ run "the_pull_request_role_cannot_change_aws" {
 
   assert {
     condition     = aws_iam_role_policy_attachment.diff_read_only.policy_arn == "arn:aws:iam::aws:policy/ReadOnlyAccess"
-    error_message = "antenna-diff must start from read-only access"
+    error_message = "antuna-diff must start from read-only access"
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role_policy.diff_lock.policy).Statement[0].Resource == "arn:aws:s3:::antenna-terraform-state-123456789012/*.tflock"
-    error_message = "antenna-diff may write only the state lock files"
+    condition     = jsondecode(aws_iam_role_policy.diff_lock.policy).Statement[0].Resource == "arn:aws:s3:::antuna-terraform-state-123456789012/*.tflock"
+    error_message = "antuna-diff may write only the state lock files"
   }
 
   assert {
     condition     = toset(jsondecode(aws_iam_role_policy.diff_lock.policy).Statement[0].Action) == toset(["s3:PutObject", "s3:DeleteObject"])
-    error_message = "antenna-diff may only create and remove its lock"
+    error_message = "antuna-diff may only create and remove its lock"
   }
 }
 
@@ -86,7 +86,7 @@ run "a_repository_name_without_owner_is_refused" {
   command = plan
 
   variables {
-    github_repository = "antenna"
+    github_repository = "antuna"
   }
 
   expect_failures = [var.github_repository]

@@ -5,7 +5,7 @@ import Foundation
 /// and the loader share one parser and one filter, so Live lists exactly
 /// the channels the summary counted.
 public enum PlaylistImport {
-    /// The largest file Antenna imports: 16 MB, about 50 000 entries.
+    /// The largest file Antuna imports: 16 MB, about 50 000 entries.
     public static let maximumBytes = 16_000_000
 
     /// What a file holds, decided by its contents and never by its name.

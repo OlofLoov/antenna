@@ -101,7 +101,7 @@ struct OnboardingProgressScreen: View {
             let empty = progress.isEmpty
             return OnboardingChecklist.Phone(
                 headline: headline, subtitle: subtitle, sections: progress.sections(.phone),
-                footnote: signedInToICloud ? "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own." : nil,
+                footnote: signedInToICloud ? "Synced through iCloud. Antuna on Apple TV, iPad and Mac shows this source on its own." : nil,
                 primary: progress.primary, actions: actions
             )
             .navigationTitle(empty ? .verbatim(model.setups.last?.name ?? "") : progress.title)

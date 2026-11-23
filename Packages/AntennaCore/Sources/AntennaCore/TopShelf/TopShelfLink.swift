@@ -38,7 +38,7 @@ public enum TopShelfLink: Hashable, Sendable {
     static let emptyPath = "empty"
 
     /// Nil for any URL that is not a well-formed shelf link, so a damaged
-    /// link opens Antenna as it was (top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was).
+    /// link opens Antuna as it was (top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was).
     public init?(url: URL) {
         guard url.scheme?.lowercased() == Self.scheme, url.host() == Self.host, url.query() == nil, url.fragment() == nil
         else { return nil }

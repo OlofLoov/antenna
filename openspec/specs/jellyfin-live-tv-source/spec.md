@@ -1,7 +1,7 @@
 # jellyfin-live-tv-source Specification
 
 ## Purpose
-Lets a Jellyfin user sign in to their home server with a username and password and get its Live TV channels, guide and streams in Antenna, with each device signed in on its own.
+Lets a Jellyfin user sign in to their home server with a username and password and get its Live TV channels, guide and streams in Antuna, with each device signed in on its own.
 
 ## Requirements
 
@@ -11,7 +11,7 @@ The system SHALL check that a typed address points at a Jellyfin server, without
 #### Scenario: Check the server
 - **GIVEN** a user who typed a server address, with or without a path such as `/jellyfin` or a trailing slash
 - **WHEN** the user taps Connect
-- **THEN** Antenna checks the server without sending the password and learns its id, name and version
+- **THEN** Antuna checks the server without sending the password and learns its id, name and version
 
 ### Requirement: Signing in remembers this device
 The system SHALL send the username and password once per device, keep the sign-in key the server returns for that device, and send only the key afterwards.
@@ -19,11 +19,11 @@ The system SHALL send the username and password once per device, keep the sign-i
 #### Scenario: First sign-in on a device
 - **GIVEN** a user with a username and password, and a device that has not signed in to this server before
 - **WHEN** the app first needs the server, at Connect or a channel load
-- **THEN** Antenna sends the username and password once and keeps the key the server returns for this device
+- **THEN** Antuna sends the username and password once and keeps the key the server returns for this device
 - **AND** every later request carries that key and never the password
 
 #### Scenario: The device name sent to the server
-- **WHEN** Antenna signs in
+- **WHEN** Antuna signs in
 - **THEN** the device name it sends names the platform, never the user's own device name
 
 #### Scenario: The password has not synced yet
@@ -60,7 +60,7 @@ The system SHALL sign in again once when the server turns down this device's key
 #### Scenario: Key revoked mid-load
 - **GIVEN** a device whose key the server has revoked while a long channel list is loading
 - **WHEN** the server turns down a request
-- **THEN** Antenna signs in again once, keeps the new key, repeats only that request and finishes the list with nothing missing
+- **THEN** Antuna signs in again once, keeps the new key, repeats only that request and finishes the list with nothing missing
 
 #### Scenario: The second try is also turned down
 - **GIVEN** a revoked key
@@ -104,7 +104,7 @@ The system SHALL skip and count broken rows in a server answer while loading the
 
 #### Scenario: Broken rows and broken answers
 - **GIVEN** a server-info, channel or guide answer with some broken rows, an empty answer, a web page, or an answer that is not a list at all
-- **WHEN** Antenna reads it
+- **WHEN** Antuna reads it
 - **THEN** broken rows (no id, name or channel, a programme that ends before it starts, an unreadable date, a channel listed twice) are skipped and counted while the rest load in order
 - **AND** an empty answer gives an empty list
 - **AND** a server answer without an id or version fails
@@ -120,7 +120,7 @@ The system SHALL build stream addresses that carry this device's key and play th
 
 #### Scenario: Build the addresses
 - **GIVEN** a channel and this device's key, on a server with and without a path in its address
-- **WHEN** Antenna builds the channel's stream and logo addresses
+- **WHEN** Antuna builds the channel's stream and logo addresses
 - **THEN** the stream address asks for the channel unchanged with the key in it and plays through the route for MPEG-TS, the raw stream format most IPTV uses
 - **AND** the logo address carries no key, so image caches never hold it
 

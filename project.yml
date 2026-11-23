@@ -29,6 +29,7 @@ targets:
   # iPhone, iPad and native Mac from one target (multiplatform destinations).
   Antenna:
     type: application
+    productName: Antuna
     supportedDestinations: [iOS, macOS]
     sources:
       - Apps/Shared
@@ -46,14 +47,14 @@ targets:
     info:
       path: Apps/Mobile/Info.plist
       properties:
-        CFBundleDisplayName: Antenna
+        CFBundleDisplayName: Antuna
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UIBackgroundModes: [audio, remote-notification]
-        NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
+        NSLocalNetworkUsageDescription: "Antuna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
           # IPTV sources are overwhelmingly plain http. Tighten per-domain later if you can.
           NSAllowsArbitraryLoads: true
@@ -63,14 +64,16 @@ targets:
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
             LSItemContentTypes: [public.m3u-playlist]
-        AntennaTermsURL: https://antenna.code-crave.se/terms
-        AntennaPrivacyURL: https://antenna.code-crave.se/privacy
+        AntennaTermsURL: https://antuna.app/terms
+        AntennaPrivacyURL: https://antuna.app/privacy
         NSUserActivityTypes: [se.codecrave.antenna.setup]
         AntennaCloudKitContainer: $(ANTENNA_CLOUDKIT_CONTAINER)
         AntennaKeychainGroup: $(ANTENNA_KEYCHAIN_GROUP)
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: se.codecrave.antenna
+        PRODUCT_NAME: Antuna
+        PRODUCT_MODULE_NAME: Antenna
         CODE_SIGN_ENTITLEMENTS: Config/Antenna$(ANTENNA_ENTITLEMENTS_SUFFIX).entitlements
         CODE_SIGN_ENTITLEMENTS[sdk=macosx*]: Config/AntennaMac$(ANTENNA_ENTITLEMENTS_SUFFIX).entitlements
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -156,17 +159,17 @@ targets:
     info:
       path: Apps/TV/Info.plist
       properties:
-        CFBundleDisplayName: Antenna
+        CFBundleDisplayName: Antuna
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UIUserInterfaceStyle: Automatic
         CFBundleURLTypes:
           - CFBundleURLName: se.codecrave.antenna.tv
             CFBundleURLSchemes: [antenna]
-        AntennaTermsURL: https://antenna.code-crave.se/terms
-        AntennaPrivacyURL: https://antenna.code-crave.se/privacy
+        AntennaTermsURL: https://antuna.app/terms
+        AntennaPrivacyURL: https://antuna.app/privacy
         UIBackgroundModes: [audio, remote-notification]
-        NSLocalNetworkUsageDescription: "Antenna connects to TV servers on your home network when one of your sources points there."
+        NSLocalNetworkUsageDescription: "Antuna connects to TV servers on your home network when one of your sources points there."
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         AntennaCloudKitContainer: $(ANTENNA_CLOUDKIT_CONTAINER)
@@ -203,7 +206,7 @@ targets:
     info:
       path: Apps/TopShelf/Info.plist
       properties:
-        CFBundleDisplayName: Antenna
+        CFBundleDisplayName: Antuna
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:

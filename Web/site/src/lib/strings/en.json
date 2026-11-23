@@ -1,8 +1,8 @@
 {
 	"site": {
-		"name": "Antenna",
+		"name": "Antuna",
 		"skip": "Skip to content",
-		"publisher": "Antenna is published by Code Crave.",
+		"publisher": "Antuna is published by Code Crave.",
 		"navLabel": "Main",
 		"footerLabel": "About this site"
 	},
@@ -18,17 +18,17 @@
 		"get": "Download on the App Store"
 	},
 	"home": {
-		"title": "Antenna",
-		"description": "Antenna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels.",
+		"title": "Antuna",
+		"description": "Antuna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels.",
 		"hero": "Your TV sources, on every Apple screen.",
-		"lead": "Antenna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels. A purchase unlocks it on all your devices.",
+		"lead": "Antuna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels. A purchase unlocks it on all your devices.",
 		"platforms": "iPhone, iPad, Mac, Apple TV",
 		"heroAlt": "Live TV on Apple TV: a made-up news channel playing full screen, with the programme on now and next in the bar below."
 	},
 	"features": {
 		"title": "Features",
-		"description": "What Antenna does on iPhone, iPad, Mac and Apple TV, in nine areas, with the platforms that have each feature.",
-		"lead": "Antenna in nine areas. Each page says which of iPhone, iPad, Mac and Apple TV have each feature.",
+		"description": "What Antuna does on iPhone, iPad, Mac and Apple TV, in nine areas, with the platforms that have each feature.",
+		"lead": "Antuna in nine areas. Each page says which of iPhone, iPad, Mac and Apple TV have each feature.",
 		"all": "All features",
 		"home": "Home",
 		"next": "Next:",
@@ -38,7 +38,7 @@
 		{
 			"slug": "sources",
 			"name": "Sources",
-			"summary": "M3U playlists from a link or a file, Xtream Codes logins, Stalker portals, Jellyfin and Channels DVR servers. Antenna plays sources you already have and names none.",
+			"summary": "M3U playlists from a link or a file, Xtream Codes logins, Stalker portals, Jellyfin and Channels DVR servers. Antuna plays sources you already have and names none.",
 			"line": "Add the sources you already have: a playlist, an Xtream Codes login, a Stalker portal, or a Jellyfin or Channels DVR server.",
 			"platforms": "On iPhone, iPad, Mac and Apple TV.",
 			"more": "More about sources",
@@ -48,13 +48,13 @@
 				{
 					"id": "m3u-playlists",
 					"title": "M3U playlists",
-					"body": "Paste a playlist link. Antenna reads the guide links, catch-up details and any movies and episodes in it, and a playlist of 50,000 entries loads in a few seconds.",
+					"body": "Paste a playlist link. Antuna reads the guide links, catch-up details and any movies and episodes in it, and a playlist of 50,000 entries loads in a few seconds.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
 					"id": "playlist-files",
 					"title": "Playlist files",
-					"body": "Import a playlist file, share it to Antenna or open it from Finder. A preview shows how many channels and groups it holds before you import, and the channels then reach your Apple TV too. Drag and drop works on iPad and Mac.",
+					"body": "Import a playlist file, share it to Antuna or open it from Finder. A preview shows how many channels and groups it holds before you import, and the channels then reach your Apple TV too. Drag and drop works on iPad and Mac.",
 					"platforms": "Import on iPhone, iPad and Mac. Not on Apple TV, which plays the imported channels."
 				},
 				{
@@ -72,13 +72,13 @@
 				{
 					"id": "jellyfin",
 					"title": "Jellyfin Live TV",
-					"body": "Sign in to your own Jellyfin server for its live channels, radio and a week of guide. Antenna checks the server is Jellyfin before it sends your password.",
+					"body": "Sign in to your own Jellyfin server for its live channels, radio and a week of guide. Antuna checks the server is Jellyfin before it sends your password.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
 					"id": "channels-dvr",
 					"title": "Channels DVR",
-					"body": "Type the server's address and Antenna fills in the rest. Your channel names, numbers and seven days of guide come over as the server has them.",
+					"body": "Type the server's address and Antuna fills in the rest. Your channel names, numbers and seven days of guide come over as the server has them.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
@@ -145,7 +145,7 @@
 					"id": "reminders",
 					"title": "Reminders",
 					"body": "Set a reminder on a programme and get a notification before it starts, with a button that plays the channel.",
-					"platforms": "Notifications on iPhone, iPad and Mac. On Apple TV a reminder shows while Antenna is open."
+					"platforms": "Notifications on iPhone, iPad and Mac. On Apple TV a reminder shows while Antuna is open."
 				},
 				{
 					"id": "picture-and-sound",
@@ -192,13 +192,13 @@
 				{
 					"id": "guide-sources",
 					"title": "Every guide your sources offer",
-					"body": "Antenna uses the guide links in a playlist, the guide of an Xtream, Stalker, Jellyfin or Channels DVR source, and guide links you add. It keeps a week back and two weeks ahead.",
+					"body": "Antuna uses the guide links in a playlist, the guide of an Xtream, Stalker, Jellyfin or Channels DVR source, and guide links you add. It keeps a week back and two weeks ahead.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
 					"id": "match-by-hand",
 					"title": "Fix a missing guide",
-					"body": "Choose which guides a playlist uses and in what order. When a channel has no programmes, Antenna says why, and you can pick its guide entry by hand. The fix syncs to your other devices.",
+					"body": "Choose which guides a playlist uses and in what order. When a channel has no programmes, Antuna says why, and you can pick its guide entry by hand. The fix syncs to your other devices.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				}
 			]
@@ -234,7 +234,7 @@
 				{
 					"id": "next-episode",
 					"title": "The next episode on its own",
-					"body": "When an episode ends, the next one counts down and starts. After three in a row Antenna asks if you are still watching. Turn autoplay off in Settings.",
+					"body": "When an episode ends, the next one counts down and starts. After three in a row Antuna asks if you are still watching. Turn autoplay off in Settings.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
@@ -280,7 +280,7 @@
 				{
 					"id": "stream-limits",
 					"title": "When the source says no",
-					"body": "Many sources allow one or two streams per account at a time. When a tile is refused, Antenna says so in that tile.",
+					"body": "Many sources allow one or two streams per account at a time. When a tile is refused, Antuna says so in that tile.",
 					"platforms": "On Apple TV, iPad and Mac."
 				}
 			]
@@ -298,7 +298,7 @@
 				{
 					"id": "last-channel",
 					"title": "Straight to your last channel",
-					"body": "Antenna opens full screen on the channel you watched last, after asking who is watching when there is more than one profile.",
+					"body": "Antuna opens full screen on the channel you watched last, after asking who is watching when there is more than one profile.",
 					"platforms": "On Apple TV."
 				},
 				{
@@ -340,7 +340,7 @@
 				{
 					"id": "scan-the-code",
 					"title": "Scan the code on the TV",
-					"body": "The Apple TV shows a code. Scan it with the iPhone camera, or accept Handoff, and Antenna opens on the phone ready to set up the TV.",
+					"body": "The Apple TV shows a code. Scan it with the iPhone camera, or accept Handoff, and Antuna opens on the phone ready to set up the TV.",
 					"platforms": "Apple TV with an iPhone, iPad or Mac on the same iCloud account."
 				},
 				{
@@ -356,9 +356,9 @@
 					"platforms": "For Xtream, Stalker, Jellyfin and Channels DVR sources."
 				},
 				{
-					"id": "without-antenna",
-					"title": "No Antenna on the phone yet",
-					"body": "A phone without Antenna that scans the code gets a plain page with a link to the App Store.",
+					"id": "without-antuna",
+					"title": "No Antuna on the phone yet",
+					"body": "A phone without Antuna that scans the code gets a plain page with a link to the App Store.",
 					"platforms": "On iPhone."
 				}
 			]
@@ -388,13 +388,13 @@
 				{
 					"id": "profiles",
 					"title": "A profile for each person",
-					"body": "Up to eight profiles, each with its own favorites, history, My list and color. Antenna asks who is watching when it opens. Sources and logins are shared.",
+					"body": "Up to eight profiles, each with its own favorites, history, My list and color. Antuna asks who is watching when it opens. Sources and logins are shared.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
 					"id": "without-icloud",
 					"title": "Without iCloud",
-					"body": "Antenna works on a device that is not signed in to iCloud. What you set up stays on that device.",
+					"body": "Antuna works on a device that is not signed in to iCloud. What you set up stays on that device.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				}
 			]
@@ -403,7 +403,7 @@
 			"slug": "privacy",
 			"name": "Privacy",
 			"summary": "No account, no ads, no analytics. Your passwords stay in your iCloud Keychain.",
-			"line": "Antenna collects nothing about you and connects only to your sources and Apple.",
+			"line": "Antuna collects nothing about you and connects only to your sources and Apple.",
 			"platforms": "On iPhone, iPad, Mac and Apple TV.",
 			"more": "More about privacy",
 			"image": "add-source-iphone.jpg",
@@ -412,7 +412,7 @@
 				{
 					"id": "no-account",
 					"title": "No account, no tracking",
-					"body": "There is nothing to sign up for. Antenna has no analytics, ads or third-party code, and Code Crave runs no server that receives your data.",
+					"body": "There is nothing to sign up for. Antuna has no analytics, ads or third-party code, and Code Crave runs no server that receives your data.",
 					"platforms": "On iPhone, iPad, Mac and Apple TV."
 				},
 				{
@@ -438,8 +438,8 @@
 	],
 	"pricing": {
 		"title": "Pricing",
-		"description": "Antenna is free to download and needs a purchase to use: a yearly subscription or a lifetime unlock, shared with your family.",
-		"lead": "Antenna is free to download and needs a purchase to use. Either purchase unlocks every feature on every iPhone, iPad, Mac and Apple TV on your Apple Account.",
+		"description": "Antuna is free to download and needs a purchase to use: a yearly subscription or a lifetime unlock, shared with your family.",
+		"lead": "Antuna is free to download and needs a purchase to use. Either purchase unlocks every feature on every iPhone, iPad, Mac and Apple TV on your Apple Account.",
 		"plans": [
 			{
 				"id": "yearly",
@@ -452,7 +452,7 @@
 			{
 				"id": "lifetime",
 				"name": "Lifetime",
-				"lines": ["Pay once. It does not renew.", "Unlocks Antenna for good on your Apple Account."]
+				"lines": ["Pay once. It does not renew.", "Unlocks Antuna for good on your Apple Account."]
 			}
 		],
 		"sections": [
@@ -464,17 +464,17 @@
 			{
 				"id": "what-it-costs",
 				"title": "What it costs",
-				"body": "The App Store shows the price for your region before you buy, and Antenna shows the same price on its purchase screen. Antenna includes no channels; your sources come from your provider."
+				"body": "The App Store shows the price for your region before you buy, and Antuna shows the same price on its purchase screen. Antuna includes no channels; your sources come from your provider."
 			},
 			{
 				"id": "new-device",
 				"title": "On a new device",
-				"body": "Antenna unlocks on its own on a device signed in to the same Apple Account. If it does not, choose Restore purchase on the purchase screen."
+				"body": "Antuna unlocks on its own on a device signed in to the same Apple Account. If it does not, choose Restore purchase on the purchase screen."
 			},
 			{
 				"id": "if-it-ends",
 				"title": "If your subscription ends",
-				"body": "Antenna shows the purchase screen again and keeps your sources, favorites and settings. Buy again or restore, and everything is back."
+				"body": "Antuna shows the purchase screen again and keeps your sources, favorites and settings. Buy again or restore, and everything is back."
 			}
 		],
 		"cancelBefore": "To stop the yearly subscription, cancel in your Apple Account's subscription settings at least 24 hours before it renews. The",
@@ -482,16 +482,16 @@
 	},
 	"support": {
 		"title": "Support",
-		"description": "Answers to common questions about Antenna, and how to report a problem from the app.",
+		"description": "Answers to common questions about Antuna, and how to report a problem from the app.",
 		"reportTitle": "Report a problem from the app",
-		"reportSoon": "Report a problem is coming to Antenna's Settings. It will show you everything it sends before you send it, and give you a reference code. Until then, the answers below cover the common questions.",
+		"reportSoon": "Report a problem is coming to Antuna's Settings. It will show you everything it sends before you send it, and give you a reference code. Until then, the answers below cover the common questions.",
 		"questionsTitle": "Questions",
 		"faq": [
 			{
-				"id": "does-antenna-include-channels",
-				"question": "Does Antenna include channels?",
+				"id": "does-antuna-include-channels",
+				"question": "Does Antuna include channels?",
 				"answer": [
-					"No. Antenna plays sources you already have: a playlist link or file, an Xtream Codes login, a Stalker portal, or a Jellyfin or Channels DVR server. Code Crave does not sell or recommend TV subscriptions."
+					"No. Antuna plays sources you already have: a playlist link or file, an Xtream Codes login, a Stalker portal, or a Jellyfin or Channels DVR server. Code Crave does not sell or recommend TV subscriptions."
 				]
 			},
 			{
@@ -526,35 +526,35 @@
 				"id": "a-source-will-not-load",
 				"question": "A source will not load",
 				"answer": [
-					"Settings shows a status line under each source. Check the address and login there; Antenna checks a change with the server before it saves it. A refresh that fails keeps the channels you had. For Channels DVR on iPhone, iPad or Mac, allow local network access for Antenna in the device's settings."
+					"Settings shows a status line under each source. Check the address and login there; Antuna checks a change with the server before it saves it. A refresh that fails keeps the channels you had. For Channels DVR on iPhone, iPad or Mac, allow local network access for Antuna in the device's settings."
 				]
 			},
 			{
 				"id": "setting-up-an-apple-tv",
 				"question": "Setting up an Apple TV from an iPhone",
 				"answer": [
-					"Open Antenna on the Apple TV and scan the code it shows with your iPhone's camera, or accept the Handoff suggestion. Fill in the source on the phone and the Apple TV receives it through your iCloud. Both need to be signed in to the same iCloud account. When the Apple TV asks for a password, send it from the phone the same way."
+					"Open Antuna on the Apple TV and scan the code it shows with your iPhone's camera, or accept the Handoff suggestion. Fill in the source on the phone and the Apple TV receives it through your iCloud. Both need to be signed in to the same iCloud account. When the Apple TV asks for a password, send it from the phone the same way."
 				]
 			},
 			{
 				"id": "unlocking-on-a-new-device",
-				"question": "Unlocking Antenna on a new device",
+				"question": "Unlocking Antuna on a new device",
 				"answer": [
-					"Antenna unlocks on its own on any iPhone, iPad, Mac or Apple TV signed in to the same Apple Account. If it does not, choose Restore purchase on the purchase screen. It says what it found and opens the app."
+					"Antuna unlocks on its own on any iPhone, iPad, Mac or Apple TV signed in to the same Apple Account. If it does not, choose Restore purchase on the purchase screen. It says what it found and opens the app."
 				]
 			},
 			{
 				"id": "family-sharing",
 				"question": "Family Sharing",
 				"answer": [
-					"Both purchases work for everyone in your Family Sharing group. If a family member's Antenna stays locked, they can choose Restore purchase, and the organizer can check that purchase sharing is on in Family Sharing."
+					"Both purchases work for everyone in your Family Sharing group. If a family member's Antuna stays locked, they can choose Restore purchase, and the organizer can check that purchase sharing is on in Family Sharing."
 				]
 			},
 			{
 				"id": "canceling-the-yearly-subscription",
 				"question": "Canceling the yearly subscription",
 				"answer": [
-					"Cancel in your Apple Account's subscription settings at least 24 hours before it renews. You keep Antenna until the end of the year you paid for."
+					"Cancel in your Apple Account's subscription settings at least 24 hours before it renews. You keep Antuna until the end of the year you paid for."
 				]
 			},
 			{
@@ -568,7 +568,7 @@
 				"id": "deleting-your-data",
 				"question": "Deleting your data",
 				"answer": [
-					"Removing a source in Settings deletes it, its login, and its favorites, guide and progress on every device on your iCloud account. To delete everything Antenna keeps in iCloud, open Settings on your iPhone, tap your name, then iCloud, then Manage Storage, and delete Antenna's data."
+					"Removing a source in Settings deletes it, its login, and its favorites, guide and progress on every device on your iCloud account. To delete everything Antuna keeps in iCloud, open Settings on your iPhone, tap your name, then iCloud, then Manage Storage, and delete Antuna's data."
 				]
 			}
 		]

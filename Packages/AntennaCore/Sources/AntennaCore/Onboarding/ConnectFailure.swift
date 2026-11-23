@@ -70,7 +70,7 @@ public enum ConnectFailure: Error, Equatable, Sendable {
             case .offline: words("You're offline. Connect to the internet and try again.")
             case .unreachable(let host): words("Could not reach \(host). Check the address and try again.")
             case .serverError(let status): words("The server answered with an error (\(String(status))). Check the address and try again.")
-            case .unreadable: words("The server replied with something Antenna could not read.")
+            case .unreadable: words("The server replied with something Antuna could not read.")
             case .credentials(let reason): words("Could not store credentials: \(reason)")
             case .invalidMAC: words("Enter a valid MAC address, like 00:1A:79:12:34:56.")
             case .portalRejected: words("Could not sign in. Check the MAC address, and the login if you have one.")
@@ -79,13 +79,13 @@ public enum ConnectFailure: Error, Equatable, Sendable {
             case .noJellyfin(let host): words("No Jellyfin server answered at \(host). Check the address and try again.")
             case .forbidden: words("This account is not allowed to sign in from this device.")
             case .untrustedCertificate:
-                words("Antenna can't verify this server's certificate. Use http on your network or a trusted certificate.")
+                words("Antuna can't verify this server's certificate. Use http on your network or a trusted certificate.")
             case .invalidServer: words("Enter a valid server address.")
             case .addressHasLogin: words("Remove the username and password from the address.")
             case .invalidUsername: words("Enter a username without a colon.")
             case .notAChannelsServer(let host): words("No Channels DVR server at \(host).")
             case .starting: words("Channels DVR is starting. Try again in a moment.")
-            case .needsPassword: words("This server asks for a username and password, which Antenna cannot send yet.")
+            case .needsPassword: words("This server asks for a username and password, which Antuna cannot send yet.")
             }
         }
     }
@@ -156,7 +156,7 @@ public enum ConnectFailure: Error, Equatable, Sendable {
     /// cannot be reached, since a refused local network permission often
     /// looks like being offline.
     public static func localNetworkHint(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Allow local network access for Antenna in Settings.")
+        Words(locale)("Allow local network access for Antuna in Settings.")
     }
 
     /// True for an offline or unreachable failure when `host` is a private

@@ -1,6 +1,6 @@
 import Foundation
 
-/// The set-top box Antenna presents itself as to a Stalker portal. Portals
+/// The set-top box Antuna presents itself as to a Stalker portal. Portals
 /// reject requests without these headers and profile values.
 public struct StalkerDevice: Sendable, Equatable {
     public var userAgent: String
@@ -27,7 +27,7 @@ public struct StalkerDevice: Sendable, Equatable {
 
 /// The serial number, device id and signature worked out from a MAC, the
 /// way StbEmu and TiviMate work them out, so a portal that tied the MAC to
-/// those ids accepts Antenna
+/// those ids accepts Antuna
 /// (stalker-portal-source/portals-that-remember-your-device-still-let-you-in).
 ///
 /// Every value identifies the device as well as the MAC does, so

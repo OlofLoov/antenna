@@ -8,7 +8,7 @@
         @Entry var intentHost: AppIntentHost?
     }
 
-    /// Carries out what Siri and Shortcuts asked for once Antenna is
+    /// Carries out what Siri and Shortcuts asked for once Antuna is
     /// forward: tunes a channel on Live, plays a movie or opens a series as
     /// a search result would, or opens Search
     /// (app-intents/tune-a-channel-by-voice-or-shortcut, app-intents/play-a-movie-or-series,

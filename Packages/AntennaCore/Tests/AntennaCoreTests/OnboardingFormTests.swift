@@ -53,7 +53,7 @@ import Testing
                 == "The server answered with an error (500). Check the address and try again.")
         #expect(
             ConnectFailure(XtreamClient.XtreamError.decoding(path: ""), host: host).message(.english)
-                == "The server replied with something Antenna could not read.")
+                == "The server replied with something Antuna could not read.")
     }
 
     @Test("first-run-onboarding/fill-the-form-from-a-copied-link: a link with a login picks Xtream")
@@ -159,7 +159,7 @@ import Testing
                 == "This account is not allowed to sign in from this device.")
         #expect(
             ConnectFailure(JellyfinClient.JellyfinError.untrustedCertificate, host: host).message(.english)
-                == "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate.")
+                == "Antuna can't verify this server's certificate. Use http on your network or a trusted certificate.")
         #expect(
             ConnectFailure.noJellyfin(host: host).message(.english)
                 == "No Jellyfin server answered at jf.local. Check the address and try again.")

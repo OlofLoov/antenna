@@ -21,7 +21,7 @@ Each locale folder has `name`, `subtitle`, `description`, `keywords`,
 
 `scripts/check-store-metadata.sh` checks every locale, held ones included:
 each field present and inside Apple's limit, keywords without spaces or
-repeats, Antenna's own addresses only, and no provider, broadcaster, league
+repeats, Antuna's own addresses only, and no provider, broadcaster, league
 or competing player named. It runs before each push and in the Lint
 workflow.
 

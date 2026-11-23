@@ -464,7 +464,7 @@ The system SHALL read an entry's `catchup` style, `catchup-source` template and 
 - **THEN** the channel is kept and has no correction
 
 ### Requirement: Earlier ids map to the new ones
-The system SHALL report, for each channel in a parse, the id an earlier version of Antenna gave the same entry, so references saved with that id can move to the new one. The earlier id SHALL be used for nothing else and SHALL never be logged.
+The system SHALL report, for each channel in a parse, the id an earlier version of Antuna gave the same entry, so references saved with that id can move to the new one. The earlier id SHALL be used for nothing else and SHALL never be logged.
 
 #### Scenario: A channel with a guide id
 - **GIVEN** an entry with `tvg-id="same.uk"` and link `http://s/one.ts`
@@ -516,7 +516,7 @@ The system SHALL treat a playlist whose last load on this device had movies or e
 
 #### Scenario: Siri finds a playlist movie
 - **GIVEN** only a playlist that has the movie "Film A", and the app not running
-- **WHEN** the user asks Siri to play "Film A" in Antenna
+- **WHEN** the user asks Siri to play "Film A" in Antuna
 - **THEN** the movie is found and plays
 
 ### Requirement: Movies and Series show by what the sources offer

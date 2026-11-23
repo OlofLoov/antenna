@@ -208,8 +208,8 @@ The system SHALL show each episode with a picture, number, title, length and one
 - **WHEN** the page shows
 - **THEN** a series with none says "No episodes available", and unreadable ones are counted under the list as "<n> episodes could not be read from the provider's list."
 
-#### Scenario: Watched outside Antenna
-- **GIVEN** an episode watched outside Antenna
+#### Scenario: Watched outside Antuna
+- **GIVEN** an episode watched outside Antuna
 - **WHEN** the list shows
 - **THEN** it shows as unwatched until played here
 

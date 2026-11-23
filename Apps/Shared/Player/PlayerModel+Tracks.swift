@@ -74,7 +74,7 @@ extension PlayerModel {
     /// grayed out or, on Apple TV, not shown.
     var canSwitchSubtitles: Bool { tracks.subtitles.contains { !$0.isForced } }
 
-    /// "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player", or that details
+    /// "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player", or that details
     /// are not available yet.
     var streamLine: String {
         let container = subject.flatMap { StreamLine.container(pathExtension: $0.channel.streamURL.pathExtension, route: route) }

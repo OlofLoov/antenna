@@ -4,7 +4,7 @@
     import SwiftUI
 
     /// The reminder banner over every Apple TV screen, the only way a
-    /// reminder shows there (programme-reminders/a-banner-while-antenna-is-open;
+    /// reminder shows there (programme-reminders/a-banner-while-antuna-is-open;
     /// `TV-Reminder-Banner`). Watch takes focus when it appears; Dismiss,
     /// Menu or 20 seconds close it and focus goes back where it was. Watch
     /// plays the channel full screen, switching the overlay's group to All

@@ -42,7 +42,7 @@ public struct ReminderDelivery: Codable, Equatable, Sendable {
 
 /// When reminders go off and what this device schedules
 /// (programme-reminders/a-notification-before-the-programme-starts,
-/// programme-reminders/a-banner-while-antenna-is-open).
+/// programme-reminders/a-banner-while-antuna-is-open).
 public struct ReminderSchedule: Sendable {
     /// The most notifications iOS keeps pending for one app.
     public static let pendingLimit = 64

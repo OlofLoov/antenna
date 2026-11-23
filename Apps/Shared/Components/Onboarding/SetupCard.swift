@@ -24,20 +24,20 @@ enum SetupCard {
 
     static let title: LocalizedStringResource = "Set up from your iPhone"
     static let body: LocalizedStringResource = """
-        Point your iPhone camera at the code. Antenna opens there with this form, \
+        Point your iPhone camera at the code. Antuna opens there with this form, \
         and what you enter syncs to this Apple TV through iCloud.
         """
     static let footer: LocalizedStringResource = """
-        Antenna also appears in the App Switcher on your iPhone. \
+        Antuna also appears in the App Switcher on your iPhone. \
         Prefer the remote? Type here; your iPhone offers its keyboard too.
         """
     static let nothingYet: LocalizedStringResource = """
-        Nothing yet? Your iPhone needs Antenna installed, an internet connection \
+        Nothing yet? Your iPhone needs Antuna installed, an internet connection \
         and the same iCloud account as this Apple TV.
         """
     static let cannotSetUp: LocalizedStringResource = """
         A source arrived from iCloud that this Apple TV can't set up here. \
-        Update Antenna, or type the source here.
+        Update Antuna, or type the source here.
         """
     static let codeLabel: LocalizedStringResource = "QR code. Scan it with your iPhone to set up this Apple TV from there."
 

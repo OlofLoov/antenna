@@ -144,7 +144,7 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(alert.staticTexts["Its favorites, hidden groups and history go too. Sources stay."].exists)
         alert.buttons["Delete"].tap()
 
-        // One profile is left, so Antenna opens straight on it.
+        // One profile is left, so Antuna opens straight on it.
         expectFavorites(dad: true, kids: false, in: app)
         XCTAssertFalse(app.element("profiles.picker").exists)
 

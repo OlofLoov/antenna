@@ -14,7 +14,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      project    = "antenna"
+      project    = "antuna"
       managed-by = "terraform"
     }
   }
@@ -23,7 +23,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "state" {
-  bucket = "antenna-terraform-state-${data.aws_caller_identity.current.account_id}"
+  bucket = "antuna-terraform-state-${data.aws_caller_identity.current.account_id}"
 
   lifecycle {
     prevent_destroy = true

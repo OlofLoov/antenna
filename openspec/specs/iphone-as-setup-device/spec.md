@@ -83,12 +83,12 @@ The system SHALL show a hint on the Apple TV after two minutes without a usable 
 #### Scenario: Two minutes pass
 - **GIVEN** the QR card on screen
 - **WHEN** two minutes pass with no usable source
-- **THEN** a hint says the iPhone needs Antenna, an internet connection and the same iCloud account as the TV
+- **THEN** a hint says the iPhone needs Antuna, an internet connection and the same iCloud account as the TV
 
 #### Scenario: A source this card cannot set up
 - **GIVEN** the QR card on screen
 - **WHEN** a source arrives of a kind the card cannot set up
-- **THEN** after two minutes the hint says to update Antenna or type the source on the TV instead
+- **THEN** after two minutes the hint says to update Antuna or type the source on the TV instead
 
 #### Scenario: Offline TV or another account
 - **GIVEN** an Apple TV that is offline, or a phone on a different iCloud account
@@ -107,13 +107,13 @@ The system SHALL let the user fill in the form on the Apple TV while the QR card
 The system SHALL open a "Set up Apple TV" form on iPhone, iPad or Mac when the user scans the code or accepts the Handoff offer, from any screen, and open nothing new for a code already used.
 
 #### Scenario: Scan or accept Handoff
-- **GIVEN** Antenna on an iPhone, iPad or Mac, on any screen
+- **GIVEN** Antuna on an iPhone, iPad or Mac, on any screen
 - **WHEN** the user scans the code or accepts the Handoff offer
 - **THEN** a "Set up Apple TV" form opens with the banner "Opened from your Apple TV" and onboarding's fields
 - **AND** the same code arriving again opens nothing new
 
 #### Scenario: A damaged or newer link
-- **WHEN** the user opens a damaged setup link, or one from a newer Antenna
+- **WHEN** the user opens a damaged setup link, or one from a newer Antuna
 - **THEN** the plain add-source form opens, and for a newer link it asks the user to update
 
 #### Scenario: The paywall is up
@@ -158,16 +158,16 @@ The system SHALL show "Not sent yet" with what to check when iCloud has not conf
 - **WHEN** 30 seconds pass without iCloud confirming the upload, or the device is not signed in to iCloud
 - **THEN** the Apple TV row reads "Not sent yet" and tells the user to check the device is online and signed in to iCloud, at once when it is not signed in
 
-### Requirement: An iPhone without Antenna gets a plain page
-The system SHALL serve a plain web page for the setup link that says what Antenna does and links to the App Store, with no scripts, images or third-party content.
+### Requirement: An iPhone without Antuna gets a plain page
+The system SHALL serve a plain web page for the setup link that says what Antuna does and links to the App Store, with no scripts, images or third-party content.
 
-#### Scenario: Scan without Antenna installed
-- **GIVEN** an iPhone without Antenna installed
+#### Scenario: Scan without Antuna installed
+- **GIVEN** an iPhone without Antuna installed
 - **WHEN** the camera opens the setup link
-- **THEN** Safari shows a page that says "Antenna sets up your Apple TV from your iPhone." with one link to the App Store, and no scripts, images or third-party content
+- **THEN** Safari shows a page that says "Antuna sets up your Apple TV from your iPhone." with one link to the App Store, and no scripts, images or third-party content
 
-#### Scenario: Open the link in Safari with Antenna installed
-- **GIVEN** an iPhone with Antenna installed
+#### Scenario: Open the link in Safari with Antuna installed
+- **GIVEN** an iPhone with Antuna installed
 - **WHEN** the user opens the setup link in Safari directly
 - **THEN** Safari shows the same page
 
@@ -177,4 +177,4 @@ The system SHALL update the sending screen to say the source was handed to iClou
 #### Scenario: iCloud confirms
 - **GIVEN** the sending screen, including after it reads "Not sent yet"
 - **WHEN** iCloud confirms the upload
-- **THEN** the Apple TV row reads "Handed to iCloud. Open Antenna on your Apple TV." and "Continue on iPhone" becomes the main button
+- **THEN** the Apple TV row reads "Handed to iCloud. Open Antuna on your Apple TV." and "Continue on iPhone" becomes the main button

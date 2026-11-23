@@ -67,7 +67,7 @@ The system SHALL open a person's page showing their initials, name, whether they
 #### Scenario: Only the title they came from
 - **GIVEN** a person named only in the movie whose page the user came from
 - **WHEN** their page opens
-- **THEN** it shows "Acting · 1 in your sources" and that movie, and the note that titles whose names Antenna has not seen yet may be missing
+- **THEN** it shows "Acting · 1 in your sources" and that movie, and the note that titles whose names Antuna has not seen yet may be missing
 
 #### Scenario: Selecting a poster
 - **GIVEN** a person's page
@@ -118,7 +118,7 @@ The system SHALL build a person's page from names the provider has already sent,
 #### Scenario: Names from details
 - **GIVEN** a panel whose movie list has no cast, and the user has opened three movies with Mira Holt
 - **WHEN** the user opens her page
-- **THEN** those three movies are on it, with the note that titles whose names Antenna has not seen yet may be missing
+- **THEN** those three movies are on it, with the note that titles whose names Antuna has not seen yet may be missing
 
 #### Scenario: Offline
 - **GIVEN** the device is offline

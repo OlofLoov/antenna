@@ -12,7 +12,7 @@ struct PaywallProduct: Equatable, Sendable {
 /// What the App Store said about the products.
 enum ProductsAnswer: Equatable, Sendable {
     case products([PaywallProduct])
-    /// Antenna is not sold in this region.
+    /// Antuna is not sold in this region.
     case notSold
     /// No answer; the App Store could not be reached.
     case unreachable

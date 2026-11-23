@@ -1,6 +1,6 @@
 import Foundation
 
-/// One person using Antenna (profiles capability). Profiles share the sources and
+/// One person using Antuna (profiles capability). Profiles share the sources and
 /// logins; each keeps its own favorites, history and hidden groups.
 public struct Profile: Sendable, Hashable, Identifiable {
     /// The first profile's fixed id. Records with no profile id are Main's.

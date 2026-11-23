@@ -1,4 +1,4 @@
-O Antenna reproduz as fontes de TV que você já tem, no iPhone, iPad, Mac e Apple TV. O app não vem com nenhum canal, playlist ou endereço de provedor. Você adiciona sua própria fonte, e o Antenna a transforma em uma lista de canais, um guia de TV e uma biblioteca de filmes e séries.
+O Antuna reproduz as fontes de TV que você já tem, no iPhone, iPad, Mac e Apple TV. O app não vem com nenhum canal, playlist ou endereço de provedor. Você adiciona sua própria fonte, e o Antuna a transforma em uma lista de canais, um guia de TV e uma biblioteca de filmes e séries.
 
 SUAS FONTES
 • Playlists M3U, de um link ou de um arquivo
@@ -34,9 +34,9 @@ EM TODOS OS DISPOSITIVOS
 • Atalhos de teclado no Mac e no iPad
 
 COMPRA
-O Antenna é gratuito para baixar e precisa de uma compra para ser usado: uma assinatura anual ou um desbloqueio vitalício com pagamento único. As duas opções funcionam com o Compartilhamento Familiar. O app mostra o preço da sua região antes da compra.
+O Antuna é gratuito para baixar e precisa de uma compra para ser usado: uma assinatura anual ou um desbloqueio vitalício com pagamento único. As duas opções funcionam com o Compartilhamento Familiar. O app mostra o preço da sua região antes da compra.
 
 PRIVACIDADE
-O Antenna não pede conta e não tem anúncios nem análises. Ele se conecta apenas às fontes que você adiciona, à sua conta do iCloud e à App Store.
+O Antuna não pede conta e não tem anúncios nem análises. Ele se conecta apenas às fontes que você adiciona, à sua conta do iCloud e à App Store.
 
-Você precisa ter o direito de assistir ao que suas fontes reproduzem. O Antenna não vende nem recomenda assinaturas de TV.
+Você precisa ter o direito de assistir ao que suas fontes reproduzem. O Antuna não vende nem recomenda assinaturas de TV.

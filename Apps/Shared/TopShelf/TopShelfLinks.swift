@@ -14,8 +14,8 @@
         @ObservationIgnored private var gates = 0
 
         /// Keeps a channel or title link. The add-favorites tile and a
-        /// damaged link open Antenna as it was
-        /// (top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was).
+        /// damaged link open Antuna as it was
+        /// (top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was).
         func receive(_ url: URL) {
             guard gates == 0, case .item(let id) = TopShelfLink(url: url) else { return }
             pending = id
@@ -115,7 +115,7 @@
     extension TopShelfInbox {
         /// The app's inbox. A Debug build launched with
         /// `-antenna.openURL <url>` receives that link at launch, as a tile
-        /// selected while Antenna was not running delivers it. With
+        /// selected while Antuna was not running delivers it. With
         /// `-ui-testing-open-url-running` as well, the link arrives once a
         /// channel plays instead (`UITestingShell`).
         static func launching(arguments: [String] = ProcessInfo.processInfo.arguments) -> TopShelfInbox {

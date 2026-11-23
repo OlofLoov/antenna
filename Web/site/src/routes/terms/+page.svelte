@@ -4,7 +4,7 @@
 
 <Meta
 	title="Terms of Use"
-	description="The terms for using Antenna, the TV player for iPhone, iPad, Mac and Apple TV, and how its purchases work."
+	description="The terms for using Antuna, the TV player for iPhone, iPad, Mac and Apple TV, and how its purchases work."
 />
 
 <article class="prose">
@@ -12,13 +12,13 @@
 	<p class="updated">Last updated: November 23, 2026</p>
 
 	<p>
-		These terms cover Antenna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
-		Crave. By downloading or using Antenna you agree to them.
+		These terms cover Antuna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
+		Crave. By downloading or using Antuna you agree to them.
 	</p>
 
-	<h2>What Antenna is</h2>
+	<h2>What Antuna is</h2>
 	<p>
-		Antenna plays TV sources that you add yourself: M3U playlists, Xtream Codes accounts, Stalker
+		Antuna plays TV sources that you add yourself: M3U playlists, Xtream Codes accounts, Stalker
 		portals, Jellyfin servers and Channels DVR servers. It comes with no channels, playlists,
 		provider addresses or other content. Code Crave does not sell, host or recommend TV
 		subscriptions and has no ties to any provider.
@@ -26,23 +26,23 @@
 
 	<h2>Your sources</h2>
 	<p>
-		You are responsible for having the right to watch everything you add to Antenna, under the law
+		You are responsible for having the right to watch everything you add to Antuna, under the law
 		where you live and under your provider's terms. Code Crave does not check, host or control what
-		your sources play and is not responsible for it. Do not use Antenna to watch anything you have
-		no right to watch.
+		your sources play and is not responsible for it. Do not use Antuna to watch anything you have no
+		right to watch.
 	</p>
 
 	<h2>Purchases</h2>
-	<p>Antenna is free to download. To use it you buy one of two options in the app:</p>
+	<p>Antuna is free to download. To use it you buy one of two options in the app:</p>
 	<ul>
 		<li>
-			<strong>Yearly subscription.</strong> Unlocks Antenna for one year at a time. The App Store charges
+			<strong>Yearly subscription.</strong> Unlocks Antuna for one year at a time. The App Store charges
 			your Apple Account when you confirm the purchase and again at the start of each new year, at the
 			price shown in the app, until you cancel. To stop it renewing, cancel in your Apple Account's subscription
 			settings at least 24 hours before the current year ends. You keep access until then.
 		</li>
 		<li>
-			<strong>Lifetime unlock.</strong> One payment unlocks Antenna for good. It does not renew.
+			<strong>Lifetime unlock.</strong> One payment unlocks Antuna for good. It does not renew.
 		</li>
 	</ul>
 	<p>
@@ -56,7 +56,7 @@
 		>, and Apple decides them.
 	</p>
 	<p>
-		If your subscription ends or a purchase is refunded, Antenna shows the purchase screen again.
+		If your subscription ends or a purchase is refunded, Antuna shows the purchase screen again.
 		Your sources, favorites and settings are kept and come back when you buy again.
 	</p>
 
@@ -64,21 +64,21 @@
 	<p>
 		Apple's <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
 			>Licensed Application End User License Agreement</a
-		> applies to Antenna. These terms add to it. If the two disagree, Apple's agreement applies.
+		> applies to Antuna. These terms add to it. If the two disagree, Apple's agreement applies.
 	</p>
 
 	<h2>No warranty</h2>
 	<p>
-		Antenna is provided as is and as available, without warranties of any kind, to the extent the
-		law allows. Code Crave does not promise that any source works with Antenna, that streams play
-		without interruption, or that the app is free of errors.
+		Antuna is provided as is and as available, without warranties of any kind, to the extent the law
+		allows. Code Crave does not promise that any source works with Antuna, that streams play without
+		interruption, or that the app is free of errors.
 	</p>
 
 	<h2>Limits on liability</h2>
 	<p>
 		To the extent the law allows, Code Crave is not liable for indirect, incidental or consequential
 		damages, or for anything your sources show or fail to show. Code Crave's total liability to you
-		is limited to what you paid for Antenna in the twelve months before the claim. Nothing in these
+		is limited to what you paid for Antuna in the twelve months before the claim. Nothing in these
 		terms limits rights that consumer law gives you and does not allow a contract to take away.
 	</p>
 

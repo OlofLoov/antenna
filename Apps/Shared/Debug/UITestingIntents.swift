@@ -7,7 +7,7 @@
 
     /// Stands in for Siri and Shortcuts in UI tests, which cannot drive
     /// them (app-intents capability). `-ui-testing-intent <request>` hands the
-    /// app at launch what an action hands it once Antenna is forward:
+    /// app at launch what an action hands it once Antuna is forward:
     /// `tune:<channel reference>`, `play:<title reference>`, `search:<text>`
     /// or `search` alone for an empty field. `-ui-testing-intent-on-return
     /// <request>` hands the request over each time the app comes back to the

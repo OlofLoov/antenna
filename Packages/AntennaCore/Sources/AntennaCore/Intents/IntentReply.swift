@@ -42,21 +42,21 @@ public enum IntentFailure: Error, Equatable, Sendable, CustomStringConvertible, 
         let channel = { (name: String) in IntentText.channel(name, locale: locale) }
         let title = { (name: String) in IntentText.title(name, locale: locale) }
         return switch self {
-        case .notUnlocked: words("Antenna isn't unlocked on this device yet. Open Antenna to continue.")
-        case .noSources: words("Antenna has no sources yet. Open Antenna to add one.")
+        case .notUnlocked: words("Antuna isn't unlocked on this device yet. Open Antuna to continue.")
+        case .noSources: words("Antuna has no sources yet. Open Antuna to add one.")
         case .offline: words("You're offline. Connect to the internet and try again.")
-        case .stillLoading: words("Antenna is still loading your library. Try again in a moment.")
-        case .sourceFailed(let name): words("Antenna couldn't reach \(source(name)). Try again later.")
+        case .stillLoading: words("Antuna is still loading your library. Try again in a moment.")
+        case .sourceFailed(let name): words("Antuna couldn't reach \(source(name)). Try again later.")
         case .loginMissing(let name): words("The login for \(source(name)) hasn't synced from iCloud to this device yet.")
-        case .channelSourceGone: words("That channel's source is no longer in Antenna.")
-        case .titleSourceGone: words("That title's source is no longer in Antenna.")
+        case .channelSourceGone: words("That channel's source is no longer in Antuna.")
+        case .titleSourceGone: words("That title's source is no longer in Antuna.")
         case .channelGone(let name?, let from): words("\(channel(name)) is no longer in \(source(from)).")
         case .channelGone(nil, let from): words("That channel is no longer in \(source(from)).")
         case .titleGone(let name?, let from): words("\(title(name)) is no longer available from \(source(from)).")
         case .titleGone(nil, let from): words("That title is no longer available from \(source(from)).")
-        case .locked(let name): words("\(channel(name)) is in a locked group. Unlock it in Antenna first.")
-        case .adultHidden: words("This profile hides adult content. Show it in Antenna's Settings first.")
-        case .nothingPlaying: words("Antenna isn't playing a channel right now. Say which channel instead.")
+        case .locked(let name): words("\(channel(name)) is in a locked group. Unlock it in Antuna first.")
+        case .adultHidden: words("This profile hides adult content. Show it in Antuna's Settings first.")
+        case .nothingPlaying: words("Antuna isn't playing a channel right now. Say which channel instead.")
         case .alreadyFavorite(let name): words("\(channel(name)) is already a favorite.")
         case .notFavorite(let name): words("\(channel(name)) isn't a favorite.")
         case .needsUnlock(let device): words("Unlock your \(IntentText.name(device)) once and try again.")
@@ -67,7 +67,7 @@ public enum IntentFailure: Error, Equatable, Sendable, CustomStringConvertible, 
     public var debugDescription: String { description }
 }
 
-/// The words Siri and Shortcuts say and show for Antenna's actions
+/// The words Siri and Shortcuts say and show for Antuna's actions
 /// (app-intents capability). Every name passes through here first.
 public enum IntentText {
     /// What Siri asks when a channel is missing or matched nothing.

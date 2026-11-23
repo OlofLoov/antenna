@@ -295,9 +295,9 @@ private struct SourceFieldsSection: View {
                 Text("Login")
             } footer: {
                 #if os(tvOS)
-                    Text("Saved in the Keychain on this Apple TV. Antenna has no servers.")
+                    Text("Saved in the Keychain on this Apple TV. Antuna has no servers.")
                 #else
-                    Text("Saved in your iCloud Keychain only. Antenna has no servers and never sees your login.")
+                    Text("Saved in your iCloud Keychain only. Antuna has no servers and never sees your login.")
                 #endif
             }
         }

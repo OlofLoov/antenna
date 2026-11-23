@@ -219,7 +219,7 @@ import Testing
         clock.now += 120
         pairing.check()
         #expect(pairing.hint == .unusable)
-        #expect(String(localized: SetupCard.text(.unusable)).contains("Update Antenna"))
+        #expect(String(localized: SetupCard.text(.unusable)).contains("Update Antuna"))
     }
 
     @Test("iphone-as-setup-device/typing-on-the-tv-still-works: Connect on the TV drops the card and ignores later arrivals")

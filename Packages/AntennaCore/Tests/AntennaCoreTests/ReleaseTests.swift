@@ -6,7 +6,7 @@ import Testing
 /// the App Review source, read from the files at the repository root.
 @Suite struct ReleaseTests {
     static let root = WebsiteTests.root
-    static let playlistPath = "Web/review/antenna-review.m3u"
+    static let playlistPath = "Web/review/antuna-review.m3u"
     static let bundles = ["Apps/Mobile", "Apps/TV", "Apps/TopShelf"]
 
     private func read(_ path: String) throws -> String {
@@ -111,7 +111,7 @@ import Testing
             #expect(process.terminationStatus == 0)
             let guide = try XMLTVParser().parse(Data(contentsOf: folder.appending(path: "review/guide.xml")))
             #expect(guide.programmes.count > 4 * 28 * 24)
-            #expect(FileManager.default.fileExists(atPath: folder.appending(path: "review/antenna-review.m3u").path))
+            #expect(FileManager.default.fileExists(atPath: folder.appending(path: "review/antuna-review.m3u").path))
         }
     #endif
 
@@ -203,7 +203,7 @@ import Testing
         let files = try #require(FileManager.default.enumerator(at: apps, includingPropertiesForKeys: nil))
         for case let file as URL in files where ["swift", "plist", "strings", "xcstrings", "json"].contains(file.pathExtension) {
             let text = (try? String(contentsOf: file, encoding: .utf8)) ?? ""
-            #expect(!text.contains("antenna-review"), "\(file.path)")
+            #expect(!text.contains("antuna-review"), "\(file.path)")
             #expect(!text.contains("\(SetupLink.host)/review"), "\(file.path)")
         }
     }

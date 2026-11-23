@@ -1,15 +1,15 @@
-# Antenna
+# Antuna
 
-A native IPTV player for iPhone, iPad, Mac and Apple TV. Working title.
+A native IPTV player for iPhone, iPad, Mac and Apple TV.
 
-Antenna plays sources **you** already have (M3U playlists, Xtream Codes logins,
+Antuna plays sources **you** already have (M3U playlists, Xtream Codes logins,
 Stalker portals, and later Jellyfin / Channels DVR / Tvheadend). It ships no
 content and no provider links.
 
 ## Why another one
 
 The Apple TV category is a dozen solo-developer apps with partial iCloud sync
-and software-rendered video. Antenna is built around two things they lack:
+and software-rendered video. Antuna is built around two things they lack:
 
 1. **A hardware playback path for MPEG-TS.** FFmpeg demux → VideoToolbox decode →
    `AVSampleBufferVideoRenderer`, so HDR10 / Dolby Vision / Atmos stay on the

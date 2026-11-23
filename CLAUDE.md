@@ -1,7 +1,13 @@
-# Antenna
+# Antuna
 
 Native IPTV player for iPhone, iPad, Mac and Apple TV. Plays the user's own
 sources (M3U, Xtream, later Stalker / Jellyfin / Channels DVR). Ships no content.
+
+Antuna is the name people see: the app, the store listing, the site at
+antuna.app and the docs. Code names keep "Antenna": the packages, modules,
+targets, schemes, `Antenna.xcodeproj`, type names, bundle ids, the iCloud
+container, App Group and Keychain ids, UserDefaults keys and file names
+(`rename-to-antuna` design.md lists them). Do not rename them.
 
 ## Commands
 
@@ -18,14 +24,14 @@ scripts/sync-strings.sh                                  # write new string lite
 scripts/build-ffmpeg.sh macos                            # LGPL demux-only FFmpeg.framework; all platforms and the xcframework need Xcode
 swift test --disable-keychain --package-path Packages/FFmpeg   # the published FFmpeg build against the stream fixtures
 swift test --disable-keychain --package-path Packages/AntennaDemux   # the FFmpeg playback path, decoded by VideoToolbox
-scripts/make-review-guide.py Web/review/antenna-review.m3u 2026-01-01 36   # the App Review guide for a start day and length
+scripts/make-review-guide.py Web/review/antuna-review.m3u 2026-01-01 36   # the App Review guide for a start day and length
 actionlint                                               # workflow files, including release.yml; brew install actionlint
 (cd Web/site && npm ci && npm run lint && npm run check)  # the website: Prettier, ESLint, svelte-check; Node 22 from Web/site/.nvmrc
 (cd Web/site && npm run build && npm test)                # prerender every page, then the link, route, policy and budget check
 scripts/publish-web.sh /tmp/site Web/site/build           # the final file tree: plain files in Web/ plus the built app
 scripts/site-screenshots.sh en                           # the site's pictures from the newest store-screenshots artifact, with gh and sips
 terraform fmt -check -recursive Infra                    # Terraform 1.17.2, pinned in each root
-terraform -chdir=Infra/antenna init -backend=false && terraform -chdir=Infra/antenna test   # infra plans against a mocked AWS; Infra/ci too
+terraform -chdir=Infra/antuna init -backend=false && terraform -chdir=Infra/antuna test   # infra plans against a mocked AWS; Infra/ci too
 scripts/render-icons.sh                                  # app icons and Apple TV brand assets from design/icon/*.svg
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO
@@ -52,11 +58,11 @@ associated domains, and the app runs without sync.
 - `Apps/Shared/` SwiftUI shared by every platform. SwiftData records and the
   Keychain `CredentialStore` live in `Persistence/`.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
-- `Web/` the site, served from CloudFront at Antenna's own domain and
+- `Web/` the site, served from CloudFront at antuna.app and
   uploaded from main by the site job in `.github/workflows/infra.yml` through
-  `scripts/publish-web.sh <out> <site build>`. The domain is not picked yet
-  (`add-aws-hosting` task 1.1); until then the app names antenna.code-crave.se,
-  which serves nothing. `Web/site/` is a SvelteKit app with every page prerendered
+  `scripts/publish-web.sh <out> <site build>`. The app names antuna.app, which
+  serves nothing until the owner registers it (`add-aws-hosting` task 1.1).
+  `Web/site/` is a SvelteKit app with every page prerendered
   (home, nine feature pages, pricing, support, the Terms of Use and Privacy
   Policy the paywall links to, 404), built
   with Node 22 from its committed lockfile. It runs only its own bundled
@@ -73,7 +79,7 @@ associated domains, and the app runs without sync.
   AntennaCore check the plain files and the legal text, the site's Vitest
   checks the built pages.
 - `Infra/` the Terraform for AWS: `bootstrap/` (state bucket), the `ci` and
-  `antenna` roots, and `modules/`. `.github/workflows/infra.yml` plans on PRs,
+  `antuna` roots, and `modules/`. `.github/workflows/infra.yml` plans on PRs,
   applies on main and uploads the site. Nothing runs until the owner sets the
   AWS repository variables (add-aws-hosting design.md decision 9).
 - `docs/release/` the App Review notes and the App Store Connect privacy answers.

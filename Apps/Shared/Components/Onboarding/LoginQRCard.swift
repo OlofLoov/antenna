@@ -24,12 +24,12 @@
         static let title: LocalizedStringResource = "Send the login from your iPhone"
         static let body: LocalizedStringResource = """
             Scan the code with your iPhone camera. \
-            Antenna there sends the login to this Apple TV, encrypted, through iCloud.
+            Antuna there sends the login to this Apple TV, encrypted, through iCloud.
             """
         static let footer: LocalizedStringResource = "Prefer the remote? Type here; your iPhone offers its keyboard too."
         static let codeLabel: LocalizedStringResource = "QR code. Scan it with your iPhone to send the login to this Apple TV."
         static let unreadable: LocalizedStringResource = "Something arrived from your iPhone that this Apple TV can't read."
-        static let unreadableHint: LocalizedStringResource = "Update Antenna on both, or type the login here."
+        static let unreadableHint: LocalizedStringResource = "Update Antuna on both, or type the login here."
         static let received: LocalizedStringResource = "Login received from your iPhone"
 
         /// "Waiting for your iPhone", and "· 2 logins" when the code asks for more than one.

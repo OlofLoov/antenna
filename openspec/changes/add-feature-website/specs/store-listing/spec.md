@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: The listing links to the site's pages
-The repo MUST give every listing a support address that opens the site's support page, a privacy address that opens the Privacy Policy, and a marketing address that opens the home page, all on Antenna's domain.
+The repo MUST give every listing a support address that opens the site's support page, a privacy address that opens the Privacy Policy, and a marketing address that opens the home page, all on Antuna's domain.
 
 #### Scenario: Checking the addresses
 - **WHEN** the check runs

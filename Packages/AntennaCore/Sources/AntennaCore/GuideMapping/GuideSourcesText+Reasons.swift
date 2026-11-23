@@ -53,7 +53,7 @@ extension GuideSourcesText {
         case .playlistLoading:
             return Card(
                 title: Line(words("Waiting for the playlist")),
-                body: [words("Antenna reads the guide links from the playlist when it finishes loading.")]
+                body: [words("Antuna reads the guide links from the playlist when it finishes loading.")]
             )
         case .noGuide:
             return Card(
@@ -68,7 +68,7 @@ extension GuideSourcesText {
                 title: Line(words("Waiting for the login to sync"), .muted),
                 body: [words("The provider guide needs this source's login, which has not reached this device from iCloud yet.")])
         case .notDownloaded(let bytes):
-            let body = bytes.map(setup.downloading(bytes:)) ?? words("Antenna downloads the guide when the source finishes loading.")
+            let body = bytes.map(setup.downloading(bytes:)) ?? words("Antuna downloads the guide when the source finishes loading.")
             return Card(title: Line(words("The guide has not been downloaded yet")), body: [body])
         case .offline:
             return Card(title: Line(words("You're offline"), .muted), body: [words("The guide downloads when you're back online.")])

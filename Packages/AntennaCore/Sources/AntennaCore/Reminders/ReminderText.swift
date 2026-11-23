@@ -33,18 +33,18 @@ public struct ReminderText: Sendable {
             """
             Reminders sync to your other devices through iCloud. Each device reminds \
             you in its own way: a notification on iPhone, iPad and Mac, a banner on \
-            Apple TV while Antenna is open.
+            Apple TV while Antuna is open.
             """
         )
     }
     public static func cannotNotify(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Notifications are off for Antenna. Reminders show only while the app is open.")
+        Words(locale)("Notifications are off for Antuna. Reminders show only while the app is open.")
     }
     public static func notAskedYet(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Antenna has not asked to send notifications. Reminders show only while the app is open.")
+        Words(locale)("Antuna has not asked to send notifications. Reminders show only while the app is open.")
     }
     public static func television(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Apple TV cannot show notifications. Reminders show as a banner while Antenna is open.")
+        Words(locale)("Apple TV cannot show notifications. Reminders show as a banner while Antuna is open.")
     }
 
     /// The notification's body (programme-reminders/a-notification-before-the-programme-starts):

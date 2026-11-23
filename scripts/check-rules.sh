@@ -35,7 +35,7 @@ check "no availability checks below 26" \
   Apps Packages/AntennaCore/Sources
 
 check "app-release: the app never names the App Review playlist or guide" \
-  '(antenna-review|code-crave\.se/review)' \
+  '(antuna-review|antuna\.app/review)' \
   Apps
 
 check "no password or token in print/log calls" \

@@ -97,7 +97,7 @@ final class SetupTVUITests: XCTestCase {
         openDetails(app)
         let hint = element(app, "onboarding.qr.hint")
         XCTAssertTrue(hint.waitForExistence(timeout: 10))
-        XCTAssertTrue(hint.label.hasPrefix("Nothing yet? Your iPhone needs Antenna installed"))
+        XCTAssertTrue(hint.label.hasPrefix("Nothing yet? Your iPhone needs Antuna installed"))
     }
 
     // iphone-as-setup-device/nothing-arrives-and-the-tv-says-why-that-might-be
@@ -106,6 +106,6 @@ final class SetupTVUITests: XCTestCase {
         openDetails(app)
         let hint = element(app, "onboarding.qr.hint")
         XCTAssertTrue(hint.waitForExistence(timeout: 12))
-        XCTAssertTrue(hint.label.contains("Update Antenna, or type the source here."))
+        XCTAssertTrue(hint.label.contains("Update Antuna, or type the source here."))
     }
 }

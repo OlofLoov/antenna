@@ -8,7 +8,7 @@ terraform {
 }
 
 variable "domain" {
-  description = "Antenna's own domain, without www."
+  description = "Antuna's own domain, without www."
   type        = string
 }
 
@@ -25,7 +25,7 @@ variable "certificate_arn" {
 variable "site_role_name" {
   description = "The role the workflow uploads the site with, created by the ci root."
   type        = string
-  default     = "antenna-site"
+  default     = "antuna-site"
 }
 
 locals {
@@ -48,7 +48,7 @@ data "aws_cloudfront_cache_policy" "optimized" {
 }
 
 resource "aws_s3_bucket" "site" {
-  bucket = "antenna-site-${data.aws_caller_identity.current.account_id}"
+  bucket = "antuna-site-${data.aws_caller_identity.current.account_id}"
 }
 
 resource "aws_s3_bucket_public_access_block" "site" {
@@ -95,21 +95,21 @@ resource "aws_s3_bucket_policy" "site" {
 }
 
 resource "aws_cloudfront_origin_access_control" "site" {
-  name                              = "antenna-site"
+  name                              = "antuna-site"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_function" "address" {
-  name    = "antenna-site-address"
+  name    = "antuna-site-address"
   runtime = "cloudfront-js-2.0"
   publish = true
   code    = file("${path.module}/address.js")
 }
 
 resource "aws_cloudfront_cache_policy" "pages" {
-  name        = "antenna-pages"
+  name        = "antuna-pages"
   min_ttl     = 0
   default_ttl = 3600
   max_ttl     = 86400
@@ -133,7 +133,7 @@ resource "aws_cloudfront_cache_policy" "pages" {
 }
 
 resource "aws_cloudfront_response_headers_policy" "site" {
-  name = "antenna-site"
+  name = "antuna-site"
 
   security_headers_config {
     strict_transport_security {
@@ -160,7 +160,7 @@ resource "aws_cloudfront_response_headers_policy" "site" {
 }
 
 resource "aws_cloudfront_response_headers_policy" "setup" {
-  name = "antenna-setup"
+  name = "antuna-setup"
 
   security_headers_config {
     strict_transport_security {
@@ -192,7 +192,7 @@ resource "aws_cloudfront_distribution" "site" {
   http_version    = "http2and3"
   price_class     = "PriceClass_100"
   aliases         = local.names
-  comment         = "Antenna site"
+  comment         = "Antuna site"
 
   origin {
     origin_id                = "site"

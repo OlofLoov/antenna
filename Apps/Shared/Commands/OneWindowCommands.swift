@@ -1,7 +1,7 @@
 #if os(macOS)
     import SwiftUI
 
-    /// The Antenna windows open on the Mac. Each window's root view adds
+    /// The Antuna windows open on the Mac. Each window's root view adds
     /// itself when it appears and removes itself when it disappears.
     @MainActor @Observable
     final class OpenWindows {

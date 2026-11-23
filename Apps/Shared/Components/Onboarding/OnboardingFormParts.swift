@@ -23,7 +23,7 @@ extension OnboardingForm {
                 }
             } footer: {
                 Text(
-                    offer == .link ? "Antenna reads the clipboard only when you tap Fill in." : "Type the details from your provider above."
+                    offer == .link ? "Antuna reads the clipboard only when you tap Fill in." : "Type the details from your provider above."
                 )
                 .accessibilityIdentifier("onboarding.clipboard")
             }
@@ -32,7 +32,7 @@ extension OnboardingForm {
 
     /// The card about the keyboard an iPhone nearby offers, beside the
     /// Apple TV form. It describes the system offer and claims nothing
-    /// Antenna does.
+    /// Antuna does.
     struct TypeOnPhoneCard: View {
         var body: some View {
             HStack(alignment: .top, spacing: Metrics.Spacing.xLarge) {
@@ -47,7 +47,7 @@ extension OnboardingForm {
                     Text(
                         """
                         An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields \
-                        fill in here as you type. Or add the source in Antenna on iPhone and it syncs over.
+                        fill in here as you type. Or add the source in Antuna on iPhone and it syncs over.
                         """
                     )
                     .font(.caption)

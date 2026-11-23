@@ -81,7 +81,7 @@ import Testing
     func topShelfInSwedish() {
         let swedish = Locale(identifier: "sv_SE")
         #expect(TopShelfContent.Section(kind: .continueWatching, items: []).title(swedish) == "Fortsätt titta")
-        #expect(TopShelfContent.emptyTitle(swedish) == "Lägg till favoriter i Antenna för att se dem här")
+        #expect(TopShelfContent.emptyTitle(swedish) == "Lägg till favoriter i Antuna för att se dem här")
     }
 }
 

@@ -43,7 +43,7 @@ import Testing
             #expect(harness.host.inbox.pending == .tune(LastChannelKey(sourceID: cabin.id, channelID: "sport")))
         }
 
-        @Test("app-intents/tune-a-channel-by-voice-or-shortcut nothing is tuned when the system will not bring Antenna forward")
+        @Test("app-intents/tune-a-channel-by-voice-or-shortcut nothing is tuned when the system will not bring Antuna forward")
         func refused() async throws {
             let harness = try harness()
             harness.refuseForeground = true
@@ -249,7 +249,7 @@ import Testing
             withExtendedLifetime(locked) {}
         }
 
-        @Test("app-intents/shortcuts-on-the-mac with Antenna closed three actions come forward and Toggle Favorite says nothing plays")
+        @Test("app-intents/shortcuts-on-the-mac with Antuna closed three actions come forward and Toggle Favorite says nothing plays")
         func closedApp() async throws {
             let harness = try harness()
             let news = try #require(await harness.channel(cabin.id, "news"))
@@ -270,7 +270,7 @@ import Testing
 
         // MARK: Gate
 
-        @Test("app-intents/nothing-works-until-antenna-is-unlocked-and-set-up every action refuses before the unlock or without sources")
+        @Test("app-intents/nothing-works-until-antuna-is-unlocked-and-set-up every action refuses before the unlock or without sources")
         func gate() async throws {
             for (unlocked, failure) in [(false, IntentFailure.notUnlocked), (true, .noSources)] {
                 let harness = try unlocked ? self.harness(sources: []) : self.harness(unlocked: false)

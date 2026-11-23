@@ -57,7 +57,7 @@ The system SHALL check a changed link or login against the server before saving 
 #### Scenario: Change a portal's MAC address
 - **GIVEN** a Stalker portal's details with a changed MAC address or login
 - **WHEN** the user saves
-- **THEN** Antenna signs in to the portal with them first, and saves and reloads only when the portal accepts them
+- **THEN** Antuna signs in to the portal with them first, and saves and reloads only when the portal accepts them
 - **AND** a MAC address that is not six pairs of letters and digits is refused before the portal is asked
 
 #### Scenario: Change only the name
@@ -213,7 +213,7 @@ The system SHALL show a Jellyfin server's status like any other source, SHALL le
 #### Scenario: Change a Jellyfin server's login
 - **GIVEN** a Jellyfin server's details, with the username filled in and the password field empty
 - **WHEN** the user changes the address, username or password and saves
-- **THEN** Antenna checks the server and signs in with them first, and saves and reloads only when the server accepts them
+- **THEN** Antuna checks the server and signs in with them first, and saves and reloads only when the server accepts them
 - **AND** leaving the password empty keeps the saved one
 
 #### Scenario: Sign in to a Jellyfin server on Apple TV
@@ -284,7 +284,7 @@ The system SHALL offer an App icon row in Settings, Appearance on iPhone, iPad a
 
 #### Scenario: Back to the standard icon
 - **GIVEN** the Light icon
-- **WHEN** the user picks Antenna
+- **WHEN** the user picks Antuna
 - **THEN** the Home Screen shows the standard icon again
 
 #### Scenario: Another profile on the same device

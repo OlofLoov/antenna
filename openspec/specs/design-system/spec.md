@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The look and layout rules every Antenna screen follows on Apple TV, iPhone,
+The look and layout rules every Antuna screen follows on Apple TV, iPhone,
 iPad and Mac, so the living-room viewer, the on-the-go viewer and the movie
 and series watcher get one consistent app, and reviewers can check each
 screen against its board. Tokens, type scale, layout patterns and shared
@@ -289,7 +289,7 @@ is allowed.
 - **THEN** it fails this requirement
 
 #### Scenario: Copy that names the platform
-- **WHEN** copy says "this Apple TV" or "Antenna on iPhone"
+- **WHEN** copy says "this Apple TV" or "Antuna on iPhone"
 - **THEN** it passes
 
 ### Requirement: Text meets contrast minimums
@@ -306,7 +306,7 @@ including muted captions, and at least 3:1 for text at 24 pt and above.
 
 ### Requirement: Nothing shows before the paywall
 The app MUST show none of these screens until the user has an active
-entitlement, because Antenna has no free tier.
+entitlement, because Antuna has no free tier.
 Onboarding SHALL start after the paywall.
 
 #### Scenario: First launch with no purchase
@@ -661,7 +661,7 @@ overlays is the one screen allowed to stay visible, behind the overlay scrim.
 On Apple TV a page's first line of content MUST start below the tab bar
 while the bar shows, and nothing scrolls under the bar without the system
 scroll edge effect. Titles, eyebrows, search fields and toolbar buttons MUST
-NOT overlap the bar, the Antenna mark or the clock.
+NOT overlap the bar, the Antuna mark or the clock.
 
 #### Scenario: Opening Settings
 - **WHEN** Sources and Settings opens on Apple TV
@@ -669,7 +669,7 @@ NOT overlap the bar, the Antenna mark or the clock.
 
 #### Scenario: The Movies hero
 - **WHEN** the viewer opens Movies on Apple TV
-- **THEN** the hero's eyebrow and title start below the tab bar and the Antenna mark
+- **THEN** the hero's eyebrow and title start below the tab bar and the Antuna mark
 
 ### Requirement: Empty and error states share one layout
 Every empty, unavailable and error state MUST use one layout: a symbol, a

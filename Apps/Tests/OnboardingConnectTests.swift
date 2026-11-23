@@ -51,7 +51,7 @@ import Testing
             (401, #"{}"#, "Could not sign in. Check the username and password."),
             (200, #"{"user_info":{"status":"Expired","auth":1}}"#, "This account is expired."),
             (500, "", "The server answered with an error (500). Check the address and try again."),
-            (200, "<html>", "The server replied with something Antenna could not read."),
+            (200, "<html>", "The server replied with something Antuna could not read."),
         ])
     func refused(status: Int, body: String, message: String) async throws {
         let host = "refused-\(status)-\(body.count).test"

@@ -1,7 +1,7 @@
 # store-listing Specification
 
 ## Purpose
-What Antenna's App Store listing says in each language the app ships, the
+What Antuna's App Store listing says in each language the app ships, the
 limits it stays within, what it never claims or names, and the screenshots
 taken for it.
 
@@ -36,7 +36,7 @@ the name and the subtitle, 100 for keywords, 170 for promotional text, and
 4000 for the description and what's new. Keywords MUST be separated by
 commas with no space around them, MUST NOT repeat a keyword, and MUST NOT
 repeat a word from the name or subtitle. The addresses MUST be https
-addresses on Antenna's site.
+addresses on Antuna's site.
 
 #### Scenario: A subtitle one character too long
 - **GIVEN** a French subtitle of 31 characters
@@ -54,12 +54,12 @@ addresses on Antenna's site.
 - **THEN** it fails, since the App Store already searches the subtitle's words
 
 ### Requirement: The listing promises no content
-The listing in every language MUST say that Antenna comes with no channels
+The listing in every language MUST say that Antuna comes with no channels
 and that the user adds their own source, and MUST say that a purchase is
 required to use it. It MUST NOT name a TV provider, broadcaster, channel,
 league, streaming service or competing player, MUST NOT promise free
 channels or any amount of content, and MUST NOT carry a web address other
-than Antenna's own.
+than Antuna's own.
 
 #### Scenario: Reading the description
 - **WHEN** someone reads the listing in any language

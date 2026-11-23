@@ -44,12 +44,12 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 
 #### Scenario: Last channel available
 - **GIVEN** the current profile watched a channel on this Apple TV before
-- **WHEN** they open Antenna and its source has loaded
+- **WHEN** they open Antuna and its source has loaded
 - **THEN** that channel plays full screen
 
 #### Scenario: Saved for launch
 - **GIVEN** the current profile's last channel was saved for launch and its source's list takes 20 seconds to load
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** that channel starts full screen before the list loads, and the 10 seconds do not apply to it
 
 #### Scenario: Another profile's last channel
@@ -59,7 +59,7 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 
 #### Scenario: Last channel gone or late
 - **GIVEN** the last channel no longer exists, or its source has not loaded within 10 seconds
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** the first channel of the first source to load plays instead
 
 #### Scenario: Later sources and coming back
@@ -84,17 +84,17 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 
 #### Scenario: Last watched an M3U channel
 - **GIVEN** the last channel watched on this Apple TV came from an M3U playlist
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** that channel plays full screen, the stored last channel holds no stream link, and what was saved for launch holds no username or password
 
 #### Scenario: Last watched an M3U channel with a stream link in its id
 - **GIVEN** a last channel stored by an earlier version whose id contains a stream link
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** that channel is not remembered, the first channel of the first source to load plays instead, and no error is shown
 
 #### Scenario: Unreadable last channel
 - **GIVEN** the stored last channel cannot be read
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** it counts as nothing remembered
 
 ### Requirement: Menu shows the tab bar over the picture
@@ -173,7 +173,7 @@ The system SHALL show a loading screen on Live while no channel plays and at lea
 
 #### Scenario: Nothing loaded yet
 - **GIVEN** the user has sources and none has finished loading
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** a loading screen lists each source by name with how far it has got, and Menu reaches the tab bar and Settings
 
 #### Scenario: One source done, one still loading
@@ -303,19 +303,19 @@ The system SHALL show an imported file source whose contents have not yet arrive
 The system SHALL tune a channel or resume a title named by a Top Shelf link, and hold a link that arrives before the shell is ready until the item's source loads within the launch deadline, replacing the last-channel tune with one load in total.
 
 #### Scenario: A link at launch
-- **GIVEN** Antenna is not running and its last channel is 7
+- **GIVEN** Antuna is not running and its last channel is 7
 - **WHEN** the user selects the shelf tile for channel 104
 - **THEN** channel 104 plays once its source loads, and channel 7 is never loaded
 
 #### Scenario: A link while running
-- **GIVEN** Antenna is running on any screen
+- **GIVEN** Antuna is running on any screen
 - **WHEN** a shelf link for a channel arrives
 - **THEN** the channel plays as it would after going to live TV
 
 #### Scenario: A link that does not resolve
 - **GIVEN** a shelf link whose channel's source does not load within the launch deadline, or whose channel no longer exists
 - **WHEN** the link arrives
-- **THEN** the link is dropped and Antenna launches or stays as it would without it
+- **THEN** the link is dropped and Antuna launches or stays as it would without it
 
 ### Requirement: The tab bar stays hidden on a title page
 The system SHALL hide the Apple TV tab bar and clock while a movie or series page is open, and swiping up from the page's top SHALL not reach the tab bar.

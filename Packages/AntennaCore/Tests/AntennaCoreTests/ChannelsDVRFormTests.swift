@@ -32,10 +32,10 @@ import Testing
             (.transport(.secureConnectionFailed), "Could not reach nas.local. Check the address and try again."),
             (.offline, "You're offline. Connect to the internet and try again."),
             (.httpStatus(502), "The server answered with an error (502). Check the address and try again."),
-            (.malformed, "The server replied with something Antenna could not read."),
+            (.malformed, "The server replied with something Antuna could not read."),
             (.notAChannelsServer, "No Channels DVR server at nas.local."),
             (.starting, "Channels DVR is starting. Try again in a moment."),
-            (.unauthorized, "This server asks for a username and password, which Antenna cannot send yet."),
+            (.unauthorized, "This server asks for a username and password, which Antuna cannot send yet."),
         ]
         for (error, sentence) in cases {
             #expect(ConnectFailure(error, host: host).message(.english) == sentence)

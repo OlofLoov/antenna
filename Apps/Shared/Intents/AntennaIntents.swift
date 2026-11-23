@@ -6,7 +6,7 @@
     /// Plays a channel on Live (app-intents/tune-a-channel-by-voice-or-shortcut).
     struct TuneChannelIntent: AppIntent {
         static let title: LocalizedStringResource = "Tune Channel"
-        static let description = IntentDescription("Opens Antenna on Live with the channel playing.")
+        static let description = IntentDescription("Opens Antuna on Live with the channel playing.")
         static let supportedModes: IntentModes = [.background, .foreground(.dynamic)]
 
         @Parameter(title: "Channel", requestValueDialog: "Which channel?")
@@ -28,7 +28,7 @@
     /// Resumes a movie or opens a series (app-intents/play-a-movie-or-series).
     struct PlayTitleIntent: AppIntent {
         static let title: LocalizedStringResource = "Play Title"
-        static let description = IntentDescription("Opens Antenna and resumes the movie, or opens the series.")
+        static let description = IntentDescription("Opens Antuna and resumes the movie, or opens the series.")
         static let supportedModes: IntentModes = [.background, .foreground(.dynamic)]
 
         @Parameter(title: "Movie or Series", requestValueDialog: "Which movie or series?")
@@ -50,7 +50,7 @@
     /// Opens Search, with a query or without (app-intents/open-search).
     struct OpenSearchIntent: AppIntent {
         static let title: LocalizedStringResource = "Open Search"
-        static let description = IntentDescription("Opens Antenna on Search.")
+        static let description = IntentDescription("Opens Antuna on Search.")
         static let supportedModes: IntentModes = [.background, .foreground(.dynamic)]
 
         @Parameter(title: "Search For")
@@ -79,7 +79,7 @@
         ]
     }
 
-    /// Adds, removes or toggles a favorite without bringing Antenna forward
+    /// Adds, removes or toggles a favorite without bringing Antuna forward
     /// (app-intents/change-a-favorite-without-opening-the-app).
     struct ToggleFavoriteIntent: AppIntent {
         static let title: LocalizedStringResource = "Toggle Favorite"
@@ -106,7 +106,7 @@
         }
     }
 
-    /// "Add this channel to favorites in Antenna": Toggle Favorite set to
+    /// "Add this channel to favorites in Antuna": Toggle Favorite set to
     /// add, for the playing channel. App Shortcuts need it visible, so it
     /// also lists in Shortcuts.
     struct AddFavoriteIntent: AppIntent {
@@ -121,7 +121,7 @@
         }
     }
 
-    /// "Remove this channel from favorites in Antenna": Toggle Favorite set to remove.
+    /// "Remove this channel from favorites in Antuna": Toggle Favorite set to remove.
     struct RemoveFavoriteIntent: AppIntent {
         static let title: LocalizedStringResource = "Remove from Favorites"
         static let description = IntentDescription("Removes the playing channel from Favorites.")
@@ -144,7 +144,7 @@
         }
 
         /// Refuses before the unlock, without sources, or for a channel that
-        /// cannot play; otherwise brings Antenna forward and asks Live to
+        /// cannot play; otherwise brings Antuna forward and asks Live to
         /// play the channel. Nothing is tuned when the system refuses.
         static func tune<Intent: AppIntent>(_ channel: ChannelEntity, for intent: Intent) async throws {
             let provider = try IntentContext.current()

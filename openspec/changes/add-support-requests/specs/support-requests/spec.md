@@ -1,6 +1,6 @@
 ## Purpose
 
-Lets anyone using Antenna tell Code Crave about a problem from inside the app, on every platform, with enough about the app and the last error to act on it, and never with the user's sources, logins or channels. A report reaches the developer privately and says nothing about who sent it, so it is one-way. The user gets a reference and can delete the report later from the device that sent it.
+Lets anyone using Antuna tell Code Crave about a problem from inside the app, on every platform, with enough about the app and the last error to act on it, and never with the user's sources, logins or channels. A report reaches the developer privately and says nothing about who sent it, so it is one-way. The user gets a reference and can delete the report later from the device that sent it.
 
 ## ADDED Requirements
 
@@ -38,9 +38,9 @@ The system SHALL offer a Report a problem form on iPhone, iPad, Mac and Apple TV
 The system SHALL show, on the form and before Send, a "What will be sent" list with every value the report carries, the text exactly as it will leave the device, and a line saying what is never sent, and SHALL update the list as the user types or changes a field.
 
 #### Scenario: Reading the list
-- **GIVEN** an iPhone with Antenna 1.4 (52) on iOS 26.1, one Xtream and one M3U source, and no playback error
+- **GIVEN** an iPhone with Antuna 1.4 (52) on iOS 26.1, one Xtream and one M3U source, and no playback error
 - **WHEN** the user types "Guide is empty since this morning" and picks Channels and guide
-- **THEN** the list shows the text, "Channels and guide", "Antenna 1.4 (52)", "iOS 26.1", the device model, the app language, "Unlocked", "Sources: Xtream, M3U" and "Last playback error: none"
+- **THEN** the list shows the text, "Channels and guide", "Antuna 1.4 (52)", "iOS 26.1", the device model, the app language, "Unlocked", "Sources: Xtream, M3U" and "Last playback error: none"
 - **AND** under it the line "Links and logins are removed from your text. Source addresses, names, logins and channels are never sent."
 
 #### Scenario: Text the scrubber changed
@@ -112,7 +112,7 @@ The system SHALL replace links, email addresses, addresses and login-looking tex
 The system SHALL offer, on iPhone, iPad and Mac and only when the system has delivered one, a box "Attach the latest crash or hang report", off each time the form opens, and SHALL attach that report only while the box is ticked. Apple TV SHALL NOT show the box.
 
 #### Scenario: A crash report exists
-- **GIVEN** the system delivered a crash report to Antenna yesterday
+- **GIVEN** the system delivered a crash report to Antuna yesterday
 - **WHEN** the user opens the form on iPhone
 - **THEN** the box shows, unticked, with the date of the report
 - **AND** ticking it adds "Crash report from yesterday" to the "What will be sent" list
@@ -150,7 +150,7 @@ The system SHALL keep the text, topic and box in the form when a report cannot b
 #### Scenario: A slow service
 - **GIVEN** the service has not answered
 - **WHEN** 20 seconds pass after Send
-- **THEN** the spinner stops, the form reads "Couldn't reach Antenna support. Try again in a moment.", and Send works again
+- **THEN** the spinner stops, the form reads "Couldn't reach Antuna support. Try again in a moment.", and Send works again
 - **AND** sending again after a report that did arrive does not make a second report
 
 #### Scenario: Too many reports
@@ -159,7 +159,7 @@ The system SHALL keep the text, topic and box in the form when a report cannot b
 - **THEN** the form reads "Too many reports from this network. Try again in a few minutes."
 
 #### Scenario: Refused
-- **GIVEN** the service refuses the report as too large, malformed, or not from Antenna
+- **GIVEN** the service refuses the report as too large, malformed, or not from Antuna
 - **WHEN** the answer arrives
 - **THEN** the form reads "Couldn't send this report. Try again later."
 
@@ -179,7 +179,7 @@ The system SHALL keep each report as an issue in a private repository that only 
 #### Scenario: Where a report lands
 - **WHEN** the service accepts a report
 - **THEN** a new issue in the private repository holds the scrubbed text, the topic, the app and device values, and the reference code
-- **AND** nothing about it appears in Antenna's public repository
+- **AND** nothing about it appears in Antuna's public repository
 
 #### Scenario: Looking inside the app
 - **WHEN** someone searches the app bundle for a credential that can create issues
@@ -194,8 +194,8 @@ The system SHALL keep each report as an issue in a private repository that only 
 - **WHEN** the scheduled clean-up in the private repository runs
 - **THEN** the report's issue is gone, whether it was open or closed
 
-### Requirement: Only Antenna can send reports
-The support service SHALL accept a report only with proof from Apple that it comes from Antenna on a genuine device, App Attest where the device supports it and a DeviceCheck token otherwise, SHALL limit how many reports one network can send, and SHALL refuse a body over its size limit.
+### Requirement: Only Antuna can send reports
+The support service SHALL accept a report only with proof from Apple that it comes from Antuna on a genuine device, App Attest where the device supports it and a DeviceCheck token otherwise, SHALL limit how many reports one network can send, and SHALL refuse a body over its size limit.
 
 #### Scenario: A request from a script
 - **GIVEN** a request with a valid body but no proof from Apple
@@ -252,7 +252,7 @@ The system SHALL list under Sent reports, at the bottom of the form, the referen
 
 #### Scenario: Another device or a reinstall
 - **GIVEN** a report sent from an iPhone
-- **WHEN** the user opens Sent reports on their Apple TV, or on the same iPhone after deleting and reinstalling Antenna
+- **WHEN** the user opens Sent reports on their Apple TV, or on the same iPhone after deleting and reinstalling Antuna
 - **THEN** the report is not listed, since the list stays on the device that sent it and is not synced
 
 #### Scenario: A deletion from a script

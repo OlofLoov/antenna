@@ -1,4 +1,4 @@
-Antenna reproduce las fuentes de TV que ya tienes, en iPhone, iPad, Mac y Apple TV. No incluye ningún canal, lista ni dirección de proveedor. Añades tu propia fuente y Antenna la convierte en una lista de canales, una guía de TV y una biblioteca de películas y series.
+Antuna reproduce las fuentes de TV que ya tienes, en iPhone, iPad, Mac y Apple TV. No incluye ningún canal, lista ni dirección de proveedor. Añades tu propia fuente y Antuna la convierte en una lista de canales, una guía de TV y una biblioteca de películas y series.
 
 TUS FUENTES
 • Listas M3U, desde un enlace o un archivo
@@ -34,9 +34,9 @@ EN TODOS TUS DISPOSITIVOS
 • Atajos de teclado en Mac y iPad
 
 COMPRA
-Antenna se descarga gratis y necesita una compra para usarse: una suscripción anual o un desbloqueo para siempre con un solo pago. Ambas opciones funcionan con En familia. La app muestra el precio de tu región antes de comprar.
+Antuna se descarga gratis y necesita una compra para usarse: una suscripción anual o un desbloqueo para siempre con un solo pago. Ambas opciones funcionan con En familia. La app muestra el precio de tu región antes de comprar.
 
 PRIVACIDAD
-Antenna no pide cuenta y no tiene anuncios ni analíticas. Solo se conecta a las fuentes que añades, a tu cuenta de iCloud y al App Store.
+Antuna no pide cuenta y no tiene anuncios ni analíticas. Solo se conecta a las fuentes que añades, a tu cuenta de iCloud y al App Store.
 
-Necesitas tener derecho a ver lo que reproducen tus fuentes. Antenna no vende ni recomienda suscripciones de TV.
+Necesitas tener derecho a ver lo que reproducen tus fuentes. Antuna no vende ni recomienda suscripciones de TV.

@@ -42,7 +42,7 @@ Out of scope:
 - `xtream-vod-client`: reads TMDB and IMDb ids.
 - `title-detail-and-episode-picker`: the score row, and the provider rating leaving the details line when scores show.
 - `sources-and-settings`: the lookup switch.
-- `antenna-website`: the Privacy Policy names the lookup service.
+- `antuna-website`: the Privacy Policy names the lookup service.
 - `design-system`: a credit logo a data licence requires is allowed in Settings, About.
 - `movies-and-series-browsing`: the Trending row and its place in the row order.
 

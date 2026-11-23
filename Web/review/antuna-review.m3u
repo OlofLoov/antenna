@@ -1,4 +1,4 @@
-#EXTM3U url-tvg="https://antenna.code-crave.se/review/guide.xml"
+#EXTM3U url-tvg="https://antuna.app/review/guide.xml"
 #EXTINF:-1 tvg-id="basic-4x3.review" tvg-chno="1" group-title="Apple samples",Basic 4:3
 https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8
 #EXTINF:-1 tvg-id="basic-16x9.review" tvg-chno="2" group-title="Apple samples",Basic 16:9

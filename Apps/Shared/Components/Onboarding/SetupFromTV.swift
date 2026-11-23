@@ -55,12 +55,12 @@ enum SetupFromTV {
         }
     }
 
-    /// The line over the plain form for a link from a newer Antenna.
+    /// The line over the plain form for a link from a newer Antuna.
     struct UpdateLine: View {
         let device: Device
 
         var body: some View {
-            Text("This code is from a newer Antenna. Update Antenna on this \(device) to set up your Apple TV from here.")
+            Text("This code is from a newer Antuna. Update Antuna on this \(device) to set up your Apple TV from here.")
                 .font(.boardStyle(13))
                 .foregroundStyle(Palette.textMuted)
                 .padding(.horizontal, 4)
@@ -92,7 +92,7 @@ enum SetupFromTV {
                     Text("Sending to your Apple TV")
                         .font(.boardStyle(22, weight: .bold))
                         .accessibilityAddTraits(.isHeader)
-                    Text("Through iCloud. Antenna on the Apple TV picks it up on its own.")
+                    Text("Through iCloud. Antuna on the Apple TV picks it up on its own.")
                         .font(.boardStyle(15))
                         .foregroundStyle(Palette.textMuted)
                 }
@@ -145,7 +145,7 @@ enum SetupFromTV {
         private var tvTitle: LocalizedStringResource {
             switch delivery {
             case .sending: "Sending to your Apple TV…"
-            case .sent: "Handed to iCloud. Open Antenna on your Apple TV."
+            case .sent: "Handed to iCloud. Open Antuna on your Apple TV."
             case .notSent, .notSignedIn: "Not sent yet"
             }
         }
