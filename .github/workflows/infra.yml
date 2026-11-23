@@ -103,7 +103,7 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         env:
           STATE_BUCKET: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
-          TF_VAR_github_repository: ${{ github.repository }}
+          TF_VAR_github_subject: repo:${{ github.repository_owner }}@${{ github.repository_owner_id }}/${{ github.event.repository.name }}@${{ github.repository_id }}
           TF_VAR_state_bucket: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
           TF_VAR_domain: ${{ vars.ANTUNA_DOMAIN }}
           TF_VAR_alert_email: ${{ vars.AWS_ALERT_EMAIL }}
@@ -185,7 +185,7 @@ jobs:
       - name: Apply
         env:
           STATE_BUCKET: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
-          TF_VAR_github_repository: ${{ github.repository }}
+          TF_VAR_github_subject: repo:${{ github.repository_owner }}@${{ github.repository_owner_id }}/${{ github.event.repository.name }}@${{ github.repository_id }}
           TF_VAR_state_bucket: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
           TF_VAR_domain: ${{ vars.ANTUNA_DOMAIN }}
           TF_VAR_alert_email: ${{ vars.AWS_ALERT_EMAIL }}

@@ -3,8 +3,8 @@ mock_provider "aws" {
 }
 
 variables {
-  github_repository = "example/antuna"
-  state_bucket      = "antuna-terraform-state-123456789012"
+  github_subject = "repo:example@100/antuna@200"
+  state_bucket   = "antuna-terraform-state-123456789012"
 }
 
 override_resource {
@@ -30,17 +30,17 @@ run "each_role_trusts_one_subject" {
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antuna:environment:production"
+    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example@100/antuna@200:environment:production"
     error_message = "antuna-deploy must trust only the production environment"
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.site.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antuna:ref:refs/heads/main"
+    condition     = jsondecode(aws_iam_role.site.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example@100/antuna@200:ref:refs/heads/main"
     error_message = "antuna-site must trust only the main branch"
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.diff.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example/antuna:pull_request"
+    condition     = jsondecode(aws_iam_role.diff.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:example@100/antuna@200:pull_request"
     error_message = "antuna-diff must trust only pull requests"
   }
 
@@ -82,12 +82,12 @@ run "the_pull_request_role_cannot_change_aws" {
   }
 }
 
-run "a_repository_name_without_owner_is_refused" {
+run "a_subject_without_ids_is_refused" {
   command = plan
 
   variables {
-    github_repository = "antuna"
+    github_subject = "repo:example/antuna"
   }
 
-  expect_failures = [var.github_repository]
+  expect_failures = [var.github_subject]
 }
