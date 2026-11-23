@@ -24,8 +24,9 @@
 
 ## 4. Retire GitHub Pages
 
-- [ ] 4.1 Remove `.github/workflows/pages.yml`, `Web/CNAME` and `Web/.nojekyll`; point `release.yml` at the site job in `infra.yml`; update `WebsiteTests` and `ReleaseTests` to read the new workflow
-- [ ] 4.2 Owner: switch off GitHub Pages and delete the `antenna` record in the code-crave.se DNS
+- [x] 4.1 Remove `.github/workflows/pages.yml`, `Web/CNAME` and `Web/.nojekyll`; point `release.yml` at the site job in `infra.yml`; update `WebsiteTests` and `ReleaseTests` to read the new workflow
+- [x] 4.2 Owner: switch off GitHub Pages and delete the `antenna` record in the code-crave.se DNS. Not needed: Pages was never enabled on the repository and the record never existed
+- [x] 4.3 Say in the Privacy Policy that the site is served by Amazon CloudFront and that its request logs are off (decision 5), in place of the GitHub Pages paragraph, citing `antenna-website/the-privacy-policy-rules-out-tracking`
 
 ## 5. Rename the domain
 

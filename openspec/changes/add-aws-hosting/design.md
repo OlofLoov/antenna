@@ -4,8 +4,8 @@
 
 See proposal.md for why. What exists on 2026-11-22:
 
-- `Web/` is copied by `scripts/publish-web.sh` into a folder, with the team id filled into the association file from the `APPLE_TEAM_ID` repository variable and the App Review guide written by `scripts/make-review-guide.py`. `.github/workflows/pages.yml` uploads that folder to GitHub Pages on pushes to main that touch the site, and `release.yml` runs it again after each release (`gh workflow run pages.yml`).
-- `Web/CNAME` holds antenna.code-crave.se. The code-crave.se DNS has an `antenna` record pointing at GitHub Pages; that zone is not in this repo.
+- `Web/` is copied by `scripts/publish-web.sh` into a folder, with the team id filled into the association file from the `APPLE_TEAM_ID` repository variable and the App Review guide written by `scripts/make-review-guide.py`. `.github/workflows/pages.yml` uploads that folder to GitHub Pages on pushes to main that touch the site, and `release.yml` runs it again after each release (`gh workflow run pages.yml`). Pages was never enabled on the repository, so that workflow fails and nothing is served.
+- `Web/CNAME` holds antenna.code-crave.se. The code-crave.se DNS has no `antenna` record; that zone is not in this repo.
 - No AWS account, no server, no CDK or Terraform. `add-title-metadata` decision 1 planned `Services/lookup/` with "a TypeScript Lambda and a CDK stack", an OIDC deploy workflow, Secrets Manager, CloudFront with a one-day cache, a WAF rate rule and every request log off. `add-support-requests` decision 1 puts `/v1/support` on the same stack. Both are proposed; neither has built any of it.
 - The app is not published. Nothing has been uploaded to App Store Connect or TestFlight (`app-release/merging-the-release-pull-request-publishes-the-release`), so no installed build, listing or user's link holds the old domain. The move is a rename.
 - The owner wants no email (2026-11-22). `add-support-requests` has dropped the email field and the support address.
@@ -141,7 +141,7 @@ A new workflow, `.github/workflows/infra.yml`:
 - On a pull request touching `Infra/**` or the workflow: `terraform fmt -check -recursive Infra`, then in each root `terraform init -backend=false`, `terraform validate` and `terraform test`. A `plan` job then assumes the read-only `antenna-diff` role, plans `ci` and `antenna`, and posts both plans as one sticky PR comment. It runs only when `AWS_ACCOUNT_ID` is set (and plans `antenna` only when `ANTENNA_DOMAIN` and `AWS_ALERT_EMAIL` are too); otherwise it writes a notice and skips. Pull requests from forks get no OIDC token and skip the plan.
 - On push to main touching `Infra/**`, `Web/**`, `scripts/publish-web.sh`, `scripts/make-review-guide.py` or the workflow: an `apply` job in the `production` environment runs `terraform apply` on `ci` and then `antenna` with `antenna-deploy`, only when the push changed `Infra/**` or the workflow and the variables are set. Then a `site` job, after `apply` succeeded or was skipped, sets up Node from `Web/site/.nvmrc`, runs `npm ci` and `npm run build` in `Web/site/` once it exists, builds the folder with `scripts/publish-web.sh <folder> Web/site/build` (or without the second argument while there is no `Web/site/`), and runs the two-step `aws s3 sync` and the invalidation from decision 3 with `antenna-site`. It runs only when `AWS_ACCOUNT_ID`, `SITE_BUCKET` and `SITE_DISTRIBUTION_ID` are set.
 - `workflow_dispatch` runs the site job alone, which `release.yml` calls after a release instead of `gh workflow run pages.yml` (task 4.1).
-- Until the owner sets the variables every AWS job is skipped, so main stays green and `pages.yml` keeps serving the site.
+- Until the owner sets the variables every AWS job is skipped, so main stays green and no site is served. The owner decided on 2026-11-23 not to use GitHub Pages in the meantime, and `pages.yml` is removed (task 4.1).
 
 Where the site job's values come from: repository variables. The role ARNs are built from `AWS_ACCOUNT_ID` and the fixed role names. `SITE_BUCKET` and `SITE_DISTRIBUTION_ID` are copied once by the owner from `terraform output` after the first apply. The other option, reading the outputs from state in the site job, needs the site role to read the whole state file, and the API's origin secret will be in it.
 
@@ -155,7 +155,7 @@ Roles in the `ci` root, each trusting `token.actions.githubusercontent.com` with
 
 The `production` environment allows only the main branch. Who approves:
 - Options considered: no reviewer (the merge is the approval, as for the site), the owner as required reviewer on every infrastructure deploy, or the owner only for changes to IAM, DNS or WAF.
-- Chosen by the owner on 2026-11-22: the owner as required reviewer on `production`, which gates `terraform apply`. Site uploads use `antenna-site` without the environment, so a page edit is live within minutes of the merge, the way Pages works today. Infrastructure changes are rare, and the PR's plan comment tells the owner what he is approving. The third option needs a script that reads the plan, which is more to get wrong than one click.
+- Chosen by the owner on 2026-11-22: the owner as required reviewer on `production`, which gates `terraform apply`. Site uploads use `antenna-site` without the environment, so a page edit is live within minutes of the merge. Infrastructure changes are rare, and the PR's plan comment tells the owner what he is approving. The third option needs a script that reads the plan, which is more to get wrong than one click.
 
 Environments: one, `production`, in one AWS account, decided by the owner on 2026-11-22. The other option was a staging account next to it, at twice the fixed cost and a second set of roles. A staging account is added when a service has users who would notice a bad deploy; the roots take the domain as a variable and the bucket at init, so a second account is a second state bucket and other values.
 
@@ -197,7 +197,7 @@ Options considered:
 
 Records in the zone: apex and `www` A/AAAA aliases to the site distribution, `api` aliases to the API distribution, the ACM validation CNAMEs, and a CAA record allowing only `amazon.com`. No MX record, an SPF record `v=spf1 -all` and a DMARC record `v=DMARC1; p=reject` so nobody can send mail as the domain.
 
-Old domain: the `antenna` CNAME in the code-crave.se zone is deleted once the new site serves, and the Pages site is switched off in the repository settings (an owner step; this change touches no repo settings from automation).
+Old domain: nothing to retire. Pages was never enabled on the repository and the code-crave.se zone has no `antenna` record, so there is no redirect and no owner step (task 4.2).
 
 ### 8. No email (decided)
 
@@ -258,12 +258,12 @@ Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the opti
 ## Migration Plan
 
 1. Owner: steps in decision 9.
-2. PR: `Infra/` with `bootstrap`, `ci`, `modules/edge` and `modules/site`, and `infra.yml`. It deploys nothing until the owner has done decision 9; after that, the next merge deploys the site to `<antenna-domain>` next to Pages.
-3. PR: the rename in every place listed above. `pages.yml`, `Web/CNAME` and `Web/.nojekyll` removed.
-4. Owner: switch off GitHub Pages, delete the `antenna` record in code-crave.se's DNS.
+2. PR: `Infra/` with `bootstrap`, `ci`, `modules/edge` and `modules/site`, and `infra.yml`. It deploys nothing until the owner has done decision 9; after that, the next merge deploys the site to `<antenna-domain>`, or a manual run of `infra.yml` does.
+3. PR: `pages.yml`, `Web/CNAME` and `Web/.nojekyll` removed, `release.yml` dispatches `infra.yml` (task 4.1).
+4. PR: the rename in every place listed above.
 5. PR: `modules/api` with no routes, the `config.yaml` amendment and the diagrams, when `add-title-metadata` or `add-support-requests` is ready to add its first route.
 
-No data moves. Rollback for steps 2 and 3 is reverting the PRs while Pages still serves.
+No data moves. No site is live before step 2 deploys, so rollback for steps 2 to 4 is reverting the PRs.
 
 ## Open Questions
 

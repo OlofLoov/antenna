@@ -8,9 +8,9 @@ The owner, on 2026-11-22: AWS for now, "most straightforward, we can always chan
 
 > As a buyer reading about Antenna, I want its site on its own address, over HTTPS.
 
-Today the site is `Web/`, published to GitHub Pages at antenna.code-crave.se by `.github/workflows/pages.yml`. The app has no server. `add-title-metadata` plans a lookup service with its own CDK stack and deploy role, and `add-support-requests` plans a `/v1/support` route on it. Neither is built. The app is not published, so no installed build, App Store listing or link in a user's hands names the old domain.
+Today the site is `Web/`, with `.github/workflows/pages.yml` meant to publish it to GitHub Pages at antenna.code-crave.se. Pages was never enabled and that name has no DNS record, so nothing is served. The app has no server. `add-title-metadata` plans a lookup service with its own CDK stack and deploy role, and `add-support-requests` plans a `/v1/support` route on it. Neither is built. The app is not published, so no installed build, App Store listing or link in a user's hands names the old domain.
 
-After this change Code Crave has one AWS account defined by Terraform in this repo. The site, a single-page app prerendered to HTML by `add-feature-website`, is served from a private S3 bucket through CloudFront at `https://<antenna-domain>` with a strict Content-Security-Policy, and the API answers at `https://api.<antenna-domain>` with no routes of its own until those two changes add them. Every deploy runs from main through GitHub Actions with a role assumed through OIDC, and nothing keeps a log of who asked for what. The domain is renamed everywhere the repo names antenna.code-crave.se, and the GitHub Pages site is retired.
+After this change Code Crave has one AWS account defined by Terraform in this repo. The site, a single-page app prerendered to HTML by `add-feature-website`, is served from a private S3 bucket through CloudFront at `https://<antenna-domain>` with a strict Content-Security-Policy, and the API answers at `https://api.<antenna-domain>` with no routes of its own until those two changes add them. Every deploy runs from main through GitHub Actions with a role assumed through OIDC, and nothing keeps a log of who asked for what. The domain is renamed everywhere the repo names antenna.code-crave.se, and the unused GitHub Pages workflow is removed.
 
 ## What Changes
 
@@ -18,7 +18,7 @@ After this change Code Crave has one AWS account defined by Terraform in this re
 - A deploy workflow: `terraform test` and a `terraform plan` comment on pull requests that touch `Infra/`, `terraform apply` and the site upload on merge to main, through roles assumed with GitHub's OIDC token. No AWS keys are stored in GitHub.
 - One environment, production, and no other. The owner approves each infrastructure deploy; site uploads need no approval.
 - No request logs anywhere: CloudFront standard and real-time logs off, API Gateway access logs off, S3 server access logs off, WAF logging and sampled requests off, Lambda logs limited to counts and errors with a 14-day retention.
-- The site moves from GitHub Pages to CloudFront at `<antenna-domain>`. `.github/workflows/pages.yml`, `Web/CNAME` and `Web/.nojekyll` are removed, and the Pages site is switched off.
+- The site is served from CloudFront at `<antenna-domain>`, not GitHub Pages. `.github/workflows/pages.yml`, `Web/CNAME` and `Web/.nojekyll` are removed. Pages was never switched on, so there is nothing to switch off and no redirect.
 - Every place the repo names antenna.code-crave.se names `<antenna-domain>` instead: the associated domains entitlement, the setup and sign-in links, the paywall's Terms and Privacy links, the App Store support and privacy addresses, the App Review notes and the review playlist's guide address. design.md has the list.
 - No email on the new domain and no MX records.
 - A Content-Security-Policy header on every page that lets a page run only the site's own scripts, styles and images and connect to nothing but the site. The setup page gets a stricter one: no scripts at all.
