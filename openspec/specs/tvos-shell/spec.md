@@ -40,12 +40,17 @@ The system SHALL show the system tab bar holding, from left to right, Live, Guid
 - **THEN** it is read as the system tab bar, one tab per item, and the search tab reads "Search"
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one, once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
+The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one: at once when it was saved for launch, otherwise once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
 
 #### Scenario: Last channel available
 - **GIVEN** the current profile watched a channel on this Apple TV before
 - **WHEN** they open Antenna and its source has loaded
 - **THEN** that channel plays full screen
+
+#### Scenario: Saved for launch
+- **GIVEN** the current profile's last channel was saved for launch and its source's list takes 20 seconds to load
+- **WHEN** they open Antenna
+- **THEN** that channel starts full screen before the list loads, and the 10 seconds do not apply to it
 
 #### Scenario: Another profile's last channel
 - **GIVEN** Dad last watched News 24 on this Apple TV and Kids has watched nothing here
@@ -68,7 +73,7 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 - **THEN** the second source's first channel plays
 
 #### Scenario: Remembered source later than 10 seconds
-- **GIVEN** a remembered channel whose source finishes after 10 seconds, and no source with channels before it
+- **GIVEN** a remembered channel whose source finishes after 10 seconds, no source with channels before it, and the channel was not saved for launch
 - **WHEN** that source finishes
 - **THEN** its first channel plays, not the remembered one
 
@@ -79,8 +84,8 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 
 #### Scenario: Last watched an M3U channel
 - **GIVEN** the last channel watched on this Apple TV came from an M3U playlist
-- **WHEN** the user opens Antenna and the playlist has loaded
-- **THEN** that channel plays full screen, and the stored last channel holds no stream link
+- **WHEN** the user opens Antenna
+- **THEN** that channel plays full screen, the stored last channel holds no stream link, and what was saved for launch holds no username or password
 
 #### Scenario: Last watched an M3U channel with a stream link in its id
 - **GIVEN** a last channel stored by an earlier version whose id contains a stream link
