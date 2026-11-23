@@ -40,11 +40,12 @@ enum ShelfRowAnchor {
     }
 }
 
-/// Each row's height, written as rows lay out. Not observed, so a row
-/// growing never redraws the screen.
+/// Each row's height and top on screen, written as rows lay out and
+/// scroll. Not observed, so a row moving never redraws the screen.
 @MainActor
 final class ShelfRowHeights {
     var heights: [String: CGFloat] = [:]
+    var tops: [String: CGFloat] = [:]
 }
 
 extension EnvironmentValues {
@@ -59,10 +60,11 @@ extension EnvironmentValues {
 
         func body(content: Content) -> some View {
             content
-                .onGeometryChange(for: CGFloat.self) {
-                    $0.size.height
-                } action: { height in
-                    rows?.heights[identifier] = height
+                .onGeometryChange(for: CGRect.self) {
+                    $0.frame(in: .global)
+                } action: { frame in
+                    rows?.heights[identifier] = frame.height
+                    rows?.tops[identifier] = frame.minY
                 }
         }
     }
