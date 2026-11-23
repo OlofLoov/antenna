@@ -52,9 +52,11 @@ associated domains, and the app runs without sync.
 - `Apps/Shared/` SwiftUI shared by every platform. SwiftData records and the
   Keychain `CredentialStore` live in `Persistence/`.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
-- `Web/` the site at antenna.code-crave.se, published by
-  `.github/workflows/pages.yml` through `scripts/publish-web.sh <out>
-  <site build>`. `Web/site/` is a SvelteKit app with every page prerendered
+- `Web/` the site, served from CloudFront at Antenna's own domain and
+  uploaded from main by the site job in `.github/workflows/infra.yml` through
+  `scripts/publish-web.sh <out> <site build>`. The domain is not picked yet
+  (`add-aws-hosting` task 1.1); until then the app names antenna.code-crave.se,
+  which serves nothing. `Web/site/` is a SvelteKit app with every page prerendered
   (home, nine feature pages, pricing, support, the Terms of Use and Privacy
   Policy the paywall links to, 404), built
   with Node 22 from its committed lockfile. It runs only its own bundled

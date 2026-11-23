@@ -119,10 +119,15 @@ import Testing
     func republishAfterRelease() throws {
         let workflow = try read(".github/workflows/release.yml")
         #expect(workflow.contains("if: needs.release.outputs.release_created == 'true'"))
-        #expect(workflow.contains("gh workflow run pages.yml"))
-        let pages = try read(".github/workflows/pages.yml")
-        #expect(pages.contains("workflow_dispatch:"))
-        #expect(pages.contains("scripts/make-review-guide.py"))
+        #expect(workflow.contains("gh workflow run infra.yml"))
+        let infra = try read(".github/workflows/infra.yml")
+        #expect(infra.contains("\n  workflow_dispatch:\n"))
+        #expect(infra.contains("scripts/make-review-guide.py"))
+        // A dispatch skips the change check and the apply, and the site job still runs.
+        #expect(infra.contains("if: github.event_name == 'push'\n"))
+        let site = try #require(infra.components(separatedBy: "\n  site:\n").last)
+        #expect(site.contains("!cancelled() && github.event_name != 'pull_request'"))
+        #expect(site.contains("bash scripts/publish-web.sh"))
     }
 
     @Test("app-release/merging-the-release-pull-request-publishes-the-release: a pinned action, outputs for later, no upload")
