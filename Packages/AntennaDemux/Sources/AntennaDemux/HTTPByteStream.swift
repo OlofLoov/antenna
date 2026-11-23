@@ -19,7 +19,9 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     private let session: URLSession
     private let condition = NSCondition()
     private var task: URLSessionDataTask?
+    /// Bytes received; the ones from `head` on are not taken yet.
     private var buffer = Data()
+    private var head = 0
     private var finished = false
     private var cancelled = false
     private var suspended = false
@@ -107,18 +109,18 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     public func read(into destination: UnsafeMutablePointer<UInt8>, count: Int) -> Int {
         condition.lock()
         defer { condition.unlock() }
-        while buffer.isEmpty, !finished, !cancelled {
+        while held == 0, !finished, !cancelled {
             condition.wait()
         }
         if cancelled { return -1 }
-        if buffer.isEmpty { return failure == nil ? 0 : -1 }
-        let taken = min(count, buffer.count)
+        if held == 0 { return failure == nil ? 0 : -1 }
+        let taken = min(count, held)
         buffer.withUnsafeBytes { raw in
             guard let base = raw.baseAddress else { return }
-            destination.update(from: base.assumingMemoryBound(to: UInt8.self), count: taken)
+            destination.update(from: base.advanced(by: head).assumingMemoryBound(to: UInt8.self), count: taken)
         }
-        buffer.removeFirst(taken)
-        if suspended, buffer.count < Self.bufferLimit / 2 {
+        drop(taken)
+        if suspended, held < Self.bufferLimit / 2 {
             suspended = false
             task?.resume()
         }
@@ -144,10 +146,10 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     public func peek(_ count: Int) -> Data {
         condition.lock()
         defer { condition.unlock() }
-        while buffer.count < count, !finished, !cancelled {
+        while held < count, !finished, !cancelled {
             condition.wait()
         }
-        return Data(buffer.prefix(count))
+        return Data(buffer[head..<head + min(count, held)])
     }
 
     /// The answer's Content-Type, once it came.
@@ -177,11 +179,28 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         waiter?.resume(throwing: CancellationError())
     }
 
+    /// Bytes received and not taken. Call with the lock held.
+    private var held: Int { buffer.count - head }
+
+    /// Lets go of the `count` oldest bytes held. Call with the lock held.
+    ///
+    /// `Data.removeFirst` only moves the start of a slice, so the storage
+    /// kept every byte the connection ever sent, 30 MB a minute of a
+    /// 4 Mbit/s channel (playback-engine/live-playback-keeps-memory-steady).
+    /// The bytes taken are cleared once they are half of what is stored,
+    /// so each byte is moved at most once more.
+    private func drop(_ count: Int) {
+        head += count
+        guard head * 2 >= buffer.count else { return }
+        buffer.removeSubrange(0..<head)
+        head = 0
+    }
+
     /// Drops the oldest bytes past `window`. Call with the lock held.
     private func trimToWindow() {
-        guard let window, buffer.count > window else { return }
-        let excess = buffer.count - window
-        buffer.removeFirst(min(buffer.count, (excess + 187) / 188 * 188))
+        guard let window, held > window else { return }
+        let excess = held - window
+        drop(min(held, (excess + 187) / 188 * 188))
         if suspended {
             suspended = false
             task?.resume()
@@ -227,7 +246,7 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         condition.lock()
         buffer.append(data)
         trimToWindow()
-        if window == nil, buffer.count >= Self.bufferLimit, !suspended {
+        if window == nil, held >= Self.bufferLimit, !suspended {
             suspended = true
             dataTask.suspend()
         }

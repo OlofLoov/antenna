@@ -19,6 +19,12 @@ public enum TimeshiftFileError: Error, Sendable, Equatable {
 }
 
 /// The buffer's files on this device's disk.
+///
+/// A read runs in an autorelease pool of its own. The demuxing thread that
+/// reads drains its own pool only when the run ends, so without it every
+/// byte read back stayed in memory until the channel changed, about 600 MB
+/// in 20 minutes of a 4 Mbit/s channel
+/// (playback-engine/live-playback-keeps-memory-steady).
 public struct DiskTimeshiftFiles: TimeshiftFiles {
     public init() {}
 
@@ -42,6 +48,10 @@ public struct DiskTimeshiftFiles: TimeshiftFiles {
     }
 
     public func read(_ url: URL, offset: Int, count: Int) throws -> Data {
+        try autoreleasepool { try readNow(url, offset: offset, count: count) }
+    }
+
+    private func readNow(_ url: URL, offset: Int, count: Int) throws -> Data {
         do {
             let handle = try FileHandle(forReadingFrom: url)
             defer { try? handle.close() }
