@@ -1,6 +1,6 @@
 ## 1. Proposal and owner setup
 
-- [ ] 1.1 Owner: register `antuna.app` in Route 53 Domains. The owner picked the name on 2026-11-23, and `rename-to-antuna` replaced the placeholder in this change, `add-support-requests`, `add-feature-website` and `add-title-metadata`. Every task after this group waits for the registration
+- [ ] 1.1 Owner: register `antuna.app` in Route 53 Domains. The owner picked the name on 2026-11-23, and `rename-to-antuna` replaced the placeholder in this change, `add-feature-website` and `add-title-metadata`. Every task after this group waits for the registration
 - [x] 1.2 Write the proposal, delta specs, design and tasks, and validate with `openspec validate add-aws-hosting --strict`
 - [x] 1.3 Fold in the owner's 2026-11-22 decisions on the open questions, and the single-page site from `add-feature-website`
 - [ ] 1.4 Owner, outside the repo, the steps in design.md decision 9: create the AWS account, create the state bucket with `Infra/bootstrap/`, apply `Infra/ci/` from his machine, import the Route 53 Domains zone and apply `Infra/antuna/`, set `AWS_ACCOUNT_ID`, `ANTUNA_DOMAIN`, `AWS_ALERT_EMAIL`, `SITE_BUCKET` and `SITE_DISTRIBUTION_ID`, and create the `production` environment with the owner as required reviewer
@@ -40,7 +40,7 @@ Done in `rename-to-antuna` on 2026-11-23, ahead of 1.1 and 3.5, at the owner's w
 
 ## 6. API stack and constraints
 
-Ships when `add-title-metadata` or `add-support-requests` is ready to add its first route.
+Ships when `add-title-metadata` is ready to add its first route.
 
 - [ ] 6.1 Add `Infra/modules/api`: the HTTP API, its distribution at `api.antuna.app` and its certificate, the origin secret and header, the shared origin check in `Services/shared/`, the WAF web ACL with no logging or sampled requests, and the header-stripping policy, with `terraform test` files, citing `hosting/the-api-answers-on-its-own-address`
 - [ ] 6.2 Amend the "no server of our own" line in `openspec/config.yaml` and CLAUDE.md's hard constraints as design.md decision 10 words it

@@ -11,7 +11,6 @@ See proposal.md for why. What exists on 2026-11-22:
 - The `App screenshots` workflow uploads `store-screenshots` every night: iPhone, iPad, Mac and Apple TV in each ready language, at App Store sizes, made from fixtures (`store-listing/store-screenshots-in-every-ready-language`). The artifact is kept 14 days.
 - The store description in `fastlane/metadata/en-US/description.txt` already groups the features as sources, live TV, movies and series, Apple TV, every device, purchase and privacy.
 - `add-aws-hosting` moves the site to CloudFront at `antuna.app`, with one fixed Content-Security-Policy header for the site and a stricter one for `/setup*`, and answers unknown addresses with `/404.html` and status 404. It also sets up `infra.yml`, whose site job builds and uploads the site.
-- `add-support-requests` adds Report a problem in Settings and on the player's error screen. Not built.
 - The owner took every recommendation in the first version of this design on 2026-11-22, except the page builder: he wants a single-page app. Decisions 1 to 8 record each choice; decision 2 is the single-page app.
 
 ## Boards
@@ -21,7 +20,7 @@ Drawn as drafts in this change, under `openspec/specs/design-system/boards/`, in
 - `Web-Home-Phone`: 390 wide, one column. Hero text before the first screenshot. Five sections drawn.
 - `Web-Feature`: one area page, multi-view: title, line, platforms, a large screenshot, features in two columns, links to all features and the next area.
 - `Web-Pricing`: Yearly and Lifetime cards, Family Sharing, "What it costs" with no amount.
-- `Web-Support`: the Report a problem section, then the FAQ.
+- `Web-Support`: the contact card with the email address, then the FAQ.
 
 The single-page app changes nothing the boards draw: every page is the same HTML with or without scripts, and moving between pages looks the same as loading them. The boards' notes name the new image folder, `Web/site/static/images/`.
 
@@ -52,11 +51,11 @@ Every capability in `openspec/specs/` on 2026-11-22, by area. A capability can f
 | Apple TV (`/features/apple-tv/`) | `tvos-shell`, `tv-channel-overlay`, `tv-zap-bar-and-number-entry`, `control-hints`, `top-shelf`, `tv-guide-grid` | Opens on the last channel full screen, the channel list over the picture, up and down to change channel, numbers from a keyboard, hints for what the remote does, favorites and titles in progress on the Top Shelf. |
 | Setup from iPhone (`/features/setup-from-iphone/`) | `iphone-as-setup-device`, `apple-tv-login-from-iphone` | Scan the TV's code or accept Handoff, fill in the source on the phone, sign a TV in without typing the password with the remote; the login travels sealed and only that TV can read it. |
 | Sync and profiles (`/features/sync-and-profiles/`) | `source-management`, `watch-progress-sync`, `favorites`, `profiles`, `group-management` | Add a source once and it reaches every device on the Apple Account through iCloud, progress and My list follow you, a profile per person with their own favorites and history. |
-| Privacy (`/features/privacy/`) | `source-management`, `paywall-and-entitlement`, `app-release` (privacy manifest), `antuna-website` (Privacy Policy) | No account, no ads, no analytics, passwords in iCloud Keychain only, data in the user's own iCloud, connects only to their sources, iCloud and the App Store. Links to the Privacy Policy. Updated when `add-support-requests` and `add-title-metadata` ship, since both change what leaves the device. |
+| Privacy (`/features/privacy/`) | `source-management`, `paywall-and-entitlement`, `app-release` (privacy manifest), `antuna-website` (Privacy Policy) | No account, no ads, no analytics, passwords in iCloud Keychain only, data in the user's own iCloud, connects only to their sources, iCloud and the App Store. Links to the Privacy Policy. Updated when `add-title-metadata` ships, since it changes what leaves the device. |
 
 On no feature page: `antuna-website`, `app-release`, `store-listing`, `design-system`, `localization` (the footer lists the app's languages instead), and `paywall-and-entitlement`, which is the pricing page.
 
-Not on the site until their changes are archived (`feature-website/the-site-shows-only-what-the-app-does`): scores, trending and TMDB people from `add-title-metadata`, Report a problem from `add-support-requests`.
+Not on the site until their changes are archived (`feature-website/the-site-shows-only-what-the-app-does`): scores, trending and TMDB people from `add-title-metadata`.
 
 ## Goals / Non-Goals
 
@@ -172,15 +171,17 @@ Options considered:
 
 The App Store badge on the pricing page leads to the product page, which shows the price.
 
-### 6. Support with no email (decided)
+### 6. Support by email (decided)
 
-The owner wants no email (2026-11-22), and chose on the same day to ship `add-support-requests` before the first App Store submission, so the in-app form is the contact guideline 1.5 asks for. If the site goes live before the form ships, the support page carries the FAQ and says the in-app form is coming, still with no email address. The other options were an email address on the support page until the form ships, which the owner ruled out, and holding the site back until the form ships.
+Dropped 2026-11-23: the in-app report form (`add-support-requests`) and the no-email rule that came with it. Support is email to antuna@code-crave.se.
+
+Options considered: the in-app form, which needed a server, a GitHub App and device attestation for little gain; a web form on the site, which needs a server and a spam filter; plain email (chosen).
 
 The support page has:
-- "Report a problem from the app": Settings, Report a problem; on a failed stream, Report this problem; what is sent is shown first; a reference code comes back. Shipped with `add-support-requests`.
+- A contact card: antuna@code-crave.se as a mailto link, a line on what to include (device, Antuna version, what happened), and a warning never to send a password, MAC address or playlist link. It is the only page with an email address; the site check fails on any other.
 - An FAQ, each question an `<h2>` with an id so a store reply or a form can link to it: does Antuna include channels, which sources work, a channel will not play (what each error message means, from `player-controls-and-playback-errors`), the guide is empty or wrong, a source will not load, setting up an Apple TV from an iPhone, unlocking on a new device and Restore Purchases, Family Sharing, canceling the yearly subscription, refunds (from Apple), deleting your data.
 
-The Terms of Use and Privacy Policy say "how to reach the publisher" by linking to the support page, replacing `support@code-crave.se`. App Store Connect's support URL becomes `/support/` (`store-listing/the-listing-links-to-the-site-s-pages`); App Review's guideline 1.5 asks that it gives "an easy way to contact you", which the Report a problem section does once that form ships.
+The Terms of Use and Privacy Policy say "how to reach the publisher" by linking to the support page, replacing `support@code-crave.se`. The Privacy Policy adds that emails sent to Code Crave are kept in the mailbox to answer the sender. App Store Connect's support URL becomes `/support/` (`store-listing/the-listing-links-to-the-site-s-pages`); App Review's guideline 1.5 asks that it gives "an easy way to contact you", which the email address does.
 
 ### 7. Page structure and ids
 
@@ -214,7 +215,7 @@ Arabic, later: `dir="rtl"` from the hook, a stylesheet in CSS logical properties
 - A Node toolchain and a dependency tree join a repo that had only Swift and Python. The lockfile, `npm ci` and the site job keep it pinned and checked, dependency updates come in their own PRs, and the Swift jobs never need it.
 - A visitor with the previous version open who moves to another page loads a script that may no longer exist. `add-aws-hosting` keeps old hashed files in the bucket, and SvelteKit falls back to a full page load when a route's script fails to load.
 - A screenshot can go stale when a screen changes. The App screenshots workflow runs nightly; the site's pictures change only when someone runs the script. The PR that changes a screen's board names the site picture if one shows it.
-- Guideline 1.5 and no email: if the site ships before `add-support-requests`, the support page offers no way to contact Code Crave. The owner's decision is to ship the form before the first submission.
+- An email address on a public page draws spam. The mailbox's own filter handles it; the address is on one page only.
 - Apple's badge guidelines change from time to time; the committed SVG must be the current one at each submission.
 - Describing features in English and Swedish while the app ships seven languages leaves other buyers with the store listing only, until their language's site is added.
 - A feature page can drift from the app as specs change. The inventory table above is the check: archiving a change that touches a listed capability updates its page (`feature-website/the-site-shows-only-what-the-app-does`).
@@ -225,4 +226,4 @@ Additive for visitors. The existing addresses keep their paths: `/setup/`, `/.we
 
 ## Open Questions
 
-None in this change. The owner decided every question on 2026-11-22: pages per feature area, committed screenshots, no prices, the support page before the form, English then Swedish, a single-page app, and the hero line. The owner picked `antuna.app` on 2026-11-23; registering it is `add-aws-hosting` task 1.1.
+None in this change. The owner decided every question on 2026-11-22: pages per feature area, committed screenshots, no prices, English then Swedish, a single-page app, and the hero line. The owner picked `antuna.app` on 2026-11-23; registering it is `add-aws-hosting` task 1.1.
