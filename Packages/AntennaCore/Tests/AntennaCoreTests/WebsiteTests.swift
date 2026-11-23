@@ -183,7 +183,7 @@ import Testing
         for phrase in [
             "published by Code Crave", "private iCloud database", "Code Crave cannot read it", "favorites", "preferences",
             "programme reminders", "channel groups", "watch progress", "iCloud Keychain", "at most ten minutes", "Removing a source",
-            "see the Support page",
+            "see the Support page", "kept in the mailbox to answer you",
         ] {
             #expect(body.contains(phrase), "\(phrase)")
         }

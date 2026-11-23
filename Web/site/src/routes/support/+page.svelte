@@ -10,9 +10,12 @@
 <div class="prose">
 	<h1>{s.title}</h1>
 
-	<section class="card" id="report-a-problem">
-		<h2>{s.reportTitle}</h2>
-		<p>{s.reportSoon}</p>
+	<section class="card" id="contact">
+		<h2>{s.contactTitle}</h2>
+		<p>
+			{s.contactBefore}<a href="mailto:{s.contactEmail}">{s.contactEmail}</a>{s.contactAfter}
+		</p>
+		<p>{s.contactWarning}</p>
 	</section>
 
 	<h2 class="questions">{s.questionsTitle}</h2>
