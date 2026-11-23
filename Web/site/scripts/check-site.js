@@ -9,8 +9,10 @@
 //   and every #anchor exists
 // - no inline <script>, <style>, on*= or style= attribute, and nothing loaded
 //   from another address
+// - every style attribute the scripts write has its hash in the site's CSP
 // - the image and script budgets
 
+import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { dirname, join, relative, sep } from 'node:path';
@@ -373,13 +375,63 @@ export function checkEmails(build = BUILD) {
 	return problems;
 }
 
+/** The site's Content-Security-Policy, read from the CloudFront headers policy. */
+export function siteCsp(repo = REPO) {
+	const module = readFileSync(join(repo, 'Infra', 'modules', 'site', 'main.tf'), 'utf8');
+	const match = module.match(/^\s*site_csp\s*=\s*"([^"]+)"/m);
+	if (!match) throw new Error('Infra/modules/site/main.tf: no site_csp');
+	return match[1];
+}
+
+/** The CSP source for a style attribute value, as a browser hashes it. */
+export function styleHash(value) {
+	return `'sha256-${createHash('sha256').update(value, 'utf8').digest('base64')}'`;
+}
+
+/**
+ * Every style attribute the built scripts write, such as the one on SvelteKit's
+ * route announcer, has its hash in the CSP's style-src-attr, and every hash
+ * there belongs to one of them. A SvelteKit update that changes the
+ * announcer's style fails here, not in a visitor's console.
+ */
+export function checkStyleHashes(build = BUILD, csp = siteCsp()) {
+	const problems = [];
+	const directives = Object.fromEntries(
+		csp
+			.split(';')
+			.map((part) => part.trim().split(/\s+/))
+			.filter((tokens) => tokens[0])
+			.map(([name, ...sources]) => [name, sources])
+	);
+	for (const name of ['style-src', 'style-src-attr'])
+		if (directives[name]?.includes("'unsafe-inline'"))
+			problems.push(`the CSP allows 'unsafe-inline' in ${name}`);
+	const allowed = directives['style-src-attr'] ?? [];
+	const found = new Map();
+	for (const name of files(build).filter((file) => file.endsWith('.js'))) {
+		const code = readFileSync(join(build, name), 'utf8');
+		for (const match of code.matchAll(/\sstyle=(\\?["'])(.*?)\1/g))
+			found.set(styleHash(match[2]), { name, value: match[2] });
+	}
+	if (found.size > 0 && !allowed.includes("'unsafe-hashes'"))
+		problems.push("style-src-attr lacks 'unsafe-hashes', so no style attribute applies");
+	for (const [hash, { name, value }] of found)
+		if (!allowed.includes(hash))
+			problems.push(`${name}: style="${value}" needs ${hash} in style-src-attr`);
+	for (const source of allowed.filter((token) => token.startsWith("'sha256-")))
+		if (!found.has(source))
+			problems.push(`style-src-attr allows ${source}, which no built script writes`);
+	return problems;
+}
+
 export const checks = {
 	checkRoutes,
 	checkLinks,
 	checkPolicy,
 	checkBudgets,
 	checkProviders,
-	checkEmails
+	checkEmails,
+	checkStyleHashes
 };
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {

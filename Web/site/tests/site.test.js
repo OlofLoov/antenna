@@ -11,10 +11,13 @@ import {
 	checkPolicy,
 	checkProviders,
 	checkRoutes,
+	checkStyleHashes,
 	pages,
 	providerNames,
 	routeAddresses,
 	scriptSizes,
+	siteCsp,
+	styleHash,
 	textOf
 } from '../scripts/check-site.js';
 import { externalize, routeName } from '../scripts/externalize-start.js';
@@ -38,6 +41,12 @@ describe('the built site', () => {
 	// antenna-website/the-pages-read-on-a-phone-and-in-dark-mode
 	test('no inline script or style, and nothing from another address', () => {
 		expect(checkPolicy()).toEqual([]);
+	});
+
+	// hosting/pages-run-only-the-site-s-own-code
+	test("the CSP allows exactly the route announcer's style attribute", () => {
+		expect(siteCsp()).toContain("style-src-attr 'unsafe-hashes' 'sha256-");
+		expect(checkStyleHashes()).toEqual([]);
 	});
 
 	// antenna-website/the-pages-read-on-a-phone-and-in-dark-mode
@@ -220,6 +229,25 @@ describe('the checks catch what they look for', () => {
 		expect(problems).toContain('an inline <script>');
 		expect(problems).toContain('a style= attribute on <h1>');
 		expect(problems).toContain('an onclick= attribute');
+	});
+
+	test('a style attribute the CSP does not hash, and a hash nothing uses', () => {
+		const announcer = 'position: absolute; width: 1px';
+		const dir = build({
+			'_app/a.js': `const t = '<div id="svelte-announcer" style="${announcer}"></div>';`,
+			'_app/b.js': 'const u = `<p style=\\"color: red\\">`;'
+		});
+		const csp = `style-src 'self'; style-src-attr 'unsafe-hashes' ${styleHash(announcer)} 'sha256-c3RhbGU='`;
+		const problems = checkStyleHashes(dir, csp).join('\n');
+		expect(problems).toContain(`_app/b.js: style="color: red" needs ${styleHash('color: red')}`);
+		expect(problems).toContain("allows 'sha256-c3RhbGU=', which no built script writes");
+		expect(problems).not.toContain('_app/a.js');
+		expect(checkStyleHashes(dir, "style-src 'self' 'unsafe-inline'").join('\n')).toContain(
+			"style-src-attr lacks 'unsafe-hashes'"
+		);
+		expect(checkStyleHashes(dir, "style-src 'unsafe-inline'")).toContain(
+			"the CSP allows 'unsafe-inline' in style-src"
+		);
 	});
 
 	test('a script, stylesheet or image from another address', () => {
