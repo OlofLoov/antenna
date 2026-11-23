@@ -23,8 +23,11 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <div style="font-size: 17px; font-weight: 600">You're offline</div>
     <!-- player.error.body -->
     <div style="font-size: 15px; line-height: 1.4; color: #A7B0BF">Connect to the internet and try again. Playback resumes on its own when the connection returns.</div>
-    <!-- player.retry, 44 pt -->
-    <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 20px; margin-top: 4px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Try again</button>
+    <!-- player.retry and player.channels, 44 pt. Channels leaves full screen if on and opens the Groups sheet with the open group checked (iPhone-Live-Groups). -->
+    <div style="display: flex; gap: 12px; margin-top: 4px">
+      <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 20px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Try again</button>
+      <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 20px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Channels</button>
+    </div>
   </div>
 
   <!-- Now playing -->

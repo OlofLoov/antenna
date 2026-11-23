@@ -29,9 +29,12 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <!-- player.error.detail -->
     <div style="font-size: 22px; color: #A7B0BF">Source: Acme TV · Attempted at 21:34</div>
 
-    <!-- player.retry: focused on appearance (Focus token). Play/pause does the same. -->
+    <!-- player.retry: focused on appearance (Focus token). Play/pause does the same.
+         player.channels: unfocused beside it; opens the channel overlay with the highlight on the current group (TV-Groups).
+         For a missing or refused login, player.signIn takes the place of player.channels. -->
     <div style="display: flex; gap: 16px; padding-top: 12px">
       <button type="button" style="font: inherit; font-size: 26px; font-weight: 600; height: 64px; padding: 0 40px; border-radius: 14px; border: 0; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,.45); cursor: pointer">Try again</button>
+      <button type="button" style="font: inherit; font-size: 26px; font-weight: 600; height: 64px; padding: 0 40px; border-radius: 14px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Channels</button>
     </div>
 
     <!-- player.error.hint -->
