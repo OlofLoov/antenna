@@ -25,7 +25,7 @@ The system SHALL serve the website at Antenna's own domain over HTTPS with a cer
 - **THEN** they land on the same page at the bare domain, through a permanent redirect
 
 ### Requirement: Pages run only the site's own code
-The system SHALL tell browsers, with every page, to run only scripts and styles the site serves itself, never inline ones, to load images only from the site, to connect to no other address, and to refuse to show the page inside another site's frame. The setup page SHALL run no script at all.
+The system SHALL tell browsers, with every page, to run only scripts and styles the site serves itself, never inline ones except the one style that hides the page-change announcement for screen readers, to load images only from the site, to connect to no other address, and to refuse to show the page inside another site's frame. The setup page SHALL run no script at all.
 
 #### Scenario: A script from another address
 - **GIVEN** a page that somehow names a script on another address
@@ -36,6 +36,11 @@ The system SHALL tell browsers, with every page, to run only scripts and styles 
 - **GIVEN** a page with a script written inside the page
 - **WHEN** a browser opens it
 - **THEN** the browser refuses to run it
+
+#### Scenario: A screen reader hears the new page
+- **GIVEN** a screen reader is on
+- **WHEN** the user follows a link in the header to another page of the site
+- **THEN** the screen reader reads the new page's title, the announcement stays hidden on screen, and the browser reports no blocked style
 
 #### Scenario: The setup page
 - **WHEN** an iPhone without Antenna opens a setup link
