@@ -8,7 +8,7 @@ The owner, on 2026-11-22: a website that shows every feature of the app, hosted 
 
 > As a household setter-upper, I want to read how setting up the Apple TV from my iPhone works, so I know I will not be typing passwords with the remote.
 
-> As a user with a problem, I want a support page that answers the common questions and tells me how to report the rest from the app.
+> As a user with a problem, I want a support page that answers the common questions and tells me how to reach the developer about the rest.
 
 Today the site is a setup page, the Terms of Use, the Privacy Policy and the App Review playlist. Nothing on it says what Antuna does, the App Store support address points at the Terms, and the site's own rules forbid images and scripts, so it cannot show a screenshot.
 
@@ -19,17 +19,17 @@ After this change the site has a home page with the line "Your TV sources, on ev
 - A home page: the hero line "Your TV sources, on every Apple screen.", the four platforms, "no channels included", an App Store link, and one section per feature area with a screenshot and a link to its page.
 - Nine feature pages, grouped the way a buyer thinks: sources, live TV, guide, movies and series, multi-view, Apple TV, setup from iPhone, sync and profiles, privacy. design.md maps every capability in `openspec/specs/` to one of them.
 - A pricing page: free to download, a purchase needed to use it, lifetime or yearly, Family Sharing, the price shown in the App Store for the buyer's region. No prices written on the site.
-- A support page: an FAQ and "Report a problem" in the app's Settings. No email address. The App Store support address points here.
+- A support page: an FAQ and the support email address, antuna@code-crave.se. The App Store support address points here.
 - The site becomes a SvelteKit app in `Web/site/` with `adapter-static`, built with Node 22 from a committed lockfile. Every route is prerendered to its own HTML file, and there is no catch-all page: an unknown address gets "Page not found" with a not-found status.
 - The site may run its own bundled JavaScript and show its own images: screenshots from the store set, committed after review, and Apple's App Store badge. Still no third-party scripts, fonts, trackers or analytics, no cookies, and no request to another address. The Content-Security-Policy from `add-aws-hosting` enforces it, and a site check in CI fails on any inline script or outside address in the built pages.
 - The setup page, the association file and the App Review files stay plain files outside the app. The setup page keeps its no-script rule, because it is where a setup link lands on an iPhone without Antuna.
-- The Terms of Use and Privacy Policy keep their text, move into the app as prerendered pages, link to the support page for contact instead of an email address, and share the new header and footer.
+- The Terms of Use and Privacy Policy keep their text, move into the app as prerendered pages, link to the support page for contact, and share the new header and footer.
 - A `site` job in CI: install, lint, type-check, build, and the link and route check.
 - English first, Swedish next, then each other language when its store listing is ready, under `/<lang>/`, with Arabic right to left.
 
 Out of scope:
 - Hosting, the domain, the CSP header and the deploy workflow (`add-aws-hosting`).
-- The in-app Report a problem form (`add-support-requests`). The support page only names it.
+- A contact form on the site or in the app.
 - A contact form, newsletter, blog, changelog page, press kit or search.
 - Analytics of any kind, including server-side counts by page.
 - A dark mode switch. The site follows the device's appearance.
@@ -55,4 +55,3 @@ Out of scope:
 - CLAUDE.md's `Web/` line ("No scripts, images or third-party content") changes to allow the site's own scripts and images, and the Commands list gains the site's build and check.
 - Boards: new drafts `Web-Home`, `Web-Home-Phone`, `Web-Feature`, `Web-Pricing` and `Web-Support`. The single-page app changes nothing they draw.
 - Depends on `add-aws-hosting` for the host, the domain and the CSP header, and through it on the owner registering `antuna.app` (its task 1.1). The app can be built and checked in CI before that, but it is not published and the store addresses do not move until the new domain serves.
-- The support page's "Report a problem" answer depends on `add-support-requests` shipping. The owner decided to ship that form before the first App Store submission; until it ships the page lists the FAQ and says the form is coming.

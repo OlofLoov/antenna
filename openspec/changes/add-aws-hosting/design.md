@@ -6,9 +6,9 @@ See proposal.md for why. What exists on 2026-11-22:
 
 - `Web/` is copied by `scripts/publish-web.sh` into a folder, with the team id filled into the association file from the `APPLE_TEAM_ID` repository variable and the App Review guide written by `scripts/make-review-guide.py`. `.github/workflows/pages.yml` uploads that folder to GitHub Pages on pushes to main that touch the site, and `release.yml` runs it again after each release (`gh workflow run pages.yml`). Pages was never enabled on the repository, so that workflow fails and nothing is served.
 - `Web/CNAME` holds antenna.code-crave.se. The code-crave.se DNS has no `antenna` record; that zone is not in this repo.
-- No AWS account, no server, no CDK or Terraform. `add-title-metadata` decision 1 planned `Services/lookup/` with "a TypeScript Lambda and a CDK stack", an OIDC deploy workflow, Secrets Manager, CloudFront with a one-day cache, a WAF rate rule and every request log off. `add-support-requests` decision 1 puts `/v1/support` on the same stack. Both are proposed; neither has built any of it.
+- No AWS account, no server, no CDK or Terraform. `add-title-metadata` decision 1 planned `Services/lookup/` with "a TypeScript Lambda and a CDK stack", an OIDC deploy workflow, Secrets Manager, CloudFront with a one-day cache, a WAF rate rule and every request log off. It is proposed and has built none of it.
 - The app is not published. Nothing has been uploaded to App Store Connect or TestFlight (`app-release/merging-the-release-pull-request-publishes-the-release`), so no installed build, listing or user's link holds the old domain. The move is a rename.
-- The owner wants no email (2026-11-22). `add-support-requests` has dropped the email field and the support address.
+- The owner dropped `add-support-requests` (the in-app report form and its `/v1/support` route) on 2026-11-23. Support is email to antuna@code-crave.se, on the company's domain, not `antuna.app`.
 - The owner took every recommendation below on 2026-11-22, and asked for the website to be a single-page app. `add-feature-website` decision 2 picks SvelteKit, prerendered to one HTML file per address, so the bucket still holds plain files; decision 3 here covers what that changes for hosting.
 - Later that day the owner asked for Terraform instead of the CDK app this design first chose (decision 1).
 
@@ -31,7 +31,7 @@ Every hit outside `openspec/changes/archive/` on 2026-11-22. Each becomes `antun
 | `Apps/Tests/SetupInboxTests.swift`, `Apps/UITests/SetupUITests.swift`, `Apps/UITests/SendLoginsUITests.swift` | literal setup links |
 | `Web/CNAME` | removed |
 | `Web/review/antuna-review.m3u` | `url-tvg` guide address |
-| `Web/terms/index.html`, `Web/privacy/index.html` | `support@code-crave.se` as the contact. Not a site address; it goes with the no-email decision (decision 8), in `add-feature-website`'s support page PR. |
+| `Web/terms/index.html`, `Web/privacy/index.html` | `support@code-crave.se` as the contact. Not a site address; `add-feature-website`'s support page replaces it. |
 | `fastlane/metadata/*/support_url.txt` (9 locales) | `/terms` today. Renamed here; `add-feature-website` points them at `/support`. |
 | `fastlane/metadata/*/privacy_url.txt` (9 locales) | `/privacy` |
 | `scripts/store_metadata.py` line 49 | `SITE`, which the listing check compares the addresses with |
@@ -41,7 +41,6 @@ Every hit outside `openspec/changes/archive/` on 2026-11-22. Each becomes `antun
 | `docs/release/device-checklist.md` lines 373 to 374 | the association file check, which also says "at GitHub Pages" |
 | `CLAUDE.md` line 49 | "the static site at antenna.code-crave.se, published by pages.yml" |
 | `openspec/specs/design-system/boards/TV-Paywall.dc.html`, `TV-Paywall-Purchasing.dc.html`, `TV-Paywall-Unavailable.dc.html` | the addresses as text in the footer |
-| `openspec/specs/design-system/boards/iPhone-Report-Sent.dc.html`, `TV-Report-Sent.dc.html`, `openspec/changes/add-support-requests/` | `support@code-crave.se`. Owned by the agent removing email from that change; not edited here. |
 
 Not in the list, because they do not depend on a domain: the bundle ids, `iCloud.se.codecrave.antenna`, the Keychain service `se.codecrave.antenna.sources`, the Handoff activity type `se.codecrave.antenna.setup`, and the team id in `APPLE_TEAM_ID`.
 
@@ -69,7 +68,7 @@ The owner chose one place for all of it on 2026-11-22, first as a CDK app (optio
 Options considered:
 - **A. Terraform in `Infra/`, Lambda code in `Services/<name>/` (chosen).** HCL with the `hashicorp/aws` provider, laid out as roots and modules (decision 2). Each service's handler code lives in its own package under `Services/`; the workflow bundles it with esbuild before `terraform plan`, and the `api` module uploads the zip. The domain, the certificates, the WAF web ACL and the roles exist once.
 - **B. One CDK app in TypeScript in `Infra/` (chosen first, then replaced).** `bin/antuna.ts`, `lib/*-stack.ts`, Jest assertion tests, `NodejsFunction` for the Lambdas. CloudFormation keeps the state, so no state bucket, and the lookup service was already planned in TypeScript. Cross-region values need `crossRegionReferences`, which creates SSM parameters and custom resources that make deleting stacks out of order fail.
-- **C. A CDK stack per service, as `add-title-metadata` planned (`Services/lookup/` with its own stack).** Fine for one service. With the site and the support route it becomes three stacks each wanting the hosted zone, a certificate, a distribution and a deploy role, or cross-stack lookups between apps.
+- **C. A CDK stack per service, as `add-title-metadata` planned (`Services/lookup/` with its own stack).** Fine for one service. With the site it becomes two stacks each wanting the hosted zone, a certificate, a distribution and a deploy role, or cross-stack lookups between apps.
 - **D. OpenTofu.** The same language and state format as Terraform under an open-source license. The owner asked for Terraform by name, and moving to OpenTofu later is a binary swap.
 - **E. SST or Amplify Hosting.** Less code for the site, more framework between the owner and the AWS resources, and Amplify keeps access logs by default.
 
@@ -176,12 +175,11 @@ AWS WAF cannot attach to an API Gateway HTTP API, only to REST APIs, CloudFront,
 - CloudFront adds an `x-antuna-origin` header with a random value from Secrets Manager (`antuna/api/origin-secret`). A Lambda authorizer would cost a call per request; instead each handler checks the header with a shared helper in `Services/shared/` and answers 403 without it. That is how `hosting/the-api-answers-on-its-own-address` refuses calls to the `execute-api` address.
 - Cache policy: by default none (`CachingDisabled`) and all query strings forwarded; a route that wants caching, such as `/v1/match`, sets its own behavior in the change that adds it.
 - The WAF web ACL is created with `modules/api` when the first route ships, not with the site, as the owner decided on 2026-11-22; that saves about $6 a month until then. The other option, creating it with the site in task group 3, protects nothing while the API has no routes.
-- WAF web ACL with the AWS managed IP reputation list and a rate rule of 300 requests per IP per five minutes on `/v1/*`. `add-support-requests` adds its own tighter rule on `/v1/support*`.
+- WAF web ACL with the AWS managed IP reputation list and a rate rule of 300 requests per IP per five minutes on `/v1/*`.
 - Unknown routes answer API Gateway's 404 with the body `{"message":"Not Found"}`, which names no version or server. A response headers policy removes `x-amzn-*` and `apigw-requestid` headers.
 
-What this means for the two services, written into their designs in this PR:
+What this means for the lookup service, written into its design in this PR:
 - `add-title-metadata`: the lookup Lambda and its routes are added to `modules/api`; its code stays in `Services/lookup/`. Its planned CDK stack is this change's `api` module, and its deploy workflow and OIDC role are this change's. It adds a cache behavior for `/v1/match*` and `/v1/trending*` with a one-day TTL.
-- `add-support-requests`: its Lambda, secrets and WAF rule are added to `modules/api` and `modules/edge`.
 
 ### 7. The domain (decided)
 
@@ -199,11 +197,11 @@ Records in the zone: apex and `www` A/AAAA aliases to the site distribution, `ap
 
 Old domain: nothing to retire. Pages was never enabled on the repository and the code-crave.se zone has no `antenna` record, so there is no redirect and no owner step (task 4.2).
 
-### 8. No email (decided)
+### 8. No email on the domain (decided)
 
-The owner wants none. The domain gets no MX record (decision 7), so mail to it bounces. Contact goes through the app's Report a problem form (`add-support-requests`) and the site's support page (`add-feature-website`).
+`antuna.app` gets no MX record (decision 7), so mail to it bounces. Support mail goes to antuna@code-crave.se, which the site's support page (`add-feature-website`) shows. That mailbox is on the company's domain, outside this repo and outside AWS.
 
-App Store Connect requires a support URL; the site's `/support` page is it, once `add-feature-website` ships it, and `/terms` until then. App Review's guideline 1.5 asks that the support URL "include an easy way to contact you"; the support page names Report a problem in the app. Separately, the EU Digital Services Act makes Apple show a trader's address, phone number and email on the product page for a paid app in the EU. That is an address the owner gives Apple in App Store Connect, it can be on any domain, and it needs nothing on `antuna.app`. It is recorded in `docs/release/` with the other App Store answers (task 6.4).
+App Store Connect requires a support URL; the site's `/support/` page is it. App Review's guideline 1.5 asks that the support URL "include an easy way to contact you"; the support page gives the email address. Separately, the EU Digital Services Act makes Apple show a trader's address, phone number and email on the product page for a paid app in the EU. That is an address the owner gives Apple in App Store Connect, it can be on any domain, and it needs nothing on `antuna.app`. It is recorded in `docs/release/` with the other App Store answers (task 6.4).
 
 ### 9. One-time setup by the owner
 
@@ -222,7 +220,7 @@ From then on `infra.yml` plans on pull requests, applies on main after the owner
 
 ### 10. The config.yaml amendment
 
-`openspec/config.yaml` says sync is CloudKit "with no server of our own", and `add-title-metadata` and `add-support-requests` each planned to amend it. It is amended once here, when `modules/api` first deploys: "Sync is SwiftData over the user's private CloudKit database, with no server of our own. Code Crave runs one API at `api.antuna.app` for services the app calls by name; it holds no user's sources, logins or watch data and keeps no record of requests." `add-title-metadata` adds its routes without touching the line; `add-support-requests` adds its sentence about problem reports reaching the private repository (its task 3.4). CLAUDE.md's hard constraints say the same.
+`openspec/config.yaml` says sync is CloudKit "with no server of our own", and `add-title-metadata` planned to amend it. It is amended once here, when `modules/api` first deploys: "Sync is SwiftData over the user's private CloudKit database, with no server of our own. Code Crave runs one API at `api.antuna.app` for services the app calls by name; it holds no user's sources, logins or watch data and keeps no record of requests." `add-title-metadata` adds its routes without touching the line. CLAUDE.md's hard constraints say the same.
 
 ## Cost
 
@@ -252,7 +250,7 @@ Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the opti
 - Tearing down runs in reverse: `antuna`, then `ci`, then `bootstrap`. The `site` module's policy on the `antuna-site` role goes with `antuna`.
 - If the domain is not registered before the rename PR, the app builds with a name that does not resolve and the paywall's links fail on device. The rename (task group 5) waits for the site to answer on the new domain.
 - Universal links: Apple fetches the association file through its CDN, which caches it. A wrong file on the first deploy can keep setup links opening in Safari for up to a day on test devices. The device checklist's association check runs after the first deploy.
-- A WAF rate limit shared by everyone behind one carrier NAT can refuse real users. 300 per five minutes per IP is far above what one person makes; the services' own rules are tighter only on writes.
+- A WAF rate limit shared by everyone behind one carrier NAT can refuse real users. 300 per five minutes per IP is far above what one person makes.
 - Lock-in is small: the site is a folder, the services are Lambdas behind plain HTTP, and the domain is the owner's.
 
 ## Migration Plan
@@ -261,7 +259,7 @@ Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the opti
 2. PR: `Infra/` with `bootstrap`, `ci`, `modules/edge` and `modules/site`, and `infra.yml`. It deploys nothing until the owner has done decision 9; after that, the next merge deploys the site to `antuna.app`, or a manual run of `infra.yml` does.
 3. PR: `pages.yml`, `Web/CNAME` and `Web/.nojekyll` removed, `release.yml` dispatches `infra.yml` (task 4.1).
 4. PR: the rename in every place listed above.
-5. PR: `modules/api` with no routes, the `config.yaml` amendment and the diagrams, when `add-title-metadata` or `add-support-requests` is ready to add its first route.
+5. PR: `modules/api` with no routes, the `config.yaml` amendment and the diagrams, when `add-title-metadata` is ready to add its first route.
 
 No data moves. No site is live before step 2 deploys, so rollback for steps 2 to 4 is reverting the PRs.
 

@@ -4,11 +4,11 @@
 
 The owner, on 2026-11-22: AWS for now, "most straightforward, we can always change later", and a new domain for Antuna instead of the company domain code-crave.se. Later that day the owner took every recommendation in design.md: a short `.app` name containing "antuna", registered in Route 53 Domains, with `www` redirecting to the bare domain. The exact name is not picked yet; this change writes it as `antuna.app` until task 1.1 picks it.
 
-> As the developer, I want one place that owns the domain, the certificates, the website and the API, so the movie info service, problem reports and the feature website do not each build their own copy.
+> As the developer, I want one place that owns the domain, the certificates, the website and the API, so the movie info service and the feature website do not each build their own copy.
 
 > As a buyer reading about Antuna, I want its site on its own address, over HTTPS.
 
-Today the site is `Web/`, with `.github/workflows/pages.yml` meant to publish it to GitHub Pages at antenna.code-crave.se. Pages was never enabled and that name has no DNS record, so nothing is served. The app has no server. `add-title-metadata` plans a lookup service with its own CDK stack and deploy role, and `add-support-requests` plans a `/v1/support` route on it. Neither is built. The app is not published, so no installed build, App Store listing or link in a user's hands names the old domain.
+Today the site is `Web/`, with `.github/workflows/pages.yml` meant to publish it to GitHub Pages at antenna.code-crave.se. Pages was never enabled and that name has no DNS record, so nothing is served. The app has no server. `add-title-metadata` plans a lookup service with its own CDK stack and deploy role. It is not built. The app is not published, so no installed build, App Store listing or link in a user's hands names the old domain.
 
 After this change Code Crave has one AWS account defined by Terraform in this repo. The site, a single-page app prerendered to HTML by `add-feature-website`, is served from a private S3 bucket through CloudFront at `https://antuna.app` with a strict Content-Security-Policy, and the API answers at `https://api.antuna.app` with no routes of its own until those two changes add them. Every deploy runs from main through GitHub Actions with a role assumed through OIDC, and nothing keeps a log of who asked for what. The domain is renamed everywhere the repo names antenna.code-crave.se, and the unused GitHub Pages workflow is removed.
 
@@ -26,7 +26,7 @@ After this change Code Crave has one AWS account defined by Terraform in this re
 - `www.antuna.app` redirects permanently to `antuna.app`.
 
 Out of scope:
-- The lookup service, the support endpoint and their Lambdas (`add-title-metadata`, `add-support-requests`). This change gives them the API, the distribution, the WAF web ACL and the deploy role to build on.
+- The lookup service and its Lambda (`add-title-metadata`). This change gives them the API, the distribution, the WAF web ACL and the deploy role to build on.
 - The feature website's pages (`add-feature-website`).
 - A staging environment or preview deployments per pull request.
 - A redirect from antenna.code-crave.se. Nothing published uses it.
@@ -52,5 +52,5 @@ Out of scope:
 - Tests: `WebsiteTests`, `SetupLinkTests`, `LoginLinkTests`, `SetupInboxTests`, `SetupUITests`, `SendLoginsUITests`. `ReleaseTests` reads `SetupLink.host` and follows on its own.
 - Boards: `TV-Paywall`, `TV-Paywall-Purchasing` and `TV-Paywall-Unavailable` show the addresses as text and change with them.
 - Docs: CLAUDE.md's `Web/` line, `docs/architecture/` (the CDN, the API and AWS as containers), `openspec/config.yaml`'s "no server of our own" line, amended once, here, for both later services.
-- `add-title-metadata` and `add-support-requests` depend on this change for the account, the API, CloudFront, WAF and the deploy role. `add-feature-website` depends on it for the host.
+- `add-title-metadata` depends on this change for the account, the API, CloudFront, WAF and the deploy role. `add-feature-website` depends on it for the host.
 - Blocked on: the owner registering `antuna.app` (task 1.1), creating the AWS account, and the one-time bootstrap in design.md decision 9.

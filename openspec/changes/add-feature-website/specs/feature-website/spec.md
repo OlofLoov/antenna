@@ -74,16 +74,20 @@ The system SHALL publish a pricing page that says Antuna is free to download and
 - **WHEN** someone looks for how to stop the yearly subscription
 - **THEN** the page says to cancel in their Apple Account's subscription settings and links to the Terms of Use
 
-### Requirement: Support answers questions and points to the app
-The system SHALL publish a support page with answers to common questions and a section saying how to report a problem from the app's Settings on each platform, and SHALL show no email address anywhere on the site.
+### Requirement: Support answers questions and gives an email address
+The system SHALL publish a support page with answers to common questions and the support email address as a link that opens a new email, with what to include and a warning never to send a password or playlist link, and SHALL show no other email address anywhere on the site.
 
 #### Scenario: A channel will not play
 - **WHEN** someone opens the support page with a channel that will not play
-- **THEN** an answer says what the app's error message means and what to check, and how to report it from the app
+- **THEN** an answer says what the app's error message means and what to check
 
-#### Scenario: Looking for an email address
-- **WHEN** someone looks on any page for an email address
-- **THEN** there is none, and the support and legal pages point to Report a problem in the app
+#### Scenario: Writing to the developer
+- **WHEN** someone looks on the support page for a way to reach Code Crave
+- **THEN** they find the support email address, asking for their device, the Antuna version and what happened, and telling them never to send a password, MAC address or playlist link
+
+#### Scenario: Looking for an email address elsewhere
+- **WHEN** someone looks on any other page for an email address
+- **THEN** there is none, and the legal pages point to the support page
 
 #### Scenario: Restoring a purchase
 - **WHEN** someone reads how to unlock Antuna on a new device

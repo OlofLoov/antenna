@@ -28,8 +28,8 @@
 ## 5. Pricing and support
 
 - [x] 5.1 Add the pricing page with no amounts, citing `feature-website/pricing-says-how-buying-works`
-- [x] 5.2 Add the support page with the FAQ and the Report a problem section, saying the form is coming if `add-support-requests` has not shipped, and a site check that no page holds an email address, citing `feature-website/support-answers-questions-and-points-to-the-app`
-- [ ] 5.3 Point every `fastlane/metadata/*/support_url.txt` at `/support/`, add `marketing_url.txt` per locale, and check both in `scripts/store_metadata.py`, citing `store-listing/the-listing-links-to-the-site-s-pages`
+- [x] 5.2 Add the support page with the FAQ and the contact card with antuna@code-crave.se, and a site check that no other page holds an email address, citing `feature-website/support-answers-questions-and-gives-an-email-address`
+- [ ] 5.3 Add `marketing_url.txt` per locale and check it and `support_url.txt` in `scripts/store_metadata.py` (every `support_url.txt` points at `/support/` since 2026-11-23), citing `store-listing/the-listing-links-to-the-site-s-pages`
 
 ## 6. Languages
 
