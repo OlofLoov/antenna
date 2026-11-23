@@ -122,6 +122,16 @@ before, and now also after `sourcesChanged`. When the key's source has no
 channels yet, has its login, and the saved channel rebuilds, it tunes it and
 remembers the key in `restore.started`. A user pick clears it.
 
+Live's view appears for a moment at launch before the root view switches to
+the restored tab or section, which the list-based restore never noticed
+because no list had loaded by then. The early tune would. So the root view
+calls `screenRestored(onLive:)` once it has picked the tab, `opened(_:)`
+keeps `restore.onLive` current after that, and the early tune needs
+`onLive == true`. It also waits for the scene to become active
+(`sceneBecameActive`, from `LiveSync`): an iPhone launched sideways that
+tunes before then keeps its tab bar over the full-screen picture, which
+`LivePlayerUITests` caught.
+
 Apple TV (`ShellModel`): `considerTune()` tunes the saved channel while its
 source is still loading, before the 10-second deadline, and remembers the key
 in `launchStarted`. `tune` already cancels the deadline.
