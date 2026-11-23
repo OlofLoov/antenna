@@ -107,7 +107,9 @@ delegate method, without a network, and reads each part back or leaves it
 to the window of a stream opened ahead. It compares malloc's bytes in use
 before and after against a 16 MB limit.
 
-It also plays a one-second interlaced fixture over and over as
-an endless live stream through a run, and compares malloc's bytes in use
-after 300 pictures and after 5,300. The limit is 256 bytes a picture; the
-old code left about 900 to 1,400.
+It also runs an endless live stream through a run from bytes whose every
+read autoreleases an object that counts itself, and checks that fewer than
+a quarter of 3,000 are still alive. Before the per-packet pool all 3,049
+were. An earlier version counted malloc over 5,000 deinterlaced pictures,
+but on the CI runners it did not reach 300 pictures in a minute, so the
+deinterlacer figures above were measured by hand.

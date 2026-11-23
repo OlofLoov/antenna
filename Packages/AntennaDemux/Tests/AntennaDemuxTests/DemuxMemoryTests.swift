@@ -7,37 +7,40 @@ import Testing
 
 @testable import AntennaDemux
 
-/// A run's memory over a long live stream: what it takes for each packet
-/// is let go while the stream plays on, not when its thread ends.
+/// Memory over a long live stream: what the run and the connection are
+/// done with is let go while the stream plays on, not when it ends.
 @Suite(.serialized) struct DemuxMemoryTests {
+    /// Every read of these bytes autoreleases an object, as reading back
+    /// the local buffer does through Foundation and as the deinterlacer's
+    /// Metal calls do for each picture. Before the run drained its pool per
+    /// packet, every one of them lived until the channel changed: each read
+    /// of the buffer held its bytes, and each 1080i or 576i picture about
+    /// 1.4 KB of the GPU's bookkeeping.
     @Test(
-        "playback-engine/live-playback-keeps-memory-steady memory stays flat while interlaced live TV plays",
-        arguments: ["interlaced-576i.ts", "interlaced-1080i.ts"])
-    func interlacedLiveStaysFlat(file: String) async throws {
-        let data = try Data(contentsOf: FixtureServer.fixtures().appending(path: file))
-        let bytes = EndlessBytes(data)
+        "playback-engine/live-playback-keeps-memory-steady what a run autoreleases for a packet is let go while live TV plays"
+    )
+    func autoreleasedPerPacketIsLetGo() async throws {
+        let data = try Data(contentsOf: FixtureServer.fixtures().appending(path: "channel.ts"))
+        let bytes = EndlessBytes(data, readSize: 4096)
         var timebase: CMTimebase?
         CMTimebaseCreateWithSourceClock(allocator: nil, sourceClock: CMClockGetHostTimeClock(), timebaseOut: &timebase)
         let clock = try #require(timebase)
-        let video = CountingRenderer(timebase: clock)
-        let audio = CountingRenderer(timebase: clock)
         let run = DemuxRun(
-            bytes: bytes, videoFeed: SampleFeed(renderer: video, label: "memory.video", limit: 8),
-            audioFeed: SampleFeed(renderer: audio, label: "memory.audio", limit: 64))
+            bytes: bytes, videoFeed: SampleFeed(renderer: TakingRenderer(timebase: clock), label: "memory.video", limit: 8),
+            audioFeed: SampleFeed(renderer: TakingRenderer(timebase: clock), label: "memory.audio", limit: 64))
         run.start(ready: { _ in }, options: PlaybackOptions(isLive: true), ended: { _ in })
         defer { run.cancel() }
 
-        // Past the start, the decoder, deinterlacer and feeds hold all they will.
-        try await video.wait(for: 300)
-        let settled = Self.bytesInUse()
-        try await video.wait(for: 300 + Self.pictures)
-        let grown = Self.bytesInUse() - settled
-        // Each picture left about 2 KB of the GPU's bookkeeping behind
-        // before the run drained its autorelease pool per packet.
-        #expect(grown < Self.pictures * 256, "grew \(grown) bytes over \(Self.pictures) pictures")
+        let deadline = ContinuousClock.now + .seconds(120)
+        while bytes.tally.made < 3000, ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let (made, alive) = bytes.tally.counts
+        #expect(made >= 3000)
+        // The reads FFmpeg makes while it opens the stream come before the
+        // first packet and stay with the thread; a few hundred at most.
+        #expect(alive < made / 4, "\(alive) of \(made) autoreleased objects still alive")
     }
-
-    static let pictures = 5000
 
     @Test(
         "playback-engine/live-playback-keeps-memory-steady bytes taken from the connection are let go",
@@ -69,22 +72,28 @@ import Testing
     }
 }
 
-/// A live stream that never ends: `data` over and over, until cancelled.
+/// A live stream that never ends: `data` over and over, until cancelled,
+/// at most `readSize` bytes a read. Each read autoreleases an object
+/// `tally` counts.
 private final class EndlessBytes: DemuxBytes, @unchecked Sendable {
     private let data: Data
+    private let readSize: Int
     private let lock = NSLock()
     private var offset = 0
     private var cancelled = false
+    let tally = Tally()
 
-    init(_ data: Data) {
+    init(_ data: Data, readSize: Int) {
         self.data = data
+        self.readSize = readSize
     }
 
     func read(into destination: UnsafeMutablePointer<UInt8>, count: Int) -> Int {
-        lock.withLock {
+        _ = Unmanaged.passRetained(Tracked(tally)).autorelease()
+        return lock.withLock {
             guard !cancelled else { return 0 }
             let within = offset % data.count
-            let taken = min(count, data.count - within)
+            let taken = min(count, readSize, data.count - within)
             data.withUnsafeBytes { raw in
                 guard let base = raw.baseAddress else { return }
                 destination.update(from: base.advanced(by: within).assumingMemoryBound(to: UInt8.self), count: taken)
@@ -103,34 +112,44 @@ private final class EndlessBytes: DemuxBytes, @unchecked Sendable {
     func cancel() { lock.withLock { cancelled = true } }
 }
 
-/// A renderer that takes every buffer at once and counts them.
-private final class CountingRenderer: NSObject, AVQueuedSampleBufferRendering, @unchecked Sendable {
-    let timebase: CMTimebase
+/// How many `Tracked` objects were made and how many are gone.
+private final class Tally: @unchecked Sendable {
     private let lock = NSLock()
-    private var taken = 0
+    private var madeCount = 0
+    private var goneCount = 0
+
+    var made: Int { lock.withLock { madeCount } }
+    /// Made, and made less gone.
+    var counts: (made: Int, alive: Int) { lock.withLock { (madeCount, madeCount - goneCount) } }
+    func add() { lock.withLock { madeCount += 1 } }
+    func remove() { lock.withLock { goneCount += 1 } }
+}
+
+/// Tells its tally when it is made and when it goes.
+private final class Tracked {
+    private let tally: Tally
+
+    init(_ tally: Tally) {
+        self.tally = tally
+        tally.add()
+    }
+
+    deinit { tally.remove() }
+}
+
+/// A renderer that takes every buffer at once.
+private final class TakingRenderer: NSObject, AVQueuedSampleBufferRendering, @unchecked Sendable {
+    let timebase: CMTimebase
 
     init(timebase: CMTimebase) {
         self.timebase = timebase
     }
 
-    var count: Int { lock.withLock { taken } }
-
-    /// Returns once `target` buffers arrived; fails after a minute.
-    func wait(for target: Int) async throws {
-        let deadline = ContinuousClock.now + .seconds(60)
-        while count < target {
-            guard ContinuousClock.now < deadline else { throw Timeout() }
-            try await Task.sleep(for: .milliseconds(10))
-        }
-    }
-
-    func enqueue(_ sampleBuffer: CMSampleBuffer) { lock.withLock { taken += 1 } }
+    func enqueue(_ sampleBuffer: CMSampleBuffer) {}
     func flush() {}
     var isReadyForMoreMediaData: Bool { true }
     // swiftlint:disable:next identifier_name
     var hasSufficientMediaDataForReliablePlaybackStart: Bool { true }
     func requestMediaDataWhenReady(on queue: DispatchQueue, using block: @escaping @Sendable () -> Void) {}
     func stopRequestingMediaData() {}
-
-    struct Timeout: Error {}
 }
