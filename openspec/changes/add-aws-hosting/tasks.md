@@ -20,6 +20,7 @@
 - [x] 3.3 Add the two response headers policies from design.md decision 3, the site's and the stricter one on `/setup*`, with `terraform test` files that compare each Content-Security-Policy with the decided string and fail on `'unsafe-inline'` or `'unsafe-eval'` in `script-src`, citing `hosting/pages-run-only-the-site-s-own-code`
 - [x] 3.4 Add the site job to `infra.yml`: Node from `Web/site/.nvmrc`, `npm ci` and `npm run build` in `Web/site/` once it exists, `scripts/publish-web.sh` with the build folder, the two-step `aws s3 sync` with the JSON content type on the association file and the year-long cache on `/_app/immutable/`, and the invalidation, with `SITE_BUCKET` and `SITE_DISTRIBUTION_ID` from repository variables, citing `antenna-website/the-site-publishes-from-main`
 - [ ] 3.5 After the first deploy, check the site, the association file, HTTPS, the `www` redirect, a 404 status on a made-up address and the CSP header on `<antenna-domain>` with the device checklist
+- [x] 3.6 Allow the route announcer's style attribute by its hash in the site's `style-src-attr` (design.md decision 3), drop the `#svelte-announcer` rule from `site.css`, and add `checkStyleHashes` to the site check, which fails when a style attribute in the built scripts has no hash in the policy or the policy holds a hash nothing writes, citing `hosting/pages-run-only-the-site-s-own-code`
 
 ## 4. Retire GitHub Pages
 
