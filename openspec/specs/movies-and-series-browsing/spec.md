@@ -356,6 +356,11 @@ On Apple TV the system SHALL show, at the top of Movies and Series while the hig
 - **WHEN** the viewer moves down from one row to the next
 - **THEN** the new row takes the place just under the preview, the row above leaves the screen, and the preview changes once the highlight rests
 
+#### Scenario: Moving up to the row above
+- **GIVEN** the highlight is in a row below the first, with the preview showing
+- **WHEN** the viewer moves up to the row above, once or twice in quick succession
+- **THEN** that row comes down from under the preview at once, in one movement, and rests whole just under the preview, as a row does after moving down
+
 #### Scenario: Details still loading
 - **GIVEN** the provider has not answered for the title the highlight rests on
 - **WHEN** the preview changes to it
