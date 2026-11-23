@@ -5,7 +5,7 @@ The system SHALL open the page of the movie or series the current profile watche
 
 #### Scenario: An episode stopped part-way on iPhone
 - **GIVEN** the user stopped Harbor Watch Season 1 Episode 1 part-way on an iPhone and watched nothing after it
-- **WHEN** they open Antenna on that iPhone
+- **WHEN** they open Antuna on that iPhone
 - **THEN** Series opens with Harbor Watch's page on Season 1, Play reads "Resume S1 E1" with its progress bar, and nothing plays
 
 #### Scenario: A movie on Apple TV
@@ -33,7 +33,7 @@ The system SHALL open no title page at launch, and launch as it would without on
 
 #### Scenario: The title is gone
 - **GIVEN** the title watched last is no longer in its source, or its source failed, is offline or is waiting for its login
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** no page opens; iPhone, iPad and Mac show the section, and Apple TV plays the last channel, or the first channel of the first source to load
 
 #### Scenario: A slow source
@@ -56,7 +56,7 @@ The system SHALL keep, for each profile on each device, whether a live channel o
 
 #### Scenario: A movie, then a channel
 - **GIVEN** the user played a movie and then watched a channel
-- **WHEN** the channel has played for ten seconds and the user opens Antenna again later
+- **WHEN** the channel has played for ten seconds and the user opens Antuna again later
 - **THEN** the launch is the one for a channel; before those ten seconds it is the one for the movie
 
 #### Scenario: Things that do not count
@@ -66,12 +66,12 @@ The system SHALL keep, for each profile on each device, whether a live channel o
 
 #### Scenario: An episode from Up next
 - **GIVEN** an episode started from the title page and the next one started from Up next
-- **WHEN** the user opens Antenna again
+- **WHEN** the user opens Antuna again
 - **THEN** the series page shows the season of the episode that started last
 
 #### Scenario: Nothing kept or damaged
 - **GIVEN** nothing kept yet, or a kept value that cannot be read
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** it launches as for a channel, without an error
 
 #### Scenario: The source is deleted
@@ -86,18 +86,18 @@ The system SHALL reopen iPhone, iPad and Mac on the tab and Live group the user 
 
 #### Scenario: Reopen the app
 - **GIVEN** the user last had a tab and a channel group open on iPhone, iPad or Mac, and last watched a channel or nothing
-- **WHEN** they open Antenna again
+- **WHEN** they open Antuna again
 - **THEN** the same tab is shown, and Live shows the same group
 
 #### Scenario: Last watched a title
 - **GIVEN** the user last had Live open but last watched a movie from Search
-- **WHEN** they open Antenna again
+- **WHEN** they open Antuna again
 - **THEN** Movies opens with the movie's page, and Live still shows the same group when they go to it
 
 #### Scenario: A tab that is not restored
 - **GIVEN** the user was last on Search or Settings, or on Movies or Series with no source that has them
-- **WHEN** they open Antenna again
-- **THEN** Antenna opens on Live
+- **WHEN** they open Antuna again
+- **THEN** Antuna opens on Live
 
 #### Scenario: The group is gone or still loading
 - **GIVEN** the restored group no longer exists, or its source is still loading

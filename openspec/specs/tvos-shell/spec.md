@@ -40,10 +40,10 @@ The system SHALL show the system tab bar holding, from left to right, Live, Guid
 - **THEN** it is read as the system tab bar, one tab per item, and the search tab reads "Search"
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one: at once when it was saved for launch, otherwise once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced.
+The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after "Who's watching?" when it shows: at once when it was saved for launch, else once its source has loaded. If the channel is gone or its source failed or has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. After a movie or an episode, the title's page SHALL open instead, with the channel paused behind it, unless it cannot open.
 
 #### Scenario: Last channel available
-- **GIVEN** the current profile watched a channel on this Apple TV before
+- **GIVEN** the current profile watched a channel on this Apple TV, with no movie or episode after it
 - **WHEN** they open Antuna and its source has loaded
 - **THEN** that channel plays full screen
 
@@ -80,7 +80,7 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 #### Scenario: What is remembered
 - **GIVEN** a channel the user tunes
 - **WHEN** its stream loads
-- **THEN** it becomes the current profile's last channel; a stream that fails to load leaves the last channel as it was
+- **THEN** it becomes the current profile's last channel on this Apple TV only, never synced; a stream that fails to load leaves the last channel as it was
 
 #### Scenario: Last watched an M3U channel
 - **GIVEN** the last channel watched on this Apple TV came from an M3U playlist
@@ -96,6 +96,16 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 - **GIVEN** the stored last channel cannot be read
 - **WHEN** the user opens Antuna
 - **THEN** it counts as nothing remembered
+
+#### Scenario: Last watched a movie or an episode
+- **GIVEN** the current profile's last watch on this Apple TV was a movie or an episode that its section lists within 10 seconds
+- **WHEN** they open Antuna
+- **THEN** the title's page opens with Resume focused, the last channel loads paused behind it, and it plays when the user goes to Live
+
+#### Scenario: The title cannot open
+- **GIVEN** the current profile's last watch was a movie or an episode that is gone, whose source failed, or that is not listed within 10 seconds
+- **WHEN** they open Antuna
+- **THEN** the last channel plays full screen as when the last watch was a channel, or the first channel of the first source to load
 
 ### Requirement: Menu shows the tab bar over the picture
 The system SHALL dim the picture and show the tab bar with Live highlighted when the user presses Menu over a full-screen channel with nothing else on screen, keeping the video playing, or failed.

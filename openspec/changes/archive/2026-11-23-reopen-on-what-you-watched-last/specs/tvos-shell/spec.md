@@ -1,16 +1,16 @@
 ## MODIFIED Requirements
 
 ### Requirement: Back to the last channel on launch
-The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after the "Who's watching?" screen when there is one: at once when it was saved for launch, otherwise once its source has loaded. If it no longer exists, its source failed, or its source has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. The last channel is kept per profile on this Apple TV only, never synced. When the profile's last watch on this Apple TV was a movie or an episode, the system SHALL open the title's page instead, with the channel loaded paused behind it, unless the title cannot open.
+The system SHALL play the current profile's last channel on this Apple TV full screen at launch, after "Who's watching?" when it shows: at once when it was saved for launch, else once its source has loaded. If the channel is gone or its source failed or has not loaded within 10 seconds, the first channel of the first source to finish with channels SHALL play instead. After a movie or an episode, the title's page SHALL open instead, with the channel paused behind it, unless it cannot open.
 
 #### Scenario: Last channel available
 - **GIVEN** the current profile watched a channel on this Apple TV, with no movie or episode after it
-- **WHEN** they open Antenna and its source has loaded
+- **WHEN** they open Antuna and its source has loaded
 - **THEN** that channel plays full screen
 
 #### Scenario: Saved for launch
 - **GIVEN** the current profile's last channel was saved for launch and its source's list takes 20 seconds to load
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** that channel starts full screen before the list loads, and the 10 seconds do not apply to it
 
 #### Scenario: Another profile's last channel
@@ -20,7 +20,7 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 
 #### Scenario: Last channel gone or late
 - **GIVEN** the last channel no longer exists, or its source has not loaded within 10 seconds
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** the first channel of the first source to load plays instead
 
 #### Scenario: Later sources and coming back
@@ -41,29 +41,29 @@ The system SHALL play the current profile's last channel on this Apple TV full s
 #### Scenario: What is remembered
 - **GIVEN** a channel the user tunes
 - **WHEN** its stream loads
-- **THEN** it becomes the current profile's last channel; a stream that fails to load leaves the last channel as it was
+- **THEN** it becomes the current profile's last channel on this Apple TV only, never synced; a stream that fails to load leaves the last channel as it was
 
 #### Scenario: Last watched an M3U channel
 - **GIVEN** the last channel watched on this Apple TV came from an M3U playlist
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** that channel plays full screen, the stored last channel holds no stream link, and what was saved for launch holds no username or password
 
 #### Scenario: Last watched an M3U channel with a stream link in its id
 - **GIVEN** a last channel stored by an earlier version whose id contains a stream link
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** that channel is not remembered, the first channel of the first source to load plays instead, and no error is shown
 
 #### Scenario: Unreadable last channel
 - **GIVEN** the stored last channel cannot be read
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** it counts as nothing remembered
 
 #### Scenario: Last watched a movie or an episode
 - **GIVEN** the current profile's last watch on this Apple TV was a movie or an episode that its section lists within 10 seconds
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** the title's page opens with Resume focused, the last channel loads paused behind it, and it plays when the user goes to Live
 
 #### Scenario: The title cannot open
 - **GIVEN** the current profile's last watch was a movie or an episode that is gone, whose source failed, or that is not listed within 10 seconds
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** the last channel plays full screen as when the last watch was a channel, or the first channel of the first source to load
