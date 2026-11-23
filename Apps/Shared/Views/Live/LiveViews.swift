@@ -42,6 +42,9 @@
                     default: break
                     }
                 }
+                .onChange(of: scenePhase == .active, initial: true) { _, active in
+                    if active { live.sceneBecameActive() }
+                }
                 .modifier(SourceDeletions(removed: live.sourceDeleted, defaults: live.session.store.defaults))
                 .modifier(GroupRulesFeed(changed: live.rulesChanged))
                 .modifier(

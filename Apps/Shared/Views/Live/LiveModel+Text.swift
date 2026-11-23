@@ -37,6 +37,7 @@ extension LiveModel.Dependencies {
             languages: ChannelLanguageStore(profile: profile),
             recents: RecentsStore(profile: profile))
         dependencies.seen = .app
+        dependencies.launchLogins = { LaunchLogins(credentials: loader.credentials).logins(for: $0) }
         dependencies.waitsForICloud = { loader.waitsForICloud($0) }
         return dependencies
     }

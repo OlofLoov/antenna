@@ -60,10 +60,10 @@
                     return
                 } catch {
                     Self.logger.info("tune failed, the stored channel is kept")
-                    if let failure = error as? PlaybackFailure, tuned == channel { player.loadFailed(failure) }
+                    if let failure = error as? PlaybackFailure, tuned?.isSame(as: channel) == true { player.loadFailed(failure) }
                     return
                 }
-                guard tuned == channel else { return }
+                guard tuned?.isSame(as: channel) == true else { return }
                 // A load that lands behind Movies, Series or Search stays paused.
                 holdLoadedBehindContent()
                 if !pausedByShell { await engine.play() }
@@ -78,6 +78,7 @@
             session.remove(source: id)
             dependencies.seen.remove(id)
             if stored?.sourceID == id { stored = nil }
+            if launchStarted?.sourceID == id { launchStarted = nil }
             recents.removeAll { $0.sourceID == id }
         }
 
@@ -170,6 +171,7 @@
                 languages: ChannelLanguageStore(profile: profile))
             dependencies.waitsForICloud = { loader.waitsForICloud($0) }
             dependencies.seen = .app
+            dependencies.launchLogins = { LaunchLogins(credentials: loader.credentials).logins(for: $0) }
             dependencies.storedTitles = { refresher?.status(of: $0).titleCounts ?? LastLoadStore().readTitles($0) }
             return dependencies
         }

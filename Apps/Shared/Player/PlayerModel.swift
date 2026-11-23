@@ -259,6 +259,13 @@ final class PlayerModel {
         if new != nil { startWaiting() }
     }
 
+    /// The playing channel's details changed, as when the fresh list
+    /// replaces the channel started at launch. Tracks, the wait and any
+    /// error stay as they are.
+    func retitle(_ new: PlayerSubject) {
+        subject = new
+    }
+
     /// Try again: the same channel loads once more without counting as a
     /// channel change, the error goes and the spinner shows at once
     /// (player-controls-and-playback-errors/try-again-or-recover-on-its-own).

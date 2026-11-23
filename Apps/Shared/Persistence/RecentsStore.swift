@@ -6,7 +6,8 @@ import Foundation
 /// (session-restore-and-recently-watched capability). Keys are
 /// `recents.list`, `recents.session` and `shell.lastChannel`, each with
 /// `.<profile id>` appended for every profile but Main. A value that cannot
-/// be read counts as absent.
+/// be read counts as absent. The channel saved for launch, with its link,
+/// is a file in `launch`, outside `UserDefaults`.
 struct RecentsStore: Sendable {
     static let lastChannelKey = "shell.lastChannel"
     static let listKey = "recents.list"
@@ -15,10 +16,13 @@ struct RecentsStore: Sendable {
 
     nonisolated(unsafe) let defaults: UserDefaults
     let profile: UUID
+    /// The channel the profile starts at launch.
+    let launch: LaunchChannelStore
 
-    init(defaults: UserDefaults = .standard, profile: UUID = Profile.mainID) {
+    init(defaults: UserDefaults = .standard, profile: UUID = Profile.mainID, launchDirectory: URL = LaunchChannelStore.appDirectory) {
         self.defaults = defaults
         self.profile = profile
+        launch = LaunchChannelStore(directory: launchDirectory, profile: profile)
     }
 
     /// A store outside the app's own values for tests and previews, empty
@@ -27,7 +31,7 @@ struct RecentsStore: Sendable {
         let suite = "antenna.scratch"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
-        return RecentsStore(defaults: defaults)
+        return RecentsStore(defaults: defaults, launchDirectory: LaunchChannelStore.scratchDirectory)
     }()
 
     // MARK: Last channel
@@ -49,6 +53,20 @@ struct RecentsStore: Sendable {
         #if DEBUG
             UITestingRecents.mirror(channel)
         #endif
+    }
+
+    /// The saved channel when it is the last channel; nil otherwise, so a
+    /// file left behind by a deleted or renamed channel tunes nothing.
+    func readLaunch() -> SavedChannel? {
+        guard let saved = launch.read(), saved.key == read() else { return nil }
+        return saved
+    }
+
+    /// Saves `channel` for launch with `logins` taken out of its links, or
+    /// deletes the saved channel when `logins` is nil or the channel cannot
+    /// be saved (session-restore-and-recently-watched/what-is-saved-for-launch-holds-no-login).
+    func saveLaunch(_ channel: Channel, logins: [SavedChannel.Login]?) {
+        launch.write(logins.flatMap { SavedChannel(channel, logins: $0) })
     }
 
     // MARK: Recents
@@ -84,9 +102,9 @@ struct RecentsStore: Sendable {
     /// Removes `source`'s channels from the recents, the session group and
     /// the last channel of every profile on this device
     /// (session-restore-and-recently-watched/deleting-a-source-clears-its-channels).
-    static func remove(source: UUID, from defaults: UserDefaults = .standard) {
+    static func remove(source: UUID, from defaults: UserDefaults = .standard, launchDirectory: URL = LaunchChannelStore.appDirectory) {
         for profile in profiles(in: defaults) {
-            RecentsStore(defaults: defaults, profile: profile).remove(source: source)
+            RecentsStore(defaults: defaults, profile: profile, launchDirectory: launchDirectory).remove(source: source)
         }
     }
 
@@ -98,6 +116,7 @@ struct RecentsStore: Sendable {
         session.remove(source: source)
         write(session)
         if read()?.sourceID == source { defaults.removeObject(forKey: key(Self.lastChannelKey)) }
+        launch.remove(source: source)
     }
 
     // MARK: Switched sources
@@ -112,6 +131,7 @@ struct RecentsStore: Sendable {
     }
 
     private func renameChannels(_ ids: [String: String], source: UUID) {
+        launch.remove(source: source)
         if defaults.data(forKey: key(Self.listKey)) != nil {
             var list = recents
             list.renameChannels(ids, source: source)

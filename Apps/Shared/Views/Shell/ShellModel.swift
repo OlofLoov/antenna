@@ -9,37 +9,6 @@
     /// pause, then stop, behind Movies, Series and Search.
     @MainActor @Observable
     final class ShellModel {
-        struct Dependencies {
-            var engine: any PlaybackEngine
-            var load: @MainActor (SourceDescriptor) async throws -> Playlist
-            var hasLogin: @MainActor (SourceDescriptor) -> Bool
-            var recents: RecentsStore
-            /// The channels each source had on this Apple TV, for the New group.
-            var seen = SeenChannelsStore.scratch
-            var sleep: @MainActor (Duration) async throws -> Void
-            var guide: AppGuideStore?
-            var languages = ChannelLanguageStore()
-            /// Where Sign in on the error stores a login.
-            var credentials: any CredentialStoring = CredentialStore()
-            /// The connection the player watches to recover from an offline error.
-            var network: NetworkWatch = .system
-            /// How long the spinner shows before it names the source as slow.
-            var slowDelay = Duration.seconds(10)
-            /// How the ten-second count waits, when not as `sleep`.
-            var watchSleep: (@MainActor (Duration) async throws -> Void)?
-            /// The tiles' engines and limit when multi-view starts.
-            var multiView = MultiViewModel.Dependencies()
-            /// Builds Start over's catch-up addresses.
-            var catchup = CatchupAddresses()
-            /// True for a file source whose playlist has not synced yet.
-            var waitsForICloud: @MainActor (SourceDescriptor) -> Bool = { _ in false }
-            /// The movies and episodes a source's last load had on this device, nil when unknown.
-            var storedTitles: @MainActor (UUID) -> TitleCounts? = { _ in nil }
-        }
-
-        static let logger = Logger(subsystem: "se.codecrave.antenna", category: "shell")
-        static let launchDeadline = Duration.seconds(10)
-
         private(set) var tab: ShellTab = .live
         /// True while the highlight is in the system tab bar; the shell's view reports it.
         var barFocused = false
@@ -89,6 +58,10 @@
         @ObservationIgnored private var finishOrder: [UUID] = []
         /// The channel to tune at launch, read once.
         @ObservationIgnored var stored: LastChannelKey?
+        /// `stored` as saved for launch, tuned before its source loads; read once.
+        @ObservationIgnored var savedLaunch: SavedChannel?
+        /// The channel tuned from `savedLaunch`, until its source's list arrives.
+        @ObservationIgnored var launchStarted: LastChannelKey?
         /// True once the first `sourcesChanged` has run.
         private(set) var launched = false
         @ObservationIgnored private(set) var deadlinePassed = false
@@ -125,6 +98,7 @@
                     slowDelay: dependencies.slowDelay))
             hold = LiveHold(engine: dependencies.engine, timeshift: player.timeshift, sleep: dependencies.sleep)
             player.reload = { [weak self] channel in self?.load(channel) }
+            session.saved = { [weak self] channel in self?.saveForLaunch(channel) }
             wireStartOver()
             player.hasLogin = { [weak self] id in
                 guard let self, let source = descriptors[id] else { return false }
@@ -168,6 +142,7 @@
             if !launched {
                 launched = true
                 stored = dependencies.recents.read()
+                savedLaunch = dependencies.recents.readLaunch()
                 startDeadline()
             }
             let ids = Set(list.map(\.id))
@@ -299,7 +274,14 @@
             guard tuned == nil, launched, shelfItem == nil else { return }
             if let stored, !deadlinePassed {
                 let state = sources.first { $0.id == stored.sourceID }?.state
-                if state == .loading { return }
+                if state == .loading {
+                    // (session-restore-and-recently-watched/the-last-channel-starts-before-its-source-loads)
+                    if channelsBySource[stored.sourceID] == nil, let channel = launchChannel(stored) {
+                        launchStarted = stored
+                        tune(channel)
+                    }
+                    return
+                }
                 if let match = channelsBySource[stored.sourceID]?.first(where: stored.matches) {
                     tune(match)
                     return
@@ -432,6 +414,23 @@
             pickerOpen = false
         }
 
+        /// The list's `channel` replaces the tuned one with no reload
+        /// (session-restore-and-recently-watched/the-fresh-list-decides).
+        func adopt(_ channel: Channel) {
+            guard let tuned, tuned.isSame(as: channel) else { return }
+            self.tuned = channel
+            player.retitle(subject(for: channel))
+            session.adopt(channel)
+        }
+
+        /// Nothing is tuned, so the first channel of the first source to load takes over.
+        func dropLaunchChannel() {
+            tuned = nil
+            stored = nil
+            player.tuned(nil)
+            session.tuned(nil)
+        }
+
         /// Multi-view ended with `channel`'s player now playing here with no
         /// reload, or with every tile stopped when nil (multi-view/leave-multi-view).
         /// It counts as one channel change, and the channel is the last one.
@@ -442,7 +441,7 @@
             session.tuned(channel)
             multiViewEnds += 1
             guard let channel else { return }
-            if let key = LastChannelKey(channel) { session.store.write(key) }
+            session.remember(channel)
             let state = await engine.state
             player.stateChanged(state)
             session.stateChanged(state)
@@ -468,6 +467,7 @@
                 if !loaded.unchanged { channelsBySource[source.id] = tagged }
                 setState(.loaded(channels: tagged.count), for: source.id)
                 rebuildChannels()
+                reconcileLaunch(source.id, fresh: tagged)
                 considerTune()
                 record(source.id, tagged)
                 if let guide = dependencies.guide {

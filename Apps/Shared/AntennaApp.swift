@@ -48,6 +48,7 @@ struct AntennaApp: App {
         // A profile deleted on another device leaves its per-device values here.
         let profiles = (try? container.mainContext.fetch(FetchDescriptor<ProfileRecord>())) ?? []
         ProfileKeys.prune(.standard, keeping: ProfileStore.list(profiles).profiles.map(\.id))
+        LaunchChannelStore.prune(keeping: [Profile.mainID] + ProfileStore.list(profiles).profiles.map(\.id))
         ActivityStore.carryOverSearches(from: .standard, into: container.mainContext)
         // Buffers from an earlier run are deleted unread
         // (timeshift-catch-up-and-start-over/changing-channel-starts-fresh).

@@ -58,8 +58,7 @@
             .menuCommand(\.sectionCommands, sectionCommands)
         }
 
-        /// The Go menu: the sidebar's sections, picked as from the sidebar
-        /// (keyboard-commands/go-to-a-section).
+        /// The Go menu: the sidebar's sections, picked as from the sidebar (keyboard-commands/go-to-a-section).
         private var sectionCommands: SectionCommands {
             SectionCommands(offered: sections + [.settings]) { item in
                 live.setFullScreen(false)
@@ -151,6 +150,7 @@
                     let offer = TitleOffer(records: records, refresher: refresher)
                     section = LiveSection(live.restoredTab, offer: offer)
                     section = handoff?.takeMovies() == true ? .titles(offer) : .launch(preferences, offer: offer) ?? section
+                    live.screenRestored(onLive: section == .live)
                 }
             }
             .background(Palette.ground)
