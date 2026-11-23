@@ -123,4 +123,25 @@ extension ShellUITests {
         app.launchInEnglish()
         expectEngine("playing loads=1 file=a2.ts")
     }
+
+    // tvos-shell/back-to-the-last-channel-on-launch, saved for launch
+    // session-restore-and-recently-watched/the-last-channel-starts-before-its-source-loads
+    func testTheLastChannelPlaysWhileItsSourceStillLoads() {
+        let mirror = FileManager.default.temporaryDirectory.appending(path: "tv-last-\(UUID().uuidString).txt")
+        defer { try? FileManager.default.removeItem(at: mirror) }
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels"]
+        app.launchEnvironment["UITESTING_LAST_CHANNEL_FILE"] = mirror.path
+        app.launchInEnglish()
+        expectEngine("playing loads=1 file=a1.ts")
+        let stored = XCTNSPredicateExpectation(
+            predicate: NSPredicate { _, _ in (try? String(contentsOf: mirror, encoding: .utf8)) == "fixture/a1" }, object: nil)
+        XCTAssertEqual(XCTWaiter().wait(for: [stored], timeout: 10), .completed, "a1 never became the last channel")
+        app.terminate()
+
+        // Both sources never finish loading.
+        app.launchArguments = ["-ui-testing-shell", "loading", "-ui-testing-keep-session"]
+        app.launchInEnglish()
+        expectEngine("playing loads=1 file=a1.ts")
+    }
 }

@@ -109,6 +109,7 @@
         private func dependencies() -> LiveModel.Dependencies {
             #if DEBUG
                 if var scripted = UITestingLive.dependencies() {
+                    scripted.launchLogins = UITestingRecents.launchLogins
                     // Settings reads the scripted sources' status from the app's refresher.
                     if let refresher {
                         scripted.load = { try await refresher.load($0) }
@@ -232,6 +233,7 @@
                 // preference, when not Live, wins over the restored tab
                 // (sources-and-settings/choose-how-the-app-behaves).
                 let titles = Tab(LiveSection.titles(storedOffer))
+                defer { live.screenRestored(onLive: selection == .live) }
                 if handoff?.takeMovies() == true { return selection = titles }
                 switch PreferencesStore.current(preferences).launchScreen(offersMovies: storedOffer.any) {
                 case .live: break

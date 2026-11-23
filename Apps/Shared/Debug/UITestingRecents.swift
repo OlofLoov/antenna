@@ -13,6 +13,8 @@
     /// `UITESTING_LAST_CHANNEL_FILE` names a file, each last-channel write
     /// puts the channel id in it, and `UITESTING_RECENTS_FILE` gets the
     /// recents' ids one per line, since a UI test cannot read the app's defaults.
+    /// The channel saved for launch is in its own folder, emptied with the
+    /// defaults.
     enum UITestingRecents {
         static let keepArgument = "-ui-testing-keep-session"
         static let recentsVariable = "UITESTING_RECENTS"
@@ -40,14 +42,29 @@
         static func store(source: (String) -> UUID) -> RecentsStore {
             let defaults = UserDefaults(suiteName: suite) ?? .standard
             let environment = ProcessInfo.processInfo.environment
-            guard !ProcessInfo.processInfo.arguments.contains(keepArgument) else { return RecentsStore(defaults: defaults) }
+            let launch = FileManager.default.temporaryDirectory.appending(path: "ui-testing-launch", directoryHint: .isDirectory)
+            guard !ProcessInfo.processInfo.arguments.contains(keepArgument) else {
+                return RecentsStore(defaults: defaults, launchDirectory: launch)
+            }
             defaults.removePersistentDomain(forName: suite)
-            let store = RecentsStore(defaults: defaults)
+            try? FileManager.default.removeItem(at: launch)
+            let store = RecentsStore(defaults: defaults, launchDirectory: launch)
             let seeded = (environment[recentsVariable] ?? "").split(separator: ",").map(String.init)
             for id in seeded.reversed() {
                 store.record(LastChannelKey(sourceID: source(id), channelID: "fixture/\(id)"))
             }
             return store
+        }
+
+        /// With this argument no channel is saved for launch or started
+        /// from what was saved, so a test sees the launch wait for the list.
+        static let noLaunchChannelArgument = "-ui-testing-no-launch-channel"
+
+        /// The scripted sources' logins: one for an Xtream source, none for
+        /// a playlist. The fixture links carry neither.
+        static func launchLogins(_ source: SourceDescriptor) -> [SavedChannel.Login]? {
+            guard !ProcessInfo.processInfo.arguments.contains(noLaunchChannelArgument) else { return nil }
+            return source.kind == .xtream ? [SavedChannel.Login(username: "fixture-user", password: "fixture-pass")] : []
         }
 
         /// Sleeps as asked, except the ten-second count, which takes

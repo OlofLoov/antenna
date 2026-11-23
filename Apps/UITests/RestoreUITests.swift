@@ -22,9 +22,12 @@ final class RestoreUITests: XCTestCase {
         try? FileManager.default.removeItem(at: lastChannel)
     }
 
-    func launch(_ scenario: String = "channels", keep: Bool = false) -> XCUIApplication {
+    /// With `saved` false the relaunch starts nothing from the channel saved
+    /// for launch, so it waits for the list as before.
+    func launch(_ scenario: String = "channels", keep: Bool = false, saved: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-live", scenario] + (keep ? ["-ui-testing-keep-session"] : [])
+        app.launchArguments =
+            ["-ui-testing-live", scenario] + (keep ? ["-ui-testing-keep-session"] : []) + (saved ? [] : ["-ui-testing-no-launch-channel"])
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
         app.launchEnvironment["UITESTING_LAST_CHANNEL_FILE"] = lastChannel.path
         app.launchInEnglish()
@@ -112,13 +115,37 @@ final class RestoreUITests: XCTestCase {
         app.terminate()
 
         // Cabin fails on the first load and loads on the next.
-        app = launch("failing", keep: true)
+        app = launch("failing", keep: true, saved: false)
         let retry = app.element("browse.banner.failed.retry")
         XCTAssertTrue(retry.waitForExistence(timeout: 10))
         XCTAssertEqual(loaded, ["cabin-film.ts"], "nothing plays while Cabin failed")
         retry.tap()
         app.waitForEngine("playing loads=1")
         XCTAssertEqual(loaded.last, "cabin-film.ts")
+    }
+
+    // session-restore-and-recently-watched/the-last-channel-starts-before-its-source-loads
+    func testTheLastChannelPlaysWhileItsSourceStillLoads() {
+        var app = launch()
+        playCabinFilm(app)
+        app.terminate()
+
+        // Cabin never finishes loading.
+        app = launch("loading", keep: true)
+        app.waitForEngine("playing loads=1")
+        XCTAssertEqual(loaded, ["cabin-film.ts", "cabin-film.ts"])
+    }
+
+    // session-restore-and-recently-watched/the-fresh-list-decides
+    func testTheFreshListKeepsTheSameStreamWithoutAReload() {
+        var app = launch()
+        playCabinFilm(app)
+        app.terminate()
+
+        app = launch(keep: true)
+        app.waitForEngine("playing loads=1")
+        XCTAssertTrue(app.element("browse.row.\(Self.cabin).0").waitForExistence(timeout: 10))
+        XCTAssertEqual(loaded, ["cabin-film.ts", "cabin-film.ts"], "the list brought the same stream, so it did not load again")
     }
 
     // session-restore-and-recently-watched/reopen-on-the-same-tab-and-group, a group that arrives later

@@ -16,6 +16,9 @@ final class SessionTracker {
     let store: RecentsStore
     /// Called with the new list each time a channel counts as watched.
     var recorded: (RecentChannels) -> Void = { _ in }
+    /// Called with each channel that becomes the last channel, to save it
+    /// for launch (session-restore-and-recently-watched/the-last-channel-starts-before-its-source-loads).
+    var saved: (Channel) -> Void = { _ in }
 
     private let sleep: @MainActor (Duration) async throws -> Void
     private(set) var channel: Channel?
@@ -34,8 +37,23 @@ final class SessionTracker {
     func load(_ channel: Channel, on engine: any PlaybackEngine, options: PlaybackOptions) async throws {
         tuned(channel)
         try await engine.load(try await StreamResolver.address(for: channel), options: options)
-        guard self.channel == channel, let key = LastChannelKey(channel) else { return }
+        guard let current = self.channel, current.isSame(as: channel) else { return }
+        remember(current)
+    }
+
+    /// Saves `channel` for launch, then makes it the last channel, so
+    /// anything that sees the last channel change finds it saved too.
+    func remember(_ channel: Channel) {
+        guard let key = LastChannelKey(channel) else { return }
+        saved(channel)
         store.write(key)
+    }
+
+    /// The list brought `channel`, the one already playing, with fresher
+    /// details: it takes the tuned one's place and the count runs on.
+    func adopt(_ channel: Channel) {
+        guard let current = self.channel, current.isSame(as: channel) else { return }
+        self.channel = channel
     }
 
     /// `channel` was tuned, or nothing plays when it is nil. Stops the count.
@@ -56,7 +74,7 @@ final class SessionTracker {
             } catch {
                 return
             }
-            guard let self, !Task.isCancelled, self.channel == channel else { return }
+            guard let self, !Task.isCancelled, self.channel?.isSame(as: channel) == true else { return }
             count = nil
             counted = true
             recorded(store.record(key))
@@ -78,5 +96,13 @@ final class SessionTracker {
     private func stopCount() {
         count?.cancel()
         count = nil
+    }
+}
+
+extension Channel {
+    /// True for the same channel of the same source, whatever details a
+    /// fresher list changed.
+    func isSame(as other: Channel) -> Bool {
+        id == other.id && sourceID == other.sourceID
     }
 }
