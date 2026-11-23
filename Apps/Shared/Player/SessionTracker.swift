@@ -77,6 +77,9 @@ final class SessionTracker {
             guard let self, !Task.isCancelled, self.channel?.isSame(as: channel) == true else { return }
             count = nil
             counted = true
+            // A channel watched for ten seconds is what was watched last
+            // (session-restore-and-recently-watched/what-was-watched-last).
+            store.write(LastWatched.live)
             recorded(store.record(key))
         }
     }

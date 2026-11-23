@@ -37,6 +37,11 @@
                         .environment(\.switchProfile, stopping(live))
                         .modifier(LiveSync(live: live))
                         .modifier(ShelfSync(library: shelves, playback: playback))
+                        .modifier(
+                            LaunchTitleRestore(launch: live.launchTitle, library: shelves) { title, key in
+                                reopen(title, key, live, shelves)
+                            }
+                        )
                         .environment(\.publishesMenuCommands, !compact)
                         .onChange(of: compact, initial: true) { _, compact in guide.compact = compact }
                 }
@@ -60,7 +65,9 @@
                 if let channel = handoff?.takeChannel() { live.pick(channel) }
                 let shelves = ShelfLibrary.app(loader)
                 self.shelves = shelves
-                self.playback = .app(loader) { await live.suspend() }
+                let playback = ShelfPlayback.app(loader) { await live.suspend() }
+                playback.recordsWatched(in: live.session.store)
+                self.playback = playback
                 intentHost?.attach(live: live, shelves: shelves, profile: profile)
                 self.lifecycle = lifecycle
             }
@@ -85,6 +92,15 @@
             #else
                 false
             #endif
+        }
+
+        /// Opens the page of the title watched last over its section, unless
+        /// the user opened a page first
+        /// (session-restore-and-recently-watched/reopen-on-the-title-watched-last).
+        private func reopen(_ title: ShelfTitle, _ key: LastWatched.Title, _ live: LiveModel, _ shelves: ShelfLibrary) {
+            guard shelves.top == nil else { return live.launchTitle.drop() }
+            shelves.reopen(title, episode: key.episodeID)
+            live.launchTitle.opened()
         }
 
         /// `switchProfile` after the engine stops; nil outside a profile gate.
@@ -230,16 +246,22 @@
                 restored = true
                 selection = Tab(live.restoredTab, offer: storedOffer)
                 // Browse movies in onboarding opens Movies; otherwise the launch
-                // preference, when not Live, wins over the restored tab
-                // (sources-and-settings/choose-how-the-app-behaves).
+                // preference, when not Live, wins over the restored tab and
+                // the title watched last (sources-and-settings/choose-how-the-app-behaves,
+                // session-restore-and-recently-watched/a-title-that-cannot-open-gives-way).
                 let titles = Tab(LiveSection.titles(storedOffer))
-                defer { live.screenRestored(onLive: selection == .live) }
-                if handoff?.takeMovies() == true { return selection = titles }
-                switch PreferencesStore.current(preferences).launchScreen(offersMovies: storedOffer.any) {
-                case .live: break
-                case .guide: selection = .guide
-                case .movies: selection = titles
-                }
+                defer { live.screenRestored(selection.session) }
+                let chosen: Tab? =
+                    if handoff?.takeMovies() == true {
+                        titles
+                    } else {
+                        switch PreferencesStore.current(preferences).launchScreen(offersMovies: storedOffer.any) {
+                        case .live: nil
+                        case .guide: .guide
+                        case .movies: titles
+                        }
+                    }
+                selection = live.launchWins(chosen) ?? selection
             }
             .environment(\.shellNavigator, navigator)
             .modifier(IntentRequests(navigator: navigator))

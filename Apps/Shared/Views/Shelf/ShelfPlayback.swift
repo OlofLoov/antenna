@@ -109,6 +109,8 @@ final class ShelfPlayback {
     /// The Subtitles preference, which the screen keeps current
     /// (playback-engine/subtitles-start-by-the-subtitle-setting).
     @ObservationIgnored var subtitles = SubtitleMode.auto
+    /// Told about each movie or episode, not a trailer, that loads and plays.
+    @ObservationIgnored var watched: @MainActor (Target) -> Void = { _ in }
 
     @ObservationIgnored let engine: any PlaybackEngine
     @ObservationIgnored private let dependencies: Dependencies
@@ -246,6 +248,7 @@ final class ShelfPlayback {
             }
             guard !Task.isCancelled else { return }
             await engine.play()
+            if let self, playing == target, target.lastWatched != nil { watched(target) }
             await self?.follow(target, tracks: tracks, transport: transport)
         }
     }

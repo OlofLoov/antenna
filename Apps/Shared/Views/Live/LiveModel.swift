@@ -75,6 +75,8 @@ final class LiveModel {
     @ObservationIgnored var latestRecents: [LastChannelKey] = []
     /// The tab, group and channel to bring back from the last session.
     @ObservationIgnored var restore = LiveRestore()
+    /// The movie or series watched last, whose page opens at launch.
+    @ObservationIgnored let launchTitle: LaunchTitle
     @ObservationIgnored private var tuning: Task<Void, Never>?
     @ObservationIgnored private var loginWatch: Task<Void, Never>?
     @ObservationIgnored var names = ChannelNameIndex(Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])) {
@@ -104,6 +106,7 @@ final class LiveModel {
         session = SessionTracker(store: dependencies.recents, sleep: dependencies.sleep)
         latestRecents = dependencies.recents.recents.entries
         restore = LiveRestore(store: dependencies.recents)
+        launchTitle = LaunchTitle(dependencies.recents.readLastWatched()?.title)
         shownRecents = latestRecents
         player = PlayerModel(
             .init(

@@ -67,6 +67,8 @@
         @ObservationIgnored private(set) var deadlinePassed = false
         /// A Top Shelf item waiting for its source; the launch tune waits while set.
         @ObservationIgnored var shelfItem: UUID?
+        /// The movie or series watched last; the launch tune waits while it holds.
+        @ObservationIgnored let launchTitle = LaunchTitle()
         @ObservationIgnored private var deadline: Task<Void, Never>?
         /// The pause, then stop, behind Movies, Series and Search.
         @ObservationIgnored let hold: LiveHold
@@ -99,6 +101,7 @@
             hold = LiveHold(engine: dependencies.engine, timeshift: player.timeshift, sleep: dependencies.sleep)
             player.reload = { [weak self] channel in self?.load(channel) }
             session.saved = { [weak self] channel in self?.saveForLaunch(channel) }
+            launchTitle.dropped = { [weak self] in self?.considerTune() }
             wireStartOver()
             player.hasLogin = { [weak self] id in
                 guard let self, let source = descriptors[id] else { return false }
@@ -271,7 +274,7 @@
         /// deadline, otherwise the first channel of the first source that
         /// finished with channels. Nothing changes once a channel is tuned.
         func considerTune() {
-            guard tuned == nil, launched, shelfItem == nil else { return }
+            guard tuned == nil, launched, shelfItem == nil, !launchTitle.holds else { return }
             if let stored, !deadlinePassed {
                 let state = sources.first { $0.id == stored.sourceID }?.state
                 if state == .loading {
@@ -315,6 +318,7 @@
         /// page changes at once and the video follows in order. Picked again,
         /// the open tab sends the highlight onto its page.
         func choose(_ target: ShellTab) {
+            launchTitle.drop()
             guard target != tab else {
                 reselects += 1
                 return
@@ -329,13 +333,6 @@
         func select(_ target: ShellTab) async -> ShellFocus? {
             _ = await switchTab(to: target, picked: true).value
             return target == .live ? liveFocus : nil
-        }
-
-        /// Where focus goes on Live: the picture once tuned, Try again while
-        /// the error shows, else the loading or empty screen.
-        var liveFocus: ShellFocus {
-            guard tuned != nil else { return .liveScreen }
-            return player.failure == nil ? .picture : .retry
         }
 
         /// Shows `target` now and queues what the video does behind it after

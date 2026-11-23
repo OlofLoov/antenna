@@ -14,6 +14,13 @@
         /// Thrown by a loader for a source whose login is not on this device.
         enum LoadFailure: Error { case waitingForLogin }
 
+        /// Where focus goes on Live: the picture once tuned, Try again while
+        /// the error shows, else the loading or empty screen.
+        var liveFocus: ShellFocus {
+            guard tuned != nil else { return .liveScreen }
+            return player.failure == nil ? .picture : .retry
+        }
+
         /// The picture or the guide dims while the highlight is in the tab bar over them.
         var dimmed: Bool { barFocused && tab.showsPicture }
 
